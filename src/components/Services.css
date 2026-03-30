@@ -1,0 +1,144 @@
+.services-section {
+  background-color: var(--background-light);
+}
+
+.section-header {
+  margin-bottom: 4rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.max-w-lg {
+  max-width: 600px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+.service-card {
+  background: var(--background-white);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.featured-card {
+  background: var(--primary-blue);
+  color: white;
+  transform: scale(1.02);
+  box-shadow: var(--shadow-color);
+}
+
+.featured-card:hover {
+  transform: scale(1.02) translateY(-5px);
+}
+
+.popular-tag {
+  position: absolute;
+  top: -12px;
+  right: 2rem;
+  background-color: var(--primary-yellow);
+  color: var(--text-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 10px rgba(254, 237, 1, 0.3);
+}
+
+.service-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.blue-icon {
+  background-color: rgba(0, 89, 178, 0.1);
+  color: var(--primary-blue);
+}
+
+.magenta-icon {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--primary-magenta);
+}
+
+.service-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.service-card p {
+  flex-grow: 1;
+  margin-bottom: 2rem;
+}
+
+.text-light-gray {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.service-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.featured-card .service-price {
+  border-top-color: rgba(255, 255, 255, 0.2);
+}
+
+.service-price span {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+}
+
+.featured-card .service-price span {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.service-price strong {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+.featured-card .service-price strong {
+  color: var(--primary-yellow);
+}
+
+.mt-4 { margin-top: 3rem; }
+
+@media (min-width: 768px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .services-grid {
+    grid-template-columns: repeat(3, 1fr);
+    align-items: center;
+  }
+}
