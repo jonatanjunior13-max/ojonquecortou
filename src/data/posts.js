@@ -21,7 +21,7 @@ export const posts = [
       
       <p>No Studio do Jon, eu ensino cada cliente a dominar a sua rotina de Day After preferida!</p>
     `,
-    image: 'https://images.unsplash.com/photo-1595152772835-219674b2a8a6?auto=format&fit=crop&q=80&w=800'
+    image: '/blog-frizz.png'
   },
   {
     id: 2,
