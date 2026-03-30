@@ -6,21 +6,33 @@
 
 .blog-header {
   text-align: center;
-  padding: 4rem 0;
-  background: linear-gradient(135deg, var(--primary-blue), #0047a0);
-  color: white;
+  padding: 5rem 0;
+  background: var(--background-light);
+  border-bottom: 1px solid var(--border-light);
   margin-bottom: 4rem;
+  position: relative;
+}
+
+.blog-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-blue), var(--primary-magenta), var(--primary-yellow));
 }
 
 .blog-title {
-  font-size: 3rem;
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
   font-weight: 800;
   margin-bottom: 1rem;
+  color: var(--primary-magenta);
 }
 
 .blog-subtitle {
-  font-size: 1.2rem;
-  opacity: 0.9;
+  font-size: 1.1rem;
+  color: var(--text-gray);
   max-width: 600px;
   margin: 0 auto;
 }
