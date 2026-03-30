@@ -27,6 +27,7 @@ const Navbar = () => {
           <Link to="/" className="nav-link">Início</Link>
           <Link to="/sobre" className="nav-link">Sobre o Jon</Link>
           <Link to="/servicos" className="nav-link">Serviços</Link>
+          <Link to="/blog" className="nav-link">Blog</Link>
           <a href="/#depoimentos" className="nav-link">Depoimentos</a>
           <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" className="btn btn-primary sm-btn">
             Agendar
@@ -46,6 +47,7 @@ const Navbar = () => {
           <Link to="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Início</Link>
           <Link to="/sobre" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Sobre o Jon</Link>
           <Link to="/servicos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Serviços</Link>
+          <Link to="/blog" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
           <a href="/#depoimentos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Depoimentos</a>
           <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" className="btn btn-primary w-100">
             Agendar Online

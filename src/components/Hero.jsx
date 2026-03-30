@@ -30,7 +30,7 @@ const Hero = () => {
               </a>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}>
-                  <span style={{ fontWeight: 800, marginRight: '8px' }}>IG</span> Instagram
+                  confira meu instagram
                 </a>
                 <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}>
                   WhatsApp
@@ -76,13 +76,6 @@ const Hero = () => {
           {/* Decorative Elements */}
           <div className="blob blob-blue"></div>
           <div className="blob blob-magenta"></div>
-
-          {/* Botão abaixo da foto */}
-          <div className="hero-photo-cta">
-            <Link to="/sobre" className="btn btn-outline hero-photo-btn">
-              Conheça o Jon
-            </Link>
-          </div>
         </div>
       </div>
     </section>
