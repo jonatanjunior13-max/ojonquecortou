@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './Hero.css';
 
 const Hero = () => {
@@ -75,6 +76,13 @@ const Hero = () => {
           {/* Decorative Elements */}
           <div className="blob blob-blue"></div>
           <div className="blob blob-magenta"></div>
+
+          {/* Botão abaixo da foto */}
+          <div className="hero-photo-cta">
+            <Link to="/sobre" className="btn btn-outline hero-photo-btn">
+              Conheça o Jon
+            </Link>
+          </div>
         </div>
       </div>
     </section>

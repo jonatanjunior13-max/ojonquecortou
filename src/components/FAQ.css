@@ -2,19 +2,19 @@
   background-color: var(--background-white);
 }
 
-.faq-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4rem;
-  align-items: center;
+.faq-full-content {
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .max-w-lg {
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .mb-2 { margin-bottom: 2rem; }
+.mb-4 { margin-bottom: 4rem; }
 .mt-1 { margin-top: 1rem; }
+.mx-auto { margin-left: auto; margin-right: auto; }
 
 /* Accordion */
 .accordion {
@@ -29,6 +29,7 @@
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
+  background-color: var(--background-white);
 }
 
 .accordion-item:hover {
@@ -45,13 +46,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--background-white);
 }
 
 .accordion-header h3 {
   margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--text-dark);
   font-family: var(--font-body);
 }
@@ -59,6 +59,8 @@
 .accordion-icon {
   color: var(--text-gray);
   transition: transform 0.3s ease;
+  flex-shrink: 0;
+  margin-left: 1rem;
 }
 
 .accordion-item.active .accordion-icon {
@@ -75,59 +77,12 @@
 }
 
 .accordion-item.active .accordion-body {
-  max-height: 200px;
+  max-height: 300px;
   padding: 0 1.5rem 1.5rem 1.5rem;
 }
 
 .accordion-item.active .accordion-body p {
   color: var(--text-gray);
-  line-height: 1.6;
-}
-
-/* Testimonial Side */
-.testimonial-side {
-  position: relative;
-}
-
-.testimonial-side::before {
-  content: '';
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  background-color: var(--primary-yellow);
-  border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.3;
-  top: -50px;
-  right: -50px;
-  z-index: 0;
-}
-
-.testimonial-card {
-  position: relative;
-  z-index: 1;
-  padding: 3rem;
-  border-radius: var(--radius-lg);
-  background: white;
-  border-left: 6px solid var(--primary-yellow);
-}
-
-.text-dark { color: var(--text-dark); }
-.text-sm { font-size: 0.875rem; }
-
-.reviewer {
-  display: flex;
-  flex-direction: column;
-}
-
-.stars {
-  font-size: 1.25rem;
-  letter-spacing: 0.2rem;
-}
-
-@media (min-width: 992px) {
-  .faq-container {
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-  }
+  line-height: 1.7;
+  font-size: 0.95rem;
 }

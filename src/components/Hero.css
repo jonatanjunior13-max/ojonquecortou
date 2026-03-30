@@ -207,3 +207,27 @@
     bottom: -10px;
   }
 }
+
+.hero-photo-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 3;
+}
+
+.hero-photo-btn {
+  font-size: 0.9rem;
+  padding: 0.75rem 2rem;
+  background: var(--primary-yellow);
+  color: var(--text-dark);
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 4px 14px rgba(254, 237, 1, 0.4);
+}
+
+.hero-photo-btn:hover {
+  background: #fce100;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(254, 237, 1, 0.6);
+}

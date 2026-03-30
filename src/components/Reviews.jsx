@@ -5,24 +5,31 @@ import './Reviews.css';
 const reviewsData = [
   {
     id: 1,
-    name: "Carlos Eduardo",
-    text: "O melhor corte que já tive em anos. O Jon não é apenas um barbeiro, ele entende o que combina com o seu rosto. Atendimento impecável e ambiente super agradável. Voltarei sempre!",
+    name: "Cristinna da Silva",
+    text: "Incrível! Excelente profissional, atencioso! Fiz corte e coloração, e o resultado foi melhor que o esperado! Jon é muuuito talentoso! Recomendo, com toda certeza!",
     rating: 5,
-    role: "Cliente Premium"
+    role: "Corte e Coloração"
   },
   {
     id: 2,
-    name: "Rafael Silva",
-    text: "Experiência sensacional. O cuidado com os detalhes é impressionante, desde a toalha quente até a finalização com produtos de primeira linha. Recomendo de olhos fechados.",
+    name: "Taís Resende Costa",
+    text: "Jon é um excelente profissional! Foi super atencioso e preocupado em entregar um resultado do qual eu gostasse. Além disso, é uma pessoa incrível e super bem-humorada.",
     rating: 5,
-    role: "Cliente Premium"
+    role: "Cliente fiel"
   },
   {
     id: 3,
-    name: "Marcelo Costa",
-    text: "Procurei o Jon para arrumar um corte que deu errado em outra barbearia, e ele fez mágica. Me passou muita confiança e o resultado ficou muito além das minhas expectativas.",
+    name: "Ana Beatriz",
+    text: "Eu amei o resultado, o Jon foi super gentil do início ao fim, ele é uma pessoa muito legal de conversar. Além disso, foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!",
     rating: 5,
-    role: "Cliente Premium"
+    role: "Corte especializado"
+  },
+  {
+    id: 4,
+    name: "Sandra Mara Ferreira santos",
+    text: "Excelente atendimento. Profissional perfeito, com muita técnica e conhecimento. Amei o corte 🤩🤩🤩",
+    rating: 5,
+    role: "Avaliação 5 Estrelas"
   }
 ];
 
