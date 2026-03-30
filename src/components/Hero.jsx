@@ -30,7 +30,7 @@ const Hero = () => {
               </a>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}>
-                  confira meu instagram
+                  Confira meu Instagram
                 </a>
                 <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ fontSize: '0.9rem', padding: '0.75rem 1.5rem' }}>
                   WhatsApp
