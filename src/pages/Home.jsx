@@ -3,8 +3,13 @@ import { Link } from 'react-router-dom';
 import Hero from '../components/Hero';
 import FAQ from '../components/FAQ';
 import Reviews from '../components/Reviews';
+import { posts } from '../data/posts';
+import './Home.css';
 
 const Home = () => {
+  // Pegar os 3 posts mais recentes
+  const latestPosts = posts.slice(0, 3);
+
   return (
     <main>
       <Hero />
@@ -21,6 +26,39 @@ const Home = () => {
       </section>
 
       <Reviews />
+
+      {/* Seção Blog na Home */}
+      <section className="section-padding home-blog-section">
+        <div className="container">
+          <div className="flex justify-between items-end mb-4 flex-wrap gap-2">
+            <div>
+              <span className="badge">Dicas & Tendências</span>
+              <h2 className="heading-lg mt-1">Do nosso Blog</h2>
+            </div>
+            <Link to="/blog" className="btn btn-outline sm-btn">Ver todos os artigos</Link>
+          </div>
+
+          <div className="home-blog-grid">
+            {latestPosts.map((post) => (
+              <article key={post.id} className="home-blog-card">
+                <div className="home-blog-card-image-wrap">
+                  <img src={post.image} alt={post.title} className="home-blog-card-image" />
+                </div>
+                <div className="home-blog-card-content">
+                  <span className="home-blog-card-category">{post.category}</span>
+                  <h3 className="home-blog-card-title">
+                    <Link to={`/blog/${post.slug}`}>{post.title}</Link>
+                  </h3>
+                  <Link to={`/blog/${post.slug}`} className="read-more-link">
+                    Ler mais →
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <FAQ />
     </main>
   );
