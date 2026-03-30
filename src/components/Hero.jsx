@@ -59,18 +59,6 @@ const Hero = () => {
             <div className="image-placeholder" style={{ padding: 0, overflow: 'hidden', backgroundColor: 'transparent', boxShadow: 'none' }}>
               <img src="/jon-perfil.jpg" alt="Foto Profissional do Jon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
-            
-            <div className="floating-card glass-panel float-anim">
-              <div className="rate">
-                <Star size={16} fill="var(--primary-yellow)" color="var(--primary-yellow)" />
-                <Star size={16} fill="var(--primary-yellow)" color="var(--primary-yellow)" />
-                <Star size={16} fill="var(--primary-yellow)" color="var(--primary-yellow)" />
-                <Star size={16} fill="var(--primary-yellow)" color="var(--primary-yellow)" />
-                <Star size={16} fill="var(--primary-yellow)" color="var(--primary-yellow)" />
-              </div>
-              <p className="review-snippet">"Melhor salão de BH!"</p>
-              <span className="review-author">- Thais Costa</span>
-            </div>
           </div>
           
           {/* Decorative Elements */}
