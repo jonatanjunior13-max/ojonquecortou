@@ -10,16 +10,18 @@ export const posts = [
     content: `
       <p>O "Day After" é o grande desafio de quem tem cabelos com curvatura. Acordar com os fios amassados ou com frizz é comum, mas existem técnicas para revitalizar os cachos sem precisar lavar novamente.</p>
       
-      <h2>1. Use uma fronha de cetim</h2>
+      <h3>1. Use uma fronha de cetim</h3>
       <p>O algodão absorve a umidade do fio e gera atrito, causando frizz. O cetim permite que o cabelo deslize, preservando a definição.</p>
       
-      <h2>2. Borrifador é seu melhor amigo</h2>
+      <h3>2. Borrifador é seu melhor amigo</h3>
       <p>Uma mistura de água com um pouco de leave-in ou ativador de cachos ajuda a "acordar" as molas. Borriffe levemente e amasse os fios de baixo para cima.</p>
       
-      <h2>3. Evite tocar demais no cabelo</h2>
+      <h3>3. Evite tocar demais no cabelo</h3>
       <p>Quanto mais você mexe no cabelo seco, mais frizz você gera. Deixe a revitalização secar naturalmente.</p>
       
       <p>No Studio do Jon, eu ensino cada cliente a dominar a sua rotina de Day After preferida!</p>
+
+      <p><strong>Gostou da dica?</strong></p>
     `,
     image: '/blog-frizz.png'
   },
