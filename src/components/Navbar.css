@@ -91,6 +91,27 @@
   text-align: center;
 }
 
+.nav-icon-link {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: var(--primary-magenta) !important;
+  transition: transform 0.3s ease;
+}
+
+.nav-icon-link:hover {
+  transform: scale(1.1);
+}
+
+.nav-icon-link::after {
+  display: none;
+}
+
+.instagram-mobile-link {
+  color: var(--primary-magenta) !important;
+}
+
 @media (min-width: 768px) {
   .desktop-menu {
     display: flex;

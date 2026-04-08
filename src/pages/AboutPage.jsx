@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './AboutPage.css';
 
-const WA_URL = 'https://wa.me/553135866673?text=' + encodeURIComponent('Olá! Gostaria de agendar minha transformação no Studio do Jon.');
+const TRINKS_URL = 'http://trinks.com/ateliedoscachosmg';
 
 const services = [
   { emoji: '✂️', label: 'Corte Especializado (Ondas, Cachos e Crespos)' },
@@ -69,8 +69,8 @@ const AboutPage = () => {
             </p>
 
             <div className="about-cta-row">
-              <a href={WA_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
-                💬 Agendar pela Transformação
+              <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
+                📅 Agende sua transformação
               </a>
               <Link to="/servicos" className="btn btn-outline">Ver Serviços</Link>
             </div>
@@ -173,16 +173,17 @@ const AboutPage = () => {
             </p>
             <p className="final-cta-body">
               O Studio do Jon te espera no Caiçara. Clique no botão abaixo e agende sua
-              transformação pelo WhatsApp!
+              transformação online!
             </p>
             <div className="final-cta-buttons">
               <a
-                href={WA_URL}
+                href={TRINKS_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="btn btn-whatsapp-lg"
+                className="btn btn-primary"
+                style={{ padding: '1rem 2rem', fontSize: '1rem', borderRadius: '50px' }}
               >
-                💬 Agendar minha Transformação
+                📅 Agendar minha Transformação
               </a>
               <Link to="/servicos" className="btn btn-outline">
                 Ver todos os Serviços

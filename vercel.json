@@ -4,8 +4,22 @@
   "outputDirectory": "dist",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/ad570ba1c6ba4630b664a7f571d247d0.txt",
+      "destination": "/ad570ba1c6ba4630b664a7f571d247d0.txt"
+    },
+    {
+      "source": "/((?!api|.*\\.txt$).*)",
       "destination": "/index.html"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/indexnow",
+      "schedule": "0 1 * * *" 
     }
   ]
 }

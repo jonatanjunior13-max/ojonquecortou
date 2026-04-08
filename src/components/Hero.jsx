@@ -14,9 +14,9 @@ const Hero = () => {
           </div>
           
           <h1 className="heading-xl hero-title">
-            Não "domamos" o seu cacho.<br/>
-            Nós <span className="highlight-magenta">libertamos</span> a sua<br/>
-            <span className="text-primary">identidade.</span>
+            O Jon que Cortou:<br/>
+            <span className="highlight-magenta">Liberdade</span> para seus<br/>
+            <span className="text-primary">Cachos</span>
           </h1>
           
           <p className="paragraph-lg hero-text">

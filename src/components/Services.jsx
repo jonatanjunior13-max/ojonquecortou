@@ -26,7 +26,7 @@ const Services = () => {
              </p>
              <div className="service-price">
                <span>A partir de</span>
-               <strong>R$ 170</strong>
+               <strong>R$ 190</strong>
              </div>
           </div>
           

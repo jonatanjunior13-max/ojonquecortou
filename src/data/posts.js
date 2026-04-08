@@ -1,5 +1,391 @@
 export const posts = [
   {
+    id: 9,
+    slug: 'sulfato-no-shampoo-guia-completo',
+    title: 'O que é o "Sulfato", afinal?',
+    excerpt: 'Entenda de vez o que é sulfato, quando evitar e quando usar. Guia técnico e descomplicado para cabelos ondulados, cacheados e crespos.',
+    metaDescription: 'Entenda de vez o que é sulfato, quando evitar e quando usar. Guia técnico e descomplicado do Studio do Jon para cabelos ondulados, cacheados e crespos.',
+    keywords: 'sulfato no shampoo, shampoo sem sulfato cabelo cacheado, o que é sulfato, build up capilar, low poo no poo, surfactante forte fraco, limpeza profunda cabelo crespo',
+    date: '07 de Abril, 2026',
+    author: 'Jon',
+    category: 'Saúde Capilar',
+    image: '/blog-sulfato.png',
+    content: `
+      <p>Primeiro, um esclarecimento técnico importante: "sulfato" não é um ingrediente único. É um apelido popular para um grupo de substâncias chamadas surfactantes (ou tensoativos), que são os agentes de limpeza dos shampoos.</p>
+
+      <p>O apelido "sulfato" surgiu porque os dois surfactantes mais comuns em shampoos tradicionais têm essa palavra no nome:</p>
+      <ul>
+        <li>Sodium Lauryl Sulfate (SLS)</li>
+        <li>Sodium Laureth Sulfate (SLES)</li>
+      </ul>
+
+      <p>Esses dois são baratos, eficientes e criam aquela espuma abundante que a gente associa a "cabelo limpo". Mas a espuma, por si só, não é sinônimo de limpeza. É apenas uma característica visual dos surfactantes fortes.</p>
+
+      <h2>Por que os surfactantes fortes são problemáticos para cabelos com curvatura?</h2>
+      <p>A questão não é que o sulfato seja "veneno". O problema é que ele é poderoso demais para a maioria dos fios cacheados, crespos e ondulados. Veja o que acontece quando você usa um shampoo com SLS ou SLES com frequência:</p>
+      <ul>
+        <li><strong>Remove a oleosidade natural:</strong> O couro cabeludo produz sebo para proteger e nutrir os fios. Os surfactantes fortes removem esse sebo de forma tão eficiente que o fio fica sem proteção.</li>
+        <li><strong>Ressecamento progressivo:</strong> Cabelos com curvatura já têm dificuldade de distribuir a oleosidade natural da raiz até as pontas. Sem o sebo, o ressecamento se instala rápido.</li>
+        <li><strong>Frizz aumentado:</strong> Fio seco = cutícula aberta = frizz. É uma equação direta.</li>
+        <li><strong>Perda de definição:</strong> A curvatura depende de hidratação para se manter. Sem ela, o cacho perde a forma.</li>
+        <li><strong>Irritação do couro cabeludo:</strong> Em peles mais sensíveis, podem causar coceira e descamação.</li>
+        <li><strong>Desbotamento de cor:</strong> Para quem tem mechas ou coloração, o SLS acelera a perda de pigmento.</li>
+      </ul>
+
+      <h2>Mas espera: "Sem Sulfato" não é garantia de nada</h2>
+      <p>Aqui mora um dos maiores mitos do universo capilar. Muitas marcas estampam "Sem Sulfato" no rótulo referindo-se apenas à ausência de SLS e SLES. Mas existem outros surfactantes igualmente agressivos que passam despercebidos:</p>
+      <ul>
+        <li>Sodium C14-16 Olefin Sulfonate</li>
+        <li>Sodium Coco Sulfate</li>
+        <li>TEA Lauryl Sulfate</li>
+        <li>Sodium Dodecyl Sulfate</li>
+      </ul>
+
+      <p>E atenção: a palavra "sulfate" também aparece em ingredientes completamente inofensivos e até benéficos, como o <strong>Behentrimonium Methosulfate</strong>, liberado até para No Poo. Não entre em pânico com a palavra, leia o contexto.</p>
+
+      <h2>Então, quando usar shampoo com surfactante forte?</h2>
+      <p>Existem situações em que um shampoo mais potente é necessário:</p>
+      <ol>
+        <li><strong>Limpeza Profunda (Detox Capilar):</strong> Quando ocorre o <em>build-up</em> (acúmulo de resíduos).</li>
+        <li><strong>Antes de procedimentos químicos:</strong> Para garantir que o produto penetre uniformemente.</li>
+        <li><strong>Couro cabeludo com oleosidade excessiva:</strong> Para equilibrar a produção de sebo ocasionalmente.</li>
+      </ol>
+
+      <h2>O Guia Prático: Qual shampoo usar?</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Situação</th>
+            <th>Tipo de Shampoo Indicado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lavagem semanal (rotina)</td>
+            <td>Sem surfactantes fortes (Low Poo)</td>
+          </tr>
+          <tr>
+            <td>Couro cabeludo oleoso</td>
+            <td>Shampoo suave com frequência maior</td>
+          </tr>
+          <tr>
+            <td>Build up / acúmulo de produto</td>
+            <td>Shampoo antirresíduo (1x por mês)</td>
+          </tr>
+          <tr>
+            <td>Antes de coloração/mechas</td>
+            <td>Shampoo de limpeza profunda</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Como ler um rótulo sem enlouquecer</h2>
+      <p><strong>Procure por surfactantes suaves (liberados):</strong> Cocamidopropyl Betaine, Sodium Cocoyl Isethionate, Disodium Laureth Sulfosuccinate.</p>
+      <p><strong>Fuja dos surfactantes fortes (proibidos para Low Poo):</strong> Sodium Lauryl Sulfate (SLS), Sodium Laureth Sulfate (SLES), Sodium C14-16 Olefin Sulfonate.</p>
+
+      <blockquote>
+        "O sulfato não é um vilão absoluto. É uma ferramenta poderosa que, usada no momento errado e com frequência excessiva, causa dano real. A inteligência está em entender quando seu cabelo precisa de limpeza suave e quando precisa de um reset."
+      </blockquote>
+
+      <p>No Studio do Jon, eu avalio o histórico do seu fio antes de qualquer indicação. Porque cabelo saudável não é sobre seguir regras cegas, é sobre entender o que o seu fio está pedindo.</p>
+    `
+  },
+  {
+    id: 8,
+    slug: 'teste-de-porosidade-guia-definitivo',
+    title: 'Teste da Porosidade: O segredo para parar de "jogar produto fora"',
+    excerpt: 'Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? O problema pode ser a porosidade.',
+    metaDescription: 'Afina, por que seu cabelo não segura hidratação? Aprenda a fazer o teste da porosidade e descubra o tratamento ideal para fios ondulados, cacheados e crespos.',
+    keywords: 'teste de porosidade, porosidade alta o que fazer, cabelo cacheado ressecado, cronograma capilar porosidade, Studio do Jon, especialista em cachos BH',
+    date: '06 de Abril, 2026',
+    author: 'Jon',
+    category: 'Saúde Capilar',
+    image: '/blog-porosidade.png',
+    content: `
+      <p>Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? Ou que ele seca em 5 minutos e já está com aspecto de palha de novo? O problema pode não ser o produto, mas sim a porosidade do seu fio.</p>
+
+      <p>Aqui no Studio do Jon, eu sempre digo: tratar o cabelo sem saber a porosidade é como tentar encher um balde furado. Você gasta tempo, dinheiro e o resultado nunca vem. Vamos entender a ciência por trás disso de um jeito simples e prático.</p>
+
+      <h2>O que é Porosidade Capilar?</h2>
+      <p>Imagine que o seu fio de cabelo é coberto por pequenas escamas, como as de um peixe ou as telhas de um telhado. Essas são as cutículas. A porosidade é a capacidade que o seu cabelo tem de absorver e, principalmente, reter a água e os nutrientes dentro do fio.</p>
+      <ul>
+        <li><strong>Porosidade Baixa:</strong> As cutículas são tão fechadas que nem a água consegue entrar direito.</li>
+        <li><strong>Porosidade Média:</strong> O "estado do paraíso". As cutículas estão na medida certa para absorver e manter o tratamento.</li>
+        <li><strong>Porosidade Alta:</strong> As cutículas estão arreganhadas ou danificadas. A água entra fácil, mas sai na mesma velocidade.</li>
+      </ul>
+
+      <h2>Como descobrir a sua? (O Teste do Copo)</h2>
+      <p>Esqueça testes mirabolantes. Você só precisa de um copo com água filtrada e um fio do seu cabelo limpo (lavado apenas com shampoo, sem condicionador ou creme).</p>
+      <ol>
+        <li>Coloque o fio no copo com água.</li>
+        <li>Espere 10 minutos.</li>
+        <li>Observe onde o fio parou:</li>
+      </ol>
+      <ul>
+        <li><strong>Boio na superfície:</strong> Porosidade Baixa.</li>
+        <li><strong>Ficou no meio do copo:</strong> Porosidade Média.</li>
+        <li><strong>Afundou no fundo:</strong> Porosidade Alta.</li>
+      </ul>
+
+      <h2>O Plano de Ação para cada caso</h2>
+      <p>Agora que você já sabe o diagnóstico, aqui no Studio do Jon a gente parte para o tratamento estratégico:</p>
+
+      <h3>1. Porosidade Baixa (O fio "impermeável")</h3>
+      <p>Seu cabelo demora séculos para molhar no banho e o produto parece que fica "sambando" em cima do fio sem penetrar.</p>
+      <ul>
+        <li><strong>O que fazer:</strong> Você precisa de calor. Use água morna no banho (nunca pelando!) para ajudar a abrir as cutículas.</li>
+        <li><strong>Foco:</strong> Hidratações com texturas leves. Fuja de cremes muito densos que vão apenas pesar.</li>
+        <li><strong>Dica do Jon:</strong> Use toucas térmicas (ou uma toalha morna) durante o tratamento para "forçar" a entrada dos ativos.</li>
+      </ul>
+
+      <h3>2. Porosidade Média (O fio equilibrado)</h3>
+      <p>Seu cabelo retém a hidratação, tem brilho natural e responde bem aos estímulos.</p>
+      <ul>
+        <li><strong>O que fazer:</strong> Manter o equilíbrio. Não precisa inventar moda.</li>
+        <li><strong>Foco:</strong> Um cronograma capilar básico, alternando entre hidratação e nutrição.</li>
+        <li><strong>Dica do Jon:</strong> Cuidado com o excesso de queratina! Mesmo fios saudáveis podem enrijecer se você exagerar na reconstrução sem necessidade.</li>
+      </ul>
+
+      <h3>3. Porosidade Alta (O fio "esponja")</h3>
+      <p>Geralmente é um cabelo que passou por químicas, descoloração ou muito uso de fontes de calor. Ele absorve tudo na hora, mas em minutos fica seco e com muito frizz.</p>
+      <ul>
+        <li><strong>O que fazer:</strong> O foco total é selar. O fio está com as "portas abertas" e precisamos fechá-las.</li>
+        <li><strong>Foco:</strong> Nutrição e Reconstrução. Use óleos vegetais e máscaras repositoras de massa.</li>
+        <li><strong>Dica do Jon:</strong> O último enxágue deve ser com água fria. Finalize sempre com um condicionador de pH ácido ou use um acidificante capilar para "dar o xeque-mate" nas cutículas abertas.</li>
+      </ul>
+
+      <h2>Conclusão: Conhecimento é Liberdade</h2>
+      <p>Aqui no Studio do Jon, meu papel é te dar as ferramentas para você ser mestre do seu próprio cacho. Entender a porosidade é o primeiro passo para um cabelo saudável, brilhante e, acima de tudo, livre.</p>
+      <p>Se o seu teste deu "Porosidade Alta" e você sente que o cabelo está pedindo socorro, talvez seja a hora de uma análise profissional aqui no Studio para recuperarmos a saúde dessa fibra.</p>
+    `
+  },
+  {
+    id: 7,
+    slug: 'finalizacao-por-curvatura-guia-tecnico',
+    title: 'Finalização por Curvatura: O que realmente muda do 2C ao 4C? (Guia Técnico)',
+    excerpt: 'Descubra a técnica de finalização ideal para o seu tipo de cabelo, do ondulado 2C ao crespo 4C. Dicas técnicas e descomplicadas.',
+    metaDescription: 'Descubra a técnica de finalização ideal para o seu tipo de cabelo, do ondulado 2C ao crespo 4C. Dicas técnicas, descomplicadas e sem indicação de marcas.',
+    keywords: 'finalização de cachos, curvatura 2c, cabelo crespo 4c, como finalizar cabelo cacheado, transição capilar, Jon Que Cortou, especialista em cachos BH',
+    date: '06 de Abril, 2026',
+    author: 'Jon',
+    category: 'Finalização',
+    image: '/blog-curvaturas.png',
+    content: `
+      <p>Se você já tentou copiar a finalização daquela influenciadora e o resultado no seu cabelo foi um desastre, calma. Não é culpa do seu fio e, muitas vezes, nem do produto. O segredo está na física: a estrutura de um ondulado 2C é completamente diferente de um crespo 4C, e a técnica precisa acompanhar essas mudanças de forma e densidade.</p>
+
+      <p>Aqui no Studio do Jon, eu prezo pela liberdade da curvatura, mas com embasamento. Vamos decifrar o que muda na hora de finalizar, do "S" ao "Z", sem complicação.</p>
+
+      <h2>1. Curvatura 2C: A fronteira entre onda e cacho</h2>
+      <p>O cabelo 2C tem ondas intensas em formato de "S" que começam bem próximas à raiz. É um fio que costuma ter volume, mas que perde a definição muito fácil se não tiver "sustentação".</p>
+      <ul>
+        <li><strong>O desafio:</strong> O frizz de umidade e a perda da forma ao longo do dia.</li>
+        <li><strong>A técnica ideal:</strong> Fitagem com foco em fixação. Use produtos com texturas mais fluidas (leave-ins leves) combinados com uma camada de gel ou gelatina por cima.</li>
+        <li><strong>Pulo do gato:</strong> Use a técnica de <em>Plopping</em> (com camiseta de algodão) para retirar o excesso de água sem gerar atrito. Isso ajuda a "memorizar" a onda antes de secar.</li>
+      </ul>
+
+      <h2>2. Curvaturas 3A e 3B: Espirais e movimento</h2>
+      <p>Aqui entramos nos cachos propriamente ditos, com formato de mola. O 3A é um cacho maior e mais aberto; o 3B é mais fechado e volumoso.</p>
+      <ul>
+        <li><strong>O desafio:</strong> Equilibrar definição sem perder o balanço (o famoso efeito "capacete").</li>
+        <li><strong>A técnica ideal:</strong> Fitagem estruturada. Divida o cabelo em seções médias e aplique o creme de pentear enluvando bem. Se o seu cabelo for fino, use menos creme; se for grosso, pode caprichar na consistência.</li>
+        <li><strong>Pulo do gato:</strong> Amasse os cachos de baixo para cima com as mãos em formato de concha. Isso estimula a mola sem desmanchar o agrupamento dos fios.</li>
+      </ul>
+
+      <h2>3. Curvatura 3C: Densidade e fator encolhimento</h2>
+      <p>O 3C apresenta cachos bem pequenos e apertados, muitas vezes com a raiz já apresentando textura desde o couro cabeludo. É a curvatura que mais sofre com o ressecamento das pontas.</p>
+      <ul>
+        <li><strong>O desafio:</strong> Manter o brilho e controlar o encolhimento excessivo.</li>
+        <li><strong>A técnica ideal:</strong> Técnica LOC (Líquido, Óleo, Creme) ou LCO. Aplicar uma base de água (ou tônico), um pouco de óleo vegetal nas pontas e finalizar com um creme de boa emoliência.</li>
+        <li><strong>Pulo do gato:</strong> Finalize com o cabelo bem molhado. O 3C "bebe" água rápido, e passar produto no fio quase seco é a receita para o frizz.</li>
+      </ul>
+
+      <h2>4. Curvatura 4A: Definição pequena e poderosa</h2>
+      <p>O 4A é o primeiro dos crespos. Ele forma pequenos "anéis" que são visíveis mesmo sem produto, mas que perdem a definição ao menor sinal de atrito.</p>
+      <ul>
+        <li><strong>O desafio:</strong> Manter a umidade dentro do fio (a porosidade costuma ser maior).</li>
+        <li><strong>A técnica ideal:</strong> Dedoliss ou Fitagem Esticada. Enrolar mechas pequenas nos dedos ajuda a criar uma definição que dura vários day afters. Use cremes com manteigas vegetais para selar a cutícula.</li>
+        <li><strong>Pulo do gato:</strong> Evite secar com toalha comum. O 4A é extremamente sensível ao atrito mecânico.</li>
+      </ul>
+
+      <h2>5. Curvaturas 4B e 4C: O poder do volume e do Zigue-Zague</h2>
+      <p>Cabelos 4B e 4C têm um padrão de curvatura em "Z" em vez de espirais. O 4C, especificamente, pode não formar cachos definidos sozinho, focando toda a sua beleza no volume e na textura.</p>
+      <ul>
+        <li><strong>O desafio:</strong> Combater o ressecamento extremo e gerenciar o encolhimento (que pode chegar a 70%).</li>
+        <li><strong>A técnica ideal:</strong> Twists ou Texturização. Fazer tranças de duas mechas (twists) com o cabelo úmido e soltar depois de seco garante uma definição incrível e ajuda a alongar o fio.</li>
+        <li><strong>Pulo do gato:</strong> Selagem com óleo é obrigatória. Como o óleo natural não caminha pelo fio "Z", você precisa colocar esse lipídio manualmente para o cabelo não ficar opaco.</li>
+      </ul>
+
+      <h2>Resumo técnico: O que não pode faltar na sua prateleira?</h2>
+      <ul>
+        <li><strong>Ondulados (2C):</strong> Fórmulas leves, extratos de plantas e polímeros de fixação. Evite óleos pesados na finalização.</li>
+        <li><strong>Cacheados (3ABC):</strong> Pantenol, babosa (aloe vera) e óleos leves (como coco ou semente de uva).</li>
+        <li><strong>Crespos (4ABC):</strong> Manteiga de karité, óleo de rícino, abacate e ativos reconrutores (queratina vegetal/aminoácidos).</li>
+      </ul>
+
+      <p>Entender sua curvatura é o primeiro passo para parar de brigar com o espelho. A finalização não é para te prender a um padrão, mas para te dar a liberdade de exibir sua textura natural com saúde máxima.</p>
+    `
+  },
+  {
+    id: 6,
+    slug: 'frizz-normal-ou-dano-capilar',
+    title: 'Cabelo com frizz: quando é normal e quando é sinal de dano?',
+    excerpt: 'Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz.',
+    metaDescription: 'Aprenda a diferença entre o frizz de textura e o frizz de dano estrutural. Dicas técnicas para tratar cada tipo e recuperar a saúde dos seus cachos.',
+    keywords: 'frizz cabelo cacheado, frizz ou dano, transição capilar, saúde capilar, especialista em cachos BH, corte a seco',
+    date: '06 de Abril, 2026',
+    author: 'Jon',
+    category: 'Saúde Capilar',
+    image: '/blog-frizz-dano.png',
+    content: `
+      <p>Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz. Muita gente entra em pânico ao ver o primeiro fiozinho "arrepiado", mas a verdade nua e crua é esta: frizz não é, automaticamente, sinal de cabelo destruído.</p>
+
+      <p>Muitas vezes, o frizz é apenas o seu cabelo reagindo ao ambiente, à umidade ou à sua própria natureza. No entanto, em outros casos, ele é sim um pedido de socorro da fibra capilar. Para ajudar você a entender o que está acontecendo aí em cima, vamos separar o frizz de textura do frizz de dano de um jeito técnico e descomplicado.</p>
+
+      <h2>O que é o frizz, afinal?</h2>
+      <p>Cientificamente, o frizz ocorre quando as cutículas (a camada externa do fio) se levantam, fazendo com que o fio se desvie do formato do cacho e procure umidade no ar. Isso pode ser causado por:</p>
+
+      <ul>
+        <li><strong>Eletricidade estática:</strong> atrito com fronhas de algodão ou toalhas comuns.</li>
+        <li><strong>Hidrofobia vs. Higroscopia:</strong> quando o cabelo está seco, ele tenta "sugar" a umidade do ambiente, o que faz o fio inchar e desalinhar.</li>
+        <li><strong>Fatores mecânicos:</strong> passar muito a mão no cabelo ou pentear os cachos depois de secos.</li>
+      </ul>
+
+      <h2>Quando o frizz é NORMAL (Frizz de Textura)</h2>
+      <p>Se o seu cabelo é ondulado, cacheado ou crespo, você terá algum nível de frizz. Isso faz parte da estética de um cabelo com volume e movimento. O frizz é considerado saudável quando:</p>
+
+      <ul>
+        <li>O cabelo mantém o brilho e a maciez ao toque.</li>
+        <li>Os fios têm elasticidade (você puxa levemente e o cacho volta ao lugar sem quebrar).</li>
+        <li>Ele aparece mais em dias úmidos ou após o uso de difusor, mas desaparece com uma revitalização leve.</li>
+        <li>O fio não parece "espetado" ou áspero, apenas com uma aura de volume ao redor da definição.</li>
+      </ul>
+
+      <h2>Quando o frizz é SINAL DE DANO (Frizz Estrutural)</h2>
+      <p>Aqui a conversa muda. Se o frizz vem acompanhado de outros sintomas, a estrutura do seu fio pode estar comprometida. Fique atenta a estes sinais:</p>
+
+      <ul>
+        <li><strong>Aspereza:</strong> o fio parece lixa ao passar os dedos, indicando cutículas extremamente abertas ou danificadas.</li>
+        <li><strong>Quebra excessiva:</strong> você nota muitos fios bem curtinhos, especialmente no topo da cabeça e nas têmporas (a famosa "coroa de frizz").</li>
+        <li><strong>Opacidade:</strong> o cabelo não reflete luz, mesmo usando produtos com brilho.</li>
+        <li><strong>Ponta Espigada:</strong> a extremidade do fio está rala, esbranquiçada ou "dupla".</li>
+        <li><strong>Porosidade Alta:</strong> o cabelo absorve água instantaneamente, mas seca em minutos e volta a ficar armado e sem forma.</li>
+      </ul>
+
+      <h2>Como tratar cada tipo de frizz?</h2>
+      <p>Identificar a causa é o primeiro passo para o tratamento correto. Não adianta entupir o cabelo de óleo se o problema for quebra, nem usar queratina se o problema for apenas falta de técnica na finalização.</p>
+
+      <h3>Para o Frizz de Textura (Dicas de Rotina):</h3>
+      <ul>
+        <li><strong>Troque o atrito:</strong> use fronhas ou toucas de cetim e substitua a toalha de banho por uma camiseta de algodão ou toalha de microfibra.</li>
+        <li><strong>Capriche na hidratação:</strong> o fio bem hidratado não precisa "buscar" umidade no ar, reduzindo o arrepiado natural.</li>
+        <li><strong>Mãos longe:</strong> evite tocar nos cachos enquanto estão secando. Cada toque quebra a película do produto e gera frizz.</li>
+      </ul>
+
+      <h3>Para o Frizz de Dano (Dicas de Tratamento):</h3>
+      <ul>
+        <li><strong>Cronograma Inteligente:</strong> intercale Nutrição (óleos e manteigas para selar a cutícula) com Reconstrução (aminoácidos para fortalecer o fio quebrado).</li>
+        <li><strong>Acidificação:</strong> cabelos muito porosos precisam de acidificantes para fechar as cutículas e manter o tratamento dentro do fio.</li>
+        <li><strong>Corte Estratégico:</strong> pontas duplas e fios extremamente danificados não se recuperam com máscara. O corte remove a parte morta do fio e devolve o caimento.</li>
+      </ul>
+
+      <h2>A ciência por trás do equilíbrio</h2>
+      <p>Aqui no Studio do Jon, eu sempre prezo pela saúde real da fibra. Muitas vezes, o excesso de produtos pesados para "domar" o frizz acaba criando um efeito rebote, deixando o cabelo sem vida e opaco. O segredo é entender se o seu cabelo precisa de água, óleo ou proteína.</p>
+
+      <blockquote>"Frizz não é o vilão da história — a falta de informação é que é."</blockquote>
+
+      <p>Se o seu frizz é apenas parte da sua identidade e volume, abrace-o. Mas se ele está deixando seu cabelo frágil e sem forma, é hora de olhar para a saúde do seu fio com mais critério. O diagnóstico começa pela observação: toque seu cabelo, sinta a textura e observe como ele reage aos produtos. O autoconhecimento capilar é o maior aliado da sua liberdade.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+      </div>
+    `
+  },
+  {
+    id: 5,
+    slug: 'fim-do-bad-hair-day-after',
+    title: 'O Fim do "Bad Hair Day": 5 Segredos para um Day After de Respeito',
+    excerpt: 'Aprenda a manter a definição dos seus cachos sem sofrimento.',
+    metaDescription: 'Descubra 5 segredos para um day after sem frizz e com definição duradoura. Dicas e suporte com especialista em cachos em BH e corte a seco no Caiçara.',
+    keywords: 'Finalização de cachos, day after cacheadas, como definir cabelos crespos, especialista em cachos BH, corte a seco Belo Horizonte',
+    date: '05 de Abril, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-day-after.png',
+    content: `
+      <p>Sabe aquele desespero de acordar, olhar no espelho e ver que os cachos que você demorou uma era para finalizar ontem resolveram tirar férias hoje? Pois é, a gente sabe que o day after pode ser um verdadeiro campo de batalha. Mas ó: ter definição duradoura não é sorte nem milagre, é ciência aplicada com os movimentos certos.</p>
+
+      <p>Aqui no Studio O Jon que Cortou, eu não acredito em fórmulas mágicas. Eu acredito em saúde capilar. O seu cacho só "desmancha" rápido se ele estiver gritando por socorro (ou por água!). Se a fibra está porosa e desidratada, não existe geléia capilar no mundo que segure esse look por muito tempo.</p>
+
+      <p>Como seu especialista de confiança aqui no bairro Caiçara, em BH, separei 5 segredos técnicos (mas descomplicados) que vão mudar sua relação com o travesseiro:</p>
+
+      <ul>
+        <li><strong>A Regra de Ouro da Água:</strong> A técnica da fitagem precisa de água, muita água! Se o seu cabelo estiver "bebendo" o creme e as fitas não estiverem se formando com aquele brilho espelhado, use o borrifador. O creme sela a hidratação, mas quem dá a forma é a água.</li>
+        <li><strong>Proteção Noturna é Lei:</strong> Dormir com o cabelo solto em fronha de algodão é pedir pro frizz ganhar a briga. A fronha de cetim ou a touca são suas melhores amigas. Elas evitam o atrito que destrói a definição enquanto você sonha com o seu próximo look.</li>
+        <li><strong>Menos é Mais no Refazer:</strong> Viu um cacho desfeito? Não precisa molhar a cabeça toda! Use um pouquinho do nosso Óleo Reparador de Semente de Uva ou um tiquinho de geléia apenas na mecha rebelde. Entuchar o cabelo de creme todo dia só vai dar peso e causar o acúmulo de resíduos.</li>
+        <li><strong>Conheça sua Curvatura:</strong> Do 2ABC ao 4ABC, cada fio reage de um jeito. Um ondulado pede produtos mais leves, enquanto um crespo precisa de nutrição potente. Usar o produto errado é o caminho mais curto pro desastre no dia seguinte.</li>
+        <li><strong>Corte Estratégico a Seco:</strong> Se o seu corte está reto ou sem camadas, o peso vai "esticar" o cacho e a definição vai embora rapidinho. Um corte feito a seco, respeitando o seu balanço natural, garante que o cabelo tenha força para se manter definido por dias.</li>
+      </ul>
+
+      <p>Minha missão aqui no Studio é a Educação Capilar. Eu quero que você aprenda a cuidar do seu cabelo em casa, combatendo a dependência do salão. Cabelo bonito é aquele que te traz liberdade, risadas e zero estresse na frente do espelho.</p>
+
+      <p>Quer descobrir o ritual exato para o seu tipo de fio e nunca mais sofrer com o day after?</p>
+      
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+      </div>
+    `
+  },
+  {
+    id: 4,
+    slug: 'alforria-do-cacho-liberdade-2026',
+    title: 'A Alforria do Cacho: Por que 2026 é o ano da sua liberdade?',
+    excerpt: 'Cansada de brigar com o espelho? Entenda por que assumir sua curvatura natural em 2026 é o maior ato de respeito com você mesma.',
+    metaDescription: 'Cansada de brigar com o espelho? Entenda por que assumir sua curvatura natural em 2026 é o maior ato de respeito com você mesma. Dicas de transição e corte com o Jon que Cortou.',
+    keywords: 'transição capilar, aceitação cabelo natural, como assumir os cachos, autoestima capilar, especialista em cachos BH, libertar a curvatura',
+    date: '30 de Março, 2026',
+    author: 'Jon',
+    category: 'Transição Capilar',
+    image: '/blog-liberdade-2026.png',
+    content: `
+      <p>O papo hoje é sobre identidade e respeito.</p>
+      
+      <p>Deixa eu te perguntar uma coisa: quanto tempo da sua vida você já gastou tentando "domar" um cabelo que nasceu para ter volume e movimento? Quantas vezes você se sentiu refém de uma chapinha ou de uma química só para se encaixar em um padrão que nunca foi seu?</p>
+
+      <p>Eu sei como é, porque eu vivi isso. Mas em 2026, a regra mudou. A única tendência que realmente importa é a sua autenticidade. O seu cabelo não é um problema que precisa de solução; ele é a sua identidade que precisa de liberdade.</p>
+
+      <h2>Cacho não é bagunça, é estrutura.</h2>
+      <p>Muita gente cresceu ouvindo que o cabelo cacheado ou crespo era "desleixado". Isso é falta de informação e de técnica. O que o seu cabelo precisa não é de "jeitinho", é de respeito à fibra e ao corte certo.</p>
+
+      <p>Quando você decide parar de alisar, você não está apenas mudando o visual. Você está assinando a sua carta de liberdade. É o momento de olhar no espelho e dizer: "Esse é o meu volume, essa é a minha textura". E não tem nada mais potente do que se reconhecer de verdade.</p>
+
+      <blockquote>"Jon, e o medo do julgamento?"</blockquote>
+      <p>Eu sei que o medo da transição capilar é real. Aquela fase das duas texturas testa a paciência de qualquer pessoa. Mas sabe o que faz a diferença? Estratégia.</p>
+
+      <p>Aqui no Studio, a gente não só corta; a gente planeja. O corte certo ajuda a equilibrar as texturas e devolve o balanço enquanto a parte lisa vai embora. A tesoura não é sua inimiga; ela é a ferramenta que vai te devolver a liberdade de lavar o cabelo e sair por aí sem depender de horas de secador.</p>
+
+      <h2>3 motivos para libertar sua curvatura agora:</h2>
+      <ul>
+        <li><strong>Saúde da Fibra:</strong> Chega de couro cabeludo irritado e fios elásticos por causa de química. Seu cabelo vai brilhar porque está saudável de verdade.</li>
+        <li><strong>Praticidade Real:</strong> Imagina a liberdade de finalizar o cabelo, deixar secar naturalmente e ter um resultado incrível? O day after bem feito é qualidade de vida.</li>
+        <li><strong>Presença e Personalidade:</strong> Um cacho bem cortado e tratado tem um impacto visual que nenhum liso padrão consegue entregar. É sobre ter um visual que é só seu.</li>
+      </ul>
+
+      <h2>O Studio do Jon é o seu lugar em BH.</h2>
+      <p>No meu Studio no Caiçara, o foco é você. Eu priorizo a escuta ativa para entender sua rotina antes de encostar na tesoura. Aqui, a gente une a ciência do fio com o acolhimento de quem sabe o que você está passando.</p>
+
+      <p>Se você está sentindo aquele "fogo no rabo" para mudar, mas ainda tem receio, vem conversar comigo. Vamos transformar esse medo em um visual que te dê orgulho.</p>
+
+      <p><strong>"Seu cabelo é a sua coroa natural. É hora de parar de escondê-la."</strong></p>
+
+      <p>Quer dar o primeiro passo? Vem pro Studio do Jon. Vamos traçar o plano perfeito para você assumir sua melhor versão.</p>
+      
+      <p>📍 Rua Francisco Ovídio, 184 – Bairro Caiçara, BH-MG<br />
+      📲 Agende pelo link na bio: <a href="https://www.instagram.com/ojonquecortou" target="_blank" rel="noopener noreferrer">@ojonquecortou</a></p>
+
+      <p>Liberte sua curvatura. Quem cortou? O Jon que cortou.</p>
+    `
+  },
+  {
     id: 1,
     slug: 'guia-sobrevivencia-frizz-bh',
     title: 'O Guia de Sobrevivência ao Frizz: Inimigo ou Parte da Textura?',
@@ -35,5 +421,102 @@ export const posts = [
       <p>Se você está cansada de lutar contra o próprio cabelo e quer entender o que ele realmente precisa, vem pro Studio do Jon. Aqui no Caiçara, a gente não faz promessa milagrosa; a gente faz análise de fibra, teste de mecha e entrega um Tratamento de Alta Performance que devolve a vida e o brilho que o frizz está escondendo.</p>
     `,
     image: '/blog-frizz.png'
+  },
+  {
+    id: 2,
+    slug: 'transicao-capilar-bh-corte-seco',
+    title: 'Transição Capilar em BH: Por que o Corte a Seco é o seu Melhor Amigo?',
+    excerpt: 'Decidir parar com a química e assumir a textura natural é um ato de coragem em BH. Entenda como o corte a seco facilita essa jornada no Caiçara.',
+    date: '30 de Março, 2026',
+    author: 'Jon',
+    category: 'Transição Capilar',
+    image: '/blog-transicao-bh.png',
+    content: `
+      <p>Decidir parar com a química e assumir a textura natural é um ato de coragem, mas a gente sabe: a fase das "duas texturas" não é fácil. Se você está em transição capilar em Belo Horizonte, provavelmente já se pegou no espelho sem saber o que fazer com a raiz cacheada e as pontas lisas.</p>
+
+      <p>É aqui que entra o diferencial de um especialista. No meu Studio no Caiçara, eu não apenas corto cabelo; eu ajudo você a atravessar essa ponte com autoestima. E o segredo para isso tem nome: <strong>Corte a Seco (Dry Cutting)</strong>.</p>
+
+      <h2>O problema do corte molhado na transição</h2>
+      <p>Quando o cabelo está molhado, o peso da água estica o fio e esconde o real fator de encolhimento da sua nova curvatura. Cortar assim é um risco: você só descobre o tamanho real quando o cabelo seca, e muitas vezes o resultado é aquele "degrau" indesejado entre o liso e o crespo/cacheado.</p>
+
+      <h2>Por que o Corte a Seco é a solução real?</h2>
+      <p>No Corte a Seco, eu consigo visualizar exatamente onde cada mola nasce e como ela se comporta. Isso é fundamental na transição capilar por três motivos:</p>
+
+      <ul>
+        <li><strong>Respeito ao Volume:</strong> Eu esculpo o cabelo cacho por cacho, tirando o peso das pontas lisas sem sacrificar o comprimento que você quer manter.</li>
+        <li><strong>Sem Surpresas:</strong> Você vê o resultado final em tempo real. O formato é construído com o cabelo do jeito que você vai usar no dia a dia.</li>
+        <li><strong>Harmonização de Texturas:</strong> Consigo camuflar a diferença entre a parte com química e a natural, criando camadas que dão movimento e disfarçam o "estirado" das pontas.</li>
+      </ul>
+
+      <h2>O Big Chop (BC) no seu tempo</h2>
+      <p>Muitas clientes chegam ao Studio no Caiçara com medo do "Big Chop" (o grande corte). Meu papel como especialista em cabelos naturais é respeitar o seu tempo. Se você quer tirar tudo de uma vez, fazemos um BC cheio de estilo. Se prefere ir cortando aos poucos, traçamos um plano de cortes trimestrais para eliminar a química gradualmente.</p>
+
+      <h2>Além do corte: Saúde da Fibra em BH</h2>
+      <p>A transição não é só sobre tesoura; é sobre devolver nutrientes para o fio que está nascendo. Aqui no Studio, aliamos o corte a seco com tratamentos de alta performance para garantir que seu novo cabelo cresça forte, brilhante e com definição desde a raiz.</p>
+    `
+  },
+  {
+    id: 3,
+    slug: 'cabelo-cacheado-ressecado-porosidade',
+    title: 'Cabelo Cacheado Ressecado? Seu Fio Não Tá Bebendo Água, Tá Desperdiçando!',
+    excerpt: 'Cabelo que não retém hidratação? Entenda o papel da porosidade capilar e como a técnica LOC pode salvar seus cachos.',
+    metaDescription: 'Cabelo cacheado ressecado que não retém hidratação? Descubra por que isso acontece e como resolver com técnica, não com milagre. Guia completo do Jon que Cortou.',
+    date: '30 de Março, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-ressecamento.png',
+    content: `
+      <p>Vamos falar de ciência capilar de verdade. Você já passou creme, máscara, óleo, leave-in, gelatina, oração e promessa no cabelo... e duas horas depois ele tá mais seco que o Saara em agosto?</p>
+
+      <p>Calma. Você não tá fazendo errado. Você só não sabe ainda por que o seu fio não retém a hidratação. E isso muda tudo.</p>
+
+      <p>Aqui no Studio do Jon, a gente não acredita em milagre de pote. A gente acredita em técnica, diagnóstico e consistência. Então bora entender o que tá acontecendo com o seu cacho de verdade.</p>
+
+      <h2>Por que o cabelo cacheado resseca mais?</h2>
+      <p>Antes de qualquer coisa, precisa entender uma coisa: o cacho é estruturalmente mais seco que o cabelo liso. Não é frescura, não é falta de cuidado. É anatomia.</p>
+
+      <p>A curvatura do fio cacheado cria um caminho tortuoso para a oleosidade natural do couro cabeludo. Enquanto no cabelo liso essa oleosidade escorrega tranquilamente do couro até as pontas, no cacho ela fica presa no meio do caminho. Resultado? Pontas secas, frizz e aquela sensação de palha que ninguém merece.</p>
+
+      <p>Mas aí vem a pergunta que realmente importa: por que o produto não fica no fio? A resposta tem nome: <strong>porosidade capilar</strong>.</p>
+
+      <h2>Porosidade: o diagnóstico que vai mudar sua vida capilar</h2>
+      <p>A porosidade é a capacidade do seu fio de absorver e reter a umidade. Quando a cutícula (a camada externa do fio) está muito aberta, o produto entra fácil... e sai ainda mais fácil. É como tentar encher um balde furado.</p>
+
+      <h3>Como saber se o seu cabelo tem alta porosidade?</h3>
+      <p>Faça o teste do copo: pegue um fio limpo e coloque na água. Se ele afundar rápido, sua porosidade é alta. Se ficar boiando, é baixa. Se ficar no meio, é média. Simples assim.</p>
+
+      <h2>Os 5 erros que estão sabotando a hidratação do seu cacho</h2>
+      <ul>
+        <li><strong>Usar shampoo com sulfato toda semana:</strong> O sulfato limpa tão bem que leva junto a oleosidade natural do fio. Troca por um low poo ou co-wash.</li>
+        <li><strong>Secar com toalha de felpudo:</strong> Aquela toalha grossa cria atrito, levanta a cutícula e diz adeus à definição. Usa microfibra ou uma camiseta de algodão.</li>
+        <li><strong>Aplicar produto no cabelo quase seco:</strong> Hidratação entra no fio quando ele tá encharcado. Aplica tudo com o cabelo pingando.</li>
+        <li><strong>Pular a selagem:</strong> Hidratar sem selar é jogar produto fora. É aqui que entra a técnica LOC.</li>
+        <li><strong>Não ter cronograma capilar:</strong> Seu fio precisa de consistência, não de intensidade esporádica.</li>
+      </ul>
+
+      <h2>A Técnica LOC: o segredo para a hidratação durar de verdade</h2>
+      <p>LOC significa Líquido, Óleo e Creme, nessa ordem. Cada camada tem uma função:</p>
+      <ul>
+        <li><strong>L (Líquido):</strong> Água ou spray hidratante. Repõe a umidade dentro do fio.</li>
+        <li><strong>O (Óleo):</strong> Óleo vegetal leve (semente de uva, argan, coco). Cria uma barreira que impede a umidade de evaporar.</li>
+        <li><strong>C (Creme):</strong> Creme de pentear ou leave-in. Sela tudo e define o cacho.</li>
+      </ul>
+
+      <h2>Cronograma Capilar para Cabelo Cacheado Ressecado</h2>
+      <p>Se o seu cabelo tá no nível "deserto do Saara", você precisa de um cronograma de recuperação:</p>
+      <ul>
+        <li><strong>Semana 1 e 2 → Foco em Reconstrução:</strong> Usa máscara com queratina, colágeno ou aminoácidos. Isso fecha a cutícula.</li>
+        <li><strong>Semana 3 → Hidratação Profunda:</strong> Máscara com babosa, pantenol ou ácido hialurônico.</li>
+        <li><strong>Semana 4 → Nutrição:</strong> Óleos vegetais como abacate, coco ou manteiga de karité.</li>
+      </ul>
+
+      <h2>E o corte? Sim, o corte faz parte da hidratação!</h2>
+      <p>Aqui vem o papo que muita gente ignora: pontas ressecadas e com dano não absorvem tratamento. Um corte especializado remove o dano e deixa o fio saudável absorver a hidratação de verdade.</p>
+      
+      <blockquote>"Aqui no Studio do Jon, a gente não corta só cabelo. A gente corta o que tá te impedindo de brilhar."</blockquote>
+
+      <h2>Quer um diagnóstico real do seu cacho?</h2>
+      <p>Aqui no Studio do Jon, em Belo Horizonte, a gente analisa a porosidade, a curvatura e o histórico do seu fio antes de qualquer tesoura ou produto. Porque cacho bom começa com diagnóstico honesto.</p>
+    `
   }
 ];

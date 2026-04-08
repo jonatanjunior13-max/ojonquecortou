@@ -3,7 +3,7 @@ import './WhatsAppButton.css';
 
 const WhatsAppButton = () => {
   const phoneNumber = "553135866673";
-  const message = "Olá! Gostaria de agendar um horário.";
+  const message = "Olá, gostaria de mais informações";
   const encodedMessage = encodeURIComponent(message);
   const waUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 

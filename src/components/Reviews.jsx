@@ -5,31 +5,45 @@ import './Reviews.css';
 const reviewsData = [
   {
     id: 1,
-    name: "Cristinna da Silva",
-    text: "Incrível! Excelente profissional, atencioso! Fiz corte e coloração, e o resultado foi melhor que o esperado! Jon é muuuito talentoso! Recomendo, com toda certeza!",
+    name: "Fernanda Baiao",
+    text: "O Jon é fantástico! Super educado, atencioso, tem uma escuta super ativa, me entendeu, entendeu meu cabelo e me ensinou a finalizar de uma forma muito mais simples do que eu jamais imaginei! Amei o corte, valorizou demais meus cachos! Fiquei muito feliz! É muito bom quando a gente encontra alguém que realmente entende de cabelo cacheado! Nota 1000!",
     rating: 5,
-    role: "Corte e Coloração"
+    role: "Avaliação no Google"
   },
   {
     id: 2,
-    name: "Taís Resende Costa",
-    text: "Jon é um excelente profissional! Foi super atencioso e preocupado em entregar um resultado do qual eu gostasse. Além disso, é uma pessoa incrível e super bem-humorada.",
-    rating: 5,
-    role: "Cliente fiel"
-  },
-  {
-    id: 3,
     name: "Ana Beatriz",
     text: "Eu amei o resultado, o Jon foi super gentil do início ao fim, ele é uma pessoa muito legal de conversar. Além disso, foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!",
     rating: 5,
-    role: "Corte especializado"
+    role: "Avaliação no Google"
+  },
+  {
+    id: 3,
+    name: "Cristinna da Silva",
+    text: "Incrível! Excelente profissional, atencioso! Fiz corte e coloração, e o resultado foi melhor que o esperado! Jon é muuuito talentoso! Recomendo, com toda certeza!",
+    rating: 5,
+    role: "Avaliação no Google"
   },
   {
     id: 4,
-    name: "Sandra Mara Ferreira santos",
-    text: "Excelente atendimento. Profissional perfeito, com muita técnica e conhecimento. Amei o corte 🤩🤩🤩",
+    name: "Julia Almeida de Bastos",
+    text: "Eu sou de outra cidade e estava procurando alguém como jonh para salvar meu cabelo. Ele é super bem humorado, ótimo profissional e alternativo. O que eu amo! Eu atrasei e ele foi super compreensivo. Não vejo a hora de voltar",
     rating: 5,
-    role: "Avaliação 5 Estrelas"
+    role: "Avaliação no Google"
+  },
+  {
+    id: 5,
+    name: "Mariana Silva",
+    text: "Fui no Jon e me encantei com seu serviço!! Jonathan me deu várias dicas pro meu cabelo ondulado, atendeu exatamente o que pedi, que era um corte sem tirar muito no comprimento e fazer um tratamento. Amei o resultado e com certeza irei voltar para fazer meus próximos cortes com ele, uma amor de pessoa e um ótimo profissional 🩷",
+    rating: 5,
+    role: "Avaliação no Google"
+  },
+  {
+    id: 6,
+    name: "Luciana Lima",
+    text: "Excelente profissional, nos recebe com alegria, acata nossas opiniões com muita gentileza. Ele domina bem os cabelos cacheados e portanto, o tratamento capilar foi excelente e o corte ficou incrível. Super indico!",
+    rating: 5,
+    role: "Avaliação no Google"
   }
 ];
 
