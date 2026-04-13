@@ -1,5 +1,64 @@
 export const posts = [
   {
+    id: 12,
+    slug: 'cabelo-cacheado-embaraca-muito',
+    title: 'Cabelo cacheado embaraça muito? O que isso revela sobre rotina, corte e saúde do fio',
+    excerpt: 'Se o desembaraço virou uma luta corporal digna de novela das 9, calma: o problema não é o seu cabelo ser impossível. Entenda o que o fio está tentando te dizer.',
+    metaDescription: 'Cabelo cacheado embaraçando demais não é frescura. Entenda as causas e aprenda como reduzir nós, quebra e ressecamento com rotina e diagnóstico certo.',
+    keywords: 'cabelo cacheado embaraçado, nós no cabelo, como desembaraçar cachos, Studio do Jon, saúde capilar BH, cabelos crespos cuidados',
+    date: '13 de Abril, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-embaraco.png',
+    content: `
+      <h2>Cabelo cacheado embaraça muito? O que isso revela sobre rotina, corte e saúde do fio</h2>
+      <p>Se o desembaraço virou uma luta corporal digna de novela das 9, calma: o problema não é “o seu cabelo ser impossível”. Na maioria das vezes, cabelo cacheado que embaraça demais está dando sinais claros de ressecamento, atrito, excesso de quebra, corte vencido ou rotina errada.</p>
+
+      <p>E aqui vai a verdade que muita gente evita dizer: tem cabelo que não está “difícil”. Está mal lido.</p>
+
+      <p>Porque cacho embola, sim. Faz parte da estrutura. Fios curvos se encontram, se enrolam entre si e têm mais pontos de atrito do que um cabelo liso. Só que uma coisa é o embaraço natural da textura. Outra bem diferente é quando você passa a mão e sente nó em tudo, dificuldade absurda no banho, quebra no desembaraço e aquela sensação de que o cabelo nunca desliza.</p>
+
+      <blockquote>Isso não é personalidade forte do fio, bonita. Isso é sinal.</blockquote>
+
+      <h2>Por que cabelo cacheado embaraça mais?</h2>
+      <p>O cabelo cacheado e crespo tende a embaraçar mais por uma razão estrutural: quanto maior a curvatura, mais pontos de contato o fio cria nele mesmo e com os fios vizinhos. Além disso, a oleosidade natural do couro cabeludo tem mais dificuldade para descer pelo comprimento, o que deixa pontas mais vulneráveis ao ressecamento.</p>
+
+      <p>Mas quando esse embaraço fica excessivo, geralmente existe um ou mais desses fatores por trás:</p>
+      <ul>
+        <li>Ressecamento e porosidade elevada</li>
+        <li>Quebra e pontas danificadas</li>
+        <li>Acúmulo de resíduos (build-up)</li>
+        <li>Corte sem forma ou vencido</li>
+        <li>Excesso de atrito (fronhas comuns, toalhas gasta)</li>
+      </ul>
+
+      <h2>O que o embaraço pode estar revelando sobre o seu fio</h2>
+      <h3>1. Ressecamento disfarçado de “cabelo rebelde”</h3>
+      <p>Muita gente acha que o cabelo está “difícil”, quando na verdade ele está seco. Fio ressecado perde maciez e flexibilidade. Quando o fio não tem água suficiente e a superfície está mais áspera, o atrito aumenta.</p>
+
+      <h3>2. Pontas danificadas ou corte vencido</h3>
+      <p>Pontas duplas tendem a se agarrar umas nas outras. Às vezes o problema não é o creme. É o corte que já perdeu forma e está pedindo socorro com educação há semanas.</p>
+
+      <h3>3. Excesso de porosidade</h3>
+      <p>Fio muito poroso perde água com facilidade e as cutículas abertas deixam a superfície menos alinhada. Em outras palavras: o cabelo não “escorrega”. Ele raspa.</p>
+
+      <h2>O que fazer para o cabelo parar de embaraçar tanto?</h2>
+      <p>O melhor momento para desembaraçar é com o cabelo úmido ou molhado, com produto de boa emoliência. Isso reduz o atrito e evita quebra desnecessária.</p>
+      <ul>
+        <li>Divida o cabelo em partes para facilitar</li>
+        <li>Comece sempre das pontas para cima</li>
+        <li>Use os dedos antes da escova</li>
+        <li>Use fronha ou touca de cetim para dormir</li>
+      </ul>
+
+      <p>Se o seu cabelo embaraça demais, quebra no desembaraço ou parece nunca deslizar de verdade, talvez o problema não seja falta de produto — e sim falta de diagnóstico.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+      </div>
+    `
+  },
+  {
     id: 11,
     slug: 'fator-encolhimento-cabelo-cacheado',
     title: 'Fator Encolhimento: Por que seu cabelo parece curto (e como amar isso)',
