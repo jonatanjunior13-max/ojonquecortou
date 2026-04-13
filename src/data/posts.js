@@ -1,5 +1,46 @@
 export const posts = [
   {
+    id: 11,
+    slug: 'fator-encolhimento-cabelo-cacheado',
+    title: 'Fator Encolhimento: Por que seu cabelo parece curto (e como amar isso)',
+    excerpt: 'Cortei dois dedos e subiram dez? Calma, não é bruxaria, é estrutura capilar. Entenda como o fator encolhimento é sinal de saúde!',
+    metaDescription: 'Entenda o fator encolhimento e por que o Corte com Leitura é a solução para cacheadas e crespas. Recupere sua identidade em BH (Caiçara) com o Jon.',
+    keywords: 'fator encolhimento, cabelo cacheado curto, corte a seco bh, Studio do Jon, transição capilar, saúde capilar',
+    date: '13 de Abril, 2026',
+    author: 'Jon',
+    category: 'Saúde Capilar',
+    image: '/blog-encolhimento.png',
+    content: `
+      <h2>"Cortei dois dedos e subiram dez?" Calma, não é bruxaria, é estrutura capilar.</h2>
+      <p>Se você é cacheada ou crespa, com certeza já viveu esse filme de terror: você pede para o cabeleireiro tirar "só as pontinhas", ele corta com o cabelo molhado e, quando seca… puf! O cabelo encolhe tanto que você sai do salão querendo chorar no banho.</p>
+
+      <p>Aqui no Studio O Jon que Cortou, a gente trata o encolhimento com o respeito que ele merece. Afinal, o fator encolhimento não é um defeito, é o sinal mais claro de que o seu cacho tem mola, tem vida e tem saúde!</p>
+
+      <h2>O que a ciência explica (e os salões ignoram)</h2>
+      <p>Quanto mais fechada é a sua curvatura — alô, maravilhosas do 4ABC! — mais as pontes de hidrogênio do fio se unem para formar a espiral. Quando o cabelo está molhado, o peso da água estica essas pontes. Quando seca, elas voltam para o lugar original.</p>
+
+      <p>Se o profissional não faz uma Leitura de Fio antes de começar, ele vai cortar o seu cabelo "mentiroso" (molhado) e ignorar como ele se comporta na vida real. Por isso, aqui no Caiçara, a minha tesoura só entra em ação depois que eu entendo como o seu cacho funciona de verdade.</p>
+
+      <h2>3 Coisas que você precisa saber para não sofrer mais:</h2>
+      <ul>
+        <li><strong>Corte com Leitura é Vida:</strong> No Studio, eu analiso o seu rosto, o balanço natural e a distribuição do volume com o cabelo seco. O Corte com Leitura permite que eu preveja o encolhimento antes de dar o primeiro clique. O resultado que você vê na cadeira é o que você vai ter em casa.</li>
+        <li><strong>Identidade Recuperada:</strong> Entender o encolhimento permite que a gente escolha o volume certo para você. Se você quer mais comprimento, trabalhamos com técnicas que "soltam" a raiz. Se quer volumão de disco ball, usamos o encolhimento a nosso favor. O foco é você se reconhecer no espelho.</li>
+        <li><strong>Saúde em Primeiro Lugar:</strong> Um cabelo ressecado encolhe de forma desordenada e com muito frizz. Um cabelo nutrido e com a porosidade em dia tem um encolhimento bonito, com brilho e movimento natural.</li>
+      </ul>
+
+      <blockquote>"Eu sei o que seu cabelo precisa."</blockquote>
+      <p>Minha missão é que você pare de brigar com o espelho. Entender o encolhimento é o primeiro passo para você parar de tentar "domar" o que nasceu para ser livre.</p>
+
+      <p>Aqui no Studio, a gente não padroniza cachos, a gente recupera identidades. Se você cansou de sair do salão frustrada com o comprimento, o problema não é o seu cabelo — foi o diagnóstico errado.</p>
+
+      <p>Pronta para entender a real estrutura do seu fio e sair do studio amando o que vê no espelho?</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+      </div>
+    `
+  },
+  {
     id: 10,
     slug: 'rotina-minimalista-cabelos-cacheados',
     title: 'Rotina Minimalista para Cabelos Cacheados: 3 Produtos e o Guia Real',
