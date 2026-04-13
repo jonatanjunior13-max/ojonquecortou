@@ -33,8 +33,6 @@ export const posts = [
 
       <p><strong>Creme leve ou Gelatina?</strong> Se você quer movimento e toque macio, vá de creme. Se quer que o cacho dure 3 dias sem mexer, a gelatina (ou um gel de qualidade) é seu melhor amigo. O truque é a água: aplique com o cabelo bem úmido para o produto distribuir sem pesar.</p>
 
-      <img src="/blog-infografico-rotina.png" alt="Comparativo: Rotina Complicada vs Rotina Minimalista" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
-
       <h2>A Ordem que Resolve (O Checklist)</h2>
       <ul>
         <li><strong>Limpeza:</strong> 2 minutos de massagem no couro. Enxágue 100%.</li>
