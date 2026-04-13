@@ -12,7 +12,7 @@ const services = [
     name: 'Corte Especializado',
     tagline: 'Ondulados, Cacheados e Crespos',
     description:
-      'Aqui não existe o "corta só as pontinhas" que vira um desastre. Meu corte é focado na arquitetura do fio natural, respeitando o fator de encolhimento e a sua rotina. O atendimento começa com uma consultoria real para entender seus desejos. Seja corte a seco (dry cutting) ou molhado, o foco é volume, definição e movimento para curvaturas do 2ABC ao 4ABC.',
+      'Aqui não existe o "corta só as pontinhas" que vira um desastre. Meu corte é focado na arquitetura do fio natural, respeitando o fator de encolhimento e a sua rotina. O atendimento começa com uma consultoria real para entender seus desejos. Através da Leitura de Fio Personalizada, o foco é volume, definição e movimento real para curvaturas do 2abc ao 4abc.',
     includes: ['Higienização', 'Finalização personalizada'],
     duration: null,
     price: 'R$ 190',
@@ -241,8 +241,9 @@ const ServicesPage = () => {
             <span className="text-gradient">uma transformação</span>
           </h1>
           <p className="services-hero-sub">
-            Do corte a seco ao tratamento personalizado, cada atendimento começa com escuta
-            e termina com um visual que é 100% você.
+            Chega de cortes genéricos que não entendem suas curvas. Aqui, cada atendimento
+            começa com uma Leitura de Fio personalizada e termina com o visual que você
+            sempre quis (e que dura até em casa).
           </p>
         </div>
       </section>
