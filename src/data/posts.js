@@ -1,5 +1,72 @@
 export const posts = [
   {
+    id: 10,
+    slug: 'rotina-minimalista-cabelos-cacheados',
+    title: 'Rotina Minimalista para Cabelos Cacheados: 3 Produtos e o Guia Real',
+    excerpt: 'Cabelo cacheado não precisa de 10 produtos. Aprenda a rotina minimalista com 3 itens que resolve 80% dos problemas de definição e saúde dos fios.',
+    metaDescription: 'Cabelo cacheado não precisa de 10 produtos. Aprenda a rotina minimalista com 3 itens que resolve 80% dos problemas de definição e saúde dos fios.',
+    keywords: 'rotina minimalista cachos, Studio do Jon, finalização minimalista, cabelo cacheado, transição capilar',
+    date: '13 de Abril, 2026',
+    author: 'Jon',
+    category: 'Rotina',
+    image: '/blog-rotina-minimalista.png',
+    content: `
+      <h2>Cabelo de 400 reais, estratégia de 2: por que o excesso de produto está matando seus cachos</h2>
+      <p>Se você precisa de um ritual de 2 horas, 5 cremes diferentes e uma reza forte pra ter um day after decente, eu tenho uma notícia (e talvez você não goste): seu cabelo não é difícil, sua estratégia é que é confusa.</p>
+
+      <p>Aqui no Studio do Jon, eu vejo isso todo dia. A cliente chega com uma sacola de produtos "milagrosos", mas o fio está pesado, sem brilho e com aquela definição "fake" que esfarela no toque. A verdade técnica? O excesso de resíduos cria uma barreira que impede o fio de respirar e, ironicamente, de absorver o que ele realmente precisa.</p>
+
+      <p>Cabelo cacheado, ondulado e crespo precisa de estratégia, não de estoque. Vou te mostrar como 3 produtos e a ordem certa resolvem 80% da sua vida.</p>
+
+      <h2>1. O Limpador: Foco no couro cabeludo, não no erro</h2>
+      <p>O primeiro erro é achar que shampoo "limpa o cabelo". Shampoo limpa couro cabeludo. Se você usa um produto que não remove o sebo e os resíduos de finalizadores anteriores da raiz, nada do que você passar depois vai funcionar.</p>
+
+      <p><strong>A técnica:</strong> Higienização suave, mas real. Se o couro não respira, o bulbo não entrega um fio forte. Esqueça esfregar o comprimento; a espuma que desce já dá conta do recado.</p>
+
+      <h2>2. A Máscara Base: Nutrição e Hidratação em um só "strike"</h2>
+      <p>Você não precisa de 4 máscaras diferentes toda semana. Você precisa de uma máscara de alta performance que tenha equilíbrio entre água (hidratação) e lipídios (nutrição).</p>
+
+      <p><strong>O segredo técnico:</strong> Shampoos abrem levemente a cutícula. A máscara entra pra preencher. Se o seu fio for muito fino, foque em texturas mais fluidas. Se for grosso ou poroso, vá nas mais densas. A ordem é: limpar → tratar → (selar).</p>
+
+      <h2>3. O Finalizador: Entre a definição e a liberdade</h2>
+      <p>Aqui é onde a mágica (ou a tragédia) acontece. Para uma rotina minimalista, você precisa de um finalizador com memória de cacho.</p>
+
+      <p><strong>Creme leve ou Gelatina?</strong> Se você quer movimento e toque macio, vá de creme. Se quer que o cacho dure 3 dias sem mexer, a gelatina (ou um gel de qualidade) é seu melhor amigo. O truque é a água: aplique com o cabelo bem úmido para o produto distribuir sem pesar.</p>
+
+      <img src="/blog-infografico-rotina.png" alt="Comparativo: Rotina Complicada vs Rotina Minimalista" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+
+      <h2>A Ordem que Resolve (O Checklist)</h2>
+      <ul>
+        <li><strong>Limpeza:</strong> 2 minutos de massagem no couro. Enxágue 100%.</li>
+        <li><strong>Tratamento:</strong> Aplique a máscara, enluve as mechas (o segredo tá no atrito das mãos, não no tempo de pausa infinito) e enxágue bem.</li>
+        <li><strong>Finalização:</strong> Com o fio pingando, aplique o finalizador. Amasse de baixo para cima. Use uma camiseta de algodão pra tirar o excesso, e pare de tocar.</li>
+      </ul>
+
+      <blockquote>"Jon, mas meu cabelo é diferente!"</blockquote>
+      <p>Sim, cada curvatura tem uma espessura e uma porosidade. Um 2B ondulado não se comporta como um 4A crespo. Mas a base da saúde capilar é a mesma: limpeza real e entrega do que falta.</p>
+
+      <p>Se você simplifica a rotina, você entende o que o seu cabelo está te pedindo. Se você taca 10 produtos, você só está mascarando o problema.</p>
+
+      <h2>FAQ Rápido</h2>
+      <p><strong>Posso usar condicionador em vez de máscara?</strong><br>
+      Pode, mas o condicionador apenas sela a cutícula. A máscara entrega tratamento. Se tiver que escolher um pro minimalismo, fique com a máscara e use uma quantidade menor.</p>
+
+      <p><strong>E o óleo capilar?</strong><br>
+      Ele entra como o "plus". Se o seu cabelo é muito seco (comum em curvaturas 4), ele é o quarto elemento indispensável. Se não, a máscara já resolve.</p>
+
+      <h2>Cansada de lutar contra o espelho e gastar o salário na prateleira da farmácia?</h2>
+      <p>Às vezes, o que seu cabelo precisa não é de um produto novo, mas de um profissional que saiba ler o que ele está tentando te dizer.</p>
+
+      <img src="/blog-jon-analisando-mecha.png" alt="Jon analisando uma mecha com olhar clínico" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+
+      <p>Aqui no Studio do Jon, meu foco é a Leitura de Fio. Antes de encostar a tesoura ou sugerir qualquer tratamento, eu analiso a estrutura real do seu cabelo para que você pare de ser refém de rotinas infinitas e aprenda a amar o que vê no espelho — de um jeito prático.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO MARCAR MINHA LEITURA DE FIO E SIMPLIFICAR MINHA VIDA</a>
+      </div>
+    `
+  },
+  {
     id: 9,
     slug: 'sulfato-no-shampoo-guia-completo',
     title: 'O que é o "Sulfato", afinal?',
