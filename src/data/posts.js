@@ -1,5 +1,40 @@
 export const posts = [
   {
+    id: 13,
+    slug: 'cabelo-bonito-no-salao-diferente-em-casa',
+    title: 'Por que seu cabelo fica bonito no salão e diferente em casa?',
+    excerpt: 'Cansada de amar o cabelo no salão e não conseguir repetir em casa? Entenda por que o Corte com Leitura e a educação capilar mudam o seu desfecho com o espelho.',
+    metaDescription: 'Entenda por que o Corte com Leitura e a educação capilar são a solução para que o seu cabelo fique incrível todos os dias, e não só após o salão.',
+    keywords: 'cabelo no salão vs em casa, finalização de cachos, educação capilar, Studio do Jon, corte personalizado BH, autonomia capilar',
+    date: '13 de Abril, 2026',
+    author: 'Jon',
+    category: 'Educação Capilar',
+    image: '/blog-salao-casa.png',
+    content: `
+      <h2>Por que seu cabelo fica bonito no salão e diferente em casa?</h2>
+      <p>Você já passou por isso: sai do studio se sentindo a própria protagonista de comercial de shampoo. Mas aí, dois dias depois, você tenta lavar, tenta finalizar e... o resultado parece outra pessoa. O cacho não "arma" igual e a frustração bate forte.</p>
+
+      <p>Aí você pensa: "É a mão dele que é mágica". Deixa eu te contar a real: não é mágica, é método. E se o resultado só dura até a sua primeira lavagem em casa, algo no processo está errado.</p>
+
+      <blockquote>Aqui no Studio, eu bato na tecla da Educação Capilar. Se você sai daqui dependente de mim para o seu cabelo ficar bom, eu falhei como seu profissional.</blockquote>
+
+      <h2>1. O Diagnóstico que você pula (mas eu não)</h2>
+      <p>No meu atendimento, a Leitura do Cacho é o que manda. Eu não olho só para a curvatura; eu leio a porosidade, a elasticidade e a densidade. Quando eu escolho um produto, eu sei exatamente por que ele vai funcionar na sua fibra. Em casa, usamos o que a internet indicou, sem saber se o fio precisa de carga de proteína ou apenas de água.</p>
+
+      <h2>2. O Corte Feito com Leitura: A estrutura real</h2>
+      <p>O Corte feito com Leitura do Cacho é um processo onde eu entendo como cada mecha se comporta antes mesmo de encostar a tesoura. Isso garante que o cabelo tenha "memória" de onde deve cair. Se o corte é planejado tecnicamente, ele se ajeita quase sozinho no dia a dia.</p>
+
+      <h2>3. A "Dose Certa" de Água</h2>
+      <p>O erro em casa é quase sempre o mesmo: falta de água na aplicação. No salão, a gente finaliza com a hidratação no nível certo, criando aquela "musse" que sela a cutícula. Em casa, na pressa, você acaba tirando o excesso de água antes do creme.</p>
+
+      <p><strong>"Básico? Hoje não, Faro."</strong> Meu objetivo não é que você venha aqui toda semana. É que você aprenda a dominar o seu próprio cabelo. Se você entende a lógica do seu fio, o "mistério" do salão desaparece e você assume o controle da sua identidade.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">AGENDAR MEU CORTE PERSONALIZADO E DIAGNÓSTICO</a>
+      </div>
+    `
+  },
+  {
     id: 12,
     slug: 'cabelo-cacheado-embaraca-muito',
     title: 'Cabelo cacheado embaraça muito? O que isso revela sobre rotina, corte e saúde do fio',
