@@ -14,9 +14,7 @@ const Hero = () => {
           </div>
           
           <h1 className="heading-xl hero-title">
-            O Jon que Cortou:<br/>
-            <span className="highlight-magenta">Liberdade</span> para seus<br/>
-            <span className="text-primary">Cachos</span>
+            O Jon que Cortou: <span className="text-pink">Liberdade para seus Cachos</span>
           </h1>
           
           <p className="paragraph-lg hero-text">

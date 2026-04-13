@@ -49,6 +49,10 @@
   position: relative;
 }
 
+.text-pink {
+  color: var(--primary-magenta);
+}
+
 .hero-text {
   margin-bottom: 2.5rem;
 }
