@@ -89,3 +89,55 @@
 .flex-wrap { flex-wrap: wrap; }
 .gap-2 { gap: 1rem; }
 .mb-4 { margin-bottom: 3rem; }
+
+/* Service Cards Mini */
+.services-highlight {
+  position: relative;
+  z-index: 1;
+}
+
+.service-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem auto;
+  max-width: 900px;
+}
+
+.service-card-mini {
+  background: white;
+  padding: 2rem 1.5rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.service-card-mini:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary-magenta);
+}
+
+.service-card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.service-card-mini h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--primary-blue);
+}
+
+.service-card-mini p {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}

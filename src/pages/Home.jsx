@@ -15,13 +15,32 @@ const Home = () => {
       <Hero />
       
       {/* Destaque de Serviços */}
-      <section className="section-padding glass-panel text-center">
+      <section className="section-padding glass-panel text-center services-highlight">
         <div className="container">
           <h2 className="heading-lg mb-1">Nossos Serviços</h2>
           <p className="paragraph-lg max-w-lg mx-auto mb-3 mt-2 text-gray">
-            Cortes a seco, finalizações exclusivas e tratamentos avançados. Uma experiência de luxo para os seus fios.
+            Cortes especializados, finalizações exclusivas e tratamentos avançados. Uma experiência de luxo para os seus fios.
           </p>
-          <Link to="/servicos" className="btn btn-primary">Ver Todos os Serviços</Link>
+
+          <div className="service-cards-grid">
+            <div className="service-card-mini animate-fade-in">
+              <div className="service-card-icon">✂️</div>
+              <h3>Corte</h3>
+              <p>Personalizado para sua curvatura.</p>
+            </div>
+            <div className="service-card-mini animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              <div className="service-card-icon">✨</div>
+              <h3>Corte + Tratamento</h3>
+              <p>Saúde e definição completas.</p>
+            </div>
+            <div className="service-card-mini animate-fade-in" style={{ animationDelay: '0.4s' }}>
+              <div className="service-card-icon">🎨</div>
+              <h3>Mechas</h3>
+              <p>Iluminação que respeita o fio.</p>
+            </div>
+          </div>
+
+          <Link to="/servicos" className="btn btn-primary mt-4">Ver Todos os Serviços</Link>
         </div>
       </section>
 

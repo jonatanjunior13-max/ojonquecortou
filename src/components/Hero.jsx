@@ -20,7 +20,7 @@ const Hero = () => {
           </h1>
           
           <p className="paragraph-lg hero-text">
-            Corte especializado a seco, tratamentos reais e a dose certa de autoconfiança no coração do bairro Caiçara, Belo Horizonte.
+            Corte especializado em cabelos ondulados, cacheados e crespos, tratamentos reais e a dose certa de autoconfiança no coração do bairro Caiçara, Belo Horizonte.
           </p>
           
           <div className="hero-actions">
