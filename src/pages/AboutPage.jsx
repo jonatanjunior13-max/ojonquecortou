@@ -89,9 +89,9 @@ const AboutPage = () => {
             </h2>
             <div className="title-bar" />
             <p className="about-body">
-              Diferente dos salões tradicionais, meu método de corte para cabelo cacheado em BH
+              Diferente dos salões tradicionais, meu método de corte para cabelo cacheado
               respeita o <strong>fator de encolhimento</strong> e a densidade de cada mola.
-              Utilizo o <strong>corte a seco (dry cutting)</strong> para esculpir o volume ideal,
+              Utilizo uma <strong>técnica de leitura do cabelo</strong> para esculpir o corte ideal,
               garantindo que o seu visual funcione não só no espelho do salão, mas na sua
               rotina real em casa.
             </p>
