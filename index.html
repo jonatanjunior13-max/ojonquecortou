@@ -64,11 +64,12 @@
     </script>
   </head>
   <body>
-    <!-- H1 para SEO (Bing/Google) antes do carregamento do React -->
-    <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
-      O Jon que Cortou: Especialista em Cachos BH - Liberdade para seus Cachos
-    </h1>
-    <div id="root"></div>
+    <div id="root">
+      <!-- H1 para SEO (Bing/Google) antes do carregamento do React - será substituído pelo conteúdo dinâmico -->
+      <h1 style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;">
+        O Jon que Cortou: Especialista em Cachos BH - Liberdade para seus Cachos
+      </h1>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
