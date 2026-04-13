@@ -23,7 +23,7 @@ const Hero = () => {
           
           <div className="hero-actions">
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: 'fit-content' }}>
-              <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" className="btn btn-primary hero-btn">
+              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary hero-btn">
                 Agende seu Horário <ArrowRight size={20} />
               </a>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>

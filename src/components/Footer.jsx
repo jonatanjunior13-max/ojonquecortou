@@ -29,7 +29,7 @@ const Footer = () => {
             <li><a href="#inicio">Início</a></li>
             <li><a href="#sobre">Sobre o Jon</a></li>
             <li><a href="#servicos">Nossos Serviços</a></li>
-            <li><a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer">Agendar Online</a></li>
+            <li><a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer">Agendar Online</a></li>
           </ul>
         </div>
         

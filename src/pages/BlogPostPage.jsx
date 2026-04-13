@@ -46,7 +46,7 @@ const BlogPostPage = () => {
             <h3 className="heading-md mb-2">Gostou da dica?</h3>
             <p className="paragraph-lg mb-2">Vem viver essa experiência no Studio! Agende seu horário no Caiçara.</p>
             <div className="flex gap-1">
-              <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" className="btn btn-primary">
+              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
                 Agendar no Trinks
               </a>
               <a href={`https://wa.me/553135866673?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar um horário.`} target="_blank" rel="noreferrer" className="btn btn-outline">

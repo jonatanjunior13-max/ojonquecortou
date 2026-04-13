@@ -63,7 +63,7 @@ const Services = () => {
         </div>
         
         <div className="services-cta text-center mt-4">
-           <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" className="btn btn-primary">
+           <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
               Ver Todos os Serviços no Trinks
            </a>
         </div>

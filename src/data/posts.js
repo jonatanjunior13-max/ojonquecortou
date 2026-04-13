@@ -62,7 +62,7 @@ export const posts = [
       <p>Aqui no Studio do Jon, meu foco é a Leitura de Fio. Antes de encostar a tesoura ou sugerir qualquer tratamento, eu analiso a estrutura real do seu cabelo para que você pare de ser refém de rotinas infinitas e aprenda a amar o que vê no espelho — de um jeito prático.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO MARCAR MINHA LEITURA DE FIO E SIMPLIFICAR MINHA VIDA</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO MARCAR MINHA LEITURA DE FIO E SIMPLIFICAR MINHA VIDA</a>
       </div>
     `
   },
@@ -363,7 +363,7 @@ export const posts = [
       <p>Se o seu frizz é apenas parte da sua identidade e volume, abrace-o. Mas se ele está deixando seu cabelo frágil e sem forma, é hora de olhar para a saúde do seu fio com mais critério. O diagnóstico começa pela observação: toque seu cabelo, sinta a textura e observe como ele reage aos produtos. O autoconhecimento capilar é o maior aliado da sua liberdade.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
     `
   },
@@ -398,7 +398,7 @@ export const posts = [
       <p>Quer descobrir o ritual exato para o seu tipo de fio e nunca mais sofrer com o day after?</p>
       
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ateliedoscachosmg" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
     `
   },

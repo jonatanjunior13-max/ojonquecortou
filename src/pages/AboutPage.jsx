@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './AboutPage.css';
 
-const TRINKS_URL = 'http://trinks.com/ateliedoscachosmg';
+const TRINKS_URL = 'http://trinks.com/ojonquecortou';
 
 const services = [
   { emoji: '✂️', label: 'Corte Especializado (Ondas, Cachos e Crespos)' },

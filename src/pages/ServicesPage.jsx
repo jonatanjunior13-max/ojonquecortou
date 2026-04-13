@@ -21,7 +21,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -41,7 +41,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -60,7 +60,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -79,7 +79,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -99,7 +99,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar Pacote',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -118,7 +118,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -195,7 +195,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
   {
@@ -214,7 +214,7 @@ const services = [
     cta: {
       type: 'booking',
       label: 'Agendar',
-      url: 'http://trinks.com/ateliedoscachosmg',
+      url: 'http://trinks.com/ojonquecortou',
     },
   },
 ];
@@ -352,7 +352,7 @@ const ServicesPage = () => {
                 💬 Falar no WhatsApp
               </a>
               <a
-                href="http://trinks.com/ateliedoscachosmg"
+                href="http://trinks.com/ojonquecortou"
                 target="_blank"
                 rel="noreferrer"
                 className="btn btn-outline"
