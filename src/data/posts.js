@@ -1,5 +1,48 @@
 export const posts = [
   {
+    id: 15,
+    slug: 'cabelo-poroso-nao-absorve-creme-scab-hair',
+    title: 'O Falso Ressecado: Por Que Seu Cabelo Poroso Não Absorve Creme (E Como Resolver)',
+    excerpt: 'Aquele creme caríssimo não funciona por um motivo estrutural profundo. Entenda por que seu cabelo engole produto e continua seco e o que é o Scab Hair.',
+    metaDescription: 'O seu cabelo poroso não absorve creme e fica sempre áspero? Descubra a diferença entre porosidade alta e scab hair, e como a leitura de fio resolve o problema.',
+    keywords: 'cabelo poroso, scab hair o que é, reconstrução capilar bh, Studio do Jon, cabelo áspero, corte a seco bh, saúde capilar',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Saúde da Fibra',
+    image: '/blog-porosidade-scab.png',
+    content: `
+      <h2>Aquele creme de reconstrução caríssimo não está funcionando por um motivo estrutural profundo.</h2>
+      <p>Você faz umectação, testa acidificantes famosos, mas o seu cabelo poroso não absorve creme. Ele engole o produto no banho e, algumas horas depois, seca completamente áspero e sem definição. Sabe por quê? Porque tentar hidratar uma haste que perdeu a capacidade física de reter líquido é lutar contra as leis da química.</p>
+
+      <h2>O diagnóstico errado e o cemitério do cronograma capilar</h2>
+      <p>Aqui no Studio, vejo sacolas repletas de produtos caros e uma frustração gigantesca. O erro está em um diagnóstico genérico. O cabelo com curvatura possui uma cutícula que se abre com muito mais facilidade, e existe uma linha tênue entre um fio momentaneamente ressecado e um fio que está "morto".</p>
+
+      <blockquote>Eu sou autista. Meu cérebro processa o mundo através do reconhecimento de padrões. Eu foco na matemática da sua curvatura e no grau exato do seu desgaste cuticular. E o padrão de destruição que eu mais encontro é o <strong>scab hair</strong>.</blockquote>
+
+      <h2>Scab Hair vs. Porosidade Genética</h2>
+      <p>O scab hair é aquele cabelo extremamente áspero e sem forma que nasce após anos de químicas severas ou tração constante. O folículo sofreu uma agressão tão contínua que entrou em estado de defesa. O fio já nasce com a estrutura da cutícula estilhaçada. Ele não tem "escamas" para segurar nada.</p>
+
+      <h2>A verdade dolorosa: creme não conserta haste morta</h2>
+      <p>Quando a barreira de retenção acabou, o fio não segura água, óleo ou proteína. O produto entra, bate nas paredes rompidas e vai direto para o ralo no primeiro enxágue. Continuar tentando tratar o que já passou do ponto de não retorno é tentar encher uma peneira com água.</p>
+
+      <h2>A tesoura é o tratamento mais rápido do mundo</h2>
+      <p>Cortar a seco e remover essa memória química é a única reconstrução verdadeira. O <strong>Método Jon</strong> foca na escuta antes de tocar. Remover o que está sabotando seu resultado é o que libera a mola natural do seu cacho.</p>
+
+      <h2>Perguntas Reais Sobre Porosidade e Scab Hair</h2>
+      <div class="faq-section">
+        <h3>Por que meu cabelo fica áspero mesmo fazendo cronograma capilar?</h3>
+        <p>Provavelmente você está tratando o problema errado. Se o fio perdeu a barreira cuticular, ele entra em alta porosidade crônica. O creme apenas maquia a textura temporariamente.</p>
+
+        <h3>Como saber se tenho scab hair ou apenas porosidade alta?</h3>
+        <p>A porosidade alta reage a acidificantes técnicos que equilibram o pH. O scab hair não reage a nada; ele mantém a textura de "arame" constante. Apenas uma <strong>Leitura de Fio</strong> presencial crava esse diagnóstico.</p>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO</a>
+      </div>
+    `
+  },
+  {
     id: 14,
     slug: 'corte-para-cabelo-cacheado-bh-volume',
     title: 'A Arquitetura do Volume: Por Que Seu Corte Para Cabelo Cacheado Sempre Acaba no Efeito Pirâmide',
