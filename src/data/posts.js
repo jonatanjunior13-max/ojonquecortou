@@ -1,5 +1,47 @@
 export const posts = [
   {
+    id: 16,
+    slug: 'transicao-capilar-bh-danos-botox',
+    title: 'Aquela Progressiva Disfarçada Derreteu Seus Cachos: A Verdade Sobre a Transição Capilar BH',
+    excerpt: 'Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro. Entenda o golpe do botox capilar e como a transição capilar BH pode ser técnica e sem trauma.',
+    metaDescription: 'Caiu no golpe do botox capilar e perdeu os cachos? Descubra como a leitura de fio e o corte a seco salvam sua transição capilar em BH no Studio do Jon.',
+    keywords: 'transição capilar bh, botox capilar estraga cachos, como recuperar cachos com quimica, corte a seco bh, Studio do Jon, big chop bh, cabelo com duas texturas',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Transição Capilar',
+    image: '/blog-transicao-quimica.png',
+    content: `
+      <h2>Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro.</h2>
+      <p>Você pediu um "botox para reduzir o frizz" e saiu com um alisamento térmico mascarado. Agora, vive o pesadelo de uma transição capilar forçada, tentando tratar com creme uma haste capilar que já não tem salvação.</p>
+
+      <h2>A mentira do botox capilar e o diagnóstico preguiçoso</h2>
+      <p>Química que reduz volume age destruindo as pontas de dissulfeto do seu fio. É química de transformação. Ponto final. Os ácidos atuais afinam a estrutura do córtex capilar até o talo, selando a cutícula por fora enquanto carbonizam o interior.</p>
+
+      <blockquote>O seu cabelo cacheado não perde a forma porque ficou hidratado. Ele perde a curvatura porque a mola de sustentação foi derretida pela acidez extrema combinada com o calor da prancha.</blockquote>
+
+      <h2>O perigo de adiar o inevitável por apego a centímetros</h2>
+      <p>Tentar reviver um fio plastificado por ácido é rasgar dinheiro. A <strong>Escuta Antes de Tocar</strong> serve exatamente para frear esse ciclo de decepção. Eu mapeio o nível real de destruição da fibra e o impacto na sua raiz saudável.</p>
+
+      <h2>O Método Jon e a precisão do corte a seco crespo</h2>
+      <p>A única saída honesta para o golpe do alisamento natural é a tesoura. Mas isso não significa um Big Chop traumático. Usando técnicas de angulação e <strong>Corte a Seco</strong>, eu esculpo o seu cabelo tirando a química aos poucos, disfarçando a diferença de texturas.</p>
+
+      <h2>Perguntas Frequentes Sobre Danos Químicos e Transição</h2>
+      <div class="faq-section">
+        <h3>Botox capilar realmente tira os cachos?</h3>
+        <p>Sim. Se mudou a forma original após a lavagem, rompeu pontes de dissulfeto. Cabelos cacheados não recuperam a contração natural após essa ruptura estrutural.</p>
+
+        <h3>Quanto tempo dura o processo de transição capilar BH?</h3>
+        <p>O tempo necessário para que sua raiz natural atinja um comprimento que te dê segurança. Pode levar seis meses ou um ano e meio, dependendo da sua paciência e do plano técnico traçado na Leitura de Fio.</p>
+      </div>
+
+      <p>Sua identidade não é negociável. A transição capilar não é uma sentença de autoestima no lixo; é um projeto de retomada. Vamos arrancar essa mentira química daí e devolver o formato que é seu por direito.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">INICIAR MINHA TRANSIÇÃO COM SEGURANÇA</a>
+      </div>
+    `
+  },
+  {
     id: 15,
     slug: 'cabelo-poroso-nao-absorve-creme-scab-hair',
     title: 'O Falso Ressecado: Por Que Seu Cabelo Poroso Não Absorve Creme (E Como Resolver)',
