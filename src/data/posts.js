@@ -2,7 +2,7 @@ export const posts = [
   {
     id: 16,
     slug: 'transicao-capilar-bh-danos-botox',
-    title: 'Aquela Progressiva Disfarçada Derreteu Seus Cachos: A Verdade Sobre a Transição Capilar BH',
+    title: 'Aquela Progressiva Disfarçada Derreteu Seus Cachos: A Verdade Sobre a Transição Capilar',
     excerpt: 'Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro. Entenda o golpe do botox capilar e como a transição capilar BH pode ser técnica e sem trauma.',
     metaDescription: 'Caiu no golpe do botox capilar e perdeu os cachos? Descubra como a leitura de fio e o corte a seco salvam sua transição capilar em BH no Studio do Jon.',
     keywords: 'transição capilar bh, botox capilar estraga cachos, como recuperar cachos com quimica, corte a seco bh, Studio do Jon, big chop bh, cabelo com duas texturas',
