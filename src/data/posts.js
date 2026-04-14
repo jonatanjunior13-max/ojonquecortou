@@ -1,5 +1,47 @@
 export const posts = [
   {
+    id: 17,
+    slug: 'cabeleireiro-especialista-em-cachos-belo-horizonte-descolorido',
+    title: 'O Luto do Cacho Descolorido: A Realidade Que Um Cabeleireiro Especialista em Cachos Precisa Te Contar',
+    excerpt: 'Aquele loiro perfeito do Instagram custou a estrutura do seu cacho. Entenda por que o pó descolorante mata sua curvatura e como um especialista pode salvar sua identidade.',
+    metaDescription: 'Fez luzes e o cacho esticou? Entenda por que o pó descolorante mata sua curvatura e como um cabeleireiro especialista em cachos Belo Horizonte pode salvar seu fio.',
+    keywords: 'cabeleireiro especialista em cachos bh, loiro cacheado estragado, como recuperar cachos de luzes, corte a seco bh, Studio do Jon, porosidade alta loiro',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Química & Danos',
+    image: '/blog-cacho-descolorido.png',
+    content: `
+      <h2>Aquele loiro perfeito que você salvou na pasta do Instagram custou a estrutura interna do cacho daquela modelo.</h2>
+      <p>Você pediu um "morena iluminada" sutil e saiu com as pontas ralas, o cacho esticado e uma porosidade que nenhum creme resolve. O pó descolorante não perdoa. Quando a mola morre, você não precisa de mais hidratação. Você precisa de um cabeleireiro especialista em cachos para te salvar.</p>
+
+      <h2>A química do descolorante e o assassinato da curvatura</h2>
+      <p>O pó descolorante entra na fibra capilar como uma retroescavadeira. Ele não apenas retira o pigmento; ele rompe as <strong>pontes de dissulfeto</strong> — a espinha dorsal da sua curvatura. Sem elas, o fio perde a capacidade física de contração e vira um arame.</p>
+
+      <blockquote>Meu cérebro autista processa a física bruta da sua haste. E a física diz que quando o dano atinge um nível crítico, a haste vira um tecido inerte que não se regenera com cosmético importado.</blockquote>
+
+      <h2>A farsa da reconstrução mágica</h2>
+      <p>Te venderam pacotes caríssimos de cronograma capilar, mas a porosidade alta de um loiro inconsequente não segura tratamento. O produto entra, bate no córtex esburacado e vai direto para o ralo. Tentar colar os pedaços é ilusão.</p>
+
+      <h2>O corte terapêutico e a engenharia do caimento</h2>
+      <p>A única salvação definitiva para a mola que morreu é a tesoura. O <strong>Corte a Seco</strong> me permite enxergar exatamente onde a curvatura termina e o dano químico começa. Eu removo o peso morto de forma estratégica, criando camadas de sustentação.</p>
+
+      <h2>Perguntas reais sobre descoloração e perda de cachos</h2>
+      <div class="faq-section">
+        <h3>O cabelo cacheado descolorido pode voltar a enrolar?</h3>
+        <p>Se a ponte de dissulfeto foi rompida permanentemente, aquela parte do fio não volta a cachear. O que enrola é a raiz nova. A ponta esticada só tem uma cura: a lâmina.</p>
+
+        <h3>É impossível fazer luzes sem perder os cachos?</h3>
+        <p>Não. É plenamente possível, mas exige teste de mecha rigoroso e abrir o tom lentamente com volumes baixos de oxidante. A maioria dos salões tem pressa e acaba derretendo o seu córtex no processo.</p>
+      </div>
+
+      <p>A sua textura não deveria ser o preço a se pagar por uma cor de cabelo. O seu cabelo tem conserto. Ele só precisa que parem de empurrar creme e comecem a aplicar geometria.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO</a>
+      </div>
+    `
+  },
+  {
     id: 16,
     slug: 'transicao-capilar-bh-danos-botox',
     title: 'Aquela Progressiva Disfarçada Derreteu Seus Cachos: A Verdade Sobre a Transição Capilar',
