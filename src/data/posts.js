@@ -1,5 +1,47 @@
 export const posts = [
   {
+    id: 20,
+    slug: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco',
+    title: 'A Epidemia do Corte a Seco Genérico: O Que Realmente Define um Corte Para Cabelo Cacheado de Sucesso',
+    excerpt: 'Cortar a seco virou a isca da internet, mas sem projeto geométrico você vira vítima de um fio mal lido. Entenda por que o corte para cabelo cacheado de sucesso exige arquitetura.',
+    metaDescription: 'O corte a seco deixou seu volume esburacado? Entenda por que um corte para cabelo cacheado de verdade exige leitura de fio e técnica estrutural.',
+    keywords: 'corte para cabelo cacheado bh, mentira do corte a seco, cabeleireiro especialista em cachos caiçara, studio do jon, corte a seco crespo bh, leitura de fio',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Corte & Técnica',
+    image: '/blog-epidemia-corte-generico.png',
+    content: `
+      <h2>Cortar o seu cabelo sem molhar virou a grande isca da internet.</h2>
+      <p>Todo salão agora diz que faz. Mas se quem está segurando a tesoura não sabe mapear a sua densidade, afastar a água não serve para nada. Você vai sair da cadeira com pontas esburacadas e um volume completamente sem sentido.</p>
+
+      <h2>A diferença brutal entre picotar e fazer um corte com leitura</h2>
+      <p>A febre das redes sociais fez muita mulher acreditar que o simples fato de secar o cabelo antes do corte garante um resultado perfeito. Isso é uma mentira. O verdadeiro corte exige um projeto estrutural que leva em conta a força de tração da raiz e a porosidade da haste.</p>
+
+      <blockquote>A arquitetura de um cacho precisa se sustentar sozinha. O corte deve dar previsibilidade; o caimento tem que nascer livre, sem depender de 40 minutos de finalização.</blockquote>
+
+      <h2>O perigo na transição capilar e o crime do desfiado</h2>
+      <p>Muitas vezes em transição capilar, profissionais tentam "conectar" as texturas desfiando as pontas. Desfiar fio com curvatura é um crime estrutural. A navalha estraçalha a cutícula e cria um frizz crônico. O corte com leitura resolve isso extirpando o peso morto de forma limpa e estratégica.</p>
+
+      <h2>Perguntas Reais Sobre Corte e Curvatura</h2>
+      <div class="faq-section">
+        <h3>O corte com leitura funciona para todos os tipos de textura?</h3>
+        <p>Sim. O diagnóstico preciso é o que dita se usaremos uma angulação para ativação de movimento (2A) ou para controle absoluto do fator encolhimento (4C).</p>
+
+        <h3>Por que meu cabelo ficou ralo após o último corte a seco?</h3>
+        <p>Provavelmente usaram técnicas de afinamento na base. Cabelos cacheados precisam de pontas plenas e densas para que a mola tenha peso para se fechar e formar.</p>
+
+        <h3>Quanto tempo dura o formato de um corte estruturado?</h3>
+        <p>Um corte técnico preciso deve durar de três a quatro meses, mantendo a silhueta arredondada e uniforme à medida que cresce.</p>
+      </div>
+
+      <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, agende sua avaliação técnica no Studio do Jon.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MEU CORTE COM SEGURANÇA</a>
+      </div>
+    `
+  },
+  {
     id: 19,
     slug: 'especialista-em-cabelo-cacheado-bh-texturas',
     title: 'Ter Três Texturas na Mesma Cabeça é Normal. Sair com um Buraco no Volume, Não: A Visão de um Especialista em Cabelo Cacheado',
