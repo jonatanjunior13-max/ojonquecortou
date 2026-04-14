@@ -1,5 +1,47 @@
 export const posts = [
   {
+    id: 19,
+    slug: 'especialista-em-cabelo-cacheado-bh-texturas',
+    title: 'Ter Três Texturas na Mesma Cabeça é Normal. Sair com um Buraco no Volume, Não: A Visão de um Especialista em Cabelo Cacheado',
+    excerpt: 'Você joga o cabelo para o lado e parece que falta um pedaço no volume? Ter três texturas na mesma cabeça é biologia. Sair do salão com degraus é falta de arquitetura capilar.',
+    metaDescription: 'Cansada de ter a raiz crespa e a nuca lisa? Veja como o corte com leitura de um especialista em cabelo cacheado BH conecta texturas sem deixar buracos no volume.',
+    keywords: 'especialista em cabelo cacheado bh, cabelo com duas texturas, nuca lisa topo crespo, corte a seco bh, studio do jon, transição capilar bh, leitura de fio',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Biologia Capilar',
+    image: '/blog-multiplas-texturas.png',
+    content: `
+      <h2>Você joga o cabelo para o lado e parece que falta um pedaço bem no meio do pescoço.</h2>
+      <p>O topo encolhe como uma mola perfeita, mas a nuca escorre e despenca. Ter duas ou três texturas diferentes na mesma cabeça é a regra biológica. Mas sair com degraus visíveis é um erro de arquitetura capilar. Você precisa de um especialista que entenda profundamente de geometria estrutural.</p>
+
+      <h2>A biologia do caos: por que seu cacho não é uniforme?</h2>
+      <p>A lateral pode ser um 3B, o topo um 3C denso e a nuca um 2C frouxo. O seu couro cabeludo não é uma máquina de xerox. Fatores como atrito, sol e genética garantem essa assimetria. O problema começa quando o salão ignora essa biologia e corta tudo como se tivesse a mesma contração.</p>
+
+      <h2>O erro crônico do corte reto e a criação do degrau</h2>
+      <p>Se cortamos o topo crespo e a nuca lisa com a mesma tensão molhada, criamos uma bomba-relógio. Quando seca, o topo sobe e a nuca despenca. É aí que nasce o degrau – um vazio que desconecta o visual. Creme nenhum conserta falha de projeto.</p>
+
+      <blockquote>A sua nuca mais lisa não é um defeito. O defeito está na obsessão de forçar uma única identidade visual em uma estrutura que nasceu plural.</blockquote>
+
+      <h2>A arquitetura invisível do corte com leitura</h2>
+      <p>Conectar texturas exige cálculo. O <strong>Corte com Leitura</strong> mapeia onde a mola pesa e cria camadas internas de transição. É como construir uma escada suave em vez de um abismo no meio do rosto. Eu tiro o peso da nuca solta para que ela ganhe movimento e sustento o topo para uma silhueta coesa.</p>
+
+      <h2>Perguntas Reais Sobre Múltiplas Texturas</h2>
+      <div class="faq-section">
+        <h3>É possível fazer a nuca lisa cachear igual ao topo?</h3>
+        <p>Não. Se o folículo produz um fio tipo 2C, forçar um cacho 3C só deixa o cabelo com aspecto sujo e rígido. A solução é conectar o volume através do desenho do corte, respeitando o caimento natural.</p>
+
+        <h3>Por que meu cabelo desconecta no day after?</h3>
+        <p>Porque a textura mais solta não aguenta o próprio comprimento sem camadas internas. O corte com leitura cria pontos de apoio para que a nuca mais lisa não despenque, mantendo o formato redondo.</p>
+      </div>
+
+      <p>A guerra contra as texturas do seu cabelo termina no segundo em que você encontra a geometria certa para ele. O Studio do Jon está de portas abertas para ler seu fio pela ótica certa.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA AVALIAÇÃO TÉCNICA</a>
+      </div>
+    `
+  },
+  {
     id: 18,
     slug: 'corte-a-seco-cabelo-cacheado-bh-volume',
     title: 'O Risco Oculto da Tesoura: Por Que Seu Corte a Seco Cabelo Cacheado Deixou Buracos no Volume',
