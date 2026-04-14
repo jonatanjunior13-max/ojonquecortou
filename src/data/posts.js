@@ -1,5 +1,48 @@
 export const posts = [
   {
+    id: 18,
+    slug: 'corte-a-seco-cabelo-cacheado-bh-volume',
+    title: 'O Risco Oculto da Tesoura: Por Que Seu Corte a Seco Cabelo Cacheado Deixou Buracos no Volume',
+    excerpt: 'Cortar a seco sem ler a densidade da nuca não serve de nada. Entenda por que cortes genéricos deixam buracos no seu volume e como a arquitetura do cacho evita traumas.',
+    metaDescription: 'Fizeram buracos no seu volume? Entenda por que o corte a seco para cabelo cacheado exige leitura de fio e como o Studio do Jon conserta a geometria do seu cacho.',
+    keywords: 'corte a seco cabelo cacheado bh, buraco no volume cacho, cabeleireiro especialista em cachos caiçara, studio do jon, corte a seco crespo bh, leitura de fio',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Técnica & Corte',
+    image: '/blog-risco-corte-seco.png',
+    content: `
+      <h2>Cortar o seu cabelo sem molhar não serve absolutamente de nada se quem está com a tesoura não souber ler a densidade da sua nuca.</h2>
+      <p>A internet banalizou a técnica. Hoje, qualquer salão oferece o corte a seco apenas para surfar na tendência, mas entrega resultados esburacados, sem forma e com pontas mastigadas. A técnica não é sobre ter preguiça de lavar; é sobre dominar a arquitetura da curvatura.</p>
+
+      <h2>A diferença brutal entre afastar a água e dominar a estrutura</h2>
+      <p>Muitos profissionais usam a mesma métrica de um cabelo liso aplicada no fio seco: esticam a mecha com tensão absurda e cortam reto. Quando o cacho solta, a contração da natureza cobra o preço: degraus marcados e buracos inexplicáveis.</p>
+
+      <blockquote>Eu sou autista. Meu cérebro processa o mundo através do reconhecimento de padrões. Eu calculo exatamente onde o cacho pesa e como as diferentes texturas da sua cabeça se conectam no espaço.</blockquote>
+
+      <h2>O mapeamento de densidade ignorado</h2>
+      <p>Todo cabelo com curvatura possui, no mínimo, duas ou três texturas diferentes. O topo encolhe de forma diferente da nuca. Se eu jogo água, a umidade mascara essa assimetria. O corte a seco só funciona com um projeto geométrico sustentando a execução.</p>
+
+      <h2>O desastre na transição capilar e as pontas esticadas</h2>
+      <p>Remover o peso morto de forma estratégica exige camadas internas invisíveis. Sem técnica de angulação, o resultado é uma raiz inchada com pontas escorridas. O <strong>Método Jon</strong> foca na previsibilidade cirúrgica para que o seu volume volte a ter sentido.</p>
+
+      <h2>Perguntas Reais Sobre Corte e Curvatura</h2>
+      <div class="faq-section">
+        <h3>Qual a verdadeira vantagem do corte a seco em cachos?</h3>
+        <p>A previsibilidade milimétrica. Cortar a seco permite esculpir o formato real do seu dia a dia, sem surpresas assustadoras quando você chegar em casa e lavar.</p>
+
+        <h3>O corte a seco estraga as pontas ou causa mais frizz?</h3>
+        <p>Não. O que causa quebra é tesoura cega ou navalha. Um corte técnico feito com tesoura de precisão em meio a um projeto geométrico sela a base da mecha.</p>
+
+        <h3>Existe contraindicação para cortar cabelo crespo a seco?</h3>
+        <p>Nenhuma. O fio crespo tem o maior fator de encolhimento; cortá-lo molhado é um risco enorme de remover comprimento demais. O corte a seco garante forma sem perda de tamanho indesejada.</p>
+      </div>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MEU CORTE COM SEGURANÇA</a>
+      </div>
+    `
+  },
+  {
     id: 17,
     slug: 'cabeleireiro-especialista-em-cachos-belo-horizonte-descolorido',
     title: 'O Luto do Cacho Descolorido: A Realidade Que Um Cabeleireiro Especialista em Cachos Precisa Te Contar',
