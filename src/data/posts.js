@@ -1,5 +1,47 @@
 export const posts = [
   {
+    id: 14,
+    slug: 'corte-para-cabelo-cacheado-bh-volume',
+    title: 'A Arquitetura do Volume: Por Que Seu Corte Para Cabelo Cacheado Sempre Acaba no Efeito Pirâmide',
+    excerpt: 'O seu cabelo não tem vontade própria. Ele só está com o peso geométrico acumulado no lugar errado. Entenda por que o efeito pirâmide acontece e como a arquitetura do corte resolve isso.',
+    metaDescription: 'O efeito pirâmide acabou com o seu volume? Descubra como a leitura de fio e o corte para cabelo cacheado em BH do Studio do Jon devolvem a forma dos seus cachos.',
+    keywords: 'corte cabelo cacheado bh, efeito piramide cabelo, corte a seco bh, volume na raiz cachos, cabeleireiro especialista em cachos caiçara, studio do jon',
+    date: '14 de Abril, 2026',
+    author: 'Jon',
+    category: 'Corte & Volume',
+    image: '/blog-arquitetura-volume.png',
+    content: `
+      <h2>O seu cabelo não tem vontade própria. Ele só está com o peso geométrico acumulado no lugar errado.</h2>
+      <p>Você senta na cadeira, pede movimento e sai com a raiz escorrida e as pontas armadas. O clássico formato de abajur ou "pirâmide". O erro não está na sua textura. O erro está na tesoura que cortou seu cabelo como se ele fosse liso.</p>
+
+      <h2>A matemática por trás do desastre do efeito pirâmide</h2>
+      <p>Cabelo cacheado não desce. Ele expande. E quando um profissional ignora a contração do cacho, a física cobra o preço. Cortar o cabelo molhado é criar uma mentira temporária: quando a água seca e o cacho encolhe, a base reta sobe de uma vez, a raiz chapa e as pontas "explodem" para os lados.</p>
+
+      <h2>A engenharia da distribuição de peso</h2>
+      <p>Para destruir o efeito pirâmide, você precisa de um arquiteto, não de um tosador. Aqui no Caiçara, no Studio do Jon, meu foco é a <strong>Leitura de Fio</strong> com o cabelo seco. Eu preciso ver como a sua mola se comporta na vida real.</p>
+      
+      <p>Corte em camadas não é só picotar o cabelo. É criar "pilares de sustentação". O corte a seco permite criar camadas invisíveis que "empurram" o cabelo de fora para cima, criando volume na raiz sem precisar de pente garfo o dia todo. É a engenharia trabalhando a seu favor.</p>
+
+      <blockquote>A minha visão funciona por reconhecimento de padrão. Eu mapeio a densidade da sua nuca e a curvatura do seu topo para entregar um formato que se sustenta sozinho.</blockquote>
+
+      <h2>Perguntas Frequentes Sobre Corte e Volume</h2>
+      <div class="faq-section">
+        <h3>Corte em camadas tira o volume ou dá volume?</h3>
+        <p>Depende da técnica. Camadas curtas no topo liberam o peso e projetam o volume para cima (leveza). Camadas longas nas pontas mantêm o volume sob controle na base. A leitura de fio decide a melhor estratégia para o seu rosto.</p>
+
+        <h3>Por que meu cabelo cacheado fica com efeito pirâmide?</h3>
+        <p>Resultado inevitável de cortes retos ou molhados feitos sem técnica de distribuição de peso. Sem camadas projetadas, o volume desce e se concentra nas pontas, criando o triângulo.</p>
+      </div>
+
+      <h2>A sua tesoura falhou com você</h2>
+      <p>Se você gasta mais tempo tentando "consertar" o formato do que vivendo a vida, sua base está errada. O formato perfeito não é sorte, é projeto. Se você quer uma avaliação técnica de verdade que resolva a raiz escorrida e as pontas pesadas, você está no lugar certo.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO E CORTE BH</a>
+      </div>
+    `
+  },
+  {
     id: 13,
     slug: 'cabelo-bonito-no-salao-diferente-em-casa',
     title: 'Por que seu cabelo fica bonito no salão e diferente em casa?',
