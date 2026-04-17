@@ -1,5 +1,75 @@
 export const posts = [
   {
+    id: 21,
+    slug: 'botox-capilar-cabelo-cacheado-perigos',
+    title: 'BOTOX CAPILAR EM CABELO CACHEADO: Meu cacho vai alisar?',
+    excerpt: 'Resposta direta: Sim. O botox não é tratamento, é uma reorganização química que destrói sua curvatura. Entenda os perigos e o "ciclo do vício" químico.',
+    metaDescription: 'O botox capilar alisa o cabelo cacheado? Descubra a verdade sobre como essa química destrói o fio e por que o Studio do Jon recomenda o corte com leitura.',
+    keywords: 'botox capilar estraga cachos, botox alisa cabelo cacheado, perigos do botox capilar, transição capilar bh, Studio do Jon, corte a seco bh, leitura de fio',
+    date: '17 de Abril, 2026',
+    author: 'Jon',
+    category: 'Química & Danos',
+    image: '/blog-botox-capilar.png',
+    content: `
+      <h2>Resposta direta: Sim. E aqui está por quê eu sou contra.</h2>
+      <p>Você faz essa pergunta porque já viu o resultado em outra pessoa. O cabelo fica liso, comportado, brilhando... Parece solução. Mas aqui dentro tem um problema que ninguém fala no comecinho. E é por isso que eu não recomendo.</p>
+      <p>A resposta curta é: sim, vai alisar. Mas a resposta que importa é mais técnica que isso.</p>
+
+      <h2>Por que botox capilar alisa seu cacho (nem que você não queira)</h2>
+      <p>O botox capilar não é um tratamento de hidratação. Parece, mas não é. É uma reorganização química da estrutura do seu fio. E aqui está o que acontece:</p>
+
+      <h3>1. Destrói a estrutura natural do fio</h3>
+      <p>O botox age com uma fórmula à base de queratina, colágeno e aminoácidos. Tudo bonito na teoria. O produto vai no fio, senta por 20 a 40 minutos, depois entra a chapinha em temperatura alta. Essa combinação amolece as ligações internas do fio para que a chapinha consiga moldar.</p>
+
+      <img src="/blog-botox-estrutura.png" alt="Comparativo: Estrutura capilar saudável vs danificada" class="post-inline-image" />
+      <blockquote>Aqui vem o problema: aquelas ligações internas? Elas seguram a curvatura natural do seu cacho. Quando você as amolece para alisar, você está mexendo na estrutura que faz seu cacho ser cacho.</blockquote>
+      <p>Não é reversível na hora. O fio leva meses para recuperar. E se você repetir a cada 2 meses (que é o ciclo que a maioria faz)? Seu fio nunca recupera.</p>
+
+      <h3>2. Alisar é inevitável — não existe "só controlar volume"</h3>
+      <p>Aqui vem a maior mentira do botox capilar. Você ouve: "Botox só controla volume, não alisa."</p>
+      <p><strong>Mentira.</strong> O botox é um pouco menos agressivo que alisante, mas alisar continua sendo o resultado. A diferença é quanto você alisa, não se alisa ou não.</p>
+      <p>Por quê? Porque o calor da chapinha que finaliza o processo faz a fixação do alisamento. Se você quer só controlar volume sem chapinha, o produto não fixa. E aí não funciona. Se você quer resultado, entra a chapinha. E com chapinha, alisa.</p>
+
+      <h3>3. Vicia — e cada aplicação estraga mais que a anterior</h3>
+      <p>Botox dura 3 meses. Às vezes menos se você lava o cabelo toda semana. Aí bate o mês 2, seu cacho tá voltando, o frizz tá aparecendo de novo, e você quer aquele cabelo "liso e com brilho" de volta.</p>
+
+      <img src="/blog-botox-timeline.png" alt="Linha do tempo: Deterioração da fibra capilar com botox" class="post-inline-image" />
+      <p>Volta pro profissional. Faz de novo. E de novo. E de novo.</p>
+      <p>Cada aplicação danifica um pouco mais. O fio fica mais fraco, mais quebradiço. Algumas pessoas relatam o <strong>"efeito rebote"</strong> — o cabelo fica tão danificado que brilha apenas pela plastificação, mas morre por dentro.</p>
+      <p>E aqui tá o que ninguém fala: você fica preso nesse ciclo. Parou o botox? O cabelo volta ao natural, mas agora está danificado. Você não retorna ao cacho saudável que tinha antes. Volta a um cacho que sofreu química.</p>
+
+      <h2>A alternativa que funciona — e funciona mesmo</h2>
+      <p>Se você quer controlar o volume sem danificar seu fio, existem duas coisas que EU uso e que recomendo:</p>
+
+      <h3>O corte certo</h3>
+      <p>Não é decoração. É leitura de fio. Sou cabeleireiro. Quando você chega aqui, eu não olho só para "ah, deixa curto que controla volume". Eu leio como o fio <em>behave</em> (se comporta). Como ele cai. Onde ele tem mais peso. Onde ele tem mais movimento.</p>
+
+      <img src="/blog-botox-comparacao.png" alt="Comparação: Cacho plastificado vs Cacho saudável com corte especializado" class="post-inline-image" />
+      <blockquote>Um corte bem feito respeita a curvatura natural do seu cacho e redistribui o peso de forma que o volume é controlado pelo próprio fio. Não é alisado. Não é danificado. É inteligência no corte.</blockquote>
+
+      <h3>Cronograma capilar personalizado</h3>
+      <p>Aqui é onde muita gente trava. A maioria usa cronograma genérico: "segunda hidrata, quarta reconstrói, sexta nutrição". Soa prático. Não funciona.</p>
+      <p>Por quê? Porque seu fio é único. O seu pode estar quebradiço, enquanto o de outra pessoa está apenas ressecado. Cronograma personalizado significa: a gente analisa o seu fio, vê exatamente o que ele precisa e monta uma rotina que funciona.</p>
+
+      <img src="/blog-botox-analise.png" alt="Leitura técnica de fio para cronograma personalizado" class="post-inline-image" />
+
+      <h2>O que você realmente vai encontrar aqui</h2>
+      <ul>
+        <li>Corte que respeita sua textura — não alisador disfarçado de corte.</li>
+        <li>Cronograma que funciona com o seu fio — não genérico.</li>
+        <li>Transparência total — você sabe o que está acontecendo e por quê.</li>
+      </ul>
+
+      <div class="faq-section">
+        <h3>Próximo passo</h3>
+        <p>Está com dúvida se botox é mesmo a saída? Quer saber se o seu cacho responde bem a um corte bem feito?</p>
+        <p>Marque uma <strong>análise de fio</strong>. Aqui a gente lê o que seu cacho precisa de verdade. Não é consulta, é análise técnica, proposta de ação e resultado.</p>
+      </div>
+
+      <p>Para saber mais sobre como recuperar a saúde dos seus fios após danos químicos, visite nossa página de <a href="/servicos">Serviços Especializados</a>.</p>
+    `
+  },
+  {
     id: 20,
     slug: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco',
     title: 'A Epidemia do Corte a Seco Genérico: O Que Realmente Define um Corte Para Cabelo Cacheado de Sucesso',
@@ -34,7 +104,7 @@ export const posts = [
         <p>Um corte técnico preciso deve durar de três a quatro meses, mantendo a silhueta arredondada e uniforme à medida que cresce.</p>
       </div>
 
-      <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, agende sua avaliação técnica no Studio do Jon.</p>
+      <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, conheça todos os nossos <a href="/servicos">serviços de especialista em cachos</a> e agende sua avaliação técnica no Studio do Jon.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
         <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MEU CORTE COM SEGURANÇA</a>

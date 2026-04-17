@@ -42,10 +42,16 @@ const BlogPostPage = () => {
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
           
-          <footer className="post-footer mt-5 pt-3 border-t border-gray-100">
+          <div className="post-cta-seo mt-10 p-6 bg-gray-50 rounded-xl border border-gray-100">
+            <p className="paragraph-lg mb-0 text-center">
+              Deseja transformar seu visual? Confira todos os meus <strong><Link to="/servicos" className="text-magenta hover:underline">Serviços</Link></strong> ou faça seu <strong><a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="text-magenta hover:underline">Agendamento Online</a></strong>.
+            </p>
+          </div>
+          
+          <footer className="post-footer mt-10 pt-6 border-t border-gray-100">
             <h3 className="heading-md mb-2">Gostou da dica?</h3>
-            <p className="paragraph-lg mb-2">Vem viver essa experiência no Studio! Agende seu horário no Caiçara.</p>
-            <div className="flex gap-1">
+            <p className="paragraph-lg mb-4">Vem viver essa experiência no Studio! Agende seu horário no Caiçara.</p>
+            <div className="flex flex-wrap gap-2">
               <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
                 Agendar no Trinks
               </a>

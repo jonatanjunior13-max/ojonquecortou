@@ -192,3 +192,35 @@
     font-size: 2.2rem;
   }
 }
+
+.post-cta-seo {
+  max-width: 750px;
+  margin: 3rem auto;
+  text-align: center;
+}
+
+.post-cta-seo p {
+  line-height: 1.6;
+}
+
+.post-cta-seo a {
+  color: var(--primary-blue);
+  transition: all 0.2s ease;
+}
+
+.post-cta-seo a:hover {
+  color: var(--primary-magenta);
+}
+
+.post-footer {
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.post-inline-image {
+  width: 100%;
+  border-radius: var(--radius-md);
+  margin: 2.5rem 0;
+  box-shadow: var(--shadow-sm);
+  display: block;
+}
