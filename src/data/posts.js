@@ -76,6 +76,7 @@ export const posts = [
       <p>Se você tá cansada de cortar cabelo que fica bonito em outra pessoa mas não em você e se você quer um corte pensado matematicamente a favor do formato do SEU cacho, marque uma <a href="/servicos">análise de fio comigo</a>.</p>
     `
   },
+  {
     id: 21,
     slug: 'botox-capilar-cabelo-cacheado-perigos',
     title: 'BOTOX CAPILAR EM CABELO CACHEADO: Meu cacho vai alisar?',
