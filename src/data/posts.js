@@ -1,5 +1,81 @@
 export const posts = [
   {
+    id: 22,
+    slug: 'corte-cabelo-cacheado-visagismo-influenciadora',
+    title: 'Aquele corte que ficou lindo na influenciadora não vai ficar em você',
+    excerpt: 'Descubra por que o visagismo em cabelos cacheados e crespos vai muito além do formato do rosto e como a análise dupla (rosto + fio) muda o resultado do seu corte.',
+    metaDescription: 'Visagismo para cabelo cacheado em BH. Descubra por que copiar o corte da influenciadora não funciona e entenda a técnica real da leitura de fio.',
+    keywords: 'visagismo cabelo cacheado, corte que não deu certo, corte rosto redondo cacheado, leitura de fio BH, corte visagista cachos, cabeleireiro bh, studio do jon',
+    date: '18 de Abril, 2026',
+    author: 'Jon',
+    category: 'Corte & Técnica',
+    image: '/blog-visagismo-capa.png',
+    content: `
+      <h2>Visagismo + cabelo cacheado: como funciona de verdade</h2>
+      <p>Você vê um corte numa cacheada que tem o rosto parecido com o seu, ama, tira print, leva pro cabeleireiro. Chega em casa, se vê no espelho e... não é a mesma coisa. Fica ali pensando: "Por que nela fica perfeito e em mim fica errado?"</p>
+      <p>A resposta é uma palavra: <strong>visagismo</strong>.</p>
+      <p>Mas não é visagismo do jeito que vendem por aí. Não é só "ah, você tem rosto quadrado então deixa o cabelo assim". Não. Visagismo de verdade com cabelo cacheado é mais técnico que isso.</p>
+
+      <h2>Por que cabelo cacheado precisa de visagismo diferente</h2>
+      <p>A maioria dos cortes que você vê sendo recomendado funciona legal em cabelo liso. Porque cabelo liso é previsível. Você corta, cai reto, pronto.</p>
+      <p>Cabelo cacheado? É outra história.</p>
+      <p>Um cacho não cai igual a outro. O encolhimento (shrinkage) é diferente em cada pessoa — tem gente que o cabelo encolhe 30%, tem gente que encolhe 50%. O volume não é distribuído igual em quem tem cacho fino ou cacho grosso. E se você tem mais volume num lado da cabeça? Aí muda tudo.</p>
+      <p>Isso significa que aquele corte que funcionou perfeito em uma pessoa com rosto quadrado pode ficar completamente diferente em você. <strong>Mesma pessoa, mesmo tipo de rosto, cachos diferentes = resultados diferentes.</strong></p>
+      <blockquote>Por isso visagismo com cacheado precisa de análise dupla: rosto E fio.</blockquote>
+
+      <h2>Como funciona a análise real</h2>
+      <p>Quando alguém chega aqui, eu não olho pro rosto e falo "tá, você tem rosto redondo então deixa assim". Não é assim que funciona. Eu leio:</p>
+      <ul>
+        <li>Como o cacho se comporta (fino, grosso, padrão)</li>
+        <li>Onde tem mais volume (às vezes tem mais num lado)</li>
+        <li>Como ele cai natural (tem fios que caem diferente e moldam o traço de forma irregular)</li>
+        <li>Qual é o encolhimento quando seca</li>
+        <li>O formato do rosto (sim, claro, mas apenas como parte da equação e não conclusão isolada)</li>
+      </ul>
+      
+      <img src="/blog-visagismo-analise.png" alt="Processo técnico de análise e leitura de fios molhados e secos" class="post-inline-image" />
+      
+      <p>Com essas informações todas, aí sim eu penso em qual corte equilibra a proporção do rosto mantendo a textura saudável.</p>
+
+      <h2>Os erros mais comuns (e por que acontecem)</h2>
+      <p><strong>1. Cortar molhado sem saber como o cacho vai encolher</strong><br>
+      Você corta molhado, seca, e o cabelo encolhe mais do que esperado. Aí parece que o corte ficou mais curto que o combinado. Não ficou — só encolheu. A maioria dos cabeleireiros não calcula isso.</p>
+      
+      <p><strong>2. Ignorar a distribuição natural de volume</strong><br>
+      Se você tem mais volume concentrado no topo da cabeça e o cabeleireiro corta as laterais muito curtas, a proporção fica errada pro seu rosto. A cabeça e o rosto acabam se misturando na percepção geométrica.</p>
+      
+      <p><strong>3. Fazer o mesmo corte que funciona pra cabelo liso</strong><br>
+      Cabeleireiro que trabalha bem com liso crê que cachos é só deitar o cabelo e cortar igual. Desastre iminente.</p>
+      
+      <p><strong>4. Esquecer que o cacho muda com o tempo</strong><br>
+      Seu cabelo mudou em seis meses por causa do fator saúde química ou de ressecamento. Ele vai responder diferente a cortes também.</p>
+
+      <h2>O método que funciona</h2>
+      <p>Primeira coisa: <strong>escuta</strong>.</p>
+      <p>Eu pergunto qual é o seu tipo, o que a incomoda e quanto tempo de rotina o corte pode demandar. Só depois dessa conversa focada no comportamento da fibra do seu cacho é que faço a análise real do fio. Eu conto a você o que eu vi. Sem segredos, com transparência total. E aí sim eu corto.</p>
+      
+      <h2>Visagismo e Formato do Rosto com Textura</h2>
+      <p>Vamos simplificar para cabelos naturais estruturados:</p>
+      
+      <p><strong>Rosto Redondo:</strong> Precisa de alongamento no visual final. Cortes com o volume focado do <em>mid point</em> para o topo funcionam excelentemente, equilibrando o peso excessivo em torno da região das bochechas.</p>
+      
+      <img src="/blog-visagismo-redondo.png" alt="Rosto redondo cacheado bem harmonizado" class="post-inline-image" />
+
+      <p><strong>Rosto Quadrado:</strong> O foco está na quebra de retidão geométrica. Camadas em diagonais alongadas ou franjas com muita ondulação tiram o rigor da estrutura mandibular expressiva.</p>
+      
+      <img src="/blog-visagismo-quadrado.png" alt="Rosto quadrado disfarçado pelas curvas cacheadas corretas do corte" class="post-inline-image" />
+
+      <p><strong>Rosto Triangular/Coração:</strong> Para pessoas com testa maior ou maçãs amplas que afilam fortemente na região inferior. Concentrar as partes principais da forma arredondando bem baixo e nas margens estabiliza e traz volume à parte reduzida do próprio rosto.</p>
+      
+      <img src="/blog-visagismo-triangular.png" alt="Rosto triangular preenchido harmoniosamente pelo volume e moldura capilar" class="post-inline-image" />
+      
+      <h2>Por que a maioria erra</h2>
+      <p>Tratar visagismo feminino e as texturas encaracoladas e afro puramente como "fórmula" garante cortes até que bonitos tecnicamente, porém frustrantes de forma sistemática.</p>
+      
+      <h2>Próximo passo</h2>
+      <p>Se você tá cansada de cortar cabelo que fica bonito em outra pessoa mas não em você e se você quer um corte pensado matematicamente a favor do formato do SEU cacho, marque uma <a href="/servicos">análise de fio comigo</a>.</p>
+    `
+  },
     id: 21,
     slug: 'botox-capilar-cabelo-cacheado-perigos',
     title: 'BOTOX CAPILAR EM CABELO CACHEADO: Meu cacho vai alisar?',
