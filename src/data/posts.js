@@ -1,5 +1,77 @@
 export const posts = [
   {
+    id: 23,
+    slug: 'melhores-cortes-cabelo-cacheado-masculino-2026',
+    title: 'A Revolução do Corte de Cabelo Cacheado Masculino: Estilos em Alta para 2026',
+    excerpt: 'Em vez de lutar contra o volume, leia o padrão do cacho. Descubra os cortes masculinos (shaggy, fade texturizado) que valorizam a textura natural sem dar trabalho.',
+    metaDescription: 'Cortes de cabelo cacheado masculino que estão em alta em 2026. Shaggy, fade texturizado e mais. Especialista em visagismo em BH.',
+    keywords: 'corte cabelo cacheado masculino, cabelo ondulado homem, cortes masculinos 2026, shaggy masculino, fade cacheado, corte cabelo crespo homem, visagismo homem, cabeleireiro especialista cabelo cacheado, corte moderno cabelo ondulado, como cuidar cabelo cacheado masculino, cabelo cacheado em alta, corte especializado cabelo cacheado, tapered cut cabelo cacheado, cabelo cacheado BH, especialista cabelo cacheado Belo Horizonte',
+    date: '18 de Abril, 2026',
+    author: 'Jon',
+    category: 'Homens & Estilo',
+    image: '/blog-masculino-capa.png',
+    content: `
+      <h2>A Revolução Cacheada: Lendo a Textura</h2>
+      <p>Em vez de lutar contra o volume do cabelo cacheado, a nova abordagem é ler o padrão dele, cortar de forma inteligente e deixar o cacho aparecer. Isso abriu espaço pra cortes que antes eram impensáveis num homem com cabelo cacheado.</p>
+
+      <h2>Os cortes de cabelo cacheado masculino que estão bombando</h2>
+      
+      <h3>1. Shaggy Cacheado (O mais em alta)</h3>
+      <p>O shaggy é o corte que voltou com tudo em 2026. E funciona extremamente bem em cabelo ondulado e cacheado masculino.</p>
+      <p><strong>Como é:</strong> camadas em cima de camadas, volume concentrado no topo, laterais progressivas (não rasas, mas definidas). Fica bem com franja ou sem.</p>
+      <p><strong>Por que funciona:</strong> o shaggy respira. Não prende o cacho, deixa ele solto e natural. E o movimento que ele cria faz o cabelo parecer mais controlado sem estar alisado.</p>
+      <p><strong>Tipo de rosto:</strong> funciona com quase todos, mas fica especialmente bom em rosto quadrado ou retangular.</p>
+      
+      <img src="/blog-masculino-shaggy.png" alt="Shaggy Cacheado masculino: volume e textura harmonizados" class="post-inline-image" />
+
+      <h3>2. Fade Texturizado (A opção mais prática)</h3>
+      <p>Não é aquele fade raso de antes. O fade texturizado deixa as laterais curtas (2-3cm) mas com textura mantida. O topo fica mais comprido (5-8cm) com camadas que respeitam o cacho.</p>
+      <p><strong>Como é:</strong> transição suave das laterais pro topo, volume mantido, sem ficar aquele contraste brutal.</p>
+      <p><strong>Por que funciona:</strong> é super prático. Você lava, penteia com os dedos, e fica bom. Não precisa de muito estilo. Mas foge do clichê do undercut chato.</p>
+      
+      <img src="/blog-masculino-fade.png" alt="Fade com textura na lateral para cabelos cacheados masculinos" class="post-inline-image" />
+
+      <h3>3. Corte Comprido com Camadas</h3>
+      <p>Aqui a gente não corta curto. Mantemos o comprimento — do queixo pra baixo ou ombro — e fazemos camadas estratégicas que controlam o volume sem matar a textura.</p>
+      <p><strong>Por que funciona:</strong> se você quer deixar o cabelo crescer mas acha que vai ficar incontrolável, esse é o corte. As camadas fazem a mágica.</p>
+      
+      <img src="/blog-masculino-comprido.png" alt="Corte comprido com volume controlado para homem" class="post-inline-image" />
+
+      <h3>4. Tapered Cut (O corte versátil)</h3>
+      <p>É um fade, mas suave. As laterais diminuem gradualmente, e o topo fica volumoso com camadas leves.</p>
+      <p><strong>Por que funciona:</strong> é o meio-termo ideal. Bem apresentável para qualquer contexto, do escritório ao casual.</p>
+      
+      <img src="/blog-masculino-tapered.png" alt="Tapered cut elegante em cabelo escuro" class="post-inline-image" />
+
+      <h2>Os Erros que Cabeleireiros Cometem</h2>
+      <ul>
+        <li><strong>Não dominar a técnica especializada:</strong> Fazer corte sem ler o padrão molhado vs. seco destrói a silhueta.</li>
+        <li><strong>Ignorar o encolhimento (shrinkage):</strong> Cabelo cacheado seco fica de 30% a 50% mais curto que o molhado.</li>
+        <li><strong>Fazer o mesmo corte do liso:</strong> Um fade em cabelo liso precisa de outro raciocínio geométrico que o fade cacheado. O volume muda a regra do jogo.</li>
+        <li><strong>Esquecer que cada lado cresce diferente:</strong> Muitas pessoas concentram mais cachos de um lado do que de outro.</li>
+      </ul>
+
+      <h2>A diferença entre ondulado, cacheado e crespo</h2>
+      <p><strong>Ondulado (tipo 2):</strong> padrão de "S" mais aberto. Cai pesado, mas dificilmente forma cachos longos perfeitos.<br>
+      <strong>Cacheado (tipo 3):</strong> forma de mola ou saca-rolhas clara, mais encorporado.<br>
+      <strong>Crespo (tipo 4):</strong> máxima textura, padrão zigue-zague ou molas super fechadas.</p>
+      <p>Isso importa porque <strong>cada tipo responde radicalmente diferente ao peso da tesoura.</strong></p>
+
+      <h2>O Método que usamos aqui: Da escuta ao Visagismo real</h2>
+      <p>Quando um cara chega aqui, não usamos máquina para passar "zero, um, dois" no escuro. Fazemos a **Leitura do Fio** técnica: eu escuto como é sua rotina, analiso a densidade das mechas e encaixo o corte que faça seu formato de rosto subir de nível esteticamente e ser fácil de manter em casa.</p>
+      
+      <img src="/blog-masculino-info.png" alt="Infográfico: ciclo de manutenção de corte cacheado masculino" class="post-inline-image" />
+
+      <div class="faq-section">
+        <h3>Próximo passo</h3>
+        <p>Se você é homem, tem cabelo cacheado ou ondulado e está cansado de cortes convencionais que deixam você escravo de finalizações irritantes, marque um **corte inteligente** focando na liberdade da sua textura.</p>
+        <p>Não é só um aparo simples. É análise + técnica = Resultado coerente e harmônico que dura meses.</p>
+      </div>
+
+      <p>Descubra toda a potencialidade que seus cachos têm através de quem é <a href="/servicos">Especialista na sua identidade visual</a>. Agende já!</p>
+    `
+  },
+  {
     id: 22,
     slug: 'corte-cabelo-cacheado-visagismo-influenciadora',
     title: 'Aquele corte que ficou lindo na influenciadora não vai ficar em você',
