@@ -1,5 +1,113 @@
 export const posts = [
   {
+    id: 24,
+    slug: 'shag-cacheado-corte-tendencia-2026',
+    title: 'SHAG CACHEADO: O CORTE QUE VAI DOMINAR 2026 (E COMO NÃO ERRAR)',
+    excerpt: 'O corte setentista bagunçado voltou com tudo. Descubra por que o shag cacheado exige técnica especializada e como ele valoriza o seu padrão de fio natural.',
+    metaDescription: 'Shag cacheado é a tendência absoluta para 2026. Aprenda o que diferencia um corte técnico de um desastre e por que a leitura de fio é essencial.',
+    keywords: 'shag cacheado, corte shag bh, tendências corte 2026, corte em camadas cachos, visagismo cacheado, cabeleireiro bh, studio do jon, o jon que cortou',
+    date: '21 de Abril, 2026',
+    author: 'Jon',
+    category: 'Tendências & Estilo',
+    image: '/blog-shag-capa.png',
+    content: `
+      <h2>Introdução</h2>
+      <p>Aquele corte setentista bagunçadinho que voltou com tudo nas ruas? Sim. Aquele corte que você vê no TikTok e pensa "nossa, que legal"? Provavelmente é shag. Só que tem um detalhe que ninguém fala: shag em cabelo cacheado é completamente diferente de shag em cabelo liso.</p>
+      <p>A maioria dos salões trata como se fosse a mesma coisa. Resultado? Você sai bonita. Em três dias o cacho desaparece. Uma semana depois você tá com cabelo solto, bagunçado pra valer — mas não no bom sentido. O shag cacheado que funciona é aquele que respeita o padrão do fio. Esse é o ponto.</p>
+
+      <h2>O Que É Shag Cacheado (De Verdade)</h2>
+      <p>Shag vem de "shaggy" — significa bagunçado. Mas aqui em BH a gente chama de corte com camadas irregulares, muita textura e movimento natural. Visualmente é isso:</p>
+      <ul>
+        <li>Topo volumoso (camadas curtas concentradas na coroa)</li>
+        <li>Laterais mais soltas (comprimento maior)</li>
+        <li>Franja ou sem franja (opcional, mas faz diferença)</li>
+        <li>Pontas desfiadas (textura + movimento)</li>
+        <li>Aspecto "proposital" — parece que acordou assim</li>
+      </ul>
+      <p>O grande diferencial é que cada camada tem um tamanho diferente. Não é gradual. É irregular. E isso que torna visual e prático ao mesmo tempo.</p>
+
+      <h2>Por Que Shag Funcionou em 2025/2026</h2>
+      <p>Simples: porque a gente tá cansado de corte perfeito. A tendência geral é volta ao natural. Menos alisamento, menos ferramentas térmicas, mais cacho mesmo sendo meio desastroso.</p>
+      <p>Shag é a resposta. É o corte que celebra a bagunça do cacho ao invés de tentar domar. No Brasil, a coisa explodiu em 2025 e em 2026 é a tendência de corte mais buscada. Google Trends mostra volume crescente para "shag cacheado", "shag cacho", "corte shag para cabelo cacheado". Não é hype passageira. É tendência real.</p>
+
+      <h2>A Técnica (O Que Diferencia Um Shag Bom De Um Desastre)</h2>
+      <p>Aqui é onde a gente separa especialista de cabeleireiro que faz tudo igual. Um shag cacheado começa com:</p>
+      
+      <h3>1. Leitura de Fio Antes de Tudo</h3>
+      <p>Você chega ao salão. Eu leio seu padrão. Não é "você tem cacho tipo 3A". É isso: onde seu fio é mais denso, onde é mais fino, quanto ele encolhe quando seca, em qual ponto ele perde curvatura.</p>
+      <p>Essa leitura dita tudo. Se seu encolhimento é 40%, eu corto levando isso em conta. Se você tem menos densidade nas laterais, eu não faço camadas pesadas lá (porque vai ficar vazio).</p>
+      
+      <h3>2. Corte a Seco</h3>
+      <p>Aqui é polêmico. Mas para shag funcionar, a gente precisa cortar seco para ver o padrão real. Molhado é armadilha — você acha que está bem distribuído e quando seca? Desastre. Então: leitura de fio + corte a seco = previsibilidade.</p>
+      
+      <h3>3. Camadas Estratégicas</h3>
+      <p>Não é cortar igual em todo lado. É concentrar mais camadas no topo (volume), reduzir na lateral (sem ficar oco), distribuir para criar movimento.</p>
+      
+      <h3>4. Textura com Tesoura de Desbaste</h3>
+      <p>O desbaste cria aquela textura desfiada do shag. Mas não é "desbasta tudo". É estratégico: onde você quer movimento, onde você quer que respire, onde você precisa de peso.</p>
+
+      <h2>Shag Cacheado x Outros Cortes (Qual É a Diferença?)</h2>
+      <p><strong>Shag vs Bob com Camadas:</strong> Bob é mais estruturado. Shag é propositalmente bagunçado. Um tem intenção geométrica. Outro tem intenção artística.</p>
+      <p><strong>Shag vs Wolf Cut:</strong> Wolf cut tem mais peso na parte de trás e mais leveza em cima. Shag distribui melhor. Wolf é mais selvagem. Shag é mais acessível.</p>
+      <p><strong>Shag vs Corte em Camadas Normal:</strong> Camadas normais são mais previsíveis. Shag celebra a irregularidade. Um você escova e fica perfeito. Outro você escova e fica... bem, mais interessante.</p>
+
+      <h2>Quando Shag Funciona (E Quando Não)</h2>
+      <p>Funciona bem se:</p>
+      <ul>
+        <li>Você tem bastante quantidade de cabelo (shag em fio fino fica oco)</li>
+        <li>Ama o visual um pouco bagunçado (não é para quem quer perfeição)</li>
+        <li>Tem paciência com manutenção (não é "deixa secar que fica bom")</li>
+        <li>Seus cachos têm curvatura consistente (se tem muita variação, fica difícil)</li>
+        <li>Você tá disposto a cortar seco (molhado não funciona)</li>
+      </ul>
+
+      <p>Não funciona se:</p>
+      <ul>
+        <li>Seu cabelo é fino ou pouco denso (fica vazio)</li>
+        <li>Você quer corte que não precisa de cuidado (shag pede atenção)</li>
+        <li>Seus cachos são muito variados (tipo 2C na frente, 4C atrás)</li>
+        <li>Você não gosta de texturas irregulares</li>
+        <li>Está achando que uma ida ao salão resolve (não. Shag é um corte que você aprende a usar)</li>
+      </ul>
+
+      <h2>Cuidados Após Shag (Para Não Virar Um Desastre)</h2>
+      <p>Okay. Você fez o corte. Saiu do salão bonita. Como não deixar morrer em três dias?</p>
+      <h3>1. Primeira Semana = Aprendizado</h3>
+      <p>Descobrir como seu cabelo seca com shag. Pode ser que você precise de mais gel de um lado, menos do outro. Pode ser que a franja precise ser penteada diferente.</p>
+      <h3>2. Manutenção do Padrão</h3>
+      <p>O shag depende da leitura de fio. Se você quer que continue bonito, volta a cada 6-8 semanas para ajuste. Não é "você não precisa cortar". É "você precisa manter a estrutura".</p>
+      <h3>3. Rotina de Definição</h3>
+      <p>Shag + cacho só funciona se o cacho tá definido. Então rotina básica: leave-in, gel, plopping ou difusor. Sem isso fica bagunçado errado.</p>
+      <h3>4. O Encolhimento é Seu Aliado</h3>
+      <p>Seu cabelo vai encolher quando secar. Com shag, isso é bom — a irregularidade das camadas fica mais evidente, o volume no topo mais pronunciado. Deixa acontecer.</p>
+
+      <h2>Shag Para Qual Formato de Rosto?</h2>
+      <p>Aqui é visagismo real:</p>
+      <ul>
+        <li><strong>Rosto redondo:</strong> Shag com mais volume no topo funciona. Distrai da largura.</li>
+        <li><strong>Rosto quadrado:</strong> Franja longa + shag nas laterais suaviza as linhas.</li>
+        <li><strong>Rosto comprido:</strong> Shag mais aberto na lateral ajuda a alargar.</li>
+        <li><strong>Rosto triangular:</strong> Shag com volume na base (laterais) equilibra.</li>
+        <li><strong>Rosto oval:</strong> Rosto oval funciona com qualquer coisa. Aproveita.</li>
+      </ul>
+      <p>Mas aqui vem a real: visagismo em cacho não é só rosto. É rosto + padrão de fio + densidade + encolhimento. Um rosto quadrado com fio fino não suporta o mesmo shag de um rosto quadrado com fio denso. Por isso que shag genérico não funciona.</p>
+
+      <h2>Shag Cacheado Vs. TikTok (Expectativa vs. Realidade)</h2>
+      <p>Seu shag vai ser bom. Pode ser que não seja TikTok-perfeito. Mas vai ser REAL. E real é melhor.</p>
+
+      <div class="faq-section">
+        <h3>CTA — Quando Você Tá Pronto Para Shag</h3>
+        <p>Se você leu tudo isso e ainda quer fazer, parabéns. Você tá pronto. A gente marca a consulta (SEM COMPROMISSO), faço a leitura de fio, explico como vai ficar, e aí você decide se quer mesmo.</p>
+        <p>Spoiler: você vai querer.</p>
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary">AGENDAR CONSULTA</a>
+        </div>
+      </div>
+
+      <p><i>Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>
+    `
+  },
+  {
     id: 23,
     slug: 'melhores-cortes-cabelo-cacheado-masculino-2026',
     title: 'A Revolução do Corte de Cabelo Cacheado Masculino: Estilos em Alta para 2026',
