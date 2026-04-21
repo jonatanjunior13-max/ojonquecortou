@@ -1,5 +1,68 @@
 export const posts = [
   {
+    id: 25,
+    slug: 'wolf-cut-cabelos-cacheados-tendencia',
+    title: 'WOLF CUT PARA CABELOS CACHEADOS: O CORTE LOBO QUE VIROU TENDÊNCIA',
+    excerpt: 'Combinação explosiva entre o Shag dos anos 70 e o Mullet dos 80. Descubra como o Wolf Cut valoriza cabelos cacheados com volume e atitude selvagem.',
+    metaDescription: 'Wolf cut para cabelos cacheados: técnica, diferenças do shag, quando funciona e cuidados. O corte lobo viral explicado por especialista em BH.',
+    keywords: 'wolf cut cacheado, corte lobo cabelo cacheado, wolf cut para cachos, wolf cut 2026, corte selvagem cacho, studio do jon, o jon que cortou',
+    date: '24 de Abril, 2026',
+    author: 'Jon',
+    category: 'Corte & Técnica',
+    image: '/blog-wolf-capa.png',
+    content: `
+      <h2>Introdução</h2>
+      <p>Você viu esse corte viral no TikTok? Aquele que parece selvagem, descontrolado, mas de um jeito que funciona? Pois é. Wolf cut. A gente chama de "corte lobo" porque combina volume agressivo no topo com comprimento mais longo na parte de trás — tipo a melena de um lobo. Selvagem, chique, atrevido.</p>
+      <p>Só que aqui vem o detalhe que ninguém quer ouvir: wolf cut em cabelo liso é fácil. Wolf cut em cabelo cacheado é leitura de fio complexa. A diferença entre um wolf cut bonito e um que te faz querer raspar a cabeça? Conhecer o padrão do seu cacho antes de cortar.</p>
+
+      <h2>O Que É Wolf Cut (De Verdade)</h2>
+      <p>Wolf cut é uma fusão proposital entre o <strong>Shag dos anos 70</strong> (camadas, movimento, aspecto bagunçado) e o <strong>Mullet dos anos 80</strong> (volume em cima, comprimento em baixo). É atitude selvagem em forma de corte.</p>
+      <p>Visualmente, você encontra um topo muito volumoso com camadas curtas e desfiadas, laterais repicadas que moldam o rosto de forma definida e uma nuca mais longa que cria o contraste visual característico. O ponto central é o aspecto propositalmente descontrolado.</p>
+
+      <h2>Por Que Wolf Cut Ficou Viral</h2>
+      <p>TikTok explodiu com wolf cut em 2024/2025. O algoritmo amou os antes e depois, as celebridades adotaram e o Pinterest viu as buscas aumentarem 6x. A razão é simples: o wolf cut celebra o caos do cacho em vez de tentar domá-lo. Em um mundo cansado de controle, esse corte traz a atitude necessária.</p>
+
+      <h2>A Diferença Entre Wolf Cut E Outros Cortes</h2>
+      <p><strong>Wolf Cut vs Shag:</strong> No Shag, a bagunça é democraticamente distribuída. No Wolf cut, a bagunça é estratégica, concentrando o volume no topo e o comprimento na nuca.</p>
+      <p><strong>Wolf Cut vs Corte em Camadas Normal:</strong> Camadas normais são previsíveis e estruturadas. O Wolf cut é selvagem e tem um contraste visual muito mais marcado.</p>
+      <p><strong>Wolf Cut vs Bob com Camadas:</strong> O Bob é elegante e controlado. O Wolf cut é descontrolado — mas com total intencionalidade artística.</p>
+
+      <h2>Como Funciona em Cabelo Cacheado (A Técnica)</h2>
+      <p>Aqui é onde a coisa fica séria. Wolf cut em cacho exige técnica apurada.</p>
+      
+      <h3>1. Leitura de Fio Primeiro</h3>
+      <p>Eu leio o seu padrão de curvatura, o encolhimento (quanto ele encurta quando seca), a densidade e a porosidade. Essa leitura dita tudo. Se o seu encolhimento é de 35%, eu corto prevendo exatamente onde cada cacho vai parar.</p>
+      
+      <h3>2. Onde O Volume Vai</h3>
+      <p>O topo recebe camadas curtas para volume na raiz. As laterais recebem camadas médias para moldura. A nuca fica longa para o contraste. Em cabelos cacheados, a pegadinha é sempre o encolhimento: um cacho cortado com 15cm pode acabar com 10cm quando seco.</p>
+      
+      <h3>3. Corte a Seco É Essencial</h3>
+      <p>Você não consegue prever como um cacho vai ficar se cortar molhado. Molhado mente. O corte a seco permite ver o padrão real e o encolhimento exato enquanto esculpimos a forma.</p>
+
+      <h2>Quando Wolf Cut Funciona Bem</h2>
+      <p>O wolf cut é versátil, mas aqui está como o visagismo trabalha:</p>
+      <ul>
+        <li><strong>Rosto Redondo:</strong> Volume no topo e laterais definidas equilibram a redondeza.</li>
+        <li><strong>Rosto Quadrado:</strong> Suaviza as linhas mandibulares com franjas longas e camadas laterais.</li>
+        <li><strong>Rosto Comprido:</strong> Volume lateral ajuda a alargar e equilibrar o comprimento.</li>
+        <li><strong>Rosto Oval:</strong> Funciona com qualquer variação do corte.</li>
+        <li><strong>Rosto Triangular:</strong> Mais volume na base (nuca) equilibra a largura da testa.</li>
+      </ul>
+
+      <h2>Cuidados Pós-Corte (Para Manter a Selvageria Boa)</h2>
+      <p>A primeira semana é de aprendizado intenso com seu novo volume. A manutenção das camadas deve ser feita a cada 6-8 semanas; se deixar crescer demais, a estrutura se perde. E lembre-se: Wolf cut + cacho só funciona com definição. Sua rotina vai precisar de leave-in, gel e preferencialmente um difusor para estruturar as camadas durante a secagem.</p>
+
+      <div class="faq-section">
+        <h3>Você Tá Pronto Para Wolf Cut?</h3>
+        <p>Se você ama o aspecto descontrolado, está disposto a aprender novas formas de estilizar e aceita a manutenção periódica, você está pronto. A gente marca a consulta, faço a leitura de fio e explico como o wolf cut vai nascer no seu cabelo.</p>
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary">AGENDAR CONSULTA</a>
+        </div>
+      </div>
+
+      <p><i>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte.</i></p>
+    `
+  },
     id: 24,
     slug: 'shag-cacheado-corte-tendencia-2026',
     title: 'SHAG CACHEADO: O CORTE QUE VAI DOMINAR 2026 (E COMO NÃO ERRAR)',
