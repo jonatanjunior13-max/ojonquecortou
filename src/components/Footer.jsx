@@ -13,7 +13,7 @@ const Footer = () => {
             <span className="logo-text text-white">Studio do Jon</span>
           </a>
           <p className="footer-desc">
-            Básico? Hoje não, Faro. Liberte sua curvatura e sinta o poder do cacho bem cuidado.
+            Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
           </p>
           
           <div className="social-links">

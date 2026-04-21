@@ -51,8 +51,8 @@ const Reviews = () => {
   return (
     <section id="depoimentos" className="reviews-section glass-panel">
       <div className="container">
-        <h2 className="section-title text-center text-gradient">O Que Dizem Meus Clientes</h2>
-        <p className="section-subtitle text-center">Experiências reais de quem confiou no meu trabalho.</p>
+        <h2 className="section-title text-center text-gradient">O que as clientes dizem sobre o Studio do Jon</h2>
+        <p className="section-subtitle text-center">Avaliações reais de clientes atendidas no Studio do Jon, BH.</p>
         
         <div className="reviews-grid">
           {reviewsData.map((review) => (

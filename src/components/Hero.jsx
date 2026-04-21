@@ -14,11 +14,11 @@ const Hero = () => {
           </div>
           
           <h1 className="heading-xl hero-title">
-            O Jon que Cortou: <span className="text-pink">Liberdade para seus Cachos</span>
+            O Jon que Cortou: <span className="text-pink">o especialista que lê o seu fio antes de cortar.</span>
           </h1>
           
           <p className="paragraph-lg hero-text">
-            Corte especializado em cabelos ondulados, cacheados e crespos, tratamentos reais e a dose certa de autoconfiança no coração do bairro Caiçara, Belo Horizonte.
+            Antes de qualquer tesoura, Jon analisa espessura, porosidade e curvatura do seu fio. Corte técnico para cabelos ondulados, cacheados e crespos no Caiçara, BH.
           </p>
           
           <div className="hero-actions">
@@ -48,7 +48,7 @@ const Hero = () => {
                 <div className="avatar cta-avatar">+2k</div>
               </div>
               <p className="stats-text text-gray">
-                Cachos transformados com <span className="text-magenta font-semibold">amor</span>.
+                +2.000 atendimentos especializados em curvaturas.
               </p>
             </div>
           </div>
@@ -58,7 +58,7 @@ const Hero = () => {
           {/* This is a placeholder for Jon's professional photo. */}
           <div className="visual-card glass-panel">
             <div className="image-placeholder" style={{ padding: 0, overflow: 'hidden', backgroundColor: 'transparent', boxShadow: 'none' }}>
-              <img src="/jon-perfil.jpg" alt="Foto Profissional do Jon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src="/jon-perfil.jpg" alt="Jon, especialista em corte para cabelos cacheados e crespos em Belo Horizonte" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </div>
           

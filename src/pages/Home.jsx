@@ -19,19 +19,19 @@ const Home = () => {
         <div className="container">
           <h2 className="heading-lg mb-1">Nossos Serviços</h2>
           <p className="paragraph-lg max-w-lg mx-auto mb-3 mt-2 text-gray">
-            Cortes especializados, finalizações exclusivas e tratamentos avançados. Uma experiência de luxo para os seus fios.
+            Cada atendimento começa com diagnóstico técnico do fio. O serviço é definido pelo que o seu cabelo precisa — não por um cardápio fixo.
           </p>
 
           <div className="service-cards-grid">
             <div className="service-card-mini animate-fade-in">
               <div className="service-card-icon">✂️</div>
               <h3>Corte</h3>
-              <p>Personalizado para sua curvatura.</p>
+              <p>Análise de porosidade e curvatura antes do corte. Resultado que funciona em casa, não só no salão.</p>
             </div>
             <div className="service-card-mini animate-fade-in" style={{ animationDelay: '0.2s' }}>
               <div className="service-card-icon">✨</div>
               <h3>Corte + Tratamento</h3>
-              <p>Saúde e definição completas.</p>
+              <p>Corte técnico combinado com tratamento escolhido pelo estado real do fio. Sem protocolo genérico.</p>
             </div>
             <div className="service-card-mini animate-fade-in" style={{ animationDelay: '0.4s' }}>
               <div className="service-card-icon">🎨</div>

@@ -17,11 +17,11 @@ const faqs = [
   },
   {
     question: "Quais curvaturas de cabelo o Jon atende?",
-    answer: "Sou especialista em todas as curvaturas de cabelos naturais: ondulados (2ABC), cacheados (3ABC) e crespos (4ABC), além de auxiliar em processos de transição capilar."
+    answer: "Jon atende todas as curvaturas: ondulados (2A, 2B, 2C), cacheados (3A, 3B, 3C) e crespos (4A, 4B, 4C), incluindo transição capilar. Cada curvatura tem características diferentes de porosidade e contração — o corte respeita isso."
   },
   {
     question: "Preciso lavar o cabelo antes de ir?",
-    answer: "Recomendamos vir com o cabelo seco e do jeito que você usa no dia a dia. Isso ajuda na análise técnica e garante que o corte a seco (dry cutting) seja perfeito para o seu rosto."
+    answer: "Venha com o cabelo seco e sem produto de finalização pesado. Jon faz a leitura de fio com o cabelo seco — é assim que a curvatura real aparece. Isso define o corte antes de qualquer tesoura."
   },
   {
     question: "Quais são os horários de funcionamento?",
