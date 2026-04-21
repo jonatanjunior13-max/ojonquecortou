@@ -63,6 +63,7 @@ export const posts = [
       <p><i>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte.</i></p>
     `
   },
+  {
     id: 24,
     slug: 'shag-cacheado-corte-tendencia-2026',
     title: 'SHAG CACHEADO: O CORTE QUE VAI DOMINAR 2026 (E COMO NÃO ERRAR)',
