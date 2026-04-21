@@ -45,10 +45,10 @@ const Hero = () => {
                 <div className="avatar"></div>
                 <div className="avatar"></div>
                 <div className="avatar"></div>
-                <div className="avatar cta-avatar">+2k</div>
+                <div className="avatar cta-avatar">+4k</div>
               </div>
               <p className="stats-text text-gray">
-                +2.000 atendimentos especializados em curvaturas.
+                +4.000 atendimentos especializados em curvaturas.
               </p>
             </div>
           </div>

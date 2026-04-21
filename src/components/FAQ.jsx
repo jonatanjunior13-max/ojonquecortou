@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     question: "Qual o valor do corte para cabelo cacheado em BH?",
-    answer: "O investimento para o corte especializado começa em R$ 170. Este valor inclui consultoria, higienização, corte técnico (seco ou molhado) e finalização personalizada."
+    answer: "O investimento para o corte especializado começa em R$ 190. Este valor inclui consultoria, higienização, corte técnico (seco ou molhado) e finalização personalizada."
   },
   {
     question: "Quais curvaturas de cabelo o Jon atende?",
