@@ -15,32 +15,36 @@ const Home = () => {
       <Hero />
       
       {/* Destaque de Serviços */}
-      <section className="section-padding glass-panel text-center services-highlight">
+      <section className="section-padding services-highlight">
         <div className="container">
-          <h2 className="heading-lg mb-1">Nossos Serviços</h2>
-          <p className="paragraph-lg max-w-lg mx-auto mb-3 mt-2 text-gray">
-            Cada atendimento começa com diagnóstico técnico do fio. O serviço é definido pelo que o seu cabelo precisa — não por um cardápio fixo.
-          </p>
+          <div className="text-center reveal">
+            <h2 className="heading-lg mb-2">Nossas Especialidades</h2>
+            <p className="paragraph-lg max-w-lg mx-auto">
+              Cada atendimento começa com diagnóstico técnico do fio. O serviço é definido pelo que o seu cabelo precisa.
+            </p>
+          </div>
 
           <div className="service-cards-grid">
-            <div className="service-card-mini animate-fade-in">
+            <div className="service-card-mini reveal stagger-1">
               <div className="service-card-icon">✂️</div>
               <h3>Corte</h3>
-              <p>Análise de porosidade e curvatura antes do corte. Resultado que funciona em casa, não só no salão.</p>
+              <p>Análise de porosidade e curvatura antes do corte. Resultado que funciona em casa.</p>
             </div>
-            <div className="service-card-mini animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            <div className="service-card-mini reveal stagger-2">
               <div className="service-card-icon">✨</div>
               <h3>Corte + Tratamento</h3>
-              <p>Corte técnico combinado com tratamento escolhido pelo estado real do fio. Sem protocolo genérico.</p>
+              <p>Corte técnico combinado com tratamento escolhido pelo estado real do fio.</p>
             </div>
-            <div className="service-card-mini animate-fade-in" style={{ animationDelay: '0.4s' }}>
+            <div className="service-card-mini reveal stagger-3">
               <div className="service-card-icon">🎨</div>
               <h3>Mechas</h3>
-              <p>Iluminação que respeita o fio.</p>
+              <p>Iluminação técnica que respeita a estrutura do fio.</p>
             </div>
           </div>
 
-          <Link to="/servicos" className="btn btn-primary mt-4">Ver Todos os Serviços</Link>
+          <div className="text-center reveal stagger-4">
+            <Link to="/servicos" className="btn btn-primary">Ver Todos os Serviços</Link>
+          </div>
         </div>
       </section>
 
@@ -49,17 +53,16 @@ const Home = () => {
       {/* Seção Blog na Home */}
       <section className="section-padding home-blog-section">
         <div className="container">
-          <div className="flex justify-between items-end mb-4 flex-wrap gap-2">
+          <div className="flex justify-between items-end mb-4 flex-wrap gap-2 reveal">
             <div>
-              <span className="badge">Dicas & Tendências</span>
-              <h2 className="heading-lg mt-1">Do nosso Blog</h2>
+              <h2 className="heading-lg">O Especialista Explica</h2>
             </div>
-            <Link to="/blog" className="btn btn-outline sm-btn">Ver todos os artigos</Link>
+            <Link to="/blog" className="btn btn-outline">Ver Blog Completo</Link>
           </div>
 
           <div className="home-blog-grid">
-            {latestPosts.map((post) => (
-              <article key={post.id} className="home-blog-card">
+            {latestPosts.map((post, index) => (
+              <article key={post.id} className={`home-blog-card reveal stagger-${index + 1}`}>
                 <div className="home-blog-card-image-wrap">
                   <img src={post.image} alt={post.title} className="home-blog-card-image" />
                 </div>
@@ -69,7 +72,7 @@ const Home = () => {
                     <Link to={`/blog/${post.slug}`}>{post.title}</Link>
                   </h3>
                   <Link to={`/blog/${post.slug}`} className="read-more-link">
-                    Ler mais →
+                    Acessar Artigo →
                   </Link>
                 </div>
               </article>

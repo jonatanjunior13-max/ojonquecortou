@@ -6,20 +6,22 @@ import './Blog.css';
 const BlogPage = () => {
   return (
     <main className="blog-page">
-      <header className="blog-header">
-        <div className="container">
-          <h1 className="blog-title">Blog do Jon</h1>
-          <p className="blog-subtitle">
-            Dicas, técnicas e tudo o que você precisa saber para amar e cuidar dos seus cachos em BH.
+      <header className="blog-header reveal active">
+        <div className="container text-center">
+          <h1 className="heading-xl">O Especialista <span className="text-gradient">Explica</span></h1>
+          <p className="paragraph-lg max-w-lg mx-auto">
+            Dicas, técnicas e bastidores sobre o cuidado real com cabelos naturais.
           </p>
         </div>
       </header>
 
       <section className="container section-padding">
         <div className="blog-grid">
-          {posts.map((post) => (
-            <article key={post.id} className="blog-card">
-              <img src={post.image} alt={post.title} className="blog-card-image" />
+          {posts.map((post, index) => (
+            <article key={post.id} className={`blog-card reveal stagger-${(index % 3) + 1}`}>
+              <div className="blog-card-img-wrap">
+                <img src={post.image} alt={post.title} className="blog-card-image" />
+              </div>
               <div className="blog-card-content">
                 <span className="blog-card-category">{post.category}</span>
                 <h2 className="blog-card-title">
@@ -27,12 +29,9 @@ const BlogPage = () => {
                 </h2>
                 <p className="blog-card-excerpt">{post.excerpt}</p>
                 <div className="blog-card-footer">
-                  <span>Por {post.author}</span>
-                  <span>{post.date}</span>
+                  <Link to={`/blog/${post.slug}`} className="read-more">Leia Mais →</Link>
+                  <span className="blog-date">{post.date}</span>
                 </div>
-                <Link to={`/blog/${post.slug}`} className="btn btn-outline sm-btn mt-1">
-                  Ler artigo completo
-                </Link>
               </div>
             </article>
           ))}

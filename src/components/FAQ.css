@@ -1,22 +1,7 @@
 .faq-section {
-  background-color: var(--background-white);
+  background-color: var(--color-bg);
 }
 
-.faq-full-content {
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.max-w-lg {
-  max-width: 600px;
-}
-
-.mb-2 { margin-bottom: 2rem; }
-.mb-4 { margin-bottom: 4rem; }
-.mt-1 { margin-top: 1rem; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-
-/* Accordion */
 .accordion {
   display: flex;
   flex-direction: column;
@@ -24,65 +9,68 @@
 }
 
 .accordion-item {
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
   overflow: hidden;
   transition: all 0.3s ease;
-  cursor: pointer;
-  background-color: var(--background-white);
 }
 
 .accordion-item:hover {
-  border-color: var(--primary-magenta);
+  border-color: #333;
 }
 
 .accordion-item.active {
-  border-color: var(--primary-blue);
-  box-shadow: var(--shadow-sm);
+  border-color: var(--color-accent);
 }
 
 .accordion-header {
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 
 .accordion-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--text-dark);
+  font-size: 1rem;
   font-family: var(--font-body);
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-main);
+  margin: 0;
 }
 
 .accordion-icon {
-  color: var(--text-gray);
+  color: var(--color-accent);
   transition: transform 0.3s ease;
-  flex-shrink: 0;
-  margin-left: 1rem;
 }
 
 .accordion-item.active .accordion-icon {
   transform: rotate(180deg);
-  color: var(--primary-blue);
 }
 
 .accordion-body {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.3s ease, padding 0.3s ease;
-  background-color: var(--background-light);
-  padding: 0 1.5rem;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .accordion-item.active .accordion-body {
-  max-height: 300px;
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  max-height: 1000px;
+  transition: max-height 1s ease-in;
 }
 
-.accordion-item.active .accordion-body p {
-  color: var(--text-gray);
-  line-height: 1.7;
+.accordion-body p {
+  padding: 0 2rem 2rem;
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .accordion-header { padding: 1.25rem 1.5rem; }
+  .accordion-body p { padding: 0 1.5rem 1.5rem; }
 }

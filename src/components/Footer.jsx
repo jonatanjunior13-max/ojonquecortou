@@ -1,77 +1,63 @@
 import React from 'react';
-import { MapPin, Phone, Scissors } from 'lucide-react';
+import { MapPin, Phone, Scissors, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer = () => {
   return (
-    <footer className="footer-section">
+    <footer className="footer-section reveal">
       <div className="container footer-container">
-        
         <div className="footer-brand">
-          <a href="#" className="logo mb-2">
-            <Scissors className="logo-icon text-yellow" size={28} />
-            <span className="logo-text text-white">Studio do Jon</span>
-          </a>
+          <Link to="/" className="logo mb-2">
+            <Scissors className="logo-icon" size={28} />
+            <span className="logo-text">O Jon Que Cortou</span>
+          </Link>
           <p className="footer-desc">
             Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
           </p>
-          
           <div className="social-links">
             <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="social-icon">
-              <span style={{ fontWeight: 800 }}>IG</span>
+              <Instagram size={20} />
             </a>
           </div>
         </div>
-        
+
         <div className="footer-links">
-          <h4 className="footer-heading">Links Úteis</h4>
+          <h4 className="footer-heading">Navegação</h4>
           <ul>
-            <li><a href="#inicio">Início</a></li>
-            <li><a href="#sobre">Sobre o Jon</a></li>
-            <li><a href="#servicos">Nossos Serviços</a></li>
+            <li><Link to="/">Início</Link></li>
+            <li><Link to="/sobre">Sobre o Jon</Link></li>
+            <li><Link to="/servicos">Serviços</Link></li>
+            <li><Link to="/blog">Blog</Link></li>
             <li><a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer">Agendar Online</a></li>
           </ul>
         </div>
-        
+
         <div className="footer-contact">
-          <h4 className="footer-heading">Fale Conosco</h4>
-          
+          <h4 className="footer-heading">Contato</h4>
           <div className="contact-item">
-            <MapPin size={20} className="contact-icon text-magenta" />
-            <div>
-              <strong>Onde Estamos</strong>
-              <p>Rua Francisco Ovidio, 184<br/>Caiçara, BH / MG</p>
-            </div>
+            <MapPin size={18} className="contact-icon" />
+            <p>Rua Francisco Ovidio, 184<br/>Caiçara, BH / MG</p>
           </div>
-          
-          <div className="contact-item mt-2">
-            <Phone size={20} className="contact-icon text-yellow" />
-            <div>
-              <strong>WhatsApp</strong>
-              <p>(31) 3586-6673</p>
-            </div>
+          <div className="contact-item">
+            <Phone size={18} className="contact-icon" />
+            <p>(31) 3586-6673</p>
           </div>
-          
         </div>
-        
+
         <div className="footer-hours">
-          <h4 className="footer-heading">Horário</h4>
+          <h4 className="footer-heading">Horário de Atendimento</h4>
           <ul className="hours-list">
-            <li><span>Terça a Sexta</span> <span>09:00 - 19:00</span></li>
-            <li><span>Sábado</span> <span>09:00 - 17:00</span></li>
-            <li className="closed"><span>Domingo e Segunda</span> <span>Fechado</span></li>
+            <li><span>Terça a Sexta</span> <span>09:00 — 19:00</span></li>
+            <li><span>Sábado</span> <span>09:00 — 17:00</span></li>
+            <li className="closed"><span>Dom e Seg</span> <span>Fechado</span></li>
           </ul>
         </div>
-        
       </div>
-      
+
       <div className="footer-bottom">
         <div className="container bottom-container">
           <p>&copy; {new Date().getFullYear()} O Jon que Cortou. Todos os direitos reservados.</p>
-          <div className="legal-links">
-            <a href="#">Política de Privacidade</a>
-            <a href="#">Termos e Condições</a>
-          </div>
         </div>
       </div>
     </footer>

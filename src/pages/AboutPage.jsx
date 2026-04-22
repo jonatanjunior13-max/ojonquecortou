@@ -4,195 +4,71 @@ import './AboutPage.css';
 
 const TRINKS_URL = 'http://trinks.com/ojonquecortou';
 
-const services = [
-  { emoji: '✂️', label: 'Corte Especializado (Ondas, Cachos e Crespos)' },
-  { emoji: '💆', label: 'Tratamentos Personalizados (Hidratação, Nutrição e Reconstrução)' },
-  { emoji: '🌟', label: 'Mechas e Luzes com Segurança (Teste de mecha obrigatório)' },
-  { emoji: '🌿', label: 'Detox Capilar para crescimento saudável' },
-];
-
 const AboutPage = () => {
   return (
     <main className="about-page">
-
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <section className="about-hero">
-        <div className="about-hero-bg" />
-        <div className="container about-hero-content">
-          <span className="about-badge">Especialista em Cachos · Caiçara, BH</span>
-          <h1 className="about-hero-title">
-            Jon: Especialista em <br />
-            <span className="text-gradient">Cachos no Caiçara</span>
-          </h1>
-          <p className="about-hero-sub">
-            Referência em Cabelos Naturais na Região do Caiçara e Pedro II
+      <section className="about-hero section-padding">
+        <div className="container text-center reveal active">
+          <h1 className="heading-xl">Muito Prazer, <span className="text-gradient">O Jon</span>.</h1>
+          <p className="paragraph-lg max-w-lg mx-auto mt-2">
+            Especialista em curvaturas e visagismo no coração do bairro Caiçara, BH.
           </p>
         </div>
       </section>
 
-      {/* ── Quem é o Jon ─────────────────────────────────────── */}
-      <section className="about-intro section-padding">
-        <div className="container about-intro-grid">
-          <div className="about-photo-col">
-            <div className="about-photo-wrap">
-              <img
-                src="/jon-trabalhando.jpg"
-                alt="Jon especialista em cachos atendendo no Studio do Jon no Caiçara BH"
-                className="about-photo"
-              />
-              <div className="about-exp-badge">
-                <span className="exp-num">8+</span>
-                <span className="exp-lbl">Anos de<br />Experiência</span>
-              </div>
+      <section className="section-padding">
+        <div className="container about-grid">
+          <div className="about-visual reveal">
+            <div className="about-image-wrap">
+              <img src="/jon-trabalhando.jpg" alt="Jon atendendo cliente" className="about-image" />
+            </div>
+            <div className="experience-tag">
+              <span className="exp-number">8+</span>
+              <span className="exp-text">Anos de Especialização</span>
             </div>
           </div>
-
-          <div className="about-text-col">
-            <span className="section-label">Sobre o Jon</span>
-            <h2 className="about-section-title">
-              Muito prazer,<br />
-              eu sou o <span className="text-magenta">Jon.</span>
-            </h2>
-            <div className="title-bar" />
-
-            <p className="about-body">
-              Se você procura um especialista em cachos no Caiçara (BH) que realmente entenda
-              a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem
-              cansou de cortes genéricos e busca um atendimento personalizado para cabelos
-              ondulados, cacheados e crespos — do <strong>2ABC ao 4ABC</strong>.
+          
+          <div className="about-content reveal">
+            <h2 className="heading-lg mb-2">O Cabelo não mente.<br />O corte errado, sim.</h2>
+            <p className="paragraph-md mb-2">
+              Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.
             </p>
-            <p className="about-body">
-              Localizado estrategicamente próximo à <strong>Avenida Pedro II</strong>, no coração
-              do bairro Caiçara, meu espaço foi criado para oferecer técnica de ponta com o
-              acolhimento que a comunidade de Belo Horizonte merece. Aqui, o foco é a
-              <strong> liberdade do seu fio natural</strong>.
+            <p className="paragraph-md mb-3">
+              Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçara (BH), construí um espaço focado na <strong>liberdade do seu fio natural</strong>, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.
             </p>
-
-            <div className="about-cta-row">
-              <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
-                📅 Agende sua transformação
-              </a>
+            <div className="cta-group">
+              <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">Agendar Consultoria</a>
               <Link to="/servicos" className="btn btn-outline">Ver Serviços</Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Técnica ──────────────────────────────────────────── */}
-      <section className="about-technique section-padding">
-        <div className="container about-technique-inner">
-          <div className="technique-text">
-            <span className="section-label">Método e Visagismo</span>
-            <h2 className="about-section-title">
-              Corte para Cabelo Cacheado<br />
-              no Caiçara: <span className="text-primary">Técnica e Visagismo</span>
-            </h2>
-            <div className="title-bar" />
-            <p className="about-body">
-              Diferente dos salões tradicionais, meu método de corte para cabelo cacheado
-              respeita o <strong>fator de encolhimento</strong> e a densidade de cada mola.
-              Utilizo uma <strong>técnica de leitura do cabelo</strong> para esculpir o corte ideal,
-              garantindo que o seu visual funcione não só no espelho do salão, mas na sua
-              rotina real em casa.
-            </p>
-            <p className="about-body">
-              Seja para um corte radical, uma <strong>transição capilar</strong> ou apenas para
-              devolver o movimento aos fios, meu objetivo é entregar um formato que valorize o
-              seu rosto e a sua identidade.
-            </p>
+      <section className="section-padding technique-section">
+        <div className="container">
+          <div className="text-center reveal mb-4">
+            <h2 className="heading-md">Método & Técnica</h2>
           </div>
-
-          <div className="technique-cards">
-            <div className="tech-card">
-              <span className="tech-icon">✂️</span>
+          
+          <div className="technique-grid">
+            <div className="card reveal stagger-1">
+              <span className="tech-emoji">🔬</span>
+              <h3>Leitura de Fio</h3>
+              <p>Análise clínica de porosidade, espessura e saúde antes de qualquer tesoura.</p>
+            </div>
+            <div className="card reveal stagger-2">
+              <span className="tech-emoji">✂️</span>
               <h3>Corte a Seco</h3>
-              <p>Escultura do volume real, sem distorção de medidas causada pela umidade.</p>
+              <p>Escultura do volume real, garantindo que o visual funcione no seu dia a dia.</p>
             </div>
-            <div className="tech-card">
-              <span className="tech-icon">🔬</span>
-              <h3>Análise da Curvatura</h3>
-              <p>Identificação do padrão (2ABC–4ABC) e do fator de encolhimento individual.</p>
-            </div>
-            <div className="tech-card">
-              <span className="tech-icon">🪞</span>
+            <div className="card reveal stagger-3">
+              <span className="tech-emoji">🪞</span>
               <h3>Visagismo</h3>
-              <p>Formato de corte adaptado ao formato do rosto para valorizar o resultado.</p>
-            </div>
-            <div className="tech-card">
-              <span className="tech-icon">🏠</span>
-              <h3>Rotina Real</h3>
-              <p>Consultoria de finalização para que o resultado funcione em casa, todo dia.</p>
+              <p>Harmonização do corte com o formato do seu rosto e sua personalidade.</p>
             </div>
           </div>
         </div>
       </section>
-
-      {/* ── Saúde Capilar ────────────────────────────────────── */}
-      <section className="about-health section-padding">
-        <div className="container">
-          <div className="health-header text-center">
-            <span className="section-label">Saúde Capilar</span>
-            <h2 className="about-section-title">
-              Tratamentos e Saúde Capilar<br />
-              <span className="text-primary">em Belo Horizonte</span>
-            </h2>
-            <div className="title-bar mx-auto" />
-            <p className="about-body health-intro">
-              Além de ser referência em corte no Caiçara, sou focado em <strong>saúde da fibra
-              capilar</strong>. Realizo uma análise clínica antes de qualquer procedimento,
-              tratando desde a porosidade do fio até questões do couro cabeludo, como
-              oleosidade e dermatite.
-            </p>
-          </div>
-
-          <p className="health-subtitle">No Studio do Jon, você encontra:</p>
-
-          <div className="services-list">
-            {services.map((s, i) => (
-              <div className="service-item" key={i}>
-                <span className="service-item-icon">{s.emoji}</span>
-                <span className="service-item-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA Final ─────────────────────────────────────────── */}
-      <section className="about-final-cta section-padding">
-        <div className="container">
-          <div className="final-cta-box">
-            <span className="final-cta-emoji">💈</span>
-            <h2 className="final-cta-title">
-              Agende seu horário no Studio do Jon
-            </h2>
-            <p className="final-cta-body">
-              Procurando por <strong>salão especializado em cachos no Caiçara</strong> ou{' '}
-              <strong>especialista em cabelos naturais em BH</strong>? Venha viver uma
-              experiência autêntica, com muita conversa boa, técnica de verdade e zero frescura.
-            </p>
-            <p className="final-cta-body">
-              O Studio do Jon te espera no Caiçara. Clique no botão abaixo e agende sua
-              transformação online!
-            </p>
-            <div className="final-cta-buttons">
-              <a
-                href={TRINKS_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="btn btn-primary"
-                style={{ padding: '1rem 2rem', fontSize: '1rem', borderRadius: '50px' }}
-              >
-                📅 Agendar minha Transformação
-              </a>
-              <Link to="/servicos" className="btn btn-outline">
-                Ver todos os Serviços
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </main>
   );
 };

@@ -1,55 +1,41 @@
 .whatsapp-float {
   position: fixed;
+  width: 60px;
+  height: 60px;
   bottom: 30px;
   right: 30px;
-  background-color: #25d366;
-  color: #fff;
-  border-radius: 50px;
+  background-color: var(--color-accent);
+  color: #000;
+  border-radius: 50%;
   text-align: center;
-  font-size: 30px;
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.4);
-  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease;
-  animation: pulse 2s infinite;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .whatsapp-float:hover {
-  background-color: #1ebe5d;
-  color: #fff;
-  transform: scale(1.1) translateY(-5px);
-  animation: none;
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 15px 30px var(--color-accent-dim);
+  filter: brightness(1.1);
 }
 
 .wa-icon {
-  margin-top: 1px;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-  }
+  width: 32px;
+  height: 32px;
 }
 
 @media (max-width: 768px) {
   .whatsapp-float {
-    bottom: 20px;
-    right: 20px;
     width: 50px;
     height: 50px;
+    bottom: 20px;
+    right: 20px;
   }
   .wa-icon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
   }
 }

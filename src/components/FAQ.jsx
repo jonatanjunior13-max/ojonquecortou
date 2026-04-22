@@ -36,18 +36,17 @@ const FAQ = () => {
     <section className="faq-section section-padding" id="faq">
       <div className="container">
         
-        <div className="faq-full-content text-center">
-          <span className="badge">Tire suas dúvidas</span>
-          <h2 className="heading-lg mb-1 mt-2">Dúvidas Frequentes</h2>
+        <div className="faq-full-content text-center reveal">
+          <h2 className="heading-lg mb-2">Perguntas Técnicas</h2>
           <p className="paragraph-lg max-w-lg mb-4 mx-auto">
-            Ainda tem dúvidas sobre o Studio ou meu processo? Aqui estão as respostas para as perguntas mais comuns.
+            Ainda tem dúvidas sobre o meu processo ou o atendimento? Aqui estão os detalhes.
           </p>
           
           <div className="accordion mx-auto" style={{ maxWidth: '800px', textAlign: 'left' }}>
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-                className={`accordion-item ${openIndex === index ? 'active' : ''}`}
+                className={`accordion-item reveal stagger-${index + 1} ${openIndex === index ? 'active' : ''}`}
                 onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
               >
                 <div className="accordion-header">
