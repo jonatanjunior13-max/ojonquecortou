@@ -1,66 +1,63 @@
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
 import './FAQ.css';
 
 const faqs = [
   {
-    question: "Onde o Studio do Jon está localizado?",
-    answer: "Estamos no bairro Caiçara, em Belo Horizonte (BH), na Rua Francisco Ovidio, 184 — próximo à Avenida Pedro II e à Igreja Santa Teresinha."
+    question: "O que é corte a seco?",
+    answer: "É a técnica de cortar o cabelo em seu estado natural. Isso permite ao Jon visualizar exatamente como o cacho se comporta, respeitando o fator de encolhimento e o caimento real."
   },
   {
-    question: "Como faço para agendar um horário?",
-    answer: 'O agendamento é feito de forma simples pelo aplicativo Trinks (<a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" style="text-decoration: underline; font-weight: bold; color: inherit;">Acessar Calendário Online</a>) ou clicando no botão agendar disponível aqui no site.'
+    question: "O Jon atende homens também?",
+    answer: "Sim! O foco é na textura do cabelo (ondulados, cacheados e crespos), independente do gênero. O método de leitura de fio se aplica a todos."
   },
   {
-    question: "Qual o valor do corte para cabelo cacheado em BH?",
-    answer: "O investimento para o corte especializado começa em R$ 190. Este valor inclui consultoria, higienização, corte técnico (seco ou molhado) e finalização personalizada."
+    question: "Como funciona a leitura de fio?",
+    answer: "Antes de qualquer corte, Jon analisa a porosidade, densidade e o padrão de curvatura. Isso garante um diagnóstico real e um corte que funciona para a sua rotina."
   },
   {
-    question: "Quais curvaturas de cabelo o Jon atende?",
-    answer: "Jon atende todas as curvaturas: ondulados (2A, 2B, 2C), cacheados (3A, 3B, 3C) e crespos (4A, 4B, 4C), incluindo transição capilar. Cada curvatura tem características diferentes de porosidade e contração — o corte respeita isso."
+    question: "Quanto tempo dura o atendimento?",
+    answer: "O atendimento completo (corte + nutrição) dura em média 2h a 2h30. O Jon não trabalha com pressa — sua sessão é exclusiva e sem interrupções."
   },
   {
-    question: "Preciso lavar o cabelo antes de ir?",
-    answer: "Venha com o cabelo seco e sem produto de finalização pesado. Jon faz a leitura de fio com o cabelo seco — é assim que a curvatura real aparece. Isso define o corte antes de qualquer tesoura."
+    question: "Precisa lavar o cabelo antes?",
+    answer: "Venha com o cabelo seco e sem excesso de creme. Jon faz a leitura de fio com o cabelo seco — é assim que a curvatura real aparece antes do corte."
   },
   {
-    question: "Quais são os horários de funcionamento?",
-    answer: "Atendemos de Terça a Sexta, das 09:00 às 19:00, e aos Sábados, das 09:00 às 17:00."
+    question: "Como agendar meu horário?",
+    answer: "O agendamento é 100% online pelo Trinks ou pelo botão do WhatsApp. Recomendamos agendar com antecedência, pois a agenda é limitada."
   }
 ];
 
 const FAQ = () => {
-  const [openIndex, setOpenIndex] = useState(0);
+  const [openIndex, setOpenIndex] = useState(3); // Start with one open as in the inspiration
 
   return (
     <section className="faq-section section-padding" id="faq">
       <div className="container">
+        <span className="section-badge-blue">FAQ</span>
+        <h2 className="heading-lg mb-4">Perguntas frequentes</h2>
         
-        <div className="faq-full-content text-center">
-          <h2 className="heading-lg mb-2">Perguntas Técnicas</h2>
-          <p className="paragraph-lg max-w-lg mb-4 mx-auto">
-            Ainda tem dúvidas sobre o meu processo ou o atendimento? Aqui estão os detalhes.
-          </p>
-          
-          <div className="accordion mx-auto" style={{ maxWidth: '800px', textAlign: 'left' }}>
-            {faqs.map((faq, index) => (
-              <div 
-                key={index} 
-                className={`accordion-item ${openIndex === index ? 'is-open' : ''}`}
-                onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
-              >
-                <div className="accordion-header">
-                  <h3>{faq.question}</h3>
-                  <ChevronDown className="accordion-icon" size={20} />
-                </div>
-                <div className="accordion-body">
-                  <p dangerouslySetInnerHTML={{ __html: faq.answer }}></p>
+        <div className="faq-grid">
+          {faqs.map((faq, index) => (
+            <div 
+              key={index} 
+              className={`faq-grid-item ${openIndex === index ? 'is-open' : ''}`}
+              onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
+            >
+              <div className="faq-grid-header">
+                <h3>{faq.question}</h3>
+                <div className="faq-toggle-btn">
+                  {openIndex === index ? '✕' : '+'}
                 </div>
               </div>
-            ))}
-          </div>
+              {openIndex === index && (
+                <div className="faq-grid-body">
+                  <p>{faq.answer}</p>
+                </div>
+              )}
+            </div>
+          ))}
         </div>
-        
       </div>
     </section>
   );
