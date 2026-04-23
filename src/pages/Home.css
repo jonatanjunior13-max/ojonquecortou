@@ -175,7 +175,8 @@
 .insta-item {
   position: relative;
   aspect-ratio: 1;
-  background: #eee;
+  background: var(--color-dark);
+  overflow: hidden;
 }
 
 .insta-img-real {

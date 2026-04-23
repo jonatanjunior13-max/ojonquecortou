@@ -48,10 +48,13 @@ const InstagramFeed = () => {
         >
           <div className="insta-item">
             <img 
-              src={post.mediaUrl} 
-              alt={post.caption || 'Post do Instagram @ojonquecortou'} 
+              src={post.thumbnailUrl || post.mediaUrl} 
+              alt="Post Studio Jon" 
               className="insta-img-real" 
               loading="lazy"
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/400x400?text=Instagram+Post';
+              }}
             />
             <div className="insta-item-hover">
                <span>Ver no Instagram</span>
