@@ -9,7 +9,7 @@ export const posts = [
     date: '25 de Abril, 2026',
     author: 'Jon',
     category: 'Ciência Capilar',
-    image: '/blog-ph-capilar-capa.png',
+    image: '/blog-ph-capilar-v2.png',
     content: `
       <h2>Introdução: O Brilho é uma Questão de Física</h2>
       <p>Muitas clientes chegam ao Studio reclamando que o cabelo "não tem vida". Elas investem centenas de reais em máscaras importadas, mas o fio continua com aquele aspecto opaco, áspero ao toque e que parece "beber" o creme sem reter nada. Sabe o que está acontecendo? O pH do seu cabelo está em guerra com você.</p>
