@@ -3,6 +3,7 @@ import './ServicesPage.css';
 
 const WA_NUMBER = '553135866673';
 const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
+const TRINKS_URL = 'http://trinks.com/ojonquecortou';
 
 const services = [
   {
@@ -13,7 +14,19 @@ const services = [
     tagline: 'Ondulados, Cacheados e Crespos',
     description: 'Aqui não existe o "corta só as pontinhas" que vira um desastre. Meu corte é focado na arquitetura do fio natural, respeitando o fator de encolhimento e a sua rotina.',
     price: 'R$ 190',
-    cta: 'http://trinks.com/ojonquecortou',
+    includes: ['Leitura de Fio técnica', 'Corte a seco/técnico', 'Finalização educativa'],
+    cta: TRINKS_URL,
+  },
+  {
+    id: 7,
+    emoji: '📏',
+    category: 'Corte',
+    name: 'Manutenção de Corte',
+    tagline: 'Exclusivo para clientes recorrentes',
+    description: 'Retoque estratégico nas pontas e no formato para manter o caimento original. Válido para quem cortou com o Jon nos últimos 90 dias.',
+    price: 'R$ 130',
+    includes: ['Ajuste de volume', 'Limpeza de pontas'],
+    cta: TRINKS_URL,
   },
   {
     id: 3,
@@ -24,7 +37,8 @@ const services = [
     description: 'O pacote completo para quem quer sair com o visual renovado e a saúde capilar em dia. Unimos o corte personalizado com o tratamento sob medida.',
     price: 'De 320 por 230',
     highlight: true,
-    cta: 'http://trinks.com/ojonquecortou',
+    includes: ['Corte Especializado', 'Tratamento de Alta Performance', 'Finalização Premium'],
+    cta: TRINKS_URL,
   },
   {
     id: 2,
@@ -34,7 +48,31 @@ const services = [
     tagline: 'Saúde da Fibra Capilar',
     description: 'Análise clínica da fibra e do couro cabeludo. Identifico se o seu cabelo precisa de reposição lipídica, hídrica ou proteica.',
     price: 'R$ 130',
-    cta: 'http://trinks.com/ojonquecortou',
+    includes: ['Higienização técnica', 'Carga de ativos personalizada'],
+    cta: TRINKS_URL,
+  },
+  {
+    id: 6,
+    emoji: '🌿',
+    category: 'Tratamento',
+    name: 'Detox Capilar',
+    tagline: 'Saúde do Couro Cabeludo',
+    description: 'Esfoliação suave e limpeza profunda dos folículos. Ideal para oleosidade excessiva ou descamação, estimulando o crescimento saudável.',
+    price: 'R$ 150',
+    includes: ['Esfoliação de semente de damasco', 'Ativos refrescantes'],
+    cta: TRINKS_URL,
+  },
+  {
+    id: 8,
+    emoji: '💎',
+    category: 'Combo',
+    name: 'Pacote Cachos Perfeitos',
+    tagline: '4 sessões com 30% OFF',
+    description: 'Mantenha a saúde capilar em dia com um cronograma técnico. Ideal para quem está em transição ou quer recuperar fios danificados.',
+    price: 'De 520 por 390',
+    highlight: true,
+    includes: ['4 Sessões de Tratamento', 'Acompanhamento de evolução'],
+    cta: TRINKS_URL,
   },
   {
     id: 5,
@@ -44,7 +82,41 @@ const services = [
     tagline: 'Morena Iluminada e Loiros',
     description: 'Realçar a curvatura com luzes exige ciência. Todas as mechas no Studio são feitas apenas após o teste de mecha obrigatório.',
     price: 'Sob Orçamento',
+    includes: ['Teste de mecha obrigatório', 'Proteção da estrutura'],
     cta: WA_BASE + encodeURIComponent('Olá! Gostaria de um orçamento para mechas e luzes.'),
+  },
+  {
+    id: 12,
+    emoji: '🧡',
+    category: 'Coloração',
+    name: 'Ruivos Personalizados',
+    tagline: 'O Ruivo dos Sonhos',
+    description: 'Criação de tons acobreados ou vibrantes que harmonizam com seu tom de pele, preservando a saúde dos fios.',
+    price: 'Sob Consulta',
+    includes: ['Diagnóstico de cor', 'Tonalização técnica'],
+    cta: WA_BASE + encodeURIComponent('Olá! Gostaria de um orçamento para Ruivo Personalizado.'),
+  },
+  {
+    id: 11,
+    emoji: '🖌️',
+    category: 'Coloração',
+    name: 'Retoque de Raiz',
+    tagline: 'Uniformidade e Saúde',
+    description: 'Manutenção da cor sem alterar o comprimento, garantindo um visual harmônico e natural.',
+    price: 'R$ 180',
+    includes: ['Aplicação técnica', 'Proteção do comprimento'],
+    cta: TRINKS_URL,
+  },
+  {
+    id: 9,
+    emoji: '🧴',
+    category: 'Finalização',
+    name: 'Lavar e Finalizar',
+    tagline: 'Definição e Volume',
+    description: 'Finalização sob medida para o seu desejo do dia. Cachos soltos, com brilho e no melhor formato. (Não é dedoliss).',
+    price: 'R$ 100',
+    includes: ['Higienização suave', 'Técnica de definição'],
+    cta: TRINKS_URL,
   }
 ];
 
@@ -95,6 +167,18 @@ const ServicesPage = () => {
                 <h2 className="sdc-name">{service.name}</h2>
                 <p className="sdc-tagline">{service.tagline}</p>
                 <p className="sdc-description">{service.description}</p>
+                
+                {service.includes && service.includes.length > 0 && (
+                  <div className="sdc-includes">
+                    <p className="sdc-includes-title">O que está incluso:</p>
+                    <ul>
+                      {service.includes.map((item, idx) => (
+                        <li key={idx}>✓ {item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <div className="sdc-footer">
                   <span className="sdc-price">{service.price}</span>
                   <a href={service.cta} target="_blank" rel="noreferrer" className="btn btn-primary">

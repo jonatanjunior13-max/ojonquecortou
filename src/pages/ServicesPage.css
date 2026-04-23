@@ -104,8 +104,39 @@
   font-size: 0.95rem;
   color: var(--color-text-secondary);
   line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.sdc-includes {
   margin-bottom: 2rem;
   flex-grow: 1;
+}
+
+.sdc-includes-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+.sdc-includes ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sdc-includes li {
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.highlight-card .sdc-includes-title, 
+.highlight-card .sdc-includes li {
+  color: var(--color-white);
 }
 
 .sdc-footer {
