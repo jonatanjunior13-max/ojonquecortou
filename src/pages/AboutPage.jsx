@@ -58,7 +58,7 @@ const AboutPage = () => {
             </div>
             <div className="card reveal stagger-2">
               <span className="tech-emoji">✂️</span>
-              <h3>Corte a Seco</h3>
+              <h3>Corte com Técnica</h3>
               <p>Escultura do volume real, garantindo que o visual funcione no seu dia a dia.</p>
             </div>
             <div className="card reveal stagger-3">
