@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     question: "Como faço para agendar um horário?",
-    answer: "O agendamento é feito de forma simples pelo aplicativo Trinks (Avançar no Calendário Online) ou clicando no botão do WhatsApp disponível aqui no site."
+    answer: 'O agendamento é feito de forma simples pelo aplicativo Trinks (<a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" style="text-decoration: underline; font-weight: bold; color: inherit;">Acessar Calendário Online</a>) ou clicando no botão agendar disponível aqui no site.'
   },
   {
     question: "Qual o valor do corte para cabelo cacheado em BH?",
@@ -54,7 +54,7 @@ const FAQ = () => {
                   <ChevronDown className="accordion-icon" size={20} />
                 </div>
                 <div className="accordion-body">
-                  <p>{faq.answer}</p>
+                  <p dangerouslySetInnerHTML={{ __html: faq.answer }}></p>
                 </div>
               </div>
             ))}

@@ -36,12 +36,12 @@
 }
 
 .accordion-header h3 {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 800;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--color-text-main);
+  color: var(--color-dark) !important;
   margin: 0;
 }
 
