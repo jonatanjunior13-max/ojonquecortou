@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import Ticker from '../components/Ticker';
 import FAQ from '../components/FAQ';
 import Reviews from '../components/Reviews';
+import InstagramFeed from '../components/InstagramFeed';
 import { posts } from '../data/posts';
 import './Home.css';
 
@@ -192,14 +193,8 @@ const Home = () => {
             </a>
           </div>
 
-          <div className="instagram-grid mt-4 reveal stagger-1">
-             {[1,2,3,4,5,6].map(i => (
-               <div key={i} className="insta-item">
-                 <div className="placeholder-img insta-img">
-                   <span className="placeholder-label">post instagram {i}</span>
-                 </div>
-               </div>
-             ))}
+          <div className="instagram-feed-container mt-4 reveal">
+             <InstagramFeed />
           </div>
         </div>
       </section>
@@ -229,7 +224,7 @@ const Home = () => {
               </div>
               <div className="location-item">
                 <h4>CONTATO</h4>
-                <p>(31) 3658-6673</p>
+                <p>(31) 3586-6673</p>
                 <p>WhatsApp · Instagram @ojonquecortou</p>
               </div>
             </div>
