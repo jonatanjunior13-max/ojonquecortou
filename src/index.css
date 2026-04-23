@@ -11,10 +11,10 @@
   /* Theme Mapping */
   --color-bg: var(--color-cream);
   --color-surface: var(--color-white);
-  --color-accent: var(--color-magenta);
-  --color-accent-secondary: var(--color-blue);
+  --color-accent: var(--color-blue);
+  --color-accent-secondary: var(--color-magenta);
   --color-accent-tertiary: var(--color-yellow);
-  --color-accent-dim: rgba(255, 23, 232, 0.1);
+  --color-accent-dim: rgba(28, 110, 255, 0.1);
   
   --color-text-main: var(--color-dark);
   --color-text-secondary: #4a5459;

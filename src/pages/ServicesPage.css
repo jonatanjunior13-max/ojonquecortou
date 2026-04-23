@@ -26,7 +26,7 @@
 }
 
 .filter-btn.active, .filter-btn:hover {
-  background: var(--color-magenta);
+  background: var(--color-accent);
   color: var(--color-white);
   box-shadow: 4px 4px 0px var(--color-dark);
   transform: translate(-2px, -2px);
@@ -55,7 +55,7 @@
 }
 
 .highlight-card {
-  background: var(--color-purple);
+  background: var(--color-accent);
   color: var(--color-white);
   box-shadow: 6px 6px 0px var(--color-dark);
 }
