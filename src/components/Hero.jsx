@@ -14,7 +14,7 @@ const Hero = () => {
           </div>
           
           <h1 className="heading-xl hero-title">
-            O Jon que Cortou: <span className="text-gradient">o especialista que lê o seu fio antes de cortar.</span>
+            O Jon que Cortou: <br /> <span className="text-gradient">o especialista que lê o seu fio antes de cortar.</span>
           </h1>
           
           <p className="paragraph-lg hero-text mb-4">

@@ -1,7 +1,7 @@
 .footer-section {
-  background-color: #080808;
+  background-color: var(--color-bg);
   padding-top: 5rem;
-  border-top: 1px solid var(--color-accent);
+  border-top: 1px solid var(--color-border);
 }
 
 .footer-container {
@@ -103,7 +103,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #444;
+  color: var(--color-text-secondary);
   font-size: 0.75rem;
 }
 

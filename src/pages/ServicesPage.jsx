@@ -22,7 +22,7 @@ const services = [
     name: 'Corte + Tratamento',
     tagline: 'O Queridinho do Studio',
     description: 'O pacote completo para quem quer sair com o visual renovado e a saúde capilar em dia. Unimos o corte personalizado com o tratamento sob medida.',
-    price: 'De 320 por 260',
+    price: 'De 320 por 230',
     highlight: true,
     cta: 'http://trinks.com/ojonquecortou',
   },

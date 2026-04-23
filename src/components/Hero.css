@@ -11,7 +11,18 @@
   display: grid;
   grid-template-columns: 1.2fr 0.8fr;
   align-items: center;
-  gap: 4rem;
+  gap: 5rem;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  min-width: 0;
+}
+
+.hero-visual {
+  position: relative;
+  z-index: 1;
 }
 
 .badge {
@@ -31,6 +42,7 @@
 
 .hero-title {
   margin-bottom: 2rem;
+  max-width: 100%;
 }
 
 .hero-text {
