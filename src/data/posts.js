@@ -184,7 +184,7 @@ export const posts = [
     image: '/blog-masculino-capa.png',
     content: `
       <h2>A Revolução Cacheada: Lendo a Textura</h2>
-      <p>Em vez de lutar contra o volume do cabelo cacheado, a nova abordagem é ler o padrão dele, cortar de forma inteligente e deixar o cacho aparecer. Isso abriu espaço pra cortes que antes eram impensáveis num homem com cabelo cacheado.</p>
+      <p>Em vez de lutar contra o volume do cabelo cacheado, a nova abordagem é ler o padrão dele, cortar de forma inteligente e deixar o cacho aparecer. Isso abriu espaço pra cortes que antes eram impensáveis num homem com cabelo cacheado. Conheça nossos <a href="/servicos">serviços de corte visagista</a>.</p>
 
       <h2>Os cortes de cabelo cacheado masculino que estão bombando</h2>
       
@@ -387,7 +387,7 @@ export const posts = [
         <p>Marque uma <strong>análise de fio</strong>. Aqui a gente lê o que seu cacho precisa de verdade. Não é consulta, é análise técnica, proposta de ação e resultado.</p>
       </div>
 
-      <p>Para saber mais sobre como recuperar a saúde dos seus fios após danos químicos, visite nossa página de <a href="/servicos">Serviços Especializados</a>.</p>
+      <p>Para saber mais sobre como recuperar a saúde dos seus fios após danos químicos ou realizar um diagnóstico preciso, visite nossa página de <a href="/servicos">Serviços Especializados em Cachos</a>.</p>
     `
   },
   {
