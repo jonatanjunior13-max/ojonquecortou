@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowRight, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Hero.css';
 
@@ -7,65 +8,49 @@ const Hero = () => {
     <section className="hero-section" id="inicio">
       <div className="container hero-container">
         <div className="hero-content reveal active">
-          <div className="hero-badge mb-2">
-            <span>● ESPECIALISTA EM CACHOS E CRESPOS EM BH</span>
+          <div className="badge mb-2">
+            <Star size={14} className="star-icon" />
+            <span>Especialista em Cachos BH</span>
           </div>
           
-          <h1 className="hero-title mb-2">
-            O corte que <br /> <span className="text-gradient">respeita o seu fio.</span>
+          <h1 className="heading-xl hero-title">
+            O Jon que Cortou: <br /> <span className="text-gradient">o especialista que lê o seu fio antes de cortar.</span>
           </h1>
           
-          <p className="hero-text mb-4">
-            Leitura de fio, corte a seco e educação real — atendimento exclusivo para ondulados, cacheados e crespos no coração do Caiçara.
+          <p className="paragraph-lg hero-text mb-4">
+            Antes de qualquer tesoura, Jon analisa espessura, porosidade e curvatura do seu fio. Corte técnico para cabelos ondulados, cacheados e crespos no Caiçara, BH.
           </p>
           
           <div className="hero-actions stagger-1">
-            <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-primary whatsapp-btn">
-              <span className="btn-icon">💬</span> Agendar pelo WhatsApp
-            </a>
-            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline">
-              Ver disponibilidade
-            </a>
-          </div>
-
-          <div className="hero-stats-grid mt-4 stagger-2">
-            <div className="stat-item">
-              <span className="stat-number">8+</span>
-              <span className="stat-label">anos de experiência</span>
+            <div className="hero-btns-group">
+              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary hero-btn">
+                Agende seu Horário <ArrowRight size={20} style={{ marginLeft: '10px' }} />
+              </a>
+              <div className="hero-secondary-btns">
+                <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline">
+                  WhatsApp
+                </a>
+                <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline">
+                  Meu Instagram
+                </a>
+                <Link to="/sobre" className="btn btn-outline">
+                  Conheça o Jon
+                </Link>
+              </div>
             </div>
-            <div className="stat-item">
-              <span className="stat-number">500+</span>
-              <span className="stat-label">clientes atendidos</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-number">5★</span>
-              <span className="stat-label">no Google</span>
+            
+            <div className="hero-stats mt-4 stagger-2">
+              <div className="avatar-group">
+                <div className="avatar cta-avatar">+4k</div>
+              </div>
+              <p className="stats-text">+4.000 atendimentos especializados em curvaturas.</p>
             </div>
           </div>
         </div>
         
-        <div className="hero-grid-visual reveal active stagger-3">
-          <div className="hero-grid">
-            <div className="grid-item large">
-              <div className="placeholder-img">
-                <span className="placeholder-label">resultado antes/depois 3B</span>
-              </div>
-            </div>
-            <div className="grid-item small">
-              <div className="placeholder-img">
-                <span className="placeholder-label">cacho 2C/3A</span>
-              </div>
-            </div>
-            <div className="grid-item medium">
-              <div className="placeholder-img">
-                <span className="placeholder-label">Jon em ação</span>
-              </div>
-            </div>
-            <div className="grid-item tall">
-              <div className="placeholder-img">
-                <span className="placeholder-label">resultado crespo 4A/4B</span>
-              </div>
-            </div>
+        <div className="hero-visual reveal active stagger-3">
+          <div className="visual-card">
+            <img src="/jon-perfil.jpg" alt="Jon, especialista em corte para cabelos cacheados e crespos em Belo Horizonte" className="hero-image" />
           </div>
         </div>
       </div>
