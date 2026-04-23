@@ -30,6 +30,9 @@ const Hero = () => {
                 <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline">
                   WhatsApp
                 </a>
+                <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline">
+                  Meu Instagram
+                </a>
                 <Link to="/sobre" className="btn btn-outline">
                   Conheça o Jon
                 </Link>
