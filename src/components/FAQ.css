@@ -41,8 +41,10 @@
   font-weight: 800;
   text-transform: none;
   letter-spacing: 0;
-  color: var(--color-dark) !important;
+  color: #0d1214 !important; /* Cor oficial do site, forçada */
   margin: 0;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .accordion-icon {
@@ -69,7 +71,7 @@
 
 .accordion-body p {
   padding: 0 2rem 2rem;
-  color: var(--color-text-secondary);
+  color: #222222 !important;
   font-size: 0.95rem;
   line-height: 1.7;
 }
