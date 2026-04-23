@@ -84,17 +84,19 @@ const services = [
     price: 'Sob Orçamento',
     includes: ['Teste de mecha obrigatório', 'Proteção da estrutura'],
     cta: WA_BASE + encodeURIComponent('Olá! Gostaria de um orçamento para mechas e luzes.'),
+    btnLabel: 'Me chama',
   },
   {
     id: 12,
-    emoji: '🧡',
+    emoji: '🎨',
     category: 'Coloração',
-    name: 'Ruivos Personalizados',
-    tagline: 'O Ruivo dos Sonhos',
-    description: 'Criação de tons acobreados ou vibrantes que harmonizam com seu tom de pele, preservando a saúde dos fios.',
+    name: 'Coloração Completa',
+    tagline: 'A cor que você desejar, o Jon faz',
+    description: 'Seja para uma mudança radical ou para intensificar seu tom atual, aqui criamos a cor perfeita respeitando a saúde dos seus cachos.',
     price: 'Sob Consulta',
     includes: ['Diagnóstico de cor', 'Tonalização técnica'],
-    cta: WA_BASE + encodeURIComponent('Olá! Gostaria de um orçamento para Ruivo Personalizado.'),
+    cta: WA_BASE + encodeURIComponent('Olá! Gostaria de um orçamento para Coloração Completa.'),
+    btnLabel: 'Me chama',
   },
   {
     id: 11,
@@ -182,7 +184,7 @@ const ServicesPage = () => {
                 <div className="sdc-footer">
                   <span className="sdc-price">{service.price}</span>
                   <a href={service.cta} target="_blank" rel="noreferrer" className="btn btn-primary">
-                    Reservar
+                    {service.btnLabel || 'Reservar'}
                   </a>
                 </div>
               </div>
