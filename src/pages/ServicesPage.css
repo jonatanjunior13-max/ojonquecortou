@@ -13,19 +13,23 @@
 
 .filter-btn {
   padding: 0.6rem 1.5rem;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-dark);
   border-radius: var(--radius);
-  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  color: var(--color-dark);
   font-size: 0.8rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   transition: all 0.3s ease;
+  box-shadow: 4px 4px 0px transparent;
 }
 
-.filter-btn.active {
-  background: var(--color-accent);
-  color: #000;
-  border-color: var(--color-accent);
+.filter-btn.active, .filter-btn:hover {
+  background: var(--color-magenta);
+  color: var(--color-white);
+  box-shadow: 4px 4px 0px var(--color-dark);
+  transform: translate(-2px, -2px);
 }
 
 .services-full-grid {
@@ -36,21 +40,32 @@
 
 .service-detail-card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 3px solid var(--color-dark);
   border-radius: var(--radius);
   padding: 2.5rem;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 6px 6px 0px var(--color-dark);
 }
 
 .service-detail-card:hover {
-  border-color: var(--color-accent);
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0px var(--color-yellow);
 }
 
 .highlight-card {
-  border-color: var(--color-accent);
-  background: linear-gradient(145deg, #141414, #1a1a1a);
+  background: var(--color-purple);
+  color: var(--color-white);
+  box-shadow: 6px 6px 0px var(--color-dark);
+}
+
+.highlight-card .sdc-name, .highlight-card .sdc-description, .highlight-card .sdc-price {
+  color: var(--color-white);
+}
+
+.highlight-card .sdc-category, .highlight-card .sdc-tagline {
+  color: var(--color-yellow);
 }
 
 .sdc-header {

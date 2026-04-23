@@ -12,16 +12,17 @@
   background: var(--color-surface);
   border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-dark);
   transition: all 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
+  box-shadow: 6px 6px 0px var(--color-dark);
 }
 
 .home-blog-card:hover {
-  transform: translateY(-8px);
-  border-color: var(--color-accent);
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0px var(--color-accent-secondary);
 }
 
 .home-blog-card-image-wrap {
@@ -105,16 +106,17 @@
   background: var(--color-surface);
   padding: 3rem 2rem;
   border-radius: var(--radius);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-dark);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 4px 4px 0px var(--color-accent-tertiary);
 }
 
 .service-card-mini:hover {
-  border-color: var(--color-accent);
-  transform: translateY(-5px);
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0px var(--color-dark);
 }
 
 .service-card-icon {

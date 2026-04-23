@@ -1,17 +1,29 @@
 :root {
-  /* Design Tokens - Light Theme */
-  --color-bg: #ffffff;
-  --color-surface: #fafafa;
-  --color-accent: #ff00ff;
-  --color-accent-dim: rgba(255, 0, 255, 0.1);
-  --color-text-main: #000000;
-  --color-text-secondary: #444444;
-  --color-border: #eeeeee;
+  /* Brand Colors (Converted from CMYK) */
+  --color-magenta: #ff17e8; /* 0/91/9/0 */
+  --color-blue: #1c6eff;    /* 89/57/0/0 */
+  --color-purple: #e32eff;  /* 11/82/0/0 */
+  --color-yellow: #f0d142;  /* 6/18/74/0 */
+  --color-dark: #0d1214;    /* 75/65/60/80 */
+  --color-cream: #f2f5e3;   /* 5/4/11/0 */
+  --color-white: #ffffff;
+
+  /* Theme Mapping */
+  --color-bg: var(--color-cream);
+  --color-surface: var(--color-white);
+  --color-accent: var(--color-magenta);
+  --color-accent-secondary: var(--color-blue);
+  --color-accent-tertiary: var(--color-yellow);
+  --color-accent-dim: rgba(255, 23, 232, 0.1);
+  
+  --color-text-main: var(--color-dark);
+  --color-text-secondary: #4a5459;
+  --color-border: #e0e5cc;
   
   --font-display: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
   
-  --radius: 8px;
+  --radius: 12px;
   --transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   --max-width: 1200px;
 }
@@ -127,35 +139,47 @@ button {
 
 .btn-primary {
   background: var(--color-accent);
-  color: #000000;
+  color: var(--color-white);
+  border: 2px solid var(--color-dark);
+  box-shadow: 4px 4px 0px var(--color-dark);
+  font-weight: 800;
 }
 
 .btn-primary:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 20px var(--color-accent-dim);
-  filter: brightness(1.1);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px var(--color-dark);
+  filter: brightness(1.05);
 }
 
 .btn-outline {
-  border: 1px solid var(--color-border);
-  color: var(--color-text-main);
+  border: 2px solid var(--color-dark);
+  background: var(--color-surface);
+  color: var(--color-dark);
+  font-weight: 800;
+  box-shadow: 4px 4px 0px transparent;
 }
 
 .btn-outline:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background: var(--color-accent-secondary);
+  color: var(--color-white);
+  border-color: var(--color-dark);
+  box-shadow: 4px 4px 0px var(--color-dark);
+  transform: translate(-2px, -2px);
 }
 
 .card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-dark);
   border-radius: var(--radius);
   padding: 2.5rem;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 6px 6px 0px var(--color-accent-dim);
 }
 
 .card:hover {
-  border-color: var(--color-accent);
+  transform: translateY(-4px);
+  box-shadow: 10px 10px 0px var(--color-accent-tertiary);
+  border-color: var(--color-dark);
 }
 
 /* Animations */
