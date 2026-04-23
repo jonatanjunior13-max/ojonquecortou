@@ -143,7 +143,7 @@
 
 /* Instagram Section (Classic Blue Style) */
 .instagram-home-section {
-  background-color: var(--color-white);
+  background-color: var(--color-bg);
   border-top: 2px solid var(--color-dark);
   border-bottom: 2px solid var(--color-dark);
 }
