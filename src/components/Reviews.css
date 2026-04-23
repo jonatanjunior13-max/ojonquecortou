@@ -1,5 +1,5 @@
 .reviews-section {
-  background-color: var(--color-surface);
+  background-color: var(--color-bg);
 }
 
 .reviews-grid {
@@ -53,4 +53,16 @@
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.05em;
+}
+
+.reviews-cta {
+  margin-top: 6rem;
+  padding: 3rem;
+  border-top: 2px dashed var(--color-dark);
+}
+
+.reviews-cta p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  color: var(--color-dark);
 }

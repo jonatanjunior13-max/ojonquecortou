@@ -54,13 +54,13 @@ const Reviews = () => {
           ))}
         </div>
 
-        <div className="text-center mt-5 reveal">
-          <p className="mb-2" style={{ fontWeight: 700 }}>Já passou pela experiência de um corte com leitura de fio?</p>
+        <div className="reviews-cta text-center reveal">
+          <p style={{ fontWeight: 800 }}>Já passou pela experiência de um corte com leitura de fio?</p>
           <a 
-            href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
+            href="https://www.google.com/maps/search/?api=1&query=O+Jon que Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
             target="_blank" 
             rel="noreferrer" 
-            className="btn btn-outline"
+            className="btn btn-primary"
           >
             Deixe sua avaliação no Google
           </a>
