@@ -53,13 +53,7 @@ export const posts = [
       <h2>Conclusão: Pare de Gastar, Comece a Estabilizar</h2>
       <p>Não adianta colocar o melhor combustível em um tanque furado. Se o pH está alto, o tratamento vai embora no ralo. A base de todo cacho saudável é a estabilidade química.</p>
       
-      <div class="faq-section">
-        <h3>Quer um Diagnóstico Real?</h3>
-        <p>No Studio, a minha <strong>Leitura de Fio</strong> inclui a análise de porosidade e estado cuticular. Eu não te vendo um "banho de creme". Eu te entrego um plano técnico para estabilizar seu pH e devolver a autonomia do seu cacho.</p>
-        <div style="text-align: center; margin-top: 1.5rem;">
-          <a href="/servicos" class="btn btn-primary">CONHEÇA NOSSOS SERVIÇOS TÉCNICOS</a>
-        </div>
-      </div>
+
 
       <p><i>Jon é especialista em leitura biológica do fio e visagismo capilar em Belo Horizonte. Foco total na saúde e identidade da textura natural.</i></p>
     `
@@ -117,13 +111,7 @@ export const posts = [
       <h2>Cuidados Pós-Corte (Para Manter a Selvageria Boa)</h2>
       <p>A primeira semana é de aprendizado intenso com seu novo volume. A manutenção das camadas deve ser feita a cada 6-8 semanas; se deixar crescer demais, a estrutura se perde. E lembre-se: Wolf cut + cacho só funciona com definição. Sua rotina vai precisar de leave-in, gel e preferencialmente um difusor para estruturar as camadas durante a secagem.</p>
 
-      <div class="faq-section">
-        <h3>Você Tá Pronto Para Wolf Cut?</h3>
-        <p>Se você ama o aspecto descontrolado, está disposto a aprender novas formas de estilizar e aceita a manutenção periódica, você está pronto. A gente marca a consulta, faço a leitura de fio e explico como o wolf cut vai nascer no seu cabelo.</p>
-        <div style="text-align: center; margin-top: 1.5rem;">
-          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary">AGENDAR CONSULTA</a>
-        </div>
-      </div>
+
 
       <p><i>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte.</i></p>
     `
@@ -224,14 +212,7 @@ export const posts = [
       <h2>Shag Cacheado Vs. TikTok (Expectativa vs. Realidade)</h2>
       <p>Seu shag vai ser bom. Pode ser que não seja TikTok-perfeito. Mas vai ser REAL. E real é melhor.</p>
 
-      <div class="faq-section">
-        <h3>CTA — Quando Você Tá Pronto Para Shag</h3>
-        <p>Se você leu tudo isso e ainda quer fazer, parabéns. Você tá pronto. A gente marca a consulta (SEM COMPROMISSO), faço a leitura de fio, explico como vai ficar, e aí você decide se quer mesmo.</p>
-        <p>Spoiler: você vai querer.</p>
-        <div style="text-align: center; margin-top: 1.5rem;">
-          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary">AGENDAR CONSULTA</a>
-        </div>
-      </div>
+
 
       <p><i>Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>
     `
@@ -299,13 +280,9 @@ export const posts = [
       
       <img src="/blog-masculino-info.png" alt="Infográfico: ciclo de manutenção de corte cacheado masculino" class="post-inline-image" />
 
-      <div class="faq-section">
-        <h3>Próximo passo</h3>
-        <p>Se você é homem, tem cabelo cacheado ou ondulado e está cansado de cortes convencionais que deixam você escravo de finalizações irritantes, marque um **corte inteligente** focando na liberdade da sua textura.</p>
-        <p>Não é só um aparo simples. É análise + técnica = Resultado coerente e harmônico que dura meses.</p>
-      </div>
 
-      <p>Descubra toda a potencialidade que seus cachos têm através de quem é <a href="/servicos">Especialista na sua identidade visual</a>. Agende já!</p>
+
+
     `
   },
   {
@@ -382,7 +359,6 @@ export const posts = [
       <p>Tratar visagismo feminino e as texturas encaracoladas e afro puramente como "fórmula" garante cortes até que bonitos tecnicamente, porém frustrantes de forma sistemática.</p>
       
       <h2>Próximo passo</h2>
-      <p>Se você tá cansada de cortar cabelo que fica bonito em outra pessoa mas não em você e se você quer um corte pensado matematicamente a favor do formato do SEU cacho, marque uma <a href="/servicos">análise de fio comigo</a>.</p>
     `
   },
   {
@@ -445,14 +421,6 @@ export const posts = [
         <li>Cronograma que funciona com o seu fio — não genérico.</li>
         <li>Transparência total — você sabe o que está acontecendo e por quê.</li>
       </ul>
-
-      <div class="faq-section">
-        <h3>Próximo passo</h3>
-        <p>Está com dúvida se botox é mesmo a saída? Quer saber se o seu cacho responde bem a um corte bem feito?</p>
-        <p>Marque uma <strong>análise de fio</strong>. Aqui a gente lê o que seu cacho precisa de verdade. Não é consulta, é análise técnica, proposta de ação e resultado.</p>
-      </div>
-
-      <p>Para saber mais sobre como recuperar a saúde dos seus fios após danos químicos ou realizar um diagnóstico preciso, visite nossa página de <a href="/servicos">Serviços Especializados em Cachos</a>.</p>
     `
   },
   {
@@ -478,23 +446,7 @@ export const posts = [
       <h2>O perigo na transição capilar e o crime do desfiado</h2>
       <p>Muitas vezes em transição capilar, profissionais tentam "conectar" as texturas desfiando as pontas. Desfiar fio com curvatura é um crime estrutural. A navalha estraçalha a cutícula e cria um frizz crônico. O corte com leitura resolve isso extirpando o peso morto de forma limpa e estratégica.</p>
 
-      <h2>Perguntas Reais Sobre Corte e Curvatura</h2>
-      <div class="faq-section">
-        <h3>O corte com leitura funciona para todos os tipos de textura?</h3>
-        <p>Sim. O diagnóstico preciso é o que dita se usaremos uma angulação para ativação de movimento (2A) ou para controle absoluto do fator encolhimento (4C).</p>
-
-        <h3>Por que meu cabelo ficou ralo após o último corte a seco?</h3>
-        <p>Provavelmente usaram técnicas de afinamento na base. Cabelos cacheados precisam de pontas plenas e densas para que a mola tenha peso para se fechar e formar.</p>
-
-        <h3>Quanto tempo dura o formato de um corte estruturado?</h3>
-        <p>Um corte técnico preciso deve durar de três a quatro meses, mantendo a silhueta arredondada e uniforme à medida que cresce.</p>
-      </div>
-
       <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, conheça todos os nossos <a href="/servicos">serviços de especialista em cachos</a> e agende sua avaliação técnica no Studio do Jon.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MEU CORTE COM SEGURANÇA</a>
-      </div>
     `
   },
   {
@@ -523,10 +475,6 @@ export const posts = [
       <h2>A arquitetura invisível do corte com leitura</h2>
       <p>Conectar texturas exige cálculo. O <strong>Corte com Leitura</strong> mapeia onde a mola pesa e cria camadas internas de transição. É como construir uma escada suave em vez de um abismo no meio do rosto. Eu tiro o peso da nuca solta para que ela ganhe movimento e sustento o topo para uma silhueta coesa.</p>
 
-      <h2>Perguntas Reais Sobre Múltiplas Texturas</h2>
-      <div class="faq-section">
-        <h3>É possível fazer a nuca lisa cachear igual ao topo?</h3>
-        <p>Não. Se o folículo produz um fio tipo 2C, forçar um cacho 3C só deixa o cabelo com aspecto sujo e rígido. A solução é conectar o volume através do desenho do corte, respeitando o caimento natural.</p>
 
         <h3>Por que meu cabelo desconecta no day after?</h3>
         <p>Porque a textura mais solta não aguenta o próprio comprimento sem camadas internas. O corte com leitura cria pontos de apoio para que a nuca mais lisa não despenque, mantendo o formato redondo.</p>
@@ -534,9 +482,7 @@ export const posts = [
 
       <p>A guerra contra as texturas do seu cabelo termina no segundo em que você encontra a geometria certa para ele. O Studio do Jon está de portas abertas para ler seu fio pela ótica certa.</p>
 
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA AVALIAÇÃO TÉCNICA</a>
-      </div>
+
     `
   },
   {
@@ -564,22 +510,6 @@ export const posts = [
 
       <h2>O desastre na transição capilar e as pontas esticadas</h2>
       <p>Remover o peso morto de forma estratégica exige camadas internas invisíveis. Sem técnica de angulação, o resultado é uma raiz inchada com pontas escorridas. O <strong>Método Jon</strong> foca na previsibilidade cirúrgica para que o seu volume volte a ter sentido.</p>
-
-      <h2>Perguntas Reais Sobre Corte e Curvatura</h2>
-      <div class="faq-section">
-        <h3>Qual a verdadeira vantagem do corte a seco em cachos?</h3>
-        <p>A previsibilidade milimétrica. Cortar a seco permite esculpir o formato real do seu dia a dia, sem surpresas assustadoras quando você chegar em casa e lavar.</p>
-
-        <h3>O corte a seco estraga as pontas ou causa mais frizz?</h3>
-        <p>Não. O que causa quebra é tesoura cega ou navalha. Um corte técnico feito com tesoura de precisão em meio a um projeto geométrico sela a base da mecha.</p>
-
-        <h3>Existe contraindicação para cortar cabelo crespo a seco?</h3>
-        <p>Nenhuma. O fio crespo tem o maior fator de encolhimento; cortá-lo molhado é um risco enorme de remover comprimento demais. O corte a seco garante forma sem perda de tamanho indesejada.</p>
-      </div>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MEU CORTE COM SEGURANÇA</a>
-      </div>
     `
   },
   {
@@ -587,7 +517,7 @@ export const posts = [
     slug: 'cabeleireiro-especialista-em-cachos-belo-horizonte-descolorido',
     title: 'O Luto do Cacho Descolorido: A Realidade Que Um Cabeleireiro Especialista em Cachos Precisa Te Contar',
     excerpt: 'Aquele loiro perfeito do Instagram custou a estrutura do seu cacho. Entenda por que o pó descolorante mata sua curvatura e como um especialista pode salvar sua identidade.',
-    metaDescription: 'Fez luzes e o cacho esticou? Entenda por que o pó descolorante mata sua curvatura e como um cabeleireiro especialista em cachos Belo Horizonte pode salvar seu fio.',
+    metaDescription: 'Fez luzes e o cacho esticado? Entenda por que o pó descolorante mata sua curvatura e como um cabeleireiro especialista em cachos Belo Horizonte pode salvar seu fio.',
     keywords: 'cabeleireiro especialista em cachos bh, loiro cacheado estragado, como recuperar cachos de luzes, corte a seco bh, Studio do Jon, porosidade alta loiro',
     date: '14 de Abril, 2026',
     author: 'Jon',
@@ -607,21 +537,6 @@ export const posts = [
 
       <h2>O corte terapêutico e a engenharia do caimento</h2>
       <p>A única salvação definitiva para a mola que morreu é a tesoura. O <strong>Corte a Seco</strong> me permite enxergar exatamente onde a curvatura termina e o dano químico começa. Eu removo o peso morto de forma estratégica, criando camadas de sustentação.</p>
-
-      <h2>Perguntas reais sobre descoloração e perda de cachos</h2>
-      <div class="faq-section">
-        <h3>O cabelo cacheado descolorido pode voltar a enrolar?</h3>
-        <p>Se a ponte de dissulfeto foi rompida permanentemente, aquela parte do fio não volta a cachear. O que enrola é a raiz nova. A ponta esticada só tem uma cura: a lâmina.</p>
-
-        <h3>É impossível fazer luzes sem perder os cachos?</h3>
-        <p>Não. É plenamente possível, mas exige teste de mecha rigoroso e abrir o tom lentamente com volumes baixos de oxidante. A maioria dos salões tem pressa e acaba derretendo o seu córtex no processo.</p>
-      </div>
-
-      <p>A sua textura não deveria ser o preço a se pagar por uma cor de cabelo. O seu cabelo tem conserto. Ele só precisa que parem de empurrar creme e comecem a aplicar geometria.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO</a>
-      </div>
     `
   },
   {
@@ -649,21 +564,6 @@ export const posts = [
 
       <h2>O Método Jon e a precisão do corte a seco crespo</h2>
       <p>A única saída honesta para o golpe do alisamento natural é a tesoura. Mas isso não significa um Big Chop traumático. Usando técnicas de angulação e <strong>Corte a Seco</strong>, eu esculpo o seu cabelo tirando a química aos poucos, disfarçando a diferença de texturas.</p>
-
-      <h2>Perguntas Frequentes Sobre Danos Químicos e Transição</h2>
-      <div class="faq-section">
-        <h3>Botox capilar realmente tira os cachos?</h3>
-        <p>Sim. Se mudou a forma original após a lavagem, rompeu pontes de dissulfeto. Cabelos cacheados não recuperam a contração natural após essa ruptura estrutural.</p>
-
-        <h3>Quanto tempo dura o processo de transição capilar BH?</h3>
-        <p>O tempo necessário para que sua raiz natural atinja um comprimento que te dê segurança. Pode levar seis meses ou um ano e meio, dependendo da sua paciência e do plano técnico traçado na Leitura de Fio.</p>
-      </div>
-
-      <p>Sua identidade não é negociável. A transição capilar não é uma sentença de autoestima no lixo; é um projeto de retomada. Vamos arrancar essa mentira química daí e devolver o formato que é seu por direito.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">INICIAR MINHA TRANSIÇÃO COM SEGURANÇA</a>
-      </div>
     `
   },
   {
@@ -694,19 +594,6 @@ export const posts = [
 
       <h2>A tesoura é o tratamento mais rápido do mundo</h2>
       <p>Cortar a seco e remover essa memória química é a única reconstrução verdadeira. O <strong>Método Jon</strong> foca na escuta antes de tocar. Remover o que está sabotando seu resultado é o que libera a mola natural do seu cacho.</p>
-
-      <h2>Perguntas Reais Sobre Porosidade e Scab Hair</h2>
-      <div class="faq-section">
-        <h3>Por que meu cabelo fica áspero mesmo fazendo cronograma capilar?</h3>
-        <p>Provavelmente você está tratando o problema errado. Se o fio perdeu a barreira cuticular, ele entra em alta porosidade crônica. O creme apenas maquia a textura temporariamente.</p>
-
-        <h3>Como saber se tenho scab hair ou apenas porosidade alta?</h3>
-        <p>A porosidade alta reage a acidificantes técnicos que equilibram o pH. O scab hair não reage a nada; ele mantém a textura de "arame" constante. Apenas uma <strong>Leitura de Fio</strong> presencial crava esse diagnóstico.</p>
-      </div>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO</a>
-      </div>
     `
   },
   {
@@ -733,15 +620,6 @@ export const posts = [
       <p>Corte em camadas não é só picotar o cabelo. É criar "pilares de sustentação". O corte a seco permite criar camadas invisíveis que "empurram" o cabelo de fora para cima, criando volume na raiz sem precisar de pente garfo o dia todo. É a engenharia trabalhando a seu favor.</p>
 
       <blockquote>A minha visão funciona por reconhecimento de padrão. Eu mapeio a densidade da sua nuca e a curvatura do seu topo para entregar um formato que se sustenta sozinho.</blockquote>
-
-      <h2>Perguntas Frequentes Sobre Corte e Volume</h2>
-      <div class="faq-section">
-        <h3>Corte em camadas tira o volume ou dá volume?</h3>
-        <p>Depende da técnica. Camadas curtas no topo liberam o peso e projetam o volume para cima (leveza). Camadas longas nas pontas mantêm o volume sob controle na base. A leitura de fio decide a melhor estratégia para o seu rosto.</p>
-
-        <h3>Por que meu cabelo cacheado fica com efeito pirâmide?</h3>
-        <p>Resultado inevitável de cortes retos ou molhados feitos sem técnica de distribuição de peso. Sem camadas projetadas, o volume desce e se concentra nas pontas, criando o triângulo.</p>
-      </div>
 
       <h2>A sua tesoura falhou com você</h2>
       <p>Se você gasta mais tempo tentando "consertar" o formato do que vivendo a vida, sua base está errada. O formato perfeito não é sorte, é projeto. Se você quer uma avaliação técnica de verdade que resolva a raiz escorrida e as pontas pesadas, você está no lugar certo.</p>
@@ -781,9 +659,7 @@ export const posts = [
 
       <p><strong>"Básico? Hoje não, Faro."</strong> Meu objetivo não é que você venha aqui toda semana. É que você aprenda a dominar o seu próprio cabelo. Se você entende a lógica do seu fio, o "mistério" do salão desaparece e você assume o controle da sua identidade.</p>
 
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">AGENDAR MEU CORTE PERSONALIZADO E DIAGNÓSTICO</a>
-      </div>
+
     `
   },
   {
@@ -948,9 +824,7 @@ export const posts = [
 
       <p>Aqui no Studio do Jon, meu foco é a Leitura de Fio. Antes de encostar a tesoura ou sugerir qualquer tratamento, eu analiso a estrutura real do seu cabelo para que você pare de ser refém de rotinas infinitas e aprenda a amar o que vê no espelho — de um jeito prático.</p>
 
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO MARCAR MINHA LEITURA DE FIO E SIMPLIFICAR MINHA VIDA</a>
-      </div>
+
     `
   },
   {
@@ -1371,8 +1245,7 @@ export const posts = [
       
       <p>O frizz excessivo é o jeito do seu cabelo dizer: "Jon, me ajuda!". Não adianta tentar "domar" o cacho se a saúde da fibra está comprometida.</p>
 
-      <h2>Quer resolver de verdade?</h2>
-      <p>Se você está cansada de lutar contra o próprio cabelo e quer entender o que ele realmente precisa, vem pro Studio do Jon. Aqui no Caiçara, a gente não faz promessa milagrosa; a gente faz análise de fibra, teste de mecha e entrega um Tratamento de Alta Performance que devolve a vida e o brilho que o frizz está escondendo.</p>
+
     `,
     image: '/blog-frizz.png'
   },
@@ -1469,8 +1342,7 @@ export const posts = [
       
       <blockquote>"Aqui no Studio do Jon, a gente não corta só cabelo. A gente corta o que tá te impedindo de brilhar."</blockquote>
 
-      <h2>Quer um diagnóstico real do seu cacho?</h2>
-      <p>Aqui no Studio do Jon, em Belo Horizonte, a gente analisa a porosidade, a curvatura e o histórico do seu fio antes de qualquer tesoura ou produto. Porque cacho bom começa com diagnóstico honesto.</p>
+
     `
   }
 ];

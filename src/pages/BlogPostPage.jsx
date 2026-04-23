@@ -36,17 +36,23 @@ const BlogPostPage = () => {
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
           
-          <footer className="post-footer section-padding reveal">
-            <div className="card text-center">
-              <h3 className="heading-md mb-2">Transforme seu visual</h3>
-              <p className="paragraph-md mb-4">Agende uma consultoria técnica no Caiçara.</p>
-              <div className="flex justify-center flex-wrap gap-2">
+          <footer className="post-cta-section section-padding reveal active">
+            <div className="post-cta-card">
+              <h2 className="heading-lg mb-2">Gostou desse conteúdo técnico?</h2>
+              <p className="paragraph-lg mb-4">
+                O próximo passo é uma leitura de fio personalizada para entender o que o seu cabelo precisa.
+              </p>
+              
+              <div className="post-cta-btns">
                 <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
                   Agendar Online
                 </a>
                 <a href={`https://wa.me/553135866673?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline">
                   WhatsApp
                 </a>
+                <Link to="/blog" className="btn btn-outline btn-blog">
+                  Ver outros posts
+                </Link>
               </div>
             </div>
           </footer>
