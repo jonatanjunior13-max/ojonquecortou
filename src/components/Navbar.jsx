@@ -10,8 +10,7 @@ const Navbar = () => {
     <nav className="navbar reveal">
       <div className="container nav-container">
         <Link to="/" className="logo">
-          <Scissors className="logo-icon" size={24} />
-          <span className="logo-text">O Jon Que Cortou</span>
+          <img src="/logo-cabeleireiro-de-cachos.png" alt="O Jon que Cortou" className="logo-img" />
         </Link>
 
         <div className="desktop-menu">

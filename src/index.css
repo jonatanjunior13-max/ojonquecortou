@@ -123,6 +123,18 @@ button {
 .max-w-lg { max-width: 800px; }
 .max-w-md { max-width: 600px; }
 
+.logo-img {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  transition: var(--transition);
+}
+
+.logo:hover .logo-img {
+  transform: scale(1.05) rotate(-2deg);
+  filter: drop-shadow(4px 4px 0px var(--color-dark));
+}
+
 /* Components */
 .btn {
   display: inline-flex;

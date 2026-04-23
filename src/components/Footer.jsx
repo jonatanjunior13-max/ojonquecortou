@@ -27,8 +27,7 @@ const Footer = () => {
       <div className="container footer-container">
         <div className="footer-brand">
           <Link to="/" className="logo mb-2">
-            <Scissors className="logo-icon" size={28} />
-            <span className="logo-text">O Jon Que Cortou</span>
+            <img src="/logo-cabeleireiro-de-cachos.png" alt="O Jon que Cortou" className="logo-img" />
           </Link>
           <p className="footer-desc">
             Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.

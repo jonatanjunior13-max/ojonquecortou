@@ -21,19 +21,6 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-family: var(--font-display);
-  font-weight: 800;
-  text-transform: lowercase;
-  font-size: 1.5rem;
-  letter-spacing: -0.05em;
-  color: var(--color-magenta);
-  text-shadow: 2px 2px 0px var(--color-dark);
-}
-
-.logo-icon {
-  color: var(--color-yellow);
-  filter: drop-shadow(2px 2px 0px var(--color-dark));
 }
 
 .desktop-menu {
