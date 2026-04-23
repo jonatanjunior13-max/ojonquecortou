@@ -22,7 +22,7 @@
   box-shadow: 8px 8px 0px var(--color-yellow);
 }
 
-.accordion-item.active {
+.accordion-item.is-open {
   border-color: var(--color-dark);
   background: var(--color-yellow);
 }
@@ -50,7 +50,7 @@
   transition: transform 0.3s ease;
 }
 
-.accordion-item.active .accordion-icon {
+.accordion-item.is-open .accordion-icon {
   transform: rotate(180deg);
   color: var(--color-dark);
 }
@@ -62,7 +62,7 @@
   background: rgba(255, 255, 255, 0.02);
 }
 
-.accordion-item.active .accordion-body {
+.accordion-item.is-open .accordion-body {
   max-height: 1000px;
   transition: max-height 1s ease-in;
 }

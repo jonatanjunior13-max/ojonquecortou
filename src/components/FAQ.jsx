@@ -46,7 +46,7 @@ const FAQ = () => {
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-                className={`accordion-item reveal stagger-${index + 1} ${openIndex === index ? 'active' : ''}`}
+                className={`accordion-item reveal stagger-${index + 1} ${openIndex === index ? 'is-open' : ''}`}
                 onClick={() => setOpenIndex(openIndex === index ? -1 : index)}
               >
                 <div className="accordion-header">
