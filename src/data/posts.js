@@ -1,5 +1,70 @@
 export const posts = [
   {
+    id: 26,
+    slug: 'ph-capilar-cachos-brilho-definicao',
+    title: 'pH CAPILAR: O SEGREDO MATEMÁTICO PARA FECHAR AS CUTÍCULAS E DAR BRILHO AOS CACHOS',
+    excerpt: 'Você usa as melhores máscaras do mercado, mas o seu cabelo continua opaco e "farofado"? O problema não é falta de produto, é falta de estabilidade química. Entenda como o pH dita o brilho do seu cacho.',
+    metaDescription: 'pH capilar para cabelos cacheados: entenda como a acidez controla o brilho e a definição. Guia técnico sobre acidificação capilar e saúde do fio com o especialista Jon.',
+    keywords: 'pH capilar cachos, acidificação capilar bh, como dar brilho no cabelo cacheado, cutícula aberta cachos, cabelo poroso solução, studio do jon, o jon que cortou, especialista em cachos bh',
+    date: '25 de Abril, 2026',
+    author: 'Jon',
+    category: 'Ciência Capilar',
+    image: '/blog-ph-capilar-capa.png',
+    content: `
+      <h2>Introdução: O Brilho é uma Questão de Física</h2>
+      <p>Muitas clientes chegam ao Studio reclamando que o cabelo "não tem vida". Elas investem centenas de reais em máscaras importadas, mas o fio continua com aquele aspecto opaco, áspero ao toque e que parece "beber" o creme sem reter nada. Sabe o que está acontecendo? O pH do seu cabelo está em guerra com você.</p>
+      <p>O brilho que você vê no espelho não é "mágica" de um óleo finalizador. O brilho é luz refletida em uma superfície plana. Se as cutículas do seu cacho estão abertas (eriçadas), a luz bate e se dispersa. Se elas estão fechadas e seladas, a luz bate e reflete. Simples assim. E quem controla essa "porta" é o pH.</p>
+
+      <h2>O Que é o pH (De Forma Direta)</h2>
+      <p>pH significa Potencial Hidrogeniônico. É uma escala de 0 a 14 que mede o quão ácida ou alcalina é uma substância. 
+      <ul>
+        <li><strong>0 a 6.9:</strong> Ácido</li>
+        <li><strong>7.0:</strong> Neutro</li>
+        <li><strong>7.1 a 14:</strong> Alcalino</li>
+      </ul>
+      O segredo técnico que quase ninguém te conta: o pH natural do cabelo e do couro cabeludo é levemente ácido, variando entre <strong>4.5 e 5.5</strong>.</p>
+
+      <h2>O "Ponto Doce" do Cacho (4.5 - 5.5)</h2>
+      <p>Nesta faixa de acidez, as cutículas (as escamas que protegem o fio) se mantêm fechadas, compactas e organizadas. É nesse estado que o cacho retém a hidratação lá dentro e reflete o brilho máximo lá fora. Quando você usa produtos alcalinos (como a maioria dos sabonetes, shampoos de limpeza profunda ou químicas de transformação), o pH sobe. Cutículas se abrem. A hidratação foge. O brilho morre.</p>
+
+      <h2>Os Inimigos do pH Equilibrado</h2>
+      <p>Por que o seu pH vive desregulado? Aqui estão os culpados mais comuns:</p>
+      <ul>
+        <li><strong>Água do Chuveiro:</strong> O pH da água da torneira costuma ser neutro (7.0) ou levemente alcalino, o que já é suficiente para abrir um pouco as cutículas.</li>
+        <li><strong>Shampoos de Farmácia:</strong> Muitos shampoos comuns têm pH elevado para limpar "na força", agredindo a acidez natural.</li>
+        <li><strong>Processos Químicos:</strong> Descoloração e coloração usam pH altíssimo (alcalino) para "explodir" a cutícula e injetar ou retirar pigmento.</li>
+        <li><strong>Sol e Poluição:</strong> Agressores externos que oxidam o fio e alteram sua estabilidade química.</li>
+      </ul>
+
+      <h2>Acidificação: A Técnica de Estabilização</h2>
+      <p>Se o seu cabelo está poroso, áspero e sem brilho, ele precisa de uma <strong>Acidificação Técnica</strong>. Não é apenas passar vinagre de maçã (que tem pH muito instável e pode ressecar se mal usado). É sobre usar produtos formulados para baixar o pH do fio de forma controlada.</p>
+      <p>Ao acidificar, nós forçamos as cutículas a voltarem para o lugar. É como se estivéssemos fechando todas as janelas de uma casa durante uma tempestade. O resultado? Definição que dura mais dias, menos frizz e um brilho que você não conseguia com máscaras de hidratação comum.</p>
+
+      <h2>Como Saber se Você Precisa de Acidificação?</h2>
+      <p>Faça o check-list Jon:</p>
+      <ol>
+        <li>Seu cabelo embaraça com extrema facilidade?</li>
+        <li>Você sente o fio áspero mesmo após usar condicionador?</li>
+        <li>O brilho "desaparece" minutos após o cabelo secar?</li>
+        <li>Você fez química (luzes/coloração) nos últimos 30 dias?</li>
+      </ol>
+      <p>Se você respondeu "sim" para duas ou mais, o seu pH está alto. Você está perdendo nutrientes por uma porta que nunca fecha.</p>
+
+      <h2>Conclusão: Pare de Gastar, Comece a Estabilizar</h2>
+      <p>Não adianta colocar o melhor combustível em um tanque furado. Se o pH está alto, o tratamento vai embora no ralo. A base de todo cacho saudável é a estabilidade química.</p>
+      
+      <div class="faq-section">
+        <h3>Quer um Diagnóstico Real?</h3>
+        <p>No Studio, a minha <strong>Leitura de Fio</strong> inclui a análise de porosidade e estado cuticular. Eu não te vendo um "banho de creme". Eu te entrego um plano técnico para estabilizar seu pH e devolver a autonomia do seu cacho.</p>
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <a href="/servicos" class="btn btn-primary">CONHEÇA NOSSOS SERVIÇOS TÉCNICOS</a>
+        </div>
+      </div>
+
+      <p><i>Jon é especialista em leitura biológica do fio e visagismo capilar em Belo Horizonte. Foco total na saúde e identidade da textura natural.</i></p>
+    `
+  },
+  {
     id: 25,
     slug: 'wolf-cut-cabelos-cacheados-tendencia',
     title: 'WOLF CUT PARA CABELOS CACHEADOS: O CORTE LOBO QUE VIROU TENDÊNCIA',
