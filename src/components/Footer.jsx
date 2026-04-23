@@ -60,6 +60,17 @@ const Footer = () => {
             <Phone size={18} className="contact-icon" />
             <p>(31) 3586-6673</p>
           </div>
+          <div className="contact-item mt-2">
+            <a 
+              href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="footer-review-link"
+              style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-yellow)', textDecoration: 'underline' }}
+            >
+              Avalie no Google Maps
+            </a>
+          </div>
         </div>
 
         <div className="footer-hours">
