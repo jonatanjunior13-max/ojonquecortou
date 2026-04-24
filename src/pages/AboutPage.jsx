@@ -68,6 +68,7 @@ const AboutPage = () => {
             </div>
           </div>
         </div>
+      </section>
       <section className="about-cta-bottom section-padding">
         <div className="container text-center reveal">
           <h2 className="heading-lg mb-2">Venha viver essa experiência</h2>

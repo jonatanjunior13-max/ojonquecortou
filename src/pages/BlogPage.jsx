@@ -36,6 +36,7 @@ const BlogPage = () => {
             </article>
           ))}
         </div>
+      </section>
       <section className="blog-cta-bottom section-padding">
         <div className="container text-center reveal">
           <h2 className="heading-lg mb-2">Quer um diagnóstico técnico do seu fio?</h2>
