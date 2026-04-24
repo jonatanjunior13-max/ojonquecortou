@@ -36,6 +36,16 @@ const BlogPage = () => {
             </article>
           ))}
         </div>
+      <section className="blog-cta-bottom section-padding">
+        <div className="container text-center reveal">
+          <h2 className="heading-lg mb-2">Quer um diagnóstico técnico do seu fio?</h2>
+          <p className="paragraph-lg mb-4 max-w-md mx-auto">
+            Não fique apenas na teoria. Agende seu horário e venha cuidar dos seus cachos com quem entende.
+          </p>
+          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+            Agendar agora pelo Trinks
+          </a>
+        </div>
       </section>
     </main>
   );

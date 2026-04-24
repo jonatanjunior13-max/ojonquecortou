@@ -44,7 +44,10 @@ const Home = () => {
           </div>
 
           <div className="text-center reveal stagger-4">
-            <Link to="/servicos" className="btn btn-primary">Ver Todos os Serviços</Link>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Link to="/servicos" className="btn btn-outline">Ver Todos os Serviços</Link>
+              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">Agendar Horário</a>
+            </div>
           </div>
         </div>
       </section>
@@ -67,6 +70,12 @@ const Home = () => {
           <div className="instagram-feed-container reveal stagger-1">
             <InstagramFeed />
           </div>
+
+          <div className="text-center mt-4 reveal">
+            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+              Gostou dos resultados? Agende o seu!
+            </a>
+          </div>
         </div>
       </section>
 
@@ -79,7 +88,7 @@ const Home = () => {
             </div>
             <Link to="/blog" className="btn btn-outline">Ver Blog Completo</Link>
           </div>
-
+ 
           <div className="home-blog-grid">
             {latestPosts.map((post, index) => (
               <article key={post.id} className={`home-blog-card reveal stagger-${index + 1}`}>
@@ -97,6 +106,12 @@ const Home = () => {
                 </div>
               </article>
             ))}
+          </div>
+
+          <div className="text-center mt-4 reveal">
+            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+              Agendar Consultoria com o Jon
+            </a>
           </div>
         </div>
       </section>

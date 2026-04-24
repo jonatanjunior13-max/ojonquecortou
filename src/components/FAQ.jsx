@@ -59,6 +59,14 @@ const FAQ = () => {
               </div>
             ))}
           </div>
+
+          <div className="text-center mt-4 reveal">
+            <p className="paragraph-md mb-2">Ainda tem alguma dúvida ou quer garantir sua vaga?</p>
+            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+              Agendar pelo Trinks
+            </a>
+          </div>
+        </div>
         </div>
         
       </div>

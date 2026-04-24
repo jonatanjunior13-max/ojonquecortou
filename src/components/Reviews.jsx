@@ -56,14 +56,24 @@ const Reviews = () => {
 
         <div className="reviews-cta text-center reveal">
           <p style={{ fontWeight: 800 }}>Já passou pela experiência de um corte com leitura de fio?</p>
-          <a 
-            href="https://www.google.com/maps/search/?api=1&query=O+Jon que Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
-            target="_blank" 
-            rel="noreferrer" 
-            className="btn btn-primary"
-          >
-            Deixe sua avaliação no Google
-          </a>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
+            <a 
+              href="https://www.google.com/maps/search/?api=1&query=O+Jon que Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="btn btn-outline"
+            >
+              Deixe sua avaliação no Google
+            </a>
+            <a 
+              href="http://trinks.com/ojonquecortou" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="btn btn-primary"
+            >
+              Agendar meu Horário
+            </a>
+          </div>
         </div>
       </div>
     </section>

@@ -34,7 +34,7 @@ const About = () => {
           <ul className="about-list">
             <li>
               <div className="list-icon">✓</div>
-              <span>Corte a seco respeitando a curvatura real</span>
+              <span>Corte com técnica respeitando a curvatura real</span>
             </li>
             <li>
               <div className="list-icon">✓</div>
@@ -45,6 +45,13 @@ const About = () => {
               <span>Ambiente acolhedor e sem julgamentos</span>
             </li>
           </ul>
+
+          <div className="mt-4">
+             <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+                Agendar com o Jon
+             </a>
+          </div>
+        </div>
         </div>
       </div>
     </section>

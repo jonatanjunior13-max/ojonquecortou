@@ -192,6 +192,17 @@ const ServicesPage = () => {
           </div>
         </div>
       </section>
+      <section className="services-cta-bottom section-padding">
+        <div className="container text-center reveal">
+          <h2 className="heading-lg mb-2">Pronta para transformar seus cachos?</h2>
+          <p className="paragraph-lg mb-4 max-w-md mx-auto">
+            Escolha o melhor horário para você e garanta sua vaga no Studio do Jon.
+          </p>
+          <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
+            Agendar Agora pelo Trinks
+          </a>
+        </div>
+      </section>
     </main>
   );
 };

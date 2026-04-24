@@ -68,6 +68,16 @@ const AboutPage = () => {
             </div>
           </div>
         </div>
+      <section className="about-cta-bottom section-padding">
+        <div className="container text-center reveal">
+          <h2 className="heading-lg mb-2">Venha viver essa experiência</h2>
+          <p className="paragraph-lg mb-4 max-w-md mx-auto">
+            Meu Studio no Caiçara está pronto para receber você e seus cachos.
+          </p>
+          <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
+            Garantir meu horário agora
+          </a>
+        </div>
       </section>
     </main>
   );
