@@ -127,6 +127,16 @@
   margin-bottom: 4rem;
 }
 
+.post-inline-image {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 3px solid var(--color-dark);
+  box-shadow: 8px 8px 0px var(--color-accent);
+  margin: 3rem 0;
+  display: block;
+}
+
 .post-content {
   max-width: 800px;
   margin: 0 auto;

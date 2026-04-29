@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
 import ScrollToTop from './components/ScrollToTop';
+import CanonicalTag from './components/CanonicalTag';
 
 import Home from './pages/Home';
 import AboutPage from './pages/AboutPage';
@@ -15,6 +16,7 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+      <CanonicalTag />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
