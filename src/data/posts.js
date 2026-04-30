@@ -1,5 +1,37 @@
 export const posts = [
   {
+    id: 28,
+    slug: '3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos',
+    title: '3 coisas que eu, como especialista, NUNCA faria no meu próprio cabelo',
+    excerpt: 'Muitas vezes, a maior dificuldade não é falta de produtos caros, mas hábitos que sabotam a curvatura. Listei 3 coisas que jamais faria no meu cabelo.',
+    metaDescription: '3 erros fatais que destroem cabelos cacheados e crespos. Descubra o que um especialista nunca faria no próprio cabelo e salve seus cachos.',
+    keywords: 'Especialista em cachos BH, leitura de fio, transição capilar, cuidados com cabelo natural.',
+    date: '30 de Abril, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-3-erros-capa.png',
+    content: `
+      <h2>Introdução</h2>
+      <p>Se você me acompanha por aqui ou lá no Instagram, sabe que eu prezo pela saúde real do fio. Não acredito em milagres de prateleira, acredito em ciência e técnica.</p>
+      <p>Muitas vezes, a maior dificuldade que minhas clientes enfrentam não é falta de produtos caros, mas hábitos que sabotam a curvatura todos os dias. Para ajudar você a entender o que realmente importa, listei 3 coisas que eu jamais faria no meu cabelo — e que você deveria considerar parar de fazer hoje mesmo.</p>
+
+      <h2>1. Cair na cilada da progressiva "sem formol"</h2>
+      <p>Eu vejo isso acontecer direto no Studio. Muitas pessoas chegam com o cabelo rígido, quebradiço e sem vida porque acreditaram que a "escova ácida" ou "orgânica" era inofensiva por não ter formol.</p>
+      <p><strong>A verdade:</strong> Esses ácidos agem selando a cutícula de forma tão extrema que o fio para de absorver água e nutrientes. É como se você passasse um verniz no cabelo: por fora brilha, mas por dentro ele está morrendo de sede. Eu prefiro mil vezes um cabelo com volume e saúde do que um liso artificial que destrói a estrutura do fio a longo prazo.</p>
+
+      <h2>2. Passar o pente (ou escova) com o cabelo seco</h2>
+      <p>Parece básico, mas o "atentado" contra os cachos muitas vezes começa aqui. Pentear o cabelo seco causa um atrito mecânico que o fio com curvatura não aguenta.</p>
+      <p>Além de desmanchar toda a definição que a gente luta para conseguir, isso gera um frizz excessivo e, o pior: microfissuras na fibra capilar que levam à quebra. Cabelo com curvatura a gente só desembaraça molhado e com muito condicionador ou máscara para dar o "deslize" necessário.</p>
+
+      <h2>3. Usar a toalha de banho convencional para secar</h2>
+      <p>Sabe aquela toalha de algodão felpudo que todo mundo tem no banheiro? Ela é ótima para o corpo, mas é uma vilã para o seu cabelo. As fibras grossas da toalha comum absorvem água demais — inclusive a hidratação que deveria ficar no fio — e levantam a cutícula, criando aquele frizz que nenhuma finalização consegue segurar.</p>
+      <p><strong>O que eu faço:</strong> No meu dia a dia, só entra camisa de algodão velha ou toalha de microfibra. Elas tratam o fio com delicadeza, mantendo a umidade onde ela deve estar e preservando a definição do seu corte.</p>
+
+      <h2>Dica do Jon</h2>
+      <p>A saúde do seu cabelo é o resultado do que você faz entre uma visita e outra ao meu Studio. Qual desses hábitos é o mais difícil para você desapegar?</p>
+    `
+  },
+  {
     id: 27,
     slug: 'metodo-leitura-de-fio-antes-da-tesoura',
     title: 'MÉTODO LEITURA DE FIO: O QUE ACONTECE ANTES DA TESOURA TOCAR O SEU CABELO',
