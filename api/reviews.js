@@ -13,8 +13,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  // Cache na Vercel Edge Network e no navegador (12 horas)
-  res.setHeader('Cache-Control', 's-maxage=43200, stale-while-revalidate');
+  // Cache na Vercel Edge Network por 15 minutos (900 segundos) para ser dinâmico
+  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate');
 
   try {
     const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Configuração da API ausente (GOOGLE_PLACES_API_KEY ou GOOGLE_PLACE_ID)' });
     }
 
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${PLACE_ID}&fields=reviews,rating,user_ratings_total&language=pt-BR&key=${API_KEY}`;
+    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${PLACE_ID}&fields=reviews,rating,user_ratings_total&language=pt-BR&reviews_sort=newest&key=${API_KEY}`;
     
     const response = await fetch(url);
     const data = await response.json();
