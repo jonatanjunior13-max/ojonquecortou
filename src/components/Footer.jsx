@@ -52,14 +52,28 @@ const Footer = () => {
 
         <div className="footer-contact">
           <h4 className="footer-heading">Contato</h4>
-          <div className="contact-item">
-            <MapPin size={18} className="contact-icon" />
+          <div className="contact-item" style={{ marginBottom: '0.5rem' }}>
+            <MapPin size={18} className="contact-icon" style={{ minWidth: '18px' }} />
             <p>Rua Francisco Ovidio, 184<br/>Caiçara, BH / MG</p>
           </div>
-          <div className="contact-item">
-            <Phone size={18} className="contact-icon" />
+          <div className="contact-item" style={{ marginBottom: '1rem' }}>
+            <Phone size={18} className="contact-icon" style={{ minWidth: '18px' }} />
             <p>(31) 3586-6673</p>
           </div>
+          
+          <div className="map-container" style={{ width: '100%', height: '140px', borderRadius: '8px', overflow: 'hidden', marginBottom: '1rem' }}>
+            <iframe 
+              src="https://maps.google.com/maps?q=O%20Jon%20que%20Cortou%2C%20Rua%20Francisco%20Ovidio%20184%2C%20Belo%20Horizonte&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen="" 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Mapa do Studio do Jon"
+            ></iframe>
+          </div>
+
           <div className="contact-item mt-2">
             <a 
               href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
