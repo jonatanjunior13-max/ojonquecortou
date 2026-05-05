@@ -1,11 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { posts } from '../data/posts';
+import SEO from '../components/SEO';
 import './Blog.css';
 
 const BlogPage = () => {
   return (
     <main className="blog-page">
+      <SEO 
+        title="Blog de Cabelo Cacheado | Dicas do Jon que Cortou" 
+        description="Dicas de cabelo cacheado, crespo e ondulado direto do especialista. Jon explica cortes e cuidados sem enrolação. O Jon que Cortou, BH. Leia agora." 
+      />
       <header className="blog-header reveal active">
         <div className="container text-center">
           <h1 className="heading-xl">O Especialista <span className="text-gradient">Explica</span></h1>

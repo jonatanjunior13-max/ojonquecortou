@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import SEO from '../components/SEO';
 import './ServicesPage.css';
 
 const WA_NUMBER = '553135866673';
@@ -129,6 +130,10 @@ const ServicesPage = () => {
 
   return (
     <main className="services-page">
+      <SEO 
+        title="Corte Cacheado em BH | Serviços | Studio do Jon" 
+        description="Corte técnico para cabelo cacheado, crespo e ondulado em BH. Jon faz leitura de fio antes de tocar. Deva Cut, Wolf Cut e mais. Agende no Studio do Jon." 
+      />
       <section className="services-hero section-padding">
         <div className="container text-center reveal active">
           <h1 className="heading-xl">Tabela de <span className="text-gradient">Serviços</span></h1>

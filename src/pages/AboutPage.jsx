@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 import './AboutPage.css';
 
 const TRINKS_URL = 'http://trinks.com/ojonquecortou';
@@ -7,6 +8,10 @@ const TRINKS_URL = 'http://trinks.com/ojonquecortou';
 const AboutPage = () => {
   return (
     <main className="about-page">
+      <SEO 
+        title="Jon Cabeleireiro de Cachos em BH | O Jon que Cortou" 
+        description="Jon é especialista em cachos e crespos em BH. Lê padrão de fio antes de cortar. Método Leitura de Fio: 7 etapas de diagnóstico. Studio do Jon, Caiçara." 
+      />
       <section className="about-hero section-padding">
         <div className="container text-center reveal active">
           <h1 className="heading-xl">Muito Prazer, <span className="text-gradient">O Jon</span>.</h1>

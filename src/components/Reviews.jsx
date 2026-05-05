@@ -23,7 +23,7 @@ const fallbackReviews = [
   }
 ];
 
-const Reviews = () => {
+const Reviews = ({ isPage = false }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,11 +51,13 @@ const Reviews = () => {
     fetchReviews();
   }, []);
 
+  const TitleTag = isPage ? 'h1' : 'h2';
+
   return (
     <section id="depoimentos" className="reviews-section section-padding">
       <div className="container">
         <div className="text-center reveal mb-4">
-          <h2 className="heading-lg">Experiências no Studio</h2>
+          <TitleTag className="heading-lg">Experiências no Studio</TitleTag>
           <p className="paragraph-lg">O que dizem sobre a leitura de fio e o método Jon.</p>
         </div>
         

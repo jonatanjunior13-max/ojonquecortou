@@ -36,7 +36,7 @@ const Navbar = () => {
           <Link to="/sobre" className="nav-link">Sobre o Jon</Link>
           <Link to="/servicos" className="nav-link">Serviços</Link>
           <Link to="/blog" className="nav-link">Blog</Link>
-          <a href="/#depoimentos" className="nav-link">Depoimentos</a>
+          <Link to="/depoimentos" className="nav-link">Depoimentos</Link>
           <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="nav-link social-nav-link">
             <InstagramIcon size={20} />
           </a>
@@ -59,7 +59,7 @@ const Navbar = () => {
           <Link to="/sobre" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Sobre o Jon</Link>
           <Link to="/servicos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Serviços</Link>
           <Link to="/blog" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
-          <a href="/#depoimentos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Depoimentos</a>
+          <Link to="/depoimentos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Depoimentos</Link>
           <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
             Siga no Instagram
           </a>

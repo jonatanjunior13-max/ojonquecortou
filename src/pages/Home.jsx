@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import FAQ from '../components/FAQ';
 import Reviews from '../components/Reviews';
 import InstagramFeed from '../components/InstagramFeed';
+import SEO from '../components/SEO';
 import { posts } from '../data/posts';
 import './Home.css';
 
@@ -13,6 +14,10 @@ const Home = () => {
 
   return (
     <main>
+      <SEO 
+        title="Studio do Jon | Especialista em Cabelo Cacheado em BH" 
+        description="Especialista em corte para cabelo cacheado em Belo Horizonte. Jon analisa o fio antes de tocar: porosidade, curvatura e histórico. Caiçara, BH. Agende." 
+      />
       <Hero />
       
       {/* Destaque de Serviços */}
