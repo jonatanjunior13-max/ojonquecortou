@@ -13,6 +13,9 @@ export default async function handler(req, res) {
     return;
   }
 
+  // Cache na Vercel Edge Network e no navegador (12 horas)
+  res.setHeader('Cache-Control', 's-maxage=43200, stale-while-revalidate');
+
   try {
     const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
     const PLACE_ID = process.env.GOOGLE_PLACE_ID; 
