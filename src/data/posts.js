@@ -1,5 +1,144 @@
 export const posts = [
   {
+    id: 29,
+    slug: 'cronograma-capilar-cabelo-cacheado',
+    title: 'Cronograma Capilar para Cabelo Cacheado: O Que Ninguém Te Conta Antes de Começar',
+    excerpt: 'O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. Descubra como ler o fio antes de montar qualquer protocolo.',
+    metaDescription: 'Cronograma capilar para cabelo cacheado começa com diagnóstico — não com produto. Jon explica como ler o fio antes de montar qualquer protocolo. Studio do Jon, BH.',
+    keywords: 'cronograma capilar para cabelo cacheado, cronograma capilar crespo, como montar cronograma capilar, hidratação nutrição reconstrução cabelo cacheado, cronograma capilar porosidade',
+    date: '05 de Maio, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-cronograma-capilar.png',
+    content: `
+      <h2>Introdução</h2>
+      <p>Você pesquisou, escolheu os produtos, montou a sequência — hidratação, nutrição, reconstrução — e seguiu à risca por semanas.</p>
+      <p>O cabelo não melhorou. Ou piorou.</p>
+      <p>Isso acontece com uma frequência que cansa de explicar. E o motivo quase sempre é o mesmo: você começou pelo passo errado.</p>
+      <p>O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. E sem esse diagnóstico, qualquer protocolo é chute — às vezes um chute que faz mais mal do que bem.</p>
+
+      <h2>O Que É Cronograma Capilar (e por que quase todos explicam errado)</h2>
+      <p>Cronograma capilar é um protocolo de cuidados que alterna três tipos de tratamento: hidratação, nutrição e reconstrução. A ideia é simples — cada etapa resolve uma necessidade diferente do fio.</p>
+      <ul>
+        <li><strong>Hidratação</strong> repõe água e substâncias umectantes ao fio. É o passo de base — o mais frequente, o mais fundamental.</li>
+        <li><strong>Nutrição</strong> repõe lipídeos, a "gordura" que o fio precisa para manter a cutícula fechada e o brilho presente. Óleos, manteigas, compostos lipídicos.</li>
+        <li><strong>Reconstrução</strong> reintroduz proteínas que foram perdidas por dano químico, mecânico ou térmico. É o passo mais agressivo — e o que mais gera problema quando usado sem indicação.</li>
+      </ul>
+      <p>Até aqui, nada de errado. O problema começa quando você pega essa estrutura genérica e aplica sem saber o que o seu fio especificamente precisa.</p>
+      <p>Fio com excesso de proteína vai piorar com reconstrução. Fio com porosidade baixa vai reter produto na superfície em vez de absorver. Fio que está ressecado por dano mecânico tem uma resposta completamente diferente do fio ressecado por dano químico.</p>
+      <p>O cronograma certo não é o que você leu num tutorial. É o que responde ao que o seu fio está pedindo.</p>
+
+      <h2>O Erro Que Sabota o Cronograma Antes de Começar</h2>
+      <p>A pergunta que a maioria faz antes de montar o cronograma é: "Quais produtos usar?"</p>
+      <p>A pergunta certa é outra: "Qual é a porosidade do meu fio?"</p>
+      <p>Porosidade é a capacidade do fio de absorver e reter substâncias. Ela determina como o fio responde a cada tipo de tratamento — e ignorar isso é a raiz de quase todo cronograma que não funciona.</p>
+      <ul>
+        <li><strong>Fio de alta porosidade</strong> (cutícula aberta, danificada) absorve produto rápido, mas não retém. Precisa de hidratação frequente, lacres com óleos, e reconstrução quando há dano real — não como rotina fixa.</li>
+        <li><strong>Fio de baixa porosidade</strong> (cutícula fechada, resistente) tem dificuldade de absorver qualquer coisa. Produto acumula na superfície. Cronograma pesado com máscaras espessas resulta em cabelo pesado, sem definição, com sensação de resíduo — exatamente o sintoma de quem reclama que "nada funciona".</li>
+        <li><strong>Fio de porosidade média</strong> é o mais fácil de trabalhar — responde bem à maioria dos produtos sem precisar de ajustes extremos.</li>
+      </ul>
+      <p>Antes de montar qualquer cronograma, faça o <a href="/blog/teste-de-porosidade-guia-definitivo">teste de porosidade</a>. O resultado muda completamente os produtos que você vai usar, a frequência de cada etapa e a quantidade de produto que faz sentido aplicar.</p>
+
+      <h2>Cronograma Capilar por Tipo de Porosidade</h2>
+      
+      <h3>Porosidade Alta</h3>
+      <p>Fio de alta porosidade perde água rápido. A hidratação precisa ser frequente — a cada lavagem, idealmente — com produtos que contenham agentes umectantes (glicerina, aloe vera, ácido hialurônico).</p>
+      <p>A nutrição entra como lacre após a hidratação: óleos leves como argan, jojoba ou amendoa doce aplicados nos fios úmidos ajudam a selar a cutícula e reter a umidade.</p>
+      <p>A reconstrução deve ser usada com critério — apenas quando há sinal real de dano (elasticidade comprometida, quebra excessiva, fio sem forma). Usar reconstrução como rotina semanal em fio de alta porosidade que não está danificado pode gerar rigidez e quebra.</p>
+      <p><strong>Frequência sugerida:</strong> hidratação a cada lavagem, nutrição 1–2x por semana, reconstrução quando necessário (não por calendário fixo).</p>
+      
+      <h3>Porosidade Baixa</h3>
+      <p>Esse é o fio que mais sofre com cronograma genérico. A cutícula fechada dificulta a entrada de substâncias — o produto fica na superfície, acumula, e o cabelo fica pesado sem ter recebido nada de verdade.</p>
+      <p>A solução começa antes do produto: calor abre a cutícula e permite absorção. Banho de creme com touca térmica ou vapor muda completamente a resposta do fio.</p>
+      <p>Produtos com moléculas menores penetram melhor — hidrolisados de proteína em vez de proteína intacta, por exemplo. Fuja de produtos muito densos ou com muita manteiga — eles ficam depositados na superfície.</p>
+      <p>Reconstrução pesada em fio de baixa porosidade é receita de desastre. O fio já tem a cutícula fechada — empurrar mais proteína por cima só vai endurecer e fragilizar.</p>
+      <p><strong>Frequência sugerida:</strong> hidratação com auxílio de calor 1x por semana, nutrição leve quinzenal, reconstrução raramente e com produtos de moléculas pequenas.</p>
+      
+      <h3>Porosidade Média</h3>
+      <p>O fio responde bem à maioria dos protocolos. A estrutura clássica de hidratação, nutrição e reconstrução funciona — mas ainda assim observe os sinais do fio. Se aparecer rigidez, reduza reconstrução. Se aparecer ressecamento, aumente a frequência de hidratação.</p>
+      <p><strong>Frequência sugerida:</strong> hidratação 1–2x por semana, nutrição quinzenal, reconstrução mensal ou a cada 6 semanas.</p>
+
+      <h2>Quando o Cronograma Não É o Que Você Precisa</h2>
+      <p>Existe uma situação em que o cronograma capilar não vai resolver nada: quando o problema não é de cuidado, é de corte.</p>
+      <p>Fio com dano mecânico acumulado nas pontas — as pontas duplas que não se hidratam, a região que quebra antes do resto — não responde a produto. Aquela parte do fio está morta. O corte é a única resposta.</p>
+      <p>Do mesmo jeito, fio com distribuição de peso errada vai continuar pesado, murcho e sem definição independente do cronograma que você montar. Isso é problema de corte, não de rotina.</p>
+      <p>Se você está há meses seguindo cronograma e o cabelo continua igual, vale pausar e avaliar: o que está sendo tratado é o sintoma ou a causa?</p>
+      <p>Um diagnóstico profissional — que inclui análise do fio seco, molhado e do couro cabeludo — muitas vezes revela que o cronograma está certo, mas o corte está errado. Ou vice-versa.</p>
+      <p>O <a href="/blog/metodo-leitura-de-fio-antes-da-tesoura">Método Leitura de Fio</a> que uso no Studio do Jon começa exatamente aí: antes de falar em produto, em corte ou em qualquer protocolo, o fio precisa ser lido.</p>
+
+      <h2>Sinais de Que o Seu Cronograma Está Errado</h2>
+      <p>O fio avisa quando o protocolo não está funcionando — ou quando está sendo prejudicial. Aprenda a reconhecer esses sinais:</p>
+      
+      <p><strong>Excesso de reconstrução:</strong></p>
+      <ul>
+        <li>Fio rígido, sem elasticidade, que parece "palha"</li>
+        <li>Quebra ao manipular mesmo sem tração excessiva</li>
+        <li>Fio que não forma cacho, fica esticado e sem forma</li>
+        <li>Sensação de fio duro mesmo após hidratação</li>
+      </ul>
+      
+      <p><strong>Excesso de nutrição (óleos):</strong></p>
+      <ul>
+        <li>Cabelo pesado, cacho que não sobe</li>
+        <li>Fio com aparência oleosa mesmo após a lavagem</li>
+        <li>Produto que não parece absorver</li>
+      </ul>
+      
+      <p><strong>Hidratação insuficiente:</strong></p>
+      <ul>
+        <li><a href="/blog/frizz-normal-ou-dano-capilar">Frizz ou sinal de dano</a> constante, especialmente nas pontas</li>
+        <li>Fio sem elasticidade ao puxar (não "estica" — quebra direto)</li>
+        <li>Pontas ressecadas que não respondem a nada</li>
+      </ul>
+      
+      <p><strong>Produto acumulando (porosidade baixa mal trabalhada):</strong></p>
+      <ul>
+        <li><a href="/blog/cabelo-poroso-nao-absorve-creme-scab-hair">Cabelo poroso que não absorve creme</a> — sensação de resíduo</li>
+        <li>Cacho sem definição apesar de muito produto</li>
+        <li>Couro cabeludo irritado ou com coceira</li>
+      </ul>
+      <p>Se você se identificou com qualquer um desses padrões, vale revisitar o <a href="/blog/teste-de-porosidade-guia-definitivo">teste de porosidade</a> e ajustar o protocolo a partir daí.</p>
+
+      <h2>Como Montar o Cronograma Certo Para o Seu Fio</h2>
+      <p>Agora que você tem o diagnóstico de porosidade, o caminho fica mais claro. Mas existem mais algumas variáveis que influenciam a resposta do fio:</p>
+      <ul>
+        <li><strong>Histórico químico:</strong> fio que passou por coloração, descoloração ou alisamento tem porosidade artificialmente elevada. Mesmo que o fio "pareça" de porosidade baixa no teste, o histórico químico indica que a cutícula foi comprometida. Reconstrução pode ser necessária — mas com frequência e produto certos.</li>
+        <li><strong>Densidade:</strong> fio fino precisa de produtos mais leves. Fio denso aguenta produtos mais ricos. Isso afeta principalmente a escolha dos produtos de nutrição.</li>
+        <li><strong>Curvatura:</strong> fio mais fechado (3C, 4A, 4B, 4C) tem mais dificuldade de distribuir a oleosidade natural da raiz até as pontas — por isso resseca mais. A <a href="/blog/finalizacao-por-curvatura-guia-tecnico">finalização por curvatura</a> muda dependendo do grau de curvatura, e o cronograma acompanha essa lógica.</li>
+        <li><strong>Rotina atual:</strong> se você já tem uma rotina funcionando, não precisa reinventar tudo. Identifica o que está funcionando, o que está faltando e ajusta só o que for necessário. Pode ser que uma <a href="/blog/rotina-minimalista-cabelos-cacheados">rotina minimalista para cacheados</a> com menos produtos já resolva o que o cronograma carregado não conseguiu.</li>
+      </ul>
+
+      <h2>A Pergunta Certa Antes de Começar</h2>
+      <p>Antes de pesquisar "melhor cronograma capilar para cacheado", há uma pergunta mais útil:</p>
+      <p>O meu cabelo está com problema de cuidado — ou de corte, de produto, de técnica de aplicação?</p>
+      <p>Cronograma resolve problema de nutrição e hidratação do fio. Não resolve distribuição de peso, não resolve ponta dupla acumulada, não resolve fio mal lido.</p>
+      <p>Se você não sabe qual é o problema real, qualquer protocolo vai ser uma tentativa no escuro.</p>
+      <p>O caminho que funciona começa com diagnóstico — não com lista de produto.</p>
+      <p>Se quiser fazer esse diagnóstico com quem lê o fio antes de qualquer outra coisa, o Studio do Jon atende em Belo Horizonte. O agendamento é pelo link abaixo.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">Agendar diagnóstico</a>
+      </div>
+
+      <p><i>Jonatan Junior é especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>
+
+      <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <h3>Continue Lendo</h3>
+        <ul style="list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1rem;">
+            → <a href="/blog/teste-de-porosidade-guia-definitivo">Teste da Porosidade: O segredo para parar de "jogar produto fora"</a>
+          </li>
+          <li style="margin-bottom: 1rem;">
+            → <a href="/blog/cabelo-cacheado-ressecado-porosidade">Cabelo Cacheado Ressecado? Seu Fio Não Tá Bebendo Água, Tá Desperdiçando!</a>
+          </li>
+          <li style="margin-bottom: 1rem;">
+            → <a href="/blog/rotina-minimalista-cabelos-cacheados">Rotina Minimalista para Cabelos Cacheados: 3 Produtos e o Guia Real</a>
+          </li>
+        </ul>
+      </div>
+    `
+  },
+  {
     id: 28,
     slug: '3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos',
     title: '3 coisas que eu, como especialista, NUNCA faria no meu próprio cabelo',
