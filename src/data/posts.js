@@ -9,7 +9,7 @@ export const posts = [
     date: '05 de Maio, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-cronograma-capilar.png',
+    image: '/blog-cronograma-capilar.webp',
     content: `
       <h2>Introdução</h2>
       <p>Você pesquisou, escolheu os produtos, montou a sequência — hidratação, nutrição, reconstrução — e seguiu à risca por semanas.</p>
@@ -148,7 +148,7 @@ export const posts = [
     date: '30 de Abril, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-3-erros-capa.png',
+    image: '/blog-3-erros-capa.webp',
     content: `
       <h2>Introdução</h2>
       <p>Se você me acompanha por aqui ou lá no Instagram, sabe que eu prezo pela saúde real do fio. Não acredito em milagres de prateleira, acredito em ciência e técnica.</p>
@@ -180,51 +180,51 @@ export const posts = [
     date: '26 de Abril, 2026',
     author: 'Jon',
     category: 'Metodologia',
-    image: '/blog-leitura-fio-capa.jpg',
+    image: '/blog-leitura-fio-capa.webp',
     content: `
       <h2>Introdução</h2>
       <p>Você já saiu de um salão com o cabelo diferente do que planejou? Não diferente no bom sentido. Diferente no sentido de "isso não era pra ser assim."</p>
       <p>A maioria das pessoas culpa o profissional. Algumas culpam o próprio cabelo. Poucas conseguem identificar o que realmente aconteceu. O que aconteceu foi simples: ninguém leu o fio antes de cortar.</p>
 
       <h2>O que é leitura de fio</h2>
-      <img src="/blog-leitura-fio-analise.jpg" alt="Jon analisando mecha de cabelo úmido" class="post-inline-image" />
+      <img src="/blog-leitura-fio-analise.webp" alt="Jon analisando mecha de cabelo úmido" class="post-inline-image" />
       <p>Leitura de fio não é um termo bonito que inventei pra marketing. É uma metodologia que desenvolvi ao longo de anos estudando estrutura capilar, tricologia, técnicas de corte em cabelos cacheados, crespos e ondulados — e, principalmente, entendendo por que tantos cortes "certos" saíam errados.</p>
       <p>A premissa é direta: o fio tem uma linguagem. Antes de qualquer corte, você precisa ouvi-la. Cabelo cacheado, crespo e ondulado é complexo de uma forma que corte reto não é. O mesmo fio pode se comportar diferente dependendo de hidratação, histórico químico, zona do couro, peso acumulado e como está sendo finalizado. Cortar sem mapear isso é adivinhar. E adivinhação gera erro.</p>
 
       <h2>Por que a maioria dos cortes falha</h2>
-      <img src="/blog-leitura-fio-falha.jpg" alt="Tesoura sobre cabelo cacheado seco e sem forma" class="post-inline-image" />
+      <img src="/blog-leitura-fio-falha.webp" alt="Tesoura sobre cabelo cacheado seco e sem forma" class="post-inline-image" />
       <p>Existe um padrão nos clientes que chegam até mim depois de um corte que não deu certo. O profissional anterior olhou para o cabelo finalizado, decidiu o corte na hora, cortou o que viu e confiou que o resultado seria o esperado.</p>
       <p>O problema: cabelo cacheado com produto, com finalização errada ou com histórico químico não mostra a sua forma real. Ele mostra uma versão distorcida. Cortar em cima disso é construir em terreno que você não conhece. O Método Leitura de Fio existe para resolver exatamente esse problema.</p>
 
       <h2>Os passos do método</h2>
       
       <h3>Passo 1 — Escuta antes do diagnóstico</h3>
-      <img src="/blog-leitura-fio-escuta.jpg" alt="Jon em consulta atenta com cliente" class="post-inline-image" />
+      <img src="/blog-leitura-fio-escuta.webp" alt="Jon em consulta atenta com cliente" class="post-inline-image" />
       <p>O primeiro contato não é visual. É verbal. Antes de olhar para o cabelo, eu preciso entender quem é a pessoa que está na cadeira. Isso inclui histórico de procedimentos químicos, rotina de finalização, comportamento do cabelo e o que a pessoa realmente deseja.</p>
       <p>Essa distinção importa. Muita cliente quer "só um shape" quando o que o fio precisa é de uma reconstrução estrutural do corte. Entender isso antes de pegar a tesoura evita um segundo erro em cima do primeiro.</p>
 
       <h3>Passo 2 — Análise do fio seco, sem produto</h3>
-      <img src="/blog-leitura-fio-seco.jpg" alt="Vista de cima de cabelo 4A solto e seco" class="post-inline-image" />
+      <img src="/blog-leitura-fio-seco.webp" alt="Vista de cima de cabelo 4A solto e seco" class="post-inline-image" />
       <p>Antes de qualquer água ou procedimento, observo o cabelo no estado em que chegou. O fio seco mostra o padrão real de curvatura, zonas de transição, distribuição de volume e o estado real das pontas. Esse mapa é o ponto de partida. Sem ele, qualquer decisão de corte é baseada em suposição.</p>
 
       <h3>Passo 3 — Diagnóstico de couro cabeludo</h3>
-      <img src="/blog-leitura-fio-couro.jpg" alt="Mãos separando cabelo para diagnóstico de couro cabeludo" class="post-inline-image" />
+      <img src="/blog-leitura-fio-couro.webp" alt="Mãos separando cabelo para diagnóstico de couro cabeludo" class="post-inline-image" />
       <p>Couro cabeludo saudável é a base de tudo. Ele determina como o fio nasce, como cresce e como se sustenta. Observo oleosidade, sensibilidade, padrão de crescimento e densidade real. Tricologia não é só tratamento. É informação para o corte.</p>
 
       <h3>Passo 4 — Avaliação do histórico químico</h3>
-      <img src="/blog-leitura-fio-quimica.jpg" alt="Comparação entre textura virgem e em transição" class="post-inline-image" />
+      <img src="/blog-leitura-fio-quimica.webp" alt="Comparação entre textura virgem e em transição" class="post-inline-image" />
       <p>Fio que passou por química não se comporta como fio virgem. O processo químico altera a proteína, o ângulo de curvatura e a porosidade. Mapeio a linha de demarcação, o grau de porosidade e a elasticidade. Cortar uma transição sem entender onde está cada zona é garantia de corte desigual.</p>
 
       <h3>Passo 5 — Análise molhada e avaliação do padrão real</h3>
-      <img src="/blog-leitura-fio-molhado.jpg" alt="Cabelo 3B/3C molhado revelando curvatura autêntica" class="post-inline-image" />
+      <img src="/blog-leitura-fio-molhado.webp" alt="Cabelo 3B/3C molhado revelando curvatura autêntica" class="post-inline-image" />
       <p>Depois da limpeza, com o fio úmido e sem produto, observo como o cacho se forma naturalmente. Isso revela a curvatura real sem interferência de produto, onde o fio precisa de peso ou leveza, e as assimetrias naturais. É aqui que a maioria das decisões de corte é tomada.</p>
 
       <h3>Passo 6 — Definição da técnica de corte</h3>
-      <img src="/blog-leitura-fio-tecnica.jpg" alt="Jon cortando mecha por mecha com precisão" class="post-inline-image" />
+      <img src="/blog-leitura-fio-tecnica.webp" alt="Jon cortando mecha por mecha com precisão" class="post-inline-image" />
       <p>Com tudo mapeado, escolho a técnica: corte molhado vs. seco, distribuição de camadas, técnica em espiral e ponto de queda. Essa decisão só é possível depois dos cinco passos anteriores. Pular algum deles é cortar no escuro.</p>
 
       <h3>Passo 7 — Finalização como validação</h3>
-      <img src="/blog-leitura-fio-validacao.jpg" alt="Cliente satisfeita com resultado do corte no espelho" class="post-inline-image" />
+      <img src="/blog-leitura-fio-validacao.webp" alt="Cliente satisfeita com resultado do corte no espelho" class="post-inline-image" />
       <p>A finalização serve para confirmar se o que foi planejado se realizou. Se o shape está correto, o cacho define com menos produto. Se o volume está equilibrado, não precisa de recurso para segurar a forma. O método prevê calibração final se necessário.</p>
 
       <h2>O que muda quando o fio é lido corretamente</h2>
@@ -247,7 +247,7 @@ export const posts = [
     date: '25 de Abril, 2026',
     author: 'Jon',
     category: 'Ciência Capilar',
-    image: '/blog-ph-capilar-v2.png',
+    image: '/blog-ph-capilar-v2.webp',
     content: `
       <h2>Introdução: O Brilho é uma Questão de Física</h2>
       <p>Muitas clientes chegam ao Studio reclamando que o cabelo "não tem vida". Elas investem centenas de reais em máscaras importadas, mas o fio continua com aquele aspecto opaco, áspero ao toque e que parece "beber" o creme sem reter nada. Sabe o que está acontecendo? O pH do seu cabelo está em guerra com você.</p>
@@ -306,7 +306,7 @@ export const posts = [
     date: '24 de Abril, 2026',
     author: 'Jon',
     category: 'Corte & Técnica',
-    image: '/blog-wolf-capa.png',
+    image: '/blog-wolf-capa.webp',
     content: `
       <h2>Introdução</h2>
       <p>Você viu esse corte viral no TikTok? Aquele que parece selvagem, descontrolado, mas de um jeito que funciona? Pois é. Wolf cut. A gente chama de "corte lobo" porque combina volume agressivo no topo com comprimento mais longo na parte de trás — tipo a melena de um lobo. Selvagem, chique, atrevido.</p>
@@ -364,7 +364,7 @@ export const posts = [
     date: '21 de Abril, 2026',
     author: 'Jon',
     category: 'Tendências & Estilo',
-    image: '/blog-shag-capa.png',
+    image: '/blog-shag-capa.webp',
     content: `
       <h2>Introdução</h2>
       <p>Aquele corte setentista bagunçadinho que voltou com tudo nas ruas? Sim. Aquele corte que você vê no TikTok e pensa "nossa, que legal"? Provavelmente é shag. Só que tem um detalhe que ninguém fala: shag em cabelo cacheado é completamente diferente de shag em cabelo liso.</p>
@@ -465,7 +465,7 @@ export const posts = [
     date: '18 de Abril, 2026',
     author: 'Jon',
     category: 'Homens & Estilo',
-    image: '/blog-masculino-capa.png',
+    image: '/blog-masculino-capa.webp',
     content: `
       <h2>A Revolução Cacheada: Lendo a Textura</h2>
       <p>Em vez de lutar contra o volume do cabelo cacheado, a nova abordagem é ler o padrão dele, cortar de forma inteligente e deixar o cacho aparecer. Isso abriu espaço pra cortes que antes eram impensáveis num homem com cabelo cacheado. Conheça nossos <a href="/servicos">serviços de corte visagista</a>.</p>
@@ -478,26 +478,26 @@ export const posts = [
       <p><strong>Por que funciona:</strong> o shaggy respira. Não prende o cacho, deixa ele solto e natural. E o movimento que ele cria faz o cabelo parecer mais controlado sem estar alisado.</p>
       <p><strong>Tipo de rosto:</strong> funciona com quase todos, mas fica especialmente bom em rosto quadrado ou retangular.</p>
       
-      <img src="/blog-masculino-shaggy.png" alt="Shaggy Cacheado masculino: volume e textura harmonizados" class="post-inline-image" />
+      <img src="/blog-masculino-shaggy.webp" alt="Shaggy Cacheado masculino: volume e textura harmonizados" class="post-inline-image" />
 
       <h3>2. Fade Texturizado (A opção mais prática)</h3>
       <p>Não é aquele fade raso de antes. O fade texturizado deixa as laterais curtas (2-3cm) mas com textura mantida. O topo fica mais comprido (5-8cm) com camadas que respeitam o cacho.</p>
       <p><strong>Como é:</strong> transição suave das laterais pro topo, volume mantido, sem ficar aquele contraste brutal.</p>
       <p><strong>Por que funciona:</strong> é super prático. Você lava, penteia com os dedos, e fica bom. Não precisa de muito estilo. Mas foge do clichê do undercut chato.</p>
       
-      <img src="/blog-masculino-fade.png" alt="Fade com textura na lateral para cabelos cacheados masculinos" class="post-inline-image" />
+      <img src="/blog-masculino-fade.webp" alt="Fade com textura na lateral para cabelos cacheados masculinos" class="post-inline-image" />
 
       <h3>3. Corte Comprido com Camadas</h3>
       <p>Aqui a gente não corta curto. Mantemos o comprimento — do queixo pra baixo ou ombro — e fazemos camadas estratégicas que controlam o volume sem matar a textura.</p>
       <p><strong>Por que funciona:</strong> se você quer deixar o cabelo crescer mas acha que vai ficar incontrolável, esse é o corte. As camadas fazem a mágica.</p>
       
-      <img src="/blog-masculino-comprido.png" alt="Corte comprido com volume controlado para homem" class="post-inline-image" />
+      <img src="/blog-masculino-comprido.webp" alt="Corte comprido com volume controlado para homem" class="post-inline-image" />
 
       <h3>4. Tapered Cut (O corte versátil)</h3>
       <p>É um fade, mas suave. As laterais diminuem gradualmente, e o topo fica volumoso com camadas leves.</p>
       <p><strong>Por que funciona:</strong> é o meio-termo ideal. Bem apresentável para qualquer contexto, do escritório ao casual.</p>
       
-      <img src="/blog-masculino-tapered.png" alt="Tapered cut elegante em cabelo escuro" class="post-inline-image" />
+      <img src="/blog-masculino-tapered.webp" alt="Tapered cut elegante em cabelo escuro" class="post-inline-image" />
 
       <h2>Os Erros que Cabeleireiros Cometem</h2>
       <ul>
@@ -516,7 +516,7 @@ export const posts = [
       <h2>O Método que usamos aqui: Da escuta ao Visagismo real</h2>
       <p>Quando um cara chega aqui, não usamos máquina para passar "zero, um, dois" no escuro. Fazemos a **Leitura do Fio** técnica: eu escuto como é sua rotina, analiso a densidade das mechas e encaixo o corte que faça seu formato de rosto subir de nível esteticamente e ser fácil de manter em casa.</p>
       
-      <img src="/blog-masculino-info.png" alt="Infográfico: ciclo de manutenção de corte cacheado masculino" class="post-inline-image" />
+      <img src="/blog-masculino-info.webp" alt="Infográfico: ciclo de manutenção de corte cacheado masculino" class="post-inline-image" />
 
 
 
@@ -533,7 +533,7 @@ export const posts = [
     date: '18 de Abril, 2026',
     author: 'Jon',
     category: 'Corte & Técnica',
-    image: '/blog-visagismo-capa.png',
+    image: '/blog-visagismo-capa.webp',
     content: `
       <h2>Visagismo + cabelo cacheado: como funciona de verdade</h2>
       <p>Você vê um corte numa cacheada que tem o rosto parecido com o seu, ama, tira print, leva pro cabeleireiro. Chega em casa, se vê no espelho e... não é a mesma coisa. Fica ali pensando: "Por que nela fica perfeito e em mim fica errado?"</p>
@@ -557,7 +557,7 @@ export const posts = [
         <li>O formato do rosto (sim, claro, mas apenas como parte da equação e não conclusão isolada)</li>
       </ul>
       
-      <img src="/blog-visagismo-analise.png" alt="Processo técnico de análise e leitura de fios molhados e secos" class="post-inline-image" />
+      <img src="/blog-visagismo-analise.webp" alt="Processo técnico de análise e leitura de fios molhados e secos" class="post-inline-image" />
       
       <p>Com essas informações todas, aí sim eu penso em qual corte equilibra a proporção do rosto mantendo a textura saudável.</p>
 
@@ -583,15 +583,15 @@ export const posts = [
       
       <p><strong>Rosto Redondo:</strong> Precisa de alongamento no visual final. Cortes com o volume focado do <em>mid point</em> para o topo funcionam excelentemente, equilibrando o peso excessivo em torno da região das bochechas.</p>
       
-      <img src="/blog-visagismo-redondo.png" alt="Rosto redondo cacheado bem harmonizado" class="post-inline-image" />
+      <img src="/blog-visagismo-redondo.webp" alt="Rosto redondo cacheado bem harmonizado" class="post-inline-image" />
 
       <p><strong>Rosto Quadrado:</strong> O foco está na quebra de retidão geométrica. Camadas em diagonais alongadas ou franjas com muita ondulação tiram o rigor da estrutura mandibular expressiva.</p>
       
-      <img src="/blog-visagismo-quadrado.png" alt="Rosto quadrado disfarçado pelas curvas cacheadas corretas do corte" class="post-inline-image" />
+      <img src="/blog-visagismo-quadrado.webp" alt="Rosto quadrado disfarçado pelas curvas cacheadas corretas do corte" class="post-inline-image" />
 
       <p><strong>Rosto Triangular/Coração:</strong> Para pessoas com testa maior ou maçãs amplas que afilam fortemente na região inferior. Concentrar as partes principais da forma arredondando bem baixo e nas margens estabiliza e traz volume à parte reduzida do próprio rosto.</p>
       
-      <img src="/blog-visagismo-triangular.png" alt="Rosto triangular preenchido harmoniosamente pelo volume e moldura capilar" class="post-inline-image" />
+      <img src="/blog-visagismo-triangular.webp" alt="Rosto triangular preenchido harmoniosamente pelo volume e moldura capilar" class="post-inline-image" />
       
       <h2>Por que a maioria erra</h2>
       <p>Tratar visagismo feminino e as texturas encaracoladas e afro puramente como "fórmula" garante cortes até que bonitos tecnicamente, porém frustrantes de forma sistemática.</p>
@@ -609,7 +609,7 @@ export const posts = [
     date: '17 de Abril, 2026',
     author: 'Jon',
     category: 'Química & Danos',
-    image: '/blog-botox-capilar.png',
+    image: '/blog-botox-capilar.webp',
     content: `
       <h2>Resposta direta: Sim. E aqui está por quê eu sou contra.</h2>
       <p>Você faz essa pergunta porque já viu o resultado em outra pessoa. O cabelo fica liso, comportado, brilhando... Parece solução. Mas aqui dentro tem um problema que ninguém fala no comecinho. E é por isso que eu não recomendo.</p>
@@ -621,7 +621,7 @@ export const posts = [
       <h3>1. Destrói a estrutura natural do fio</h3>
       <p>O botox age com uma fórmula à base de queratina, colágeno e aminoácidos. Tudo bonito na teoria. O produto vai no fio, senta por 20 a 40 minutos, depois entra a chapinha em temperatura alta. Essa combinação amolece as ligações internas do fio para que a chapinha consiga moldar.</p>
 
-      <img src="/blog-botox-estrutura.png" alt="Comparativo: Estrutura capilar saudável vs danificada" class="post-inline-image" />
+      <img src="/blog-botox-estrutura.webp" alt="Comparativo: Estrutura capilar saudável vs danificada" class="post-inline-image" />
       <blockquote>Aqui vem o problema: aquelas ligações internas? Elas seguram a curvatura natural do seu cacho. Quando você as amolece para alisar, você está mexendo na estrutura que faz seu cacho ser cacho.</blockquote>
       <p>Não é reversível na hora. O fio leva meses para recuperar. E se você repetir a cada 2 meses (que é o ciclo que a maioria faz)? Seu fio nunca recupera.</p>
 
@@ -633,7 +633,7 @@ export const posts = [
       <h3>3. Vicia — e cada aplicação estraga mais que a anterior</h3>
       <p>Botox dura 3 meses. Às vezes menos se você lava o cabelo toda semana. Aí bate o mês 2, seu cacho tá voltando, o frizz tá aparecendo de novo, e você quer aquele cabelo "liso e com brilho" de volta.</p>
 
-      <img src="/blog-botox-timeline.png" alt="Linha do tempo: Deterioração da fibra capilar com botox" class="post-inline-image" />
+      <img src="/blog-botox-timeline.webp" alt="Linha do tempo: Deterioração da fibra capilar com botox" class="post-inline-image" />
       <p>Volta pro profissional. Faz de novo. E de novo. E de novo.</p>
       <p>Cada aplicação danifica um pouco mais. O fio fica mais fraco, mais quebradiço. Algumas pessoas relatam o <strong>"efeito rebote"</strong> — o cabelo fica tão danificado que brilha apenas pela plastificação, mas morre por dentro.</p>
       <p>E aqui tá o que ninguém fala: você fica preso nesse ciclo. Parou o botox? O cabelo volta ao natural, mas agora está danificado. Você não retorna ao cacho saudável que tinha antes. Volta a um cacho que sofreu química.</p>
@@ -644,14 +644,14 @@ export const posts = [
       <h3>O corte certo</h3>
       <p>Não é decoração. É leitura de fio. Sou cabeleireiro. Quando você chega aqui, eu não olho só para "ah, deixa curto que controla volume". Eu leio como o fio <em>behave</em> (se comporta). Como ele cai. Onde ele tem mais peso. Onde ele tem mais movimento.</p>
 
-      <img src="/blog-botox-comparacao.png" alt="Comparação: Cacho plastificado vs Cacho saudável com corte especializado" class="post-inline-image" />
+      <img src="/blog-botox-comparacao.webp" alt="Comparação: Cacho plastificado vs Cacho saudável com corte especializado" class="post-inline-image" />
       <blockquote>Um corte bem feito respeita a curvatura natural do seu cacho e redistribui o peso de forma que o volume é controlado pelo próprio fio. Não é alisado. Não é danificado. É inteligência no corte.</blockquote>
 
       <h3>Cronograma capilar personalizado</h3>
       <p>Aqui é onde muita gente trava. A maioria usa cronograma genérico: "segunda hidrata, quarta reconstrói, sexta nutrição". Soa prático. Não funciona.</p>
       <p>Por quê? Porque seu fio é único. O seu pode estar quebradiço, enquanto o de outra pessoa está apenas ressecado. Cronograma personalizado significa: a gente analisa o seu fio, vê exatamente o que ele precisa e monta uma rotina que funciona.</p>
 
-      <img src="/blog-botox-analise.png" alt="Leitura técnica de fio para cronograma personalizado" class="post-inline-image" />
+      <img src="/blog-botox-analise.webp" alt="Leitura técnica de fio para cronograma personalizado" class="post-inline-image" />
 
       <h2>O que você realmente vai encontrar aqui</h2>
       <ul>
@@ -671,7 +671,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Corte & Técnica',
-    image: '/blog-epidemia-corte-generico.png',
+    image: '/blog-epidemia-corte-generico.webp',
     content: `
       <h2>Cortar o seu cabelo sem molhar virou a grande isca da internet.</h2>
       <p>Todo salão agora diz que faz. Mas se quem está segurando a tesoura não sabe mapear a sua densidade, afastar a água não serve para nada. Você vai sair da cadeira com pontas esburacadas e um volume completamente sem sentido.</p>
@@ -697,7 +697,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Biologia Capilar',
-    image: '/blog-multiplas-texturas.png',
+    image: '/blog-multiplas-texturas.webp',
     content: `
       <h2>Você joga o cabelo para o lado e parece que falta um pedaço bem no meio do pescoço.</h2>
       <p>O topo encolhe como uma mola perfeita, mas a nuca escorre e despenca. Ter duas ou três texturas diferentes na mesma cabeça é a regra biológica. Mas sair com degraus visíveis é um erro de arquitetura capilar. Você precisa de um especialista que entenda profundamente de geometria estrutural.</p>
@@ -733,7 +733,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Técnica & Corte',
-    image: '/blog-risco-corte-seco.png',
+    image: '/blog-risco-corte-seco.webp',
     content: `
       <h2>Cortar o seu cabelo sem molhar não serve absolutamente de nada se quem está com a tesoura não souber ler a densidade da sua nuca.</h2>
       <p>A internet banalizou a técnica. Hoje, qualquer salão oferece o corte a seco apenas para surfar na tendência, mas entrega resultados esburacados, sem forma e com pontas mastigadas. A técnica não é sobre ter preguiça de lavar; é sobre dominar a arquitetura da curvatura.</p>
@@ -760,7 +760,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Química & Danos',
-    image: '/blog-cacho-descolorido.png',
+    image: '/blog-cacho-descolorido.webp',
     content: `
       <h2>Aquele loiro perfeito que você salvou na pasta do Instagram custou a estrutura interna do cacho daquela modelo.</h2>
       <p>Você pediu um "morena iluminada" sutil e saiu com as pontas ralas, o cacho esticado e uma porosidade que nenhum creme resolve. O pó descolorante não perdoa. Quando a mola morre, você não precisa de mais hidratação. Você precisa de um cabeleireiro especialista em cachos para te salvar.</p>
@@ -787,7 +787,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Transição Capilar',
-    image: '/blog-transicao-quimica.png',
+    image: '/blog-transicao-quimica.webp',
     content: `
       <h2>Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro.</h2>
       <p>Você pediu um "botox para reduzir o frizz" e saiu com um alisamento térmico mascarado. Agora, vive o pesadelo de uma transição capilar forçada, tentando tratar com creme uma haste capilar que já não tem salvação.</p>
@@ -814,7 +814,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Saúde da Fibra',
-    image: '/blog-porosidade-scab.png',
+    image: '/blog-porosidade-scab.webp',
     content: `
       <h2>Aquele creme de reconstrução caríssimo não está funcionando por um motivo estrutural profundo.</h2>
       <p>Você faz umectação, testa acidificantes famosos, mas o seu cabelo poroso não absorve creme. Ele engole o produto no banho e, algumas horas depois, seca completamente áspero e sem definição. Sabe por quê? Porque tentar hidratar uma haste que perdeu a capacidade física de reter líquido é lutar contra as leis da química.</p>
@@ -844,7 +844,7 @@ export const posts = [
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Corte & Volume',
-    image: '/blog-arquitetura-volume.png',
+    image: '/blog-arquitetura-volume.webp',
     content: `
       <h2>O seu cabelo não tem vontade própria. Ele só está com o peso geométrico acumulado no lugar errado.</h2>
       <p>Você senta na cadeira, pede movimento e sai com a raiz escorrida e as pontas armadas. O clássico formato de abajur ou "pirâmide". O erro não está na sua textura. O erro está na tesoura que cortou seu cabelo como se ele fosse liso.</p>
@@ -877,7 +877,7 @@ export const posts = [
     date: '13 de Abril, 2026',
     author: 'Jon',
     category: 'Educação Capilar',
-    image: '/blog-salao-casa.png',
+    image: '/blog-salao-casa.webp',
     content: `
       <h2>Por que seu cabelo fica bonito no salão e diferente em casa?</h2>
       <p>Você já passou por isso: sai do studio se sentindo a própria protagonista de comercial de shampoo. Mas aí, dois dias depois, você tenta lavar, tenta finalizar e... o resultado parece outra pessoa. O cacho não "arma" igual e a frustração bate forte.</p>
@@ -910,7 +910,7 @@ export const posts = [
     date: '13 de Abril, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-embaraco.png',
+    image: '/blog-embaraco.webp',
     content: `
       <h2>Cabelo cacheado embaraça muito? O que isso revela sobre rotina, corte e saúde do fio</h2>
       <p>Se o desembaraço virou uma luta corporal digna de novela das 9, calma: o problema não é “o seu cabelo ser impossível”. Na maioria das vezes, cabelo cacheado que embaraça demais está dando sinais claros de ressecamento, atrito, excesso de quebra, corte vencido ou rotina errada.</p>
@@ -969,7 +969,7 @@ export const posts = [
     date: '13 de Abril, 2026',
     author: 'Jon',
     category: 'Saúde Capilar',
-    image: '/blog-encolhimento.png',
+    image: '/blog-encolhimento.webp',
     content: `
       <h2>"Cortei dois dedos e subiram dez?" Calma, não é bruxaria, é estrutura capilar.</h2>
       <p>Se você é cacheada ou crespa, com certeza já viveu esse filme de terror: você pede para o cabeleireiro tirar "só as pontinhas", ele corta com o cabelo molhado e, quando seca… puf! O cabelo encolhe tanto que você sai do salão querendo chorar no banho.</p>
@@ -1010,7 +1010,7 @@ export const posts = [
     date: '13 de Abril, 2026',
     author: 'Jon',
     category: 'Rotina',
-    image: '/blog-rotina-minimalista.png',
+    image: '/blog-rotina-minimalista.webp',
     content: `
       <h2>Cabelo de 400 reais, estratégia de 2: por que o excesso de produto está matando seus cachos</h2>
       <p>Se você precisa de um ritual de 2 horas, 5 cremes diferentes e uma reza forte pra ter um day after decente, eu tenho uma notícia (e talvez você não goste): seu cabelo não é difícil, sua estratégia é que é confusa.</p>
@@ -1034,7 +1034,7 @@ export const posts = [
 
       <p><strong>Creme leve ou Gelatina?</strong> Se você quer movimento e toque macio, vá de creme. Se quer que o cacho dure 3 dias sem mexer, a gelatina (ou um gel de qualidade) é seu melhor amigo. O truque é a água: aplique com o cabelo bem úmido para o produto distribuir sem pesar.</p>
 
-      <img src="/infografico.png" alt="Comparativo: Rotina Complicada vs Rotina Minimalista" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+      <img src="/infografico.webp" alt="Comparativo: Rotina Complicada vs Rotina Minimalista" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
 
       <h2>A Ordem que Resolve (O Checklist)</h2>
       <ul>
@@ -1058,7 +1058,7 @@ export const posts = [
       <h2>Cansada de lutar contra o espelho e gastar o salário na prateleira da farmácia?</h2>
       <p>Às vezes, o que seu cabelo precisa não é de um produto novo, mas de um profissional que saiba ler o que ele está tentando te dizer.</p>
 
-      <img src="/blog-jon-analisando-mecha.png" alt="Jon analisando uma mecha com olhar clínico" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+      <img src="/blog-jon-analisando-mecha.webp" alt="Jon analisando uma mecha com olhar clínico" style="width: 100%; border-radius: 8px; margin: 2rem 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
 
       <p>Aqui no Studio do Jon, meu foco é a Leitura de Fio. Antes de encostar a tesoura ou sugerir qualquer tratamento, eu analiso a estrutura real do seu cabelo para que você pare de ser refém de rotinas infinitas e aprenda a amar o que vê no espelho — de um jeito prático.</p>
 
@@ -1075,7 +1075,7 @@ export const posts = [
     date: '07 de Abril, 2026',
     author: 'Jon',
     category: 'Saúde Capilar',
-    image: '/blog-sulfato.png',
+    image: '/blog-sulfato.webp',
     content: `
       <p>Primeiro, um esclarecimento técnico importante: "sulfato" não é um ingrediente único. É um apelido popular para um grupo de substâncias chamadas surfactantes (ou tensoativos), que são os agentes de limpeza dos shampoos.</p>
 
@@ -1166,7 +1166,7 @@ export const posts = [
     date: '06 de Abril, 2026',
     author: 'Jon',
     category: 'Saúde Capilar',
-    image: '/blog-porosidade.png',
+    image: '/blog-porosidade.webp',
     content: `
       <p>Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? Ou que ele seca em 5 minutos e já está com aspecto de palha de novo? O problema pode não ser o produto, mas sim a porosidade do seu fio.</p>
 
@@ -1235,7 +1235,7 @@ export const posts = [
     date: '06 de Abril, 2026',
     author: 'Jon',
     category: 'Finalização',
-    image: '/blog-curvaturas.png',
+    image: '/blog-curvaturas.webp',
     content: `
       <p>Se você já tentou copiar a finalização daquela influenciadora e o resultado no seu cabelo foi um desastre, calma. Não é culpa do seu fio e, muitas vezes, nem do produto. O segredo está na física: a estrutura de um ondulado 2C é completamente diferente de um crespo 4C, e a técnica precisa acompanhar essas mudanças de forma e densidade.</p>
 
@@ -1301,7 +1301,7 @@ export const posts = [
     date: '06 de Abril, 2026',
     author: 'Jon',
     category: 'Saúde Capilar',
-    image: '/blog-frizz-dano.png',
+    image: '/blog-frizz-dano.webp',
     content: `
       <p>Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz. Muita gente entra em pânico ao ver o primeiro fiozinho "arrepiado", mas a verdade nua e crua é esta: frizz não é, automaticamente, sinal de cabelo destruído.</p>
 
@@ -1376,7 +1376,7 @@ export const posts = [
     date: '05 de Abril, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-day-after.png',
+    image: '/blog-day-after.webp',
     content: `
       <p>Sabe aquele desespero de acordar, olhar no espelho e ver que os cachos que você demorou uma era para finalizar ontem resolveram tirar férias hoje? Pois é, a gente sabe que o day after pode ser um verdadeiro campo de batalha. Mas ó: ter definição duradoura não é sorte nem milagre, é ciência aplicada com os movimentos certos.</p>
 
@@ -1411,7 +1411,7 @@ export const posts = [
     date: '30 de Março, 2026',
     author: 'Jon',
     category: 'Transição Capilar',
-    image: '/blog-liberdade-2026.png',
+    image: '/blog-liberdade-2026.webp',
     content: `
       <p>O papo hoje é sobre identidade e respeito.</p>
       
@@ -1485,7 +1485,7 @@ export const posts = [
 
 
     `,
-    image: '/blog-frizz.png'
+    image: '/blog-frizz.webp'
   },
   {
     id: 2,
@@ -1495,7 +1495,7 @@ export const posts = [
     date: '30 de Março, 2026',
     author: 'Jon',
     category: 'Transição Capilar',
-    image: '/blog-transicao-bh.png',
+    image: '/blog-transicao-bh.webp',
     content: `
       <p>Decidir parar com a química e assumir a textura natural é um ato de coragem, mas a gente sabe: a fase das "duas texturas" não é fácil. Se você está em transição capilar em Belo Horizonte, provavelmente já se pegou no espelho sem saber o que fazer com a raiz cacheada e as pontas lisas.</p>
 
@@ -1529,7 +1529,7 @@ export const posts = [
     date: '30 de Março, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-ressecamento.png',
+    image: '/blog-ressecamento.webp',
     content: `
       <p>Vamos falar de ciência capilar de verdade. Você já passou creme, máscara, óleo, leave-in, gelatina, oração e promessa no cabelo... e duas horas depois ele tá mais seco que o Saara em agosto?</p>
 
