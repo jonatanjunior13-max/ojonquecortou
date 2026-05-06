@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from 'react-router-dom';
 import { posts } from '../data/posts';
 import './Blog.css';
 import { ArrowLeft } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
@@ -14,6 +15,12 @@ const BlogPostPage = () => {
 
   return (
     <main className="post-page">
+      <SEO 
+        title={`${post.title} | Studio do Jon`} 
+        description={post.excerpt || `Artigo sobre ${post.title} por Jonatan Junior, especialista em cachos.`}
+        image={post.image}
+        url={`/blog/${post.slug}`}
+      />
       <div className="container">
         <Link to="/blog" className="post-back reveal active">
           <ArrowLeft size={18} /> Voltar para o blog
