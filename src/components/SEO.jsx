@@ -28,9 +28,9 @@ const SEO = ({ title, description, image, url }) => {
       updateMeta('og:description', description, true);
     }
 
-    if (image) {
-      updateMeta('og:image', `https://www.ojonquecortou.com.br${image}`, true);
-    }
+    const defaultImage = '/logo-cabeleireiro-de-cachos.png';
+    const finalImage = image || defaultImage;
+    updateMeta('og:image', `https://www.ojonquecortou.com.br${finalImage}`, true);
 
     if (url || typeof window !== 'undefined') {
       const currentUrl = url ? `https://www.ojonquecortou.com.br${url}` : window.location.href;
