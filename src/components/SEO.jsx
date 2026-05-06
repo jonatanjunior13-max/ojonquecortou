@@ -21,16 +21,21 @@ const SEO = ({ title, description, image, url }) => {
     if (title) {
       document.title = title;
       updateMeta('og:title', title, true);
+      updateMeta('twitter:title', title, false);
     }
     
     if (description) {
       updateMeta('description', description, false);
       updateMeta('og:description', description, true);
+      updateMeta('twitter:description', description, false);
     }
 
     const defaultImage = '/logo-cabeleireiro-de-cachos.png';
     const finalImage = image || defaultImage;
-    updateMeta('og:image', `https://www.ojonquecortou.com.br${finalImage}`, true);
+    const fullImageUrl = `https://www.ojonquecortou.com.br${finalImage}`;
+    updateMeta('og:image', fullImageUrl, true);
+    updateMeta('twitter:image', fullImageUrl, false);
+    updateMeta('twitter:card', 'summary_large_image', false);
 
     if (url || typeof window !== 'undefined') {
       const currentUrl = url ? `https://www.ojonquecortou.com.br${url}` : window.location.href;

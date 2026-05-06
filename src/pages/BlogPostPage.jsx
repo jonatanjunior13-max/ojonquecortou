@@ -16,8 +16,8 @@ const BlogPostPage = () => {
   return (
     <main className="post-page">
       <SEO 
-        title={`${post.title} | Studio do Jon`} 
-        description={post.excerpt || `Artigo sobre ${post.title} por Jonatan Junior, especialista em cachos.`}
+        title={post.title} 
+        description={post.metaDescription || post.excerpt}
         image={post.image}
         url={`/blog/${post.slug}`}
       />
