@@ -38,21 +38,21 @@ const BlogPostPage = () => {
           
           <footer className="post-cta-section section-padding reveal active">
             <div className="post-cta-card">
-              <h2 className="heading-lg mb-2">Gostou desse conteúdo técnico?</h2>
-              <p className="paragraph-lg mb-4">
-                O próximo passo é uma leitura de fio personalizada para entender o que o seu cabelo precisa.
-              </p>
-              
-              <div className="post-cta-btns">
-                <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-                  Agendar Online
-                </a>
-                <a href={`https://wa.me/553135866673?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline">
-                  WhatsApp
-                </a>
-                <Link to="/blog" className="btn btn-outline btn-blog">
-                  Ver outros posts
-                </Link>
+              <img src="/jon-trabalhando.jpg" alt="Jon atendendo cliente" className="post-cta-image" />
+              <div className="post-cta-content">
+                <h2 className="heading-lg">O seu cabelo não precisa de mais testes.</h2>
+                <p className="paragraph-md">
+                  Chega de tentar adivinhar o que o seu fio precisa. Agende uma leitura de fio no Studio do Jon e descubra o corte técnico exato para a sua curvatura.
+                </p>
+                
+                <div className="post-cta-btns">
+                  <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
+                    Agendar Horário
+                  </a>
+                  <a href={`https://wa.me/553135866673?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog">
+                    WhatsApp
+                  </a>
+                </div>
               </div>
             </div>
           </footer>
