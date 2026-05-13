@@ -1,5 +1,111 @@
 export const posts = [
   {
+    id: 30,
+    slug: 'frequencia-de-corte-cabelo-cacheado',
+    title: 'Frequência de Corte para Cabelo Cacheado: Saiba Quando Cortar',
+    excerpt: 'Descubra com que frequência você deve cortar seu cabelo cacheado. Técnica profissional, diferenças por tipo de corte e como evitar pontinhas duplas...',
+    metaDescription: 'Descubra com que frequência você deve cortar seu cabelo cacheado. Técnica profissional, diferenças por tipo de corte e como evitar pontinhas duplas...',
+    keywords: 'frequência corte cabelo cacheado, de quanto em quanto cortar cacho, quando cortar cabelo cacheado, quantas semanas cortar cabelo, cacho saudável',
+    date: '08 de Maio, 2026',
+    author: 'Jon',
+    category: 'Corte & Técnica',
+    image: '/blog-frequencia-corte-capa.webp',
+    content: `
+      <h2>FREQUÊNCIA DE CORTE PARA CABELO CACHEADO: QUANDO (E COMO) CORTAR</h2>
+      <p>Você sabe com que frequência deveria estar cortando seu cabelo cacheado?</p>
+      <p>A maioria das pessoas trata essa pergunta como se fosse simples. Tipo: "corta a cada três meses e pronto". Mas não é assim.</p>
+      <p>Frequência de corte não é uma regra única. É específica. Depende do tipo de corte que você tem, da estrutura do seu fio, da sua rotina de cuidados e de como aquele cabelo se comporta quando cresce. Três meses para uma pessoa? Pode ser perfeito. Para outra? É muito tempo.</p>
+      <p>Vou ser direto: cortar cabelo cacheado no intervalo errado é como regar uma planta com a quantidade certa de água no dia errado. Tecnicamente, você está fazendo algo, mas não está otimizado.</p>
+      <p>Aqui está o que você precisa saber.</p>
+
+      <h2>QUANTO TEMPO VOCÊ PODE FICAR SEM CORTAR?</h2>
+      <p>Para cabelo cacheado saudável, a janela é de 8 a 12 semanas (mais ou menos 2 a 3 meses).</p>
+      <p>Mas escuta só: essa é a média. Não é universal.</p>
+      <p>Um corte muito marcado (como um pixie curto ou um undercut estruturado) vai começar a perder forma depois de 6 a 8 semanas. Por quê? Porque a estrutura do corte depende de linhas precisas. Conforme o cabelo cresce, elas desaparecem.</p>
+      <p>Um corte mais comprido, com camadas suaves? Pode ficar bem entre 10 a 14 semanas. O cabelo cresce e as camadas acompanham melhor a transição.</p>
+      <p>A verdade nua e crua: se você tá esperando 4 ou 5 meses entre cortes, suas pontinhas duplas já se estabeleceram. E isso não é só estética — é saúde. Pontinha dupla é quebra do fio. Ela cresce.</p>
+
+      <img src="/blog-frequencia-corte-comparativo.webp" alt="Comparativo de crescimento do corte: 8, 12 e 16 semanas" class="post-inline-image" />
+
+      <h2>DIFERENÇA POR TIPO DE CORTE</h2>
+      <h3>Cortes Estruturados (Pixie, Bob, Undercut)</h3>
+      <p><strong>Frequência ideal: 6 a 8 semanas</strong></p>
+      <p>Cortes curtos e marcados vivem de estrutura. Sem ela, viraram moita. Você vai notar a diferença rápido — aquele volume diminui, o shape desaparece, e a coisa fica mole.</p>
+      <p>Se você tem um corte curto e quer mantê-lo assim, essa é a sua realidade. Compromisso. Mas vale a pena se você ama o resultado.</p>
+      
+      <h3>Cortes Médios com Camadas (Shag, Wolf Cut, Cortes Layered)</h3>
+      <p><strong>Frequência ideal: 8 a 10 semanas</strong></p>
+      <p>Esses cortes são mais generosos. As camadas criam movimento, e conforme o cabelo cresce, a geometria ainda faz sentido por mais tempo. Você pode esperar um pouco mais sem parecer desleixado.</p>
+      <p>Mas cuidado: mesmo aqui, depois de 12 semanas, aquele efeito "desfiado" que fez você amar o corte começa a virar "despenteado demais".</p>
+      
+      <h3>Cortes Compridos (Comprimento máximo com manutenção mínima)</h3>
+      <p><strong>Frequência ideal: 10 a 14 semanas</strong></p>
+      <p>Se você tá crescendo o cabelo ou quer um comprimento maior, pode ficar mais tempo. Mas e aí? As pontinhas duplas não somem sozinhas. Elas só crescem junto com o resto.</p>
+      <p>Algumas meninas me vêm com 6 ou 8 meses de crescimento pensando que eu vou "consertar" tudo com um corte. Não funciona assim. O dano tá lá. Eu corto, sim. Mas você perdeu comprimento que não volta.</p>
+
+      <h2>AQUI TEM MAIS: A ROTINA DE CUIDADOS MUDA O JOGO</h2>
+      <p>Frequência de corte não funciona sozinha. Ela tem que andar junto com sua rotina.</p>
+      <ul>
+        <li><strong>Se você não hidrata seu cabelo:</strong> As pontinhas duplas aparecem mais rápido. Você vai precisar cortar a cada 8 semanas, talvez até menos.</li>
+        <li><strong>Se você hidrata bem:</strong> Aquela janela de 10 a 12 semanas fica mais confortável. O fio aguenta melhor.</li>
+        <li><strong>Se você têm uma rotina com creme leave-in, óleos e deep conditioning:</strong> Você ganha algumas semanas extra de qualidade. Mas não infinitas.</li>
+      </ul>
+      <p>Não existe rotina mágica que te libera de cortar. Isso é mito. Corte é manutenção obrigatória em cabelo cacheado. É como trocar óleo no carro. Você pode tentar ficar sem, mas eventualmente o motor vai reclamar.</p>
+
+      <img src="/blog-frequencia-corte-tipos.webp" alt="Variação de frequência de corte por tipo de cacho (2B/2C, 3A/3B, 4A, 4C)" class="post-inline-image" />
+
+      <h2>E AÍ TEM O PADRÃO DE CACHO</h2>
+      <p>Quanto mais ondulado e soltinho é o seu cacho, mais tempo você consegue ficar.</p>
+      <ul>
+        <li><strong>Ondas leves (2B/2C):</strong> 12 a 14 semanas. Elas têm menos estrutura para começar, então o crescimento não prejudica tanto visualmente.</li>
+        <li><strong>Cachos médios (3A/3B):</strong> 10 a 12 semanas. É o doce meio termo. Nem tão soltinho que não importa, nem tão apertado que tudo cai rápido.</li>
+        <li><strong>Cachos cerrados (4A/4B):</strong> 8 a 10 semanas. Quanto mais apertado o padrão, mais marcado o corte fica inicialmente. Quando cresce, a diferença é óbvia.</li>
+        <li><strong>Coils muito cerrados (4C):</strong> 6 a 8 semanas. Isso aqui é até mais apertado. Um corte bom em 4C é escultura. Mantém essa escultura é responsabilidade sua.</li>
+      </ul>
+      <p>Não é preconceito com cabelo cacheado cerrado. É só física. Padrão mais definido = a mudança é mais visível quando cresce.</p>
+
+      <h2>COMO VOCÊ SABE QUE ESTÁ NA HORA DE CORTAR</h2>
+      <p>Não precisa esperar pela contagem de dias perfeita. Seu cabelo vai te dar sinais.</p>
+      <p>Sinais de que tá na hora:</p>
+      <ul>
+        <li><strong>Pontinhas duplas visíveis:</strong> Se você vê aquele efeito de fio desfiado nas pontas, especialmente em movimento, chegou a hora. Não deixe piorar.</li>
+        <li><strong>Frizz aumentado sem motivo:</strong> Seu produto continua o mesmo, sua rotina continua a mesma, mas o frizz piorou? Pontinhas duplas causam isso. Elas queimam a superfície do fio.</li>
+        <li><strong>Peso incomum:</strong> Seu cabelo fica pesado, mole, sem aquele bounce de antes? Crescimento + falta de manutenção = peso morto.</li>
+        <li><strong>Shape saiu da forma:</strong> Especialmente em cortes estruturados. Quando você percebe que aquele efeito que você amava sumiu, não tá mais bonito do mesmo jeito.</li>
+        <li><strong>Volume caiu:</strong> Sem motivo aparente. Cabelo mais longo não é necessariamente mais pesado, mas fios danificados são.</li>
+      </ul>
+
+      <h2>O INTERVALO ENTRE CORTES É INVESTIMENTO, NÃO DESPESA</h2>
+      <p>Aqui vem a parada real: você pode tentar "economizar" ficando 5 ou 6 meses sem cortar. Mas aí você vai pagar com:</p>
+      <ul>
+        <li>Mais perda de comprimento no próximo corte (porque o dano tá lá)</li>
+        <li>Mais tempo de recuperação da saúde do cabelo</li>
+        <li>Mais trabalho de reconstrução na rotina</li>
+      </ul>
+      <p>Versus:</p>
+      <ul>
+        <li>Cortar a cada 8 a 12 semanas, gastando menos comprimento por corte</li>
+        <li>Mantendo o cabelo saudável o tempo todo</li>
+        <li>Tendo liberdade de estilo porque o fio tá bom</li>
+      </ul>
+      <p>A matemática é simples. Pequenos investimentos regulares é mais inteligente que procrastinação cara.</p>
+
+      <h2>QUANDO VOCÊ TIRA MUITO COMPRIMENTO NUM CORTE</h2>
+      <p>Às vezes, pontinhas duplas tão estabelecidas que eu preciso cortar mais do que o ideal.</p>
+      <p>Isso é normal. Não é fracasso seu. É correção.</p>
+      <p>Mas se você quer evitar essa situação? Corta nos intervalos certos. Pega antes que o problema fique grande.</p>
+      <p>É tipo cárie no dente. Você pode deixar até virar um buraco, mas aí o dentista tem que tirar mais. Ou você trata no começo e pronto.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <p>Seu cabelo tá com pontinhas duplas visíveis agora? Não deixa mais tempo passar. Cada semana que passa, o dano cresce junto com o fio.</p>
+        <p>Marca uma consulta. Vou analisar a estrutura, a saúde e o padrão do seu cacho. Daí a gente define a frequência exata que faz sentido pra você e pra sua rotina.</p>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Corte</a>
+      </div>
+
+      <p><i>Jonatan Junior é especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>
+    `
+  },
+  {
     id: 29,
     slug: 'cronograma-capilar-cabelo-cacheado',
     title: 'Cronograma Capilar para Cabelo Cacheado: O Que Ninguém Te Conta Antes de Começar',
