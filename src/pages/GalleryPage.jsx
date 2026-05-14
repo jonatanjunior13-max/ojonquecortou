@@ -4,6 +4,36 @@ import './Gallery.css';
 
 const galleryImages = [
   {
+    id: 115,
+    url: '/corte-visagista-cachos-bh.png',
+    title: 'Corte Visagista Personalizado',
+    description: 'Análise de rosto para criar camadas que favorecem a moldura facial em cachos tipo 3.'
+  },
+  {
+    id: 116,
+    url: '/longo-cacheado-natural-bh.png',
+    title: 'Cabelos Longos e Definidos',
+    description: 'Manutenção de saúde e brilho em curvaturas naturais com corte estratégico.'
+  },
+  {
+    id: 117,
+    url: '/mechas-vermelhas-cabelo-curto-cacheado.png',
+    title: 'Short Curly com Mechas',
+    description: 'Estilo moderno com iluminação vermelha para destacar o movimento do corte curto.'
+  },
+  {
+    id: 118,
+    url: '/volume-afro-crespo-bh.jpg',
+    title: 'Poder do Afro',
+    description: 'Valorização do volume natural com corte geométrico para crespos e afros.'
+  },
+  {
+    id: 119,
+    url: '/cabelo-ondulado-ruivo-especialista.png',
+    title: 'Ruivo Ondulado',
+    description: 'Coloração personalizada e corte que realça as ondas naturais sem perder o comprimento.'
+  },
+  {
     id: 110,
     url: '/cabelo-cacheado-longo-definicao-bh.jpg',
     title: 'Cachos Longos e Saudáveis',
