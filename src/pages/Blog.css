@@ -242,6 +242,7 @@
 .btn-blog {
   border-color: var(--color-white);
   color: var(--color-white);
+  background: transparent !important;
 }
 
 .btn-blog:hover {
