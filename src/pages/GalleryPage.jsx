@@ -4,6 +4,36 @@ import './Gallery.css';
 
 const galleryImages = [
   {
+    id: 120,
+    url: '/corte-curto-cacheado-feminino-visagismo.png',
+    title: 'Corte Curto com Visagismo',
+    description: 'Design personalizado para realçar os traços faciais em cabelos curtos tipo 3.'
+  },
+  {
+    id: 121,
+    url: '/curto-cacheado-ruivo-estilo-bh.png',
+    title: 'Ruivo Curto de Atitude',
+    description: 'Coloração copper vibrante em corte curto estruturado com definição estratégica.'
+  },
+  {
+    id: 122,
+    url: '/corte-moderno-cabelo-ondulado-curto.png',
+    title: 'Ondulado Curto e Moderno',
+    description: 'Leveza e movimento para quem busca um visual prático, elegante e versátil.'
+  },
+  {
+    id: 123,
+    url: '/corte-masculino-cacheado-bh-resultado.png',
+    title: 'Cacheado Masculino',
+    description: 'Manutenção de volume e forma para o homem moderno que valoriza a curvatura natural.'
+  },
+  {
+    id: 124,
+    url: '/definicao-extrema-cachos-longos-bh.png',
+    title: 'Definição Máxima de Cachos',
+    description: 'Cabelos longos com brilho intenso e forma impecável da raiz às pontas.'
+  },
+  {
     id: 115,
     url: '/corte-visagista-cachos-bh.png',
     title: 'Corte Visagista Personalizado',
