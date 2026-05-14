@@ -11,6 +11,7 @@ function seoLinksPlugin() {
         <a href="/">Início</a>
         <a href="/sobre">Sobre o Jon</a>
         <a href="/servicos">Serviços</a>
+        <a href="/galeria">Galeria</a>
         <a href="/depoimentos">Depoimentos</a>
         <a href="/blog">Blog</a>
         ${links}

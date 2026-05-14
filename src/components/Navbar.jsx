@@ -35,6 +35,7 @@ const Navbar = () => {
           <Link to="/" className="nav-link">Início</Link>
           <Link to="/sobre" className="nav-link">Sobre o Jon</Link>
           <Link to="/servicos" className="nav-link">Serviços</Link>
+          <Link to="/galeria" className="nav-link">Galeria</Link>
           <Link to="/blog" className="nav-link">Blog</Link>
           <Link to="/depoimentos" className="nav-link">Depoimentos</Link>
           <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="nav-link social-nav-link">
@@ -58,6 +59,7 @@ const Navbar = () => {
           <Link to="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Início</Link>
           <Link to="/sobre" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Sobre o Jon</Link>
           <Link to="/servicos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Serviços</Link>
+          <Link to="/galeria" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Galeria</Link>
           <Link to="/blog" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
           <Link to="/depoimentos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Depoimentos</Link>
           <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
