@@ -1,5 +1,169 @@
 export const posts = [
   {
+    id: 31,
+    slug: 'penteados-cabelo-cacheado',
+    title: 'Penteados para Cabelo Cacheado: 5 Opções Práticas e Chiques',
+    excerpt: 'Descubra os melhores penteados para cabelos cacheados em 2026. Da praia ao trabalho, técnicas que realçam e não danificam seus cachos...',
+    metaDescription: 'Descubra os melhores penteados para cabelos cacheados em 2026. Da praia ao trabalho, técnicas que realçam e não danificam seus cachos...',
+    keywords: 'penteados cabelo cacheado, penteado preso cacho, coque cabelo cacheado, rabo de cavalo cacheado, tranças cabelo cacheado, penteado dia a dia, styles curly hair',
+    date: '14 de Maio, 2026',
+    author: 'Jon',
+    category: 'Tendências & Estilo',
+    image: '/blog-penteados-cacheado-capa.png',
+    content: `
+      <h2>Penteados para Cabelo Cacheado: Porque nem sempre solto é a melhor opção</h2>
+      <p>Sério mesmo: nem todo dia seu cabelo tá em ponto de estar solto.</p>
+      <p>Às vezes tá quente demais. Às vezes você tem reunião importante. Às vezes acordou cansada e aquele cacho não tá batendo. Ou precisa de algo mais estruturado pro evento.</p>
+      <p>O problema que a maioria enfrenta é tentar fazer penteados em cabelo cacheado como se fosse liso. Puxar, prender com tudo junto, usar técnica de secador que empobrece a textura... daí volta solto daquele jeito morno, sem volume.</p>
+      <p>Penteado em cacho não é para submeter o fio. É para realçar ele.</p>
+      <p>Aqui tá o que funciona de verdade.</p>
+
+      <h2>O Rabo de Cavalo Polido (sem ser puxado)</h2>
+      <p>Esse é o coringa da vida agitada. Funciona pra trabalho, pra sair, pra academia. Mas tem um jeito certo de fazer.</p>
+      <p><strong>Como fazer:</strong></p>
+      <ul>
+        <li>Não penteia o cabelo inteiro. Sério. Pentear cacho seco só cria frizz.</li>
+        <li>Aplica um creme leave-in leve ou gel de fixação (não pode ser pesado, senão fica pegajoso).</li>
+        <li>Reúne o cabelo na altura que você quer — mas não puxa a raiz como se fosse um liso genérico.</li>
+        <li>A ideia é agrupar, não alisá-lo.</li>
+        <li>Prende com um elástico de tecido ou silk scrunchie (não de plástico, que quebra o fio).</li>
+        <li>Deixa algumas mininhas soltas perto do rosto. Isso não é descuido, é design.</li>
+      </ul>
+      <p><strong>Resultado esperado:</strong> Rabo com volume, sem parecer que você tá lutando contra seu cabelo.<br>
+      <strong>Quando usar:</strong> Dia a dia, trabalho, ambiente corporativo, academia, sair rápido.<br>
+      <strong>Quanto dura:</strong> 12 a 24 horas sem perder forma, dependendo de como você dorme.</p>
+
+      <img src="/blog-penteados-cacheado-comparativo.png" alt="Comparativo de 3 penteados: Rabo de cavalo alto, coque baixo desconstruído e penteado meio preso para cabelos cacheados" class="post-inline-image" />
+
+      <h2>O Coque Baixo Desconstruído (Para quando quer caprichar)</h2>
+      <p>Esse é mais sofisticado que o rabo. Funciona pra almoço de amiga, encontro, até evento.</p>
+      <p>A diferença é que não precisa ser aquele coque apertado que parece vela. O "desconstruído" é o código para "solto o suficiente pra parecer naturalmente arrumado".</p>
+      <p><strong>Como fazer:</strong></p>
+      <ul>
+        <li>Cabelo com produto de fixação (gel, creme styler).</li>
+        <li>Faz um rabo de cavalo baixo (nuca, não no topo da cabeça).</li>
+        <li>Torce o rabo ou divide em 2 ou 3 mechas e faz uma trança soltinha.</li>
+        <li>Enrola em volta da base do rabo (onde o elástico está).</li>
+        <li>Prende com grampos.</li>
+        <li>Puxa alguns fios do coque pra soltar a estrutura e criar textura.</li>
+      </ul>
+      <p><strong>A parada importante:</strong> Quanto mais você "desordena" propositalmente, mais chique fica. Parece que você acordou assim de tão perfeito.<br>
+      <strong>Quando usar:</strong> Encontros, festas, eventos, almoços, brunch, dia de se sentir poderosa.<br>
+      <strong>Quanto dura:</strong> Bem feito, 24 a 36 horas.</p>
+
+      <h2>A Trança Lateral (Prática e versátil)</h2>
+      <p>Aqui você tá valorizando o volume natural do cacho.</p>
+      <p>Tem duas variações:<br>
+      <strong>Trança Holandesa Lateral:</strong> A trança entra por cima e fica descendo pro lado. Vira quase um adorno, não uma contenção. Funciona bem com cabelo mais comprido (a partir do ombro).<br>
+      <strong>Trança Inversa (Mais discreta):</strong> Fica mais soltinha, menos evidente. Perfeita pra quem tem cacho mais cerrado ou densidade menor.</p>
+      <p><strong>Como fazer (holandesa):</strong></p>
+      <ul>
+        <li>Começa perto da testa, um pouco acima da orelha.</li>
+        <li>Divide em 3 mechas.</li>
+        <li>Vai trançando normal, mas adicionando mais cabelo conforme desce.</li>
+        <li>Termina atrás da orelha ou descendo pro outro lado.</li>
+        <li>Puxa as mechas pra soltar e criar volume.</li>
+      </ul>
+      <p><strong>Resultado:</strong> Parece mais trabalho que realmente é.<br>
+      <strong>Quando usar:</strong> Praia, piscina, dia quente, atividade outdoor, casual chic.<br>
+      <strong>Quanto dura:</strong> 24 horas fácil. Se dormir bem, pode durar 2 dias.</p>
+
+      <img src="/blog-penteados-cacheado-tipos.png" alt="Quatro tipos de cachos em penteados protetores: Ondulado, cacheado, crespo e muito crespo" class="post-inline-image" />
+
+      <h2>O Coque Abacaxi (Proteção noturna que virou estilo)</h2>
+      <p>Essa técnica nasceu como proteção de sono — e virou tendência de 2026.</p>
+      <p>A ideia é simples: prende o cabelo no topo da cabeça antes de dormir, de forma que fica protegido durante a noite. Resultado? Acordas com os cachos mais definidos e menos danificados.<br>
+      Mas agora tá virando penteado mesmo. Gente usando pra trabalhar, sair, eventos casual.</p>
+      <p><strong>Como fazer:</strong></p>
+      <ul>
+        <li>Cabelo um pouco úmido ou com leave-in.</li>
+        <li>Reúne todo o cabelo no topo da cabeça (coroa mesmo).</li>
+        <li>Prende com um elástico de tecido, não apertado.</li>
+        <li>Deixa solto e natural, sem tentar ficar perfeito.</li>
+        <li>Quando soltar, você tem cachos bem definidos.</li>
+      </ul>
+      <p><strong>A beleza disso:</strong> Parece descuido, é proteção.<br>
+      <strong>Quando usar:</strong> Casa, dias de preguiça, casual, estilo "natural elegante".<br>
+      <strong>Quanto dura:</strong> Até você soltar. Depois dura a definição do cacho por 12 a 24 horas.</p>
+
+      <h2>A Regra Dourada: Não danifique prendendo</h2>
+      <p>Qualquer penteado em cabelo cacheado tem uma regra: Se doer ou fazer pressão na raiz, tá errado.</p>
+      <p>Tensão constante causa queda. Quebra o fio na raiz. Danifica. Não é "ajuste". É dano.</p>
+      <p>Por isso:</p>
+      <ul>
+        <li>Usa elásticos de tecido ou silk scrunchies. Sempre.</li>
+        <li>Não prende muito apertado. O cabelo deve conseguir se mexer.</li>
+        <li>Varia o ponto de prensão. Prende alternando entre alto, médio e baixo. Não prende sempre no mesmo lugar.</li>
+        <li>Se seu couro cabeludo dói, desfaz.</li>
+      </ul>
+      <p><strong>Penteado bonito que danifica seu cabelo é fracasso. Ponto.</strong></p>
+
+      <h2>Acessórios em alta em 2026</h2>
+      <p>Presilhas com pérolas, grampos coloridos, lenços de seda — estão virando.</p>
+      <p>Não é só estilo. É funcional. Esses acessórios mantêm o penteado no lugar sem precisar de pressão forte.</p>
+      <p>O que tá bombando:</p>
+      <ul>
+        <li>Grampos de tartaruga ou madeira (retém melhor, menos metal irritante)</li>
+        <li>Lenços de seda presos no rabo ou coque (proteção + estilo)</li>
+        <li>Presilhas com pérolas ou detalhes (elevam um penteado simples)</li>
+        <li>Hair clips vintage (anos 90 e 2000 tão de volta)</li>
+      </ul>
+      <p><strong>A regra:</strong> escolhe algo que combina com você, não só o que tá na moda.</p>
+
+      <h2>Quando cada penteado faz sentido</h2>
+      <table border="1" cellpadding="10" style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 1rem; margin-bottom: 2rem;">
+        <thead>
+          <tr>
+            <th>Situação</th>
+            <th>Penteado</th>
+            <th>Por quê</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Trabalho / Corporativo</strong></td>
+            <td>Rabo polido ou coque baixo</td>
+            <td>Profissional, sem parecer que tá "lutando contra o cabelo"</td>
+          </tr>
+          <tr>
+            <td><strong>Praia / Piscina</strong></td>
+            <td>Trança lateral ou coque abacaxi</td>
+            <td>Protege + mantém afastado do rosto</td>
+          </tr>
+          <tr>
+            <td><strong>Evento / Festa</strong></td>
+            <td>Coque desconstruído</td>
+            <td>Elegante, versátil, dura a noite toda</td>
+          </tr>
+          <tr>
+            <td><strong>Dia casual / Home office</strong></td>
+            <td>Coque abacaxi ou meia prenda</td>
+            <td>Prático, confortável, bonitão</td>
+          </tr>
+          <tr>
+            <td><strong>Treino / Academia</strong></td>
+            <td>Rabo alto ou coque apertado alto</td>
+            <td>Não atrapalha, aguenta suor</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>A Integração com seu Corte</h2>
+      <p>Aqui tá um detalhe que ninguém fala: Seu corte determina quais penteados funcionam bem.</p>
+      <p>Um shag cacheado com camadas trabalha diferente de um corte reto. Um bob cacheado não tira proveito de uma trança que vai até a cintura.</p>
+      <p>Por isso quando você vem pra uma consulta, não é só "corta aí". A gente pensa no corte que te permite fazer os penteados que você realmente quer.</p>
+      <p>Se você adora usar coque, talvez um corte mais comprido faça mais sentido.<br>
+      Se seu estilo é rabo de cavalo, um corte com camadas que definem vai bombar mais que um corte muito uniforme.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <h3>Quer aprender a fazer penteados que realçam seu cacho em vez de danificar?</h3>
+        <p>Marcas uma consulta comigo. Vamos analisar seu tipo de cacho, o corte que você tem e quais penteados combinam melhor com a sua vida.<br>Daí você sai com técnicas que funcionam, não frustração.</p>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Consulta</a>
+      </div>
+      <p><i>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte</i></p>
+    `
+  },
+  {
     id: 30,
     slug: 'frequencia-de-corte-cabelo-cacheado',
     title: 'Frequência de Corte para Cabelo Cacheado: Saiba Quando Cortar',
