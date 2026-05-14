@@ -4,6 +4,36 @@ import './Gallery.css';
 
 const galleryImages = [
   {
+    id: 101,
+    url: '/corte-a-seco-cachos-definidos-bh.jpg',
+    title: 'Corte a Seco Visagista',
+    description: 'Análise de curvatura antes da tesoura. Definição absoluta para cachos tipo 3.'
+  },
+  {
+    id: 102,
+    url: '/especialista-em-cabelo-cacheado-resultado.jpg',
+    title: 'Leitura de Fio Realizada',
+    description: 'Harmonia entre volume e definição. Resultado de um corte que respeita o histórico do fio.'
+  },
+  {
+    id: 103,
+    url: '/corte-masculino-crespo-estilizado-bh.png',
+    title: 'Mohawk Crespo Estilizado',
+    description: 'Design técnico para crespos (4A/B). Geometria e atitude com foco em visagismo.'
+  },
+  {
+    id: 104,
+    url: '/visagismo-cabelo-cacheado-grisalho.jpg',
+    title: 'Valorização de Grisalhos',
+    description: 'Corte moderno para realçar a textura e o brilho natural dos cachos maduros.'
+  },
+  {
+    id: 105,
+    url: '/finalizacao-cachos-ondulados-bh.jpg',
+    title: 'Ondulados com Definição',
+    description: 'Técnica de finalização que elimina o frizz excessivo e realça as ondas 2C.'
+  },
+  {
     id: 1,
     url: '/gallery-1.png',
     title: 'Transformação 3B',
