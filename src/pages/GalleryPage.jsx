@@ -4,6 +4,36 @@ import './Gallery.css';
 
 const galleryImages = [
   {
+    id: 110,
+    url: '/cabelo-cacheado-longo-definicao-bh.jpg',
+    title: 'Cachos Longos e Saudáveis',
+    description: 'Manutenção de comprimento com corte técnico para redução de peso e aumento de definição.'
+  },
+  {
+    id: 111,
+    url: '/mechas-em-cabelo-cacheado-visagismo-bh.jpg',
+    title: 'Iluminação Visagista',
+    description: 'Mechas criadas estrategicamente para valorizar o rosto e a curvatura natural.'
+  },
+  {
+    id: 112,
+    url: '/resultado-mechas-cachos-definidos.jpg',
+    title: 'Design de Mechas e Brilho',
+    description: 'Contraste e luminosidade em cabelos cacheados com foco total na saúde da fibra.'
+  },
+  {
+    id: 113,
+    url: '/corte-curto-cacheado-com-mechas-bh.jpg',
+    title: 'Curto Iluminado',
+    description: 'Praticidade e estilo moderno com mechas pontuais em corte curto estruturado.'
+  },
+  {
+    id: 114,
+    url: '/especialista-em-cachos-curto-resultado.png',
+    title: 'Corte Curto Visagista',
+    description: 'Resultado de um design focado em praticidade e estilo para curvaturas 3B/C.'
+  },
+  {
     id: 106,
     url: '/corte-masculino-cachos-com-luzes-bh.jpg',
     title: 'Cachos com Luzes',
