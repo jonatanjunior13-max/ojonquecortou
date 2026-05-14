@@ -13,10 +13,12 @@ import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ReviewsPage from './pages/ReviewsPage';
 import GalleryPage from './pages/GalleryPage';
+import GoogleAnalytics from './components/GoogleAnalytics';
 
 function App() {
   return (
     <Router>
+      <GoogleAnalytics />
       <ScrollToTop />
       <CanonicalTag />
       <Navbar />
