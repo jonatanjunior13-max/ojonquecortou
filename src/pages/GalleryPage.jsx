@@ -4,6 +4,30 @@ import './Gallery.css';
 
 const galleryImages = [
   {
+    id: 106,
+    url: '/corte-masculino-cachos-com-luzes-bh.jpg',
+    title: 'Cachos com Luzes',
+    description: 'Corte visagista masculino para realçar a iluminação técnica e o volume superior.'
+  },
+  {
+    id: 107,
+    url: '/coloracao-cachos-vermelhos-especialista.jpg',
+    title: 'Explosão de Cor',
+    description: 'Coloração em cachos tipo 3. Saúde do fio mantida com brilho e definição vibrante.'
+  },
+  {
+    id: 108,
+    url: '/volume-cabelo-crespo-vermelho-resultado.jpg',
+    title: 'Arquitetura de Volume',
+    description: 'Corte estruturado para cabelos crespos coloridos, focando em forma e equilíbrio.'
+  },
+  {
+    id: 109,
+    url: '/corte-curto-cacheado-feminino-bh.jpg',
+    title: 'Curto Moderno e Prático',
+    description: 'Design de cacho curto para facilitar a rotina sem perder o estilo visagista.'
+  },
+  {
     id: 101,
     url: '/corte-a-seco-cachos-definidos-bh.jpg',
     title: 'Corte a Seco Visagista',
