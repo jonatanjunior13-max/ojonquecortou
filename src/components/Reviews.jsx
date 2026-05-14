@@ -24,8 +24,8 @@ const fallbackReviews = [
 ];
 
 const Reviews = ({ isPage = false }) => {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [reviews, setReviews] = useState(fallbackReviews);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchReviews = async () => {

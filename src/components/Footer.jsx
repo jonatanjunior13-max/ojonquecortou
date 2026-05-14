@@ -45,6 +45,7 @@ const Footer = () => {
             <li><Link to="/">Início</Link></li>
             <li><Link to="/sobre">Sobre o Jon</Link></li>
             <li><Link to="/servicos">Serviços</Link></li>
+            <li><Link to="/depoimentos">Depoimentos</Link></li>
             <li><Link to="/blog">Blog</Link></li>
             <li><a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer">Agendar Online</a></li>
           </ul>
