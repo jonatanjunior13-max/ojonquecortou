@@ -1,52 +1,310 @@
-/* Legacy Utility Classes to prevent subpages from breaking */
-.section-padding { padding: 8rem 0; }
-.text-gradient { color: var(--accent-deep); }
-.heading-xl { font-size: clamp(2rem, 5vw, 3.5rem); font-family: var(--serif); font-weight: 400; line-height: 1.1; }
-.heading-lg { font-size: clamp(1.75rem, 4vw, 2.5rem); font-family: var(--serif); font-weight: 400; line-height: 1.1; }
-.heading-md { font-size: clamp(1.25rem, 3vw, 1.8rem); font-family: var(--serif); font-weight: 400; line-height: 1.1; }
+/**
+ * Legacy CSS Bridge
+ * Maps old design token names → new design tokens
+ * Ensures Blog, Services, Reviews, Gallery and other pre-redesign pages remain styled.
+ */
 
-.paragraph-lg { font-size: 1.25rem; color: var(--muted); }
-.paragraph-md { font-size: 1rem; color: var(--muted); }
+:root {
+  /* ── Old token → new token mapping ── */
+  --color-dark:             var(--ink);
+  --color-cream:            var(--bg);
+  --color-bg:               var(--bg);
+  --color-surface:          var(--surface);
+  --color-white:            #fff;
+  --color-text-main:        var(--ink);
+  --color-text-secondary:   var(--muted);
+  --color-border:           var(--rule);
+  --color-accent:           var(--accent);
+  --color-accent-secondary: var(--accent-warm);
+  --color-accent-tertiary:  #C9AA6E;
+  --color-accent-dim:       rgba(176, 90, 46, 0.1);
+  --color-magenta:          #B05A2E;
+  --color-blue:             var(--accent-deep);
+  --color-yellow:           #C9AA6E;
 
-/* Spacing Utilities */
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.mb-4 { margin-bottom: 2rem; }
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mt-4 { margin-top: 2rem; }
-.mx-auto { margin-left: auto; margin-right: auto; }
-.text-center { text-align: center; }
-.max-w-lg { max-width: 800px; }
-.max-w-md { max-width: 600px; }
+  --font-display: var(--serif);
+  --font-body:    var(--sans);
 
-/* Buttons legacy mapping */
-.btn-outline {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 14px 22px; border-radius: 999px; font-size: 13px; font-weight: 600;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  border: 1px solid var(--rule); background: transparent; color: var(--ink);
+  --radius: 10px;
+  --transition: 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  --max-width: 1200px;
 }
-.btn-outline:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
+/* ── Utility classes used by subpages ── */
+.section-padding  { padding: clamp(60px, 9vw, 120px) 0; }
+.text-gradient    { color: var(--accent-deep); }
+
+.heading-xl { font-size: clamp(2rem, 5vw, 3.5rem);  font-family: var(--serif); font-weight: 400; line-height: 1.1; letter-spacing: -0.01em; }
+.heading-lg { font-size: clamp(1.75rem, 4vw, 2.5rem); font-family: var(--serif); font-weight: 400; line-height: 1.1; }
+.heading-md { font-size: clamp(1.25rem, 3vw, 1.8rem);  font-family: var(--serif); font-weight: 400; line-height: 1.1; }
+
+.paragraph-lg { font-size: 1.2rem;  color: var(--muted); line-height: 1.7; }
+.paragraph-md { font-size: 1rem;    color: var(--muted); line-height: 1.65; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem;   }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem;   }
+.mt-1 { margin-top: 0.5rem;    }
+.mt-2 { margin-top: 1rem;      }
+.mt-3 { margin-top: 1.5rem;    }
+.mt-4 { margin-top: 2rem;      }
+.mx-auto   { margin-left: auto; margin-right: auto; }
+.text-center { text-align: center; }
+.max-w-lg  { max-width: 800px;  }
+.max-w-md  { max-width: 600px;  }
+
+/* ── Legacy reveal animation (used by BlogPage, ServicesPage, etc.) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+/* main.jsx observer adds .active; new Reveal component adds .in — support both */
+.reveal.active,
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.stagger-1 { transition-delay: 0.08s; }
+.stagger-2 { transition-delay: 0.16s; }
+.stagger-3 { transition-delay: 0.24s; }
+.stagger-4 { transition-delay: 0.32s; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 26px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  transition: all 0.25s var(--ease);
+  cursor: pointer;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--ink);
+  color: var(--bg);
+  border: 1.5px solid var(--ink);
+}
+.btn-primary:hover {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--rule);
+}
+.btn-outline:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+
+/* ── Card ── */
 .card {
   background: var(--surface);
   border: 1px solid var(--rule-soft);
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 2.5rem;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.card:hover { transform: translateY(-4px); }
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(26,19,16,0.10);
+}
 
-/* Legacy colors */
-:root {
-  --color-primary: var(--ink);
-  --color-secondary: var(--muted);
-  --color-accent: var(--accent-deep);
-  --color-background: var(--bg);
-  --color-surface: var(--surface);
-  --color-text: var(--ink);
-  --color-text-light: var(--muted);
+/* ── Flex helpers ── */
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.justify-between { justify-content: space-between; }
+.justify-center  { justify-content: center; }
+.items-end   { align-items: flex-end; }
+.items-center { align-items: center; }
+.gap-2 { gap: 1rem; }
+
+/* ── Service card mini (used in older Home sections) ── */
+.service-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+.service-card-mini {
+  background: var(--surface);
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+  padding: 2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.service-card-mini:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(26,19,16,0.10);
+}
+.service-card-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+.service-card-mini h3 {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+.service-card-mini p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ── Reviews (used by Reviews.jsx on subpages) ── */
+.reviews-section {
+  background: var(--bg-warm);
+}
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--rule-soft);
+  border-radius: 8px;
+  padding: 2rem;
+}
+.review-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1rem;
+}
+.review-text {
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+.review-author h4 {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--ink);
+}
+.review-author span {
+  font-size: 0.8rem;
+  color: var(--muted-2);
+}
+.reviews-cta {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* ── Badge / star icon ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+.star-icon { color: var(--accent); }
+
+/* ── Hero (old Hero.jsx compatibility) ── */
+.hero-section { padding-top: 120px; }
+.hero-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  padding: 4rem 0;
+}
+.hero-actions { display: flex; flex-direction: column; gap: 1rem; }
+.hero-btns-group { display: flex; flex-direction: column; gap: 1rem; }
+.hero-secondary-btns { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.hero-btn { align-self: flex-start; }
+.hero-stats { display: flex; align-items: center; gap: 1rem; }
+.avatar-group { display: flex; }
+.avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 700;
+}
+.cta-avatar { background: var(--accent-deep); }
+.stats-text { color: var(--muted); font-size: 0.9rem; }
+.hero-image { width: 100%; height: 100%; object-fit: cover; }
+.visual-card {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--rule);
+  aspect-ratio: 4/5;
+}
+
+/* ── Instagram Feed ── */
+.instagram-home-section { background: var(--surface); }
+.instagram-feed-container { margin: 2rem 0; }
+
+/* ── Blog home section ── */
+.home-blog-section { background: var(--bg-warm); }
+.home-blog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+.home-blog-card {
+  background: var(--surface);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--rule-soft);
+  transition: transform 0.3s ease;
+}
+.home-blog-card:hover { transform: translateY(-4px); }
+.home-blog-card-image-wrap { height: 200px; overflow: hidden; }
+.home-blog-card-image { width: 100%; height: 100%; object-fit: cover; }
+.home-blog-card-content { padding: 1.5rem; }
+.home-blog-card-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.home-blog-card-title { font-family: var(--serif); font-size: 1rem; line-height: 1.4; }
+.home-blog-card-title a { color: var(--ink); }
+.read-more-link { color: var(--accent); font-size: 0.8rem; font-weight: 600; margin-top: 1rem; display: inline-block; }
+
+/* ── Logo ── */
+.logo-img { height: 46px; width: auto; object-fit: contain; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--ink-2); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+@media (max-width: 768px) {
+  .section-padding { padding: 4rem 0; }
+  .hero-container { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
 }
