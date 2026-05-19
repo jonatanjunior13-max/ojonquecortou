@@ -1,127 +1,312 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Hero from '../components/Hero';
-import FAQ from '../components/FAQ';
-import Reviews from '../components/Reviews';
-import InstagramFeed from '../components/InstagramFeed';
 import SEO from '../components/SEO';
-import { posts } from '../data/posts';
-import './Home.css';
+import { Arrow, Reveal, ContactCTA } from '../components/NewDesignComponents';
+
+function HomeHero() {
+  return (
+    <header id="top" className="hero">
+      <div className="container">
+        <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+          Studio do Jon · Caiçara · Belo Horizonte
+        </div>
+
+        <div className="hero-grid">
+          <div>
+            <h1 className="display reveal in">
+              O especialista que <span className="accent-word">lê o seu fio</span> antes de cortar.
+            </h1>
+
+            <Reveal delay={120}>
+              <p className="lead" style={{ marginTop: 28 }}>
+                Porosidade, curvatura, histórico. Cada cacho conta uma história — e o corte só começa
+                depois que a história fica clara. Sem fórmula pronta, sem tendência genérica.
+              </p>
+            </Reveal>
+
+            <Reveal delay={220} className="hero-actions">
+              <a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer" className="btn btn-accent">
+                Agendar avaliação <Arrow />
+              </a>
+              <a href="/sobre#metodo" className="btn btn-ghost">
+                Conhecer o método
+              </a>
+            </Reveal>
+
+            <Reveal delay={320} className="hero-meta">
+              <div className="hero-stat">
+                <div className="n">9<span style={{ color: "var(--accent)" }}>+</span></div>
+                <div className="l">Anos com cacheados</div>
+              </div>
+              <div className="hero-stat">
+                <div className="n">Todas</div>
+                <div className="l">As curvaturas</div>
+              </div>
+              <div className="hero-stat">
+                <div className="n">100<span style={{ color: "var(--accent)" }}>%</span></div>
+                <div className="l">Avaliação prévia</div>
+              </div>
+            </Reveal>
+          </div>
+
+          <Reveal delay={180}>
+            <div className="hero-portrait">
+              <span className="badge">Studio · BH</span>
+              <div className="caption">"Antes da tesoura, a leitura."</div>
+              <img src="/jon-perfil.jpg" alt="Foto do Jon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          </Reveal>
+        </div>
+      </div>
+
+      <div className="marquee" aria-hidden="true">
+        <div className="marquee-track">
+          {Array.from({ length: 2 }).flatMap((_, k) => [
+            "Leitura de fio", "Corte híbrido", "Porosidade", "Curvatura",
+            "Visagismo", "Morena iluminada", "Transição capilar", "Cachos verdadeiros",
+          ].map((t, i) => (
+            <span className="marquee-item" key={`${k}-${i}`}>{t}</span>
+          )))}
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function HomeManifesto() {
+  const pillars = [
+    { n: "01 — DIAGNÓSTICO", h: "O fio fala primeiro.", p: "Toda visita começa com leitura: porosidade, curvatura, elasticidade e histórico químico. Sem isso, qualquer corte vira aposta." },
+    { n: "02 — CORTE HÍBRIDO", h: "Onde o cacho realmente cai.", p: "Cortar molhado esconde o comportamento real do fio. A seco, cada mecha cai onde vai cair — e o corte respeita isso." },
+    { n: "03 — SEM ALISAR", h: "Cacho não é problema.", p: "Aqui não existe progressiva disfarçada, escova diária ou promessa de \"domar\". Existe estrutura para o seu cacho ser o que ele é." },
+  ];
+  return (
+    <section className="manifesto">
+      <div className="container">
+        <Reveal as="div" className="section-head">
+          <div>
+            <div className="eyebrow">Manifesto</div>
+            <h2 className="display" style={{ marginTop: 18 }}>
+              Três princípios <span className="italic">não negociáveis.</span>
+            </h2>
+          </div>
+          <p className="lead" style={{ marginBottom: 8 }}>
+            A diferença entre um corte bonito e um corte que continua bonito em casa está
+            no que acontece antes da tesoura tocar o fio.
+          </p>
+        </Reveal>
+
+        <div className="manifesto-grid">
+          {pillars.map((p, i) => (
+            <Reveal key={i} delay={i * 90} className="pillar">
+              <div className="n">{p.n}</div>
+              <h3>{p.h}</h3>
+              <p>{p.p}</p>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeTeasers() {
+  const items = [
+    { n: "01", t: "Sobre o Jon", d: "9 anos especializado, método próprio, atendimento individual.", href: "/sobre" },
+    { n: "02", t: "Serviços", d: "Leitura, corte, morena iluminada, transição e cronograma.", href: "/servicos" },
+    { n: "03", t: "Galeria", d: "Antes/depois reais, sem retoque pra parecer domado.", href: "/galeria" },
+    { n: "04", t: "Depoimentos", d: "O que muda na rotina depois da Leitura de Fio.", href: "/depoimentos" },
+  ];
+  return (
+    <section className="section" style={{ paddingTop: "clamp(60px, 9vw, 110px)" }}>
+      <div className="container">
+        <Reveal as="div" className="section-head">
+          <div>
+            <div className="eyebrow">Studio</div>
+            <h2 className="display" style={{ marginTop: 18 }}>
+              Explore o <span className="italic">trabalho.</span>
+            </h2>
+          </div>
+        </Reveal>
+        <div className="teasers">
+          {items.map((x, i) => (
+            <Reveal key={i} delay={i * 70}>
+              <Link className="teaser" to={x.href}>
+                <div>
+                  <div className="n">{x.n}</div>
+                  <h3 style={{ marginTop: 18 }}>{x.t}</h3>
+                  <p style={{ color: "var(--muted)", fontSize: 14.5, lineHeight: 1.5, margin: "12px 0 0" }}>{x.d}</p>
+                </div>
+                <span className="more">Ver <Arrow /></span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeMethodTeaser() {
+  return (
+    <section className="method section">
+      <div className="container">
+        <Reveal as="div" className="section-head">
+          <div>
+            <div className="eyebrow">Método Leitura de Fio</div>
+            <h2 className="display" style={{ marginTop: 18 }}>
+              O que acontece <span className="italic" style={{ color: "var(--accent-warm)" }}>antes</span><br/>
+              da tesoura tocar o fio.
+            </h2>
+          </div>
+          <p className="lead">
+            Quatro etapas. Nenhuma pulada. O que separa um corte que funciona de um corte que
+            "ficou bom só no salão" é o tempo gasto antes — e o método que sustenta o depois.
+          </p>
+        </Reveal>
+
+        <div className="method-steps">
+          {[
+            { n: "01", t: "Leitura de fio", d: "Análise técnica: porosidade, padrão de curvatura, elasticidade e histórico químico." },
+            { n: "02", t: "Visagismo & intenção", d: "Sua rotina, seu rosto, seu estilo. O corte serve a você — não o contrário." },
+            { n: "03", t: "Corte híbrido", d: "Sem pente, sem tração. Cada cacho cortado onde realmente cai." },
+            { n: "04", t: "Finalização e protocolo", d: "Cronograma personalizado pra reproduzir em casa." },
+          ].map((s, i) => (
+            <Reveal key={i} delay={i * 60} className="step">
+              <div className="num">{s.n}</div>
+              <div className="ttl">{s.t}</div>
+              <div className="desc">{s.d}</div>
+              <div className="icn">ETAPA {s.n}</div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={200}>
+          <div style={{ marginTop: 48, display: "flex", justifyContent: "center" }}>
+            <Link to="/blog/metodo-leitura-de-fio-antes-da-tesoura" className="btn btn-light">
+              Ler o método completo <Arrow />
+            </Link>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function HomeTestimonials() {
+  const list = [
+    { q: "Foi a primeira vez que sentei numa cadeira e ouvi alguém explicar meu cabelo antes de cortar. Saí de lá entendendo o meu próprio fio.", n: "Marina A.", m: "Cliente desde 2023 · 3B" },
+    { q: "Tenho três texturas na mesma cabeça e sempre saí dos salões com buraco no volume. Aqui o cacho cai pra baixo, não pros lados.", n: "Bia R.", m: "Transição capilar · 2C/3A" },
+    { q: "A morena iluminada que ele faz não risca o cabelo, ela acompanha o cacho. Parece que a luz nasceu ali.", n: "Luísa C.", m: "Coloração · 3A" },
+  ];
+  return (
+    <section className="testimonials section">
+      <div className="container">
+        <Reveal as="div" className="section-head">
+          <div>
+            <div className="eyebrow">Depoimentos</div>
+            <h2 className="display" style={{ marginTop: 18 }}>
+              O que muda quando<br/>o fio é <span className="italic">lido primeiro.</span>
+            </h2>
+          </div>
+          <p className="lead">Mais de uma década com cacheadas e crespas em BH.</p>
+        </Reveal>
+
+        <div className="testimonial-track">
+          {list.map((t, i) => (
+            <Reveal key={i} delay={i * 80} className="t-card">
+              <div className="stars">{"★★★★★".split("").map((s, k) => <span key={k}>{s}</span>)}</div>
+              <p className="q">"{t.q}"</p>
+              <div className="who">
+                <div className="av">{t.n[0]}</div>
+                <div className="who-meta">
+                  <div className="n">{t.n}</div>
+                  <div className="m">{t.m}</div>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={250}>
+          <div style={{ marginTop: 48, display: "flex", justifyContent: "center" }}>
+            <Link to="/depoimentos" className="btn btn-ghost">
+              Ler todos os depoimentos <Arrow />
+            </Link>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function HomeBlog() {
+  const posts = [
+    { cat: "Método", title: "Método Leitura de Fio: o que acontece antes da tesoura tocar o seu cabelo.", ex: "Porosidade, curvatura, elasticidade, histórico químico. Um passo a passo do que avaliamos antes de qualquer corte.", time: "8 min", slug: "metodo-leitura-de-fio-antes-da-tesoura", grad: "linear-gradient(160deg,#6E2F18 0%,#1A1310 100%), radial-gradient(60% 60% at 80% 20%, rgba(201,123,73,0.6) 0%, transparent 60%)" },
+    { cat: "Mito vs. Verdade", title: "A epidemia do corte a seco genérico: o que realmente define um corte de cacho.", ex: "Cortar a seco virou marketing. Mas técnica é outra história.", time: "6 min", slug: "corte-para-cabelo-cacheado-mentira-do-corte-a-seco", grad: "linear-gradient(160deg,#3a2b22 0%,#1A1310 100%)" },
+    { cat: "Rotina", title: "Cronograma capilar para cabelo cacheado: o que ninguém te conta antes de começar.", ex: "Hidratação, nutrição, reconstrução: quando, por quê, e o erro mais comum que sabota o cacho em casa.", time: "10 min", slug: "cronograma-capilar-cabelo-cacheado", grad: "linear-gradient(160deg,#7a4a2e 0%,#2a1a12 100%)" },
+  ];
+  return (
+    <section className="section">
+      <div className="container">
+        <Reveal as="div" className="section-head">
+          <div>
+            <div className="eyebrow">Diário do studio</div>
+            <h2 className="display" style={{ marginTop: 18 }}>
+              Conteúdo técnico,<br/>sem <span className="italic">papo de embalagem.</span>
+            </h2>
+          </div>
+          <p className="lead">
+            Textos longos, escritos pelo Jon, sobre o que realmente importa pro seu fio.
+          </p>
+        </Reveal>
+
+        <div className="blog-grid">
+          {posts.map((p, i) => (
+            <Reveal key={i} delay={i * 90}>
+              <Link className="post" to={`/blog/${p.slug}`}>
+                <div className="cover">
+                  <div className="ph" style={{ background: p.grad, position: "absolute", inset: 0 }} />
+                  <span className="cat">{p.cat}</span>
+                </div>
+                <div className="meta">
+                  <span>Leitura {p.time}</span>
+                  <span className="dot"></span>
+                  <span>Studio do Jon</span>
+                </div>
+                <h3>{p.title}</h3>
+                <p className="ex">{p.ex}</p>
+                <span className="more">Ler ensaio <Arrow /></span>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={250}>
+          <div style={{ marginTop: 48, display: "flex", justifyContent: "center" }}>
+            <Link to="/blog" className="btn btn-ghost">
+              Todos os ensaios <Arrow />
+            </Link>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
 
 const Home = () => {
-  // Pegar os 3 posts mais recentes
-  const latestPosts = posts.slice(0, 3);
-
   return (
     <main>
       <SEO 
         title="Studio do Jon | Especialista em Cabelo Cacheado em BH" 
         description="Especialista em corte para cabelo cacheado em Belo Horizonte. Jon analisa o fio antes de tocar: porosidade, curvatura e histórico. Caiçara, BH. Agende." 
       />
-      <Hero />
-      
-      {/* Destaque de Serviços */}
-      <section className="section-padding services-highlight">
-        <div className="container">
-          <div className="text-center reveal">
-            <h2 className="heading-lg mb-2">Nossas Especialidades</h2>
-            <p className="paragraph-lg max-w-lg mx-auto">
-              Cada atendimento começa com diagnóstico técnico do fio. O serviço é definido pelo que o seu cabelo precisa.
-            </p>
-          </div>
-
-          <div className="service-cards-grid">
-            <div className="service-card-mini reveal stagger-1">
-              <div className="service-card-icon">✂️</div>
-              <h3>Corte</h3>
-              <p>Análise de porosidade e curvatura antes do corte. Resultado que funciona em casa.</p>
-            </div>
-            <div className="service-card-mini reveal stagger-2">
-              <div className="service-card-icon">✨</div>
-              <h3>Corte + Tratamento</h3>
-              <p>Corte técnico combinado com tratamento escolhido pelo estado real do fio.</p>
-            </div>
-            <div className="service-card-mini reveal stagger-3">
-              <div className="service-card-icon">🎨</div>
-              <h3>Mechas</h3>
-              <p>Iluminação técnica que respeita a estrutura do fio.</p>
-            </div>
-          </div>
-
-          <div className="text-center reveal stagger-4">
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Link to="/servicos" className="btn btn-outline">Ver Todos os Serviços</Link>
-              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">Agendar Horário</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Reviews />
-      
-      {/* Seção Instagram */}
-      <section className="section-padding instagram-home-section">
-        <div className="container">
-          <div className="flex justify-between items-end mb-4 flex-wrap gap-2 reveal">
-            <div>
-              <h2 className="heading-lg">No Instagram</h2>
-              <p className="paragraph-md">Acompanhe os últimos cortes e transformações @ojonquecortou</p>
-            </div>
-            <a href="https://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline">
-              Seguir no Instagram
-            </a>
-          </div>
-          
-          <div className="instagram-feed-container reveal stagger-1">
-            <InstagramFeed />
-          </div>
-
-          <div className="text-center mt-4 reveal">
-            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-              Gostou dos resultados? Agende o seu!
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Seção Blog na Home */}
-      <section className="section-padding home-blog-section">
-        <div className="container">
-          <div className="flex justify-between items-end mb-4 flex-wrap gap-2 reveal">
-            <div>
-              <h2 className="heading-lg">O Especialista Explica</h2>
-            </div>
-            <Link to="/blog" className="btn btn-outline">Ver Blog Completo</Link>
-          </div>
- 
-          <div className="home-blog-grid">
-            {latestPosts.map((post, index) => (
-              <article key={post.id} className={`home-blog-card reveal stagger-${index + 1}`}>
-                <div className="home-blog-card-image-wrap">
-                  <img src={post.image} alt={post.title} className="home-blog-card-image" />
-                </div>
-                <div className="home-blog-card-content">
-                  <span className="home-blog-card-category">{post.category}</span>
-                  <h3 className="home-blog-card-title">
-                    <Link to={`/blog/${post.slug}`}>{post.title}</Link>
-                  </h3>
-                  <Link to={`/blog/${post.slug}`} className="read-more-link">
-                    Acessar Artigo →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="text-center mt-4 reveal">
-            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-              Agendar Consultoria com o Jon
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <FAQ />
+      <HomeHero />
+      <HomeManifesto />
+      <HomeTeasers />
+      <HomeMethodTeaser />
+      <HomeTestimonials />
+      <HomeBlog />
+      <ContactCTA />
     </main>
   );
 };

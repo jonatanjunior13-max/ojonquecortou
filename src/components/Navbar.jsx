@@ -1,77 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Scissors } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import './Navbar.css';
+import { Link, useLocation } from 'react-router-dom';
+import { Arrow } from './NewDesignComponents';
 
-const InstagramIcon = ({ size = 20 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-  </svg>
-);
+function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const location = useLocation();
+  const current = location.pathname;
 
-const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const links = [
+    { id: "/", label: "Início" },
+    { id: "/sobre", label: "Sobre o Jon" },
+    { id: "/servicos", label: "Serviços" },
+    { id: "/galeria", label: "Galeria" },
+    { id: "/depoimentos", label: "Depoimentos" },
+    { id: "/blog", label: "Blog" },
+  ];
 
   return (
-    <nav className="navbar reveal">
-      <div className="container nav-container">
-        <Link to="/" className="logo">
-          <img src="/logo-cabeleireiro-de-cachos.png" alt="O Jon que Cortou" className="logo-img" />
-        </Link>
-
-        <div className="desktop-menu">
-          <Link to="/" className="nav-link">Início</Link>
-          <Link to="/sobre" className="nav-link">Sobre o Jon</Link>
-          <Link to="/servicos" className="nav-link">Serviços</Link>
-          <Link to="/galeria" className="nav-link">Galeria</Link>
-          <Link to="/blog" className="nav-link">Blog</Link>
-          <Link to="/depoimentos" className="nav-link">Depoimentos</Link>
-          <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="nav-link social-nav-link">
-            <InstagramIcon size={20} />
-          </a>
-          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary nav-cta">
-            Agendar
-          </a>
+    <React.Fragment>
+      <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
+        <div className="container nav-inner">
+          <Link to="/" className="brand">
+            <span className="mark">J</span>
+            <span className="word">O Jon que Cortou</span>
+          </Link>
+          <div className="nav-links">
+            {links.map((l) => (
+              <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""}>
+                {l.label}
+              </Link>
+            ))}
+          </div>
+          <div className="nav-cta">
+            <a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer" className="btn btn-primary hide-mobile">
+              Agendar <Arrow />
+            </a>
+            <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
+              <span></span><span></span><span></span>
+            </button>
+          </div>
         </div>
-
-        <button 
-          className="mobile-menu-btn" 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {mobileMenuOpen && (
-        <div className="mobile-menu">
-          <Link to="/" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Início</Link>
-          <Link to="/sobre" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Sobre o Jon</Link>
-          <Link to="/servicos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Serviços</Link>
-          <Link to="/galeria" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Galeria</Link>
-          <Link to="/blog" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
-          <Link to="/depoimentos" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>Depoimentos</Link>
-          <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="mobile-link" onClick={() => setMobileMenuOpen(false)}>
-            Siga no Instagram
-          </a>
-          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary w-100">
-            Agendar Online
-          </a>
+      </nav>
+      {open && (
+        <div className="mobile-menu" onClick={() => setOpen(false)}>
+          <div className="mobile-menu-inner" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-menu-head">
+              <span className="brand">
+                <span className="mark">J</span>
+                <span className="word">O Jon que Cortou</span>
+              </span>
+              <button className="close" onClick={() => setOpen(false)}>×</button>
+            </div>
+            <div className="mobile-menu-links">
+              {links.map((l) => (
+                <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""} onClick={() => setOpen(false)}>
+                  {l.label}<Arrow />
+                </Link>
+              ))}
+            </div>
+            <a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ marginTop: 28 }}>
+              Agendar pelo WhatsApp <Arrow />
+            </a>
+          </div>
         </div>
       )}
-    </nav>
+    </React.Fragment>
   );
-};
+}
 
 export default Navbar;

@@ -1,111 +1,60 @@
 import React from 'react';
-import { MapPin, Phone, Scissors } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import './Footer.css';
 
-const InstagramIcon = ({ size = 20 }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-  </svg>
-);
-
-const Footer = () => {
+function Footer() {
   return (
-    <footer className="footer-section reveal">
-      <div className="container footer-container">
-        <div className="footer-brand">
-          <Link to="/" className="logo mb-2">
-            <img src="/logo-cabeleireiro-de-cachos.png" alt="O Jon que Cortou" className="logo-img" />
-          </Link>
-          <p className="footer-desc">
-            Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
-          </p>
-          <div className="social-links">
-            <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="social-icon">
-              <InstagramIcon size={20} />
-            </a>
+    <footer className="footer">
+      <div className="container">
+        <div className="footer-grid">
+          <div>
+            <div className="footer-brand">
+              O Jon que<br/><span className="italic">cortou.</span>
+            </div>
+            <p style={{ color: "var(--muted)", fontSize: 14.5, maxWidth: "38ch", margin: 0 }}>
+              Studio especializado em cabelos cacheados e crespos em Belo Horizonte.
+              Leitura técnica antes da tesoura. Caiçara, BH.
+            </p>
+          </div>
+
+          <div>
+            <h4>Studio</h4>
+            <ul>
+              <li><Link to="/sobre">Sobre o Jon</Link></li>
+              <li><Link to="/servicos">Serviços</Link></li>
+              <li><Link to="/galeria">Galeria</Link></li>
+              <li><Link to="/depoimentos">Depoimentos</Link></li>
+              <li><Link to="/blog">Blog</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Diário</h4>
+            <ul>
+              <li><Link to="/blog/metodo-leitura-de-fio-antes-da-tesoura">Método Leitura de Fio</Link></li>
+              <li><Link to="/blog/cronograma-capilar-cabelo-cacheado">Cronograma capilar</Link></li>
+              <li><Link to="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">Mito do corte a seco</Link></li>
+              <li><Link to="/blog">Todos os ensaios</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4>Contato</h4>
+            <ul>
+              <li><a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+              <li><a href="https://instagram.com/ojonquecortou" target="_blank" rel="noopener noreferrer">Instagram</a></li>
+              <li><a href="https://maps.google.com/?q=Caiçara,Belo+Horizonte" target="_blank" rel="noopener noreferrer">Caiçara · BH</a></li>
+              <li><a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer">Agendar</a></li>
+            </ul>
           </div>
         </div>
 
-        <div className="footer-links">
-          <h4 className="footer-heading">Navegação</h4>
-          <ul>
-            <li><Link to="/">Início</Link></li>
-            <li><Link to="/sobre">Sobre o Jon</Link></li>
-            <li><Link to="/servicos">Serviços</Link></li>
-            <li><Link to="/galeria">Galeria</Link></li>
-            <li><Link to="/depoimentos">Depoimentos</Link></li>
-            <li><Link to="/blog">Blog</Link></li>
-            <li><a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer">Agendar Online</a></li>
-          </ul>
-        </div>
-
-        <div className="footer-contact">
-          <h4 className="footer-heading">Contato</h4>
-          <div className="contact-item" style={{ marginBottom: '0.5rem' }}>
-            <MapPin size={18} className="contact-icon" style={{ minWidth: '18px' }} />
-            <p>Rua Francisco Ovidio, 184<br/>Caiçara, BH / MG</p>
-          </div>
-          <div className="contact-item" style={{ marginBottom: '1rem' }}>
-            <Phone size={18} className="contact-icon" style={{ minWidth: '18px' }} />
-            <p>(31) 3586-6673</p>
-          </div>
-          
-          <div className="map-container" style={{ width: '100%', height: '140px', borderRadius: '8px', overflow: 'hidden', marginBottom: '1rem' }}>
-            <iframe 
-              src="https://maps.google.com/maps?q=O%20Jon%20que%20Cortou%2C%20Rua%20Francisco%20Ovidio%20184%2C%20Belo%20Horizonte&t=&z=16&ie=UTF8&iwloc=&output=embed" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0 }} 
-              allowFullScreen="" 
-              loading="lazy" 
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Mapa do Studio do Jon"
-            ></iframe>
-          </div>
-
-          <div className="contact-item mt-2">
-            <a 
-              href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
-              target="_blank" 
-              rel="noreferrer" 
-              className="footer-review-link"
-              style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-yellow)', textDecoration: 'underline' }}
-            >
-              Avalie no Google Maps
-            </a>
-          </div>
-        </div>
-
-        <div className="footer-hours">
-          <h4 className="footer-heading">Horário de Atendimento</h4>
-          <ul className="hours-list">
-            <li><span>Terça a Sexta</span> <span>09:00 — 19:00</span></li>
-            <li><span>Sábado</span> <span>09:00 — 17:00</span></li>
-            <li className="closed"><span>Dom e Seg</span> <span>Fechado</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="footer-bottom">
-        <div className="container bottom-container">
-          <p>&copy; {new Date().getFullYear()} O Jon que Cortou. Todos os direitos reservados.</p>
+        <div className="footer-bottom">
+          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH</span>
+          <span>Feito com cuidado · Caiçara, Belo Horizonte</span>
         </div>
       </div>
     </footer>
   );
-};
+}
 
 export default Footer;

@@ -2,7 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Analytics } from '@vercel/analytics/react'
 import { FlagValues } from 'flags/react'
-import './index.css'
+import './index.css';
+import './legacy.css';
 import App from './App.jsx'
 
 // Custom Cursor Script
