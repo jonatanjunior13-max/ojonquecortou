@@ -4,22 +4,53 @@ import './Reviews.css';
 
 const fallbackReviews = [
   {
+    author_name: "Claudia Dantas",
+    text: "Fiquei encantada com o Jon. Nos meus quase 60 anos de vida, nunca ninguém cortou tão bem meu cabelo! E finalmente entendi como meus cachos funcionam. Ele é ESPETACULAR!!!!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Crespo · BH"
+  },
+  {
+    author_name: "Maria Isabel",
+    text: "Olha, eu tinha expectativas mas elas foram superadas. Indico muito corte com tratamento porque faz muita diferença. Meu cabelo chegou xoxo e anêmico e saiu lindíssimo.",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cacheado · BH"
+  },
+  {
     author_name: "Fernanda Baiao",
     text: "O Jon é fantástico! Super educado, atencioso, tem uma escuta super ativa, me entendeu, entendeu meu cabelo e me ensinou a finalizar de uma forma muito mais simples do que eu jamais imaginei! Amei o corte, valorizou demais meus cachos!",
     rating: 5,
-    relative_time_description: "Avaliação no Google"
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Ondulado · BH"
   },
   {
     author_name: "Ana Beatriz",
     text: "Eu amei o resultado, o Jon foi super gentil do início ao fim, ele é uma pessoa muito legal de conversar. Além disso, foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!",
     rating: 5,
-    relative_time_description: "Avaliação no Google"
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cacheado · Caiçara"
+  },
+  {
+    author_name: "Bernardo Pereira",
+    text: "Atendimento ótimo! Entendeu minhas necessidades e me ajudou no cuidado do meu cabelo, super leve e descontraído.",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cabelo masculino · BH"
   },
   {
     author_name: "Cristinna da Silva",
     text: "Incrível! Excelente profissional, atencioso! Fiz corte e coloração, e o resultado foi melhor que o esperado! Jon é muuuito talentoso! Recomendo, com toda certeza!",
     rating: 5,
-    relative_time_description: "Avaliação no Google"
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Coloração · BH"
+  },
+  {
+    author_name: "Thaisa Macedo",
+    text: "Profissional maravilhoso, muito agradável e cuidadoso. Gostei muito!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cacheado · BH"
   }
 ];
 

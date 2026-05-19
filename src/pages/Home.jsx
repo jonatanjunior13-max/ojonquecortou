@@ -194,9 +194,9 @@ function HomeMethodTeaser() {
 
 function HomeTestimonials() {
   const list = [
-    { q: "Foi a primeira vez que sentei numa cadeira e ouvi alguém explicar meu cabelo antes de cortar. Saí de lá entendendo o meu próprio fio.", n: "Marina A.", m: "Cliente desde 2023 · 3B" },
-    { q: "Tenho três texturas na mesma cabeça e sempre saí dos salões com buraco no volume. Aqui o cacho cai pra baixo, não pros lados.", n: "Bia R.", m: "Transição capilar · 2C/3A" },
-    { q: "A morena iluminada que ele faz não risca o cabelo, ela acompanha o cacho. Parece que a luz nasceu ali.", n: "Luísa C.", m: "Coloração · 3A" },
+    { q: "Nos meus quase 60 anos de vida, nunca ninguém cortou tão bem meu cabelo! E finalmente entendi como meus cachos funcionam. Ele é ESPETACULAR!!!!", n: "Claudia Dantas", m: "Avaliação no Google · Crespo" },
+    { q: "O Jon é fantástico! Tem uma escuta super ativa, me entendeu, entendeu meu cabelo e me ensinou a finalizar de uma forma muito mais simples do que eu jamais imaginei!", n: "Fernanda Baiao", m: "Avaliação no Google · Ondulado" },
+    { q: "Eu amei o resultado. Foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!", n: "Ana Beatriz", m: "Avaliação no Google · Cacheado" },
   ];
   return (
     <section className="testimonials section">
