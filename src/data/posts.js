@@ -1,5 +1,217 @@
 export const posts = [
   {
+    id: 34,
+    slug: 'secagem-cachos-difusor-vs-natural',
+    title: 'Secagem de Cachos Difusor vs Natural Como Adaptar a Sua Rotina',
+    excerpt: 'Saber secar o cabelo cacheado e o segredo para uma definicao que dura dias Aprenda quando usar o difusor e quando deixar secar natural',
+    metaDescription: 'Aprenda a secar seu cabelo cacheado da forma certa Jon explica quando usar difusor quando deixar secar natural e como a rotina influencia Studio Jon BH',
+    keywords: 'secagem cabelo cacheado difusor ou natural como usar difusor finalizar cabelo cacheado definindo cachos',
+    date: '19 de Maio, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-secagem-hero.png',
+    content: `
+      <h2>O Segredo da Definição Está na Secagem</h2>
+      <p>Um dos maiores erros que eu vejo aqui no Studio é a cliente caprichar na lavagem, usar os melhores produtos na finalização, e na hora de secar... colocar tudo a perder.</p>
+      <p>A secagem não é só o momento de tirar a água do cabelo. É o momento onde o seu cacho "fixa" o formato. Se você manipula demais o cabelo enquanto ele está molhado, você cria frizz. Se você seca com muito vento e calor desprotegido, você danifica o fio e derrete a definição.</p>
+      <p>A dúvida mais comum é: "Jon, eu devo secar natural ou usar o difusor?". E a resposta depende da sua <strong>rotina</strong> e do <strong>tempo</strong> que você tem disponível.</p>
+
+      <h2>O Difusor: Agilidade e Volume</h2>
+      <p>O difusor é a melhor ferramenta para quem não tem paciência de esperar horas com o cabelo molhado. Ele distribui o ar do secador, evitando que o vento desmanche o formato do cacho que você acabou de finalizar.</p>
+      <p><strong>Quando usar:</strong></p>
+      <ul>
+        <li>Quando você precisa de agilidade (<strong>2 a 3 vezes com difusor</strong> quando tá com pressa).</li>
+        <li>Quando você quer mais volume desde a raiz (o calor leve do difusor ajuda a encorpar os fios).</li>
+        <li>No inverno, para não ficar com o couro cabeludo úmido por muito tempo.</li>
+      </ul>
+      <p>A regra de ouro aqui é: use <strong>temperatura média ou fria</strong> e <strong>velocidade baixa</strong>. E nada de ficar mexendo o difusor para cima e para baixo loucamente. Posicione, segure, e só mude de posição depois de alguns segundos.</p>
+
+      <h2>A Secagem Natural: Mínimo Dano, Máxima Definição</h2>
+      <p>Deixar o cabelo secar naturalmente é o método mais seguro para a saúde do fio, porque você elimina completamente o calor artificial. O cacho se forma no seu próprio tempo, o que geralmente resulta em uma definição mais controlada e com menos frizz.</p>
+      <p><strong>Quando usar:</strong></p>
+      <ul>
+        <li>Quando você tem tempo de sobra para deixar a natureza agir (<strong>3 a 4 vezes natural</strong> quando tem tempo).</li>
+        <li>Quando seu cabelo está passando por um momento de fragilidade extrema ou recuperação de danos.</li>
+        <li>Quando o clima está quente e seco o suficiente para agilizar o processo.</li>
+      </ul>
+
+      <h2>Como Adaptar na Sua Rotina (A Regra do Jon)</h2>
+      <p>Para não ficar escrava de nenhuma técnica e ainda assim manter a saúde do cacho, eu recomendo o seguinte esquema, baseado na sua vida profissional:</p>
+      
+      <p><strong>Se você trabalha de home office:</strong></p>
+      <p>Deixa natural. Você está em casa, não precisa enfrentar vento na rua ou pegar reunião presencial com o cabelo 100% armado logo de manhã. Aproveite a vantagem de estar em casa para poupar o seu fio do calor.</p>
+      
+      <p><strong>Se você trabalha presencial:</strong></p>
+      <p>Usa o difusor de <strong>2 a 3 vezes na semana</strong> (quando tá com pressa e precisa do cabelo pronto para sair). Nos fins de semana ou dias mais tranquilos, opta pela secagem natural. Assim, você equilibra a praticidade que o seu dia a dia exige com a saúde que o seu cacho precisa.</p>
+
+      <hr class="post-divider" />
+
+      <h2>Seu cacho perde a forma logo depois de secar?</h2>
+      <p>Seu cacho é definido quando seca, mas você não sabe por que perde a forma depois?</p>
+      <p>Pode ser que você tá secando certo, mas deixando muito tempo sem lavar, o que pesa o fio com sujeira. Ou pode ser que tá secando errado e o cacho tá danificado.</p>
+      <p>A gente analisa seu cacho, vê como tá a saúde dele, ensina a técnica correta de secagem pro seu tipo de cacho, e recomenda produtos que combinam com sua rotina.</p>
+      <p>Resultado que dura <strong>dias</strong>, não horas.</p>
+
+      <div style="text-align: center; margin: 2rem 0;">
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; text-decoration: none;">👉 AGENDAR CONSULTA</a>
+        <p style="margin-top: 1rem; font-style: italic; color: #666;">Especialista em secagem e definição de cachos em Belo Horizonte</p>
+      </div>
+
+      <p style="font-size: 0.9rem; color: #888; border-top: 1px solid #eee; padding-top: 1rem; margin-top: 2rem;">
+        <em>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte</em><br/>
+        #cachos #cacheadas #cacheada #curlyhair #cabelocacheado
+      </p>
+    `
+  },
+  {
+    id: 33,
+    slug: 'guia-completo-produtos-cabelo-cacheado-2026',
+    title: 'Guia Completo de Produtos para Cabelo Cacheado: O Que Comprar, Onde Investir e O Que Evitar',
+    excerpt: 'Descubra como escolher xampus, condicionadores, máscaras e finalizadores baseados no seu tipo de cacho, onde vale a pena investir e o mito da proteína.',
+    metaDescription: 'Guia definitivo de produtos para cabelo cacheado em 2026. Jon explica como escolher xampus, finalizadores, evitar excesso de proteína e onde investir seu dinheiro. Studio do Jon, BH.',
+    keywords: 'produtos cabelo cacheado, melhor gel cabelo cacheado, xampu low poo, máscara cabelo crespo, cronograma capilar produtos, produtos transição capilar',
+    date: '17 de Maio, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-produtos-hero.png',
+    content: `
+      <h2>Introdução</h2>
+      <p>Você entra na farmácia ou na loja de cosméticos e dá de cara com uma parede inteira de produtos "para cachos". Promessas de definição milagrosa, redução de volume, controle de frizz, brilho 3D. A vontade é levar tudo.</p>
+      <p>Mas aí você chega em casa, usa, e o cabelo fica pesado, opaco, ou duro igual pedra.</p>
+      <p>O problema não é necessariamente o produto (embora existam muitos ruins por aí). O problema é que a maioria das pessoas escolhe produto pelo rótulo, não pela leitura do próprio fio.</p>
+      <p>Neste guia, vou ser direto. Sem enrolação de marketing. Vamos dissecar o que cada produto faz e como escolher o certo para o seu cacho.</p>
+
+      <img src="/blog-produtos-hero.png" alt="Mulher branca com cabelo cacheado saudável e volumoso lavando o cabelo em banheiro elegante" class="post-inline-image" />
+
+      <h2>Xampu: A Base de Tudo</h2>
+      <p>A lavagem dita o tom da sua finalização. Se você agride o fio aqui, vai passar o resto da rotina tentando compensar o dano.</p>
+      <p>A maioria dos xampus comerciais usa sulfatos fortes (como o Sodium Laureth Sulfate) que agem como detergente de louça: limpam tudo, inclusive a hidratação e a oleosidade natural que o seu cacho demora dias para produzir.</p>
+      <p><strong>A regra do Jon:</strong> Fuja de sulfatos pesados no dia a dia. Opte por Low Poo (xampus sem sulfato ou com surfactantes suaves). Eles limpam o couro cabeludo sem ressecar o comprimento.</p>
+      <p>Só use um xampu de limpeza profunda (ou anti-resíduos) a cada 15 ou 20 dias, caso sinta que o cabelo está "pesado" e acumulando produto (build-up).</p>
+
+      <h2>Condicionador: Não é Opcional</h2>
+      <p>Tem gente que usa máscara no banho e pula o condicionador. Erro clássico.</p>
+      <p>A máscara trata (hidrata, nutre, reconstrói). O condicionador sela. O pH do condicionador é formulado para fechar as cutículas do fio que o xampu abriu. Se você pula esse passo, a hidratação que a máscara entregou vai ralo abaixo.</p>
+      <p>Use o condicionador do meio para as pontas. Deixe agir por um minuto e desembarace o cabelo com os dedos ou com um pente de dentes largos <strong>durante</strong> esse processo. Nunca desembarace o cabelo sem esse "deslize".</p>
+
+      <h2>Máscaras: O Cronograma Inteligente</h2>
+      <p>Você não precisa de 10 máscaras diferentes. Você precisa de três funções bem atendidas:</p>
+      <ul>
+        <li><strong>Hidratação:</strong> A base. Repõe água. Procure glicerina, aloe vera, ácido hialurônico, d-pantenol. Use com frequência.</li>
+        <li><strong>Nutrição:</strong> Repõe lipídios (óleos). Cabelo cacheado ama nutrição porque a oleosidade da raiz não chega nas pontas. Procure manteiga de karité, óleo de argan, óleo de coco, abacate.</li>
+        <li><strong>Reconstrução:</strong> Repõe massa e proteína. Queratina, colágeno, aminoácidos. (Vou falar mais sobre isso no tópico "O Mito" abaixo, cuidado aqui).</li>
+      </ul>
+
+      <img src="/blog-produtos-aplicacao.png" alt="Mulher branca com cachos definidos aplicando creme leave-in com as mãos" class="post-inline-image" />
+
+      <h2>Leave-in: O Arquiteto da Definição</h2>
+      <p>Leave-in não é só "creme de pentear". É o produto que vai ficar no seu cabelo pelas próximas 48 ou 72 horas. Ele protege, mantém a hidratação e dá o primeiro passo na definição.</p>
+      <p>Para cachos mais abertos (ondulados, 2A-2C), o leave-in precisa ser leve, quase líquido ou em loção. Se for pesado, o cabelo não "sobe".</p>
+      <p>Para cachos mais fechados (3B-4C), o leave-in precisa ser denso, rico em óleos, porque esse fio resseca fácil e precisa de peso para não virar só volume indefinido.</p>
+
+      <h2>Finalizadores: Gel e Óleo</h2>
+      <p>Aqui é onde a mágica da durabilidade acontece. O leave-in define. O finalizador (como o gel) fixa essa definição para durar o Day After.</p>
+
+      <p><strong>Com Gel:</strong></p>
+      <ul>
+        <li>Mão ligeiramente úmida (não molhada).</li>
+        <li>Pega o gel, esfrega nas mãos pra distribuir.</li>
+        <li>Prende no cacho "scrunchando" (formando um cast, aquela crosta durinha).</li>
+        <li>Deixa secar completamente (ao ar livre ou com secador com difusor).</li>
+        <li>Quando tá 100% seco, quebra o cast (faz "crunch" com as mãos para tirar o aspecto molhado).</li>
+      </ul>
+
+      <p><strong>Com Óleo:</strong></p>
+      <ul>
+        <li>Cacho já completamente seco.</li>
+        <li>Uma gota entre os dedos, espalhe bem nas mãos.</li>
+        <li>Passa nos fios delicadamente (não esfrega, apenas amasse as pontas ou alise suavemente para selar o frizz).</li>
+      </ul>
+
+      <p><strong>Recomendações (2026):</strong></p>
+      <ul>
+        <li><em>Kérastase Curl Manifesto Gel</em> — Fixação forte, brilho intenso</li>
+        <li><em>Aunt Jackie's Don't Burn My Hair Gel</em> — Clássico, confiável</li>
+        <li><em>Olia Organics Hold Gel</em> — Mais leve, sem crunch excessivo</li>
+        <li><em>Carol's Daughter Curl Defining Crème</em> — Gel-creme, meio termo</li>
+      </ul>
+
+      <h2>O MITO QUE NINGUÉM FALA: PROTEÍNA EM EXCESSO</h2>
+      <p>Tem um padrão que a maioria segue errado.</p>
+      <p>Coloca máscara protéica todo dia. Usa finalizador com keratin. Compra condicionador com proteína. Tudo junto.</p>
+      <p><strong>Resultado?</strong> Cacho rígido, pesado, sem movimento, quebradiço.</p>
+      <p>Proteína em quantidade certa = cacho forte, macio, flexível.</p>
+      <p>Proteína em excesso = cabelo de boneca (duro, sem vida e que quebra à toa).</p>
+      <p><strong>A regra:</strong></p>
+      <p>Se você tem cacho saudável, uma máscara proteica por semana é MÁXIMO.</p>
+      <p>Se seu cacho tá muito danificado, pode ser 2 vezes. Mas não mais.</p>
+      <p>Balanceia sempre com hidratação e nutrição. A proporção ideal é:</p>
+      <ul>
+        <li>50% Hidratação</li>
+        <li>30% Nutrição</li>
+        <li>20% Reconstrução (proteína)</li>
+      </ul>
+
+      <img src="/blog-produtos-resultado.png" alt="Mulher branca com cachos espetaculares, volumosos e perfeitamente definidos sorrindo para a câmera" class="post-inline-image" />
+
+      <h2>COMO ESCOLHER PRODUTO BASEADO NO SEU CACHO</h2>
+      <p><strong>Cacho Soltinho (2B/2C)</strong><br>
+      Produtos mais leves. Máscara hidratante é o prato principal. Nutrição e proteína em menor frequência.<br>
+      <em>Foco:</em> Evitar peso, manter definição.</p>
+
+      <p><strong>Cacho Médio (3A/3B)</strong><br>
+      Mix equilibrado. Alternância entre hidratação, nutrição e reconstrução.<br>
+      <em>Foco:</em> Definição + saúde.</p>
+
+      <p><strong>Cacho Cerrado (4A/4B)</strong><br>
+      Mais nutrição e reconstrução. Hidratação também, mas em menor frequência que nutrição.<br>
+      <em>Foco:</em> Brilho, maciez, força.</p>
+
+      <p><strong>Coil Muito Cerrado (4C)</strong><br>
+      Máxima nutrição. Reconstrução frequente. Hidratação constante com óleos.<br>
+      <em>Foco:</em> Força, saúde, definição estruturada.</p>
+
+      <h2>O INVESTIMENTO: QUANDO GASTAR MAIS FAZ SENTIDO</h2>
+      <p>Produto caro sempre é melhor?</p>
+      <p>Não. Mas produto barato MUITO bom é raro.</p>
+      <p><strong>Vale investir mais em:</strong></p>
+      <ul>
+        <li><em>Condicionador</em> — Fica no fio para selar, faz muita diferença na cutícula.</li>
+        <li><em>Máscara nutritiva</em> — Essa você usa 1 a 2 vezes por semana. Rende muito e entrega os óleos essenciais.</li>
+        <li><em>Finalizador</em> — Usa toda vez que lava. Faz diferença visível e imediata no resultado final.</li>
+      </ul>
+
+      <p><strong>Pode ser mais barato em:</strong></p>
+      <ul>
+        <li><em>Xampu</em> — Low Poo bom não precisa ser caro. O objetivo é só limpar sem agredir.</li>
+        <li><em>Leave-in (para algumas curvaturas)</em> — Existem opções ótimas por menos de R$50 que cumprem bem o papel de desembaraçar e condicionar.</li>
+      </ul>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Já testou vários produtos e nada funciona?</h3>
+        <p>Pode ser que o produto tá bom, mas você tá usando errado. Ou misturando coisas que não combinam.</p>
+        <p>Marcas uma consulta. A gente analisa seu cacho, entende o que tá faltando, recomenda produtos que fazem sentido pro SEU tipo específico, e ainda te ensina o jeito certo de aplicar.</p>
+        <p><strong>Produto bom + aplicação certa = resultado que você procura.</strong></p>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta de Diagnóstico</a>
+      </div>
+
+      <p><i>Jonatan Junior é especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte.</i><br>
+      <small>#cachos #cacheadas #cacheada #curlyhair #cabelocacheado</small></p>
+
+      <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <h3>Continue Lendo</h3>
+        <ul style="list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1rem;">
+            → <a href="/blog/rotina-basica-cabelo-cacheado-cronograma">Rotina Básica para Cabelos Cacheados: Cronograma que Funciona</a>
+          </li>
+          <li style="margin-bottom: 1rem;">
+            → <a href="/blog/frequencia-de-corte-cabelo-cacheado">Frequência de Corte para Cabelo Cacheado: Saiba Quando Cortar</a>
+          </li>
+        </ul>
+      </div>
+    `
+  },
+  {
     id: 32,
     slug: 'rotina-basica-cabelo-cacheado-cronograma',
     title: 'Rotina Básica para Cabelos Cacheados: Cronograma que Funciona',
