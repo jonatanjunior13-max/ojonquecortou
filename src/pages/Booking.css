@@ -3,6 +3,7 @@
   padding-top: 140px;
   padding-bottom: 80px;
   max-width: 800px !important;
+  color: var(--ink);
 }
 
 .booking-header {
@@ -11,17 +12,19 @@
 
 .booking-header h1 {
   margin-bottom: 12px;
+  color: var(--ink);
 }
 
 .demo-banner {
-  background: rgba(229, 62, 62, 0.1);
-  border: 1px solid rgba(229, 62, 62, 0.3);
-  color: #fc8181;
+  background: rgba(176, 90, 46, 0.1);
+  border: 1px solid rgba(176, 90, 46, 0.3);
+  color: var(--accent);
   padding: 8px 16px;
   border-radius: 4px;
   font-size: 0.9rem;
   margin-top: 16px;
   display: inline-block;
+  font-weight: 600;
 }
 
 /* Step Indicator */
@@ -36,7 +39,7 @@
 .step-dot {
   font-size: 0.9rem;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--muted);
   cursor: pointer;
   transition: color 0.3s var(--ease);
   white-space: nowrap;
@@ -44,14 +47,14 @@
 
 .step-dot.active {
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .step-indicator .line {
   flex-grow: 1;
   max-width: 60px;
   height: 2px;
-  background: var(--border);
+  background: var(--rule);
   transition: background 0.3s var(--ease);
 }
 
@@ -61,27 +64,40 @@
 
 /* Booking Card */
 .booking-card-wrap {
-  background: var(--bg-card, #1A1310);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--rule);
   border-radius: 8px;
   padding: 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 30px rgba(26, 19, 16, 0.05);
 }
 
 .booking-step h2 {
-  font-size: 1.5rem;
-  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-family: var(--font-display, var(--serif));
   margin-bottom: 24px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--rule);
   padding-bottom: 12px;
+  color: var(--ink);
 }
 
 /* Services */
+.services-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--rule-soft);
+  padding-bottom: 6px;
+  font-family: var(--mono);
+}
+
 .services-list {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .service-card {
@@ -89,33 +105,36 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s var(--ease);
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-warm);
 }
 
 .service-card:hover {
-  border-color: var(--accent-muted, #c97b49);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent-warm);
+  background: var(--surface);
+  box-shadow: 0 4px 12px rgba(26, 19, 16, 0.03);
 }
 
 .service-card.selected {
   border-color: var(--accent);
-  background: rgba(201, 123, 73, 0.08);
-  box-shadow: 0 0 12px rgba(201, 123, 73, 0.15);
+  background: var(--surface);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .service-info h3 {
   font-size: 1.15rem;
   margin-bottom: 6px;
-  color: var(--text);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 600;
 }
 
 .service-info .desc {
   font-size: 0.9rem;
-  color: var(--text-muted);
+  color: var(--muted);
   margin-bottom: 8px;
   line-height: 1.4;
 }
@@ -124,14 +143,47 @@
   font-size: 0.8rem;
   color: var(--accent);
   display: block;
+  font-weight: 600;
 }
 
 .service-price {
   font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 700;
+  color: var(--accent-deep);
   white-space: nowrap;
   margin-left: 20px;
+}
+
+/* More Services Trigger */
+.more-services-trigger-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 32px 0;
+}
+
+.more-services-btn {
+  border: 1px solid var(--rule) !important;
+  padding: 12px 24px !important;
+  border-radius: 6px;
+  font-weight: 700;
+  color: var(--accent) !important;
+  background: var(--bg-warm) !important;
+  transition: all 0.3s var(--ease);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.more-services-btn:hover {
+  background: var(--accent) !important;
+  color: #fff !important;
+  border-color: var(--accent) !important;
+}
+
+.additional-services-wrapper {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--rule);
 }
 
 /* Date and Time Picker */
@@ -147,45 +199,47 @@
   flex-direction: column;
   align-items: center;
   padding: 12px 8px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
+  background: var(--bg-warm);
+  border: 1px solid var(--rule);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s var(--ease);
-  color: var(--text);
+  color: var(--ink);
 }
 
 .date-btn:hover {
-  border-color: var(--accent-muted);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent-warm);
+  background: var(--surface);
 }
 
 .date-btn.selected {
   border-color: var(--accent);
-  background: rgba(201, 123, 73, 0.15);
+  background: var(--surface);
   color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .date-btn .weekday {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: var(--text-muted);
+  color: var(--muted);
   margin-bottom: 4px;
 }
 
 .date-btn.selected .weekday {
   color: var(--accent);
+  font-weight: 700;
 }
 
 .date-btn .day {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .time-picker-wrap {
   margin-top: 24px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--rule);
   padding-top: 24px;
   margin-bottom: 32px;
 }
@@ -193,6 +247,7 @@
 .time-picker-wrap h3 {
   font-size: 1.1rem;
   margin-bottom: 16px;
+  color: var(--ink);
 }
 
 .time-picker-grid {
@@ -203,31 +258,33 @@
 
 .time-btn {
   padding: 12px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
+  background: var(--bg-warm);
+  border: 1px solid var(--rule);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s var(--ease);
-  font-weight: 500;
+  font-weight: 600;
   text-align: center;
-  color: var(--text);
+  color: var(--ink);
 }
 
 .time-btn:hover:not(:disabled) {
-  border-color: var(--accent-muted);
-  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--accent-warm);
+  background: var(--surface);
 }
 
 .time-btn.selected {
   border-color: var(--accent);
-  background: rgba(201, 123, 73, 0.15);
+  background: var(--surface);
   color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .time-btn:disabled {
   opacity: 0.25;
   cursor: not-allowed;
   text-decoration: line-through;
+  background: var(--rule-soft);
 }
 
 /* Forms */
@@ -244,8 +301,8 @@
 .booking-step label {
   display: block;
   font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--ink-2);
   margin-bottom: 8px;
 }
 
@@ -254,10 +311,10 @@
 .booking-step textarea {
   width: 100%;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--rule);
   border-radius: 4px;
-  color: var(--text);
+  color: var(--ink);
   font-family: inherit;
   font-size: 1rem;
   transition: border-color 0.3s var(--ease);
@@ -268,11 +325,12 @@
 .booking-step textarea:focus {
   border-color: var(--accent);
   outline: none;
+  background: var(--surface);
 }
 
 .booking-step .hint {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--muted);
   margin-top: 4px;
   display: block;
 }
@@ -283,7 +341,7 @@
   justify-content: flex-end;
   gap: 16px;
   margin-top: 32px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--rule);
   padding-top: 24px;
 }
 
@@ -291,9 +349,9 @@
 .booking-success .success-icon {
   width: 64px;
   height: 64px;
-  background: rgba(72, 187, 120, 0.1);
-  border: 2px solid #48bb78;
-  color: #48bb78;
+  background: rgba(39, 103, 73, 0.1);
+  border: 2px solid #276749;
+  color: #276749;
   font-size: 2rem;
   border-radius: 50%;
   display: flex;
@@ -305,10 +363,10 @@
 .summary-card {
   max-width: 400px;
   margin: 24px auto;
-  border: 1px solid var(--border);
+  border: 1px solid var(--rule);
   padding: 20px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--bg-warm);
   text-align: left;
 }
 
@@ -317,9 +375,9 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--rule);
   padding-bottom: 8px;
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .summary-row {
@@ -330,7 +388,7 @@
 }
 
 .summary-row strong {
-  color: var(--text-muted);
+  color: var(--muted);
 }
 
 .alert {
@@ -342,9 +400,9 @@
 }
 
 .alert-info {
-  background: rgba(201, 123, 73, 0.08);
-  border: 1px solid rgba(201, 123, 73, 0.2);
-  color: #ebd1be;
+  background: var(--bg-warm);
+  border: 1px solid var(--rule);
+  color: var(--ink);
 }
 
 /* Responsive */

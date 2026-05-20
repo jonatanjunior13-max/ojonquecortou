@@ -6,10 +6,19 @@ import { Arrow } from '../components/NewDesignComponents';
 import './Booking.css';
 
 // Lista oficial de serviços fornecida pelo Jon
-const SERVICES = [
+const PRIMARY_SERVICES = [
   { id: 'corte-jon', name: 'Corte com o Jon', price: 150, duration: 60, desc: 'Diagnóstico com Leitura de Fio, corte visagista personalizado (a seco ou molhado conforme necessidade) e finalização estruturada.' },
   { id: 'combo-corte-tratamento', name: 'Combo Corte + Tratamento', price: 220, duration: 90, desc: 'O serviço completo de corte Leitura de Fio acompanhado de um protocolo de tratamento profundo (hidratação/nutrição/reconstrução) adequado ao seu fio.' },
   { id: 'tratamento-personalizado', name: 'Tratamento Personalizado', price: 120, duration: 60, desc: 'Higienização suave, aplicação de máscara de tratamento de alta performance escolhida sob medida e finalização técnica.' }
+];
+
+const ADDITIONAL_SERVICES = [
+  { id: 'corte-especializado', name: 'Corte Especializado', price: 190, duration: 60, desc: 'Arquitetura do fio natural, respeitando o fator de encolhimento e a sua rotina capilar.' },
+  { id: 'manutencao-corte', name: 'Manutenção de Corte', price: 130, duration: 45, desc: 'Exclusivo para clientes recorrentes que cortaram com o Jon nos últimos 90 dias.' },
+  { id: 'detox-capilar', name: 'Detox Capilar', price: 150, duration: 60, desc: 'Esfoliação suave e limpeza profunda dos folículos para estimular o crescimento saudável.' },
+  { id: 'pacote-cachos', name: 'Pacote Cachos Perfeitos', price: 390, duration: 180, desc: '4 sessões com 30% OFF. Ideal para quem está em transição ou quer recuperar fios.' },
+  { id: 'retoque-raiz', name: 'Retoque de Raiz', price: 180, duration: 90, desc: 'Manutenção da cor na raiz sem alterar o comprimento, garantindo um visual harmônico.' },
+  { id: 'lavar-finalizar', name: 'Lavar e Finalizar', price: 100, duration: 45, desc: 'Definição e volume sob medida para o seu desejo do dia (cachos soltos e hidratados).' }
 ];
 
 // Horários padrão de atendimento
@@ -21,6 +30,7 @@ const BookingPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
+  const [showMoreServices, setShowMoreServices] = useState(false);
   
   // Dados do cliente
   const [clientData, setClientData] = useState({
@@ -168,8 +178,10 @@ const BookingPage = () => {
         {step === 1 && (
           <div className="booking-step">
             <h2>Escolha o serviço desejado</h2>
+            
+            <div className="services-section-title">Serviços Principais</div>
             <div className="services-list">
-              {SERVICES.map(service => (
+              {PRIMARY_SERVICES.map(service => (
                 <div 
                   key={service.id} 
                   className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
@@ -186,6 +198,40 @@ const BookingPage = () => {
                 </div>
               ))}
             </div>
+
+            <div className="more-services-trigger-wrap">
+              <button 
+                type="button" 
+                className="btn btn-ghost more-services-btn" 
+                onClick={() => setShowMoreServices(!showMoreServices)}
+              >
+                {showMoreServices ? 'Ocultar outros serviços ▲' : 'Ver mais serviços no salão ▼'}
+              </button>
+            </div>
+
+            {showMoreServices && (
+              <div className="additional-services-wrapper">
+                <div className="services-section-title" style={{ marginTop: 24 }}>Outros Serviços</div>
+                <div className="services-list additional-services-list">
+                  {ADDITIONAL_SERVICES.map(service => (
+                    <div 
+                      key={service.id} 
+                      className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
+                      onClick={() => setSelectedService(service)}
+                    >
+                      <div className="service-info">
+                        <h3>{service.name}</h3>
+                        <p className="desc">{service.desc}</p>
+                        <span className="duration">Duração aproximada: {service.duration} min</span>
+                      </div>
+                      <div className="service-price">
+                        R$ {service.price}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
             <div className="step-actions">
               <button 
