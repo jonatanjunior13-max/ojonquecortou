@@ -5,20 +5,95 @@ import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
 import './Booking.css';
 
-// Lista oficial de serviços fornecida pelo Jon
-const PRIMARY_SERVICES = [
-  { id: 'corte-jon', name: 'Corte com o Jon', price: 150, duration: 60, desc: 'Diagnóstico com Leitura de Fio, corte visagista personalizado (a seco ou molhado conforme necessidade) e finalização estruturada.' },
-  { id: 'combo-corte-tratamento', name: 'Combo Corte + Tratamento', price: 220, duration: 90, desc: 'O serviço completo de corte Leitura de Fio acompanhado de um protocolo de tratamento profundo (hidratação/nutrição/reconstrução) adequado ao seu fio.' },
-  { id: 'tratamento-personalizado', name: 'Tratamento Personalizado', price: 120, duration: 60, desc: 'Higienização suave, aplicação de máscara de tratamento de alta performance escolhida sob medida e finalização técnica.' }
-];
-
-const ADDITIONAL_SERVICES = [
-  { id: 'corte-especializado', name: 'Corte Especializado', price: 190, duration: 60, desc: 'Arquitetura do fio natural, respeitando o fator de encolhimento e a sua rotina capilar.' },
-  { id: 'manutencao-corte', name: 'Manutenção de Corte', price: 130, duration: 45, desc: 'Exclusivo para clientes recorrentes que cortaram com o Jon nos últimos 90 dias.' },
-  { id: 'detox-capilar', name: 'Detox Capilar', price: 150, duration: 60, desc: 'Esfoliação suave e limpeza profunda dos folículos para estimular o crescimento saudável.' },
-  { id: 'pacote-cachos', name: 'Pacote Cachos Perfeitos', price: 390, duration: 180, desc: '4 sessões com 30% OFF. Ideal para quem está em transição ou quer recuperar fios.' },
-  { id: 'retoque-raiz', name: 'Retoque de Raiz', price: 180, duration: 90, desc: 'Manutenção da cor na raiz sem alterar o comprimento, garantindo um visual harmônico.' },
-  { id: 'lavar-finalizar', name: 'Lavar e Finalizar', price: 100, duration: 45, desc: 'Definição e volume sob medida para o seu desejo do dia (cachos soltos e hidratados).' }
+const SEED_SERVICES = [
+  {
+    id: 'coloracao-completa',
+    name: 'Coloração Completa',
+    category: 'Cabelo',
+    description: 'Quer uma transformação completa ou renovar a cor dos seus fios? A Coloração Completa é para quem deseja uma coloração total, seja para cobrir os fios brancos ou mudar completamente o tom. Antes de começar, conversamos sobre o tom perfeito para você, e garantimos que a cor escolhida vai realçar o seu estilo, sempre cuidando da saúde dos fios.',
+    price: 499,
+    priceType: 'A partir de',
+    promoPrice: null,
+    duration: 120,
+    isPrimary: true
+  },
+  {
+    id: 'combo-corte-tratamento-personalizado',
+    name: 'Combo - Corte com o Jon + Tratamento personalizado',
+    category: 'Cabelo',
+    description: 'Cachos precisando de tratamento e um corte novo? Esse pacote inclui uma restauração profunda que devolve a maciez e o brilho, e um corte personalizado, pensado para valorizar os seus cachos. A finalização é sob medida para que seus cachos saiam com definição e brilho.',
+    price: 320,
+    priceType: 'Fixo',
+    promoPrice: 230,
+    duration: 60,
+    isPrimary: true
+  },
+  {
+    id: 'combo-corte-terapia-trp',
+    name: 'Combo Corte com o Jon + Terapia de Reposição Proteica',
+    category: 'Cabelo',
+    description: 'Um tratamento completo pra quem quer se apaixonar de novo pelo próprio cabelo! O corte valoriza cada cacho e o TRP devolve vida, brilho e força com tecnologia que age na fibra capilar de dentro pra fora. Resultado? Cachos leves, saudáveis e com movimento real. Vem viver essa transformação — seu cabelo vai sentir a diferença desde o primeiro toque! 💫',
+    price: 370,
+    priceType: 'Fixo',
+    promoPrice: 300,
+    duration: 60,
+    isPrimary: true
+  },
+  {
+    id: 'corte-jon',
+    name: 'Corte com o Jon',
+    category: 'Cabelo',
+    description: 'Nada de cortar os cachos de qualquer jeito! A gente conversa primeiro para entender o que você quer e o que seus cachos precisam. O corte é personalizado, feito para realçar o formato natural dos seus fios, garantindo movimento. Esqueça os cortes genéricos e padronizados. Aqui, cada corte é único, assim como você. Tudo começa com uma entrevista detalhada, onde eu, Jon, descubro tudo sobre o seu estilo de vida, suas preferências e suas necessidades.',
+    price: 190,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 60,
+    isPrimary: true
+  },
+  {
+    id: 'detox-estimulante',
+    name: 'Detox Estimulante',
+    category: 'Cabelo',
+    description: "Dê um respiro para o seu couro cabeludo com o nosso serviço 'Purifica & Cresce'. Este tratamento esfoliante detox é a solução perfeita para eliminar impurezas, excesso de oleosidade e estimular o crescimento saudável do cabelo. Com a combinação de ingredientes naturais e técnicas especializadas, este tratamento vai revitalizar o seu couro cabeludo, promovendo um ambiente saudável para o crescimento dos seus fios.",
+    price: 180,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 60,
+    isPrimary: false
+  },
+  {
+    id: 'inside-trp',
+    name: 'Inside TRP – Reconstrução Premium',
+    category: 'Cabelo',
+    description: 'Tratamento proteico premium com a tecnologia Deep Complex pra recuperar fios danificados por química, calor ou processos agressivos. Atua desde o córtex até as cutículas: repara massa perdida, reduz porosidade, evita quebra e sela a fibra. Resultado: cachos mais fortes, elásticos e vibrantes — sem sofrimento.',
+    price: 180,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 60,
+    isPrimary: false
+  },
+  {
+    id: 'lavar-finalizar',
+    name: 'Lavar e Finalizar',
+    category: 'Cabelo',
+    description: 'Aqui seus cachos recebem a finalização perfeita! A gente conversa sobre o que você quer – definição, volume ou leveza – e faço a finalização sob medida. O resultado são cachos definidos, soltos, com brilho e prontos para arrasar. Tudo pensado para que seus fios fiquem no melhor formato. Importante: NÃO É DEDOLISS',
+    price: 100,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 60,
+    isPrimary: false
+  },
+  {
+    id: 'luzes-morena-iluminada',
+    name: 'Luzes ou Morena Iluminada',
+    category: 'Cabelo',
+    description: 'Ilumine seus fios sem agredir! Com nossa técnica exclusiva de Mechas Sem Descolorante, você consegue um efeito iluminado e natural, perfeito para quem quer uma transformação suave e saudável. Ideal para cabelos cacheados, ondulados e lisos, garantindo brilho e definição sem danificar a estrutura do fio.',
+    price: 699,
+    priceType: 'A partir de',
+    promoPrice: null,
+    duration: 180,
+    isPrimary: false
+  }
 ];
 
 // Horários padrão de atendimento
@@ -26,6 +101,7 @@ const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
 
 const BookingPage = () => {
   const [step, setStep] = useState(1);
+  const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -44,6 +120,44 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
+
+  // Busca lista de serviços cadastrados no salão
+  useEffect(() => {
+    const fetchServices = async () => {
+      if (!db) {
+        setIsDemoMode(true);
+        const localData = localStorage.getItem('demo_services');
+        if (localData) {
+          setServices(JSON.parse(localData));
+        } else {
+          setServices(SEED_SERVICES);
+        }
+        return;
+      }
+
+      try {
+        const querySnapshot = await getDocs(collection(db, 'services'));
+        const list = [];
+        querySnapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        if (list.length > 0) {
+          setServices(list);
+        } else {
+          setServices(SEED_SERVICES);
+        }
+      } catch (err) {
+        console.warn('Erro ao buscar serviços do Firestore, usando locais:', err);
+        setIsDemoMode(true);
+        const localData = localStorage.getItem('demo_services');
+        setServices(localData ? JSON.parse(localData) : SEED_SERVICES);
+      }
+    };
+    fetchServices();
+  }, []);
+
+  const primaryServices = services.filter(s => s.isPrimary);
+  const additionalServices = services.filter(s => !s.isPrimary);
 
   // Gera datas disponíveis para agendamento (próximos 14 dias, exceto domingos e segundas)
   const getAvailableDates = () => {
@@ -187,7 +301,7 @@ const BookingPage = () => {
             
             <div className="services-section-title">Serviços Principais</div>
             <div className="services-list">
-              {PRIMARY_SERVICES.map(service => (
+              {primaryServices.map(service => (
                 <div 
                   key={service.id} 
                   className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
@@ -195,11 +309,25 @@ const BookingPage = () => {
                 >
                   <div className="service-info">
                     <h3>{service.name}</h3>
-                    <p className="desc">{service.desc}</p>
+                    <p className="desc">{service.description}</p>
                     <span className="duration">Duração aproximada: {service.duration} min</span>
                   </div>
                   <div className="service-price">
-                    R$ {service.price}
+                    {service.promoPrice ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                        <span style={{ textDecoration: 'line-through', fontSize: '0.8rem', opacity: 0.6 }}>
+                          R$ {service.price.toFixed(2)}
+                        </span>
+                        <span style={{ color: '#2f855a', fontWeight: 'bold' }}>
+                          R$ {service.promoPrice.toFixed(2)}
+                        </span>
+                      </div>
+                    ) : (
+                      <span>
+                        {service.priceType === 'A partir de' ? 'A partir de ' : ''}
+                        R$ {service.price.toFixed(2)}
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}
@@ -219,7 +347,7 @@ const BookingPage = () => {
               <div className="additional-services-wrapper">
                 <div className="services-section-title" style={{ marginTop: 24 }}>Outros Serviços</div>
                 <div className="services-list additional-services-list">
-                  {ADDITIONAL_SERVICES.map(service => (
+                  {additionalServices.map(service => (
                     <div 
                       key={service.id} 
                       className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
@@ -227,11 +355,25 @@ const BookingPage = () => {
                     >
                       <div className="service-info">
                         <h3>{service.name}</h3>
-                        <p className="desc">{service.desc}</p>
+                        <p className="desc">{service.description}</p>
                         <span className="duration">Duração aproximada: {service.duration} min</span>
                       </div>
                       <div className="service-price">
-                        R$ {service.price}
+                        {service.promoPrice ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                            <span style={{ textDecoration: 'line-through', fontSize: '0.8rem', opacity: 0.6 }}>
+                              R$ {service.price.toFixed(2)}
+                            </span>
+                            <span style={{ color: '#2f855a', fontWeight: 'bold' }}>
+                              R$ {service.promoPrice.toFixed(2)}
+                            </span>
+                          </div>
+                        ) : (
+                          <span>
+                            {service.priceType === 'A partir de' ? 'A partir de ' : ''}
+                            R$ {service.price.toFixed(2)}
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -417,7 +559,10 @@ const BookingPage = () => {
               </div>
               <div className="summary-row">
                 <strong>Valor:</strong>
-                <span>R$ {selectedService?.price}</span>
+                <span>
+                  {selectedService?.priceType === 'A partir de' ? 'A partir de ' : ''}
+                  R$ {(selectedService?.promoPrice ?? selectedService?.price)?.toFixed(2)}
+                </span>
               </div>
               <div className="summary-row">
                 <strong>Data:</strong>

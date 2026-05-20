@@ -7,6 +7,17 @@ import './Admin.css';
 // Lista de horários padrão
 const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
 
+const SEED_SERVICES = [
+  { id: 'coloracao-completa', name: 'Coloração Completa', price: 499, priceType: 'A partir de', promoPrice: null, duration: 120 },
+  { id: 'combo-corte-tratamento-personalizado', name: 'Combo - Corte com o Jon + Tratamento personalizado', price: 320, priceType: 'Fixo', promoPrice: 230, duration: 60 },
+  { id: 'combo-corte-terapia-trp', name: 'Combo Corte com o Jon + Terapia de Reposição Proteica', price: 370, priceType: 'Fixo', promoPrice: 300, duration: 60 },
+  { id: 'corte-jon', name: 'Corte com o Jon', price: 190, priceType: 'Fixo', promoPrice: null, duration: 60 },
+  { id: 'detox-estimulante', name: 'Detox Estimulante', price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
+  { id: 'inside-trp', name: 'Inside TRP – Reconstrução Premium', price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
+  { id: 'lavar-finalizar', name: 'Lavar e Finalizar', price: 100, priceType: 'Fixo', promoPrice: null, duration: 60 },
+  { id: 'luzes-morena-iluminada', name: 'Luzes ou Morena Iluminada', price: 699, priceType: 'A partir de', promoPrice: null, duration: 180 }
+];
+
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
@@ -19,6 +30,7 @@ const SEED_TRANSACTIONS = [
 const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [products, setProducts] = useState([]);
+  const [services, setServices] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -45,31 +57,63 @@ const AdminDashboard = () => {
     clientName: '',
     clientPhone: '',
     clientEmail: '',
-    serviceName: 'Corte com o Jon',
-    servicePrice: 150,
+    serviceName: '',
+    servicePrice: 0,
     date: new Date().toISOString().split('T')[0],
     time: '09:00',
     notes: ''
   });
 
-  // Carrega produtos para o dropdown de vendas da comanda
+  // Carrega produtos e serviços
   useEffect(() => {
     if (!db) {
-      const localData = localStorage.getItem('demo_products');
-      if (localData) {
-        setProducts(JSON.parse(localData));
+      const localProd = localStorage.getItem('demo_products');
+      if (localProd) setProducts(JSON.parse(localProd));
+      
+      const localServ = localStorage.getItem('demo_services');
+      if (localServ) {
+        setServices(JSON.parse(localServ));
+      } else {
+        setServices(SEED_SERVICES);
       }
       return;
     }
-    const unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
+    
+    const unsubProd = onSnapshot(collection(db, 'products'), (snapshot) => {
       const prodList = [];
       snapshot.forEach((doc) => {
         prodList.push({ id: doc.id, ...doc.data() });
       });
       setProducts(prodList);
     });
-    return () => unsubscribe();
+
+    const unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
+      const list = [];
+      snapshot.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() });
+      });
+      if (list.length > 0) {
+        setServices(list);
+      } else {
+        setServices(SEED_SERVICES);
+      }
+    });
+
+    return () => {
+      unsubProd();
+      unsubServ();
+    };
   }, []);
+
+  useEffect(() => {
+    if (services.length > 0 && !newBooking.serviceName) {
+      setNewBooking(prev => ({
+        ...prev,
+        serviceName: services[0].name,
+        servicePrice: services[0].promoPrice || services[0].price
+      }));
+    }
+  }, [services]);
 
   // Escuta agendamentos no Firestore em tempo real
   useEffect(() => {
@@ -174,19 +218,16 @@ const AdminDashboard = () => {
   // Criar agendamento manual
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
-    const serviceMap = {
-      'Corte com o Jon': 150,
-      'Combo Corte + Tratamento': 220,
-      'Tratamento Personalizado': 120
-    };
+    const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
+    const activeServPrice = newBooking.servicePrice || (services[0]?.promoPrice || services[0]?.price || 150);
 
     const payload = {
       clientName: newBooking.clientName,
       clientPhone: newBooking.clientPhone,
       clientEmail: newBooking.clientEmail,
       service: {
-        name: newBooking.serviceName,
-        price: serviceMap[newBooking.serviceName]
+        name: activeServName,
+        price: activeServPrice
       },
       date: newBooking.date,
       time: newBooking.time,
@@ -207,8 +248,8 @@ const AdminDashboard = () => {
         clientName: '',
         clientPhone: '',
         clientEmail: '',
-        serviceName: 'Corte com o Jon',
-        servicePrice: 150,
+        serviceName: services[0]?.name || '',
+        servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
         date: new Date().toISOString().split('T')[0],
         time: '09:00',
         notes: ''
@@ -579,9 +620,11 @@ const AdminDashboard = () => {
                         style={{ padding: '6px', fontSize: '0.8rem', flexGrow: 1 }}
                       >
                         <option value="">-- Selecione --</option>
-                        <option value="Lavagem Especial|40">Lavagem Especial (R$ 40)</option>
-                        <option value="Secagem Diferenciada|50">Secagem Diferenciada (R$ 50)</option>
-                        <option value="Tratamento Rápido|60">Tratamento Rápido (R$ 60)</option>
+                        {services.map(s => (
+                          <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                            {s.name} (R$ {s.promoPrice || s.price})
+                          </option>
+                        ))}
                       </select>
                       <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.9rem' }} onClick={addExtraService}>+</button>
                     </div>
@@ -677,12 +720,17 @@ const AdminDashboard = () => {
               <div className="form-group">
                 <label>Serviço *</label>
                 <select 
-                  value={newBooking.serviceName}
-                  onChange={e => setNewBooking(prev => ({ ...prev, serviceName: e.target.value }))}
+                  value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
+                  onChange={e => {
+                    const [name, priceStr] = e.target.value.split('|');
+                    setNewBooking(prev => ({ ...prev, serviceName: name, servicePrice: Number(priceStr) }));
+                  }}
                 >
-                  <option value="Corte com o Jon">Corte com o Jon (R$ 150)</option>
-                  <option value="Combo Corte + Tratamento">Combo Corte + Tratamento (R$ 220)</option>
-                  <option value="Tratamento Personalizado">Tratamento Personalizado (R$ 120)</option>
+                  {services.map(s => (
+                    <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                      {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

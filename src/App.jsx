@@ -21,6 +21,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminClients from './pages/admin/AdminClients';
 import AdminInventory from './pages/admin/AdminInventory';
 import AdminFinancial from './pages/admin/AdminFinancial';
+import AdminServices from './pages/admin/AdminServices';
 
 import GoogleAnalytics from './components/GoogleAnalytics';
 
@@ -87,6 +88,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="agenda" element={<AdminDashboard />} />
+          <Route path="servicos" element={<AdminServices />} />
           <Route path="clientes" element={<AdminClients />} />
           <Route path="estoque" element={<AdminInventory />} />
           <Route path="financeiro" element={<AdminFinancial />} />

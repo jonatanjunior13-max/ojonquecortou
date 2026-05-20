@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { Calendar, Users, LogOut, Package, DollarSign } from 'lucide-react';
+import { Calendar, Users, LogOut, Package, DollarSign, Scissors } from 'lucide-react';
 import './AdminNavbar.css';
 
 const AdminLayout = () => {
@@ -74,6 +74,13 @@ const AdminLayout = () => {
             <span>Agenda Semanal</span>
           </Link>
           <Link 
+            to="/admin/servicos" 
+            className={`nav-item ${location.pathname.includes('/servicos') ? 'active' : ''}`}
+          >
+            <Scissors size={18} />
+            <span>Serviços</span>
+          </Link>
+          <Link 
             to="/admin/clientes" 
             className={`nav-item ${location.pathname.includes('/clientes') ? 'active' : ''}`}
           >
@@ -109,6 +116,7 @@ const AdminLayout = () => {
         <header className="admin-topbar">
           <div className="topbar-title">
             {location.pathname.includes('/clientes') ? 'Fichas Técnicas & Clientes' :
+             location.pathname.includes('/servicos') ? 'Serviços do Salão' :
              location.pathname.includes('/estoque') ? 'Controle de Estoque' :
              location.pathname.includes('/financeiro') ? 'Movimentação & Fluxo de Caixa' : 'Agenda do Studio'}
           </div>
