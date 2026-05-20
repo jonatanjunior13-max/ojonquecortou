@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../../config/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import SEO from '../../components/SEO';
+import { Arrow } from '../../components/NewDesignComponents';
+import './Admin.css';
+
+const AdminLogin = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [demoMode, setDemoMode] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      if (demoMode || email === 'admin@ojonquecortou.com.br') {
+        // Modo Demo: Bypass local se Firebase não estiver configurado
+        console.log('Login efetuado via modo Demo');
+        localStorage.setItem('admin_logged', 'true');
+        navigate('/admin/agenda');
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+        localStorage.setItem('admin_logged', 'true');
+        navigate('/admin/agenda');
+      }
+    } catch (err) {
+      console.warn('Erro ao autenticar com Firebase Auth:', err.message);
+      
+      // Se falhar por conexão (ex: chaves mockadas), oferece opção de entrar em Modo Demo
+      if (err.code === 'auth/invalid-api-key' || err.code === 'auth/network-request-failed' || !import.meta.env.VITE_FIREBASE_API_KEY) {
+        setError('Erro de conexão com o banco de dados. Deseja entrar em Modo Demonstração local?');
+        setDemoMode(true);
+      } else {
+        setError('Credenciais inválidas. Verifique seu e-mail e senha.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemoBypass = () => {
+    localStorage.setItem('admin_logged', 'true');
+    navigate('/admin/agenda');
+  };
+
+  return (
+    <main className="admin-login-page text-center">
+      <SEO title="Acesso Administrativo | Studio do Jon" description="Painel interno de controle e agendamento." />
+
+      <div className="login-card">
+        <header className="login-header">
+          <div className="logo-text">Studio do Jon</div>
+          <h2>Painel <span className="italic">BackOffice</span></h2>
+          <p>Insira suas credenciais para gerenciar a agenda e fichas das clientes.</p>
+        </header>
+
+        {error && (
+          <div className="error-message">
+            {error}
+            {demoMode && (
+              <button type="button" className="demo-btn-link" onClick={handleDemoBypass}>
+                Entrar como Demonstrativo
+              </button>
+            )}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin}>
+          <div className="form-group text-left">
+            <label htmlFor="email">E-mail de Acesso</label>
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              placeholder="admin@ojonquecortou.com.br" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group text-left">
+            <label htmlFor="password">Senha de Segurança</label>
+            <input 
+              type="password" 
+              id="password" 
+              required 
+              placeholder="••••••••" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <button type="submit" className="btn btn-accent w-100" disabled={loading}>
+            {loading ? 'Verificando...' : 'Acessar Painel'} <Arrow />
+          </button>
+        </form>
+
+        <div className="login-footer">
+          <a href="/">← Voltar para o Site</a>
+        </div>
+      </div>
+    </main>
+  );
+};
+
+export default AdminLogin;

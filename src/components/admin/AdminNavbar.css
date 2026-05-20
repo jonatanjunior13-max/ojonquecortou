@@ -1,0 +1,170 @@
+/* Admin Shell & Layout Styles */
+
+.admin-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #120e0c;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+.admin-app-container {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  background: #120e0c;
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+/* Sidebar */
+.admin-sidebar {
+  background: #1A1310;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-brand {
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-brand h2 {
+  font-size: 1.2rem;
+  font-family: var(--font-display);
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.sidebar-brand .badge {
+  font-size: 0.7rem;
+  background: rgba(201, 123, 73, 0.15);
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.sidebar-nav {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.3s var(--ease);
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: rgba(201, 123, 73, 0.1);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 24px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  width: 100%;
+  background: none;
+  border: none;
+  color: #fc8181;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-align: left;
+  transition: background 0.3s var(--ease);
+}
+
+.logout-btn:hover {
+  background: rgba(229, 62, 62, 0.05);
+}
+
+/* Main Content Area */
+.admin-main-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.admin-topbar {
+  background: #1A1310;
+  height: 70px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  background: #48bb78;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px #48bb78;
+}
+
+.admin-page-body {
+  padding: 32px;
+  flex-grow: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-app-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .admin-sidebar {
+    display: none; /* Em celular simplificamos ou faríamos menu toggle */
+  }
+}
