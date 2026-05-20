@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { Calendar, Users, LogOut, ShieldAlert } from 'lucide-react';
+import { Calendar, Users, LogOut } from 'lucide-react';
 import './AdminNavbar.css';
 
 const AdminLayout = () => {
@@ -11,7 +11,18 @@ const AdminLayout = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Verifica se há autenticação ativa no Firebase ou no localStorage (bypass local/demo)
+    // Se auth for nulo (Firebase inativo/mockado), usamos apenas o localStorage (bypass local/demo)
+    if (!auth) {
+      const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
+      if (isLocalLogged) {
+        setAuthorized(true);
+      } else {
+        setAuthorized(false);
+        navigate('/admin/login');
+      }
+      return;
+    }
+
     const checkAuth = onAuthStateChanged(auth, (user) => {
       const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
       if (user || isLocalLogged) {
@@ -26,10 +37,12 @@ const AdminLayout = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-    } catch (err) {
-      console.warn('Erro ao deslogar do Firebase:', err);
+    if (auth) {
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.warn('Erro ao deslogar do Firebase:', err);
+      }
     }
     localStorage.removeItem('admin_logged');
     navigate('/admin/login');

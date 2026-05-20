@@ -20,7 +20,7 @@ const AdminLogin = () => {
     setError('');
 
     try {
-      if (demoMode || email === 'admin@ojonquecortou.com.br') {
+      if (demoMode || email === 'admin@ojonquecortou.com.br' || !auth) {
         // Modo Demo: Bypass local se Firebase não estiver configurado
         console.log('Login efetuado via modo Demo');
         localStorage.setItem('admin_logged', 'true');
@@ -34,7 +34,7 @@ const AdminLogin = () => {
       console.warn('Erro ao autenticar com Firebase Auth:', err.message);
       
       // Se falhar por conexão (ex: chaves mockadas), oferece opção de entrar em Modo Demo
-      if (err.code === 'auth/invalid-api-key' || err.code === 'auth/network-request-failed' || !import.meta.env.VITE_FIREBASE_API_KEY) {
+      if (err.code === 'auth/invalid-api-key' || err.code === 'auth/network-request-failed' || !auth) {
         setError('Erro de conexão com o banco de dados. Deseja entrar em Modo Demonstração local?');
         setDemoMode(true);
       } else {
@@ -99,6 +99,15 @@ const AdminLogin = () => {
 
           <button type="submit" className="btn btn-accent w-100" disabled={loading}>
             {loading ? 'Verificando...' : 'Acessar Painel'} <Arrow />
+          </button>
+          
+          <button 
+            type="button" 
+            className="btn btn-ghost w-100" 
+            style={{ marginTop: 12, borderColor: 'var(--rule)', color: 'var(--ink)' }}
+            onClick={handleDemoBypass}
+          >
+            Entrar como Demonstrativo
           </button>
         </form>
 
