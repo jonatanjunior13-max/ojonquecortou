@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Arrow, Reveal, ContactCTA } from '../components/NewDesignComponents';
+import { posts as blogPosts } from '../data/posts';
 
 function HomeHero() {
   return (
@@ -240,11 +241,28 @@ function HomeTestimonials() {
 }
 
 function HomeBlog() {
-  const posts = [
-    { cat: "Método", title: "Método Leitura de Fio: o que acontece antes da tesoura tocar o seu cabelo.", ex: "Porosidade, curvatura, elasticidade, histórico químico. Um passo a passo do que avaliamos antes de qualquer corte.", time: "8 min", slug: "metodo-leitura-de-fio-antes-da-tesoura", grad: "linear-gradient(160deg,#6E2F18 0%,#1A1310 100%), radial-gradient(60% 60% at 80% 20%, rgba(201,123,73,0.6) 0%, transparent 60%)" },
-    { cat: "Mito vs. Verdade", title: "A epidemia do corte a seco genérico: o que realmente define um corte de cacho.", ex: "Cortar a seco virou marketing. Mas técnica é outra história.", time: "6 min", slug: "corte-para-cabelo-cacheado-mentira-do-corte-a-seco", grad: "linear-gradient(160deg,#3a2b22 0%,#1A1310 100%)" },
-    { cat: "Rotina", title: "Cronograma capilar para cabelo cacheado: o que ninguém te conta antes de começar.", ex: "Hidratação, nutrição, reconstrução: quando, por quê, e o erro mais comum que sabota o cacho em casa.", time: "10 min", slug: "cronograma-capilar-cabelo-cacheado", grad: "linear-gradient(160deg,#7a4a2e 0%,#2a1a12 100%)" },
+  const getReadingTime = (content) => {
+    if (!content) return '5 min';
+    const words = content.replace(/<[^>]*>/g, '').trim().split(/\s+/).length;
+    return `${Math.ceil(words / 200)} min`;
+  };
+
+  const defaultGradients = [
+    "linear-gradient(160deg,#6E2F18 0%,#1A1310 100%), radial-gradient(60% 60% at 80% 20%, rgba(201,123,73,0.6) 0%, transparent 60%)",
+    "linear-gradient(160deg,#3a2b22 0%,#1A1310 100%)",
+    "linear-gradient(160deg,#7a4a2e 0%,#2a1a12 100%)"
   ];
+
+  const posts = blogPosts.slice(0, 3).map((post, i) => ({
+    cat: post.category,
+    title: post.title,
+    ex: post.excerpt,
+    time: getReadingTime(post.content),
+    slug: post.slug,
+    image: post.image,
+    grad: defaultGradients[i % defaultGradients.length]
+  }));
+
   return (
     <section className="section">
       <div className="container">
@@ -265,7 +283,11 @@ function HomeBlog() {
             <Reveal key={i} delay={i * 90}>
               <Link className="post" to={`/blog/${p.slug}`}>
                 <div className="cover">
-                  <div className="ph" style={{ background: p.grad, position: "absolute", inset: 0 }} />
+                  {p.image ? (
+                    <img src={p.image} alt={p.title} />
+                  ) : (
+                    <div className="ph" style={{ background: p.grad, position: "absolute", inset: 0 }} />
+                  )}
                   <span className="cat">{p.cat}</span>
                 </div>
                 <div className="meta">
