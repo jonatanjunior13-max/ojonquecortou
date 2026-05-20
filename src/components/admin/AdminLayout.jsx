@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { Calendar, Users, LogOut } from 'lucide-react';
+import { Calendar, Users, LogOut, Package, DollarSign } from 'lucide-react';
 import './AdminNavbar.css';
 
 const AdminLayout = () => {
@@ -80,6 +80,20 @@ const AdminLayout = () => {
             <Users size={18} />
             <span>Clientes & Fichas</span>
           </Link>
+          <Link 
+            to="/admin/estoque" 
+            className={`nav-item ${location.pathname.includes('/estoque') ? 'active' : ''}`}
+          >
+            <Package size={18} />
+            <span>Estoque</span>
+          </Link>
+          <Link 
+            to="/admin/financeiro" 
+            className={`nav-item ${location.pathname.includes('/financeiro') ? 'active' : ''}`}
+          >
+            <DollarSign size={18} />
+            <span>Financeiro</span>
+          </Link>
         </nav>
 
         <div className="sidebar-footer">
@@ -94,7 +108,9 @@ const AdminLayout = () => {
       <main className="admin-main-content">
         <header className="admin-topbar">
           <div className="topbar-title">
-            {location.pathname.includes('/clientes') ? 'Fichas Técnicas & Clientes' : 'Agenda do Studio'}
+            {location.pathname.includes('/clientes') ? 'Fichas Técnicas & Clientes' :
+             location.pathname.includes('/estoque') ? 'Controle de Estoque' :
+             location.pathname.includes('/financeiro') ? 'Movimentação & Fluxo de Caixa' : 'Agenda do Studio'}
           </div>
           <div className="topbar-user">
             <span className="status-indicator"></span>

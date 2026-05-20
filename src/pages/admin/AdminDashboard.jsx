@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDocs } from 'firebase/firestore';
-import { ChevronLeft, ChevronRight, Plus, X } from 'lucide-react';
+import { collection, onSnapshot, query, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2 } from 'lucide-react';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -10,13 +10,28 @@ const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 
+const SEED_TRANSACTIONS = [
+  { id: 't1', date: new Date().toISOString().split('T')[0], time: '09:00', clientName: 'Ana Souza', type: 'entrada', paymentMethod: 'Pix', value: 150, description: 'Corte com o Jon' },
+  { id: 't2', date: new Date().toISOString().split('T')[0], time: '13:00', clientName: 'Carla Lima', type: 'entrada', paymentMethod: 'Cartão de Crédito', value: 220, description: 'Combo Corte + Tratamento' },
+  { id: 't3', date: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0], time: '15:30', clientName: 'Bruna Melo', type: 'entrada', paymentMethod: 'Pix', value: 205, description: 'Tratamento Personalizado + 1 Shampoo Curly' }
+];
+
 const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
+  const [products, setProducts] = useState([]);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
   
+  // Checkout / Comanda states
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [addedServices, setAddedServices] = useState([]);
+  const [addedProducts, setAddedProducts] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState('Pix');
+  const [selectedExtraService, setSelectedExtraService] = useState('');
+  const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
+
   // Filtros de data (semana atual)
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
     const d = new Date();
@@ -37,23 +52,24 @@ const AdminDashboard = () => {
     notes: ''
   });
 
-  // Gera os 5 dias de atendimento da semana atual (Terça a Sábado)
-  const getWeekDays = () => {
-    const days = [];
-    for (let i = 1; i <= 5; i++) { // Terça (2) a Sábado (6)
-      const d = new Date(currentWeekStart);
-      d.setDate(currentWeekStart.getDate() + i);
-      days.push({
-        raw: d.toISOString().split('T')[0],
-        formattedWeekday: DAYS_TRANSLATION[d.getDay()],
-        formattedDay: d.getDate(),
-        displayDate: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
-      });
+  // Carrega produtos para o dropdown de vendas da comanda
+  useEffect(() => {
+    if (!db) {
+      const localData = localStorage.getItem('demo_products');
+      if (localData) {
+        setProducts(JSON.parse(localData));
+      }
+      return;
     }
-    return days;
-  };
-
-  const weekDays = getWeekDays();
+    const unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
+      const prodList = [];
+      snapshot.forEach((doc) => {
+        prodList.push({ id: doc.id, ...doc.data() });
+      });
+      setProducts(prodList);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Escuta agendamentos no Firestore em tempo real
   useEffect(() => {
@@ -118,7 +134,25 @@ const AdminDashboard = () => {
     setCurrentWeekStart(newStart);
   };
 
-  // Atualizar status do agendamento
+  // Gera os 5 dias de atendimento da semana atual (Terça a Sábado)
+  const getWeekDays = () => {
+    const days = [];
+    for (let i = 1; i <= 5; i++) { // Terça (2) a Sábado (6)
+      const d = new Date(currentWeekStart);
+      d.setDate(currentWeekStart.getDate() + i);
+      days.push({
+        raw: d.toISOString().split('T')[0],
+        formattedWeekday: DAYS_TRANSLATION[d.getDay()],
+        formattedDay: d.getDate(),
+        displayDate: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
+      });
+    }
+    return days;
+  };
+
+  const weekDays = getWeekDays();
+
+  // Atualizar status do agendamento simples
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
       if (isDemoMode) {
@@ -185,12 +219,152 @@ const AdminDashboard = () => {
     }
   };
 
+  // Funções Auxiliares da Comanda
+  const addExtraService = () => {
+    if (!selectedExtraService) return;
+    const [name, priceStr] = selectedExtraService.split('|');
+    setAddedServices(prev => [...prev, { name, price: Number(priceStr) }]);
+    setSelectedExtraService('');
+  };
+
+  const removeService = (index) => {
+    setAddedServices(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const addExtraProduct = () => {
+    if (!selectedExtraProduct) return;
+    const [productId, name, priceStr] = selectedExtraProduct.split('|');
+    
+    // Verifica se já adicionou
+    const existing = addedProducts.find(ap => ap.productId === productId);
+    if (existing) {
+      setAddedProducts(prev => prev.map(ap => 
+        ap.productId === productId ? { ...ap, quantity: ap.quantity + 1 } : ap
+      ));
+    } else {
+      setAddedProducts(prev => [...prev, { productId, name, price: Number(priceStr), quantity: 1 }]);
+    }
+    setSelectedExtraProduct('');
+  };
+
+  const removeProduct = (index) => {
+    setAddedProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const calculateTotal = () => {
+    const base = selectedBooking?.service?.price || 150;
+    const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
+    const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    return base + extras + prods;
+  };
+
+  const handleCloseComanda = async (booking) => {
+    const baseServicePrice = booking.service?.price || 150;
+    const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
+    const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalComanda = baseServicePrice + extraServicesTotal + productsTotal;
+
+    const itemsDescription = [
+      booking.service?.name || booking.serviceName || 'Serviço Base',
+      ...addedServices.map(s => s.name),
+      ...addedProducts.map(p => `${p.quantity}x ${p.name}`)
+    ].join(', ');
+
+    const transactionPayload = {
+      date: booking.date || new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: booking.clientName,
+      clientPhone: booking.clientPhone || '',
+      type: 'entrada',
+      paymentMethod,
+      value: totalComanda,
+      description: itemsDescription,
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (isDemoMode || !db) {
+        // 1. Atualiza agendamento no estado local
+        setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
+
+        // 2. Deduz estoque local
+        const localProducts = localStorage.getItem('demo_products');
+        if (localProducts) {
+          const prods = JSON.parse(localProducts);
+          const updatedProds = prods.map(p => {
+            const added = addedProducts.find(ap => ap.productId === p.id);
+            if (added) {
+              return { ...p, quantity: Math.max(0, p.quantity - added.quantity) };
+            }
+            return p;
+          });
+          localStorage.setItem('demo_products', JSON.stringify(updatedProds));
+          setProducts(updatedProds);
+        }
+
+        // 3. Salva transação no localStorage
+        const localTx = localStorage.getItem('demo_transactions');
+        const transactions = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
+        const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
+        localStorage.setItem('demo_transactions', JSON.stringify([...transactions, newTx]));
+      } else {
+        // 1. Atualizar agendamento no Firestore
+        const apptRef = doc(db, 'bookings', booking.id);
+        await updateDoc(apptRef, { status: 'finalizado' });
+
+        // 2. Deduzir estoque no Firestore
+        for (const added of addedProducts) {
+          const prodRef = doc(db, 'products', added.productId);
+          const match = products.find(p => p.id === added.productId);
+          if (match) {
+            const newQty = Math.max(0, match.quantity - added.quantity);
+            await updateDoc(prodRef, { quantity: newQty });
+          }
+        }
+
+        // 3. Salvar transação no Firestore
+        await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+      }
+
+      alert('Comanda fechada com sucesso! Estoque deduzido e receita registrada.');
+      setSelectedBooking(null);
+      setIsCheckoutOpen(false);
+      setAddedServices([]);
+      setAddedProducts([]);
+    } catch (err) {
+      console.error('Erro ao fechar comanda:', err);
+      alert('Falha ao concluir o fechamento da comanda.');
+    }
+  };
+
   // Métricas do Dashboard
   const activeBookings = bookings.filter(b => b.status !== 'cancelado');
   const pendingCount = bookings.filter(b => b.status === 'pendente').length;
-  const revenueThisWeek = bookings
-    .filter(b => b.status === 'finalizado' || b.status === 'confirmado')
-    .reduce((sum, b) => sum + (b.service?.price || 150), 0);
+  
+  // Receita semanal calculada a partir de transações locais ou do Firestore
+  const [revenueThisWeek, setRevenueThisWeek] = useState(0);
+
+  useEffect(() => {
+    // Calcula com base nas comandas/transações da semana
+    const startStr = weekDays[0]?.raw;
+    const endStr = weekDays[4]?.raw;
+    if (!startStr || !endStr) return;
+
+    if (isDemoMode || !db) {
+      const localTx = localStorage.getItem('demo_transactions');
+      const transactions = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
+      const weekEntradas = transactions
+        .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
+        .reduce((sum, t) => sum + t.value, 0);
+      setRevenueThisWeek(weekEntradas);
+    } else {
+      // Se em Firestore, lê as comandas de forma simplificada da lista local de agendamentos
+      const apptRevenue = bookings
+        .filter(b => b.status === 'finalizado' && b.date >= startStr && b.date <= endStr)
+        .reduce((sum, b) => sum + (b.service?.price || 150), 0);
+      setRevenueThisWeek(apptRevenue);
+    }
+  }, [bookings, weekDays, isDemoMode]);
 
   return (
     <div className="admin-dashboard">
@@ -206,7 +380,7 @@ const AdminDashboard = () => {
           <div className="value" style={{ color: '#ecc94b' }}>{pendingCount}</div>
         </div>
         <div className="stat-card">
-          <h3>Estimativa de Receita (Semana)</h3>
+          <h3>Receita Consolidada (Semana)</h3>
           <div className="value" style={{ color: '#48bb78' }}>R$ {revenueThisWeek}</div>
         </div>
       </section>
@@ -248,14 +422,18 @@ const AdminDashboard = () => {
               <div key={slot} className="time-row">
                 <div className="time-label-cell">{slot}</div>
                 {weekDays.map(day => {
-                  // Filtra o agendamento correspondente a este slot de hora e dia
                   const appt = bookings.find(b => b.date === day.raw && b.time === slot);
                   return (
                     <div key={day.raw} className="day-cell">
                       {appt && (
                         <div 
                           className={`appt-card ${appt.status}`}
-                          onClick={() => setSelectedBooking(appt)}
+                          onClick={() => {
+                            setSelectedBooking(appt);
+                            setIsCheckoutOpen(false);
+                            setAddedServices([]);
+                            setAddedProducts([]);
+                          }}
                         >
                           <span className="appt-time">{appt.time}</span>
                           <span className="appt-client">{appt.clientName}</span>
@@ -271,76 +449,185 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* MODAL 1: DETALHE DO AGENDAMENTO */}
+      {/* MODAL 1: DETALHE DO AGENDAMENTO E COMANDA */}
       {selectedBooking && (
         <div className="modal-overlay">
-          <div className="modal-content">
+          <div className="modal-content" style={{ maxWidth: isCheckoutOpen ? 640 : 500 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3>Ficha do Agendamento</h3>
-              <button className="btn-icon" onClick={() => setSelectedBooking(null)}><X size={18} /></button>
+              <h3>{isCheckoutOpen ? 'Fechar Comanda da Cliente' : 'Ficha do Agendamento'}</h3>
+              <button className="btn-icon" onClick={() => {
+                setSelectedBooking(null);
+                setIsCheckoutOpen(false);
+              }}><X size={18} /></button>
             </div>
             
-            <div className="detail-row">
-              <label>Cliente:</label>
-              <span>{selectedBooking.clientName}</span>
-            </div>
-            <div className="detail-row">
-              <label>WhatsApp:</label>
-              <span>{selectedBooking.clientPhone}</span>
-            </div>
-            <div className="detail-row">
-              <label>E-mail:</label>
-              <span>{selectedBooking.clientEmail}</span>
-            </div>
-            <div className="detail-row">
-              <label>Serviço:</label>
-              <span>{selectedBooking.service?.name || selectedBooking.serviceName}</span>
-            </div>
-            <div className="detail-row">
-              <label>Preço:</label>
-              <span>R$ {selectedBooking.service?.price}</span>
-            </div>
-            <div className="detail-row">
-              <label>Data/Hora:</label>
-              <span>{selectedBooking.date} às {selectedBooking.time}</span>
-            </div>
-            <div className="detail-row">
-              <label>Curvatura:</label>
-              <span>{selectedBooking.hairType || 'Não informada'}</span>
-            </div>
-            <div className="detail-row">
-              <label>Observações:</label>
-              <span>{selectedBooking.notes || 'Nenhuma observação.'}</span>
-            </div>
-            <div className="detail-row">
-              <label>Status Atual:</label>
-              <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
-            </div>
+            {!isCheckoutOpen ? (
+              <>
+                <div className="detail-row">
+                  <label>Cliente:</label>
+                  <span>{selectedBooking.clientName}</span>
+                </div>
+                <div className="detail-row">
+                  <label>WhatsApp:</label>
+                  <span>{selectedBooking.clientPhone}</span>
+                </div>
+                <div className="detail-row">
+                  <label>E-mail:</label>
+                  <span>{selectedBooking.clientEmail || 'Não informado'}</span>
+                </div>
+                <div className="detail-row">
+                  <label>Serviço:</label>
+                  <span>{selectedBooking.service?.name || selectedBooking.serviceName}</span>
+                </div>
+                <div className="detail-row">
+                  <label>Preço:</label>
+                  <span>R$ {selectedBooking.service?.price || 150}</span>
+                </div>
+                <div className="detail-row">
+                  <label>Data/Hora:</label>
+                  <span>{selectedBooking.date} às {selectedBooking.time}</span>
+                </div>
+                <div className="detail-row">
+                  <label>Curvatura:</label>
+                  <span>{selectedBooking.hairType || 'Não informada'}</span>
+                </div>
+                <div className="detail-row">
+                  <label>Observações:</label>
+                  <span>{selectedBooking.notes || 'Nenhuma observação.'}</span>
+                </div>
+                <div className="detail-row">
+                  <label>Status Atual:</label>
+                  <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
+                </div>
 
-            <div className="modal-actions">
-              <div style={{ display: 'flex', gap: 8 }}>
-                {selectedBooking.status === 'pendente' && (
-                  <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => handleUpdateStatus(selectedBooking.id, 'confirmado')}>
-                    Confirmar Horário
-                  </button>
-                )}
-                {selectedBooking.status === 'confirmado' && (
-                  <button className="btn btn-ghost" style={{ padding: '6px 12px', fontSize: '0.85rem', borderColor: '#48bb78', color: '#48bb78' }} onClick={() => handleUpdateStatus(selectedBooking.id, 'finalizado')}>
-                    Marcar como Atendido
-                  </button>
-                )}
+                <div className="modal-actions">
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {selectedBooking.status === 'pendente' && (
+                      <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => handleUpdateStatus(selectedBooking.id, 'confirmado')}>
+                        Confirmar Horário
+                      </button>
+                    )}
+                    {selectedBooking.status === 'confirmado' && (
+                      <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setIsCheckoutOpen(true)}>
+                        Fechar Comanda / Pagar
+                      </button>
+                    )}
+                  </div>
+                  
+                  {selectedBooking.status !== 'cancelado' && (
+                    <button 
+                      className="btn btn-ghost" 
+                      style={{ padding: '6px 12px', fontSize: '0.85rem', borderColor: '#e53e3e', color: '#e53e3e' }}
+                      onClick={() => handleUpdateStatus(selectedBooking.id, 'cancelado')}
+                    >
+                      Cancelar Horário
+                    </button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="checkout-section">
+                <p style={{ fontSize: '0.9rem', marginBottom: 12, color: 'var(--muted)' }}>
+                  Gere o faturamento da cliente <strong>{selectedBooking.clientName}</strong>. Adicione itens se necessário.
+                </p>
+                
+                {/* Lista de Itens atuais na comanda */}
+                <div className="comanda-items-list">
+                  <div className="comanda-item-row" style={{ fontWeight: 600 }}>
+                    <span>{selectedBooking.service?.name || selectedBooking.serviceName} (Serviço Agendado)</span>
+                    <span>R$ {selectedBooking.service?.price || 150}</span>
+                  </div>
+                  
+                  {addedServices.map((s, idx) => (
+                    <div key={'s-' + idx} className="comanda-item-row">
+                      <span>{s.name} (Serviço Extra)</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>R$ {s.price}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeService(idx)}>
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {addedProducts.map((p, idx) => (
+                    <div key={'p-' + idx} className="comanda-item-row">
+                      <span>{p.quantity}x {p.name} (Produto)</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span>R$ {p.price * p.quantity}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeProduct(idx)}>
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  <div className="comanda-total-row">
+                    <span>Total a Receber</span>
+                    <span>R$ {calculateTotal()}</span>
+                  </div>
+                </div>
+
+                {/* Formulário de acréscimo rápido */}
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+                  <div className="form-group">
+                    <label style={{ fontSize: '0.8rem' }}>Lançar Serviço Extra</label>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <select 
+                        value={selectedExtraService} 
+                        onChange={e => setSelectedExtraService(e.target.value)}
+                        style={{ padding: '6px', fontSize: '0.8rem', flexGrow: 1 }}
+                      >
+                        <option value="">-- Selecione --</option>
+                        <option value="Lavagem Especial|40">Lavagem Especial (R$ 40)</option>
+                        <option value="Secagem Diferenciada|50">Secagem Diferenciada (R$ 50)</option>
+                        <option value="Tratamento Rápido|60">Tratamento Rápido (R$ 60)</option>
+                      </select>
+                      <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.9rem' }} onClick={addExtraService}>+</button>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label style={{ fontSize: '0.8rem' }}>Lançar Produto</label>
+                    <div style={{ display: 'flex', gap: 6 }}>
+                      <select 
+                        value={selectedExtraProduct} 
+                        onChange={e => setSelectedExtraProduct(e.target.value)}
+                        style={{ padding: '6px', fontSize: '0.8rem', flexGrow: 1 }}
+                      >
+                        <option value="">-- Selecione --</option>
+                        {products.map(p => (
+                          <option key={p.id} value={`${p.id}|${p.name}|${p.sellingPrice}`} disabled={p.quantity <= 0}>
+                            {p.name} (R$ {p.sellingPrice}) {p.quantity <= 0 ? '[Sem Estoque]' : `[Qtd: ${p.quantity}]`}
+                          </option>
+                        ))}
+                      </select>
+                      <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.9rem' }} onClick={addExtraProduct}>+</button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Forma de Pagamento */}
+                <div className="form-group" style={{ marginBottom: 20 }}>
+                  <label>Forma de Pagamento *</label>
+                  <select 
+                    value={paymentMethod} 
+                    onChange={e => setPaymentMethod(e.target.value)}
+                    style={{ padding: '8px', width: '100%' }}
+                  >
+                    <option value="Pix">Pix</option>
+                    <option value="Cartão de Crédito">Cartão de Crédito</option>
+                    <option value="Cartão de Débito">Cartão de Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                  </select>
+                </div>
+
+                <div className="modal-actions" style={{ justifyContent: 'space-between' }}>
+                  <button type="button" className="btn btn-ghost" onClick={() => setIsCheckoutOpen(false)}>Voltar</button>
+                  <button type="button" className="btn btn-accent" onClick={() => handleCloseComanda(selectedBooking)}>Finalizar e Baixar Estoque</button>
+                </div>
               </div>
-              
-              {selectedBooking.status !== 'cancelado' && (
-                <button 
-                  className="btn btn-ghost" 
-                  style={{ padding: '6px 12px', fontSize: '0.85rem', borderColor: '#e53e3e', color: '#e53e3e' }}
-                  onClick={() => handleUpdateStatus(selectedBooking.id, 'cancelado')}
-                >
-                  Cancelar Agendamento
-                </button>
-              )}
-            </div>
+            )}
           </div>
         </div>
       )}
