@@ -94,26 +94,42 @@ export function ContactCTA() {
             </Reveal>
           </div>
 
-          <Reveal delay={200}>
-            <div className="booking-card">
-              <h3>Como agendar</h3>
-              <p>Atendimento individual, vaga limitada. Escolha o canal:</p>
-              <div className="channels">
-                <a className="channel" href="https://wa.me/5531000000000" target="_blank" rel="noopener">
-                  <span className="left"><WhatsIcon /> WhatsApp</span>
-                  <span className="right">Resposta &lt; 1h</span>
-                </a>
-                <a className="channel" href="https://instagram.com/ojonquecortou" target="_blank" rel="noopener">
-                  <span className="left"><InstaIcon /> @ojonquecortou</span>
-                  <span className="right">DM</span>
-                </a>
-                <a className="channel" href="https://maps.google.com/?q=Caiçara,Belo+Horizonte" target="_blank" rel="noopener">
-                  <span className="left"><MapPin /> Como chegar</span>
-                  <span className="right">Caiçara · BH</span>
-                </a>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Reveal delay={200}>
+              <div className="booking-card">
+                <h3>Como agendar</h3>
+                <p>Atendimento individual, vaga limitada. Escolha o canal:</p>
+                <div className="channels">
+                  <a className="channel" href="https://wa.me/5531000000000" target="_blank" rel="noopener">
+                    <span className="left"><WhatsIcon /> WhatsApp</span>
+                    <span className="right">Resposta &lt; 1h</span>
+                  </a>
+                  <a className="channel" href="https://instagram.com/ojonquecortou" target="_blank" rel="noopener">
+                    <span className="left"><InstaIcon /> @ojonquecortou</span>
+                    <span className="right">DM</span>
+                  </a>
+                  <a className="channel" href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+-+Especialista+em+Cachos" target="_blank" rel="noopener">
+                    <span className="left"><MapPin /> Como chegar</span>
+                    <span className="right">Caiçara · BH</span>
+                  </a>
+                </div>
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+            <Reveal delay={260}>
+              <div className="map-embed-wrapper" style={{ borderRadius: '6px', overflow: 'hidden', border: '1px solid rgba(245,237,219,0.14)', height: '220px', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3751.3741037334435!2d-43.9678756253839!3d-19.908634081475036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa69341f36fd6f3%3A0xe6c5e30e4bbba519!2sO%20Jon%20que%20Cortou%20-%20Especialista%20em%20Cachos%20%7C%20Cabeleireiro%20em%20BH!5e0!3m2!1spt-BR!2sbr!4v1779265943789!5m2!1spt-BR!2sbr"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, display: 'block' }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Mapa de Localização do Studio - O Jon que Cortou"
+                />
+              </div>
+            </Reveal>
+          </div>
         </div>
       </div>
     </section>

@@ -1,6 +1,33 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { posts } from './src/data/posts.js'
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const srcImages = [
+  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204349484.jpg",
+  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204307347.jpg",
+  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204040308.jpg"
+]
+
+const destImage = path.join(__dirname, 'public', 'jon-perfil.jpg')
+
+for (const src of srcImages) {
+  if (fs.existsSync(src)) {
+    try {
+      fs.copyFileSync(src, destImage);
+      console.log("SUCCESSFULLY COPIED PROFILE IMAGE FROM", src, "TO", destImage);
+      break;
+    } catch (err) {
+      console.error("ERROR COPYING PROFILE IMAGE:", err);
+    }
+  }
+}
+
 
 function seoLinksPlugin() {
   return {
