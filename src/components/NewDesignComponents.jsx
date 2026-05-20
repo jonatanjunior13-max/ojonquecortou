@@ -100,7 +100,7 @@ export function ContactCTA() {
                 <h3>Como agendar</h3>
                 <p>Atendimento individual, vaga limitada. Escolha o canal:</p>
                 <div className="channels">
-                  <a className="channel" href="https://wa.me/5531000000000" target="_blank" rel="noopener">
+                  <a className="channel" href="https://wa.me/553135866673" target="_blank" rel="noopener">
                     <span className="left"><WhatsIcon /> WhatsApp</span>
                     <span className="right">Resposta &lt; 1h</span>
                   </a>

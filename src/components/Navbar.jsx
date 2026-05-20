@@ -40,7 +40,7 @@ function Navbar() {
             ))}
           </div>
           <div className="nav-cta">
-            <a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer" className="btn btn-primary hide-mobile">
+            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noopener noreferrer" className="btn btn-primary hide-mobile">
               Agendar <Arrow />
             </a>
             <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
@@ -66,7 +66,7 @@ function Navbar() {
                 </Link>
               ))}
             </div>
-            <a href="https://wa.me/5531000000000" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ marginTop: 28 }}>
+            <a href="https://wa.me/553135866673" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ marginTop: 28 }}>
               Agendar pelo WhatsApp <Arrow />
             </a>
           </div>
