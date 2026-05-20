@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2, Lock, Unlock } from 'lucide-react';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -43,6 +43,11 @@ const AdminDashboard = () => {
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [selectedExtraService, setSelectedExtraService] = useState('');
   const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
+
+  // Slot Action and Block States
+  const [showSlotActionModal, setShowSlotActionModal] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [blockMotive, setBlockMotive] = useState('');
 
   // Filtros de data (semana atual)
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
@@ -260,6 +265,67 @@ const AdminDashboard = () => {
     }
   };
 
+  // Abrir opções para o horário clicado
+  const handleCellClick = (day, slot) => {
+    setSelectedSlot({
+      date: day.raw,
+      time: slot,
+      dateFormatted: `${day.formattedDay}/${day.raw.split('-')[1]} (${day.formattedWeekday})`
+    });
+    setShowSlotActionModal(true);
+  };
+
+  // Selecionar agendamento manual a partir do horário
+  const handleSelectManualBooking = () => {
+    setNewBooking({
+      clientName: '',
+      clientPhone: '',
+      clientEmail: '',
+      serviceName: services[0]?.name || '',
+      servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+      date: selectedSlot.date,
+      time: selectedSlot.time,
+      notes: ''
+    });
+    setShowSlotActionModal(false);
+    setShowAddModal(true);
+  };
+
+  // Bloquear horário
+  const handleBlockSlotSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedSlot) return;
+
+    const payload = {
+      clientName: 'Horário Bloqueado',
+      clientPhone: '00000000000',
+      clientEmail: '',
+      service: {
+        name: 'Bloqueio Administrativo',
+        price: 0
+      },
+      date: selectedSlot.date,
+      time: selectedSlot.time,
+      notes: blockMotive || 'Bloqueio administrativo',
+      status: 'bloqueado',
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (isDemoMode) {
+        setBookings(prev => [...prev, { id: 'demo-block-' + Date.now(), ...payload }]);
+      } else {
+        await addDoc(collection(db, 'bookings'), payload);
+      }
+      setShowSlotActionModal(false);
+      setBlockMotive('');
+      setSelectedSlot(null);
+    } catch (err) {
+      console.error('Erro ao bloquear horário:', err);
+      alert('Não foi possível bloquear o horário.');
+    }
+  };
+
   // Funções Auxiliares da Comanda
   const addExtraService = () => {
     if (!selectedExtraService) return;
@@ -463,13 +529,45 @@ const AdminDashboard = () => {
               <div key={slot} className="time-row">
                 <div className="time-label-cell">{slot}</div>
                 {weekDays.map(day => {
-                  const appt = bookings.find(b => b.date === day.raw && b.time === slot);
+                  // Procura agendamento ativo primeiro, senão procura cancelado
+                  const appt = bookings.find(b => b.date === day.raw && b.time === slot && b.status !== 'cancelado') ||
+                               bookings.find(b => b.date === day.raw && b.time === slot && b.status === 'cancelado');
                   return (
-                    <div key={day.raw} className="day-cell">
-                      {appt && (
+                    <div 
+                      key={day.raw} 
+                      className="day-cell"
+                      style={{ cursor: (!appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
+                      onClick={() => {
+                        if (!appt || appt.status === 'cancelado') {
+                          handleCellClick(day, slot);
+                        }
+                      }}
+                    >
+                      {appt && appt.status === 'bloqueado' && (
+                        <div 
+                          className="appt-card bloqueado"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedBooking(appt);
+                            setIsCheckoutOpen(false);
+                            setAddedServices([]);
+                            setAddedProducts([]);
+                          }}
+                        >
+                          <span className="appt-time">{appt.time}</span>
+                          <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Lock size={12} /> Bloqueado
+                          </span>
+                          <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
+                            {appt.notes}
+                          </span>
+                        </div>
+                      )}
+                      {appt && appt.status !== 'bloqueado' && (
                         <div 
                           className={`appt-card ${appt.status}`}
-                          onClick={() => {
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setSelectedBooking(appt);
                             setIsCheckoutOpen(false);
                             setAddedServices([]);
@@ -503,69 +601,114 @@ const AdminDashboard = () => {
             </div>
             
             {!isCheckoutOpen ? (
-              <>
-                <div className="detail-row">
-                  <label>Cliente:</label>
-                  <span>{selectedBooking.clientName}</span>
-                </div>
-                <div className="detail-row">
-                  <label>WhatsApp:</label>
-                  <span>{selectedBooking.clientPhone}</span>
-                </div>
-                <div className="detail-row">
-                  <label>E-mail:</label>
-                  <span>{selectedBooking.clientEmail || 'Não informado'}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Serviço:</label>
-                  <span>{selectedBooking.service?.name || selectedBooking.serviceName}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Preço:</label>
-                  <span>R$ {selectedBooking.service?.price || 150}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Data/Hora:</label>
-                  <span>{selectedBooking.date} às {selectedBooking.time}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Curvatura:</label>
-                  <span>{selectedBooking.hairType || 'Não informada'}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Observações:</label>
-                  <span>{selectedBooking.notes || 'Nenhuma observação.'}</span>
-                </div>
-                <div className="detail-row">
-                  <label>Status Atual:</label>
-                  <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
-                </div>
-
-                <div className="modal-actions">
-                  <div style={{ display: 'flex', gap: 8 }}>
-                    {selectedBooking.status === 'pendente' && (
-                      <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => handleUpdateStatus(selectedBooking.id, 'confirmado')}>
-                        Confirmar Horário
-                      </button>
-                    )}
-                    {selectedBooking.status === 'confirmado' && (
-                      <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setIsCheckoutOpen(true)}>
-                        Fechar Comanda / Pagar
-                      </button>
-                    )}
+              selectedBooking.status === 'bloqueado' ? (
+                <>
+                  <div className="detail-row">
+                    <label>Tipo:</label>
+                    <span style={{ fontWeight: 'bold', color: 'var(--muted)' }}>Horário Bloqueado (Indisponível)</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Data/Hora:</label>
+                    <span>{selectedBooking.date} às {selectedBooking.time}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Motivo:</label>
+                    <span>{selectedBooking.notes || 'Sem observações'}</span>
                   </div>
                   
-                  {selectedBooking.status !== 'cancelado' && (
+                  <div className="modal-actions" style={{ justifyContent: 'flex-end' }}>
                     <button 
                       className="btn btn-ghost" 
                       style={{ padding: '6px 12px', fontSize: '0.85rem', borderColor: '#e53e3e', color: '#e53e3e' }}
                       onClick={() => handleUpdateStatus(selectedBooking.id, 'cancelado')}
                     >
-                      Cancelar Horário
+                      Desbloquear Horário (Liberar)
                     </button>
-                  )}
-                </div>
-              </>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="detail-row">
+                    <label>Cliente:</label>
+                    <span>{selectedBooking.clientName}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>WhatsApp:</label>
+                    <span>{selectedBooking.clientPhone}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>E-mail:</label>
+                    <span>{selectedBooking.clientEmail || 'Não informado'}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Serviço:</label>
+                    <span>{selectedBooking.service?.name || selectedBooking.serviceName}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Preço:</label>
+                    <span>R$ {selectedBooking.service?.price || 150}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Data/Hora:</label>
+                    <span>{selectedBooking.date} às {selectedBooking.time}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Curvatura:</label>
+                    <span>{selectedBooking.hairType || 'Não informada'}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Observações:</label>
+                    <span>{selectedBooking.notes || 'Nenhuma observação.'}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Status Atual:</label>
+                    <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
+                  </div>
+
+                  <div className="modal-actions">
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      {selectedBooking.status === 'pendente' && (
+                        <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => handleUpdateStatus(selectedBooking.id, 'confirmado')}>
+                          Confirmar Horário
+                        </button>
+                      )}
+                      {selectedBooking.status === 'confirmado' && (
+                        <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setIsCheckoutOpen(true)}>
+                          Fechar Comanda / Pagar
+                        </button>
+                      )}
+                      {selectedBooking.status === 'cancelado' && (
+                        <button 
+                          className="btn btn-accent" 
+                          style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                          onClick={() => {
+                            const matchingDayObj = weekDays.find(d => d.raw === selectedBooking.date) || { formattedDay: selectedBooking.date, formattedWeekday: '' };
+                            setSelectedSlot({
+                              date: selectedBooking.date,
+                              time: selectedBooking.time,
+                              dateFormatted: `${matchingDayObj.formattedDay} ${matchingDayObj.formattedWeekday}`
+                            });
+                            setSelectedBooking(null);
+                            handleSelectManualBooking();
+                          }}
+                        >
+                          Agendar Neste Horário
+                        </button>
+                      )}
+                    </div>
+                    
+                    {selectedBooking.status !== 'cancelado' && (
+                      <button 
+                        className="btn btn-ghost" 
+                        style={{ padding: '6px 12px', fontSize: '0.85rem', borderColor: '#e53e3e', color: '#e53e3e' }}
+                        onClick={() => handleUpdateStatus(selectedBooking.id, 'cancelado')}
+                      >
+                        Cancelar Horário
+                      </button>
+                    )}
+                  </div>
+                </>
+              )
             ) : (
               <div className="checkout-section">
                 <p style={{ fontSize: '0.9rem', marginBottom: 12, color: 'var(--muted)' }}>
@@ -774,6 +917,57 @@ const AdminDashboard = () => {
               <button type="submit" className="btn btn-accent">Salvar na Agenda</button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* MODAL: AÇÕES DO HORÁRIO LIVRE (AGENDAR OU BLOQUEAR) */}
+      {showSlotActionModal && selectedSlot && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: 400 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3>Ações do Horário</h3>
+              <button type="button" className="btn-icon" onClick={() => {
+                setShowSlotActionModal(false);
+                setBlockMotive('');
+                setSelectedSlot(null);
+              }}><X size={18} /></button>
+            </div>
+            
+            <p style={{ fontSize: '0.95rem', marginBottom: 20, color: 'var(--ink)' }}>
+              Escolha uma ação para o dia <strong>{selectedSlot.dateFormatted}</strong> às <strong>{selectedSlot.time}</strong>:
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <button 
+                type="button"
+                className="btn btn-accent" 
+                onClick={handleSelectManualBooking}
+                style={{ justifyContent: 'center', padding: '12px', width: '100%' }}
+              >
+                <Plus size={16} style={{ marginRight: 8 }} /> Agendar Cliente
+              </button>
+              
+              <div style={{ borderTop: '1px solid var(--rule)', paddingTop: 16, marginTop: 4 }}>
+                <h4 style={{ fontSize: '0.9rem', marginBottom: 8, fontWeight: 700 }}>Bloquear este Horário</h4>
+                <form onSubmit={handleBlockSlotSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <input 
+                    type="text" 
+                    placeholder="Motivo (ex: Almoço, Folga, Curso)..." 
+                    value={blockMotive}
+                    onChange={e => setBlockMotive(e.target.value)}
+                    style={{ padding: '8px', fontSize: '0.85rem', width: '100%', background: 'var(--bg-warm)', border: '1px solid var(--rule)', borderRadius: '4px', color: 'var(--ink)' }}
+                  />
+                  <button 
+                    type="submit" 
+                    className="btn btn-ghost" 
+                    style={{ justifyContent: 'center', padding: '10px', width: '100%', border: '1px solid var(--rule)', color: 'var(--muted)' }}
+                  >
+                    <Lock size={14} style={{ marginRight: 6 }} /> Confirmar Bloqueio
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

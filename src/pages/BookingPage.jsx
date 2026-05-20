@@ -203,7 +203,10 @@ const BookingPage = () => {
         const querySnapshot = await getDocs(q);
         const booked = [];
         querySnapshot.forEach((doc) => {
-          booked.push(doc.data().time);
+          const data = doc.data();
+          if (data.status !== 'cancelado') {
+            booked.push(data.time);
+          }
         });
         setBookedTimes(booked);
         setIsDemoMode(false);
