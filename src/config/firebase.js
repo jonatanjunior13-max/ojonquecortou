@@ -3,21 +3,36 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 // Configurações do Firebase com suporte a variáveis de ambiente (.env)
-// e fallbacks seguros para evitar quebras em ambientes locais sem credenciais.
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "placeholder-api-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "ojonquecortou.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "ojonquecortou",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "ojonquecortou.appspot.com",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "placeholder-sender-id",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "placeholder-app-id"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
-// Inicializa o Firebase
-const app = initializeApp(firebaseConfig);
+// Verifica se as chaves são válidas e não são placeholders
+const isConfigValid = firebaseConfig.apiKey && 
+                      firebaseConfig.apiKey !== 'placeholder-api-key' && 
+                      !firebaseConfig.apiKey.includes('your_');
 
-// Inicializa os serviços de Autenticação e Firestore
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+let app = null;
+let auth = null;
+let db = null;
 
+if (isConfigValid) {
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    console.log("Firebase inicializado com sucesso.");
+  } catch (err) {
+    console.error("Erro ao inicializar Firebase:", err);
+  }
+} else {
+  console.log("Firebase rodando em Modo Demonstração (chaves ausentes ou inválidas)");
+}
+
+export { auth, db };
 export default app;

@@ -57,19 +57,7 @@ const AdminDashboard = () => {
 
   // Escuta agendamentos no Firestore em tempo real
   useEffect(() => {
-    setLoading(true);
-    const q = query(collection(db, 'bookings'));
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const appts = [];
-      snapshot.forEach((doc) => {
-        appts.push({ id: doc.id, ...doc.data() });
-      });
-      setBookings(appts);
-      setLoading(false);
-      setIsDemoMode(false);
-    }, (error) => {
-      console.warn('Firestore real-time error, switching to Demo Mode:', error);
+    if (!db) {
       setIsDemoMode(true);
       // Mock data para demonstração
       setBookings([
@@ -97,9 +85,31 @@ const AdminDashboard = () => {
         }
       ]);
       setLoading(false);
-    });
+      return;
+    }
 
-    return () => unsubscribe();
+    setLoading(true);
+    try {
+      const q = query(collection(db, 'bookings'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const appts = [];
+        snapshot.forEach((doc) => {
+          appts.push({ id: doc.id, ...doc.data() });
+        });
+        setBookings(appts);
+        setLoading(false);
+        setIsDemoMode(false);
+      }, (error) => {
+        console.warn('Firestore real-time error, switching to Demo Mode:', error);
+        setIsDemoMode(true);
+        setLoading(false);
+      });
+      return () => unsubscribe();
+    } catch (err) {
+      console.warn('Error fetching bookings from Firestore:', err);
+      setIsDemoMode(true);
+      setLoading(false);
+    }
   }, [currentWeekStart]);
 
   const changeWeek = (direction) => {

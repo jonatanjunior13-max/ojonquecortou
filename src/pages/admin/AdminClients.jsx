@@ -26,20 +26,8 @@ const AdminClients = () => {
 
   // Carrega agendamentos para agrupar em clientes únicos e ver históricos
   useEffect(() => {
-    const q = query(collection(db, 'bookings'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const appts = [];
-      snapshot.forEach((doc) => {
-        appts.push({ id: doc.id, ...doc.data() });
-      });
-      setBookings(appts);
-      groupClients(appts);
-      setLoading(false);
-      setIsDemoMode(false);
-    }, (error) => {
-      console.warn('Erro ao carregar clientes do Firestore, iniciando modo Demo:', error);
+    if (!db) {
       setIsDemoMode(true);
-      
       const demoAppts = [
         {
           id: 'demo-1',
@@ -78,9 +66,71 @@ const AdminClients = () => {
       setBookings(demoAppts);
       groupClients(demoAppts);
       setLoading(false);
-    });
+      return;
+    }
 
-    return () => unsubscribe();
+    setLoading(true);
+    try {
+      const q = query(collection(db, 'bookings'));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const appts = [];
+        snapshot.forEach((doc) => {
+          appts.push({ id: doc.id, ...doc.data() });
+        });
+        setBookings(appts);
+        groupClients(appts);
+        setLoading(false);
+        setIsDemoMode(false);
+      }, (error) => {
+        console.warn('Erro ao carregar clientes do Firestore, iniciando modo Demo:', error);
+        setIsDemoMode(true);
+        
+        const demoAppts = [
+          {
+            id: 'demo-1',
+            clientName: 'Ana Souza',
+            clientPhone: '31988887777',
+            clientEmail: 'ana@email.com',
+            service: { name: 'Corte com o Jon', price: 150 },
+            date: '2026-05-15',
+            time: '09:00',
+            status: 'finalizado',
+            hairType: '3B'
+          },
+          {
+            id: 'demo-2',
+            clientName: 'Carla Lima',
+            clientPhone: '31977776666',
+            clientEmail: 'carla@email.com',
+            service: { name: 'Combo Corte + Tratamento', price: 220 },
+            date: '2026-05-18',
+            time: '13:00',
+            status: 'finalizado',
+            hairType: '3C'
+          },
+          {
+            id: 'demo-3',
+            clientName: 'Ana Souza',
+            clientPhone: '31988887777',
+            clientEmail: 'ana@email.com',
+            service: { name: 'Tratamento Personalizado', price: 120 },
+            date: '2026-05-25',
+            time: '14:30',
+            status: 'confirmado',
+            hairType: '3B'
+          }
+        ];
+        setBookings(demoAppts);
+        groupClients(demoAppts);
+        setLoading(false);
+      });
+  
+      return () => unsubscribe();
+    } catch (err) {
+      console.warn('Error querying client database from Firestore:', err);
+      setIsDemoMode(true);
+      setLoading(false);
+    }
   }, []);
 
   // Agrupa agendamentos por telefone (ID único de cliente)

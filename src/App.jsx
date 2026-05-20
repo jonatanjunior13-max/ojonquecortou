@@ -65,7 +65,8 @@ function App() {
       <GoogleAnalytics />
       <ScrollToTop />
       <CanonicalTag />
-      <TrinksInterceptor />
+      {/* TrinksInterceptor desativado temporariamente até a Fase 1 rodar 100% */}
+      {/* <TrinksInterceptor /> */}
       <Routes>
         {/* Rotas Públicas */}
         <Route element={<PublicLayout />}>

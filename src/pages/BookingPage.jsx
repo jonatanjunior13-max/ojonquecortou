@@ -74,6 +74,12 @@ const BookingPage = () => {
     if (!selectedDate) return;
 
     const fetchBookings = async () => {
+      if (!db) {
+        setIsDemoMode(true);
+        setBookedTimes(['10:30', '16:00']);
+        return;
+      }
+
       try {
         setLoading(true);
         const q = query(
@@ -123,7 +129,7 @@ const BookingPage = () => {
     };
 
     try {
-      if (isDemoMode) {
+      if (isDemoMode || !db) {
         // Simulação local de sucesso
         console.log('Agendamento simulado (Demo):', bookingPayload);
       } else {
