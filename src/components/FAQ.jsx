@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import './FAQ.css';
 
@@ -9,7 +10,7 @@ const faqs = [
   },
   {
     question: "Como faço para agendar um horário?",
-    answer: 'O agendamento é feito de forma simples pelo aplicativo Trinks (<a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" style="text-decoration: underline; font-weight: bold; color: inherit;">Acessar Calendário Online</a>) ou clicando no botão agendar disponível aqui no site.'
+    answer: 'O agendamento é feito de forma simples pelo nosso sistema online (<a href="/agendar" style="text-decoration: underline; font-weight: bold; color: inherit;">Acessar Calendário Online</a>) ou clicando no botão agendar disponível aqui no site.'
   },
   {
     question: "Qual o valor do corte para cabelo cacheado em BH?",
@@ -62,9 +63,9 @@ const FAQ = () => {
 
           <div className="text-center mt-4 reveal">
             <p className="paragraph-md mb-2">Ainda tem alguma dúvida ou quer garantir sua vaga?</p>
-            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-              Agendar pelo Trinks
-            </a>
+            <Link to="/agendar" className="btn btn-primary">
+              Agendar Online
+            </Link>
           </div>
         </div>
       </div>

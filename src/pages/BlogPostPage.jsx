@@ -53,9 +53,9 @@ const BlogPostPage = () => {
                 </p>
                 
                 <div className="post-cta-btns">
-                  <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
+                  <Link to="/agendar" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
                     Agendar Horário
-                  </a>
+                  </Link>
                   <a href={`https://wa.me/553135866673?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog">
                     WhatsApp
                   </a>

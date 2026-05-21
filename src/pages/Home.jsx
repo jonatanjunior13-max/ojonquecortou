@@ -26,9 +26,9 @@ function HomeHero() {
             </Reveal>
 
             <Reveal delay={220} className="hero-actions">
-              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noopener noreferrer" className="btn btn-accent">
+              <Link to="/agendar" className="btn btn-accent">
                 Agendar avaliação <Arrow />
-              </a>
+              </Link>
               <a href="/sobre#metodo" className="btn btn-ghost">
                 Conhecer o método
               </a>

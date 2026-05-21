@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Star } from 'lucide-react';
 import './Reviews.css';
 
@@ -128,14 +129,12 @@ const Reviews = ({ isPage = false }) => {
             >
               Deixe sua avaliação no Google
             </a>
-            <a 
-              href="http://trinks.com/ojonquecortou" 
-              target="_blank" 
-              rel="noreferrer" 
+            <Link 
+              to="/agendar" 
               className="btn btn-primary"
             >
               Agendar meu Horário
-            </a>
+            </Link>
           </div>
         </div>
       </div>

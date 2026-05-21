@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import './Gallery.css';
 
@@ -186,9 +187,9 @@ const GalleryPage = () => {
             <h2 className="heading-lg mb-2">Pronta para sua transformação?</h2>
             <p className="paragraph-md mb-4">Seu cabelo merece um corte que entenda a linguagem dele.</p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+              <Link to="/agendar" className="btn btn-primary">
                 Agendar Horário
-              </a>
+              </Link>
               <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline">
                 Falar com Especialista
               </a>

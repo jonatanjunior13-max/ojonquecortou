@@ -48,9 +48,9 @@ const BlogPage = () => {
           <p className="paragraph-lg mb-4 max-w-md mx-auto">
             Não fique apenas na teoria. Agende seu horário e venha cuidar dos seus cachos com quem entende.
           </p>
-          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-            Agendar agora pelo Trinks
-          </a>
+          <Link to="/agendar" className="btn btn-primary">
+            Agendar agora Online
+          </Link>
         </div>
       </section>
     </main>

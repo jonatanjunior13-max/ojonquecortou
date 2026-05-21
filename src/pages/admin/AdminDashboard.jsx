@@ -470,6 +470,47 @@ const AdminDashboard = () => {
     }
   };
 
+  const triggerEmailNotification = async (payload) => {
+    if (!payload.clientEmail) return;
+    try {
+      // Format date beautifully if possible
+      let displayDate = payload.date;
+      try {
+        const parts = payload.date.split('-');
+        if (parts.length === 3) {
+          const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+          const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+          const weekday = weekdays[dateObj.getDay()];
+          displayDate = `${weekday}, ${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+      } catch (dateErr) {
+        console.warn('Error formatting date for email:', dateErr);
+      }
+
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientEmail: payload.clientEmail,
+          clientName: payload.clientName,
+          serviceName: payload.service?.name || payload.service || '',
+          date: displayDate,
+          time: payload.time,
+          duration: payload.duration || payload.service?.duration || 60,
+          notes: payload.notes || '',
+          professionalName: payload.profissional || 'Jon',
+          price: payload.service?.price || null
+        }),
+      });
+      const data = await response.json();
+      console.log('Admin Email API response:', data);
+    } catch (err) {
+      console.error('Failed to send admin manual booking email confirmation:', err);
+    }
+  };
+
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
@@ -539,6 +580,10 @@ const AdminDashboard = () => {
             }
           }
         }
+      }
+
+      if (payload.clientEmail) {
+        triggerEmailNotification(payload);
       }
 
       setShowAddModal(false);

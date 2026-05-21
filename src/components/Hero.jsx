@@ -23,9 +23,9 @@ const Hero = () => {
           
           <div className="hero-actions stagger-1">
             <div className="hero-btns-group">
-              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary hero-btn">
+              <Link to="/agendar" className="btn btn-primary hero-btn">
                 Agende seu Horário <ArrowRight size={20} style={{ marginLeft: '10px' }} />
-              </a>
+              </Link>
               <div className="hero-secondary-btns">
                 <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline">
                   WhatsApp

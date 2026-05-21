@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import './ServicesPage.css';
 
 const WA_NUMBER = '553135866673';
 const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
-const TRINKS_URL = 'http://trinks.com/ojonquecortou';
+const TRINKS_URL = '/agendar';
 
 const services = [
   {
@@ -188,9 +189,15 @@ const ServicesPage = () => {
 
                 <div className="sdc-footer">
                   <span className="sdc-price">{service.price}</span>
-                  <a href={service.cta} target="_blank" rel="noreferrer" className="btn btn-primary">
-                    {service.btnLabel || 'Reservar'}
-                  </a>
+                  {service.cta.startsWith('http') ? (
+                    <a href={service.cta} target="_blank" rel="noreferrer" className="btn btn-primary">
+                      {service.btnLabel || 'Reservar'}
+                    </a>
+                  ) : (
+                    <Link to={service.cta} className="btn btn-primary">
+                      {service.btnLabel || 'Reservar'}
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
@@ -203,9 +210,9 @@ const ServicesPage = () => {
           <p className="paragraph-lg mb-4 max-w-md mx-auto">
             Escolha o melhor horário para você e garanta sua vaga no Studio do Jon.
           </p>
-          <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
-            Agendar Agora pelo Trinks
-          </a>
+          <Link to={TRINKS_URL} className="btn btn-primary">
+            Agendar Agora Online
+          </Link>
         </div>
       </section>
     </main>

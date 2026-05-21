@@ -263,6 +263,38 @@ const BookingPage = () => {
     }
   };
 
+  // Disparar notificação de confirmação de agendamento por email
+  const triggerEmailNotification = async (payload) => {
+    try {
+      const displayDate = selectedDateObj?.display || payload.date;
+      const serviceName = payload.service?.name || (typeof payload.service === 'string' ? payload.service : '');
+      const duration = payload.service?.duration || 60;
+      const price = payload.service?.promoPrice ?? payload.service?.price ?? null;
+
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          clientEmail: payload.clientEmail,
+          clientName: payload.clientName,
+          serviceName: serviceName,
+          date: displayDate,
+          time: payload.time,
+          duration: duration,
+          notes: payload.notes || '',
+          professionalName: 'Jon',
+          price: price
+        }),
+      });
+      const data = await response.json();
+      console.log('Email API response:', data);
+    } catch (err) {
+      console.error('Falha ao enviar confirmação por email:', err);
+    }
+  };
+
   // Load client profile by authenticated user ID
   const loadProfileByUserId = async (uid, email) => {
     setCheckingProfile(true);
@@ -831,6 +863,9 @@ const BookingPage = () => {
       }
       
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
+      if (bookingPayload.clientEmail) {
+        triggerEmailNotification(bookingPayload);
+      }
       setSuccess(true);
       setStep(4);
     } catch (err) {
@@ -842,6 +877,9 @@ const BookingPage = () => {
       localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
       
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
+      if (bookingPayload.clientEmail) {
+        triggerEmailNotification(bookingPayload);
+      }
       setSuccess(true);
       setStep(4);
     } finally {
