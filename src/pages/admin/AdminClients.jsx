@@ -424,33 +424,35 @@ const AdminClients = () => {
           setProfiles(currentProfiles);
           localStorage.setItem('demo_client_profiles', JSON.stringify(currentProfiles));
         } else {
-          // Firestore: batch writes in chunks of 50 to avoid overloading and slow network drops
-          const CHUNK = 50;
-          const totalChunks = Math.ceil(parsed.length / CHUNK);
-          
-          for (let i = 0; i < parsed.length; i += CHUNK) {
-            const chunkIndex = Math.floor(i / CHUNK) + 1;
-            setImportSummary(`Processando lote ${chunkIndex} de ${totalChunks}... (Aguarde, pode demorar alguns segundos)`);
-            
-            const chunk = parsed.slice(i, i + CHUNK);
-            const batch = writeBatch(db);
-            for (const c of chunk) {
+          // Firestore: upload individual documents with concurrency limit for fluid UI feedback
+          let completed = 0;
+          const CONCURRENCY = 20; // 20 uploads simultâneos
+
+          const uploadQueue = [...parsed];
+          const workers = Array.from({ length: Math.min(CONCURRENCY, uploadQueue.length) }).map(async () => {
+            while (uploadQueue.length > 0) {
+              const c = uploadQueue.shift();
               const docRef = doc(db, 'client_profiles', c.phone);
-              if (replaceExisting) {
-                batch.set(docRef, c, { merge: true });
-                updated++;
-              } else {
-                batch.set(docRef, c, { merge: false });
-                created++;
+              try {
+                if (replaceExisting) {
+                  await setDoc(docRef, c, { merge: true });
+                  updated++;
+                } else {
+                  await setDoc(docRef, c, { merge: false });
+                  created++;
+                }
+              } catch (err) {
+                console.error('Erro ao gravar cliente', c.phone, err);
+                throw err; // propagates to the main catch block
               }
+              completed++;
+              setImportSummary(`Gravando cliente ${completed} de ${total}... (Não feche esta janela)`);
+              setImportProgress(20 + Math.floor((completed / total) * 75));
             }
-            
-            // Timeout de 60 segundos por lote para conexões lentas ou long-polling
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error(`O lote ${chunkIndex} demorou mais de 60s para responder. Verifique sua conexão.`)), 60000));
-            await Promise.race([batch.commit(), timeoutPromise]);
-            
-            setImportProgress(prev => Math.min(prev + Math.floor(80 / totalChunks), 95));
-          }
+          });
+
+          // Wait for all workers to finish
+          await Promise.all(workers);
         }
 
         setImportProgress(100);
