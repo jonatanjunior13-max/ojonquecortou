@@ -31,17 +31,7 @@ import './Admin.css';
 
 // Lista de horários padrão
 const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
-
-const SEED_SERVICES = [
-  { id: 'coloracao-completa', name: "Colora\u00e7\u00e3o Completa", price: 499, priceType: 'A partir de', promoPrice: null, duration: 120 },
-  { id: 'combo-corte-tratamento-personalizado', name: 'Combo - Corte com o Jon + Tratamento personalizado', price: 320, priceType: 'Fixo', promoPrice: 230, duration: 60 },
-  { id: 'combo-corte-terapia-trp', name: "Combo Corte com o Jon + Terapia de Reposi\u00e7\u00e3o Proteica", price: 370, priceType: 'Fixo', promoPrice: 300, duration: 60 },
-  { id: 'corte-jon', name: 'Corte com o Jon', price: 190, priceType: 'Fixo', promoPrice: null, duration: 60 },
-  { id: 'detox-estimulante', name: 'Detox Estimulante', price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
-  { id: 'inside-trp', name: "Inside TRP - Reconstru\u00e7\u00e3o Premium", price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
-  { id: 'lavar-finalizar', name: 'Lavar e Finalizar', price: 100, priceType: 'Fixo', promoPrice: null, duration: 60 },
-  { id: 'luzes-morena-iluminada', name: 'Luzes ou Morena Iluminada', price: 699, priceType: 'A partir de', promoPrice: null, duration: 180 }
-];
+import { SEED_SERVICES } from '../../data/seedServices';
 
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -261,6 +251,38 @@ const AdminDashboard = () => {
       notes: c.notes || prev.notes || ''
     }));
     setShowEditSuggestions(false);
+  };
+
+  // Auto-fill by phone on blur (add modal)
+  const handlePhoneBlurForAdd = () => {
+    const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) return;
+    const allClients = getUniqueClientsList();
+    const match = allClients.find(c => c.phone && c.phone.replace(/\D/g, '') === cleanPhone);
+    if (match) {
+      setNewBooking(prev => ({
+        ...prev,
+        clientName: prev.clientName || match.name || '',
+        clientEmail: prev.clientEmail || match.email || ''
+      }));
+    }
+  };
+
+  // Auto-fill by phone on blur (edit modal)
+  const handlePhoneBlurForEdit = () => {
+    const cleanPhone = editBookingForm.clientPhone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) return;
+    const allClients = getUniqueClientsList();
+    const match = allClients.find(c => c.phone && c.phone.replace(/\D/g, '') === cleanPhone);
+    if (match) {
+      setEditBookingForm(prev => ({
+        ...prev,
+        clientName: prev.clientName || match.name || '',
+        clientEmail: prev.clientEmail || match.email || '',
+        cpf: prev.cpf || match.cpf || '',
+        tags: (prev.tags && prev.tags.length > 0) ? prev.tags : (match.tags || [])
+      }));
+    }
   };
 
   // Formulário para novo agendamento manual
@@ -1874,6 +1896,7 @@ const AdminDashboard = () => {
                         required 
                         value={editBookingForm.clientPhone}
                         onChange={e => setEditBookingForm(prev => ({ ...prev, clientPhone: e.target.value }))}
+                        onBlur={handlePhoneBlurForEdit}
                       />
                     </div>
                   </div>
@@ -2438,6 +2461,7 @@ const AdminDashboard = () => {
                   placeholder="Ex: 31999998888"
                   value={newBooking.clientPhone}
                   onChange={e => setNewBooking(prev => ({ ...prev, clientPhone: e.target.value }))}
+                  onBlur={handlePhoneBlurForAdd}
                 />
               </div>
 

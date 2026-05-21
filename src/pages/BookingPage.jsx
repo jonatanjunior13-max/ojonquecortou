@@ -13,97 +13,7 @@ import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
 import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert } from 'lucide-react';
 import './Booking.css';
-
-const SEED_SERVICES = [
-  {
-    id: 'coloracao-completa',
-    name: 'Coloração Completa',
-    category: 'Cabelo',
-    description: 'Quer uma transformação completa ou renovar a cor dos seus fios? A Coloração Completa é para quem deseja uma coloração total, seja para cobrir os fios brancos ou mudar completamente o tom. Antes de começar, conversamos sobre o tom perfeito para você, e garantimos que a cor escolhida vai realçar o seu estilo, sempre cuidando da saúde dos fios.',
-    price: 499,
-    priceType: 'A partir de',
-    promoPrice: null,
-    duration: 120,
-    isPrimary: true
-  },
-  {
-    id: 'combo-corte-tratamento-personalizado',
-    name: 'Combo - Corte com o Jon + Tratamento personalizado',
-    category: 'Cabelo',
-    description: 'Cachos precisando de tratamento e um corte novo? Esse pacote inclui uma restauração profunda que devolve a maciez e o brilho, e um corte personalizado, pensado para valorizar os seus cachos. A finalização é sob medida para que seus cachos saiam com definição e brilho.',
-    price: 320,
-    priceType: 'Fixo',
-    promoPrice: 230,
-    duration: 60,
-    isPrimary: true
-  },
-  {
-    id: 'combo-corte-terapia-trp',
-    name: 'Combo Corte com o Jon + Terapia de Reposição Proteica',
-    category: 'Cabelo',
-    description: 'Um tratamento completo pra quem quer se apaixonar de novo pelo próprio cabelo! O corte valoriza cada cacho e o TRP devolve vida, brilho e força com tecnologia que age na fibra capilar de dentro pra fora. Resultado? Cachos leves, saudáveis e com movimento real. Vem viver essa transformação — seu cabelo vai sentir a diferença desde o primeiro toque! 💫',
-    price: 370,
-    priceType: 'Fixo',
-    promoPrice: 300,
-    duration: 60,
-    isPrimary: true
-  },
-  {
-    id: 'corte-jon',
-    name: 'Corte com o Jon',
-    category: 'Cabelo',
-    description: 'Nada de cortar os cachos de qualquer jeito! A gente conversa primeiro para entender o que você quer e o que seus cachos precisam. O corte é personalizado, feito para realçar o formato natural dos seus fios, garantindo movimento. Esqueça os cortes genéricos e padronizados. Aqui, cada corte é único, assim como você. Tudo começa com uma entrevista detalhada, onde eu, Jon, descubro tudo sobre o seu estilo de vida, suas preferências e suas necessidades.',
-    price: 190,
-    priceType: 'Fixo',
-    promoPrice: null,
-    duration: 60,
-    isPrimary: true
-  },
-  {
-    id: 'detox-estimulante',
-    name: 'Detox Estimulante',
-    category: 'Cabelo',
-    description: "Dê um respiro para o seu couro cabeludo com o nosso serviço 'Purifica & Cresce'. Este tratamento esfoliante detox é a solução perfeita para eliminar impurezas, excesso de oleosidade e estimular o crescimento saudável do cabelo. Com a combinação de ingredientes naturais e técnicas especializadas, este tratamento vai revitalizar o seu couro cabeludo, promovendo um ambiente saudável para o crescimento dos seus fios.",
-    price: 180,
-    priceType: 'Fixo',
-    promoPrice: null,
-    duration: 60,
-    isPrimary: false
-  },
-  {
-    id: 'inside-trp',
-    name: 'Inside TRP – Reconstrução Premium',
-    category: 'Cabelo',
-    description: 'Tratamento proteico premium com a tecnologia Deep Complex pra recuperar fios danificados por química, calor ou processos agressivos. Atua desde o córtex até as cutículas: repara massa perdida, reduz porosidade, evita quebra e sela a fibra. Resultado: cachos mais fortes, elásticos e vibrantes — sem sofrimento.',
-    price: 180,
-    priceType: 'Fixo',
-    promoPrice: null,
-    duration: 60,
-    isPrimary: false
-  },
-  {
-    id: 'lavar-finalizar',
-    name: 'Lavar e Finalizar',
-    category: 'Cabelo',
-    description: 'Aqui seus cachos recebem a finalização perfeita! A gente conversa sobre o que você quer – definição, volume ou leveza – e faço a finalização sob medida. O resultado são cachos definidos, soltos, com brilho e prontos para arrasar. Tudo pensado para que seus fios fiquem no melhor formato. Importante: NÃO É DEDOLISS',
-    price: 100,
-    priceType: 'Fixo',
-    promoPrice: null,
-    duration: 60,
-    isPrimary: false
-  },
-  {
-    id: 'luzes-morena-iluminada',
-    name: 'Luzes ou Morena Iluminada',
-    category: 'Cabelo',
-    description: 'Ilumine seus fios sem agredir! Com nossa técnica exclusiva de Mechas Sem Descolorante, você consegue um efeito iluminado e natural, perfeito para quem quer uma transformação suave e saudável. Ideal para cabelos cacheados, ondulados e lisos, garantindo brilho e definição sem danificar a estrutura do fio.',
-    price: 699,
-    priceType: 'A partir de',
-    promoPrice: null,
-    duration: 180,
-    isPrimary: false
-  }
-];
+import { SEED_SERVICES } from '../data/seedServices';
 
 // Horários padrão de atendimento
 const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
@@ -149,13 +59,10 @@ const BookingPage = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
   
-  // Helper to detect WhatsApp-only services (Coloração, Luzes, Retoque de raiz)
-  const isWhatsappOnlyService = (name) => {
-    if (!name) return false;
-    const normalized = name.toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-    return normalized.includes('colora') || normalized.includes('luzes') || normalized.includes('retoque de raiz');
+  // Helper to detect WhatsApp-only services based on priceType
+  const isWhatsappOnlyService = (service) => {
+    if (!service) return false;
+    return service.priceType === 'A partir de' || service.price === 'Sob Orçamento' || service.price === 'Sob Consulta';
   };
 
   // Helper to map name keywords to emojis and taglines matching ServicesPage.jsx
@@ -232,6 +139,7 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [bookingDemoMode, setBookingDemoMode] = useState(false);
 
   // Authentication & Linking States
   const [currentUser, setCurrentUser] = useState(null);
@@ -330,6 +238,7 @@ const BookingPage = () => {
           email: profile.email || prev.email,
           hairType: profile.curvatura || prev.hairType || '3A',
           birthdate: profile.birthdate || prev.birthdate || '',
+          notes: profile.observacoes || prev.notes || '',
         }));
         setExistingProfile(profile);
       } else if (email) {
@@ -410,7 +319,8 @@ const BookingPage = () => {
           phone: prev.phone || matchedProfile.phone || '',
           email: prev.email || matchedProfile.email || '',
           hairType: prev.hairType || matchedProfile.curvatura || '3A',
-          birthdate: prev.birthdate || matchedProfile.birthdate || ''
+          birthdate: prev.birthdate || matchedProfile.birthdate || '',
+          notes: prev.notes || matchedProfile.observacoes || ''
         }));
 
         if (matchedProfile.userId) {
@@ -424,6 +334,48 @@ const BookingPage = () => {
       }
     } catch (err) {
       console.error('Erro ao verificar perfil existente:', err);
+    } finally {
+      setCheckingProfile(false);
+    }
+  };
+
+  // Busca perfil pelo e-mail digitado na aba "Entrar com E-mail" (antes de confirmar senha)
+  const handleLoginEmailBlur = async () => {
+    const email = loginEmail.trim();
+    if (!email || !email.includes('@')) return;
+    if (existingProfile) return; // já encontrou
+
+    setCheckingProfile(true);
+    setAuthError('');
+    try {
+      let matched = null;
+      const isDemo = !db || bookingDemoMode;
+      if (isDemo) {
+        const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        matched = localClients.find(c => c.email && c.email.toLowerCase() === email.toLowerCase());
+      } else {
+        const { getDocs: _getDocs, query: _query, collection: _col, where: _where } = await import('firebase/firestore');
+        const q = _query(_col(db, 'client_profiles'), _where('email', '==', email));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          matched = { id: snap.docs[0].id, ...snap.docs[0].data() };
+        }
+      }
+      if (matched) {
+        setExistingProfile(matched);
+        // Pre-fill clientData with found profile (will be shown after password confirm)
+        setClientData(prev => ({
+          ...prev,
+          name: matched.name || prev.name,
+          phone: matched.phone || prev.phone,
+          email: matched.email || prev.email,
+          hairType: matched.curvatura || prev.hairType || '3A',
+          birthdate: matched.birthdate || prev.birthdate || '',
+          notes: matched.observacoes || prev.notes || ''
+        }));
+      }
+    } catch (err) {
+      console.warn('Erro ao buscar perfil pelo email de login:', err);
     } finally {
       setCheckingProfile(false);
     }
@@ -599,14 +551,15 @@ const BookingPage = () => {
 
       // Timeout fallback se o Firestore falhar/travar na carga
       const serviceTimeout = setTimeout(() => {
-        console.warn('Conexão com Firestore excedeu tempo limite ao carregar serviços. Ativando Modo Demo.');
-        setIsDemoMode(true);
+        console.warn('Conexão com Firestore excedeu tempo limite ao carregar serviços. Usando serviços locais.');
+        // NÃO ativamos isDemoMode aqui — só carregamos serviços locais como fallback
+        // Isso garante que o agendamento ainda será salvo no Firestore
         const localData = localStorage.getItem('demo_services');
         setServices(localData ? JSON.parse(localData) : SEED_SERVICES);
-      }, 3500);
+      }, 5000);
 
       try {
-        const querySnapshot = await withTimeout(getDocs(collection(db, 'services')), 3500);
+        const querySnapshot = await withTimeout(getDocs(collection(db, 'services')), 5000);
         clearTimeout(serviceTimeout);
         const list = [];
         querySnapshot.forEach((doc) => {
@@ -620,7 +573,7 @@ const BookingPage = () => {
       } catch (err) {
         clearTimeout(serviceTimeout);
         console.warn('Erro ao buscar serviços do Firestore, usando locais:', err);
-        setIsDemoMode(true);
+        // NÃO ativamos isDemoMode — apenas usamos serviços locais como fallback
         const localData = localStorage.getItem('demo_services');
         setServices(localData ? JSON.parse(localData) : SEED_SERVICES);
       }
@@ -767,7 +720,7 @@ const BookingPage = () => {
       const cleanPhone = clientData.phone.replace(/\D/g, '');
 
       // 1. Salvar agendamento
-      if (isDemoMode || !db) {
+      if (bookingDemoMode || !db) {
         console.log('Agendamento simulado (Demo):', bookingPayload);
         const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
         localBookings.push(bookingPayload);
@@ -799,13 +752,13 @@ const BookingPage = () => {
         }
       } else {
         try {
-          await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 4500);
+          await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
 
           // Auto-cadastro no Firestore
           if (cleanPhone) {
             try {
               const clientRef = doc(db, 'client_profiles', cleanPhone);
-              const clientSnap = await withTimeout(getDoc(clientRef), 3500);
+              const clientSnap = await withTimeout(getDoc(clientRef), 5000);
               if (!clientSnap.exists()) {
                 await withTimeout(setDoc(clientRef, {
                   name: clientData.name,
@@ -822,7 +775,7 @@ const BookingPage = () => {
                   createdAt: new Date().toISOString(),
                   userId: finalUserId,
                   authProvider: finalAuthProvider
-                }), 3500);
+                }), 5000);
               }
             } catch (profileErr) {
               console.warn('Erro ao auto-cadastrar cliente no Firestore:', profileErr);
@@ -830,7 +783,7 @@ const BookingPage = () => {
           }
         } catch (dbErr) {
           console.warn('Erro/Timeout ao salvar no Firestore. Ativando fallback local:', dbErr);
-          setIsDemoMode(true);
+          setBookingDemoMode(true);
           const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
           localBookings.push(bookingPayload);
           localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
@@ -992,7 +945,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     const hasPromo = !!service.promoPrice;
                     const isFeatured = !!(service.isPrimary || service.featured);
                     const isSelected = selectedService?.id === service.id;
-                    const isWaOnly = isWhatsappOnlyService(service.name);
+                    const isWaOnly = isWhatsappOnlyService(service);
                     const { emoji, tagline } = getServiceExtraDetails(service.name);
                     
                     return (
@@ -1321,7 +1274,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   <div className="auth-separator">Ou use uma senha</div>
                   
                   <div className="password-auth-form">
-                    {!existingProfile && (
+                    {!existingProfile ? (
                       <div className="form-group" style={{ marginBottom: '10px' }}>
                         <label htmlFor="login-email" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>E-mail de Acesso</label>
                         <input 
@@ -1329,9 +1282,25 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                           id="login-email" 
                           placeholder="Ex: maria@exemplo.com" 
                           value={loginEmail}
-                          onChange={(e) => setLoginEmail(e.target.value)}
+                          onChange={(e) => { setLoginEmail(e.target.value); setExistingProfile(null); }}
+                          onBlur={handleLoginEmailBlur}
                           disabled={authLoading}
+                          autoFocus
                         />
+                        {checkingProfile && (
+                          <span style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                            <span style={{ display: 'inline-block', width: 10, height: 10, border: '2px solid var(--rule)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'booking-catalog-spin 0.6s linear infinite' }} />
+                            Buscando cadastro...
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <div style={{ marginBottom: '10px', padding: '8px 12px', background: 'rgba(47,133,90,0.08)', border: '1px solid #2f855a', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: '1.2rem' }}>✓</span>
+                        <div>
+                          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#2f855a' }}>Cadastro encontrado!</div>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text)' }}>Olá, <strong>{existingProfile.name?.split(' ')[0]}</strong>! Confirme sua senha para continuar.</div>
+                        </div>
                       </div>
                     )}
                     <div className="form-group" style={{ marginBottom: '10px' }}>
