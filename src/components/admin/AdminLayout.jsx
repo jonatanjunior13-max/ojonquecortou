@@ -108,7 +108,7 @@ const AdminLayout = () => {
         setGlobalData(prev => ({
           ...prev,
           bookings: JSON.parse(localStorage.getItem('demo_bookings')) || [],
-          clients: JSON.parse(localStorage.getItem('demo_clients')) || [],
+          clients: JSON.parse(localStorage.getItem('demo_client_profiles')) || [],
           services: JSON.parse(localStorage.getItem('demo_services')) || [],
           products: JSON.parse(localStorage.getItem('demo_inventory')) || [],
           financial_transactions: JSON.parse(localStorage.getItem('demo_financial')) || []

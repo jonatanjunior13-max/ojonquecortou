@@ -2342,14 +2342,14 @@ const AdminDashboard = () => {
           <form
             className="modal-content"
             onSubmit={handleAddManualBooking}
-            style={{ maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+            style={{ maxHeight: '95vh', maxWidth: '600px', width: '95%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexShrink: 0 }}>
-              <h3>Registrar Horário Manual</h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexShrink: 0 }}>
+              <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Registrar Horário Manual</h3>
               <button type="button" className="btn-icon" onClick={() => setShowAddModal(false)}><X size={18} /></button>
             </div>
 
-            <div className="form-group" style={{ flexShrink: 0, position: 'relative', zIndex: 200 }}>
+            <div className="form-group" style={{ flexShrink: 0, position: 'relative', zIndex: 200, marginBottom: 12 }}>
               <label>Nome Completo do Cliente *</label>
               <div className="autocomplete-container">
                 <input 
@@ -2384,8 +2384,8 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div style={{ overflowY: 'auto', flex: 1, paddingRight: 4 }}>
-              <div className="form-group">
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 16, rowGap: 12, overflowY: 'auto', flex: 1, paddingRight: 4, paddingBottom: 8 }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>WhatsApp *</label>
                 <input 
                   type="tel" 
@@ -2396,7 +2396,7 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>E-mail (Opcional)</label>
                 <input 
                   type="email" 
@@ -2406,7 +2406,7 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>Profissional Responsável *</label>
                 <select 
                   value={newBooking.profissional}
@@ -2418,76 +2418,74 @@ const AdminDashboard = () => {
                 </select>
               </div>
 
-              <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
-                <div className="form-group">
-                  <label>Serviço *</label>
-                  <select 
-                    value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
-                    onChange={e => {
-                      const [name, priceStr] = e.target.value.split('|');
-                      const matched = services.find(s => s.name === name);
-                      setNewBooking(prev => ({ 
-                        ...prev, 
-                        serviceName: name, 
-                        servicePrice: Number(priceStr),
-                        duration: matched ? (matched.duration || 60) : 60
-                      }));
-                    }}
-                  >
-                    {services.map(s => (
-                      <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
-                        {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Valor (R$) *</label>
-                  <input 
-                    type="number" 
-                    required 
-                    min="0"
-                    step="0.01"
-                    value={newBooking.servicePrice}
-                    onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Duração (min) *</label>
-                  <input 
-                    type="number" 
-                    required 
-                    min="5"
-                    step="5"
-                    value={newBooking.duration || 60}
-                    onChange={e => setNewBooking(prev => ({ ...prev, duration: Number(e.target.value) }))}
-                  />
-                </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Serviço *</label>
+                <select 
+                  value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
+                  onChange={e => {
+                    const [name, priceStr] = e.target.value.split('|');
+                    const matched = services.find(s => s.name === name);
+                    setNewBooking(prev => ({ 
+                      ...prev, 
+                      serviceName: name, 
+                      servicePrice: Number(priceStr),
+                      duration: matched ? (matched.duration || 60) : 60
+                    }));
+                  }}
+                >
+                  {services.map(s => (
+                    <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                      {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Data *</label>
-                  <input 
-                    type="date" 
-                    required
-                    value={newBooking.date}
-                    onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Horário *</label>
-                  <input 
-                    type="time"
-                    required
-                    value={newBooking.time}
-                    onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
-                  />
-                </div>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Valor (R$) *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0"
+                  step="0.01"
+                  value={newBooking.servicePrice}
+                  onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                />
               </div>
 
-              <div className="form-group">
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Duração (min) *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="5"
+                  step="5"
+                  value={newBooking.duration || 60}
+                  onChange={e => setNewBooking(prev => ({ ...prev, duration: Number(e.target.value) }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Data *</label>
+                <input 
+                  type="date" 
+                  required
+                  value={newBooking.date}
+                  onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Horário *</label>
+                <input 
+                  type="time"
+                  required
+                  value={newBooking.time}
+                  onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>
                 <label>Notas Internas</label>
                 <textarea 
                   rows="2"
@@ -2498,7 +2496,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancelar</button>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                 {newBooking.clientPhone && (

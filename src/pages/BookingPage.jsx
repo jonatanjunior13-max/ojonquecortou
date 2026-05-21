@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { db, withTimeout } from '../config/firebase';
-import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db, withTimeout } from '../config/firebase';
+import { 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  onAuthStateChanged,
+  signOut
+} from 'firebase/auth';
+import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
-import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle } from 'lucide-react';
+import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert } from 'lucide-react';
 import './Booking.css';
 
 const SEED_SERVICES = [
@@ -210,7 +218,6 @@ const BookingPage = () => {
   // Catálogo visual states
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
-  const [showMoreServices, setShowMoreServices] = useState(false);
   
   // Dados do cliente
   const [clientData, setClientData] = useState({
@@ -225,6 +232,324 @@ const BookingPage = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
+
+  // Authentication & Linking States
+  const [currentUser, setCurrentUser] = useState(null);
+  const [checkingProfile, setCheckingProfile] = useState(false);
+  const [existingProfile, setExistingProfile] = useState(null);
+  const [authMode, setAuthMode] = useState(null); // null, 'login', 'register'
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authSuccess, setAuthSuccess] = useState(false);
+  const [loginEmail, setLoginEmail] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+
+  // Friendly error messages translator
+  const getFriendlyAuthMessage = (code) => {
+    switch (code) {
+      case 'auth/wrong-password':
+        return 'Senha incorreta. Tente novamente.';
+      case 'auth/user-not-found':
+        return 'Usuário não encontrado.';
+      case 'auth/invalid-credential':
+        return 'Credenciais inválidas. Verifique os dados informados.';
+      case 'auth/weak-password':
+        return 'A senha deve ter pelo menos 6 caracteres.';
+      case 'auth/invalid-email':
+        return 'E-mail inválido.';
+      default:
+        return 'Erro na autenticação. Verifique os dados ou tente outra opção.';
+    }
+  };
+
+  // Load client profile by authenticated user ID
+  const loadProfileByUserId = async (uid, email) => {
+    setCheckingProfile(true);
+    try {
+      let profile = null;
+      const isDemo = !db || isDemoMode;
+      if (isDemo) {
+        const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        profile = localClients.find(c => c.userId === uid || (c.email && c.email.toLowerCase() === email?.toLowerCase()));
+      } else {
+        const q = query(collection(db, 'client_profiles'), where('userId', '==', uid));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          profile = { id: snap.docs[0].id, ...snap.docs[0].data() };
+        } else if (email) {
+          const q2 = query(collection(db, 'client_profiles'), where('email', '==', email));
+          const snap2 = await getDocs(q2);
+          if (!snap2.empty) {
+            profile = { id: snap2.docs[0].id, ...snap2.docs[0].data() };
+            // Link existing profile to this UID
+            const docRef = doc(db, 'client_profiles', profile.id);
+            await updateDoc(docRef, { userId: uid });
+            profile.userId = uid;
+          }
+        }
+      }
+
+      if (profile) {
+        setClientData(prev => ({
+          ...prev,
+          name: profile.name || prev.name,
+          phone: profile.phone || prev.phone,
+          email: profile.email || prev.email,
+          hairType: profile.curvatura || prev.hairType || '3A',
+          birthdate: profile.birthdate || prev.birthdate || '',
+        }));
+        setExistingProfile(profile);
+      } else if (email) {
+        setClientData(prev => ({
+          ...prev,
+          email: email
+        }));
+      }
+      setAuthSuccess(true);
+      setAuthMode(null);
+    } catch (err) {
+      console.error('Erro ao carregar perfil por userId:', err);
+    } finally {
+      setCheckingProfile(false);
+    }
+  };
+
+  // Listen for auth state changes
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setCurrentUser(user);
+        await loadProfileByUserId(user.uid, user.email);
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDemoMode]);
+
+  // Check phone/email on blur
+  const handleFieldBlur = async () => {
+    const cleanPhone = clientData.phone.replace(/\D/g, '');
+    const email = clientData.email.trim();
+    if (cleanPhone.length < 10 && !email) return;
+    
+    if (authSuccess) return;
+
+    setCheckingProfile(true);
+    setAuthError('');
+    
+    try {
+      let matchedProfile = null;
+      const isDemo = !db || isDemoMode;
+      
+      if (isDemo) {
+        const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        if (cleanPhone) {
+          matchedProfile = localClients.find(c => c.phone === cleanPhone);
+        }
+        if (!matchedProfile && email) {
+          matchedProfile = localClients.find(c => c.email && c.email.toLowerCase() === email.toLowerCase());
+        }
+      } else {
+        if (cleanPhone) {
+          const clientRef = doc(db, 'client_profiles', cleanPhone);
+          const clientSnap = await getDoc(clientRef);
+          if (clientSnap.exists()) {
+            matchedProfile = { id: clientSnap.id, ...clientSnap.data() };
+          }
+        }
+        if (!matchedProfile && email) {
+          const q = query(collection(db, 'client_profiles'), where('email', '==', email));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            matchedProfile = { id: snap.docs[0].id, ...snap.docs[0].data() };
+          }
+        }
+      }
+      
+      if (matchedProfile) {
+        setExistingProfile(matchedProfile);
+        setClientData(prev => ({
+          ...prev,
+          name: prev.name || matchedProfile.name || '',
+          phone: prev.phone || matchedProfile.phone || '',
+          email: prev.email || matchedProfile.email || '',
+          hairType: prev.hairType || matchedProfile.curvatura || '3A',
+          birthdate: prev.birthdate || matchedProfile.birthdate || ''
+        }));
+
+        if (matchedProfile.userId) {
+          setAuthMode('login');
+        } else {
+          setAuthMode('register');
+        }
+      } else {
+        setExistingProfile(null);
+        setAuthMode(null);
+      }
+    } catch (err) {
+      console.error('Erro ao verificar perfil existente:', err);
+    } finally {
+      setCheckingProfile(false);
+    }
+  };
+
+  // Google authentication popup
+  const handleGoogleAuth = async () => {
+    setAuthLoading(true);
+    setAuthError('');
+    
+    try {
+      let uid = '';
+      let email = '';
+      const isDemo = !auth || isDemoMode;
+      
+      if (isDemo) {
+        uid = existingProfile?.userId || 'demo-google-uid-' + Date.now();
+        email = clientData.email || 'demo@google.com';
+      } else {
+        const provider = new GoogleAuthProvider();
+        const result = await signInWithPopup(auth, provider);
+        uid = result.user.uid;
+        email = result.user.email;
+      }
+      
+      const cleanPhone = clientData.phone.replace(/\D/g, '');
+      
+      if (existingProfile) {
+        if (authMode === 'register') {
+          if (isDemo) {
+            const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+            const updated = localClients.map(c => c.phone === cleanPhone ? { ...c, userId: uid, authProvider: 'google' } : c);
+            localStorage.setItem('demo_client_profiles', JSON.stringify(updated));
+          } else {
+            const clientRef = doc(db, 'client_profiles', cleanPhone);
+            await setDoc(clientRef, { userId: uid, authProvider: 'google' }, { merge: true });
+          }
+          setAuthSuccess(true);
+          setAuthMode(null);
+        } else if (authMode === 'login' || !authMode) {
+          if (uid === existingProfile.userId || isDemo || email === existingProfile.email) {
+            if (uid !== existingProfile.userId && !isDemo) {
+              const clientRef = doc(db, 'client_profiles', existingProfile.phone);
+              await setDoc(clientRef, { userId: uid }, { merge: true });
+            }
+            setAuthSuccess(true);
+            setAuthMode(null);
+          } else {
+            setAuthError('Esta conta do Google não corresponde ao e-mail deste perfil.');
+          }
+        }
+      } else {
+        // Upfront login/register with Google (no profile matched yet)
+        await loadProfileByUserId(uid, email);
+      }
+    } catch (err) {
+      console.error('Erro na autenticação do Google:', err);
+      setAuthError('Falha ao autenticar com o Google.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Email/Password login or registration linking
+  const handleEmailPasswordAuth = async (e) => {
+    if (e) e.preventDefault();
+    
+    const emailToUse = existingProfile ? clientData.email : loginEmail;
+    if (!emailToUse) {
+      setAuthError('Por favor, informe seu e-mail.');
+      return;
+    }
+    if (!password) {
+      setAuthError('Por favor, digite a senha.');
+      return;
+    }
+    
+    setAuthLoading(true);
+    setAuthError('');
+    
+    try {
+      let uid = '';
+      const isDemo = !auth || isDemoMode;
+      const cleanPhone = clientData.phone.replace(/\D/g, '');
+      
+      if (authMode === 'register') {
+        if (isDemo) {
+          uid = 'demo-pwd-uid-' + Date.now();
+        } else {
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, emailToUse, password);
+            uid = userCredential.user.uid;
+          } catch (createErr) {
+            if (createErr.code === 'auth/email-already-in-use') {
+              const userCredential = await signInWithEmailAndPassword(auth, emailToUse, password);
+              uid = userCredential.user.uid;
+            } else {
+              throw createErr;
+            }
+          }
+        }
+        
+        if (isDemo) {
+          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+          const updated = localClients.map(c => c.phone === cleanPhone ? { ...c, userId: uid, authProvider: 'password' } : c);
+          localStorage.setItem('demo_client_profiles', JSON.stringify(updated));
+        } else {
+          const clientRef = doc(db, 'client_profiles', cleanPhone);
+          await setDoc(clientRef, { userId: uid, authProvider: 'password' }, { merge: true });
+        }
+        setAuthSuccess(true);
+        setAuthMode(null);
+      } else if (authMode === 'login') {
+        if (isDemo) {
+          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+          const matchedProfile = localClients.find(c => c.email && c.email.toLowerCase() === emailToUse.toLowerCase());
+          uid = matchedProfile?.userId || 'demo-pwd-uid-' + Date.now();
+        } else {
+          const userCredential = await signInWithEmailAndPassword(auth, emailToUse, password);
+          uid = userCredential.user.uid;
+        }
+        
+        await loadProfileByUserId(uid, emailToUse);
+      }
+    } catch (err) {
+      console.error('Erro na autenticação por senha:', err);
+      setAuthError(getFriendlyAuthMessage(err.code));
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  // Reset auth and clear fields
+  const handleResetAuth = async () => {
+    if (auth && currentUser) {
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.warn('Erro ao deslogar:', err);
+      }
+    }
+    setCurrentUser(null);
+    setExistingProfile(null);
+    setAuthMode(null);
+    setAuthSuccess(false);
+    setPassword('');
+    setAuthError('');
+    setLoginEmail('');
+    setNewPassword('');
+    setClientData(prev => ({
+      ...prev,
+      name: '',
+      phone: '',
+      email: '',
+      birthdate: '',
+      notes: ''
+    }));
+  };
 
   // Busca lista de serviços cadastrados no salão
   useEffect(() => {
@@ -270,9 +595,6 @@ const BookingPage = () => {
     };
     fetchServices();
   }, []);
-
-  const primaryServices = services.filter(s => s.isPrimary);
-  const additionalServices = services.filter(s => !s.isPrimary);
 
   const dates = getAvailableDates();
 
@@ -345,7 +667,54 @@ const BookingPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (existingProfile && !authSuccess) {
+      setAuthError('Você precisa confirmar sua identidade para agendar usando este perfil.');
+      setTimeout(() => {
+        const authCard = document.querySelector('.client-auth-card');
+        if (authCard) {
+          authCard.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return;
+    }
+
     setLoading(true);
+
+    let finalUserId = currentUser?.uid || existingProfile?.userId || '';
+    let finalAuthProvider = currentUser 
+      ? (currentUser.providerData[0]?.providerId === 'google.com' ? 'google' : 'password') 
+      : (existingProfile?.authProvider || '');
+
+    // Se o cliente definiu uma nova senha de cadastro e não está autenticado ainda:
+    if (!currentUser && newPassword.length >= 6 && clientData.email) {
+      try {
+        const isDemo = !auth || isDemoMode;
+        if (isDemo) {
+          finalUserId = 'demo-pwd-uid-' + Date.now();
+          finalAuthProvider = 'password';
+        } else {
+          try {
+            const userCredential = await createUserWithEmailAndPassword(auth, clientData.email, newPassword);
+            finalUserId = userCredential.user.uid;
+            finalAuthProvider = 'password';
+          } catch (createErr) {
+            if (createErr.code === 'auth/email-already-in-use') {
+              const userCredential = await signInWithEmailAndPassword(auth, clientData.email, newPassword);
+              finalUserId = userCredential.user.uid;
+              finalAuthProvider = 'password';
+            } else {
+              throw createErr;
+            }
+          }
+        }
+      } catch (authErr) {
+        console.warn('Erro ao criar credenciais durante cadastro:', authErr);
+        setAuthError(getFriendlyAuthMessage(authErr.code));
+        setLoading(false);
+        return;
+      }
+    }
 
     const bookingPayload = {
       service: selectedService,
@@ -358,7 +727,8 @@ const BookingPage = () => {
       hairType: clientData.hairType,
       notes: clientData.notes,
       status: 'pendente', // pendente, confirmado, finalizado, cancelado
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      userId: finalUserId
     };
 
     try {
@@ -388,7 +758,9 @@ const BookingPage = () => {
               observacoes: 'Cadastrado automaticamente via agendamento online',
               sexo: 'Feminino',
               birthdate: clientData.birthdate || '',
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString(),
+              userId: finalUserId,
+              authProvider: finalAuthProvider
             });
             localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
           }
@@ -415,7 +787,9 @@ const BookingPage = () => {
                   observacoes: 'Cadastrado automaticamente via agendamento online',
                   sexo: 'Feminino',
                   birthdate: clientData.birthdate || '',
-                  createdAt: new Date().toISOString()
+                  createdAt: new Date().toISOString(),
+                  userId: finalUserId,
+                  authProvider: finalAuthProvider
                 }), 3500);
               }
             } catch (profileErr) {
@@ -446,7 +820,9 @@ const BookingPage = () => {
                 observacoes: 'Cadastrado automaticamente via agendamento online (fallback)',
                 sexo: 'Feminino',
                 birthdate: clientData.birthdate || '',
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                userId: finalUserId,
+                authProvider: finalAuthProvider
               });
               localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
             }
@@ -475,6 +851,7 @@ const BookingPage = () => {
 
   const selectedDateObj = dates.find(d => d.raw === selectedDate);
 
+  /*
   const getWhatsAppMessage = () => {
     if (!selectedService) return '';
     const dateFormatted = selectedDateObj?.display || selectedDate;
@@ -492,6 +869,7 @@ const BookingPage = () => {
 - *Curvatura:* ${clientData.hairType}
 ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
   };
+  */
 
 
   return (
@@ -793,98 +1171,272 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           <form className="booking-step" onSubmit={handleSubmit}>
             <h2>Confirme seus dados para contato</h2>
             
-            <div className="form-group">
-              <label htmlFor="name">Seu Nome Completo *</label>
-              <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                required 
-                placeholder="Ex: Maria da Silva" 
-                value={clientData.name} 
-                onChange={handleInputChange} 
-              />
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="phone">WhatsApp (com DDD) *</label>
-                <input 
-                  type="tel" 
-                  id="phone" 
-                  name="phone" 
-                  required 
-                  placeholder="Ex: 31988887777" 
-                  value={clientData.phone} 
-                  onChange={handleInputChange} 
-                />
-                <span className="hint">Usaremos para enviar a confirmação de horário</span>
+            {/* Abas de Autenticação Upfront */}
+            {!authSuccess && (
+              <div className="auth-selection-tabs">
+                <button 
+                  type="button" 
+                  className={`auth-tab-btn ${(!authMode) ? 'active' : ''}`}
+                  onClick={() => {
+                    setAuthMode(null);
+                    setAuthError('');
+                    if (loginEmail) {
+                      setClientData(prev => ({ ...prev, email: loginEmail }));
+                    }
+                  }}
+                >
+                  Criar Novo Cadastro
+                </button>
+                <button 
+                  type="button" 
+                  className={`auth-tab-btn ${authMode === 'login' ? 'active' : ''}`}
+                  onClick={() => {
+                    setAuthMode('login');
+                    setAuthError('');
+                    if (clientData.email) {
+                      setLoginEmail(clientData.email);
+                    }
+                  }}
+                >
+                  Entrar com E-mail
+                </button>
+                <button 
+                  type="button" 
+                  className="auth-tab-btn"
+                  onClick={handleGoogleAuth}
+                >
+                  <svg width="16" height="16" viewBox="0 0 18 18" style={{ marginRight: '4px' }}>
+                    <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7v2.25h2.9c1.69-1.55 2.69-3.85 2.69-6.58z"/>
+                    <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.9-2.25c-.8.54-1.83.86-3.06.86-2.35 0-4.34-1.58-5.05-3.71H.92v2.33C2.4 16.03 5.46 18 9 18z"/>
+                    <path fill="#FBBC05" d="M3.95 10.7c-.18-.54-.28-1.12-.28-1.7s.1-1.16.28-1.7V4.97H.92c-.6 1.2-1.07 2.57-1.07 4.03s.47 2.83 1.07 4.03l3.03-2.33z"/>
+                    <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.2C13.46.77 11.42 0 9 0 5.46 0 2.4 1.97.92 4.97l3.03 2.33c.71-2.13 2.7-3.71 5.05-3.71z"/>
+                  </svg>
+                  Entrar com Google
+                </button>
               </div>
+            )}
 
-              <div className="form-group">
-                <label htmlFor="email">Seu Melhor E-mail *</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
-                  required 
-                  placeholder="Ex: maria@exemplo.com" 
-                  value={clientData.email} 
-                  onChange={handleInputChange} 
-                />
+            {checkingProfile && (
+              <div style={{ margin: '10px 0', fontSize: '0.85rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="spinner-small" style={{ display: 'inline-block', width: '12px', height: '12px', border: '2px solid var(--rule)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'booking-catalog-spin 0.6s linear infinite' }}></span>
+                Verificando cadastro...
               </div>
-            </div>
+            )}
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="hairType">Qual a curvatura aproximada do seu cacho? *</label>
-                <select id="hairType" name="hairType" value={clientData.hairType} onChange={handleInputChange}>
-                  <option value="2A">2A (Ondulado Leve)</option>
-                  <option value="2B">2B (Ondulado Médio)</option>
-                  <option value="2C">2C (Ondulado Marcado)</option>
-                  <option value="3A">3A (Cacho Solto/Largo)</option>
-                  <option value="3B">3B (Cacho Espiral Médio)</option>
-                  <option value="3C">3C (Cacho Fechado/Saca-Rolha)</option>
-                  <option value="4A">4A (Crespo Definido)</option>
-                  <option value="4B">4B (Crespo em Ziguezague)</option>
-                  <option value="4C">4C (Crespo Muito Cerrado)</option>
-                  <option value="NaoSei">Ainda não sei (vamos descobrir!)</option>
-                </select>
+            {authSuccess && (
+              <div className="client-auth-card" style={{ borderColor: '#2f855a' }}>
+                <div className="client-auth-card-header">
+                  <Unlock size={20} style={{ color: '#2f855a' }} />
+                  <h3 className="client-auth-card-title">Perfil Verificado</h3>
+                </div>
+                <p className="client-auth-card-desc">
+                  Seus dados estão vinculados e protegidos. Agende com tranquilidade!
+                </p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', flexWrap: 'wrap', gap: '10px' }}>
+                  <span className="auth-success-badge">✓ Perfil verificado com sucesso!</span>
+                  <button 
+                    type="button" 
+                    className="btn btn-link" 
+                    onClick={handleResetAuth}
+                    style={{ fontSize: '0.8rem', color: 'var(--muted)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}
+                  >
+                    Acessar outra conta
+                  </button>
+                </div>
               </div>
+            )}
 
-              <div className="form-group">
-                <label htmlFor="birthdate">Data de Nascimento (Opcional)</label>
-                <input 
-                  type="date" 
-                  id="birthdate" 
-                  name="birthdate" 
-                  value={clientData.birthdate || ''} 
-                  onChange={handleInputChange} 
-                />
+            {!authSuccess && authMode && (
+              <div className="client-auth-card">
+                <div className="client-auth-card-header">
+                  <Lock size={20} style={{ color: 'var(--accent)' }} />
+                  <h3 className="client-auth-card-title">
+                    {authMode === 'login' ? 'Confirmar Identidade' : 'Proteger seu Cadastro'}
+                  </h3>
+                </div>
+                <p className="client-auth-card-desc">
+                  {authMode === 'login' 
+                    ? (existingProfile 
+                        ? 'Identificamos que você já possui um cadastro. Confirme sua senha ou use sua conta do Google para continuar.'
+                        : 'Entre com suas credenciais de acesso ou use sua conta do Google.')
+                    : 'Identificamos que você tem um histórico conosco, mas seu perfil não tem uma senha de acesso. Defina uma senha ou use o Google para proteger seus dados.'}
+                </p>
+                
+                {authError && <div className="auth-error-msg">{authError}</div>}
+                
+                <div className="client-auth-actions">
+                  <button 
+                    type="button" 
+                    className="btn-google-auth" 
+                    onClick={handleGoogleAuth}
+                    disabled={authLoading}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 18 18" style={{ marginRight: '8px', verticalAlign: 'middle' }}>
+                      <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.79 2.7v2.25h2.9c1.69-1.55 2.69-3.85 2.69-6.58z"/>
+                      <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.2l-2.9-2.25c-.8.54-1.83.86-3.06.86-2.35 0-4.34-1.58-5.05-3.71H.92v2.33C2.4 16.03 5.46 18 9 18z"/>
+                      <path fill="#FBBC05" d="M3.95 10.7c-.18-.54-.28-1.12-.28-1.7s.1-1.16.28-1.7V4.97H.92c-.6 1.2-1.07 2.57-1.07 4.03s.47 2.83 1.07 4.03l3.03-2.33z"/>
+                      <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.2C13.46.77 11.42 0 9 0 5.46 0 2.4 1.97.92 4.97l3.03 2.33c.71-2.13 2.7-3.71 5.05-3.71z"/>
+                    </svg>
+                    {authMode === 'login' ? 'Confirmar com Google' : 'Criar Acesso com Google'}
+                  </button>
+                  
+                  <div className="auth-separator">Ou use uma senha</div>
+                  
+                  <div className="password-auth-form">
+                    {!existingProfile && (
+                      <div className="form-group" style={{ marginBottom: '10px' }}>
+                        <label htmlFor="login-email" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>E-mail de Acesso</label>
+                        <input 
+                          type="email" 
+                          id="login-email" 
+                          placeholder="Ex: maria@exemplo.com" 
+                          value={loginEmail}
+                          onChange={(e) => setLoginEmail(e.target.value)}
+                          disabled={authLoading}
+                        />
+                      </div>
+                    )}
+                    <div className="form-group" style={{ marginBottom: '10px' }}>
+                      <label htmlFor="auth-password" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Senha</label>
+                      <input 
+                        type="password" 
+                        id="auth-password" 
+                        placeholder="Sua senha" 
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        disabled={authLoading}
+                      />
+                    </div>
+                    <button 
+                      type="button" 
+                      className="btn btn-accent" 
+                      onClick={handleEmailPasswordAuth}
+                      disabled={authLoading || !password}
+                      style={{ width: '100%', justifyContent: 'center' }}
+                    >
+                      {authLoading ? 'Processando...' : (authMode === 'login' ? 'Confirmar Senha' : 'Salvar e Proteger Perfil')}
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="form-group">
-              <label htmlFor="notes">Algum comentário ou histórico químico importante?</label>
-              <textarea 
-                id="notes" 
-                name="notes" 
-                rows="3" 
-                placeholder="Ex: Passei por descoloração há 3 meses / Cabelo em transição..."
-                value={clientData.notes}
-                onChange={handleInputChange}
-              ></textarea>
-            </div>
+            {(authSuccess || !authMode) && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="name">Seu Nome Completo *</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required 
+                    placeholder="Ex: Maria da Silva" 
+                    value={clientData.name} 
+                    onChange={handleInputChange} 
+                  />
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="phone">WhatsApp (com DDD) *</label>
+                    <input 
+                      type="tel" 
+                      id="phone" 
+                      name="phone" 
+                      required 
+                      placeholder="Ex: 31988887777" 
+                      value={clientData.phone} 
+                      onChange={handleInputChange} 
+                      onBlur={handleFieldBlur}
+                    />
+                    <span className="hint">Usaremos para enviar a confirmação de horário</span>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="email">Seu Melhor E-mail *</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      name="email" 
+                      required 
+                      placeholder="Ex: maria@exemplo.com" 
+                      value={clientData.email} 
+                      onChange={handleInputChange} 
+                      onBlur={handleFieldBlur}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="hairType">Qual a curvatura aproximada do seu cacho? *</label>
+                    <select id="hairType" name="hairType" value={clientData.hairType} onChange={handleInputChange}>
+                      <option value="2A">2A (Ondulado Leve)</option>
+                      <option value="2B">2B (Ondulado Médio)</option>
+                      <option value="2C">2C (Ondulado Marcado)</option>
+                      <option value="3A">3A (Cacho Solto/Largo)</option>
+                      <option value="3B">3B (Cacho Espiral Médio)</option>
+                      <option value="3C">3C (Cacho Fechado/Saca-Rolha)</option>
+                      <option value="4A">4A (Crespo Definido)</option>
+                      <option value="4B">4B (Crespo em Ziguezague)</option>
+                      <option value="4C">4C (Crespo Muito Cerrado)</option>
+                      <option value="NaoSei">Ainda não sei (vamos descobrir!)</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="birthdate">Data de Nascimento (Opcional)</label>
+                    <input 
+                      type="date" 
+                      id="birthdate" 
+                      name="birthdate" 
+                      value={clientData.birthdate || ''} 
+                      onChange={handleInputChange} 
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="notes">Algum comentário ou histórico químico importante?</label>
+                  <textarea 
+                    id="notes" 
+                    name="notes" 
+                    rows="3" 
+                    placeholder="Ex: Passei por descoloração há 3 meses / Cabelo em transição..."
+                    value={clientData.notes}
+                    onChange={handleInputChange}
+                  ></textarea>
+                </div>
+
+                {!authSuccess && !authMode && (
+                  <div className="form-group" style={{ marginTop: '20px', borderTop: '1px dashed var(--rule)', paddingTop: '16px' }}>
+                    <label htmlFor="register-password" style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px' }}>
+                      Criar uma Senha de Acesso (Opcional)
+                    </label>
+                    <input 
+                      type="password" 
+                      id="register-password" 
+                      placeholder="Mínimo 6 caracteres se desejar criar acesso" 
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <span className="hint">Defina uma senha se quiser salvar seus dados para agendamentos futuros.</span>
+                  </div>
+                )}
+              </>
+            )}
 
             <div className="step-actions">
               <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>Voltar</button>
-              <button 
-                type="submit" 
-                className="btn btn-accent"
-                disabled={loading}
-              >
-                {loading ? 'Finalizando...' : 'Confirmar Agendamento'} <Arrow />
-              </button>
+              {(authSuccess || !authMode) && (
+                <button 
+                  type="submit" 
+                  className="btn btn-accent"
+                  disabled={loading}
+                >
+                  {loading ? 'Finalizando...' : 'Confirmar Agendamento'} <Arrow />
+                </button>
+              )}
             </div>
           </form>
         )}
