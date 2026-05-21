@@ -1062,3 +1062,56 @@
 .notif-delete-btn:hover {
   color: var(--mobile-red) !important;
 }
+
+/* Autocomplete Sugestões Mobile */
+.mobile-autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
+.mobile-suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1.5px solid var(--mobile-rule);
+  border-radius: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.08);
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.mobile-suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #fce7f3;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.mobile-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.mobile-suggestion-item:active {
+  background: var(--mobile-primary-light);
+}
+
+.mobile-suggestion-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--mobile-text);
+}
+
+.mobile-suggestion-phone {
+  font-size: 0.75rem;
+  color: var(--mobile-muted);
+}
+

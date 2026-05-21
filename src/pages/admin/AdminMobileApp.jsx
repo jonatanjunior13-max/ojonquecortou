@@ -31,7 +31,7 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
+  waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728'
 };
 
 const AdminMobileApp = () => {
@@ -63,10 +63,41 @@ const AdminMobileApp = () => {
     clientEmail: '',
     serviceName: '',
     servicePrice: 0,
+    duration: 60,
     date: '',
     time: '09:00',
     notes: ''
   });
+
+  const [showMobileSuggestions, setShowMobileSuggestions] = useState(false);
+
+  // Autocomplete filtering helper
+  const getFilteredClients = (queryText) => {
+    if (!queryText || queryText.trim().length < 3) return [];
+    const normQuery = queryText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return clients.filter(c => {
+      if (!c.name) return false;
+      const normName = c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const nameMatch = normName.includes(normQuery);
+      const initials = normName.split(/\s+/).filter(Boolean).map(p => p[0]).join('');
+      const initialsMatch = initials.startsWith(normQuery);
+      const cleanPhone = c.phone?.replace(/\D/g, '') || '';
+      const cleanQueryPhone = normQuery.replace(/\D/g, '');
+      const phoneMatch = cleanQueryPhone.length > 0 && cleanPhone.includes(cleanQueryPhone);
+      return nameMatch || initialsMatch || phoneMatch;
+    }).slice(0, 6);
+  };
+
+  const selectClientForMobileAdd = (c) => {
+    setNewBooking(prev => ({
+      ...prev,
+      clientName: c.name || '',
+      clientPhone: c.phone || c.id || '',
+      clientEmail: c.email || '',
+      notes: c.observacoes || c.notes || prev.notes || ''
+    }));
+    setShowMobileSuggestions(false);
+  };
 
   const [newClient, setNewClient] = useState({
     name: '',
@@ -156,7 +187,8 @@ const AdminMobileApp = () => {
           setNewBooking(prev => ({
             ...prev,
             serviceName: list[0].name,
-            servicePrice: list[0].promoPrice || list[0].price || 150
+            servicePrice: list[0].promoPrice || list[0].price || 150,
+            duration: list[0].duration || 60
           }));
         }
         localStorage.setItem('demo_services', JSON.stringify(list));
@@ -208,7 +240,8 @@ const AdminMobileApp = () => {
         setNewBooking(prev => ({
           ...prev,
           serviceName: parsedS[0].name,
-          servicePrice: parsedS[0].promoPrice || parsedS[0].price || 150
+          servicePrice: parsedS[0].promoPrice || parsedS[0].price || 150,
+          duration: parsedS[0].duration || 60
         }));
       }
     }
@@ -487,13 +520,16 @@ const AdminMobileApp = () => {
 
   const submitBooking = async (e) => {
     if (e) e.preventDefault();
+    const activeDuration = newBooking.duration || (services[0]?.duration || 60);
     const payload = {
       clientName: newBooking.clientName,
       clientPhone: newBooking.clientPhone.replace(/\D/g, ''),
       clientEmail: newBooking.clientEmail,
+      duration: activeDuration,
       service: {
         name: newBooking.serviceName || services[0]?.name || 'Corte com o Jon',
-        price: Number(newBooking.servicePrice) || (services[0]?.promoPrice || services[0]?.price || 150)
+        price: Number(newBooking.servicePrice) || (services[0]?.promoPrice || services[0]?.price || 150),
+        duration: activeDuration
       },
       date: newBooking.date,
       time: newBooking.time,
@@ -558,6 +594,7 @@ const AdminMobileApp = () => {
       clientEmail: '',
       serviceName: services[0]?.name || '',
       servicePrice: services[0]?.promoPrice || services[0]?.price || 150,
+      duration: services[0]?.duration || 60,
       date: currentDate,
       time: '09:00',
       notes: ''
@@ -774,10 +811,9 @@ const AdminMobileApp = () => {
   // Datas e Timeline
   const dateInfo = formatLocalDate(currentDate);
   const hourSlots = [];
-  for (let h = 8; h <= 21; h++) {
+  for (let h = 8; h <= 20; h++) {
     const hs = String(h).padStart(2, '0');
     hourSlots.push(`${hs}:00`);
-    hourSlots.push(`${hs}:30`);
   }
 
   // Filtragem dos agendamentos de hoje para a tela Home
@@ -1206,6 +1242,10 @@ const AdminMobileApp = () => {
                     <span className="label">HORÁRIO</span>
                     <span className="value">{selectedBooking.date.split('-').reverse().join('/')} às {selectedBooking.time}</span>
                   </div>
+                  <div className="mobile-detail-row">
+                    <span className="label">DURAÇÃO</span>
+                    <span className="value">{selectedBooking.duration || selectedBooking.service?.duration || 60} minutos</span>
+                  </div>
                   {selectedBooking.notes && (
                     <div className="mobile-detail-row">
                       <span className="label">OBSERVAÇÕES</span>
@@ -1271,13 +1311,37 @@ const AdminMobileApp = () => {
             <form onSubmit={submitBooking}>
               <div className="mobile-form-group">
                 <label>Nome do Cliente *</label>
-                <input 
-                  type="text" 
-                  placeholder="Nome do cliente" 
-                  required
-                  value={newBooking.clientName}
-                  onChange={e => setNewBooking(prev => ({ ...prev, clientName: e.target.value }))}
-                />
+                <div className="mobile-autocomplete-container">
+                  <input 
+                    type="text" 
+                    placeholder="Nome do cliente" 
+                    required
+                    value={newBooking.clientName}
+                    onChange={e => {
+                      setNewBooking(prev => ({ ...prev, clientName: e.target.value }));
+                      setShowMobileSuggestions(true);
+                    }}
+                    onFocus={() => setShowMobileSuggestions(true)}
+                    onBlur={() => setShowMobileSuggestions(false)}
+                  />
+                  {showMobileSuggestions && getFilteredClients(newBooking.clientName).length > 0 && (
+                    <ul className="mobile-suggestions-list">
+                      {getFilteredClients(newBooking.clientName).map(c => (
+                        <li 
+                          key={c.id} 
+                          className="mobile-suggestion-item"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            selectClientForMobileAdd(c);
+                          }}
+                        >
+                          <span className="mobile-suggestion-name">{c.name}</span>
+                          {c.phone && <span className="mobile-suggestion-phone">{c.phone}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
 
               <div className="mobile-form-group">
@@ -1292,7 +1356,7 @@ const AdminMobileApp = () => {
               </div>
 
               <div className="mobile-form-group">
-                <label>Serviço *</label>
+                <label>{"Servi\u00e7o *"}</label>
                 <select 
                   value={newBooking.serviceName}
                   onChange={e => {
@@ -1300,7 +1364,8 @@ const AdminMobileApp = () => {
                     setNewBooking(prev => ({
                       ...prev,
                       serviceName: e.target.value,
-                      servicePrice: match ? (match.promoPrice || match.price || 150) : 150
+                      servicePrice: match ? (match.promoPrice || match.price || 150) : 150,
+                      duration: match ? (match.duration || 60) : 60
                     }));
                   }}
                 >
@@ -1314,11 +1379,20 @@ const AdminMobileApp = () => {
               </div>
 
               <div className="mobile-form-group">
-                <label>Preço do Serviço (R$)</label>
+                <label>{"Pre\u00e7o do Servi\u00e7o (R$)"}</label>
                 <input 
                   type="number" 
                   value={newBooking.servicePrice}
                   onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>{"Dura\u00e7\u00e3o (minutos)"}</label>
+                <input 
+                  type="number" 
+                  value={newBooking.duration || 60}
+                  onChange={e => setNewBooking(prev => ({ ...prev, duration: Number(e.target.value) }))}
                 />
               </div>
 
@@ -1343,7 +1417,7 @@ const AdminMobileApp = () => {
               </div>
 
               <div className="mobile-form-group">
-                <label>Observações</label>
+                <label>{"Observa\u00e7\u00f5es"}</label>
                 <textarea 
                   placeholder="Ex: Quer volume e definição"
                   rows={2}
@@ -1354,7 +1428,7 @@ const AdminMobileApp = () => {
 
               <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
                 <button type="button" className="mobile-btn-outline" style={{ flex: 1 }} onClick={() => setShowBlockModal(true)}>
-                  Bloquear Horário
+                  {"Bloquear Hor\u00e1rio"}
                 </button>
                 <button type="submit" className="mobile-btn-solid" style={{ flex: 1 }}>
                   Reservar

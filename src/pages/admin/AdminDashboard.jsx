@@ -5,21 +5,29 @@ import { ChevronLeft, ChevronRight, Plus, X, Trash2, Lock, Unlock, Send, Sparkle
 import './Admin.css';
 
 // Lista de horários padrão
-const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
+const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 
 const SEED_SERVICES = [
-  { id: 'coloracao-completa', name: 'Coloração Completa', price: 499, priceType: 'A partir de', promoPrice: null, duration: 120 },
+  { id: 'coloracao-completa', name: "Colora\u00e7\u00e3o Completa", price: 499, priceType: 'A partir de', promoPrice: null, duration: 120 },
   { id: 'combo-corte-tratamento-personalizado', name: 'Combo - Corte com o Jon + Tratamento personalizado', price: 320, priceType: 'Fixo', promoPrice: 230, duration: 60 },
-  { id: 'combo-corte-terapia-trp', name: 'Combo Corte com o Jon + Terapia de Reposição Proteica', price: 370, priceType: 'Fixo', promoPrice: 300, duration: 60 },
+  { id: 'combo-corte-terapia-trp', name: "Combo Corte com o Jon + Terapia de Reposi\u00e7\u00e3o Proteica", price: 370, priceType: 'Fixo', promoPrice: 300, duration: 60 },
   { id: 'corte-jon', name: 'Corte com o Jon', price: 190, priceType: 'Fixo', promoPrice: null, duration: 60 },
   { id: 'detox-estimulante', name: 'Detox Estimulante', price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
-  { id: 'inside-trp', name: 'Inside TRP – Reconstrução Premium', price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
+  { id: 'inside-trp', name: "Inside TRP - Reconstru\u00e7\u00e3o Premium", price: 180, priceType: 'Fixo', promoPrice: null, duration: 60 },
   { id: 'lavar-finalizar', name: 'Lavar e Finalizar', price: 100, priceType: 'Fixo', promoPrice: null, duration: 60 },
   { id: 'luzes-morena-iluminada', name: 'Luzes ou Morena Iluminada', price: 699, priceType: 'A partir de', promoPrice: null, duration: 180 }
 ];
 
 // Mapeia dias da semana
-const DAYS_TRANSLATION = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+const DAYS_TRANSLATION = ['Domingo', 'Segunda', "Ter\u00e7a", 'Quarta', 'Quinta', 'Sexta', "S\u00e1bado"];
+
+// Clientes seed para autocomplete em modo demo (quando não há dados no Firestore)
+const SEED_CLIENTS = [
+  { phone: '31988887777', name: 'Ana Souza', email: 'ana@email.com' },
+  { phone: '31977776666', name: 'Carla Lima', email: 'carla@email.com' },
+  { phone: '31900001111', name: 'Mariana Costa', email: 'mariana@email.com' },
+  { phone: '31911112222', name: 'Bruno Silva', email: 'bruno@email.com' }
+];
 
 const SEED_TRANSACTIONS = [
   { id: 't1', date: new Date().toISOString().split('T')[0], time: '09:00', clientName: 'Ana Souza', type: 'entrada', paymentMethod: 'Pix', value: 150, description: 'Corte com o Jon' },
@@ -46,7 +54,7 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
+  waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728'
 };
 
 const AdminDashboard = () => {
@@ -83,11 +91,93 @@ const AdminDashboard = () => {
     clientEmail: '',
     serviceName: '',
     servicePrice: 0,
+    duration: 60,
     date: '',
     time: '',
     notes: '',
     status: ''
   });
+
+  // Autocomplete suggestions states
+  const [showAddSuggestions, setShowAddSuggestions] = useState(false);
+  const [showEditSuggestions, setShowEditSuggestions] = useState(false);
+
+  // Helper to construct a unified list of clients from profiles, bookings, and seed fallback
+  const getUniqueClientsList = () => {
+    const unique = new Map();
+
+    // 1. Load seed clients as baseline fallback
+    SEED_CLIENTS.forEach(c => {
+      unique.set(c.phone, { name: c.name, phone: c.phone, email: c.email || '' });
+    });
+
+    // 2. Merge clients from client_profiles (Firestore)
+    if (Array.isArray(clients)) {
+      clients.forEach(c => {
+        if (c.phone) {
+          unique.set(c.phone, { name: c.name, phone: c.phone, email: c.email || '' });
+        }
+      });
+    }
+
+    // 3. Merge clients from existing bookings
+    if (Array.isArray(bookings)) {
+      bookings.forEach(b => {
+        const phone = b.clientPhone;
+        if (phone) {
+          if (!unique.has(phone)) {
+            unique.set(phone, {
+              name: b.clientName || '',
+              phone: phone,
+              email: b.clientEmail || ''
+            });
+          }
+        }
+      });
+    }
+
+    return Array.from(unique.values());
+  };
+
+  // Autocomplete filtering helper
+  const getFilteredClients = (queryText) => {
+    if (!queryText || queryText.trim().length < 3) return [];
+    const normQuery = queryText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const listToFilter = getUniqueClientsList();
+    return listToFilter.filter(c => {
+      if (!c.name) return false;
+      const normName = c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const nameMatch = normName.includes(normQuery);
+      const initials = normName.split(/\s+/).filter(Boolean).map(p => p[0]).join('');
+      const initialsMatch = initials.startsWith(normQuery);
+      const cleanPhone = c.phone?.replace(/\D/g, '') || '';
+      const cleanQueryPhone = normQuery.replace(/\D/g, '');
+      const phoneMatch = cleanQueryPhone.length > 0 && cleanPhone.includes(cleanQueryPhone);
+      return nameMatch || initialsMatch || phoneMatch;
+    }).slice(0, 6);
+  };
+
+  const selectClientForAdd = (c) => {
+    setNewBooking(prev => ({
+      ...prev,
+      clientName: c.name || '',
+      clientPhone: c.phone || '',
+      clientEmail: c.email || '',
+      notes: c.notes || prev.notes || ''
+    }));
+    setShowAddSuggestions(false);
+  };
+
+  const selectClientForEdit = (c) => {
+    setEditBookingForm(prev => ({
+      ...prev,
+      clientName: c.name || '',
+      clientPhone: c.phone || '',
+      clientEmail: c.email || '',
+      notes: c.notes || prev.notes || ''
+    }));
+    setShowEditSuggestions(false);
+  };
 
   // Filtros de data (semana atual)
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
@@ -104,6 +194,7 @@ const AdminDashboard = () => {
     clientEmail: '',
     serviceName: '',
     servicePrice: 0,
+    duration: 60,
     date: new Date().toISOString().split('T')[0],
     time: '09:00',
     notes: ''
@@ -120,7 +211,16 @@ const AdminDashboard = () => {
       else setServices(SEED_SERVICES);
 
       const localClients = localStorage.getItem('demo_client_profiles');
-      if (localClients) setClients(JSON.parse(localClients));
+      if (localClients) {
+        try {
+          const parsed = JSON.parse(localClients);
+          setClients(parsed.length > 0 ? parsed : SEED_CLIENTS);
+        } catch (e) {
+          setClients(SEED_CLIENTS);
+        }
+      } else {
+        setClients(SEED_CLIENTS);
+      }
 
       const localTx = localStorage.getItem('demo_transactions');
       if (localTx) setTransactions(JSON.parse(localTx));
@@ -208,7 +308,8 @@ const AdminDashboard = () => {
       setNewBooking(prev => ({
         ...prev,
         serviceName: services[0].name,
-        servicePrice: services[0].promoPrice || services[0].price
+        servicePrice: services[0].promoPrice || services[0].price,
+        duration: services[0].duration || 60
       }));
     }
   }, [services]);
@@ -352,6 +453,7 @@ const AdminDashboard = () => {
       clientEmail: selectedBooking.clientEmail || '',
       serviceName: selectedBooking.serviceName || selectedBooking.service?.name || '',
       servicePrice: selectedBooking.servicePrice || selectedBooking.service?.price || 0,
+      duration: selectedBooking.duration || selectedBooking.service?.duration || 60,
       date: selectedBooking.date || '',
       time: selectedBooking.time || '',
       notes: selectedBooking.notes || '',
@@ -370,8 +472,10 @@ const AdminDashboard = () => {
       servicePrice: Number(editBookingForm.servicePrice),
       service: {
         name: editBookingForm.serviceName,
-        price: Number(editBookingForm.servicePrice)
+        price: Number(editBookingForm.servicePrice),
+        duration: Number(editBookingForm.duration || 60)
       },
+      duration: Number(editBookingForm.duration || 60),
       date: editBookingForm.date,
       time: editBookingForm.time,
       notes: editBookingForm.notes,
@@ -408,6 +512,7 @@ const AdminDashboard = () => {
     e.preventDefault();
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
     const activeServPrice = newBooking.servicePrice || (services[0]?.promoPrice || services[0]?.price || 150);
+    const activeDuration = newBooking.duration || (services[0]?.duration || 60);
 
     const payload = {
       clientName: newBooking.clientName,
@@ -415,8 +520,10 @@ const AdminDashboard = () => {
       clientEmail: newBooking.clientEmail,
       service: {
         name: activeServName,
-        price: activeServPrice
+        price: activeServPrice,
+        duration: activeDuration
       },
+      duration: activeDuration,
       date: newBooking.date,
       time: newBooking.time,
       notes: newBooking.notes,
@@ -438,6 +545,7 @@ const AdminDashboard = () => {
         clientEmail: '',
         serviceName: services[0]?.name || '',
         servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+        duration: services[0]?.duration || 60,
         date: new Date().toISOString().split('T')[0],
         time: '09:00',
         notes: ''
@@ -466,6 +574,7 @@ const AdminDashboard = () => {
       clientEmail: '',
       serviceName: services[0]?.name || '',
       servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+      duration: services[0]?.duration || 60,
       date: selectedSlot.date,
       time: selectedSlot.time,
       notes: ''
@@ -784,7 +893,7 @@ const AdminDashboard = () => {
   // Lógica de envio de mensagem de aniversariante por WhatsApp
   const handleWhatsAppCongratulate = (client) => {
     const cleanPhone = client.phone.replace(/\D/g, '');
-    const message = `Olá, ${client.name}! O Studio do Jon passando aqui para te desejar um feliz aniversário! Que seu dia seja maravilhoso e repleto de sorrisos. Para comemorar, temos um mimo especial pra você na sua próxima visita! 🎂🎉`;
+    const message = `Olá, ${client.name}! O Studio do Jon passando aqui para te desejar um feliz aniversário! Que seu dia seja maravilhoso e repleto de sorrisos. Para comemorar, temos um mimo especial pra você na sua próxima visita! ðŸŽ‚ðŸŽ‰`;
     const url = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
@@ -845,7 +954,7 @@ const AdminDashboard = () => {
                 <div key={c.phone} className="birthday-member-card">
                   <div className="member-avatar-badge">
                     {initials}
-                    <span className="balloon-emoji">🎂</span>
+                    <span className="balloon-emoji">ðŸŽ‚</span>
                   </div>
                   <div className="member-details">
                     <strong className="member-name">{c.name}</strong>
@@ -980,12 +1089,33 @@ const AdminDashboard = () => {
                 <form onSubmit={handleSaveEditBooking} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <div className="form-group">
                     <label>Nome Completo do Cliente *</label>
-                    <input 
-                      type="text" 
-                      required 
-                      value={editBookingForm.clientName}
-                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientName: e.target.value }))}
-                    />
+                    <div className="autocomplete-container">
+                      <input 
+                        type="text" 
+                        required 
+                        value={editBookingForm.clientName}
+                        onChange={e => {
+                          setEditBookingForm(prev => ({ ...prev, clientName: e.target.value }));
+                          setShowEditSuggestions(true);
+                        }}
+                        onFocus={() => setShowEditSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowEditSuggestions(false), 200)}
+                      />
+                      {showEditSuggestions && getFilteredClients(editBookingForm.clientName).length > 0 && (
+                        <ul className="suggestions-list">
+                          {getFilteredClients(editBookingForm.clientName).map(c => (
+                            <li 
+                              key={c.phone || c.id} 
+                              className="suggestion-item"
+                              onMouseDown={() => selectClientForEdit(c)}
+                            >
+                              <span className="suggestion-name">{c.name}</span>
+                              {c.phone && <span className="suggestion-phone">{c.phone}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>WhatsApp *</label>
@@ -1005,14 +1135,20 @@ const AdminDashboard = () => {
                     />
                   </div>
                   
-                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
+                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
                     <div className="form-group">
-                      <label>Serviço *</label>
+                      <label>{"Servi\u00e7o *"}</label>
                       <select 
                         value={`${editBookingForm.serviceName}|${editBookingForm.servicePrice}`}
                         onChange={e => {
                           const [name, priceStr] = e.target.value.split('|');
-                          setEditBookingForm(prev => ({ ...prev, serviceName: name, servicePrice: Number(priceStr) }));
+                          const matched = services.find(s => s.name === name);
+                          setEditBookingForm(prev => ({ 
+                            ...prev, 
+                            serviceName: name, 
+                            servicePrice: Number(priceStr),
+                            duration: matched ? (matched.duration || 60) : 60
+                          }));
                         }}
                       >
                         {services.map(s => (
@@ -1023,7 +1159,7 @@ const AdminDashboard = () => {
                       </select>
                     </div>
                     <div className="form-group">
-                      <label>Preço (R$) *</label>
+                      <label>{"Pre\u00e7o (R$) *"}</label>
                       <input 
                         type="number" 
                         required 
@@ -1031,6 +1167,17 @@ const AdminDashboard = () => {
                         step="0.01"
                         value={editBookingForm.servicePrice}
                         onChange={e => setEditBookingForm(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>{"Dura\u00e7\u00e3o (min) *"}</label>
+                      <input 
+                        type="number" 
+                        required 
+                        min="5"
+                        step="5"
+                        value={editBookingForm.duration || 60}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, duration: Number(e.target.value) }))}
                       />
                     </div>
                   </div>
@@ -1046,7 +1193,7 @@ const AdminDashboard = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <label>Horário *</label>
+                      <label>{"Hor\u00e1rio *"}</label>
                       <select 
                         value={editBookingForm.time}
                         onChange={e => setEditBookingForm(prev => ({ ...prev, time: e.target.value }))}
@@ -1065,7 +1212,7 @@ const AdminDashboard = () => {
                         value={editBookingForm.status}
                         onChange={e => setEditBookingForm(prev => ({ ...prev, status: e.target.value }))}
                       >
-                        <option value="pendente">Aguardando Confirmação (Pendente)</option>
+                        <option value="pendente">{"Aguardando Confirma\u00e7\u00e3o (Pendente)"}</option>
                         <option value="confirmado">Confirmado</option>
                         <option value="cancelado">Cancelado</option>
                         <option value="finalizado">Finalizado</option>
@@ -1084,7 +1231,7 @@ const AdminDashboard = () => {
 
                   <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 12 }}>
                     <button type="button" className="btn btn-ghost" onClick={() => setIsEditingBooking(false)}>Cancelar</button>
-                    <button type="submit" className="btn btn-accent">Salvar Alterações</button>
+                    <button type="submit" className="btn btn-accent">{"Salvar Altera\u00e7\u00f5es"}</button>
                   </div>
                 </form>
               ) : selectedBooking.status === 'bloqueado' ? (
@@ -1133,6 +1280,10 @@ const AdminDashboard = () => {
                   <div className="detail-row">
                     <label>Preço:</label>
                     <span>R$ {selectedBooking.servicePrice || selectedBooking.service?.price || 150}</span>
+                  </div>
+                  <div className="detail-row">
+                    <label>Duração:</label>
+                    <span>{selectedBooking.duration || selectedBooking.service?.duration || 60} minutos</span>
                   </div>
                   <div className="detail-row">
                     <label>Data/Hora:</label>
@@ -1340,111 +1491,178 @@ const AdminDashboard = () => {
       {/* MODAL 2: CRIAR AGENDAMENTO MANUAL */}
       {showAddModal && (
         <div className="modal-overlay">
-          <form className="modal-content" onSubmit={handleAddManualBooking}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3>Registrar Horário Manual</h3>
+          <form
+            className="modal-content"
+            onSubmit={handleAddManualBooking}
+            style={{ maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+          >
+            {/* Cabeçalho fixo */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexShrink: 0 }}>
+              <h3>{"Registrar Hor\u00e1rio Manual"}</h3>
               <button type="button" className="btn-icon" onClick={() => setShowAddModal(false)}><X size={18} /></button>
             </div>
 
-            <div className="form-group">
+            {/* Campo nome + autocomplete FORA do overflow para o dropdown não ser cortado */}
+            <div className="form-group" style={{ flexShrink: 0, position: 'relative', zIndex: 200 }}>
               <label>Nome Completo do Cliente *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="Ex: Pedro Santos"
-                value={newBooking.clientName}
-                onChange={e => setNewBooking(prev => ({ ...prev, clientName: e.target.value }))}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>WhatsApp *</label>
-              <input 
-                type="tel" 
-                required 
-                placeholder="Ex: 31999998888"
-                value={newBooking.clientPhone}
-                onChange={e => setNewBooking(prev => ({ ...prev, clientPhone: e.target.value }))}
-              />
-            </div>
-
-            <div className="form-group">
-              <label>E-mail (Opcional)</label>
-              <input 
-                type="email" 
-                placeholder="Ex: pedro@email.com"
-                value={newBooking.clientEmail}
-                onChange={e => setNewBooking(prev => ({ ...prev, clientEmail: e.target.value }))}
-              />
-            </div>
-
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
-              <div className="form-group">
-                <label>Serviço *</label>
-                <select 
-                  value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
-                  onChange={e => {
-                    const [name, priceStr] = e.target.value.split('|');
-                    setNewBooking(prev => ({ ...prev, serviceName: name, servicePrice: Number(priceStr) }));
-                  }}
-                >
-                  {services.map(s => (
-                    <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
-                      {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Valor (R$) *</label>
+              <div className="autocomplete-container">
                 <input 
-                  type="number" 
+                  type="text" 
                   required 
-                  min="0"
-                  step="0.01"
-                  value={newBooking.servicePrice}
-                  onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                  placeholder="Ex: Pedro Santos"
+                  value={newBooking.clientName}
+                  onChange={e => {
+                    setNewBooking(prev => ({ ...prev, clientName: e.target.value }));
+                    setShowAddSuggestions(true);
+                  }}
+                  onFocus={() => setShowAddSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowAddSuggestions(false), 300)}
                 />
+                {showAddSuggestions && getFilteredClients(newBooking.clientName).length > 0 && (
+                  <ul className="suggestions-list">
+                    {getFilteredClients(newBooking.clientName).map(c => (
+                      <li 
+                        key={c.phone || c.id} 
+                        className="suggestion-item"
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          selectClientForAdd(c);
+                        }}
+                      >
+                        <span className="suggestion-name">{c.name}</span>
+                        {c.phone && <span className="suggestion-phone">{c.phone}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             </div>
 
-            <div className="form-row">
+            {/* Corpo rolável */}
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: 4 }}>
               <div className="form-group">
-                <label>Data *</label>
+                <label>WhatsApp *</label>
                 <input 
-                  type="date" 
-                  required
-                  value={newBooking.date}
-                  onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
+                  type="tel" 
+                  required 
+                  placeholder="Ex: 31999998888"
+                  value={newBooking.clientPhone}
+                  onChange={e => setNewBooking(prev => ({ ...prev, clientPhone: e.target.value }))}
                 />
               </div>
 
               <div className="form-group">
-                <label>Horário *</label>
-                <select 
-                  value={newBooking.time}
-                  onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
-                >
-                  {TIME_SLOTS.map(t => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
+                <label>E-mail (Opcional)</label>
+                <input 
+                  type="email" 
+                  placeholder="Ex: pedro@email.com"
+                  value={newBooking.clientEmail}
+                  onChange={e => setNewBooking(prev => ({ ...prev, clientEmail: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
+                <div className="form-group">
+                  <label>{"Servi\u00e7o *"}</label>
+                  <select 
+                    value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
+                    onChange={e => {
+                      const [name, priceStr] = e.target.value.split('|');
+                      const matched = services.find(s => s.name === name);
+                      setNewBooking(prev => ({ 
+                        ...prev, 
+                        serviceName: name, 
+                        servicePrice: Number(priceStr),
+                        duration: matched ? (matched.duration || 60) : 60
+                      }));
+                    }}
+                  >
+                    {services.map(s => (
+                      <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                        {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Valor (R$) *</label>
+                  <input 
+                    type="number" 
+                    required 
+                    min="0"
+                    step="0.01"
+                    value={newBooking.servicePrice}
+                    onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>{"Dura\u00e7\u00e3o (min) *"}</label>
+                  <input 
+                    type="number" 
+                    required 
+                    min="5"
+                    step="5"
+                    value={newBooking.duration || 60}
+                    onChange={e => setNewBooking(prev => ({ ...prev, duration: Number(e.target.value) }))}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Data *</label>
+                  <input 
+                    type="date" 
+                    required
+                    value={newBooking.date}
+                    onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>{"Hor\u00e1rio *"}</label>
+                  <select 
+                    value={newBooking.time}
+                    onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
+                  >
+                    {TIME_SLOTS.map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Notas Internas</label>
+                <textarea 
+                  rows="2"
+                  placeholder="Ex: Cliente prefere finalização sem creme pesado."
+                  value={newBooking.notes}
+                  onChange={e => setNewBooking(prev => ({ ...prev, notes: e.target.value }))}
+                ></textarea>
               </div>
             </div>
 
-            <div className="form-group">
-              <label>Notas Internas</label>
-              <textarea 
-                rows="2"
-                placeholder="Ex: Cliente prefere finalização sem creme pesado."
-                value={newBooking.notes}
-                onChange={e => setNewBooking(prev => ({ ...prev, notes: e.target.value }))}
-              ></textarea>
-            </div>
-
-            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12 }}>
+            {/* Rodapé fixo */}
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancelar</button>
-              <button type="submit" className="btn btn-accent">Salvar na Agenda</button>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                {newBooking.clientPhone && (
+                  <a
+                    href={`https://wa.me/55${newBooking.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
+                      `Ol\u00e1 ${newBooking.clientName ? newBooking.clientName.split(' ')[0] : ''}! \uD83D\uDC87 Seu agendamento no Studio do Jon foi confirmado! \u2705\n\n\uD83D\uDCC5 Data: ${newBooking.date ? newBooking.date.split('-').reverse().join('/') : ''}\n\u23F0 Hor\u00e1rio: ${newBooking.time}\n\u2702\uFE0F Servi\u00e7o: ${newBooking.serviceName}\n\nAguardamos voc\u00ea! \uD83D\uDE0A`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-ghost"
+                    style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#22c55e', borderColor: '#22c55e', textDecoration: 'none' }}
+                  >
+                    <Send size={15} />
+                    {"Enviar Confirma\u00e7\u00e3o WhatsApp"}
+                  </a>
+                )}
+                <button type="submit" className="btn btn-accent">Salvar na Agenda</button>
+              </div>
             </div>
           </form>
         </div>

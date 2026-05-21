@@ -142,10 +142,10 @@ const AdminLayout = () => {
           <Link 
             to="/admin/servicos" 
             className={`nav-item ${location.pathname.includes('/servicos') ? 'active' : ''}`}
-            title="Serviços"
+            title="Servi\u00e7os"
           >
             <Scissors size={18} />
-            <span>Serviços</span>
+            <span>{"Servi\u00e7os"}</span>
           </Link>
           <Link 
             to="/admin/clientes" 
@@ -182,10 +182,10 @@ const AdminLayout = () => {
           <Link 
             to="/admin/configuracoes" 
             className={`nav-item ${location.pathname.includes('/configuracoes') ? 'active' : ''}`}
-            title="Configurações"
+            title="Configura\u00e7\u00f5es"
           >
             <Settings size={18} />
-            <span>Configurações</span>
+            <span>{"Configura\u00e7\u00f5es"}</span>
           </Link>
           <Link 
             to="/admin/mobile" 
@@ -212,12 +212,12 @@ const AdminLayout = () => {
         <header className="admin-topbar">
           <div className="topbar-left" style={{ display: 'flex', alignItems: 'center', gap: 24, flexGrow: 1 }}>
             <div className="topbar-title">
-              {location.pathname.includes('/clientes') ? 'Fichas Técnicas & Clientes' :
-               location.pathname.includes('/servicos') ? 'Serviços do Salão' :
-               location.pathname.includes('/estoque') ? 'Controle de Estoque' :
-               location.pathname.includes('/financeiro') ? 'Movimentação & Fluxo de Caixa' :
-               location.pathname.includes('/marketing') ? 'Fidelidade & Cupons' :
-               location.pathname.includes('/configuracoes') ? 'Configurações do Estabelecimento' : 'Agenda do Studio'}
+              {location.pathname.includes('/clientes') ? "Fichas T\u00e9cnicas & Clientes" :
+               location.pathname.includes('/servicos') ? "Servi\u00e7os do Sal\u00e3o" :
+               location.pathname.includes('/estoque') ? "Controle de Estoque" :
+               location.pathname.includes('/financeiro') ? "Movimenta\u00e7\u00e3o & Fluxo de Caixa" :
+               location.pathname.includes('/marketing') ? "Fidelidade & Cupons" :
+               location.pathname.includes('/configuracoes') ? "Configura\u00e7\u00f5es do Estabelecimento" : "Agenda do Studio"}
             </div>
 
             <div className="topbar-search-container">

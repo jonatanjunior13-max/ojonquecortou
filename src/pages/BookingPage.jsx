@@ -98,7 +98,7 @@ const SEED_SERVICES = [
 ];
 
 // Horários padrão de atendimento
-const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
+const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
 
 // Gera datas disponíveis para agendamento (próximos 60 dias, exceto domingos e segundas)
 const getAvailableDates = () => {
@@ -296,7 +296,7 @@ const BookingPage = () => {
     const fetchBookings = async () => {
       if (!db) {
         setIsDemoMode(true);
-        setBookedTimes(['10:30', '16:00']);
+        setBookedTimes(['11:00', '14:00']);
         return;
       }
 
@@ -304,7 +304,7 @@ const BookingPage = () => {
       const bookingsTimeout = setTimeout(() => {
         console.warn('Timeout ao carregar horários. Ativando modo Demo.');
         setIsDemoMode(true);
-        setBookedTimes(['10:30', '16:00']);
+        setBookedTimes(['11:00', '14:00']);
         setLoading(false);
       }, 3500);
 
@@ -329,7 +329,7 @@ const BookingPage = () => {
         clearTimeout(bookingsTimeout);
         console.warn('Erro ao conectar ao Firebase, ativando modo Demo:', err);
         setIsDemoMode(true);
-        setBookedTimes(['10:30', '16:00']);
+        setBookedTimes(['11:00', '14:00']);
       } finally {
         setLoading(false);
       }
