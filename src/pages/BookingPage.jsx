@@ -100,6 +100,39 @@ const SEED_SERVICES = [
 // Horários padrão de atendimento
 const TIME_SLOTS = ['09:00', '10:30', '13:00', '14:30', '16:00', '17:30'];
 
+// Gera datas disponíveis para agendamento (próximos 60 dias, exceto domingos e segundas)
+const getAvailableDates = () => {
+  const dates = [];
+  const today = new Date();
+  
+  for (let i = 1; i <= 60; i++) {
+    const nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + i);
+    
+    const dayOfWeek = nextDate.getDay();
+    // Domingo = 0, Segunda = 1 (Salão fechado nesses dias)
+    if (dayOfWeek !== 0 && dayOfWeek !== 1) {
+      // Encontrar a segunda-feira da semana correspondente
+      const monday = new Date(nextDate);
+      const diff = nextDate.getDay() === 0 ? -6 : 1 - nextDate.getDay();
+      monday.setDate(nextDate.getDate() + diff);
+      const weekKey = monday.toISOString().split('T')[0];
+      
+      let weekLabel = monday.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+      weekLabel = `Semana de ${weekLabel.replace('.', '')}`;
+
+      dates.push({
+        raw: nextDate.toISOString().split('T')[0],
+        formatted: nextDate.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }),
+        display: nextDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        weekKey,
+        weekLabel
+      });
+    }
+  }
+  return dates;
+};
+
 const BookingPage = () => {
   const [step, setStep] = useState(1);
   const [services, setServices] = useState([]);
@@ -107,6 +140,12 @@ const BookingPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
+  
+  // Semana ativa para calendário de 60 dias
+  const [activeWeekKey, setActiveWeekKey] = useState(() => {
+    const initialDates = getAvailableDates();
+    return initialDates[0]?.weekKey || '';
+  });
   
   // Catálogo visual states
   const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -174,29 +213,20 @@ const BookingPage = () => {
   const primaryServices = services.filter(s => s.isPrimary);
   const additionalServices = services.filter(s => !s.isPrimary);
 
-  // Gera datas disponíveis para agendamento (próximos 14 dias, exceto domingos e segundas)
-  const getAvailableDates = () => {
-    const dates = [];
-    const today = new Date();
-    
-    for (let i = 1; i <= 14; i++) {
-      const nextDate = new Date(today);
-      nextDate.setDate(today.getDate() + i);
-      
-      const dayOfWeek = nextDate.getDay();
-      // Domingo = 0, Segunda = 1 (Salão fechado nesses dias)
-      if (dayOfWeek !== 0 && dayOfWeek !== 1) {
-        dates.push({
-          raw: nextDate.toISOString().split('T')[0],
-          formatted: nextDate.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }),
-          display: nextDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        });
-      }
-    }
-    return dates;
-  };
-
   const dates = getAvailableDates();
+
+  // Extrair semanas únicas para renderizar no seletor
+  const weeks = [];
+  const seenWeeks = new Set();
+  dates.forEach(d => {
+    if (!seenWeeks.has(d.weekKey)) {
+      seenWeeks.add(d.weekKey);
+      weeks.push({
+        key: d.weekKey,
+        label: d.weekLabel
+      });
+    }
+  });
 
   // Busca horários já agendados na data selecionada no Firestore
   useEffect(() => {
@@ -528,21 +558,41 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           <div className="booking-step">
             <h2>Selecione o melhor dia e horário</h2>
             
+            {/* Seletor de Semanas */}
+            <div className="booking-week-tabs">
+              {weeks.map(w => {
+                const isSelectedDateInWeek = dates.find(d => d.raw === selectedDate)?.weekKey === w.key;
+                return (
+                  <button
+                    key={w.key}
+                    type="button"
+                    className={`booking-week-tab-btn ${activeWeekKey === w.key ? 'active' : ''}`}
+                    onClick={() => setActiveWeekKey(w.key)}
+                  >
+                    {w.label}
+                    {isSelectedDateInWeek && <span className="booking-week-tab-indicator" />}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="date-picker-grid">
-              {dates.map(d => (
-                <button
-                  key={d.raw}
-                  type="button"
-                  className={`date-btn ${selectedDate === d.raw ? 'selected' : ''}`}
-                  onClick={() => {
-                    setSelectedDate(d.raw);
-                    setSelectedTime(''); // reseta horário ao trocar o dia
-                  }}
-                >
-                  <span className="weekday">{d.formatted.split(',')[0]}</span>
-                  <span className="day">{d.formatted.split(',')[1]}</span>
-                </button>
-              ))}
+              {dates
+                .filter(d => d.weekKey === activeWeekKey)
+                .map(d => (
+                  <button
+                    key={d.raw}
+                    type="button"
+                    className={`date-btn ${selectedDate === d.raw ? 'selected' : ''}`}
+                    onClick={() => {
+                      setSelectedDate(d.raw);
+                      setSelectedTime(''); // reseta horário ao trocar o dia
+                    }}
+                  >
+                    <span className="weekday">{d.formatted.split(',')[0]}</span>
+                    <span className="day">{d.formatted.split(',')[1]}</span>
+                  </button>
+                ))}
             </div>
 
             {selectedDate && (
