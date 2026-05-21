@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db } from '../../config/firebase';
+import { db, auth } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload } from 'lucide-react';
 import { parseClientCSV } from '../../utils/clientImport';
@@ -402,6 +402,8 @@ const AdminClients = () => {
 
       let created = 0;
       let updated = 0;
+      let skipped = 0;
+      let failed = 0;
       const total = parsed.length;
 
       try {
@@ -414,6 +416,8 @@ const AdminClients = () => {
               if (replaceExisting) {
                 currentProfiles[idx] = { ...currentProfiles[idx], ...c };
                 updated++;
+              } else {
+                skipped++;
               }
             } else {
               currentProfiles.push(c);
@@ -424,42 +428,96 @@ const AdminClients = () => {
           setProfiles(currentProfiles);
           localStorage.setItem('demo_client_profiles', JSON.stringify(currentProfiles));
         } else {
-          // Firestore: upload individual documents with concurrency limit for fluid UI feedback
+          // Firestore: upload using the Firestore REST API to bypass WebSocket network/hang issues
           let completed = 0;
-          const CONCURRENCY = 20; // 20 uploads simultâneos
-
+          const CONCURRENCY = 15; // 15 uploads simultâneos para fluxo UI leve e evitar rate limits
           const uploadQueue = [...parsed];
+
+          const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+          if (!projectId) {
+            throw new Error("ID do projeto Firebase não está configurado nas variáveis de ambiente.");
+          }
+
+          const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+          if (!token) {
+            throw new Error("Usuário não autenticado no Firebase. Faça login novamente.");
+          }
+
+          const toFirestoreValue = (val) => {
+            if (val === null || val === undefined) {
+              return { nullValue: null };
+            }
+            return { stringValue: String(val) };
+          };
+
           const workers = Array.from({ length: Math.min(CONCURRENCY, uploadQueue.length) }).map(async () => {
             while (uploadQueue.length > 0) {
               const c = uploadQueue.shift();
-              const docRef = doc(db, 'client_profiles', c.phone);
+              if (!c) continue;
+
+              const fields = {};
+              for (const [k, v] of Object.entries(c)) {
+                fields[k] = toFirestoreValue(v);
+              }
+              const requestBody = { fields };
+
+              const fieldNames = Object.keys(c);
+              const updateMaskParams = fieldNames.map(f => `updateMask.fieldPaths=${f}`).join('&');
+              
+              let url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/client_profiles/${c.phone}`;
+              if (replaceExisting) {
+                url += `?${updateMaskParams}`;
+              } else {
+                url += `?currentDocument.exists=false`;
+              }
+
               try {
-                // Timeout individual de 30s por cliente
-                const singleTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout individual')), 30000));
-                if (replaceExisting) {
-                  await Promise.race([setDoc(docRef, c, { merge: true }), singleTimeout]);
-                  updated++;
+                const response = await fetch(url, {
+                  method: 'PATCH',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify(requestBody)
+                });
+
+                if (response.ok) {
+                  if (replaceExisting) {
+                    updated++;
+                  } else {
+                    created++;
+                  }
                 } else {
-                  await Promise.race([setDoc(docRef, c, { merge: false }), singleTimeout]);
-                  created++;
+                  // Se replaceExisting for falso e o documento já existir, o Firestore retorna 409 (Conflict) ou 412 (Precondition Failed)
+                  if (!replaceExisting && (response.status === 409 || response.status === 412)) {
+                    skipped++;
+                  } else {
+                    const errorText = await response.text();
+                    console.error(`Erro Firestore REST para o cliente ${c.phone}:`, response.status, errorText);
+                    failed++;
+                    setImportErrors(prev => [...prev, `Telefone ${c.phone}: Erro ${response.status} ao gravar.`]);
+                  }
                 }
               } catch (err) {
-                console.error('Erro ao gravar cliente', c.phone, err);
-                throw err; // propagates to the main catch block
+                console.error(`Erro de rede REST para o cliente ${c.phone}:`, err);
+                failed++;
+                setImportErrors(prev => [...prev, `Telefone ${c.phone}: Erro de conexão (${err.message}).`]);
               }
+
               completed++;
-              setImportSummary(`Gravando cliente ${completed} de ${total}... (Não feche esta janela)`);
+              setImportSummary(
+                `Importados: ${created + updated} | Pulados: ${skipped} | Falhas: ${failed} (Progresso: ${completed}/${total})`
+              );
               setImportProgress(20 + Math.floor((completed / total) * 75));
             }
           });
 
-          // Wait for all workers to finish
           await Promise.all(workers);
         }
 
         setImportProgress(100);
         setImportSummary(
-          `✅ Importação concluída: ${created} cliente(s) criado(s)${updated > 0 ? `, ${updated} atualizado(s)` : ''}.${validationErrors.length > 0 ? ` ${validationErrors.length} linha(s) inválida(s).` : ''}`
+          `✅ Importação concluída! Sucesso: ${created + updated}${skipped > 0 ? `, Pulados: ${skipped}` : ''}${failed > 0 ? `, Falhas: ${failed}` : ''}.${validationErrors.length > 0 ? ` ${validationErrors.length} linha(s) com erros de cabeçalho/validação.` : ''}`
         );
 
         // Reset file input
