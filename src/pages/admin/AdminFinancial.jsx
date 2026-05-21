@@ -12,9 +12,7 @@ const SEED_TRANSACTIONS = [
 ];
 
 const DEFAULT_PROFESSIONALS = [
-  { id: 'p1', name: 'Jon (Proprietário)', commission: 100 },
-  { id: 'p2', name: 'Auxiliar Amanda', commission: 40 },
-  { id: 'p3', name: 'Esteticista Carol', commission: 50 }
+  { id: 'jon', name: 'Jon', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
 ];
 
 const AdminFinancial = () => {
@@ -49,7 +47,7 @@ const AdminFinancial = () => {
 
   // Load configuration and professional mappings
   useEffect(() => {
-    // 1. Load fees from settings
+    // 1. Load fees and professionals from settings
     const loadSettings = () => {
       const saved = localStorage.getItem('demo_studio_settings');
       if (saved) {
@@ -60,7 +58,14 @@ const AdminFinancial = () => {
             feeDebit: parsed.feeDebit ?? 1.9,
             feeCredit: parsed.feeCredit ?? 3.5
           });
+          if (parsed.professionals && parsed.professionals.length > 0) {
+            setProfessionals(parsed.professionals);
+          } else {
+            setProfessionals(DEFAULT_PROFESSIONALS);
+          }
         } catch (e) {}
+      } else {
+        setProfessionals(DEFAULT_PROFESSIONALS);
       }
     };
     loadSettings();
@@ -104,9 +109,15 @@ const AdminFinancial = () => {
     };
 
     const getMockProfessionals = () => {
-      const savedProfs = localStorage.getItem('demo_professionals');
-      if (savedProfs) return JSON.parse(savedProfs);
-      localStorage.setItem('demo_professionals', JSON.stringify(DEFAULT_PROFESSIONALS));
+      const saved = localStorage.getItem('demo_studio_settings');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed.professionals && parsed.professionals.length > 0) {
+            return parsed.professionals;
+          }
+        } catch (e) {}
+      }
       return DEFAULT_PROFESSIONALS;
     };
 
@@ -162,24 +173,29 @@ const AdminFinancial = () => {
         console.warn('Erro ao carregar transações do Firestore:', error);
       });
 
-      // 2. Subscribe to professionals
-      unsubscribeProfs = onSnapshot(collection(db, 'professionals'), (snapshot) => {
+      // 2. Subscribe to settings (which contains professionals)
+      unsubscribeProfs = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
         if (timedOut) return;
         clearTimeout(timeoutId);
 
-        const profList = [];
-        snapshot.forEach((doc) => {
-          profList.push({ id: doc.id, ...doc.data() });
-        });
-        
-        if (profList.length > 0) {
-          setProfessionals(profList);
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          if (data.professionals && data.professionals.length > 0) {
+            setProfessionals(data.professionals);
+          } else {
+            setProfessionals(DEFAULT_PROFESSIONALS);
+          }
+          setFees({
+            feePix: data.feePix ?? 0,
+            feeDebit: data.feeDebit ?? 1.9,
+            feeCredit: data.feeCredit ?? 3.5
+          });
         } else {
           setProfessionals(DEFAULT_PROFESSIONALS);
         }
         setLoading(false);
       }, (error) => {
-        console.warn('Erro ao carregar profissionais do Firestore:', error);
+        console.warn('Erro ao carregar profissionais/configurações do Firestore:', error);
         setProfessionals(getMockProfessionals());
         setLoading(false);
       });
@@ -338,49 +354,7 @@ const AdminFinancial = () => {
       .reduce((sum, t) => sum + (getNetValue(t.value, t.paymentMethod) * (commissionPct / 100)), 0);
   };
 
-  const handleAddProfessional = async (e) => {
-    e.preventDefault();
-    if (!newProfForm.name.trim()) return;
-    const payload = {
-      name: newProfForm.name,
-      commission: Number(newProfForm.commission)
-    };
-    try {
-      if (isDemoMode) {
-        const localPayload = { id: 'p_' + Date.now(), ...payload };
-        const list = [...professionals, localPayload];
-        setProfessionals(list);
-        localStorage.setItem('demo_professionals', JSON.stringify(list));
-      } else {
-        await addDoc(collection(db, 'professionals'), payload);
-      }
-      setNewProfForm({ name: '', commission: 40 });
-      setShowAddProfModal(false);
-    } catch (err) {
-      console.error('Erro ao adicionar profissional:', err);
-      alert('Erro ao salvar profissional.');
-    }
-  };
 
-  const handleDeleteProfessional = async (id) => {
-    if (id === 'p1') {
-      alert('Não é possível remover o proprietário.');
-      return;
-    }
-    if (!confirm('Deseja realmente remover este profissional?')) return;
-    try {
-      if (isDemoMode) {
-        const list = professionals.filter(p => p.id !== id);
-        setProfessionals(list);
-        localStorage.setItem('demo_professionals', JSON.stringify(list));
-      } else {
-        await deleteDoc(doc(db, 'professionals', id));
-      }
-    } catch (err) {
-      console.error('Erro ao excluir profissional:', err);
-      alert('Erro ao remover profissional.');
-    }
-  };
 
   const handleAssignProfWrapper = async (txId, profId) => {
     try {
@@ -562,8 +536,13 @@ const AdminFinancial = () => {
           <div className="financial-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h3 style={{ margin: 0 }}>Profissionais e Comissionamento</h3>
-              <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setShowAddProfModal(true)}>
-                <Plus size={16} style={{ marginRight: 6 }} /> Cadastrar Profissional
+              <button 
+                type="button"
+                className="btn btn-ghost" 
+                style={{ padding: '6px 12px', fontSize: '0.85rem' }} 
+                onClick={() => window.location.href = '/admin/configuracoes?tab=profissionais'}
+              >
+                <Users size={16} style={{ marginRight: 6 }} /> Gerenciar Profissionais
               </button>
             </div>
 
@@ -581,11 +560,6 @@ const AdminFinancial = () => {
                         Repasse devido: R$ {totalComm.toFixed(2)}
                       </span>
                     </div>
-                    {p.id !== 'p1' && (
-                      <button className="btn-icon text-danger" onClick={() => handleDeleteProfessional(p.id)}>
-                        <Trash2 size={14} />
-                      </button>
-                    )}
                   </div>
                 );
               })}
@@ -714,43 +688,7 @@ const AdminFinancial = () => {
         </div>
       )}
 
-      {/* Modal para Cadastrar Profissional */}
-      {showAddProfModal && (
-        <div className="modal-overlay">
-          <form className="modal-content" onSubmit={handleAddProfessional}>
-            <h3>Cadastrar Novo Colaborador</h3>
 
-            <div className="form-group">
-              <label>Nome Completo da Profissional *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="Ex: Auxiliar Amanda"
-                value={newProfForm.name}
-                onChange={e => setNewProfForm(prev => ({ ...prev, name: e.target.value }))}
-              />
-            </div>
-
-            <div className="form-group" style={{ marginTop: 12 }}>
-              <label>Comissão Padrão (%) *</label>
-              <input 
-                type="number" 
-                required 
-                min="0"
-                max="100"
-                placeholder="40"
-                value={newProfForm.commission}
-                onChange={e => setNewProfForm(prev => ({ ...prev, commission: e.target.value }))}
-              />
-            </div>
-
-            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-              <button type="button" className="btn btn-ghost" onClick={() => setShowAddProfModal(false)}>Cancelar</button>
-              <button type="submit" className="btn btn-accent">Adicionar Profissional</button>
-            </div>
-          </form>
-        </div>
-      )}
     </div>
   );
 };

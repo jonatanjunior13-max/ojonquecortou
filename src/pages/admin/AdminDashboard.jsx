@@ -1,7 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2, Lock, Unlock, Send, Sparkles } from 'lucide-react';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Plus, 
+  X, 
+  Trash2, 
+  Lock, 
+  Unlock, 
+  Send, 
+  Sparkles,
+  Calendar,
+  User,
+  Clock,
+  Phone,
+  DollarSign,
+  RefreshCw,
+  FileText,
+  CheckCircle,
+  HelpCircle,
+  MessageSquare,
+  Copy,
+  Scissors,
+  Clipboard,
+  Edit
+} from 'lucide-react';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -19,14 +43,14 @@ const SEED_SERVICES = [
 ];
 
 // Mapeia dias da semana
-const DAYS_TRANSLATION = ['Domingo', 'Segunda', "Ter\u00e7a", 'Quarta', 'Quinta', 'Sexta', "S\u00e1bado"];
+const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
 // Clientes seed para autocomplete em modo demo (quando não há dados no Firestore)
 const SEED_CLIENTS = [
-  { phone: '31988887777', name: 'Ana Souza', email: 'ana@email.com' },
-  { phone: '31977776666', name: 'Carla Lima', email: 'carla@email.com' },
-  { phone: '31900001111', name: 'Mariana Costa', email: 'mariana@email.com' },
-  { phone: '31911112222', name: 'Bruno Silva', email: 'bruno@email.com' }
+  { phone: '31988887777', name: 'Ana Souza', email: 'ana@email.com', cpf: '123.456.789-00', tags: ['Frequente', 'Cachos 3C'] },
+  { phone: '31977776666', name: 'Carla Lima', email: 'carla@email.com', cpf: '234.567.890-11', tags: ['Novo Cliente'] },
+  { phone: '31900001111', name: 'Mariana Costa', email: 'mariana@email.com', cpf: '345.678.901-22', tags: ['Frequente'] },
+  { phone: '31911112222', name: 'Bruno Silva', email: 'bruno@email.com', cpf: '456.789.012-33', tags: ['Cabelo Curto'] }
 ];
 
 const SEED_TRANSACTIONS = [
@@ -54,7 +78,10 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728'
+  waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728',
+  professionals: [
+    { id: 'jon', name: 'Jon', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+  ]
 };
 
 const AdminDashboard = () => {
@@ -89,38 +116,83 @@ const AdminDashboard = () => {
     clientName: '',
     clientPhone: '',
     clientEmail: '',
+    cpf: '',
+    tags: [],
     serviceName: '',
     servicePrice: 0,
     duration: 60,
     date: '',
     time: '',
     notes: '',
-    status: ''
+    status: '',
+    profissional: 'jon'
   });
 
   // Autocomplete suggestions states
   const [showAddSuggestions, setShowAddSuggestions] = useState(false);
   const [showEditSuggestions, setShowEditSuggestions] = useState(false);
 
+  // New States for Trinks layout
+  const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
+  const [activePopover, setActivePopover] = useState({ visible: false, x: 0, y: 0, booking: null });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedAccordions, setExpandedAccordions] = useState({
+    whatsapp: true,
+    professionals: true,
+    status: false,
+    calendarSize: false,
+    displayAgenda: false
+  });
+  const [waFilter, setWaFilter] = useState('todos');
+  const [selectedProfs, setSelectedProfs] = useState(['jon']);
+  const [miniCalDate, setMiniCalDate] = useState(() => new Date());
+  const [clipboard, setClipboard] = useState(null); // { booking: obj, action: 'copy'|'cut' }
+
+  // Tag helper in edit modal
+  const [tagInputOpen, setTagInputOpen] = useState(false);
+  const [newTagVal, setNewTagVal] = useState('');
+
+  // Handle outside click listener for context menu and popover
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (contextMenu.visible) {
+        setContextMenu({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
+      }
+      if (activePopover.visible && !e.target.closest('.booking-popover') && !e.target.closest('.appt-card')) {
+        setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+      }
+    };
+    window.addEventListener('click', handleOutsideClick);
+    return () => window.removeEventListener('click', handleOutsideClick);
+  }, [contextMenu.visible, activePopover.visible]);
+
+  // Synchronize selectedProfs list from settings
+  useEffect(() => {
+    if (settings && settings.professionals) {
+      const activeIds = settings.professionals.filter(p => p.active).map(p => p.id);
+      setSelectedProfs(activeIds);
+    } else {
+      setSelectedProfs(['jon']);
+    }
+  }, [settings]);
+
   // Helper to construct a unified list of clients from profiles, bookings, and seed fallback
   const getUniqueClientsList = () => {
     const unique = new Map();
 
-    // 1. Load seed clients as baseline fallback
     SEED_CLIENTS.forEach(c => {
-      unique.set(c.phone, { name: c.name, phone: c.phone, email: c.email || '' });
+      unique.set(c.phone, { name: c.name, phone: c.phone, email: c.email || '', cpf: c.cpf || '', tags: c.tags || [] });
     });
 
-    // 2. Merge clients from client_profiles (Firestore)
     if (Array.isArray(clients)) {
       clients.forEach(c => {
         if (c.phone) {
-          unique.set(c.phone, { name: c.name, phone: c.phone, email: c.email || '' });
+          unique.set(c.phone, { name: c.name, phone: c.phone, email: c.email || '', cpf: c.cpf || '', tags: c.tags || [] });
         }
       });
     }
 
-    // 3. Merge clients from existing bookings
     if (Array.isArray(bookings)) {
       bookings.forEach(b => {
         const phone = b.clientPhone;
@@ -129,7 +201,9 @@ const AdminDashboard = () => {
             unique.set(phone, {
               name: b.clientName || '',
               phone: phone,
-              email: b.clientEmail || ''
+              email: b.clientEmail || '',
+              cpf: b.cpf || '',
+              tags: b.tags || []
             });
           }
         }
@@ -174,18 +248,12 @@ const AdminDashboard = () => {
       clientName: c.name || '',
       clientPhone: c.phone || '',
       clientEmail: c.email || '',
+      cpf: c.cpf || prev.cpf || '',
+      tags: c.tags || prev.tags || [],
       notes: c.notes || prev.notes || ''
     }));
     setShowEditSuggestions(false);
   };
-
-  // Filtros de data (semana atual)
-  const [currentWeekStart, setCurrentWeekStart] = useState(() => {
-    const d = new Date();
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // ajusta para segunda-feira
-    return new Date(d.setDate(diff));
-  });
 
   // Formulário para novo agendamento manual
   const [newBooking, setNewBooking] = useState({
@@ -197,10 +265,11 @@ const AdminDashboard = () => {
     duration: 60,
     date: new Date().toISOString().split('T')[0],
     time: '09:00',
-    notes: ''
+    notes: '',
+    profissional: 'jon'
   });
 
-  // Carrega produtos, serviços, clientes (para aniversários), transações e configurações
+  // Carrega produtos, serviços, clientes, transações e configurações
   useEffect(() => {
     if (!db) {
       const localProd = localStorage.getItem('demo_products');
@@ -319,7 +388,6 @@ const AdminDashboard = () => {
     let unsubscribe;
     let timedOut = false;
 
-    // Define os agendamentos mockados para fallback
     const getMockBookings = () => {
       const localData = localStorage.getItem('demo_bookings');
       if (localData) return JSON.parse(localData);
@@ -330,22 +398,28 @@ const AdminDashboard = () => {
           clientName: 'Ana Souza',
           clientPhone: '31988887777',
           clientEmail: 'ana@email.com',
+          cpf: '123.456.789-00',
+          tags: ['Frequente', 'Cachos 3C'],
           service: { name: 'Corte com o Jon', price: 150 },
-          date: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0], // amanhã
+          date: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0],
           time: '09:00',
           status: 'confirmado',
-          notes: 'Deseja volume e definição'
+          notes: 'Deseja volume e definição',
+          profissional: 'jon'
         },
         {
           id: 'demo-2',
           clientName: 'Carla Lima',
           clientPhone: '31977776666',
           clientEmail: 'carla@email.com',
+          cpf: '234.567.890-11',
+          tags: ['Novo Cliente'],
           service: { name: 'Combo Corte + Tratamento', price: 220 },
           date: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0],
           time: '13:00',
           status: 'pendente',
-          notes: 'Histórico de descoloração recente'
+          notes: 'Histórico de descoloração recente',
+          profissional: 'jon'
         }
       ];
     };
@@ -402,31 +476,14 @@ const AdminDashboard = () => {
         setLoading(false);
       }
     }
-  }, [currentWeekStart]);
+  }, [currentDate]);
 
-  const changeWeek = (direction) => {
-    const newStart = new Date(currentWeekStart);
-    newStart.setDate(currentWeekStart.getDate() + (direction * 7));
-    setCurrentWeekStart(newStart);
+  const changeDay = (direction) => {
+    const d = new Date(currentDate);
+    d.setDate(currentDate.getDate() + direction);
+    setCurrentDate(d);
+    setMiniCalDate(new Date(d));
   };
-
-  // Gera os 5 dias de atendimento da semana atual (Terça a Sábado)
-  const getWeekDays = () => {
-    const days = [];
-    for (let i = 1; i <= 5; i++) { // Terça (2) a Sábado (6)
-      const d = new Date(currentWeekStart);
-      d.setDate(currentWeekStart.getDate() + i);
-      days.push({
-        raw: d.toISOString().split('T')[0],
-        formattedWeekday: DAYS_TRANSLATION[d.getDay()],
-        formattedDay: d.getDate(),
-        displayDate: d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
-      });
-    }
-    return days;
-  };
-
-  const weekDays = getWeekDays();
 
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
@@ -446,28 +503,38 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleStartEditBooking = () => {
+  const handleStartEditBooking = (appt) => {
+    const activeAppt = appt || selectedBooking;
+    if (!activeAppt) return;
+
     setEditBookingForm({
-      clientName: selectedBooking.clientName || '',
-      clientPhone: selectedBooking.clientPhone || '',
-      clientEmail: selectedBooking.clientEmail || '',
-      serviceName: selectedBooking.serviceName || selectedBooking.service?.name || '',
-      servicePrice: selectedBooking.servicePrice || selectedBooking.service?.price || 0,
-      duration: selectedBooking.duration || selectedBooking.service?.duration || 60,
-      date: selectedBooking.date || '',
-      time: selectedBooking.time || '',
-      notes: selectedBooking.notes || '',
-      status: selectedBooking.status || 'confirmado'
+      clientName: activeAppt.clientName || '',
+      clientPhone: activeAppt.clientPhone || '',
+      clientEmail: activeAppt.clientEmail || '',
+      cpf: activeAppt.cpf || '',
+      tags: activeAppt.tags || [],
+      serviceName: activeAppt.serviceName || activeAppt.service?.name || '',
+      servicePrice: activeAppt.servicePrice || activeAppt.service?.price || 0,
+      duration: activeAppt.duration || activeAppt.service?.duration || 60,
+      date: activeAppt.date || '',
+      time: activeAppt.time || '',
+      notes: activeAppt.notes || '',
+      status: activeAppt.status || 'confirmado',
+      profissional: activeAppt.profissional || 'jon'
     });
     setIsEditingBooking(true);
+    setActivePopover({ visible: false });
+    setContextMenu({ visible: false });
   };
 
   const handleSaveEditBooking = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     const updatedPayload = {
       clientName: editBookingForm.clientName,
       clientPhone: editBookingForm.clientPhone,
       clientEmail: editBookingForm.clientEmail,
+      cpf: editBookingForm.cpf || '',
+      tags: editBookingForm.tags || [],
       serviceName: editBookingForm.serviceName,
       servicePrice: Number(editBookingForm.servicePrice),
       service: {
@@ -479,25 +546,28 @@ const AdminDashboard = () => {
       date: editBookingForm.date,
       time: editBookingForm.time,
       notes: editBookingForm.notes,
-      status: editBookingForm.status
+      status: editBookingForm.status,
+      profissional: editBookingForm.profissional || 'jon'
     };
 
     try {
+      const bId = selectedBooking?.id;
+      if (!bId) return;
+
       if (isDemoMode || !db) {
-        setBookings(prev => prev.map(b => b.id === selectedBooking.id ? { ...b, ...updatedPayload } : b));
-        setSelectedBooking(prev => ({ ...prev, ...updatedPayload }));
+        setBookings(prev => prev.map(b => b.id === bId ? { ...b, ...updatedPayload } : b));
+        setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
         
-        // Salva backup local
         const localData = localStorage.getItem('demo_bookings');
         if (localData) {
           const arr = JSON.parse(localData);
-          const newArr = arr.map(b => (b.id === selectedBooking.id || (b.date === selectedBooking.date && b.time === selectedBooking.time && b.clientPhone === selectedBooking.clientPhone)) ? { ...b, ...updatedPayload } : b);
+          const newArr = arr.map(b => b.id === bId ? { ...b, ...updatedPayload } : b);
           localStorage.setItem('demo_bookings', JSON.stringify(newArr));
         }
       } else {
-        const docRef = doc(db, 'bookings', selectedBooking.id);
+        const docRef = doc(db, 'bookings', bId);
         await updateDoc(docRef, updatedPayload);
-        setSelectedBooking(prev => ({ ...prev, ...updatedPayload }));
+        setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
       }
       setIsEditingBooking(false);
       alert('Agendamento atualizado com sucesso!');
@@ -507,7 +577,59 @@ const AdminDashboard = () => {
     }
   };
 
-  // Criar agendamento manual
+  const handleSaveAndCheckout = async () => {
+    const updatedPayload = {
+      clientName: editBookingForm.clientName,
+      clientPhone: editBookingForm.clientPhone,
+      clientEmail: editBookingForm.clientEmail,
+      cpf: editBookingForm.cpf || '',
+      tags: editBookingForm.tags || [],
+      serviceName: editBookingForm.serviceName,
+      servicePrice: Number(editBookingForm.servicePrice),
+      service: {
+        name: editBookingForm.serviceName,
+        price: Number(editBookingForm.servicePrice),
+        duration: Number(editBookingForm.duration || 60)
+      },
+      duration: Number(editBookingForm.duration || 60),
+      date: editBookingForm.date,
+      time: editBookingForm.time,
+      notes: editBookingForm.notes,
+      status: editBookingForm.status,
+      profissional: editBookingForm.profissional || 'jon'
+    };
+
+    try {
+      const bId = selectedBooking?.id;
+      if (!bId) return;
+
+      let savedBookingObj = { id: bId, ...updatedPayload };
+
+      if (isDemoMode || !db) {
+        setBookings(prev => prev.map(b => b.id === bId ? { ...b, ...updatedPayload } : b));
+        setSelectedBooking(savedBookingObj);
+        
+        const localData = localStorage.getItem('demo_bookings');
+        if (localData) {
+          const arr = JSON.parse(localData);
+          const newArr = arr.map(b => b.id === bId ? { ...b, ...updatedPayload } : b);
+          localStorage.setItem('demo_bookings', JSON.stringify(newArr));
+        }
+      } else {
+        const docRef = doc(db, 'bookings', bId);
+        await updateDoc(docRef, updatedPayload);
+        setSelectedBooking(savedBookingObj);
+      }
+      
+      setOverrideBasePrice(Number(editBookingForm.servicePrice));
+      setIsEditingBooking(false);
+      setIsCheckoutOpen(true);
+    } catch (err) {
+      console.error('Erro ao salvar e ir para checkout:', err);
+      alert('Não foi possível salvar e ir para a comanda.');
+    }
+  };
+
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
@@ -528,6 +650,7 @@ const AdminDashboard = () => {
       time: newBooking.time,
       notes: newBooking.notes,
       status: 'confirmado',
+      profissional: newBooking.profissional || 'jon',
       createdAt: new Date().toISOString()
     };
 
@@ -538,7 +661,7 @@ const AdminDashboard = () => {
         await addDoc(collection(db, 'bookings'), payload);
       }
       setShowAddModal(false);
-      // Reset formulário
+      
       setNewBooking({
         clientName: '',
         clientPhone: '',
@@ -546,9 +669,10 @@ const AdminDashboard = () => {
         serviceName: services[0]?.name || '',
         servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
         duration: services[0]?.duration || 60,
-        date: new Date().toISOString().split('T')[0],
+        date: currentDate.toISOString().split('T')[0],
         time: '09:00',
-        notes: ''
+        notes: '',
+        profissional: 'jon'
       });
     } catch (err) {
       console.error('Erro ao criar agendamento manual:', err);
@@ -556,17 +680,21 @@ const AdminDashboard = () => {
     }
   };
 
-  // Abrir opções para o horário clicado
-  const handleCellClick = (day, slot) => {
+  const handleCellClick = (dateStr, slot, profId, profName) => {
+    const [year, month, day] = dateStr.split('-');
+    const dateObj = new Date(year, month - 1, day);
+    const weekday = DAYS_TRANSLATION[dateObj.getDay()];
+
     setSelectedSlot({
-      date: day.raw,
+      date: dateStr,
       time: slot,
-      dateFormatted: `${day.formattedDay}/${day.raw.split('-')[1]} (${day.formattedWeekday})`
+      profissional: profId,
+      dateFormatted: `${day}/${month} (${weekday})`,
+      profName: profName
     });
     setShowSlotActionModal(true);
   };
 
-  // Selecionar agendamento manual a partir do horário
   const handleSelectManualBooking = () => {
     setNewBooking({
       clientName: '',
@@ -577,13 +705,13 @@ const AdminDashboard = () => {
       duration: services[0]?.duration || 60,
       date: selectedSlot.date,
       time: selectedSlot.time,
+      profissional: selectedSlot.profissional || 'jon',
       notes: ''
     });
     setShowSlotActionModal(false);
     setShowAddModal(true);
   };
 
-  // Bloquear horário
   const handleBlockSlotSubmit = async (e) => {
     e.preventDefault();
     if (!selectedSlot) return;
@@ -598,6 +726,7 @@ const AdminDashboard = () => {
       },
       date: selectedSlot.date,
       time: selectedSlot.time,
+      profissional: selectedSlot.profissional || 'jon',
       notes: blockMotive || 'Bloqueio administrativo',
       status: 'bloqueado',
       createdAt: new Date().toISOString()
@@ -618,7 +747,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Funções Auxiliares da Comanda
   const addExtraService = () => {
     if (!selectedExtraService) return;
     const [name, priceStr] = selectedExtraService.split('|');
@@ -634,7 +762,6 @@ const AdminDashboard = () => {
     if (!selectedExtraProduct) return;
     const [productId, name, priceStr] = selectedExtraProduct.split('|');
     
-    // Verifica se já adicionou
     const existing = addedProducts.find(ap => ap.productId === productId);
     if (existing) {
       setAddedProducts(prev => prev.map(ap => 
@@ -683,10 +810,8 @@ const AdminDashboard = () => {
 
     try {
       if (isDemoMode || !db) {
-        // 1. Atualiza agendamento no estado local
         setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
 
-        // 2. Deduz estoque local
         const localProducts = localStorage.getItem('demo_products');
         if (localProducts) {
           const prods = JSON.parse(localProducts);
@@ -701,7 +826,6 @@ const AdminDashboard = () => {
           setProducts(updatedProds);
         }
 
-        // 3. Salva transação no localStorage
         const localTx = localStorage.getItem('demo_transactions');
         const currentTx = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
         const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
@@ -709,11 +833,9 @@ const AdminDashboard = () => {
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
       } else {
-        // 1. Atualizar agendamento no Firestore
         const apptRef = doc(db, 'bookings', booking.id);
         await updateDoc(apptRef, { status: 'finalizado' });
 
-        // 2. Deduzir estoque no Firestore
         for (const added of addedProducts) {
           const prodRef = doc(db, 'products', added.productId);
           const match = products.find(p => p.id === added.productId);
@@ -723,7 +845,6 @@ const AdminDashboard = () => {
           }
         }
 
-        // 3. Salvar transação no Firestore
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
       }
 
@@ -739,36 +860,108 @@ const AdminDashboard = () => {
     }
   };
 
-  // Métricas do Dashboard
+  // Reschedule Paste logic
+  const handlePasteBooking = async () => {
+    if (!clipboard || !contextMenu) return;
+    const { booking: sourceBooking, action } = clipboard;
+    const targetDate = contextMenu.date;
+    const targetTime = contextMenu.time;
+    const targetProf = contextMenu.professional;
+
+    const occupied = bookings.some(b => 
+      b.date === targetDate && 
+      b.time === targetTime && 
+      (b.profissional || 'jon') === targetProf && 
+      b.status !== 'cancelado'
+    );
+
+    if (occupied) {
+      alert('Este horário já está ocupado por outro agendamento!');
+      return;
+    }
+
+    const updatedPayload = {
+      date: targetDate,
+      time: targetTime,
+      profissional: targetProf
+    };
+
+    try {
+      if (action === 'cut') {
+        if (isDemoMode || !db) {
+          setBookings(prev => prev.map(b => b.id === sourceBooking.id ? { ...b, ...updatedPayload } : b));
+          const local = localStorage.getItem('demo_bookings');
+          if (local) {
+            const arr = JSON.parse(local);
+            const newArr = arr.map(b => b.id === sourceBooking.id ? { ...b, ...updatedPayload } : b);
+            localStorage.setItem('demo_bookings', JSON.stringify(newArr));
+          }
+        } else {
+          const ref = doc(db, 'bookings', sourceBooking.id);
+          await updateDoc(ref, updatedPayload);
+        }
+        setClipboard(null);
+        alert('Agendamento movido com sucesso!');
+      } else if (action === 'copy') {
+        const newPayload = {
+          ...sourceBooking,
+          id: undefined,
+          date: targetDate,
+          time: targetTime,
+          profissional: targetProf,
+          createdAt: new Date().toISOString()
+        };
+        delete newPayload.id;
+
+        if (isDemoMode || !db) {
+          const newId = 'demo-' + Date.now();
+          setBookings(prev => [...prev, { id: newId, ...newPayload }]);
+          const local = localStorage.getItem('demo_bookings');
+          const arr = local ? JSON.parse(local) : [];
+          arr.push({ id: newId, ...newPayload });
+          localStorage.setItem('demo_bookings', JSON.stringify(arr));
+        } else {
+          await addDoc(collection(db, 'bookings'), newPayload);
+        }
+        alert('Agendamento copiado com sucesso!');
+      }
+    } catch (err) {
+      console.error('Erro ao colar agendamento:', err);
+      alert('Erro ao colar agendamento.');
+    }
+    setContextMenu({ visible: false });
+  };
+
+  // Metrics calculations
   const activeBookings = bookings.filter(b => b.status !== 'cancelado');
   const pendingCount = bookings.filter(b => b.status === 'pendente').length;
   
-  // Receita semanal calculada a partir de transações locais ou do Firestore
   const [revenueThisWeek, setRevenueThisWeek] = useState(0);
 
   useEffect(() => {
-    // Calcula com base nas comandas/transações da semana
-    const startStr = weekDays[0]?.raw;
-    const endStr = weekDays[4]?.raw;
-    if (!startStr || !endStr) return;
+    const d = new Date(currentDate);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const startOfWeek = new Date(d.setDate(diff));
+    const startStr = startOfWeek.toISOString().split('T')[0];
+
+    const endStr = new Date(startOfWeek.setDate(startOfWeek.getDate() + 5)).toISOString().split('T')[0];
 
     const weekEntradas = transactions
       .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
       .reduce((sum, t) => sum + t.value, 0);
     setRevenueThisWeek(weekEntradas);
-  }, [transactions, weekDays]);
+  }, [transactions, currentDate]);
 
-  // Automação de lembrete de WhatsApp 24h antes
+  // WhatsApp automation 24h before
   useEffect(() => {
     if (!settings || !settings.waReminderEnabled) return;
     if (bookings.length === 0) return;
 
-    // Calcula a data de amanhã (YYYY-MM-DD)
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowStr = tomorrow.toISOString().split('T')[0];
 
-    // Filtra agendamentos de amanhã que ainda não receberam lembrete
     const remindersToSend = bookings.filter(b => {
       return b.date === tomorrowStr && 
              b.status !== 'cancelado' && 
@@ -778,7 +971,6 @@ const AdminDashboard = () => {
     if (remindersToSend.length === 0) return;
 
     const sendReminder = async (booking) => {
-      // Trava otimista: define reminderSent como 'enviando' para evitar duplo disparo
       if (db) {
         try {
           const apptRef = doc(db, 'bookings', booking.id);
@@ -790,7 +982,6 @@ const AdminDashboard = () => {
         booking.reminderSent = 'enviando';
       }
 
-      // Constrói a mensagem formatada
       const rawTemplate = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
       
       const [year, month, day] = booking.date.split('-');
@@ -883,24 +1074,42 @@ const AdminDashboard = () => {
       }
     };
 
-    // Dispara sequencialmente
     remindersToSend.forEach(booking => {
       sendReminder(booking);
     });
 
   }, [bookings, settings, db]);
 
-  // Lógica de envio de mensagem de aniversariante por WhatsApp
   const handleWhatsAppCongratulate = (client) => {
     const cleanPhone = client.phone.replace(/\D/g, '');
-    const message = `Olá, ${client.name}! O Studio do Jon passando aqui para te desejar um feliz aniversário! Que seu dia seja maravilhoso e repleto de sorrisos. Para comemorar, temos um mimo especial pra você na sua próxima visita! ðŸŽ‚ðŸŽ‰`;
+    const message = `Olá, ${client.name}! O Studio do Jon passando aqui para te desejar um feliz aniversário! Que seu dia seja maravilhoso e repleto de sorrisos. Para comemorar, temos um mimo especial pra você na sua próxima visita! 🎂🎉`;
     const url = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
 
-  // Filtra os aniversariantes do mês atual
+  const getWhatsAppConfirmationUrl = (phone, booking) => {
+    if (!phone) return '';
+    const cleanPhone = phone.replace(/\D/g, '');
+    const clientName = booking.clientName || '';
+    const serviceName = booking.serviceName || booking.service?.name || '';
+    let formattedDate = booking.date || '';
+    if (formattedDate.includes('-')) {
+      formattedDate = formattedDate.split('-').reverse().join('/');
+    }
+    const time = booking.time || '';
+
+    const rawTemplate = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨';
+    const message = rawTemplate
+      .replace(/{cliente}/gi, clientName)
+      .replace(/{servico}/gi, serviceName)
+      .replace(/{data}/gi, formattedDate)
+      .replace(/{hora}/gi, time);
+
+    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+  };
+
   const birthdayClients = (() => {
-    const currentMonth = new Date().getMonth() + 1; // 1 a 12
+    const currentMonth = new Date().getMonth() + 1;
     return clients.filter(c => {
       if (!c.aniversario) return false;
       const parts = c.aniversario.split('-');
@@ -914,14 +1123,173 @@ const AdminDashboard = () => {
     });
   })();
 
+  // Filtered List of Professionals
+  const activeProfessionalsList = settings?.professionals || [
+    { id: 'jon', name: 'Jon', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+  ];
+
+  // Selected active professionals to render
+  const columnsToRender = activeProfessionalsList.filter(p => selectedProfs.includes(p.id));
+
+  // Date badges dynamically computed
+  const getDateBadge = (dateStr) => {
+    if (!dateStr) return '';
+    const todayStr = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    if (dateStr === todayStr) return 'Hoje';
+    if (dateStr === tomorrowStr) return 'Amanhã';
+
+    const [year, month, day] = dateStr.split('-');
+    const dateObj = new Date(year, month - 1, day);
+    return DAYS_TRANSLATION[dateObj.getDay()];
+  };
+
+  // Mini Calendar list of days
+  const getMiniCalDays = () => {
+    const year = miniCalDate.getFullYear();
+    const month = miniCalDate.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const days = [];
+    for (let i = 0; i < firstDay; i++) {
+      days.push({ day: null, date: null });
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push({
+        day: i,
+        date: new Date(year, month, i)
+      });
+    }
+    return days;
+  };
+
+  const handleMiniCalDayClick = (dayDate) => {
+    if (!dayDate) return;
+    setCurrentDate(dayDate);
+    setMiniCalDate(new Date(dayDate));
+  };
+
+  const handleMiniCalMonthChange = (dir) => {
+    const newDate = new Date(miniCalDate);
+    newDate.setMonth(miniCalDate.getMonth() + dir);
+    setMiniCalDate(newDate);
+  };
+
+  // Left-Click Handler for bookings cards (shows popover)
+  const handleBookingLeftClick = (e, appt) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setActivePopover({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      booking: appt
+    });
+    setContextMenu({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
+  };
+
+  // Right-Click Handler (custom Context Menu)
+  const handleCellContextMenu = (e, dateStr, slot, profId, appt) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setContextMenu({
+      visible: true,
+      x: e.clientX,
+      y: e.clientY,
+      booking: appt || null,
+      date: dateStr,
+      time: slot,
+      professional: profId
+    });
+    setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+  };
+
+  // Toggle Accordion State
+  const toggleAccordion = (section) => {
+    setExpandedAccordions(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Toggle Professional Select Checkbox
+  const handleToggleProfCheckbox = (profId) => {
+    if (selectedProfs.includes(profId)) {
+      if (selectedProfs.length === 1) {
+        alert('Selecione pelo menos um profissional para exibir na grade!');
+        return;
+      }
+      setSelectedProfs(prev => prev.filter(id => id !== profId));
+    } else {
+      setSelectedProfs(prev => [...prev, profId]);
+    }
+  };
+
+  // Edit Tag Methods
+  const handleAddTag = () => {
+    if (!newTagVal.trim()) return;
+    if (editBookingForm.tags.includes(newTagVal.trim())) {
+      setNewTagVal('');
+      setTagInputOpen(false);
+      return;
+    }
+    setEditBookingForm(prev => ({
+      ...prev,
+      tags: [...prev.tags, newTagVal.trim()]
+    }));
+    setNewTagVal('');
+    setTagInputOpen(false);
+  };
+
+  const handleRemoveTag = (tag) => {
+    setEditBookingForm(prev => ({
+      ...prev,
+      tags: prev.tags.filter(t => t !== tag)
+    }));
+  };
+
+  // Filter bookings list based on search and filters
+  const getFilteredBookings = () => {
+    const currentDateStr = currentDate.toISOString().split('T')[0];
+    
+    return bookings.filter(b => {
+      // Must match active date
+      if (b.date !== currentDateStr) return false;
+
+      // Filter by whatsapp status if selected
+      if (waFilter !== 'todos') {
+        if (waFilter === 'confirmados' && b.status !== 'confirmado') return false;
+        if (waFilter === 'pendentes' && b.status !== 'pendente') return false;
+        if (waFilter === 'cancelados' && b.status !== 'cancelado') return false;
+        if (waFilter === 'sem-mensagem' && b.reminderSent === true) return false;
+      }
+
+      // Filter by Search Query
+      if (searchQuery.trim().length >= 3) {
+        const queryNorm = searchQuery.toLowerCase().trim();
+        const clientMatch = b.clientName?.toLowerCase().includes(queryNorm);
+        const serviceMatch = (b.serviceName || b.service?.name)?.toLowerCase().includes(queryNorm);
+        if (!clientMatch && !serviceMatch) return false;
+      }
+
+      return true;
+    });
+  };
+
+  const filteredBookingsList = getFilteredBookings();
+
   return (
     <div className="admin-dashboard">
       
       {/* Cards de Métricas */}
       <section className="admin-stats-grid">
         <div className="stat-card">
-          <h3>Agendamentos Ativos</h3>
-          <div className="value">{activeBookings.length}</div>
+          <h3>Agendamentos Ativos (Dia)</h3>
+          <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
         </div>
         <div className="stat-card">
           <h3>Aguardando Confirmação</h3>
@@ -954,7 +1322,7 @@ const AdminDashboard = () => {
                 <div key={c.phone} className="birthday-member-card">
                   <div className="member-avatar-badge">
                     {initials}
-                    <span className="balloon-emoji">ðŸŽ‚</span>
+                    <span className="balloon-emoji">🎈</span>
                   </div>
                   <div className="member-details">
                     <strong className="member-name">{c.name}</strong>
@@ -974,120 +1342,548 @@ const AdminDashboard = () => {
         </section>
       )}
 
-      {/* Controles da Agenda */}
-      <section className="calendar-controls">
-        <div className="nav-buttons">
-          <button className="btn-icon" onClick={() => changeWeek(-1)}><ChevronLeft size={16} /></button>
-          <span style={{ fontWeight: 600 }}>
-            Semana de {weekDays[0]?.displayDate} a {weekDays[4]?.displayDate}
-          </span>
-          <button className="btn-icon" onClick={() => changeWeek(1)}><ChevronRight size={16} /></button>
-        </div>
+      {/* Split layout: sidebar + agenda */}
+      <div className="admin-agenda-container">
+        
+        {/* SIDEBAR LEFT */}
+        <aside className="agenda-sidebar-left">
+          
+          <button 
+            type="button" 
+            className="agenda-sidebar-btn primary"
+            onClick={() => {
+              // Prefill selection slot and open modal
+              setSelectedSlot({
+                date: currentDate.toISOString().split('T')[0],
+                time: '09:00',
+                profissional: activeProfessionalsList[0]?.id || 'jon',
+                dateFormatted: currentDate.toLocaleDateString('pt-BR')
+              });
+              setNewBooking({
+                clientName: '',
+                clientPhone: '',
+                clientEmail: '',
+                serviceName: services[0]?.name || '',
+                servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+                duration: services[0]?.duration || 60,
+                date: currentDate.toISOString().split('T')[0],
+                time: '09:00',
+                notes: '',
+                profissional: activeProfessionalsList[0]?.id || 'jon'
+              });
+              setShowAddModal(true);
+            }}
+          >
+            <Plus size={16} /> Buscar e Agendar
+          </button>
 
-        <button className="btn btn-accent" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={() => setShowAddModal(true)}>
-          <Plus size={16} style={{ marginRight: 6 }} /> Agendamento Manual
-        </button>
-      </section>
+          <button 
+            type="button" 
+            className="agenda-sidebar-btn secondary"
+            onClick={() => {
+              // select all active professionals
+              const activeIds = activeProfessionalsList.filter(p => p.active).map(p => p.id);
+              setSelectedProfs(activeIds);
+            }}
+          >
+            <User size={16} /> Todos Profissionais
+          </button>
 
-      {/* Grade da Agenda */}
-      {loading ? (
-        <p>Carregando agenda...</p>
-      ) : (
-        <div className="calendar-grid">
-          {/* Cabeçalho de dias */}
-          <div className="calendar-header">
-            <div className="header-cell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>Hora</div>
-            {weekDays.map(day => (
-              <div key={day.raw} className="header-cell">
-                <span className="weekday">{day.formattedWeekday}</span>
-                <span className="day">{day.formattedDay}</span>
-              </div>
-            ))}
+          {/* Mini Calendar Container */}
+          <div className="mini-calendar">
+            <div className="mini-calendar-header">
+              <button 
+                type="button" 
+                className="btn-icon" 
+                style={{ padding: 4 }}
+                onClick={() => handleMiniCalMonthChange(-1)}
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <span>
+                {miniCalDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+              </span>
+              <button 
+                type="button" 
+                className="btn-icon" 
+                style={{ padding: 4 }}
+                onClick={() => handleMiniCalMonthChange(1)}
+              >
+                <ChevronRight size={14} />
+              </button>
+            </div>
+            
+            <div className="mini-calendar-grid">
+              {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((dayName, index) => (
+                <span key={index} className="mini-calendar-day-name">{dayName}</span>
+              ))}
+              {getMiniCalDays().map((dayObj, index) => {
+                if (!dayObj.day) {
+                  return <span key={index} className="mini-calendar-day empty" />;
+                }
+                
+                const isDayActive = currentDate.getDate() === dayObj.day && 
+                                    currentDate.getMonth() === dayObj.date.getMonth() && 
+                                    currentDate.getFullYear() === dayObj.date.getFullYear();
+                                    
+                const isToday = new Date().getDate() === dayObj.day && 
+                                new Date().getMonth() === dayObj.date.getMonth() && 
+                                new Date().getFullYear() === dayObj.date.getFullYear();
+
+                return (
+                  <span 
+                    key={index} 
+                    className={`mini-calendar-day ${isDayActive ? 'active' : ''} ${isToday ? 'today' : ''}`}
+                    onClick={() => handleMiniCalDayClick(dayObj.date)}
+                  >
+                    {dayObj.day}
+                  </span>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Linhas de Horários */}
-          <div className="calendar-body">
-            {TIME_SLOTS.map(slot => (
-              <div key={slot} className="time-row">
-                <div className="time-label-cell">{slot}</div>
-                {weekDays.map(day => {
-                  // Procura agendamento ativo primeiro, senão procura cancelado
-                  const appt = bookings.find(b => b.date === day.raw && b.time === slot && b.status !== 'cancelado') ||
-                               bookings.find(b => b.date === day.raw && b.time === slot && b.status === 'cancelado');
-                  return (
-                    <div 
-                      key={day.raw} 
-                      className="day-cell"
-                      style={{ cursor: (!appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
-                      onClick={() => {
-                        if (!appt || appt.status === 'cancelado') {
-                          handleCellClick(day, slot);
-                        }
-                      }}
-                    >
-                      {appt && appt.status === 'bloqueado' && (
-                        <div 
-                          className="appt-card bloqueado"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedBooking(appt);
-                            setIsCheckoutOpen(false);
-                            setAddedServices([]);
-                            setAddedProducts([]);
-                          }}
-                        >
-                          <span className="appt-time">{appt.time}</span>
-                          <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <Lock size={12} /> Bloqueado
-                          </span>
-                          <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
-                            {appt.notes}
-                          </span>
-                        </div>
-                      )}
-                      {appt && appt.status !== 'bloqueado' && (
-                        <div 
-                          className={`appt-card ${appt.status}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedBooking(appt);
-                            setIsCheckoutOpen(false);
-                            setAddedServices([]);
-                            setAddedProducts([]);
-                          }}
-                        >
-                          <span className="appt-time">{appt.time}</span>
-                          <span className="appt-client">{appt.clientName}</span>
-                          <span className="appt-service">{appt.service?.name || appt.serviceName}</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+          {/* Filter Accordions */}
+          <div className="sidebar-accordion">
+            <div className="accordion-header" onClick={() => toggleAccordion('whatsapp')}>
+              <span>Confirmações por WhatsApp</span>
+              <span>{expandedAccordions.whatsapp ? '▲' : '▼'}</span>
+            </div>
+            {expandedAccordions.whatsapp && (
+              <div className="accordion-content">
+                {[
+                  { id: 'todos', label: 'Todos' },
+                  { id: 'confirmados', label: 'Confirmado' },
+                  { id: 'pendentes', label: 'Pendente' },
+                  { id: 'cancelados', label: 'Cancelado' },
+                  { id: 'sem-mensagem', label: 'Sem mensagem' }
+                ].map(opt => (
+                  <label key={opt.id} className="filter-option">
+                    <input 
+                      type="radio" 
+                      name="waFilter" 
+                      checked={waFilter === opt.id}
+                      onChange={() => setWaFilter(opt.id)}
+                    />
+                    {opt.label}
+                  </label>
+                ))}
               </div>
-            ))}
+            )}
+          </div>
+
+          <div className="sidebar-accordion">
+            <div className="accordion-header" onClick={() => toggleAccordion('professionals')}>
+              <span>Profissionais</span>
+              <span>{expandedAccordions.professionals ? '▲' : '▼'}</span>
+            </div>
+            {expandedAccordions.professionals && (
+              <div className="accordion-content">
+                {activeProfessionalsList.map(prof => (
+                  <label key={prof.id} className="filter-option">
+                    <input 
+                      type="checkbox" 
+                      checked={selectedProfs.includes(prof.id)}
+                      onChange={() => handleToggleProfCheckbox(prof.id)}
+                    />
+                    {prof.name}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="sidebar-accordion">
+            <div className="accordion-header" onClick={() => toggleAccordion('status')}>
+              <span>Status do Agendamento</span>
+              <span>{expandedAccordions.status ? '▲' : '▼'}</span>
+            </div>
+            {expandedAccordions.status && (
+              <div className="accordion-content" style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado" /> Confirmado</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot pendente" /> Pendente</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot finalizado" /> Finalizado</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot bloqueado" /> Bloqueado</div>
+              </div>
+            )}
+          </div>
+
+          <div className="sidebar-accordion">
+            <div className="accordion-header" onClick={() => toggleAccordion('calendarSize')}>
+              <span>Tamanho da Agenda</span>
+              <span>{expandedAccordions.calendarSize ? '▲' : '▼'}</span>
+            </div>
+            {expandedAccordions.calendarSize && (
+              <div className="accordion-content">
+                <label className="filter-option"><input type="radio" name="size" defaultChecked /> Compacto</label>
+                <label className="filter-option"><input type="radio" name="size" /> Normal</label>
+              </div>
+            )}
+          </div>
+
+        </aside>
+
+        {/* MAIN AGENDA AREA */}
+        <main className="agenda-main-area">
+          
+          <div className="agenda-top-bar">
+            
+            <div className="agenda-day-nav">
+              <button className="btn-icon" onClick={() => changeDay(-1)}><ChevronLeft size={16} /></button>
+              <span className="agenda-day-label">
+                {currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </span>
+              <button className="btn-icon" onClick={() => changeDay(1)}><ChevronRight size={16} /></button>
+              <button 
+                type="button" 
+                className="btn btn-ghost" 
+                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                onClick={() => {
+                  setCurrentDate(new Date());
+                  setMiniCalDate(new Date());
+                }}
+              >
+                Hoje
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <input 
+                type="text" 
+                className="agenda-search-input" 
+                placeholder="Buscar cliente agendado hoje..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+              />
+              <button 
+                className="btn btn-accent" 
+                style={{ padding: '8px 16px', fontSize: '0.9rem' }} 
+                onClick={() => {
+                  setSelectedSlot({
+                    date: currentDate.toISOString().split('T')[0],
+                    time: '09:00',
+                    profissional: selectedProfs[0] || 'jon',
+                    dateFormatted: currentDate.toLocaleDateString('pt-BR')
+                  });
+                  setNewBooking({
+                    clientName: '',
+                    clientPhone: '',
+                    clientEmail: '',
+                    serviceName: services[0]?.name || '',
+                    servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+                    duration: services[0]?.duration || 60,
+                    date: currentDate.toISOString().split('T')[0],
+                    time: '09:00',
+                    notes: '',
+                    profissional: selectedProfs[0] || 'jon'
+                  });
+                  setShowAddModal(true);
+                }}
+              >
+                <Plus size={16} style={{ marginRight: 6 }} /> Agendar
+              </button>
+            </div>
+
+          </div>
+
+          {/* Agenda Grid Columns */}
+          {loading ? (
+            <p>Carregando agenda...</p>
+          ) : (
+            <div className="calendar-grid">
+              
+              {/* Header column professionals */}
+              <div 
+                className="pro-columns-header" 
+                style={{ gridTemplateColumns: `80px repeat(${columnsToRender.length}, 1fr)` }}
+              >
+                <div className="pro-header-cell" style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Hora</div>
+                {columnsToRender.map(prof => (
+                  <div key={prof.id} className="pro-header-cell">
+                    <img 
+                      src={prof.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'} 
+                      alt={prof.name} 
+                      className="pro-avatar"
+                    />
+                    <span className="pro-name">{prof.name}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Time slots rows */}
+              <div className="calendar-body">
+                {TIME_SLOTS.map(slot => (
+                  <div 
+                    key={slot} 
+                    className="time-row"
+                    style={{ gridTemplateColumns: `80px repeat(${columnsToRender.length}, 1fr)` }}
+                  >
+                    <div className="time-label-cell">{slot}</div>
+                    
+                    {columnsToRender.map(prof => {
+                      const currentDateStr = currentDate.toISOString().split('T')[0];
+                      // Find appointment for this professional at this slot
+                      const appt = filteredBookingsList.find(b => 
+                        b.date === currentDateStr && 
+                        b.time === slot && 
+                        (b.profissional || 'jon') === prof.id &&
+                        b.status !== 'cancelado'
+                      ) || filteredBookingsList.find(b => 
+                        b.date === currentDateStr && 
+                        b.time === slot && 
+                        (b.profissional || 'jon') === prof.id &&
+                        b.status === 'cancelado'
+                      );
+
+                      return (
+                        <div 
+                          key={prof.id} 
+                          className="day-cell"
+                          style={{ cursor: (!appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
+                          onClick={(e) => {
+                            if (!appt || appt.status === 'cancelado') {
+                              handleCellClick(currentDateStr, slot, prof.id, prof.name);
+                            }
+                          }}
+                          onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
+                        >
+                          {appt && appt.status === 'bloqueado' && (
+                            <div 
+                              className="appt-card bloqueado"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedBooking(appt);
+                                setIsCheckoutOpen(false);
+                                setAddedServices([]);
+                                setAddedProducts([]);
+                              }}
+                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
+                            >
+                              <span className="appt-time">{appt.time}</span>
+                              <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                <Lock size={12} /> Bloqueado
+                              </span>
+                              <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
+                                {appt.notes}
+                              </span>
+                            </div>
+                          )}
+                          
+                          {appt && appt.status !== 'bloqueado' && (
+                            <div 
+                              className={`appt-card ${appt.status}`}
+                              onClick={(e) => handleBookingLeftClick(e, appt)}
+                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
+                            >
+                              <span className="appt-time">{appt.time}</span>
+                              <span className="appt-client">{appt.clientName}</span>
+                              <span className="appt-service">{appt.service?.name || appt.serviceName}</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          )}
+
+        </main>
+      </div>
+
+      {/* CUSTOM LEFT-CLICK POPOVER / TOOLTIP */}
+      {activePopover.visible && activePopover.booking && (
+        <div 
+          className="booking-popover" 
+          style={{ top: activePopover.y + 10, left: activePopover.x + 10 }}
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="booking-popover-header">
+            <span className="booking-popover-client">{activePopover.booking.clientName.toUpperCase()}</span>
+            <button 
+              className="btn-icon" 
+              style={{ padding: 2, border: 'none', background: 'none' }}
+              onClick={() => setActivePopover({ visible: false, x: 0, y: 0, booking: null })}
+            >
+              <X size={14} />
+            </button>
+          </div>
+          <div className="booking-popover-body">
+            <div className="booking-popover-row">
+              <Clock size={12} className="text-muted" />
+              <span>{activePopover.booking.time} - {(() => {
+                const [h, m] = activePopover.booking.time.split(':').map(Number);
+                const duration = activePopover.booking.duration || 60;
+                const totalMin = h * 60 + m + duration;
+                const newH = Math.floor(totalMin / 60) % 24;
+                const newM = totalMin % 60;
+                return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+              })()}</span>
+            </div>
+            <div className="booking-popover-row">
+              <Phone size={12} className="text-muted" />
+              <a 
+                href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
+              </a>
+            </div>
+            <div className="booking-popover-row">
+              <User size={12} className="text-muted" />
+              <span>Profissional: {activeProfessionalsList.find(p => p.id === (activePopover.booking.profissional || 'jon'))?.name || 'Jon'}</span>
+            </div>
+            <div className="booking-popover-row">
+              <FileText size={12} className="text-muted" />
+              <span>Serviço: {activePopover.booking.serviceName || activePopover.booking.service?.name}</span>
+            </div>
+            <div className="booking-popover-row">
+              <span className={`appt-status-dot ${activePopover.booking.status}`} />
+              <span style={{ textTransform: 'capitalize' }}>Status: {activePopover.booking.status}</span>
+            </div>
+            
+            <div className="booking-popover-actions">
+              <button 
+                className="btn btn-ghost" 
+                style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+                onClick={() => {
+                  setSelectedBooking(activePopover.booking);
+                  handleStartEditBooking(activePopover.booking);
+                }}
+              >
+                Editar
+              </button>
+              {activePopover.booking.status === 'confirmado' && (
+                <button 
+                  className="btn btn-accent" 
+                  style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+                  onClick={() => {
+                    setSelectedBooking(activePopover.booking);
+                    setOverrideBasePrice(activePopover.booking.servicePrice || activePopover.booking.service?.price || 150);
+                    setIsCheckoutOpen(true);
+                    setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                  }}
+                >
+                  Comanda
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      {/* MODAL 1: DETALHE DO AGENDAMENTO E COMANDA */}
-      {selectedBooking && (
+      {/* CUSTOM CONTEXT MENU */}
+      {contextMenu.visible && (
+        <ul 
+          className="context-menu-list" 
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+          onClick={e => e.stopPropagation()}
+        >
+          {contextMenu.booking ? (
+            <>
+              <li className="context-menu-item" onClick={() => handleStartEditBooking(contextMenu.booking)}>
+                <Edit size={14} /> Ver/Editar Agendamento
+              </li>
+              <li className="context-menu-item" style={{ zIndex: 1100 }}>
+                <RefreshCw size={14} /> Alterar Status
+                <span className="context-menu-arrow">▶</span>
+                <ul className="context-menu-submenu">
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'pendente')}>Pendente</li>
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'confirmado')}>Confirmado</li>
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'finalizado')}>Finalizado</li>
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'cancelado')}>Cancelado</li>
+                </ul>
+              </li>
+              {contextMenu.booking.status === 'confirmado' && (
+                <li className="context-menu-item" onClick={() => {
+                  setSelectedBooking(contextMenu.booking);
+                  setOverrideBasePrice(contextMenu.booking.servicePrice || contextMenu.booking.service?.price || 150);
+                  setIsCheckoutOpen(true);
+                  setContextMenu({ visible: false });
+                }}>
+                  <DollarSign size={14} /> Fechar Conta
+                </li>
+              )}
+              <li className="context-menu-item" onClick={() => {
+                setClipboard({ booking: contextMenu.booking, action: 'copy' });
+                setContextMenu({ visible: false });
+              }}>
+                <Copy size={14} /> Copiar
+              </li>
+              <li className="context-menu-item" onClick={() => {
+                setClipboard({ booking: contextMenu.booking, action: 'cut' });
+                setContextMenu({ visible: false });
+              }}>
+                <Scissors size={14} /> Recortar
+              </li>
+              <li className="context-menu-item danger" onClick={() => {
+                handleUpdateStatus(contextMenu.booking.id, 'cancelado');
+                setContextMenu({ visible: false });
+              }}>
+                <Trash2 size={14} /> Cancelar Agendamento
+              </li>
+            </>
+          ) : (
+            <>
+              <li className="context-menu-item" onClick={() => {
+                handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon');
+                setContextMenu({ visible: false });
+              }}>
+                <Plus size={14} /> Agendar Cliente
+              </li>
+              <li className="context-menu-item" onClick={() => {
+                setSelectedSlot({
+                  date: contextMenu.date,
+                  time: contextMenu.time,
+                  profissional: contextMenu.professional,
+                  dateFormatted: contextMenu.date
+                });
+                setShowSlotActionModal(true);
+                setContextMenu({ visible: false });
+              }}>
+                <Lock size={14} /> Bloquear Horário
+              </li>
+              {clipboard && (
+                <li className="context-menu-item" onClick={handlePasteBooking}>
+                  <Clipboard size={14} /> Colar Agendamento
+                </li>
+              )}
+            </>
+          )}
+        </ul>
+      )}
+
+      {/* DETAILED EDITAR AGENDAMENTO MODAL (TRINKS STYLE) */}
+      {selectedBooking && isEditingBooking && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: isCheckoutOpen ? 640 : 500 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3>{isCheckoutOpen ? 'Fechar Comanda da Cliente' : (isEditingBooking ? 'Editar Agendamento' : 'Ficha do Agendamento')}</h3>
-              <button className="btn-icon" onClick={() => {
-                setSelectedBooking(null);
-                setIsCheckoutOpen(false);
-                setOverrideBasePrice(null);
-                setIsEditingBooking(false);
-              }}><X size={18} /></button>
-            </div>
+          <div className="modal-content trinks-modal">
             
-            {!isCheckoutOpen ? (
-              isEditingBooking ? (
-                <form onSubmit={handleSaveEditBooking} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <div className="form-group">
+            <div className="trinks-modal-header">
+              <h3 className="trinks-modal-title">
+                <Edit size={20} /> EDITAR AGENDAMENTO
+              </h3>
+              <button 
+                type="button" 
+                className="trinks-modal-close-btn"
+                onClick={() => {
+                  setSelectedBooking(null);
+                  setIsEditingBooking(false);
+                }}
+              >
+                X
+              </button>
+            </div>
+
+            <div className="trinks-modal-body">
+              
+              {/* Split row - Cliente vs Avatar */}
+              <div className="trinks-client-split">
+                <div className="trinks-client-form">
+                  <div className="form-group" style={{ position: 'relative', marginBottom: 6 }}>
                     <label>Nome Completo do Cliente *</label>
                     <div className="autocomplete-container">
                       <input 
@@ -1117,16 +1913,46 @@ const AdminDashboard = () => {
                       )}
                     </div>
                   </div>
-                  <div className="form-group">
-                    <label>WhatsApp *</label>
-                    <input 
-                      type="tel" 
-                      required 
-                      value={editBookingForm.clientPhone}
-                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientPhone: e.target.value }))}
-                    />
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div className="form-group" style={{ marginBottom: 6 }}>
+                      <label>CPF (Opcional)</label>
+                      <input 
+                        type="text" 
+                        placeholder="Ex: 000.000.000-00"
+                        value={editBookingForm.cpf}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, cpf: e.target.value }))}
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 6 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', justifycontent: 'space-between' }}>
+                        <span>WhatsApp *</span>
+                        {editBookingForm.clientPhone && (
+                          <a 
+                            href={getWhatsAppConfirmationUrl(editBookingForm.clientPhone, {
+                              clientName: editBookingForm.clientName,
+                              serviceName: editBookingForm.serviceName,
+                              date: editBookingForm.date,
+                              time: editBookingForm.time
+                            })} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            style={{ display: 'flex', alignItems: 'center', color: '#22c55e', textDecoration: 'none', fontSize: '0.75rem', fontWeight: 600 }}
+                          >
+                            <Send size={11} style={{ marginRight: 2 }} /> Abrir
+                          </a>
+                        )}
+                      </label>
+                      <input 
+                        type="tel" 
+                        required 
+                        value={editBookingForm.clientPhone}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, clientPhone: e.target.value }))}
+                      />
+                    </div>
                   </div>
-                  <div className="form-group">
+
+                  <div className="form-group" style={{ marginBottom: 6 }}>
                     <label>E-mail (Opcional)</label>
                     <input 
                       type="email" 
@@ -1134,107 +1960,257 @@ const AdminDashboard = () => {
                       onChange={e => setEditBookingForm(prev => ({ ...prev, clientEmail: e.target.value }))}
                     />
                   </div>
-                  
-                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
-                    <div className="form-group">
-                      <label>{"Servi\u00e7o *"}</label>
-                      <select 
-                        value={`${editBookingForm.serviceName}|${editBookingForm.servicePrice}`}
-                        onChange={e => {
-                          const [name, priceStr] = e.target.value.split('|');
-                          const matched = services.find(s => s.name === name);
-                          setEditBookingForm(prev => ({ 
-                            ...prev, 
-                            serviceName: name, 
-                            servicePrice: Number(priceStr),
-                            duration: matched ? (matched.duration || 60) : 60
-                          }));
-                        }}
-                      >
-                        {services.map(s => (
-                          <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
-                            {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="form-group">
-                      <label>{"Pre\u00e7o (R$) *"}</label>
-                      <input 
-                        type="number" 
-                        required 
-                        min="0"
-                        step="0.01"
-                        value={editBookingForm.servicePrice}
-                        onChange={e => setEditBookingForm(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>{"Dura\u00e7\u00e3o (min) *"}</label>
-                      <input 
-                        type="number" 
-                        required 
-                        min="5"
-                        step="5"
-                        value={editBookingForm.duration || 60}
-                        onChange={e => setEditBookingForm(prev => ({ ...prev, duration: Number(e.target.value) }))}
-                      />
+
+                  {/* Tags Row */}
+                  <div className="form-group" style={{ marginBottom: 6 }}>
+                    <label>Etiquetas (Tags)</label>
+                    <div className="trinks-tags-row">
+                      {editBookingForm.tags.map(t => (
+                        <span key={t} className="trinks-tag-pill">
+                          {t} 
+                          <button 
+                            type="button" 
+                            style={{ border: 'none', background: 'none', cursor: 'pointer', color: '#e53e3e', marginLeft: 4, fontWeight: 700 }}
+                            onClick={() => handleRemoveTag(t)}
+                          >
+                            x
+                          </button>
+                        </span>
+                      ))}
+                      
+                      {!tagInputOpen ? (
+                        <button 
+                          type="button" 
+                          className="trinks-tag-add-btn"
+                          onClick={() => setTagInputOpen(true)}
+                        >
+                          + Adicionar Tag
+                        </button>
+                      ) : (
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          <input 
+                            type="text" 
+                            placeholder="Tag..."
+                            style={{ padding: '2px 6px', fontSize: '0.75rem', width: '80px' }}
+                            value={newTagVal}
+                            onChange={e => setNewTagVal(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && handleAddTag()}
+                            autoFocus
+                          />
+                          <button 
+                            type="button" 
+                            className="btn btn-accent" 
+                            style={{ padding: '2px 6px', fontSize: '0.75rem' }} 
+                            onClick={handleAddTag}
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <div className="form-group">
-                      <label>Data *</label>
-                      <input 
-                        type="date" 
-                        required
-                        value={editBookingForm.date}
-                        onChange={e => setEditBookingForm(prev => ({ ...prev, date: e.target.value }))}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>{"Hor\u00e1rio *"}</label>
-                      <select 
-                        value={editBookingForm.time}
-                        onChange={e => setEditBookingForm(prev => ({ ...prev, time: e.target.value }))}
-                      >
-                        {TIME_SLOTS.map(t => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
-                      </select>
-                    </div>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+                    <span>Ficha Completa: <strong>{(editBookingForm.cpf && editBookingForm.clientEmail) ? 'Sim' : 'Não'}</strong></span>
+                    <span 
+                      style={{ color: 'var(--accent)', textDecoration: 'underline', cursor: 'pointer' }}
+                      onClick={() => {
+                        alert('Navegue para o painel de Clientes para uma ficha detalhada.');
+                      }}
+                    >
+                      Editar Cliente
+                    </span>
                   </div>
 
-                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                    <div className="form-group">
-                      <label>Status *</label>
-                      <select 
-                        value={editBookingForm.status}
-                        onChange={e => setEditBookingForm(prev => ({ ...prev, status: e.target.value }))}
-                      >
-                        <option value="pendente">{"Aguardando Confirma\u00e7\u00e3o (Pendente)"}</option>
-                        <option value="confirmado">Confirmado</option>
-                        <option value="cancelado">Cancelado</option>
-                        <option value="finalizado">Finalizado</option>
-                      </select>
-                    </div>
-                  </div>
+                </div>
 
-                  <div className="form-group">
-                    <label>Notas Internas</label>
-                    <textarea 
-                      rows="2"
-                      value={editBookingForm.notes}
-                      onChange={e => setEditBookingForm(prev => ({ ...prev, notes: e.target.value }))}
-                    ></textarea>
+                <div className="trinks-client-avatar-container">
+                  <div className="trinks-avatar-placeholder">
+                    {editBookingForm.clientName ? editBookingForm.clientName.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase() : '?'}
                   </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: 8 }}>Foto de Perfil</span>
+                </div>
+              </div>
 
-                  <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 12 }}>
-                    <button type="button" className="btn btn-ghost" onClick={() => setIsEditingBooking(false)}>Cancelar</button>
-                    <button type="submit" className="btn btn-accent">{"Salvar Altera\u00e7\u00f5es"}</button>
-                  </div>
-                </form>
-              ) : selectedBooking.status === 'bloqueado' ? (
+              {/* Appointment details block */}
+              <div className="trinks-appointment-details">
+                <div className="form-group">
+                  <label>Profissional Responsável *</label>
+                  <select 
+                    value={editBookingForm.profissional}
+                    onChange={e => setEditBookingForm(prev => ({ ...prev, profissional: e.target.value }))}
+                  >
+                    {activeProfessionalsList.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Serviço Principal *</label>
+                  <select 
+                    value={`${editBookingForm.serviceName}|${editBookingForm.servicePrice}`}
+                    onChange={e => {
+                      const [name, priceStr] = e.target.value.split('|');
+                      const matched = services.find(s => s.name === name);
+                      setEditBookingForm(prev => ({ 
+                        ...prev, 
+                        serviceName: name, 
+                        servicePrice: Number(priceStr),
+                        duration: matched ? (matched.duration || 60) : 60
+                      }));
+                    }}
+                  >
+                    {services.map(s => (
+                      <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                        {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    Data do Agendamento *
+                    <span className="trinks-date-badge">{getDateBadge(editBookingForm.date)}</span>
+                  </label>
+                  <input 
+                    type="date" 
+                    required
+                    value={editBookingForm.date}
+                    onChange={e => setEditBookingForm(prev => ({ ...prev, date: e.target.value }))}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <Clock size={13} /> Horário *
+                  </label>
+                  <select 
+                    value={editBookingForm.time}
+                    onChange={e => setEditBookingForm(prev => ({ ...prev, time: e.target.value }))}
+                  >
+                    {TIME_SLOTS.map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Duração (minutos) *</label>
+                  <input 
+                    type="number" 
+                    required 
+                    min="5"
+                    step="5"
+                    value={editBookingForm.duration}
+                    onChange={e => setEditBookingForm(prev => ({ ...prev, duration: Number(e.target.value) }))}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Valor Cobrado (R$) *</label>
+                  <input 
+                    type="number" 
+                    required 
+                    min="0"
+                    step="0.01"
+                    value={editBookingForm.servicePrice}
+                    onChange={e => setEditBookingForm(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Repetir Agendamento</label>
+                  <select>
+                    <option value="não">Não repetir (Único)</option>
+                    <option value="semanal">Semanal</option>
+                    <option value="quinzenal">Quinzenal</option>
+                    <option value="mensal">Mensal</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Status do Agendamento *</label>
+                  <select 
+                    value={editBookingForm.status}
+                    onChange={e => setEditBookingForm(prev => ({ ...prev, status: e.target.value }))}
+                  >
+                    <option value="pendente">Aguardando Confirmação</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="cancelado">Cancelado</option>
+                    <option value="finalizado">Finalizado</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div className="form-group">
+                <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>Observações do Agendamento</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+                    {editBookingForm.notes ? editBookingForm.notes.length : 0} de 400
+                  </span>
+                </label>
+                <textarea 
+                  rows="3"
+                  maxLength={400}
+                  placeholder="Observações ou notas especiais..."
+                  value={editBookingForm.notes}
+                  onChange={e => setEditBookingForm(prev => ({ ...prev, notes: e.target.value }))}
+                />
+              </div>
+
+            </div>
+
+            <div className="trinks-modal-footer">
+              <span 
+                className="trinks-footer-link"
+                onClick={handleSaveAndCheckout}
+              >
+                Salvar e fechar conta
+              </span>
+              
+              <div style={{ display: 'flex', gap: 12 }}>
+                <button 
+                  type="button" 
+                  className="btn btn-ghost" 
+                  onClick={() => {
+                    setSelectedBooking(null);
+                    setIsEditingBooking(false);
+                  }}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-accent"
+                  onClick={handleSaveEditBooking}
+                >
+                  Salvar
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 1: DETALHE DO AGENDAMENTO E COMANDA (When only viewing details or closing account) */}
+      {selectedBooking && !isEditingBooking && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: isCheckoutOpen ? 640 : 500 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3>{isCheckoutOpen ? 'Fechar Comanda da Cliente' : 'Ficha do Agendamento'}</h3>
+              <button className="btn-icon" onClick={() => {
+                setSelectedBooking(null);
+                setIsCheckoutOpen(false);
+                setOverrideBasePrice(null);
+              }}><X size={18} /></button>
+            </div>
+            
+            {!isCheckoutOpen ? (
+              selectedBooking.status === 'bloqueado' ? (
                 <>
                   <div className="detail-row">
                     <label>Tipo:</label>
@@ -1290,10 +2266,6 @@ const AdminDashboard = () => {
                     <span>{selectedBooking.date} às {selectedBooking.time}</span>
                   </div>
                   <div className="detail-row">
-                    <label>Curvatura:</label>
-                    <span>{selectedBooking.hairType || 'Não informada'}</span>
-                  </div>
-                  <div className="detail-row">
                     <label>Observações:</label>
                     <span>{selectedBooking.notes || 'Nenhuma observação.'}</span>
                   </div>
@@ -1322,11 +2294,11 @@ const AdminDashboard = () => {
                           className="btn btn-accent" 
                           style={{ padding: '6px 12px', fontSize: '0.85rem' }}
                           onClick={() => {
-                            const matchingDayObj = weekDays.find(d => d.raw === selectedBooking.date) || { formattedDay: selectedBooking.date, formattedWeekday: '' };
                             setSelectedSlot({
                               date: selectedBooking.date,
                               time: selectedBooking.time,
-                              dateFormatted: `${matchingDayObj.formattedDay} ${matchingDayObj.formattedWeekday}`
+                              profissional: selectedBooking.profissional || 'jon',
+                              dateFormatted: selectedBooking.date
                             });
                             setSelectedBooking(null);
                             handleSelectManualBooking();
@@ -1335,7 +2307,7 @@ const AdminDashboard = () => {
                           Agendar Neste Horário
                         </button>
                       )}
-                      <button className="btn btn-ghost" type="button" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={handleStartEditBooking}>
+                      <button className="btn btn-ghost" type="button" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => handleStartEditBooking(selectedBooking)}>
                         Editar Agendamento
                       </button>
                     </div>
@@ -1358,7 +2330,6 @@ const AdminDashboard = () => {
                   Gere o faturamento da cliente <strong>{selectedBooking.clientName}</strong>. Adicione itens se necessário.
                 </p>
                 
-                {/* Lista de Itens atuais na comanda */}
                 <div className="comanda-items-list">
                   <div className="comanda-item-row" style={{ fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>{selectedBooking.service?.name || selectedBooking.serviceName} (Serviço Agendado)</span>
@@ -1422,7 +2393,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* Formulário de acréscimo rápido */}
                 <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
                   <div className="form-group">
                     <label style={{ fontSize: '0.8rem' }}>Lançar Serviço Extra</label>
@@ -1463,7 +2433,6 @@ const AdminDashboard = () => {
                   </div>
                 </div>
 
-                {/* Forma de Pagamento */}
                 <div className="form-group" style={{ marginBottom: 20 }}>
                   <label>Forma de Pagamento *</label>
                   <select 
@@ -1496,13 +2465,11 @@ const AdminDashboard = () => {
             onSubmit={handleAddManualBooking}
             style={{ maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
           >
-            {/* Cabeçalho fixo */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexShrink: 0 }}>
-              <h3>{"Registrar Hor\u00e1rio Manual"}</h3>
+              <h3>Registrar Horário Manual</h3>
               <button type="button" className="btn-icon" onClick={() => setShowAddModal(false)}><X size={18} /></button>
             </div>
 
-            {/* Campo nome + autocomplete FORA do overflow para o dropdown não ser cortado */}
             <div className="form-group" style={{ flexShrink: 0, position: 'relative', zIndex: 200 }}>
               <label>Nome Completo do Cliente *</label>
               <div className="autocomplete-container">
@@ -1538,7 +2505,6 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Corpo rolável */}
             <div style={{ overflowY: 'auto', flex: 1, paddingRight: 4 }}>
               <div className="form-group">
                 <label>WhatsApp *</label>
@@ -1561,9 +2527,21 @@ const AdminDashboard = () => {
                 />
               </div>
 
+              <div className="form-group">
+                <label>Profissional Responsável *</label>
+                <select 
+                  value={newBooking.profissional}
+                  onChange={e => setNewBooking(prev => ({ ...prev, profissional: e.target.value }))}
+                >
+                  {activeProfessionalsList.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
               <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: 12 }}>
                 <div className="form-group">
-                  <label>{"Servi\u00e7o *"}</label>
+                  <label>Serviço *</label>
                   <select 
                     value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
                     onChange={e => {
@@ -1596,7 +2574,7 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>{"Dura\u00e7\u00e3o (min) *"}</label>
+                  <label>Duração (min) *</label>
                   <input 
                     type="number" 
                     required 
@@ -1620,7 +2598,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>{"Hor\u00e1rio *"}</label>
+                  <label>Horário *</label>
                   <select 
                     value={newBooking.time}
                     onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
@@ -1643,22 +2621,24 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* Rodapé fixo */}
             <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancelar</button>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                 {newBooking.clientPhone && (
                   <a
-                    href={`https://wa.me/55${newBooking.clientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(
-                      `Ol\u00e1 ${newBooking.clientName ? newBooking.clientName.split(' ')[0] : ''}! \uD83D\uDC87 Seu agendamento no Studio do Jon foi confirmado! \u2705\n\n\uD83D\uDCC5 Data: ${newBooking.date ? newBooking.date.split('-').reverse().join('/') : ''}\n\u23F0 Hor\u00e1rio: ${newBooking.time}\n\u2702\uFE0F Servi\u00e7o: ${newBooking.serviceName}\n\nAguardamos voc\u00ea! \uD83D\uDE0A`
-                    )}`}
+                    href={getWhatsAppConfirmationUrl(newBooking.clientPhone, {
+                      clientName: newBooking.clientName,
+                      serviceName: newBooking.serviceName || (services.find(s => s.id === newBooking.serviceId)?.name || ''),
+                      date: newBooking.date,
+                      time: newBooking.time
+                    })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn btn-ghost"
                     style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#22c55e', borderColor: '#22c55e', textDecoration: 'none' }}
                   >
                     <Send size={15} />
-                    {"Enviar Confirma\u00e7\u00e3o WhatsApp"}
+                    Enviar Confirmação WhatsApp
                   </a>
                 )}
                 <button type="submit" className="btn btn-accent">Salvar na Agenda</button>
@@ -1673,11 +2653,10 @@ const AdminDashboard = () => {
         <div className="modal-overlay slot-action-overlay">
           <div className="slot-action-modal">
 
-            {/* Header */}
             <div className="slot-action-header">
               <div className="slot-action-pill">
                 <span className="slot-action-pill-dot" />
-                Horário Livre
+                Horário Livre ({selectedSlot.profName || 'Jon'})
               </div>
               <button
                 type="button"
@@ -1695,10 +2674,8 @@ const AdminDashboard = () => {
 
             <p className="slot-action-label">O que deseja fazer neste horário?</p>
 
-            {/* Action Cards */}
             <div className="slot-action-cards">
 
-              {/* Card Agendar */}
               <button
                 type="button"
                 className="slot-card slot-card-schedule"
@@ -1713,7 +2690,6 @@ const AdminDashboard = () => {
                 </div>
               </button>
 
-              {/* Card Bloquear */}
               <div className="slot-card slot-card-block">
                 <div className="slot-card-block-row">
                   <div className="slot-card-icon">

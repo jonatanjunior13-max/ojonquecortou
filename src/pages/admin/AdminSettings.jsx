@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Building, Clock, ShieldCheck, CreditCard, Send } from 'lucide-react';
+import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit } from 'lucide-react';
 import { db } from '../../config/firebase';
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import './Admin.css';
@@ -41,14 +41,100 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
+  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨',
+  professionals: [
+    { id: 'jon', name: 'Jon', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+  ]
 };
 
 const AdminSettings = () => {
-  const [activeTab, setActiveTab] = useState('perfil');
+  const [activeTab, setActiveTab] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('tab') === 'profissionais' ? 'profissionais' : 'perfil';
+  });
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [isSaved, setIsSaved] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
+
+  const [newProf, setNewProf] = useState({ name: '', avatar: '', commission: 50, phone: '', email: '', active: true });
+  const [editingProfId, setEditingProfId] = useState(null);
+
+  const handleAddProf = () => {
+    if (!newProf.name.trim()) {
+      alert('Por favor, informe o nome do profissional.');
+      return;
+    }
+    const id = newProf.name.toLowerCase().trim().replace(/\s+/g, '-');
+    const existing = settings.professionals || [];
+    if (existing.some(p => p.id === id)) {
+      alert('Já existe um profissional cadastrado com este nome.');
+      return;
+    }
+    const profToAdd = {
+      ...newProf,
+      id: id || `prof-${Date.now()}`,
+      avatar: newProf.avatar.trim() || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
+      commission: Number(newProf.commission) || 0
+    };
+    setSettings(prev => ({
+      ...prev,
+      professionals: [...(prev.professionals || []), profToAdd]
+    }));
+    setNewProf({ name: '', avatar: '', commission: 50, phone: '', email: '', active: true });
+  };
+
+  const handleEditProfStart = (prof) => {
+    setEditingProfId(prof.id);
+    setNewProf({
+      name: prof.name,
+      avatar: prof.avatar || '',
+      commission: prof.commission,
+      phone: prof.phone || '',
+      email: prof.email || '',
+      active: prof.active ?? true
+    });
+  };
+
+  const handleEditProfCancel = () => {
+    setEditingProfId(null);
+    setNewProf({ name: '', avatar: '', commission: 50, phone: '', email: '', active: true });
+  };
+
+  const handleUpdateProf = () => {
+    if (!newProf.name.trim()) {
+      alert('Por favor, informe o nome do profissional.');
+      return;
+    }
+    setSettings(prev => ({
+      ...prev,
+      professionals: (prev.professionals || []).map(p => 
+        p.id === editingProfId 
+          ? { ...p, ...newProf, commission: Number(newProf.commission) || 0 } 
+          : p
+      )
+    }));
+    handleEditProfCancel();
+  };
+
+  const handleDeleteProf = (id) => {
+    if (id === 'jon') {
+      alert('O profissional principal (Jon) não pode ser removido.');
+      return;
+    }
+    if (window.confirm('Tem certeza que deseja remover este profissional?')) {
+      setSettings(prev => ({
+        ...prev,
+        professionals: (prev.professionals || []).filter(p => p.id !== id)
+      }));
+    }
+  };
+
+  const handleToggleProfActive = (id) => {
+    setSettings(prev => ({
+      ...prev,
+      professionals: (prev.professionals || []).map(p => p.id === id ? { ...p, active: !p.active } : p)
+    }));
+  };
 
   useEffect(() => {
     const loadSettings = (savedRaw) => {
@@ -137,17 +223,20 @@ const AdminSettings = () => {
     <div className="admin-settings-page">
       {/* Abas */}
       <div className="tab-menu" style={{ marginBottom: 24 }}>
-        <button className={`tab-btn ${activeTab === 'perfil' ? 'active' : ''}`} onClick={() => setActiveTab('perfil')}>
+        <button type="button" className={`tab-btn ${activeTab === 'perfil' ? 'active' : ''}`} onClick={() => setActiveTab('perfil')}>
           <Building size={16} /> Perfil & Taxas
         </button>
-        <button className={`tab-btn ${activeTab === 'horarios' ? 'active' : ''}`} onClick={() => setActiveTab('horarios')}>
+        <button type="button" className={`tab-btn ${activeTab === 'horarios' ? 'active' : ''}`} onClick={() => setActiveTab('horarios')}>
           <Clock size={16} /> Horários da Grade
         </button>
-        <button className={`tab-btn ${activeTab === 'politicas' ? 'active' : ''}`} onClick={() => setActiveTab('politicas')}>
+        <button type="button" className={`tab-btn ${activeTab === 'politicas' ? 'active' : ''}`} onClick={() => setActiveTab('politicas')}>
           <ShieldCheck size={16} /> Políticas de Agendamento
         </button>
-        <button className={`tab-btn ${activeTab === 'whatsapp' ? 'active' : ''}`} onClick={() => setActiveTab('whatsapp')}>
+        <button type="button" className={`tab-btn ${activeTab === 'whatsapp' ? 'active' : ''}`} onClick={() => setActiveTab('whatsapp')}>
           <Send size={16} /> Integração WhatsApp
+        </button>
+        <button type="button" className={`tab-btn ${activeTab === 'profissionais' ? 'active' : ''}`} onClick={() => setActiveTab('profissionais')}>
+          <Users size={16} /> Profissionais
         </button>
       </div>
 
@@ -484,6 +573,169 @@ const AdminSettings = () => {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* CONTEÚDO: PROFISSIONAIS */}
+        {activeTab === 'profissionais' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            <div className="financial-card">
+              <h3>{editingProfId ? `Editar Profissional: ${newProf.name}` : 'Cadastrar Novo Profissional'}</h3>
+              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+                {editingProfId 
+                  ? 'Atualize os dados e comissão deste profissional.' 
+                  : 'Adicione um profissional para que ele apareça como coluna na agenda e configure seu e-mail, telefone e comissão.'}
+              </p>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, alignItems: 'flex-end' }}>
+                <div className="form-group">
+                  <label>Nome do Profissional *</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: Lucas Silva"
+                    value={newProf.name}
+                    onChange={e => setNewProf({ ...newProf, name: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Comissão (%) *</label>
+                  <input 
+                    type="number" 
+                    min="0"
+                    max="100"
+                    value={newProf.commission}
+                    onChange={e => setNewProf({ ...newProf, commission: Number(e.target.value) })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>WhatsApp / Telefone</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: 31999998888"
+                    value={newProf.phone}
+                    onChange={e => setNewProf({ ...newProf, phone: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 16, marginTop: 12, alignItems: 'flex-end' }}>
+                <div className="form-group">
+                  <label>URL da Foto do Perfil (opcional)</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: https://images.unsplash.com/..."
+                    value={newProf.avatar}
+                    onChange={e => setNewProf({ ...newProf, avatar: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>E-mail</label>
+                  <input 
+                    type="email" 
+                    placeholder="Ex: lucas@email.com"
+                    value={newProf.email}
+                    onChange={e => setNewProf({ ...newProf, email: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 16, display: 'flex', gap: 12 }}>
+                {editingProfId ? (
+                  <>
+                    <button 
+                      type="button" 
+                      className="btn btn-accent" 
+                      style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                      onClick={handleUpdateProf}
+                    >
+                      <Save size={16} /> Salvar Alterações
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn btn-outline" 
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--rule)', background: 'none', color: 'var(--text)' }}
+                      onClick={handleEditProfCancel}
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    type="button" 
+                    className="btn btn-accent" 
+                    style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                    onClick={handleAddProf}
+                  >
+                    <UserPlus size={16} /> Adicionar Profissional
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="financial-card">
+              <h3>Profissionais Cadastrados</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 16 }}>
+                {(settings.professionals || []).map(prof => (
+                  <div 
+                    key={prof.id} 
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'space-between', 
+                      padding: 16, 
+                      background: 'var(--bg-warm)', 
+                      borderRadius: 8, 
+                      border: '1px solid var(--rule)' 
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <img 
+                        src={prof.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'} 
+                        alt={prof.name} 
+                        style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent)' }}
+                      />
+                      <div>
+                        <strong style={{ fontSize: '1rem', display: 'block' }}>{prof.name}</strong>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--muted)', display: 'block' }}>
+                          Comissão: {prof.commission}% | Contato: {prof.phone || 'Sem telefone'} | E-mail: {prof.email || 'Sem e-mail'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem', cursor: 'pointer' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={prof.active}
+                          onChange={() => handleToggleProfActive(prof.id)}
+                        />
+                        Ativo na agenda
+                      </label>
+
+                      <button 
+                        type="button" 
+                        style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', padding: 4 }}
+                        onClick={() => handleEditProfStart(prof)}
+                        title="Editar profissional"
+                      >
+                        <Edit size={16} />
+                      </button>
+
+                      {prof.id !== 'jon' && (
+                        <button 
+                          type="button" 
+                          style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: 4 }}
+                          onClick={() => handleDeleteProf(prof.id)}
+                          title="Remover profissional"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
