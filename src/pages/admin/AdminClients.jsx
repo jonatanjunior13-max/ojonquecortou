@@ -5,20 +5,28 @@ import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, A
 import { parseClientCSV } from '../../utils/clientImport';
 import './Admin.css';
 
+import { useOutletContext } from 'react-router-dom';
+
 const AdminClients = () => {
-  // Abas do CRM: 'fichas', 'relatorios', 'marketing'
   const [activeTab, setActiveTab] = useState('fichas');
   
-  const [bookings, setBookings] = useState([]);
-  const [profiles, setProfiles] = useState([]);
+  const { globalData, setGlobalData } = useOutletContext();
+  const bookings = globalData.bookings || [];
+  const profiles = globalData.clients || [];
+  
+  // As we need a merged version of bookings+profiles, we keep this local derived state
   const [clients, setClients] = useState([]);
+  
+  const setProfiles = (updater) => setGlobalData(prev => ({ ...prev, clients: typeof updater === 'function' ? updater(prev.clients) : updater }));
+  const [clientDisplayLimit, setClientDisplayLimit] = useState(50);
   const [selectedClientPhone, setSelectedClientPhone] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [settings, setSettings] = useState(null);
+  const settings = globalData.settings || null;
+  const setSettings = (updater) => setGlobalData(prev => ({ ...prev, settings: typeof updater === 'function' ? updater(prev.settings) : updater }));
   const [isSendingWhatsapp, setIsSendingWhatsapp] = useState(false);
   const [whatsappLogs, setWhatsappLogs] = useState([]);
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(!db);
+  const [loading, setLoading] = useState(false);
 
   // Modal de Novo Cliente
   const [showAddModal, setShowAddModal] = useState(false);
@@ -178,141 +186,10 @@ const AdminClients = () => {
     }
   ];
 
-  // Carrega Configurações do Studio para disparo de WhatsApp
+  // 1. Usa os dados já injetados via globalData (AdminLayout). Não precisa mais criar um Snapshot local, evitando lentidão.
   useEffect(() => {
     if (!db) {
-      const saved = localStorage.getItem('demo_studio_settings');
-      if (saved) {
-        try {
-          setSettings(JSON.parse(saved));
-        } catch (e) {}
-      }
-      return;
-    }
-    const unsub = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
-      if (snapshot.exists()) {
-        setSettings(snapshot.data());
-      }
-    });
-    return () => unsub();
-  }, []);
-
-  // 1. Carrega Perfis e Agendamentos em Tempo Real
-  useEffect(() => {
-    let unsubProfiles;
-    let unsubBookings;
-    let timedOut = false;
-
-    const getMockData = () => {
-      const localProfiles = localStorage.getItem('demo_client_profiles');
-      const loadedProfiles = localProfiles ? JSON.parse(localProfiles) : SEED_PROFILES;
-      
-      const localBookings = localStorage.getItem('demo_bookings');
-      const loadedBookings = localBookings ? JSON.parse(localBookings) : SEED_BOOKINGS;
-
-      return { loadedProfiles, loadedBookings };
-    };
-
-    if (!db) {
       setIsDemoMode(true);
-      const { loadedProfiles, loadedBookings } = getMockData();
-      setProfiles(loadedProfiles);
-      setBookings(loadedBookings);
-      groupClients(loadedBookings, loadedProfiles);
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-      console.warn('Firestore CRM subscriptions timed out. Falling back to Demo Mode.');
-      setIsDemoMode(true);
-      if (unsubProfiles) unsubProfiles();
-      if (unsubBookings) unsubBookings();
-      const { loadedProfiles, loadedBookings } = getMockData();
-      setProfiles(loadedProfiles);
-      setBookings(loadedBookings);
-      groupClients(loadedBookings, loadedProfiles);
-      setLoading(false);
-    }, 3500);
-
-    try {
-      let profilesLoaded = false;
-      let bookingsLoaded = false;
-
-      // Escuta Perfis de Clientes
-      unsubProfiles = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
-        if (timedOut) return;
-        const profList = [];
-        snapshot.forEach((doc) => {
-          profList.push({ phone: doc.id, ...doc.data() });
-        });
-        setProfiles(profList);
-        localStorage.setItem('demo_client_profiles', JSON.stringify(profList));
-        
-        profilesLoaded = true;
-        if (bookingsLoaded) {
-          clearTimeout(timeoutId);
-          setLoading(false);
-          setIsDemoMode(false);
-        }
-      }, (error) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        console.warn('Erro ao ler perfis do Firestore, usando locais:', error);
-        setIsDemoMode(true);
-        const { loadedProfiles, loadedBookings } = getMockData();
-        setProfiles(loadedProfiles);
-        setBookings(loadedBookings);
-        groupClients(loadedBookings, loadedProfiles);
-        setLoading(false);
-      });
-
-      // Escuta Agendamentos
-      unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
-        if (timedOut) return;
-        const appts = [];
-        snapshot.forEach((doc) => {
-          appts.push({ id: doc.id, ...doc.data() });
-        });
-        setBookings(appts);
-
-        bookingsLoaded = true;
-        if (profilesLoaded) {
-          clearTimeout(timeoutId);
-          setLoading(false);
-          setIsDemoMode(false);
-        }
-      }, (error) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        console.warn('Erro ao ler agendamentos do Firestore no CRM:', error);
-        setIsDemoMode(true);
-        const { loadedProfiles, loadedBookings } = getMockData();
-        setProfiles(loadedProfiles);
-        setBookings(loadedBookings);
-        groupClients(loadedBookings, loadedProfiles);
-        setLoading(false);
-      });
-
-      return () => {
-        clearTimeout(timeoutId);
-        if (unsubProfiles) unsubProfiles();
-        if (unsubBookings) unsubBookings();
-      };
-    } catch (err) {
-      if (!timedOut) {
-        clearTimeout(timeoutId);
-        console.warn('Erro na conexão do banco para CRM:', err);
-        setIsDemoMode(true);
-        const { loadedProfiles, loadedBookings } = getMockData();
-        setProfiles(loadedProfiles);
-        setBookings(loadedBookings);
-        groupClients(loadedBookings, loadedProfiles);
-        setLoading(false);
-      }
     }
   }, []);
 
@@ -914,7 +791,7 @@ const AdminClients = () => {
                   {filteredClients.length === 0 ? (
                     <p className="no-data-msg">Nenhuma cliente encontrada.</p>
                   ) : (
-                    filteredClients.map(c => {
+                    filteredClients.slice(0, clientDisplayLimit).map(c => {
                       const status = getClientCRMStatus(c);
                       return (
                         <div 
@@ -935,6 +812,13 @@ const AdminClients = () => {
                         </div>
                       );
                     })
+                  )}
+                  {filteredClients.length > clientDisplayLimit && (
+                    <div className="client-load-more" style={{ textAlign: 'center', margin: '20px 0' }}>
+                      <button className="btn btn-outline" onClick={() => setClientDisplayLimit(prev => prev + 50)}>
+                        Carregar mais ({filteredClients.length - clientDisplayLimit} restantes)
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1156,7 +1040,7 @@ const AdminClients = () => {
                   <label style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>Último Serviço Realizado</label>
                   <select 
                     value={serviceFilter} 
-                    onChange={e => setServiceFilter(e.target.value)}
+                    onChange={setServiceFilter}
                     style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--panel-bg)', color: 'var(--text-main)', fontSize: '0.85rem' }}
                   >
                     <option value="todos">Todos os Serviços</option>

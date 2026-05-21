@@ -16,7 +16,11 @@ export function parseClientCSV(file, onResult) {
       header: true,
       skipEmptyLines: true,
       encoding: 'UTF-8',
-      transformHeader: (h) => h.trim().toLowerCase(),
+      transformHeader: (h) => {
+        return h.trim().toLowerCase()
+          .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove acentos
+          .replace(/[^a-z0-9]/g, ""); // Remove espaços, hífens e caracteres especiais
+      },
       complete: (results) => {
         const clients = [];
         const errors = [];

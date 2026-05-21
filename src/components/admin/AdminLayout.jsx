@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { auth } from '../../config/firebase';
+import { auth, db } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { collection, onSnapshot, doc } from 'firebase/firestore';
 import { 
   Calendar, Users, LogOut, Package, DollarSign, 
   Scissors, Settings, Megaphone, ChevronLeft, ChevronRight, Search, Smartphone 
@@ -10,6 +11,10 @@ import './AdminNavbar.css';
 
 const AdminLayout = () => {
   const [authorized, setAuthorized] = useState(null);
+  const [globalData, setGlobalData] = useState({
+    bookings: [], clients: [], services: [], products: [],
+    financial_transactions: [], settings: null, coupons: [], giftcards: []
+  });
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -83,6 +88,36 @@ const AdminLayout = () => {
 
     return () => checkAuth();
   }, [navigate]);
+
+  useEffect(() => {
+    if (!authorized) return;
+
+    let unsubs = [];
+    if (db) {
+      unsubs.push(onSnapshot(collection(db, 'bookings'), (snap) => setGlobalData(prev => ({ ...prev, bookings: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => setGlobalData(prev => ({ ...prev, clients: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'services'), (snap) => setGlobalData(prev => ({ ...prev, services: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'products'), (snap) => setGlobalData(prev => ({ ...prev, products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => setGlobalData(prev => ({ ...prev, financial_transactions: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'coupons'), (snap) => setGlobalData(prev => ({ ...prev, coupons: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'giftcards'), (snap) => setGlobalData(prev => ({ ...prev, giftcards: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }))));
+    } else {
+      // Demo Mode fallback
+      try {
+        setGlobalData(prev => ({
+          ...prev,
+          bookings: JSON.parse(localStorage.getItem('demo_bookings')) || [],
+          clients: JSON.parse(localStorage.getItem('demo_clients')) || [],
+          services: JSON.parse(localStorage.getItem('demo_services')) || [],
+          products: JSON.parse(localStorage.getItem('demo_inventory')) || [],
+          financial_transactions: JSON.parse(localStorage.getItem('demo_financial')) || []
+        }));
+      } catch(e) {}
+    }
+
+    return () => unsubs.forEach(u => u && u());
+  }, [authorized]);
 
   const handleLogout = async () => {
     if (auth) {
@@ -261,7 +296,7 @@ const AdminLayout = () => {
           </div>
         </header>
         <div className="admin-page-body">
-          <Outlet />
+          <Outlet context={{ globalData, setGlobalData }} />
         </div>
       </main>
     </div>

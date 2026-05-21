@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { useOutletContext } from 'react-router-dom';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -85,16 +86,23 @@ const DEFAULT_SETTINGS = {
 };
 
 const AdminDashboard = () => {
-  const [bookings, setBookings] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [services, setServices] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [settings, setSettings] = useState(null);
+  const { globalData, setGlobalData } = useOutletContext();
+  const bookings = globalData.bookings || [];
+  const products = globalData.products || [];
+  const services = globalData.services || [];
+  const clients = globalData.clients || [];
+  const transactions = globalData.financial_transactions || [];
+  const settings = globalData.settings || DEFAULT_SETTINGS;
+  const setBookings = (updater) => setGlobalData(prev => ({ ...prev, bookings: typeof updater === 'function' ? updater(prev.bookings) : updater }));
+  const setProducts = (updater) => setGlobalData(prev => ({ ...prev, products: typeof updater === 'function' ? updater(prev.products) : updater }));
+  const setServices = (updater) => setGlobalData(prev => ({ ...prev, services: typeof updater === 'function' ? updater(prev.services) : updater }));
+  const setClients = (updater) => setGlobalData(prev => ({ ...prev, clients: typeof updater === 'function' ? updater(prev.clients) : updater }));
+  const setTransactions = (updater) => setGlobalData(prev => ({ ...prev, financial_transactions: typeof updater === 'function' ? updater(prev.financial_transactions) : updater }));
+  const setSettings = (updater) => setGlobalData(prev => ({ ...prev, settings: typeof updater === 'function' ? updater(prev.settings) : updater }));
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(!db);
   
   // Checkout / Comanda states
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -290,90 +298,15 @@ const AdminDashboard = () => {
       } else {
         setClients(SEED_CLIENTS);
       }
-
-      const localTx = localStorage.getItem('demo_transactions');
-      if (localTx) setTransactions(JSON.parse(localTx));
-      else {
-        setTransactions(SEED_TRANSACTIONS);
-        localStorage.setItem('demo_transactions', JSON.stringify(SEED_TRANSACTIONS));
-      }
-
-      const saved = localStorage.getItem('demo_studio_settings');
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          const merged = { ...DEFAULT_SETTINGS };
-          Object.keys(parsed).forEach(key => {
-            if (parsed[key] !== undefined && parsed[key] !== null && parsed[key] !== '') {
-              merged[key] = parsed[key];
-            }
-          });
-          setSettings(merged);
-        } catch (e) {
-          setSettings(DEFAULT_SETTINGS);
-        }
-      } else {
-        setSettings(DEFAULT_SETTINGS);
-      }
-      
-      return;
+      setIsDemoMode(true);
+    } else {
+      setIsDemoMode(false);
     }
-    
-    const unsubProd = onSnapshot(collection(db, 'products'), (snapshot) => {
-      const prodList = [];
-      snapshot.forEach((doc) => {
-        prodList.push({ id: doc.id, ...doc.data() });
-      });
-      setProducts(prodList);
-    });
-
-    const unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
-      const list = [];
-      snapshot.forEach((doc) => {
-        list.push({ id: doc.id, ...doc.data() });
-      });
-      if (list.length > 0) {
-        setServices(list);
-      } else {
-        setServices(SEED_SERVICES);
-      }
-    });
-
-    const unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
-      const clientList = [];
-      snapshot.forEach((doc) => {
-        clientList.push({ phone: doc.id, ...doc.data() });
-      });
-      setClients(clientList);
-    });
-
-    const unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
-      const txList = [];
-      snapshot.forEach((doc) => {
-        txList.push({ id: doc.id, ...doc.data() });
-      });
-      setTransactions(txList);
-    });
-
-    const unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
-      if (snapshot.exists()) {
-        setSettings(snapshot.data());
-      } else {
-        setSettings(DEFAULT_SETTINGS);
-      }
-    });
-
-    return () => {
-      unsubProd();
-      unsubServ();
-      unsubClients();
-      unsubTx();
-      unsubSettings();
-    };
+    setLoading(false);
   }, []);
 
   useEffect(() => {
-    if (services.length > 0 && !newBooking.serviceName) {
+    if (globalData.services.length > 0 && !newBooking.serviceName) {
       setNewBooking(prev => ({
         ...prev,
         serviceName: services[0].name,
@@ -383,100 +316,7 @@ const AdminDashboard = () => {
     }
   }, [services]);
 
-  // Escuta agendamentos no Firestore em tempo real
-  useEffect(() => {
-    let unsubscribe;
-    let timedOut = false;
 
-    const getMockBookings = () => {
-      const localData = localStorage.getItem('demo_bookings');
-      if (localData) return JSON.parse(localData);
-
-      return [
-        {
-          id: 'demo-1',
-          clientName: 'Ana Souza',
-          clientPhone: '31988887777',
-          clientEmail: 'ana@email.com',
-          cpf: '123.456.789-00',
-          tags: ['Frequente', 'Cachos 3C'],
-          service: { name: 'Corte com o Jon', price: 150 },
-          date: new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0],
-          time: '09:00',
-          status: 'confirmado',
-          notes: 'Deseja volume e definição',
-          profissional: 'jon'
-        },
-        {
-          id: 'demo-2',
-          clientName: 'Carla Lima',
-          clientPhone: '31977776666',
-          clientEmail: 'carla@email.com',
-          cpf: '234.567.890-11',
-          tags: ['Novo Cliente'],
-          service: { name: 'Combo Corte + Tratamento', price: 220 },
-          date: new Date(new Date().setDate(new Date().getDate() + 2)).toISOString().split('T')[0],
-          time: '13:00',
-          status: 'pendente',
-          notes: 'Histórico de descoloração recente',
-          profissional: 'jon'
-        }
-      ];
-    };
-
-    if (!db) {
-      setIsDemoMode(true);
-      setBookings(getMockBookings());
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-      console.warn('Firestore subscription for bookings timed out. Falling back to Demo Mode.');
-      setIsDemoMode(true);
-      if (unsubscribe) unsubscribe();
-      setBookings(getMockBookings());
-      setLoading(false);
-    }, 3500);
-
-    try {
-      const q = query(collection(db, 'bookings'));
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-
-        const appts = [];
-        snapshot.forEach((doc) => {
-          appts.push({ id: doc.id, ...doc.data() });
-        });
-        setBookings(appts);
-        setLoading(false);
-        setIsDemoMode(false);
-      }, (error) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        console.warn('Firestore real-time error, switching to Demo Mode:', error);
-        setIsDemoMode(true);
-        setBookings(getMockBookings());
-        setLoading(false);
-      });
-      return () => {
-        clearTimeout(timeoutId);
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      if (!timedOut) {
-        clearTimeout(timeoutId);
-        console.warn('Error fetching bookings from Firestore:', err);
-        setIsDemoMode(true);
-        setBookings(getMockBookings());
-        setLoading(false);
-      }
-    }
-  }, [currentDate]);
 
   const changeDay = (direction) => {
     const d = new Date(currentDate);
