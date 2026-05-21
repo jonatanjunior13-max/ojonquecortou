@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 
 // Configurações do Firebase com suporte a variáveis de ambiente (.env)
 const firebaseConfig = {
@@ -25,7 +25,13 @@ if (isConfigValid) {
   try {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
-    db = getFirestore(app);
+    try {
+      db = initializeFirestore(app, {
+        experimentalAutoDetectLongPolling: true
+      });
+    } catch (e) {
+      db = getFirestore(app);
+    }
     console.log("Firebase inicializado com sucesso.");
   } catch (err) {
     console.error("Erro ao inicializar Firebase:", err);

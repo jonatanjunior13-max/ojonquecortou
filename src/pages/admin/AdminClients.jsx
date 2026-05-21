@@ -428,91 +428,71 @@ const AdminClients = () => {
           setProfiles(currentProfiles);
           localStorage.setItem('demo_client_profiles', JSON.stringify(currentProfiles));
         } else {
-          // Firestore: upload using the Firestore REST API to bypass WebSocket network/hang issues
-          let completed = 0;
-          const CONCURRENCY = 15; // 15 uploads simultâneos para fluxo UI leve e evitar rate limits
-          const uploadQueue = [...parsed];
-
-          const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
-          if (!projectId) {
-            throw new Error("ID do projeto Firebase não está configurado nas variáveis de ambiente.");
-          }
-
-          const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
-          if (!token) {
-            throw new Error("Usuário não autenticado no Firebase. Faça login novamente.");
-          }
-
-          const toFirestoreValue = (val) => {
-            if (val === null || val === undefined) {
-              return { nullValue: null };
-            }
-            return { stringValue: String(val) };
-          };
-
-          const workers = Array.from({ length: Math.min(CONCURRENCY, uploadQueue.length) }).map(async () => {
-            while (uploadQueue.length > 0) {
-              const c = uploadQueue.shift();
-              if (!c) continue;
-
-              const fields = {};
-              for (const [k, v] of Object.entries(c)) {
-                fields[k] = toFirestoreValue(v);
-              }
-              const requestBody = { fields };
-
-              const fieldNames = Object.keys(c);
-              const updateMaskParams = fieldNames.map(f => `updateMask.fieldPaths=${f}`).join('&');
-              
-              let url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/client_profiles/${c.phone}`;
+          // Firestore: upload using standard SDK with writeBatch to avoid REST API GCP enablement issues
+          // and prevent WebSocket/network hangs by doing chunked uploads.
+          const existingPhones = new Set(profiles.map(p => p.phone));
+          
+          // Classify each client as update, skip or create in memory first
+          const queue = [];
+          for (const c of parsed) {
+            if (existingPhones.has(c.phone)) {
               if (replaceExisting) {
-                url += `?${updateMaskParams}`;
+                queue.push({ client: c, isUpdate: true });
               } else {
-                url += `?currentDocument.exists=false`;
+                skipped++;
               }
-
-              try {
-                const response = await fetch(url, {
-                  method: 'PATCH',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                  },
-                  body: JSON.stringify(requestBody)
-                });
-
-                if (response.ok) {
-                  if (replaceExisting) {
-                    updated++;
-                  } else {
-                    created++;
-                  }
-                } else {
-                  // Se replaceExisting for falso e o documento já existir, o Firestore retorna 409 (Conflict) ou 412 (Precondition Failed)
-                  if (!replaceExisting && (response.status === 409 || response.status === 412)) {
-                    skipped++;
-                  } else {
-                    const errorText = await response.text();
-                    console.error(`Erro Firestore REST para o cliente ${c.phone}:`, response.status, errorText);
-                    failed++;
-                    setImportErrors(prev => [...prev, `Telefone ${c.phone}: Erro ${response.status} ao gravar.`]);
-                  }
-                }
-              } catch (err) {
-                console.error(`Erro de rede REST para o cliente ${c.phone}:`, err);
-                failed++;
-                setImportErrors(prev => [...prev, `Telefone ${c.phone}: Erro de conexão (${err.message}).`]);
-              }
-
-              completed++;
-              setImportSummary(
-                `Importados: ${created + updated} | Pulados: ${skipped} | Falhas: ${failed} (Progresso: ${completed}/${total})`
-              );
-              setImportProgress(20 + Math.floor((completed / total) * 75));
+            } else {
+              queue.push({ client: c, isUpdate: false });
             }
-          });
+          }
 
-          await Promise.all(workers);
+          if (queue.length === 0) {
+            setImportProgress(100);
+            setImportSummary(
+              `✅ Importação concluída! Sucesso: 0, Pulados: ${skipped}.${validationErrors.length > 0 ? ` ${validationErrors.length} linha(s) com erros de cabeçalho/validação.` : ''}`
+            );
+            setImportFile(null);
+            if (importFileRef.current) importFileRef.current.value = '';
+            return;
+          }
+
+          const BATCH_SIZE = 100; // Chunk size for write batches (limit is 500)
+          const totalToUpload = queue.length;
+          
+          for (let i = 0; i < totalToUpload; i += BATCH_SIZE) {
+            const chunk = queue.slice(i, i + BATCH_SIZE);
+            const batch = writeBatch(db);
+
+            for (const item of chunk) {
+              const docRef = doc(db, 'client_profiles', item.client.phone);
+              if (item.isUpdate) {
+                batch.set(docRef, item.client, { merge: true });
+              } else {
+                batch.set(docRef, item.client);
+              }
+            }
+
+            try {
+              await batch.commit();
+              for (const item of chunk) {
+                if (item.isUpdate) {
+                  updated++;
+                } else {
+                  created++;
+                }
+              }
+            } catch (batchErr) {
+              console.error(`Erro ao gravar lote de clientes (índice ${i}):`, batchErr);
+              failed += chunk.length;
+              setImportErrors(prev => [...prev, `Erro no lote de ${i + 1} a ${i + chunk.length}: ${batchErr.message}`]);
+            }
+
+            const completedCount = Math.min(i + BATCH_SIZE, totalToUpload);
+            setImportSummary(
+              `Importados: ${created + updated} | Pulados: ${skipped} | Falhas: ${failed} (Progresso: ${completedCount}/${totalToUpload})`
+            );
+            setImportProgress(20 + Math.floor((completedCount / totalToUpload) * 75));
+          }
         }
 
         setImportProgress(100);
@@ -1536,9 +1516,10 @@ await resend.emails.send({
 
               {importErrors.length > 0 && (
                 <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 8, background: '#c5303018', color: '#c53030', fontSize: '0.82rem' }}>
-                  <strong>Erros de validação ({importErrors.length}):</strong>
-                  <ul style={{ margin: '6px 0 0 16px', padding: 0 }}>
-                    {importErrors.map((err, i) => <li key={i}>{err}</li>)}
+                  <strong>Lista de erros/status ({importErrors.length}):</strong>
+                  <ul style={{ margin: '6px 0 0 16px', padding: 0, maxHeight: '180px', overflowY: 'auto' }}>
+                    {importErrors.slice(0, 50).map((err, i) => <li key={i}>{err}</li>)}
+                    {importErrors.length > 50 && <li style={{ fontWeight: 'bold', listStyle: 'none', marginTop: 4 }}>... e mais {importErrors.length - 50} erros.</li>}
                   </ul>
                 </div>
               )}
