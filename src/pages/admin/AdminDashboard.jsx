@@ -2086,14 +2086,12 @@ const AdminDashboard = () => {
                   <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Clock size={13} /> Horário *
                   </label>
-                  <select 
+                  <input 
+                    type="time"
+                    required
                     value={editBookingForm.time}
                     onChange={e => setEditBookingForm(prev => ({ ...prev, time: e.target.value }))}
-                  >
-                    {TIME_SLOTS.map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div className="form-group">
@@ -2599,14 +2597,12 @@ const AdminDashboard = () => {
 
                 <div className="form-group">
                   <label>Horário *</label>
-                  <select 
+                  <input 
+                    type="time"
+                    required
                     value={newBooking.time}
                     onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
-                  >
-                    {TIME_SLOTS.map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
+                  />
                 </div>
               </div>
 

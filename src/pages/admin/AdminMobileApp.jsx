@@ -286,10 +286,22 @@ const AdminMobileApp = () => {
 
     if ('Notification' in window && Notification.permission === 'granted') {
       try {
-        new Notification(title, {
-          body: message,
-          icon: '/favicon.ico'
-        });
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.ready.then(registration => {
+            registration.showNotification(title, {
+              body: message,
+              icon: '/jon-perfil.jpg',
+              tag: id,
+              vibrate: [200, 100, 200, 100, 200]
+            });
+          });
+        } else {
+          new Notification(title, {
+            body: message,
+            icon: '/jon-perfil.jpg',
+            tag: id
+          });
+        }
       } catch (e) {
         console.warn('Native notification failed:', e);
       }
@@ -445,6 +457,18 @@ const AdminMobileApp = () => {
       localStorage.setItem('admin_notifications', JSON.stringify(updated));
       return updated;
     });
+  };
+
+  const requestNotificationPermission = () => {
+    if ('Notification' in window) {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          triggerNotification('welcome_notif', 'Notificações Ativadas! ✅', 'Você receberá avisos sonoros de novos agendamentos.', 'sistema');
+        } else {
+          alert('Permissão de notificação negada. Você não receberá alertas.');
+        }
+      });
+    }
   };
 
   const clearAllNotifications = () => {
@@ -1621,6 +1645,14 @@ const AdminMobileApp = () => {
             </div>
 
             <div className="notifications-list-container" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '4px 0' }}>
+              {'Notification' in window && Notification.permission !== 'granted' && (
+                <div style={{ padding: '12px', background: '#fff3cd', borderRadius: '8px', marginBottom: '12px', border: '1px solid #ffe69c' }}>
+                  <p style={{ margin: '0 0 8px 0', fontSize: '0.85rem', color: '#664d03' }}>Ative as notificações para receber avisos e sons no celular.</p>
+                  <button onClick={requestNotificationPermission} style={{ width: '100%', padding: '8px', background: '#ffc107', color: '#000', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>
+                    🔔 Ativar Notificações
+                  </button>
+                </div>
+              )}
               {notifications.length > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, gap: 10 }}>
                   <button 

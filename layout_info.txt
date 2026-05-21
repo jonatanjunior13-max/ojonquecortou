@@ -1,0 +1,882 @@
+=== AdminClients.jsx ===
+Component Name: AdminClients
+Return found at line 1311:
+                      <option value="inativos_60">Clientes Adormecidas (&gt;60 dias) ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d > 60 && d !== Infinity; }).length})</option>
+                      <option value="nunca_visitaram">Sem Agendamento no Salão ({clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length})</option>
+                      {selectedCampaignPhones.length > 0 && (
+                        <option value="selecionados">Selecionadas no Relatório ({selectedCampaignPhones.length})</option>
+                      )}
+                    </select>
+                  </div>
+
+                  <div className="form-group-sleek">
+                    <label>Canal de Disparo</label>
+                    <div className="campaign-channel-toggle" style={{ display: 'flex', gap: '12px', margin: '8px 0' }}>
+                      <button 
+                        type="button" 
+                        className={`btn ${marketingChannel === 'whatsapp' ? 'btn-accent' : 'btn-outline'}`}
+                        onClick={() => setMarketingChannel('whatsapp')}
+                        style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
+                      >
+                        <Phone size={14} style={{ marginRight: 6 }} /> WhatsApp
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`btn ${marketingChannel === 'email' ? 'btn-accent' : 'btn-outline'}`}
+                        onClick={() => setMarketingChannel('email')}
+                        style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
+                      >
+                        <Mail size={14} style={{ marginRight: 6 }} /> E-mail (Resend API)
+                      </button>
+                    </div>
+                  </div>
+
+                  {marketingChannel === 'whatsapp' ? (
+                    <div className="form-group-sleek">
+                      <label>Texto da Campanha (Suporta Tags Dinâmicas)</label>
+                      <textarea 
+                        rows="5"
+                        value={campaignMessage}
+                        onChange={e => setCampaignMessage(e.target.value)}
+                        placeholder="Use as tags para personalizar..."
+                      ></textarea>
+                      
+                      <div className="tags-legend">
+                        <strong>Tags disponíveis:</strong>
+                        <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {nome}')}>{`{nome}`}</span>
+                        <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {ultimo_servico}')}>{`{ultimo_servico}`}</span>
+                        <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {dias_ausente}')}>{`{dias_ausente}`}</span>
+                      </div>
+
+                      <div className="message-preview-box" style={{ marginTop: '16px' }}>
+                        <h5>Pré-visualização do WhatsApp:</h5>
+                        <div className="preview-bubble">
+                          {campaignMessage
+                            .replace(/{nome}/g, 'Mariana Costa')
+                            .replace(/{ultimo_servico}/g, 'Corte com o Jon')
+                            .replace(/{dias_ausente}/g, '42')}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="email-campaign-form">
+                      <div className="form-group-sleek">
+                        <label>Assunto do E-mail</label>
+                        <input 
+                          type="text"
+                          value={emailCampaignSubject}
+                          onChange={e => setEmailCampaignSubject(e.target.value)}
+                          placeholder="Assunto da campanha..."
+                        />
+                      </div>
+                      
+                      <div className="form-group-sleek" style={{ marginTop: '12px' }}>
+                        <label>Corpo do E-mail (HTML permitido)</label>
+                        <textarea 
+                          rows="6"
+                          value={emailCampaignBody}
+                          onChange={e => setEmailCampaignBody(e.target.value)}
+                          style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
+                        ></textarea>
+                        
+                        <div className="tags-legend">
+                          <strong>Tags disponíveis:</strong>
+                          <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {nome}')}>{`{nome}`}</span>
+                          <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {ultimo_servico}')}>{`{ultimo_servico}`}</span>
+                          <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {dias_ausente}')}>{`{dias_ausente}`}</span>
+                        </div>
+                      </div>
+
+                      <div className="message-preview-box" style={{ marginTop: '16px' }}>
+                        <h5>Pré-visualização do HTML:</h5>
+                        <div 
+                          className="email-html-preview" 
+                          style={{ background: 'white', color: 'black', padding: '16px', borderRadius: '6px', border: '1px solid var(--rule)', maxHeight: '200px', overflowY: 'auto' }}
+                          dangerouslySetInnerHTML={{ 
+                            __html: emailCampaignBody
+                              .replace(/{nome}/g, 'Mariana Costa')
+                              .replace(/{ultimo_servico}/g, 'Corte com o Jon')
+                              .replace(/{dias_ausente}/g, '42') 
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Disparo e Links Gerados */}
+                <div className="marketing-targets-card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <h4 style={{ margin: 0 }}>Alvos da Campanha ({marketingTargetsList.length} Clientes)</h4>
+                    
+                    {marketingChannel === 'email' && (
+                      <button 
+                        className="btn btn-accent" 
+                        onClick={handleSimulateEmailCampaign}
+                        disabled={isSendingEmail || marketingTargetsList.length === 0}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                      >
+                        {isSendingEmail ? 'Disparando...' : 'Disparar E-mails'}
+                      </button>
+                    )}
+
+                    {marketingChannel === 'whatsapp' && (
+
+--------------------------------------------------
+
+=== AdminDashboard.jsx ===
+Component Name: AdminDashboard
+Return found at line 1017:
+                  return (
+                    <div 
+                      key={day.raw} 
+                      className="day-cell"
+                      style={{ cursor: (!appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
+                      onClick={() => {
+                        if (!appt || appt.status === 'cancelado') {
+                          handleCellClick(day, slot);
+                        }
+                      }}
+                    >
+                      {appt && appt.status === 'bloqueado' && (
+                        <div 
+                          className="appt-card bloqueado"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedBooking(appt);
+                            setIsCheckoutOpen(false);
+                            setAddedServices([]);
+                            setAddedProducts([]);
+                          }}
+                        >
+                          <span className="appt-time">{appt.time}</span>
+                          <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Lock size={12} /> Bloqueado
+                          </span>
+                          <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
+                            {appt.notes}
+                          </span>
+                        </div>
+                      )}
+                      {appt && appt.status !== 'bloqueado' && (
+                        <div 
+                          className={`appt-card ${appt.status}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedBooking(appt);
+                            setIsCheckoutOpen(false);
+                            setAddedServices([]);
+                            setAddedProducts([]);
+                          }}
+                        >
+                          <span className="appt-time">{appt.time}</span>
+                          <span className="appt-client">{appt.clientName}</span>
+                          <span className="appt-service">{appt.service?.name || appt.serviceName}</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 1: DETALHE DO AGENDAMENTO E COMANDA */}
+      {selectedBooking && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: isCheckoutOpen ? 640 : 500 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <h3>{isCheckoutOpen ? 'Fechar Comanda da Cliente' : (isEditingBooking ? 'Editar Agendamento' : 'Ficha do Agendamento')}</h3>
+              <button className="btn-icon" onClick={() => {
+                setSelectedBooking(null);
+                setIsCheckoutOpen(false);
+                setOverrideBasePrice(null);
+                setIsEditingBooking(false);
+              }}><X size={18} /></button>
+            </div>
+            
+            {!isCheckoutOpen ? (
+              isEditingBooking ? (
+                <form onSubmit={handleSaveEditBooking} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div className="form-group">
+                    <label>Nome Completo do Cliente *</label>
+                    <div className="autocomplete-container">
+                      <input 
+                        type="text" 
+                        required 
+                        value={editBookingForm.clientName}
+                        onChange={e => {
+                          setEditBookingForm(prev => ({ ...prev, clientName: e.target.value }));
+                          setShowEditSuggestions(true);
+                        }}
+                        onFocus={() => setShowEditSuggestions(true)}
+                        onBlur={() => setTimeout(() => setShowEditSuggestions(false), 200)}
+                      />
+                      {showEditSuggestions && getFilteredClients(editBookingForm.clientName).length > 0 && (
+                        <ul className="suggestions-list">
+                          {getFilteredClients(editBookingForm.clientName).map(c => (
+                            <li 
+                              key={c.phone || c.id} 
+                              className="suggestion-item"
+                              onMouseDown={() => selectClientForEdit(c)}
+                            >
+                              <span className="suggestion-name">{c.name}</span>
+                              {c.phone && <span className="suggestion-phone">{c.phone}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label>WhatsApp *</label>
+                    <input 
+                      type="tel" 
+                      required 
+                      value={editBookingForm.clientPhone}
+                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientPhone: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>E-mail (Opcional)</label>
+                    <input 
+                      type="email" 
+                      value={editBookingForm.clientEmail}
+                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientEmail: e.target.value }))}
+                    />
+                  </div>
+
+--------------------------------------------------
+
+=== AdminFinancial.jsx ===
+Component Name: AdminFinancial
+Return found at line 621:
+                  return (
+                    <tr key={t.id}>
+                      <td>{t.date.split('-').reverse().join('/')}</td>
+                      <td>
+                        <div style={{ fontWeight: 600 }}>{t.clientName}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{t.description}</div>
+                      </td>
+                      <td>{t.paymentMethod}</td>
+                      <td>R$ {t.value.toFixed(2)}</td>
+                      <td>R$ {netVal.toFixed(2)}</td>
+                      <td>
+                        <select 
+                          value={currentAssigned} 
+                          onChange={e => handleAssignProfWrapper(t.id, e.target.value)}
+                          style={{ padding: '4px 8px', fontSize: '0.85rem', width: '100%', maxWidth: 200 }}
+                        >
+                          <option value="">-- Não Associado --</option>
+                          {professionals.map(p => (
+                            <option key={p.id} value={p.id}>{p.name}</option>
+                          ))}
+                        </select>
+                      </td>
+                      <td style={{ fontWeight: 700, color: repasseValue > 0 ? '#48bb78' : 'var(--muted)' }}>
+                        {repasseValue > 0 ? `R$ ${repasseValue.toFixed(2)} (${prof.commission}%)` : 'R$ 0.00'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Modal para Registrar Despesa */}
+      {showExpenseModal && (
+        <div className="modal-overlay">
+          <form className="modal-content" onSubmit={handleAddExpense}>
+            <h3>Lançar Saída de Caixa (Sangria)</h3>
+
+            <div className="form-group">
+              <label>Descrição do Gasto / Destinatário *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="Ex: Compra de toalhas descartáveis"
+                value={expenseForm.description}
+                onChange={e => setExpenseForm(prev => ({ ...prev, description: e.target.value }))}
+              />
+            </div>
+
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="form-group">
+                <label>Valor da Despesa (R$) *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0.01"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={expenseForm.value}
+                  onChange={e => setExpenseForm(prev => ({ ...prev, value: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Método de Saída *</label>
+                <select 
+                  value={expenseForm.paymentMethod}
+                  onChange={e => setExpenseForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                >
+                  <option value="Pix">Pix</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-group" style={{ marginTop: 12 }}>
+              <label>Data de Pagamento *</label>
+              <input 
+                type="date" 
+                required
+                value={expenseForm.date}
+                onChange={e => setExpenseForm(prev => ({ ...prev, date: e.target.value }))}
+              />
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowExpenseModal(false)}>Cancelar</button>
+              <button type="submit" className="btn btn-accent" style={{ background: '#e53e3e', borderColor: '#e53e3e' }}>Registrar Gasto</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Modal para Cadastrar Profissional */}
+      {showAddProfModal && (
+        <div className="modal-overlay">
+          <form className="modal-content" onSubmit={handleAddProfessional}>
+            <h3>Cadastrar Novo Colaborador</h3>
+
+            <div className="form-group">
+              <label>Nome Completo da Profissional *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="Ex: Auxiliar Amanda"
+                value={newProfForm.name}
+                onChange={e => setNewProfForm(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+
+            <div className="form-group" style={{ marginTop: 12 }}>
+              <label>Comissão Padrão (%) *</label>
+              <input 
+                type="number" 
+                required 
+                min="0"
+                max="100"
+
+--------------------------------------------------
+
+=== AdminInventory.jsx ===
+Component Name: AdminInventory
+Return found at line 280:
+                  return (
+                    <tr key={p.id}>
+                      <td style={{ fontWeight: 600 }}>{p.name}</td>
+                      <td>{p.category}</td>
+                      <td>
+                        {quickRestockId === p.id ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <input 
+                              type="number" 
+                              value={quickRestockAmount} 
+                              onChange={e => setQuickRestockAmount(e.target.value)} 
+                              style={{ width: 60, padding: '4px 8px', borderRadius: 4, border: '1px solid var(--rule)' }}
+                            />
+                            <button 
+                              className="btn btn-accent" 
+                              style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                              onClick={() => handleQuickRestock(p)}
+                            >
+                              Salvar
+                            </button>
+                            <button 
+                              className="btn btn-ghost" 
+                              style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                              onClick={() => setQuickRestockId(null)}
+                            >
+                              X
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span>{p.quantity} unid.</span>
+                            <button 
+                              className="btn-icon" 
+                              title="Reabastecer Rápido"
+                              style={{ padding: 4 }}
+                              onClick={() => {
+                                setQuickRestockId(p.id);
+                                setQuickRestockAmount(5);
+                              }}
+                            >
+                              <ArrowUp size={12} />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                      <td style={{ color: 'var(--text-muted)' }}>{p.minStock} unid.</td>
+                      <td>R$ {p.costPrice}</td>
+                      <td>R$ {p.sellingPrice}</td>
+                      <td style={{ color: '#48bb78', fontWeight: 600 }}>R$ {p.sellingPrice - p.costPrice}</td>
+                      <td>
+                        <span className={`stock-badge ${isLow ? 'low' : 'normal'}`}>
+                          {isLow ? 'Estoque Baixo' : 'Normal'}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <div style={{ display: 'inline-flex', gap: 6 }}>
+                          <button className="btn-icon" onClick={() => handleOpenEdit(p)} title="Editar"><Edit2 size={14} /></button>
+                          <button className="btn-icon" style={{ color: '#e53e3e' }} onClick={() => handleDelete(p.id)} title="Excluir"><Trash2 size={14} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* Modal de Cadastro/Edição */}
+      {showModal && (
+        <div className="modal-overlay">
+          <form className="modal-content" onSubmit={handleSave}>
+            <h3>{editingProduct ? 'Editar Produto' : 'Cadastrar Novo Produto'}</h3>
+
+            <div className="form-group">
+              <label>Nome do Produto *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="Ex: Creme definidor 250ml"
+                value={form.name}
+                onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div className="form-group">
+                <label>Categoria *</label>
+                <select 
+                  value={form.category}
+                  onChange={e => setForm(prev => ({ ...prev, category: e.target.value }))}
+                >
+                  {CATEGORIES.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Qtd. Inicial *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0"
+                  value={form.quantity}
+                  onChange={e => setForm(prev => ({ ...prev, quantity: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 12 }}>
+              <div className="form-group">
+                <label>Preço Custo (R$) *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0"
+                  step="0.01"
+                  value={form.costPrice}
+
+--------------------------------------------------
+
+=== AdminServices.jsx ===
+Component Name: AdminServices
+Return found at line 358:
+            return (
+              <div key={s.id} className={`service-catalog-card ${s.isPrimary ? 'featured' : ''}`}>
+                {/* Visual Top Bar / Card Header */}
+                <div className="card-top-decoration">
+                  <span className="service-category-tag">{s.category || 'Cabelo'}</span>
+                  <div className="service-badges-row">
+                    {s.isPrimary && (
+                      <span className="service-badge highlight">
+                        <Sparkles size={11} /> Destaque
+                      </span>
+                    )}
+                    {isPromo && (
+                      <span className="service-badge promo">
+                        <Percent size={11} /> Oferta
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Card Content */}
+                <div className="service-card-body">
+                  <h3 className="service-card-title">{s.name}</h3>
+                  
+                  <div className="service-duration-info">
+                    <Clock size={13} />
+                    <span>Duração média: {formatDuration(s.duration)}</span>
+                  </div>
+
+                  {s.description && (
+                    <div className="service-desc-wrapper">
+                      <p className={`service-description ${isDescExpanded ? 'expanded' : 'collapsed'}`}>
+                        {s.description}
+                      </p>
+                      {s.description.length > 120 && (
+                        <button 
+                          type="button" 
+                          className="btn-toggle-desc" 
+                          onClick={() => toggleDescription(s.id)}
+                        >
+                          {isDescExpanded ? 'Ler menos' : 'Ler descrição completa'}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Card Footer / Pricing & Actions */}
+                <div className="service-card-footer">
+                  <div className="service-pricing-area">
+                    {isPromo ? (
+                      <div className="pricing-split">
+                        <span className="pricing-label">Preço Promocional</span>
+                        <div className="price-comparison">
+                          <span className="price-old-strike">R$ {s.price.toFixed(2)}</span>
+                          <span className="price-new-value">
+                            <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                            <strong>R$ {s.promoPrice.toFixed(2)}</strong>
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="pricing-standard">
+                        <span className="pricing-label">Valor do Serviço</span>
+                        <span className="price-standard-value">
+                          <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                          <strong>R$ {s.price.toFixed(2)}</strong>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="service-card-actions">
+                    <button 
+                      className="action-btn edit" 
+                      onClick={() => handleOpenEdit(s)} 
+                      title="Editar Serviço"
+                    >
+                      <Edit3 size={15} />
+                    </button>
+                    <button 
+                      className="action-btn delete" 
+                      onClick={() => handleDelete(s.id)} 
+                      title="Excluir Serviço"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Modal de Cadastro/Edição */}
+      {isModalOpen && (
+        <div className="modal-overlay">
+          <form className="modal-content" onSubmit={handleSubmit} style={{ maxWidth: 650 }}>
+            <div className="modal-header-with-icon">
+              <Scissors size={20} className="modal-heading-icon" />
+              <h3>{editingService ? 'Editar Serviço' : 'Novo Serviço do Salão'}</h3>
+            </div>
+
+            <div className="form-group-sleek">
+              <label>Nome do Serviço *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="Ex: Corte com o Jon"
+                value={form.name}
+                onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+
+            <div className="form-row-grid">
+              <div className="form-group-sleek">
+                <label>Categoria *</label>
+                <input 
+                  type="text" 
+                  required
+
+--------------------------------------------------
+
+=== AdminSettings.jsx ===
+Component Name: AdminSettings
+Return found at line 255:
+                return (
+                  <div 
+                    key={day} 
+                    style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: '150px 120px 1fr', 
+                      alignItems: 'center', 
+                      padding: 12, 
+                      background: hourData.active ? 'var(--bg-warm)' : 'none', 
+                      borderRadius: 6,
+                      border: '1px solid var(--rule)'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <input 
+                        type="checkbox" 
+                        id={`check-${day}`}
+                        checked={hourData.active}
+                        onChange={e => handleHourChange(day, 'active', e.target.checked)}
+                      />
+                      <label htmlFor={`check-${day}`} style={{ fontWeight: 600, textTransform: 'capitalize', cursor: 'pointer' }}>
+                        {day}
+                      </label>
+                    </div>
+
+                    <div>
+                      <span className={`status-badge ${hourData.active ? 'confirmado' : 'cancelado'}`}>
+                        {hourData.active ? 'Aberto' : 'Fechado'}
+                      </span>
+                    </div>
+
+                    {hourData.active ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                        <span>Horário de Funcionamento:</span>
+                        <input 
+                          type="time" 
+                          value={hourData.start} 
+                          onChange={e => handleHourChange(day, 'start', e.target.value)}
+                          style={{ width: 90, padding: 4 }}
+                        />
+                        <span>até</span>
+                        <input 
+                          type="time" 
+                          value={hourData.end} 
+                          onChange={e => handleHourChange(day, 'end', e.target.value)}
+                          style={{ width: 90, padding: 4 }}
+                        />
+                      </div>
+                    ) : (
+                      <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Não há atendimento neste dia.</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* CONTEÚDO: POLÍTICAS DE AGENDAMENTO */}
+        {activeTab === 'politicas' && (
+          <div className="financial-card">
+            <h3>Políticas de Reservas & Regras</h3>
+
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label>Antecedência Mínima para Agendamento do Cliente (em horas)</label>
+              <select 
+                value={settings.minAdvance} 
+                onChange={e => setSettings({ ...settings, minAdvance: e.target.value })}
+                style={{ maxWidth: 200 }}
+              >
+                <option value="1">1 hora</option>
+                <option value="2">2 horas</option>
+                <option value="4">4 horas</option>
+                <option value="12">12 horas</option>
+                <option value="24">24 horas (1 dia)</option>
+              </select>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 20 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+                <input 
+                  type="checkbox" 
+                  checked={settings.autoApprove}
+                  onChange={e => setSettings({ ...settings, autoApprove: e.target.checked })}
+                />
+                Aprovação automática de novos agendamentos via site
+              </label>
+              <p style={{ color: 'var(--muted)', fontSize: '0.82rem', marginLeft: 22, marginTop: 4 }}>
+                Se marcado, os agendamentos feitos por clientes são criados automaticamente como "Confirmado". 
+                Caso contrário, entram no status "Pendente" aguardando ação do administrador.
+              </p>
+            </div>
+
+            <div className="form-group">
+              <label>Mensagem Padrão de Envio para WhatsApp</label>
+              <textarea 
+                rows="3"
+                value={settings.waTemplate}
+                onChange={e => setSettings({ ...settings, waTemplate: e.target.value })}
+                placeholder="Ex: Olá Jon, agendei o serviço..."
+                style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--rule)', borderRadius: 6 }}
+              />
+              <span style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+                Use as tags mágicas <code>{"{servico}"}</code>, <code>{"{data}"}</code> e <code>{"{hora}"}</code> para preencher os dados dinamicamente.
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* CONTEÚDO: INTEGRAÇÃO WHATSAPP */}
+        {activeTab === 'whatsapp' && (
+          <div className="financial-card">
+            <h3>Disparos Automáticos de Confirmação (24h Antes)</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+              Ative e configure o envio automático de lembretes aos clientes com agendamento para o dia seguinte. A automação ocorre em segundo plano sempre que você ou sua equipe acessam o painel de controle.
+            </p>
+
+            <div className="form-group" style={{ marginBottom: 20 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, cursor: 'pointer' }}>
+                <input 
+
+--------------------------------------------------
+
+=== AdminMarketing.jsx ===
+Component Name: AdminMarketing
+Return found at line 283:
+  return (
+    <div className="admin-marketing-page">
+      {/* Abas */}
+      <div className="tab-menu" style={{ marginBottom: 24 }}>
+        <button className={`tab-btn ${activeTab === 'cupons' ? 'active' : ''}`} onClick={() => setActiveTab('cupons')}>
+          <Ticket size={16} /> Cupons de Desconto
+        </button>
+        <button className={`tab-btn ${activeTab === 'fidelidade' ? 'active' : ''}`} onClick={() => setActiveTab('fidelidade')}>
+          <Award size={16} /> Programa de Fidelidade
+        </button>
+        <button className={`tab-btn ${activeTab === 'vales' ? 'active' : ''}`} onClick={() => setActiveTab('vales')}>
+          <Gift size={16} /> Vales-Presente
+        </button>
+      </div>
+
+      {isDemoMode && (
+        <div style={{ marginBottom: 16, padding: '8px 16px', background: 'rgba(176, 90, 46, 0.08)', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent)' }}>Ambiente de Demonstração / Dados Locais</span>
+        </div>
+      )}
+
+      {/* CONTEÚDO: CUPONS */}
+      {activeTab === 'cupons' && (
+        <div className="financial-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <h3>Gestão de Cupons Promocionais</h3>
+            <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setShowCouponModal(true)}>
+              <Plus size={16} style={{ marginRight: 6 }} /> Criar Novo Cupom
+            </button>
+          </div>
+
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Tipo</th>
+                <th>Desconto</th>
+                <th>Vencimento</th>
+                <th>Usos / Limite</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {coupons.map(c => (
+                <tr key={c.id}>
+                  <td style={{ fontWeight: 700, color: 'var(--accent)' }}>{c.code}</td>
+                  <td>{c.type === 'porcentagem' ? 'Porcentagem' : 'Valor Fixo'}</td>
+                  <td>{c.type === 'porcentagem' ? `${c.value}%` : `R$ ${c.value}`}</td>
+                  <td>{c.validity.split('-').reverse().join('/')}</td>
+                  <td>{c.used} / {c.limit}</td>
+                  <td>
+                    <span className={`status-badge ${c.status === 'ativo' ? 'confirmado' : 'cancelado'}`}>
+                      {c.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button className="btn-icon text-danger" onClick={() => handleDeleteCoupon(c.id)}>
+                      <Trash2 size={14} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* CONTEÚDO: PROGRAMA DE FIDELIDADE */}
+      {activeTab === 'fidelidade' && (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 24 }}>
+          {/* Configuração de Regras */}
+          <div className="financial-card" style={{ height: 'fit-content' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+              <Settings size={18} style={{ color: 'var(--accent)' }} />
+              <h3 style={{ margin: 0 }}>Regras do Clube</h3>
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: 12 }}>
+              <label>Conversão (R$ para Pontos)</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span>R$ 1,00 =</span>
+                <input 
+                  type="number" 
+                  value={fidelityRules.pointsPerReal} 
+                  onChange={e => saveFidelityRules({ ...fidelityRules, pointsPerReal: Number(e.target.value) })}
+                  style={{ width: 70, textAlign: 'center' }}
+                />
+                <span>Ponto(s)</span>
+              </div>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 12 }}>
+              <label>Resgate de Prêmio</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                <input 
+                  type="number" 
+                  value={fidelityRules.pointsToRedeem} 
+                  onChange={e => saveFidelityRules({ ...fidelityRules, pointsToRedeem: Number(e.target.value) })}
+                  style={{ width: 75, textAlign: 'center' }}
+                />
+                <span>pts valem</span>
+                <span style={{ fontWeight: 600 }}>R$</span>
+                <input 
+                  type="number" 
+                  value={fidelityRules.redeemValue} 
+                  onChange={e => saveFidelityRules({ ...fidelityRules, redeemValue: Number(e.target.value) })}
+                  style={{ width: 75, textAlign: 'center' }}
+                />
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: 16 }}>
+              As pontuações são lançadas nas contas dos clientes automaticamente ao fechar comandas finalizadas.
+            </p>
+          </div>
+
+          {/* Saldo de Pontos dos Clientes */}
+          <div className="financial-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+
+--------------------------------------------------
+

@@ -49,7 +49,39 @@ function seoLinksPlugin() {
   }
 }
 
+import { VitePWA } from 'vite-plugin-pwa'
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), seoLinksPlugin()],
+  plugins: [
+    react(), 
+    seoLinksPlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}']
+      },
+      manifest: {
+        name: 'O Jon Que Cortou - Admin',
+        short_name: 'Jon Admin',
+        description: 'Painel de Agendamento do Salão',
+        theme_color: '#fdfbf7',
+        background_color: '#fdfbf7',
+        display: 'standalone',
+        icons: [
+          {
+            src: '/jon-perfil.jpg',
+            sizes: '192x192',
+            type: 'image/jpeg'
+          },
+          {
+            src: '/jon-perfil.jpg',
+            sizes: '512x512',
+            type: 'image/jpeg'
+          }
+        ]
+      }
+    })
+  ],
 })
