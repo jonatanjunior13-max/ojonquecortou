@@ -36,23 +36,39 @@ const AdminInventory = () => {
   });
 
   useEffect(() => {
+    let unsubscribe;
+    let timedOut = false;
+
+    const getMockProducts = () => {
+      const localData = localStorage.getItem('demo_products');
+      if (localData) return JSON.parse(localData);
+      localStorage.setItem('demo_products', JSON.stringify(SEED_PRODUCTS));
+      return SEED_PRODUCTS;
+    };
+
     if (!db) {
       setIsDemoMode(true);
-      // Carrega do localStorage ou inicia com sementes
-      const localData = localStorage.getItem('demo_products');
-      if (localData) {
-        setProducts(JSON.parse(localData));
-      } else {
-        localStorage.setItem('demo_products', JSON.stringify(SEED_PRODUCTS));
-        setProducts(SEED_PRODUCTS);
-      }
+      setProducts(getMockProducts());
       setLoading(false);
       return;
     }
 
     setLoading(true);
+
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      console.warn('Firestore subscription for products timed out. Falling back to Demo Mode.');
+      setIsDemoMode(true);
+      if (unsubscribe) unsubscribe();
+      setProducts(getMockProducts());
+      setLoading(false);
+    }, 3500);
+
     try {
-      const unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
+      unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
+        if (timedOut) return;
+        clearTimeout(timeoutId);
+
         const prodList = [];
         snapshot.forEach((doc) => {
           prodList.push({ id: doc.id, ...doc.data() });
@@ -61,20 +77,26 @@ const AdminInventory = () => {
         setLoading(false);
         setIsDemoMode(false);
       }, (error) => {
+        if (timedOut) return;
+        clearTimeout(timeoutId);
         console.warn('Erro ao carregar Firestore, mudando para Demo local:', error);
         setIsDemoMode(true);
-        const localData = localStorage.getItem('demo_products') || JSON.stringify(SEED_PRODUCTS);
-        setProducts(JSON.parse(localData));
+        setProducts(getMockProducts());
         setLoading(false);
       });
 
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(timeoutId);
+        if (unsubscribe) unsubscribe();
+      };
     } catch (err) {
-      console.warn('Falha na conexão com Firestore para produtos:', err);
-      setIsDemoMode(true);
-      const localData = localStorage.getItem('demo_products') || JSON.stringify(SEED_PRODUCTS);
-      setProducts(JSON.parse(localData));
-      setLoading(false);
+      if (!timedOut) {
+        clearTimeout(timeoutId);
+        console.warn('Falha na conexão com Firestore para produtos:', err);
+        setIsDemoMode(true);
+        setProducts(getMockProducts());
+        setLoading(false);
+      }
     }
   }, []);
 

@@ -56,6 +56,9 @@ const AdminLogin = () => {
 
       <div className="login-card">
         <header className="login-header">
+          <div className="login-logo-container" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <img src="/logo-app.png" alt="Logo O Jon Que Cortou" style={{ width: '90px', height: '90px', borderRadius: '16px', border: '2.5px solid var(--accent)', boxShadow: '0 6px 18px rgba(255, 0, 127, 0.2)' }} />
+          </div>
           <div className="logo-text">Studio do Jon</div>
           <h2>Painel <span className="italic">BackOffice</span></h2>
           <p>Insira suas credenciais para gerenciar a agenda e fichas das clientes.</p>

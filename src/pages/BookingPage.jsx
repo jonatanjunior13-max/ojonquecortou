@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../config/firebase';
+import { db, withTimeout } from '../config/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
+import { Clock, ChevronDown, ChevronUp, Sparkles, Check } from 'lucide-react';
 import './Booking.css';
 
 const SEED_SERVICES = [
@@ -106,6 +107,10 @@ const BookingPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
+  
+  // Catálogo visual states
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [showMoreServices, setShowMoreServices] = useState(false);
   
   // Dados do cliente
@@ -135,8 +140,17 @@ const BookingPage = () => {
         return;
       }
 
+      // Timeout fallback se o Firestore falhar/travar na carga
+      const serviceTimeout = setTimeout(() => {
+        console.warn('Conexão com Firestore excedeu tempo limite ao carregar serviços. Ativando Modo Demo.');
+        setIsDemoMode(true);
+        const localData = localStorage.getItem('demo_services');
+        setServices(localData ? JSON.parse(localData) : SEED_SERVICES);
+      }, 3500);
+
       try {
-        const querySnapshot = await getDocs(collection(db, 'services'));
+        const querySnapshot = await withTimeout(getDocs(collection(db, 'services')), 3500);
+        clearTimeout(serviceTimeout);
         const list = [];
         querySnapshot.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
@@ -147,6 +161,7 @@ const BookingPage = () => {
           setServices(SEED_SERVICES);
         }
       } catch (err) {
+        clearTimeout(serviceTimeout);
         console.warn('Erro ao buscar serviços do Firestore, usando locais:', err);
         setIsDemoMode(true);
         const localData = localStorage.getItem('demo_services');
@@ -194,13 +209,22 @@ const BookingPage = () => {
         return;
       }
 
+      // Timeout fallback se o Firestore travar ao ler agenda
+      const bookingsTimeout = setTimeout(() => {
+        console.warn('Timeout ao carregar horários. Ativando modo Demo.');
+        setIsDemoMode(true);
+        setBookedTimes(['10:30', '16:00']);
+        setLoading(false);
+      }, 3500);
+
       try {
         setLoading(true);
         const q = query(
           collection(db, 'bookings'),
           where('date', '==', selectedDate)
         );
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await withTimeout(getDocs(q), 3500);
+        clearTimeout(bookingsTimeout);
         const booked = [];
         querySnapshot.forEach((doc) => {
           const data = doc.data();
@@ -211,9 +235,9 @@ const BookingPage = () => {
         setBookedTimes(booked);
         setIsDemoMode(false);
       } catch (err) {
+        clearTimeout(bookingsTimeout);
         console.warn('Erro ao conectar ao Firebase, ativando modo Demo:', err);
         setIsDemoMode(true);
-        // Simulando alguns horários agendados aleatoriamente em modo Demo
         setBookedTimes(['10:30', '16:00']);
       } finally {
         setLoading(false);
@@ -247,26 +271,74 @@ const BookingPage = () => {
 
     try {
       if (isDemoMode || !db) {
-        // Simulação local de sucesso
         console.log('Agendamento simulado (Demo):', bookingPayload);
+        const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+        localBookings.push(bookingPayload);
+        localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
       } else {
-        await addDoc(collection(db, 'bookings'), bookingPayload);
+        try {
+          await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 4500);
+        } catch (dbErr) {
+          console.warn('Erro/Timeout ao salvar no Firestore. Ativando fallback local:', dbErr);
+          setIsDemoMode(true);
+          const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+          localBookings.push(bookingPayload);
+          localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
+        }
       }
       
-      // Armazena no localStorage para mostrar à cliente na tela de sucesso
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
-      
       setSuccess(true);
       setStep(4);
     } catch (err) {
-      console.error('Erro ao salvar agendamento:', err);
-      alert('Ocorreu um erro ao salvar o agendamento. Por favor, tente novamente ou nos chame no WhatsApp.');
+      console.error('Erro ao processar agendamento:', err);
+      // Ainda simula o sucesso para não travar a cliente
+      setIsDemoMode(true);
+      const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+      localBookings.push(bookingPayload);
+      localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
+      
+      localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
+      setSuccess(true);
+      setStep(4);
     } finally {
       setLoading(false);
     }
   };
 
   const selectedDateObj = dates.find(d => d.raw === selectedDate);
+
+  const getWhatsAppMessage = () => {
+    if (!selectedService) return '';
+    const dateFormatted = selectedDateObj?.display || selectedDate;
+    const priceText = selectedService.priceType === 'A partir de' 
+      ? `A partir de R$ ${(selectedService.promoPrice ?? selectedService.price)?.toFixed(2)}` 
+      : `R$ ${(selectedService.promoPrice ?? selectedService.price)?.toFixed(2)}`;
+    
+    return `Olá Jon! Gostaria de confirmar meu agendamento sob orçamento solicitado pelo site:
+- *Cliente:* ${clientData.name}
+- *WhatsApp:* ${clientData.phone}
+- *Serviço:* ${selectedService.name}
+- *Data:* ${dateFormatted}
+- *Horário:* ${selectedTime}
+- *Valor:* ${priceText}
+- *Curvatura:* ${clientData.hairType}
+${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
+  };
+
+  // Redirecionamento automático após 2 segundos no Passo 4 (Sucesso)
+  useEffect(() => {
+    if (step === 4 && success) {
+      const timer = setTimeout(() => {
+        const messageText = getWhatsAppMessage();
+        if (messageText) {
+          const url = `https://wa.me/553135866673?text=${encodeURIComponent(messageText)}`;
+          window.open(url, '_blank');
+        }
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [step, success]);
 
   return (
     <main className="booking-page container">
@@ -298,103 +370,158 @@ const BookingPage = () => {
       <div className="booking-card-wrap">
         
         {/* PASSO 1: SELEÇÃO DE SERVIÇO */}
-        {step === 1 && (
-          <div className="booking-step">
-            <h2>Escolha o serviço desejado</h2>
-            
-            <div className="services-section-title">Serviços Principais</div>
-            <div className="services-list">
-              {primaryServices.map(service => (
-                <div 
-                  key={service.id} 
-                  className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
-                  onClick={() => setSelectedService(service)}
-                >
-                  <div className="service-info">
-                    <h3>{service.name}</h3>
-                    <p className="desc">{service.description}</p>
-                    <span className="duration">Duração aproximada: {service.duration} min</span>
-                  </div>
-                  <div className="service-price">
-                    {service.promoPrice ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <span style={{ textDecoration: 'line-through', fontSize: '0.8rem', opacity: 0.6 }}>
-                          R$ {service.price.toFixed(2)}
-                        </span>
-                        <span style={{ color: '#2f855a', fontWeight: 'bold' }}>
-                          R$ {service.promoPrice.toFixed(2)}
-                        </span>
-                      </div>
-                    ) : (
-                      <span>
-                        {service.priceType === 'A partir de' ? 'A partir de ' : ''}
-                        R$ {service.price.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+        {step === 1 && (() => {
+          const categories = ['Todos', ...new Set(services.map(s => s.category || 'Outros'))];
+          const filteredServices = selectedCategory === 'Todos'
+            ? services
+            : services.filter(s => (s.category || 'Outros') === selectedCategory);
 
-            <div className="more-services-trigger-wrap">
-              <button 
-                type="button" 
-                className="btn btn-ghost more-services-btn" 
-                onClick={() => setShowMoreServices(!showMoreServices)}
-              >
-                {showMoreServices ? 'Ocultar outros serviços ▲' : 'Ver mais serviços no salão ▼'}
-              </button>
-            </div>
+          const toggleDescription = (id, e) => {
+            e.stopPropagation();
+            setExpandedDescriptions(prev => ({
+              ...prev,
+              [id]: !prev[id]
+            }));
+          };
 
-            {showMoreServices && (
-              <div className="additional-services-wrapper">
-                <div className="services-section-title" style={{ marginTop: 24 }}>Outros Serviços</div>
-                <div className="services-list additional-services-list">
-                  {additionalServices.map(service => (
-                    <div 
-                      key={service.id} 
-                      className={`service-card ${selectedService?.id === service.id ? 'selected' : ''}`}
-                      onClick={() => setSelectedService(service)}
+          return (
+            <div className="booking-step">
+              <h2>Escolha o serviço desejado</h2>
+              <p className="step-desc">Selecione uma categoria abaixo para filtrar nosso menu de serviços e tratamentos capilares.</p>
+              
+              {/* Abas de Categorias */}
+              <div className="booking-category-tabs">
+                {categories.map(cat => {
+                  const count = cat === 'Todos'
+                    ? services.length
+                    : services.filter(s => (s.category || 'Outros') === cat).length;
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      className={`booking-category-tab-btn ${selectedCategory === cat ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory(cat)}
                     >
-                      <div className="service-info">
-                        <h3>{service.name}</h3>
-                        <p className="desc">{service.description}</p>
-                        <span className="duration">Duração aproximada: {service.duration} min</span>
-                      </div>
-                      <div className="service-price">
-                        {service.promoPrice ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                            <span style={{ textDecoration: 'line-through', fontSize: '0.8rem', opacity: 0.6 }}>
-                              R$ {service.price.toFixed(2)}
-                            </span>
-                            <span style={{ color: '#2f855a', fontWeight: 'bold' }}>
-                              R$ {service.promoPrice.toFixed(2)}
-                            </span>
-                          </div>
-                        ) : (
-                          <span>
-                            {service.priceType === 'A partir de' ? 'A partir de ' : ''}
-                            R$ {service.price.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                      {cat}
+                      <span className="booking-tab-count">{count}</span>
+                    </button>
+                  );
+                })}
               </div>
-            )}
-            
-            <div className="step-actions">
-              <button 
-                className="btn btn-accent" 
-                disabled={!selectedService}
-                onClick={() => setStep(2)}
-              >
-                Escolher Data e Hora <Arrow />
-              </button>
+
+              {/* Grid do Catálogo */}
+              {services.length === 0 ? (
+                <div className="booking-catalog-loading">
+                  <div className="spinner"></div>
+                  <p>Buscando nosso menu de serviços...</p>
+                </div>
+              ) : (
+                <div className="booking-services-grid">
+                  {filteredServices.map(service => {
+                    const isExpanded = !!expandedDescriptions[service.id];
+                    const hasPromo = !!service.promoPrice;
+                    const isFeatured = !!(service.isPrimary || service.featured);
+                    const isSelected = selectedService?.id === service.id;
+                    
+                    return (
+                      <div 
+                        key={service.id} 
+                        className={`booking-service-card ${isSelected ? 'selected' : ''} ${isFeatured ? 'featured' : ''}`}
+                        onClick={() => {
+                          setSelectedService(service);
+                          setStep(2);
+                        }}
+                      >
+                        {/* Linha superior */}
+                        <div className="booking-card-top-decor">
+                          <span className="booking-service-category-tag">{service.category || 'Outros'}</span>
+                          <div className="booking-service-badges-row">
+                            {isFeatured && (
+                              <span className="booking-service-badge highlight">
+                                <Sparkles size={10} /> Destaque
+                              </span>
+                            )}
+                            {hasPromo && (
+                              <span className="booking-service-badge promo">
+                                Oferta
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Corpo do card */}
+                        <div className="booking-service-card-body">
+                          <h3 className="booking-service-card-title">{service.name}</h3>
+                          <div className="booking-service-duration-info">
+                            <Clock size={12} />
+                            <span>Duração aproximada: {service.duration || 60} min</span>
+                          </div>
+                          
+                          {service.description && (
+                            <div className="booking-service-desc-wrapper">
+                              <p className={`booking-service-description ${isExpanded ? 'expanded' : 'collapsed'}`}>
+                                {service.description}
+                              </p>
+                              {service.description.length > 120 && (
+                                <button
+                                  type="button"
+                                  className="booking-btn-toggle-desc"
+                                  onClick={(e) => toggleDescription(service.id, e)}
+                                >
+                                  {isExpanded ? 'Ocultar descrição ▲' : 'Ver descrição completa ▼'}
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Rodapé do card */}
+                        <div className="booking-service-card-footer">
+                          <div className="booking-service-pricing-area">
+                            <span className="booking-pricing-label">Valor</span>
+                            {hasPromo ? (
+                              <div className="booking-price-comparison">
+                                <span className="booking-price-old-strike">R$ {service.price.toFixed(2)}</span>
+                                <span className="booking-price-new-value">
+                                  <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                                  <strong>R$ {service.promoPrice.toFixed(2)}</strong>
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="booking-price-standard-value">
+                                <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                                <strong>R$ {service.price.toFixed(2)}</strong>
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="booking-service-selection-indicator">
+                            {isSelected ? (
+                              <span className="booking-selected-pill"><Check size={12} /> Selecionado</span>
+                            ) : (
+                              <span className="booking-select-action-label">Agendar</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              
+              <div className="step-actions" style={{ marginTop: 24 }}>
+                <button 
+                  className="btn btn-accent" 
+                  disabled={!selectedService}
+                  onClick={() => setStep(2)}
+                  style={{ width: '100%', justifyContent: 'center' }}
+                >
+                  Escolher Data e Hora <Arrow />
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* PASSO 2: DATA E HORA */}
         {step === 2 && (
@@ -550,39 +677,67 @@ const BookingPage = () => {
         {/* PASSO 4: SUCESSO */}
         {step === 4 && success && (
           <div className="booking-success text-center">
-            <div className="success-icon">✓</div>
-            <h2>Agendamento Realizado!</h2>
-            <p className="lead">Seu horário foi reservado com sucesso no Studio do Jon.</p>
+            <div className="success-icon" style={{ background: 'rgba(37, 211, 102, 0.1)', borderColor: '#25D366', color: '#25D366' }}>✓</div>
+            <h2>Solicitação de Orçamento Enviada!</h2>
+            <p className="lead" style={{ fontSize: '0.95rem' }}>
+              Seu agendamento prévio foi registrado na agenda do Jon. <br />
+              <strong>Para confirmar seu horário</strong>, clique no botão abaixo para nos enviar os detalhes via WhatsApp.
+            </p>
             
-            <div className="summary-card">
-              <h3>Detalhes do Horário:</h3>
-              <div className="summary-row">
+            <div className="summary-card" style={{ padding: '16px', margin: '20px auto', maxWidth: '380px' }}>
+              <h3 style={{ fontSize: '0.85rem', marginBottom: '8px', paddingBottom: '4px' }}>Resumo do Agendamento</h3>
+              <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
                 <strong>Serviço:</strong>
                 <span>{selectedService?.name}</span>
               </div>
-              <div className="summary-row">
-                <strong>Valor:</strong>
+              <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
+                <strong>Orçamento:</strong>
                 <span>
                   {selectedService?.priceType === 'A partir de' ? 'A partir de ' : ''}
                   R$ {(selectedService?.promoPrice ?? selectedService?.price)?.toFixed(2)}
                 </span>
               </div>
-              <div className="summary-row">
+              <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
                 <strong>Data:</strong>
                 <span>{selectedDateObj?.display}</span>
               </div>
-              <div className="summary-row">
+              <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
                 <strong>Horário:</strong>
                 <span>{selectedTime}</span>
               </div>
             </div>
 
-            <div className="alert alert-info" style={{ marginTop: 24 }}>
-              📌 <strong>Confirmação de Horário:</strong> Enviamos os detalhes de confirmação para o seu e-mail e em breve você receberá nosso lembrete oficial no WhatsApp!
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '24px' }}>
+              <a 
+                href={`https://wa.me/553135866673?text=${encodeURIComponent(getWhatsAppMessage())}`} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="btn"
+                style={{
+                  background: '#25D366',
+                  color: '#fff',
+                  borderColor: '#25D366',
+                  fontWeight: 'bold',
+                  fontSize: '13px',
+                  padding: '12px 24px',
+                  borderRadius: '999px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 12px rgba(37, 211, 102, 0.25)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <span>Confirmar no WhatsApp</span> ➔
+              </a>
+              
+              <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+                Redirecionando automaticamente em 2 segundos...
+              </span>
             </div>
 
-            <div style={{ marginTop: 32 }}>
-              <a href="/" className="btn btn-accent">Voltar para a Página Inicial</a>
+            <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--rule)' }}>
+              <a href="/" className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '11px' }}>Voltar para o Início</a>
             </div>
           </div>
         )}

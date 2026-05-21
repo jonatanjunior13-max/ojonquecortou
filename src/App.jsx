@@ -22,6 +22,9 @@ import AdminClients from './pages/admin/AdminClients';
 import AdminInventory from './pages/admin/AdminInventory';
 import AdminFinancial from './pages/admin/AdminFinancial';
 import AdminServices from './pages/admin/AdminServices';
+import AdminMarketing from './pages/admin/AdminMarketing';
+import AdminSettings from './pages/admin/AdminSettings';
+import AdminMobileApp from './pages/admin/AdminMobileApp';
 
 import GoogleAnalytics from './components/GoogleAnalytics';
 
@@ -85,6 +88,7 @@ function App() {
 
         {/* Rotas Administrativas */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/mobile" element={<AdminMobileApp />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
           <Route path="agenda" element={<AdminDashboard />} />
@@ -92,6 +96,8 @@ function App() {
           <Route path="clientes" element={<AdminClients />} />
           <Route path="estoque" element={<AdminInventory />} />
           <Route path="financeiro" element={<AdminFinancial />} />
+          <Route path="marketing" element={<AdminMarketing />} />
+          <Route path="configuracoes" element={<AdminSettings />} />
         </Route>
       </Routes>
     </Router>

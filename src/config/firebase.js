@@ -34,5 +34,25 @@ if (isConfigValid) {
   console.log("Firebase rodando em Modo Demonstração (chaves ausentes ou inválidas)");
 }
 
-export { auth, db };
+// Helper para abortar operações do Firestore que travam por falta de rede ou regras bloqueadas
+const withTimeout = (promise, ms = 4500) => {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error("Timeout de conexão com o banco de dados."));
+    }, ms);
+    
+    promise.then(
+      (res) => {
+        clearTimeout(timer);
+        resolve(res);
+      },
+      (err) => {
+        clearTimeout(timer);
+        reject(err);
+      }
+    );
+  });
+};
+
+export { auth, db, withTimeout };
 export default app;

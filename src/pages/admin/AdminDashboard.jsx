@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { ChevronLeft, ChevronRight, Plus, X, Trash2, Lock, Unlock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, X, Trash2, Lock, Unlock, Send, Sparkles } from 'lucide-react';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -27,10 +27,35 @@ const SEED_TRANSACTIONS = [
   { id: 't3', date: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString().split('T')[0], time: '15:30', clientName: 'Bruna Melo', type: 'entrada', paymentMethod: 'Pix', value: 205, description: 'Tratamento Personalizado + 1 Shampoo Curly' }
 ];
 
+const DEFAULT_SETTINGS = {
+  name: 'Studio do Jon',
+  phone: '3135866673',
+  address: 'Rua Jacuí, 312 - Floresta, Belo Horizonte - MG',
+  instagram: 'https://instagram.com/ojonquecortou',
+  feePix: 0,
+  feeDebit: 1.9,
+  feeCredit: 3.5,
+  minAdvance: '2',
+  autoApprove: false,
+  waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento...',
+  waReminderEnabled: false,
+  waReminderGateway: 'zapi',
+  zApiInstanceId: '',
+  zApiToken: '',
+  evolutionApiUrl: '',
+  evolutionApiKey: '',
+  evolutionInstanceName: '',
+  customWebhookUrl: '',
+  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
+};
+
 const AdminDashboard = () => {
   const [bookings, setBookings] = useState([]);
   const [products, setProducts] = useState([]);
   const [services, setServices] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -43,11 +68,26 @@ const AdminDashboard = () => {
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [selectedExtraService, setSelectedExtraService] = useState('');
   const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
+  const [overrideBasePrice, setOverrideBasePrice] = useState(null);
 
   // Slot Action and Block States
   const [showSlotActionModal, setShowSlotActionModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [blockMotive, setBlockMotive] = useState('');
+
+  // Edit Booking States
+  const [isEditingBooking, setIsEditingBooking] = useState(false);
+  const [editBookingForm, setEditBookingForm] = useState({
+    clientName: '',
+    clientPhone: '',
+    clientEmail: '',
+    serviceName: '',
+    servicePrice: 0,
+    date: '',
+    time: '',
+    notes: '',
+    status: ''
+  });
 
   // Filtros de data (semana atual)
   const [currentWeekStart, setCurrentWeekStart] = useState(() => {
@@ -69,18 +109,29 @@ const AdminDashboard = () => {
     notes: ''
   });
 
-  // Carrega produtos e serviços
+  // Carrega produtos, serviços, clientes (para aniversários), transações e configurações
   useEffect(() => {
     if (!db) {
       const localProd = localStorage.getItem('demo_products');
       if (localProd) setProducts(JSON.parse(localProd));
       
       const localServ = localStorage.getItem('demo_services');
-      if (localServ) {
-        setServices(JSON.parse(localServ));
-      } else {
-        setServices(SEED_SERVICES);
+      if (localServ) setServices(JSON.parse(localServ));
+      else setServices(SEED_SERVICES);
+
+      const localClients = localStorage.getItem('demo_client_profiles');
+      if (localClients) setClients(JSON.parse(localClients));
+
+      const localTx = localStorage.getItem('demo_transactions');
+      if (localTx) setTransactions(JSON.parse(localTx));
+      else {
+        setTransactions(SEED_TRANSACTIONS);
+        localStorage.setItem('demo_transactions', JSON.stringify(SEED_TRANSACTIONS));
       }
+
+      const saved = localStorage.getItem('demo_studio_settings');
+      setSettings(saved ? JSON.parse(saved) : DEFAULT_SETTINGS);
+      
       return;
     }
     
@@ -104,9 +155,36 @@ const AdminDashboard = () => {
       }
     });
 
+    const unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
+      const clientList = [];
+      snapshot.forEach((doc) => {
+        clientList.push({ phone: doc.id, ...doc.data() });
+      });
+      setClients(clientList);
+    });
+
+    const unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
+      const txList = [];
+      snapshot.forEach((doc) => {
+        txList.push({ id: doc.id, ...doc.data() });
+      });
+      setTransactions(txList);
+    });
+
+    const unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
+      if (snapshot.exists()) {
+        setSettings(snapshot.data());
+      } else {
+        setSettings(DEFAULT_SETTINGS);
+      }
+    });
+
     return () => {
       unsubProd();
       unsubServ();
+      unsubClients();
+      unsubTx();
+      unsubSettings();
     };
   }, []);
 
@@ -122,10 +200,15 @@ const AdminDashboard = () => {
 
   // Escuta agendamentos no Firestore em tempo real
   useEffect(() => {
-    if (!db) {
-      setIsDemoMode(true);
-      // Mock data para demonstração
-      setBookings([
+    let unsubscribe;
+    let timedOut = false;
+
+    // Define os agendamentos mockados para fallback
+    const getMockBookings = () => {
+      const localData = localStorage.getItem('demo_bookings');
+      if (localData) return JSON.parse(localData);
+
+      return [
         {
           id: 'demo-1',
           clientName: 'Ana Souza',
@@ -148,15 +231,33 @@ const AdminDashboard = () => {
           status: 'pendente',
           notes: 'Histórico de descoloração recente'
         }
-      ]);
+      ];
+    };
+
+    if (!db) {
+      setIsDemoMode(true);
+      setBookings(getMockBookings());
       setLoading(false);
       return;
     }
 
     setLoading(true);
+
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      console.warn('Firestore subscription for bookings timed out. Falling back to Demo Mode.');
+      setIsDemoMode(true);
+      if (unsubscribe) unsubscribe();
+      setBookings(getMockBookings());
+      setLoading(false);
+    }, 3500);
+
     try {
       const q = query(collection(db, 'bookings'));
-      const unsubscribe = onSnapshot(q, (snapshot) => {
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        if (timedOut) return;
+        clearTimeout(timeoutId);
+
         const appts = [];
         snapshot.forEach((doc) => {
           appts.push({ id: doc.id, ...doc.data() });
@@ -165,15 +266,25 @@ const AdminDashboard = () => {
         setLoading(false);
         setIsDemoMode(false);
       }, (error) => {
+        if (timedOut) return;
+        clearTimeout(timeoutId);
         console.warn('Firestore real-time error, switching to Demo Mode:', error);
         setIsDemoMode(true);
+        setBookings(getMockBookings());
         setLoading(false);
       });
-      return () => unsubscribe();
+      return () => {
+        clearTimeout(timeoutId);
+        if (unsubscribe) unsubscribe();
+      };
     } catch (err) {
-      console.warn('Error fetching bookings from Firestore:', err);
-      setIsDemoMode(true);
-      setLoading(false);
+      if (!timedOut) {
+        clearTimeout(timeoutId);
+        console.warn('Error fetching bookings from Firestore:', err);
+        setIsDemoMode(true);
+        setBookings(getMockBookings());
+        setLoading(false);
+      }
     }
   }, [currentWeekStart]);
 
@@ -201,7 +312,6 @@ const AdminDashboard = () => {
 
   const weekDays = getWeekDays();
 
-  // Atualizar status do agendamento simples
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
       if (isDemoMode) {
@@ -217,6 +327,64 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Erro ao atualizar status:', err);
       alert('Não foi possível atualizar o status do agendamento.');
+    }
+  };
+
+  const handleStartEditBooking = () => {
+    setEditBookingForm({
+      clientName: selectedBooking.clientName || '',
+      clientPhone: selectedBooking.clientPhone || '',
+      clientEmail: selectedBooking.clientEmail || '',
+      serviceName: selectedBooking.serviceName || selectedBooking.service?.name || '',
+      servicePrice: selectedBooking.servicePrice || selectedBooking.service?.price || 0,
+      date: selectedBooking.date || '',
+      time: selectedBooking.time || '',
+      notes: selectedBooking.notes || '',
+      status: selectedBooking.status || 'confirmado'
+    });
+    setIsEditingBooking(true);
+  };
+
+  const handleSaveEditBooking = async (e) => {
+    e.preventDefault();
+    const updatedPayload = {
+      clientName: editBookingForm.clientName,
+      clientPhone: editBookingForm.clientPhone,
+      clientEmail: editBookingForm.clientEmail,
+      serviceName: editBookingForm.serviceName,
+      servicePrice: Number(editBookingForm.servicePrice),
+      service: {
+        name: editBookingForm.serviceName,
+        price: Number(editBookingForm.servicePrice)
+      },
+      date: editBookingForm.date,
+      time: editBookingForm.time,
+      notes: editBookingForm.notes,
+      status: editBookingForm.status
+    };
+
+    try {
+      if (isDemoMode || !db) {
+        setBookings(prev => prev.map(b => b.id === selectedBooking.id ? { ...b, ...updatedPayload } : b));
+        setSelectedBooking(prev => ({ ...prev, ...updatedPayload }));
+        
+        // Salva backup local
+        const localData = localStorage.getItem('demo_bookings');
+        if (localData) {
+          const arr = JSON.parse(localData);
+          const newArr = arr.map(b => (b.id === selectedBooking.id || (b.date === selectedBooking.date && b.time === selectedBooking.time && b.clientPhone === selectedBooking.clientPhone)) ? { ...b, ...updatedPayload } : b);
+          localStorage.setItem('demo_bookings', JSON.stringify(newArr));
+        }
+      } else {
+        const docRef = doc(db, 'bookings', selectedBooking.id);
+        await updateDoc(docRef, updatedPayload);
+        setSelectedBooking(prev => ({ ...prev, ...updatedPayload }));
+      }
+      setIsEditingBooking(false);
+      alert('Agendamento atualizado com sucesso!');
+    } catch (err) {
+      console.error('Erro ao editar agendamento:', err);
+      alert('Não foi possível salvar as alterações do agendamento.');
     }
   };
 
@@ -359,14 +527,14 @@ const AdminDashboard = () => {
   };
 
   const calculateTotal = () => {
-    const base = selectedBooking?.service?.price || 150;
+    const base = overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.price || selectedBooking?.servicePrice || 150);
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     return base + extras + prods;
   };
 
   const handleCloseComanda = async (booking) => {
-    const baseServicePrice = booking.service?.price || 150;
+    const baseServicePrice = overrideBasePrice !== null ? overrideBasePrice : (booking.service?.price || booking.servicePrice || 150);
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const totalComanda = baseServicePrice + extraServicesTotal + productsTotal;
@@ -411,9 +579,11 @@ const AdminDashboard = () => {
 
         // 3. Salva transação no localStorage
         const localTx = localStorage.getItem('demo_transactions');
-        const transactions = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
+        const currentTx = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
         const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
-        localStorage.setItem('demo_transactions', JSON.stringify([...transactions, newTx]));
+        const updatedTxList = [...currentTx, newTx];
+        localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
+        setTransactions(updatedTxList);
       } else {
         // 1. Atualizar agendamento no Firestore
         const apptRef = doc(db, 'bookings', booking.id);
@@ -436,6 +606,7 @@ const AdminDashboard = () => {
       alert('Comanda fechada com sucesso! Estoque deduzido e receita registrada.');
       setSelectedBooking(null);
       setIsCheckoutOpen(false);
+      setOverrideBasePrice(null);
       setAddedServices([]);
       setAddedProducts([]);
     } catch (err) {
@@ -457,21 +628,167 @@ const AdminDashboard = () => {
     const endStr = weekDays[4]?.raw;
     if (!startStr || !endStr) return;
 
-    if (isDemoMode || !db) {
-      const localTx = localStorage.getItem('demo_transactions');
-      const transactions = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
-      const weekEntradas = transactions
-        .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
-        .reduce((sum, t) => sum + t.value, 0);
-      setRevenueThisWeek(weekEntradas);
-    } else {
-      // Se em Firestore, lê as comandas de forma simplificada da lista local de agendamentos
-      const apptRevenue = bookings
-        .filter(b => b.status === 'finalizado' && b.date >= startStr && b.date <= endStr)
-        .reduce((sum, b) => sum + (b.service?.price || 150), 0);
-      setRevenueThisWeek(apptRevenue);
-    }
-  }, [bookings, weekDays, isDemoMode]);
+    const weekEntradas = transactions
+      .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
+      .reduce((sum, t) => sum + t.value, 0);
+    setRevenueThisWeek(weekEntradas);
+  }, [transactions, weekDays]);
+
+  // Automação de lembrete de WhatsApp 24h antes
+  useEffect(() => {
+    if (!settings || !settings.waReminderEnabled) return;
+    if (bookings.length === 0) return;
+
+    // Calcula a data de amanhã (YYYY-MM-DD)
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+
+    // Filtra agendamentos de amanhã que ainda não receberam lembrete
+    const remindersToSend = bookings.filter(b => {
+      return b.date === tomorrowStr && 
+             b.status !== 'cancelado' && 
+             !b.reminderSent;
+    });
+
+    if (remindersToSend.length === 0) return;
+
+    const sendReminder = async (booking) => {
+      // Trava otimista: define reminderSent como 'enviando' para evitar duplo disparo
+      if (db) {
+        try {
+          const apptRef = doc(db, 'bookings', booking.id);
+          await updateDoc(apptRef, { reminderSent: 'enviando' });
+        } catch (e) {
+          return;
+        }
+      } else {
+        booking.reminderSent = 'enviando';
+      }
+
+      // Constrói a mensagem formatada
+      const rawTemplate = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+      
+      const [year, month, day] = booking.date.split('-');
+      const dateObj = new Date(year, month - 1, day);
+      const weekdayStr = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+
+      const msgText = rawTemplate
+        .replace('{cliente}', booking.clientName)
+        .replace('{data}', weekdayStr)
+        .replace('{hora}', booking.time)
+        .replace('{servico}', booking.serviceName || booking.service?.name || 'Serviço');
+
+      const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+      if (!cleanPhone || cleanPhone.length < 10) {
+        if (db) {
+          await updateDoc(doc(db, 'bookings', booking.id), { reminderSent: 'erro_telefone' });
+        }
+        return;
+      }
+
+      const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+
+      let url = '';
+      let headers = { 'Content-Type': 'application/json' };
+      let body = {};
+
+      if (settings.waReminderGateway === 'zapi') {
+        const instance = settings.zApiInstanceId;
+        const token = settings.zApiToken;
+        if (!instance || !token) return;
+        url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
+        body = {
+          phone: phoneWithDDI,
+          message: msgText
+        };
+      } else if (settings.waReminderGateway === 'evolution') {
+        const apiUrl = settings.evolutionApiUrl;
+        const apiKey = settings.evolutionApiKey;
+        const instance = settings.evolutionInstanceName;
+        if (!apiUrl || !apiKey || !instance) return;
+        url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
+        headers['apikey'] = apiKey;
+        body = {
+          number: phoneWithDDI,
+          text: msgText
+        };
+      } else if (settings.waReminderGateway === 'custom') {
+        url = settings.customWebhookUrl;
+        if (!url) return;
+        body = {
+          phone: phoneWithDDI,
+          message: msgText,
+          bookingId: booking.id,
+          clientName: booking.clientName,
+          date: booking.date,
+          time: booking.time,
+          service: booking.serviceName || booking.service?.name
+        };
+      }
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body)
+        });
+
+        if (response.ok) {
+          if (db) {
+            await updateDoc(doc(db, 'bookings', booking.id), { 
+              reminderSent: true, 
+              reminderSentAt: new Date().toISOString() 
+            });
+          } else {
+            booking.reminderSent = true;
+            booking.reminderSentAt = new Date().toISOString();
+            localStorage.setItem('demo_bookings', JSON.stringify(bookings));
+          }
+          console.log(`Lembrete automático WhatsApp enviado para ${booking.clientName}`);
+        } else {
+          throw new Error('Erro na resposta do gateway');
+        }
+      } catch (err) {
+        console.error(`Erro ao disparar WhatsApp automático para ${booking.clientName}:`, err);
+        if (db) {
+          await updateDoc(doc(db, 'bookings', booking.id), { reminderSent: false });
+        } else {
+          booking.reminderSent = false;
+        }
+      }
+    };
+
+    // Dispara sequencialmente
+    remindersToSend.forEach(booking => {
+      sendReminder(booking);
+    });
+
+  }, [bookings, settings, db]);
+
+  // Lógica de envio de mensagem de aniversariante por WhatsApp
+  const handleWhatsAppCongratulate = (client) => {
+    const cleanPhone = client.phone.replace(/\D/g, '');
+    const message = `Olá, ${client.name}! O Studio do Jon passando aqui para te desejar um feliz aniversário! Que seu dia seja maravilhoso e repleto de sorrisos. Para comemorar, temos um mimo especial pra você na sua próxima visita! 🎂🎉`;
+    const url = `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
+  // Filtra os aniversariantes do mês atual
+  const birthdayClients = (() => {
+    const currentMonth = new Date().getMonth() + 1; // 1 a 12
+    return clients.filter(c => {
+      if (!c.aniversario) return false;
+      const parts = c.aniversario.split('-');
+      if (parts.length < 2) return false;
+      const birthMonth = parseInt(parts[1], 10);
+      return birthMonth === currentMonth;
+    }).sort((a, b) => {
+      const dayA = parseInt(a.aniversario.split('-')[2], 10);
+      const dayB = parseInt(b.aniversario.split('-')[2], 10);
+      return dayA - dayB;
+    });
+  })();
 
   return (
     <div className="admin-dashboard">
@@ -491,6 +808,47 @@ const AdminDashboard = () => {
           <div className="value" style={{ color: '#48bb78' }}>R$ {revenueThisWeek}</div>
         </div>
       </section>
+
+      {/* Bloco de Aniversariantes do Mês */}
+      {birthdayClients.length > 0 && (
+        <section className="dashboard-birthdays-panel">
+          <div className="birthdays-panel-header">
+            <div className="panel-title-group">
+              <Sparkles size={18} className="birthday-decor-icon" />
+              <h3>Aniversariantes de {new Date().toLocaleDateString('pt-BR', { month: 'long' })}</h3>
+              <span className="birthday-count-tag">{birthdayClients.length}</span>
+            </div>
+            <p className="panel-subtitle">Envie uma mensagem carinhosa pelo WhatsApp com apenas um clique!</p>
+          </div>
+          
+          <div className="birthdays-carousel-row">
+            {birthdayClients.map(c => {
+              const day = c.aniversario.split('-')[2];
+              const initials = c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+              
+              return (
+                <div key={c.phone} className="birthday-member-card">
+                  <div className="member-avatar-badge">
+                    {initials}
+                    <span className="balloon-emoji">🎂</span>
+                  </div>
+                  <div className="member-details">
+                    <strong className="member-name">{c.name}</strong>
+                    <span className="member-date">Dia {day}</span>
+                  </div>
+                  <button 
+                    onClick={() => handleWhatsAppCongratulate(c)}
+                    className="btn-birthday-action"
+                    title={`Enviar parabéns para ${c.name}`}
+                  >
+                    <Send size={12} /> Parabenizar
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Controles da Agenda */}
       <section className="calendar-controls">
@@ -593,15 +951,128 @@ const AdminDashboard = () => {
         <div className="modal-overlay">
           <div className="modal-content" style={{ maxWidth: isCheckoutOpen ? 640 : 500 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3>{isCheckoutOpen ? 'Fechar Comanda da Cliente' : 'Ficha do Agendamento'}</h3>
+              <h3>{isCheckoutOpen ? 'Fechar Comanda da Cliente' : (isEditingBooking ? 'Editar Agendamento' : 'Ficha do Agendamento')}</h3>
               <button className="btn-icon" onClick={() => {
                 setSelectedBooking(null);
                 setIsCheckoutOpen(false);
+                setOverrideBasePrice(null);
+                setIsEditingBooking(false);
               }}><X size={18} /></button>
             </div>
             
             {!isCheckoutOpen ? (
-              selectedBooking.status === 'bloqueado' ? (
+              isEditingBooking ? (
+                <form onSubmit={handleSaveEditBooking} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <div className="form-group">
+                    <label>Nome Completo do Cliente *</label>
+                    <input 
+                      type="text" 
+                      required 
+                      value={editBookingForm.clientName}
+                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientName: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>WhatsApp *</label>
+                    <input 
+                      type="tel" 
+                      required 
+                      value={editBookingForm.clientPhone}
+                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientPhone: e.target.value }))}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>E-mail (Opcional)</label>
+                    <input 
+                      type="email" 
+                      value={editBookingForm.clientEmail}
+                      onChange={e => setEditBookingForm(prev => ({ ...prev, clientEmail: e.target.value }))}
+                    />
+                  </div>
+                  
+                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
+                    <div className="form-group">
+                      <label>Serviço *</label>
+                      <select 
+                        value={`${editBookingForm.serviceName}|${editBookingForm.servicePrice}`}
+                        onChange={e => {
+                          const [name, priceStr] = e.target.value.split('|');
+                          setEditBookingForm(prev => ({ ...prev, serviceName: name, servicePrice: Number(priceStr) }));
+                        }}
+                      >
+                        {services.map(s => (
+                          <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                            {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Preço (R$) *</label>
+                      <input 
+                        type="number" 
+                        required 
+                        min="0"
+                        step="0.01"
+                        value={editBookingForm.servicePrice}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div className="form-group">
+                      <label>Data *</label>
+                      <input 
+                        type="date" 
+                        required
+                        value={editBookingForm.date}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, date: e.target.value }))}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Horário *</label>
+                      <select 
+                        value={editBookingForm.time}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, time: e.target.value }))}
+                      >
+                        {TIME_SLOTS.map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div className="form-group">
+                      <label>Status *</label>
+                      <select 
+                        value={editBookingForm.status}
+                        onChange={e => setEditBookingForm(prev => ({ ...prev, status: e.target.value }))}
+                      >
+                        <option value="pendente">Aguardando Confirmação (Pendente)</option>
+                        <option value="confirmado">Confirmado</option>
+                        <option value="cancelado">Cancelado</option>
+                        <option value="finalizado">Finalizado</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Notas Internas</label>
+                    <textarea 
+                      rows="2"
+                      value={editBookingForm.notes}
+                      onChange={e => setEditBookingForm(prev => ({ ...prev, notes: e.target.value }))}
+                    ></textarea>
+                  </div>
+
+                  <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 12 }}>
+                    <button type="button" className="btn btn-ghost" onClick={() => setIsEditingBooking(false)}>Cancelar</button>
+                    <button type="submit" className="btn btn-accent">Salvar Alterações</button>
+                  </div>
+                </form>
+              ) : selectedBooking.status === 'bloqueado' ? (
                 <>
                   <div className="detail-row">
                     <label>Tipo:</label>
@@ -646,7 +1117,7 @@ const AdminDashboard = () => {
                   </div>
                   <div className="detail-row">
                     <label>Preço:</label>
-                    <span>R$ {selectedBooking.service?.price || 150}</span>
+                    <span>R$ {selectedBooking.servicePrice || selectedBooking.service?.price || 150}</span>
                   </div>
                   <div className="detail-row">
                     <label>Data/Hora:</label>
@@ -665,7 +1136,7 @@ const AdminDashboard = () => {
                     <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
                   </div>
 
-                  <div className="modal-actions">
+                  <div className="modal-actions" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                     <div style={{ display: 'flex', gap: 8 }}>
                       {selectedBooking.status === 'pendente' && (
                         <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => handleUpdateStatus(selectedBooking.id, 'confirmado')}>
@@ -673,7 +1144,10 @@ const AdminDashboard = () => {
                         </button>
                       )}
                       {selectedBooking.status === 'confirmado' && (
-                        <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setIsCheckoutOpen(true)}>
+                        <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => {
+                          setOverrideBasePrice(selectedBooking.servicePrice || selectedBooking.service?.price || 150);
+                          setIsCheckoutOpen(true);
+                        }}>
                           Fechar Comanda / Pagar
                         </button>
                       )}
@@ -695,6 +1169,9 @@ const AdminDashboard = () => {
                           Agendar Neste Horário
                         </button>
                       )}
+                      <button className="btn btn-ghost" type="button" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={handleStartEditBooking}>
+                        Editar Agendamento
+                      </button>
                     </div>
                     
                     {selectedBooking.status !== 'cancelado' && (
@@ -717,16 +1194,33 @@ const AdminDashboard = () => {
                 
                 {/* Lista de Itens atuais na comanda */}
                 <div className="comanda-items-list">
-                  <div className="comanda-item-row" style={{ fontWeight: 600 }}>
+                  <div className="comanda-item-row" style={{ fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span>{selectedBooking.service?.name || selectedBooking.serviceName} (Serviço Agendado)</span>
-                    <span>R$ {selectedBooking.service?.price || 150}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>R$</span>
+                      <input 
+                        type="number"
+                        style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.price || 150)}
+                        onChange={e => setOverrideBasePrice(Number(e.target.value))}
+                      />
+                    </div>
                   </div>
                   
                   {addedServices.map((s, idx) => (
-                    <div key={'s-' + idx} className="comanda-item-row">
+                    <div key={'s-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span>{s.name} (Serviço Extra)</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span>R$ {s.price}</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          value={s.price}
+                          onChange={e => {
+                            const newPrice = Number(e.target.value);
+                            setAddedServices(prev => prev.map((item, i) => i === idx ? { ...item, price: newPrice } : item));
+                          }}
+                        />
                         <button type="button" className="btn-remove" onClick={() => removeService(idx)}>
                           <Trash2 size={12} />
                         </button>
@@ -735,10 +1229,20 @@ const AdminDashboard = () => {
                   ))}
                   
                   {addedProducts.map((p, idx) => (
-                    <div key={'p-' + idx} className="comanda-item-row">
-                      <span>{p.quantity}x {p.name} (Produto)</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span>R$ {p.price * p.quantity}</span>
+                    <div key={'p-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>{p.quantity}x {p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Unit: R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '75px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          value={p.price}
+                          onChange={e => {
+                            const newPrice = Number(e.target.value);
+                            setAddedProducts(prev => prev.map((item, i) => i === idx ? { ...item, price: newPrice } : item));
+                          }}
+                        />
+                        <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>= R$ {p.price * p.quantity}</span>
                         <button type="button" className="btn-remove" onClick={() => removeProduct(idx)}>
                           <Trash2 size={12} />
                         </button>
@@ -809,7 +1313,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="modal-actions" style={{ justifyContent: 'space-between' }}>
-                  <button type="button" className="btn btn-ghost" onClick={() => setIsCheckoutOpen(false)}>Voltar</button>
+                  <button type="button" className="btn btn-ghost" onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>
                   <button type="button" className="btn btn-accent" onClick={() => handleCloseComanda(selectedBooking)}>Finalizar e Baixar Estoque</button>
                 </div>
               </div>
@@ -859,7 +1363,7 @@ const AdminDashboard = () => {
               />
             </div>
 
-            <div className="form-row">
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 12 }}>
               <div className="form-group">
                 <label>Serviço *</label>
                 <select 
@@ -875,6 +1379,17 @@ const AdminDashboard = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="form-group">
+                <label>Valor (R$) *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0"
+                  step="0.01"
+                  value={newBooking.servicePrice}
+                  onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                />
               </div>
             </div>
 
@@ -922,50 +1437,78 @@ const AdminDashboard = () => {
 
       {/* MODAL: AÇÕES DO HORÁRIO LIVRE (AGENDAR OU BLOQUEAR) */}
       {showSlotActionModal && selectedSlot && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: 400 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3>Ações do Horário</h3>
-              <button type="button" className="btn-icon" onClick={() => {
-                setShowSlotActionModal(false);
-                setBlockMotive('');
-                setSelectedSlot(null);
-              }}><X size={18} /></button>
-            </div>
-            
-            <p style={{ fontSize: '0.95rem', marginBottom: 20, color: 'var(--ink)' }}>
-              Escolha uma ação para o dia <strong>{selectedSlot.dateFormatted}</strong> às <strong>{selectedSlot.time}</strong>:
-            </p>
+        <div className="modal-overlay slot-action-overlay">
+          <div className="slot-action-modal">
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <button 
+            {/* Header */}
+            <div className="slot-action-header">
+              <div className="slot-action-pill">
+                <span className="slot-action-pill-dot" />
+                Horário Livre
+              </div>
+              <button
                 type="button"
-                className="btn btn-accent" 
-                onClick={handleSelectManualBooking}
-                style={{ justifyContent: 'center', padding: '12px', width: '100%' }}
+                className="btn-icon"
+                onClick={() => { setShowSlotActionModal(false); setBlockMotive(''); setSelectedSlot(null); }}
               >
-                <Plus size={16} style={{ marginRight: 8 }} /> Agendar Cliente
+                <X size={18} />
               </button>
-              
-              <div style={{ borderTop: '1px solid var(--rule)', paddingTop: 16, marginTop: 4 }}>
-                <h4 style={{ fontSize: '0.9rem', marginBottom: 8, fontWeight: 700 }}>Bloquear este Horário</h4>
-                <form onSubmit={handleBlockSlotSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <input 
-                    type="text" 
-                    placeholder="Motivo (ex: Almoço, Folga, Curso)..." 
+            </div>
+
+            <div className="slot-action-datetime">
+              <span className="slot-action-date">{selectedSlot.dateFormatted}</span>
+              <span className="slot-action-time">{selectedSlot.time}</span>
+            </div>
+
+            <p className="slot-action-label">O que deseja fazer neste horário?</p>
+
+            {/* Action Cards */}
+            <div className="slot-action-cards">
+
+              {/* Card Agendar */}
+              <button
+                type="button"
+                className="slot-card slot-card-schedule"
+                onClick={handleSelectManualBooking}
+              >
+                <div className="slot-card-icon">
+                  <Plus size={24} />
+                </div>
+                <div className="slot-card-text">
+                  <strong>Agendar Cliente</strong>
+                  <span>Abrir formulário de agendamento manual pré-preenchido com este horário</span>
+                </div>
+              </button>
+
+              {/* Card Bloquear */}
+              <div className="slot-card slot-card-block">
+                <div className="slot-card-block-row">
+                  <div className="slot-card-icon">
+                    <Lock size={24} />
+                  </div>
+                  <div className="slot-card-text">
+                    <strong>Bloquear Horário</strong>
+                    <span>Marque como indisponível para novas reservas (almoço, folga, curso...)</span>
+                  </div>
+                </div>
+                <form
+                  onSubmit={handleBlockSlotSubmit}
+                  className="slot-block-form"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <input
+                    type="text"
+                    placeholder="Motivo (ex: Almoço, Folga, Reunião)..."
                     value={blockMotive}
                     onChange={e => setBlockMotive(e.target.value)}
-                    style={{ padding: '8px', fontSize: '0.85rem', width: '100%', background: 'var(--bg-warm)', border: '1px solid var(--rule)', borderRadius: '4px', color: 'var(--ink)' }}
+                    className="slot-block-input"
                   />
-                  <button 
-                    type="submit" 
-                    className="btn btn-ghost" 
-                    style={{ justifyContent: 'center', padding: '10px', width: '100%', border: '1px solid var(--rule)', color: 'var(--muted)' }}
-                  >
-                    <Lock size={14} style={{ marginRight: 6 }} /> Confirmar Bloqueio
+                  <button type="submit" className="slot-block-btn">
+                    <Lock size={13} /> Confirmar Bloqueio
                   </button>
                 </form>
               </div>
+
             </div>
           </div>
         </div>
