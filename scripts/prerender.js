@@ -44,12 +44,6 @@ const staticRoutes = [
     description: 'Antes e depois de cortes para cabelos cacheados, crespos e ondulados no Studio do Jon, BH. Técnica Leitura de Fio em ação.',
     canonical: 'https://www.ojonquecortou.com.br/galeria',
   },
-  {
-    path: 'agendar',
-    title: 'Agendamento Online | O Jon que Cortou - Especialista em Cachos',
-    description: 'Reserve seu horário online no Studio do Jon no Caiçara em BH. Especialista em corte a seco, visagismo e saúde para cabelos ondulados, cacheados e crespos.',
-    canonical: 'https://www.ojonquecortou.com.br/agendar',
-  },
 ];
 
 // =====================

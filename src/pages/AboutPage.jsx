@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import './AboutPage.css';
 
-const TRINKS_URL = '/agendar';
+const TRINKS_URL = 'http://trinks.com/ojonquecortou';
 
 const AboutPage = () => {
   return (
@@ -42,7 +42,7 @@ const AboutPage = () => {
               Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçara (BH), construí um espaço focado na <strong>liberdade do seu fio natural</strong>, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.
             </p>
             <div className="cta-group">
-              <Link to={TRINKS_URL} className="btn btn-primary">Agendar Consultoria</Link>
+              <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">Agendar Consultoria</a>
               <Link to="/servicos" className="btn btn-outline">Ver Serviços</Link>
             </div>
           </div>
@@ -107,9 +107,9 @@ const AboutPage = () => {
           <p className="paragraph-lg mb-4 max-w-md mx-auto">
             Meu Studio no Caiçara está pronto para receber você e seus cachos.
           </p>
-          <Link to={TRINKS_URL} className="btn btn-primary">
+          <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
             Garantir meu horário agora
-          </Link>
+          </a>
         </div>
       </section>
     </main>

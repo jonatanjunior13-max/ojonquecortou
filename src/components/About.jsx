@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import './About.css';
 
 const About = () => {
@@ -48,9 +47,9 @@ const About = () => {
           </ul>
 
           <div className="mt-4">
-             <Link to="/agendar" className="btn btn-primary">
+             <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
                 Agendar com o Jon
-             </Link>
+             </a>
           </div>
         </div>
       </div>

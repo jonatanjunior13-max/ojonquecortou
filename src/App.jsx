@@ -53,7 +53,7 @@ function TrinksInterceptor() {
     if (!navigate) return;
     const handleGlobalClick = (e) => {
       const anchor = e.target.closest('a');
-      if (anchor && anchor.href && anchor.href.includes('trinks.com')) {
+      if (anchor && anchor.href && anchor.href.includes('trinks.com/ojonquecortou')) {
         e.preventDefault();
         navigate('/agendar');
       }
@@ -71,8 +71,8 @@ function App() {
       <GoogleAnalytics />
       <ScrollToTop />
       <CanonicalTag />
-      {/* Intercepta links do Trinks e redireciona para agendamento interno */}
-      <TrinksInterceptor />
+      {/* TrinksInterceptor desativado temporariamente até a Fase 1 rodar 100% */}
+      {/* <TrinksInterceptor /> */}
       <Routes>
         {/* Rotas Públicas */}
         <Route element={<PublicLayout />}>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Scissors, Sparkles, Sun } from 'lucide-react';
 import './Services.css';
 
@@ -64,9 +63,9 @@ const Services = () => {
         </div>
         
         <div className="services-cta text-center mt-4">
-           <Link to="/servicos" className="btn btn-primary">
-              Ver Todos os Serviços
-           </Link>
+           <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+              Ver Todos os Serviços no Trinks
+           </a>
         </div>
       </div>
     </section>

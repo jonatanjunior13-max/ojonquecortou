@@ -40,9 +40,9 @@ function Navbar() {
             ))}
           </div>
           <div className="nav-cta">
-            <Link to="/agendar" className="btn btn-primary hide-mobile">
+            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noopener noreferrer" className="btn btn-primary hide-mobile">
               Agendar <Arrow />
-            </Link>
+            </a>
             <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
               <span></span><span></span><span></span>
             </button>

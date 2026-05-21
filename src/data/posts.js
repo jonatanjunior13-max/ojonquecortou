@@ -53,8 +53,8 @@ export const posts = [
       <p>Resultado que dura <strong>dias</strong>, não horas.</p>
 
       <div style="text-align: center; margin: 2rem 0;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; text-decoration: none;">👉 AGENDAR CONSULTA</a>
-        <p style="margin-top: 1rem; font-style: italic; color: #666;">Especialista em secagem e definição de cachos in Belo Horizonte</p>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; text-decoration: none;">👉 AGENDAR CONSULTA</a>
+        <p style="margin-top: 1rem; font-style: italic; color: #666;">Especialista em secagem e definição de cachos em Belo Horizonte</p>
       </div>
 
       <p style="font-size: 0.9rem; color: #888; border-top: 1px solid #eee; padding-top: 1rem; margin-top: 2rem;">
@@ -192,7 +192,7 @@ export const posts = [
         <p>Pode ser que o produto tá bom, mas você tá usando errado. Ou misturando coisas que não combinam.</p>
         <p>Marcas uma consulta. A gente analisa seu cacho, entende o que tá faltando, recomenda produtos que fazem sentido pro SEU tipo específico, e ainda te ensina o jeito certo de aplicar.</p>
         <p><strong>Produto bom + aplicação certa = resultado que você procura.</strong></p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta de Diagnóstico</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta de Diagnóstico</a>
       </div>
 
       <p><i>Jonatan Junior é especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte.</i><br>
@@ -307,7 +307,7 @@ export const posts = [
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
         <h3>Quer uma rotina personalizada para o seu tipo de cacho?</h3>
         <p>Marcas uma consulta. Vamos analisar seu fio e montar um cronograma que funciona com a sua vida, não contra ela.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Consulta</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Consulta</a>
       </div>
 
       <p><i>Especialista em diagnóstico e rotina para cabelos cacheados em Belo Horizonte</i></p>
@@ -472,7 +472,7 @@ export const posts = [
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
         <h3>Quer aprender a fazer penteados que realçam seu cacho em vez de danificar?</h3>
         <p>Marcas uma consulta comigo. Vamos analisar seu tipo de cacho, o corte que você tem e quais penteados combinam melhor com a sua vida.<br>Daí você sai com técnicas que funcionam, não frustração.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Consulta</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Consulta</a>
       </div>
       <p><i>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte</i></p>
     `
@@ -577,7 +577,7 @@ export const posts = [
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
         <p>Seu cabelo tá com pontinhas duplas visíveis agora? Não deixa mais tempo passar. Cada semana que passa, o dano cresce junto com o fio.</p>
         <p>Marca uma consulta. Vou analisar a estrutura, a saúde e o padrão do seu cacho. Daí a gente define a frequência exata que faz sentido pra você e pra sua rotina.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Corte</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Corte</a>
       </div>
 
       <p><i>Jonatan Junior é especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>
@@ -701,7 +701,7 @@ export const posts = [
       <p>Se quiser fazer esse diagnóstico com quem lê o fio antes de qualquer outra coisa, o Studio do Jon atende em Belo Horizonte. O agendamento é pelo link abaixo.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">Agendar diagnóstico</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">Agendar diagnóstico</a>
       </div>
 
       <p><i>Jonatan Junior é especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>
@@ -1447,7 +1447,7 @@ export const posts = [
       <p>Se você gasta mais tempo tentando "consertar" o formato do que vivendo a vida, sua base está errada. O formato perfeito não é sorte, é projeto. Se você quer uma avaliação técnica de verdade que resolva a raiz escorrida e as pontas pesadas, você está no lugar certo.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO E CORTE BH</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO E CORTE BH</a>
       </div>
     `
   },
@@ -1539,7 +1539,7 @@ export const posts = [
       <p>Se o seu cabelo embaraça demais, quebra no desembaraço ou parece nunca deslizar de verdade, talvez o problema não seja falta de produto — e sim falta de diagnóstico.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
     `
   },
@@ -1580,7 +1580,7 @@ export const posts = [
       <p>Pronta para entender a real estrutura do seu fio e sair do studio amando o que vê no espelho?</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
     `
   },
@@ -1946,7 +1946,7 @@ export const posts = [
       <p>Se o seu frizz é apenas parte da sua identidade e volume, abrace-o. Mas se ele está deixando seu cabelo frágil e sem forma, é hora de olhar para a saúde do seu fio com mais critério. O diagnóstico começa pela observação: toque seu cabelo, sinta a textura e observe como ele reage aos produtos. O autoconhecimento capilar é o maior aliado da sua liberdade.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
     `
   },
@@ -1981,7 +1981,7 @@ export const posts = [
       <p>Quer descobrir o ritual exato para o seu tipo de fio e nunca mais sofrer com o day after?</p>
       
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
     `
   },
