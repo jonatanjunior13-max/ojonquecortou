@@ -81,5 +81,7 @@ export function parseClientCSV(file, onResult) {
         onResult({ clients: [], errors: [`Erro ao ler o arquivo: ${err.message}`] });
       },
     });
+  }).catch(err => {
+    onResult({ clients: [], errors: [`Erro ao carregar o leitor de planilhas. Por favor, atualize a página (F5) e tente novamente. Detalhes: ${err.message}`] });
   });
 }
