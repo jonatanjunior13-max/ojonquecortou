@@ -1,0 +1,18 @@
+{
+  "name": "O Jon Que Cortou",
+  "short_name": "Jon Cortou",
+  "description": "Studio do Jon - Especialista em Cachos",
+  "start_url": "/admin/mobile",
+  "display": "standalone",
+  "background_color": "#fdf2f8",
+  "theme_color": "#ff007f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo-app.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
