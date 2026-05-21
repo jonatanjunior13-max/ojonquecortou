@@ -985,3 +985,80 @@
   cursor: pointer;
   width: 100%;
 }
+
+/* Central de Notificações */
+.bell-badge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  position: relative;
+}
+
+.bell-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background: var(--mobile-primary);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid white;
+}
+
+.notifications-sheet {
+  background: white;
+  width: 92%;
+  max-width: 440px;
+  border-radius: 16px;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: scale-up 0.2s ease-out;
+}
+
+/* Lista de Notificações */
+.notifications-list-container {
+  margin-top: 12px;
+}
+
+.empty-notifications svg {
+  animation: pulse-bell 2s infinite ease-in-out;
+  color: var(--mobile-primary);
+}
+
+@keyframes pulse-bell {
+  0% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0.3; }
+}
+
+.notification-card {
+  transition: all 0.2s ease;
+}
+
+.notification-card:active {
+  background: #f7fafc !important;
+}
+
+.notification-card.unread {
+  background: rgba(255, 0, 127, 0.04) !important;
+  border-left-width: 4px !important;
+}
+
+.notification-card.unread .notif-dot {
+  background: var(--mobile-primary);
+}
+
+.notif-action-btn:hover {
+  text-decoration: underline;
+}
+
+.notif-delete-btn:hover {
+  color: var(--mobile-red) !important;
+}

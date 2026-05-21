@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { 
@@ -11,6 +11,28 @@ import {
   Clock, Settings
 } from 'lucide-react';
 import './AdminMobile.css';
+
+const DEFAULT_SETTINGS = {
+  name: 'Studio do Jon',
+  phone: '3135866673',
+  address: 'Rua Jacuí, 312 - Floresta, Belo Horizonte - MG',
+  instagram: 'https://instagram.com/ojonquecortou',
+  feePix: 0,
+  feeDebit: 1.9,
+  feeCredit: 3.5,
+  minAdvance: '2',
+  autoApprove: false,
+  waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento...',
+  waReminderEnabled: true,
+  waReminderGateway: 'evolution',
+  zApiInstanceId: '',
+  zApiToken: '',
+  evolutionApiUrl: 'https://evolution-api-production-1e65.up.railway.app',
+  evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
+  evolutionInstanceName: 'JonStudio',
+  customWebhookUrl: '',
+  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
+};
 
 const AdminMobileApp = () => {
   const navigate = useNavigate();
@@ -51,8 +73,18 @@ const AdminMobileApp = () => {
     phone: '',
     email: '',
     curvatura: '3A',
-    observacoes: ''
+    observacoes: '',
+    birthdate: ''
   });
+
+  const [notifications, setNotifications] = useState(() => {
+    const stored = localStorage.getItem('admin_notifications');
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
+
+  const notifiedRef = useRef(new Set());
+  const unreadCount = notifications.filter(n => !n.read).length;
 
   const [blockMotive, setBlockMotive] = useState('Almoço');
   const [paymentMethod, setPaymentMethod] = useState('pix');
@@ -180,7 +212,227 @@ const AdminMobileApp = () => {
         }));
       }
     }
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    if (savedSettings) {
+      try {
+        const parsed = JSON.parse(savedSettings);
+        const merged = { ...DEFAULT_SETTINGS };
+        Object.keys(parsed).forEach(key => {
+          if (parsed[key] !== undefined && parsed[key] !== null && parsed[key] !== '') {
+            merged[key] = parsed[key];
+          }
+        });
+        setSettings(merged);
+      } catch (e) {
+        setSettings(DEFAULT_SETTINGS);
+      }
+    } else {
+      setSettings(DEFAULT_SETTINGS);
+    }
+  };
+
+  // 1b. Motor de Notificações
+  const triggerNotification = (id, title, message, type) => {
+    if (notifiedRef.current.has(id)) return;
+    notifiedRef.current.add(id);
+    localStorage.setItem('notified_ids', JSON.stringify(Array.from(notifiedRef.current)));
+
+    const newNotif = {
+      id,
+      title,
+      message,
+      type,
+      timestamp: new Date().toISOString(),
+      read: false
+    };
+
+    setNotifications(prev => {
+      const updated = [newNotif, ...prev];
+      localStorage.setItem('admin_notifications', JSON.stringify(updated));
+      return updated;
+    });
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        new Notification(title, {
+          body: message,
+          icon: '/favicon.ico'
+        });
+      } catch (e) {
+        console.warn('Native notification failed:', e);
+      }
+    }
+  };
+
+  const isBirthdayInCurrentWeek = (birthdateStr) => {
+    if (!birthdateStr) return false;
+    const parts = birthdateStr.split('-');
+    if (parts.length !== 3) return false;
+    const bMonth = parseInt(parts[1], 10) - 1;
+    const bDay = parseInt(parts[2], 10);
+
+    const now = new Date();
+    const currentDayOfWeek = now.getDay();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - currentDayOfWeek);
+
+    for (let i = 0; i < 7; i++) {
+      const checkDay = new Date(startOfWeek);
+      checkDay.setDate(startOfWeek.getDate() + i);
+      if (checkDay.getMonth() === bMonth && checkDay.getDate() === bDay) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const runPollerChecks = () => {
+    if (!bookings || bookings.length === 0) return;
+
+    const now = new Date();
+    const nowTime = now.getTime();
+
+    // 1. Check for New Bookings (created in the last 60 seconds)
+    bookings.forEach(booking => {
+      if (booking.createdAt && booking.status !== 'cancelado') {
+        const createdTime = new Date(booking.createdAt).getTime();
+        const id = `new_booking_${booking.id || booking.createdAt}`;
+        if (nowTime - createdTime < 60000 && !notifiedRef.current.has(id)) {
+          triggerNotification(
+            id,
+            'Novo Agendamento! 📅',
+            `${booking.clientName} agendou ${booking.service?.name || 'Serviço'} para ${booking.date} às ${booking.time}`,
+            'novo_agendamento'
+          );
+        }
+      }
+    });
+
+    // 2. Check for 30-minute Pre-Appointment Alert
+    bookings.forEach(booking => {
+      if (booking.status !== 'cancelado' && booking.date && booking.time) {
+        try {
+          const [yr, mo, dy] = booking.date.split('-').map(Number);
+          const [hr, mn] = booking.time.split(':').map(Number);
+          const bookingTime = new Date(yr, mo - 1, dy, hr, mn);
+          const diffMs = bookingTime.getTime() - nowTime;
+          const diffMinutes = Math.round(diffMs / 60000);
+
+          if (diffMinutes >= 0 && diffMinutes <= 30) {
+            const id = `reminder_30m_${booking.id}`;
+            if (!notifiedRef.current.has(id)) {
+              triggerNotification(
+                id,
+                'Compromisso em Breve! ⏰',
+                `Atendimento de ${booking.clientName} (${booking.service?.name || 'Serviço'}) começa em ${diffMinutes} min às ${booking.time}!`,
+                'lembrete_30m'
+              );
+            }
+          }
+        } catch (e) {
+          console.warn('Error parsing booking date/time:', e);
+        }
+      }
+    });
+
+    // 3. Check for Birthday of the Week with active booking this week
+    const currentDayOfWeek = now.getDay();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - currentDayOfWeek);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    bookings.forEach(booking => {
+      if (booking.status !== 'cancelado' && booking.date) {
+        try {
+          const [yr, mo, dy] = booking.date.split('-').map(Number);
+          const bookingTime = new Date(yr, mo - 1, dy);
+
+          if (bookingTime >= startOfWeek && bookingTime <= endOfWeek) {
+            let birthdate = booking.clientBirthdate || '';
+            if (!birthdate) {
+              const clientProf = clients.find(c => c.phone === booking.clientPhone);
+              if (clientProf) birthdate = clientProf.birthdate || '';
+            }
+
+            if (birthdate) {
+              if (isBirthdayInCurrentWeek(birthdate)) {
+                const id = `birthday_week_${booking.id}`;
+                if (!notifiedRef.current.has(id)) {
+                  const bParts = birthdate.split('-');
+                  const bDay = bParts[2];
+                  const bMonth = bParts[1];
+                  triggerNotification(
+                    id,
+                    'Aniversariante da Semana! 🎂',
+                    `${booking.clientName} faz aniversário essa semana (dia ${bDay}/${bMonth}) e tem agendamento para dia ${dy}/${mo} às ${booking.time}!`,
+                    'aniversario'
+                  );
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Error checking birthday for booking:', e);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    const storedNotified = localStorage.getItem('notified_ids');
+    if (storedNotified) {
+      try {
+        const parsed = JSON.parse(storedNotified);
+        notifiedRef.current = new Set(parsed);
+      } catch (e) {
+        console.warn('Failed to parse notified_ids:', e);
+      }
+    }
+
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    runPollerChecks();
+    const intervalId = setInterval(() => {
+      runPollerChecks();
+    }, 60000);
+
+    return () => clearInterval(intervalId);
+  }, [bookings, clients]);
+
+  const markAllAsRead = () => {
+    setNotifications(prev => {
+      const updated = prev.map(n => ({ ...n, read: true }));
+      localStorage.setItem('admin_notifications', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+    localStorage.removeItem('admin_notifications');
+  };
+
+  const markAsRead = (id) => {
+    setNotifications(prev => {
+      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
+      localStorage.setItem('admin_notifications', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const deleteNotification = (id) => {
+    setNotifications(prev => {
+      const updated = prev.filter(n => n.id !== id);
+      localStorage.setItem('admin_notifications', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   // 2. Auxiliares Financeiros (Mês Corrente)
@@ -321,6 +573,7 @@ const AdminMobileApp = () => {
       email: newClient.email || 'Não informado',
       curvatura: newClient.curvatura,
       observacoes: newClient.observacoes,
+      birthdate: newClient.birthdate || '',
       createdAt: new Date().toISOString()
     };
 
@@ -333,7 +586,7 @@ const AdminMobileApp = () => {
         await addDoc(collection(db, 'client_profiles'), payload);
       }
       setShowAddClientModal(false);
-      setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '' });
+      setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '', birthdate: '' });
       alert('Cliente cadastrado com sucesso!');
     } catch (e) {
       alert('Falha ao cadastrar cliente.');
@@ -558,7 +811,10 @@ const AdminMobileApp = () => {
         </div>
         <div className="mobile-header-actions">
           <HelpCircle size={20} />
-          <Bell size={20} />
+          <div className="bell-badge-container" onClick={() => setShowNotificationsModal(true)} style={{ position: 'relative', cursor: 'pointer' }}>
+            <Bell size={20} />
+            {unreadCount > 0 && <span className="bell-badge">{unreadCount}</span>}
+          </div>
         </div>
       </header>
 
@@ -1205,6 +1461,15 @@ const AdminMobileApp = () => {
               </div>
 
               <div className="mobile-form-group">
+                <label>Data de Nascimento (Opcional)</label>
+                <input 
+                  type="date"
+                  value={newClient.birthdate || ''}
+                  onChange={e => setNewClient(prev => ({ ...prev, birthdate: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
                 <label>Observações</label>
                 <textarea 
                   placeholder="Observações iniciais sobre o cabelo"
@@ -1264,6 +1529,124 @@ const AdminMobileApp = () => {
               <button type="button" className="btn-save" style={{ background: 'var(--mobile-green)' }} onClick={submitCheckout}>
                 Confirmar Recebimento
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CENTRAL DE NOTIFICAÇÕES */}
+      {showNotificationsModal && (
+        <div className="mobile-overlay" onClick={() => setShowNotificationsModal(false)}>
+          <div className="mobile-popup-modal notifications-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-sheet-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Bell size={20} className="text-pink" style={{ color: 'var(--mobile-primary)' }} />
+                <h4 style={{ margin: 0 }}>Central de Notificações</h4>
+              </div>
+              <button onClick={() => setShowNotificationsModal(false)}><X size={20} /></button>
+            </div>
+
+            <div className="notifications-list-container" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '4px 0' }}>
+              {notifications.length > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, gap: 10 }}>
+                  <button 
+                    onClick={markAllAsRead} 
+                    className="notif-action-btn"
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--mobile-primary)',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer',
+                      fontWeight: '500',
+                      padding: '4px 8px'
+                    }}
+                  >
+                    Marcar todas como lidas
+                  </button>
+                  <button 
+                    onClick={clearAllNotifications} 
+                    className="notif-action-btn notif-clear-btn"
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: '#a0aec0',
+                      fontSize: '0.75rem',
+                      cursor: 'pointer',
+                      fontWeight: '500',
+                      padding: '4px 8px'
+                    }}
+                  >
+                    Limpar histórico
+                  </button>
+                </div>
+              )}
+
+              {notifications.length === 0 ? (
+                <div className="empty-notifications" style={{ textAlign: 'center', padding: '40px 20px', color: '#a0aec0' }}>
+                  <Bell size={36} style={{ opacity: 0.3, marginBottom: 8, margin: '0 auto' }} />
+                  <p style={{ fontSize: '0.85rem' }}>Você não tem nenhuma notificação.</p>
+                </div>
+              ) : (
+                <div className="notifications-list" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {notifications.map(notif => (
+                    <div 
+                      key={notif.id} 
+                      className={`notification-card ${notif.type} ${notif.read ? 'read' : 'unread'}`}
+                      onClick={() => markAsRead(notif.id)}
+                      style={{
+                        padding: '12px',
+                        borderRadius: '8px',
+                        borderLeft: '4px solid',
+                        borderLeftColor: notif.type === 'novo_agendamento' ? 'var(--mobile-primary)' : notif.type === 'lembrete_30m' ? '#ed8936' : '#ecc94b',
+                        background: notif.read ? '#f7fafc' : 'rgba(213, 63, 140, 0.05)',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                        position: 'relative',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      <div className="notif-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          {!notif.read && (
+                            <span className="notif-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--mobile-primary)', display: 'inline-block' }} />
+                          )}
+                          <span className="notif-title" style={{ fontWeight: notif.read ? '500' : '700', fontSize: '0.85rem', color: '#2d3748' }}>
+                            {notif.title}
+                          </span>
+                        </div>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteNotification(notif.id);
+                          }} 
+                          className="notif-delete-btn"
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#a0aec0',
+                            cursor: 'pointer',
+                            padding: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                      <p className="notif-message" style={{ fontSize: '0.8rem', color: '#4a5568', margin: '4px 0 6px 0', lineHeight: '1.3' }}>
+                        {notif.message}
+                      </p>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                        <span className="notif-time" style={{ fontSize: '0.7rem', color: '#a0aec0' }}>
+                          {new Date(notif.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -41,7 +41,8 @@ const AdminClients = () => {
     quimicas: 'Nenhuma',
     produtosRecomendados: '',
     observacoes: '',
-    sexo: 'Feminino'
+    sexo: 'Feminino',
+    birthdate: ''
   });
 
   // Ficha técnica para o cliente selecionado
@@ -52,7 +53,8 @@ const AdminClients = () => {
     quimicas: 'Nenhuma',
     produtosRecomendados: '',
     observacoes: '',
-    sexo: 'Feminino'
+    sexo: 'Feminino',
+    birthdate: ''
   });
 
   const [saving, setSaving] = useState(false);
@@ -387,7 +389,8 @@ const AdminClients = () => {
         quimicas: clientProf.quimicas || 'Nenhuma',
         produtosRecomendados: clientProf.produtosRecomendados || '',
         observacoes: clientProf.observacoes || '',
-        sexo: clientProf.sexo || 'Feminino'
+        sexo: clientProf.sexo || 'Feminino',
+        birthdate: clientProf.birthdate || ''
       });
     } else {
       // Se não tem perfil salvo ainda, herda o tipo do agendamento
@@ -399,7 +402,8 @@ const AdminClients = () => {
         quimicas: 'Nenhuma',
         produtosRecomendados: '',
         observacoes: '',
-        sexo: clientObj?.sexo || 'Feminino'
+        sexo: clientObj?.sexo || 'Feminino',
+        birthdate: ''
       });
     }
   }, [selectedClientPhone, profiles, clients]);
@@ -458,7 +462,8 @@ const AdminClients = () => {
       quimicas: newClient.quimicas || 'Nenhuma',
       produtosRecomendados: newClient.produtosRecomendados || '',
       observacoes: newClient.observacoes || '',
-      sexo: newClient.sexo || 'Feminino'
+      sexo: newClient.sexo || 'Feminino',
+      birthdate: newClient.birthdate || ''
     };
 
     try {
@@ -485,7 +490,8 @@ const AdminClients = () => {
         quimicas: 'Nenhuma',
         produtosRecomendados: '',
         observacoes: '',
-        sexo: 'Feminino'
+        sexo: 'Feminino',
+        birthdate: ''
       });
     } catch (err) {
       console.error('Erro ao cadastrar cliente:', err);
@@ -1018,6 +1024,16 @@ const AdminClients = () => {
                           <option value="Masculino">Masculino</option>
                           <option value="Outro">Outro / Não informado</option>
                         </select>
+                      </div>
+
+                      <div className="form-group-sleek">
+                        <label>Data de Nascimento</label>
+                        <input 
+                          type="date"
+                          value={hairProfile.birthdate || ''}
+                          onChange={e => setHairProfile(prev => ({ ...prev, birthdate: e.target.value }))}
+                          style={{ maxWidth: '200px' }}
+                        />
                       </div>
 
                       <div className="form-group-sleek">
@@ -1636,6 +1652,17 @@ await resend.emails.send({
                     <option value="Masculino">Masculino</option>
                     <option value="Outro">Outro / Não informado</option>
                   </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group-sleek" style={{ flex: 1 }}>
+                  <label>Data de Nascimento (opcional)</label>
+                  <input 
+                    type="date"
+                    value={newClient.birthdate || ''}
+                    onChange={e => setNewClient(prev => ({ ...prev, birthdate: e.target.value }))}
+                  />
                 </div>
               </div>
 

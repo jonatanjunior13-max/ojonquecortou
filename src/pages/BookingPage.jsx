@@ -3,7 +3,7 @@ import { db, withTimeout } from '../config/firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
-import { Clock, ChevronDown, ChevronUp, Sparkles, Check } from 'lucide-react';
+import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle } from 'lucide-react';
 import './Booking.css';
 
 const SEED_SERVICES = [
@@ -141,6 +141,66 @@ const BookingPage = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
   
+  // Helper to detect WhatsApp-only services (Coloração, Luzes, Retoque de raiz)
+  const isWhatsappOnlyService = (name) => {
+    if (!name) return false;
+    const normalized = name.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    return normalized.includes('colora') || normalized.includes('luzes') || normalized.includes('retoque de raiz');
+  };
+
+  // Helper to map name keywords to emojis and taglines matching ServicesPage.jsx
+  const getServiceExtraDetails = (name) => {
+    if (!name) return { emoji: '✨', tagline: '' };
+    const normalized = name.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+    // Corte + Tratamento or Combo Corte
+    if (normalized.includes('corte') && (normalized.includes('tratamento') || normalized.includes('terapia') || normalized.includes('trp'))) {
+      return { emoji: '✨', tagline: 'O Queridinho do Studio' };
+    }
+    // Corte Especializado or Corte com o Jon
+    if (normalized.includes('corte com o jon') || normalized.includes('corte especializado')) {
+      return { emoji: '✂️', tagline: 'Ondulados, Cacheados e Crespos' };
+    }
+    // Manutenção de corte
+    if (normalized.includes('manutencao')) {
+      return { emoji: '📏', tagline: 'Exclusivo para clientes recorrentes' };
+    }
+    // Tratamento Personalizado
+    if (normalized.includes('tratamento personalizado')) {
+      return { emoji: '💆', tagline: 'Saúde da Fibra Capilar' };
+    }
+    // Detox
+    if (normalized.includes('detox')) {
+      return { emoji: '🌿', tagline: 'Saúde do Couro Cabeludo' };
+    }
+    // Inside TRP / Reconstrução
+    if (normalized.includes('trp') || normalized.includes('reconstrucao')) {
+      return { emoji: '💎', tagline: 'Tecnologia Deep Complex' };
+    }
+    // Mechas e Luzes
+    if (normalized.includes('luzes') || normalized.includes('mechas')) {
+      return { emoji: '🌟', tagline: 'Morena Iluminada e Loiros' };
+    }
+    // Coloração Completa
+    if (normalized.includes('coloracao completa')) {
+      return { emoji: '🎨', tagline: 'A cor que você desejar, o Jon faz' };
+    }
+    // Retoque de raiz
+    if (normalized.includes('retoque')) {
+      return { emoji: '🖌️', tagline: 'Uniformidade e Saúde' };
+    }
+    // Lavar e Finalizar
+    if (normalized.includes('lavar') || normalized.includes('finalizar')) {
+      return { emoji: '🧴', tagline: 'Definição e Volume' };
+    }
+
+    return { emoji: '✨', tagline: '' };
+  };
+  
   // Semana ativa para calendário de 60 dias
   const [activeWeekKey, setActiveWeekKey] = useState(() => {
     const initialDates = getAvailableDates();
@@ -158,7 +218,8 @@ const BookingPage = () => {
     phone: '',
     email: '',
     hairType: '3A',
-    notes: ''
+    notes: '',
+    birthdate: ''
   });
 
   const [loading, setLoading] = useState(false);
@@ -293,6 +354,7 @@ const BookingPage = () => {
       clientName: clientData.name,
       clientPhone: clientData.phone,
       clientEmail: clientData.email,
+      clientBirthdate: clientData.birthdate || '',
       hairType: clientData.hairType,
       notes: clientData.notes,
       status: 'pendente', // pendente, confirmado, finalizado, cancelado
@@ -452,19 +514,31 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     const hasPromo = !!service.promoPrice;
                     const isFeatured = !!(service.isPrimary || service.featured);
                     const isSelected = selectedService?.id === service.id;
+                    const isWaOnly = isWhatsappOnlyService(service.name);
+                    const { emoji, tagline } = getServiceExtraDetails(service.name);
                     
                     return (
                       <div 
                         key={service.id} 
-                        className={`booking-service-card ${isSelected ? 'selected' : ''} ${isFeatured ? 'featured' : ''}`}
-                        onClick={() => {
+                        className={`booking-service-card ${isSelected ? 'selected' : ''} ${isFeatured ? 'featured' : ''} ${isWaOnly ? 'whatsapp-card' : ''}`}
+                        onClick={(e) => {
+                          if (isWaOnly) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const text = encodeURIComponent(`Olá! Gostaria de um orçamento para ${service.name}.`);
+                            window.open(`https://wa.me/553135866673?text=${text}`, '_blank');
+                            return;
+                          }
                           setSelectedService(service);
                           setStep(2);
                         }}
                       >
                         {/* Linha superior */}
                         <div className="booking-card-top-decor">
-                          <span className="booking-service-category-tag">{service.category || 'Outros'}</span>
+                          <div className="booking-card-emoji-category">
+                            <span className="booking-service-emoji">{emoji}</span>
+                            <span className="booking-service-category-tag">{service.category || 'Outros'}</span>
+                          </div>
                           <div className="booking-service-badges-row">
                             {isFeatured && (
                               <span className="booking-service-badge highlight">
@@ -482,6 +556,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                         {/* Corpo do card */}
                         <div className="booking-service-card-body">
                           <h3 className="booking-service-card-title">{service.name}</h3>
+                          {tagline && <p className="booking-service-tagline">{tagline}</p>}
+                          
                           <div className="booking-service-duration-info">
                             <Clock size={12} />
                             <span>Duração aproximada: {service.duration || 60} min</span>
@@ -501,6 +577,17 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                                   {isExpanded ? 'Ocultar descrição ▲' : 'Ver descrição completa ▼'}
                                 </button>
                               )}
+                            </div>
+                          )}
+
+                          {service.includes && service.includes.length > 0 && (
+                            <div className="booking-service-includes">
+                              <p className="booking-service-includes-title">O que está incluso:</p>
+                              <ul>
+                                {service.includes.map((item, idx) => (
+                                  <li key={idx}>✓ {item}</li>
+                                ))}
+                              </ul>
                             </div>
                           )}
                         </div>
@@ -526,7 +613,12 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                           </div>
                           
                           <div className="booking-service-selection-indicator">
-                            {isSelected ? (
+                            {isWaOnly ? (
+                              <span className="booking-select-action-label whatsapp-btn">
+                                <MessageCircle size={12} style={{ marginRight: 4, display: 'inline-block', verticalAlign: 'middle' }} />
+                                Me chama no Whatsapp
+                              </span>
+                            ) : isSelected ? (
                               <span className="booking-selected-pill"><Check size={12} /> Selecionado</span>
                             ) : (
                               <span className="booking-select-action-label">Agendar</span>
@@ -696,6 +788,17 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   <option value="4C">4C (Crespo Muito Cerrado)</option>
                   <option value="NaoSei">Ainda não sei (vamos descobrir!)</option>
                 </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="birthdate">Data de Nascimento (Opcional)</label>
+                <input 
+                  type="date" 
+                  id="birthdate" 
+                  name="birthdate" 
+                  value={clientData.birthdate || ''} 
+                  onChange={handleInputChange} 
+                />
               </div>
             </div>
 

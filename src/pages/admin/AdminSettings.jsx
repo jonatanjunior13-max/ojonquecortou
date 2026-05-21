@@ -33,13 +33,13 @@ const DEFAULT_SETTINGS = {
   waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento de {servico} para o dia {data} às {hora}.',
 
   // Integração WhatsApp 24h
-  waReminderEnabled: false,
-  waReminderGateway: 'zapi',
+  waReminderEnabled: true,
+  waReminderGateway: 'evolution',
   zApiInstanceId: '',
   zApiToken: '',
-  evolutionApiUrl: '',
-  evolutionApiKey: '',
-  evolutionInstanceName: '',
+  evolutionApiUrl: 'https://evolution-api-production-1e65.up.railway.app',
+  evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
+  evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
   waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
 };
@@ -51,13 +51,28 @@ const AdminSettings = () => {
   const [isDemoMode, setIsDemoMode] = useState(false);
 
   useEffect(() => {
+    const loadSettings = (savedRaw) => {
+      try {
+        const parsed = JSON.parse(savedRaw);
+        const merged = { ...DEFAULT_SETTINGS };
+        Object.keys(parsed).forEach(key => {
+          if (parsed[key] !== undefined && parsed[key] !== null && parsed[key] !== '') {
+            merged[key] = parsed[key];
+          }
+        });
+        return merged;
+      } catch (err) {
+        return DEFAULT_SETTINGS;
+      }
+    };
+
     if (!db) {
       setIsDemoMode(true);
       const saved = localStorage.getItem('demo_studio_settings');
       if (saved) {
-        try {
-          setSettings(JSON.parse(saved));
-        } catch (err) {}
+        setSettings(loadSettings(saved));
+      } else {
+        setSettings(DEFAULT_SETTINGS);
       }
       return;
     }
@@ -75,9 +90,9 @@ const AdminSettings = () => {
       setIsDemoMode(true);
       const saved = localStorage.getItem('demo_studio_settings');
       if (saved) {
-        try {
-          setSettings(JSON.parse(saved));
-        } catch (err) {}
+        setSettings(loadSettings(saved));
+      } else {
+        setSettings(DEFAULT_SETTINGS);
       }
     });
 

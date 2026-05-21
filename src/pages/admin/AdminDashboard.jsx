@@ -38,13 +38,13 @@ const DEFAULT_SETTINGS = {
   minAdvance: '2',
   autoApprove: false,
   waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento...',
-  waReminderEnabled: false,
-  waReminderGateway: 'zapi',
+  waReminderEnabled: true,
+  waReminderGateway: 'evolution',
   zApiInstanceId: '',
   zApiToken: '',
-  evolutionApiUrl: '',
-  evolutionApiKey: '',
-  evolutionInstanceName: '',
+  evolutionApiUrl: 'https://evolution-api-production-1e65.up.railway.app',
+  evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
+  evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
   waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨'
 };
@@ -130,7 +130,22 @@ const AdminDashboard = () => {
       }
 
       const saved = localStorage.getItem('demo_studio_settings');
-      setSettings(saved ? JSON.parse(saved) : DEFAULT_SETTINGS);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          const merged = { ...DEFAULT_SETTINGS };
+          Object.keys(parsed).forEach(key => {
+            if (parsed[key] !== undefined && parsed[key] !== null && parsed[key] !== '') {
+              merged[key] = parsed[key];
+            }
+          });
+          setSettings(merged);
+        } catch (e) {
+          setSettings(DEFAULT_SETTINGS);
+        }
+      } else {
+        setSettings(DEFAULT_SETTINGS);
+      }
       
       return;
     }
