@@ -570,7 +570,7 @@ const AdminDashboard = () => {
         setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
       }
       setIsEditingBooking(false);
-      alert('Agendamento atualizado com sucesso!');
+      setSelectedBooking(null);
     } catch (err) {
       console.error('Erro ao editar agendamento:', err);
       alert('Não foi possível salvar as alterações do agendamento.');
