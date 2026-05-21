@@ -424,9 +424,14 @@ const AdminClients = () => {
           setProfiles(currentProfiles);
           localStorage.setItem('demo_client_profiles', JSON.stringify(currentProfiles));
         } else {
-          // Firestore: batch writes in chunks of 100 to avoid overloading
-          const CHUNK = 100;
+          // Firestore: batch writes in chunks of 50 to avoid overloading and slow network drops
+          const CHUNK = 50;
+          const totalChunks = Math.ceil(parsed.length / CHUNK);
+          
           for (let i = 0; i < parsed.length; i += CHUNK) {
+            const chunkIndex = Math.floor(i / CHUNK) + 1;
+            setImportSummary(`Processando lote ${chunkIndex} de ${totalChunks}... (Aguarde, pode demorar alguns segundos)`);
+            
             const chunk = parsed.slice(i, i + CHUNK);
             const batch = writeBatch(db);
             for (const c of chunk) {
@@ -440,11 +445,11 @@ const AdminClients = () => {
               }
             }
             
-            // Timeout de 15 segundos por lote para não travar a tela
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Tempo limite de comunicação com o banco atingido no lote ' + i)), 15000));
+            // Timeout de 60 segundos por lote para conexões lentas ou long-polling
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error(`O lote ${chunkIndex} demorou mais de 60s para responder. Verifique sua conexão.`)), 60000));
             await Promise.race([batch.commit(), timeoutPromise]);
             
-            setImportProgress(prev => Math.min(prev + Math.floor(80 / Math.ceil(parsed.length / CHUNK)), 90));
+            setImportProgress(prev => Math.min(prev + Math.floor(80 / totalChunks), 95));
           }
         }
 
