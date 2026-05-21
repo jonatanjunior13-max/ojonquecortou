@@ -424,8 +424,8 @@ const AdminClients = () => {
           setProfiles(currentProfiles);
           localStorage.setItem('demo_client_profiles', JSON.stringify(currentProfiles));
         } else {
-          // Firestore: batch writes in chunks of 499
-          const CHUNK = 499;
+          // Firestore: batch writes in chunks of 100 to avoid overloading
+          const CHUNK = 100;
           for (let i = 0; i < parsed.length; i += CHUNK) {
             const chunk = parsed.slice(i, i + CHUNK);
             const batch = writeBatch(db);
@@ -439,8 +439,12 @@ const AdminClients = () => {
                 created++;
               }
             }
-            await batch.commit();
-            setImportProgress(prev => Math.min(prev + Math.floor(60 / Math.ceil(parsed.length / CHUNK)), 90));
+            
+            // Timeout de 15 segundos por lote para não travar a tela
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Tempo limite de comunicação com o banco atingido no lote ' + i)), 15000));
+            await Promise.race([batch.commit(), timeoutPromise]);
+            
+            setImportProgress(prev => Math.min(prev + Math.floor(80 / Math.ceil(parsed.length / CHUNK)), 90));
           }
         }
 
