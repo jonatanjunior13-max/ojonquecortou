@@ -434,11 +434,13 @@ const AdminClients = () => {
               const c = uploadQueue.shift();
               const docRef = doc(db, 'client_profiles', c.phone);
               try {
+                // Timeout individual de 30s por cliente
+                const singleTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout individual')), 30000));
                 if (replaceExisting) {
-                  await setDoc(docRef, c, { merge: true });
+                  await Promise.race([setDoc(docRef, c, { merge: true }), singleTimeout]);
                   updated++;
                 } else {
-                  await setDoc(docRef, c, { merge: false });
+                  await Promise.race([setDoc(docRef, c, { merge: false }), singleTimeout]);
                   created++;
                 }
               } catch (err) {
