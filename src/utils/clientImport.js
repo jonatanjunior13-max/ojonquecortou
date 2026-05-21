@@ -1,3 +1,5 @@
+import Papa from 'papaparse';
+
 /**
  * parseClientCSV
  * Parses a CSV File object into an array of client objects ready for persistence.
@@ -11,8 +13,7 @@
  * @param {Function} onResult  - Callback({ clients, errors }) called when done.
  */
 export function parseClientCSV(file, onResult) {
-  import('papaparse').then(({ default: Papa }) => {
-    Papa.parse(file, {
+  Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       encoding: 'UTF-8',
@@ -81,7 +82,4 @@ export function parseClientCSV(file, onResult) {
         onResult({ clients: [], errors: [`Erro ao ler o arquivo: ${err.message}`] });
       },
     });
-  }).catch(err => {
-    onResult({ clients: [], errors: [`Erro ao carregar o leitor de planilhas. Por favor, atualize a página (F5) e tente novamente. Detalhes: ${err.message}`] });
-  });
 }
