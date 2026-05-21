@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { 
-  collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit 
+  collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit, getDoc, setDoc 
 } from 'firebase/firestore';
 import { 
   Home as HomeIcon, Calendar as CalendarIcon, Plus, Menu, HelpCircle, 
@@ -545,9 +545,10 @@ const AdminMobileApp = () => {
   const submitBooking = async (e) => {
     if (e) e.preventDefault();
     const activeDuration = newBooking.duration || (services[0]?.duration || 60);
+    const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
     const payload = {
       clientName: newBooking.clientName,
-      clientPhone: newBooking.clientPhone.replace(/\D/g, ''),
+      clientPhone: cleanPhone,
       clientEmail: newBooking.clientEmail,
       duration: activeDuration,
       service: {
@@ -570,6 +571,44 @@ const AdminMobileApp = () => {
       } else {
         await addDoc(collection(db, 'bookings'), payload);
       }
+
+      // Auto-cadastro de cliente mobile
+      if (cleanPhone) {
+        const exists = clients.some(c => c.phone === cleanPhone || c.id === cleanPhone);
+        if (!exists) {
+          const profilePayload = {
+            name: newBooking.clientName,
+            phone: cleanPhone,
+            email: newBooking.clientEmail || 'Não informado',
+            curvatura: '3A',
+            porosidade: 'Média',
+            elasticidade: 'Normal',
+            quimicas: 'Nenhuma',
+            produtosRecomendados: '',
+            observacoes: 'Cadastrado automaticamente via agendamento mobile',
+            sexo: 'Feminino',
+            birthdate: '',
+            createdAt: new Date().toISOString()
+          };
+
+          if (isDemoMode) {
+            const local = [...clients, { id: cleanPhone, ...profilePayload }];
+            setClients(local);
+            localStorage.setItem('demo_client_profiles', JSON.stringify(local));
+          } else {
+            try {
+              const clientRef = doc(db, 'client_profiles', cleanPhone);
+              const clientSnap = await getDoc(clientRef);
+              if (!clientSnap.exists()) {
+                await setDoc(clientRef, profilePayload);
+              }
+            } catch (profileErr) {
+              console.warn('Erro ao auto-cadastrar cliente no Firestore (Mobile):', profileErr);
+            }
+          }
+        }
+      }
+
       setShowAddBookingModal(false);
       resetBookingForm();
       alert('Agendamento cadastrado com sucesso!');
@@ -644,7 +683,7 @@ const AdminMobileApp = () => {
         setClients(local);
         localStorage.setItem('demo_client_profiles', JSON.stringify(local));
       } else {
-        await addDoc(collection(db, 'client_profiles'), payload);
+        await setDoc(doc(db, 'client_profiles', payload.phone), payload);
       }
       setShowAddClientModal(false);
       setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '', birthdate: '' });

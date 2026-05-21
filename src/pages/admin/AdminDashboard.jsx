@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, query, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
 import { 
   ChevronLeft, 
@@ -495,11 +495,52 @@ const AdminDashboard = () => {
     };
 
     try {
+      const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
+
       if (isDemoMode) {
         setBookings(prev => [...prev, { id: 'demo-' + Date.now(), ...payload }]);
       } else {
         await addDoc(collection(db, 'bookings'), payload);
       }
+
+      // Auto-cadastro de cliente
+      if (cleanPhone) {
+        const exists = clients.some(c => c.phone === cleanPhone);
+        if (!exists) {
+          const profilePayload = {
+            name: newBooking.clientName,
+            phone: cleanPhone,
+            email: newBooking.clientEmail || 'Não informado',
+            curvatura: '3A',
+            porosidade: 'Média',
+            elasticidade: 'Normal',
+            quimicas: 'Nenhuma',
+            produtosRecomendados: '',
+            observacoes: 'Cadastrado automaticamente via agendamento manual no painel',
+            sexo: 'Feminino',
+            birthdate: '',
+            createdAt: new Date().toISOString()
+          };
+
+          if (isDemoMode) {
+            const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+            localClients.push(profilePayload);
+            localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+            setClients(prev => [...prev, { id: cleanPhone, ...profilePayload }]);
+          } else {
+            try {
+              const clientRef = doc(db, 'client_profiles', cleanPhone);
+              const clientSnap = await getDoc(clientRef);
+              if (!clientSnap.exists()) {
+                await setDoc(clientRef, profilePayload);
+              }
+            } catch (profileErr) {
+              console.warn('Erro ao auto-cadastrar cliente no Firestore (Painel):', profileErr);
+            }
+          }
+        }
+      }
+
       setShowAddModal(false);
       
       setNewBooking({

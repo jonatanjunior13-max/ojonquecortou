@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, withTimeout } from '../config/firebase';
-import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
 import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle } from 'lucide-react';
@@ -362,20 +362,95 @@ const BookingPage = () => {
     };
 
     try {
+      const cleanPhone = clientData.phone.replace(/\D/g, '');
+
+      // 1. Salvar agendamento
       if (isDemoMode || !db) {
         console.log('Agendamento simulado (Demo):', bookingPayload);
         const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
         localBookings.push(bookingPayload);
         localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
+
+        // Auto-cadastro local
+        if (cleanPhone) {
+          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+          const exists = localClients.some(c => c.phone === cleanPhone);
+          if (!exists) {
+            localClients.push({
+              name: clientData.name,
+              phone: cleanPhone,
+              email: clientData.email || 'Não informado',
+              curvatura: clientData.hairType || '3A',
+              porosidade: 'Média',
+              elasticidade: 'Normal',
+              quimicas: 'Nenhuma',
+              produtosRecomendados: '',
+              observacoes: 'Cadastrado automaticamente via agendamento online',
+              sexo: 'Feminino',
+              birthdate: clientData.birthdate || '',
+              createdAt: new Date().toISOString()
+            });
+            localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+          }
+        }
       } else {
         try {
           await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 4500);
+
+          // Auto-cadastro no Firestore
+          if (cleanPhone) {
+            try {
+              const clientRef = doc(db, 'client_profiles', cleanPhone);
+              const clientSnap = await withTimeout(getDoc(clientRef), 3500);
+              if (!clientSnap.exists()) {
+                await withTimeout(setDoc(clientRef, {
+                  name: clientData.name,
+                  phone: cleanPhone,
+                  email: clientData.email || 'Não informado',
+                  curvatura: clientData.hairType || '3A',
+                  porosidade: 'Média',
+                  elasticidade: 'Normal',
+                  quimicas: 'Nenhuma',
+                  produtosRecomendados: '',
+                  observacoes: 'Cadastrado automaticamente via agendamento online',
+                  sexo: 'Feminino',
+                  birthdate: clientData.birthdate || '',
+                  createdAt: new Date().toISOString()
+                }), 3500);
+              }
+            } catch (profileErr) {
+              console.warn('Erro ao auto-cadastrar cliente no Firestore:', profileErr);
+            }
+          }
         } catch (dbErr) {
           console.warn('Erro/Timeout ao salvar no Firestore. Ativando fallback local:', dbErr);
           setIsDemoMode(true);
           const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
           localBookings.push(bookingPayload);
           localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
+
+          // Auto-cadastro local fallback
+          if (cleanPhone) {
+            const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+            const exists = localClients.some(c => c.phone === cleanPhone);
+            if (!exists) {
+              localClients.push({
+                name: clientData.name,
+                phone: cleanPhone,
+                email: clientData.email || 'Não informado',
+                curvatura: clientData.hairType || '3A',
+                porosidade: 'Média',
+                elasticidade: 'Normal',
+                quimicas: 'Nenhuma',
+                produtosRecomendados: '',
+                observacoes: 'Cadastrado automaticamente via agendamento online (fallback)',
+                sexo: 'Feminino',
+                birthdate: clientData.birthdate || '',
+                createdAt: new Date().toISOString()
+              });
+              localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+            }
+          }
         }
       }
       
