@@ -27,7 +27,7 @@ if (isConfigValid) {
     auth = getAuth(app);
     try {
       db = initializeFirestore(app, {
-        experimentalAutoDetectLongPolling: true
+        experimentalForceLongPolling: true
       });
     } catch (e) {
       db = getFirestore(app);

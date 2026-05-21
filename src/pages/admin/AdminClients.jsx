@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, auth } from '../../config/firebase';
+import { db, auth, withTimeout } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload } from 'lucide-react';
 import { parseClientCSV } from '../../utils/clientImport';
@@ -473,7 +473,8 @@ const AdminClients = () => {
             }
 
             try {
-              await batch.commit();
+              // Timeout de 15 segundos por lote (100 clientes)
+              await withTimeout(batch.commit(), 15000);
               for (const item of chunk) {
                 if (item.isUpdate) {
                   updated++;
