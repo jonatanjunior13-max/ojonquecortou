@@ -418,19 +418,6 @@ const BookingPage = () => {
 ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
   };
 
-  // Redirecionamento automático após 2 segundos no Passo 4 (Sucesso)
-  useEffect(() => {
-    if (step === 4 && success) {
-      const timer = setTimeout(() => {
-        const messageText = getWhatsAppMessage();
-        if (messageText) {
-          const url = `https://wa.me/553135866673?text=${encodeURIComponent(messageText)}`;
-          window.open(url, '_blank');
-        }
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [step, success]);
 
   return (
     <main className="booking-page container">
@@ -830,11 +817,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         {/* PASSO 4: SUCESSO */}
         {step === 4 && success && (
           <div className="booking-success text-center">
-            <div className="success-icon" style={{ background: 'rgba(37, 211, 102, 0.1)', borderColor: '#25D366', color: '#25D366' }}>✓</div>
-            <h2>Solicitação de Orçamento Enviada!</h2>
+            <div className="success-icon" style={{ background: 'rgba(212, 175, 55, 0.1)', borderColor: 'var(--accent)', color: 'var(--accent)' }}>✓</div>
+            <h2>Agendamento Solicitado!</h2>
             <p className="lead" style={{ fontSize: '0.95rem' }}>
-              Seu agendamento prévio foi registrado na agenda do Jon. <br />
-              <strong>Para confirmar seu horário</strong>, clique no botão abaixo para nos enviar os detalhes via WhatsApp.
+              Seu horário foi pré-reservado com sucesso na nossa agenda. <br />
+              Analisaremos a sua solicitação e entraremos em contato em breve para confirmar!
             </p>
             
             <div className="summary-card" style={{ padding: '16px', margin: '20px auto', maxWidth: '380px' }}>
@@ -860,37 +847,22 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', marginTop: '24px' }}>
+            <div style={{ marginTop: '32px', paddingTop: '16px', borderTop: '1px solid var(--rule)' }}>
               <a 
-                href={`https://wa.me/553135866673?text=${encodeURIComponent(getWhatsAppMessage())}`} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn"
-                style={{
-                  background: '#25D366',
-                  color: '#fff',
-                  borderColor: '#25D366',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                  padding: '12px 24px',
+                href="/" 
+                className="btn btn-accent" 
+                style={{ 
+                  padding: '12px 28px', 
+                  fontSize: '13px', 
                   borderRadius: '999px',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  boxShadow: '0 4px 12px rgba(37, 211, 102, 0.25)',
-                  transition: 'all 0.2s ease'
+                  textDecoration: 'none'
                 }}
               >
-                <span>Confirmar no WhatsApp</span> ➔
+                Voltar para o Início ➔
               </a>
-              
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
-                Redirecionando automaticamente em 2 segundos...
-              </span>
-            </div>
-
-            <div style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--rule)' }}>
-              <a href="/" className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '11px' }}>Voltar para o Início</a>
             </div>
           </div>
         )}
