@@ -15,7 +15,7 @@ function HomeHero() {
         <div className="hero-grid">
           <div>
             <h1 className="display reveal in">
-              O especialista que <span className="accent-word">lê o seu fio</span> antes de cortar.
+              Especialista em Cabelo Cacheado em <span className="accent-word">Belo Horizonte</span>.
             </h1>
 
             <Reveal delay={120}>
