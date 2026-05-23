@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db, auth, withTimeout } from '../../config/firebase';
-import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch } from 'firebase/firestore';
+import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload } from 'lucide-react';
 import { parseClientCSV } from '../../utils/clientImport';
 import './Admin.css';
@@ -260,6 +260,9 @@ const AdminClients = () => {
     
     if (clientProf) {
       setHairProfile({
+        name: clientProf.name || clientObj?.name || '',
+        email: clientProf.email || clientObj?.email || '',
+        phone: clientProf.phone || selectedClientPhone,
         curvatura: clientProf.curvatura || '3A',
         porosidade: clientProf.porosidade || 'Média',
         elasticidade: clientProf.elasticidade || 'Normal',
@@ -273,6 +276,9 @@ const AdminClients = () => {
       // Se não tem perfil salvo ainda, herda o tipo do agendamento
       const clientObj = clients.find(c => c.phone === selectedClientPhone);
       setHairProfile({
+        name: clientObj?.name || '',
+        email: clientObj?.email || '',
+        phone: selectedClientPhone,
         curvatura: clientObj?.hairType || '3A',
         porosidade: 'Média',
         elasticidade: 'Normal',
@@ -293,8 +299,6 @@ const AdminClients = () => {
     const clientObj = clients.find(c => c.phone === selectedClientPhone);
     const updatedProfile = {
       ...hairProfile,
-      name: clientObj?.name || 'Cliente',
-      email: clientObj?.email || '',
       phone: selectedClientPhone
     };
 
@@ -594,8 +598,8 @@ const AdminClients = () => {
     document.body.removeChild(link);
   };
 
-  // Simular Envio de Campanha de E-mail via Resend
-  const handleSimulateEmailCampaign = () => {
+  // Disparo Real de Campanha de E-mail via Vercel Function
+  const handleSendEmailCampaign = () => {
     if (marketingTargetsList.length === 0) {
       alert('Nenhum cliente no segmento escolhido para disparar.');
       return;
@@ -609,11 +613,11 @@ const AdminClients = () => {
     
     setEmailLogs(prev => [...prev, `[${logTime()}] 🚀 Iniciando campanha de e-mail: "${emailCampaignSubject}"`]);
     setEmailLogs(prev => [...prev, `[${logTime()}] 📬 Total de destinatários: ${targets.length}`]);
-    setEmailLogs(prev => [...prev, `[${logTime()}] 🔗 Endpoint: POST https://api.resend.com/emails`]);
+    setEmailLogs(prev => [...prev, `[${logTime()}] 🔗 Endpoint: POST /api/send-email`]);
     
-    const sendNext = () => {
+    const sendNext = async () => {
       if (currentIdx >= targets.length) {
-        setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha finalizada com sucesso! Todos os e-mails foram entregues via Resend.`]);
+        setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha finalizada com sucesso!`]);
         setIsSendingEmail(false);
         return;
       }
@@ -624,20 +628,39 @@ const AdminClients = () => {
         .replace(/{ultimo_servico}/g, client.lastServiceName || 'serviço')
         .replace(/{dias_ausente}/g, getDaysAbsent(client.lastVisit) === Infinity ? 'algum' : getDaysAbsent(client.lastVisit));
 
-      setEmailLogs(prev => [...prev, `[${logTime()}] 🔄 Enviando para ${client.name} (${client.email || 'sem e-mail'})...`]);
+      setEmailLogs(prev => [...prev, `[${logTime()}] 🔄 Processando: ${client.name} (${client.email || 'sem e-mail'})...`]);
       
-      setTimeout(() => {
-        if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
-          setEmailLogs(prev => [...prev, `[${logTime()}] ⚠️ Pulado: E-mail inválido ou não cadastrado`]);
-        } else {
-          setEmailLogs(prev => [...prev, `[${logTime()}] 📧 Sucesso: enviado para ${client.email} (ID: re_${Math.random().toString(36).substr(2, 9)})`]);
+      if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
+        setEmailLogs(prev => [...prev, `[${logTime()}] ⚠️ Pulado: E-mail inválido ou não cadastrado`]);
+      } else {
+        try {
+          const res = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'campanha',
+              subject: emailCampaignSubject,
+              htmlBody: emailBodyCompiled,
+              clientEmail: client.email,
+              clientName: client.name
+            })
+          });
+          if (res.ok) {
+            setEmailLogs(prev => [...prev, `[${logTime()}] 📧 Sucesso: enviado para ${client.email}`]);
+          } else {
+            setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Falha no envio para ${client.email}`]);
+          }
+        } catch (err) {
+          setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de conexão para ${client.email}`]);
         }
-        currentIdx++;
-        sendNext();
-      }, 700);
+      }
+      
+      currentIdx++;
+      // Pequeno delay para não sobrecarregar a Serverless Function (rate limit simples)
+      setTimeout(sendNext, 1000);
     };
     
-    setTimeout(sendNext, 800);
+    setTimeout(sendNext, 500);
   };
 
   // Disparar Campanha de WhatsApp em Lote via Gateway
@@ -787,12 +810,6 @@ const AdminClients = () => {
         >
           <Calendar size={16} /> Relatório de Visitas
         </button>
-        <button 
-          className={`crm-tab-btn ${activeTab === 'marketing' ? 'active' : ''}`}
-          onClick={() => setActiveTab('marketing')}
-        >
-          <Sparkles size={16} /> Central de Campanhas
-        </button>
 
         {isDemoMode && (
           <span className="demo-badge-inline">
@@ -902,9 +919,38 @@ const AdminClients = () => {
 
                     {/* Ficha Capilar do Studio do Jon */}
                     <form onSubmit={handleSaveProfile} className="hair-profile-form">
-                      <h3>Ficha Capilar Técnica & Análise</h3>
-                      
+                      <h3>Dados Pessoais & Ficha Capilar</h3>
+
                       <div className="form-grid-three">
+                        <div className="form-group-sleek">
+                          <label>Nome Completo</label>
+                          <input 
+                            type="text"
+                            required
+                            value={hairProfile.name || ''}
+                            onChange={e => setHairProfile(prev => ({ ...prev, name: e.target.value }))}
+                          />
+                        </div>
+                        <div className="form-group-sleek">
+                          <label>E-mail</label>
+                          <input 
+                            type="email"
+                            value={hairProfile.email || ''}
+                            onChange={e => setHairProfile(prev => ({ ...prev, email: e.target.value }))}
+                          />
+                        </div>
+                        <div className="form-group-sleek">
+                          <label>WhatsApp (Não Editável)</label>
+                          <input 
+                            type="text"
+                            value={hairProfile.phone || selectedClientPhone}
+                            disabled
+                            style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                          />
+                        </div>
+                      </div>
+                      
+                      <div className="form-grid-three" style={{ marginTop: '16px' }}>
                         <div className="form-group-sleek">
                           <label>Curvatura de Cacho</label>
                           <select 
@@ -1223,241 +1269,7 @@ const AdminClients = () => {
             </div>
           )}
 
-          {/* ==================== ABA 3: CAMPANHAS DE MARKETING ==================== */}
-          {activeTab === 'marketing' && (
-            <div className="marketing-tab-view">
-              <header className="report-header">
-                <h3>Campanhas & Automações de Relacionamento (Marketing CRM)</h3>
-                <p>Selecione um segmento de clientes, defina o canal de disparo (WhatsApp ou E-mail) e gere links de engajamento ou chamadas de API.</p>
-              </header>
 
-              <div className="marketing-layout-grid">
-                {/* Painel do Template da Campanha */}
-                <div className="marketing-config-card">
-                  <h4>Configurar Mensagem</h4>
-
-                  <div className="form-group-sleek">
-                    <label>Público Alvo Segmentado</label>
-                    <select 
-                      value={marketingTarget} 
-                      onChange={e => setMarketingTarget(e.target.value)}
-                    >
-                      <option value="todos">Todos os Clientes ({clients.length})</option>
-                      <option value="inativos_30">Clientes Ausentes (30 a 60 dias) ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 30 && d <= 60; }).length})</option>
-                      <option value="inativos_60">Clientes Adormecidas (&gt;60 dias) ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d > 60 && d !== Infinity; }).length})</option>
-                      <option value="nunca_visitaram">Sem Agendamento no Salão ({clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length})</option>
-                      {selectedCampaignPhones.length > 0 && (
-                        <option value="selecionados">Selecionadas no Relatório ({selectedCampaignPhones.length})</option>
-                      )}
-                    </select>
-                  </div>
-
-                  <div className="form-group-sleek">
-                    <label>Canal de Disparo</label>
-                    <div className="campaign-channel-toggle" style={{ display: 'flex', gap: '12px', margin: '8px 0' }}>
-                      <button 
-                        type="button" 
-                        className={`btn ${marketingChannel === 'whatsapp' ? 'btn-accent' : 'btn-outline'}`}
-                        onClick={() => setMarketingChannel('whatsapp')}
-                        style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
-                      >
-                        <Phone size={14} style={{ marginRight: 6 }} /> WhatsApp
-                      </button>
-                      <button 
-                        type="button" 
-                        className={`btn ${marketingChannel === 'email' ? 'btn-accent' : 'btn-outline'}`}
-                        onClick={() => setMarketingChannel('email')}
-                        style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
-                      >
-                        <Mail size={14} style={{ marginRight: 6 }} /> E-mail (Resend API)
-                      </button>
-                    </div>
-                  </div>
-
-                  {marketingChannel === 'whatsapp' ? (
-                    <div className="form-group-sleek">
-                      <label>Texto da Campanha (Suporta Tags Dinâmicas)</label>
-                      <textarea 
-                        rows="5"
-                        value={campaignMessage}
-                        onChange={e => setCampaignMessage(e.target.value)}
-                        placeholder="Use as tags para personalizar..."
-                      ></textarea>
-                      
-                      <div className="tags-legend">
-                        <strong>Tags disponíveis:</strong>
-                        <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {nome}')}>{`{nome}`}</span>
-                        <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {ultimo_servico}')}>{`{ultimo_servico}`}</span>
-                        <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {dias_ausente}')}>{`{dias_ausente}`}</span>
-                      </div>
-
-                      <div className="message-preview-box" style={{ marginTop: '16px' }}>
-                        <h5>Pré-visualização do WhatsApp:</h5>
-                        <div className="preview-bubble">
-                          {campaignMessage
-                            .replace(/{nome}/g, 'Mariana Costa')
-                            .replace(/{ultimo_servico}/g, 'Corte com o Jon')
-                            .replace(/{dias_ausente}/g, '42')}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="email-campaign-form">
-                      <div className="form-group-sleek">
-                        <label>Assunto do E-mail</label>
-                        <input 
-                          type="text"
-                          value={emailCampaignSubject}
-                          onChange={e => setEmailCampaignSubject(e.target.value)}
-                          placeholder="Assunto da campanha..."
-                        />
-                      </div>
-                      
-                      <div className="form-group-sleek" style={{ marginTop: '12px' }}>
-                        <label>Corpo do E-mail (HTML permitido)</label>
-                        <textarea 
-                          rows="6"
-                          value={emailCampaignBody}
-                          onChange={e => setEmailCampaignBody(e.target.value)}
-                          style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
-                        ></textarea>
-                        
-                        <div className="tags-legend">
-                          <strong>Tags disponíveis:</strong>
-                          <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {nome}')}>{`{nome}`}</span>
-                          <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {ultimo_servico}')}>{`{ultimo_servico}`}</span>
-                          <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {dias_ausente}')}>{`{dias_ausente}`}</span>
-                        </div>
-                      </div>
-
-                      <div className="message-preview-box" style={{ marginTop: '16px' }}>
-                        <h5>Pré-visualização do HTML:</h5>
-                        <div 
-                          className="email-html-preview" 
-                          style={{ background: 'white', color: 'black', padding: '16px', borderRadius: '6px', border: '1px solid var(--rule)', maxHeight: '200px', overflowY: 'auto' }}
-                          dangerouslySetInnerHTML={{ 
-                            __html: emailCampaignBody
-                              .replace(/{nome}/g, 'Mariana Costa')
-                              .replace(/{ultimo_servico}/g, 'Corte com o Jon')
-                              .replace(/{dias_ausente}/g, '42') 
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Disparo e Links Gerados */}
-                <div className="marketing-targets-card">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <h4 style={{ margin: 0 }}>Alvos da Campanha ({marketingTargetsList.length} Clientes)</h4>
-                    
-                    {marketingChannel === 'email' && (
-                      <button 
-                        className="btn btn-accent" 
-                        onClick={handleSimulateEmailCampaign}
-                        disabled={isSendingEmail || marketingTargetsList.length === 0}
-                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                      >
-                        {isSendingEmail ? 'Disparando...' : 'Disparar E-mails'}
-                      </button>
-                    )}
-
-                    {marketingChannel === 'whatsapp' && (
-                      <button 
-                        className="btn btn-accent" 
-                        onClick={handleSendWhatsappCampaign}
-                        disabled={isSendingWhatsapp || marketingTargetsList.length === 0}
-                        style={{ padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6 }}
-                      >
-                        {isSendingWhatsapp ? 'Disparando...' : '🚀 Disparar em Lote'}
-                      </button>
-                    )}
-                  </div>
-
-                  {marketingChannel === 'whatsapp' ? (
-                    <p className="sub-instruction">Dispare automaticamente via API Gateway configurada ou clique em "WhatsApp" em cada linha para enviar manualmente.</p>
-                  ) : (
-                    <p className="sub-instruction">Simule ou conecte o disparo de e-mails em massa através de nossa API integrada.</p>
-                  )}
-
-                  {marketingChannel === 'whatsapp' && whatsappLogs.length > 0 && (
-                    <div className="email-sim-console" style={{ background: '#1e1e1e', color: '#00ff00', fontFamily: 'monospace', padding: '12px', borderRadius: '6px', fontSize: '0.8rem', height: '160px', overflowY: 'auto', border: '1px solid #333', marginBottom: '16px' }}>
-                      {whatsappLogs.map((log, index) => (
-                        <div key={index} style={{ marginBottom: '2px' }}>{log}</div>
-                      ))}
-                    </div>
-                  )}
-
-                  {marketingChannel === 'email' && emailLogs.length > 0 && (
-                    <div className="email-sim-console" style={{ background: '#1e1e1e', color: '#00ff00', fontFamily: 'monospace', padding: '12px', borderRadius: '6px', fontSize: '0.8rem', height: '160px', overflowY: 'auto', border: '1px solid #333', marginBottom: '16px' }}>
-                      {emailLogs.map((log, index) => (
-                        <div key={index} style={{ marginBottom: '2px' }}>{log}</div>
-                      ))}
-                    </div>
-                  )}
-
-                  {marketingChannel === 'whatsapp' && (!settings || !settings.waReminderEnabled) && (
-                    <div className="api-config-tip" style={{ padding: '12px', background: 'var(--panel-bg)', borderRadius: '6px', borderLeft: '3px solid var(--accent)', marginBottom: '16px' }}>
-                      <h5 style={{ margin: '0 0 6px 0', fontSize: '0.85rem' }}>💡 Disparos Automáticos em Lote</h5>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--muted)', margin: 0 }}>
-                        Deseja fazer disparos 100% automáticos em lote em vez de clicar de um por um? Ative e configure o seu gateway de WhatsApp (Z-API ou Evolution API) na aba <strong>Configurações</strong>.
-                      </p>
-                    </div>
-                  )}
-
-                  {marketingChannel === 'email' && (
-                    <div className="api-config-tip" style={{ padding: '12px', background: 'var(--panel-bg)', borderRadius: '6px', borderLeft: '3px solid var(--accent)', marginBottom: '16px' }}>
-                      <h5 style={{ margin: '0 0 6px 0', fontSize: '0.85rem' }}>💡 Integração do Desenvolvedor (Resend API)</h5>
-                      <p style={{ fontSize: '0.75rem', color: 'var(--muted)', margin: '0 0 8px 0' }}>Para ativar em produção, use esta chamada de API no seu servidor Node.js/Firebase:</p>
-                      <pre style={{ fontSize: '0.7rem', background: 'rgba(0,0,0,0.1)', padding: '6px', borderRadius: '4px', overflowX: 'auto', margin: 0, fontFamily: 'monospace' }}>
-{`import { Resend } from 'resend';
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-await resend.emails.send({
-  from: 'Studio do Jon <no-reply@ojonquecortou.com.br>',
-  to: client.email,
-  subject: '${emailCampaignSubject}',
-  html: emailBody
-});`}
-                      </pre>
-                    </div>
-                  )}
-
-                  <div className="targets-scroll-list" style={{ maxHeight: '350px' }}>
-                    {marketingTargetsList.length === 0 ? (
-                      <p className="no-data-msg">Nenhum cliente no segmento escolhido.</p>
-                    ) : (
-                      marketingTargetsList.map(c => (
-                        <div key={c.phone} className="marketing-target-row">
-                          <div className="target-client-info">
-                            <h5>{c.name}</h5>
-                            <span>WhatsApp: {c.phone} | Ausente há: {getDaysAbsent(c.lastVisit) === Infinity ? 'Sem Visitas' : `${getDaysAbsent(c.lastVisit)} dias`}</span>
-                          </div>
-                          
-                          {marketingChannel === 'whatsapp' ? (
-                            <a 
-                              href={getCampaignMessageLink(c)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="btn btn-accent btn-small btn-whatsapp-direct"
-                              style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                            >
-                              <Send size={12} /> WhatsApp
-                            </a>
-                          ) : (
-                            <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
-                              {c.email && c.email !== 'Não informado' ? c.email : 'Sem E-mail'}
-                            </span>
-                          )}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
         </div>
       )}

@@ -515,6 +515,7 @@ const AdminDashboard = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          type: 'horario_confirmado',
           clientEmail: payload.clientEmail,
           clientName: payload.clientName,
           serviceName: payload.service?.name || payload.service || '',
@@ -1027,6 +1028,79 @@ const AdminDashboard = () => {
     });
 
   }, [bookings, settings, db]);
+
+  const handleSendFeedbackWhatsApp = async (booking) => {
+    if (!settings.waReminderGateway || settings.waReminderGateway === 'none') {
+      alert('Integração de WhatsApp Gateway não configurada ou desativada.');
+      return;
+    }
+
+    const msgText = `${booking.clientName}!
+
+Cada avaliação no Google ajuda uma cacheada nova a encontrar o Studio antes de tomar uma decisão errada de corte.
+
+Se você gostou do atendimento, leva 1 minuto:
+https://g.page/r/CRmlu0sO48XmEBM/review
+
+Jon`;
+
+    const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      alert('Telefone da cliente inválido.');
+      return;
+    }
+
+    const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+
+    let url = '';
+    let headers = { 'Content-Type': 'application/json' };
+    let body = {};
+
+    if (settings.waReminderGateway === 'zapi') {
+      const instance = settings.zApiInstanceId;
+      const token = settings.zApiToken;
+      if (!instance || !token) { alert('Z-API não configurada corretamente'); return; }
+      url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
+      body = { phone: phoneWithDDI, message: msgText };
+    } else if (settings.waReminderGateway === 'evolution') {
+      const apiUrl = settings.evolutionApiUrl;
+      const apiKey = settings.evolutionApiKey;
+      const instance = settings.evolutionInstanceName;
+      if (!apiUrl || !apiKey || !instance) { alert('Evolution API não configurada corretamente'); return; }
+      url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
+      headers['apikey'] = apiKey;
+      body = { number: phoneWithDDI, text: msgText };
+    } else if (settings.waReminderGateway === 'custom') {
+      url = settings.customWebhookUrl;
+      if (!url) { alert('Webhook customizado não configurado'); return; }
+      body = {
+        phone: phoneWithDDI,
+        message: msgText,
+        bookingId: booking.id,
+        clientName: booking.clientName,
+        date: booking.date,
+        time: booking.time,
+        service: booking.serviceName || booking.service?.name
+      };
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+      });
+
+      if (response.ok) {
+        alert('Mensagem de feedback enviada com sucesso!');
+      } else {
+        throw new Error('Erro na resposta do gateway');
+      }
+    } catch (err) {
+      console.error('Erro ao enviar feedback via WhatsApp:', err);
+      alert('Erro ao enviar mensagem. Verifique o console.');
+    }
+  };
 
   const handleWhatsAppCongratulate = (client) => {
     const cleanPhone = client.phone.replace(/\D/g, '');
@@ -2111,12 +2185,36 @@ const AdminDashboard = () => {
             </div>
 
             <div className="trinks-modal-footer">
-              <span 
-                className="trinks-footer-link"
-                onClick={handleSaveAndCheckout}
-              >
-                Salvar e fechar conta
-              </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span 
+                  className="trinks-footer-link"
+                  onClick={handleSaveAndCheckout}
+                >
+                  Salvar e fechar conta
+                </span>
+                
+                {editBookingForm.status === 'finalizado' && (
+                  <button 
+                    type="button"
+                    onClick={() => handleSendFeedbackWhatsApp(editBookingForm)}
+                    style={{
+                      background: '#25D366', 
+                      color: 'white', 
+                      border: 'none', 
+                      padding: '6px 12px', 
+                      borderRadius: '8px', 
+                      fontSize: '0.85rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    <Send size={12} /> Pedir Feedback
+                  </button>
+                )}
+              </div>
               
               <div style={{ display: 'flex', gap: 12 }}>
                 <button 

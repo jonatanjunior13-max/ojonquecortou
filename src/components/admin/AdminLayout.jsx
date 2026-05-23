@@ -47,7 +47,7 @@ const AdminLayout = () => {
     { name: 'Estoque', path: '/admin/estoque', category: 'Produtos', keywords: 'quantidade shampoo oleo ativo custo venda' },
     { name: 'Financeiro (Caixa)', path: '/admin/financeiro', category: 'Finanças', keywords: 'entrada saida despesa extrato pix credito debito dinheiro' },
     { name: 'Comissões & Repasses', path: '/admin/financeiro?tab=comissao', category: 'Finanças', keywords: 'comissao profissional jon auxiliar repasse porcentagem' },
-    { name: 'Fidelidade & Cupons', path: '/admin/marketing', category: 'Marketing', keywords: 'pontos fidelidade cupom desconto vale presente promocao' },
+    { name: 'Campanhas', path: '/admin/marketing', category: 'Marketing', keywords: 'whatsapp email massa disparo' },
     { name: 'Configurações do Studio', path: '/admin/configuracoes', category: 'Configurações', keywords: 'horarios maquininha taxas pix email instagram politica' },
   ];
 
@@ -209,10 +209,10 @@ const AdminLayout = () => {
           <Link 
             to="/admin/marketing" 
             className={`nav-item ${location.pathname.includes('/marketing') ? 'active' : ''}`}
-            title="Marketing & Cupons"
+            title="Campanhas"
           >
             <Megaphone size={18} />
-            <span>Marketing & Cupons</span>
+            <span>Campanhas</span>
           </Link>
           <Link 
             to="/admin/configuracoes" 

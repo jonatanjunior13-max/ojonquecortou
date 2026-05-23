@@ -44,6 +44,7 @@ const AdminMobileApp = () => {
   const [clients, setClients] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [services, setServices] = useState([]);
+  const [inventory, setInventory] = useState([]);
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -55,6 +56,8 @@ const AdminMobileApp = () => {
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [showAddClientModal, setShowAddClientModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [checkoutBooking, setCheckoutBooking] = useState(null);
+  const [selectedProducts, setSelectedProducts] = useState([]);
 
   // Form states
   const [newBooking, setNewBooking] = useState({
@@ -127,6 +130,7 @@ const AdminMobileApp = () => {
     let unsubClients;
     let unsubTx;
     let unsubServ;
+    let unsubInventory;
     let unsubSettings;
     let timedOut = false;
 
@@ -194,6 +198,16 @@ const AdminMobileApp = () => {
         localStorage.setItem('demo_services', JSON.stringify(list));
       });
 
+      unsubInventory = onSnapshot(collection(db, 'inventory'), (snapshot) => {
+        if (timedOut) return;
+        const list = [];
+        snapshot.forEach(doc => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        setInventory(list);
+        localStorage.setItem('demo_inventory', JSON.stringify(list));
+      });
+
       unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
         if (timedOut) return;
         if (snapshot.exists()) {
@@ -219,6 +233,7 @@ const AdminMobileApp = () => {
       if (unsubClients) unsubClients();
       if (unsubTx) unsubTx();
       if (unsubServ) unsubServ();
+      if (unsubInventory) unsubInventory();
       if (unsubSettings) unsubSettings();
     };
   }, []);
@@ -228,6 +243,7 @@ const AdminMobileApp = () => {
     const savedClients = localStorage.getItem('demo_client_profiles');
     const savedTransactions = localStorage.getItem('demo_transactions');
     const savedServices = localStorage.getItem('demo_services');
+    const savedInventory = localStorage.getItem('demo_inventory');
     const savedSettings = localStorage.getItem('demo_studio_settings');
 
     if (savedBookings) setBookings(JSON.parse(savedBookings));
@@ -245,6 +261,7 @@ const AdminMobileApp = () => {
         }));
       }
     }
+    if (savedInventory) setInventory(JSON.parse(savedInventory));
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
@@ -609,6 +626,29 @@ const AdminMobileApp = () => {
         }
       }
 
+      // Enviar e-mail de confirmação de agendamento manual
+      if (payload.clientEmail && payload.clientEmail.includes('@')) {
+        try {
+          const displayDate = payload.date.split('-').reverse().join('/');
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'horario_confirmado',
+              clientEmail: payload.clientEmail,
+              clientName: payload.clientName,
+              serviceName: payload.service?.name || 'Serviço',
+              date: displayDate,
+              time: payload.time,
+              duration: payload.duration || 60,
+              professionalName: 'Jon'
+            })
+          });
+        } catch (err) {
+          console.warn('Falha ao enviar email de confirmação no cadastro manual', err);
+        }
+      }
+
       setShowAddBookingModal(false);
       resetBookingForm();
       alert('Agendamento cadastrado com sucesso!');
@@ -697,14 +737,22 @@ const AdminMobileApp = () => {
   const openCheckout = (booking) => {
     setCheckoutBooking(booking);
     setSelectedBooking(null);
+    setSelectedProducts([]);
     setShowCheckoutModal(true);
   };
 
-  const [checkoutBooking, setCheckoutBooking] = useState(null);
 
   const submitCheckout = async () => {
     if (!checkoutBooking) return;
-    const value = checkoutBooking.service?.price || checkoutBooking.servicePrice || 150;
+    const baseServicePrice = checkoutBooking.service?.price || checkoutBooking.servicePrice || 150;
+    const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
+    const value = baseServicePrice + productsTotal;
+    
+    let description = checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base';
+    if (selectedProducts.length > 0) {
+      description += ` + ${selectedProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
+    }
+
     const payloadTx = {
       date: checkoutBooking.date || new Date().toISOString().split('T')[0],
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
@@ -713,7 +761,7 @@ const AdminMobileApp = () => {
       type: 'entrada',
       paymentMethod,
       value: Number(value),
-      description: checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base',
+      description,
       createdAt: new Date().toISOString()
     };
 
@@ -728,14 +776,33 @@ const AdminMobileApp = () => {
         const updatedTx = [...transactions, { id: 'tx_' + Date.now(), ...payloadTx }];
         setTransactions(updatedTx);
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTx));
+        
+        // Atualiza estoque
+        const updatedInv = inventory.map(item => {
+          const sold = selectedProducts.find(p => p.id === item.id);
+          if (sold) return { ...item, quantity: Math.max(0, item.quantity - sold.qty) };
+          return item;
+        });
+        setInventory(updatedInv);
+        localStorage.setItem('demo_inventory', JSON.stringify(updatedInv));
       } else {
         const apptRef = doc(db, 'bookings', checkoutBooking.id);
         await updateDoc(apptRef, { status: 'finalizado' });
         await addDoc(collection(db, 'financial_transactions'), payloadTx);
+        
+        // Baixa no estoque
+        for (const prod of selectedProducts) {
+          const invRef = doc(db, 'inventory', prod.id);
+          const currentItem = inventory.find(i => i.id === prod.id);
+          if (currentItem) {
+            await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
+          }
+        }
       }
       setShowCheckoutModal(false);
       setCheckoutBooking(null);
-      alert('Comanda fechada com sucesso! Receita registrada no caixa.');
+      setSelectedProducts([]);
+      alert('Comanda fechada com sucesso! Receita e baixa no estoque registradas.');
     } catch (e) {
       alert('Erro ao fechar comanda.');
     }
@@ -839,6 +906,51 @@ const AdminMobileApp = () => {
       alert('Agendamento cancelado.');
     } catch (e) {
       alert('Erro ao cancelar agendamento.');
+    }
+  };
+
+  // Confirmar agendamento
+  const confirmBooking = async (bookingId) => {
+    try {
+      const bookingToConfirm = bookings.find(b => b.id === bookingId);
+      
+      if (isDemoMode) {
+        const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'confirmado' } : b);
+        setBookings(updated);
+        localStorage.setItem('demo_bookings', JSON.stringify(updated));
+      } else {
+        const docRef = doc(db, 'bookings', bookingId);
+        await updateDoc(docRef, { status: 'confirmado' });
+      }
+      
+      setSelectedBooking(prev => ({ ...prev, status: 'confirmado' }));
+      
+      // Enviar e-mail de confirmação
+      if (bookingToConfirm && bookingToConfirm.clientEmail && bookingToConfirm.clientEmail.includes('@')) {
+        try {
+          const displayDate = bookingToConfirm.date.split('-').reverse().join('/');
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'horario_confirmado',
+              clientEmail: bookingToConfirm.clientEmail,
+              clientName: bookingToConfirm.clientName,
+              serviceName: bookingToConfirm.service?.name || bookingToConfirm.serviceName || 'Serviço',
+              date: displayDate,
+              time: bookingToConfirm.time,
+              duration: bookingToConfirm.duration || 60,
+              professionalName: 'Jon'
+            })
+          });
+        } catch(err) {
+          console.warn('Falha ao enviar email de confirmação', err);
+        }
+      }
+      
+      alert('Agendamento confirmado!');
+    } catch (e) {
+      alert('Erro ao confirmar agendamento.');
     }
   };
 
@@ -1341,8 +1453,13 @@ const AdminMobileApp = () => {
 
               {/* Botões de Ação da Comanda */}
               <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+                {selectedBooking.status === 'pendente' && (
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)', flex: 1 }} onClick={() => confirmBooking(selectedBooking.id)}>
+                    Confirmar
+                  </button>
+                )}
                 {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)' }} onClick={() => openCheckout(selectedBooking)}>
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)', flex: 1 }} onClick={() => openCheckout(selectedBooking)}>
                     Fechar Conta
                   </button>
                 )}
@@ -1639,14 +1756,68 @@ const AdminMobileApp = () => {
                 <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>CLIENTE</span>
                 <strong style={{ fontSize: '0.9rem' }}>{checkoutBooking.clientName}</strong>
               </div>
-              <div>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>SERVIÇO REALIZADO</span>
-                <span style={{ fontSize: '0.9rem' }}>{checkoutBooking.service?.name || checkoutBooking.serviceName}</span>
+              
+              <div style={{ background: '#f8f9fa', padding: 12, borderRadius: 8, marginTop: 8 }}>
+                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginBottom: 4 }}>ITENS DA COMANDA</span>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                  <span style={{ fontSize: '0.9rem' }}>{checkoutBooking.service?.name || checkoutBooking.serviceName}</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>R$ {(checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}</span>
+                </div>
+
+                {selectedProducts.map((prod, index) => (
+                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.9rem' }}>{prod.qty}x {prod.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
+                      <button type="button" onClick={() => {
+                        const newProds = [...selectedProducts];
+                        newProds.splice(index, 1);
+                        setSelectedProducts(newProds);
+                      }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 4 }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
+
+              <div className="mobile-form-group" style={{ marginTop: 8 }}>
+                <label>Adicionar Produto</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <select 
+                    id="checkout-product-select"
+                    style={{ flex: 1 }}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Selecione um produto</option>
+                    {inventory.filter(i => i.quantity > 0).map(i => (
+                      <option key={i.id} value={i.id}>{i.name} - R$ {i.sellingPrice.toFixed(2).replace('.', ',')}</option>
+                    ))}
+                  </select>
+                  <button type="button" className="mobile-btn-solid" style={{ padding: '0 16px', background: 'var(--mobile-primary)' }} onClick={() => {
+                    const selectEl = document.getElementById('checkout-product-select');
+                    if (!selectEl.value) return;
+                    const prod = inventory.find(i => i.id === selectEl.value);
+                    if (prod) {
+                      const existing = selectedProducts.find(p => p.id === prod.id);
+                      if (existing) {
+                        setSelectedProducts(selectedProducts.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
+                      } else {
+                        setSelectedProducts([...selectedProducts, { ...prod, qty: 1 }]);
+                      }
+                      selectEl.value = "";
+                    }
+                  }}>
+                    <Plus size={16} />
+                  </button>
+                </div>
+              </div>
+
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>VALOR TOTAL COBRADO</span>
-                <strong style={{ fontSize: '1.2rem', color: 'var(--mobile-green)' }}>
-                  R$ {(checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}
+                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginTop: 10 }}>VALOR TOTAL COBRADO</span>
+                <strong style={{ fontSize: '1.4rem', color: 'var(--mobile-green)' }}>
+                  R$ {((checkoutBooking.service?.price || checkoutBooking.servicePrice || 150) + selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0)).toFixed(2).replace('.', ',')}
                 </strong>
               </div>
             </div>

@@ -44,6 +44,11 @@ async function startServer() {
 }
 
 async function prerender() {
+  if (process.env.VERCEL) {
+    console.log('Ambiente Vercel detectado. Pulando o pre-rendering com Puppeteer para evitar travamento da build.');
+    return;
+  }
+
   console.log('Starting pre-rendering process...');
   const server = await startServer();
   const port = server.port;

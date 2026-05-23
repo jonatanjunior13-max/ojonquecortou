@@ -55,20 +55,8 @@ const AdminInventory = () => {
 
     setLoading(true);
 
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-      console.warn('Firestore subscription for products timed out. Falling back to Demo Mode.');
-      setIsDemoMode(true);
-      if (unsubscribe) unsubscribe();
-      setProducts(getMockProducts());
-      setLoading(false);
-    }, 3500);
-
     try {
       unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-
         const prodList = [];
         snapshot.forEach((doc) => {
           prodList.push({ id: doc.id, ...doc.data() });
@@ -77,26 +65,17 @@ const AdminInventory = () => {
         setLoading(false);
         setIsDemoMode(false);
       }, (error) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        console.warn('Erro ao carregar Firestore, mudando para Demo local:', error);
-        setIsDemoMode(true);
-        setProducts(getMockProducts());
+        console.warn('Erro ao carregar Firestore:', error);
+        alert('Erro ao carregar o estoque. Tente recarregar a página.');
         setLoading(false);
       });
 
       return () => {
-        clearTimeout(timeoutId);
         if (unsubscribe) unsubscribe();
       };
     } catch (err) {
-      if (!timedOut) {
-        clearTimeout(timeoutId);
-        console.warn('Falha na conexão com Firestore para produtos:', err);
-        setIsDemoMode(true);
-        setProducts(getMockProducts());
-        setLoading(false);
-      }
+      console.warn('Falha na conexão com Firestore para produtos:', err);
+      setLoading(false);
     }
   }, []);
 

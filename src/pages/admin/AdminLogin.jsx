@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../config/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import SEO from '../../components/SEO';
 import { Arrow } from '../../components/NewDesignComponents';
 import './Admin.css';
@@ -10,6 +10,7 @@ const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
   const navigate = useNavigate();
@@ -18,9 +19,10 @@ const AdminLogin = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    setSuccessMsg('');
 
     try {
-      if (demoMode || email === 'admin@ojonquecortou.com.br' || !auth) {
+      if (demoMode || !auth) {
         // Modo Demo: Bypass local se Firebase não estiver configurado
         console.log('Login efetuado via modo Demo');
         localStorage.setItem('admin_logged', 'true');
@@ -42,6 +44,20 @@ const AdminLogin = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Por favor, insira seu e-mail no campo acima para recuperar a senha.');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setSuccessMsg('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
+      setError('');
+    } catch (err) {
+      setError('Erro ao enviar e-mail de recuperação. Verifique se o e-mail está correto.');
     }
   };
 
@@ -75,6 +91,12 @@ const AdminLogin = () => {
           </div>
         )}
 
+        {successMsg && (
+          <div className="success-message" style={{ color: 'var(--accent)', marginBottom: '16px', fontSize: '14px', fontWeight: '500' }}>
+            {successMsg}
+          </div>
+        )}
+
         <form onSubmit={handleLogin}>
           <div className="form-group text-left">
             <label htmlFor="email">E-mail de Acesso</label>
@@ -82,7 +104,7 @@ const AdminLogin = () => {
               type="email" 
               id="email" 
               required 
-              placeholder="admin@ojonquecortou.com.br" 
+              placeholder="contato@ojonquecortou.com.br" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -98,6 +120,16 @@ const AdminLogin = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+          </div>
+
+          <div style={{ textAlign: 'right', marginBottom: '20px' }}>
+            <button 
+              type="button" 
+              onClick={handleForgotPassword}
+              style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              Esqueceu a senha?
+            </button>
           </div>
 
           <button type="submit" className="btn btn-accent w-100" disabled={loading}>

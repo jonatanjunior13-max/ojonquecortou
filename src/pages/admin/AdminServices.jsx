@@ -49,59 +49,35 @@ const AdminServices = () => {
 
     setLoading(true);
 
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-      console.warn('Firestore subscription for services timed out. Falling back to Demo Mode.');
-      setIsDemoMode(true);
-      if (unsubscribe) unsubscribe();
-      setServices(getMockServices());
-      setLoading(false);
-    }, 3500);
-
     try {
       unsubscribe = onSnapshot(collection(db, 'services'), (snapshot) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        
         const list = [];
         snapshot.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
         });
         
-        if (list.length === 0 || list.length < SEED_SERVICES.length) {
-          // Se o banco estiver vazio ou faltando itens, semeia os dados iniciais
-          const existingIds = list.map(s => s.id);
+        if (list.length === 0 && !localStorage.getItem('services_seeded')) {
+          // Se o banco estiver vazio, semeia os dados iniciais uma única vez
           SEED_SERVICES.forEach(async (serv) => {
-            if (!existingIds.includes(serv.id)) {
-              await setDoc(doc(db, 'services', serv.id), serv);
-            }
+            await setDoc(doc(db, 'services', serv.id), serv);
           });
-        } else {
-          setServices(list);
+          localStorage.setItem('services_seeded', 'true');
         }
+        setServices(list);
         setLoading(false);
         setIsDemoMode(false);
       }, (error) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        console.warn('Erro ao conectar Firestore para serviços, usando Demo local:', error);
-        setIsDemoMode(true);
-        setServices(getMockServices());
+        console.warn('Erro ao conectar Firestore para serviços:', error);
+        alert('Erro ao carregar serviços. Tente recarregar a página.');
         setLoading(false);
       });
 
       return () => {
-        clearTimeout(timeoutId);
         if (unsubscribe) unsubscribe();
       };
     } catch (err) {
-      if (!timedOut) {
-        clearTimeout(timeoutId);
-        console.warn('Erro na conexão do banco para serviços:', err);
-        setIsDemoMode(true);
-        setServices(getMockServices());
-        setLoading(false);
-      }
+      console.warn('Erro na conexão do banco para serviços:', err);
+      setLoading(false);
     }
   }, []);
 

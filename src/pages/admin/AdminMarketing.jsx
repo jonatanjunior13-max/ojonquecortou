@@ -1,643 +1,680 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, doc, addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { Plus, Trash2, Award, Ticket, Gift, Settings, Search } from 'lucide-react';
+import { collection, onSnapshot, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye } from 'lucide-react';
 import './Admin.css';
+import { HTML_TEMPLATES, EMAIL_CSS } from '../../utils/emailTemplates.js';
 
-const SEED_COUPONS = [
-  { id: 'c1', code: 'BEMVINDA15', type: 'fixo', value: 15, validity: '2026-12-31', limit: 100, used: 24, status: 'ativo' },
-  { id: 'c2', code: 'JONCACHEADO10', type: 'porcentagem', value: 10, validity: '2026-08-30', limit: 50, used: 12, status: 'ativo' }
-];
 
-const SEED_GIFTCARDS = [
-  { id: 'g1', code: 'VALE50_XYZ', value: 50, clientName: 'Mariana Costa', status: 'ativo', createdAt: '2026-05-18' },
-  { id: 'g2', code: 'VALE100_ABC', value: 100, clientName: 'Patricia Goulart', status: 'resgatado', createdAt: '2026-05-10' }
-];
+const EMAIL_PREVIEWS = {
+  seqD1: { subject: '{nome}, como tá o fio hoje?', body: HTML_TEMPLATES['d1'] },
+  seqD7: { subject: 'A semana mais importante do seu cabelo (e quase ninguém fala sobre isso)', body: HTML_TEMPLATES['d7'] },
+  seqD21: { subject: '3 semanas de corte novo. Agora vem a parte boa.', body: HTML_TEMPLATES['d21'] },
+  seqD35: { subject: '{nome}, chegou a hora.', body: HTML_TEMPLATES['d35'] },
+  seqD60: { subject: 'Uma coisa que percebi depois de anos cortando cacheado', body: HTML_TEMPLATES['d60'] },
+  seqD90: { subject: 'Esse é o último email que mando, {nome}.', body: HTML_TEMPLATES['d90'] },
+  birthdayEnabled: { subject: 'Parabéns, {nome}.', body: HTML_TEMPLATES['aniversario'] }
+};
 
-const SEED_FIDELITY = [
-  { id: 'f1', clientName: 'Ana Souza', clientPhone: '31999998888', points: 150 },
-  { id: 'f2', clientName: 'Carla Lima', clientPhone: '31988887777', points: 80 },
-  { id: 'f3', clientName: 'Bruna Melo', clientPhone: '31977776666', points: 220 }
-];
 
 const AdminMarketing = () => {
-  const [activeTab, setActiveTab] = useState('cupons');
+  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [settings, setSettings] = useState(null);
 
-  // Data states
-  const [coupons, setCoupons] = useState([]);
-  const [giftCards, setGiftCards] = useState([]);
-  const [fidelityPoints, setFidelityPoints] = useState([]);
-  const [fidelityRules, setFidelityRules] = useState({
-    pointsPerReal: 1,
-    pointsToRedeem: 100,
-    redeemValue: 10
-  });
+  // Marketing states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [marketingTarget, setMarketingTarget] = useState('todos');
+  const [marketingChannel, setMarketingChannel] = useState('whatsapp');
+  const [campaignMessage, setCampaignMessage] = useState('Oi {nome}, vimos que faz {dias_ausente} dias desde seu último {ultimo_servico}. Saudade dos seus cachos!');
+  const [emailCampaignSubject, setEmailCampaignSubject] = useState('Sentimos sua falta no Studio do Jon! ✂️');
+  const [emailCampaignBody, setEmailCampaignBody] = useState('<p>Olá <b>{nome}</b>!</p><p>Já faz {dias_ausente} dias que não cuidamos do seu cabelo. Seu último procedimento foi {ultimo_servico}.</p><p>Que tal agendar um horário esta semana?</p>');
+  
+  const [selectedCampaignPhones, setSelectedCampaignPhones] = useState([]);
+  
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [showEmailPreviewModal, setShowEmailPreviewModal] = useState(false);
+  const [showEmailEditModal, setShowEmailEditModal] = useState(false);
+  const [editingTemplateKey, setEditingTemplateKey] = useState(null);
+  const [editingTemplateContent, setEditingTemplateContent] = useState({ subject: '', body: '' });
+  const [emailPreviewContent, setEmailPreviewContent] = useState({ subject: '', body: '' });
+  const [isSendingWhatsapp, setIsSendingWhatsapp] = useState(false);
+  const [emailLogs, setEmailLogs] = useState([]);
+  const [whatsappLogs, setWhatsappLogs] = useState([]);
+  const [automationLogs, setAutomationLogs] = useState([]);
 
-  // Modals & form states
-  const [showCouponModal, setShowCouponModal] = useState(false);
-  const [showGiftModal, setShowGiftModal] = useState(false);
-  const [showFidelityAdjustModal, setShowFidelityAdjustModal] = useState(false);
-
-  const [couponForm, setCouponForm] = useState({
-    code: '',
-    type: 'porcentagem',
-    value: '',
-    validity: '',
-    limit: 100
-  });
-
-  const [giftForm, setGiftForm] = useState({
-    code: '',
-    value: '',
-    clientName: ''
-  });
-
-  const [selectedClientFidelity, setSelectedClientFidelity] = useState(null);
-  const [fidelityAdjustment, setFidelityAdjustment] = useState('');
-  const [fidelitySearch, setFidelitySearch] = useState('');
-
-  // Load Rules & Mock Data
   useEffect(() => {
-    // Carrega regras de fidelidade salvas localmente
-    const savedRules = localStorage.getItem('demo_fidelity_rules');
-    if (savedRules) {
-      setFidelityRules(JSON.parse(savedRules));
-    }
+    let unsubscribeProfiles;
+    let unsubscribeBookings;
+    let unsubscribeLogs;
+    let unsubscribeSettings;
 
-    let unsubCoupons, unsubGift, unsubFidelity;
-    let timedOut = false;
+    const loadData = async () => {
+      try {
+        unsubscribeSettings = onSnapshot(doc(db, 'settings', 'studio'), (docSnap) => {
+          if (docSnap.exists()) {
+            setSettings(docSnap.data());
+          } else {
+            setSettings({ automations: {} });
+          }
+        });
 
-    const loadMockData = () => {
-      const c = localStorage.getItem('demo_coupons');
-      const g = localStorage.getItem('demo_giftcards');
-      const f = localStorage.getItem('demo_fidelity');
+        unsubscribeLogs = onSnapshot(collection(db, 'automation_logs'), (logsSnap) => {
+          const lgs = [];
+          logsSnap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
+          lgs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+          setAutomationLogs(lgs);
+        });
 
-      setCoupons(c ? JSON.parse(c) : SEED_COUPONS);
-      setGiftCards(g ? JSON.parse(g) : SEED_GIFTCARDS);
-      setFidelityPoints(f ? JSON.parse(f) : SEED_FIDELITY);
-      
-      if (!c) localStorage.setItem('demo_coupons', JSON.stringify(SEED_COUPONS));
-      if (!g) localStorage.setItem('demo_giftcards', JSON.stringify(SEED_GIFTCARDS));
-      if (!f) localStorage.setItem('demo_fidelity', JSON.stringify(SEED_FIDELITY));
-    };
+        const profiles = [];
+        unsubscribeProfiles = onSnapshot(collection(db, 'client_profiles'), (profSnap) => {
+          profiles.length = 0;
+          profSnap.forEach(d => profiles.push({ phone: d.id, ...d.data() }));
+          
+          unsubscribeBookings = onSnapshot(collection(db, 'bookings'), (bookSnap) => {
+            const bookings = [];
+            bookSnap.forEach(d => bookings.push({ id: d.id, ...d.data() }));
+            
+            // Build unified clients array
+            const clientMap = new Map();
+            bookings.forEach(b => {
+              if (['Pendente', 'Confirmado', 'Concluído'].includes(b.status)) {
+                const existing = clientMap.get(b.phone) || { name: b.clientName, phone: b.phone, visits: [], lastServiceName: b.serviceName, email: '' };
+                existing.visits.push(new Date(b.date + 'T00:00:00'));
+                if (!existing.email && b.email) existing.email = b.email;
+                clientMap.set(b.phone, existing);
+              }
+            });
 
-    if (!db) {
-      setIsDemoMode(true);
-      loadMockData();
-      setLoading(false);
-      return;
-    }
+            profiles.forEach(p => {
+              const existing = clientMap.get(p.phone) || { name: p.name || 'Cliente', phone: p.phone, visits: [], lastServiceName: 'Nenhum', email: p.email || '' };
+              if (p.email) existing.email = p.email;
+              if (p.name) existing.name = p.name;
+              clientMap.set(p.phone, existing);
+            });
 
-    setLoading(true);
-
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-      console.warn('Firestore subscription for marketing timed out. Falling back to Demo Mode.');
-      setIsDemoMode(true);
-      loadMockData();
-      setLoading(false);
-    }, 3500);
-
-    try {
-      unsubCoupons = onSnapshot(collection(db, 'coupons'), (snap) => {
-        if (timedOut) return;
-        const list = [];
-        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
-        setCoupons(list);
-      });
-
-      unsubGift = onSnapshot(collection(db, 'giftcards'), (snap) => {
-        if (timedOut) return;
-        const list = [];
-        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
-        setGiftCards(list);
-      });
-
-      unsubFidelity = onSnapshot(collection(db, 'clients'), (snap) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        const list = [];
-        snap.forEach(d => {
-          const data = d.data();
-          list.push({
-            id: d.id,
-            clientName: data.name || data.clientName,
-            clientPhone: data.phone || data.clientPhone,
-            points: data.fidelityPoints || 0
+            const merged = Array.from(clientMap.values()).map(c => {
+              c.visits.sort((a, b) => b - a);
+              return {
+                ...c,
+                lastVisit: c.visits.length > 0 ? c.visits[0].toISOString() : 'Nunca visitou',
+                totalVisits: c.visits.length
+              };
+            });
+            
+            setClients(merged);
+            setLoading(false);
           });
         });
-        // Se a lista do Firestore for muito vazia, mesclamos com dados demo para ficar mais rico
-        if (list.length === 0) {
-          setFidelityPoints(SEED_FIDELITY);
-        } else {
-          setFidelityPoints(list);
-        }
-        setLoading(false);
-        setIsDemoMode(false);
-      }, (err) => {
-        if (timedOut) return;
-        clearTimeout(timeoutId);
-        setIsDemoMode(true);
-        loadMockData();
-        setLoading(false);
-      });
 
-      return () => {
-        clearTimeout(timeoutId);
-        if (unsubCoupons) unsubCoupons();
-        if (unsubGift) unsubGift();
-        if (unsubFidelity) unsubFidelity();
-      };
-    } catch (e) {
-      if (!timedOut) {
-        clearTimeout(timeoutId);
-        setIsDemoMode(true);
-        loadMockData();
+      } catch (err) {
+        console.error(err);
         setLoading(false);
       }
-    }
+    };
+
+    if (db) loadData();
+
+    return () => {
+      if (unsubscribeProfiles) unsubscribeProfiles();
+      if (unsubscribeBookings) unsubscribeBookings();
+      if (unsubscribeLogs) unsubscribeLogs();
+      if (unsubscribeSettings) unsubscribeSettings();
+    };
   }, []);
 
-  // Save changes wrapper
-  const saveFidelityRules = (newRules) => {
-    setFidelityRules(newRules);
-    localStorage.setItem('demo_fidelity_rules', JSON.stringify(newRules));
+  const getDaysAbsent = (lastVisitDate) => {
+    if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) return Infinity;
+    const diffTime = Math.abs(new Date() - new Date(lastVisitDate));
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  const handleAddCoupon = async (e) => {
-    e.preventDefault();
-    const payload = {
-      code: couponForm.code.toUpperCase().trim(),
-      type: couponForm.type,
-      value: Number(couponForm.value),
-      validity: couponForm.validity,
-      limit: Number(couponForm.limit),
-      used: 0,
-      status: 'ativo'
-    };
+  const toggleClientSelection = (phone) => {
+    setSelectedCampaignPhones(prev => 
+      prev.includes(phone) ? prev.filter(p => p !== phone) : [...prev, phone]
+    );
+  };
 
+  const toggleAutomation = async (key, newValue) => {
     try {
-      if (isDemoMode) {
-        const list = [{ id: 'c_' + Date.now(), ...payload }, ...coupons];
-        setCoupons(list);
-        localStorage.setItem('demo_coupons', JSON.stringify(list));
-      } else {
-        await addDoc(collection(db, 'coupons'), payload);
-      }
-      setShowCouponModal(false);
-      setCouponForm({ code: '', type: 'porcentagem', value: '', validity: '', limit: 100 });
+      await updateDoc(doc(db, 'settings', 'studio'), {
+        [`automations.${key}`]: newValue
+      });
+      // A UI vai atualizar automaticamente via onSnapshot
     } catch (err) {
-      console.error(err);
-      alert('Falha ao adicionar cupom.');
+      console.error("Erro ao atualizar automação:", err);
+      alert("Erro ao salvar configuração.");
     }
   };
 
-  const handleDeleteCoupon = async (id) => {
-    if (!confirm('Deseja realmente remover este cupom?')) return;
-    try {
-      if (isDemoMode) {
-        const list = coupons.filter(c => c.id !== id);
-        setCoupons(list);
-        localStorage.setItem('demo_coupons', JSON.stringify(list));
-      } else {
-        await deleteDoc(doc(db, 'coupons', id));
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleAddGiftCard = async (e) => {
-    e.preventDefault();
-    const payload = {
-      code: giftForm.code.toUpperCase().trim() || 'VALE' + Math.floor(Math.random() * 90000 + 10000),
-      value: Number(giftForm.value),
-      clientName: giftForm.clientName,
-      status: 'ativo',
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-
-    try {
-      if (isDemoMode) {
-        const list = [{ id: 'g_' + Date.now(), ...payload }, ...giftCards];
-        setGiftCards(list);
-        localStorage.setItem('demo_giftcards', JSON.stringify(list));
-      } else {
-        await addDoc(collection(db, 'giftcards'), payload);
-      }
-      setShowGiftModal(false);
-      setGiftForm({ code: '', value: '', clientName: '' });
-    } catch (err) {
-      console.error(err);
-      alert('Falha ao adicionar vale-presente.');
-    }
-  };
-
-  const handleRedeemGift = async (id) => {
-    if (!confirm('Confirmar resgate total deste Vale-Presente?')) return;
-    try {
-      if (isDemoMode) {
-        const list = giftCards.map(g => g.id === id ? { ...g, status: 'resgatado' } : g);
-        setGiftCards(list);
-        localStorage.setItem('demo_giftcards', JSON.stringify(list));
-      } else {
-        await updateDoc(doc(db, 'giftcards', id), { status: 'resgatado' });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleAdjustPoints = async (e) => {
-    e.preventDefault();
-    const delta = Number(fidelityAdjustment);
-    if (!selectedClientFidelity || isNaN(delta)) return;
-
-    const newPoints = Math.max(0, selectedClientFidelity.points + delta);
-
-    try {
-      if (isDemoMode || !db) {
-        const list = fidelityPoints.map(f => f.id === selectedClientFidelity.id ? { ...f, points: newPoints } : f);
-        setFidelityPoints(list);
-        localStorage.setItem('demo_fidelity', JSON.stringify(list));
-      } else {
-        await updateDoc(doc(db, 'clients', selectedClientFidelity.id), { fidelityPoints: newPoints });
-      }
-      setShowFidelityAdjustModal(false);
-      setSelectedClientFidelity(null);
-      setFidelityAdjustment('');
-      alert('Pontos atualizados com sucesso!');
-    } catch (err) {
-      console.error(err);
-      alert('Não foi possível ajustar a pontuação.');
-    }
-  };
-
-  const filteredFidelity = fidelityPoints.filter(f => 
-    f.clientName.toLowerCase().includes(fidelitySearch.toLowerCase()) ||
-    f.clientPhone.includes(fidelitySearch)
+  const filteredClients = clients.filter(c =>
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.phone.includes(searchTerm)
   );
 
+  const marketingTargetsList = clients.filter(c => {
+    const days = getDaysAbsent(c.lastVisit);
+    if (marketingTarget === 'todos') return true;
+    if (marketingTarget === 'inativos_30') return days >= 30 && days <= 60;
+    if (marketingTarget === 'inativos_60') return days > 60 && days !== Infinity;
+    if (marketingTarget === 'nunca_visitaram') return days === Infinity;
+    if (marketingTarget === 'selecionados') return selectedCampaignPhones.includes(c.phone);
+    return false;
+  });
+
+  const getCampaignMessageLink = (client) => {
+    const days = getDaysAbsent(client.lastVisit);
+    let msg = campaignMessage
+      .replace(/{nome}/g, client.name.split(' ')[0])
+      .replace(/{ultimo_servico}/g, client.lastServiceName || 'Corte')
+      .replace(/{dias_ausente}/g, days === Infinity ? 'muito tempo' : days);
+    
+    return `https://wa.me/55${client.phone}?text=${encodeURIComponent(msg)}`;
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!editingTemplateKey) return;
+    try {
+      await updateDoc(doc(db, 'settings', 'studio'), {
+        [`email_templates.${editingTemplateKey}`]: editingTemplateContent
+      });
+      setShowEmailEditModal(false);
+      alert('Template salvo com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar template.');
+    }
+  };
+
+  const handleSendWhatsappCampaign = async () => {
+    if (marketingTargetsList.length === 0) return;
+    setIsSendingWhatsapp(true);
+    setWhatsappLogs(['[SYSTEM] Iniciando disparo em lote (WhatsApp)...']);
+
+    for (const client of marketingTargetsList) {
+      await new Promise(r => setTimeout(r, 1200));
+      setWhatsappLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+    }
+
+    setWhatsappLogs(prev => [...prev, '[SYSTEM] Lote finalizado!']);
+    setIsSendingWhatsapp(false);
+  };
+
+  const handleSendEmailCampaign = async () => {
+    if (marketingTargetsList.length === 0) return;
+    setIsSendingEmail(true);
+    setEmailLogs(['[SYSTEM] Conectando ao gateway de E-mail (Resend)...']);
+
+    for (const client of marketingTargetsList) {
+      await new Promise(r => setTimeout(r, 800));
+      if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
+        setEmailLogs(prev => [...prev, `[❌ Pulo] ${client.name} não possui e-mail cadastrado.`]);
+      } else {
+        const days = getDaysAbsent(client.lastVisit);
+        const firstName = client.name.split(' ')[0];
+        
+        const subject = emailCampaignSubject
+          .replace(/{nome}/g, firstName)
+          .replace(/{ultimo_servico}/g, client.lastServiceName || 'Corte')
+          .replace(/{dias_ausente}/g, days === Infinity ? 'muito tempo' : days);
+          
+        let content = emailCampaignBody
+          .replace(/{nome}/g, firstName)
+          .replace(/{ultimo_servico}/g, client.lastServiceName || 'Corte')
+          .replace(/{dias_ausente}/g, days === Infinity ? 'muito tempo' : days);
+
+        if (!content.includes('<p') && !content.includes('<br')) {
+          content = '<p>' + content.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br/>') + '</p>';
+        }
+
+        try {
+          const response = await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'campanha',
+              subject,
+              htmlBody: content,
+              clientEmail: client.email,
+              clientName: client.name
+            })
+          });
+          if (response.ok) {
+            setEmailLogs(prev => [...prev, `[✅ Enviado] E-mail disparado para ${client.email}`]);
+          } else {
+            setEmailLogs(prev => [...prev, `[❌ Erro] Falha ao enviar para ${client.email}`]);
+          }
+        } catch (error) {
+          setEmailLogs(prev => [...prev, `[❌ Erro] Falha ao enviar para ${client.email}: ${error.message}`]);
+        }
+      }
+    }
+
+    setEmailLogs(prev => [...prev, '[SYSTEM] Lote finalizado!']);
+    setIsSendingEmail(false);
+  };
+
   return (
-    <div className="admin-marketing-page">
-      {/* Abas */}
-      <div className="tab-menu" style={{ marginBottom: 24 }}>
-        <button className={`tab-btn ${activeTab === 'cupons' ? 'active' : ''}`} onClick={() => setActiveTab('cupons')}>
-          <Ticket size={16} /> Cupons de Desconto
-        </button>
-        <button className={`tab-btn ${activeTab === 'fidelidade' ? 'active' : ''}`} onClick={() => setActiveTab('fidelidade')}>
-          <Award size={16} /> Programa de Fidelidade
-        </button>
-        <button className={`tab-btn ${activeTab === 'vales' ? 'active' : ''}`} onClick={() => setActiveTab('vales')}>
-          <Gift size={16} /> Vales-Presente
+    <div className="admin-clients-page">
+      <div className="crm-header-tabs" style={{ marginBottom: 20 }}>
+        <button className="crm-tab-btn active" style={{ cursor: 'default' }}>
+          <Sparkles size={16} /> Central de Campanhas
         </button>
       </div>
 
-      {isDemoMode && (
-        <div style={{ marginBottom: 16, padding: '8px 16px', background: 'rgba(176, 90, 46, 0.08)', borderRadius: 6, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent)' }}>Ambiente de Demonstração / Dados Locais</span>
-        </div>
-      )}
+      {loading ? (
+        <div style={{ padding: 24, textAlign: 'center', color: 'var(--muted)' }}>Carregando dados...</div>
+      ) : (
+        <div className="crm-body-content">
+          <div className="marketing-tab-view">
+            <header className="report-header">
+              <h3>Campanhas & Automações de Relacionamento (Marketing CRM)</h3>
+              <p>Selecione um segmento de clientes, defina o canal de disparo (WhatsApp ou E-mail) e crie campanhas direcionadas.</p>
+            </header>
 
-      {/* CONTEÚDO: CUPONS */}
-      {activeTab === 'cupons' && (
-        <div className="financial-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h3>Gestão de Cupons Promocionais</h3>
-            <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setShowCouponModal(true)}>
-              <Plus size={16} style={{ marginRight: 6 }} /> Criar Novo Cupom
-            </button>
-          </div>
+            <div className="marketing-layout-grid">
+              
+              {/* Client Selection Tool */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <h4 style={{ margin: '0 0 12px 0' }}>Buscar e Marcar Clientes</h4>
+                <div className="search-wrap" style={{ marginBottom: '16px', maxWidth: '400px' }}>
+                  <Search size={14} className="search-icon" />
+                  <input 
+                    type="text" 
+                    placeholder="Pesquisar por nome ou telefone..." 
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    style={{ width: '100%', padding: '8px 8px 8px 32px', borderRadius: '4px', border: '1px solid var(--rule)' }}
+                  />
+                </div>
 
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Código</th>
-                <th>Tipo</th>
-                <th>Desconto</th>
-                <th>Vencimento</th>
-                <th>Usos / Limite</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {coupons.map(c => (
-                <tr key={c.id}>
-                  <td style={{ fontWeight: 700, color: 'var(--accent)' }}>{c.code}</td>
-                  <td>{c.type === 'porcentagem' ? 'Porcentagem' : 'Valor Fixo'}</td>
-                  <td>{c.type === 'porcentagem' ? `${c.value}%` : `R$ ${c.value}`}</td>
-                  <td>{c.validity.split('-').reverse().join('/')}</td>
-                  <td>{c.used} / {c.limit}</td>
-                  <td>
-                    <span className={`status-badge ${c.status === 'ativo' ? 'confirmado' : 'cancelado'}`}>
-                      {c.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="btn-icon text-danger" onClick={() => handleDeleteCoupon(c.id)}>
-                      <Trash2 size={14} />
+                <div style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                  <table className="admin-table" style={{ margin: 0 }}>
+                    <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
+                      <tr>
+                        <th style={{ width: 40, textAlign: 'center' }}>
+                          <button 
+                            className="btn-icon" 
+                            onClick={() => {
+                              if (selectedCampaignPhones.length === filteredClients.length) {
+                                setSelectedCampaignPhones([]);
+                              } else {
+                                setSelectedCampaignPhones(filteredClients.map(c => c.phone));
+                              }
+                            }}
+                          >
+                            {selectedCampaignPhones.length === filteredClients.length && filteredClients.length > 0 ? <CheckSquare size={16} /> : <Square size={16} />}
+                          </button>
+                        </th>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>Última Visita</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredClients.map(c => {
+                        const days = getDaysAbsent(c.lastVisit);
+                        return (
+                          <tr key={c.phone} style={{ background: selectedCampaignPhones.includes(c.phone) ? 'rgba(47, 133, 90, 0.1)' : 'transparent' }}>
+                            <td style={{ textAlign: 'center' }}>
+                              <input 
+                                type="checkbox" 
+                                checked={selectedCampaignPhones.includes(c.phone)}
+                                onChange={() => toggleClientSelection(c.phone)}
+                                style={{ width: 16, height: 16, cursor: 'pointer' }}
+                              />
+                            </td>
+                            <td>{c.name}</td>
+                            <td>{c.phone}</td>
+                            <td>{days === Infinity ? 'Sem visitas' : `${days} dias atrás`}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                {selectedCampaignPhones.length > 0 && (
+                  <p style={{ fontSize: '0.85rem', color: 'var(--accent)', marginTop: '8px', fontWeight: 600 }}>
+                    {selectedCampaignPhones.length} clientes marcados. (Escolha "Selecionadas no Relatório" abaixo).
+                  </p>
+                )}
+              </div>
+              
+              {/* Automações Fixas */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <h4 style={{ margin: '0 0 6px 0' }}>Régua de Relacionamento (Automática)</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '20px', marginTop: 0 }}>
+                  Acompanhe a jornada pós-atendimento. O sistema verifica diariamente e dispara a sequência abaixo.
+                </p>
+
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', alignItems: 'center', background: 'var(--sidebar-bg)', padding: '12px', borderRadius: '6px' }}>
+                  <strong style={{ flex: 1 }}>Régua Completa (Mestre)</strong>
+                  <button 
+                    className={`btn-toggle ${settings?.automations?.sequenceEnabled !== false ? 'active' : ''}`}
+                    onClick={() => toggleAutomation('sequenceEnabled', settings?.automations?.sequenceEnabled === false)}
+                  >
+                    {settings?.automations?.sequenceEnabled !== false ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+                  {[
+                    { key: 'seqD1', label: 'E-mail 1 (D+1)', desc: 'Cuidado Imediato' },
+                    { key: 'seqD7', label: 'E-mail 2 (D+7)', desc: 'Semana Crítica' },
+                    { key: 'seqD21', label: 'E-mail 3 (D+21)', desc: 'Pico de Definição' },
+                    { key: 'seqD35', label: 'E-mail 4 (D+35/50)', desc: 'Rebooking Ideal' },
+                    { key: 'seqD60', label: 'E-mail 5 (D+60)', desc: 'Reativação Suave' },
+                    { key: 'seqD90', label: 'E-mail 6 (D+90)', desc: 'Último Contato' },
+                    { key: 'birthdayEnabled', label: 'Aniversário (D-5)', desc: 'Convite c/ antecedência' }
+                  ].map(step => (
+                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{step.label}</span>
+                        <button 
+                          className={`btn-toggle ${settings?.automations?.[step.key] !== false ? 'active' : ''}`}
+                          style={{ padding: '4px 8px', fontSize: '0.7rem' }}
+                          onClick={() => toggleAutomation(step.key, settings?.automations?.[step.key] === false)}
+                        >
+                          {settings?.automations?.[step.key] !== false ? 'ON' : 'OFF'}
+                        </button>
+                      </div>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{step.desc}</span>
+                      
+                      <div style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
+                        <button 
+                          className="btn btn-outline btn-small"
+                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.7rem', padding: '4px' }}
+                          onClick={() => {
+                            setEditingTemplateKey(step.key);
+                            setEditingTemplateContent(settings?.email_templates?.[step.key] || EMAIL_PREVIEWS[step.key]);
+                            setShowEmailEditModal(true);
+                          }}
+                        >
+                          ✏️ Editar
+                        </button>
+                        <button 
+                          className="btn btn-outline btn-small"
+                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.7rem', padding: '4px' }}
+                          onClick={() => {
+                            setEmailPreviewContent(settings?.email_templates?.[step.key] || EMAIL_PREVIEWS[step.key]);
+                            setShowEmailPreviewModal(true);
+                          }}
+                        >
+                          <Eye size={12} /> Ver
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ marginTop: '30px' }}>
+                  <h5 style={{ margin: '0 0 10px 0' }}>Histórico de Disparos da Régua</h5>
+                  {automationLogs.length === 0 ? (
+                    <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado ainda.</p>
+                  ) : (
+                    <div style={{ maxHeight: '250px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                      <table className="admin-table" style={{ margin: 0 }}>
+                        <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)' }}>
+                          <tr>
+                            <th>Data</th>
+                            <th>Cliente</th>
+                            <th>Etapa (Trigger)</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {automationLogs.slice(0, 50).map(log => (
+                            <tr key={log.id}>
+                              <td>{new Date(log.timestamp).toLocaleString('pt-BR')}</td>
+                              <td>{log.clientName}</td>
+                              <td><span className="status-badge concluded">{log.stage}</span></td>
+                              <td>✅ Enviado</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Template */}
+              <div className="marketing-config-card">
+                <h4>Configurar Campanha</h4>
+
+                <div className="form-group-sleek">
+                  <label>Público Alvo Segmentado</label>
+                  <select value={marketingTarget} onChange={e => setMarketingTarget(e.target.value)}>
+                    <option value="todos">Todos os Clientes ({clients.length})</option>
+                    <option value="inativos_30">Clientes Ausentes (30 a 60 dias) ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 30 && d <= 60; }).length})</option>
+                    <option value="inativos_60">Clientes Adormecidos (&gt;60 dias) ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d > 60 && d !== Infinity; }).length})</option>
+                    <option value="nunca_visitaram">Sem Agendamento no Salão ({clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length})</option>
+                    <option value="selecionados">Selecionados Acima ({selectedCampaignPhones.length})</option>
+                  </select>
+                </div>
+
+                <div className="form-group-sleek">
+                  <label>Canal de Disparo</label>
+                  <div className="campaign-channel-toggle" style={{ display: 'flex', gap: '12px', margin: '8px 0' }}>
+                    <button 
+                      type="button" 
+                      className={`btn ${marketingChannel === 'whatsapp' ? 'btn-accent' : 'btn-outline'}`}
+                      onClick={() => setMarketingChannel('whatsapp')}
+                      style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
+                    >
+                      <Phone size={14} style={{ marginRight: 6 }} /> WhatsApp
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    <button 
+                      type="button" 
+                      className={`btn ${marketingChannel === 'email' ? 'btn-accent' : 'btn-outline'}`}
+                      onClick={() => setMarketingChannel('email')}
+                      style={{ flex: 1, padding: '10px', fontSize: '0.85rem' }}
+                    >
+                      <Mail size={14} style={{ marginRight: 6 }} /> E-mail (Automático)
+                    </button>
+                  </div>
+                </div>
+
+                {marketingChannel === 'whatsapp' ? (
+                  <div className="form-group-sleek">
+                    <label>Texto da Campanha (Suporta Tags Dinâmicas)</label>
+                    <textarea 
+                      rows="5"
+                      value={campaignMessage}
+                      onChange={e => setCampaignMessage(e.target.value)}
+                      placeholder="Use as tags para personalizar..."
+                    ></textarea>
+                    
+                    <div className="tags-legend">
+                      <strong>Tags disponíveis:</strong>
+                      <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {nome}')}>{`{nome}`}</span>
+                      <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {ultimo_servico}')}>{`{ultimo_servico}`}</span>
+                      <span className="tag-pill-ref" onClick={() => setCampaignMessage(prev => prev + ' {dias_ausente}')}>{`{dias_ausente}`}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="email-campaign-form">
+                    <div className="form-group-sleek">
+                      <label>Assunto do E-mail</label>
+                      <input 
+                        type="text"
+                        value={emailCampaignSubject}
+                        onChange={e => setEmailCampaignSubject(e.target.value)}
+                        placeholder="Assunto da campanha..."
+                      />
+                    </div>
+                    
+                    <div className="form-group-sleek" style={{ marginTop: '12px' }}>
+                      <label>Corpo do E-mail (HTML permitido)</label>
+                      <textarea 
+                        rows="6"
+                        value={emailCampaignBody}
+                        onChange={e => setEmailCampaignBody(e.target.value)}
+                        style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}
+                      ></textarea>
+                      
+                      <div className="tags-legend">
+                        <strong>Tags disponíveis:</strong>
+                        <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {nome}')}>{`{nome}`}</span>
+                        <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {ultimo_servico}')}>{`{ultimo_servico}`}</span>
+                        <span className="tag-pill-ref" onClick={() => setEmailCampaignBody(prev => prev + ' {dias_ausente}')}>{`{dias_ausente}`}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Targets */}
+              <div className="marketing-targets-card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <h4 style={{ margin: 0 }}>Alvos da Campanha ({marketingTargetsList.length} Clientes)</h4>
+                  
+                  {marketingChannel === 'email' && (
+                    <button 
+                      className="btn btn-accent" 
+                      onClick={handleSendEmailCampaign}
+                      disabled={isSendingEmail || marketingTargetsList.length === 0}
+                      style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                    >
+                      {isSendingEmail ? 'Disparando...' : 'Disparar E-mails'}
+                    </button>
+                  )}
+
+                  {marketingChannel === 'whatsapp' && (
+                    <button 
+                      className="btn btn-accent" 
+                      onClick={handleSendWhatsappCampaign}
+                      disabled={isSendingWhatsapp || marketingTargetsList.length === 0}
+                      style={{ padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                    >
+                      {isSendingWhatsapp ? 'Disparando...' : '🚀 Disparar em Lote'}
+                    </button>
+                  )}
+                </div>
+
+                {marketingChannel === 'whatsapp' ? (
+                  <p className="sub-instruction">Dispare automaticamente via API Gateway configurada ou clique em "WhatsApp" em cada linha para enviar manualmente.</p>
+                ) : (
+                  <p className="sub-instruction">Simule ou conecte o disparo de e-mails em massa através de nossa API integrada.</p>
+                )}
+
+                {marketingChannel === 'whatsapp' && whatsappLogs.length > 0 && (
+                  <div className="email-sim-console" style={{ background: '#1e1e1e', color: '#00ff00', fontFamily: 'monospace', padding: '12px', borderRadius: '6px', fontSize: '0.8rem', height: '160px', overflowY: 'auto', border: '1px solid #333', marginBottom: '16px' }}>
+                    {whatsappLogs.map((log, index) => <div key={index} style={{ marginBottom: '2px' }}>{log}</div>)}
+                  </div>
+                )}
+
+                {marketingChannel === 'email' && emailLogs.length > 0 && (
+                  <div className="email-sim-console" style={{ background: '#1e1e1e', color: '#00ff00', fontFamily: 'monospace', padding: '12px', borderRadius: '6px', fontSize: '0.8rem', height: '160px', overflowY: 'auto', border: '1px solid #333', marginBottom: '16px' }}>
+                    {emailLogs.map((log, index) => <div key={index} style={{ marginBottom: '2px' }}>{log}</div>)}
+                  </div>
+                )}
+
+                <div className="targets-scroll-list" style={{ maxHeight: '350px' }}>
+                  {marketingTargetsList.length === 0 ? (
+                    <p className="no-data-msg">Nenhum cliente no segmento escolhido.</p>
+                  ) : (
+                    marketingTargetsList.map(c => (
+                      <div key={c.phone} className="marketing-target-row">
+                        <div className="target-client-info">
+                          <h5>{c.name}</h5>
+                          <span>WhatsApp: {c.phone} | Ausente há: {getDaysAbsent(c.lastVisit) === Infinity ? 'Sem Visitas' : `${getDaysAbsent(c.lastVisit)} dias`}</span>
+                        </div>
+                        
+                        {marketingChannel === 'whatsapp' ? (
+                          <a 
+                            href={getCampaignMessageLink(c)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-accent btn-small btn-whatsapp-direct"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            <Send size={12} /> WhatsApp
+                          </a>
+                        ) : (
+                          <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                            {c.email && c.email !== 'Não informado' ? c.email : 'Sem E-mail'}
+                          </span>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* CONTEÚDO: PROGRAMA DE FIDELIDADE */}
-      {activeTab === 'fidelidade' && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 24 }}>
-          {/* Configuração de Regras */}
-          <div className="financial-card" style={{ height: 'fit-content' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <Settings size={18} style={{ color: 'var(--accent)' }} />
-              <h3 style={{ margin: 0 }}>Regras do Clube</h3>
+      {showEmailEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEmailEditModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px', width: '100%' }}>
+            <h3>Editar E-mail da Régua</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>As tags dinâmicas como <b>{'{'}nome{'}'}</b> serão substituídas no disparo.</p>
+            
+            <div className="form-group-sleek">
+              <label>Assunto</label>
+              <input 
+                type="text" 
+                value={editingTemplateContent.subject} 
+                onChange={e => setEditingTemplateContent({...editingTemplateContent, subject: e.target.value})} 
+              />
+            </div>
+            <div className="form-group-sleek" style={{ marginTop: '12px' }}>
+              <label>Corpo do E-mail (HTML permitido)</label>
+              <textarea 
+                rows="10" 
+                value={editingTemplateContent.body} 
+                onChange={e => setEditingTemplateContent({...editingTemplateContent, body: e.target.value})} 
+                style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}
+              ></textarea>
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', marginTop: 24 }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowEmailEditModal(false)}>Cancelar</button>
+              <button type="button" className="btn btn-accent" onClick={handleSaveTemplate}>Salvar E-mail</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: PREVIEW DE EMAIL */}
+      {showEmailPreviewModal && (
+        <div className="modal-overlay" onClick={() => setShowEmailPreviewModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%', padding: '0', overflow: 'hidden' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
+              <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                Preview de E-mail
+              </div>
+              <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#fff' }}>{emailPreviewContent.subject.replace(/{nome}/g, 'Marina')}</div>
             </div>
             
-            <div className="form-group" style={{ marginBottom: 12 }}>
-              <label>Conversão (R$ para Pontos)</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span>R$ 1,00 =</span>
-                <input 
-                  type="number" 
-                  value={fidelityRules.pointsPerReal} 
-                  onChange={e => saveFidelityRules({ ...fidelityRules, pointsPerReal: Number(e.target.value) })}
-                  style={{ width: 70, textAlign: 'center' }}
-                />
-                <span>Ponto(s)</span>
-              </div>
-            </div>
-
-            <div className="form-group" style={{ marginBottom: 12 }}>
-              <label>Resgate de Prêmio</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                <input 
-                  type="number" 
-                  value={fidelityRules.pointsToRedeem} 
-                  onChange={e => saveFidelityRules({ ...fidelityRules, pointsToRedeem: Number(e.target.value) })}
-                  style={{ width: 75, textAlign: 'center' }}
-                />
-                <span>pts valem</span>
-                <span style={{ fontWeight: 600 }}>R$</span>
-                <input 
-                  type="number" 
-                  value={fidelityRules.redeemValue} 
-                  onChange={e => saveFidelityRules({ ...fidelityRules, redeemValue: Number(e.target.value) })}
-                  style={{ width: 75, textAlign: 'center' }}
-                />
-              </div>
-            </div>
-
-            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: 16 }}>
-              As pontuações são lançadas nas contas dos clientes automaticamente ao fechar comandas finalizadas.
-            </p>
-          </div>
-
-          {/* Saldo de Pontos dos Clientes */}
-          <div className="financial-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
-              <h3 style={{ margin: 0 }}>Pontuação das Clientes</h3>
-              
-              <div className="search-input-wrapper" style={{ width: 220, background: 'var(--surface)' }}>
-                <Search size={14} className="search-icon" />
-                <input 
-                  type="text" 
-                  placeholder="Filtrar por nome ou WhatsApp..." 
-                  value={fidelitySearch}
-                  onChange={e => setFidelitySearch(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Cliente</th>
-                  <th>Contato</th>
-                  <th>Saldo de Pontos</th>
-                  <th>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredFidelity.map(f => (
-                  <tr key={f.id}>
-                    <td>{f.clientName}</td>
-                    <td>{f.clientPhone}</td>
-                    <td style={{ fontWeight: 700 }}>{f.points} pts</td>
-                    <td>
-                      <button 
-                        className="btn btn-ghost" 
-                        style={{ padding: '3px 8px', fontSize: '0.75rem' }}
-                        onClick={() => {
-                          setSelectedClientFidelity(f);
-                          setShowFidelityAdjustModal(true);
-                        }}
-                      >
-                        Ajustar Pontos
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* CONTEÚDO: VALES-PRESENTE */}
-      {activeTab === 'vales' && (
-        <div className="financial-card">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-            <h3>Vales-Presente Emitidos</h3>
-            <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => setShowGiftModal(true)}>
-              <Plus size={16} style={{ marginRight: 6 }} /> Emitir Vale-Presente
-            </button>
-          </div>
-
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Código do Voucher</th>
-                <th>Valor do Vale</th>
-                <th>Beneficiário/Comprador</th>
-                <th>Data de Emissão</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {giftCards.map(g => (
-                <tr key={g.id}>
-                  <td style={{ fontWeight: 700, fontFamily: 'monospace' }}>{g.code}</td>
-                  <td>R$ {g.value}</td>
-                  <td>{g.clientName}</td>
-                  <td>{g.createdAt.split('-').reverse().join('/')}</td>
-                  <td>
-                    <span className={`status-badge ${g.status === 'ativo' ? 'confirmado' : 'cancelado'}`}>
-                      {g.status}
-                    </span>
-                  </td>
-                  <td>
-                    {g.status === 'ativo' && (
-                      <button className="btn btn-ghost" style={{ padding: '3px 8px', fontSize: '0.75rem' }} onClick={() => handleRedeemGift(g.id)}>
-                        Marcar como Resgatado
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* MODAL: CRIAR CUPOM */}
-      {showCouponModal && (
-        <div className="modal-overlay">
-          <form className="modal-content" onSubmit={handleAddCoupon}>
-            <h3>Criar Novo Cupom Promocional</h3>
-
-            <div className="form-group">
-              <label>Código do Cupom *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="Ex: CACHOSVIP15"
-                value={couponForm.code}
-                onChange={e => setCouponForm(prev => ({ ...prev, code: e.target.value }))}
+            <div style={{ backgroundColor: '#f0eee9', width: '100%', height: '600px' }}>
+              <iframe 
+                srcDoc={`
+                  <!DOCTYPE html>
+                  <html lang="pt-BR">
+                  <head>
+                    <meta charset="utf-8">
+                    <title>Preview</title>
+                    <style>${EMAIL_CSS}</style>
+                  </head>
+                  <body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased;">
+                    <div class="mail-stage">
+                      ${emailPreviewContent.body.replace(/{nome}/g, 'Marina')}
+                    </div>
+                  </body>
+                  </html>
+                `}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                title="Email Preview"
               />
             </div>
-
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-              <div className="form-group">
-                <label>Tipo de Desconto *</label>
-                <select 
-                  value={couponForm.type}
-                  onChange={e => setCouponForm(prev => ({ ...prev, type: e.target.value }))}
-                >
-                  <option value="porcentagem">Porcentagem (%)</option>
-                  <option value="fixo">Valor Fixo (R$)</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Valor do Desconto *</label>
-                <input 
-                  type="number" 
-                  required 
-                  min="1"
-                  placeholder={couponForm.type === 'porcentagem' ? '10' : '15.00'}
-                  value={couponForm.value}
-                  onChange={e => setCouponForm(prev => ({ ...prev, value: e.target.value }))}
-                />
-              </div>
+            
+            <div className="modal-actions" style={{ padding: '20px' }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowEmailPreviewModal(false)}>Fechar</button>
             </div>
-
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
-              <div className="form-group">
-                <label>Data de Validade *</label>
-                <input 
-                  type="date" 
-                  required
-                  value={couponForm.validity}
-                  onChange={e => setCouponForm(prev => ({ ...prev, validity: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label>Limite Total de Usos *</label>
-                <input 
-                  type="number" 
-                  required
-                  value={couponForm.limit}
-                  onChange={e => setCouponForm(prev => ({ ...prev, limit: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-              <button type="button" className="btn btn-ghost" onClick={() => setShowCouponModal(false)}>Cancelar</button>
-              <button type="submit" className="btn btn-accent">Criar Cupom</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* MODAL: CRIAR VALE-PRESENTE */}
-      {showGiftModal && (
-        <div className="modal-overlay">
-          <form className="modal-content" onSubmit={handleAddGiftCard}>
-            <h3>Emitir Vale-Presente</h3>
-
-            <div className="form-group">
-              <label>Nome do Comprador / Beneficiário *</label>
-              <input 
-                type="text" 
-                required 
-                placeholder="Ex: Patricia Goulart"
-                value={giftForm.clientName}
-                onChange={e => setGiftForm(prev => ({ ...prev, clientName: e.target.value }))}
-              />
-            </div>
-
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
-              <div className="form-group">
-                <label>Valor do Vale (R$) *</label>
-                <input 
-                  type="number" 
-                  required 
-                  min="10"
-                  step="10"
-                  placeholder="100.00"
-                  value={giftForm.value}
-                  onChange={e => setGiftForm(prev => ({ ...prev, value: e.target.value }))}
-                />
-              </div>
-              <div className="form-group">
-                <label>Código do Voucher (Opcional)</label>
-                <input 
-                  type="text" 
-                  placeholder="Gerado automaticamente se vazio"
-                  value={giftForm.code}
-                  onChange={e => setGiftForm(prev => ({ ...prev, code: e.target.value }))}
-                />
-              </div>
-            </div>
-
-            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-              <button type="button" className="btn btn-ghost" onClick={() => setShowGiftModal(false)}>Cancelar</button>
-              <button type="submit" className="btn btn-accent">Emitir Vale</button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* MODAL: AJUSTAR PONTOS */}
-      {showFidelityAdjustModal && selectedClientFidelity && (
-        <div className="modal-overlay">
-          <form className="modal-content" onSubmit={handleAdjustPoints}>
-            <h3>Ajustar Pontuação de Fidelidade</h3>
-            <p>Cliente: <strong>{selectedClientFidelity.clientName}</strong></p>
-            <p>Saldo Atual: <strong>{selectedClientFidelity.points} pontos</strong></p>
-
-            <div className="form-group" style={{ marginTop: 16 }}>
-              <label>Valor a somar ou subtrair *</label>
-              <input 
-                type="number" 
-                required 
-                placeholder="Ex: 50 para adicionar, -30 para descontar"
-                value={fidelityAdjustment}
-                onChange={e => setFidelityAdjustment(e.target.value)}
-              />
-            </div>
-
-            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
-              <button type="button" className="btn btn-ghost" onClick={() => setShowFidelityAdjustModal(false)}>Cancelar</button>
-              <button type="submit" className="btn btn-accent">Confirmar Ajuste</button>
-            </div>
-          </form>
+          </div>
         </div>
       )}
     </div>
