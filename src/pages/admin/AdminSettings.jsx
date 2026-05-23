@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
   // Estabelecimento
   name: 'Studio do Jon',
   phone: '3135866673',
-  address: 'Rua Jacuí, 312 - Floresta, Belo Horizonte - MG',
+  address: 'Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG',
   instagram: 'https://instagram.com/ojonquecortou',
   
   // Taxas de Maquininha

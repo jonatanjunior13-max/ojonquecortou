@@ -776,7 +776,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>
@@ -854,7 +854,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>
@@ -946,7 +946,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>
@@ -1023,7 +1023,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>
@@ -1103,7 +1103,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>
@@ -1171,7 +1171,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>
@@ -1233,7 +1233,7 @@ export const HTML_TEMPLATES = {
   <div class="m-footer-grid">
     <div>
       <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
-      <p class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
     </div>
   </div>
   <div class="legal">© 2026 Studio do Jon</div>

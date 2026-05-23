@@ -89,7 +89,7 @@ function getEmailWrapper(title, content) {
         </div>
         <div class="footer">
           <div class="footer-brand">Studio do Jon <span style="margin-left:5px;">— corte com leitura.</span></div>
-          <div class="addr">Rua dos Cacheados, 218 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</div>
+          <div class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</div>
           <div class="legal">© ${new Date().getFullYear()} Studio do Jon</div>
         </div>
       </div>
@@ -182,7 +182,7 @@ export default async function handler(req, res) {
         <div class="appt-card">
           <div class="label">Agendamento</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua dos Cacheados, 218 · Caiçara · Belo Horizonte</p>
+          <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
