@@ -208,17 +208,17 @@ export default async function handler(req, res) {
     const formattedService = data.serviceName || '';
     
     emailContent = customAutomationHtml
-      .replace(/{nome}/g, firstName)
-      .replace(/{data}/g, formattedDate)
-      .replace(/{horario}/g, formattedTime)
-      .replace(/{hora}/g, formattedTime)
-      .replace(/{servico}/g, formattedService)
-      .replace(/{email}/g, encodeURIComponent(clientEmail));
+      .replace(/{nome}/gi, firstName)
+      .replace(/{data}/gi, formattedDate)
+      .replace(/{horario}/gi, formattedTime)
+      .replace(/{hora}/gi, formattedTime)
+      .replace(/{servico}/gi, formattedService)
+      .replace(/{email}/gi, encodeURIComponent(clientEmail));
       
     emailSubject = subject || (
       type === 'solicitacao_recebida' ? 'Solicitação de Agendamento Recebida - O Jon Que Cortou' :
       type === 'lembrete_24h' ? 'Lembrete de Agendamento - O Jon Que Cortou' :
-      type === 'reativacao_5_meses' ? 'Seu cabelo tem memória, {nome}'.replace(/{nome}/g, firstName) :
+      type === 'reativacao_5_meses' ? 'Seu cabelo tem memória, {nome}'.replace(/{nome}/gi, firstName) :
       'Mensagem do Studio do Jon'
     );
     currentType = 'campanha_raw';

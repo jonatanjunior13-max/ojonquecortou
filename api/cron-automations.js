@@ -19,7 +19,7 @@ const auth = getAuth(app);
 // Use fetch to call our own send-email API so we don't have to duplicate NodeMailer logic
 function formatBody(body, name) {
   if (!body) return '';
-  return body.replace(/{nome}/g, name);
+  return body.replace(/{nome}/gi, name);
 }
 
 async function dispatchEmail(payload, hostUrl) {
