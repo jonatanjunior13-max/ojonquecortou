@@ -61,32 +61,21 @@ export default async function handler(req, res) {
     const tomYear = tomParts.find(p => p.type === 'year').value;
     const tomorrowStr = `${tomYear}-${tomMonth}-${tomDay}`;
 
-    // Buscar agendamentos de amanhã para o e-mail de lembrete 24h
-    const qTomorrow = query(collection(db, 'bookings'), where('date', '==', tomorrowStr));
-    const snapshotTomorrow = await getDocs(qTomorrow);
-    const tomorrowBookings = [];
-    snapshotTomorrow.forEach(doc => {
-      const data = doc.data();
-      if (data.status === 'pendente' || data.status === 'confirmado') {
-        tomorrowBookings.push({ id: doc.id, ...data });
-      }
-    });
-
-    // Buscar agendamentos de hoje
-    const q = query(collection(db, 'bookings'), where('date', '==', todayStr));
+    // Buscar agendamentos de amanhã para o e-mail e WhatsApp de lembrete 24h
+    const q = query(collection(db, 'bookings'), where('date', '==', tomorrowStr));
     const snapshot = await getDocs(q);
-
     const bookings = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      // Filtrar confirmados e pendentes
       if (data.status === 'pendente' || data.status === 'confirmado') {
         bookings.push({ id: doc.id, ...data });
       }
     });
 
+    const tomorrowBookings = bookings;
+
     if (bookings.length === 0) {
-      return res.status(200).json({ message: 'Nenhum agendamento pendente ou confirmado para hoje.', todayStr });
+      return res.status(200).json({ message: 'Nenhum agendamento pendente ou confirmado para amanhã.', tomorrowStr });
     }
 
     // Obter as configurações do painel para ler as credenciais da Evolution API
@@ -113,7 +102,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'O Cron job atualmente foi otimizado para Evolution API.' });
     }
 
-    const template = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário hoje ({data} às {hora}) para o serviço: {servico}.';
+    const template = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}.';
 
     let successCount = 0;
     let failCount = 0;
@@ -121,11 +110,18 @@ export default async function handler(req, res) {
     for (const b of bookings) {
       if (!b.clientPhone) continue;
 
+      const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
       let msg = template
         .replace('{cliente}', b.clientName.split(' ')[0])
         .replace('{data}', b.date.split('-').reverse().join('/'))
         .replace('{hora}', b.time)
         .replace('{servico}', b.service?.name || b.serviceName);
+
+      if (msg.includes('{link_cancelamento}')) {
+        msg = msg.replace('{link_cancelamento}', cancelLink);
+      } else {
+        msg += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+      }
 
       const phoneNum = b.clientPhone.replace(/\D/g, '');
       const waNumber = phoneNum.startsWith('55') ? phoneNum : `55${phoneNum}`;

@@ -275,7 +275,7 @@ const AdminSettings = () => {
       {/* Abas */}
       <div className="tab-menu" style={{ marginBottom: 24 }}>
         <button type="button" className={`tab-btn ${activeTab === 'perfil' ? 'active' : ''}`} onClick={() => setActiveTab('perfil')}>
-          <Building size={16} /> Perfil & Taxas
+          <Building size={16} /> Perfil
         </button>
         <button type="button" className={`tab-btn ${activeTab === 'horarios' ? 'active' : ''}`} onClick={() => setActiveTab('horarios')}>
           <Clock size={16} /> Horários da Grade
@@ -292,9 +292,9 @@ const AdminSettings = () => {
       </div>
 
       <form onSubmit={handleSave}>
-        {/* CONTEÚDO: PERFIL & TAXAS */}
+        {/* CONTEÚDO: PERFIL */}
         {activeTab === 'perfil' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 24 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             {/* Informações básicas */}
             <div className="financial-card">
               <h3>Perfil do Estabelecimento</h3>
@@ -335,48 +335,6 @@ const AdminSettings = () => {
                   onChange={e => setSettings({ ...settings, address: e.target.value })}
                 />
               </div>
-            </div>
-
-            {/* Taxas de Maquininha */}
-            <div className="financial-card" style={{ height: 'fit-content' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <CreditCard size={18} style={{ color: 'var(--accent)' }} />
-                <h3 style={{ margin: 0 }}>Taxas de Cartão</h3>
-              </div>
-
-              <div className="form-group" style={{ marginBottom: 12 }}>
-                <label>Taxa de Pix (%)</label>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  value={settings.feePix} 
-                  onChange={e => setSettings({ ...settings, feePix: Number(e.target.value) })}
-                />
-              </div>
-
-              <div className="form-group" style={{ marginBottom: 12 }}>
-                <label>Taxa de Débito (%)</label>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  value={settings.feeDebit} 
-                  onChange={e => setSettings({ ...settings, feeDebit: Number(e.target.value) })}
-                />
-              </div>
-
-              <div className="form-group" style={{ marginBottom: 12 }}>
-                <label>Taxa de Crédito à Vista (%)</label>
-                <input 
-                  type="number" 
-                  step="0.01" 
-                  value={settings.feeCredit} 
-                  onChange={e => setSettings({ ...settings, feeCredit: Number(e.target.value) })}
-                />
-              </div>
-
-              <p style={{ fontSize: '0.78rem', color: 'var(--muted)', margin: 0 }}>
-                Essas taxas serão aplicadas automaticamente para deduzir o valor líquido nas entradas financeiras registradas.
-              </p>
             </div>
           </div>
         )}

@@ -349,6 +349,8 @@ const AdminDashboard = () => {
 
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
+      const booking = bookings.find(b => b.id === bookingId);
+      
       if (isDemoMode) {
         setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
         if (selectedBooking && selectedBooking.id === bookingId) {
@@ -358,6 +360,20 @@ const AdminDashboard = () => {
         const apptRef = doc(db, 'bookings', bookingId);
         await updateDoc(apptRef, { status: newStatus });
         setSelectedBooking(null);
+      }
+
+      if (booking && booking.clientEmail) {
+        if (newStatus === 'confirmado') {
+          await triggerEmailNotification({
+            ...booking,
+            type: 'horario_confirmado'
+          }, 'horario_confirmado');
+        } else if (newStatus === 'cancelado') {
+          await triggerEmailNotification({
+            ...booking,
+            type: 'agendamento_cancelado'
+          }, 'agendamento_cancelado');
+        }
       }
     } catch (err) {
       console.error('Erro ao atualizar status:', err);
@@ -492,7 +508,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const triggerEmailNotification = async (payload) => {
+  const triggerEmailNotification = async (payload, type = 'horario_confirmado') => {
     if (!payload.clientEmail) return;
     try {
       // Format date beautifully if possible
@@ -515,22 +531,23 @@ const AdminDashboard = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          type: 'horario_confirmado',
+          type: type,
           clientEmail: payload.clientEmail,
           clientName: payload.clientName,
-          serviceName: payload.service?.name || payload.service || '',
+          serviceName: payload.serviceName || payload.service?.name || payload.service || '',
           date: displayDate,
           time: payload.time,
           duration: payload.duration || payload.service?.duration || 60,
           notes: payload.notes || '',
           professionalName: payload.profissional || 'Jon',
-          price: payload.service?.price || null
+          price: payload.service?.price || null,
+          cancelledBy: payload.cancelledBy || 'admin'
         }),
       });
       const data = await response.json();
       console.log('Admin Email API response:', data);
     } catch (err) {
-      console.error('Failed to send admin manual booking email confirmation:', err);
+      console.error(`Failed to send email notification (${type}):`, err);
     }
   };
 
@@ -937,11 +954,18 @@ const AdminDashboard = () => {
       const dateObj = new Date(year, month - 1, day);
       const weekdayStr = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
-      const msgText = rawTemplate
+      const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${booking.id}`;
+      let msgText = rawTemplate
         .replace('{cliente}', booking.clientName)
         .replace('{data}', weekdayStr)
         .replace('{hora}', booking.time)
         .replace('{servico}', booking.serviceName || booking.service?.name || 'Serviço');
+
+      if (msgText.includes('{link_cancelamento}')) {
+        msgText = msgText.replace('{link_cancelamento}', cancelLink);
+      } else {
+        msgText += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+      }
 
       const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
       if (!cleanPhone || cleanPhone.length < 10) {
@@ -1127,7 +1151,15 @@ Jon`;
       .replace(/{data}/gi, formattedDate)
       .replace(/{hora}/gi, time);
 
-    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+    const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${booking.id}`;
+    let finalMsg = message;
+    if (finalMsg.includes('{link_cancelamento}')) {
+      finalMsg = finalMsg.replace(/{link_cancelamento}/gi, cancelLink);
+    } else {
+      finalMsg += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+    }
+
+    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(finalMsg)}`;
   };
 
   const birthdayClients = (() => {

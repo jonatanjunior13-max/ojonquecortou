@@ -14,6 +14,7 @@ import BlogPostPage from './pages/BlogPostPage';
 import ReviewsPage from './pages/ReviewsPage';
 import GalleryPage from './pages/GalleryPage';
 import BookingPage from './pages/BookingPage';
+import CancelBookingPage from './pages/CancelBookingPage';
 
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminLayout from './components/admin/AdminLayout';
@@ -84,6 +85,7 @@ function App() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/depoimentos" element={<ReviewsPage />} />
           <Route path="/agendar" element={<BookingPage />} />
+          <Route path="/cancelar" element={<CancelBookingPage />} />
         </Route>
 
         {/* Rotas Administrativas */}

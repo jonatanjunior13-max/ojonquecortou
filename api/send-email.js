@@ -125,6 +125,114 @@ function formatApptDate(dateString, timeString) {
   return `${d} de ${months[parseInt(m, 10)-1]}`;
 }
 
+async function sendAdminNotification(type, data, transporter, smtpFrom) {
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'jon@studio.com';
+  let subject = '';
+  let body = '';
+  const formattedDate = data.date ? (data.date.includes('-') ? data.date.split('-').reverse().join('/') : data.date) : '';
+  const clientName = data.clientName || 'Cliente';
+  const clientEmail = data.clientEmail || 'Não informado';
+  const clientPhone = data.clientPhone || 'Não informado';
+  const serviceName = data.serviceName || 'Serviço';
+  const time = data.time || '';
+
+  if (type === 'solicitacao_recebida') {
+    subject = `[NOVO AGENDAMENTO] Solicitação de ${clientName}`;
+    body = `
+      <div class="eyebrow">Aviso de Agendamento</div>
+      <h1 class="display-title">Nova Solicitação</h1>
+      <p class="lead">Olá Jon, uma nova solicitação de agendamento online foi recebida.</p>
+      
+      <div class="appt-card">
+        <div class="label">Detalhes da solicitação</div>
+        <p class="when">${formattedDate} <span>às ${time}</span></p>
+        <div class="meta-row" style="margin-top:20px;">
+          <div class="cell">
+            <div class="lbl">Cliente</div>
+            <div class="val">${clientName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">E-mail</div>
+            <div class="val">${clientEmail}</div>
+          </div>
+        </div>
+        <div class="meta-row" style="margin-top:10px;">
+          <div class="cell">
+            <div class="lbl">Serviço</div>
+            <div class="val">${serviceName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">Telefone</div>
+            <div class="val">${clientPhone}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (type === 'horario_confirmado') {
+    subject = `[AGENDAMENTO CONFIRMADO] Horário marcado para ${clientName}`;
+    body = `
+      <div class="eyebrow">Aviso de Confirmação</div>
+      <h1 class="display-title">Agendamento Confirmado</h1>
+      <p class="lead">Olá Jon, um agendamento foi confirmado ou criado no sistema.</p>
+      
+      <div class="appt-card">
+        <div class="label">Agendamento</div>
+        <p class="when">${formattedDate} <span>às ${time}</span></p>
+        <div class="meta-row" style="margin-top:20px;">
+          <div class="cell">
+            <div class="lbl">Cliente</div>
+            <div class="val">${clientName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">Serviço</div>
+            <div class="val">${serviceName}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (type === 'agendamento_cancelado') {
+    const cancelledByText = data.cancelledBy === 'client' ? 'pelo cliente' : 'pelo administrador';
+    subject = `[AGENDAMENTO CANCELADO] Cancelamento de ${clientName}`;
+    body = `
+      <div class="eyebrow" style="color: #9e2a2b;">Aviso de Cancelamento</div>
+      <h1 class="display-title" style="color: #ffffff;">Horário Cancelado</h1>
+      <p class="lead">Olá Jon, um agendamento foi cancelado no sistema ${cancelledByText}.</p>
+      
+      <div class="appt-card" style="border-color: #9e2a2b;">
+        <div class="label" style="color: #9e2a2b;">Agendamento Cancelado</div>
+        <p class="when" style="color: #ffffff;">${formattedDate} <span>às ${time}</span></p>
+        <div class="meta-row" style="margin-top:20px;">
+          <div class="cell">
+            <div class="lbl">Cliente</div>
+            <div class="val">${clientName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">Serviço</div>
+            <div class="val">${serviceName}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    return; // No admin notifications for other generic types
+  }
+
+  const finalHtml = getEmailWrapper(subject, body);
+  const mailOptions = {
+    from: `"O Jon Que Cortou" <${smtpFrom}>`,
+    to: adminEmail,
+    subject: subject,
+    html: finalHtml
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Email de notificação enviado para o administrador: ${adminEmail}`);
+  } catch (err) {
+    console.error('Falha ao enviar e-mail de notificação para o admin:', err);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -162,8 +270,13 @@ export default async function handler(req, res) {
   const smtpFrom = process.env.SMTP_FROM || 'agendamento@ojonquecortou.com.br';
 
   const sendReal = process.env.SEND_REAL_EMAILS === 'true';
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'jon@studio.com';
+
   if (!sendReal) {
     console.log('Simulação de envio ativa (SEND_REAL_EMAILS não é "true"). Para:', clientEmail);
+    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
+      console.log('Simulação de notificação para o administrador:', adminEmail, 'Tipo:', type);
+    }
     return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
   }
 
@@ -220,6 +333,7 @@ export default async function handler(req, res) {
       type === 'horario_confirmado' ? `Está marcado — ${formattedDate} às ${formattedTime}` :
       type === 'lembrete_24h' ? 'Lembrete de Agendamento - O Jon Que Cortou' :
       type === 'reativacao_5_meses' ? 'Seu cabelo tem memória, {nome}'.replace(/{nome}/gi, firstName) :
+      type === 'agendamento_cancelado' ? 'Confirmação de Cancelamento - O Jon Que Cortou' :
       'Mensagem do Studio do Jon'
     );
     currentType = 'campanha_raw';
@@ -377,6 +491,37 @@ export default async function handler(req, res) {
       }
       break;
 
+    case 'agendamento_cancelado':
+      emailSubject = 'Confirmação de Cancelamento - O Jon Que Cortou';
+      emailContent = `
+        <div class="eyebrow" style="color: #c8852a;">Cancelamento</div>
+        <h1 class="display-title">Agendamento Cancelado, <span>${firstName}.</span></h1>
+        <p class="lead">Confirmamos o cancelamento do seu agendamento no Studio do Jon.</p>
+        
+        <div class="appt-card" style="border-color: #333;">
+          <div class="label">Agendamento Cancelado</div>
+          <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
+          <div class="meta-row" style="margin-top:20px;">
+            <div class="cell">
+              <div class="lbl">Serviço</div>
+              <div class="val">${data.serviceName}</div>
+            </div>
+          </div>
+        </div>
+        
+        <p class="lead">Se foi um imprevisto e você deseja escolher outro momento, sinta-se à vontade para agendar um novo horário.</p>
+        
+        <div style="text-align: center;">
+          <a href="https://www.ojonquecortou.com.br/agendar" class="btn">Agendar novo horário</a>
+        </div>
+        
+        <div class="signoff">
+          <div class="sig-name">Jon,</div>
+          <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+        </div>
+      `;
+      break;
+
     default:
       return res.status(400).json({ message: 'Tipo de e-mail inválido' });
   }
@@ -412,6 +557,14 @@ export default async function handler(req, res) {
 
   try {
     const info = await transporter.sendMail(mailOptions);
+    
+    // Enviar notificação para o administrador de forma assíncrona
+    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
+      sendAdminNotification(type, data, transporter, smtpFrom).catch(err => {
+        console.error('Erro de background ao enviar notificação ao admin:', err);
+      });
+    }
+
     return res.status(200).json({ success: true, messageId: info.messageId });
   } catch (error) {
     console.error('Erro ao enviar email SMTP:', error);
