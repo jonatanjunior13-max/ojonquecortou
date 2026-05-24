@@ -217,6 +217,7 @@ export default async function handler(req, res) {
       
     emailSubject = subject || (
       type === 'solicitacao_recebida' ? 'Solicitação de Agendamento Recebida - O Jon Que Cortou' :
+      type === 'horario_confirmado' ? `Está marcado — ${formattedDate} às ${formattedTime}` :
       type === 'lembrete_24h' ? 'Lembrete de Agendamento - O Jon Que Cortou' :
       type === 'reativacao_5_meses' ? 'Seu cabelo tem memória, {nome}'.replace(/{nome}/gi, firstName) :
       'Mensagem do Studio do Jon'

@@ -534,6 +534,7 @@ const AdminMarketing = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
                   {[
                     { key: 'solicitacao_recebida', label: 'Pedido em Espera', desc: 'Disparado quando um cliente solicita agendamento (aguardando aprovação).', toggleKey: 'waitingRequestEmailEnabled' },
+                    { key: 'horario_confirmado', label: 'Confirmação de Horário', desc: 'Disparado quando o agendamento é confirmado pelo administrador.', toggleKey: 'bookingConfirmationEmailEnabled' },
                     { key: 'lembrete_24h', label: 'Lembrete de Agendamento (24h)', desc: 'Disparado automaticamente 24 horas antes do horário marcado.', toggleKey: 'reminder24hEmailEnabled' },
                     { key: 'reativacao_5_meses', label: 'Reativação (150+ dias)', desc: 'Enviado para clientes inativos há mais de 5 meses sem novas reservas.', toggleKey: 'seqD150' }
                   ].map(item => (
@@ -864,7 +865,7 @@ const AdminMarketing = () => {
               <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                 Preview de E-mail
               </div>
-              <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#fff' }}>{emailPreviewContent.subject.replace(/{nome}/g, 'Marina')}</div>
+              <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#fff' }}>{emailPreviewContent.subject.replace(/{nome}/g, '[Nome]')}</div>
             </div>
             
             <div style={{ backgroundColor: '#f0eee9', width: '100%', height: '600px' }}>
@@ -879,7 +880,7 @@ const AdminMarketing = () => {
                   </head>
                   <body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased;">
                     <div class="mail-stage">
-                      ${emailPreviewContent.body.replace(/{nome}/g, 'Marina')}
+                      ${emailPreviewContent.body.replace(/{nome}/g, '[Nome]')}
                     </div>
                   </body>
                   </html>
