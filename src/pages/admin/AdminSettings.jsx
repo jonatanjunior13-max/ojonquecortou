@@ -68,7 +68,9 @@ const AdminSettings = () => {
     lunchStart: '12:00',
     lunchEnd: '13:00',
     daysOff: [0, 1], // default Sunday (0) and Monday (1)
-    blockedDates: []
+    blockedDates: [],
+    blockedWeekdayHours: [],
+    blockedSpecificHours: []
   });
   const [editingProfId, setEditingProfId] = useState(null);
 
@@ -93,7 +95,9 @@ const AdminSettings = () => {
       lunchStart: newProf.lunchStart || '12:00',
       lunchEnd: newProf.lunchEnd || '13:00',
       daysOff: newProf.daysOff || [0, 1],
-      blockedDates: newProf.blockedDates || []
+      blockedDates: newProf.blockedDates || [],
+      blockedWeekdayHours: newProf.blockedWeekdayHours || [],
+      blockedSpecificHours: newProf.blockedSpecificHours || []
     };
     setSettings(prev => ({
       ...prev,
@@ -111,7 +115,9 @@ const AdminSettings = () => {
       lunchStart: '12:00',
       lunchEnd: '13:00',
       daysOff: [0, 1],
-      blockedDates: []
+      blockedDates: [],
+      blockedWeekdayHours: [],
+      blockedSpecificHours: []
     });
   };
 
@@ -129,7 +135,9 @@ const AdminSettings = () => {
       lunchStart: prof.lunchStart || '12:00',
       lunchEnd: prof.lunchEnd || '13:00',
       daysOff: prof.daysOff || [0, 1],
-      blockedDates: prof.blockedDates || []
+      blockedDates: prof.blockedDates || [],
+      blockedWeekdayHours: prof.blockedWeekdayHours || [],
+      blockedSpecificHours: prof.blockedSpecificHours || []
     });
   };
 
@@ -147,7 +155,9 @@ const AdminSettings = () => {
       lunchStart: '12:00',
       lunchEnd: '13:00',
       daysOff: [0, 1],
-      blockedDates: []
+      blockedDates: [],
+      blockedWeekdayHours: [],
+      blockedSpecificHours: []
     });
   };
 
@@ -745,6 +755,160 @@ const AdminSettings = () => {
                 </div>
               </div>
 
+              <div style={{ borderTop: '1px dashed var(--rule)', marginTop: 20, paddingTop: 20 }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Grade de Horários Bloqueados</h4>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                  {/* Bloqueio Recorrente (Semanal) */}
+                  <div className="financial-card" style={{ background: 'rgba(255,255,255,0.01)', padding: 16 }}>
+                    <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem' }}>Bloqueio Recorrente (Semanal)</h5>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+                      <select 
+                        id="block-weekday-select"
+                        style={{ flex: 1, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                      >
+                        <option value="0">Domingo</option>
+                        <option value="1">Segunda</option>
+                        <option value="2">Terça</option>
+                        <option value="3">Quarta</option>
+                        <option value="4">Quinta</option>
+                        <option value="5">Sexta</option>
+                        <option value="6">Sábado</option>
+                      </select>
+                      <select 
+                        id="block-weekday-time-select"
+                        style={{ flex: 1, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                      >
+                        {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        type="button"
+                        className="btn btn-accent"
+                        style={{ padding: '8px 12px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                        onClick={() => {
+                          const weekday = document.getElementById('block-weekday-select').value;
+                          const time = document.getElementById('block-weekday-time-select').value;
+                          const blockStr = `${weekday}-${time}`;
+                          const current = newProf.blockedWeekdayHours || [];
+                          if (current.includes(blockStr)) {
+                            alert('Este horário recorrente já está bloqueado.');
+                            return;
+                          }
+                          setNewProf({ ...newProf, blockedWeekdayHours: [...current, blockStr] });
+                        }}
+                      >
+                        Bloquear
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxHeight: 120, overflowY: 'auto' }}>
+                      {(newProf.blockedWeekdayHours || []).map(block => {
+                        const [w, t] = block.split('-');
+                        const weekdayLabel = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][Number(w)];
+                        return (
+                          <span 
+                            key={block}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
+                          >
+                            {weekdayLabel} {t}
+                            <button 
+                              type="button"
+                              style={{ border: 'none', background: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                              onClick={() => {
+                                setNewProf({
+                                  ...newProf,
+                                  blockedWeekdayHours: (newProf.blockedWeekdayHours || []).filter(x => x !== block)
+                                });
+                              }}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        );
+                      })}
+                      {(newProf.blockedWeekdayHours || []).length === 0 && (
+                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>Nenhum horário recorrente bloqueado.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bloqueio Pontual (Data/Hora) */}
+                  <div className="financial-card" style={{ background: 'rgba(255,255,255,0.01)', padding: 16 }}>
+                    <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem' }}>Bloqueio Pontual (Data/Hora)</h5>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+                      <input 
+                        type="date"
+                        id="block-specific-date"
+                        style={{ flex: 1.2, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                      />
+                      <select 
+                        id="block-specific-time"
+                        style={{ flex: 0.8, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                      >
+                        {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <button 
+                        type="button"
+                        className="btn btn-accent"
+                        style={{ padding: '8px 12px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
+                        onClick={() => {
+                          const dateVal = document.getElementById('block-specific-date').value;
+                          const time = document.getElementById('block-specific-time').value;
+                          if (!dateVal) {
+                            alert('Por favor, selecione uma data para o bloqueio.');
+                            return;
+                          }
+                          const blockStr = `${dateVal}-${time}`;
+                          const current = newProf.blockedSpecificHours || [];
+                          if (current.includes(blockStr)) {
+                            alert('Este horário pontual já está bloqueado.');
+                            return;
+                          }
+                          setNewProf({ ...newProf, blockedSpecificHours: [...current, blockStr] });
+                        }}
+                      >
+                        Bloquear
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxHeight: 120, overflowY: 'auto' }}>
+                      {(newProf.blockedSpecificHours || []).map(block => {
+                        const datePart = block.substring(0, 10);
+                        const timePart = block.substring(11);
+                        const displayDate = datePart.split('-').reverse().join('/');
+                        return (
+                          <span 
+                            key={block}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
+                          >
+                            {displayDate} às {timePart}
+                            <button 
+                              type="button"
+                              style={{ border: 'none', background: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                              onClick={() => {
+                                setNewProf({
+                                  ...newProf,
+                                  blockedSpecificHours: (newProf.blockedSpecificHours || []).filter(x => x !== block)
+                                });
+                              }}
+                            >
+                              ×
+                            </button>
+                          </span>
+                        );
+                      })}
+                      {(newProf.blockedSpecificHours || []).length === 0 && (
+                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>Nenhum horário pontual bloqueado.</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
                 {editingProfId ? (
                   <>
@@ -809,6 +973,9 @@ const AdminSettings = () => {
                           Expediente: <strong>{prof.workStart || '09:00'} às {prof.workEnd || '19:00'}</strong> (Almoço: {prof.lunchStart || '12:00'} - {prof.lunchEnd || '13:00'}) | 
                           Folgas: <strong>{prof.daysOff && prof.daysOff.length > 0 ? prof.daysOff.map(d => ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][d]).join(', ') : 'Nenhuma'}</strong>
                           {prof.blockedDates && prof.blockedDates.length > 0 && (' | Datas Bloqueadas: ' + prof.blockedDates.map(d => d.split('-').reverse().join('/')).join(', '))}
+                          {(prof.blockedWeekdayHours?.length > 0 || prof.blockedSpecificHours?.length > 0) && (
+                            <span> | Horários Bloqueados: <strong>{(prof.blockedWeekdayHours?.length || 0) + (prof.blockedSpecificHours?.length || 0)} horários</strong></span>
+                          )}
                         </span>
                       </div>
                     </div>

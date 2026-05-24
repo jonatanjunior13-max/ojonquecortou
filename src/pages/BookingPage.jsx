@@ -697,13 +697,59 @@ const BookingPage = () => {
             booked.push(data.time);
           }
         });
+
+        // Adicionar bloqueios customizados do profissional
+        if (selectedProfessional) {
+          const parts = selectedDate.split('-');
+          if (parts.length === 3) {
+            const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            const weekday = dateObj.getDay();
+
+            // 1. Bloqueios recorrentes por dia da semana (ex: "3-09:00")
+            const weekdayBlocks = selectedProfessional.blockedWeekdayHours || [];
+            weekdayBlocks.forEach(block => {
+              const [w, h] = block.split('-');
+              if (Number(w) === weekday) {
+                booked.push(h);
+              }
+            });
+
+            // 2. Bloqueios específicos por data (ex: "2026-05-27-15:00")
+            const specificBlocks = selectedProfessional.blockedSpecificHours || [];
+            specificBlocks.forEach(block => {
+              if (block.startsWith(selectedDate)) {
+                const h = block.replace(`${selectedDate}-`, '');
+                booked.push(h);
+              }
+            });
+          }
+        }
+
         setBookedTimes(booked);
         setIsDemoMode(false);
       } catch (err) {
         clearTimeout(bookingsTimeout);
         console.warn('Erro ao conectar ao Firebase, ativando modo Demo:', err);
         setIsDemoMode(true);
-        setBookedTimes(['11:00', '14:00']);
+        const bookedFallback = ['11:00', '14:00'];
+        if (selectedProfessional) {
+          const parts = selectedDate.split('-');
+          if (parts.length === 3) {
+            const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            const weekday = dateObj.getDay();
+            (selectedProfessional.blockedWeekdayHours || []).forEach(block => {
+              const [w, h] = block.split('-');
+              if (Number(w) === weekday) bookedFallback.push(h);
+            });
+            (selectedProfessional.blockedSpecificHours || []).forEach(block => {
+              if (block.startsWith(selectedDate)) {
+                const h = block.replace(`${selectedDate}-`, '');
+                bookedFallback.push(h);
+              }
+            });
+          }
+        }
+        setBookedTimes(bookedFallback);
       } finally {
         setLoading(false);
       }

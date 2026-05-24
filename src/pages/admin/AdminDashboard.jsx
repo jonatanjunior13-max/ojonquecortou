@@ -36,6 +36,37 @@ import { SEED_SERVICES } from '../../data/seedServices';
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
+const isSlotBlocked = (prof, dateStr, slot) => {
+  if (!prof) return false;
+  
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const weekday = dateObj.getDay();
+    
+    // 1. Check day off
+    if ((prof.daysOff || []).includes(weekday)) return true;
+    
+    // 2. Check blocked date
+    if ((prof.blockedDates || []).includes(dateStr)) return true;
+
+    // 3. Check recurring weekday hour blocks
+    const weekdayBlocks = prof.blockedWeekdayHours || [];
+    const hasWeekdayBlock = weekdayBlocks.some(block => {
+      const [w, h] = block.split('-');
+      return Number(w) === weekday && h === slot;
+    });
+    if (hasWeekdayBlock) return true;
+
+    // 4. Check specific date hour blocks
+    const specificBlocks = prof.blockedSpecificHours || [];
+    const hasSpecificBlock = specificBlocks.some(block => block === `${dateStr}-${slot}`);
+    if (hasSpecificBlock) return true;
+  }
+  
+  return false;
+};
+
 // Clientes seed para autocomplete em modo demo (quando não há dados no Firestore)
 const SEED_CLIENTS = [
   { phone: '31988887777', name: 'Ana Souza', email: 'ana@email.com', cpf: '123.456.789-00', tags: ['Frequente', 'Cachos 3C'] },
@@ -1689,18 +1720,47 @@ Jon`;
                         b.status === 'cancelado'
                       );
 
+                      const blockedBySettings = !appt && isSlotBlocked(prof, currentDateStr, slot);
+
                       return (
                         <div 
                           key={prof.id} 
                           className="day-cell"
-                          style={{ cursor: (!appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
+                          style={{ cursor: (blockedBySettings || !appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
                           onClick={(e) => {
+                            if (blockedBySettings) {
+                              alert('Este horário está bloqueado pelas configurações de escala do profissional.');
+                              return;
+                            }
                             if (!appt || appt.status === 'cancelado') {
                               handleCellClick(currentDateStr, slot, prof.id, prof.name);
                             }
                           }}
-                          onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
+                          onContextMenu={(e) => {
+                            if (blockedBySettings) return;
+                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt);
+                          }}
                         >
+                          {blockedBySettings && (
+                            <div 
+                              className="appt-card bloqueado"
+                              style={{ 
+                                background: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 10px, rgba(0,0,0,0) 10px, rgba(0,0,0,0) 20px)', 
+                                opacity: 0.6, 
+                                border: '1px dashed rgba(255,255,255,0.1)',
+                                pointerEvents: 'none'
+                              }}
+                            >
+                              <span className="appt-time">{slot}</span>
+                              <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                <Lock size={12} /> Bloqueado
+                              </span>
+                              <span className="appt-service">
+                                Configurações de Escala
+                              </span>
+                            </div>
+                          )}
+
                           {appt && appt.status === 'bloqueado' && (
                             <div 
                               className="appt-card bloqueado"
