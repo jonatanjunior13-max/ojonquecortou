@@ -15,22 +15,25 @@ import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Un
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
 
-// Horários padrão de atendimento
-const TIME_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'];
-
-// Gera datas disponíveis para agendamento (próximos 60 dias, exceto domingos e segundas)
-const getAvailableDates = () => {
+// Helper: gera datas disponíveis para agendamento (próximos 60 dias, respeitando folgas e bloqueios)
+const getAvailableDates = (prof) => {
   const dates = [];
   const today = new Date();
+  
+  const daysOff = prof && prof.daysOff !== undefined ? prof.daysOff : [0, 1];
+  const blockedDates = prof && prof.blockedDates ? prof.blockedDates : [];
   
   for (let i = 1; i <= 60; i++) {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
     
     const dayOfWeek = nextDate.getDay();
-    // Domingo = 0, Segunda = 1 (Salão fechado nesses dias)
-    if (dayOfWeek !== 0 && dayOfWeek !== 1) {
-      // Encontrar a segunda-feira da semana correspondente
+    const dateStr = nextDate.toISOString().split('T')[0];
+    
+    const isDayOff = daysOff.includes(dayOfWeek);
+    const isBlocked = blockedDates.includes(dateStr);
+    
+    if (!isDayOff && !isBlocked) {
       const monday = new Date(nextDate);
       const diff = nextDate.getDay() === 0 ? -6 : 1 - nextDate.getDay();
       monday.setDate(nextDate.getDate() + diff);
@@ -40,7 +43,7 @@ const getAvailableDates = () => {
       weekLabel = `Semana de ${weekLabel.replace('.', '')}`;
 
       dates.push({
-        raw: nextDate.toISOString().split('T')[0],
+        raw: dateStr,
         formatted: nextDate.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }),
         display: nextDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
         weekKey,
@@ -51,6 +54,36 @@ const getAvailableDates = () => {
   return dates;
 };
 
+// Helper: gera horários disponíveis dinamicamente (respeitando expediente e almoço)
+const generateTimeSlots = (prof) => {
+  const slots = [];
+  const workStart = prof?.workStart || '09:00';
+  const workEnd = prof?.workEnd || '19:00';
+  const lunchStart = prof?.lunchStart || '12:00';
+  const lunchEnd = prof?.lunchEnd || '13:00';
+  
+  const [startH, startM] = workStart.split(':').map(Number);
+  const [endH, endM] = workEnd.split(':').map(Number);
+  const [lunchStartH, lunchStartM] = lunchStart.split(':').map(Number);
+  const [lunchEndH, lunchEndM] = lunchEnd.split(':').map(Number);
+  
+  const startMin = startH * 60 + startM;
+  const endMin = endH * 60 + endM;
+  const lunchStartMin = lunchStartH * 60 + lunchStartM;
+  const lunchEndMin = lunchEndH * 60 + lunchEndM;
+  
+  // Intervalos de 60 minutos
+  for (let min = startMin; min < endMin; min += 60) {
+    if (min >= lunchStartMin && min < lunchEndMin) {
+      continue;
+    }
+    const h = Math.floor(min / 60);
+    const m = min % 60;
+    slots.push(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
+  }
+  return slots;
+};
+
 const BookingPage = () => {
   const [step, setStep] = useState(1);
   const [services, setServices] = useState([]);
@@ -58,6 +91,8 @@ const BookingPage = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
+  const [settings, setSettings] = useState(null);
+  const [selectedProfessional, setSelectedProfessional] = useState(null);
   
   // Helper to detect WhatsApp-only services based on priceType
   const isWhatsappOnlyService = (service) => {
@@ -117,10 +152,7 @@ const BookingPage = () => {
   };
   
   // Semana ativa para calendário de 60 dias
-  const [activeWeekKey, setActiveWeekKey] = useState(() => {
-    const initialDates = getAvailableDates();
-    return initialDates[0]?.weekKey || '';
-  });
+  const [activeWeekKey, setActiveWeekKey] = useState('');
   
   // Catálogo visual states
   const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -536,6 +568,37 @@ const BookingPage = () => {
     }));
   };
 
+  // Carregar settings do Firestore e inicializar profissional padrão
+  useEffect(() => {
+    const fetchSettings = async () => {
+      if (!db) return;
+      try {
+        const docRef = doc(db, 'settings', 'studio');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setSettings(data);
+          const activeProfs = (data.professionals || []).filter(p => p.active !== false);
+          if (activeProfs.length > 0) {
+            const defaultProf = activeProfs.find(p => p.id === 'jon') || activeProfs[0];
+            setSelectedProfessional(defaultProf);
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar settings em BookingPage:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  // Atualizar semana padrão e recalcular datas ao trocar de profissional
+  useEffect(() => {
+    const newDates = getAvailableDates(selectedProfessional);
+    if (newDates.length > 0) {
+      setActiveWeekKey(newDates[0].weekKey);
+    }
+  }, [selectedProfessional]);
+
   // Busca lista de serviços cadastrados no salão
   useEffect(() => {
     const fetchServices = async () => {
@@ -582,7 +645,9 @@ const BookingPage = () => {
     fetchServices();
   }, []);
 
-  const dates = getAvailableDates();
+  const dates = getAvailableDates(selectedProfessional);
+  const timeSlots = generateTimeSlots(selectedProfessional);
+  const activeProfessionals = (settings?.professionals || []).filter(p => p.active !== false);
 
   // Extrair semanas únicas para renderizar no seletor
   const weeks = [];
@@ -620,7 +685,8 @@ const BookingPage = () => {
         setLoading(true);
         const q = query(
           collection(db, 'bookings'),
-          where('date', '==', selectedDate)
+          where('date', '==', selectedDate),
+          where('professionalId', '==', selectedProfessional?.id || 'jon')
         );
         const querySnapshot = await withTimeout(getDocs(q), 3500);
         clearTimeout(bookingsTimeout);
@@ -714,7 +780,9 @@ const BookingPage = () => {
       notes: clientData.notes,
       status: 'pendente', // pendente, confirmado, finalizado, cancelado
       createdAt: new Date().toISOString(),
-      userId: finalUserId
+      userId: finalUserId,
+      professionalId: selectedProfessional?.id || 'jon',
+      professionalName: selectedProfessional?.name || 'Jon'
     };
 
     try {
@@ -1099,6 +1167,46 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           <div className="booking-step">
             <h2>Selecione o melhor dia e horário</h2>
             
+            {/* Seletor de Profissionais (se houver mais de um ativo) */}
+            {activeProfessionals.length > 1 && (
+              <div className="professional-selector-wrap" style={{ marginBottom: 24, padding: '16px', background: 'var(--panel-bg)', borderRadius: 8, border: '1px solid var(--rule)' }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: '0.95rem' }}>Escolha o Profissional:</h4>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
+                  {activeProfessionals.map(prof => {
+                    const isSelected = selectedProfessional?.id === prof.id;
+                    return (
+                      <div
+                        key={prof.id}
+                        onClick={() => {
+                          setSelectedProfessional(prof);
+                          setSelectedTime('');
+                        }}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          padding: 12,
+                          background: isSelected ? 'rgba(200, 133, 42, 0.12)' : 'var(--bg-warm)',
+                          border: isSelected ? '2px solid var(--accent)' : '1px solid var(--rule)',
+                          borderRadius: 6,
+                          cursor: 'pointer',
+                          textAlign: 'center',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <img
+                          src={prof.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'}
+                          alt={prof.name}
+                          style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', marginBottom: 8, border: isSelected ? '2px solid var(--accent)' : '1px solid transparent' }}
+                        />
+                        <strong style={{ fontSize: '0.85rem', color: isSelected ? 'var(--accent)' : 'var(--text)' }}>{prof.name}</strong>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+            
             {/* Seletor de Semanas */}
             <div className="booking-week-tabs">
               {weeks.map(w => {
@@ -1143,7 +1251,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   <p>Buscando horários disponíveis...</p>
                 ) : (
                   <div className="time-picker-grid">
-                    {TIME_SLOTS.map(slot => {
+                    {timeSlots.map(slot => {
                       const isBooked = bookedTimes.includes(slot);
                       return (
                         <button

@@ -56,7 +56,20 @@ const AdminSettings = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
 
-  const [newProf, setNewProf] = useState({ name: '', avatar: '', commission: 50, phone: '', email: '', active: true });
+  const [newProf, setNewProf] = useState({
+    name: '',
+    avatar: '',
+    commission: 50,
+    phone: '',
+    email: '',
+    active: true,
+    workStart: '09:00',
+    workEnd: '19:00',
+    lunchStart: '12:00',
+    lunchEnd: '13:00',
+    daysOff: [0, 1], // default Sunday (0) and Monday (1)
+    blockedDates: []
+  });
   const [editingProfId, setEditingProfId] = useState(null);
 
   const handleAddProf = () => {
@@ -74,13 +87,32 @@ const AdminSettings = () => {
       ...newProf,
       id: id || `prof-${Date.now()}`,
       avatar: newProf.avatar.trim() || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
-      commission: Number(newProf.commission) || 0
+      commission: Number(newProf.commission) || 0,
+      workStart: newProf.workStart || '09:00',
+      workEnd: newProf.workEnd || '19:00',
+      lunchStart: newProf.lunchStart || '12:00',
+      lunchEnd: newProf.lunchEnd || '13:00',
+      daysOff: newProf.daysOff || [0, 1],
+      blockedDates: newProf.blockedDates || []
     };
     setSettings(prev => ({
       ...prev,
       professionals: [...(prev.professionals || []), profToAdd]
     }));
-    setNewProf({ name: '', avatar: '', commission: 50, phone: '', email: '', active: true });
+    setNewProf({
+      name: '',
+      avatar: '',
+      commission: 50,
+      phone: '',
+      email: '',
+      active: true,
+      workStart: '09:00',
+      workEnd: '19:00',
+      lunchStart: '12:00',
+      lunchEnd: '13:00',
+      daysOff: [0, 1],
+      blockedDates: []
+    });
   };
 
   const handleEditProfStart = (prof) => {
@@ -91,13 +123,32 @@ const AdminSettings = () => {
       commission: prof.commission,
       phone: prof.phone || '',
       email: prof.email || '',
-      active: prof.active ?? true
+      active: prof.active ?? true,
+      workStart: prof.workStart || '09:00',
+      workEnd: prof.workEnd || '19:00',
+      lunchStart: prof.lunchStart || '12:00',
+      lunchEnd: prof.lunchEnd || '13:00',
+      daysOff: prof.daysOff || [0, 1],
+      blockedDates: prof.blockedDates || []
     });
   };
 
   const handleEditProfCancel = () => {
     setEditingProfId(null);
-    setNewProf({ name: '', avatar: '', commission: 50, phone: '', email: '', active: true });
+    setNewProf({
+      name: '',
+      avatar: '',
+      commission: 50,
+      phone: '',
+      email: '',
+      active: true,
+      workStart: '09:00',
+      workEnd: '19:00',
+      lunchStart: '12:00',
+      lunchEnd: '13:00',
+      daysOff: [0, 1],
+      blockedDates: []
+    });
   };
 
   const handleUpdateProf = () => {
@@ -639,7 +690,104 @@ const AdminSettings = () => {
                 </div>
               </div>
 
-              <div style={{ marginTop: 16, display: 'flex', gap: 12 }}>
+              {/* Novas Configurações de Agenda do Profissional */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 16, marginTop: 16 }}>
+                <div className="form-group">
+                  <label>Início do Expediente</label>
+                  <input 
+                    type="time"
+                    value={newProf.workStart || '09:00'}
+                    onChange={e => setNewProf({ ...newProf, workStart: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Fim do Expediente</label>
+                  <input 
+                    type="time"
+                    value={newProf.workEnd || '19:00'}
+                    onChange={e => setNewProf({ ...newProf, workEnd: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Início do Almoço</label>
+                  <input 
+                    type="time"
+                    value={newProf.lunchStart || '12:00'}
+                    onChange={e => setNewProf({ ...newProf, lunchStart: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Fim do Almoço</label>
+                  <input 
+                    type="time"
+                    value={newProf.lunchEnd || '13:00'}
+                    onChange={e => setNewProf({ ...newProf, lunchEnd: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
+                <div className="form-group">
+                  <label>Dias de Folga Semanais</label>
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: 6 }}>
+                    {[
+                      { label: 'Dom', val: 0 },
+                      { label: 'Seg', val: 1 },
+                      { label: 'Ter', val: 2 },
+                      { label: 'Qua', val: 3 },
+                      { label: 'Qui', val: 4 },
+                      { label: 'Sex', val: 5 },
+                      { label: 'Sáb', val: 6 }
+                    ].map(d => {
+                      const isChecked = (newProf.daysOff || []).includes(d.val);
+                      return (
+                        <label key={d.val} style={{ display: 'flex', alignItems: 'center', gap: 4, background: isChecked ? 'var(--accent)' : 'var(--bg-warm)', padding: '6px 10px', borderRadius: 4, fontSize: '0.8rem', cursor: 'pointer', color: isChecked ? '#0a0a0a' : 'inherit', fontWeight: isChecked ? 'bold' : 'normal', border: '1px solid var(--rule)' }}>
+                          <input 
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => {
+                              const current = newProf.daysOff || [];
+                              const updated = current.includes(d.val)
+                                ? current.filter(x => x !== d.val)
+                                : [...current, d.val];
+                              setNewProf({ ...newProf, daysOff: updated });
+                            }}
+                            style={{ display: 'none' }}
+                          />
+                          {d.label}
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Datas de Folga Específicas (ex: DD/MM/AAAA, separadas por vírgula)</label>
+                  <input 
+                    type="text"
+                    placeholder="Ex: 25/12/2026, 01/01/2027"
+                    value={(newProf.blockedDates || []).map(d => {
+                      const parts = d.split('-');
+                      if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+                      return d;
+                    }).join(', ')}
+                    onChange={e => {
+                      const val = e.target.value;
+                      const dates = val.split(',').map(d => {
+                        const clean = d.trim();
+                        const parts = clean.split('/');
+                        if (parts.length === 3) {
+                          return parts[2] + '-' + parts[1].padStart(2, '0') + '-' + parts[0].padStart(2, '0');
+                        }
+                        return clean;
+                      }).filter(d => d.match(/^\d{4}-\d{2}-\d{2}$/));
+                      setNewProf({ ...newProf, blockedDates: dates });
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
                 {editingProfId ? (
                   <>
                     <button 
@@ -698,6 +846,11 @@ const AdminSettings = () => {
                         <strong style={{ fontSize: '1rem', display: 'block' }}>{prof.name}</strong>
                         <span style={{ fontSize: '0.82rem', color: 'var(--muted)', display: 'block' }}>
                           Comissão: {prof.commission}% | Contato: {prof.phone || 'Sem telefone'} | E-mail: {prof.email || 'Sem e-mail'}
+                        </span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+                          Expediente: <strong>{prof.workStart || '09:00'} às {prof.workEnd || '19:00'}</strong> (Almoço: {prof.lunchStart || '12:00'} - {prof.lunchEnd || '13:00'}) | 
+                          Folgas: <strong>{prof.daysOff && prof.daysOff.length > 0 ? prof.daysOff.map(d => ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][d]).join(', ') : 'Nenhuma'}</strong>
+                          {prof.blockedDates && prof.blockedDates.length > 0 && (' | Datas Bloqueadas: ' + prof.blockedDates.map(d => d.split('-').reverse().join('/')).join(', '))}
                         </span>
                       </div>
                     </div>

@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { HTML_TEMPLATES } from '../src/utils/emailTemplates.js';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -16,6 +17,11 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // Use fetch to call our own send-email API so we don't have to duplicate NodeMailer logic
+function formatBody(body, name) {
+  if (!body) return '';
+  return body.replace(/{nome}/g, name);
+}
+
 async function dispatchEmail(payload, hostUrl) {
   try {
     const res = await fetch(`${hostUrl}/api/send-email`, {
@@ -83,14 +89,50 @@ const baseLayout = (content, linkUrl, linkText) => `
 
 
 const templates = {
-  'd1': { subject: '{nome}, como tá o fio hoje?', content: HTML_TEMPLATES['d1'] },
-  'd7': { subject: 'A semana mais importante do seu cabelo (e quase ninguém fala sobre isso)', content: HTML_TEMPLATES['d7'] },
-  'd21': { subject: '3 semanas de corte novo. Agora vem a parte boa.', content: HTML_TEMPLATES['d21'] },
-  'd35': { subject: '{nome}, chegou a hora.', content: HTML_TEMPLATES['d35'] },
-  'd60': { subject: 'Uma coisa que percebi depois de anos cortando cacheado', content: HTML_TEMPLATES['d60'] },
-  'd90': { subject: 'Esse é o último email que mando, {nome}.', content: HTML_TEMPLATES['d90'] },
-  'aniversario': { subject: 'Parabéns, {nome}.', content: HTML_TEMPLATES['aniversario'] }
+  'd1': { 
+    subject: '{nome}, como tá o fio hoje?', 
+    content: HTML_TEMPLATES['d1'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'd7': { 
+    subject: 'A semana mais importante do seu cabelo (e quase ninguém fala sobre isso)', 
+    content: HTML_TEMPLATES['d7'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'd21': { 
+    subject: '3 semanas de corte novo. Agora vem a parte boa.', 
+    content: HTML_TEMPLATES['d21'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'd35': { 
+    subject: '{nome}, chegou a hora.', 
+    content: HTML_TEMPLATES['d35'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'd60': { 
+    subject: 'Uma coisa que percebi depois de anos cortando cacheado', 
+    content: HTML_TEMPLATES['d60'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'd90': { 
+    subject: 'Esse é o último email que mando, {nome}.', 
+    content: HTML_TEMPLATES['d90'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'aniversario': { 
+    subject: 'Parabéns, {nome}.', 
+    content: HTML_TEMPLATES['aniversario'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  }
 };
+
 
 
 export default async function handler(req, res) {
@@ -138,13 +180,15 @@ export default async function handler(req, res) {
       const profilesSnap = await getDocs(collection(db, 'client_profiles'));
       for (const docSnap of profilesSnap.docs) {
         const p = docSnap.data();
+        if (p.unsubscribed === true) continue;
         if (p.birthdate && p.email && p.email !== 'Não informado' && p.email.includes('@')) {
           if (p.birthdate.endsWith(`-${monthDayStr}`)) {
             const firstName = (p.name || 'Cliente').split(' ')[0];
             const customTpl = settings?.email_templates?.['birthdayEnabled'];
-            const subject = (customTpl?.subject || templates.birthday.subject).replace(/{nome}/g, firstName);
-            const content = formatBody(customTpl?.body || templates.birthday.content, firstName);
-            const emailBody = baseLayout(content, templates.birthday.linkUrl, templates.birthday.linkText);
+            const subject = (customTpl?.subject || templates.aniversario.subject).replace(/{nome}/g, firstName);
+            const content = formatBody(customTpl?.body || templates.aniversario.content, firstName);
+            const emailBody = baseLayout(content, templates.aniversario.linkUrl, templates.aniversario.linkText);
+
 
             const ok = await dispatchEmail({
               type: 'campanha',
@@ -174,7 +218,7 @@ export default async function handler(req, res) {
     // 2. RÉGUA DE RELACIONAMENTO
     // ==========================================
     // Array of days to check
-    const windows = [1, 7, 21, 35, 50, 60, 90];
+    const windows = [1, 7, 21, 35, 50, 60, 90, 150];
 
     const isChemistry = (serviceName) => {
       if (!serviceName) return false;
@@ -199,6 +243,17 @@ export default async function handler(req, res) {
         for (const bDoc of snap.docs) {
           const booking = bDoc.data();
           if (!booking.phone || !booking.email || processedPhones.has(booking.phone)) continue;
+          
+          // Check if client is unsubscribed
+          try {
+            const profileDoc = await getDoc(doc(db, 'client_profiles', booking.phone));
+            if (profileDoc.exists() && profileDoc.data().unsubscribed === true) {
+              console.log(`Ignorando régua para cliente descadastrado: ${booking.clientName} (${booking.email})`);
+              continue;
+            }
+          } catch (err) {
+            console.warn('Erro ao verificar opt-out do cliente:', err);
+          }
           if (!booking.email.includes('@')) continue;
 
           processedPhones.add(booking.phone);
@@ -224,23 +279,38 @@ export default async function handler(req, res) {
             else if (daysAgo === 50 && chem) tplKey = 'd35'; // Rebooking química
             else if (daysAgo === 60) tplKey = 'd60';
             else if (daysAgo === 90) tplKey = 'd90';
+            else if (daysAgo === 150) tplKey = 'reativacao_5_meses';
 
             if (tplKey && automations[`seqD${daysAgo === 50 ? 35 : daysAgo}`] !== false) {
               const firstName = (booking.clientName || 'Cliente').split(' ')[0];
               const dbKey = `seqD${daysAgo === 50 ? 35 : daysAgo}`;
               const customTpl = settings?.email_templates?.[dbKey];
               
-              const subject = (customTpl?.subject || templates[tplKey].subject).replace(/{nome}/g, firstName);
-              const content = formatBody(customTpl?.body || templates[tplKey].content, firstName);
-              const emailBody = baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText);
+              let payload;
+              if (tplKey === 'reativacao_5_meses') {
+                const subject = (customTpl?.subject || 'Seu cabelo tem memória, {nome}').replace(/{nome}/g, firstName);
+                const content = formatBody(customTpl?.body || '', firstName);
+                payload = {
+                  type: 'reativacao_5_meses',
+                  clientEmail: booking.email,
+                  clientName: booking.clientName,
+                  subject: subject,
+                  fallbackBody: content || null
+                };
+              } else {
+                const subject = (customTpl?.subject || templates[tplKey].subject).replace(/{nome}/g, firstName);
+                const content = formatBody(customTpl?.body || templates[tplKey].content, firstName);
+                const emailBody = baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText);
+                payload = {
+                  type: 'campanha',
+                  subject: subject,
+                  htmlBody: emailBody,
+                  clientEmail: booking.email,
+                  clientName: booking.clientName
+                };
+              }
 
-              const ok = await dispatchEmail({
-                type: 'campanha',
-                subject: subject,
-                htmlBody: emailBody,
-                clientEmail: booking.email,
-                clientName: booking.clientName
-              }, hostUrl);
+              const ok = await dispatchEmail(payload, hostUrl);
 
               if (ok) {
                 await addDoc(collection(db, 'automation_logs'), {

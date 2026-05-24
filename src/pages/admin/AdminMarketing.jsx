@@ -13,6 +13,61 @@ const EMAIL_PREVIEWS = {
   seqD35: { subject: '{nome}, chegou a hora.', body: HTML_TEMPLATES['d35'] },
   seqD60: { subject: 'Uma coisa que percebi depois de anos cortando cacheado', body: HTML_TEMPLATES['d60'] },
   seqD90: { subject: 'Esse é o último email que mando, {nome}.', body: HTML_TEMPLATES['d90'] },
+  seqD150: {
+    subject: 'Seu cabelo tem memória, {nome}',
+    body: `
+<div class="mail-body cream">
+  <div class="mail-mast">
+    <div class="brand">
+      <div class="mark">J</div>
+      Studio do Jon
+    </div>
+    <div class="tag">D+150 · Reativação</div>
+  </div>
+
+  <span class="m-eyebrow">Saudade</span>
+  <h1 class="m-display m-h1 mt-20" style="max-width: 14ch;">
+    Faz tempo, <span class="m-italic">{nome}.</span>
+  </h1>
+
+  <hr class="m-rule" />
+
+  <p class="m-body mt-28" style="max-width: 54ch;">
+    Já faz cerca de 5 meses desde o seu último corte no Studio. O cabelo ondulado, cacheado e crespo tem memória e perde a forma à medida que cresce.
+  </p>
+  <p class="m-body mt-12" style="max-width: 54ch;">
+    Que tal agendar um horário para resgatar o corte, devolver a definição e cuidar da saúde dos fios?
+  </p>
+
+  <div class="m-btn-row mt-28">
+    <a href="https://ojonquecortou.com.br/agendar" class="m-btn m-btn-primary">Quero agendar meu horário</a>
+  </div>
+
+  <hr class="m-rule" />
+  <div class="m-signoff">
+    <div class="sig-name">Jon</div>
+  </div>
+  <p class="m-body mt-12" style="max-width: 52ch; font-size: 14px; color: var(--muted);">
+    <strong style="color: var(--ink);">Studio do Jon</strong><br />
+    Especialista em corte para cabelos ondulados, cacheados e crespos<br />
+    com foco em visagismo em Belo Horizonte.
+  </p>
+  <p class="m-small mt-12" style="color: var(--muted);">
+    @ojonquecortou · ojonquecortou.com.br/agendar
+  </p>
+  <div style="height: 48px;"></div>
+</div>
+<div class="mail-footer">
+  <div class="m-footer-grid">
+    <div>
+      <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</p>
+    </div>
+  </div>
+  <div class="legal">© 2026 Studio do Jon</div>
+</div>
+`
+  },
   birthdayEnabled: { subject: 'Parabéns, {nome}.', body: HTML_TEMPLATES['aniversario'] }
 };
 
@@ -39,6 +94,11 @@ const AdminMarketing = () => {
   const [editingTemplateContent, setEditingTemplateContent] = useState({ subject: '', body: '' });
   const [emailPreviewContent, setEmailPreviewContent] = useState({ subject: '', body: '' });
   const [isSendingWhatsapp, setIsSendingWhatsapp] = useState(false);
+  const [showCustomHtmlModal, setShowCustomHtmlModal] = useState(false);
+  const [showCustomPreviewModal, setShowCustomPreviewModal] = useState(false);
+  const [editingCustomKey, setEditingCustomKey] = useState(null);
+  const [editingCustomHtml, setEditingCustomHtml] = useState('');
+  const [customPreviewHtml, setCustomPreviewHtml] = useState('');
   const [emailLogs, setEmailLogs] = useState([]);
   const [whatsappLogs, setWhatsappLogs] = useState([]);
   const [automationLogs, setAutomationLogs] = useState([]);
@@ -254,6 +314,30 @@ const AdminMarketing = () => {
     setIsSendingEmail(false);
   };
 
+  const handleSaveCustomHtml = async () => {
+    if (!editingCustomKey) return;
+    try {
+      await updateDoc(doc(db, 'settings', 'studio'), {
+        [`custom_automations.${editingCustomKey}`]: editingCustomHtml
+      });
+      setShowCustomHtmlModal(false);
+      alert('Automação HTML salva com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar automação HTML.');
+    }
+  };
+
+  const handleCustomFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setEditingCustomHtml(event.target.result);
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <div className="admin-clients-page">
       <div className="crm-header-tabs" style={{ marginBottom: 20 }}>
@@ -365,8 +449,10 @@ const AdminMarketing = () => {
                     { key: 'seqD35', label: 'E-mail 4 (D+35/50)', desc: 'Rebooking Ideal' },
                     { key: 'seqD60', label: 'E-mail 5 (D+60)', desc: 'Reativação Suave' },
                     { key: 'seqD90', label: 'E-mail 6 (D+90)', desc: 'Último Contato' },
+                    { key: 'seqD150', label: 'E-mail 7 (D+150)', desc: 'Reativação (150 dias)' },
                     { key: 'birthdayEnabled', label: 'Aniversário (D-5)', desc: 'Convite c/ antecedência' }
                   ].map(step => (
+
                     <div key={step.key} style={{ padding: '12px', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{step.label}</span>
@@ -435,6 +521,62 @@ const AdminMarketing = () => {
                       </table>
                     </div>
                   )}
+                </div>
+              </div>
+
+              {/* Automações Customizadas (Upload de HTML) */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <h4 style={{ margin: '0 0 6px 0' }}>Automações Customizadas (Upload de HTML)</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '20px', marginTop: 0 }}>
+                  Suba ou edite o código HTML dos templates de e-mail para os disparos automáticos de sistema.
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                  {[
+                    { key: 'solicitacao_recebida', label: 'Pedido em Espera', desc: 'Disparado quando um cliente solicita agendamento (aguardando aprovação).', toggleKey: 'waitingRequestEmailEnabled' },
+                    { key: 'lembrete_24h', label: 'Lembrete de Agendamento (24h)', desc: 'Disparado automaticamente 24 horas antes do horário marcado.', toggleKey: 'reminder24hEmailEnabled' },
+                    { key: 'reativacao_5_meses', label: 'Reativação (150+ dias)', desc: 'Enviado para clientes inativos há mais de 5 meses sem novas reservas.', toggleKey: 'seqD150' }
+                  ].map(item => (
+                    <div key={item.key} style={{ padding: '16px', border: '1px solid var(--rule)', borderRadius: '8px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                          <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{item.label}</span>
+                          <button 
+                            className={`btn-toggle ${settings?.automations?.[item.toggleKey] !== false ? 'active' : ''}`}
+                            style={{ padding: '4px 8px', fontSize: '0.7rem' }}
+                            onClick={() => toggleAutomation(item.toggleKey, settings?.automations?.[item.toggleKey] === false)}
+                          >
+                            {settings?.automations?.[item.toggleKey] !== false ? 'ON' : 'OFF'}
+                          </button>
+                        </div>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '0 0 16px 0', lineHeight: 1.4 }}>{item.desc}</p>
+                      </div>
+                      
+                      <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
+                        <button 
+                          className="btn btn-outline btn-small"
+                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.75rem', padding: '6px' }}
+                          onClick={() => {
+                            setEditingCustomKey(item.key);
+                            setEditingCustomHtml(settings?.custom_automations?.[item.key] || '');
+                            setShowCustomHtmlModal(true);
+                          }}
+                        >
+                          ⚙️ Configurar HTML
+                        </button>
+                        <button 
+                          className="btn btn-outline btn-small"
+                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.75rem', padding: '6px' }}
+                          onClick={() => {
+                            setCustomPreviewHtml(settings?.custom_automations?.[item.key] || '<h3>Nenhum template HTML enviado ainda para esta automação.</h3>');
+                            setShowCustomPreviewModal(true);
+                          }}
+                        >
+                          <Eye size={14} /> Ver
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -633,6 +775,82 @@ const AdminMarketing = () => {
             <div className="modal-actions" style={{ justifyContent: 'flex-end', marginTop: 24 }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowEmailEditModal(false)}>Cancelar</button>
               <button type="button" className="btn btn-accent" onClick={handleSaveTemplate}>Salvar E-mail</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: EDITAR AUTOMACAO HTML */}
+      {showCustomHtmlModal && (
+        <div className="modal-overlay" onClick={() => setShowCustomHtmlModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%' }}>
+            <h3>Configurar HTML para Automação</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Suba um arquivo HTML ou cole o código fonte abaixo. Use a tag <b>{'{nome}'}</b> para exibir o nome da cliente.</p>
+            
+            <div style={{ marginBottom: 16 }}>
+              <input 
+                type="file" 
+                accept=".html" 
+                id="custom-html-file-upload" 
+                style={{ display: 'none' }} 
+                onChange={handleCustomFileUpload} 
+              />
+              <label htmlFor="custom-html-file-upload" className="btn btn-outline" style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                📁 Escolher arquivo HTML
+              </label>
+            </div>
+
+            <div className="form-group-sleek">
+              <label>Código Fonte HTML</label>
+              <textarea 
+                rows="15" 
+                value={editingCustomHtml} 
+                onChange={e => setEditingCustomHtml(e.target.value)} 
+                style={{ fontFamily: 'monospace', fontSize: '0.82rem', width: '100%', background: '#1e1e1e', color: '#f8f8f2', border: '1px solid #333', borderRadius: 4, padding: 8 }}
+                placeholder="<!-- Cole seu HTML aqui -->"
+              ></textarea>
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', marginTop: 20 }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowCustomHtmlModal(false)}>Cancelar</button>
+              <button type="button" className="btn btn-accent" onClick={handleSaveCustomHtml}>Salvar HTML</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: PREVIEW AUTOMACAO HTML */}
+      {showCustomPreviewModal && (
+        <div className="modal-overlay" onClick={() => setShowCustomPreviewModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%', padding: '0', overflow: 'hidden' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
+              <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                Visualização do Template HTML
+              </div>
+              <strong style={{ color: '#fff' }}>Preview</strong>
+            </div>
+            
+            <div style={{ backgroundColor: '#f0eee9', width: '100%', height: '550px' }}>
+              <iframe 
+                srcDoc={`
+                  <!DOCTYPE html>
+                  <html>
+                  <head>
+                    <meta charset="utf-8">
+                    <title>Preview</title>
+                  </head>
+                  <body style="margin: 0; padding: 0;">
+                    ${customPreviewHtml.replace(/{nome}/g, 'Cliente Exemplo')}
+                  </body>
+                  </html>
+                `}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                title="Custom HTML Preview"
+              />
+            </div>
+            
+            <div className="modal-actions" style={{ padding: '16px' }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowCustomPreviewModal(false)}>Fechar</button>
             </div>
           </div>
         </div>

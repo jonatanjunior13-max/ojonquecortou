@@ -1,6 +1,24 @@
 import nodemailer from 'nodemailer';
 import { EMAIL_CSS } from '../src/utils/emailTemplates.js';
 
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID
+};
+let app, db;
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+} catch (e) {}
+
+
 
 // Helper function for the shared email template shell
 
@@ -119,6 +137,22 @@ export default async function handler(req, res) {
     return res.status(400).json({ message: 'Campos obrigatórios ausentes: clientEmail' });
   }
 
+  if (db && clientEmail) {
+    try {
+      const q = query(collection(db, 'client_profiles'), where('email', '==', clientEmail));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        if (snap.docs[0].data().unsubscribed === true) {
+          console.log(`Opt-out ativo para ${clientEmail}. Ignorando envio.`);
+          return res.status(200).json({ success: true, message: 'Usuário opt-out', unsubscribed: true });
+        }
+      }
+    } catch (e) {
+      console.warn('Erro ao checar opt-out:', e);
+    }
+  }
+
+
   // Retrieve SMTP variables from environment
   const smtpHost = process.env.SMTP_HOST;
   const smtpPort = process.env.SMTP_PORT || '587';
@@ -127,10 +161,17 @@ export default async function handler(req, res) {
   const smtpPass = process.env.SMTP_PASS;
   const smtpFrom = process.env.SMTP_FROM || 'agendamento@ojonquecortou.com.br';
 
+  const sendReal = process.env.SEND_REAL_EMAILS === 'true';
+  if (!sendReal) {
+    console.log('Simulação de envio ativa (SEND_REAL_EMAILS não é "true"). Para:', clientEmail);
+    return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
+  }
+
   if (!smtpHost || !smtpUser || !smtpPass) {
     console.warn('Servidor SMTP não configurado. Simulando envio para:', clientEmail);
     return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
   }
+
 
   const transporter = nodemailer.createTransport({
     host: smtpHost,
@@ -145,7 +186,44 @@ export default async function handler(req, res) {
   
   const firstName = clientName ? clientName.split(' ')[0] : 'Cliente';
 
-  switch (type) {
+  let currentType = type;
+
+  // Carregar settings do Firestore se existir custom_automations para o type
+  let settings = null;
+  if (db) {
+    try {
+      const settingsDoc = await getDoc(doc(db, 'settings', 'studio'));
+      if (settingsDoc.exists()) {
+        settings = settingsDoc.data();
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar settings:', e);
+    }
+  }
+
+  const customAutomationHtml = settings?.custom_automations?.[type];
+  if (customAutomationHtml) {
+    const formattedDate = data.date ? (data.date.includes('-') ? data.date.split('-').reverse().join('/') : data.date) : '';
+    const formattedTime = data.time || '';
+    const formattedService = data.serviceName || '';
+    
+    emailContent = customAutomationHtml
+      .replace(/{nome}/g, firstName)
+      .replace(/{data}/g, formattedDate)
+      .replace(/{horario}/g, formattedTime)
+      .replace(/{hora}/g, formattedTime)
+      .replace(/{servico}/g, formattedService)
+      .replace(/{email}/g, encodeURIComponent(clientEmail));
+      
+    emailSubject = subject || (
+      type === 'solicitacao_recebida' ? 'Solicitação de Agendamento Recebida - O Jon Que Cortou' :
+      type === 'lembrete_24h' ? 'Lembrete de Agendamento - O Jon Que Cortou' :
+      type === 'reativacao_5_meses' ? 'Seu cabelo tem memória, {nome}'.replace(/{nome}/g, firstName) :
+      'Mensagem do Studio do Jon'
+    );
+    currentType = 'campanha_raw';
+  } else {
+    switch (type) {
     case 'solicitacao_recebida':
       emailSubject = 'Solicitação de Agendamento Recebida - O Jon Que Cortou';
       emailContent = `
@@ -233,13 +311,96 @@ export default async function handler(req, res) {
       emailContent = htmlBody;
       break;
 
+    case 'campanha_raw':
+      emailSubject = subject || 'Novidades do Jon Que Cortou';
+      emailContent = htmlBody;
+      break;
+
+    case 'lembrete_24h':
+      emailSubject = subject || `Lembrete de Agendamento — ${formatApptDate(data.date, data.time)} às ${data.time}`;
+      emailContent = `
+        <div class="eyebrow">Lembrete</div>
+        <h1 class="display-title">Te espero amanhã, <span>${firstName}.</span></h1>
+        <p class="lead">Passando para lembrar do seu horário marcado amanhã no Studio. Lembre-se de reservar uns 15 minutos a mais no relógio.</p>
+        
+        <div class="appt-card">
+          <div class="label">Agendamento</div>
+          <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
+          <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+          
+          <div class="meta-row">
+            <div class="cell">
+              <div class="lbl">Serviço</div>
+              <div class="val">${data.serviceName}</div>
+            </div>
+            <div class="cell">
+              <div class="lbl">Duração</div>
+              <div class="val">${data.duration || '60'} min</div>
+            </div>
+          </div>
+        </div>
+        
+        <hr class="rule" />
+        
+        <div class="instructions-title">Lembrete importante</div>
+        <p class="instructions-body">Lave o cabelo na <strong>noite anterior</strong> com seu shampoo de sempre. Sem creme, sem leave-in, sem prancha. Quero ler o fio do jeito que ele acorda.</p>
+        
+        <div class="signoff">
+          <div class="sig-name">Jon,</div>
+          <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+        </div>
+      `;
+      break;
+
+    case 'reativacao_5_meses':
+      emailSubject = subject || `Seu cabelo tem memória, ${firstName}`;
+      if (data.fallbackBody) {
+        emailContent = data.fallbackBody;
+        currentType = 'campanha_raw';
+      } else {
+        emailContent = `
+          <div class="eyebrow">Saudade</div>
+          <h1 class="display-title">Faz tempo, <span>${firstName}.</span></h1>
+          <p class="lead">Já faz cerca de 5 meses desde o seu último corte no Studio. O cabelo ondulado, cacheado e crespo tem memória e perde a forma à medida que cresce.</p>
+          <p class="lead" style="margin-top:-20px;">Que tal agendar um horário para resgatar o corte, devolver a definição e cuidar da saúde dos fios?</p>
+          
+          <div style="text-align: center;">
+            <a href="https://www.ojonquecortou.com.br/agendar" class="btn">Quero cortar meu cabelo</a>
+          </div>
+          
+          <div class="signoff">
+            <div class="sig-name">Jon,</div>
+            <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+          </div>
+        `;
+      }
+      break;
+
     default:
       return res.status(400).json({ message: 'Tipo de e-mail inválido' });
   }
 
+  }
+
   // Se for uma campanha manual customizada (htmlBody fornecido já vem com tags próprias se quiser, 
   // mas aqui vamos sempre envelopar no wrapper para garantir a estética da marca, exceto se type for 'campanha_raw')
-  const finalHtml = type === 'campanha_raw' ? htmlBody : (type === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent));
+  
+  const unsubLink = `<div style="text-align: center; padding: 20px; font-size: 11px; color: #888; background-color: #0a0a0a; border-top: 1px solid #222;">
+    Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #888; text-decoration: underline;">clique aqui para descadastrar</a>.
+  </div>`;
+  const unsubLinkLight = `<div style="text-align: center; padding: 20px; font-size: 11px; color: #888; background-color: #f0eee9; border-top: 1px solid #ddd;">
+    Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #888; text-decoration: underline;">clique aqui para descadastrar</a>.
+  </div>`;
+
+  let finalHtml = currentType === 'campanha_raw' ? emailContent : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent));
+  
+  if (!finalHtml.includes('/api/unsubscribe')) {
+    if (currentType === 'campanha' || currentType === 'campanha_raw') {
+      finalHtml = finalHtml.replace('</body>', unsubLinkLight + '</body>');
+    } else {
+      finalHtml = finalHtml.replace('</body>', unsubLink + '</body>');
+    }
+  }
 
   const mailOptions = {
     from: `"O Jon Que Cortou" <${smtpFrom}>`,
