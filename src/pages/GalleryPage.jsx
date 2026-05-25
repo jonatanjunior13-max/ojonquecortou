@@ -153,8 +153,8 @@ const GalleryPage = () => {
   return (
     <main className="gallery-page">
       <SEO 
-        title="Resultados Reais | Galeria de Cachos e Crespos Studio do Jon" 
-        description="Confira as transformações reais do Studio do Jon em Belo Horizonte. Galeria de fotos de cortes técnicos em cabelos ondulados, cacheados e crespos." 
+        title="Cortes de Cabelos Cacheados BH | Antes e Depois | Studio do Jon" 
+        description="Veja fotos reais de antes e depois de cortes de cabelos cacheados, crespos e ondulados feitos pelo especialista Jon em Belo Horizonte. Inspire-se!" 
       />
       
       <section className="gallery-hero">

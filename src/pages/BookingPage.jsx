@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { auth, db, withTimeout } from '../config/firebase';
 import { 
   GoogleAuthProvider, 
@@ -85,6 +86,9 @@ const generateTimeSlots = (prof) => {
 };
 
 const BookingPage = () => {
+  const [searchParams] = useSearchParams();
+  const rescheduleId = searchParams.get('rescheduleId');
+
   const [step, setStep] = useState(1);
   const [services, setServices] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
@@ -93,6 +97,21 @@ const BookingPage = () => {
   const [bookedTimes, setBookedTimes] = useState([]);
   const [settings, setSettings] = useState(null);
   const [selectedProfessional, setSelectedProfessional] = useState(null);
+
+  // Auto-scroll to top on step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [step]);
+
+  // Auto-scroll to top on selectedDate changes (after layout rendering)
+  useEffect(() => {
+    if (selectedDate) {
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedDate]);
   
   // Helper to detect WhatsApp-only services based on priceType
   const isWhatsappOnlyService = (service) => {
@@ -185,6 +204,67 @@ const BookingPage = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
+  // Load booking to reschedule if rescheduleId is provided
+  useEffect(() => {
+    if (!rescheduleId || services.length === 0) return;
+
+    const loadRescheduleBooking = async () => {
+      let bookingData = null;
+
+      // 1. Try local storage first
+      const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+      const localBooking = localBookings.find(b => b.id === rescheduleId);
+
+      if (localBooking) {
+        bookingData = localBooking;
+      } else if (db) {
+        try {
+          const docRef = doc(db, 'bookings', rescheduleId);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            bookingData = { id: docSnap.id, ...docSnap.data() };
+          }
+        } catch (err) {
+          console.warn('Erro ao carregar agendamento para reagendamento:', err);
+        }
+      }
+
+      if (bookingData) {
+        setClientData({
+          name: bookingData.clientName || '',
+          phone: bookingData.clientPhone || '',
+          email: bookingData.clientEmail || '',
+          hairType: bookingData.hairType || '3A',
+          notes: bookingData.notes || '',
+          birthdate: bookingData.clientBirthdate || ''
+        });
+
+        // Find service
+        const svcId = bookingData.service?.id || bookingData.serviceId;
+        const svcName = bookingData.serviceName || bookingData.service?.name;
+        const matchedService = services.find(s => s.id === svcId || s.name === svcName);
+        if (matchedService) {
+          setSelectedService(matchedService);
+        } else if (bookingData.service) {
+          setSelectedService(bookingData.service);
+        }
+
+        // Set professional
+        if (bookingData.professionalId && settings?.professionals) {
+          const matchedProf = settings.professionals.find(p => p.id === bookingData.professionalId);
+          if (matchedProf) {
+            setSelectedProfessional(matchedProf);
+          }
+        }
+
+        // Jump to scheduling step directly
+        setStep(2);
+      }
+    };
+
+    loadRescheduleBooking();
+  }, [rescheduleId, services, settings]);
+
   // Friendly error messages translator
   const getFriendlyAuthMessage = (code) => {
     switch (code) {
@@ -217,7 +297,7 @@ const BookingPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          type: 'solicitacao_recebida',
+          type: rescheduleId ? 'agendamento_alterado' : 'solicitacao_recebida',
           clientEmail: payload.clientEmail,
           clientName: payload.clientName,
           serviceName: serviceName,
@@ -776,7 +856,7 @@ const BookingPage = () => {
     };
 
     fetchBookings();
-  }, [selectedDate]);
+  }, [selectedDate, selectedProfessional]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -858,7 +938,18 @@ const BookingPage = () => {
       if (bookingDemoMode || !db) {
         console.log('Agendamento simulado (Demo):', bookingPayload);
         const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
-        localBookings.push(bookingPayload);
+        if (rescheduleId) {
+          const idx = localBookings.findIndex(b => b.id === rescheduleId);
+          if (idx !== -1) {
+            localBookings[idx] = { ...localBookings[idx], ...bookingPayload, id: rescheduleId };
+          } else {
+            bookingPayload.id = rescheduleId;
+            localBookings.push(bookingPayload);
+          }
+        } else {
+          bookingPayload.id = 'demo-' + Date.now();
+          localBookings.push(bookingPayload);
+        }
         localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
 
         // Auto-cadastro local
@@ -887,7 +978,12 @@ const BookingPage = () => {
         }
       } else {
         try {
-          await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
+          if (rescheduleId) {
+            const docRef = doc(db, 'bookings', rescheduleId);
+            await withTimeout(updateDoc(docRef, bookingPayload), 8000);
+          } else {
+            await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
+          }
 
           // Auto-cadastro no Firestore
           if (cleanPhone) {
@@ -920,7 +1016,18 @@ const BookingPage = () => {
           console.warn('Erro/Timeout ao salvar no Firestore. Ativando fallback local:', dbErr);
           setBookingDemoMode(true);
           const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
-          localBookings.push(bookingPayload);
+          if (rescheduleId) {
+            const idx = localBookings.findIndex(b => b.id === rescheduleId);
+            if (idx !== -1) {
+              localBookings[idx] = { ...localBookings[idx], ...bookingPayload, id: rescheduleId };
+            } else {
+              bookingPayload.id = rescheduleId;
+              localBookings.push(bookingPayload);
+            }
+          } else {
+            bookingPayload.id = 'demo-' + Date.now();
+            localBookings.push(bookingPayload);
+          }
           localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
 
           // Auto-cadastro local fallback
@@ -961,7 +1068,18 @@ const BookingPage = () => {
       // Ainda simula o sucesso para não travar a cliente
       setIsDemoMode(true);
       const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
-      localBookings.push(bookingPayload);
+      if (rescheduleId) {
+        const idx = localBookings.findIndex(b => b.id === rescheduleId);
+        if (idx !== -1) {
+          localBookings[idx] = { ...localBookings[idx], ...bookingPayload, id: rescheduleId };
+        } else {
+          bookingPayload.id = rescheduleId;
+          localBookings.push(bookingPayload);
+        }
+      } else {
+        bookingPayload.id = 'demo-' + Date.now();
+        localBookings.push(bookingPayload);
+      }
       localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
       
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
@@ -1261,7 +1379,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                         }}
                       >
                         <img
-                          src={prof.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'}
+                          src={prof.avatar || '/jon-perfil.png'}
                           alt={prof.name}
                           style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', marginBottom: 8, border: isSelected ? '2px solid var(--accent)' : '1px solid transparent' }}
                         />
@@ -1302,6 +1420,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     onClick={() => {
                       setSelectedDate(d.raw);
                       setSelectedTime(''); // reseta horário ao trocar o dia
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   >
                     <span className="weekday">{d.formatted.split(',')[0]}</span>

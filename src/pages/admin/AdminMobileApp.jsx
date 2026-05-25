@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { 
-  collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit, getDoc, setDoc 
+  collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit, getDoc, setDoc, deleteDoc, where, getDocs 
 } from 'firebase/firestore';
 import { 
   Home as HomeIcon, Calendar as CalendarIcon, Plus, Menu, HelpCircle, 
@@ -47,7 +47,7 @@ const AdminMobileApp = () => {
   const [inventory, setInventory] = useState([]);
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(!db);
 
   // Modais
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -132,56 +132,56 @@ const AdminMobileApp = () => {
     let unsubServ;
     let unsubInventory;
     let unsubSettings;
-    let timedOut = false;
+
+    // Load local storage mock data immediately for Offline-First responsiveness
+    loadLocalMockData();
 
     if (!db) {
       setIsDemoMode(true);
       setLoading(false);
-      loadLocalMockData();
       return;
     }
 
-    const timeoutId = setTimeout(() => {
-      timedOut = true;
-      console.warn('Conexão ao Firestore expirou no Mobile. Usando modo offline.');
-      setIsDemoMode(true);
-      setLoading(false);
-      loadLocalMockData();
-    }, 4000);
+    setIsDemoMode(false);
+    setLoading(true);
 
     try {
       unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
-        if (timedOut) return;
         const list = [];
         snapshot.forEach(doc => {
           list.push({ id: doc.id, ...doc.data() });
         });
         setBookings(list);
         localStorage.setItem('demo_bookings', JSON.stringify(list));
+        setLoading(false);
+      }, (err) => {
+        console.warn('Erro ao escutar bookings:', err);
       });
 
       unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
-        if (timedOut) return;
         const list = [];
         snapshot.forEach(doc => {
           list.push({ id: doc.id, ...doc.data() });
         });
         setClients(list);
         localStorage.setItem('demo_client_profiles', JSON.stringify(list));
+      }, (err) => {
+        console.warn('Erro ao escutar client_profiles:', err);
       });
 
       unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
-        if (timedOut) return;
         const list = [];
         snapshot.forEach(doc => {
           list.push({ id: doc.id, ...doc.data() });
         });
         setTransactions(list);
         localStorage.setItem('demo_transactions', JSON.stringify(list));
+        localStorage.setItem('demo_financial', JSON.stringify(list));
+      }, (err) => {
+        console.warn('Erro ao escutar financial_transactions:', err);
       });
 
       unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
-        if (timedOut) return;
         const list = [];
         snapshot.forEach(doc => {
           list.push({ id: doc.id, ...doc.data() });
@@ -196,36 +196,36 @@ const AdminMobileApp = () => {
           }));
         }
         localStorage.setItem('demo_services', JSON.stringify(list));
+      }, (err) => {
+        console.warn('Erro ao escutar services:', err);
       });
 
       unsubInventory = onSnapshot(collection(db, 'inventory'), (snapshot) => {
-        if (timedOut) return;
         const list = [];
         snapshot.forEach(doc => {
           list.push({ id: doc.id, ...doc.data() });
         });
         setInventory(list);
         localStorage.setItem('demo_inventory', JSON.stringify(list));
+      }, (err) => {
+        console.warn('Erro ao escutar inventory:', err);
       });
 
       unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
-        if (timedOut) return;
         if (snapshot.exists()) {
           setSettings(snapshot.data());
           localStorage.setItem('demo_studio_settings', JSON.stringify(snapshot.data()));
         }
-        clearTimeout(timeoutId);
         setLoading(false);
-      }, () => {
-        clearTimeout(timeoutId);
+      }, (err) => {
+        console.warn('Erro ao escutar settings:', err);
         setLoading(false);
       });
 
     } catch (e) {
-      console.error(e);
+      console.error('Erro ao registrar listeners do Firebase:', e);
       setIsDemoMode(true);
       setLoading(false);
-      loadLocalMockData();
     }
 
     return () => {
@@ -754,6 +754,7 @@ const AdminMobileApp = () => {
     }
 
     const payloadTx = {
+      bookingId: checkoutBooking.id,
       date: checkoutBooking.date || new Date().toISOString().split('T')[0],
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       clientName: checkoutBooking.clientName,
@@ -762,6 +763,19 @@ const AdminMobileApp = () => {
       paymentMethod,
       value: Number(value),
       description,
+      professionalId: checkoutBooking.profissional || 'jon',
+      // Include products breakdown to track costs
+      productSales: selectedProducts.map(p => {
+        // In mobile inventory is state variable 'inventory' or 'products' from global
+        const match = inventory.find(prod => prod.id === p.id);
+        return {
+          productId: p.id,
+          name: p.name,
+          quantity: p.qty,
+          sellingPrice: p.sellingPrice,
+          costPrice: match ? (match.costPrice || 0) : 0
+        };
+      }),
       createdAt: new Date().toISOString()
     };
 
@@ -773,8 +787,9 @@ const AdminMobileApp = () => {
         localStorage.setItem('demo_bookings', JSON.stringify(updatedB));
         
         // Adiciona tx
-        const updatedTx = [...transactions, { id: 'tx_' + Date.now(), ...payloadTx }];
+        const updatedTx = [{ id: 'tx_' + Date.now(), ...payloadTx }, ...transactions];
         setTransactions(updatedTx);
+        localStorage.setItem('demo_financial', JSON.stringify(updatedTx));
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTx));
         
         // Atualiza estoque
@@ -894,13 +909,52 @@ const AdminMobileApp = () => {
   const cancelBooking = async (bookingId) => {
     if (!confirm('Deseja realmente cancelar este agendamento?')) return;
     try {
+      const booking = bookings.find(b => b.id === bookingId);
+      
       if (isDemoMode) {
         const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'cancelado' } : b);
         setBookings(updated);
         localStorage.setItem('demo_bookings', JSON.stringify(updated));
+
+        // Delete from local storage transactions
+        const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
+        if (localTx) {
+          const arr = JSON.parse(localTx);
+          const filtered = arr.filter(t => 
+            t.bookingId !== bookingId && 
+            !(t.clientPhone === booking?.clientPhone && t.date === booking?.date)
+          );
+          localStorage.setItem('demo_financial', JSON.stringify(filtered));
+          localStorage.setItem('demo_transactions', JSON.stringify(filtered));
+          setTransactions(filtered);
+        }
       } else {
         const docRef = doc(db, 'bookings', bookingId);
         await updateDoc(docRef, { status: 'cancelado' });
+
+        try {
+          // Delete by bookingId
+          const q = query(collection(db, 'financial_transactions'), where('bookingId', '==', bookingId));
+          const qSnap = await getDocs(q);
+          for (const docRef of qSnap.docs) {
+            await deleteDoc(docRef.ref);
+          }
+
+          // Delete by client phone and date (fallback)
+          if (booking?.clientPhone && booking?.date) {
+            const q2 = query(
+              collection(db, 'financial_transactions'),
+              where('clientPhone', '==', booking.clientPhone),
+              where('date', '==', booking.date)
+            );
+            const q2Snap = await getDocs(q2);
+            for (const docRef of q2Snap.docs) {
+              await deleteDoc(docRef.ref);
+            }
+          }
+        } catch (deleteErr) {
+          console.error('Erro ao deletar transações financeiras (Mobile):', deleteErr);
+        }
       }
       setSelectedBooking(null);
       alert('Agendamento cancelado.');

@@ -15,7 +15,7 @@ const SEED_HISTORICAL_TRANSACTIONS = [];
 const SEED_HISTORICAL_BOOKINGS = [];
 
 const DEFAULT_PROFESSIONALS = [
-  { id: 'jon', name: 'Jon', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+  { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
 ];
 
 const AdminFinancial = () => {
@@ -238,6 +238,31 @@ const AdminFinancial = () => {
       .filter(t => t.type === 'saida')
       .reduce((sum, t) => sum + t.value, 0);
   }, [filteredTransactions]);
+
+  // Product cost and profit calculations
+  const productCost = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.type === 'entrada')
+      .reduce((sum, t) => {
+        if (t.productSales && Array.isArray(t.productSales)) {
+          return sum + t.productSales.reduce((s, p) => s + ((p.costPrice || 0) * (p.quantity || 0)), 0);
+        }
+        return sum;
+      }, 0);
+  }, [filteredTransactions]);
+
+  const productGrossRevenue = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.type === 'entrada')
+      .reduce((sum, t) => {
+        if (t.productSales && Array.isArray(t.productSales)) {
+          return sum + t.productSales.reduce((s, p) => s + ((p.sellingPrice || 0) * (p.quantity || 0)), 0);
+        }
+        return sum;
+      }, 0);
+  }, [filteredTransactions]);
+
+  const productNetProfit = productGrossRevenue - productCost;
 
   const netResultado = netReceita - totalDespesa;
 
@@ -474,6 +499,16 @@ const AdminFinancial = () => {
       paymentMethod: methodLabel,
       value: total,
       description: `Venda de ${productSaleForm.quantity}x ${selectedProd.name}`,
+      professionalId: 'jon', // Direct sales default professional is Jon
+      productSales: [
+        {
+          productId: selectedProd.id,
+          name: selectedProd.name,
+          quantity: productSaleForm.quantity,
+          sellingPrice: price,
+          costPrice: selectedProd.costPrice || 0
+        }
+      ],
       createdAt: new Date().toISOString()
     };
 
@@ -524,11 +559,20 @@ const AdminFinancial = () => {
 
   // CSV Export utility
   const handleExportCSV = () => {
-    const headers = ['Data', 'Descricao', 'Cliente', 'Tipo', 'Metodo Pagamento', 'Valor Bruto (R$)', 'Valor Liquido (R$)', 'Taxa Retida (R$)'];
+    const headers = ['Data', 'Descricao', 'Cliente', 'Tipo', 'Metodo Pagamento', 'Valor Bruto (R$)', 'Valor Liquido (R$)', 'Taxa Retida (R$)', 'Custo de Produto (R$)', 'Lucro de Produto (R$)'];
     const rows = filteredTransactions.map(t => {
       const isEntrada = t.type === 'entrada';
       const netVal = isEntrada ? getNetValue(t.value, t.paymentMethod) : t.value;
       const fee = isEntrada ? getTransactionFee(t.value, t.paymentMethod) : 0;
+      
+      let txCost = 0;
+      let txProfit = 0;
+      if (isEntrada && t.productSales && Array.isArray(t.productSales)) {
+        txCost = t.productSales.reduce((sum, p) => sum + ((p.costPrice || 0) * (p.quantity || 0)), 0);
+        const txProdGross = t.productSales.reduce((sum, p) => sum + ((p.sellingPrice || 0) * (p.quantity || 0)), 0);
+        txProfit = txProdGross - txCost;
+      }
+
       return [
         t.date.split('-').reverse().join('/'),
         t.description,
@@ -537,7 +581,9 @@ const AdminFinancial = () => {
         t.paymentMethod,
         t.value.toFixed(2),
         netVal.toFixed(2),
-        fee.toFixed(2)
+        fee.toFixed(2),
+        txCost.toFixed(2),
+        txProfit.toFixed(2)
       ];
     });
 
@@ -857,6 +903,26 @@ const AdminFinancial = () => {
           </div>
           <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
             {completedBookingsCount}
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Custo de Produtos</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma dos custos de aquisição dos produtos vendidos no período" />
+          </div>
+          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+            R$ {productCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Lucro de Produtos</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma do (valor de venda - preço de custo) dos produtos vendidos no período" />
+          </div>
+          <div className="value" style={{ color: '#2f855a', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+            R$ {productNetProfit.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
       </section>
@@ -1277,13 +1343,15 @@ const AdminFinancial = () => {
                   <th>Tipo</th>
                   <th>Valor Bruto</th>
                   <th>Taxas Retidas</th>
+                  <th>Custo Prod.</th>
+                  <th>Lucro Prod.</th>
                   <th>Valor Líquido</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredLedger.length === 0 ? (
                   <tr>
-                    <td colSpan="8" style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
+                    <td colSpan="10" style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
                       Nenhum lançamento corresponde aos filtros ativos.
                     </td>
                   </tr>
@@ -1292,6 +1360,16 @@ const AdminFinancial = () => {
                     const isEntrada = t.type === 'entrada';
                     const netVal = isEntrada ? getNetValue(t.value, t.paymentMethod) : t.value;
                     const fee = isEntrada ? getTransactionFee(t.value, t.paymentMethod) : 0;
+                    
+                    // Calculate products cost and profit for this transaction
+                    let txCost = 0;
+                    let txProfit = 0;
+                    if (isEntrada && t.productSales && Array.isArray(t.productSales)) {
+                      txCost = t.productSales.reduce((sum, p) => sum + ((p.costPrice || 0) * (p.quantity || 0)), 0);
+                      const txProdGross = t.productSales.reduce((sum, p) => sum + ((p.sellingPrice || 0) * (p.quantity || 0)), 0);
+                      txProfit = txProdGross - txCost;
+                    }
+                    
                     return (
                       <tr key={t.id}>
                         <td>{t.date.split('-').reverse().join('/')} às {t.time || '00:00'}</td>
@@ -1308,6 +1386,12 @@ const AdminFinancial = () => {
                         </td>
                         <td style={{ color: fee > 0 ? 'var(--accent)' : 'var(--muted)' }}>
                           {fee > 0 ? `R$ ${fee.toFixed(2)}` : '-'}
+                        </td>
+                        <td style={{ color: txCost > 0 ? '#c53030' : 'var(--muted)' }}>
+                          {txCost > 0 ? `R$ ${txCost.toFixed(2)}` : '-'}
+                        </td>
+                        <td style={{ color: txProfit > 0 ? '#2f855a' : 'var(--muted)', fontWeight: txProfit > 0 ? '600' : 'normal' }}>
+                          {txProfit > 0 ? `R$ ${txProfit.toFixed(2)}` : '-'}
                         </td>
                         <td style={{ fontWeight: 'bold', color: isEntrada ? '#2f855a' : '#c53030' }}>
                           R$ {netVal.toFixed(2)}

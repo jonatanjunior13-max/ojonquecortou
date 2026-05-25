@@ -45,11 +45,12 @@ export default async function handler(req, res) {
     await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
 
     // Data de hoje (YYYY-MM-DD no Brasil)
-    const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
+    const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false });
     const parts = formatter.formatToParts(new Date());
     const day = parts.find(p => p.type === 'day').value;
     const month = parts.find(p => p.type === 'month').value;
     const year = parts.find(p => p.type === 'year').value;
+    const hour = parts.find(p => p.type === 'hour').value;
     const todayStr = `${year}-${month}-${day}`;
 
     // Calcular data de amanhã (para o lembrete 24h por e-mail)
@@ -67,8 +68,11 @@ export default async function handler(req, res) {
     const bookings = [];
     snapshot.forEach(doc => {
       const data = doc.data();
-      if (data.status === 'pendente' || data.status === 'confirmado') {
-        bookings.push({ id: doc.id, ...data });
+      if ((data.status === 'pendente' || data.status === 'confirmado') && !data.reminderSent) {
+        const bHour = data.time ? data.time.split(':')[0] : '';
+        if (bHour === hour) {
+          bookings.push({ id: doc.id, ...data });
+        }
       }
     });
 
@@ -120,7 +124,7 @@ export default async function handler(req, res) {
       if (msg.includes('{link_cancelamento}')) {
         msg = msg.replace('{link_cancelamento}', cancelLink);
       } else {
-        msg += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+        msg += `\n\nCaso precise cancelar ou remarcar seu horário, acesse: ${cancelLink}`;
       }
 
       const phoneNum = b.clientPhone.replace(/\D/g, '');

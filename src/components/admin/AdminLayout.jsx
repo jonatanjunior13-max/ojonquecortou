@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth, db } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, onSnapshot, doc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
 import { 
   Calendar, Users, LogOut, Package, DollarSign, 
-  Scissors, Settings, Megaphone, ChevronLeft, ChevronRight, Search, Smartphone 
+  Scissors, Settings, Megaphone, ChevronLeft, ChevronRight, Search, Smartphone,
+  Bell, Check
 } from 'lucide-react';
 import './AdminNavbar.css';
 
@@ -20,6 +21,7 @@ const AdminLayout = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     return localStorage.getItem('admin_sidebar_collapsed') === 'true';
   });
@@ -35,10 +37,61 @@ const AdminLayout = () => {
       if (!e.target.closest('.topbar-search-container')) {
         setShowSearchResults(false);
       }
+      if (!e.target.closest('.topbar-notifications-container')) {
+        setShowNotifications(false);
+      }
     };
     document.addEventListener('click', handleOutsideClick);
     return () => document.removeEventListener('click', handleOutsideClick);
   }, []);
+
+  const handleAcceptBooking = async (booking) => {
+    try {
+      if (!db) {
+        // demo mode
+        const local = localStorage.getItem('demo_bookings');
+        let updatedList = [];
+        if (local) {
+          const arr = JSON.parse(local);
+          updatedList = arr.map(b => b.id === booking.id ? { ...b, status: 'confirmado' } : b);
+          localStorage.setItem('demo_bookings', JSON.stringify(updatedList));
+        }
+        setGlobalData(prev => ({
+          ...prev,
+          bookings: prev.bookings.map(b => b.id === booking.id ? { ...b, status: 'confirmado' } : b)
+        }));
+      } else {
+        const docRef = doc(db, 'bookings', booking.id);
+        await updateDoc(docRef, { status: 'confirmado' });
+      }
+
+      // Trigger email confirmation
+      if (booking.clientEmail && booking.clientEmail.includes('@') && booking.clientEmail !== 'Não informado') {
+        let displayDate = booking.date;
+        if (displayDate && displayDate.includes('-')) {
+          displayDate = displayDate.split('-').reverse().join('/');
+        }
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'horario_confirmado',
+            clientEmail: booking.clientEmail,
+            clientName: booking.clientName,
+            serviceName: booking.serviceName || booking.service?.name || 'Serviço',
+            date: displayDate,
+            time: booking.time,
+            duration: booking.duration || 60,
+            professionalName: 'Jon'
+          })
+        });
+      }
+      alert('Agendamento confirmado com sucesso!');
+    } catch (e) {
+      console.error(e);
+      alert('Erro ao confirmar agendamento.');
+    }
+  };
 
   const searchItems = [
     { name: 'Agenda Semanal', path: '/admin/agenda', category: 'Agenda', keywords: 'horario marcar bloquear comanda fechar' },
@@ -290,9 +343,63 @@ const AdminLayout = () => {
             </div>
           </div>
 
-          <div className="topbar-user">
-            <span className="status-indicator"></span>
-            <span>Olá, Jon</span>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="topbar-notifications-container">
+              <button 
+                type="button" 
+                className="notifications-bell-btn" 
+                onClick={() => setShowNotifications(!showNotifications)}
+                title="Pedidos de agendamento"
+              >
+                <Bell size={20} />
+                {globalData.bookings.filter(b => b.status === 'pendente').length > 0 && (
+                  <span className="notifications-badge">
+                    {globalData.bookings.filter(b => b.status === 'pendente').length}
+                  </span>
+                )}
+              </button>
+              
+              {showNotifications && (
+                <div className="notifications-dropdown">
+                  <div className="notifications-header">
+                    <span>Novas Solicitações</span>
+                    <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
+                      {globalData.bookings.filter(b => b.status === 'pendente').length} pendentes
+                    </span>
+                  </div>
+                  {globalData.bookings.filter(b => b.status === 'pendente').length === 0 ? (
+                    <div className="notification-list-empty">
+                      Nenhum pedido de agendamento aguardando confirmação.
+                    </div>
+                  ) : (
+                    globalData.bookings.filter(b => b.status === 'pendente').map(b => (
+                      <div key={b.id} className="notification-item">
+                        <div className="notification-client">{b.clientName}</div>
+                        <div className="notification-details">
+                          <div><strong>Serviço:</strong> {b.serviceName || b.service?.name}</div>
+                          <div><strong>Data/Hora:</strong> {b.date ? b.date.split('-').reverse().join('/') : ''} às {b.time}</div>
+                          {b.clientPhone && <div><strong>WhatsApp:</strong> {b.clientPhone}</div>}
+                        </div>
+                        <div className="notification-actions">
+                          <button 
+                            type="button" 
+                            className="notification-accept-btn"
+                            onClick={() => handleAcceptBooking(b)}
+                          >
+                            <Check size={14} /> Aceitar
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="topbar-user">
+              <span className="status-indicator"></span>
+              <span>Olá, Jon</span>
+            </div>
           </div>
         </header>
         <div className="admin-page-body">

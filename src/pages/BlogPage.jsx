@@ -8,8 +8,8 @@ const BlogPage = () => {
   return (
     <main className="blog-page">
       <SEO 
-        title="Blog de Cabelo Cacheado | Dicas do Jon que Cortou" 
-        description="Dicas de cabelo cacheado, crespo e ondulado direto do especialista. Jon explica cortes e cuidados sem enrolação. O Jon que Cortou, BH. Leia agora." 
+        title="Dicas de Cabelo Cacheado & Cuidados | Blog do Jon" 
+        description="Artigos técnicos sobre cronograma capilar, porosidade, transição capilar e melhores cortes para cabelos cacheados. Dicas exclusivas do especialista do Studio do Jon." 
       />
       <header className="blog-header reveal active">
         <div className="container text-center">

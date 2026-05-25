@@ -177,7 +177,7 @@
 }
 
 .btn-cancel-confirm {
-  background-color: #9e2a2b;
+  background-color: #b66565;
   border: none;
   color: #ffffff;
   padding: 14px 20px;
@@ -190,7 +190,7 @@
 }
 
 .btn-cancel-confirm:hover:not(:disabled) {
-  background-color: #bd3a3c;
+  background-color: #c97b7b;
 }
 
 .btn-cancel-confirm:active:not(:disabled) {
@@ -200,6 +200,27 @@
 .btn-cancel-confirm:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.btn-reschedule {
+  background-color: #c8852a;
+  border: none;
+  color: #050505;
+  padding: 14px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-reschedule:hover {
+  background-color: #e09b3d;
+}
+
+.btn-reschedule:active {
+  transform: scale(0.98);
 }
 
 .btn-cancel-abort {

@@ -228,6 +228,38 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
         </div>
       </div>
     `;
+  } else if (type === 'agendamento_alterado') {
+    subject = `[ALTERAÇÃO DE HORÁRIO] Solicitação de remarcação de ${clientName}`;
+    body = `
+      <div class="eyebrow" style="color: #c8852a;">Alteração de Horário</div>
+      <h1 class="display-title">Pedido de Remarcação</h1>
+      <p class="lead">Olá Jon, o cliente ${clientName} solicitou uma alteração de horário que está aguardando sua aprovação.</p>
+      
+      <div class="appt-card" style="border-color: #c8852a;">
+        <div class="label" style="color: #c8852a;">Novo Horário Solicitado</div>
+        <p class="when">${formattedDate} <span>às ${time}</span></p>
+        <div class="meta-row" style="margin-top:20px;">
+          <div class="cell">
+            <div class="lbl">Cliente</div>
+            <div class="val">${clientName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">E-mail</div>
+            <div class="val">${clientEmail}</div>
+          </div>
+        </div>
+        <div class="meta-row" style="margin-top:10px;">
+          <div class="cell">
+            <div class="lbl">Serviço</div>
+            <div class="val">${serviceName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">Telefone</div>
+            <div class="val">${clientPhone}</div>
+          </div>
+        </div>
+      </div>
+    `;
   } else {
     return; // No admin notifications for other generic types
   }
@@ -378,6 +410,7 @@ export default async function handler(req, res) {
       
     emailSubject = subject || (
       type === 'solicitacao_recebida' ? 'Solicitação de Agendamento Recebida - O Jon Que Cortou' :
+      type === 'agendamento_alterado' ? 'Solicitação de Alteração de Horário - O Jon Que Cortou' :
       type === 'horario_confirmado' ? `Está marcado — ${formattedDate} às ${formattedTime}` :
       type === 'lembrete_24h' ? 'Lembrete de Agendamento - O Jon Que Cortou' :
       type === 'reativacao_5_meses' ? 'Seu cabelo tem memória, {nome}'.replace(/{nome}/gi, firstName) :
@@ -387,6 +420,32 @@ export default async function handler(req, res) {
     currentType = 'campanha_raw';
   } else {
     switch (type) {
+    case 'agendamento_alterado':
+      emailSubject = 'Solicitação de Alteração de Horário - O Jon Que Cortou';
+      emailContent = `
+        <div class="eyebrow">Em Análise</div>
+        <h1 class="display-title">Alteração solicitada, <span>${firstName}.</span></h1>
+        <p class="lead">Recebemos a sua solicitação de alteração de horário. Ela está atualmente pendente de aprovação.</p>
+        <p class="lead" style="margin-top:-20px;">Vou dar uma olhada na agenda para garantir que esse novo horário está livre e sem conflitos. Te aviso assim que confirmar.</p>
+        
+        <div class="appt-card">
+          <div class="label">Novo Horário Solicitado</div>
+          <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
+          <div class="meta-row" style="margin-top:20px;">
+            <div class="cell">
+              <div class="lbl">Serviço</div>
+              <div class="val">${data.serviceName}</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="signoff">
+          <div class="sig-name">Jon,</div>
+          <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+        </div>
+      `;
+      break;
+
     case 'solicitacao_recebida':
       emailSubject = 'Solicitação de Agendamento Recebida - O Jon Que Cortou';
       emailContent = `
@@ -607,7 +666,7 @@ export default async function handler(req, res) {
     const info = await transporter.sendMail(mailOptions);
     
     // Enviar notificação para o administrador
-    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
+    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado') {
       try {
         await sendAdminNotification(type, data, transporter, smtpFrom, settings);
       } catch (err) {

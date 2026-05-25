@@ -34,8 +34,8 @@ const ServicesPage = () => {
   return (
     <main className="services-page">
       <SEO 
-        title="Corte Cacheado em BH | Serviços | Studio do Jon" 
-        description="Corte técnico para cabelo cacheado, crespo e ondulado em BH. Jon faz leitura de fio antes de tocar. Deva Cut, Wolf Cut e mais. Agende no Studio do Jon." 
+        title="Corte de Cabelo Cacheado BH | Serviços | Studio do Jon" 
+        description="Preços e serviços de corte técnico, tratamento e morena iluminada para onduladas, cacheadas e crespas no Caiçara, Belo Horizonte. Conheça e agende." 
       />
       <section className="services-hero section-padding">
         <div className="container text-center reveal active">

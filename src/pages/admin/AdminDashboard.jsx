@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
 import { 
   ChevronLeft, 
@@ -119,7 +119,7 @@ const DEFAULT_SETTINGS = {
   customWebhookUrl: '',
   waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728',
   professionals: [
-    { id: 'jon', name: 'Jon', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
 };
 
@@ -404,10 +404,50 @@ const AdminDashboard = () => {
         if (selectedBooking && selectedBooking.id === bookingId) {
           setSelectedBooking(prev => ({ ...prev, status: newStatus }));
         }
+
+        if (newStatus === 'cancelado') {
+          const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
+          if (localTx) {
+            const arr = JSON.parse(localTx);
+            const filtered = arr.filter(t => 
+              t.bookingId !== bookingId && 
+              !(t.clientPhone === booking?.clientPhone && t.date === booking?.date)
+            );
+            localStorage.setItem('demo_financial', JSON.stringify(filtered));
+            localStorage.setItem('demo_transactions', JSON.stringify(filtered));
+            setTransactions(filtered);
+          }
+        }
       } else {
         const apptRef = doc(db, 'bookings', bookingId);
         await updateDoc(apptRef, { status: newStatus });
         setSelectedBooking(null);
+
+        if (newStatus === 'cancelado') {
+          try {
+            // Deletar transação com base no bookingId
+            const q = query(collection(db, 'financial_transactions'), where('bookingId', '==', bookingId));
+            const qSnap = await getDocs(q);
+            for (const docRef of qSnap.docs) {
+              await deleteDoc(docRef.ref);
+            }
+
+            // Deletar transação com base no telefone e data (fallback)
+            if (booking?.clientPhone && booking?.date) {
+              const q2 = query(
+                collection(db, 'financial_transactions'),
+                where('clientPhone', '==', booking.clientPhone),
+                where('date', '==', booking.date)
+              );
+              const q2Snap = await getDocs(q2);
+              for (const docRef of q2Snap.docs) {
+                await deleteDoc(docRef.ref);
+              }
+            }
+          } catch (deleteErr) {
+            console.error('Erro ao deletar transações financeiras:', deleteErr);
+          }
+        }
       }
 
       if (booking && booking.clientEmail) {
@@ -811,6 +851,7 @@ const AdminDashboard = () => {
     ].join(', ');
 
     const transactionPayload = {
+      bookingId: booking.id,
       date: booking.date || new Date().toISOString().split('T')[0],
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       clientName: booking.clientName,
@@ -819,6 +860,18 @@ const AdminDashboard = () => {
       paymentMethod,
       value: totalComanda,
       description: itemsDescription,
+      professionalId: booking.profissional || 'jon',
+      // Store products breakdown to discriminate costs and calculate profits
+      productSales: addedProducts.map(p => {
+        const match = products.find(prod => prod.id === p.productId);
+        return {
+          productId: p.productId,
+          name: p.name,
+          quantity: p.quantity,
+          sellingPrice: p.price,
+          costPrice: match ? (match.costPrice || 0) : 0
+        };
+      }),
       createdAt: new Date().toISOString()
     };
 
@@ -827,23 +880,25 @@ const AdminDashboard = () => {
         setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
 
         const localProducts = localStorage.getItem('demo_products');
+        let updatedProdsList = products;
         if (localProducts) {
           const prods = JSON.parse(localProducts);
-          const updatedProds = prods.map(p => {
+          updatedProdsList = prods.map(p => {
             const added = addedProducts.find(ap => ap.productId === p.id);
             if (added) {
               return { ...p, quantity: Math.max(0, p.quantity - added.quantity) };
             }
             return p;
           });
-          localStorage.setItem('demo_products', JSON.stringify(updatedProds));
-          setProducts(updatedProds);
+          localStorage.setItem('demo_products', JSON.stringify(updatedProdsList));
+          setProducts(updatedProdsList);
         }
 
-        const localTx = localStorage.getItem('demo_transactions');
-        const currentTx = localTx ? JSON.parse(localTx) : SEED_TRANSACTIONS;
+        const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
+        const currentTx = localTx ? JSON.parse(localTx) : [];
         const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
-        const updatedTxList = [...currentTx, newTx];
+        const updatedTxList = [newTx, ...currentTx];
+        localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
       } else {
@@ -975,9 +1030,15 @@ const AdminDashboard = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    
+    // Get current hour formatted (e.g., "14", "08")
+    const now = new Date();
+    const currentHourStr = String(now.getHours()).padStart(2, '0');
 
     const remindersToSend = bookings.filter(b => {
+      const bHour = b.time ? b.time.split(':')[0] : '';
       return b.date === tomorrowStr && 
+             bHour === currentHourStr &&
              b.status !== 'cancelado' && 
              !b.reminderSent;
     });
@@ -1012,7 +1073,7 @@ const AdminDashboard = () => {
       if (msgText.includes('{link_cancelamento}')) {
         msgText = msgText.replace('{link_cancelamento}', cancelLink);
       } else {
-        msgText += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+        msgText += `\n\nCaso precise cancelar ou remarcar seu horário, acesse: ${cancelLink}`;
       }
 
       const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
@@ -1730,11 +1791,6 @@ Jon`;
                         b.time === slot && 
                         (b.profissional || 'jon') === prof.id &&
                         b.status !== 'cancelado'
-                      ) || filteredBookingsList.find(b => 
-                        b.date === currentDateStr && 
-                        b.time === slot && 
-                        (b.profissional || 'jon') === prof.id &&
-                        b.status === 'cancelado'
                       );
 
                       const blockedBySettings = !appt && isSlotBlocked(prof, currentDateStr, slot);

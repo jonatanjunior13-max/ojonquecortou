@@ -6,8 +6,8 @@ const ReviewsPage = () => {
   return (
     <main className="reviews-page" style={{ paddingTop: '5rem' }}>
       <SEO 
-        title="Resultados Reais em Cachos e Crespos | Studio do Jon BH" 
-        description="Veja os resultados reais de clientes do Studio do Jon em BH. Cachos, crespos e ondulados transformados com Leitura de Fio. Agende já." 
+        title="Depoimentos e Avaliações | Especialista em Cachos BH | Jon" 
+        description="Confira a opinião de quem já fez a Leitura de Fio e o corte técnico com o Jon em BH. Avaliações de clientes cacheadas, crespas e onduladas." 
       />
       <Reviews isPage={true} />
     </main>
