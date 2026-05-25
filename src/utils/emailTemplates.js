@@ -1116,41 +1116,43 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+90 · até a próxima</div>
+    <div class="tag">D+90 · 3 meses</div>
   </div>
 
   <span class="m-eyebrow">Três meses</span>
   <h1 class="m-display m-h2 mt-20" style="max-width: 16ch;">
-    Esse é o <span class="m-italic">último</span><br />email que mando.
+    Seu fio tá te dizendo algo.<br /><span class="m-italic">Você tá ouvindo?</span>
   </h1>
-
-  <p class="m-lead mt-28" style="max-width: 44ch;">
-    Sem drama. Só sendo direto.
-  </p>
 
   <hr class="m-rule" />
 
   <p class="m-body mt-28" style="max-width: 54ch;">
-    Faz 3 meses desde o seu atendimento aqui.
+    Tem uma coisa que quase toda cacheada interpreta errado.
   </p>
   <p class="m-body mt-12" style="max-width: 54ch;">
-    Esse é o último email que vou mandar automaticamente. Se você não
-    quiser mais receber mensagens minhas, é só <strong>responder
-    aqui</strong> — sem problema nenhum.
+    Quando o cabelo começa a parecer "sem graça", difícil de finalizar, com menos definição do que antes — a primeira conclusão é que o produto parou de funcionar. Ou que o cabelo "mudou".
+  </p>
+  <p class="m-body mt-12" style="max-width: 54ch;">
+    Não mudou. O que aconteceu foi mais simples: o fio cresceu e perdeu a referência do corte.
   </p>
 
-  <p class="m-body mt-28" style="margin-left: 0; font-family: var(--serif-italic); font-style: italic; font-size: 22px; color: var(--accent-deep);">
-    Mas se você tiver pensando em voltar a cuidar do fio… o Studio tá
-    aqui. A mesma leitura, o mesmo cuidado antes de qualquer tesoura
-    tocar.
+  <p class="m-body mt-28" style="max-width: 54ch;">
+    Em 90 dias, o cacho cresce em torno de 3 centímetros. Pra fio liso, isso é só comprimento. Pra fio cacheado, é o suficiente pra descompensar ângulo, peso e distribuição. O corte que eu projetei pra você foi calculado pra um comprimento específico — esse comprimento não existe mais.
   </p>
 
-  <p class="m-body" style="max-width: 54ch;">
-    Me chama quando quiser retomar.
+  <div class="m-takeaway">
+    <div class="lbl">A consequência</div>
+    <p>
+      O resultado aparece na finalização: você faz tudo igual, mas o cacho não fecha do mesmo jeito. Parece falha sua. Não é.
+    </p>
+  </div>
+
+  <p class="m-body mt-28" style="max-width: 54ch;">
+    Quando você volta agora, eu consigo trabalhar o fio com a memória do que foi feito. O atendimento é mais rápido, mais preciso, e o resultado retoma de onde parou — em vez de começar do zero.
   </p>
 
   <div class="m-btn-row mt-28">
-    <a href="https://wa.me/553135866673" class="m-btn m-btn-ghost">Falar com o Jon</a>
+    <a href="https://ojonquecortou.com.br/agendar" class="m-btn m-btn-primary">Quero agendar meu retorno →</a>
   </div>
 
   <hr class="m-rule" />

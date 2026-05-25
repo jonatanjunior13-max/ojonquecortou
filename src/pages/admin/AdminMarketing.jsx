@@ -12,7 +12,7 @@ const EMAIL_PREVIEWS = {
   seqD21: { subject: '3 semanas de corte novo. Agora vem a parte boa.', body: HTML_TEMPLATES['d21'] },
   seqD35: { subject: '{nome}, chegou a hora.', body: HTML_TEMPLATES['d35'] },
   seqD60: { subject: 'Uma coisa que percebi depois de anos cortando cacheado', body: HTML_TEMPLATES['d60'] },
-  seqD90: { subject: 'Esse é o último email que mando, {nome}.', body: HTML_TEMPLATES['d90'] },
+  seqD90: { subject: 'Seu fio tá te dizendo algo. Você tá ouvindo?', body: HTML_TEMPLATES['d90'] },
   seqD150: {
     subject: 'Seu cabelo tem memória, {nome}',
     body: `
