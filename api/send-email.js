@@ -32,8 +32,10 @@ function getStandaloneWrapper(title, content) {
   <title>${title}</title>
   <style>${EMAIL_CSS}</style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased;">
-  ${content}
+<body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310;">
+  <div class="mail-stage" style="width: 100%; max-width: 640px; margin: 0 auto; display: flex; flex-direction: column;">
+    ${content}
+  </div>
 </body>
 </html>
 `;
@@ -103,7 +105,6 @@ function getEmailWrapper(title, content) {
               <div class="logo-mark" style="display: inline-block; vertical-align: middle;">J</div>
               <div class="logo-text" style="display: inline-block; vertical-align: middle; margin-left: 8px;">O Jon Que Cortou</div>
             </div>
-            <div class="tag">Mensagem Automática</div>
           </div>
         </div>
         <div class="content">

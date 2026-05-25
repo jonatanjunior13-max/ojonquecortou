@@ -723,7 +723,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+1 · primeira noite</div>
+    
   </div>
 
   <span class="m-eyebrow">24 horas depois</span>
@@ -789,7 +789,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+7 · uma semana</div>
+    
   </div>
 
   <span class="m-eyebrow">Sete dias</span>
@@ -867,7 +867,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+21 · o auge</div>
+    
   </div>
 
   <span class="m-eyebrow">Três semanas</span>
@@ -959,7 +959,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+35 · janela certa</div>
+    
   </div>
 
   <span class="m-eyebrow dark">Faz cinco semanas</span>
@@ -1036,7 +1036,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+60 · ensaio curto</div>
+    
   </div>
 
   <span class="m-eyebrow">Uma coisa que percebi</span>
@@ -1116,7 +1116,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">D+90 · 3 meses</div>
+    
   </div>
 
   <span class="m-eyebrow">Três meses</span>
@@ -1186,7 +1186,7 @@ export const HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">Aniversário · 5 dias antes</div>
+    
   </div>
 
   <span class="m-eyebrow">Hoje é seu dia</span>
@@ -1252,7 +1252,7 @@ export const ADMIN_HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">Notificação Admin</div>
+    
   </div>
 
   <span class="m-eyebrow">Aviso de Agendamento</span>
@@ -1321,7 +1321,7 @@ export const ADMIN_HTML_TEMPLATES = {
       <div class="mark">J</div>
       Studio do Jon
     </div>
-    <div class="tag">Notificação Admin</div>
+    
   </div>
 
   <span class="m-eyebrow">Aviso de Confirmação</span>
