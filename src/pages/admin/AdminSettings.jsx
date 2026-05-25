@@ -762,10 +762,10 @@ const AdminSettings = () => {
                   {/* Bloqueio Recorrente (Semanal) */}
                   <div className="financial-card" style={{ background: 'rgba(255,255,255,0.01)', padding: 16 }}>
                     <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem' }}>Bloqueio Recorrente (Semanal)</h5>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
                       <select 
                         id="block-weekday-select"
-                        style={{ flex: 1, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1, minWidth: 100, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
                       >
                         <option value="0">Domingo</option>
                         <option value="1">Segunda</option>
@@ -776,10 +776,19 @@ const AdminSettings = () => {
                         <option value="6">Sábado</option>
                       </select>
                       <select 
-                        id="block-weekday-time-select"
-                        style={{ flex: 1, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        id="block-weekday-start"
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
                       >
                         {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>até</span>
+                      <select 
+                        id="block-weekday-end"
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                      >
+                        {['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'].map(t => (
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
@@ -789,13 +798,12 @@ const AdminSettings = () => {
                         style={{ padding: '8px 12px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
                         onClick={() => {
                           const weekday = document.getElementById('block-weekday-select').value;
-                          const time = document.getElementById('block-weekday-time-select').value;
-                          const blockStr = `${weekday}-${time}`;
+                          const start = document.getElementById('block-weekday-start').value;
+                          const end = document.getElementById('block-weekday-end').value;
+                          if (start >= end) { alert('O horário de fim deve ser após o início.'); return; }
+                          const blockStr = `${weekday}-${start}-${end}`;
                           const current = newProf.blockedWeekdayHours || [];
-                          if (current.includes(blockStr)) {
-                            alert('Este horário recorrente já está bloqueado.');
-                            return;
-                          }
+                          if (current.includes(blockStr)) { alert('Este bloqueio já existe.'); return; }
                           setNewProf({ ...newProf, blockedWeekdayHours: [...current, blockStr] });
                         }}
                       >
@@ -805,23 +813,20 @@ const AdminSettings = () => {
 
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxHeight: 120, overflowY: 'auto' }}>
                       {(newProf.blockedWeekdayHours || []).map(block => {
-                        const [w, t] = block.split('-');
-                        const weekdayLabel = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][Number(w)];
+                        const parts = block.split('-');
+                        const weekdayLabel = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][Number(parts[0])];
+                        const start = parts[1];
+                        const end = parts[2] || parts[1];
                         return (
                           <span 
                             key={block}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
                           >
-                            {weekdayLabel} {t}
+                            {weekdayLabel} {start}{end !== start ? ` – ${end}` : ''}
                             <button 
                               type="button"
                               style={{ border: 'none', background: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
-                              onClick={() => {
-                                setNewProf({
-                                  ...newProf,
-                                  blockedWeekdayHours: (newProf.blockedWeekdayHours || []).filter(x => x !== block)
-                                });
-                              }}
+                              onClick={() => setNewProf({ ...newProf, blockedWeekdayHours: (newProf.blockedWeekdayHours || []).filter(x => x !== block) })}
                             >
                               ×
                             </button>
@@ -837,17 +842,26 @@ const AdminSettings = () => {
                   {/* Bloqueio Pontual (Data/Hora) */}
                   <div className="financial-card" style={{ background: 'rgba(255,255,255,0.01)', padding: 16 }}>
                     <h5 style={{ margin: '0 0 12px 0', fontSize: '0.85rem' }}>Bloqueio Pontual (Data/Hora)</h5>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12 }}>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
                       <input 
                         type="date"
                         id="block-specific-date"
-                        style={{ flex: 1.2, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1.5, minWidth: 130, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
                       />
                       <select 
-                        id="block-specific-time"
-                        style={{ flex: 0.8, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        id="block-specific-start"
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
                       >
                         {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>até</span>
+                      <select 
+                        id="block-specific-end"
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                      >
+                        {['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'].map(t => (
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
@@ -857,17 +871,13 @@ const AdminSettings = () => {
                         style={{ padding: '8px 12px', fontSize: '0.8rem', whiteSpace: 'nowrap' }}
                         onClick={() => {
                           const dateVal = document.getElementById('block-specific-date').value;
-                          const time = document.getElementById('block-specific-time').value;
-                          if (!dateVal) {
-                            alert('Por favor, selecione uma data para o bloqueio.');
-                            return;
-                          }
-                          const blockStr = `${dateVal}-${time}`;
+                          const start = document.getElementById('block-specific-start').value;
+                          const end = document.getElementById('block-specific-end').value;
+                          if (!dateVal) { alert('Selecione uma data para o bloqueio.'); return; }
+                          if (start >= end) { alert('O horário de fim deve ser após o início.'); return; }
+                          const blockStr = `${dateVal}-${start}-${end}`;
                           const current = newProf.blockedSpecificHours || [];
-                          if (current.includes(blockStr)) {
-                            alert('Este horário pontual já está bloqueado.');
-                            return;
-                          }
+                          if (current.includes(blockStr)) { alert('Este bloqueio já existe.'); return; }
                           setNewProf({ ...newProf, blockedSpecificHours: [...current, blockStr] });
                         }}
                       >
@@ -877,24 +887,23 @@ const AdminSettings = () => {
 
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', maxHeight: 120, overflowY: 'auto' }}>
                       {(newProf.blockedSpecificHours || []).map(block => {
+                        // format: YYYY-MM-DD-HH:MM-HH:MM
                         const datePart = block.substring(0, 10);
-                        const timePart = block.substring(11);
+                        const rest = block.substring(11); // HH:MM or HH:MM-HH:MM
+                        const restParts = rest.split('-');
+                        const startT = restParts[0];
+                        const endT = restParts[1] || restParts[0];
                         const displayDate = datePart.split('-').reverse().join('/');
                         return (
                           <span 
                             key={block}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
                           >
-                            {displayDate} às {timePart}
+                            {displayDate} {startT}{endT !== startT ? ` – ${endT}` : ''}
                             <button 
                               type="button"
                               style={{ border: 'none', background: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
-                              onClick={() => {
-                                setNewProf({
-                                  ...newProf,
-                                  blockedSpecificHours: (newProf.blockedSpecificHours || []).filter(x => x !== block)
-                                });
-                              }}
+                              onClick={() => setNewProf({ ...newProf, blockedSpecificHours: (newProf.blockedSpecificHours || []).filter(x => x !== block) })}
                             >
                               ×
                             </button>

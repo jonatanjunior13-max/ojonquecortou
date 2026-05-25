@@ -711,22 +711,31 @@ const BookingPage = () => {
             const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
             const weekday = dateObj.getDay();
 
-            // 1. Bloqueios recorrentes por dia da semana (ex: "3-09:00")
+            // Helper: slot inside [start, end) window
+            const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
+
+            // 1. Bloqueios recorrentes — formato: "weekday-HH:MM-HH:MM" ou legado "weekday-HH:MM"
             const weekdayBlocks = selectedProfessional.blockedWeekdayHours || [];
             weekdayBlocks.forEach(block => {
-              const [w, h] = block.split('-');
-              if (Number(w) === weekday) {
-                booked.push(h);
-              }
+              const segs = block.split('-');
+              const w = segs[0]; const start = segs[1]; const end = segs[2] || null;
+              if (Number(w) !== weekday) return;
+              // push all TIME_SLOTS that fall in range
+              ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].forEach(slot => {
+                if (inRange(slot, start, end)) booked.push(slot);
+              });
             });
 
-            // 2. Bloqueios específicos por data (ex: "2026-05-27-15:00")
+            // 2. Bloqueios pontuais — formato: "YYYY-MM-DD-HH:MM-HH:MM" ou legado "YYYY-MM-DD-HH:MM"
             const specificBlocks = selectedProfessional.blockedSpecificHours || [];
             specificBlocks.forEach(block => {
-              if (block.startsWith(selectedDate)) {
-                const h = block.replace(`${selectedDate}-`, '');
-                booked.push(h);
-              }
+              if (!block.startsWith(selectedDate)) return;
+              const rest = block.substring(selectedDate.length + 1);
+              const restParts = rest.split('-');
+              const start = restParts[0]; const end = restParts[1] || null;
+              ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].forEach(slot => {
+                if (inRange(slot, start, end)) booked.push(slot);
+              });
             });
           }
         }
@@ -743,15 +752,20 @@ const BookingPage = () => {
           if (parts.length === 3) {
             const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
             const weekday = dateObj.getDay();
+            const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
+            const ALL_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
             (selectedProfessional.blockedWeekdayHours || []).forEach(block => {
-              const [w, h] = block.split('-');
-              if (Number(w) === weekday) bookedFallback.push(h);
+              const segs = block.split('-');
+              const w = segs[0]; const start = segs[1]; const end = segs[2] || null;
+              if (Number(w) !== weekday) return;
+              ALL_SLOTS.forEach(slot => { if (inRange(slot, start, end)) bookedFallback.push(slot); });
             });
             (selectedProfessional.blockedSpecificHours || []).forEach(block => {
-              if (block.startsWith(selectedDate)) {
-                const h = block.replace(`${selectedDate}-`, '');
-                bookedFallback.push(h);
-              }
+              if (!block.startsWith(selectedDate)) return;
+              const rest = block.substring(selectedDate.length + 1);
+              const restParts = rest.split('-');
+              const start = restParts[0]; const end = restParts[1] || null;
+              ALL_SLOTS.forEach(slot => { if (inRange(slot, start, end)) bookedFallback.push(slot); });
             });
           }
         }

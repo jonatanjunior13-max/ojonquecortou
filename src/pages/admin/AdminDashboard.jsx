@@ -36,6 +36,12 @@ import { SEED_SERVICES } from '../../data/seedServices';
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
+// Helper: checks if slot ("HH:MM") falls within [start, end) window
+const slotInRange = (slot, start, end) => {
+  if (!end || end === start) return slot === start;
+  return slot >= start && slot < end;
+};
+
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
@@ -50,17 +56,28 @@ const isSlotBlocked = (prof, dateStr, slot) => {
     // 2. Check blocked date
     if ((prof.blockedDates || []).includes(dateStr)) return true;
 
-    // 3. Check recurring weekday hour blocks
+    // 3. Recurring weekday blocks — format: "weekday-HH:MM-HH:MM" (range) or "weekday-HH:MM" (legacy)
     const weekdayBlocks = prof.blockedWeekdayHours || [];
     const hasWeekdayBlock = weekdayBlocks.some(block => {
-      const [w, h] = block.split('-');
-      return Number(w) === weekday && h === slot;
+      const segments = block.split('-');
+      const w = segments[0];
+      const start = segments[1];
+      const end = segments[2] || null;
+      if (Number(w) !== weekday) return false;
+      return slotInRange(slot, start, end);
     });
     if (hasWeekdayBlock) return true;
 
-    // 4. Check specific date hour blocks
+    // 4. Specific date blocks — format: "YYYY-MM-DD-HH:MM-HH:MM" (range) or "YYYY-MM-DD-HH:MM" (legacy)
     const specificBlocks = prof.blockedSpecificHours || [];
-    const hasSpecificBlock = specificBlocks.some(block => block === `${dateStr}-${slot}`);
+    const hasSpecificBlock = specificBlocks.some(block => {
+      if (!block.startsWith(dateStr)) return false;
+      const rest = block.substring(dateStr.length + 1); // "HH:MM" or "HH:MM-HH:MM"
+      const restParts = rest.split('-');
+      const start = restParts[0];
+      const end = restParts[1] || null;
+      return slotInRange(slot, start, end);
+    });
     if (hasSpecificBlock) return true;
   }
   
