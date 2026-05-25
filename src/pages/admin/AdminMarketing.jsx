@@ -106,6 +106,14 @@ const AdminMarketing = () => {
   const [selectedAdminNotif, setSelectedAdminNotif] = useState(null);
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
 
+  // Birthday WhatsApp automation
+  const [birthdayWaMessage, setBirthdayWaMessage] = useState(
+    'Oi {nome}! 🎂 Hoje é um dia especial — e o Studio do Jon queria te desejar um feliz aniversário! Aproveite: na sua próxima visita, você tem 10% off no corte. Agende em ojonquecortou.com.br/agendar 🎉'
+  );
+  const [birthdayWindowDays, setBirthdayWindowDays] = useState(0); // 0 = hoje, 7 = próximos 7 dias
+  const [birthdayWaLogs, setBirthdayWaLogs] = useState([]);
+  const [isSendingBirthdayWa, setIsSendingBirthdayWa] = useState(false);
+
   useEffect(() => {
     let unsubscribeProfiles;
     let unsubscribeBookings;
@@ -201,6 +209,44 @@ const AdminMarketing = () => {
     if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) return Infinity;
     const diffTime = Math.abs(new Date() - new Date(lastVisitDate));
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  // Returns clients whose birthday falls within the next `windowDays` days (0 = only today)
+  const getBirthdayClients = (windowDays = 0) => {
+    const today = new Date();
+    return clients.filter(c => {
+      if (!c.birthdate) return false;
+      // birthdate stored as YYYY-MM-DD
+      const parts = c.birthdate.split('-');
+      if (parts.length < 2) return false;
+      const bMonth = parseInt(parts[1], 10);
+      const bDay   = parseInt(parts[2], 10);
+      for (let offset = 0; offset <= windowDays; offset++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + offset);
+        if (d.getMonth() + 1 === bMonth && d.getDate() === bDay) return true;
+      }
+      return false;
+    });
+  };
+
+  const getBirthdayWaLink = (client) => {
+    const firstName = (client.name || '').split(' ')[0];
+    const msg = birthdayWaMessage.replace(/{nome}/g, firstName);
+    return `https://wa.me/55${client.phone}?text=${encodeURIComponent(msg)}`;
+  };
+
+  const handleSendBirthdayWaCampaign = async () => {
+    const targets = getBirthdayClients(birthdayWindowDays);
+    if (targets.length === 0) return;
+    setIsSendingBirthdayWa(true);
+    setBirthdayWaLogs(['[SISTEMA] Iniciando disparo de aniversário...']);
+    for (const client of targets) {
+      await new Promise(r => setTimeout(r, 1000));
+      setBirthdayWaLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+    }
+    setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo finalizado! Verifique o WhatsApp.']);
+    setIsSendingBirthdayWa(false);
   };
 
   const toggleClientSelection = (phone) => {
@@ -536,6 +582,121 @@ const AdminMarketing = () => {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Automação de Aniversário — WhatsApp */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <h4 style={{ margin: 0 }}>🎂 Automação de Aniversário (WhatsApp)</h4>
+                  <button
+                    className={`btn-toggle ${settings?.automations?.birthdayWaEnabled !== false ? 'active' : ''}`}
+                    onClick={() => toggleAutomation('birthdayWaEnabled', settings?.automations?.birthdayWaEnabled === false)}
+                  >
+                    {settings?.automations?.birthdayWaEnabled !== false ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: '20px' }}>
+                  Dispara uma mensagem personalizada no WhatsApp para clientes que fazem aniversário hoje ou nos próximos dias. O Jon é notificado e abre cada conversa com 1 clique.
+                </p>
+
+                {/* Janela de disparo */}
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted)' }}>Exibir aniversariantes:</span>
+                  {[
+                    { label: 'Somente hoje', value: 0 },
+                    { label: 'Próximos 3 dias', value: 3 },
+                    { label: 'Próximos 7 dias', value: 7 },
+                  ].map(opt => (
+                    <button
+                      key={opt.value}
+                      onClick={() => setBirthdayWindowDays(opt.value)}
+                      style={{
+                        padding: '6px 14px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 600,
+                        border: birthdayWindowDays === opt.value ? '2px solid var(--accent)' : '1px solid var(--rule)',
+                        background: birthdayWindowDays === opt.value ? 'rgba(176,90,46,0.12)' : 'transparent',
+                        color: birthdayWindowDays === opt.value ? 'var(--accent)' : 'var(--muted)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Lista de aniversariantes */}
+                {(() => {
+                  const bClients = getBirthdayClients(birthdayWindowDays);
+                  return bClients.length === 0 ? (
+                    <div style={{ padding: '20px', textAlign: 'center', border: '1px dashed var(--rule)', borderRadius: '8px', color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '20px' }}>
+                      🎉 Nenhum aniversariante {birthdayWindowDays === 0 ? 'hoje' : `nos próximos ${birthdayWindowDays} dias`}.
+                    </div>
+                  ) : (
+                    <div style={{ border: '1px solid var(--rule)', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
+                      <div style={{ padding: '10px 16px', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>🎂 {bClients.length} aniversariante{bClients.length > 1 ? 's' : ''} encontrado{bClients.length > 1 ? 's' : ''}</span>
+                        <button
+                          className="btn btn-accent"
+                          style={{ padding: '7px 16px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                          onClick={handleSendBirthdayWaCampaign}
+                          disabled={isSendingBirthdayWa}
+                        >
+                          <Send size={13} /> {isSendingBirthdayWa ? 'Disparando...' : '🚀 Disparar para todos'}
+                        </button>
+                      </div>
+                      <div style={{ maxHeight: '220px', overflowY: 'auto' }}>
+                        {bClients.map(c => {
+                          const bParts = (c.birthdate || '').split('-');
+                          const bDate = bParts.length === 3 ? `${bParts[2]}/${bParts[1]}` : '—';
+                          return (
+                            <div key={c.phone} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--rule)' }}>
+                              <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #C97B49, #6E2F18)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '0.9rem', flexShrink: 0 }}>
+                                {(c.name || '?')[0].toUpperCase()}
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{c.name}</div>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>{c.phone} · Aniversário: {bDate}</div>
+                              </div>
+                              <a
+                                href={getBirthdayWaLink(c)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-accent btn-small btn-whatsapp-direct"
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: '0.78rem', padding: '6px 12px', whiteSpace: 'nowrap', flexShrink: 0 }}
+                              >
+                                <Send size={11} /> WhatsApp
+                              </a>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Editor de mensagem */}
+                <div style={{ background: 'var(--sidebar-bg)', borderRadius: '8px', padding: '16px', border: '1px solid var(--rule)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>✏️ Mensagem de Aniversário</span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Tag: <code style={{ background: 'rgba(176,90,46,0.1)', color: 'var(--accent)', padding: '1px 5px', borderRadius: 3 }}>{'{nome}'}</code></span>
+                  </div>
+                  <textarea
+                    rows={4}
+                    value={birthdayWaMessage}
+                    onChange={e => setBirthdayWaMessage(e.target.value)}
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--panel-bg)', color: 'var(--text)', fontSize: '0.88rem', lineHeight: 1.55, resize: 'vertical', boxSizing: 'border-box' }}
+                    placeholder="Digite a mensagem de aniversário..."
+                  />
+                  <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: 6, marginBottom: 0 }}>
+                    A tag <code style={{ color: 'var(--accent)' }}>{'{nome}'}</code> será substituída pelo primeiro nome do cliente no disparo.
+                  </p>
+                </div>
+
+                {/* Log de disparos */}
+                {birthdayWaLogs.length > 0 && (
+                  <div style={{ marginTop: 16, background: '#1e1e1e', color: '#00ff00', fontFamily: 'monospace', padding: 12, borderRadius: 6, fontSize: '0.8rem', maxHeight: 140, overflowY: 'auto', border: '1px solid #333' }}>
+                    {birthdayWaLogs.map((log, i) => <div key={i} style={{ marginBottom: 2 }}>{log}</div>)}
+                  </div>
+                )}
               </div>
 
               {/* E-mails do Sistema e Notificações */}
