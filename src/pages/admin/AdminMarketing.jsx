@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, doc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit } from 'firebase/firestore';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS } from '../../utils/emailTemplates.js';
@@ -102,12 +102,16 @@ const AdminMarketing = () => {
   const [emailLogs, setEmailLogs] = useState([]);
   const [whatsappLogs, setWhatsappLogs] = useState([]);
   const [automationLogs, setAutomationLogs] = useState([]);
+  const [adminNotifications, setAdminNotifications] = useState([]);
+  const [selectedAdminNotif, setSelectedAdminNotif] = useState(null);
+  const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
 
   useEffect(() => {
     let unsubscribeProfiles;
     let unsubscribeBookings;
     let unsubscribeLogs;
     let unsubscribeSettings;
+    let unsubscribeAdminNotifs;
 
     const loadData = async () => {
       try {
@@ -125,6 +129,15 @@ const AdminMarketing = () => {
           lgs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
           setAutomationLogs(lgs);
         });
+
+        unsubscribeAdminNotifs = onSnapshot(
+          query(collection(db, 'admin_notifications'), orderBy('timestamp', 'desc'), limit(50)),
+          (snap) => {
+            const list = [];
+            snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+            setAdminNotifications(list);
+          }
+        );
 
         const profiles = [];
         unsubscribeProfiles = onSnapshot(collection(db, 'client_profiles'), (profSnap) => {
@@ -180,6 +193,7 @@ const AdminMarketing = () => {
       if (unsubscribeBookings) unsubscribeBookings();
       if (unsubscribeLogs) unsubscribeLogs();
       if (unsubscribeSettings) unsubscribeSettings();
+      if (unsubscribeAdminNotifs) unsubscribeAdminNotifs();
     };
   }, []);
 
@@ -524,11 +538,11 @@ const AdminMarketing = () => {
                 </div>
               </div>
 
-              {/* Automações Customizadas (Upload de HTML) */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
-                <h4 style={{ margin: '0 0 6px 0' }}>Automações Customizadas (Upload de HTML)</h4>
+              {/* E-mails do Sistema e Notificações */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)', marginBottom: '20px' }}>
+                <h4 style={{ margin: '0 0 6px 0' }}>E-mails do Sistema e Notificações</h4>
                 <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '20px', marginTop: 0 }}>
-                  Suba ou edite o código HTML dos templates de e-mail para os disparos automáticos de sistema.
+                  Edite o HTML das automações automáticas do sistema e acompanhe o histórico de notificações de agendamentos.
                 </p>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
@@ -536,7 +550,9 @@ const AdminMarketing = () => {
                     { key: 'solicitacao_recebida', label: 'Pedido em Espera', desc: 'Disparado quando um cliente solicita agendamento (aguardando aprovação).', toggleKey: 'waitingRequestEmailEnabled' },
                     { key: 'horario_confirmado', label: 'Confirmação de Horário', desc: 'Disparado quando o agendamento é confirmado pelo administrador.', toggleKey: 'bookingConfirmationEmailEnabled' },
                     { key: 'lembrete_24h', label: 'Lembrete de Agendamento (24h)', desc: 'Disparado automaticamente 24 horas antes do horário marcado.', toggleKey: 'reminder24hEmailEnabled' },
-                    { key: 'reativacao_5_meses', label: 'Reativação (150+ dias)', desc: 'Enviado para clientes inativos há mais de 5 meses sem novas reservas.', toggleKey: 'seqD150' }
+                    { key: 'reativacao_5_meses', label: 'Reativação (150+ dias)', desc: 'Enviado para clientes inativos há mais de 5 meses sem novas reservas.', toggleKey: 'seqD150' },
+                    { key: 'admin_solicitacao_recebida', label: 'Pedido em Espera (Admin)', desc: 'Enviado para você (Administrador) quando há uma nova solicitação.', toggleKey: 'adminWaitingRequestEmailEnabled' },
+                    { key: 'admin_horario_confirmado', label: 'Confirmação de Horário (Admin)', desc: 'Enviado para você (Administrador) quando um agendamento é confirmado.', toggleKey: 'adminBookingConfirmationEmailEnabled' }
                   ].map(item => (
                     <div key={item.key} style={{ padding: '16px', border: '1px solid var(--rule)', borderRadius: '8px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                       <div>
@@ -579,6 +595,65 @@ const AdminMarketing = () => {
                     </div>
                   ))}
                 </div>
+
+                <hr style={{ border: '0', borderTop: '1px solid var(--rule)', margin: '30px 0' }} />
+                
+                <h4 style={{ margin: '0 0 6px 0' }}>Histórico de Notificações Recebidas pelo Administrador</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '15px', marginTop: 0 }}>
+                  Acompanhe os e-mails de solicitação de pedido, confirmação e cancelamento enviados para você.
+                </p>
+                
+                {adminNotifications.length === 0 ? (
+                  <div style={{ padding: '20px', textAlign: 'center', color: 'var(--muted)', background: 'var(--sidebar-bg)', borderRadius: '6px', border: '1px solid var(--rule)' }}>
+                    Nenhuma notificação enviada ao administrador foi registrada ainda.
+                  </div>
+                ) : (
+                  <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)' }}>
+                    <table className="admin-table" style={{ margin: 0 }}>
+                      <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)' }}>
+                        <tr>
+                          <th>Data/Hora</th>
+                          <th>Cliente</th>
+                          <th>Assunto / Tipo</th>
+                          <th style={{ textAlign: 'center' }}>Ações</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {adminNotifications.map(notif => (
+                          <tr key={notif.id}>
+                            <td>{new Date(notif.timestamp).toLocaleString('pt-BR')}</td>
+                            <td>
+                              <div style={{ fontWeight: 600 }}>{notif.clientName}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{notif.clientEmail}</div>
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: 500 }}>{notif.subject}</div>
+                              <span className={`status-badge ${
+                                notif.type === 'solicitacao_recebida' ? 'pending' : 
+                                notif.type === 'horario_confirmado' ? 'concluded' : 'cancelled'
+                              }`} style={{ fontSize: '0.7rem', padding: '2px 6px', marginTop: '4px', display: 'inline-block' }}>
+                                {notif.type === 'solicitacao_recebida' ? 'Solicitação' : 
+                                 notif.type === 'horario_confirmado' ? 'Confirmação' : 'Cancelamento'}
+                              </span>
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              <button 
+                                className="btn btn-outline btn-small"
+                                style={{ padding: '4px 10px', fontSize: '0.75rem' }}
+                                onClick={() => {
+                                  setSelectedAdminNotif(notif);
+                                  setShowAdminNotifModal(true);
+                                }}
+                              >
+                                👁️ Ver E-mail
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
 
               {/* Template */}
@@ -852,6 +927,43 @@ const AdminMarketing = () => {
             
             <div className="modal-actions" style={{ padding: '16px' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowCustomPreviewModal(false)}>Fechar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Visualização de E-mail do Admin */}
+      {showAdminNotifModal && selectedAdminNotif && (
+        <div className="modal-overlay" onClick={() => setShowAdminNotifModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '95%', padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '80vh' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                    E-mail Enviado ao Administrador
+                  </div>
+                  <strong style={{ color: '#fff' }}>{selectedAdminNotif.subject}</strong>
+                </div>
+                <button style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer' }} onClick={() => setShowAdminNotifModal(false)}>✕</button>
+              </div>
+            </div>
+            
+            <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--rule)', background: 'var(--sidebar-bg)', fontSize: '0.85rem' }}>
+              <div style={{ marginBottom: '4px' }}><strong>Destinatário:</strong> Notificação do Salão</div>
+              <div style={{ marginBottom: '4px' }}><strong>Data de Envio:</strong> {new Date(selectedAdminNotif.timestamp).toLocaleString('pt-BR')}</div>
+              <div><strong>Cliente Relacionado:</strong> {selectedAdminNotif.clientName}</div>
+            </div>
+            
+            <div style={{ backgroundColor: '#fff', width: '100%', flex: 1, overflow: 'hidden' }}>
+              <iframe 
+                srcDoc={selectedAdminNotif.htmlBody || '<h3>Nenhum conteúdo no e-mail.</h3>'}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                title="Admin Notification E-mail"
+              />
+            </div>
+            
+            <div className="modal-actions" style={{ padding: '16px', borderTop: '1px solid var(--rule)' }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowAdminNotifModal(false)}>Fechar</button>
             </div>
           </div>
         </div>

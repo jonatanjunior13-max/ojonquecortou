@@ -129,12 +129,13 @@ function formatApptDate(dateString, timeString) {
   return `${d} de ${months[parseInt(m, 10)-1]}`;
 }
 
-async function sendAdminNotification(type, data, transporter, smtpFrom) {
+async function sendAdminNotification(type, data, transporter, smtpFrom, settings) {
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'jon@studio.com';
   let subject = '';
   let body = '';
   const formattedDate = data.date ? (data.date.includes('-') ? data.date.split('-').reverse().join('/') : data.date) : '';
   const clientName = data.clientName || 'Cliente';
+  const firstName = clientName.split(' ')[0];
   const clientEmail = data.clientEmail || 'Não informado';
   const clientPhone = data.clientPhone || 'Não informado';
   const serviceName = data.serviceName || 'Serviço';
@@ -221,7 +222,23 @@ async function sendAdminNotification(type, data, transporter, smtpFrom) {
     return; // No admin notifications for other generic types
   }
 
-  const finalHtml = getEmailWrapper(subject, body);
+  let finalHtml = '';
+  const customKey = `admin_${type}`;
+  const customHtml = settings?.custom_automations?.[customKey];
+
+  if (customHtml) {
+    finalHtml = customHtml
+      .replace(/{nome}/gi, firstName)
+      .replace(/{data}/gi, formattedDate)
+      .replace(/{horario}/gi, time)
+      .replace(/{hora}/gi, time)
+      .replace(/{servico}/gi, serviceName)
+      .replace(/{email}/gi, encodeURIComponent(clientEmail))
+      .replace(/{telefone}/gi, clientPhone);
+  } else {
+    finalHtml = getEmailWrapper(subject, body);
+  }
+
   const mailOptions = {
     from: `"O Jon Que Cortou" <${smtpFrom}>`,
     to: adminEmail,
@@ -581,7 +598,7 @@ export default async function handler(req, res) {
     
     // Enviar notificação para o administrador de forma assíncrona
     if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
-      sendAdminNotification(type, data, transporter, smtpFrom).catch(err => {
+      sendAdminNotification(type, data, transporter, smtpFrom, settings).catch(err => {
         console.error('Erro de background ao enviar notificação ao admin:', err);
       });
     }
