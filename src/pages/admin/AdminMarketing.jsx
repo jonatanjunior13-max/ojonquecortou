@@ -3,7 +3,7 @@ import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit } from 'firebase/firestore';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye } from 'lucide-react';
 import './Admin.css';
-import { HTML_TEMPLATES, EMAIL_CSS } from '../../utils/emailTemplates.js';
+import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
 
 
 const EMAIL_PREVIEWS = {
@@ -585,8 +585,15 @@ const AdminMarketing = () => {
                           className="btn btn-outline btn-small"
                           style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.75rem', padding: '6px' }}
                           onClick={() => {
-                            setCustomPreviewHtml(settings?.custom_automations?.[item.key] || '<h3>Nenhum template HTML enviado ainda para esta automação.</h3>');
-                            setShowCustomPreviewModal(true);
+                            const customHtml = settings?.custom_automations?.[item.key];
+                            const fallback = ADMIN_HTML_TEMPLATES[item.key];
+                            if (customHtml || fallback) {
+                              setEmailPreviewContent({ subject: item.label, body: customHtml || fallback });
+                              setShowEmailPreviewModal(true);
+                            } else {
+                              setCustomPreviewHtml('<h3>Nenhum template HTML enviado ainda para esta automação.</h3>');
+                              setShowCustomPreviewModal(true);
+                            }
                           }}
                         >
                           <Eye size={14} /> Ver

@@ -1240,3 +1240,134 @@ export const HTML_TEMPLATES = {
 </div>
 `
 };
+
+// ─── Admin Notification Templates (what gets sent to the salon owner) ──────────
+export const ADMIN_HTML_TEMPLATES = {
+  admin_solicitacao_recebida: `
+<div class="mail-body warm">
+  <div class="mail-mast">
+    <div class="brand">
+      <div class="mark">J</div>
+      Studio do Jon
+    </div>
+    <div class="tag">Notificação Admin</div>
+  </div>
+
+  <span class="m-eyebrow">Aviso de Agendamento</span>
+  <h1 class="m-display m-h2 mt-20" style="max-width: 16ch;">
+    Nova <span class="m-italic">Solicitação</span>
+  </h1>
+
+  <p class="m-body mt-28" style="max-width: 54ch;">
+    Olá Jon, uma nova solicitação de agendamento online foi recebida e aguarda sua análise no painel.
+  </p>
+
+  <div class="appt-card">
+    <div class="label">Detalhes da solicitação</div>
+    <p class="when"><span class="italic">[Data]</span> às [Horário]</p>
+    <div class="meta-row" style="margin-top:20px;">
+      <div class="cell">
+        <div class="lbl">Cliente</div>
+        <div class="val">[Nome do Cliente]</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">E-mail</div>
+        <div class="val">[E-mail]</div>
+      </div>
+    </div>
+    <div class="meta-row" style="margin-top:10px;">
+      <div class="cell">
+        <div class="lbl">Serviço</div>
+        <div class="val">[Serviço]</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">Telefone</div>
+        <div class="val">[Telefone]</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="m-btn-row mt-28">
+    <a href="https://ojonquecortou.com.br/admin/bookings" class="m-btn m-btn-primary">Ver no Painel →</a>
+  </div>
+
+  <hr class="m-rule" />
+  <div class="m-signoff">
+    <div class="sig-name">Sistema</div>
+  </div>
+  <p class="m-body mt-12" style="max-width: 52ch; font-size: 14px; color: var(--muted);">
+    <strong style="color: var(--ink);">Studio do Jon</strong><br />
+    Notificação automática do sistema de agendamentos.
+  </p>
+  <div style="height: 48px;"></div>
+</div>
+<div class="mail-footer">
+  <div class="m-footer-grid">
+    <div>
+      <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG<br>Quarta a Sábado · 9h às 19h</p>
+    </div>
+  </div>
+  <div class="legal">© 2026 Studio do Jon · Notificação interna</div>
+</div>
+`,
+
+  admin_horario_confirmado: `
+<div class="mail-body cream">
+  <div class="mail-mast">
+    <div class="brand">
+      <div class="mark">J</div>
+      Studio do Jon
+    </div>
+    <div class="tag">Notificação Admin</div>
+  </div>
+
+  <span class="m-eyebrow">Aviso de Confirmação</span>
+  <h1 class="m-display m-h2 mt-20" style="max-width: 16ch;">
+    Agendamento <span class="m-italic">Confirmado</span>
+  </h1>
+
+  <p class="m-body mt-28" style="max-width: 54ch;">
+    Olá Jon, um agendamento foi confirmado ou criado no sistema.
+  </p>
+
+  <div class="appt-card">
+    <div class="label">Agendamento</div>
+    <p class="when"><span class="italic">[Data]</span> às [Horário]</p>
+    <div class="meta-row">
+      <div class="cell">
+        <div class="lbl">Cliente</div>
+        <div class="val">[Nome do Cliente]</div>
+      </div>
+      <div class="cell">
+        <div class="lbl">Serviço</div>
+        <div class="val">[Serviço]</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="m-btn-row mt-28">
+    <a href="https://ojonquecortou.com.br/admin/bookings" class="m-btn m-btn-primary">Ver no Painel →</a>
+  </div>
+
+  <hr class="m-rule" />
+  <div class="m-signoff">
+    <div class="sig-name">Sistema</div>
+  </div>
+  <p class="m-body mt-12" style="max-width: 52ch; font-size: 14px; color: var(--muted);">
+    <strong style="color: var(--ink);">Studio do Jon</strong><br />
+    Notificação automática do sistema de agendamentos.
+  </p>
+  <div style="height: 48px;"></div>
+</div>
+<div class="mail-footer">
+  <div class="m-footer-grid">
+    <div>
+      <div class="m-footer-brand">Studio do Jon <span class="italic">— corte com leitura.</span></div>
+      <p class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG<br>Quarta a Sábado · 9h às 19h</p>
+    </div>
+  </div>
+  <div class="legal">© 2026 Studio do Jon · Notificação interna</div>
+</div>
+`
+};
