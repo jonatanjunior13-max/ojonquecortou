@@ -113,10 +113,10 @@ const BookingPage = () => {
     }
   }, [selectedDate]);
   
-  // Helper to detect WhatsApp-only services based on priceType
+  // Helper to detect WhatsApp-only services based on priceType or setting
   const isWhatsappOnlyService = (service) => {
     if (!service) return false;
-    return service.priceType === 'A partir de' || service.price === 'Sob Orçamento' || service.price === 'Sob Consulta';
+    return service.scheduledViaWhatsapp === true || service.priceType === 'A partir de' || service.price === 'Sob Orçamento' || service.price === 'Sob Consulta';
   };
 
   // Helper to map name keywords to emojis and taglines matching ServicesPage.jsx

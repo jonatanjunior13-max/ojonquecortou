@@ -26,7 +26,8 @@ const AdminServices = () => {
     priceType: 'Fixo',
     promoPrice: '',
     duration: '',
-    isPrimary: true
+    isPrimary: true,
+    scheduledViaWhatsapp: false
   });
 
   useEffect(() => {
@@ -96,7 +97,8 @@ const AdminServices = () => {
       priceType: 'Fixo',
       promoPrice: '',
       duration: '60',
-      isPrimary: true
+      isPrimary: true,
+      scheduledViaWhatsapp: false
     });
     setIsModalOpen(true);
   };
@@ -111,7 +113,8 @@ const AdminServices = () => {
       priceType: service.priceType || 'Fixo',
       promoPrice: service.promoPrice ? service.promoPrice.toString() : '',
       duration: service.duration.toString(),
-      isPrimary: service.isPrimary ?? true
+      isPrimary: service.isPrimary ?? true,
+      scheduledViaWhatsapp: service.scheduledViaWhatsapp ?? false
     });
     setIsModalOpen(true);
   };
@@ -126,7 +129,8 @@ const AdminServices = () => {
       priceType: form.priceType,
       promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
       duration: Number(form.duration),
-      isPrimary: form.isPrimary
+      isPrimary: form.isPrimary,
+      scheduledViaWhatsapp: !!form.scheduledViaWhatsapp
     };
 
     try {
@@ -449,6 +453,19 @@ const AdminServices = () => {
               />
               <label htmlFor="isPrimary" style={{ margin: 0, fontWeight: 600 }}>
                 Serviço de Destaque (Aparece no topo da página de agendamentos)
+              </label>
+            </div>
+
+            <div className="form-group-sleek-checkbox" style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 10 }}>
+              <input 
+                type="checkbox"
+                id="scheduledViaWhatsapp"
+                checked={form.scheduledViaWhatsapp || false}
+                onChange={e => setForm(prev => ({ ...prev, scheduledViaWhatsapp: e.target.checked }))}
+                style={{ width: 'auto' }}
+              />
+              <label htmlFor="scheduledViaWhatsapp" style={{ margin: 0, fontWeight: 600 }}>
+                Agendar via WhatsApp (Exibe botão para chamar no WhatsApp ao invés de agendar online)
               </label>
             </div>
 
