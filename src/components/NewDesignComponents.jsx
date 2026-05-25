@@ -86,10 +86,6 @@ export function ContactCTA() {
                   <div className="lbl">Funcionamento</div>
                   <div className="val">Ter — Sáb · 9h às 19h <span style={{ color: "rgba(245,237,219,0.5)" }}>· somente com agendamento</span></div>
                 </div>
-                <div className="info">
-                  <div className="lbl">Primeira visita</div>
-                  <div className="val">Reserve <span className="italic" style={{ color: "var(--accent-warm)" }}>~2h</span> para leitura + corte</div>
-                </div>
               </div>
             </Reveal>
           </div>

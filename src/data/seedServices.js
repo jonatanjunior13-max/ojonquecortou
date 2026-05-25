@@ -1,17 +1,17 @@
 export const SEED_SERVICES = [
   {
-    id: 'coloracao-completa',
-    emoji: '🎨',
-    category: 'Coloração',
-    name: 'Coloração Completa',
-    tagline: 'A cor que você desejar, o Jon faz',
-    description: 'Seja para uma mudança radical ou para intensificar seu tom atual, aqui criamos a cor perfeita respeitando a saúde dos seus cachos.',
-    price: 499,
-    priceType: 'A partir de',
+    id: 'corte-jon',
+    emoji: '✂️',
+    category: 'Corte',
+    name: 'Corte com o Jon',
+    tagline: 'Ondulados, Cacheados e Crespos',
+    description: 'Nada de cortar os cachos de qualquer jeito! A gente conversa primeiro para entender o que você quer e o que seus cachos precisam. O corte é personalizado, feito para realçar o formato natural dos seus fios, garantindo movimento. Esqueça os cortes genéricos e padronizados. Aqui, cada corte é único, assim como você. Tudo começa com uma entrevista detalhada, onde eu, Jon, descubro tudo sobre o seu estilo de vida, suas preferências e suas necessidades.',
+    price: 190,
+    priceType: 'Fixo',
     promoPrice: null,
-    duration: 120,
+    duration: 60,
     isPrimary: true,
-    includes: ['Diagnóstico de cor', 'Tonalização técnica']
+    includes: ['Leitura de Fio técnica', 'Corte a seco/técnico', 'Finalização educativa']
   },
   {
     id: 'combo-corte-tratamento-personalizado',
@@ -28,32 +28,46 @@ export const SEED_SERVICES = [
     includes: ['Corte Especializado', 'Tratamento de Alta Performance', 'Finalização Premium']
   },
   {
-    id: 'combo-corte-terapia-trp',
-    emoji: '💎',
-    category: 'Combo',
-    name: 'Combo Corte com o Jon + Terapia de Reposição Proteica',
-    tagline: 'Reconstrução e Corte',
-    description: 'Um tratamento completo pra quem quer se apaixonar de novo pelo próprio cabelo! O corte valoriza cada cacho e o TRP devolve vida, brilho e força com tecnologia que age na fibra capilar de dentro pra fora. Resultado? Cachos leves, saudáveis e com movimento real. Vem viver essa transformação — seu cabelo vai sentir a diferença desde o primeiro toque! 💫',
-    price: 370,
-    priceType: 'Fixo',
-    promoPrice: 300,
-    duration: 60,
+    id: 'luzes-morena-iluminada',
+    emoji: '🌟',
+    category: 'Coloração',
+    name: 'Luzes ou Morena Iluminada',
+    tagline: 'Morena Iluminada e Loiros',
+    description: 'Ilumine seus fios sem agredir! Com nossa técnica exclusiva de Mechas Sem Descolorante, você consegue um efeito iluminado e natural, perfeito para quem quer uma transformação suave e saudável. Ideal para cabelos cacheados, ondulados e lisos, garantindo brilho e definição sem danificar a estrutura do fio.',
+    price: 699,
+    priceType: 'A partir de',
+    promoPrice: null,
+    duration: 180,
     isPrimary: true,
-    includes: ['Corte Especializado', 'Reconstrução Premium TRP', 'Finalização Educativa']
+    includes: ['Teste de mecha obrigatório', 'Proteção da estrutura']
   },
   {
-    id: 'corte-jon',
-    emoji: '✂️',
-    category: 'Corte',
-    name: 'Corte com o Jon',
-    tagline: 'Ondulados, Cacheados e Crespos',
-    description: 'Nada de cortar os cachos de qualquer jeito! A gente conversa primeiro para entender o que você quer e o que seus cachos precisam. O corte é personalizado, feito para realçar o formato natural dos seus fios, garantindo movimento. Esqueça os cortes genéricos e padronizados. Aqui, cada corte é único, assim como você. Tudo começa com uma entrevista detalhada, onde eu, Jon, descubro tudo sobre o seu estilo de vida, suas preferências e suas necessidades.',
-    price: 190,
+    id: 'tratamento-personalizado-novo',
+    emoji: '💆',
+    category: 'Tratamento',
+    name: 'Tratamento personalizado',
+    tagline: 'Saúde da Fibra Capilar',
+    description: 'Para cachos sem brilho e ressecados, o tratamento personalizado é o tratamento ideal. Usamos óleos e ativos poderosos para devolver maciez e brilho. Conversamos antes para entender as necessidades dos seus cachos, garantindo um tratamento totalmente personalizado. O resultado? Fios nutridos, sem frizz e com muito mais vida!',
+    price: 130,
     priceType: 'Fixo',
     promoPrice: null,
-    duration: 60,
+    duration: 45,
     isPrimary: true,
-    includes: ['Leitura de Fio técnica', 'Corte a seco/técnico', 'Finalização educativa']
+    includes: ['Análise personalizada', 'Nutrição profunda', 'Devolução de maciez e brilho']
+  },
+  {
+    id: 'coloracao-completa',
+    emoji: '🎨',
+    category: 'Coloração',
+    name: 'Coloração Completa',
+    tagline: 'A cor que você desejar, o Jon faz',
+    description: 'Seja para uma mudança radical ou para intensificar seu tom atual, aqui criamos a cor perfeita respeitando a saúde dos seus cachos.',
+    price: 499,
+    priceType: 'A partir de',
+    promoPrice: null,
+    duration: 120,
+    isPrimary: false,
+    includes: ['Diagnóstico de cor', 'Tonalização técnica']
   },
   {
     id: 'manutencao-corte',
@@ -85,10 +99,10 @@ export const SEED_SERVICES = [
   },
   {
     id: 'inside-trp',
-    emoji: '💆',
+    emoji: '💎',
     category: 'Tratamento',
     name: 'Inside TRP – Reconstrução Premium',
-    tagline: 'Saúde da Fibra Capilar',
+    tagline: 'Reconstrução Capilar',
     description: 'Tratamento proteico premium com a tecnologia Deep Complex pra recuperar fios danificados por química, calor ou processos agressivos. Atua desde o córtex até as cutículas: repara massa perdida, reduz porosidade, evita quebra e sela a fibra. Resultado: cachos mais fortes, elásticos e vibrantes — sem sofrimento.',
     price: 180,
     priceType: 'Fixo',
@@ -112,20 +126,6 @@ export const SEED_SERVICES = [
     includes: ['Higienização suave', 'Técnica de definição']
   },
   {
-    id: 'luzes-morena-iluminada',
-    emoji: '🌟',
-    category: 'Coloração',
-    name: 'Luzes ou Morena Iluminada',
-    tagline: 'Morena Iluminada e Loiros',
-    description: 'Ilumine seus fios sem agredir! Com nossa técnica exclusiva de Mechas Sem Descolorante, você consegue um efeito iluminado e natural, perfeito para quem quer uma transformação suave e saudável. Ideal para cabelos cacheados, ondulados e lisos, garantindo brilho e definição sem danificar a estrutura do fio.',
-    price: 699,
-    priceType: 'A partir de',
-    promoPrice: null,
-    duration: 180,
-    isPrimary: false,
-    includes: ['Teste de mecha obrigatório', 'Proteção da estrutura']
-  },
-  {
     id: 'pacote-cachos-perfeitos',
     emoji: '💎',
     category: 'Combo',
@@ -136,7 +136,7 @@ export const SEED_SERVICES = [
     priceType: 'Fixo',
     promoPrice: 390,
     duration: 60,
-    isPrimary: true,
+    isPrimary: false,
     includes: ['4 Sessões de Tratamento', 'Acompanhamento de evolução']
   },
   {

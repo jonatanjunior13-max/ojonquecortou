@@ -1153,20 +1153,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
             : services.filter(s => (s.category || 'Outros') === selectedCategory);
             
           filteredServices.sort((a, b) => {
-            const getRank = (name) => {
-              const n = (name || '').toLowerCase();
-              if (n === 'corte com o jon') return 1;
-              if (n.includes('combo')) return 2;
-              if (n.includes('tratamento') || n.includes('reposição') || n.includes('terapia') || n.includes('detox')) return 3;
-              if (n.includes('luzes') || n.includes('iluminação') || n.includes('coloração') || n.includes('raiz')) return 4;
-              return 5;
-            };
-            
-            const rankA = getRank(a.name);
-            const rankB = getRank(b.name);
-            
-            if (rankA !== rankB) return rankA - rankB;
-            return (a.price || 0) - (b.price || 0);
+            const idxA = SEED_SERVICES.findIndex(s => s.id === a.id || s.name.toLowerCase() === a.name.toLowerCase());
+            const idxB = SEED_SERVICES.findIndex(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
+            const rankA = idxA !== -1 ? idxA : 999;
+            const rankB = idxB !== -1 ? idxB : 999;
+            return rankA - rankB;
           });
 
           const toggleDescription = (id, e) => {

@@ -315,6 +315,8 @@ function HomeBlog() {
   );
 }
 
+import FAQ from '../components/FAQ';
+
 const Home = () => {
   return (
     <main>
@@ -328,6 +330,7 @@ const Home = () => {
       <HomeMethodTeaser />
       <HomeTestimonials />
       <HomeBlog />
+      <FAQ />
       <ContactCTA />
     </main>
   );
