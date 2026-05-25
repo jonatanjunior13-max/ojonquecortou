@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { EMAIL_CSS } from '../src/utils/emailTemplates.js';
 
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -48,59 +48,63 @@ function getEmailWrapper(title, content) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-      body { margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #cccccc; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; background-color: #0a0a0a; padding: 40px 0; }
-      .container { max-width: 600px; margin: 0 auto; background-color: #111111; border-radius: 8px; overflow: hidden; border: 1px solid #222222; }
-      .header { padding: 40px 30px; text-align: center; border-bottom: 1px solid #222222; }
-      .logo-mark { display: inline-block; width: 48px; height: 48px; border-radius: 50%; background-color: #c8852a; color: #0a0a0a; text-align: center; line-height: 48px; font-size: 26px; font-weight: bold; font-style: italic; font-family: Georgia, serif; margin-bottom: 15px; }
-      .logo-text { font-size: 15px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: #ffffff; }
-      .tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-top: 10px; }
+      body { margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; }
+      .wrapper { width: 100%; background-color: #EFE5D2; padding: 40px 0; box-sizing: border-box; }
+      .container { max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08); }
+      .header { padding: 30px 40px 20px 40px; text-align: left; border-bottom: 1px solid rgba(26, 19, 16, 0.08); }
+      .logo-mark { display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: #1A1310; color: #FAF5E8; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; margin-bottom: 10px; }
+      .logo-text { font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #1A1310; margin-left: 10px; display: inline-block; vertical-align: middle; }
+      .tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #C97B49; font-weight: 600; }
       
-      .content { padding: 40px 30px; }
+      .content { padding: 40px; }
       
-      .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #c8852a; font-weight: 600; margin-bottom: 10px; }
-      .display-title { font-size: 32px; font-weight: 400; color: #ffffff; margin-top: 0; margin-bottom: 20px; font-family: Georgia, serif; }
-      .display-title span { font-style: italic; color: #c8852a; }
+      .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #C97B49; font-weight: 600; margin-bottom: 10px; }
+      .display-title { font-size: 32px; font-weight: 400; color: #1A1310; margin-top: 0; margin-bottom: 20px; font-family: Georgia, serif; }
+      .display-title span { font-style: italic; color: #C97B49; }
       
-      .lead { font-size: 16px; line-height: 1.6; color: #cccccc; margin-bottom: 40px; }
+      .lead { font-size: 16px; line-height: 1.6; color: #2E241E; margin-bottom: 30px; }
       
-      .appt-card { background-color: #1a1a1a; border: 1px solid #333; border-radius: 6px; padding: 30px; margin-bottom: 40px; }
-      .appt-card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 15px; }
-      .appt-card .when { font-size: 20px; font-weight: 600; color: #ffffff; margin: 0 0 5px 0; }
-      .appt-card .when span { color: #c8852a; font-style: italic; font-weight: 400; font-family: Georgia, serif; }
-      .appt-card .where { font-size: 14px; color: #999; margin: 0 0 25px 0; }
+      .appt-card { background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.12); border-radius: 6px; padding: 20px; margin-bottom: 30px; }
+      .appt-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #6B5A4B; margin-bottom: 12px; font-weight: 600; }
+      .appt-card .when { font-size: 18px; font-weight: 600; color: #1A1310; margin: 0 0 6px 0; }
+      .appt-card .when span { color: #C97B49; font-style: italic; font-weight: 400; font-family: Georgia, serif; }
+      .appt-card .where { font-size: 13px; color: #6B5A4B; margin: 0 0 16px 0; }
       
-      .meta-row { display: table; width: 100%; }
+      .meta-row { display: table; width: 100%; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 14px; margin-top: 14px; }
       .cell { display: table-cell; width: 50%; }
-      .lbl { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; margin-bottom: 4px; }
-      .val { font-size: 15px; color: #fff; font-weight: 500; }
+      .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A7866; margin-bottom: 4px; font-weight: 600; }
+      .val { font-size: 14px; color: #1A1310; font-weight: 600; }
       
-      .rule { border: 0; border-top: 1px solid #222; margin: 40px 0; }
+      .rule { border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 30px 0; }
       
-      .btn { display: inline-block; text-align: center; border: 2px solid #c8852a; color: #c8852a !important; text-decoration: none; padding: 14px 24px; border-radius: 4px; font-size: 14px; font-weight: bold; margin: 30px 0; transition: background-color 0.2s ease; }
+      .btn { display: inline-block; text-align: center; border: 2px solid #C97B49; color: #C97B49 !important; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 30px 0; transition: all 0.2s ease; }
       
-      .instructions-title { font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em; color: #c8852a; font-weight: 600; margin-bottom: 15px; }
-      .instructions-body { font-size: 15px; line-height: 1.6; color: #ccc; }
-      .instructions-body strong { color: #fff; }
+      .instructions-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #C97B49; font-weight: 600; margin-bottom: 8px; }
+      .instructions-body { font-size: 15px; line-height: 1.6; color: #2E241E; }
+      .instructions-body strong { color: #1A1310; }
       
-      .signoff { margin-top: 50px; border-top: 1px solid #222; padding-top: 30px; }
-      .signoff .sig-name { font-size: 24px; font-family: Georgia, serif; font-style: italic; color: #fff; margin-bottom: 10px; }
-      .signoff .sig-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; line-height: 1.5; }
+      .signoff { margin-top: 35px; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 20px; }
+      .signoff .sig-name { font-size: 20px; font-family: Georgia, serif; font-style: italic; color: #1A1310; margin-bottom: 4px; }
+      .signoff .sig-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B5A4B; line-height: 1.5; }
       
-      .footer { padding: 40px 30px; background-color: #111; border-top: 1px solid #222; text-align: center; }
-      .footer-brand { font-size: 14px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; }
-      .footer-brand span { font-style: italic; font-weight: 400; color: #c8852a; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; }
-      .addr { font-size: 13px; color: #777; line-height: 1.6; margin-bottom: 25px; }
-      .legal { font-size: 11px; color: #555; }
+      .footer { padding: 25px 40px; background-color: #FAF5E8; border-top: 1px solid rgba(26, 19, 16, 0.08); text-align: center; }
+      .footer-brand { font-size: 14px; font-weight: 600; color: #1A1310; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; }
+      .footer-brand span { font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; }
+      .addr { font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 25px; }
+      .legal { font-size: 11px; color: #8A7866; }
     </style>
   </head>
   <body>
     <div class="wrapper">
       <div class="container">
         <div class="header">
-          <div class="logo-mark">J</div>
-          <div class="logo-text">O Jon Que Cortou</div>
-          <div class="tag">Mensagem Automática</div>
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div class="logo-mark" style="display: inline-block; vertical-align: middle;">J</div>
+              <div class="logo-text" style="display: inline-block; vertical-align: middle; margin-left: 8px;">O Jon Que Cortou</div>
+            </div>
+            <div class="tag">Mensagem Automática</div>
+          </div>
         </div>
         <div class="content">
           ${content}
@@ -228,6 +232,25 @@ async function sendAdminNotification(type, data, transporter, smtpFrom) {
   try {
     await transporter.sendMail(mailOptions);
     console.log(`Email de notificação enviado para o administrador: ${adminEmail}`);
+    if (db) {
+      try {
+        await addDoc(collection(db, 'admin_notifications'), {
+          timestamp: new Date().toISOString(),
+          type: type,
+          subject: subject,
+          clientName: clientName,
+          clientEmail: clientEmail,
+          clientPhone: clientPhone,
+          serviceName: serviceName,
+          date: formattedDate,
+          time: time,
+          htmlBody: finalHtml
+        });
+        console.log('Notificação do admin registrada no Firestore');
+      } catch (dbErr) {
+        console.error('Falha ao salvar log de notificação no banco:', dbErr);
+      }
+    }
   } catch (err) {
     console.error('Falha ao enviar e-mail de notificação para o admin:', err);
   }
@@ -267,21 +290,19 @@ export default async function handler(req, res) {
   const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === '465';
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || 'agendamento@ojonquecortou.com.br';
+  const smtpFrom = process.env.SMTP_FROM || 'contato@ojonquecortou.com.br';
 
-  const sendReal = process.env.SEND_REAL_EMAILS === 'true';
-  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'jon@studio.com';
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br';
+  
+  // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
+  const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
+  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : hasSmtpConfig;
 
   if (!sendReal) {
-    console.log('Simulação de envio ativa (SEND_REAL_EMAILS não é "true"). Para:', clientEmail);
+    console.log('Simulação de envio ativa (SMTP não configurado ou desativado). Para:', clientEmail);
     if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
       console.log('Simulação de notificação para o administrador:', adminEmail, 'Tipo:', type);
     }
-    return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
-  }
-
-  if (!smtpHost || !smtpUser || !smtpPass) {
-    console.warn('Servidor SMTP não configurado. Simulando envio para:', clientEmail);
     return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
   }
 
