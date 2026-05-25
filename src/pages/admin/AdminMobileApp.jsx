@@ -122,6 +122,8 @@ const AdminMobileApp = () => {
 
   const notifiedRef = useRef(new Set());
   const unreadCount = notifications.filter(n => !n.read).length;
+  const pendingRequests = bookings.filter(b => b.status === 'pendente');
+  const pendingCount = pendingRequests.length;
 
   const [blockMotive, setBlockMotive] = useState('Almoço');
   const [paymentMethod, setPaymentMethod] = useState('pix');
@@ -1137,7 +1139,7 @@ const AdminMobileApp = () => {
           <HelpCircle size={20} />
           <div className="bell-badge-container" onClick={() => setShowNotificationsModal(true)} style={{ position: 'relative', cursor: 'pointer' }}>
             <Bell size={20} />
-            {unreadCount > 0 && <span className="bell-badge">{unreadCount}</span>}
+            {pendingCount > 0 && <span className="bell-badge">{pendingCount}</span>}
           </div>
         </div>
       </header>
@@ -1973,125 +1975,92 @@ const AdminMobileApp = () => {
         </div>
       )}
 
-      {/* MODAL DE CENTRAL DE NOTIFICAÇÕES */}
+      {/* MODAL DE CENTRAL DE NOTIFICAÇÕES (Novas Solicitações) */}
       {showNotificationsModal && (
         <div className="mobile-overlay" onClick={() => setShowNotificationsModal(false)}>
-          <div className="mobile-popup-modal notifications-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
+          <div className="mobile-popup-modal notifications-sheet" onClick={(e) => e.stopPropagation()} style={{ background: '#fbf7f0', border: '1px solid #e8dec9' }}>
+            <div className="mobile-sheet-header" style={{ borderBottom: '1px solid #e8dec9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Bell size={20} className="text-pink" style={{ color: 'var(--mobile-primary)' }} />
-                <h4 style={{ margin: 0 }}>Central de Notificações</h4>
+                <h4 style={{ margin: 0, color: '#2d3748', fontSize: '1.05rem', fontWeight: 'bold' }}>Novas Solicitações</h4>
               </div>
-              <button onClick={() => setShowNotificationsModal(false)}><X size={20} /></button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <span style={{ color: '#c05621', fontWeight: 'bold', fontSize: '0.85rem' }}>{pendingCount} pendentes</span>
+                <button onClick={() => setShowNotificationsModal(false)} style={{ border: 'none', background: 'none', color: '#718096', padding: 0 }}><X size={20} /></button>
+              </div>
             </div>
 
             <div className="notifications-list-container" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '4px 0' }}>
-              {'Notification' in window && Notification.permission !== 'granted' && (
-                <div style={{ padding: '12px', background: '#fff3cd', borderRadius: '8px', marginBottom: '12px', border: '1px solid #ffe69c' }}>
-                  <p style={{ margin: '0 0 8px 0', fontSize: '0.85rem', color: '#664d03' }}>Ative as notificações para receber avisos e sons no celular.</p>
-                  <button onClick={requestNotificationPermission} style={{ width: '100%', padding: '8px', background: '#ffc107', color: '#000', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>
-                    🔔 Ativar Notificações
-                  </button>
-                </div>
-              )}
-              {notifications.length > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12, gap: 10 }}>
-                  <button 
-                    onClick={markAllAsRead} 
-                    className="notif-action-btn"
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--mobile-primary)',
-                      fontSize: '0.75rem',
-                      cursor: 'pointer',
-                      fontWeight: '500',
-                      padding: '4px 8px'
-                    }}
-                  >
-                    Marcar todas como lidas
-                  </button>
-                  <button 
-                    onClick={clearAllNotifications} 
-                    className="notif-action-btn notif-clear-btn"
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#a0aec0',
-                      fontSize: '0.75rem',
-                      cursor: 'pointer',
-                      fontWeight: '500',
-                      padding: '4px 8px'
-                    }}
-                  >
-                    Limpar histórico
-                  </button>
-                </div>
-              )}
-
-              {notifications.length === 0 ? (
-                <div className="empty-notifications" style={{ textAlign: 'center', padding: '40px 20px', color: '#a0aec0' }}>
-                  <Bell size={36} style={{ opacity: 0.3, marginBottom: 8, margin: '0 auto' }} />
-                  <p style={{ fontSize: '0.85rem' }}>Você não tem nenhuma notificação.</p>
+              {pendingRequests.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#a0aec0' }}>
+                  <Check size={36} style={{ opacity: 0.3, marginBottom: 8, margin: '0 auto', color: '#48bb78' }} />
+                  <p style={{ fontSize: '0.85rem' }}>Nenhuma nova solicitação pendente.</p>
                 </div>
               ) : (
-                <div className="notifications-list" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {notifications.map(notif => (
-                    <div 
-                      key={notif.id} 
-                      className={`notification-card ${notif.type} ${notif.read ? 'read' : 'unread'}`}
-                      onClick={() => markAsRead(notif.id)}
-                      style={{
-                        padding: '12px',
-                        borderRadius: '8px',
-                        borderLeft: '4px solid',
-                        borderLeftColor: notif.type === 'novo_agendamento' ? 'var(--mobile-primary)' : notif.type === 'lembrete_30m' ? '#ed8936' : '#ecc94b',
-                        background: notif.read ? '#f7fafc' : 'rgba(213, 63, 140, 0.05)',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                        position: 'relative',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      <div className="notif-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          {!notif.read && (
-                            <span className="notif-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--mobile-primary)', display: 'inline-block' }} />
-                          )}
-                          <span className="notif-title" style={{ fontWeight: notif.read ? '500' : '700', fontSize: '0.85rem', color: '#2d3748' }}>
-                            {notif.title}
-                          </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {pendingRequests.map(req => {
+                    const formattedDate = req.date ? req.date.split('-').reverse().join('/') : '';
+                    return (
+                      <div 
+                        key={req.id} 
+                        style={{
+                          padding: '16px',
+                          borderRadius: '12px',
+                          background: '#ffffff',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                          border: '1px solid #ede8db',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 8,
+                          position: 'relative'
+                        }}
+                      >
+                        <div style={{ fontWeight: 'bold', fontSize: '0.95rem', color: '#1a202c', wordBreak: 'break-word' }}>
+                          {req.clientName}
                         </div>
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteNotification(notif.id);
-                          }} 
-                          className="notif-delete-btn"
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#a0aec0',
-                            cursor: 'pointer',
-                            padding: 2,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}
-                        >
-                          <X size={14} />
-                        </button>
+                        
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: '0.825rem', color: '#4a5568' }}>
+                          <div>
+                            <span style={{ fontWeight: '600', color: '#718096' }}>Serviço:</span> {req.service?.name || req.serviceName}
+                          </div>
+                          <div>
+                            <span style={{ fontWeight: '600', color: '#718096' }}>Data/Hora:</span> {formattedDate} às {req.time}
+                          </div>
+                          {req.clientPhone && (
+                            <div>
+                              <span style={{ fontWeight: '600', color: '#718096' }}>WhatsApp:</span> {req.clientPhone}
+                            </div>
+                          )}
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
+                          <button 
+                            onClick={async () => {
+                              await confirmBooking(req.id);
+                            }}
+                            style={{
+                              background: '#8c5027',
+                              color: '#ffffff',
+                              border: 'none',
+                              borderRadius: '6px',
+                              padding: '8px 16px',
+                              fontSize: '0.85rem',
+                              fontWeight: 'bold',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 6,
+                              cursor: 'pointer',
+                              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                              transition: 'background 0.2s'
+                            }}
+                            onMouseOver={(e) => e.currentTarget.style.background = '#733e1c'}
+                            onMouseOut={(e) => e.currentTarget.style.background = '#8c5027'}
+                          >
+                            <Check size={16} /> Aceitar
+                          </button>
+                        </div>
                       </div>
-                      <p className="notif-message" style={{ fontSize: '0.8rem', color: '#4a5568', margin: '4px 0 6px 0', lineHeight: '1.3' }}>
-                        {notif.message}
-                      </p>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <span className="notif-time" style={{ fontSize: '0.7rem', color: '#a0aec0' }}>
-                          {new Date(notif.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>

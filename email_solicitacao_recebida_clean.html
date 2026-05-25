@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedido Recebido</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #EFE5D2;
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1A1310;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrapper {
+      width: 100%;
+      background-color: #EFE5D2;
+      padding: 40px 0;
+      box-sizing: border-box;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #FAF5E8;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);
+      border: 1px solid rgba(26, 19, 16, 0.1);
+    }
+    .header {
+      padding: 30px 40px 20px 40px;
+      border-bottom: 1px solid rgba(26, 19, 16, 0.08);
+    }
+    .brand-container {
+      margin-bottom: 8px;
+    }
+    .brand-name {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #1A1310;
+      font-family: 'Manrope', sans-serif;
+    }
+    .category-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #C97B49;
+      font-weight: 600;
+    }
+    .content {
+      padding: 40px;
+    }
+    .eyebrow {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #C97B49;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .display-title {
+      font-size: 32px;
+      line-height: 1.2;
+      font-weight: 400;
+      color: #1A1310;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-family: 'DM Serif Display', 'Instrument Serif', Georgia, serif;
+    }
+    .display-title span {
+      font-style: italic;
+    }
+    .lead {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #2E241E;
+      margin-bottom: 25px;
+      margin-top: 0;
+    }
+    .card {
+      background-color: #F5EDDB;
+      border: 1px solid rgba(26, 19, 16, 0.12);
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    .card-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6B5A4B;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .card-when {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1A1310;
+      margin: 0 0 6px 0;
+    }
+    .card-when span {
+      color: #C97B49;
+      font-style: italic;
+      font-weight: 400;
+      font-family: 'Instrument Serif', Georgia, serif;
+    }
+    .card-where {
+      font-size: 13px;
+      color: #6B5A4B;
+      margin: 0 0 16px 0;
+      line-height: 1.4;
+    }
+    .card-meta {
+      border-top: 1px solid rgba(26, 19, 16, 0.08);
+      padding-top: 14px;
+      margin-top: 14px;
+    }
+    .meta-row {
+      display: table;
+      width: 100%;
+    }
+    .card-cell {
+      display: table-cell;
+      width: 50%;
+      vertical-align: top;
+    }
+    .meta-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #8A7866;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .meta-val {
+      font-size: 14px;
+      color: #1A1310;
+      font-weight: 600;
+    }
+    .btn-row {
+      margin: 25px 0;
+      text-align: center;
+    }
+    .btn {
+      display: inline-block;
+      text-align: center;
+      border: 2px solid #C97B49;
+      color: #C97B49 !important;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: bold;
+      margin: 5px;
+    }
+    .section-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #C97B49;
+      font-weight: 600;
+      margin-bottom: 8px;
+      margin-top: 25px;
+    }
+    .section-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #2E241E;
+      margin-bottom: 15px;
+      margin-top: 0;
+    }
+    .timeline {
+      margin: 25px 0;
+      border-left: 1px solid rgba(26, 19, 16, 0.12);
+      padding-left: 20px;
+    }
+    .timeline-item {
+      margin-bottom: 15px;
+      position: relative;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -25px;
+      top: 5px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: #C97B49;
+      border: 2px solid #FAF5E8;
+    }
+    .timeline-num {
+      font-size: 10px;
+      color: #C97B49;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+    .timeline-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1A1310;
+      margin: 2px 0;
+    }
+    .signoff {
+      margin-top: 35px;
+      border-top: 1px solid rgba(26, 19, 16, 0.08);
+      padding-top: 20px;
+    }
+    .sig-name {
+      font-size: 20px;
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      color: #1A1310;
+      margin-bottom: 4px;
+    }
+    .sig-meta {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #6B5A4B;
+    }
+    .footer {
+      padding: 25px 40px;
+      background-color: #FAF5E8;
+      border-top: 1px solid rgba(26, 19, 16, 0.08);
+      text-align: center;
+      font-size: 12px;
+      color: #6B5A4B;
+      line-height: 1.6;
+    }
+    .footer a {
+      color: #6B5A4B;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="container">
+      <div class="header">
+        <div class="brand-container">
+          <span class="brand-name">O Jon Que Cortou</span>
+        </div>
+        <div class="category-tag">Pedido · Aguardando</div>
+      </div>
+      <div class="content">
+        
+    <span class="eyebrow">Em Análise</span>
+    <h1 class="display-title">Recebemos seu pedido, <span>{nome}.</span></h1>
+    <p class="lead">
+      Anotei seu pedido por aqui. Antes de confirmar, vou dar uma olhada na agenda para garantir que esse horário está livre e sem conflitos. Te aviso assim que confirmar.
+    </p>
+    
+    <div class="card">
+      <div class="card-title">Horário solicitado a confirmar</div>
+      <h2 class="card-when">{data} <span>às {horario}</span></h2>
+      <div class="card-where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</div>
+      <div class="card-meta">
+        <div class="meta-row">
+          <div class="card-cell">
+            <div class="meta-lbl">Serviço</div>
+            <div class="meta-val">{servico}</div>
+          </div>
+          <div class="card-cell">
+            <div class="meta-lbl">Duração Estimada</div>
+            <div class="meta-val">2h00</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section-title">O que acontece agora</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-num">01 · agora</div>
+        <div class="timeline-title">Você pediu o horário</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-num">02 · hoje</div>
+        <div class="timeline-title">Eu confirmo em até 6h úteis</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-num">03 · depois</div>
+        <div class="timeline-title">Te mando o e-mail de confirmação</div>
+      </div>
+    </div>
+    
+    <div class="section-title">Importante</div>
+    <p class="section-body">
+      Esse e-mail não garante o horário ainda. Só considere marcado quando chegar o próximo e-mail com a confirmação. Se precisar mudar algo antes ou se for urgente, me chama direto no WhatsApp.
+    </p>
+    
+    <div class="btn-row">
+      <a href="https://wa.me/553135866673" class="btn">Falar com o Jon no WhatsApp</a>
+      <a href="https://www.ojonquecortou.com.br/agendar" class="btn">Sugerir outro horário</a>
+    </div>
+    
+    <p class="section-body" style="font-size: 13px; color: #6B5A4B; font-style: italic;">
+      P.S. Se eu não te confirmar em 6 horas úteis, pode me cobrar no WhatsApp — às vezes a notificação sumária some no meio do dia.
+    </p>
+    
+    <div class="signoff">
+      <div class="sig-name">Jon,</div>
+      <div class="sig-meta">JONATAN JUNIOR · STUDIO DO JON</div>
+    </div>
+  
+      </div>
+      <div class="footer">
+        <strong>Studio do Jon</strong> · Corte com leitura.<br>
+        Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte · MG<br>
+        Quarta a Sábado · 9h às 19h
+      </div>
+    </div>
+  </div>
+</body>
+</html>
