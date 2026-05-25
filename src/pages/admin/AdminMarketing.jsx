@@ -108,7 +108,7 @@ const AdminMarketing = () => {
 
   // Birthday WhatsApp automation
   const [birthdayWaMessage, setBirthdayWaMessage] = useState(
-    'Oi {nome}! 🎂 Hoje é um dia especial — e o Studio do Jon queria te desejar um feliz aniversário! Aproveite: na sua próxima visita, você tem 10% off no corte. Agende em ojonquecortou.com.br/agendar 🎉'
+    '{nome}, parabéns!\\nAniversário com o cabelo bem lido é diferente. Você sabe disso.\\nFeliz aniversário. Se quiser passar pelo Studio esse mês: ojonquecortou.com.br/agendar\\n— Jon'
   );
   const [birthdayWindowDays, setBirthdayWindowDays] = useState(0); // 0 = hoje, 7 = próximos 7 dias
   const [birthdayWaLogs, setBirthdayWaLogs] = useState([]);
