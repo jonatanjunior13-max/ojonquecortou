@@ -150,6 +150,13 @@ const AdminDashboard = () => {
   const [selectedExtraService, setSelectedExtraService] = useState('');
   const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
+  const [discount, setDiscount] = useState(0);
+
+  useEffect(() => {
+    if (isCheckoutOpen) {
+      setDiscount(0);
+    }
+  }, [isCheckoutOpen]);
 
   // Slot Action and Block States
   const [showSlotActionModal, setShowSlotActionModal] = useState(false);
@@ -835,14 +842,14 @@ const AdminDashboard = () => {
     const base = overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.price || selectedBooking?.servicePrice || 150);
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    return base + extras + prods;
+    return Math.max(0, base + extras + prods - discount);
   };
 
   const handleCloseComanda = async (booking) => {
     const baseServicePrice = overrideBasePrice !== null ? overrideBasePrice : (booking.service?.price || booking.servicePrice || 150);
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const totalComanda = baseServicePrice + extraServicesTotal + productsTotal;
+    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal - discount);
 
     const itemsDescription = [
       booking.service?.name || booking.serviceName || 'Serviço Base',
@@ -859,7 +866,8 @@ const AdminDashboard = () => {
       type: 'entrada',
       paymentMethod,
       value: totalComanda,
-      description: itemsDescription,
+      discount: discount,
+      description: discount > 0 ? `${itemsDescription} (Desconto: R$ ${discount})` : itemsDescription,
       professionalId: booking.profissional || 'jon',
       // Store products breakdown to discriminate costs and calculate profits
       productSales: addedProducts.map(p => {
@@ -921,6 +929,7 @@ const AdminDashboard = () => {
       setSelectedBooking(null);
       setIsCheckoutOpen(false);
       setOverrideBasePrice(null);
+      setDiscount(0);
       setAddedServices([]);
       setAddedProducts([]);
     } catch (err) {
@@ -2597,6 +2606,20 @@ Jon`;
                     </div>
                   ))}
                   
+                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--rule)', paddingTop: 8, marginTop: 8 }}>
+                    <span>Desconto</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>R$</span>
+                      <input 
+                        type="number"
+                        min="0"
+                        style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        value={discount}
+                        onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
+                      />
+                    </div>
+                  </div>
+
                   <div className="comanda-total-row">
                     <span>Total a Receber</span>
                     <span>R$ {calculateTotal()}</span>

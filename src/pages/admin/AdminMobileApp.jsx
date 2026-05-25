@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { db } from '../../config/firebase';
+import { auth, db } from '../../config/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { 
   collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit, getDoc, setDoc, deleteDoc, where, getDocs 
 } from 'firebase/firestore';
@@ -58,6 +59,7 @@ const AdminMobileApp = () => {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [checkoutBooking, setCheckoutBooking] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [discount, setDiscount] = useState(0);
 
   // Form states
   const [newBooking, setNewBooking] = useState({
@@ -132,6 +134,7 @@ const AdminMobileApp = () => {
     let unsubServ;
     let unsubInventory;
     let unsubSettings;
+    let unsubAuth;
 
     // Load local storage mock data immediately for Offline-First responsiveness
     loadLocalMockData();
@@ -142,93 +145,105 @@ const AdminMobileApp = () => {
       return;
     }
 
-    setIsDemoMode(false);
     setLoading(true);
 
-    try {
-      unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
-        const list = [];
-        snapshot.forEach(doc => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setBookings(list);
-        localStorage.setItem('demo_bookings', JSON.stringify(list));
+    unsubAuth = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        console.warn('Usuário não autenticado no Mobile. Redirecionando para login.');
+        setIsDemoMode(true);
         setLoading(false);
-      }, (err) => {
-        console.warn('Erro ao escutar bookings:', err);
-      });
+        navigate('/admin/login');
+        return;
+      }
 
-      unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
-        const list = [];
-        snapshot.forEach(doc => {
-          list.push({ id: doc.id, ...doc.data() });
+      setIsDemoMode(false);
+
+      try {
+        unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
+          const list = [];
+          snapshot.forEach(doc => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          setBookings(list);
+          localStorage.setItem('demo_bookings', JSON.stringify(list));
+          setLoading(false);
+        }, (err) => {
+          console.warn('Erro ao escutar bookings:', err);
         });
-        setClients(list);
-        localStorage.setItem('demo_client_profiles', JSON.stringify(list));
-      }, (err) => {
-        console.warn('Erro ao escutar client_profiles:', err);
-      });
 
-      unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
-        const list = [];
-        snapshot.forEach(doc => {
-          list.push({ id: doc.id, ...doc.data() });
+        unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
+          const list = [];
+          snapshot.forEach(doc => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          setClients(list);
+          localStorage.setItem('demo_client_profiles', JSON.stringify(list));
+        }, (err) => {
+          console.warn('Erro ao escutar client_profiles:', err);
         });
-        setTransactions(list);
-        localStorage.setItem('demo_transactions', JSON.stringify(list));
-        localStorage.setItem('demo_financial', JSON.stringify(list));
-      }, (err) => {
-        console.warn('Erro ao escutar financial_transactions:', err);
-      });
 
-      unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
-        const list = [];
-        snapshot.forEach(doc => {
-          list.push({ id: doc.id, ...doc.data() });
+        unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
+          const list = [];
+          snapshot.forEach(doc => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          setTransactions(list);
+          localStorage.setItem('demo_transactions', JSON.stringify(list));
+          localStorage.setItem('demo_financial', JSON.stringify(list));
+        }, (err) => {
+          console.warn('Erro ao escutar financial_transactions:', err);
         });
-        setServices(list);
-        if (list.length > 0) {
-          setNewBooking(prev => ({
-            ...prev,
-            serviceName: list[0].name,
-            servicePrice: list[0].promoPrice || list[0].price || 150,
-            duration: list[0].duration || 60
-          }));
-        }
-        localStorage.setItem('demo_services', JSON.stringify(list));
-      }, (err) => {
-        console.warn('Erro ao escutar services:', err);
-      });
 
-      unsubInventory = onSnapshot(collection(db, 'inventory'), (snapshot) => {
-        const list = [];
-        snapshot.forEach(doc => {
-          list.push({ id: doc.id, ...doc.data() });
+        unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
+          const list = [];
+          snapshot.forEach(doc => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          setServices(list);
+          if (list.length > 0) {
+            setNewBooking(prev => ({
+              ...prev,
+              serviceName: list[0].name,
+              servicePrice: list[0].promoPrice || list[0].price || 150,
+              duration: list[0].duration || 60
+            }));
+          }
+          localStorage.setItem('demo_services', JSON.stringify(list));
+        }, (err) => {
+          console.warn('Erro ao escutar services:', err);
         });
-        setInventory(list);
-        localStorage.setItem('demo_inventory', JSON.stringify(list));
-      }, (err) => {
-        console.warn('Erro ao escutar inventory:', err);
-      });
 
-      unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
-        if (snapshot.exists()) {
-          setSettings(snapshot.data());
-          localStorage.setItem('demo_studio_settings', JSON.stringify(snapshot.data()));
-        }
+        unsubInventory = onSnapshot(collection(db, 'inventory'), (snapshot) => {
+          const list = [];
+          snapshot.forEach(doc => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          setInventory(list);
+          localStorage.setItem('demo_inventory', JSON.stringify(list));
+        }, (err) => {
+          console.warn('Erro ao escutar inventory:', err);
+        });
+
+        unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
+          if (snapshot.exists()) {
+            setSettings(snapshot.data());
+            localStorage.setItem('demo_studio_settings', JSON.stringify(snapshot.data()));
+          }
+          setLoading(false);
+        }, (err) => {
+          console.warn('Erro ao escutar settings:', err);
+          setLoading(false);
+        });
+
+      } catch (e) {
+        console.error('Erro ao registrar listeners do Firebase:', e);
+        setIsDemoMode(true);
         setLoading(false);
-      }, (err) => {
-        console.warn('Erro ao escutar settings:', err);
-        setLoading(false);
-      });
-
-    } catch (e) {
-      console.error('Erro ao registrar listeners do Firebase:', e);
-      setIsDemoMode(true);
-      setLoading(false);
-    }
+      }
+    });
 
     return () => {
+      if (unsubAuth) unsubAuth();
       if (unsubBookings) unsubBookings();
       if (unsubClients) unsubClients();
       if (unsubTx) unsubTx();
@@ -738,6 +753,7 @@ const AdminMobileApp = () => {
     setCheckoutBooking(booking);
     setSelectedBooking(null);
     setSelectedProducts([]);
+    setDiscount(0);
     setShowCheckoutModal(true);
   };
 
@@ -746,11 +762,14 @@ const AdminMobileApp = () => {
     if (!checkoutBooking) return;
     const baseServicePrice = checkoutBooking.service?.price || checkoutBooking.servicePrice || 150;
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
-    const value = baseServicePrice + productsTotal;
+    const value = Math.max(0, baseServicePrice + productsTotal - discount);
     
     let description = checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base';
     if (selectedProducts.length > 0) {
       description += ` + ${selectedProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
+    }
+    if (discount > 0) {
+      description += ` (Desconto: R$ ${discount})`;
     }
 
     const payloadTx = {
@@ -761,6 +780,7 @@ const AdminMobileApp = () => {
       clientPhone: checkoutBooking.clientPhone || '',
       type: 'entrada',
       paymentMethod,
+      discount: discount,
       value: Number(value),
       description,
       professionalId: checkoutBooking.profissional || 'jon',
@@ -1868,10 +1888,21 @@ const AdminMobileApp = () => {
                 </div>
               </div>
 
+              <div className="mobile-form-group" style={{ marginTop: 8 }}>
+                <label>Desconto (R$)</label>
+                <input 
+                  type="number"
+                  min="0"
+                  placeholder="0,00"
+                  value={discount || ''}
+                  onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
+                />
+              </div>
+
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginTop: 10 }}>VALOR TOTAL COBRADO</span>
                 <strong style={{ fontSize: '1.4rem', color: 'var(--mobile-green)' }}>
-                  R$ {((checkoutBooking.service?.price || checkoutBooking.servicePrice || 150) + selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0)).toFixed(2).replace('.', ',')}
+                  R$ {Math.max(0, (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150) + selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - discount).toFixed(2).replace('.', ',')}
                 </strong>
               </div>
             </div>
