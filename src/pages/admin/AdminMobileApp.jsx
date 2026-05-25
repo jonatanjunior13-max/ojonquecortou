@@ -60,6 +60,7 @@ const AdminMobileApp = () => {
   const [checkoutBooking, setCheckoutBooking] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [discount, setDiscount] = useState(0);
+  const [editingBookingId, setEditingBookingId] = useState(null);
 
   // Form states
   const [newBooking, setNewBooking] = useState({
@@ -564,14 +565,39 @@ const AdminMobileApp = () => {
     if (match) {
       setSelectedBooking(match);
     } else {
+      setEditingBookingId(null);
       setSelectedSlot({ date: currentDate, time: timeStr });
       setNewBooking(prev => ({
         ...prev,
+        clientName: '',
+        clientPhone: '',
+        clientEmail: '',
+        serviceName: services[0]?.name || 'Corte com o Jon',
+        servicePrice: services[0]?.promoPrice || services[0]?.price || 150,
+        duration: services[0]?.duration || 60,
         date: currentDate,
-        time: timeStr
+        time: timeStr,
+        notes: ''
       }));
       setShowAddBookingModal(true);
     }
+  };
+
+  const openEditBooking = (booking) => {
+    setEditingBookingId(booking.id);
+    setNewBooking({
+      clientName: booking.clientName || '',
+      clientPhone: booking.clientPhone || '',
+      clientEmail: booking.clientEmail || '',
+      serviceName: booking.serviceName || booking.service?.name || '',
+      servicePrice: booking.servicePrice || booking.service?.price || 150,
+      duration: booking.duration || 60,
+      date: booking.date || '',
+      time: booking.time || '',
+      notes: booking.notes || ''
+    });
+    setSelectedBooking(null);
+    setShowAddBookingModal(true);
   };
 
   const submitBooking = async (e) => {
@@ -596,12 +622,23 @@ const AdminMobileApp = () => {
     };
 
     try {
-      if (isDemoMode) {
-        const local = [...bookings, { id: 'demo-' + Date.now(), ...payload }];
-        setBookings(local);
-        localStorage.setItem('demo_bookings', JSON.stringify(local));
+      if (editingBookingId) {
+        if (isDemoMode) {
+          const local = bookings.map(b => b.id === editingBookingId ? { ...b, ...payload } : b);
+          setBookings(local);
+          localStorage.setItem('demo_bookings', JSON.stringify(local));
+        } else {
+          const apptRef = doc(db, 'bookings', editingBookingId);
+          await updateDoc(apptRef, payload);
+        }
       } else {
-        await addDoc(collection(db, 'bookings'), payload);
+        if (isDemoMode) {
+          const local = [...bookings, { id: 'demo-' + Date.now(), ...payload }];
+          setBookings(local);
+          localStorage.setItem('demo_bookings', JSON.stringify(local));
+        } else {
+          await addDoc(collection(db, 'bookings'), payload);
+        }
       }
 
       // Auto-cadastro de cliente mobile
@@ -666,7 +703,9 @@ const AdminMobileApp = () => {
 
       setShowAddBookingModal(false);
       resetBookingForm();
-      alert('Agendamento cadastrado com sucesso!');
+      const isEdit = !!editingBookingId;
+      setEditingBookingId(null);
+      alert(isEdit ? 'Agendamento atualizado com sucesso!' : 'Agendamento cadastrado com sucesso!');
     } catch (err) {
       alert('Erro ao registrar agendamento.');
     }
@@ -1125,7 +1164,7 @@ const AdminMobileApp = () => {
 
           {/* Scroll de atalhos rápidos */}
           <div className="mobile-shortcuts-scroll">
-            <div className="mobile-shortcut-card" onClick={() => { setNewBooking(prev => ({ ...prev, date: todayStr })); setShowAddBookingModal(true); }}>
+            <div className="mobile-shortcut-card" onClick={() => { setEditingBookingId(null); resetBookingForm(); setNewBooking(prev => ({ ...prev, date: todayStr })); setShowAddBookingModal(true); }}>
               <CalendarIcon size={18} className="icon-top" />
               <span>Novo agendamento</span>
             </div>
@@ -1249,7 +1288,7 @@ const AdminMobileApp = () => {
         <div className="mobile-actions-container">
           <h4 className="mobile-section-header">Ações principais</h4>
           <div className="mobile-actions-grid">
-            <div className="mobile-action-btn-card" onClick={() => { resetBookingForm(); setShowAddBookingModal(true); }}>
+            <div className="mobile-action-btn-card" onClick={() => { setEditingBookingId(null); resetBookingForm(); setShowAddBookingModal(true); }}>
               <div className="icon-wrapper">
                 <CalendarIcon size={20} />
               </div>
@@ -1526,24 +1565,29 @@ const AdminMobileApp = () => {
               )}
 
               {/* Botões de Ação da Comanda */}
-              <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
+              <div style={{ display: 'flex', gap: 10, marginTop: 12, flexWrap: 'wrap' }}>
                 {selectedBooking.status === 'pendente' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)', flex: 1 }} onClick={() => confirmBooking(selectedBooking.id)}>
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)', flex: '1 1 40%' }} onClick={() => confirmBooking(selectedBooking.id)}>
                     Confirmar
                   </button>
                 )}
                 {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)', flex: 1 }} onClick={() => openCheckout(selectedBooking)}>
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)', flex: '1 1 40%' }} onClick={() => openEditBooking(selectedBooking)}>
+                    Editar
+                  </button>
+                )}
+                {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)', flex: '1 1 40%' }} onClick={() => openCheckout(selectedBooking)}>
                     Fechar Conta
                   </button>
                 )}
                 {selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }} onClick={() => cancelBooking(selectedBooking.id)}>
+                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', flex: '1 1 40%' }} onClick={() => cancelBooking(selectedBooking.id)}>
                     Cancelar Horário
                   </button>
                 )}
                 {selectedBooking.status === 'bloqueado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }} onClick={() => cancelBooking(selectedBooking.id)}>
+                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', flex: '1 1 40%' }} onClick={() => cancelBooking(selectedBooking.id)}>
                     Remover Bloqueio
                   </button>
                 )}
@@ -1553,13 +1597,13 @@ const AdminMobileApp = () => {
         </div>
       )}
 
-      {/* MODAL DE ADICIONAR AGENDAMENTO */}
+      {/* MODAL DE ADICIONAR/EDITAR AGENDAMENTO */}
       {showAddBookingModal && (
-        <div className="mobile-overlay" onClick={() => setShowAddBookingModal(false)}>
+        <div className="mobile-overlay" onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }}>
           <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-sheet-header">
-              <h4>Novo Agendamento</h4>
-              <button onClick={() => setShowAddBookingModal(false)}><X size={20} /></button>
+              <h4>{editingBookingId ? 'Editar Agendamento' : 'Novo Agendamento'}</h4>
+              <button onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }}><X size={20} /></button>
             </div>
 
             <form onSubmit={submitBooking}>
@@ -1681,11 +1725,13 @@ const AdminMobileApp = () => {
               </div>
 
               <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
-                <button type="button" className="mobile-btn-outline" style={{ flex: 1 }} onClick={() => setShowBlockModal(true)}>
-                  {"Bloquear Hor\u00e1rio"}
-                </button>
+                {!editingBookingId && (
+                  <button type="button" className="mobile-btn-outline" style={{ flex: 1 }} onClick={() => setShowBlockModal(true)}>
+                    {"Bloquear Hor\u00e1rio"}
+                  </button>
+                )}
                 <button type="submit" className="mobile-btn-solid" style={{ flex: 1 }}>
-                  Reservar
+                  {editingBookingId ? 'Salvar Alterações' : 'Reservar'}
                 </button>
               </div>
             </form>
