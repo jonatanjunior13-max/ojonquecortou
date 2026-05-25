@@ -596,11 +596,13 @@ export default async function handler(req, res) {
   try {
     const info = await transporter.sendMail(mailOptions);
     
-    // Enviar notificação para o administrador de forma assíncrona
+    // Enviar notificação para o administrador
     if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
-      sendAdminNotification(type, data, transporter, smtpFrom, settings).catch(err => {
-        console.error('Erro de background ao enviar notificação ao admin:', err);
-      });
+      try {
+        await sendAdminNotification(type, data, transporter, smtpFrom, settings);
+      } catch (err) {
+        console.error('Erro ao enviar notificação ao admin:', err);
+      }
     }
 
     return res.status(200).json({ success: true, messageId: info.messageId });
