@@ -41,48 +41,63 @@ async function dispatchEmail(payload, hostUrl) {
 // -------------------------------------------------------------
 const baseLayout = (content, linkUrl, linkText) => `
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Studio do Jon</title>
-  <style>
-    body { margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #ffffff; -webkit-font-smoothing: antialiased; }
-    .wrapper { width: 100%; background-color: #0a0a0a; padding: 40px 0; }
-    .container { max-width: 600px; margin: 0 auto; background-color: #111111; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); border: 1px solid #222222; }
-    .header { padding: 30px 20px; text-align: center; border-bottom: 1px solid #222222; }
-    .logo-mark { display: inline-block; width: 40px; height: 40px; border-radius: 50%; background-color: #c8852a; color: #0a0a0a; text-align: center; line-height: 40px; font-size: 22px; font-weight: bold; font-style: italic; font-family: Georgia, serif; margin-bottom: 10px; }
-    .logo-text { font-size: 14px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: #ffffff; }
-    .content { padding: 40px 30px; font-size: 16px; line-height: 1.6; color: #cccccc; }
-    .content p { margin-top: 0; margin-bottom: 20px; }
-    .btn { display: inline-block; text-align: center; background-color: transparent; color: #c8852a !important; text-decoration: none; padding: 14px 24px; border-radius: 4px; font-size: 14px; font-weight: bold; border: 2px solid #c8852a; margin: 10px 0; transition: all 0.2s ease; }
-    .btn-container { text-align: center; margin-top: 30px; }
-    .footer { padding: 30px 20px; background-color: #1a1a1a; border-top: 1px solid #222222; text-align: center; font-size: 12px; color: #888888; line-height: 1.6; }
-    a { color: #c8852a; text-decoration: none; }
-  </style>
 </head>
-<body>
-  <div class="wrapper">
-    <div class="container">
-      <div class="header">
-        <div class="logo-mark">J</div>
-        <div class="logo-text">O JON QUE CORTOU</div>
-      </div>
-      <div class="content">
-        ${content}
-        <div class="btn-container">
-          <a href="${linkUrl}" class="btn">
-            ${linkText}
-          </a>
-        </div>
-      </div>
-      <div class="footer">
-        © ${new Date().getFullYear()} O Jon Que Cortou. Todos os direitos reservados.<br>
-        Especialista em corte para cabelos ondulados, cacheados e crespos em Belo Horizonte.<br>
-        <a href="https://instagram.com/ojonquecortou">@ojonquecortou</a>
-      </div>
-    </div>
-  </div>
+<body style="margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2;">
+    <tr>
+      <td align="center" style="padding: 40px 10px;">
+        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAF5E8" style="max-width: 600px; background-color: #FAF5E8; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);">
+          <!-- Header -->
+          <tr>
+            <td style="padding: 30px 40px 20px 40px; border-bottom: 1px solid rgba(26, 19, 16, 0.08);">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="left">
+                    <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: #1A1310; color: #FAF5E8; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; vertical-align: middle;">J</span>
+                    <span style="display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #1A1310; margin-left: 10px; vertical-align: middle; font-family: 'Manrope', sans-serif;">O Jon Que Cortou</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px; font-family: 'Manrope', sans-serif; color: #1A1310; font-size: 15.5px; line-height: 1.65;">
+              ${content}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px;">
+                <tr>
+                  <td align="center">
+                    <a href="${linkUrl}" style="display: inline-block; text-align: center; border: 2px solid #C97B49; color: #C97B49 !important; text-decoration: none; padding: 12px 24px; border-radius: 4px; font-size: 13px; font-weight: bold; font-family: 'Manrope', sans-serif; text-transform: uppercase; letter-spacing: 0.05em;">
+                      ${linkText}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 25px 40px; background-color: #FAF5E8; border-top: 1px solid rgba(26, 19, 16, 0.08); text-align: center; font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B5A4B; line-height: 1.6;">
+              <div style="font-size: 14px; font-weight: 600; color: #1A1310; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">
+                Studio do Jon <span style="font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
+              </div>
+              <div style="margin-bottom: 15px;">
+                Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte · MG
+              </div>
+              <div style="font-size: 11px; color: #8A7866; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
+                © ${new Date().getFullYear()} Studio do Jon
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 `;
@@ -187,7 +202,9 @@ export default async function handler(req, res) {
             const customTpl = settings?.email_templates?.['birthdayEnabled'];
             const subject = (customTpl?.subject || templates.aniversario.subject).replace(/{nome}/g, firstName);
             const content = formatBody(customTpl?.body || templates.aniversario.content, firstName);
-            const emailBody = baseLayout(content, templates.aniversario.linkUrl, templates.aniversario.linkText);
+            const emailBody = customTpl?.body 
+              ? baseLayout(content, templates.aniversario.linkUrl, templates.aniversario.linkText) 
+              : content;
 
 
             const ok = await dispatchEmail({
@@ -300,7 +317,9 @@ export default async function handler(req, res) {
               } else {
                 const subject = (customTpl?.subject || templates[tplKey].subject).replace(/{nome}/g, firstName);
                 const content = formatBody(customTpl?.body || templates[tplKey].content, firstName);
-                const emailBody = baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText);
+                const emailBody = customTpl?.body
+                  ? baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText)
+                  : content;
                 payload = {
                   type: 'campanha',
                   subject: subject,

@@ -30,12 +30,21 @@ function getStandaloneWrapper(title, content) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
-  <style>${EMAIL_CSS}</style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310;">
-  <div class="mail-stage" style="width: 100%; max-width: 640px; margin: 0 auto; display: flex; flex-direction: column;">
-    ${content}
-  </div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f0eee9" style="background-color: #f0eee9;">
+    <tr>
+      <td align="center" style="padding: 40px 10px;">
+        <table width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width: 640px; max-width: 640px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);">
+          <tr>
+            <td align="left">
+              ${content}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 `;
@@ -44,79 +53,79 @@ function getStandaloneWrapper(title, content) {
 function getEmailWrapper(title, content) {
   return `
   <!DOCTYPE html>
-  <html>
+  <html lang="pt-BR">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
       body { margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; }
-      .wrapper { width: 100%; background-color: #EFE5D2; padding: 40px 0; box-sizing: border-box; }
-      .container { max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08); }
-      .header { padding: 30px 40px 20px 40px; text-align: left; border-bottom: 1px solid rgba(26, 19, 16, 0.08); }
-      .logo-mark { display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: #1A1310; color: #FAF5E8; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; margin-bottom: 10px; }
-      .logo-text { font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #1A1310; margin-left: 10px; display: inline-block; vertical-align: middle; }
-      .tag { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #C97B49; font-weight: 600; }
-      
-      .content { padding: 40px; }
-      
+      a { color: #C97B49 !important; text-decoration: none; }
       .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #C97B49; font-weight: 600; margin-bottom: 10px; }
       .display-title { font-size: 32px; font-weight: 400; color: #1A1310; margin-top: 0; margin-bottom: 20px; font-family: Georgia, serif; }
       .display-title span { font-style: italic; color: #C97B49; }
-      
       .lead { font-size: 16px; line-height: 1.6; color: #2E241E; margin-bottom: 30px; }
-      
       .appt-card { background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.12); border-radius: 6px; padding: 20px; margin-bottom: 30px; }
       .appt-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #6B5A4B; margin-bottom: 12px; font-weight: 600; }
       .appt-card .when { font-size: 18px; font-weight: 600; color: #1A1310; margin: 0 0 6px 0; }
       .appt-card .when span { color: #C97B49; font-style: italic; font-weight: 400; font-family: Georgia, serif; }
       .appt-card .where { font-size: 13px; color: #6B5A4B; margin: 0 0 16px 0; }
-      
       .meta-row { display: table; width: 100%; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 14px; margin-top: 14px; }
       .cell { display: table-cell; width: 50%; }
       .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A7866; margin-bottom: 4px; font-weight: 600; }
       .val { font-size: 14px; color: #1A1310; font-weight: 600; }
-      
       .rule { border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 30px 0; }
-      
-      .btn { display: inline-block; text-align: center; border: 2px solid #C97B49; color: #C97B49 !important; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 30px 0; transition: all 0.2s ease; }
-      
+      .btn { display: inline-block; text-align: center; border: 2px solid #C97B49; color: #C97B49 !important; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 30px 0; }
       .instructions-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #C97B49; font-weight: 600; margin-bottom: 8px; }
       .instructions-body { font-size: 15px; line-height: 1.6; color: #2E241E; }
       .instructions-body strong { color: #1A1310; }
-      
       .signoff { margin-top: 35px; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 20px; }
       .signoff .sig-name { font-size: 20px; font-family: Georgia, serif; font-style: italic; color: #1A1310; margin-bottom: 4px; }
       .signoff .sig-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B5A4B; line-height: 1.5; }
-      
-      .footer { padding: 25px 40px; background-color: #FAF5E8; border-top: 1px solid rgba(26, 19, 16, 0.08); text-align: center; }
-      .footer-brand { font-size: 14px; font-weight: 600; color: #1A1310; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; }
-      .footer-brand span { font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; }
-      .addr { font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 25px; }
-      .legal { font-size: 11px; color: #8A7866; }
     </style>
   </head>
-  <body>
-    <div class="wrapper">
-      <div class="container">
-        <div class="header">
-          <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div>
-              <div class="logo-mark" style="display: inline-block; vertical-align: middle;">J</div>
-              <div class="logo-text" style="display: inline-block; vertical-align: middle; margin-left: 8px;">O Jon Que Cortou</div>
-            </div>
-          </div>
-        </div>
-        <div class="content">
-          ${content}
-        </div>
-        <div class="footer">
-          <div class="footer-brand">Studio do Jon <span style="margin-left:5px;">— corte com leitura.</span></div>
-          <div class="addr">Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h</div>
-          <div class="legal">© ${new Date().getFullYear()} Studio do Jon</div>
-        </div>
-      </div>
-    </div>
+  <body style="margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2;">
+      <tr>
+        <td align="center" style="padding: 40px 10px;">
+          <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAF5E8" style="max-width: 600px; background-color: #FAF5E8; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);">
+            <!-- Header -->
+            <tr>
+              <td style="padding: 30px 40px 20px 40px; border-bottom: 1px solid rgba(26, 19, 16, 0.08);">
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td align="left">
+                      <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: #1A1310; color: #FAF5E8; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; vertical-align: middle;">J</span>
+                      <span style="display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #1A1310; margin-left: 10px; vertical-align: middle; font-family: 'Manrope', sans-serif;">O Jon Que Cortou</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <!-- Content -->
+            <tr>
+              <td style="padding: 40px; font-family: 'Manrope', sans-serif; color: #1A1310;">
+                ${content}
+              </td>
+            </tr>
+            <!-- Footer -->
+            <tr>
+              <td style="padding: 25px 40px; background-color: #FAF5E8; border-top: 1px solid rgba(26, 19, 16, 0.08); text-align: center; font-family: 'Manrope', sans-serif;">
+                <div style="font-size: 14px; font-weight: 600; color: #1A1310; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">
+                  Studio do Jon <span style="font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
+                </div>
+                <div style="font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 25px;">
+                  Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
+                </div>
+                <div style="font-size: 11px; color: #8A7866; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
+                  © ${new Date().getFullYear()} Studio do Jon
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
   </html>
   `;

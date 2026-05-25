@@ -466,7 +466,13 @@ const BookingPage = () => {
       }
     } catch (err) {
       console.error('Erro na autenticação do Google:', err);
-      setAuthError('Falha ao autenticar com o Google.');
+      if (err.code === 'auth/popup-closed-by-user') {
+        setAuthError('O login foi cancelado (janela fechada). Tente novamente.');
+      } else if (err.code === 'auth/unauthorized-domain') {
+        setAuthError('Falha de segurança: Este domínio não está autorizado no painel do Firebase para fazer login com Google.');
+      } else {
+        setAuthError(`Falha ao autenticar com o Google. (${err.code || err.message || 'Erro desconhecido'})`);
+      }
     } finally {
       setAuthLoading(false);
     }
