@@ -1949,7 +1949,11 @@ const AdminMobileApp = () => {
 
               <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
                 {!editingBookingId && (
-                  <button type="button" className="mobile-btn-outline" style={{ flex: 1 }} onClick={() => setShowBlockModal(true)}>
+                  <button type="button" className="mobile-btn-outline" style={{ flex: 1 }} onClick={() => {
+                    setShowAddBookingModal(false);
+                    setBlockEndTime('');
+                    setShowBlockModal(true);
+                  }}>
                     {"Bloquear Hor\u00e1rio"}
                   </button>
                 )}
