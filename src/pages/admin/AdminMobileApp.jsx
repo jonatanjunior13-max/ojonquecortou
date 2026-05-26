@@ -2073,6 +2073,7 @@ const AdminMobileApp = () => {
             </div>
           </div>
         </div>
+      )}
       {/* MODAL DE VENDA AVULSA DE PRODUTOS */}
       {showDirectSaleModal && (
         <div className="mobile-overlay" onClick={() => setShowDirectSaleModal(false)}>
