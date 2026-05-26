@@ -405,6 +405,40 @@ const AdminLayout = () => {
         <div className="admin-page-body">
           <Outlet context={{ globalData, setGlobalData }} />
         </div>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <nav className="mobile-bottom-nav">
+          <Link to="/admin/mobile" className={`mobile-nav-item ${location.pathname.includes('/mobile') ? 'active' : ''}`}>
+            <div className="icon-container">
+              <Smartphone size={20} />
+            </div>
+            <span>Hub App</span>
+          </Link>
+          <Link to="/admin/servicos" className={`mobile-nav-item ${location.pathname.includes('/servicos') ? 'active' : ''}`}>
+            <div className="icon-container">
+              <Scissors size={20} />
+            </div>
+            <span>Serviços</span>
+          </Link>
+          <Link to="/admin/clientes" className={`mobile-nav-item ${location.pathname.includes('/clientes') ? 'active' : ''}`}>
+            <div className="icon-container">
+              <Users size={20} />
+            </div>
+            <span>Clientes</span>
+          </Link>
+          <Link to="/admin/financeiro" className={`mobile-nav-item ${location.pathname.includes('/financeiro') ? 'active' : ''}`}>
+            <div className="icon-container">
+              <DollarSign size={20} />
+            </div>
+            <span>Financeiro</span>
+          </Link>
+          <Link to="/admin/configuracoes" className={`mobile-nav-item ${location.pathname.includes('/configuracoes') ? 'active' : ''}`}>
+            <div className="icon-container">
+              <Settings size={20} />
+            </div>
+            <span>Ajustes</span>
+          </Link>
+        </nav>
       </main>
     </div>
   );

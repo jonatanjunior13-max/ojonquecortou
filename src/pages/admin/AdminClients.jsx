@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db, auth, withTimeout } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
-import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload } from 'lucide-react';
+import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload, ChevronLeft } from 'lucide-react';
 import { parseClientCSV } from '../../utils/clientImport';
 import './Admin.css';
 
@@ -903,6 +903,13 @@ const AdminClients = () => {
                 ) : (
                   <div className="detail-scrollable">
                     <header className="detail-header-card">
+                      <button 
+                        type="button" 
+                        className="mobile-clients-back-btn" 
+                        onClick={() => setSelectedClientPhone(null)}
+                      >
+                        <ChevronLeft size={16} /> Voltar para Lista
+                      </button>
                       <div className="header-info">
                         <h2>{selectedClient.name}</h2>
                         <span className="email-phone-sub">

@@ -1873,7 +1873,8 @@ Jon`;
           {loading ? (
             <p>Carregando agenda...</p>
           ) : (
-            <div className="calendar-grid">
+            <div className="calendar-grid-wrapper">
+              <div className="calendar-grid">
               
               {/* Header column professionals */}
               <div 
@@ -1996,7 +1997,8 @@ Jon`;
               </div>
 
             </div>
-          )}
+          </div>
+        )}
 
         </main>
       </div>
