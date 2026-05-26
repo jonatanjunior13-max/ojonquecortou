@@ -863,64 +863,6 @@ const AdminMarketing = () => {
                   ))}
                 </div>
 
-                <hr style={{ border: '0', borderTop: '1px solid var(--rule)', margin: '30px 0' }} />
-                
-                <h4 style={{ margin: '0 0 6px 0' }}>Histórico de Notificações Recebidas pelo Administrador</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '15px', marginTop: 0 }}>
-                  Acompanhe os e-mails de solicitação de pedido, confirmação e cancelamento enviados para você.
-                </p>
-                
-                {adminNotifications.length === 0 ? (
-                  <div style={{ padding: '20px', textAlign: 'center', color: 'var(--muted)', background: 'var(--sidebar-bg)', borderRadius: '6px', border: '1px solid var(--rule)' }}>
-                    Nenhuma notificação enviada ao administrador foi registrada ainda.
-                  </div>
-                ) : (
-                  <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)' }}>
-                    <table className="admin-table" style={{ margin: 0 }}>
-                      <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)' }}>
-                        <tr>
-                          <th>Data/Hora</th>
-                          <th>Cliente</th>
-                          <th>Assunto / Tipo</th>
-                          <th style={{ textAlign: 'center' }}>Ações</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {adminNotifications.map(notif => (
-                          <tr key={notif.id}>
-                            <td>{new Date(notif.timestamp).toLocaleString('pt-BR')}</td>
-                            <td>
-                              <div style={{ fontWeight: 600 }}>{notif.clientName}</div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{notif.clientEmail}</div>
-                            </td>
-                            <td>
-                              <div style={{ fontWeight: 500 }}>{notif.subject}</div>
-                              <span className={`status-badge ${
-                                notif.type === 'solicitacao_recebida' ? 'pending' : 
-                                notif.type === 'horario_confirmado' ? 'concluded' : 'cancelled'
-                              }`} style={{ fontSize: '0.7rem', padding: '2px 6px', marginTop: '4px', display: 'inline-block' }}>
-                                {notif.type === 'solicitacao_recebida' ? 'Solicitação' : 
-                                 notif.type === 'horario_confirmado' ? 'Confirmação' : 'Cancelamento'}
-                              </span>
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              <button 
-                                className="btn btn-outline btn-small"
-                                style={{ padding: '4px 10px', fontSize: '0.75rem' }}
-                                onClick={() => {
-                                  setSelectedAdminNotif(notif);
-                                  setShowAdminNotifModal(true);
-                                }}
-                              >
-                                👁️ Ver E-mail
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
               </div>
 
               {/* Template */}
