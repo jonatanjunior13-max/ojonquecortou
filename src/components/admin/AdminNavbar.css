@@ -497,7 +497,7 @@
 
 /* === MOBILE BOTTOM NAVIGATION SHELL === */
 .mobile-bottom-nav {
-  display: none;
+  display: none !important;
 }
 
 @media (max-width: 768px) {
@@ -509,7 +509,7 @@
     height: 68px;
     background: #ffffff;
     border-top: 1.5px solid #fbcfe8;
-    display: flex;
+    display: flex !important;
     justify-content: space-around;
     align-items: center;
     z-index: 1000;
