@@ -226,7 +226,7 @@ const AdminMobileApp = () => {
           console.warn('Erro ao escutar services:', err);
         });
 
-        unsubInventory = onSnapshot(collection(db, 'inventory'), (snapshot) => {
+        unsubInventory = onSnapshot(collection(db, 'products'), (snapshot) => {
           const list = [];
           snapshot.forEach(doc => {
             list.push({ id: doc.id, ...doc.data() });
@@ -933,7 +933,7 @@ const AdminMobileApp = () => {
         
         // Baixa no estoque
         for (const prod of selectedProducts) {
-          const invRef = doc(db, 'inventory', prod.id);
+          const invRef = doc(db, 'products', prod.id);
           const currentItem = inventory.find(i => i.id === prod.id);
           if (currentItem) {
             await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
@@ -1012,7 +1012,7 @@ const AdminMobileApp = () => {
         
         // Baixa no estoque
         for (const prod of directSaleProducts) {
-          const invRef = doc(db, 'inventory', prod.id);
+          const invRef = doc(db, 'products', prod.id);
           const currentItem = inventory.find(i => i.id === prod.id);
           if (currentItem) {
             await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
