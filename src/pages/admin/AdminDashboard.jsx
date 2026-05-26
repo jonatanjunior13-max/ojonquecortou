@@ -1370,10 +1370,26 @@ Jon`;
   const handleCellContextMenu = (e, dateStr, slot, profId, appt) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Adjust position if it would overflow the viewport height
+    const menuHeight = appt ? 380 : 180;
+    let y = e.clientY;
+    if (e.clientY + menuHeight > window.innerHeight) {
+      y = window.innerHeight - menuHeight - 10;
+      if (y < 10) y = 10; // Prevent going off-screen on the top
+    }
+
+    const menuWidth = 180;
+    let x = e.clientX;
+    if (e.clientX + menuWidth > window.innerWidth) {
+      x = window.innerWidth - menuWidth - 10;
+      if (x < 10) x = 10;
+    }
+
     setContextMenu({
       visible: true,
-      x: e.clientX,
-      y: e.clientY,
+      x: x,
+      y: y,
       booking: appt || null,
       date: dateStr,
       time: slot,
