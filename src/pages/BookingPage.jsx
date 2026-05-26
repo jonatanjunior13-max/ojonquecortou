@@ -761,72 +761,162 @@ const BookingPage = () => {
     if (!selectedDate) return;
 
     const fetchBookings = async () => {
-      if (!db) {
-        setIsDemoMode(true);
-        setBookedTimes(['11:00', '14:00']);
-        return;
-      }
-
       // Timeout fallback se o Firestore travar ao ler agenda
       const bookingsTimeout = setTimeout(() => {
         console.warn('Timeout ao carregar horários. Ativando modo Demo.');
         setIsDemoMode(true);
-        setBookedTimes(['11:00', '14:00']);
         setLoading(false);
       }, 3500);
+
+      // Date calculations
+      const parts = selectedDate.split('-');
+      let weekday = 0;
+      if (parts.length === 3) {
+        const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        weekday = dateObj.getDay();
+      }
+
+      const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
+      const ALL_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
+      const activeProfs = (settings?.professionals || []).filter(p => p.active !== false);
+
+      // Helper helper to check if a professional is available at a slot
+      const checkProfAvailability = (prof, slot, bookedList) => {
+        // 1. Check daysOff
+        const daysOff = prof.daysOff !== undefined ? prof.daysOff : [0, 1];
+        if (daysOff.includes(weekday)) return false;
+
+        // 2. Check blocked dates
+        const blockedDates = prof.blockedDates || [];
+        if (blockedDates.includes(selectedDate)) return false;
+
+        // 3. Check work hours and lunch hours
+        const workStart = prof.workStart || '09:00';
+        const workEnd = prof.workEnd || '19:00';
+        const lunchStart = prof.lunchStart || '12:00';
+        const lunchEnd = prof.lunchEnd || '13:00';
+
+        const [slotH, slotM] = slot.split(':').map(Number);
+        const [startH, startM] = workStart.split(':').map(Number);
+        const [endH, endM] = workEnd.split(':').map(Number);
+        const [lunchStartH, lunchStartM] = lunchStart.split(':').map(Number);
+        const [lunchEndH, lunchEndM] = lunchEnd.split(':').map(Number);
+
+        const slotMin = slotH * 60 + slotM;
+        const startMin = startH * 60 + startM;
+        const endMin = endH * 60 + endM;
+        const lunchStartMin = lunchStartH * 60 + lunchStartM;
+        const lunchEndMin = lunchEndH * 60 + lunchEndM;
+
+        if (slotMin < startMin || slotMin >= endMin) return false;
+        if (slotMin >= lunchStartMin && slotMin < lunchEndMin) return false;
+
+        // 4. Check blockedWeekdayHours (recurring)
+        const weekdayBlocks = prof.blockedWeekdayHours || [];
+        let isBlockedWeekday = false;
+        weekdayBlocks.forEach(block => {
+          const segs = block.split('-');
+          const w = segs[0]; const start = segs[1]; const end = segs[2] || null;
+          if (Number(w) === weekday && inRange(slot, start, end)) {
+            isBlockedWeekday = true;
+          }
+        });
+        if (isBlockedWeekday) return false;
+
+        // 5. Check blockedSpecificHours (pontual)
+        const specificBlocks = prof.blockedSpecificHours || [];
+        let isBlockedSpecific = false;
+        specificBlocks.forEach(block => {
+          if (!block.startsWith(selectedDate)) return;
+          const rest = block.substring(selectedDate.length + 1);
+          const restParts = rest.split('-');
+          const start = restParts[0]; const end = restParts[1] || null;
+          if (inRange(slot, start, end)) {
+            isBlockedSpecific = true;
+          }
+        });
+        if (isBlockedSpecific) return false;
+
+        // 6. Check existing booking at this slot
+        if (bookedList.includes(slot)) return false;
+
+        return true;
+      };
+
+      if (!db || isDemoMode) {
+        clearTimeout(bookingsTimeout);
+        setIsDemoMode(true);
+        setLoading(true);
+
+        const localBookings = JSON.parse(localStorage.getItem('demo_bookings')) || [];
+        const bookingsByProf = {};
+        localBookings.forEach(b => {
+          if (b.date === selectedDate && b.status !== 'cancelado') {
+            const profId = b.professionalId || 'jon';
+            if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
+            bookingsByProf[profId].push(b.time);
+          }
+        });
+
+        const booked = [];
+        ALL_SLOTS.forEach(slot => {
+          const targetProf = selectedProfessional || activeProfs.find(p => p.id === 'jon') || activeProfs[0];
+          if (!targetProf) {
+            booked.push(slot);
+            return;
+          }
+
+          const isTargetAvailable = checkProfAvailability(targetProf, slot, bookingsByProf[targetProf.id] || []);
+          if (!isTargetAvailable) {
+            // Se o profissional alvo estiver bloqueado, verifique se há OUTROS profissionais disponíveis
+            const othersAvailable = activeProfs.filter(p => p.id !== targetProf.id && checkProfAvailability(p, slot, bookingsByProf[p.id] || []));
+            if (othersAvailable.length === 0) {
+              booked.push(slot);
+            }
+          }
+        });
+
+        setBookedTimes(booked);
+        setLoading(false);
+        return;
+      }
 
       try {
         setLoading(true);
         const q = query(
           collection(db, 'bookings'),
-          where('date', '==', selectedDate),
-          where('professionalId', '==', selectedProfessional?.id || 'jon')
+          where('date', '==', selectedDate)
         );
         const querySnapshot = await withTimeout(getDocs(q), 3500);
         clearTimeout(bookingsTimeout);
-        const booked = [];
+        
+        const bookingsByProf = {};
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.status !== 'cancelado') {
-            booked.push(data.time);
+            const profId = data.professionalId || 'jon';
+            if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
+            bookingsByProf[profId].push(data.time);
           }
         });
 
-        // Adicionar bloqueios customizados do profissional
-        if (selectedProfessional) {
-          const parts = selectedDate.split('-');
-          if (parts.length === 3) {
-            const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-            const weekday = dateObj.getDay();
-
-            // Helper: slot inside [start, end) window
-            const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
-
-            // 1. Bloqueios recorrentes — formato: "weekday-HH:MM-HH:MM" ou legado "weekday-HH:MM"
-            const weekdayBlocks = selectedProfessional.blockedWeekdayHours || [];
-            weekdayBlocks.forEach(block => {
-              const segs = block.split('-');
-              const w = segs[0]; const start = segs[1]; const end = segs[2] || null;
-              if (Number(w) !== weekday) return;
-              // push all TIME_SLOTS that fall in range
-              ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].forEach(slot => {
-                if (inRange(slot, start, end)) booked.push(slot);
-              });
-            });
-
-            // 2. Bloqueios pontuais — formato: "YYYY-MM-DD-HH:MM-HH:MM" ou legado "YYYY-MM-DD-HH:MM"
-            const specificBlocks = selectedProfessional.blockedSpecificHours || [];
-            specificBlocks.forEach(block => {
-              if (!block.startsWith(selectedDate)) return;
-              const rest = block.substring(selectedDate.length + 1);
-              const restParts = rest.split('-');
-              const start = restParts[0]; const end = restParts[1] || null;
-              ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].forEach(slot => {
-                if (inRange(slot, start, end)) booked.push(slot);
-              });
-            });
+        const booked = [];
+        ALL_SLOTS.forEach(slot => {
+          const targetProf = selectedProfessional || activeProfs.find(p => p.id === 'jon') || activeProfs[0];
+          if (!targetProf) {
+            booked.push(slot);
+            return;
           }
-        }
+
+          const isTargetAvailable = checkProfAvailability(targetProf, slot, bookingsByProf[targetProf.id] || []);
+          if (!isTargetAvailable) {
+            // Se o profissional selecionado estiver indisponível/bloqueado, verifique se há outros ativos livres
+            const othersAvailable = activeProfs.filter(p => p.id !== targetProf.id && checkProfAvailability(p, slot, bookingsByProf[p.id] || []));
+            if (othersAvailable.length === 0) {
+              booked.push(slot);
+            }
+          }
+        });
 
         setBookedTimes(booked);
         setIsDemoMode(false);
@@ -834,37 +924,41 @@ const BookingPage = () => {
         clearTimeout(bookingsTimeout);
         console.warn('Erro ao conectar ao Firebase, ativando modo Demo:', err);
         setIsDemoMode(true);
-        const bookedFallback = ['11:00', '14:00'];
-        if (selectedProfessional) {
-          const parts = selectedDate.split('-');
-          if (parts.length === 3) {
-            const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-            const weekday = dateObj.getDay();
-            const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
-            const ALL_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
-            (selectedProfessional.blockedWeekdayHours || []).forEach(block => {
-              const segs = block.split('-');
-              const w = segs[0]; const start = segs[1]; const end = segs[2] || null;
-              if (Number(w) !== weekday) return;
-              ALL_SLOTS.forEach(slot => { if (inRange(slot, start, end)) bookedFallback.push(slot); });
-            });
-            (selectedProfessional.blockedSpecificHours || []).forEach(block => {
-              if (!block.startsWith(selectedDate)) return;
-              const rest = block.substring(selectedDate.length + 1);
-              const restParts = rest.split('-');
-              const start = restParts[0]; const end = restParts[1] || null;
-              ALL_SLOTS.forEach(slot => { if (inRange(slot, start, end)) bookedFallback.push(slot); });
-            });
+        
+        const localBookings = JSON.parse(localStorage.getItem('demo_bookings')) || [];
+        const bookingsByProf = {};
+        localBookings.forEach(b => {
+          if (b.date === selectedDate && b.status !== 'cancelado') {
+            const profId = b.professionalId || 'jon';
+            if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
+            bookingsByProf[profId].push(b.time);
           }
-        }
-        setBookedTimes(bookedFallback);
+        });
+
+        const booked = [];
+        ALL_SLOTS.forEach(slot => {
+          const targetProf = selectedProfessional || activeProfs.find(p => p.id === 'jon') || activeProfs[0];
+          if (!targetProf) {
+            booked.push(slot);
+            return;
+          }
+
+          const isTargetAvailable = checkProfAvailability(targetProf, slot, bookingsByProf[targetProf.id] || []);
+          if (!isTargetAvailable) {
+            const othersAvailable = activeProfs.filter(p => p.id !== targetProf.id && checkProfAvailability(p, slot, bookingsByProf[p.id] || []));
+            if (othersAvailable.length === 0) {
+              booked.push(slot);
+            }
+          }
+        });
+        setBookedTimes(booked);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBookings();
-  }, [selectedDate, selectedProfessional]);
+  }, [selectedDate, selectedProfessional, settings]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
