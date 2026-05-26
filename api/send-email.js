@@ -313,46 +313,55 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
   } catch (err) {
     console.error('Falha ao enviar e-mail de notificação para o admin:', err);
   }
+}
 
-  // Disparar notificação via WhatsApp para o administrador (Jon)
-  if (settings && settings.evolutionApiUrl && settings.evolutionApiKey && settings.evolutionInstanceName) {
-    try {
-      const waUrl = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
-      const waHeaders = {
-        'Content-Type': 'application/json',
-        'apikey': settings.evolutionApiKey
-      };
-      
-      let waText = '';
-      if (type === 'solicitacao_recebida') {
-        waText = `🔔 *Nova Solicitação de Agendamento!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
-      } else if (type === 'horario_confirmado') {
-        waText = `✅ *Agendamento Confirmado!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
-      } else if (type === 'agendamento_cancelado') {
-        const by = data.cancelledBy === 'client' ? 'pelo cliente' : 'pelo administrador';
-        waText = `❌ *Agendamento Cancelado (${by})!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
-      } else if (type === 'agendamento_alterado') {
-        waText = `⚠️ *Pedido de Remarcação!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
-      }
+async function sendAdminWhatsAppNotification(type, data, settings) {
+  if (!settings || !settings.evolutionApiUrl || !settings.evolutionApiKey || !settings.evolutionInstanceName) {
+    console.log('Evolution API settings missing or incomplete. Skipping WhatsApp notification.');
+    return;
+  }
 
-      if (waText) {
-        const response = await fetch(waUrl, {
-          method: 'POST',
-          headers: waHeaders,
-          body: JSON.stringify({
-            number: '553135866673',
-            text: waText
-          })
-        });
-        if (response.ok) {
-          console.log('Notificação de WhatsApp enviada para o administrador (Salão) com sucesso.');
-        } else {
-          console.error('Erro ao enviar notificação de WhatsApp para o admin:', await response.text());
-        }
-      }
-    } catch (waErr) {
-      console.error('Falha de rede ao enviar notificação de WhatsApp para o admin:', waErr);
+  const clientName = data.clientName || 'Cliente';
+  const serviceName = data.serviceName || 'Serviço';
+  const formattedDate = data.date ? (data.date.includes('-') ? data.date.split('-').reverse().join('/') : data.date) : '';
+  const time = data.time || '';
+
+  try {
+    const waUrl = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
+    const waHeaders = {
+      'Content-Type': 'application/json',
+      'apikey': settings.evolutionApiKey
+    };
+    
+    let waText = '';
+    if (type === 'solicitacao_recebida') {
+      waText = `🔔 *Nova Solicitação de Agendamento!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
+    } else if (type === 'horario_confirmado') {
+      waText = `✅ *Agendamento Confirmado!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
+    } else if (type === 'agendamento_cancelado') {
+      const by = data.cancelledBy === 'client' ? 'pelo cliente' : 'pelo administrador';
+      waText = `❌ *Agendamento Cancelado (${by})!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
+    } else if (type === 'agendamento_alterado') {
+      waText = `⚠️ *Pedido de Remarcação!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
     }
+
+    if (waText) {
+      const response = await fetch(waUrl, {
+        method: 'POST',
+        headers: waHeaders,
+        body: JSON.stringify({
+          number: '553135866673',
+          text: waText
+        })
+      });
+      if (response.ok) {
+        console.log('Notificação de WhatsApp enviada para o administrador (Salão) com sucesso.');
+      } else {
+        console.error('Erro ao enviar notificação de WhatsApp para o admin:', await response.text());
+      }
+    }
+  } catch (waErr) {
+    console.error('Falha de rede ao enviar notificação de WhatsApp para o admin:', waErr);
   }
 }
 
@@ -384,6 +393,28 @@ export default async function handler(req, res) {
   }
 
 
+  // Carregar settings do Firestore do estúdio
+  let settings = null;
+  if (db) {
+    try {
+      const settingsDoc = await getDoc(doc(db, 'settings', 'studio'));
+      if (settingsDoc.exists()) {
+        settings = settingsDoc.data();
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar settings:', e);
+    }
+  }
+
+  // Disparar notificação de WhatsApp de forma 100% confiável independente do status SMTP/email
+  if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado') {
+    try {
+      await sendAdminWhatsAppNotification(type, data, settings);
+    } catch (waErr) {
+      console.error('Erro ao enviar notificação instantânea de WhatsApp para o admin:', waErr);
+    }
+  }
+
   // Retrieve SMTP variables from environment
   const smtpHost = process.env.SMTP_HOST;
   const smtpPort = process.env.SMTP_PORT || '587';
@@ -401,11 +432,10 @@ export default async function handler(req, res) {
   if (!sendReal) {
     console.log('Simulação de envio ativa (SMTP não configurado ou desativado). Para:', clientEmail);
     if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
-      console.log('Simulação de notificação para o administrador:', adminEmail, 'Tipo:', type);
+      console.log('Simulação de notificação para o administrador (e-mail):', adminEmail, 'Tipo:', type);
     }
     return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
   }
-
 
   const transporter = nodemailer.createTransport({
     host: smtpHost,
@@ -421,19 +451,6 @@ export default async function handler(req, res) {
   const firstName = clientName ? clientName.split(' ')[0] : 'Cliente';
 
   let currentType = type;
-
-  // Carregar settings do Firestore se existir custom_automations para o type
-  let settings = null;
-  if (db) {
-    try {
-      const settingsDoc = await getDoc(doc(db, 'settings', 'studio'));
-      if (settingsDoc.exists()) {
-        settings = settingsDoc.data();
-      }
-    } catch (e) {
-      console.warn('Erro ao carregar settings:', e);
-    }
-  }
 
   const customAutomationHtml = settings?.custom_automations?.[type];
   if (customAutomationHtml) {
