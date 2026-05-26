@@ -415,6 +415,7 @@
   flex: 1;
   overflow-y: auto;
   background: white;
+  padding-bottom: 80px; /* Garante que o último slot não fique atrás da nav bar */
 }
 
 .mobile-timeline-row {
