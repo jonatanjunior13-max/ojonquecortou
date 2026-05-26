@@ -28,6 +28,10 @@ const services = SEED_SERVICES.map(s => ({
 
 const ServicesPage = () => {
   const [activeFilter, setActiveFilter] = useState('Todos');
+  const [expandedCards, setExpandedCards] = useState({});
+  const toggleCard = (id) => {
+    setExpandedCards(prev => ({ ...prev, [id]: !prev[id] }));
+  };
   const categories = ['Todos', ...new Set(services.map((s) => s.category))];
   const filtered = activeFilter === 'Todos' ? services : services.filter((s) => s.category === activeFilter);
 
@@ -76,9 +80,23 @@ const ServicesPage = () => {
                 </div>
                 <h2 className="sdc-name">{service.name}</h2>
                 <p className="sdc-tagline">{service.tagline}</p>
-                <p className="sdc-description">{service.description}</p>
+                <div className="sdc-desc-container">
+                  <p className={`sdc-description ${expandedCards[service.id] ? 'expanded' : 'collapsed'}`}>
+                    {service.description}
+                  </p>
+                  {service.description && service.description.length > 100 && (
+                    <button 
+                      type="button" 
+                      className="btn-toggle-desc" 
+                      onClick={() => toggleCard(service.id)}
+                      style={{ background: 'none', border: 'none', color: service.highlight ? 'var(--color-yellow)' : 'var(--color-accent)', cursor: 'pointer', fontSize: '0.85rem', padding: '4px 0', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, marginBottom: '1rem' }}
+                    >
+                      {expandedCards[service.id] ? 'Ver menos ▲' : 'Ver mais ▼'}
+                    </button>
+                  )}
+                </div>
                 
-                {service.includes && service.includes.length > 0 && (
+                {service.includes && service.includes.length > 0 && (expandedCards[service.id] || !service.description || service.description.length <= 100) && (
                   <div className="sdc-includes">
                     <p className="sdc-includes-title">O que está incluso:</p>
                     <ul>

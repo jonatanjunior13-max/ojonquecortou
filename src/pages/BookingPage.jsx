@@ -1280,7 +1280,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             </div>
                           )}
 
-                          {service.includes && service.includes.length > 0 && (
+                          {service.includes && service.includes.length > 0 && (isExpanded || !service.description || service.description.length <= 120) && (
                             <div className="booking-service-includes">
                               <p className="booking-service-includes-title">O que está incluso:</p>
                               <ul>

@@ -1199,6 +1199,25 @@ const AdminMobileApp = () => {
     }
   };
 
+  // Marcar Falta (No-Show)
+  const markAsNoShow = async (bookingId) => {
+    try {
+      if (isDemoMode) {
+        const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'faltou' } : b);
+        setBookings(updated);
+        localStorage.setItem('demo_bookings', JSON.stringify(updated));
+      } else {
+        const docRef = doc(db, 'bookings', bookingId);
+        await updateDoc(docRef, { status: 'faltou' });
+      }
+      
+      setSelectedBooking(prev => ({ ...prev, status: 'faltou' }));
+      alert('Agendamento marcado como falta.');
+    } catch (e) {
+      alert('Erro ao marcar falta.');
+    }
+  };
+
   // 9. Comissões do Jon (60% padrão)
   const getCommissionData = () => {
     const now = new Date();
@@ -1533,16 +1552,8 @@ const AdminMobileApp = () => {
             </div>
           </div>
 
-          {/* Banner de Pesquisa */}
-          <div className="mobile-survey-card" onClick={() => alert('Obrigado pelo feedback!')}>
-            <div className="mobile-survey-content">
-              <FileText size={24} style={{ color: 'var(--mobile-primary)' }} />
-              <div className="mobile-survey-text">
-                <h5>Queremos te conhecer melhor!</h5>
-                <p>Responda nossa pesquisa de 2 min</p>
-              </div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+          <div style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--mobile-muted)', paddingLeft: '8px', marginBottom: '8px' }}>
+            Opções do menu
           </div>
 
           {/* Lista de links de Menu */}
@@ -1571,19 +1582,67 @@ const AdminMobileApp = () => {
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
 
+            <div className="mobile-menu-item" onClick={() => navigate('/admin/financeiro?tab=fechadas')}>
+              <div className="mobile-menu-item-left">
+                <FileText size={18} />
+                <span>Contas fechadas</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
             <div className="mobile-menu-item" onClick={() => navigate('/admin/configuracoes')}>
               <div className="mobile-menu-item-left">
                 <Settings size={18} />
-                <span>Configurações do WhatsApp</span>
+                <span>Configurações</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => setShowNotificationsModal(true)}>
+              <div className="mobile-menu-item-left">
+                <Bell size={18} />
+                <span>Notificações</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => alert('Central de Ajuda: Entre em contato pelo suporte no WhatsApp.')}>
+              <div className="mobile-menu-item-left">
+                <HelpCircle size={18} />
+                <span>Central de Ajuda</span>
               </div>
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
           </div>
 
-          {/* Retorno para o Painel Web */}
-          <button className="mobile-btn-solid" style={{ width: '100%', padding: '14px', borderRadius: '10px' }} onClick={() => navigate('/admin')}>
-            Painel de Atendimento (Web / Desktop)
-          </button>
+          <div style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--mobile-muted)', paddingLeft: '8px', marginBottom: '8px', marginTop: '16px' }}>
+            Outras opções
+          </div>
+
+          <div className="mobile-menu-list">
+            <div className="mobile-menu-item" onClick={() => navigate('/admin')}>
+              <div className="mobile-menu-item-left" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Painel de Atendimento</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--mobile-muted)', fontWeight: 'normal' }}>Acesse o Painel de Atendimento na web</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => window.open('/', '_blank')}>
+              <div className="mobile-menu-item-left" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Ver meu site</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--mobile-muted)', fontWeight: 'normal' }}>Acesse seu site e compartilhe com os clientes</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={async () => { try { await auth.signOut(); navigate('/admin/login'); } catch (e) { console.error(e); } }}>
+              <div className="mobile-menu-item-left">
+                <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--mobile-red)' }}>Sair</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+          </div>
         </div>
       )}
 
@@ -1728,6 +1787,11 @@ const AdminMobileApp = () => {
                 {selectedBooking.status !== 'bloqueado' && (
                   <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', flex: '1 1 40%' }} onClick={() => cancelBooking(selectedBooking.id)}>
                     Cancelar Horário
+                  </button>
+                )}
+                {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && selectedBooking.status !== 'faltou' && selectedBooking.status !== 'cancelado' && (
+                  <button className="mobile-btn-outline" style={{ borderColor: '#6b7280', color: '#6b7280', flex: '1 1 40%' }} onClick={() => markAsNoShow(selectedBooking.id)}>
+                    Marcar Falta
                   </button>
                 )}
                 {selectedBooking.status === 'bloqueado' && (

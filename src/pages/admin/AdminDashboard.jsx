@@ -201,6 +201,8 @@ const AdminDashboard = () => {
   const [selectedProfs, setSelectedProfs] = useState(['jon']);
   const [miniCalDate, setMiniCalDate] = useState(() => new Date());
   const [clipboard, setClipboard] = useState(null); // { booking: obj, action: 'copy'|'cut' }
+  const [showDetailedStats, setShowDetailedStats] = useState(false);
+  const [statsScope, setStatsScope] = useState('dia'); // 'dia', 'semana', 'mes'
 
   // Tag helper in edit modal
   const [tagInputOpen, setTagInputOpen] = useState(false);
@@ -1452,66 +1454,160 @@ Jon`;
     });
   };
 
+  const getBookingsInScope = () => {
+    const curYear = currentDate.getFullYear();
+    const curMonth = currentDate.getMonth();
+    
+    if (statsScope === 'dia') {
+      const targetStr = currentDate.toISOString().split('T')[0];
+      return bookings.filter(b => b.date === targetStr);
+    } else if (statsScope === 'semana') {
+      const d = new Date(currentDate);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const startOfWeek = new Date(d.setDate(diff));
+      startOfWeek.setHours(0,0,0,0);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endOfWeek.setHours(23,59,59,999);
+      
+      return bookings.filter(b => {
+        if (!b.date) return false;
+        const bDate = new Date(b.date + 'T00:00:00');
+        return bDate >= startOfWeek && bDate <= endOfWeek;
+      });
+    } else {
+      return bookings.filter(b => {
+        if (!b.date) return false;
+        const [y, m] = b.date.split('-').map(Number);
+        return y === curYear && (m - 1) === curMonth;
+      });
+    }
+  };
+
+  const bookingsInScope = getBookingsInScope();
+  const statsCounts = {
+    pendente: bookingsInScope.filter(b => b.status === 'pendente').length,
+    confirmado: bookingsInScope.filter(b => b.status === 'confirmado').length,
+    finalizado: bookingsInScope.filter(b => b.status === 'finalizado').length,
+    cancelado: bookingsInScope.filter(b => b.status === 'cancelado').length,
+    faltou: bookingsInScope.filter(b => b.status === 'faltou').length,
+  };
+
   const filteredBookingsList = getFilteredBookings();
 
   return (
     <div className="admin-dashboard">
       
-      {/* Cards de Métricas */}
-      <section className="admin-stats-grid">
-        <div className="stat-card">
-          <h3>Agendamentos Ativos (Dia)</h3>
-          <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
+      {/* Counters Bar */}
+      <div className="status-counters-bar">
+        <div className="status-counters-left">
+          <div className="status-counter-item pendente">
+            <span className="status-counter-dot" />
+            <span className="status-counter-label">Pendentes:</span>
+            <span className="status-counter-val">{statsCounts.pendente}</span>
+          </div>
+          <div className="status-counter-item confirmado">
+            <span className="status-counter-dot" />
+            <span className="status-counter-label">Confirmados:</span>
+            <span className="status-counter-val">{statsCounts.confirmado}</span>
+          </div>
+          <div className="status-counter-item finalizado">
+            <span className="status-counter-dot" />
+            <span className="status-counter-label">Finalizados:</span>
+            <span className="status-counter-val">{statsCounts.finalizado}</span>
+          </div>
+          <div className="status-counter-item cancelado">
+            <span className="status-counter-dot" />
+            <span className="status-counter-label">Cancelados:</span>
+            <span className="status-counter-val">{statsCounts.cancelado}</span>
+          </div>
+          <div className="status-counter-item faltou">
+            <span className="status-counter-dot" />
+            <span className="status-counter-label">Faltas:</span>
+            <span className="status-counter-val">{statsCounts.faltou}</span>
+          </div>
         </div>
-        <div className="stat-card">
-          <h3>Aguardando Confirmação</h3>
-          <div className="value" style={{ color: '#ecc94b' }}>{pendingCount}</div>
+        <div className="status-counters-right">
+          <select 
+            value={statsScope} 
+            onChange={e => setStatsScope(e.target.value)}
+            className="stats-scope-select"
+          >
+            <option value="dia">Dia</option>
+            <option value="semana">Semana</option>
+            <option value="mes">Mês</option>
+          </select>
+          <button 
+            type="button" 
+            className="btn btn-ghost toggle-details-stats-btn"
+            style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+            onClick={() => setShowDetailedStats(prev => !prev)}
+          >
+            {showDetailedStats ? 'Ocultar Detalhes' : 'Ver Métricas e Nívers'}
+          </button>
         </div>
-        <div className="stat-card">
-          <h3>Receita Consolidada (Semana)</h3>
-          <div className="value" style={{ color: '#48bb78' }}>R$ {revenueThisWeek}</div>
-        </div>
-      </section>
+      </div>
 
-      {/* Bloco de Aniversariantes do Mês */}
-      {birthdayClients.length > 0 && (
-        <section className="dashboard-birthdays-panel">
-          <div className="birthdays-panel-header">
-            <div className="panel-title-group">
-              <Sparkles size={18} className="birthday-decor-icon" />
-              <h3>Aniversariantes de {new Date().toLocaleDateString('pt-BR', { month: 'long' })}</h3>
-              <span className="birthday-count-tag">{birthdayClients.length}</span>
+      {showDetailedStats && (
+        <>
+          {/* Cards de Métricas */}
+          <section className="admin-stats-grid">
+            <div className="stat-card">
+              <h3>Agendamentos Ativos (Dia)</h3>
+              <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
             </div>
-            <p className="panel-subtitle">Envie uma mensagem carinhosa pelo WhatsApp com apenas um clique!</p>
-          </div>
-          
-          <div className="birthdays-carousel-row">
-            {birthdayClients.map(c => {
-              const day = c.aniversario.split('-')[2];
-              const initials = c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-              
-              return (
-                <div key={c.phone} className="birthday-member-card">
-                  <div className="member-avatar-badge">
-                    {initials}
-                    <span className="balloon-emoji">🎈</span>
-                  </div>
-                  <div className="member-details">
-                    <strong className="member-name">{c.name}</strong>
-                    <span className="member-date">Dia {day}</span>
-                  </div>
-                  <button 
-                    onClick={() => handleWhatsAppCongratulate(c)}
-                    className="btn-birthday-action"
-                    title={`Enviar parabéns para ${c.name}`}
-                  >
-                    <Send size={12} /> Parabenizar
-                  </button>
+            <div className="stat-card">
+              <h3>Aguardando Confirmação</h3>
+              <div className="value" style={{ color: '#ecc94b' }}>{pendingCount}</div>
+            </div>
+            <div className="stat-card">
+              <h3>Receita Consolidada (Semana)</h3>
+              <div className="value" style={{ color: '#48bb78' }}>R$ {revenueThisWeek}</div>
+            </div>
+          </section>
+
+          {/* Bloco de Aniversariantes do Mês */}
+          {birthdayClients.length > 0 && (
+            <section className="dashboard-birthdays-panel">
+              <div className="birthdays-panel-header">
+                <div className="panel-title-group">
+                  <Sparkles size={18} className="birthday-decor-icon" />
+                  <h3>Aniversariantes de {new Date().toLocaleDateString('pt-BR', { month: 'long' })}</h3>
+                  <span className="birthday-count-tag">{birthdayClients.length}</span>
                 </div>
-              );
-            })}
-          </div>
-        </section>
+                <p className="panel-subtitle">Envie uma mensagem carinhosa pelo WhatsApp com apenas um clique!</p>
+              </div>
+              
+              <div className="birthdays-carousel-row">
+                {birthdayClients.map(c => {
+                  const day = c.aniversario.split('-')[2];
+                  const initials = c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+                  
+                  return (
+                    <div key={c.phone} className="birthday-member-card">
+                      <div className="member-avatar-badge">
+                        {initials}
+                        <span className="balloon-emoji">🎈</span>
+                      </div>
+                      <div className="member-details">
+                        <strong className="member-name">{c.name}</strong>
+                        <span className="member-date">Dia {day}</span>
+                      </div>
+                      <button 
+                        onClick={() => handleWhatsAppCongratulate(c)}
+                        className="btn-birthday-action"
+                        title={`Enviar parabéns para ${c.name}`}
+                      >
+                        <Send size={12} /> Parabenizar
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+        </>
       )}
 
       {/* Split layout: sidebar + agenda */}
@@ -1984,6 +2080,57 @@ Jon`;
               <li className="context-menu-item" onClick={() => handleStartEditBooking(contextMenu.booking)}>
                 <Edit size={14} /> Ver/Editar Agendamento
               </li>
+              <li className="context-menu-item" onClick={() => {
+                setSelectedSlot({
+                  date: contextMenu.booking.date,
+                  time: contextMenu.booking.time,
+                  profissional: contextMenu.booking.profissional || 'jon',
+                  dateFormatted: contextMenu.booking.date
+                });
+                setNewBooking({
+                  clientName: '',
+                  clientPhone: '',
+                  clientEmail: '',
+                  serviceName: services[0]?.name || '',
+                  servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+                  duration: services[0]?.duration || 60,
+                  date: contextMenu.booking.date,
+                  time: contextMenu.booking.time,
+                  notes: '',
+                  profissional: contextMenu.booking.profissional || 'jon'
+                });
+                setContextMenu({ visible: false });
+                setShowAddModal(true);
+              }}>
+                <Plus size={14} /> Novo Agendamento
+              </li>
+              <li className="context-menu-item" onClick={() => {
+                setSelectedSlot({
+                  date: contextMenu.booking.date,
+                  time: contextMenu.booking.time,
+                  profissional: contextMenu.booking.profissional || 'jon',
+                  dateFormatted: contextMenu.booking.date
+                });
+                setContextMenu({ visible: false });
+                setShowSlotActionModal(true);
+              }}>
+                <Lock size={14} /> Registrar Ausência
+              </li>
+              {contextMenu.booking.status === 'bloqueado' ? (
+                <li className="context-menu-item" onClick={() => {
+                  handleUpdateStatus(contextMenu.booking.id, 'cancelado');
+                  setContextMenu({ visible: false });
+                }}>
+                  <Unlock size={14} /> Registrar Liberação de Horário
+                </li>
+              ) : (
+                <li className="context-menu-item" onClick={() => {
+                  handleUpdateStatus(contextMenu.booking.id, 'faltou');
+                  setContextMenu({ visible: false });
+                }}>
+                  <X size={14} /> Marcar Falta
+                </li>
+              )}
               <li className="context-menu-item" style={{ zIndex: 1100 }}>
                 <RefreshCw size={14} /> Alterar Status
                 <span className="context-menu-arrow">▶</span>
@@ -1992,6 +2139,7 @@ Jon`;
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'confirmado')}>Confirmado</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'finalizado')}>Finalizado</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'cancelado')}>Cancelado</li>
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'faltou')}>Cliente faltou</li>
                 </ul>
               </li>
               {contextMenu.booking.status === 'confirmado' && (
@@ -2335,6 +2483,7 @@ Jon`;
                     <option value="confirmado">Confirmado</option>
                     <option value="cancelado">Cancelado</option>
                     <option value="finalizado">Finalizado</option>
+                    <option value="faltou">Cliente faltou</option>
                   </select>
                 </div>
 

@@ -278,6 +278,12 @@
   align-items: flex-start;
 }
 
+.appt-card.faltou {
+  background: repeating-linear-gradient(45deg, #718096, #718096 10px, #4a5568 10px, #4a5568 20px);
+  border-left: 4px solid #fc8181;
+  opacity: 0.65;
+}
+
 .appt-card .appt-time {
   font-weight: 700;
   display: block;
@@ -2502,6 +2508,7 @@
 .appt-status-dot.confirmado { background-color: #9ae6b4; }
 .appt-status-dot.finalizado { background-color: #cbd5e0; }
 .appt-status-dot.bloqueado { background-color: #a0aec0; }
+.appt-status-dot.faltou { background-color: #fc8181; }
 
 /* Left-Click Popover Details Tooltip */
 .booking-popover {
