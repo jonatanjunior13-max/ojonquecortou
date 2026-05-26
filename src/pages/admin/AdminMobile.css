@@ -735,7 +735,7 @@
 }
 
 /* Bottom Nav bar styling */
-.mobile-bottom-nav {
+.mobile-app-wrapper .mobile-bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -750,7 +750,7 @@
   box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
 }
 
-.mobile-nav-item {
+.mobile-app-wrapper .mobile-nav-item {
   background: none;
   border: none;
   display: flex;
@@ -764,7 +764,7 @@
   text-decoration: none;
 }
 
-.mobile-nav-item .icon-container {
+.mobile-app-wrapper .mobile-nav-item .icon-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -774,18 +774,18 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.mobile-nav-item span {
+.mobile-app-wrapper .mobile-nav-item span {
   font-size: 0.7rem;
   font-weight: 700;
   transition: color 0.2s;
 }
 
 /* Active bottom navigation */
-.mobile-nav-item.active {
+.mobile-app-wrapper .mobile-nav-item.active {
   color: var(--mobile-primary);
 }
 
-.mobile-nav-item.active .icon-container {
+.mobile-app-wrapper .mobile-nav-item.active .icon-container {
   background-color: var(--mobile-primary-light);
   color: var(--mobile-primary);
 }
