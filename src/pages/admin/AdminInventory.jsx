@@ -203,7 +203,7 @@ const AdminInventory = () => {
         </div>
         <div className="stat-card">
           <h3>Valor Comercial em Estoque</h3>
-          <div className="value" style={{ color: '#48bb78' }}>R$ {totalValue}</div>
+          <div className="value" style={{ color: '#48bb78' }}>R$ {totalValue.toFixed(2)}</div>
         </div>
       </section>
 
@@ -302,9 +302,9 @@ const AdminInventory = () => {
                         )}
                       </td>
                       <td style={{ color: 'var(--text-muted)' }}>{p.minStock} unid.</td>
-                      <td>R$ {p.costPrice}</td>
-                      <td>R$ {p.sellingPrice}</td>
-                      <td style={{ color: '#48bb78', fontWeight: 600 }}>R$ {p.sellingPrice - p.costPrice}</td>
+                      <td>R$ {Number(p.costPrice).toFixed(2)}</td>
+                      <td>R$ {Number(p.sellingPrice).toFixed(2)}</td>
+                      <td style={{ color: '#48bb78', fontWeight: 600 }}>R$ {(Number(p.sellingPrice) - Number(p.costPrice)).toFixed(2)}</td>
                       <td>
                         <span className={`stock-badge ${isLow ? 'low' : 'normal'}`}>
                           {isLow ? 'Estoque Baixo' : 'Normal'}
