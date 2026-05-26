@@ -135,6 +135,7 @@ const AdminMobileApp = () => {
   const pendingCount = pendingRequests.length;
 
   const [blockMotive, setBlockMotive] = useState('Almoço');
+  const [blockEndTime, setBlockEndTime] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('pix');
   const [sendingMsgStatus, setSendingMsgStatus] = useState('');
 
@@ -765,34 +766,48 @@ const AdminMobileApp = () => {
 
   const submitBlock = async (e) => {
     if (e) e.preventDefault();
-    const payload = {
+
+    // Gerar todos os slots de hora cheia entre início e fim
+    const ALL_HOUR_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
+    const startTime = newBooking.time || '08:00';
+    const endTime = blockEndTime || startTime;
+    const slotsToBlock = ALL_HOUR_SLOTS.filter(slot => slot >= startTime && slot <= endTime);
+    if (slotsToBlock.length === 0) slotsToBlock.push(startTime);
+
+    const basePayload = {
       clientName: 'Horário Bloqueado',
       clientPhone: '00000000000',
       clientEmail: '',
-      service: {
-        name: 'Bloqueio Administrativo',
-        price: 0
-      },
+      service: { name: 'Bloqueio Administrativo', price: 0 },
       date: newBooking.date,
-      time: newBooking.time,
       notes: blockMotive,
       status: 'bloqueado',
+      professionalId: 'jon',
       createdAt: new Date().toISOString()
     };
 
     try {
       if (isDemoMode) {
-        const local = [...bookings, { id: 'demo-block-' + Date.now(), ...payload }];
+        const newEntries = slotsToBlock.map((slot, i) => ({
+          id: 'demo-block-' + Date.now() + '-' + i,
+          ...basePayload,
+          time: slot
+        }));
+        const local = [...bookings, ...newEntries];
         setBookings(local);
         localStorage.setItem('demo_bookings', JSON.stringify(local));
       } else {
-        await addDoc(collection(db, 'bookings'), payload);
+        await Promise.all(slotsToBlock.map(slot =>
+          addDoc(collection(db, 'bookings'), { ...basePayload, time: slot })
+        ));
       }
       setShowBlockModal(false);
       setShowAddBookingModal(false);
+      setBlockEndTime('');
       resetBookingForm();
     } catch (err) {
-      alert('Erro ao bloquear horário.');
+      alert('Erro ao bloquear horário. Tente novamente.');
+      console.error(err);
     }
   };
 
@@ -1952,37 +1967,84 @@ const AdminMobileApp = () => {
         <div className="mobile-overlay" onClick={() => setShowBlockModal(false)}>
           <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-sheet-header">
-              <h4>Bloquear Horário</h4>
+              <h4>🔒 Bloquear Janela de Horário</h4>
               <button onClick={() => setShowBlockModal(false)}><X size={20} /></button>
             </div>
 
             <form onSubmit={submitBlock}>
+              {/* Data */}
+              <div className="mobile-form-group">
+                <label>📅 Data do Bloqueio *</label>
+                <input
+                  type="date"
+                  required
+                  value={newBooking.date}
+                  onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
+                />
+              </div>
+
+              {/* Horário início e fim */}
+              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>⏰ Início *</label>
+                  <select
+                    required
+                    value={newBooking.time}
+                    onChange={e => {
+                      setNewBooking(prev => ({ ...prev, time: e.target.value }));
+                      // Resetar fim se for antes do início
+                      if (blockEndTime && e.target.value > blockEndTime) setBlockEndTime(e.target.value);
+                    }}
+                  >
+                    {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>⏰ Fim (inclusive) *</label>
+                  <select
+                    required
+                    value={blockEndTime || newBooking.time}
+                    onChange={e => setBlockEndTime(e.target.value)}
+                  >
+                    {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00']
+                      .filter(t => t >= newBooking.time)
+                      .map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Resumo visual do intervalo */}
+              <div style={{ background: '#fff0f7', border: '1px solid #ffc0d9', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#c2185b', marginBottom: 10 }}>
+                🚫 Slots que serão bloqueados: <strong>{newBooking.time}</strong> até <strong>{blockEndTime || newBooking.time}</strong> em <strong>{newBooking.date.split('-').reverse().join('/')}</strong>
+              </div>
+
+              {/* Motivo */}
               <div className="mobile-form-group">
                 <label>Motivo do Bloqueio *</label>
                 <select value={blockMotive} onChange={e => setBlockMotive(e.target.value)}>
-                  <option value="Almoço">Almoço</option>
-                  <option value="Curso/Treinamento">Curso/Treinamento</option>
-                  <option value="Ausência Médica">Ausência Médica</option>
-                  <option value="Manutenção do Espaço">Manutenção do Espaço</option>
-                  <option value="Outro">Outro Motivo</option>
+                  <option value="Almoço">🍽️ Almoço</option>
+                  <option value="Curso/Treinamento">📚 Curso / Treinamento</option>
+                  <option value="Ausência Médica">🏥 Ausência Médica</option>
+                  <option value="Manutenção do Espaço">🔧 Manutenção do Espaço</option>
+                  <option value="Folga">☀️ Folga</option>
+                  <option value="Outro">✏️ Outro Motivo</option>
                 </select>
               </div>
 
               {blockMotive === 'Outro' && (
                 <div className="mobile-form-group">
                   <label>Especifique o Motivo *</label>
-                  <input type="text" placeholder="Escreva o motivo" required onChange={e => setBlockMotive(e.target.value)} />
+                  <input type="text" placeholder="Ex: Compromisso pessoal" required onChange={e => setBlockMotive(e.target.value)} />
                 </div>
               )}
 
-              <div className="mobile-form-group">
-                <label>Horário Bloqueado</label>
-                <input type="text" disabled value={`${newBooking.date.split('-').reverse().join('/')} às ${newBooking.time}`} />
-              </div>
-
               <div className="mobile-modal-actions">
                 <button type="button" className="btn-cancel" onClick={() => setShowBlockModal(false)}>Voltar</button>
-                <button type="submit" className="btn-save">Confirmar Bloqueio</button>
+                <button type="submit" className="btn-save">🔒 Confirmar Bloqueio</button>
               </div>
             </form>
           </div>
