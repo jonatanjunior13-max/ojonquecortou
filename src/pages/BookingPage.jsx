@@ -24,12 +24,15 @@ const getAvailableDates = (prof) => {
   const daysOff = prof && prof.daysOff !== undefined ? prof.daysOff : [0, 1];
   const blockedDates = prof && prof.blockedDates ? prof.blockedDates : [];
   
-  for (let i = 1; i <= 60; i++) {
+  for (let i = 0; i <= 60; i++) {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
     
     const dayOfWeek = nextDate.getDay();
-    const dateStr = nextDate.toISOString().split('T')[0];
+    const year = nextDate.getFullYear();
+    const month = String(nextDate.getMonth() + 1).padStart(2, '0');
+    const day = String(nextDate.getDate()).padStart(2, '0');
+    const dateStr = `${year}-${month}-${day}`;
     
     const isDayOff = daysOff.includes(dayOfWeek);
     const isBlocked = blockedDates.includes(dateStr);
@@ -38,11 +41,15 @@ const getAvailableDates = (prof) => {
       const monday = new Date(nextDate);
       const diff = nextDate.getDay() === 0 ? -6 : 1 - nextDate.getDay();
       monday.setDate(nextDate.getDate() + diff);
-      const weekKey = monday.toISOString().split('T')[0];
+      
+      const mYear = monday.getFullYear();
+      const mMonth = String(monday.getMonth() + 1).padStart(2, '0');
+      const mDay = String(monday.getDate()).padStart(2, '0');
+      const weekKey = `${mYear}-${mMonth}-${mDay}`;
       
       let weekLabel = monday.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
       weekLabel = `Semana de ${weekLabel.replace('.', '')}`;
-
+ 
       dates.push({
         raw: dateStr,
         formatted: nextDate.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }),
@@ -1429,12 +1436,32 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   <div className="time-picker-grid">
                     {timeSlots.map(slot => {
                       const isBooked = bookedTimes.includes(slot);
+                      let isPast = false;
+                      const now = new Date();
+                      const year = now.getFullYear();
+                      const month = String(now.getMonth() + 1).padStart(2, '0');
+                      const day = String(now.getDate()).padStart(2, '0');
+                      const todayStr = `${year}-${month}-${day}`;
+                      
+                      if (selectedDate === todayStr) {
+                        const [slotH, slotM] = slot.split(':').map(Number);
+                        const minAdvanceHours = Number(settings?.minAdvance || 2);
+                        const limitTime = new Date(now.getTime() + minAdvanceHours * 60 * 60 * 1000);
+                        const limitH = limitTime.getHours();
+                        const limitM = limitTime.getMinutes();
+                        
+                        if (slotH < limitH || (slotH === limitH && slotM < limitM)) {
+                          isPast = true;
+                        }
+                      }
+                      
+                      const isUnavailable = isBooked || isPast;
                       return (
                         <button
                           key={slot}
                           type="button"
-                          disabled={isBooked}
-                          className={`time-btn ${selectedTime === slot ? 'selected' : ''} ${isBooked ? 'booked' : ''}`}
+                          disabled={isUnavailable}
+                          className={`time-btn ${selectedTime === slot ? 'selected' : ''} ${isUnavailable ? 'booked' : ''}`}
                           onClick={() => setSelectedTime(slot)}
                         >
                           {slot}
