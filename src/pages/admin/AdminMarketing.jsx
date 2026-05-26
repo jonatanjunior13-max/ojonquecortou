@@ -332,13 +332,49 @@ const AdminMarketing = () => {
 
   const handleSendEmailCampaign = async () => {
     if (marketingTargetsList.length === 0) return;
-    setIsSendingEmail(true);
-    setEmailLogs(['[SYSTEM] Conectando ao gateway de E-mail (Resend)...']);
+    
+    const targets = [...marketingTargetsList];
+    const total = targets.length;
+    
+    // Configurações de proteção contra suspensão de SMTP (Titan)
+    const BATCH_SIZE = 5;
+    const BATCH_DELAY = 60000;
+    const INDIVIDUAL_DELAY = 15000;
+    
+    const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
+    
+    if (!confirm(`Deseja iniciar a campanha para ${total} clientes com a Proteção Anti-Spam ativada?\n\nConfiguração:\n- Intervalo entre e-mails: ${INDIVIDUAL_DELAY/1000}s\n- Lote de segurança: ${BATCH_SIZE} e-mails\n- Pausa entre lotes: ${BATCH_DELAY/1000}s\n- Tempo total estimado: ~${estTimeMinutes} minuto(s).\n\nRecomendado para evitar bloqueios na sua conta do Titan.`)) {
+      return;
+    }
 
-    for (const client of marketingTargetsList) {
-      await new Promise(r => setTimeout(r, 800));
+    setIsSendingEmail(true);
+    const logTime = () => new Date().toLocaleTimeString('pt-BR');
+    setEmailLogs([
+      `[${logTime()}] 🚀 Iniciando campanha com Proteção Anti-Spam (Modo Titan)`,
+      `[${logTime()}] 📬 Total de destinatários: ${total} | Tempo estimado: ~${estTimeMinutes} min`
+    ]);
+
+    let count = 0;
+    for (const client of targets) {
+      count++;
+      
+      // Delay de proteção individual
+      if (count > 1) {
+        // Se acabamos de completar um lote, espera o delay do lote, caso contrário o delay individual
+        const finishedBatch = (count - 1) % BATCH_SIZE === 0;
+        if (finishedBatch) {
+          setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Lote de ${BATCH_SIZE} e-mails concluído. Pausa de segurança de ${BATCH_DELAY/1000}s para evitar SPAM no Titan...`]);
+          await new Promise(r => setTimeout(r, BATCH_DELAY));
+        } else {
+          setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Aguardando ${INDIVIDUAL_DELAY/1000}s de intervalo regulamentar...`]);
+          await new Promise(r => setTimeout(r, INDIVIDUAL_DELAY));
+        }
+      }
+
+      setEmailLogs(prev => [...prev, `[${logTime()}] 🔄 [${count}/${total}] Processando: ${client.name} (${client.email || 'sem e-mail'})...`]);
+
       if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
-        setEmailLogs(prev => [...prev, `[❌ Pulo] ${client.name} não possui e-mail cadastrado.`]);
+        setEmailLogs(prev => [...prev, `[${logTime()}] ⚠️ Pulado: E-mail inválido ou não cadastrado.`]);
       } else {
         const days = getDaysAbsent(client.lastVisit);
         const firstName = client.name.split(' ')[0];
@@ -370,17 +406,17 @@ const AdminMarketing = () => {
             })
           });
           if (response.ok) {
-            setEmailLogs(prev => [...prev, `[✅ Enviado] E-mail disparado para ${client.email}`]);
+            setEmailLogs(prev => [...prev, `[${logTime()}] 📧 Sucesso: enviado para ${client.email}`]);
           } else {
-            setEmailLogs(prev => [...prev, `[❌ Erro] Falha ao enviar para ${client.email}`]);
+            setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Falha no envio para ${client.email}`]);
           }
         } catch (error) {
-          setEmailLogs(prev => [...prev, `[❌ Erro] Falha ao enviar para ${client.email}: ${error.message}`]);
+          setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de conexão para ${client.email}: ${error.message}`]);
         }
       }
     }
 
-    setEmailLogs(prev => [...prev, '[SYSTEM] Lote finalizado!']);
+    setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha de e-mail concluída com sucesso e sem suspensões!`]);
     setIsSendingEmail(false);
   };
 

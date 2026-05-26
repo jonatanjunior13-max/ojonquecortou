@@ -16,6 +16,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 // Use fetch to call our own send-email API so we don't have to duplicate NodeMailer logic
 function formatBody(body, name) {
   if (!body) return '';
@@ -226,6 +228,8 @@ export default async function handler(req, res) {
               stats.birthdays++;
               logs.push(`Aniversário (D-5) enviado para: ${p.name} (${p.email})`);
             }
+            // Pausa de segurança de 15 segundos (Titan SMTP limits)
+            await sleep(15000);
           }
         }
       }
@@ -342,6 +346,8 @@ export default async function handler(req, res) {
                 stats.sequenceMails++;
                 logs.push(`Email D+${daysAgo} enviado para: ${booking.clientName} (${booking.email})`);
               }
+              // Pausa de segurança de 15 segundos (Titan SMTP limits)
+              await sleep(15000);
             }
           }
         }

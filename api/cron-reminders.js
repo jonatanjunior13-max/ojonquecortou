@@ -15,6 +15,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 // Helper to dispatch email
 async function dispatchEmail(payload, hostUrl) {
   try {
@@ -187,6 +189,9 @@ export default async function handler(req, res) {
       } else {
         emailFailCount++;
       }
+      
+      // Pausa de segurança de 15 segundos (Titan SMTP limits)
+      await sleep(15000);
     }
 
     return res.status(200).json({

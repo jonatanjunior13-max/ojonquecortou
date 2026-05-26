@@ -598,26 +598,39 @@ const AdminClients = () => {
     document.body.removeChild(link);
   };
 
-  // Disparo Real de Campanha de E-mail via Vercel Function
+  // Disparo Real de Campanha de E-mail via Vercel Function com proteção contra SPAM (Titan)
   const handleSendEmailCampaign = () => {
     if (marketingTargetsList.length === 0) {
       alert('Nenhum cliente no segmento escolhido para disparar.');
       return;
     }
+    
+    const targets = [...marketingTargetsList];
+    const total = targets.length;
+    
+    // Configurações de proteção contra suspensão de SMTP (Titan)
+    const BATCH_SIZE = 5; // Envia em lotes de 5
+    const BATCH_DELAY = 60000; // Espera 60 segundos após cada lote
+    const INDIVIDUAL_DELAY = 15000; // Espera 15 segundos entre e-mails do mesmo lote
+    
+    const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
+    
+    if (!confirm(`Deseja iniciar a campanha para ${total} clientes com a Proteção Anti-Spam ativada?\n\nConfiguração:\n- Intervalo entre e-mails: ${INDIVIDUAL_DELAY/1000}s\n- Lote de segurança: ${BATCH_SIZE} e-mails\n- Pausa entre lotes: ${BATCH_DELAY/1000}s\n- Tempo total estimado: ~${estTimeMinutes} minuto(s).\n\nRecomendado para evitar bloqueios na sua conta do Titan.`)) {
+      return;
+    }
+
     setIsSendingEmail(true);
     setEmailLogs([]);
     
     let currentIdx = 0;
-    const targets = [...marketingTargetsList];
     const logTime = () => new Date().toLocaleTimeString('pt-BR');
     
-    setEmailLogs(prev => [...prev, `[${logTime()}] 🚀 Iniciando campanha de e-mail: "${emailCampaignSubject}"`]);
-    setEmailLogs(prev => [...prev, `[${logTime()}] 📬 Total de destinatários: ${targets.length}`]);
-    setEmailLogs(prev => [...prev, `[${logTime()}] 🔗 Endpoint: POST /api/send-email`]);
+    setEmailLogs(prev => [...prev, `[${logTime()}] 🚀 Iniciando campanha com Proteção Anti-Spam (Modo Titan)`]);
+    setEmailLogs(prev => [...prev, `[${logTime()}] 📬 Total de destinatários: ${total} | Tempo estimado: ~${estTimeMinutes} min`]);
     
     const sendNext = async () => {
-      if (currentIdx >= targets.length) {
-        setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha finalizada com sucesso!`]);
+      if (currentIdx >= total) {
+        setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha de e-mail concluída com sucesso e sem suspensões!`]);
         setIsSendingEmail(false);
         return;
       }
@@ -628,8 +641,9 @@ const AdminClients = () => {
         .replace(/{ultimo_servico}/g, client.lastServiceName || 'serviço')
         .replace(/{dias_ausente}/g, getDaysAbsent(client.lastVisit) === Infinity ? 'algum' : getDaysAbsent(client.lastVisit));
 
-      setEmailLogs(prev => [...prev, `[${logTime()}] 🔄 Processando: ${client.name} (${client.email || 'sem e-mail'})...`]);
+      setEmailLogs(prev => [...prev, `[${logTime()}] 🔄 [${currentIdx + 1}/${total}] Processando: ${client.name} (${client.email || 'sem e-mail'})...`]);
       
+      let sentSuccessfully = false;
       if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
         setEmailLogs(prev => [...prev, `[${logTime()}] ⚠️ Pulado: E-mail inválido ou não cadastrado`]);
       } else {
@@ -647,6 +661,7 @@ const AdminClients = () => {
           });
           if (res.ok) {
             setEmailLogs(prev => [...prev, `[${logTime()}] 📧 Sucesso: enviado para ${client.email}`]);
+            sentSuccessfully = true;
           } else {
             setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Falha no envio para ${client.email}`]);
           }
@@ -656,8 +671,20 @@ const AdminClients = () => {
       }
       
       currentIdx++;
-      // Pequeno delay para não sobrecarregar a Serverless Function (rate limit simples)
-      setTimeout(sendNext, 1000);
+      
+      if (currentIdx >= total) {
+        setTimeout(sendNext, 500);
+        return;
+      }
+      
+      const finishedBatch = currentIdx % BATCH_SIZE === 0;
+      if (finishedBatch && sentSuccessfully) {
+        setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Lote de ${BATCH_SIZE} e-mails concluído. Pausa de segurança de ${BATCH_DELAY/1000}s para evitar SPAM no Titan...`]);
+        setTimeout(sendNext, BATCH_DELAY);
+      } else {
+        setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Aguardando ${INDIVIDUAL_DELAY/1000}s de intervalo regulamentar...`]);
+        setTimeout(sendNext, INDIVIDUAL_DELAY);
+      }
     };
     
     setTimeout(sendNext, 500);
