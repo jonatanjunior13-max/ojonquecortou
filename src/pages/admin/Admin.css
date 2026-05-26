@@ -2495,6 +2495,80 @@
   cursor: pointer;
 }
 
+/* ── WhatsApp Filter Pills (Trinks-style) ─────────────────────────── */
+.wa-pills-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: slideDown-trinks 0.2s ease-out;
+}
+
+.wa-filter-pill {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 7px 12px;
+  border-radius: 20px;
+  border: 1.5px solid;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.18s ease;
+  letter-spacing: 0.01em;
+}
+
+.wa-filter-pill.accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.wa-filter-pill.accent.active,
+.wa-filter-pill.accent:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.wa-filter-pill.red {
+  border-color: #e53e3e;
+  color: #c53030;
+}
+.wa-filter-pill.red.active,
+.wa-filter-pill.red:hover {
+  background: #e53e3e;
+  color: #fff;
+}
+
+.wa-filter-pill.green {
+  border-color: #38a169;
+  color: #276749;
+}
+.wa-filter-pill.green.active,
+.wa-filter-pill.green:hover {
+  background: #38a169;
+  color: #fff;
+}
+
+.wa-filter-pill.yellow {
+  border-color: #d69e2e;
+  color: #b7791f;
+}
+.wa-filter-pill.yellow.active,
+.wa-filter-pill.yellow:hover {
+  background: #d69e2e;
+  color: #fff;
+}
+
+.wa-filter-pill.gray {
+  border-color: #a0aec0;
+  color: #718096;
+}
+.wa-filter-pill.gray.active,
+.wa-filter-pill.gray:hover {
+  background: #a0aec0;
+  color: #fff;
+}
+
 /* Main Area Agenda Grid */
 .agenda-main-area {
   flex-grow: 1;

@@ -1718,23 +1718,22 @@ Jon`;
               <span>{expandedAccordions.whatsapp ? '▲' : '▼'}</span>
             </div>
             {expandedAccordions.whatsapp && (
-              <div className="accordion-content">
+              <div className="wa-pills-container">
                 {[
-                  { id: 'todos', label: 'Todos' },
-                  { id: 'confirmados', label: 'Confirmado' },
-                  { id: 'pendentes', label: 'Pendente' },
-                  { id: 'cancelados', label: 'Cancelado' },
-                  { id: 'sem-mensagem', label: 'Sem mensagem' }
+                  { id: 'todos',         label: 'Todos',                       color: 'accent' },
+                  { id: 'cancelados',    label: 'Cliente não irá comparecer',  color: 'red' },
+                  { id: 'confirmados',   label: 'Confirmado pelo cliente',     color: 'green' },
+                  { id: 'pendentes',     label: 'Aguardando confirmação',      color: 'yellow' },
+                  { id: 'sem-mensagem',  label: 'Sem mensagem enviada',        color: 'gray' },
                 ].map(opt => (
-                  <label key={opt.id} className="filter-option">
-                    <input 
-                      type="radio" 
-                      name="waFilter" 
-                      checked={waFilter === opt.id}
-                      onChange={() => setWaFilter(opt.id)}
-                    />
+                  <button
+                    key={opt.id}
+                    type="button"
+                    className={`wa-filter-pill ${opt.color} ${waFilter === opt.id ? 'active' : ''}`}
+                    onClick={() => setWaFilter(opt.id)}
+                  >
                     {opt.label}
-                  </label>
+                  </button>
                 ))}
               </div>
             )}
