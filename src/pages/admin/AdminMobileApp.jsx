@@ -61,6 +61,7 @@ const AdminMobileApp = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [editingBookingId, setEditingBookingId] = useState(null);
+  const [activeAlert, setActiveAlert] = useState(null); // { id, title, message, booking }
 
   // Venda Avulsa de Produtos
   const [showDirectSaleModal, setShowDirectSaleModal] = useState(false);
@@ -307,6 +308,29 @@ const AdminMobileApp = () => {
   };
 
   // 1b. Motor de Notificações
+  const playNotificationSound = () => {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const playTone = (freq, start, duration) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, start);
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.15, start + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + duration);
+      };
+      playTone(523.25, ctx.currentTime, 0.3);
+      playTone(659.25, ctx.currentTime + 0.15, 0.4);
+    } catch (e) {
+      console.warn('Sound play failed:', e);
+    }
+  };
+
   const triggerNotification = (id, title, message, type) => {
     if (notifiedRef.current.has(id)) return;
     notifiedRef.current.add(id);
@@ -326,6 +350,24 @@ const AdminMobileApp = () => {
       localStorage.setItem('admin_notifications', JSON.stringify(updated));
       return updated;
     });
+
+    playNotificationSound();
+
+    if (type === 'novo_agendamento') {
+      const bookingId = id.replace('new_booking_', '');
+      const actualBooking = bookings.find(b => b.id === bookingId) || {
+        id: bookingId,
+        clientName: message.split(' agendou')[0] || 'Cliente',
+        serviceName: 'Serviço',
+        status: 'pendente'
+      };
+      setActiveAlert({
+        id,
+        title,
+        message,
+        booking: actualBooking
+      });
+    }
 
     if ('Notification' in window && Notification.permission === 'granted') {
       try {
@@ -2302,6 +2344,102 @@ const AdminMobileApp = () => {
                   })}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* POPUP DE NOVO AGENDAMENTO RECEBIDO EM TEMPO REAL */}
+      {activeAlert && activeAlert.booking && (
+        <div className="mobile-overlay" style={{ zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="mobile-popup-modal" style={{ maxWidth: '340px', width: '90%', animation: 'scaleUp 0.3s ease', border: '2px solid #8c5027', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.2)' }}>
+            <div style={{ padding: '24px 20px', textAlign: 'center' }}>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(140,80,39,0.1)', color: '#8c5027', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+                <Sparkles size={28} />
+              </div>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: 'bold', color: '#1a202c' }}>
+                {activeAlert.title}
+              </h3>
+              <p style={{ margin: '0 0 20px 0', fontSize: '0.875rem', color: '#4a5568', lineHeight: 1.5 }}>
+                {activeAlert.message}
+              </p>
+              
+              <div style={{ background: '#fcfcf9', border: '1px solid #ede8db', borderRadius: '8px', padding: '12px', marginBottom: '24px', textAlign: 'left' }}>
+                <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '4px' }}>Cliente</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#1a202c', marginBottom: '8px' }}>{activeAlert.booking.clientName}</div>
+                
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Data</div>
+                    <div style={{ fontSize: '0.85rem', color: '#2d3748' }}>{activeAlert.booking.date ? activeAlert.booking.date.split('-').reverse().join('/') : ''}</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Horário</div>
+                    <div style={{ fontSize: '0.85rem', color: '#2d3748' }}>{activeAlert.booking.time}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <button 
+                  type="button" 
+                  style={{
+                    background: '#8c5027',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    fontSize: '0.9rem',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 4px rgba(140,80,39,0.2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8
+                  }}
+                  onClick={async () => {
+                    await confirmBooking(activeAlert.booking.id);
+                    setActiveAlert(null);
+                  }}
+                >
+                  <Check size={18} /> Aceitar Agendamento
+                </button>
+                <button 
+                  type="button" 
+                  style={{
+                    background: 'transparent',
+                    color: '#4a5568',
+                    border: '1px solid #cbd5e0',
+                    borderRadius: '8px',
+                    padding: '12px 16px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                  onClick={() => {
+                    setSelectedBooking(activeAlert.booking);
+                    setActiveAlert(null);
+                  }}
+                >
+                  Ver Detalhes completos
+                </button>
+                <button 
+                  type="button" 
+                  style={{
+                    background: 'transparent',
+                    color: '#a0aec0',
+                    border: 'none',
+                    fontSize: '0.8rem',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    marginTop: 4
+                  }}
+                  onClick={() => setActiveAlert(null)}
+                >
+                  Fechar
+                </button>
+              </div>
             </div>
           </div>
         </div>
