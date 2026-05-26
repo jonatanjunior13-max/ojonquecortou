@@ -249,7 +249,7 @@
 }
 
 .header-cell {
-  padding: 16px;
+  padding: 8px 6px;
   text-align: center;
   font-weight: 600;
   border-right: 1px solid var(--rule);
@@ -262,15 +262,15 @@
 
 .header-cell .weekday {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.65rem;
   text-transform: uppercase;
   color: var(--muted);
-  letter-spacing: 1px;
-  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
 }
 
 .header-cell .day {
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -281,9 +281,9 @@
 
 .time-row {
   display: grid;
-  grid-template-columns: 80px repeat(5, 1fr);
+  grid-template-columns: 70px repeat(5, 1fr);
   border-bottom: 1px solid var(--rule);
-  min-height: 95px;
+  min-height: 52px;
 }
 
 .time-row:last-child {
@@ -295,14 +295,14 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   color: var(--ink);
   border-right: 1px solid var(--rule);
   background: var(--bg-warm);
 }
 
 .day-cell {
-  padding: 8px;
+  padding: 4px;
   border-right: 1px solid var(--rule);
   position: relative;
   transition: background 0.3s var(--ease);
@@ -318,14 +318,14 @@
 
 /* Appointment Card (Inner cell) */
 .appt-card {
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-size: 0.72rem;
   color: #fff;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s var(--ease);
-  line-height: 1.35;
+  line-height: 1.25;
 }
 
 .appt-card:hover {
@@ -373,12 +373,13 @@
 .appt-card .appt-time {
   font-weight: 700;
   display: block;
-  margin-bottom: 2px;
-  font-size: 0.75rem;
+  margin-bottom: 1px;
+  font-size: 0.65rem;
 }
 
 .appt-card .appt-client {
   font-weight: 700;
+  font-size: 0.72rem;
   display: block;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -386,8 +387,8 @@
 }
 
 .appt-card .appt-service {
-  font-size: 0.7rem;
-  opacity: 0.9;
+  font-size: 0.62rem;
+  opacity: 0.95;
   display: block;
 }
 
