@@ -62,6 +62,14 @@ const AdminMobileApp = () => {
   const [discount, setDiscount] = useState(0);
   const [editingBookingId, setEditingBookingId] = useState(null);
 
+  // Venda Avulsa de Produtos
+  const [showDirectSaleModal, setShowDirectSaleModal] = useState(false);
+  const [directSaleProducts, setDirectSaleProducts] = useState([]);
+  const [directSaleDiscount, setDirectSaleDiscount] = useState(0);
+  const [directSalePaymentMethod, setDirectSalePaymentMethod] = useState('pix');
+  const [directSaleClient, setDirectSaleClient] = useState('');
+  const [showDirectSaleSuggestions, setShowDirectSaleSuggestions] = useState(false);
+
   // Form states
   const [newBooking, setNewBooking] = useState({
     clientName: '',
@@ -884,6 +892,86 @@ const AdminMobileApp = () => {
     }
   };
 
+  // Venda Avulsa de Produtos
+  const submitDirectSale = async (e) => {
+    if (e) e.preventDefault();
+    if (directSaleProducts.length === 0) {
+      alert('Selecione pelo menos um produto para vender.');
+      return;
+    }
+
+    const productsTotal = directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
+    const value = Math.max(0, productsTotal - directSaleDiscount);
+    const clientName = directSaleClient.trim() || 'Cliente Avulso';
+
+    let description = `Venda Avulsa de Produto: ${directSaleProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
+    if (directSaleDiscount > 0) {
+      description += ` (Desconto: R$ ${directSaleDiscount})`;
+    }
+
+    const payloadTx = {
+      bookingId: 'venda_avulsa_' + Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName,
+      clientPhone: '',
+      type: 'entrada',
+      paymentMethod: directSalePaymentMethod,
+      discount: directSaleDiscount,
+      value: Number(value),
+      description,
+      professionalId: 'jon',
+      productSales: directSaleProducts.map(p => {
+        const match = inventory.find(prod => prod.id === p.id);
+        return {
+          productId: p.id,
+          name: p.name,
+          quantity: p.qty,
+          sellingPrice: p.sellingPrice,
+          costPrice: match ? (match.costPrice || 0) : 0
+        };
+      }),
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (isDemoMode) {
+        // Adiciona tx
+        const updatedTx = [{ id: 'tx_' + Date.now(), ...payloadTx }, ...transactions];
+        setTransactions(updatedTx);
+        localStorage.setItem('demo_financial', JSON.stringify(updatedTx));
+        localStorage.setItem('demo_transactions', JSON.stringify(updatedTx));
+        
+        // Atualiza estoque
+        const updatedInv = inventory.map(item => {
+          const sold = directSaleProducts.find(p => p.id === item.id);
+          if (sold) return { ...item, quantity: Math.max(0, item.quantity - sold.qty) };
+          return item;
+        });
+        setInventory(updatedInv);
+        localStorage.setItem('demo_inventory', JSON.stringify(updatedInv));
+      } else {
+        await addDoc(collection(db, 'financial_transactions'), payloadTx);
+        
+        // Baixa no estoque
+        for (const prod of directSaleProducts) {
+          const invRef = doc(db, 'inventory', prod.id);
+          const currentItem = inventory.find(i => i.id === prod.id);
+          if (currentItem) {
+            await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
+          }
+        }
+      }
+      setShowDirectSaleModal(false);
+      setDirectSaleProducts([]);
+      setDirectSaleDiscount(0);
+      setDirectSaleClient('');
+      alert('Venda avulsa registrada com sucesso! Faturamento e estoque atualizados.');
+    } catch (e) {
+      alert('Erro ao registrar venda.');
+    }
+  };
+
   // 7. Disparar Lembrete WhatsApp
   const handleSendReminderWhatsappManual = (booking) => {
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
@@ -1327,6 +1415,18 @@ const AdminMobileApp = () => {
                 <Clock size={20} />
               </div>
               <span>Marcar ausência</span>
+            </div>
+
+            <div className="mobile-action-btn-card" onClick={() => {
+              setDirectSaleProducts([]);
+              setDirectSaleDiscount(0);
+              setDirectSaleClient('');
+              setShowDirectSaleModal(true);
+            }}>
+              <div className="icon-wrapper" style={{ background: 'var(--mobile-green-light)', color: 'var(--mobile-green)' }}>
+                <Plus size={20} />
+              </div>
+              <span>Venda avulsa (Produto)</span>
             </div>
           </div>
         </div>
@@ -1971,6 +2071,144 @@ const AdminMobileApp = () => {
                 Confirmar Recebimento
               </button>
             </div>
+          </div>
+        </div>
+      {/* MODAL DE VENDA AVULSA DE PRODUTOS */}
+      {showDirectSaleModal && (
+        <div className="mobile-overlay" onClick={() => setShowDirectSaleModal(false)}>
+          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-sheet-header">
+              <h4>Registrar Venda Avulsa</h4>
+              <button onClick={() => setShowDirectSaleModal(false)}><X size={20} /></button>
+            </div>
+
+            <form onSubmit={submitDirectSale}>
+              <div className="mobile-form-group">
+                <label>Nome do Cliente (Opcional)</label>
+                <div className="mobile-autocomplete-container">
+                  <input 
+                    type="text" 
+                    placeholder="Ex: Cliente Avulso ou nome" 
+                    value={directSaleClient}
+                    onChange={e => {
+                      setDirectSaleClient(e.target.value);
+                      setShowDirectSaleSuggestions(true);
+                    }}
+                    onFocus={() => setShowDirectSaleSuggestions(true)}
+                    onBlur={() => setShowDirectSaleSuggestions(false)}
+                  />
+                  {showDirectSaleSuggestions && getFilteredClients(directSaleClient).length > 0 && (
+                    <ul className="mobile-suggestions-list">
+                      {getFilteredClients(directSaleClient).map(c => (
+                        <li 
+                          key={c.id} 
+                          className="mobile-suggestion-item"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setDirectSaleClient(c.name || '');
+                            setShowDirectSaleSuggestions(false);
+                          }}
+                        >
+                          <span className="mobile-suggestion-name">{c.name}</span>
+                          {c.phone && <span className="mobile-suggestion-phone">{c.phone}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+
+              <div style={{ background: '#f8f9fa', padding: 12, borderRadius: 8, marginBottom: 14 }}>
+                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginBottom: 4, fontWeight: '700' }}>PRODUTOS SELECIONADOS</span>
+                
+                {directSaleProducts.length === 0 ? (
+                  <span style={{ fontSize: '0.8rem', color: '#a0aec0' }}>Nenhum produto adicionado ainda.</span>
+                ) : (
+                  directSaleProducts.map((prod, index) => (
+                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.85rem' }}>{prod.qty}x {prod.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
+                        <button type="button" onClick={() => {
+                          const newProds = [...directSaleProducts];
+                          newProds.splice(index, 1);
+                          setDirectSaleProducts(newProds);
+                        }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 4 }}>
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Selecionar Produto</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <select 
+                    id="direct-sale-product-select"
+                    style={{ flex: 1 }}
+                    defaultValue=""
+                  >
+                    <option value="" disabled>Selecione um produto</option>
+                    {inventory.filter(i => i.quantity > 0).map(i => (
+                      <option key={i.id} value={i.id}>{i.name} - R$ {i.sellingPrice.toFixed(2).replace('.', ',')}</option>
+                    ))}
+                  </select>
+                  <button type="button" className="mobile-btn-solid" style={{ padding: '0 16px', background: 'var(--mobile-primary)' }} onClick={() => {
+                    const selectEl = document.getElementById('direct-sale-product-select');
+                    if (!selectEl.value) return;
+                    const prod = inventory.find(i => i.id === selectEl.value);
+                    if (prod) {
+                      const existing = directSaleProducts.find(p => p.id === prod.id);
+                      if (existing) {
+                        setDirectSaleProducts(directSaleProducts.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
+                      } else {
+                        setDirectSaleProducts([...directSaleProducts, { ...prod, qty: 1 }]);
+                      }
+                      selectEl.value = "";
+                    }
+                  }}>
+                    <Plus size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Desconto (R$)</label>
+                <input 
+                  type="number"
+                  min="0"
+                  placeholder="0,00"
+                  value={directSaleDiscount || ''}
+                  onChange={e => setDirectSaleDiscount(Math.max(0, Number(e.target.value)))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Forma de Pagamento *</label>
+                <select value={directSalePaymentMethod} onChange={e => setDirectSalePaymentMethod(e.target.value)}>
+                  <option value="pix">⚡ PIX</option>
+                  <option value="credito">💳 Cartão de Crédito</option>
+                  <option value="debito">💳 Cartão de Débito</option>
+                  <option value="dinheiro">💵 Dinheiro</option>
+                </select>
+              </div>
+
+              <div style={{ margin: '14px 0' }}>
+                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>TOTAL A RECEBER</span>
+                <strong style={{ fontSize: '1.3rem', color: 'var(--mobile-green)' }}>
+                  R$ {Math.max(0, directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - directSaleDiscount).toFixed(2).replace('.', ',')}
+                </strong>
+              </div>
+
+              <div className="mobile-modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => setShowDirectSaleModal(false)}>Cancelar</button>
+                <button type="submit" className="btn-save" style={{ background: 'var(--mobile-green)' }}>
+                  Confirmar Venda
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
