@@ -325,14 +325,14 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
       
       let waText = '';
       if (type === 'solicitacao_recebida') {
-        waText = `🔔 *Nova Solicitação de Agendamento!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\nAnalise no painel: ojonquecortou.com.br/admin/bookings`;
+        waText = `🔔 *Nova Solicitação de Agendamento!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
       } else if (type === 'horario_confirmado') {
         waText = `✅ *Agendamento Confirmado!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
       } else if (type === 'agendamento_cancelado') {
         const by = data.cancelledBy === 'client' ? 'pelo cliente' : 'pelo administrador';
         waText = `❌ *Agendamento Cancelado (${by})!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
       } else if (type === 'agendamento_alterado') {
-        waText = `⚠️ *Pedido de Remarcação!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\nAnalise no painel.`;
+        waText = `⚠️ *Pedido de Remarcação!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
       }
 
       if (waText) {
@@ -340,12 +340,12 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
           method: 'POST',
           headers: waHeaders,
           body: JSON.stringify({
-            number: '5531993002887',
+            number: '553135866673',
             text: waText
           })
         });
         if (response.ok) {
-          console.log('Notificação de WhatsApp enviada para o administrador (Jon) com sucesso.');
+          console.log('Notificação de WhatsApp enviada para o administrador (Salão) com sucesso.');
         } else {
           console.error('Erro ao enviar notificação de WhatsApp para o admin:', await response.text());
         }

@@ -305,6 +305,7 @@ const BookingPage = () => {
         },
         body: JSON.stringify({
           type: rescheduleId ? 'agendamento_alterado' : 'solicitacao_recebida',
+          id: payload.id,
           clientEmail: payload.clientEmail,
           clientName: payload.clientName,
           serviceName: serviceName,
