@@ -68,7 +68,10 @@ const EMAIL_PREVIEWS = {
 </div>
 `
   },
-  birthdayEnabled: { subject: 'Parabéns, {nome}.', body: HTML_TEMPLATES['aniversario'] }
+  birthdayEnabled: { subject: 'Parabéns, {nome}.', body: HTML_TEMPLATES['aniversario'] },
+  launchE1: { subject: 'Agendamento online no Studio do Jon. Acabou de mudar.', body: HTML_TEMPLATES['launch_e1'] },
+  launchE2: { subject: 'Antes de marcar em qualquer lugar, você precisa saber isso.', body: HTML_TEMPLATES['launch_e2'] },
+  launchE3: { subject: 'Primeiros agendamentos pelo novo site têm prioridade de horário.', body: HTML_TEMPLATES['launch_e3'] }
 };
 
 
@@ -697,6 +700,95 @@ const AdminMarketing = () => {
                     {birthdayWaLogs.map((log, i) => <div key={i} style={{ marginBottom: 2 }}>{log}</div>)}
                   </div>
                 )}
+              </div>
+
+              {/* Campanha de Lançamento (Novo Sistema) */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                  <h4 style={{ margin: 0 }}>🚀 Campanha de Lançamento — Novo Sistema de Agendamento</h4>
+                  <button
+                    className={`btn-toggle ${settings?.automations?.launchCampaignEnabled !== false ? 'active' : ''}`}
+                    onClick={() => toggleAutomation('launchCampaignEnabled', settings?.automations?.launchCampaignEnabled === false)}
+                  >
+                    {settings?.automations?.launchCampaignEnabled !== false ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: '20px' }}>
+                  Campanha para a lista fria (leads sem histórico de visita no Studio). Envia uma sequência de 3 e-mails para atrair os primeiros agendamentos pelo site.
+                </p>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '15px', marginBottom: '20px' }}>
+                  {[
+                    { key: 'launchE1', label: 'E-mail 1 (D+0)', desc: 'Anúncio do Novo Sistema' },
+                    { key: 'launchE2', label: 'E-mail 2 (D+5)', desc: 'Construção de Valor (Método)' },
+                    { key: 'launchE3', label: 'E-mail 3 (D+10)', desc: 'Exclusividade & Urgência' }
+                  ].map(step => (
+                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{step.label}</span>
+                      </div>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '12px' }}>{step.desc}</span>
+                      <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
+                        <button 
+                          className="btn btn-outline btn-small"
+                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.7rem', padding: '4px' }}
+                          onClick={() => {
+                            setEditingTemplateKey(step.key);
+                            setEditingTemplateContent(settings?.email_templates?.[step.key] || EMAIL_PREVIEWS[step.key]);
+                            setShowEmailEditModal(true);
+                          }}
+                        >
+                          ✏️ Editar
+                        </button>
+                        <button 
+                          className="btn btn-outline btn-small"
+                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.7rem', padding: '4px' }}
+                          onClick={() => {
+                            setEmailPreviewContent(settings?.email_templates?.[step.key] || EMAIL_PREVIEWS[step.key]);
+                            setShowEmailPreviewModal(true);
+                          }}
+                        >
+                          <Eye size={12} /> Ver
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background: 'var(--sidebar-bg)', padding: '16px', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                    <div>
+                      <h5 style={{ margin: '0 0 4px 0' }}>Disparar Sequência Manualmente</h5>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>
+                        Alvos: {clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length} contatos sem visitas anteriores.
+                      </p>
+                    </div>
+                    <button
+                      className="btn btn-accent"
+                      onClick={async () => {
+                        if (!confirm('Deseja iniciar a campanha de lançamento? Isso simulará o envio do e-mail 1 para todos os contatos sem histórico.')) return;
+                        setIsSendingEmail(true);
+                        setEmailLogs(['[CAMPANHA] Iniciando disparo de lançamento (Simulado/Inativo)...']);
+                        
+                        const targets = clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity);
+                        for (const client of targets) {
+                          await new Promise(r => setTimeout(r, 600));
+                          if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
+                            setEmailLogs(prev => [...prev, `[❌ Pulo] ${client.name} não possui e-mail válido.`]);
+                          } else {
+                            setEmailLogs(prev => [...prev, `[✅ Pronto para Enviar] E-mail 1 reservado para ${client.name} (${client.email})`]);
+                          }
+                        }
+                        setEmailLogs(prev => [...prev, '[CAMPANHA] Lançamento finalizado (Nenhum e-mail disparado de fato ainda).']);
+                        setIsSendingEmail(false);
+                      }}
+                      disabled={isSendingEmail}
+                      style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                    >
+                      🚀 Disparar Sequência (Fase de Teste)
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* E-mails do Sistema e Notificações */}
