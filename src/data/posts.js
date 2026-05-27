@@ -1,5 +1,105 @@
 export const posts = [
   {
+    id: 35,
+    slug: 'cacho-vs-crespo-qual-diferenca',
+    title: 'Cacho vs Crespo: Qual é a Diferença e Como Cuidar | Studio do Jon',
+    excerpt: 'Descubra a diferença real entre cabelo cacheado e crespo. Aprenda a identificar o seu tipo e qual rotina funciona. Especialista em BH.',
+    metaDescription: 'Descubra a diferença real entre cabelo cacheado e crespo. Aprenda a identificar o seu tipo e qual rotina funciona. Especialista em BH.',
+    keywords: 'cacho vs crespo, diferenca cacho e crespo, cabelo cacheado, cabelo crespo, transicao capilar, cuidar de cachos, cuidar de crespo',
+    date: '27 de Maio, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/cacho-vs-crespo-hero.png',
+    content: `
+      <h2>Cacho ou Crespo? A Diferença que Muda seu Cuidado Capilar</h2>
+      <p>Sabe aquela dúvida que você tem: "meu cabelo é cacho ou é crespo?"</p>
+      <p>Isso não é detalhe. É a base inteira da sua rotina. É tipo fazer bolo sem saber se vai ser de chocolate ou cenoura — no final você reclama que ficou estranho.</p>
+      <p>A diferença não é só visual. Muda tudo — desde como você seca, qual produto funciona, quanto você hidrata, como o corte sai. E a maioria confunde porque os dois têm movimento, volume, frizz... é como tentar diferenciar dois crush pelo Instagram, sabe?</p>
+      <p>Então vou parar essa confusão agora. Sem mais errar produto. Sem mais ficar "mas meu cabelo não tá respondendo."</p>
+
+      <h2>O Que Faz um Fio Ser Cacho</h2>
+      <p>Cacho é formação. É quando o fio tem uma estrutura de espiral natural, definida, que você vê claramente. Não é ondulação fraca que some quando o vento bate. É padrão de verdade — 2, 3 ou 4 voltas que se repetem do fio inteiro, como uma mola bem comportada.</p>
+      <p>Quando você vê um cacho de verdade, dá pra contar as curvas. Tem comecinho, meio e fim claro. É tipo um slinky capilar — previsível, bonitão, estruturado.</p>
+      <p>O fio dele é mais fino na maioria dos casos. Por isso absorve produto rápido (boa), mas resseca rápido também (ruim). Precisa de hidratação toda semana — não é "ah, quando sobrar tempo." É lei. Tipo imposto de renda do cabelo.</p>
+      
+      <img src="/cacho-vs-crespo-hero.png" alt="Mulher negra com cabelo cacheado tipo 3B/3C bem formados e definidos mostrando a estrutura de espiral em luz natural" class="post-inline-image" />
+      
+      <p>Quando o cacho tá bem feito (cortado certo, hidratado), ele brilha. Fica definido, compacto, com volume natural sem parecer que você dormiu com a cabeça numa tomada. É aquele visual "acorda e tá perfeito" — mentira total, mas tem seu charme.</p>
+
+      <h2>O Que Faz um Fio Ser Crespo</h2>
+      <p>Crespo é densidade. É quando o fio tem uma textura muito ondulada, super enrolada, mas não tá organizado em padrão de espiral claro. É caos controlado. É como tentar organizar uma festa e ninguém segue o script — mas funciona de um jeito estranho e bonito.</p>
+      <p>Crespo tem muito volume, naturalmente. Muito frizz também — o fio quer sair pra todo lado, é tipo aquele colega que não aguenta ficar sentado. É mais grosso que o cacho, mais resistente, mais opaco. Parece que absorveu toda a confiança do universo.</p>
+      <p>Enquanto cacho precisa de hidratação frequente, crespo precisa de nutrição pesada. Ele segura produto bem — é tipo colocar dinheiro na conta do cabelo e ele não sai gastando à toa. Mas vem ressecado de fábrica, é aquele amigo que reclama que tá quebrado mesmo depois de dormir bem.</p>
+      
+      <img src="/crespo-dense-volume.png" alt="Mulher com cabelo crespo denso, volume natural e textura super ondulada característica em luz natural" class="post-inline-image" />
+      
+      <p>O crespo bem cuidado fica volumoso, brilhante, elegante. Fica aquele volume que cacho não consegue nem sonhando — é tipo cabelo de deusa mesmo.</p>
+
+      <h2>E Se Você Tem os Dois?</h2>
+      <p>Aqui é onde a maioria erra de diagnóstico e começa a brigar com o cabelo.</p>
+      <p>Você pode ter cacho + crespo ao mesmo tempo. É quando o fio tem formação de espiral (cacho) mas também tem volume desordenado (crespo). Chamamos de textura mista. É tipo ser Gêmeos — dois em um, nem sempre em acordo comigo mesmo.</p>
+      <p>Se você olha pro seu cabelo úmido e vê espiral definida + volume que não entra em casa, você tá na categoria mista. Se olha pra câmera frontal e pensa "meu deus, pareço um leão," mas tem risos bem definidos atrás — misto, com certeza.</p>
+      
+      <img src="/mixed-curls-volume.png" alt="Mulher com cabelo misto mostrando tanto a espiral quanto o volume natural" class="post-inline-image" />
+      
+      <p>Entender a combinação real dos dois padrões ajuda a parar de tentar moldar o cabelo em algo que ele não é.</p>
+
+      <h2>Como Você Identifica o Seu (Sem Chute)</h2>
+      <p>Esqueça aquele app de teste que você baixou à 3 da manhã. Esqueça discussão no grupo do Instagram onde 47 pessoas te disseram coisa diferente. Esqueça a amiga que tem certeza que sabe.</p>
+      <p>Aqui tem um jeito que funciona:</p>
+      <ol>
+        <li>Lave o cabelo, seque natural sem tocar. Deixa ele secar sozinho, ao ar. Nada de secador, nada de penteador, nada de "vou arrumar." O seu cabelo solto diz a verdade.</li>
+        <li>Olha o padrão. Cacho você vê formação de espiral, padrão repetido, como se tivesse dado um tutorial pro fio e ele tá seguindo certinho. Crespo você vê volume e ondulação sem ordem, tipo festa de família — caos, mas funciona.</li>
+        <li>Passa a mão. Cacho tem fios que deslizam mais fácil, tipo tá lubrificado. Crespo tá mais ressecado, mais áspero, tipo tá pedindo ajuda.</li>
+      </ol>
+      <p>Pronto. Agora você sabe. Sem app. Sem ansiedade.</p>
+
+      <h2>Por Que Isso Muda Tudo na Rotina</h2>
+      <p><strong>Se você é cacho puro:</strong></p>
+      <ul>
+        <li>Hidratação toda semana (não é sugestão, é lei universal)</li>
+        <li>Produto leve, leave-in ou óleo (nada pesado, que sufoca)</li>
+        <li>Secagem com difusor ou plopping (o seu fio é delicado demais pra secador agressivo)</li>
+        <li>Corte a cada 6-8 semanas pra manter definição (deixa muito tempo, o padrão fica fraco)</li>
+      </ul>
+
+      <p><strong>Se você é crespo puro:</strong></p>
+      <ul>
+        <li>Nutrição 2x por semana com máscara pesada (tipo aquele colega que bebe 3 cafés por dia, você precisa alimentar demais)</li>
+        <li>Selante capilar com óleo grosso ou manteiga (trancar a hidratação dentro, tipo trancar porta de casa)</li>
+        <li>Secagem delicada, sem agredir o fio (o seu já tem volume, não precisa de salão de vento)</li>
+        <li>Corte a cada 8-10 semanas, com foco em peso e movimento</li>
+      </ul>
+
+      <p><strong>Se você é misto (cacho + crespo):</strong></p>
+      <ul>
+        <li>Hidratação + nutrição alternada (semana sim, semana não — tipo namoro aberto do cabelo)</li>
+        <li>Dois produtos na rotina — leve pro cacho, pesado pro crespo (é tipo ter dois namorados, mas é pra cabelo então tá liberado)</li>
+        <li>Técnica de secagem híbrida (respeita o cacho em algumas partes, trabalha volume em outras)</li>
+        <li>Corte técnico pra criar movimento sem perder volume (isso é arte, amigo)</li>
+      </ul>
+      <p>Entender isso é o que diferencia cacho que fica impecável vs cacho que fica seco e morto (tipo relacionamento sem conversa). É a diferença entre crespo que brilha vs crespo que ficou como palha de colchão antigo.</p>
+
+      <h2>E o Corte Muda?</h2>
+      <p>Muda demais. Tipo você achar que corte é corte — é ingenuidade.</p>
+      <p>Cacho você quer corte que respeita a curva, que não quebra o padrão, que trata cada cachinhos como a joia que é. Precisa ser feito úmido, vendo o cacho se formar na hora, pra não ficar irregular tipo escada de prédio abandonado.</p>
+      <p>Crespo você quer corte que trabalha volume de forma inteligente, que degrada bem, que tira peso do jeito certo pra não virar aquele puff descontrolado tipo você saiu de uma eletrocussão.</p>
+      <p>Misto é o mais técnico — precisa respeitar os dois padrões sem sacrificar nenhum. É tipo fazer um prato vegetariano sem deixar o carnívoro frustrado — é possível, mas exige técnica.</p>
+      <p>Por isso que "corte universal" não existe. Quem te oferece corte universal pra todo mundo tá mentindo. O seu tipo dita o método. Ponto.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Não tem certeza de qual é o seu tipo?</h3>
+        <p>Agenda uma consulta. A gente lê o fio aqui no Studio, identifica o padrão e desenha a rotina que vai funcionar pra você — não a que funciona pra sua prima, nem a que a influenciadora faz.</p>
+        <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta de Diagnóstico</a>
+      </div>
+
+      <p style="font-size: 0.9rem; color: #888; border-top: 1px solid #eee; padding-top: 1rem; margin-top: 2rem;">
+        <em>Especialista em corte para cabelos cacheados, crespos e ondulados com foco em visagismo em Belo Horizonte.</em><br/>
+        #cachos #cacheadas #cacheada #curlyhair #cabelocacheado
+      </p>
+    `
+  },
+  {
     id: 34,
     slug: 'secagem-cachos-difusor-vs-natural',
     title: 'Secagem de Cachos Difusor vs Natural Como Adaptar a Sua Rotina',
