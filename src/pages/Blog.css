@@ -273,3 +273,25 @@
     width: 100%;
   }
 }
+
+/* Related Posts Section */
+.related-posts-section {
+  margin-top: 6rem;
+  padding-top: 4rem;
+  border-top: 4px solid var(--color-dark);
+}
+
+.related-posts-title {
+  margin-bottom: 3rem;
+  text-align: center;
+  font-family: var(--font-display);
+  color: var(--color-text-main);
+}
+
+.related-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}

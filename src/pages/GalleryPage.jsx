@@ -41,7 +41,7 @@ const galleryImages = [
   },
   {
     id: 116,
-    url: '/longo-cacheado-natural-bh.png',
+    url: '/longo-cacheado-natural-bh.webp',
     title: 'Cabelos Longos e Definidos',
     description: 'Manutenção de saúde e brilho em curvaturas naturais com corte estratégico.'
   },
@@ -89,7 +89,7 @@ const galleryImages = [
   },
   {
     id: 114,
-    url: '/especialista-em-cachos-curto-resultado.png',
+    url: '/especialista-em-cachos-curto-resultado.webp',
     title: 'Corte Curto Visagista',
     description: 'Resultado de um design focado em praticidade e estilo para curvaturas 3B/C.'
   },

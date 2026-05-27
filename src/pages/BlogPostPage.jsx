@@ -13,6 +13,17 @@ const BlogPostPage = () => {
     return <Navigate to="/blog" replace />;
   }
 
+  // Obter posts relacionados de forma consistente e determinística:
+  // Filtra o próprio post, coloca os da mesma categoria primeiro, e depois ordena por id desc.
+  const relatedPosts = posts
+    .filter((p) => p.slug !== slug)
+    .sort((a, b) => {
+      if (a.category === post.category && b.category !== post.category) return -1;
+      if (b.category === post.category && a.category !== post.category) return 1;
+      return b.id - a.id;
+    })
+    .slice(0, 3);
+
   return (
     <main className="post-page">
       <SEO 
@@ -43,6 +54,32 @@ const BlogPostPage = () => {
             dangerouslySetInnerHTML={{ __html: post.content }} 
           />
           
+          <section className="related-posts-section reveal active">
+            <h2 className="related-posts-title heading-lg">Leia Também</h2>
+            <div className="related-posts-grid">
+              {relatedPosts.map((rPost) => (
+                <article key={rPost.id} className="blog-card">
+                  <div className="blog-card-img-wrap">
+                    <img src={rPost.image} alt={rPost.title} className="blog-card-image" />
+                  </div>
+                  <div className="blog-card-content">
+                    <span className="blog-card-category">{rPost.category}</span>
+                    <h3 className="blog-card-title" style={{ fontSize: '1.05rem', marginBottom: '0.5rem' }}>
+                      <Link to={`/blog/${rPost.slug}`}>{rPost.title}</Link>
+                    </h3>
+                    <p className="blog-card-excerpt" style={{ fontSize: '0.85rem', marginBottom: '1rem', lineHeight: '1.5' }}>
+                      {rPost.excerpt}
+                    </p>
+                    <div className="blog-card-footer" style={{ paddingTop: '1rem' }}>
+                      <Link to={`/blog/${rPost.slug}`} className="read-more">Leia Mais →</Link>
+                      <span className="blog-date">{rPost.date}</span>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
           <footer className="post-cta-section section-padding reveal active">
             <div className="post-cta-card">
               <img src="/jon-trabalhando.jpg" alt="Jon atendendo cliente" className="post-cta-image" />

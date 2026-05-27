@@ -9,7 +9,7 @@ const BlogPage = () => {
     <main className="blog-page">
       <SEO 
         title="Dicas de Cabelo Cacheado & Cuidados | Blog do Jon" 
-        description="Artigos técnicos sobre cronograma capilar, porosidade, transição capilar e melhores cortes para cabelos cacheados. Dicas exclusivas do especialista do Studio do Jon." 
+        description="Artigos sobre cronograma capilar, porosidade, transição e cortes para cabelos cacheados. Dicas exclusivas do especialista do Studio do Jon em BH." 
       />
       <header className="blog-header reveal active">
         <div className="container text-center">
