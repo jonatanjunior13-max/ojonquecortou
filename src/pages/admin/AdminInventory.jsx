@@ -12,7 +12,7 @@ const SEED_PRODUCTS = [
   { id: 'p5', name: 'Óleo Reparador de Argan 60ml', category: 'Óleo', quantity: 20, costPrice: 40, sellingPrice: 90, minStock: 5 }
 ];
 
-const CATEGORIES = ['Shampoo', 'Condicionador', 'Finalizador', 'Óleo', 'Acessório', 'Outros'];
+const CATEGORIES = ['Shampoo', 'Condicionador', 'Máscara', 'Finalizador', 'Óleo', 'Acessório', 'Outros'];
 
 const AdminInventory = () => {
   const [products, setProducts] = useState([]);
