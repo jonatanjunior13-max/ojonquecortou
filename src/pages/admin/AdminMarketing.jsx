@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit } from 'firebase/firestore';
-import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye } from 'lucide-react';
+import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
+import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3 } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
 
@@ -124,6 +124,82 @@ const AdminMarketing = () => {
   const [birthdayWaLogs, setBirthdayWaLogs] = useState([]);
   const [isSendingBirthdayWa, setIsSendingBirthdayWa] = useState(false);
 
+  const saveLog = async (clientName, clientPhone, stage, channel) => {
+    const newLog = {
+      timestamp: new Date().toISOString(),
+      clientName,
+      clientPhone: clientPhone || '',
+      stage,
+      channel, // 'email' or 'whatsapp'
+      status: 'success'
+    };
+
+    if (db) {
+      try {
+        await addDoc(collection(db, 'automation_logs'), newLog);
+      } catch (err) {
+        console.error("Erro ao salvar log no Firestore:", err);
+      }
+    } else {
+      // Demo/Offline Mode
+      try {
+        const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs')) || [];
+        const updated = [{ id: 'demo_' + Date.now() + Math.random().toString(36).substr(2, 5), ...newLog }, ...localLogs];
+        localStorage.setItem('demo_automation_logs', JSON.stringify(updated));
+        setAutomationLogs(updated);
+      } catch (e) {
+        console.error("Erro ao salvar log no localStorage:", e);
+      }
+    }
+  };
+
+  const getDeliveryStats = () => {
+    const now = new Date();
+    const stats = {
+      today: { email: 0, whatsapp: 0 },
+      week: { email: 0, whatsapp: 0 },
+      month: { email: 0, whatsapp: 0 }
+    };
+
+    const getLogChannel = (log) => {
+      if (log.channel) return log.channel;
+      const stage = (log.stage || '').toLowerCase();
+      if (stage.includes('whatsapp') || stage.includes('wa') || stage.includes('whats') || stage.includes('birthday')) {
+        return 'whatsapp';
+      }
+      return 'email';
+    };
+
+    automationLogs.forEach(log => {
+      if (!log.timestamp) return;
+      const logDate = new Date(log.timestamp);
+      if (isNaN(logDate.getTime())) return;
+
+      const diffMs = now - logDate;
+      const diffDays = diffMs / (1000 * 60 * 60 * 24);
+      const channel = getLogChannel(log);
+
+      const isToday = logDate.toDateString() === now.toDateString();
+      const isThisWeek = diffDays <= 7;
+      const isThisMonth = diffDays <= 30;
+
+      if (isToday) {
+        if (channel === 'email') stats.today.email++;
+        else stats.today.whatsapp++;
+      }
+      if (isThisWeek) {
+        if (channel === 'email') stats.week.email++;
+        else stats.week.whatsapp++;
+      }
+      if (isThisMonth) {
+        if (channel === 'email') stats.month.email++;
+        else stats.month.whatsapp++;
+      }
+    });
+
+    return stats;
+  };
+
   useEffect(() => {
     let unsubscribeProfiles;
     let unsubscribeBookings;
@@ -204,7 +280,15 @@ const AdminMarketing = () => {
       }
     };
 
-    if (db) loadData();
+    if (db) {
+      loadData();
+    } else {
+      try {
+        const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs')) || [];
+        setAutomationLogs(localLogs);
+      } catch (e) {}
+      setLoading(false);
+    }
 
     return () => {
       if (unsubscribeProfiles) unsubscribeProfiles();
@@ -253,6 +337,7 @@ const AdminMarketing = () => {
     setBirthdayWaLogs(['[SISTEMA] Iniciando disparo de aniversário...']);
     for (const client of targets) {
       await new Promise(r => setTimeout(r, 1000));
+      await saveLog(client.name, client.phone, 'Aniversário (WhatsApp)', 'whatsapp');
       setBirthdayWaLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
     }
     setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo finalizado! Verifique o WhatsApp.']);
@@ -323,6 +408,7 @@ const AdminMarketing = () => {
 
     for (const client of marketingTargetsList) {
       await new Promise(r => setTimeout(r, 1200));
+      await saveLog(client.name, client.phone, 'Campanha Manual (WhatsApp)', 'whatsapp');
       setWhatsappLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
     }
 
@@ -393,6 +479,7 @@ const AdminMarketing = () => {
           content = '<p>' + content.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br/>') + '</p>';
         }
 
+        let responseOk = false;
         try {
           const response = await fetch('/api/send-email', {
             method: 'POST',
@@ -405,18 +492,28 @@ const AdminMarketing = () => {
               clientName: client.name
             })
           });
-          if (response.ok) {
-            setEmailLogs(prev => [...prev, `[${logTime()}] 📧 Sucesso: enviado para ${client.email}`]);
-          } else {
-            setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Falha no envio para ${client.email}`]);
-          }
+          responseOk = response.ok;
         } catch (error) {
-          setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de conexão para ${client.email}: ${error.message}`]);
+          if (!db) {
+            responseOk = true;
+            setEmailLogs(prev => [...prev, `[${logTime()}] [DEMO] Simulando sucesso de envio para ${client.email}`]);
+          } else {
+            setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de conexão para ${client.email}: ${error.message}`]);
+          }
+        }
+
+        if (responseOk) {
+          await saveLog(client.name, client.phone, 'Campanha Manual (E-mail)', 'email');
+          if (db) {
+            setEmailLogs(prev => [...prev, `[${logTime()}] 📧 Sucesso: enviado para ${client.email}`]);
+          }
+        } else {
+          setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Falha no envio para ${client.email}`]);
         }
       }
     }
 
-    setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha de e-mail concluída com sucesso e sem suspensões!`]);
+    setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha de e-mail concluída com sucesso!`]);
     setIsSendingEmail(false);
   };
 
@@ -463,6 +560,47 @@ const AdminMarketing = () => {
             </header>
 
             <div className="marketing-layout-grid">
+              
+              {/* Histórico de Envios Dashboard Widget */}
+              {(() => {
+                const stats = getDeliveryStats();
+                return (
+                  <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                      <BarChart3 size={18} style={{ color: 'var(--accent)' }} />
+                      <h4 style={{ margin: 0 }}>Histórico de Envios (Acompanhamento)</h4>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+                      {[
+                        { title: 'Acompanhamento Diário', subtitle: 'Hoje', data: stats.today },
+                        { title: 'Acompanhamento Semanal', subtitle: 'Últimos 7 dias', data: stats.week },
+                        { title: 'Acompanhamento Mensal', subtitle: 'Últimos 30 dias', data: stats.month }
+                      ].map((item, idx) => (
+                        <div key={idx} style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--rule)', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                          <div>
+                            <span style={{ fontWeight: 600, fontSize: '0.9rem', display: 'block' }}>{item.title}</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{item.subtitle}</span>
+                          </div>
+                          <div style={{ display: 'flex', gap: 12 }}>
+                            <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'center' }}>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+                                <Mail size={12} /> E-mail
+                              </div>
+                              <strong style={{ fontSize: '1.25rem', color: 'var(--text)' }}>{item.data.email}</strong>
+                            </div>
+                            <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'center' }}>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+                                <Phone size={12} /> WhatsApp
+                              </div>
+                              <strong style={{ fontSize: '1.25rem', color: 'var(--text)' }}>{item.data.whatsapp}</strong>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
               
               {/* Client Selection Tool */}
               <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
