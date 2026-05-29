@@ -27,10 +27,16 @@ const AdminFinancial = () => {
   const [showDatePickerDropdown, setShowDatePickerDropdown] = useState(false);
   const [showProfDropdown, setShowProfDropdown] = useState(false);
 
-  // Time Window State (Default to Últimos 6 meses to match screenshots)
+  // Time Window State (Default to Últimos 6 meses dynamically based on current date)
   const [dateWindow, setDateWindow] = useState('6meses');
-  const [startDate, setStartDate] = useState('2025-11-01');
-  const [endDate, setEndDate] = useState('2026-05-24');
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 6);
+    return d.toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    return new Date().toISOString().split('T')[0];
+  });
 
   // Professional Filter State
   const [selectedProfFilter, setSelectedProfFilter] = useState(''); // '' means All
@@ -121,8 +127,8 @@ const AdminFinancial = () => {
   // Handle Date range presets
   const handleDateWindowChange = (windowType) => {
     setDateWindow(windowType);
-    const today = new Date('2026-05-24T12:00:00'); // set baseline to matching local time metadata
-    const todayStr = '2026-05-24';
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
     
     if (windowType === 'hoje') {
       setStartDate(todayStr);
@@ -150,8 +156,10 @@ const AdminFinancial = () => {
       setStartDate(past.toISOString().split('T')[0]);
       setEndDate(todayStr);
     } else if (windowType === '6meses') {
-      setStartDate('2025-11-01');
-      setEndDate('2026-05-24');
+      const d = new Date();
+      d.setMonth(d.getMonth() - 6);
+      setStartDate(d.toISOString().split('T')[0]);
+      setEndDate(todayStr);
     }
     
     if (windowType !== 'personalizado') {
