@@ -608,10 +608,40 @@ const AdminFinancial = () => {
   };
 
   // Commission table mapping calculator
-  const calculateProfessionalCommission = (profId, commissionPct) => {
-    return filteredTransactions
-      .filter(t => t.type === 'entrada' && (t.professionalId === profId))
-      .reduce((sum, t) => sum + (getNetValue(t.value, t.paymentMethod) * (commissionPct / 100)), 0);
+  const calculateProfessionalCommission = (prof) => {
+    if (!prof) return { services: 0, products: 0, total: 0 };
+    const commServ = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 0);
+    const commProd = prof.commissionProduct !== undefined ? prof.commissionProduct : 0;
+    
+    let servicesPayout = 0;
+    let productsPayout = 0;
+
+    filteredTransactions
+      .filter(t => t.type === 'entrada' && t.professionalId === prof.id)
+      .forEach(t => {
+        const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
+        const isProdSale = t.isProductSale || t.category === 'venda_produto';
+        
+        let rawProd = 0;
+        let rawServ = 0;
+
+        if (isProdSale) {
+          rawProd = t.value;
+        } else {
+          rawProd = productVal;
+          rawServ = Math.max(0, t.value - productVal);
+        }
+
+        const feeFactor = t.value > 0 ? getNetValue(t.value, t.paymentMethod) / t.value : 1;
+        servicesPayout += rawServ * (commServ / 100) * feeFactor;
+        productsPayout += rawProd * (commProd / 100) * feeFactor;
+      });
+
+    return {
+      services: servicesPayout,
+      products: productsPayout,
+      total: servicesPayout + productsPayout
+    };
   };
 
   // Filter Ledger Entries
@@ -1423,19 +1453,28 @@ const AdminFinancial = () => {
             <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
               Abaixo são listados os repasses calculados com base na comissão (%) de cada profissional sobre o valor líquido dos atendimentos executados.
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
               {professionals.map(p => {
-                const payout = calculateProfessionalCommission(p.id, p.commission);
+                const commServ = p.commissionService !== undefined ? p.commissionService : (p.commission || 50);
+                const commProd = p.commissionProduct !== undefined ? p.commissionProduct : 10;
+                const payout = calculateProfessionalCommission(p);
                 return (
-                  <div key={p.id} style={{ border: '1px solid var(--rule)', padding: 16, borderRadius: 8, background: 'var(--surface)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div>
-                      <h4 style={{ margin: 0, fontWeight: 700 }}>{p.name}</h4>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
-                        Comissão do Perfil: <span style={{ fontWeight: 600 }}>{p.commission}%</span>
+                  <div key={p.id} style={{ border: '1px solid var(--rule)', padding: 16, borderRadius: 8, background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem' }}>{p.name}</h4>
+                      <span style={{ fontSize: '1.1rem', color: '#48bb78', fontWeight: 700 }}>
+                        R$ {payout.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
-                      <span style={{ fontSize: '0.95rem', color: '#48bb78', fontWeight: 700, display: 'block', marginTop: 8 }}>
-                        Comissão no Período: R$ {payout.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                      </span>
+                    </div>
+                    <div style={{ borderTop: '1px solid var(--rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                      <div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Serviços ({commServ}%)</span>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--ink)' }}>R$ {payout.services.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Produtos ({commProd}%)</span>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--ink)' }}>R$ {payout.products.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                      </div>
                     </div>
                   </div>
                 );
@@ -1463,7 +1502,38 @@ const AdminFinancial = () => {
                   const currentAssigned = t.professionalId || '';
                   const prof = professionals.find(p => p.id === currentAssigned);
                   const netVal = getNetValue(t.value, t.paymentMethod);
-                  const repasseValue = prof ? netVal * (prof.commission / 100) : 0;
+                  
+                  let repasseValue = 0;
+                  let detailsStr = '';
+
+                  if (prof) {
+                    const commServ = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 50);
+                    const commProd = prof.commissionProduct !== undefined ? prof.commissionProduct : 10;
+
+                    const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
+                    const isProdSale = t.isProductSale || t.category === 'venda_produto';
+
+                    let rawProd = 0;
+                    let rawServ = 0;
+
+                    if (isProdSale) {
+                      rawProd = t.value;
+                    } else {
+                      rawProd = productVal;
+                      rawServ = Math.max(0, t.value - productVal);
+                    }
+
+                    const feeFactor = t.value > 0 ? netVal / t.value : 1;
+                    const servComm = rawServ * (commServ / 100) * feeFactor;
+                    const prodComm = rawProd * (commProd / 100) * feeFactor;
+                    
+                    repasseValue = servComm + prodComm;
+
+                    const parts = [];
+                    if (rawServ > 0) parts.push(`Serv: R$ ${servComm.toFixed(2)} (${commServ}%)`);
+                    if (rawProd > 0) parts.push(`Prod: R$ ${prodComm.toFixed(2)} (${commProd}%)`);
+                    detailsStr = parts.join(' + ');
+                  }
                   
                   return (
                     <tr key={t.id}>
@@ -1476,8 +1546,13 @@ const AdminFinancial = () => {
                       <td>R$ {t.value.toFixed(2)}</td>
                       <td>R$ {netVal.toFixed(2)}</td>
                       <td>{prof ? prof.name : 'Não Associado'}</td>
-                      <td style={{ fontWeight: 700, color: repasseValue > 0 ? '#48bb78' : 'var(--muted)' }}>
-                        {repasseValue > 0 ? `R$ ${repasseValue.toFixed(2)} (${prof.commission}%)` : 'R$ 0.00'}
+                      <td style={{ color: repasseValue > 0 ? '#48bb78' : 'var(--muted)' }}>
+                        {repasseValue > 0 ? (
+                          <div>
+                            <div style={{ fontWeight: 700 }}>R$ {repasseValue.toFixed(2)}</div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--muted)', marginTop: 2 }}>{detailsStr}</div>
+                          </div>
+                        ) : 'R$ 0.00'}
                       </td>
                     </tr>
                   );

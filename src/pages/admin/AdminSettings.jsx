@@ -43,7 +43,7 @@ const DEFAULT_SETTINGS = {
   customWebhookUrl: '',
   waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨',
   professionals: [
-    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commissionService: 50, commissionProduct: 10, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
 };
 
@@ -59,7 +59,8 @@ const AdminSettings = () => {
   const [newProf, setNewProf] = useState({
     name: '',
     avatar: '',
-    commission: 50,
+    commissionService: 50,
+    commissionProduct: 10,
     phone: '',
     email: '',
     active: true,
@@ -89,7 +90,8 @@ const AdminSettings = () => {
       ...newProf,
       id: id || `prof-${Date.now()}`,
       avatar: newProf.avatar.trim() || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80',
-      commission: Number(newProf.commission) || 0,
+      commissionService: Number(newProf.commissionService) || 0,
+      commissionProduct: Number(newProf.commissionProduct) || 0,
       workStart: newProf.workStart || '09:00',
       workEnd: newProf.workEnd || '19:00',
       lunchStart: newProf.lunchStart || '12:00',
@@ -106,7 +108,8 @@ const AdminSettings = () => {
     setNewProf({
       name: '',
       avatar: '',
-      commission: 50,
+      commissionService: 50,
+      commissionProduct: 10,
       phone: '',
       email: '',
       active: true,
@@ -126,7 +129,8 @@ const AdminSettings = () => {
     setNewProf({
       name: prof.name,
       avatar: prof.avatar || '',
-      commission: prof.commission,
+      commissionService: prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 50),
+      commissionProduct: prof.commissionProduct !== undefined ? prof.commissionProduct : 10,
       phone: prof.phone || '',
       email: prof.email || '',
       active: prof.active ?? true,
@@ -146,7 +150,8 @@ const AdminSettings = () => {
     setNewProf({
       name: '',
       avatar: '',
-      commission: 50,
+      commissionService: 50,
+      commissionProduct: 10,
       phone: '',
       email: '',
       active: true,
@@ -170,7 +175,12 @@ const AdminSettings = () => {
       ...prev,
       professionals: (prev.professionals || []).map(p => 
         p.id === editingProfId 
-          ? { ...p, ...newProf, commission: Number(newProf.commission) || 0 } 
+          ? { 
+              ...p, 
+              ...newProf, 
+              commissionService: Number(newProf.commissionService) || 0,
+              commissionProduct: Number(newProf.commissionProduct) || 0
+            } 
           : p
       )
     }));
@@ -606,7 +616,7 @@ const AdminSettings = () => {
                   : 'Adicione um profissional para que ele apareça como coluna na agenda e configure seu e-mail, telefone e comissão.'}
               </p>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, alignItems: 'flex-end' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 2fr', gap: 16, alignItems: 'flex-end' }}>
                 <div className="form-group">
                   <label>Nome do Profissional *</label>
                   <input 
@@ -617,13 +627,23 @@ const AdminSettings = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Comissão (%) *</label>
+                  <label>Comissão Serv. (%) *</label>
                   <input 
                     type="number" 
                     min="0"
                     max="100"
-                    value={newProf.commission}
-                    onChange={e => setNewProf({ ...newProf, commission: Number(e.target.value) })}
+                    value={newProf.commissionService || 0}
+                    onChange={e => setNewProf({ ...newProf, commissionService: Number(e.target.value) })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Comissão Prod. (%) *</label>
+                  <input 
+                    type="number" 
+                    min="0"
+                    max="100"
+                    value={newProf.commissionProduct || 0}
+                    onChange={e => setNewProf({ ...newProf, commissionProduct: Number(e.target.value) })}
                   />
                 </div>
                 <div className="form-group">
@@ -976,7 +996,7 @@ const AdminSettings = () => {
                       <div>
                         <strong style={{ fontSize: '1rem', display: 'block' }}>{prof.name}</strong>
                         <span style={{ fontSize: '0.82rem', color: 'var(--muted)', display: 'block' }}>
-                          Comissão: {prof.commission}% | Contato: {prof.phone || 'Sem telefone'} | E-mail: {prof.email || 'Sem e-mail'}
+                          Comissão Serviços: {prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 0)}% | Comissão Produtos: {prof.commissionProduct !== undefined ? prof.commissionProduct : 0}% | Contato: {prof.phone || 'Sem telefone'} | E-mail: {prof.email || 'Sem e-mail'}
                         </span>
                         <span style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
                           Expediente: <strong>{prof.workStart || '09:00'} às {prof.workEnd || '19:00'}</strong> (Almoço: {prof.lunchStart || '12:00'} - {prof.lunchEnd || '13:00'}) | 

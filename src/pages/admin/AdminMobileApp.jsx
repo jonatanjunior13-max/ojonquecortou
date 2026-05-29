@@ -1298,26 +1298,57 @@ const AdminMobileApp = () => {
     const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
     const monthPrefix = `${currentYear}-${currentMonth}`;
 
-    // Filtra agendamentos finalizados do mês atual
-    const doneBookings = bookings.filter(b => 
-      b.status === 'finalizado' && b.date && b.date.startsWith(monthPrefix)
+    const jonProf = settings?.professionals?.find(p => p.id === 'jon');
+    const commServ = jonProf ? (jonProf.commissionService !== undefined ? jonProf.commissionService : (jonProf.commission || 60)) : 60;
+    const commProd = jonProf ? (jonProf.commissionProduct !== undefined ? jonProf.commissionProduct : 10) : 10;
+
+    // Filter transactions for professional 'jon' in the current month
+    const monthlyTxs = transactions.filter(t => 
+      t.type === 'entrada' && 
+      t.date && 
+      t.date.startsWith(monthPrefix) && 
+      (t.professionalId === 'jon' || !t.professionalId)
     );
 
-    const list = doneBookings.map(b => {
-      const price = b.service?.price || b.servicePrice || 150;
-      const commissionValue = price * 0.60; // 60% repasse padrão
+    const list = monthlyTxs.map(t => {
+      const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
+      const isProdSale = t.isProductSale || t.category === 'venda_produto';
+      
+      let rawProd = 0;
+      let rawServ = 0;
+
+      if (isProdSale) {
+        rawProd = t.value;
+      } else {
+        rawProd = productVal;
+        rawServ = Math.max(0, t.value - productVal);
+      }
+
+      const servComm = rawServ * (commServ / 100);
+      const prodComm = rawProd * (commProd / 100);
+      const commissionValue = servComm + prodComm;
+
+      let typeStr = '';
+      if (rawServ > 0 && rawProd > 0) {
+        typeStr = `Serviços (${commServ}%) + Produtos (${commProd}%)`;
+      } else if (rawServ > 0) {
+        typeStr = `Serviços (${commServ}%)`;
+      } else if (rawProd > 0) {
+        typeStr = `Produtos (${commProd}%)`;
+      }
+
       return {
-        id: b.id,
-        clientName: b.clientName,
-        serviceName: b.service?.name || b.serviceName || 'Serviço',
-        date: b.date,
-        price,
+        id: t.id,
+        clientName: t.clientName || 'Cliente',
+        serviceName: `${t.description || 'Venda'} - ${typeStr}`,
+        date: t.date,
+        price: t.value,
         commissionValue
       };
     });
 
     const total = list.reduce((sum, item) => sum + item.commissionValue, 0);
-    return { list, total };
+    return { list, total, commServ, commProd };
   };
 
   // Datas e Timeline
@@ -1578,7 +1609,7 @@ const AdminMobileApp = () => {
               R$ {commissions.total.toFixed(2).replace('.', ',')}
             </div>
             <div className="comm-card-period">
-              De 01/{new Date().getMonth() + 1}/{new Date().getFullYear()} até {new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()} (60% repasse)
+              De 01/{new Date().getMonth() + 1}/{new Date().getFullYear()} até {new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()} ({commissions.commServ}% Serv. / {commissions.commProd}% Prod.)
             </div>
             <button className="change-period-btn" onClick={() => alert('Filtro de período disponível na versão web desktop.')}>Trocar período</button>
           </div>
