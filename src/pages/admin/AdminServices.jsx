@@ -26,6 +26,7 @@ const AdminServices = () => {
     priceType: 'Fixo',
     promoPrice: '',
     duration: '',
+    cost: '',
     isPrimary: true,
     scheduledViaWhatsapp: false
   });
@@ -97,6 +98,7 @@ const AdminServices = () => {
       priceType: 'Fixo',
       promoPrice: '',
       duration: '60',
+      cost: '',
       isPrimary: true,
       scheduledViaWhatsapp: false
     });
@@ -113,6 +115,7 @@ const AdminServices = () => {
       priceType: service.priceType || 'Fixo',
       promoPrice: service.promoPrice ? service.promoPrice.toString() : '',
       duration: service.duration.toString(),
+      cost: service.cost ? service.cost.toString() : '',
       isPrimary: service.isPrimary ?? true,
       scheduledViaWhatsapp: service.scheduledViaWhatsapp ?? false
     });
@@ -129,6 +132,7 @@ const AdminServices = () => {
       priceType: form.priceType,
       promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
       duration: Number(form.duration),
+      cost: form.cost ? Number(form.cost) : 0,
       isPrimary: form.isPrimary,
       scheduledViaWhatsapp: !!form.scheduledViaWhatsapp
     };
@@ -429,6 +433,18 @@ const AdminServices = () => {
                   onChange={e => setForm(prev => ({ ...prev, promoPrice: e.target.value }))}
                 />
               </div>
+            </div>
+
+            <div className="form-group-sleek" style={{ marginTop: 12 }}>
+              <label>Custo do Serviço (R$)</label>
+              <input 
+                type="number" 
+                min="0"
+                step="0.01"
+                placeholder="Ex: 15.00 (Lançado automaticamente como despesa ao fechar a comanda)"
+                value={form.cost}
+                onChange={e => setForm(prev => ({ ...prev, cost: e.target.value }))}
+              />
             </div>
 
             <div className="form-group-sleek">

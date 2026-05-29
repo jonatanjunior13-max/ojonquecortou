@@ -885,6 +885,15 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
+    // Calculate service cost
+    const mainService = services.find(s => s.name === (booking.service?.name || booking.serviceName));
+    const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+    const extraServicesCost = addedServices.reduce((sum, item) => {
+      const match = services.find(s => s.name === item.name);
+      return sum + (match ? (Number(match.cost) || 0) : 0);
+    }, 0);
+    const totalServiceCost = mainServiceCost + extraServicesCost;
+
     try {
       if (isDemoMode || !db) {
         setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
@@ -907,7 +916,26 @@ const AdminDashboard = () => {
         const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
         const currentTx = localTx ? JSON.parse(localTx) : [];
         const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
-        const updatedTxList = [newTx, ...currentTx];
+        let updatedTxList = [newTx, ...currentTx];
+
+        if (totalServiceCost > 0) {
+          const serviceCostTx = {
+            id: 'tx_cost_' + Date.now(),
+            bookingId: booking.id,
+            date: booking.date || new Date().toISOString().split('T')[0],
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: booking.clientName,
+            clientPhone: booking.clientPhone || '',
+            type: 'saida',
+            paymentMethod,
+            value: totalServiceCost,
+            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}`,
+            professionalId: booking.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          updatedTxList = [serviceCostTx, ...updatedTxList];
+        }
+
         localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
@@ -925,6 +953,23 @@ const AdminDashboard = () => {
         }
 
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+
+        if (totalServiceCost > 0) {
+          const serviceCostTx = {
+            bookingId: booking.id,
+            date: booking.date || new Date().toISOString().split('T')[0],
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: booking.clientName,
+            clientPhone: booking.clientPhone || '',
+            type: 'saida',
+            paymentMethod,
+            value: totalServiceCost,
+            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}`,
+            professionalId: booking.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), serviceCostTx);
+        }
       }
 
       alert('Comanda fechada com sucesso! Estoque deduzido e receita registrada.');

@@ -1035,10 +1035,11 @@
   font-weight: 600;
   color: var(--ink-2);
 }
-
 .form-group-sleek input,
 .form-group-sleek select,
 .form-group-sleek textarea {
+  width: 100%;
+  box-sizing: border-box;
   padding: 6px 10px;
   border: 1px solid var(--rule);
   border-radius: 4px;

@@ -67,7 +67,7 @@ const AdminMobileApp = () => {
   const [showDirectSaleModal, setShowDirectSaleModal] = useState(false);
   const [directSaleProducts, setDirectSaleProducts] = useState([]);
   const [directSaleDiscount, setDirectSaleDiscount] = useState(0);
-  const [directSalePaymentMethod, setDirectSalePaymentMethod] = useState('pix');
+  const [directSalePaymentMethod, setDirectSalePaymentMethod] = useState('Pix');
   const [directSaleClient, setDirectSaleClient] = useState('');
   const [showDirectSaleSuggestions, setShowDirectSaleSuggestions] = useState(false);
 
@@ -136,7 +136,7 @@ const AdminMobileApp = () => {
 
   const [blockMotive, setBlockMotive] = useState('Almoço');
   const [blockEndTime, setBlockEndTime] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('pix');
+  const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [sendingMsgStatus, setSendingMsgStatus] = useState('');
 
   // 1. Listeners em Tempo Real
@@ -863,7 +863,6 @@ const AdminMobileApp = () => {
     setShowCheckoutModal(true);
   };
 
-
   const submitCheckout = async () => {
     if (!checkoutBooking) return;
     const baseServicePrice = checkoutBooking.service?.price || checkoutBooking.servicePrice || 150;
@@ -892,7 +891,6 @@ const AdminMobileApp = () => {
       professionalId: checkoutBooking.profissional || 'jon',
       // Include products breakdown to track costs
       productSales: selectedProducts.map(p => {
-        // In mobile inventory is state variable 'inventory' or 'products' from global
         const match = inventory.find(prod => prod.id === p.id);
         return {
           productId: p.id,
@@ -905,6 +903,10 @@ const AdminMobileApp = () => {
       createdAt: new Date().toISOString()
     };
 
+    // Calculate service cost
+    const mainService = services.find(s => s.name === (checkoutBooking.service?.name || checkoutBooking.serviceName));
+    const totalServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+
     try {
       if (isDemoMode) {
         // Atualiza booking
@@ -913,7 +915,27 @@ const AdminMobileApp = () => {
         localStorage.setItem('demo_bookings', JSON.stringify(updatedB));
         
         // Adiciona tx
-        const updatedTx = [{ id: 'tx_' + Date.now(), ...payloadTx }, ...transactions];
+        const newTx = { id: 'tx_' + Date.now(), ...payloadTx };
+        let updatedTx = [newTx, ...transactions];
+
+        if (totalServiceCost > 0) {
+          const serviceCostTx = {
+            id: 'tx_cost_' + Date.now(),
+            bookingId: checkoutBooking.id,
+            date: checkoutBooking.date || new Date().toISOString().split('T')[0],
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: checkoutBooking.clientName,
+            clientPhone: checkoutBooking.clientPhone || '',
+            type: 'saida',
+            paymentMethod,
+            value: totalServiceCost,
+            description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}`,
+            professionalId: checkoutBooking.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          updatedTx = [serviceCostTx, ...updatedTx];
+        }
+
         setTransactions(updatedTx);
         localStorage.setItem('demo_financial', JSON.stringify(updatedTx));
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTx));
@@ -930,6 +952,23 @@ const AdminMobileApp = () => {
         const apptRef = doc(db, 'bookings', checkoutBooking.id);
         await updateDoc(apptRef, { status: 'finalizado' });
         await addDoc(collection(db, 'financial_transactions'), payloadTx);
+
+        if (totalServiceCost > 0) {
+          const serviceCostTx = {
+            bookingId: checkoutBooking.id,
+            date: checkoutBooking.date || new Date().toISOString().split('T')[0],
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: checkoutBooking.clientName,
+            clientPhone: checkoutBooking.clientPhone || '',
+            type: 'saida',
+            paymentMethod,
+            value: totalServiceCost,
+            description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}`,
+            professionalId: checkoutBooking.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), serviceCostTx);
+        }
         
         // Baixa no estoque
         for (const prod of selectedProducts) {
@@ -943,7 +982,7 @@ const AdminMobileApp = () => {
       setShowCheckoutModal(false);
       setCheckoutBooking(null);
       setSelectedProducts([]);
-      alert('Comanda fechada com sucesso! Receita e baixa no estoque registradas.');
+      alert('Comanda fechada com sucesso! Receita, despesa de custo de serviço e baixa no estoque registradas.');
     } catch (e) {
       alert('Erro ao fechar comanda.');
     }
@@ -978,6 +1017,7 @@ const AdminMobileApp = () => {
       value: Number(value),
       description,
       professionalId: 'jon',
+      isProductSale: true,
       productSales: directSaleProducts.map(p => {
         const match = inventory.find(prod => prod.id === p.id);
         return {
@@ -2230,10 +2270,10 @@ const AdminMobileApp = () => {
             <div className="mobile-form-group">
               <label>Forma de Pagamento *</label>
               <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
-                <option value="pix">⚡ PIX</option>
-                <option value="credito">💳 Cartão de Crédito</option>
-                <option value="debito">💳 Cartão de Débito</option>
-                <option value="dinheiro">💵 Dinheiro</option>
+                <option value="Pix">⚡ PIX</option>
+                <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
+                <option value="Cartão de Débito">💳 Cartão de Débito</option>
+                <option value="Dinheiro">💵 Dinheiro</option>
               </select>
             </div>
 
@@ -2361,10 +2401,10 @@ const AdminMobileApp = () => {
               <div className="mobile-form-group">
                 <label>Forma de Pagamento *</label>
                 <select value={directSalePaymentMethod} onChange={e => setDirectSalePaymentMethod(e.target.value)}>
-                  <option value="pix">⚡ PIX</option>
-                  <option value="credito">💳 Cartão de Crédito</option>
-                  <option value="debito">💳 Cartão de Débito</option>
-                  <option value="dinheiro">💵 Dinheiro</option>
+                  <option value="Pix">⚡ PIX</option>
+                  <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
+                  <option value="Cartão de Débito">💳 Cartão de Débito</option>
+                  <option value="Dinheiro">💵 Dinheiro</option>
                 </select>
               </div>
 
