@@ -881,7 +881,8 @@ const AdminMobileApp = () => {
     if (!checkoutBooking) return;
     const baseServicePrice = checkoutBooking.service?.price || checkoutBooking.servicePrice || 150;
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
-    const value = Math.max(0, baseServicePrice + productsTotal - discount);
+    const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
+    const value = Math.max(0, baseServicePrice + productsTotal - discount - prepay);
     
     let description = checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base';
     if (selectedProducts.length > 0) {
@@ -889,6 +890,9 @@ const AdminMobileApp = () => {
     }
     if (discount > 0) {
       description += ` (Desconto: R$ ${discount})`;
+    }
+    if (prepay > 0) {
+      description += ` (Sinal/Adiantamento: -R$ ${prepay})`;
     }
 
     const payloadTx = {
@@ -2273,10 +2277,17 @@ const AdminMobileApp = () => {
                 />
               </div>
 
+              {checkoutBooking.prepayment > 0 && (
+                <div style={{ marginTop: 6, fontSize: '0.85rem', color: '#e53e3e', fontWeight: 600 }}>
+                  <span>Sinal/Adiantamento Pago: </span>
+                  <strong>- R$ {Number(checkoutBooking.prepayment).toFixed(2).replace('.', ',')}</strong>
+                </div>
+              )}
+
               <div>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginTop: 10 }}>VALOR TOTAL COBRADO</span>
+                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginTop: 10 }}>VALOR TOTAL COBRADO (RESTANTE)</span>
                 <strong style={{ fontSize: '1.4rem', color: 'var(--mobile-green)' }}>
-                  R$ {Math.max(0, (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150) + selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - discount).toFixed(2).replace('.', ',')}
+                  R$ {Math.max(0, (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150) + selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - discount - (checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0)).toFixed(2).replace('.', ',')}
                 </strong>
               </div>
             </div>

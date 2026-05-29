@@ -180,7 +180,8 @@ const AdminDashboard = () => {
     time: '',
     notes: '',
     status: '',
-    profissional: 'jon'
+    profissional: 'jon',
+    prepayment: 0
   });
 
   // Autocomplete suggestions states
@@ -355,7 +356,8 @@ const AdminDashboard = () => {
     date: new Date().toISOString().split('T')[0],
     time: '09:00',
     notes: '',
-    profissional: 'jon'
+    profissional: 'jon',
+    prepayment: 0
   });
 
   // Carrega produtos, serviços, clientes, transações e configurações
@@ -497,7 +499,8 @@ const AdminDashboard = () => {
       time: activeAppt.time || '',
       notes: activeAppt.notes || '',
       status: activeAppt.status || 'confirmado',
-      profissional: activeAppt.profissional || 'jon'
+      profissional: activeAppt.profissional || 'jon',
+      prepayment: activeAppt.prepayment || 0
     });
     setIsEditingBooking(true);
     setActivePopover({ visible: false });
@@ -506,6 +509,13 @@ const AdminDashboard = () => {
 
   const handleSaveEditBooking = async (e) => {
     if (e) e.preventDefault();
+    const bId = selectedBooking?.id;
+    if (!bId) return;
+
+    const oldBooking = bookings.find(b => b.id === bId);
+    const oldPrepayment = oldBooking ? (Number(oldBooking.prepayment) || 0) : 0;
+    const newPrepayment = Number(editBookingForm.prepayment) || 0;
+
     const updatedPayload = {
       clientName: editBookingForm.clientName,
       clientPhone: editBookingForm.clientPhone,
@@ -524,13 +534,11 @@ const AdminDashboard = () => {
       time: editBookingForm.time,
       notes: editBookingForm.notes,
       status: editBookingForm.status,
-      profissional: editBookingForm.profissional || 'jon'
+      profissional: editBookingForm.profissional || 'jon',
+      prepayment: newPrepayment
     };
 
     try {
-      const bId = selectedBooking?.id;
-      if (!bId) return;
-
       if (isDemoMode || !db) {
         setBookings(prev => prev.map(b => b.id === bId ? { ...b, ...updatedPayload } : b));
         setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
@@ -546,6 +554,11 @@ const AdminDashboard = () => {
         await updateDoc(docRef, updatedPayload);
         setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
       }
+
+      if (newPrepayment > oldPrepayment) {
+        await logPrepaymentTransaction(bId, updatedPayload, newPrepayment - oldPrepayment);
+      }
+
       setIsEditingBooking(false);
       setSelectedBooking(null);
     } catch (err) {
@@ -650,6 +663,35 @@ const AdminDashboard = () => {
     }
   };
 
+  const logPrepaymentTransaction = async (bookingId, payload, amount) => {
+    if (amount <= 0) return;
+    const tx = {
+      bookingId: bookingId,
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: payload.clientName,
+      clientPhone: payload.clientPhone || '',
+      type: 'entrada',
+      paymentMethod: 'Pix',
+      value: amount,
+      description: `Adiantamento/Sinal: ${payload.service?.name || payload.serviceName || 'Serviço'} - ${payload.clientName}`,
+      professionalId: payload.profissional || 'jon',
+      createdAt: new Date().toISOString()
+    };
+
+    if (isDemoMode || !db) {
+      const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
+      const currentTx = localTx ? JSON.parse(localTx) : [];
+      const newTx = { id: 'tx_' + Date.now(), ...tx };
+      const updatedTxList = [newTx, ...currentTx];
+      localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
+      localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
+      setTransactions(updatedTxList);
+    } else {
+      await addDoc(collection(db, 'financial_transactions'), tx);
+    }
+  };
+
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
@@ -671,6 +713,7 @@ const AdminDashboard = () => {
       notes: newBooking.notes,
       status: 'confirmado',
       profissional: newBooking.profissional || 'jon',
+      prepayment: Number(newBooking.prepayment) || 0,
       createdAt: new Date().toISOString()
     };
 
@@ -678,9 +721,16 @@ const AdminDashboard = () => {
       const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
 
       if (isDemoMode) {
-        setBookings(prev => [...prev, { id: 'demo-' + Date.now(), ...payload }]);
+        const generatedId = 'demo-' + Date.now();
+        setBookings(prev => [...prev, { id: generatedId, ...payload }]);
+        if (payload.prepayment > 0) {
+          await logPrepaymentTransaction(generatedId, payload, payload.prepayment);
+        }
       } else {
-        await addDoc(collection(db, 'bookings'), payload);
+        const docRef = await addDoc(collection(db, 'bookings'), payload);
+        if (payload.prepayment > 0) {
+          await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
+        }
       }
 
       // Auto-cadastro de cliente
@@ -771,7 +821,8 @@ const AdminDashboard = () => {
       date: selectedSlot.date,
       time: selectedSlot.time,
       profissional: selectedSlot.profissional || 'jon',
-      notes: ''
+      notes: '',
+      prepayment: 0
     });
     setShowSlotActionModal(false);
     setShowAddModal(true);
@@ -846,14 +897,16 @@ const AdminDashboard = () => {
     const base = overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.price || selectedBooking?.servicePrice || 150);
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    return Math.max(0, base + extras + prods - discount);
+    const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
+    return Math.max(0, base + extras + prods - discount - prepay);
   };
 
   const handleCloseComanda = async (booking) => {
     const baseServicePrice = overrideBasePrice !== null ? overrideBasePrice : (booking.service?.price || booking.servicePrice || 150);
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal - discount);
+    const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
+    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal - discount - prepay);
 
     const itemsDescription = [
       booking.service?.name || booking.serviceName || 'Serviço Base',
@@ -871,7 +924,7 @@ const AdminDashboard = () => {
       paymentMethod: paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod,
       value: totalComanda,
       discount: discount,
-      description: discount > 0 ? `${itemsDescription} (Desconto: R$ ${discount})` : itemsDescription,
+      description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
       professionalId: booking.profissional || 'jon',
       // Store products breakdown to discriminate costs and calculate profits
       productSales: addedProducts.map(p => {
@@ -2554,6 +2607,17 @@ Jon`;
               </div>
 
               <div className="form-group">
+                <label>Sinal / Adiantamento Pago (R$)</label>
+                <input 
+                  type="number"
+                  min="0"
+                  placeholder="0.00"
+                  value={editBookingForm.prepayment || ''}
+                  onChange={e => setEditBookingForm(prev => ({ ...prev, prepayment: Number(e.target.value) }))}
+                />
+              </div>
+
+              <div className="form-group">
                 <label style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Observações do Agendamento</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
@@ -2833,6 +2897,13 @@ Jon`;
                     </div>
                   </div>
 
+                  {selectedBooking.prepayment > 0 && (
+                    <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#c53030', fontWeight: 600 }}>
+                      <span>Valor Já Pago (Adiantamento)</span>
+                      <span>- R$ {Number(selectedBooking.prepayment).toFixed(2)}</span>
+                    </div>
+                  )}
+
                   <div className="comanda-total-row">
                     <span>Total a Receber</span>
                     <span>R$ {calculateTotal()}</span>
@@ -3065,6 +3136,17 @@ Jon`;
                   required
                   value={newBooking.time}
                   onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>
+                <label>Sinal / Adiantamento Pago (R$)</label>
+                <input 
+                  type="number"
+                  min="0"
+                  placeholder="0.00"
+                  value={newBooking.prepayment || ''}
+                  onChange={e => setNewBooking(prev => ({ ...prev, prepayment: Number(e.target.value) }))}
                 />
               </div>
 
