@@ -147,6 +147,7 @@ const AdminDashboard = () => {
   const [addedServices, setAddedServices] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState('Pix');
+  const [installments, setInstallments] = useState('À vista');
   const [selectedExtraService, setSelectedExtraService] = useState('');
   const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
@@ -155,6 +156,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (isCheckoutOpen) {
       setDiscount(0);
+      setInstallments('À vista');
     }
   }, [isCheckoutOpen]);
 
@@ -866,7 +868,7 @@ const AdminDashboard = () => {
       clientName: booking.clientName,
       clientPhone: booking.clientPhone || '',
       type: 'entrada',
-      paymentMethod,
+      paymentMethod: paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod,
       value: totalComanda,
       discount: discount,
       description: discount > 0 ? `${itemsDescription} (Desconto: R$ ${discount})` : itemsDescription,
@@ -2877,7 +2879,7 @@ Jon`;
                   </div>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: 20 }}>
+                <div className="form-group" style={{ marginBottom: 12 }}>
                   <label>Forma de Pagamento *</label>
                   <select 
                     value={paymentMethod} 
@@ -2890,6 +2892,21 @@ Jon`;
                     <option value="Dinheiro">Dinheiro</option>
                   </select>
                 </div>
+
+                {paymentMethod === 'Cartão de Crédito' && (
+                  <div className="form-group" style={{ marginBottom: 20 }}>
+                    <label>Número de Parcelas *</label>
+                    <select 
+                      value={installments} 
+                      onChange={e => setInstallments(e.target.value)}
+                      style={{ padding: '8px', width: '100%' }}
+                    >
+                      <option value="À vista">À vista</option>
+                      <option value="2x">2x</option>
+                      <option value="3x">3x</option>
+                    </select>
+                  </div>
+                )}
 
                 <div className="modal-actions" style={{ justifyContent: 'space-between' }}>
                   <button type="button" className="btn btn-ghost" onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>

@@ -68,8 +68,21 @@ const AdminMobileApp = () => {
   const [directSaleProducts, setDirectSaleProducts] = useState([]);
   const [directSaleDiscount, setDirectSaleDiscount] = useState(0);
   const [directSalePaymentMethod, setDirectSalePaymentMethod] = useState('Pix');
+  const [directSaleInstallments, setDirectSaleInstallments] = useState('À vista');
   const [directSaleClient, setDirectSaleClient] = useState('');
   const [showDirectSaleSuggestions, setShowDirectSaleSuggestions] = useState(false);
+
+  useEffect(() => {
+    if (!showCheckoutModal) {
+      setInstallments('À vista');
+    }
+  }, [showCheckoutModal]);
+
+  useEffect(() => {
+    if (!showDirectSaleModal) {
+      setDirectSaleInstallments('À vista');
+    }
+  }, [showDirectSaleModal]);
 
   // Form states
   const [newBooking, setNewBooking] = useState({
@@ -137,6 +150,7 @@ const AdminMobileApp = () => {
   const [blockMotive, setBlockMotive] = useState('Almoço');
   const [blockEndTime, setBlockEndTime] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('Pix');
+  const [installments, setInstallments] = useState('À vista');
   const [sendingMsgStatus, setSendingMsgStatus] = useState('');
 
   // 1. Listeners em Tempo Real
@@ -884,7 +898,7 @@ const AdminMobileApp = () => {
       clientName: checkoutBooking.clientName,
       clientPhone: checkoutBooking.clientPhone || '',
       type: 'entrada',
-      paymentMethod,
+      paymentMethod: paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod,
       discount: discount,
       value: Number(value),
       description,
@@ -1012,7 +1026,7 @@ const AdminMobileApp = () => {
       clientName,
       clientPhone: '',
       type: 'entrada',
-      paymentMethod: directSalePaymentMethod,
+      paymentMethod: directSalePaymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${directSaleInstallments})` : directSalePaymentMethod,
       discount: directSaleDiscount,
       value: Number(value),
       description,
@@ -2277,6 +2291,17 @@ const AdminMobileApp = () => {
               </select>
             </div>
 
+            {paymentMethod === 'Cartão de Crédito' && (
+              <div className="mobile-form-group">
+                <label>Número de Parcelas *</label>
+                <select value={installments} onChange={e => setInstallments(e.target.value)}>
+                  <option value="À vista">À vista</option>
+                  <option value="2x">2x</option>
+                  <option value="3x">3x</option>
+                </select>
+              </div>
+            )}
+
             <div className="mobile-modal-actions">
               <button type="button" className="btn-cancel" onClick={() => setShowCheckoutModal(false)}>Cancelar</button>
               <button type="button" className="btn-save" style={{ background: 'var(--mobile-green)' }} onClick={submitCheckout}>
@@ -2407,6 +2432,17 @@ const AdminMobileApp = () => {
                   <option value="Dinheiro">💵 Dinheiro</option>
                 </select>
               </div>
+
+              {directSalePaymentMethod === 'Cartão de Crédito' && (
+                <div className="mobile-form-group">
+                  <label>Número de Parcelas *</label>
+                  <select value={directSaleInstallments} onChange={e => setDirectSaleInstallments(e.target.value)}>
+                    <option value="À vista">À vista</option>
+                    <option value="2x">2x</option>
+                    <option value="3x">3x</option>
+                  </select>
+                </div>
+              )}
 
               <div style={{ margin: '14px 0' }}>
                 <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>TOTAL A RECEBER</span>
