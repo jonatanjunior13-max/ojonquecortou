@@ -2014,14 +2014,31 @@ Jon`;
                         b.status !== 'cancelado'
                       );
 
-                      const blockedBySettings = !appt && isSlotBlocked(prof, currentDateStr, slot);
+                      const timeToMin = (t) => {
+                        const [h, m] = t.split(':').map(Number);
+                        return h * 60 + m;
+                      };
+                      const slotMin = timeToMin(slot);
+                      
+                      const ongoingAppt = !appt && filteredBookingsList.find(b => {
+                        if (b.date !== currentDateStr || (b.profissional || 'jon') !== prof.id || b.status === 'cancelado') return false;
+                        const bStart = timeToMin(b.time);
+                        const bEnd = bStart + (b.duration || 60);
+                        return bStart < slotMin && slotMin < bEnd;
+                      });
+
+                      const blockedBySettings = !appt && !ongoingAppt && isSlotBlocked(prof, currentDateStr, slot);
 
                       return (
                         <div 
                           key={prof.id} 
                           className="day-cell"
-                          style={{ cursor: (blockedBySettings || !appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
+                          style={{ cursor: (blockedBySettings || !appt || appt.status === 'cancelado' || ongoingAppt) ? 'pointer' : 'default' }}
                           onClick={(e) => {
+                            if (ongoingAppt) {
+                              handleBookingLeftClick(e, ongoingAppt);
+                              return;
+                            }
                             if (blockedBySettings) {
                               if (confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
                                 handleCellClick(currentDateStr, slot, prof.id, prof.name);
@@ -2034,7 +2051,7 @@ Jon`;
                           }}
                           onContextMenu={(e) => {
                             if (blockedBySettings) return;
-                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt);
+                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt || ongoingAppt);
                           }}
                         >
                           {blockedBySettings && (
@@ -2088,6 +2105,27 @@ Jon`;
                               <span className="appt-time">{appt.time}</span>
                               <span className="appt-client">{appt.clientName}</span>
                               <span className="appt-service">{appt.service?.name || appt.serviceName}</span>
+                            </div>
+                          )}
+
+                          {ongoingAppt && (
+                            <div 
+                              className={`appt-card ${ongoingAppt.status} continuation`}
+                              onClick={(e) => handleBookingLeftClick(e, ongoingAppt)}
+                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, ongoingAppt)}
+                              style={{ 
+                                opacity: 0.85, 
+                                borderTop: 'none', 
+                                borderTopLeftRadius: 0, 
+                                borderTopRightRadius: 0,
+                                background: ongoingAppt.status === 'bloqueado' ? undefined : 'rgba(110, 47, 24, 0.08)',
+                                borderLeft: ongoingAppt.status === 'bloqueado' ? '3px solid #a0aec0' : '3px dashed var(--accent)',
+                                color: 'var(--text-muted)'
+                              }}
+                            >
+                              <span className="appt-time" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>↳ {slot} (Ocupado)</span>
+                              <span className="appt-client" style={{ fontSize: '0.78rem', fontWeight: 600 }}>{ongoingAppt.clientName}</span>
+                              <span className="appt-service" style={{ fontSize: '0.7rem' }}>{ongoingAppt.service?.name || ongoingAppt.serviceName}</span>
                             </div>
                           )}
                         </div>

@@ -671,8 +671,22 @@ const AdminMobileApp = () => {
   // 4. Fluxo de Criação de Agendamentos e Bloqueios
   const handleSlotClick = (timeStr) => {
     const match = bookings.find(b => b.date === currentDate && b.time === timeStr && b.status !== 'cancelado');
-    if (match) {
-      setSelectedBooking(match);
+    
+    const timeToMin = (t) => {
+      const [h, m] = t.split(':').map(Number);
+      return h * 60 + m;
+    };
+    const slotMin = timeToMin(timeStr);
+    
+    const ongoingMatch = !match && bookings.find(b => {
+      if (b.date !== currentDate || b.status === 'cancelado') return false;
+      const bStart = timeToMin(b.time);
+      const bEnd = bStart + (b.duration || 60);
+      return bStart < slotMin && slotMin < bEnd;
+    });
+
+    if (match || ongoingMatch) {
+      setSelectedBooking(match || ongoingMatch);
     } else {
       const jonProf = settings?.professionals?.find(p => p.id === 'jon');
       const blockedBySettings = isSlotBlocked(jonProf, currentDate, timeStr);
@@ -1051,6 +1065,7 @@ const AdminMobileApp = () => {
       setShowCheckoutModal(false);
       setCheckoutBooking(null);
       setSelectedProducts([]);
+      setActiveTab('inicio');
       alert('Comanda fechada com sucesso! Receita, despesa de custo de serviço e baixa no estoque registradas.');
     } catch (e) {
       alert('Erro ao fechar comanda.');
@@ -1132,6 +1147,7 @@ const AdminMobileApp = () => {
       setDirectSaleProducts([]);
       setDirectSaleDiscount(0);
       setDirectSaleClient('');
+      setActiveTab('inicio');
       alert('Venda avulsa registrada com sucesso! Faturamento e estoque atualizados.');
     } catch (e) {
       alert('Erro ao registrar venda.');
@@ -1560,8 +1576,21 @@ const AdminMobileApp = () => {
           <div className="mobile-timeline-scroll">
             {hourSlots.map(slot => {
               const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
+              
+              const timeToMin = (t) => {
+                const [h, m] = t.split(':').map(Number);
+                return h * 60 + m;
+              };
+              const slotMin = timeToMin(slot);
+              const ongoingAppt = !matchedAppt && bookings.find(b => {
+                if (b.date !== currentDate || b.status === 'cancelado') return false;
+                const bStart = timeToMin(b.time);
+                const bEnd = bStart + (b.duration || 60);
+                return bStart < slotMin && slotMin < bEnd;
+              });
+
               const jonProf = settings?.professionals?.find(p => p.id === 'jon');
-              const blockedBySettings = !matchedAppt && isSlotBlocked(jonProf, currentDate, slot);
+              const blockedBySettings = !matchedAppt && !ongoingAppt && isSlotBlocked(jonProf, currentDate, slot);
               
               return (
                 <div key={slot} className="mobile-timeline-row" onClick={() => handleSlotClick(slot)}>
@@ -1575,6 +1604,24 @@ const AdminMobileApp = () => {
                           <span>{matchedAppt.status.toUpperCase()}</span>
                           {matchedAppt.status !== 'bloqueado' && (
                             <span>R$ {(matchedAppt.service?.price || matchedAppt.servicePrice || 0).toFixed(0)}</span>
+                          )}
+                        </div>
+                      </div>
+                    ) : ongoingAppt ? (
+                      <div 
+                        className={`mobile-timeline-appt-block ${ongoingAppt.status}`}
+                        style={{ 
+                          opacity: 0.85, 
+                          borderLeftStyle: 'dashed',
+                          background: ongoingAppt.status === 'bloqueado' ? undefined : '#faf5ee'
+                        }}
+                      >
+                        <div className="appt-block-client" style={{ color: 'var(--mobile-text)' }}>↳ {ongoingAppt.clientName} (Ocupado)</div>
+                        <div className="appt-block-service">{ongoingAppt.service?.name || ongoingAppt.serviceName}</div>
+                        <div className="appt-block-meta">
+                          <span>{ongoingAppt.status.toUpperCase()}</span>
+                          {ongoingAppt.status !== 'bloqueado' && (
+                            <span>R$ {(ongoingAppt.service?.price || ongoingAppt.servicePrice || 0).toFixed(0)}</span>
                           )}
                         </div>
                       </div>
@@ -1977,10 +2024,10 @@ const AdminMobileApp = () => {
       {/* MODAL DE ADICIONAR/EDITAR AGENDAMENTO */}
       {showAddBookingModal && (
         <div className="mobile-overlay" onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="mobile-bottom-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
             <div className="mobile-sheet-header">
               <h4>{editingBookingId ? 'Editar Agendamento' : 'Novo Agendamento'}</h4>
-              <button onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }}><X size={20} /></button>
+              <button type="button" onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }} style={{ background: 'none', border: 'none', color: 'var(--mobile-muted)', cursor: 'pointer' }}><X size={20} /></button>
             </div>
 
             <form onSubmit={submitBooking}>
