@@ -16,6 +16,7 @@ const AdminServices = () => {
   // Catalog View states
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const [activeViewTab, setActiveViewTab] = useState('list'); // 'list' or 'reorder'
 
   // Form states
   const [form, setForm] = useState({
@@ -28,7 +29,8 @@ const AdminServices = () => {
     duration: '',
     cost: '',
     isPrimary: true,
-    scheduledViaWhatsapp: false
+    scheduledViaWhatsapp: false,
+    position: ''
   });
 
   useEffect(() => {
@@ -37,9 +39,9 @@ const AdminServices = () => {
 
     const getMockServices = () => {
       const localData = localStorage.getItem('demo_services');
-      if (localData) return JSON.parse(localData);
-      localStorage.setItem('demo_services', JSON.stringify(SEED_SERVICES));
-      return SEED_SERVICES;
+      const dataList = localData ? JSON.parse(localData) : SEED_SERVICES;
+      dataList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
+      return dataList;
     };
 
     if (!db) {
@@ -65,6 +67,7 @@ const AdminServices = () => {
           });
           localStorage.setItem('services_seeded', 'true');
         }
+        list.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
         setServices(list);
         setLoading(false);
         setIsDemoMode(false);
@@ -100,7 +103,8 @@ const AdminServices = () => {
       duration: '60',
       cost: '',
       isPrimary: true,
-      scheduledViaWhatsapp: false
+      scheduledViaWhatsapp: false,
+      position: services.length.toString()
     });
     setIsModalOpen(true);
   };
@@ -117,7 +121,8 @@ const AdminServices = () => {
       duration: service.duration.toString(),
       cost: service.cost ? service.cost.toString() : '',
       isPrimary: service.isPrimary ?? true,
-      scheduledViaWhatsapp: service.scheduledViaWhatsapp ?? false
+      scheduledViaWhatsapp: service.scheduledViaWhatsapp ?? false,
+      position: service.position !== undefined ? service.position.toString() : ''
     });
     setIsModalOpen(true);
   };
@@ -134,7 +139,8 @@ const AdminServices = () => {
       duration: Number(form.duration),
       cost: form.cost ? Number(form.cost) : 0,
       isPrimary: form.isPrimary,
-      scheduledViaWhatsapp: !!form.scheduledViaWhatsapp
+      scheduledViaWhatsapp: !!form.scheduledViaWhatsapp,
+      position: form.position !== '' ? Number(form.position) : services.length
     };
 
     try {
@@ -173,6 +179,31 @@ const AdminServices = () => {
       }
     } catch (err) {
       console.error('Erro ao excluir serviço:', err);
+    }
+  };
+
+  const handleMoveService = async (index, direction) => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= services.length) return;
+
+    const updated = [...services];
+    const temp = updated[index];
+    updated[index] = updated[newIndex];
+    updated[newIndex] = temp;
+
+    const finalServices = updated.map((s, idx) => ({ ...s, position: idx }));
+    setServices(finalServices);
+
+    if (isDemoMode) {
+      localStorage.setItem('demo_services', JSON.stringify(finalServices));
+    } else {
+      for (const s of finalServices) {
+        try {
+          await setDoc(doc(db, 'services', s.id), { position: s.position }, { merge: true });
+        } catch (err) {
+          console.error('Erro ao atualizar posição do serviço:', err);
+        }
+      }
     }
   };
 
@@ -217,133 +248,255 @@ const AdminServices = () => {
         </button>
       </div>
 
-      {/* Dynamic Category Navigation Tabs */}
-      <div className="services-category-tabs">
-        {categoriesList.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setSelectedCategory(cat)}
-            className={`category-tab-btn ${selectedCategory === cat ? 'active' : ''}`}
-          >
-            <Layers size={14} />
-            {cat}
-            <span className="tab-count-badge">
-              {cat === 'Todos' ? services.length : services.filter(s => (s.category || 'Cabelo') === cat).length}
-            </span>
-          </button>
-        ))}
+      {/* Subtabs for List vs Order View */}
+      <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--rule)', marginBottom: '24px', paddingBottom: '8px' }}>
+        <button 
+          type="button"
+          onClick={() => setActiveViewTab('list')}
+          style={{
+            background: 'none',
+            border: 'none',
+            borderBottom: activeViewTab === 'list' ? '2px solid var(--accent)' : '2px solid transparent',
+            color: activeViewTab === 'list' ? 'var(--text)' : 'var(--muted)',
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            cursor: 'pointer',
+            fontSize: '0.95rem'
+          }}
+        >
+          Visualizar Catálogo
+        </button>
+        <button 
+          type="button"
+          onClick={() => setActiveViewTab('reorder')}
+          style={{
+            background: 'none',
+            border: 'none',
+            borderBottom: activeViewTab === 'reorder' ? '2px solid var(--accent)' : '2px solid transparent',
+            color: activeViewTab === 'reorder' ? 'var(--text)' : 'var(--muted)',
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            cursor: 'pointer',
+            fontSize: '0.95rem'
+          }}
+        >
+          Gerenciar Posição (Ordenação)
+        </button>
       </div>
 
-      {loading ? (
-        <div className="catalog-loading">
-          <div className="spinner"></div>
-          <p>Carregando catálogo de serviços...</p>
-        </div>
-      ) : filteredServices.length === 0 ? (
-        <div className="catalog-empty-state">
-          <Scissors size={48} className="empty-icon" />
-          <h3>Nenhum serviço cadastrado nesta categoria</h3>
-          <p>Você pode adicionar um novo procedimento clicando no botão acima.</p>
-          <button className="btn btn-outline" onClick={handleOpenCreate}>Adicionar Serviço</button>
-        </div>
-      ) : (
-        /* Visual Catalog Grid */
-        <div className="services-catalog-grid">
-          {filteredServices.map((s) => {
-            const isPromo = s.promoPrice !== null && s.promoPrice !== undefined && s.promoPrice !== '';
-            const isDescExpanded = !!expandedDescriptions[s.id];
-            
-            return (
-              <div key={s.id} className={`service-catalog-card ${s.isPrimary ? 'featured' : ''}`}>
-                {/* Visual Top Bar / Card Header */}
-                <div className="card-top-decoration">
-                  <span className="service-category-tag">{s.category || 'Cabelo'}</span>
-                  <div className="service-badges-row">
-                    {s.isPrimary && (
-                      <span className="service-badge highlight">
-                        <Sparkles size={11} /> Destaque
-                      </span>
-                    )}
-                    {isPromo && (
-                      <span className="service-badge promo">
-                        <Percent size={11} /> Oferta
-                      </span>
-                    )}
-                  </div>
-                </div>
+      {activeViewTab === 'list' && (
+        <>
+          {/* Dynamic Category Navigation Tabs */}
+          <div className="services-category-tabs">
+            {categoriesList.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`category-tab-btn ${selectedCategory === cat ? 'active' : ''}`}
+              >
+                <Layers size={14} />
+                {cat}
+                <span className="tab-count-badge">
+                  {cat === 'Todos' ? services.length : services.filter(s => (s.category || 'Cabelo') === cat).length}
+                </span>
+              </button>
+            ))}
+          </div>
 
-                {/* Card Content */}
-                <div className="service-card-body">
-                  <h3 className="service-card-title">{s.name}</h3>
-                  
-                  <div className="service-duration-info">
-                    <Clock size={13} />
-                    <span>Duração média: {formatDuration(s.duration)}</span>
-                  </div>
+          {loading ? (
+            <div className="catalog-loading">
+              <div className="spinner"></div>
+              <p>Carregando catálogo de serviços...</p>
+            </div>
+          ) : filteredServices.length === 0 ? (
+            <div className="catalog-empty-state">
+              <Scissors size={48} className="empty-icon" />
+              <h3>Nenhum serviço cadastrado nesta categoria</h3>
+              <p>Você pode adicionar um novo procedimento clicando no botão acima.</p>
+              <button className="btn btn-outline" onClick={handleOpenCreate}>Adicionar Serviço</button>
+            </div>
+          ) : (
+            /* Visual Catalog Grid */
+            <div className="services-catalog-grid">
+              {filteredServices.map((s) => {
+                const isPromo = s.promoPrice !== null && s.promoPrice !== undefined && s.promoPrice !== '';
+                const isDescExpanded = !!expandedDescriptions[s.id];
+                
+                return (
+                  <div key={s.id} className={`service-catalog-card ${s.isPrimary ? 'featured' : ''}`}>
+                    {/* Visual Top Bar / Card Header */}
+                    <div className="card-top-decoration">
+                      <span className="service-category-tag">{s.category || 'Cabelo'}</span>
+                      <div className="service-badges-row">
+                        {s.isPrimary && (
+                          <span className="service-badge highlight">
+                            <Sparkles size={11} /> Destaque
+                          </span>
+                        )}
+                        {isPromo && (
+                          <span className="service-badge promo">
+                            <Percent size={11} /> Oferta
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                  {s.description && (
-                    <div className="service-desc-wrapper">
-                      <p className={`service-description ${isDescExpanded ? 'expanded' : 'collapsed'}`}>
-                        {s.description}
-                      </p>
-                      {s.description.length > 120 && (
-                        <button 
-                          type="button" 
-                          className="btn-toggle-desc" 
-                          onClick={() => toggleDescription(s.id)}
-                        >
-                          {isDescExpanded ? 'Ler menos' : 'Ler descrição completa'}
-                        </button>
+                    {/* Card Content */}
+                    <div className="service-card-body">
+                      <h3 className="service-card-title">{s.name}</h3>
+                      
+                      <div className="service-duration-info">
+                        <Clock size={13} />
+                        <span>Duração média: {formatDuration(s.duration)}</span>
+                      </div>
+
+                      {s.description && (
+                        <div className="service-desc-wrapper">
+                          <p className={`service-description ${isDescExpanded ? 'expanded' : 'collapsed'}`}>
+                            {s.description}
+                          </p>
+                          {s.description.length > 120 && (
+                            <button 
+                              type="button" 
+                              className="btn-toggle-desc" 
+                              onClick={() => toggleDescription(s.id)}
+                            >
+                              {isDescExpanded ? 'Ler menos' : 'Ler descrição completa'}
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
-                  )}
+
+                    {/* Card Footer / Pricing & Actions */}
+                    <div className="service-card-footer">
+                      <div className="service-pricing-area">
+                        {isPromo ? (
+                          <div className="pricing-split">
+                            <span className="pricing-label">Preço Promocional</span>
+                            <div className="price-comparison">
+                              <span className="price-old-strike">R$ {s.price.toFixed(2)}</span>
+                              <span className="price-new-value">
+                                <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                                <strong>R$ {s.promoPrice.toFixed(2)}</strong>
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="pricing-standard">
+                            <span className="pricing-label">Valor do Serviço</span>
+                            <span className="price-standard-value">
+                              <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                              <strong>R$ {s.price.toFixed(2)}</strong>
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="service-card-actions">
+                        <button 
+                          className="action-btn edit" 
+                          onClick={() => handleOpenEdit(s)} 
+                          title="Editar Serviço"
+                        >
+                          <Edit3 size={15} />
+                        </button>
+                        <button 
+                          className="action-btn delete" 
+                          onClick={() => handleDelete(s.id)} 
+                          title="Excluir Serviço"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      {activeViewTab === 'reorder' && (
+        <div className="reorder-catalog-container" style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--rule)' }}>
+          <h3 style={{ marginBottom: '8px', color: 'var(--text)' }}>Ordenar Grade de Exibição</h3>
+          <p style={{ color: 'var(--muted)', marginBottom: '24px', fontSize: '0.9rem' }}>
+            Use os botões de subir e descer para organizar a ordem em que os serviços serão listados na página de agendamento do cliente. O serviço no topo será o primeiro exibido.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {services.map((s, index) => (
+              <div 
+                key={s.id} 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'space-between', 
+                  padding: '16px', 
+                  background: 'rgba(255,255,255,0.03)', 
+                  border: '1px solid var(--rule)', 
+                  borderRadius: '8px',
+                  gap: '16px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'rgba(140,80,39,0.1)', color: '#8c5027', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '0.85rem' }}>
+                    {index + 1}
+                  </div>
+                  <div>
+                    <h4 style={{ margin: 0, color: 'var(--text)', fontSize: '0.95rem' }}>{s.name}</h4>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.category}</span>
+                  </div>
                 </div>
 
-                {/* Card Footer / Pricing & Actions */}
-                <div className="service-card-footer">
-                  <div className="service-pricing-area">
-                    {isPromo ? (
-                      <div className="pricing-split">
-                        <span className="pricing-label">Preço Promocional</span>
-                        <div className="price-comparison">
-                          <span className="price-old-strike">R$ {s.price.toFixed(2)}</span>
-                          <span className="price-new-value">
-                            <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                            <strong>R$ {s.promoPrice.toFixed(2)}</strong>
-                          </span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="pricing-standard">
-                        <span className="pricing-label">Valor do Serviço</span>
-                        <span className="price-standard-value">
-                          <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                          <strong>R$ {s.price.toFixed(2)}</strong>
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="service-card-actions">
-                    <button 
-                      className="action-btn edit" 
-                      onClick={() => handleOpenEdit(s)} 
-                      title="Editar Serviço"
-                    >
-                      <Edit3 size={15} />
-                    </button>
-                    <button 
-                      className="action-btn delete" 
-                      onClick={() => handleDelete(s.id)} 
-                      title="Excluir Serviço"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => handleMoveService(index, 'up')}
+                    disabled={index === 0}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--rule)',
+                      color: index === 0 ? 'var(--muted)' : 'var(--text)',
+                      borderRadius: '4px',
+                      width: '36px',
+                      height: '36px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: index === 0 ? 'not-allowed' : 'pointer',
+                      opacity: index === 0 ? 0.3 : 1
+                    }}
+                    title="Mover para Cima"
+                  >
+                    ▲
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMoveService(index, 'down')}
+                    disabled={index === services.length - 1}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--rule)',
+                      color: index === services.length - 1 ? 'var(--muted)' : 'var(--text)',
+                      borderRadius: '4px',
+                      width: '36px',
+                      height: '36px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: index === services.length - 1 ? 'not-allowed' : 'pointer',
+                      opacity: index === services.length - 1 ? 0.3 : 1
+                    }}
+                    title="Mover para Baixo"
+                  >
+                    ▼
+                  </button>
                 </div>
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
       )}
 
@@ -444,6 +597,17 @@ const AdminServices = () => {
                 placeholder="Ex: 15.00 (Lançado automaticamente como despesa ao fechar a comanda)"
                 value={form.cost}
                 onChange={e => setForm(prev => ({ ...prev, cost: e.target.value }))}
+              />
+            </div>
+
+            <div className="form-group-sleek" style={{ marginTop: 12 }}>
+              <label>Posição de Exibição no Agendamento</label>
+              <input 
+                type="number" 
+                min="0"
+                placeholder="Ex: 0 (Primeiro da lista)"
+                value={form.position}
+                onChange={e => setForm(prev => ({ ...prev, position: e.target.value }))}
               />
             </div>
 

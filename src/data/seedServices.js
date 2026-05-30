@@ -1,5 +1,20 @@
 export const SEED_SERVICES = [
   {
+    id: 'combo-corte-tratamento-personalizado',
+    emoji: '✨',
+    category: 'Combo',
+    name: 'Combo - Corte com o Jon + Tratamento personalizado',
+    tagline: 'O Queridinho do Studio',
+    description: 'Cachos precisando de tratamento e um corte novo? Esse pacote includes uma restauração profunda que devolve a maciez e o brilho, e um corte personalizado, pensado para valorizar os seus cachos. A finalização é sob medida para que seus cachos saiam com definição e brilho.',
+    price: 320,
+    priceType: 'Fixo',
+    promoPrice: 230,
+    duration: 60,
+    isPrimary: true,
+    position: 0,
+    includes: ['Corte Especializado', 'Tratamento de Alta Performance', 'Finalização Premium']
+  },
+  {
     id: 'corte-jon',
     emoji: '✂️',
     category: 'Corte',
@@ -11,21 +26,8 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: true,
+    position: 1,
     includes: ['Leitura de Fio técnica', 'Corte a seco/técnico', 'Finalização educativa']
-  },
-  {
-    id: 'combo-corte-tratamento-personalizado',
-    emoji: '✨',
-    category: 'Combo',
-    name: 'Combo - Corte com o Jon + Tratamento personalizado',
-    tagline: 'O Queridinho do Studio',
-    description: 'Cachos precisando de tratamento e um corte novo? Esse pacote inclui uma restauração profunda que devolve a maciez e o brilho, e um corte personalizado, pensado para valorizar os seus cachos. A finalização é sob medida para que seus cachos saiam com definição e brilho.',
-    price: 320,
-    priceType: 'Fixo',
-    promoPrice: 230,
-    duration: 60,
-    isPrimary: true,
-    includes: ['Corte Especializado', 'Tratamento de Alta Performance', 'Finalização Premium']
   },
   {
     id: 'luzes-morena-iluminada',
@@ -39,6 +41,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 180,
     isPrimary: true,
+    position: 2,
     includes: ['Teste de mecha obrigatório', 'Proteção da estrutura']
   },
   {
@@ -53,6 +56,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 45,
     isPrimary: true,
+    position: 3,
     includes: ['Análise personalizada', 'Nutrição profunda', 'Devolução de maciez e brilho']
   },
   {
@@ -67,6 +71,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 120,
     isPrimary: false,
+    position: 4,
     includes: ['Diagnóstico de cor', 'Tonalização técnica']
   },
   {
@@ -81,6 +86,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 45,
     isPrimary: false,
+    position: 5,
     includes: ['Ajuste de volume', 'Limpeza de pontas']
   },
   {
@@ -95,6 +101,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: false,
+    position: 6,
     includes: ['Esfoliação de semente de damasco', 'Ativos refrescantes']
   },
   {
@@ -109,6 +116,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: false,
+    position: 7,
     includes: ['Análise clínica da fibra', 'Reposição proteica', 'Finalização Premium']
   },
   {
@@ -123,6 +131,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: false,
+    position: 8,
     includes: ['Higienização suave', 'Técnica de definição']
   },
   {
@@ -137,6 +146,7 @@ export const SEED_SERVICES = [
     promoPrice: 390,
     duration: 60,
     isPrimary: false,
+    position: 9,
     includes: ['4 Sessões de Tratamento', 'Acompanhamento de evolução']
   },
   {
@@ -151,6 +161,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 90,
     isPrimary: false,
+    position: 10,
     includes: ['Aplicação técnica', 'Proteção do comprimento']
   }
 ];

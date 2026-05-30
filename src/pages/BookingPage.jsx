@@ -1255,6 +1255,17 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
             : services.filter(s => (s.category || 'Outros') === selectedCategory);
             
           filteredServices.sort((a, b) => {
+            const posA = a.position !== undefined ? a.position : (a.order !== undefined ? a.order : null);
+            const posB = b.position !== undefined ? b.position : (b.order !== undefined ? b.order : null);
+            
+            if (posA !== null && posB !== null) {
+              return posA - posB;
+            } else if (posA !== null) {
+              return -1;
+            } else if (posB !== null) {
+              return 1;
+            }
+
             const idxA = SEED_SERVICES.findIndex(s => s.id === a.id || s.name.toLowerCase() === a.name.toLowerCase());
             const idxB = SEED_SERVICES.findIndex(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
             const rankA = idxA !== -1 ? idxA : 999;
