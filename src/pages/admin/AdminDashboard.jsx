@@ -2023,7 +2023,9 @@ Jon`;
                           style={{ cursor: (blockedBySettings || !appt || appt.status === 'cancelado') ? 'pointer' : 'default' }}
                           onClick={(e) => {
                             if (blockedBySettings) {
-                              alert('Este horário está bloqueado pelas configurações de escala do profissional.');
+                              if (confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
+                                handleCellClick(currentDateStr, slot, prof.id, prof.name);
+                              }
                               return;
                             }
                             if (!appt || appt.status === 'cancelado') {

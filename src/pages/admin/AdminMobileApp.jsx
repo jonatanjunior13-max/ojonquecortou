@@ -430,6 +430,48 @@ const AdminMobileApp = () => {
     return false;
   };
 
+  const isSlotBlocked = (prof, dateStr, slot) => {
+    if (!prof) return false;
+    
+    // 1. Check daysOff
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      const weekday = dateObj.getDay();
+      const daysOff = prof.daysOff !== undefined ? prof.daysOff : [0, 1];
+      if (daysOff.includes(weekday)) return true;
+    }
+
+    // 2. Check blocked dates
+    const blockedDates = prof.blockedDates || [];
+    if (blockedDates.includes(dateStr)) return true;
+
+    // 3. Check work hours and lunch hours
+    const workStart = prof.workStart || '09:00';
+    const workEnd = prof.workEnd || '19:00';
+    const lunchStart = prof.lunchStart || '12:00';
+    const lunchEnd = prof.lunchEnd || '13:00';
+
+    const [slotH, slotM] = slot.split(':').map(Number);
+    const [startH, startM] = workStart.split(':').map(Number);
+    const [endH, endM] = workEnd.split(':').map(Number);
+    const [lunchStartH, lunchStartM] = lunchStart.split(':').map(Number);
+    const [lunchEndH, lunchEndM] = lunchEnd.split(':').map(Number);
+
+    const slotMin = slotH * 60 + slotM;
+    const startMin = startH * 60 + startM;
+    const endMin = endH * 60 + endM;
+    const lunchStartMin = lunchStartH * 60 + lunchStartM;
+    const lunchEndMin = lunchEndH * 60 + lunchEndM;
+
+    // Outside work hours
+    if (slotMin < startMin || slotMin >= endMin) return true;
+    // Inside lunch hours
+    if (slotMin >= lunchStartMin && slotMin < lunchEndMin) return true;
+
+    return false;
+  };
+
   const runPollerChecks = () => {
     if (!bookings || bookings.length === 0) return;
 
@@ -632,6 +674,15 @@ const AdminMobileApp = () => {
     if (match) {
       setSelectedBooking(match);
     } else {
+      const jonProf = settings?.professionals?.find(p => p.id === 'jon');
+      const blockedBySettings = isSlotBlocked(jonProf, currentDate, timeStr);
+      
+      if (blockedBySettings) {
+        if (!confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
+          return;
+        }
+      }
+
       setEditingBookingId(null);
       setSelectedSlot({ date: currentDate, time: timeStr });
       setNewBooking(prev => ({
@@ -1509,6 +1560,8 @@ const AdminMobileApp = () => {
           <div className="mobile-timeline-scroll">
             {hourSlots.map(slot => {
               const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
+              const jonProf = settings?.professionals?.find(p => p.id === 'jon');
+              const blockedBySettings = !matchedAppt && isSlotBlocked(jonProf, currentDate, slot);
               
               return (
                 <div key={slot} className="mobile-timeline-row" onClick={() => handleSlotClick(slot)}>
@@ -1524,6 +1577,10 @@ const AdminMobileApp = () => {
                             <span>R$ {(matchedAppt.service?.price || matchedAppt.servicePrice || 0).toFixed(0)}</span>
                           )}
                         </div>
+                      </div>
+                    ) : blockedBySettings ? (
+                      <div className="mobile-empty-slot-btn bloqueado-escala" style={{ background: '#f5ebe0', border: '1px dashed #d4bda8', color: '#8b694b', opacity: 0.85 }}>
+                        <span>🚫 Bloqueado (Escala) · Toque para agendar</span>
                       </div>
                     ) : (
                       <div className="mobile-empty-slot-btn">
