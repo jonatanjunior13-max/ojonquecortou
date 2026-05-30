@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth, db } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -18,6 +18,18 @@ const AdminLayout = () => {
   });
   const navigate = useNavigate();
   const location = useLocation();
+
+  const previousBookings = useRef([]);
+  const initialLoadDone = useRef(false);
+  const notified30Min = useRef(new Set());
+
+  useEffect(() => {
+    if ('Notification' in window) {
+      if (Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -156,7 +168,35 @@ const AdminLayout = () => {
 
     let unsubs = [];
     if (db) {
-      unsubs.push(onSnapshot(collection(db, 'bookings'), (snap) => setGlobalData(prev => ({ ...prev, bookings: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'bookings'), (snap) => {
+        const newBookings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        if (initialLoadDone.current && 'Notification' in window && Notification.permission === 'granted') {
+          newBookings.forEach(booking => {
+            const oldVersion = previousBookings.current.find(b => b.id === booking.id);
+            if (!oldVersion) {
+              if (booking.status === 'pendente') {
+                new Notification("Novo Pedido de Agendamento 📅", {
+                  body: `Cliente: ${booking.clientName}\nServiço: ${booking.serviceName || booking.service?.name || 'Serviço'}\nData: ${booking.date ? booking.date.split('-').reverse().join('/') : ''} às ${booking.time}`,
+                  icon: '/logo-app.png'
+                });
+              }
+            } else {
+              if (booking.status === 'cancelado' && oldVersion.status !== 'cancelado') {
+                new Notification("Agendamento Cancelado 🚫", {
+                  body: `Cliente: ${booking.clientName} cancelou o horário de ${booking.date ? booking.date.split('-').reverse().join('/') : ''} às ${booking.time}`,
+                  icon: '/logo-app.png'
+                });
+              }
+            }
+          });
+        }
+        
+        previousBookings.current = newBookings;
+        initialLoadDone.current = true;
+        setGlobalData(prev => ({ ...prev, bookings: newBookings }));
+      }));
+
       unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => setGlobalData(prev => ({ ...prev, clients: snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'services'), (snap) => setGlobalData(prev => ({ ...prev, services: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'products'), (snap) => setGlobalData(prev => ({ ...prev, products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
@@ -167,9 +207,35 @@ const AdminLayout = () => {
     } else {
       // Demo Mode fallback
       try {
+        const demoBookings = JSON.parse(localStorage.getItem('demo_bookings')) || [];
+        
+        if (initialLoadDone.current && 'Notification' in window && Notification.permission === 'granted') {
+          demoBookings.forEach(booking => {
+            const oldVersion = previousBookings.current.find(b => b.id === booking.id);
+            if (!oldVersion) {
+              if (booking.status === 'pendente') {
+                new Notification("Novo Pedido de Agendamento 📅", {
+                  body: `Cliente: ${booking.clientName}\nServiço: ${booking.serviceName || 'Serviço'}\nData: ${booking.date} às ${booking.time}`,
+                  icon: '/logo-app.png'
+                });
+              }
+            } else {
+              if (booking.status === 'cancelado' && oldVersion.status !== 'cancelado') {
+                new Notification("Agendamento Cancelado 🚫", {
+                  body: `Cliente: ${booking.clientName} cancelou o horário de ${booking.date} às ${booking.time}`,
+                  icon: '/logo-app.png'
+                });
+              }
+            }
+          });
+        }
+        
+        previousBookings.current = demoBookings;
+        initialLoadDone.current = true;
+
         setGlobalData(prev => ({
           ...prev,
-          bookings: JSON.parse(localStorage.getItem('demo_bookings')) || [],
+          bookings: demoBookings,
           clients: JSON.parse(localStorage.getItem('demo_client_profiles')) || [],
           services: JSON.parse(localStorage.getItem('demo_services')) || [],
           products: JSON.parse(localStorage.getItem('demo_inventory')) || [],
@@ -180,6 +246,47 @@ const AdminLayout = () => {
 
     return () => unsubs.forEach(u => u && u());
   }, [authorized]);
+
+  useEffect(() => {
+    if (!authorized) return;
+
+    const checkUpcomingBookings = () => {
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const todayStr = `${year}-${month}-${day}`;
+
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      globalData.bookings.forEach(booking => {
+        if (booking.date !== todayStr || booking.status === 'cancelado' || booking.status === 'faltou') return;
+        if (!booking.time || booking.status === 'bloqueado') return;
+
+        const [h, m] = booking.time.split(':').map(Number);
+        const bookingMinutes = h * 60 + m;
+        const diff = bookingMinutes - currentMinutes;
+
+        // Trigger if difference is active between 28 and 30 minutes
+        if (diff > 0 && diff <= 30 && diff >= 28) {
+          if (!notified30Min.current.has(booking.id)) {
+            notified30Min.current.add(booking.id);
+            new Notification("Aviso de Agendamento Próximo ⏰", {
+              body: `O cliente ${booking.clientName} está agendado em 30 minutos (${booking.time}) para o serviço: ${booking.serviceName || booking.service?.name || 'Serviço'}`,
+              icon: '/logo-app.png'
+            });
+          }
+        }
+      });
+    };
+
+    checkUpcomingBookings();
+    const interval = setInterval(checkUpcomingBookings, 30000);
+
+    return () => clearInterval(interval);
+  }, [authorized, globalData.bookings]);
 
   const handleLogout = async () => {
     if (auth) {
