@@ -732,6 +732,35 @@ const AdminMobileApp = () => {
     setShowAddBookingModal(true);
   };
 
+  const logPrepaymentTransaction = async (bookingId, payload, amount) => {
+    if (amount <= 0) return;
+    const tx = {
+      bookingId: bookingId,
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: payload.clientName,
+      clientPhone: payload.clientPhone || '',
+      type: 'entrada',
+      paymentMethod: 'Pix',
+      value: amount,
+      description: `Adiantamento/Sinal: ${payload.service?.name || payload.serviceName || 'Serviço'} - ${payload.clientName}`,
+      professionalId: payload.profissional || 'jon',
+      createdAt: new Date().toISOString()
+    };
+
+    if (isDemoMode) {
+      const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
+      const currentTx = localTx ? JSON.parse(localTx) : [];
+      const newTx = { id: 'tx_' + Date.now(), ...tx };
+      const updatedTxList = [newTx, ...currentTx];
+      localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
+      localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
+      setTransactions(updatedTxList);
+    } else {
+      await addDoc(collection(db, 'financial_transactions'), tx);
+    }
+  };
+
   const submitBooking = async (e) => {
     if (e) e.preventDefault();
     const activeDuration = newBooking.duration || (services[0]?.duration || 60);
@@ -746,6 +775,8 @@ const AdminMobileApp = () => {
         price: Number(newBooking.servicePrice) || (services[0]?.promoPrice || services[0]?.price || 150),
         duration: activeDuration
       },
+      servicePrice: Number(newBooking.servicePrice) || (services[0]?.promoPrice || services[0]?.price || 150),
+      prepayment: Number(newBooking.prepayment) || 0,
       date: newBooking.date,
       time: newBooking.time,
       notes: newBooking.notes,
@@ -755,6 +786,10 @@ const AdminMobileApp = () => {
 
     try {
       if (editingBookingId) {
+        const oldBooking = bookings.find(b => b.id === editingBookingId);
+        const oldPrepayment = oldBooking ? (Number(oldBooking.prepayment) || 0) : 0;
+        const newPrepayment = Number(newBooking.prepayment) || 0;
+
         if (isDemoMode) {
           const local = bookings.map(b => b.id === editingBookingId ? { ...b, ...payload } : b);
           setBookings(local);
@@ -763,13 +798,20 @@ const AdminMobileApp = () => {
           const apptRef = doc(db, 'bookings', editingBookingId);
           await updateDoc(apptRef, payload);
         }
+
+        if (newPrepayment > oldPrepayment) {
+          await logPrepaymentTransaction(editingBookingId, payload, newPrepayment - oldPrepayment);
+        }
       } else {
         if (isDemoMode) {
-          const local = [...bookings, { id: 'demo-' + Date.now(), ...payload }];
+          const generatedId = 'demo-' + Date.now();
+          const local = [...bookings, { id: generatedId, ...payload }];
           setBookings(local);
           localStorage.setItem('demo_bookings', JSON.stringify(local));
+          await logPrepaymentTransaction(generatedId, payload, payload.prepayment);
         } else {
-          await addDoc(collection(db, 'bookings'), payload);
+          const docRef = await addDoc(collection(db, 'bookings'), payload);
+          await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
         }
       }
 
@@ -2113,6 +2155,16 @@ const AdminMobileApp = () => {
                   type="number" 
                   value={newBooking.servicePrice}
                   onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Sinal / Adiantamento Pago (R$)</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 50"
+                  value={newBooking.prepayment || ''}
+                  onChange={e => setNewBooking(prev => ({ ...prev, prepayment: Number(e.target.value) }))}
                 />
               </div>
 

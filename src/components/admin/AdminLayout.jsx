@@ -25,6 +25,15 @@ const AdminLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     return localStorage.getItem('admin_sidebar_collapsed') === 'true';
   });
+  const [isMobileViewport, setIsMobileViewport] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileViewport(window.innerWidth < 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleToggleSidebar = () => {
     const newVal = !sidebarCollapsed;
@@ -194,6 +203,34 @@ const AdminLayout = () => {
 
   return (
     <div className={`admin-app-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
+      {isMobileViewport && location.pathname !== '/admin/mobile' && (
+        <button 
+          type="button"
+          style={{
+            position: 'fixed',
+            top: '8px',
+            right: '8px',
+            zIndex: 99999,
+            background: 'var(--accent, #ff007f)',
+            color: '#fff',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: '20px',
+            fontWeight: 'bold',
+            fontSize: '0.85rem',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            cursor: 'pointer',
+            fontFamily: 'inherit'
+          }} 
+          onClick={() => navigate('/admin/mobile')}
+        >
+          <Smartphone size={16} />
+          <span>Voltar para o App 📱</span>
+        </button>
+      )}
       {/* Sidebar de Navegação */}
       <aside className={`admin-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-brand" style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
