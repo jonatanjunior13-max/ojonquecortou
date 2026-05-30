@@ -2015,6 +2015,13 @@ const AdminMobileApp = () => {
                     Remover Bloqueio
                   </button>
                 )}
+                <button 
+                  className="mobile-btn-outline" 
+                  style={{ borderColor: '#cbd5e0', color: '#4a5568', flex: '1 1 100%', marginTop: 8 }} 
+                  onClick={() => setSelectedBooking(null)}
+                >
+                  Fechar / Voltar para a Agenda
+                </button>
               </div>
             </div>
           </div>
