@@ -365,6 +365,64 @@ async function sendAdminWhatsAppNotification(type, data, settings) {
   }
 }
 
+async function sendClientWhatsAppReminder(data, settings) {
+  if (!settings || !settings.waReminderEnabled) return;
+  if (!data.clientPhone) return;
+
+  const gateway = settings.waReminderGateway || 'zapi';
+  let url = '';
+  let headers = {
+    'Content-Type': 'application/json'
+  };
+
+  if (gateway === 'evolution') {
+    if (!settings.evolutionApiUrl || !settings.evolutionApiKey || !settings.evolutionInstanceName) {
+      console.log('Evolution API settings missing in send-email.js');
+      return;
+    }
+    url = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
+    headers['apikey'] = settings.evolutionApiKey;
+  } else {
+    return;
+  }
+
+  const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${data.id || ''}`;
+  const template = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}.';
+
+  let msg = template
+    .replace('{cliente}', (data.clientName || 'Cliente').split(' ')[0])
+    .replace('{data}', (data.date || '').includes('-') ? data.date.split('-').reverse().join('/') : data.date)
+    .replace('{hora}', data.time || '')
+    .replace('{servico}', data.serviceName || '');
+
+  if (msg.includes('{link_cancelamento}')) {
+    msg = msg.replace('{link_cancelamento}', cancelLink);
+  } else {
+    msg += `\n\nCaso precise cancelar ou remarcar seu horário, acesse: ${cancelLink}`;
+  }
+
+  const phoneNum = data.clientPhone.replace(/\D/g, '');
+  const waNumber = phoneNum.startsWith('55') ? phoneNum : `55${phoneNum}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        number: waNumber,
+        text: msg
+      })
+    });
+    if (response.ok) {
+      console.log(`Mensagem de confirmação/lembrete de 24h enviada com sucesso no WhatsApp para o cliente: ${waNumber}`);
+    } else {
+      console.error(`Erro ao enviar WhatsApp de 24h para cliente:`, await response.text());
+    }
+  } catch (err) {
+    console.error(`Erro de rede ao enviar WhatsApp de 24h para cliente:`, err);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
@@ -403,6 +461,56 @@ export default async function handler(req, res) {
       }
     } catch (e) {
       console.warn('Erro ao carregar settings:', e);
+    }
+  }
+
+  // Load booking details if ID is available
+  if (db && data.id) {
+    try {
+      const bookingDoc = await getDoc(doc(db, 'bookings', data.id));
+      if (bookingDoc.exists()) {
+        const bData = bookingDoc.data();
+        data.clientPhone = bData.clientPhone || data.clientPhone;
+        data.rawDate = bData.date; // YYYY-MM-DD
+        if (!data.time) data.time = bData.time;
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar agendamento para checar telefone:', e);
+    }
+  }
+
+  // Se agendado com menos de 24h, envia lembrete no WhatsApp do cliente instantaneamente
+  if (type === 'solicitacao_recebida' || type === 'horario_confirmado') {
+    let dateStr = data.rawDate || '';
+    if (!dateStr && data.date) {
+      const match = data.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (match) {
+        dateStr = `${match[3]}-${match[2]}-${match[1]}`;
+      }
+    }
+    if (dateStr && data.time) {
+      try {
+        const [yr, mo, dy] = dateStr.split('-').map(Number);
+        const [hr, mn] = data.time.split(':').map(Number);
+        const bookingTime = new Date(yr, mo - 1, dy, hr, mn);
+        const now = new Date();
+        const diffMs = bookingTime.getTime() - now.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
+
+        if (diffHours > 0 && diffHours <= 24) {
+          // Dispara lembrete do cliente instantaneamente
+          await sendClientWhatsAppReminder(data, settings);
+          // Marcar no banco para o cron não duplicar
+          if (db && data.id) {
+            try {
+              const { updateDoc } = await import('firebase/firestore');
+              await updateDoc(doc(db, 'bookings', data.id), { reminderSent: true });
+            } catch (upErr) {}
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao calcular horas para envio de lembrete instantâneo:', err);
+      }
     }
   }
 
