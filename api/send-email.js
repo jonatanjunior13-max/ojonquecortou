@@ -500,6 +500,7 @@ export default async function handler(req, res) {
         if (diffHours > 0 && diffHours <= 24) {
           // Dispara lembrete do cliente instantaneamente
           await sendClientWhatsAppReminder(data, settings);
+          data.isUnder24h = true;
           // Marcar no banco para o cron não duplicar
           if (db && data.id) {
             try {
@@ -831,6 +832,71 @@ export default async function handler(req, res) {
   try {
     const info = await transporter.sendMail(mailOptions);
     
+    // Se agendado com menos de 24h, envia também o e-mail de lembrete de 24h
+    if (data.isUnder24h && sendReal) {
+      try {
+        const emailSubject24h = `Lembrete: Seu horário é em breve, ${firstName}`;
+        const emailContent24h = getEmailWrapper(emailSubject24h, `
+          <div class="eyebrow">Lembrete</div>
+          <h1 class="display-title">Te espero em breve, <span>${firstName}.</span></h1>
+          <p class="lead">Passando para lembrar do seu horário marcado no Studio. Lembre-se de reservar uns 15 minutos a mais no relógio.</p>
+          
+          <div class="appt-card">
+            <div class="label">Agendamento</div>
+            <p class="when">${formatApptDate(data.rawDate, data.time)} <span>às ${data.time}</span></p>
+            <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+            
+            <div class="meta-row">
+              <div class="cell">
+                <div class="lbl">Serviço</div>
+                <div class="val">${data.serviceName}</div>
+              </div>
+              <div class="cell">
+                <div class="lbl">Duração</div>
+                <div class="val">${data.duration || '60'} min</div>
+              </div>
+            </div>
+          </div>
+          
+          <hr class="rule" />
+          
+          <div class="instructions-title">Lembrete importante</div>
+          <p class="instructions-body">Lave o cabelo na <strong>noite anterior</strong> com seu shampoo de sempre. Sem creme, sem leave-in, sem prancha. Quero ler o fio do jeito que ele acorda.</p>
+          
+          <div class="signoff">
+            <div class="sig-name">Jon,</div>
+            <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+          </div>
+        `);
+
+        // Check unsubscribe for the 24h reminder
+        let isUnsubscribed = false;
+        if (db && clientEmail) {
+          try {
+            const q = query(collection(db, 'client_profiles'), where('email', '==', clientEmail));
+            const snap = await getDocs(q);
+            if (!snap.empty && snap.docs[0].data().unsubscribed === true) {
+              isUnsubscribed = true;
+            }
+          } catch (e) {
+            console.warn('Erro ao checar opt-out para lembrete 24h:', e);
+          }
+        }
+        
+        if (!isUnsubscribed) {
+          await transporter.sendMail({
+            from: `"O Jon Que Cortou" <${smtpFrom}>`,
+            to: clientEmail,
+            subject: emailSubject24h,
+            html: emailContent24h
+          });
+          console.log('E-mail de lembrete de 24h enviado instantaneamente para o cliente.');
+        }
+      } catch (email24hErr) {
+        console.error('Erro ao enviar e-mail de lembrete de 24h instantâneo:', email24hErr);
+      }
+    }
+
     // Enviar notificação para o administrador
     if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado') {
       try {
