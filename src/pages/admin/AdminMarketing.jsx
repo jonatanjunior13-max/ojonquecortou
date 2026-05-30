@@ -133,7 +133,7 @@ const AdminMarketing = () => {
   const [isGeneratingGbpPost, setIsGeneratingGbpPost] = useState(false);
   const [generatedGbpPost, setGeneratedGbpPost] = useState(null);
   const [scheduledGbpPosts, setScheduledGbpPosts] = useState([
-    { id: 'post_1', text: 'Dicas práticas de finalização e day after para cabelos cacheados (Curvaturas 3A a 3C) em Belo Horizonte. Agende seu horário no link!', image: '/cacho_vs_crespo_hero_1779884098537.png', scheduledDate: 'Próxima Quarta, 10:00' }
+    { id: 'post_1', text: 'Dicas práticas de finalização e day after para cabelos cacheados (Curvaturas 3A a 3C) em Belo Horizonte. Agende seu horário no link!', image: '/cacho-vs-crespo-hero.png', scheduledDate: 'Próxima Quarta, 10:00' }
   ]);
 
   const handleSimulateNewReview = () => {
@@ -181,11 +181,11 @@ const AdminMarketing = () => {
       const posts = [
         {
           text: 'Você sabe a real diferença entre Cabelo Cacheado e Crespo? ✂️\n\nA chave para o volume perfeito está na estrutura de cada fio. No Studio do Jon, usamos o método de leitura de fio antes da tesoura e corte a seco para garantir o caimento perfeito da sua curvatura.\n\n📍 Rua Francisco Ovídio, Caiçara - BH\n🔗 Reserve seu horário: www.ojonquecortou.com.br',
-          image: '/cacho_vs_crespo_hero_1779884098537.png'
+          image: '/cacho-vs-crespo-hero.png'
         },
         {
           text: 'Frizz: Normal ou Dano Capilar? 🤔\n\nMuitas vezes o frizz é apenas a textura natural do fio querendo liberdade, e não necessariamente ressecamento. Conheça sua curvatura e aprenda a finalização ideal no seu atendimento de visagismo!\n\n📍 Studio do Jon - Especialista em Cachos BH\n🔗 Agende agora: www.ojonquecortou.com.br',
-          image: '/blog_secagem_hero_1779267348277.png'
+          image: '/blog-secagem-hero.png'
         }
       ];
       const idx = Math.floor(Math.random() * posts.length);
