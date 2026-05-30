@@ -1241,7 +1241,7 @@ const AdminMobileApp = () => {
         await updateDoc(docRef, { status: 'confirmado' });
       }
       
-      setSelectedBooking(prev => ({ ...prev, status: 'confirmado' }));
+      setSelectedBooking(prev => prev ? { ...prev, status: 'confirmado' } : null);
       
       // Enviar e-mail de confirmação
       if (bookingToConfirm && bookingToConfirm.clientEmail && bookingToConfirm.clientEmail.includes('@')) {
@@ -1284,7 +1284,7 @@ const AdminMobileApp = () => {
         await updateDoc(docRef, { status: 'faltou' });
       }
       
-      setSelectedBooking(prev => ({ ...prev, status: 'faltou' }));
+      setSelectedBooking(prev => prev ? { ...prev, status: 'faltou' } : null);
       alert('Agendamento marcado como falta.');
     } catch (e) {
       alert('Erro ao marcar falta.');
@@ -1705,7 +1705,15 @@ const AdminMobileApp = () => {
             <div className="mobile-menu-item" onClick={() => setShowNotificationsModal(true)}>
               <div className="mobile-menu-item-left">
                 <Bell size={18} />
-                <span>Notificações</span>
+                <span>Ver Notificações Recentes</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => { requestNotificationPermission(); }}>
+              <div className="mobile-menu-item-left" style={{ color: '#8c5027' }}>
+                <Bell size={18} />
+                <span style={{ fontWeight: 'bold' }}>Ativar Alertas Sonoros e Sons</span>
               </div>
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
