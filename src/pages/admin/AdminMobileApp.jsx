@@ -946,6 +946,26 @@ const AdminMobileApp = () => {
     });
   };
 
+  const handleImportContact = async () => {
+    if (!('contacts' in navigator && 'ContactsManager' in window)) {
+      alert('Seu dispositivo ou navegador não suporta a importação automática de contatos.');
+      return;
+    }
+    try {
+      const props = ['name', 'tel'];
+      const opts = { multiple: false };
+      const contacts = await navigator.contacts.select(props, opts);
+      if (contacts && contacts.length > 0) {
+        const c = contacts[0];
+        const name = c.name && c.name.length > 0 ? c.name[0] : '';
+        const phone = c.tel && c.tel.length > 0 ? c.tel[0].replace(/\D/g, '') : '';
+        setNewClient(prev => ({ ...prev, name, phone }));
+      }
+    } catch (err) {
+      console.error('Erro ao importar contato:', err);
+    }
+  };
+
   // 5. Cadastrar Novo Cliente
   const submitClient = async (e) => {
     e.preventDefault();
@@ -2113,6 +2133,12 @@ const AdminMobileApp = () => {
                     </ul>
                   )}
                 </div>
+                {/* BOTÃO CADASTRAR NOVO CLIENTE */}
+                <div style={{ marginTop: 8, textAlign: 'right' }}>
+                  <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--mobile-primary)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto' }}>
+                    <Plus size={14} /> Cadastrar novo cliente
+                  </button>
+                </div>
               </div>
 
               <div className="mobile-form-group">
@@ -2325,6 +2351,12 @@ const AdminMobileApp = () => {
             </div>
 
             <form onSubmit={submitClient}>
+              <div style={{ marginBottom: 16 }}>
+                <button type="button" onClick={handleImportContact} className="mobile-btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, borderColor: 'var(--mobile-primary)', color: 'var(--mobile-primary)' }}>
+                  <User size={16} /> Importar contato da agenda
+                </button>
+              </div>
+
               <div className="mobile-form-group">
                 <label>Nome Completo *</label>
                 <input 

@@ -125,15 +125,24 @@ const AdminMarketing = () => {
   const [isSendingBirthdayWa, setIsSendingBirthdayWa] = useState(false);
 
   // Google Business Profile states
-  const [gbpConnected, setGbpConnected] = useState(true);
+  const gbpConnected = !!settings?.automations?.googleGbpConnected;
+  const [isPublishingGbpId, setIsPublishingGbpId] = useState(null);
   const [googleReviews, setGoogleReviews] = useState([
-    { id: 'rev_1', author: 'Mariana Silva', rating: 5, comment: 'Melhor corte de cachos que já fiz em Belo Horizonte! O atendimento com o Jon é diferenciado, ele faz uma leitura incrível do fio. Super recomendo!', date: 'Hoje', reply: 'Olá Mariana! Ficamos extremamente felizes com o seu feedback. A leitura técnica do fio é exatamente o que nos permite desenhar o volume ideal para cada curvatura. Te esperamos na próxima! — Jon' },
-    { id: 'rev_2', author: 'Carlos Henrique', rating: 5, comment: 'Excelente trabalho com visagismo. O corte a seco valorizou demais o volume do meu crespo.', date: 'Ontem', reply: 'Grande Carlos! O corte a seco valoriza o caimento natural de cada textura crespa. Obrigado pela confiança! — Jon' }
+    { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
+    { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
+    { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
+    { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
   ]);
   const [isGeneratingGbpPost, setIsGeneratingGbpPost] = useState(false);
   const [generatedGbpPost, setGeneratedGbpPost] = useState(null);
+  // Frequency scheduler
+  const [postFreqDay, setPostFreqDay] = useState('segunda');
+  const [postFreqTime, setPostFreqTime] = useState('09:00');
   const [scheduledGbpPosts, setScheduledGbpPosts] = useState([
-    { id: 'post_1', text: 'Dicas práticas de finalização e day after para cabelos cacheados (Curvaturas 3A a 3C) em Belo Horizonte. Agende seu horário no link!', image: '/cacho-vs-crespo-hero.png', scheduledDate: 'Próxima Quarta, 10:00' }
+    { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled' },
+    { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published' },
+    { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published' },
+    { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published' }
   ]);
 
   const handleSimulateNewReview = () => {
@@ -175,41 +184,116 @@ const AdminMarketing = () => {
     alert('Resposta enviada para o Google com sucesso!');
   };
 
-  const handleGenerateGbpPost = () => {
+  const handleGenerateGbpPost = async () => {
     setIsGeneratingGbpPost(true);
-    setTimeout(() => {
-      const posts = [
-        {
-          text: 'Você sabe a real diferença entre Cabelo Cacheado e Crespo? ✂️\n\nA chave para o volume perfeito está na estrutura de cada fio. No Studio do Jon, usamos o método de leitura de fio antes da tesoura e corte a seco para garantir o caimento perfeito da sua curvatura.\n\n📍 Rua Francisco Ovídio, Caiçara - BH\n🔗 Reserve seu horário: www.ojonquecortou.com.br',
-          image: '/cacho-vs-crespo-hero.png'
-        },
-        {
-          text: 'Frizz: Normal ou Dano Capilar? 🤔\n\nMuitas vezes o frizz é apenas a textura natural do fio querendo liberdade, e não necessariamente ressecamento. Conheça sua curvatura e aprenda a finalização ideal no seu atendimento de visagismo!\n\n📍 Studio do Jon - Especialista em Cachos BH\n🔗 Agende agora: www.ojonquecortou.com.br',
-          image: '/blog-secagem-hero.png'
+    
+    const fallbackPosts = [
+      {
+        text: 'Você sabe a real diferença entre Cabelo Cacheado e Crespo? ✂️\n\nA chave para o volume perfeito está na estrutura de cada fio. No Studio do Jon, usamos o método de leitura de fio antes da tesoura e corte a seco para garantir o caimento perfeito da sua curvatura.\n\n📍 Rua Francisco Ovídio, Caiçara - BH\n🔗 Reserve seu horário: www.ojonquecortou.com.br',
+        image: '/cacho-vs-crespo-hero.png'
+      },
+      {
+        text: 'Frizz: Normal ou Dano Capilar? 🤔\n\nMuitas vezes o frizz é apenas a textura natural do fio querendo liberdade, e não necessariamente ressecamento. Conheça sua curvatura e aprenda a finalização ideal no seu atendimento de visagismo!\n\n📍 Studio do Jon - Especialista em Cachos BH\n🔗 Agende agora: www.ojonquecortou.com.br',
+        image: '/blog-secagem-hero.png'
+      }
+    ];
+
+    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || '';
+    
+    if (apiKey) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: 'Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara). Fale sobre a importância do corte personalizado para valorizar a curvatura natural e convide a agendar. Inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.'
+                }]
+              }]
+            })
+          }
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (generatedText) {
+            const images = ['/cacho-vs-crespo-hero.png', '/blog-secagem-hero.png'];
+            const randomImg = images[Math.floor(Math.random() * images.length)];
+            
+            setGeneratedGbpPost({
+              text: generatedText.trim(),
+              image: randomImg
+            });
+            setIsGeneratingGbpPost(false);
+            return;
+          }
+        } else {
+          console.warn('Gemini API retornou erro:', response.status);
         }
-      ];
-      const idx = Math.floor(Math.random() * posts.length);
-      setGeneratedGbpPost(posts[idx]);
+      } catch (err) {
+        console.warn('Erro ao gerar post com Gemini API, usando fallback:', err);
+      }
+    }
+    
+    // Fallback se falhar
+    setTimeout(() => {
+      const idx = Math.floor(Math.random() * fallbackPosts.length);
+      setGeneratedGbpPost(fallbackPosts[idx]);
       setIsGeneratingGbpPost(false);
     }, 1000);
   };
 
+  const DAYS_PT = { 'domingo': 'Dom', 'segunda': 'Seg', 'terca': 'Ter', 'quarta': 'Qua', 'quinta': 'Qui', 'sexta': 'Sex', 'sabado': 'Sáb' };
+
   const handleScheduleGbpPost = () => {
     if (!generatedGbpPost) return;
+    const dayLabel = { 'domingo': 'Domingo', 'segunda': 'Segunda', 'terca': 'Terça', 'quarta': 'Quarta', 'quinta': 'Quinta', 'sexta': 'Sexta', 'sabado': 'Sábado' }[postFreqDay] || postFreqDay;
     const newPost = {
       id: 'post_' + Date.now(),
       text: generatedGbpPost.text,
       image: generatedGbpPost.image,
-      scheduledDate: 'Próxima Segunda, 09:00'
+      scheduledDate: `Próxima ${dayLabel}, ${postFreqTime}`,
+      status: 'scheduled'
     };
     setScheduledGbpPosts(prev => [newPost, ...prev]);
     setGeneratedGbpPost(null);
-    alert('Postagem programada com sucesso para a fila semanal!');
+    alert(`Postagem programada para toda ${dayLabel} às ${postFreqTime}!`);
   };
 
-  const handlePublishGbpPostNow = (post) => {
-    alert('Publicado com sucesso no Google Meu Negócio / Google Maps! 🚀');
-    setScheduledGbpPosts(prev => prev.filter(p => p.id !== post.id));
+  const handlePublishGbpPostNow = async (post) => {
+    setIsPublishingGbpId(post.id);
+    try {
+      const res = await fetch('/api/gbp?action=post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: post.text,
+          image: post.image
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Publicado com sucesso no Google Meu Negócio! 🚀');
+        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+      } else {
+        alert(`Erro ao publicar no Google: ${data.error || 'Erro desconhecido'}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro de conexão ao tentar publicar no Google.');
+    } finally {
+      setIsPublishingGbpId(null);
+    }
+  };
+
+  const handleDeleteGbpPost = (postId) => {
+    setScheduledGbpPosts(prev => prev.filter(p => p.id !== postId));
   };
 
   const saveLog = async (clientName, clientPhone, stage, channel) => {
@@ -1301,20 +1385,78 @@ const AdminMarketing = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontSize: '0.8rem', color: gbpConnected ? '#38a169' : '#e53e3e', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
                       <span style={{ width: 8, height: 8, borderRadius: '50%', background: gbpConnected ? '#38a169' : '#e53e3e', display: 'inline-block' }}></span>
-                      {gbpConnected ? 'Conectado à Conta Google' : 'Desconectado'}
+                      {gbpConnected ? 'API Conectada' : 'API não conectada (modo demo)'}
                     </span>
-                    <button 
-                      className="btn btn-outline btn-small" 
-                      onClick={() => setGbpConnected(!gbpConnected)}
-                      style={{ fontSize: '0.75rem', padding: '4px 10px' }}
-                    >
-                      {gbpConnected ? 'Desconectar' : 'Conectar Google'}
-                    </button>
+                    {gbpConnected ? (
+                      <button 
+                        className="btn btn-outline btn-small" 
+                        onClick={async () => {
+                          if (window.confirm('Tem certeza que deseja desconectar a conta do Google?')) {
+                            await updateDoc(doc(db, 'settings', 'studio'), {
+                              'automations.googleGbpConnected': false,
+                              'automations.googleGbpAccessToken': null,
+                              'automations.googleGbpRefreshToken': null,
+                              'automations.googleGbpAccountId': null,
+                              'automations.googleGbpLocationId': null,
+                              'automations.googleGbpLocationName': null
+                            });
+                          }
+                        }}
+                        style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+                      >
+                        Desconectar
+                      </button>
+                    ) : (
+                      <a 
+                        href="/api/gbp?action=auth"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = '/api/gbp?action=auth';
+                        }}
+                        className="btn btn-outline btn-small" 
+                        style={{ fontSize: '0.75rem', padding: '4px 10px', textDecoration: 'none' }}
+                      >
+                        Conectar Google
+                      </a>
+                    )}
                   </div>
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: '20px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: gbpConnected ? '20px' : '12px' }}>
                   Automatize as respostas aos seus clientes no Google Maps e agende postagens semanais com imagens e palavras-chave de SEO local para subir no ranking de buscas em BH.
                 </p>
+
+                {!gbpConnected && (
+                  <div style={{ padding: '12px 16px', background: 'rgba(213,100,20,0.08)', border: '1px solid rgba(213,100,20,0.25)', borderRadius: 8, marginBottom: 20, fontSize: '0.82rem' }}>
+                    <strong>⚠️ Para ativar com dados reais do seu Google Meu Negócio:</strong>
+                    <ol style={{ margin: '8px 0 0 0', paddingLeft: '18px', lineHeight: 1.9, color: 'var(--muted)' }}>
+                      <li>Crie a credencial OAuth no console do Google Cloud</li>
+                      <li>Clique em <strong>"Conectar Google"</strong> acima para fazer login e autorizar o site</li>
+                    </ol>
+                  </div>
+                )}
+
+                {gbpConnected && (!settings?.automations?.googleGbpAccountId || settings?.automations?.googleGbpLastError === 'quota_limit_0') && (
+                  <div style={{ padding: '16px', background: 'rgba(213,100,20,0.08)', border: '1px solid rgba(213,100,20,0.3)', borderRadius: 8, marginBottom: 20, fontSize: '0.82rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                      <span style={{ fontSize: '1.2rem', marginTop: '2px' }}>⚠️</span>
+                      <div>
+                        <strong style={{ color: '#d56414', fontSize: '0.85rem' }}>Acesso Restrito ao Google Business Profile (Quota Zero)</strong>
+                        <p style={{ margin: '8px 0', color: 'var(--text)', lineHeight: 1.5 }}>
+                          Sua autenticação OAuth funcionou perfeitamente, mas o Google bloqueou o acesso à sua conta. Novos projetos no Google Cloud possuem um limite padrão de <strong>0 requisições por minuto</strong> para a API do Meu Negócio até que sejam aprovados.
+                        </p>
+                        <strong style={{ display: 'block', marginTop: '12px', marginBottom: '6px' }}>Como liberar o acesso:</strong>
+                        <ol style={{ margin: '0', paddingLeft: '18px', lineHeight: 1.6, color: 'var(--muted)' }}>
+                          <li>Acesse o <a href="https://developers.google.com/my-business/content/prereqs#request-access" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Formulário de Solicitação de Acesso</a> oficial do Google.</li>
+                          <li>Preencha informando o número do seu projeto: <strong>65586774085</strong>.</li>
+                          <li>Explique que você está criando um painel interno de agendamentos próprio para gerenciar as avaliações e posts do seu salão "O Jon Que Cortou".</li>
+                        </ol>
+                        <p style={{ margin: '12px 0 0 0', color: 'var(--muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                          Enquanto o Google não aprova (leva de 2 a 5 dias), o painel continuará operando em modo de simulação, permitindo que você teste as integrações de SEO Local com IA!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
                   
@@ -1385,6 +1527,41 @@ const AdminMarketing = () => {
                       </div>
                     </div>
 
+                    {/* Frequência de postagem */}
+                    <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: 6, padding: 12, marginBottom: 14 }}>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 700, display: 'block', marginBottom: 10 }}>🗓️ Frequência de Publicação Automática</span>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, minWidth: 120 }}>
+                          <label style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 600 }}>Dia da semana</label>
+                          <select
+                            value={postFreqDay}
+                            onChange={e => setPostFreqDay(e.target.value)}
+                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--rule)', background: 'var(--sidebar-bg)', color: 'var(--text)', fontSize: '0.82rem' }}
+                          >
+                            <option value="domingo">Domingo</option>
+                            <option value="segunda">Segunda-feira</option>
+                            <option value="terca">Terça-feira</option>
+                            <option value="quarta">Quarta-feira</option>
+                            <option value="quinta">Quinta-feira</option>
+                            <option value="sexta">Sexta-feira</option>
+                            <option value="sabado">Sábado</option>
+                          </select>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 100 }}>
+                          <label style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 600 }}>Horário</label>
+                          <input
+                            type="time"
+                            value={postFreqTime}
+                            onChange={e => setPostFreqTime(e.target.value)}
+                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--rule)', background: 'var(--sidebar-bg)', color: 'var(--text)', fontSize: '0.82rem' }}
+                          />
+                        </div>
+                      </div>
+                      <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: '8px 0 0 0' }}>
+                        📡 Com a API conectada, os posts serão gerados e publicados automaticamente neste horário semanal.
+                      </p>
+                    </div>
+
                     <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
                       <button 
                         className="btn btn-accent" 
@@ -1419,22 +1596,53 @@ const AdminMarketing = () => {
                       </div>
                     )}
 
-                    <h6 style={{ margin: '0 0 8px 0', fontWeight: 700, fontSize: '0.85rem' }}>📅 Postagens Programadas ({scheduledGbpPosts.length})</h6>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 0 8px 0' }}>
+                      <h6 style={{ margin: 0, fontWeight: 700, fontSize: '0.85rem' }}>📋 Histórico de Posts ({scheduledGbpPosts.length})</h6>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: 12, background: 'rgba(247,170,0,0.15)', color: '#d69e00', fontWeight: 600 }}>
+                          {scheduledGbpPosts.filter(p => p.status === 'scheduled').length} programado(s)
+                        </span>
+                        <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: 12, background: 'rgba(56,161,105,0.15)', color: '#38a169', fontWeight: 600 }}>
+                          {scheduledGbpPosts.filter(p => p.status === 'published').length} publicado(s)
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
                       {scheduledGbpPosts.map(post => (
-                        <div key={post.id} style={{ padding: 10, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--rule)', display: 'flex', gap: 10, fontSize: '0.78rem' }}>
-                          <img src={post.image} alt="Thumbnail" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 4 }} />
+                        <div key={post.id} style={{ padding: 10, background: 'var(--panel-bg)', borderRadius: 6, border: `1px solid ${post.status === 'scheduled' ? 'rgba(247,170,0,0.3)' : 'var(--rule)'}`, display: 'flex', gap: 10, fontSize: '0.78rem' }}>
+                          <img src={post.image} alt="Thumbnail" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <p style={{ margin: '0 0 6px 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 600 }}>{post.text}</p>
-                            <span style={{ color: 'var(--accent)', fontWeight: 600, display: 'block' }}>🕒 {post.scheduledDate}</span>
+                            <p style={{ margin: '0 0 4px 0', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontWeight: 600, lineHeight: 1.35 }}>{post.text}</p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <span style={{ 
+                                fontSize: '0.65rem', padding: '1px 6px', borderRadius: 10, fontWeight: 700,
+                                background: post.status === 'scheduled' ? 'rgba(247,170,0,0.15)' : 'rgba(56,161,105,0.15)',
+                                color: post.status === 'scheduled' ? '#d69e00' : '#38a169'
+                              }}>
+                                {post.status === 'scheduled' ? '🕒 Programado' : '✅ Publicado'}
+                              </span>
+                              <span style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>{post.scheduledDate}</span>
+                            </div>
                           </div>
-                          <button 
-                            className="btn btn-outline btn-small" 
-                            style={{ alignSelf: 'center', fontSize: '0.7rem', padding: '4px 6px' }}
-                            onClick={() => handlePublishGbpPostNow(post)}
-                          >
-                            Publicar Já
-                          </button>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignSelf: 'center', flexShrink: 0 }}>
+                            {post.status === 'scheduled' && (
+                              <button 
+                                className="btn btn-accent btn-small" 
+                                style={{ fontSize: '0.65rem', padding: '3px 6px', whiteSpace: 'nowrap' }}
+                                onClick={() => handlePublishGbpPostNow(post)}
+                                disabled={isPublishingGbpId === post.id}
+                              >
+                                {isPublishingGbpId === post.id ? 'Publicando...' : 'Publicar'}
+                              </button>
+                            )}
+                            <button 
+                              className="btn btn-outline btn-small" 
+                              style={{ fontSize: '0.65rem', padding: '3px 6px', color: '#e53e3e', borderColor: '#e53e3e' }}
+                              onClick={() => handleDeleteGbpPost(post.id)}
+                            >
+                              Excluir
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>

@@ -163,7 +163,8 @@ export default async function handler(req, res) {
 
     await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
 
-    const hostUrl = `https://${req.headers.host}`;
+    const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
+    const hostUrl = `${isLocal ? 'http' : 'https'}://${req.headers.host}`;
 
     // Load settings
     const settingsDoc = await getDoc(doc(db, 'settings', 'studio'));
@@ -256,7 +257,7 @@ export default async function handler(req, res) {
         const tYear = tParts.find(p => p.type === 'year').value;
         const targetDateStr = `${tYear}-${tMonth}-${tDay}`;
 
-        const q = query(collection(db, 'bookings'), where('date', '==', targetDateStr), where('status', '==', 'Concluído'));
+        const q = query(collection(db, 'bookings'), where('date', '==', targetDateStr), where('status', 'in', ['Concluído', 'finalizado']));
         const snap = await getDocs(q);
 
         const processedPhones = new Set();
@@ -284,7 +285,7 @@ export default async function handler(req, res) {
             collection(db, 'bookings'),
             where('phone', '==', booking.phone),
             where('date', '>', targetDateStr),
-            where('status', 'in', ['Concluído', 'Confirmado'])
+            where('status', 'in', ['Concluído', 'Confirmado', 'finalizado'])
           );
           const recentSnap = await getDocs(recentQ);
 

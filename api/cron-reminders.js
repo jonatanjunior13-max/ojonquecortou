@@ -157,7 +157,8 @@ export default async function handler(req, res) {
     // Disparar e-mails de lembrete 24h para amanhã
     let emailSuccessCount = 0;
     let emailFailCount = 0;
-    const hostUrl = `https://${req.headers.host}`;
+    const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
+    const hostUrl = `${isLocal ? 'http' : 'https'}://${req.headers.host}`;
 
     for (const b of tomorrowBookings) {
       if (!b.clientEmail || !b.clientEmail.includes('@') || b.clientEmail === 'Não informado') continue;
