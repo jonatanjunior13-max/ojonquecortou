@@ -248,12 +248,21 @@
   border: 1.5px solid var(--mobile-primary);
   background: transparent;
   color: var(--mobile-primary);
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.mobile-btn-outline:active {
+  background: rgba(255,0,127,0.05);
+  transform: scale(0.98);
 }
 
 .mobile-btn-solid {
@@ -261,12 +270,22 @@
   background: var(--mobile-primary);
   border: none;
   color: white;
-  padding: 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  transition: filter 0.2s, transform 0.1s;
+  box-shadow: 0 4px 10px rgba(255, 0, 127, 0.2);
+}
+.mobile-btn-solid:active {
+  filter: brightness(0.9);
+  transform: scale(0.98);
 }
 
 /* Próximos compromissos */
@@ -876,11 +895,15 @@
 .mobile-form-group select,
 .mobile-form-group textarea {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: 1px solid var(--mobile-rule);
-  border-radius: 6px;
-  font-size: 0.85rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
   box-sizing: border-box;
+  min-height: 44px; /* Tamanho mínimo amigável para toque */
+  background-color: #ffffff;
+  color: var(--mobile-text);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .mobile-form-group input:focus,
@@ -888,6 +911,7 @@
 .mobile-form-group textarea:focus {
   outline: none;
   border-color: var(--mobile-primary);
+  box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.15); /* Focus ring */
 }
 
 .mobile-modal-actions {
@@ -898,14 +922,23 @@
 
 .mobile-modal-actions .btn-cancel {
   flex: 1;
-  background: #edf2f7;
+  background: transparent;
   color: #4a5568;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
+  border: 1.5px solid #cbd5e0;
+  padding: 10px 16px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.mobile-modal-actions .btn-cancel:active {
+  background: #f7fafc;
+  transform: scale(0.98);
 }
 
 .mobile-modal-actions .btn-save {
@@ -913,11 +946,21 @@
   background: var(--mobile-primary);
   color: white;
   border: none;
-  padding: 12px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
   font-weight: 700;
   font-size: 0.85rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  transition: filter 0.2s, transform 0.1s;
+  box-shadow: 0 4px 10px rgba(255, 0, 127, 0.2);
+}
+.mobile-modal-actions .btn-save:active {
+  filter: brightness(0.9);
+  transform: scale(0.98);
 }
 
 /* Detail modal fields */
@@ -1085,7 +1128,7 @@
   border-radius: 8px;
   max-height: 180px;
   overflow-y: auto;
-  z-index: 1000;
+  z-index: 2100;
   box-shadow: 0 4px 12px rgba(255, 0, 127, 0.08);
   margin-top: 4px;
   padding: 0;
