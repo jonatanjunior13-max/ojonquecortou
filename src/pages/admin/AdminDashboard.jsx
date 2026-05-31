@@ -3075,6 +3075,12 @@ Jon`;
                   </ul>
                 )}
               </div>
+              {/* BOTÃO CADASTRAR NOVO CLIENTE */}
+              <div style={{ marginTop: 8, textAlign: 'right' }}>
+                <button type="button" onClick={() => { window.location.href = '/admin/clientes'; }} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
+                  <Plus size={14} /> Cadastrar novo cliente (Ficha Completa)
+                </button>
+              </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 16, rowGap: 12, overflowY: 'auto', flex: 1, paddingRight: 4, paddingBottom: 8 }}>
