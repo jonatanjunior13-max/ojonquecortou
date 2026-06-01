@@ -508,7 +508,7 @@
     right: 0;
     height: 68px;
     background: #ffffff;
-    border-top: 1.5px solid #fbcfe8;
+    border-top: 1px solid var(--rule);
     display: flex !important;
     justify-content: space-around;
     align-items: center;
@@ -553,16 +553,16 @@
   }
 
   .mobile-nav-item.active {
-    color: #ff007f !important;
+    color: var(--accent) !important;
   }
 
   .mobile-nav-item.active .icon-container {
-    background-color: #fce7f3 !important;
-    color: #ff007f !important;
+    background-color: var(--bg-warm) !important;
+    color: var(--accent) !important;
   }
 
   .mobile-nav-item.active span {
-    color: #ff007f !important;
+    color: var(--accent) !important;
   }
 
   /* Adjust main container to avoid being hidden behind bottom nav on mobile */

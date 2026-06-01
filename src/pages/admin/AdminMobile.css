@@ -1,18 +1,18 @@
-/* CSS para o Aplicativo Mobile Administrador (Estilo Trinks Retro Pink) */
+/* CSS para o Aplicativo Mobile Administrador (Estilo Premium Terroso) */
 
 :root {
-  --mobile-bg: #fdf2f8; /* Fundo rosa/creme suave */
+  --mobile-bg: #F5EDDB; /* Creme quente */
   --mobile-card-bg: #ffffff;
-  --mobile-text: #1e1b4b; /* Azul escuro/índigo para excelente contraste */
-  --mobile-muted: #6b7280;
-  --mobile-rule: #fbcfe8; /* Divisórias em rosa pastel */
-  --mobile-primary: #ff007f; /* Rosa Neon Retro da Logo */
-  --mobile-primary-light: #fce7f3; /* Fundo Cápsula Rosa */
-  --mobile-green: #10b981;
-  --mobile-green-light: #ecfdf5;
-  --mobile-red: #ef4444;
-  --mobile-red-light: #fef2f2;
-  --mobile-grey-block: #e5e7eb; /* Almoço/Ausência */
+  --mobile-text: #1A1310; /* Carvão escuro */
+  --mobile-muted: #6B5A4B; /* Marrom-acastanhado */
+  --mobile-rule: rgba(26, 19, 16, 0.08); /* Divisória muito suave */
+  --mobile-primary: #B05A2E; /* Cobre elegante */
+  --mobile-primary-light: #FAF5E8; /* Marfim quente */
+  --mobile-green: #4A5D4E; /* Verde sálvia elegante */
+  --mobile-green-light: #F0F4F1;
+  --mobile-red: #A94442; /* Dusty red */
+  --mobile-red-light: #FAF2F2;
+  --mobile-grey-block: #ede8db; /* Almoço/Ausência */
 }
 
 /* Reset Geral Mobile */
@@ -103,7 +103,7 @@
 
 /* Home / Início Screen styling */
 .mobile-welcome-banner {
-  background: linear-gradient(135deg, var(--mobile-primary) 0%, #db2777 100%);
+  background: linear-gradient(135deg, var(--mobile-primary) 0%, var(--mobile-text) 100%);
   border-radius: 14px;
   padding: 16px;
   color: white;
@@ -111,8 +111,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  box-shadow: 0 6px 18px rgba(255, 0, 127, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 6px 18px rgba(26, 19, 16, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mobile-welcome-content h3 {
@@ -261,7 +261,7 @@
   transition: background-color 0.2s, transform 0.1s;
 }
 .mobile-btn-outline:active {
-  background: rgba(255,0,127,0.05);
+  background: rgba(176,90,46,0.05);
   transform: scale(0.98);
 }
 
@@ -281,7 +281,7 @@
   justify-content: center;
   min-height: 44px;
   transition: filter 0.2s, transform 0.1s;
-  box-shadow: 0 4px 10px rgba(255, 0, 127, 0.2);
+  box-shadow: 0 4px 10px rgba(176, 90, 46, 0.2);
 }
 .mobile-btn-solid:active {
   filter: brightness(0.9);
@@ -363,11 +363,11 @@
   margin-top: 4px;
 }
 
-.appt-status.confirmado { background: #ebf8ff; color: #2b6cb0; }
-.appt-status.pendente { background: #feebc8; color: #dd6b20; }
-.appt-status.finalizado { background: #f0fff4; color: #38a169; }
-.appt-status.cancelado { background: #fff5f5; color: #e53e3e; }
-.appt-status.bloqueado { background: #edf2f7; color: #4a5568; }
+.appt-status.confirmado { background: var(--mobile-primary-light); color: var(--mobile-primary); }
+.appt-status.pendente { background: #FEF9E7; color: #C97B49; }
+.appt-status.finalizado { background: var(--mobile-green-light); color: var(--mobile-green); }
+.appt-status.cancelado { background: var(--mobile-red-light); color: var(--mobile-red); }
+.appt-status.bloqueado { background: var(--mobile-grey-block); color: var(--mobile-muted); }
 
 /* Agenda / Calendário Screen styling */
 .mobile-agenda-header {
@@ -911,7 +911,7 @@
 .mobile-form-group textarea:focus {
   outline: none;
   border-color: var(--mobile-primary);
-  box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.15); /* Focus ring */
+  box-shadow: 0 0 0 3px rgba(176, 90, 46, 0.15); /* Focus ring */
 }
 
 .mobile-modal-actions {
@@ -956,7 +956,7 @@
   justify-content: center;
   min-height: 44px;
   transition: filter 0.2s, transform 0.1s;
-  box-shadow: 0 4px 10px rgba(255, 0, 127, 0.2);
+  box-shadow: 0 4px 10px rgba(176, 90, 46, 0.2);
 }
 .mobile-modal-actions .btn-save:active {
   filter: brightness(0.9);
@@ -1096,7 +1096,7 @@
 }
 
 .notification-card.unread {
-  background: rgba(255, 0, 127, 0.04) !important;
+  background: rgba(176, 90, 46, 0.04) !important;
   border-left-width: 4px !important;
 }
 
@@ -1129,7 +1129,7 @@
   max-height: 180px;
   overflow-y: auto;
   z-index: 2100;
-  box-shadow: 0 4px 12px rgba(255, 0, 127, 0.08);
+  box-shadow: 0 4px 12px rgba(176, 90, 46, 0.08);
   margin-top: 4px;
   padding: 0;
   list-style: none;
@@ -1138,7 +1138,7 @@
 .mobile-suggestion-item {
   padding: 10px 14px;
   cursor: pointer;
-  border-bottom: 1px solid #fce7f3;
+  border-bottom: 1px solid var(--mobile-rule);
   display: flex;
   flex-direction: column;
   gap: 2px;

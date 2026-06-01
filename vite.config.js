@@ -61,7 +61,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}']
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg}'],
+        navigateFallback: 'index.html',
+        navigateFallbackDenylist: [/^\/api\//]
       },
       manifest: {
         name: 'O Jon Que Cortou - Admin',

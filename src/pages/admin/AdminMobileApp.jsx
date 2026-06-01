@@ -1499,8 +1499,8 @@ const AdminMobileApp = () => {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#fdf2f8' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid #ff007f', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F5EDDB' }}>
+        <div style={{ width: '40px', height: '40px', border: '3px solid var(--mobile-primary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
         <p style={{ marginTop: 12, fontSize: '0.9rem', color: '#6b7280', fontWeight: 600 }}>Carregando Studio do Jon...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>

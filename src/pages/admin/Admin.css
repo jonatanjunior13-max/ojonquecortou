@@ -6,19 +6,19 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: radial-gradient(circle at 10% 20%, #fdf2f8 0%, #fbcfe8 90%);
+  background: radial-gradient(circle at 10% 20%, #FAF5E8 0%, #F5EDDB 90%);
   padding: 20px;
-  color: #1e1b4b;
+  color: var(--ink);
 }
 
 .login-card {
   background: #ffffff;
-  border: 1.5px solid #fbcfe8;
+  border: 1px solid var(--rule);
   padding: 40px;
   border-radius: 16px;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 10px 30px rgba(255, 0, 127, 0.08);
+  box-shadow: 0 10px 30px rgba(26, 19, 16, 0.04);
 }
 
 .login-header {
@@ -151,11 +151,11 @@
   flex-shrink: 0;
 }
 
-.status-counter-item.pendente .status-counter-dot { background: #d69e2e; }
-.status-counter-item.confirmado .status-counter-dot { background: #38a169; }
-.status-counter-item.finalizado .status-counter-dot { background: #4a5568; }
-.status-counter-item.cancelado .status-counter-dot { background: #e53e3e; }
-.status-counter-item.faltou .status-counter-dot { background: #805ad5; }
+.status-counter-item.pendente .status-counter-dot { background: #C97B49; }
+.status-counter-item.confirmado .status-counter-dot { background: #B05A2E; }
+.status-counter-item.finalizado .status-counter-dot { background: #4A5D4E; }
+.status-counter-item.cancelado .status-counter-dot { background: #A94442; }
+.status-counter-item.faltou .status-counter-dot { background: #8A7866; }
 
 .status-counter-label {
   color: var(--muted);
@@ -339,30 +339,30 @@
 }
 
 .appt-card.pendente {
-  background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%);
-  border-left: 4px solid #f6e05e;
+  background: linear-gradient(135deg, #C97B49 0%, #A65A2E 100%);
+  border-left: 4px solid #EFE5D2;
 }
 
 .appt-card.confirmado {
-  background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
-  border-left: 4px solid #9ae6b4;
+  background: linear-gradient(135deg, #B05A2E 0%, #8A411C 100%);
+  border-left: 4px solid #FAF5E8;
 }
 
 .appt-card.finalizado {
-  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-  border-left: 4px solid #cbd5e0;
+  background: linear-gradient(135deg, #4A5D4E 0%, #364439 100%);
+  border-left: 4px solid #F0F4F1;
 }
 
 .appt-card.cancelado {
-  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
-  border-left: 4px solid #feb2b2;
+  background: linear-gradient(135deg, #A94442 0%, #8B302F 100%);
+  border-left: 4px solid #FAF2F2;
   text-decoration: line-through;
   opacity: 0.65;
 }
 
 .appt-card.bloqueado {
-  background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
-  border-left: 4px solid #a0aec0;
+  background: linear-gradient(135deg, #8A7866 0%, #6B5A4B 100%);
+  border-left: 4px solid #ede8db;
   opacity: 0.8;
   display: flex;
   flex-direction: column;
@@ -371,8 +371,8 @@
 }
 
 .appt-card.faltou {
-  background: repeating-linear-gradient(45deg, #718096, #718096 10px, #4a5568 10px, #4a5568 20px);
-  border-left: 4px solid #fc8181;
+  background: repeating-linear-gradient(45deg, #8A7866, #8A7866 10px, #6B5A4B 10px, #6B5A4B 20px);
+  border-left: 4px solid #A94442;
   opacity: 0.65;
 }
 
@@ -467,10 +467,10 @@
   color: #fff;
 }
 
-.status-badge.pendente { background: #b7791f; }
-.status-badge.confirmado { background: #276749; }
-.status-badge.finalizado { background: #2d3748; }
-.status-badge.cancelado { background: #9b2c2c; }
+.status-badge.pendente { background: #C97B49; }
+.status-badge.confirmado { background: #B05A2E; }
+.status-badge.finalizado { background: #4A5D4E; }
+.status-badge.cancelado { background: #A94442; }
 
 /* Client Database Page */
 .clients-layout {
@@ -3035,16 +3035,15 @@
     flex-shrink: 0 !important;
     border-radius: 20px !important;
     padding: 6px 14px !important;
-    font-size: 0.8rem !important;
     background: #ffffff !important;
-    border: 1px solid #fbcfe8 !important;
+    border: 1px solid var(--rule) !important;
     color: #6b7280 !important;
   }
 
   .category-tab-btn.active, .crm-tab-btn.active, .filter-badge-btn.active {
-    background: #ff007f !important;
+    background: var(--accent) !important;
     color: #ffffff !important;
-    border-color: #ff007f !important;
+    border-color: var(--accent) !important;
   }
 
   /* --- CATÁLOGO DE SERVIÇOS (CARDS ESTILO TRINKS) --- */
@@ -3056,9 +3055,9 @@
 
   .service-catalog-card {
     background: #ffffff !important;
-    border: 1px solid #fbcfe8 !important;
+    border: 1px solid var(--rule) !important;
     border-radius: 12px !important;
-    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.03) !important;
+    box-shadow: 0 4px 12px rgba(26, 19, 16, 0.03) !important;
     padding: 16px !important;
     display: flex !important;
     flex-direction: column !important;
@@ -3074,22 +3073,22 @@
     top: 0 !important;
     bottom: 0 !important;
     width: 4px !important;
-    background: #ff007f !important;
+    background: var(--accent) !important;
   }
 
   .card-top-decoration {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    border-bottom: 1px solid #fdf2f8 !important;
+    border-bottom: 1px solid var(--rule) !important;
     padding-bottom: 8px !important;
   }
 
   .service-category-tag {
     font-size: 0.72rem !important;
     font-weight: 700 !important;
-    color: #ff007f !important;
-    background: #fce7f3 !important;
+    color: var(--accent) !important;
+    background: var(--bg-warm) !important;
     padding: 2px 8px !important;
     border-radius: 4px !important;
   }
@@ -3110,14 +3109,14 @@
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    border-top: 1.5px solid #fdf2f8 !important;
+    border-top: 1.5px solid var(--rule) !important;
     padding-top: 12px !important;
     margin-top: 8px !important;
   }
 
   .price-new-value strong, .price-standard-value strong {
     font-size: 1.15rem !important;
-    color: #ff007f !important;
+    color: var(--accent) !important;
     font-weight: 800 !important;
   }
 
@@ -3176,21 +3175,21 @@
     align-items: center !important;
     gap: 4px !important;
     background: #ffffff !important;
-    border: 1px solid #fbcfe8 !important;
-    color: #ff007f !important;
+    border: 1px solid var(--rule) !important;
+    color: var(--accent) !important;
     font-weight: 700 !important;
     padding: 6px 12px !important;
     border-radius: 8px !important;
     font-size: 0.8rem !important;
     margin-bottom: 12px !important;
     cursor: pointer !important;
-    box-shadow: 0 2px 4px rgba(255, 0, 127, 0.04) !important;
+    box-shadow: 0 2px 4px rgba(26, 19, 16, 0.04) !important;
   }
 
   /* Cards da lista de clientes */
   .client-list-item {
     background: #ffffff !important;
-    border: 1.5px solid #fbcfe8 !important;
+    border: 1.5px solid var(--rule) !important;
     border-radius: 12px !important;
     padding: 14px !important;
     margin-bottom: 10px !important;
@@ -3199,8 +3198,8 @@
   }
 
   .client-list-item.selected {
-    border-color: #ff007f !important;
-    background: #fdf2f8 !important;
+    border-color: var(--accent) !important;
+    background: var(--bg-warm) !important;
   }
 
   /* Formulários CRM */
@@ -3211,7 +3210,7 @@
 
   .hair-profile-form {
     background: #ffffff !important;
-    border: 1.5px solid #fbcfe8 !important;
+    border: 1.5px solid var(--rule) !important;
     border-radius: 12px !important;
     padding: 16px !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.01) !important;
@@ -3227,14 +3226,14 @@
     border-radius: 12px !important;
     padding: 14px 16px !important;
     background: #ffffff !important;
-    border: 1.5px solid #fbcfe8 !important;
+    border: 1.5px solid var(--rule) !important;
     box-shadow: 0 4px 8px rgba(0,0,0,0.01) !important;
   }
 
   .chart-card {
     padding: 14px !important;
     border-radius: 12px !important;
-    border: 1.5px solid #fbcfe8 !important;
+    border: 1.5px solid var(--rule) !important;
     background: #ffffff !important;
     overflow-x: auto !important;
   }
@@ -3263,7 +3262,7 @@
     display: flex !important;
     flex-direction: column !important;
     background: #ffffff !important;
-    border: 1.5px solid #fbcfe8 !important;
+    border: 1px solid var(--rule) !important;
     border-radius: 12px !important;
     padding: 14px !important;
     margin-bottom: 12px !important;
