@@ -30,6 +30,14 @@
       "handle": "filesystem"
     },
     {
+      "src": "/blog/([^/]+)/?",
+      "dest": "/blog/$1/index.html"
+    },
+    {
+      "src": "/(sobre|servicos|galeria|depoimentos|blog)/?",
+      "dest": "/$1/index.html"
+    },
+    {
       "src": "/((?!api|.*\\.txt$).*)",
       "dest": "/index.html"
     }
