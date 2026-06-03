@@ -1,4 +1,29 @@
 User-agent: *
 Allow: /
 
+# AI crawlers directives
+User-agent: GPTBot
+Allow: /blog
+Allow: /sobre
+Allow: /servicos
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: ClaudeBot
+Allow: /blog
+Allow: /sobre
+Allow: /servicos
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: Applebot-extended
+Allow: /blog
+Allow: /sobre
+Allow: /servicos
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
 Sitemap: https://www.ojonquecortou.com.br/sitemap.xml

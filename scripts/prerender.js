@@ -40,6 +40,18 @@ function replaceTitle(html, title) {
   return html.replace('</head>', `    <title>${cleanTitle}</title>\n  </head>`);
 }
 
+// Helper to replace or add a canonical link tag in the HTML head
+function replaceOrAddCanonical(html, url) {
+  if (!url) return html;
+  const regex = /<link\s+rel=["']canonical["']\s+href=["'].*?["']\s*\/?>/i;
+  const newTag = `<link rel="canonical" href="${url}" />`;
+  if (regex.test(html)) {
+    return html.replace(regex, newTag);
+  } else {
+    return html.replace('</head>', `    ${newTag}\n  </head>`);
+  }
+}
+
 // Helper to convert date format from PT-BR "02 de Junho, 2026" to ISO "2026-06-02"
 function parseDateToISO(dateStr) {
   if (!dateStr) return "2026-05-14";
@@ -66,6 +78,11 @@ function parseDateToISO(dateStr) {
 
 // Definition of static pages with their specific metadata
 const pages = [
+  {
+    route: '/',
+    title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
+    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Visagismo, corte a seco, transição capilar e tratamento personalizado.'
+  },
   {
     route: '/servicos',
     title: 'Serviços e Valores | Especialista em Cabelo Cacheado BH | Studio do Jon',
@@ -173,6 +190,9 @@ pages.forEach(page => {
   // 3. Replace OG URL
   html = replaceOrAddMeta(html, 'og:url', `https://www.ojonquecortou.com.br${page.route}`, true);
   
+  // 3b. Replace/Add Canonical Link
+  html = replaceOrAddCanonical(html, `https://www.ojonquecortou.com.br${page.route}`);
+
   // 4. Replace OG/Twitter titles
   html = replaceOrAddMeta(html, 'og:title', page.title, true);
   html = replaceOrAddMeta(html, 'twitter:title', page.title, false);
@@ -205,3 +225,50 @@ pages.forEach(page => {
 });
 
 console.log('Static pre-rendering completed successfully!');
+
+// Helper to generate the sitemap.xml dynamically
+function generateSitemap(pagesList) {
+  const currentDate = new Date().toISOString().split('T')[0];
+  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+  
+  pagesList.forEach(page => {
+    const loc = `https://www.ojonquecortou.com.br${page.route === '/' ? '' : page.route}`;
+    let changefreq = 'monthly';
+    let priority = '0.8';
+    let lastmod = currentDate;
+    
+    if (page.route === '/') {
+      changefreq = 'weekly';
+      priority = '1.0';
+    } else if (page.route === '/blog') {
+      changefreq = 'daily';
+      priority = '0.9';
+    } else if (page.route === '/servicos' || page.route === '/sobre' || page.route === '/galeria' || page.route === '/depoimentos') {
+      changefreq = 'weekly';
+      priority = '0.9';
+    } else if (page.route.startsWith('/blog/')) {
+      changefreq = 'monthly';
+      priority = '0.8';
+      if (page.schema && page.schema.datePublished) {
+        lastmod = page.schema.datePublished;
+      }
+    }
+    
+    xml += '  <url>\n';
+    xml += `    <loc>${loc}</loc>\n`;
+    xml += `    <lastmod>${lastmod}</lastmod>\n`;
+    xml += `    <changefreq>${changefreq}</changefreq>\n`;
+    xml += `    <priority>${priority}</priority>\n`;
+    xml += '  </url>\n';
+  });
+  
+  xml += '</urlset>\n';
+  return xml;
+}
+
+console.log('Generating dynamic sitemap.xml...');
+const sitemapXml = generateSitemap(pages);
+fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemapXml);
+fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml);
+console.log('Sitemap.xml generated and updated successfully in public/ and dist/!');

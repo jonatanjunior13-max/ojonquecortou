@@ -1,292 +1,273 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
-    <loc>https://www.ojonquecortou.com.br/</loc>
-    <lastmod>2026-05-14</lastmod>
+    <loc>https://www.ojonquecortou.com.br</loc>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <url>
-    <loc>https://www.ojonquecortou.com.br/galeria</loc>
-    <lastmod>2026-05-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://www.ojonquecortou.com.br/depoimentos</loc>
-    <lastmod>2026-05-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://www.ojonquecortou.com.br/sobre</loc>
-    <lastmod>2026-05-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/servicos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-06-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-
+  <url>
+    <loc>https://www.ojonquecortou.com.br/sobre</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.ojonquecortou.com.br/blog</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.ojonquecortou.com.br/depoimentos</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.ojonquecortou.com.br/galeria</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
   <url>
     <loc>https://www.ojonquecortou.com.br/servicos/descoloracao-cabelo-cacheado</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/servicos/visagismo-cacheado</loc>
     <lastmod>2026-06-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
-    <loc>https://www.ojonquecortou.com.br/blog</loc>
-    <lastmod>2026-05-14</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.ojonquecortou.com.br/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
-
-  <!-- Blog Posts -->
+  <url>
+    <loc>https://www.ojonquecortou.com.br/blog/shaggy-cacheado-corte-seco</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ojonquecortou.com.br/blog/cacho-vs-crespo-qual-diferenca</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.ojonquecortou.com.br/blog/secagem-cachos-difusor-vs-natural</loc>
+    <lastmod>2026-05-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/guia-completo-produtos-cabelo-cacheado-2026</loc>
     <lastmod>2026-05-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/rotina-basica-cabelo-cacheado-cronograma</loc>
     <lastmod>2026-05-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/penteados-cabelo-cacheado</loc>
     <lastmod>2026-05-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/frequencia-de-corte-cabelo-cacheado</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-08</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/cronograma-capilar-cabelo-cacheado</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-05-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/metodo-leitura-de-fio-antes-da-tesoura</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/ph-capilar-cachos-brilho-definicao</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/wolf-cut-cabelos-cacheados-tendencia</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-24</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/shag-cacheado-corte-tendencia-2026</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/melhores-cortes-cabelo-cacheado-masculino-2026</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/corte-cabelo-cacheado-visagismo-influenciadora</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/botox-capilar-cabelo-cacheado-perigos</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/especialista-em-cabelo-cacheado-bh-texturas</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/corte-a-seco-cabelo-cacheado-bh-volume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/cabeleireiro-especialista-em-cachos-belo-horizonte-descolorido</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/transicao-capilar-bh-danos-botox</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/cabelo-poroso-nao-absorve-creme-scab-hair</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/corte-para-cabelo-cacheado-bh-volume</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/cabelo-bonito-no-salao-diferente-em-casa</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/cabelo-cacheado-embaraca-muito</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/fator-encolhimento-cabelo-cacheado</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/rotina-minimalista-cabelos-cacheados</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-13</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/sulfato-no-shampoo-guia-completo</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/teste-de-porosidade-guia-definitivo</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/finalizacao-por-curvatura-guia-tecnico</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/frizz-normal-ou-dano-capilar</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/fim-do-bad-hair-day-after</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-04-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/alforria-do-cacho-liberdade-2026</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-03-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/guia-sobrevivencia-frizz-bh</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-03-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/transicao-capilar-bh-corte-seco</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-03-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://www.ojonquecortou.com.br/blog/cabelo-cacheado-ressecado-porosidade</loc>
-    <lastmod>2026-05-14</lastmod>
+    <lastmod>2026-03-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
 </urlset>
