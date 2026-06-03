@@ -7,7 +7,18 @@ import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import './Blog.css';
 
 const BlogPage = () => {
-  const [allPosts, setAllPosts] = useState(() => staticPosts.filter(p => p.status !== 'draft'));
+  const pinnedSlug = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
+  const pinPost = (list) => {
+    const pinned = list.find(p => p.slug === pinnedSlug);
+    if (!pinned) return list;
+    const rest = list.filter(p => p.slug !== pinnedSlug);
+    return [pinned, ...rest];
+  };
+
+  const [allPosts, setAllPosts] = useState(() => {
+    const filtered = staticPosts.filter(p => p.status !== 'draft');
+    return pinPost(filtered);
+  });
 
   useEffect(() => {
     async function loadDbPosts() {
@@ -19,11 +30,9 @@ const BlogPage = () => {
         snap.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
         });
-        if (list.length > 0) {
-          // Merge static and dynamic, putting dynamic ones first (filtering out drafts)
-          const merged = [...list, ...staticPosts].filter(p => p.status !== 'draft');
-          setAllPosts(merged);
-        }
+        // Merge static and dynamic, putting dynamic ones first (filtering out drafts)
+        const merged = [...list, ...staticPosts].filter(p => p.status !== 'draft');
+        setAllPosts(pinPost(merged));
       } catch (err) {
         console.warn('Erro ao carregar posts dinâmicos do Firestore:', err);
       }

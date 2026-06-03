@@ -351,7 +351,15 @@ function HomeBlog() {
     "linear-gradient(160deg,#7a4a2e 0%,#2a1a12 100%)"
   ];
 
-  const posts = blogPosts.slice(0, 3).map((post, i) => ({
+  const pinnedSlug = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
+  const pinPost = (list) => {
+    const pinned = list.find(p => p.slug === pinnedSlug);
+    if (!pinned) return list;
+    const rest = list.filter(p => p.slug !== pinnedSlug);
+    return [pinned, ...rest];
+  };
+
+  const posts = pinPost(blogPosts).slice(0, 3).map((post, i) => ({
     cat: post.category,
     title: post.title,
     ex: post.excerpt,
