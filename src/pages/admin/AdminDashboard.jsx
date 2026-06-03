@@ -43,6 +43,14 @@ const slotInRange = (slot, start, end) => {
   return slot >= start && slot < end;
 };
 
+const getLocalDateString = (dateObj) => {
+  if (!dateObj) return '';
+  const year = dateObj.getFullYear();
+  const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const day = String(dateObj.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
@@ -370,7 +378,7 @@ const AdminDashboard = () => {
     serviceName: '',
     servicePrice: 0,
     duration: 60,
-    date: new Date().toISOString().split('T')[0],
+    date: getLocalDateString(new Date()),
     time: '09:00',
     notes: '',
     profissional: 'jon',
@@ -721,7 +729,7 @@ const AdminDashboard = () => {
     if (amount <= 0) return;
     const tx = {
       bookingId: bookingId,
-      date: new Date().toISOString().split('T')[0],
+      date: getLocalDateString(new Date()),
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       clientName: payload.clientName,
       clientPhone: payload.clientPhone || '',
@@ -838,7 +846,7 @@ const AdminDashboard = () => {
         serviceName: services[0]?.name || '',
         servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
         duration: services[0]?.duration || 60,
-        date: currentDate.toISOString().split('T')[0],
+        date: getLocalDateString(currentDate),
         time: '09:00',
         notes: '',
         profissional: 'jon'
@@ -1023,7 +1031,7 @@ const AdminDashboard = () => {
 
     const transactionPayload = {
       bookingId: booking.id,
-      date: booking.date || new Date().toISOString().split('T')[0],
+      date: booking.date || getLocalDateString(new Date()),
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       clientName: booking.clientName,
       clientPhone: booking.clientPhone || '',
@@ -1084,7 +1092,7 @@ const AdminDashboard = () => {
           const serviceCostTx = {
             id: 'tx_cost_' + Date.now(),
             bookingId: booking.id,
-            date: booking.date || new Date().toISOString().split('T')[0],
+            date: booking.date || getLocalDateString(new Date()),
             time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
             clientName: booking.clientName,
             clientPhone: booking.clientPhone || '',
@@ -1119,7 +1127,7 @@ const AdminDashboard = () => {
         if (totalServiceCost > 0) {
           const serviceCostTx = {
             bookingId: booking.id,
-            date: booking.date || new Date().toISOString().split('T')[0],
+            date: booking.date || getLocalDateString(new Date()),
             time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
             clientName: booking.clientName,
             clientPhone: booking.clientPhone || '',
@@ -1230,9 +1238,9 @@ const AdminDashboard = () => {
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     const startOfWeek = new Date(d.setDate(diff));
-    const startStr = startOfWeek.toISOString().split('T')[0];
+    const startStr = getLocalDateString(startOfWeek);
 
-    const endStr = new Date(startOfWeek.setDate(startOfWeek.getDate() + 5)).toISOString().split('T')[0];
+    const endStr = getLocalDateString(new Date(startOfWeek.setDate(startOfWeek.getDate() + 5)));
 
     const weekEntradas = transactions
       .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
@@ -1247,7 +1255,7 @@ const AdminDashboard = () => {
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    const tomorrowStr = getLocalDateString(tomorrow);
     
     // Get current hour formatted (e.g., "14", "08")
     const now = new Date();
@@ -1532,10 +1540,10 @@ ${googleLink}
   // Date badges dynamically computed
   const getDateBadge = (dateStr) => {
     if (!dateStr) return '';
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = getLocalDateString(new Date());
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowStr = tomorrow.toISOString().split('T')[0];
+    const tomorrowStr = getLocalDateString(tomorrow);
 
     if (dateStr === todayStr) return 'Hoje';
     if (dateStr === tomorrowStr) return 'Amanhã';
@@ -1668,7 +1676,7 @@ ${googleLink}
 
   // Filter bookings list based on search and filters
   const getFilteredBookings = () => {
-    const currentDateStr = currentDate.toISOString().split('T')[0];
+    const currentDateStr = getLocalDateString(currentDate);
     
     return bookings.filter(b => {
       // Must match active date
@@ -1699,7 +1707,7 @@ ${googleLink}
     const curMonth = currentDate.getMonth();
     
     if (statsScope === 'dia') {
-      const targetStr = currentDate.toISOString().split('T')[0];
+      const targetStr = getLocalDateString(currentDate);
       return bookings.filter(b => b.date === targetStr);
     } else if (statsScope === 'semana') {
       const d = new Date(currentDate);
@@ -1863,7 +1871,7 @@ ${googleLink}
             onClick={() => {
               // Prefill selection slot and open modal
               setSelectedSlot({
-                date: currentDate.toISOString().split('T')[0],
+                date: getLocalDateString(currentDate),
                 time: '09:00',
                 profissional: activeProfessionalsList[0]?.id || 'jon',
                 dateFormatted: currentDate.toLocaleDateString('pt-BR')
@@ -1875,7 +1883,7 @@ ${googleLink}
                 serviceName: services[0]?.name || '',
                 servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
                 duration: services[0]?.duration || 60,
-                date: currentDate.toISOString().split('T')[0],
+                date: getLocalDateString(currentDate),
                 time: '09:00',
                 notes: '',
                 profissional: activeProfessionalsList[0]?.id || 'jon'
@@ -2068,7 +2076,7 @@ ${googleLink}
                 style={{ padding: '8px 16px', fontSize: '0.9rem' }} 
                 onClick={() => {
                   setSelectedSlot({
-                    date: currentDate.toISOString().split('T')[0],
+                    date: getLocalDateString(currentDate),
                     time: '09:00',
                     profissional: selectedProfs[0] || 'jon',
                     dateFormatted: currentDate.toLocaleDateString('pt-BR')
@@ -2080,7 +2088,7 @@ ${googleLink}
                     serviceName: services[0]?.name || '',
                     servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
                     duration: services[0]?.duration || 60,
-                    date: currentDate.toISOString().split('T')[0],
+                    date: getLocalDateString(currentDate),
                     time: '09:00',
                     notes: '',
                     profissional: selectedProfs[0] || 'jon'
@@ -2130,7 +2138,7 @@ ${googleLink}
                     <div className="time-label-cell">{slot}</div>
                     
                     {columnsToRender.map(prof => {
-                      const currentDateStr = currentDate.toISOString().split('T')[0];
+                      const currentDateStr = getLocalDateString(currentDate);
                       const appt = filteredBookingsList.find(b => 
                         b.date === currentDateStr && 
                         b.time === slot && 
