@@ -8,24 +8,30 @@
     },
     "api/cron-reminders.js": {
       "maxDuration": 60
+    },
+    "api/cron-blog.js": {
+      "maxDuration": 60
     }
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/whatsapp-webhook(.*)",
-      "destination": "/api/whatsapp-webhook.js"
+      "src": "/api/whatsapp-webhook(.*)",
+      "dest": "/api/whatsapp-webhook.js"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
     },
     {
-      "source": "/ad570ba1c6ba4630b664a7f571d247d0.txt",
-      "destination": "/ad570ba1c6ba4630b664a7f571d247d0.txt"
+      "src": "/ad570ba1c6ba4630b664a7f571d247d0.txt",
+      "dest": "/ad570ba1c6ba4630b664a7f571d247d0.txt"
     },
     {
-      "source": "/((?!api|.*\\.txt$).*)",
-      "destination": "/index.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/((?!api|.*\\.txt$).*)",
+      "dest": "/index.html"
     }
   ],
   "crons": [
@@ -44,6 +50,10 @@
     {
       "path": "/api/cron-daily-digest",
       "schedule": "0 3 * * *"
+    },
+    {
+      "path": "/api/cron-blog",
+      "schedule": "0 12 * * 1,5"
     }
   ]
 }

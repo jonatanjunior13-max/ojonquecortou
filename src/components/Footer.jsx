@@ -43,7 +43,7 @@ function Footer() {
               <li><a href="https://wa.me/553135866673" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
               <li><a href="https://instagram.com/ojonquecortou" target="_blank" rel="noopener noreferrer">Instagram</a></li>
               <li><a href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+-+Especialista+em+Cachos" target="_blank" rel="noopener noreferrer">Caiçara · BH</a></li>
-              <li><a href="http://trinks.com/ojonquecortou" target="_blank" rel="noopener noreferrer">Agendar</a></li>
+              <li><a href="/agendar">Agendar</a></li>
             </ul>
           </div>
         </div>

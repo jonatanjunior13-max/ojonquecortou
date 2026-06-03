@@ -8,7 +8,7 @@ const About = () => {
         <div className="about-visual">
           <div className="image-wrapper">
              <div className="main-photo" style={{ overflow: 'hidden' }}>
-                <img src="/jon-trabalhando.jpg" alt="Jon trabalhando em atendimento" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <img src="/jon-trabalhando.webp" alt="Jon trabalhando em atendimento" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
              </div>
              <div className="experience-badge glass-panel">
                <span className="exp-number text-magenta">8+</span>
@@ -47,7 +47,7 @@ const About = () => {
           </ul>
 
           <div className="mt-4">
-             <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
+             <a href="/agendar" className="btn btn-primary">
                 Agendar com o Jon
              </a>
           </div>

@@ -26,9 +26,9 @@ function HomeHero() {
             </Reveal>
 
             <Reveal delay={220} className="hero-actions">
-              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noopener noreferrer" className="btn btn-accent">
+              <Link to="/agendar" className="btn btn-accent">
                 Agendar avaliação <Arrow />
-              </a>
+              </Link>
               <a href="/sobre#metodo" className="btn btn-ghost">
                 Conhecer o método
               </a>
@@ -54,7 +54,7 @@ function HomeHero() {
             <div className="hero-portrait">
               <span className="badge">Studio · BH</span>
               <div className="caption">"Antes da tesoura, a leitura."</div>
-              <img src="/jon-perfil.jpg" alt="Foto do Jon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img src="/jon-perfil.webp" alt="Foto do Jon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
           </Reveal>
         </div>
@@ -77,7 +77,7 @@ function HomeHero() {
 function HomeManifesto() {
   const pillars = [
     { n: "01 — DIAGNÓSTICO", h: "O fio fala primeiro.", p: "Toda visita começa com leitura: porosidade, curvatura, elasticidade e histórico químico. Sem isso, qualquer corte vira aposta." },
-    { n: "02 — CORTE HÍBRIDO", h: "Onde o cacho realmente cai.", p: "Cortar molhado esconde o comportamento real do fio. A seco, cada mecha cai onde vai cair — e o corte respeita isso." },
+    { n: "02 — CORTE HÍBRIDO", h: "Onde o cacho realmente cai.", p: "Ele pode ser feito a seco ou molhado, a depender da estrutura do fio. O objetivo é que cada mecha caia exatamente onde vai cair no seu dia a dia, respeitando o volume natural." },
     { n: "03 — SEM ALISAR", h: "Cacho não é problema.", p: "Aqui não existe progressiva disfarçada, escova diária ou promessa de \"domar\". Existe estrutura para o seu cacho ser o que ele é." },
   ];
   return (
@@ -316,6 +316,7 @@ function HomeBlog() {
 }
 
 import FAQ from '../components/FAQ';
+import Reviews from '../components/Reviews';
 
 const Home = () => {
   return (
@@ -325,12 +326,16 @@ const Home = () => {
         description="Especialista em cachos em Belo Horizonte. O Studio do Jon oferece corte a seco, diagnóstico técnico e tratamentos sob medida no Caiçara. Agende seu horário!" 
       />
       <HomeHero />
+      <hr className="technical-rule" />
       <HomeManifesto />
+      <hr className="technical-rule" />
       <HomeTeasers />
       <HomeMethodTeaser />
-      <HomeTestimonials />
+      <hr className="technical-rule" />
+      <Reviews isPage={false} />
       <HomeBlog />
       <FAQ />
+      <hr className="technical-rule" />
       <ContactCTA />
     </main>
   );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle } from 'lucide-react';
+import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X } from 'lucide-react';
 import './Admin.css';
 
 import { SEED_SERVICES } from '../../data/seedServices';
@@ -504,9 +504,20 @@ const AdminServices = () => {
       {isModalOpen && (
         <div className="modal-overlay">
           <form className="modal-content" onSubmit={handleSubmit} style={{ maxWidth: 650 }}>
-            <div className="modal-header-with-icon">
-              <Scissors size={20} className="modal-heading-icon" />
-              <h3>{editingService ? 'Editar Serviço' : 'Novo Serviço do Salão'}</h3>
+            <div className="modal-header-with-icon" style={{ justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Scissors size={20} className="modal-heading-icon" />
+                <h3>{editingService ? 'Editar Serviço' : 'Novo Serviço do Salão'}</h3>
+              </div>
+              <button 
+                type="button" 
+                className="btn-close" 
+                onClick={() => setIsModalOpen(false)}
+                aria-label="Fechar"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', cursor: 'pointer', background: 'transparent', border: 'none', color: 'var(--muted)' }}
+              >
+                <X size={18} />
+              </button>
             </div>
 
             <div className="form-group-sleek">

@@ -264,26 +264,27 @@ export default async function handler(req, res) {
 
         for (const bDoc of snap.docs) {
           const booking = bDoc.data();
-          if (!booking.phone || !booking.email || processedPhones.has(booking.phone)) continue;
+          if (!booking.clientPhone || !booking.clientEmail || processedPhones.has(booking.clientPhone)) continue;
           
           // Check if client is unsubscribed
           try {
-            const profileDoc = await getDoc(doc(db, 'client_profiles', booking.phone));
+            const phoneKey = booking.clientPhone.replace(/\D/g, '');
+            const profileDoc = await getDoc(doc(db, 'client_profiles', phoneKey));
             if (profileDoc.exists() && profileDoc.data().unsubscribed === true) {
-              console.log(`Ignorando régua para cliente descadastrado: ${booking.clientName} (${booking.email})`);
+              console.log(`Ignorando régua para cliente descadastrado: ${booking.clientName} (${booking.clientEmail})`);
               continue;
             }
           } catch (err) {
             console.warn('Erro ao verificar opt-out do cliente:', err);
           }
-          if (!booking.email.includes('@')) continue;
+          if (!booking.clientEmail.includes('@')) continue;
 
-          processedPhones.add(booking.phone);
+          processedPhones.add(booking.clientPhone);
 
           // Verify NO recent booking exists
           const recentQ = query(
             collection(db, 'bookings'),
-            where('phone', '==', booking.phone),
+            where('clientPhone', '==', booking.clientPhone),
             where('date', '>', targetDateStr),
             where('status', 'in', ['Concluído', 'Confirmado', 'finalizado'])
           );
@@ -314,7 +315,7 @@ export default async function handler(req, res) {
                 const content = formatBody(customTpl?.body || '', firstName);
                 payload = {
                   type: 'reativacao_5_meses',
-                  clientEmail: booking.email,
+                  clientEmail: booking.clientEmail,
                   clientName: booking.clientName,
                   subject: subject,
                   fallbackBody: content || null
@@ -329,7 +330,7 @@ export default async function handler(req, res) {
                   type: 'campanha',
                   subject: subject,
                   htmlBody: emailBody,
-                  clientEmail: booking.email,
+                  clientEmail: booking.clientEmail,
                   clientName: booking.clientName
                 };
               }
@@ -341,11 +342,11 @@ export default async function handler(req, res) {
                   timestamp: new Date().toISOString(),
                   date: todayStr,
                   clientName: booking.clientName,
-                  email: booking.email,
+                  email: booking.clientEmail,
                   stage: `D+${daysAgo}`
                 });
                 stats.sequenceMails++;
-                logs.push(`Email D+${daysAgo} enviado para: ${booking.clientName} (${booking.email})`);
+                logs.push(`Email D+${daysAgo} enviado para: ${booking.clientName} (${booking.clientEmail})`);
               }
               // Pausa de segurança de 15 segundos (Titan SMTP limits)
               await sleep(15000);

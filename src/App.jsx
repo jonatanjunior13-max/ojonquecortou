@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -15,17 +15,18 @@ import ReviewsPage from './pages/ReviewsPage';
 import GalleryPage from './pages/GalleryPage';
 import BookingPage from './pages/BookingPage';
 import CancelBookingPage from './pages/CancelBookingPage';
+import ClientAreaPage from './pages/ClientAreaPage';
 
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminLayout from './components/admin/AdminLayout';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminClients from './pages/admin/AdminClients';
-import AdminInventory from './pages/admin/AdminInventory';
-import AdminFinancial from './pages/admin/AdminFinancial';
-import AdminServices from './pages/admin/AdminServices';
-import AdminMarketing from './pages/admin/AdminMarketing';
-import AdminSettings from './pages/admin/AdminSettings';
-import AdminMobileApp from './pages/admin/AdminMobileApp';
+const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
+const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminClients = React.lazy(() => import('./pages/admin/AdminClients'));
+const AdminInventory = React.lazy(() => import('./pages/admin/AdminInventory'));
+const AdminFinancial = React.lazy(() => import('./pages/admin/AdminFinancial'));
+const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'));
+const AdminMarketing = React.lazy(() => import('./pages/admin/AdminMarketing'));
+const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'));
+const AdminMobileApp = React.lazy(() => import('./pages/admin/AdminMobileApp'));
 
 import GoogleAnalytics from './components/GoogleAnalytics';
 
@@ -41,30 +42,6 @@ function PublicLayout() {
   );
 }
 
-function TrinksInterceptor() {
-  const navigate = React.useMemo(() => {
-    try {
-      return useNavigate();
-    } catch {
-      return null;
-    }
-  }, []);
-
-  React.useEffect(() => {
-    if (!navigate) return;
-    const handleGlobalClick = (e) => {
-      const anchor = e.target.closest('a');
-      if (anchor && anchor.href && anchor.href.includes('trinks.com/ojonquecortou')) {
-        e.preventDefault();
-        navigate('/agendar');
-      }
-    };
-    document.addEventListener('click', handleGlobalClick);
-    return () => document.removeEventListener('click', handleGlobalClick);
-  }, [navigate]);
-
-  return null;
-}
 
 function App() {
   return (
@@ -72,8 +49,6 @@ function App() {
       <GoogleAnalytics />
       <ScrollToTop />
       <CanonicalTag />
-      {/* TrinksInterceptor desativado temporariamente até a Fase 1 rodar 100% */}
-      {/* <TrinksInterceptor /> */}
       <Routes>
         {/* Rotas Públicas */}
         <Route element={<PublicLayout />}>
@@ -86,20 +61,21 @@ function App() {
           <Route path="/depoimentos" element={<ReviewsPage />} />
           <Route path="/agendar" element={<BookingPage />} />
           <Route path="/cancelar" element={<CancelBookingPage />} />
+          <Route path="/cliente" element={<ClientAreaPage />} />
         </Route>
 
         {/* Rotas Administrativas */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/mobile" element={<AdminMobileApp />} />
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="agenda" element={<AdminDashboard />} />
-          <Route path="servicos" element={<AdminServices />} />
-          <Route path="clientes" element={<AdminClients />} />
-          <Route path="estoque" element={<AdminInventory />} />
-          <Route path="financeiro" element={<AdminFinancial />} />
-          <Route path="marketing" element={<AdminMarketing />} />
-          <Route path="configuracoes" element={<AdminSettings />} />
+        <Route path="/admin/login" element={<React.Suspense fallback={null}><AdminLogin /></React.Suspense>} />
+        <Route path="/admin/mobile" element={<React.Suspense fallback={null}><AdminMobileApp /></React.Suspense>} />
+        <Route path="/admin" element={<React.Suspense fallback={null}><AdminLayout /></React.Suspense>}>
+          <Route index element={<React.Suspense fallback={null}><AdminDashboard /></React.Suspense>} />
+          <Route path="agenda" element={<React.Suspense fallback={null}><AdminDashboard /></React.Suspense>} />
+          <Route path="servicos" element={<React.Suspense fallback={null}><AdminServices /></React.Suspense>} />
+          <Route path="clientes" element={<React.Suspense fallback={null}><AdminClients /></React.Suspense>} />
+          <Route path="estoque" element={<React.Suspense fallback={null}><AdminInventory /></React.Suspense>} />
+          <Route path="financeiro" element={<React.Suspense fallback={null}><AdminFinancial /></React.Suspense>} />
+          <Route path="marketing" element={<React.Suspense fallback={null}><AdminMarketing /></React.Suspense>} />
+          <Route path="configuracoes" element={<React.Suspense fallback={null}><AdminSettings /></React.Suspense>} />
         </Route>
       </Routes>
     </Router>

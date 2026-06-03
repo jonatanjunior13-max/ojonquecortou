@@ -1097,4 +1097,60 @@
   }
 }
 
+/* Floating Booking Summary Bar (UX Progressive Context) */
+.booking-summary-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(250, 245, 232, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 3px solid var(--ink);
+  padding: 12px 24px;
+  box-shadow: 0 -4px 16px rgba(26, 19, 16, 0.08);
+  z-index: 999;
+  animation: slide-up-summary 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-up-summary {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.booking-summary-bar .summary-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.booking-summary-bar .summary-item {
+  font-size: 0.85rem;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.booking-summary-bar .summary-item strong {
+  color: var(--accent);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+@media (max-width: 768px) {
+  .booking-summary-bar {
+    padding: 10px 16px;
+  }
+  .booking-summary-bar .summary-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
 

@@ -1,10 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { posts } from '../data/posts';
+import { posts as staticPosts } from '../data/posts';
 import SEO from '../components/SEO';
+import { db } from '../config/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import './Blog.css';
 
 const BlogPage = () => {
+  const [allPosts, setAllPosts] = useState(() => staticPosts.filter(p => p.status !== 'draft'));
+
+  useEffect(() => {
+    async function loadDbPosts() {
+      if (!db) return;
+      try {
+        const q = query(collection(db, 'blog_posts'), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        const list = [];
+        snap.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        if (list.length > 0) {
+          // Merge static and dynamic, putting dynamic ones first (filtering out drafts)
+          const merged = [...list, ...staticPosts].filter(p => p.status !== 'draft');
+          setAllPosts(merged);
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar posts dinâmicos do Firestore:', err);
+      }
+    }
+    loadDbPosts();
+  }, []);
+
   return (
     <main className="blog-page">
       <SEO 
@@ -22,8 +48,8 @@ const BlogPage = () => {
 
       <section className="container section-padding">
         <div className="blog-grid">
-          {posts.map((post, index) => (
-            <article key={post.id} className={`blog-card reveal stagger-${(index % 3) + 1}`}>
+          {allPosts.map((post, index) => (
+            <article key={post.id} className={`blog-card reveal active stagger-${(index % 3) + 1}`}>
               <div className="blog-card-img-wrap">
                 <img src={post.image} alt={post.title} className="blog-card-image" />
               </div>
@@ -48,8 +74,8 @@ const BlogPage = () => {
           <p className="paragraph-lg mb-4 max-w-md mx-auto">
             Não fique apenas na teoria. Agende seu horário e venha cuidar dos seus cachos com quem entende.
           </p>
-          <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-            Agendar agora pelo Trinks
+          <a href="/agendar" className="btn btn-primary">
+            Agendar agora
           </a>
         </div>
       </section>

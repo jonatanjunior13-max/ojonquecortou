@@ -282,7 +282,7 @@
   font-weight: 500;
 }
 
-.btn-primary {
+.cancel-booking-page .btn-primary {
   background-color: transparent;
   border: 2px solid #c8852a;
   color: #c8852a;
@@ -295,7 +295,7 @@
   transition: all 0.2s ease;
 }
 
-.btn-primary:hover {
+.cancel-booking-page .btn-primary:hover {
   background-color: #c8852a;
   color: #050505;
 }

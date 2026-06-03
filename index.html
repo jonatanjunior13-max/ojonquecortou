@@ -14,7 +14,7 @@
 
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="THs63AhNeGJtfN8EPg0uhiaDPm_075Wsa_zzBoE8mIU" />
     
     <!-- PWA & Mobile Install (iPhone/Android) -->
@@ -25,10 +25,32 @@
     <meta name="apple-mobile-web-app-title" content="Jon Cortou" />
     <link rel="apple-touch-icon" href="/logo-app.png" />
     
+    <!-- Force unregister old service worker and clear old cache if build version changed -->
+    <script>
+      const BUILD_VERSION = '20260603_v7';
+      if (localStorage.getItem('site_version') !== BUILD_VERSION) {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for (let registration of registrations) {
+              registration.unregister();
+            }
+          });
+        }
+        if ('caches' in window) {
+          caches.keys().then(function(names) {
+            for (let name of names) {
+              caches.delete(name);
+            }
+          });
+        }
+        localStorage.setItem('site_version', BUILD_VERSION);
+        console.log('Cache cleared for version:', BUILD_VERSION);
+      }
+    </script>
+    
     <!-- SEO Básico -->
     <title>Especialista em Cabelo Cacheado BH | Studio do Jon</title>
     <meta name="description" content="Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Visagismo, corte a seco, transição capilar e tratamento personalizado." />
-    <meta name="keywords" content="especialista em cachos bh, corte de cabelo cacheado belo horizonte, corte a seco bh, cabeleireiro cachos caiçara, morena iluminada cacheada bh, salão para cacheadas, o jon que cortou" />
     <meta name="author" content="Jonatan Junior" />
     <meta name="robots" content="index, follow" />
 
@@ -43,24 +65,22 @@
     {
       "@context": "https://schema.org",
       "@type": "HairSalon",
-      "name": "O Jon que Cortou | Studio do Jon",
-      "description": "Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo no Caiçara, Belo Horizonte. Jon analisa porosidade e curvatura do fio antes de qualquer corte.",
-      "image": "https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png",
-      "url": "https://www.ojonquecortou.com.br/",
+      "name": "Studio do Jon",
+      "alternateName": "O Jon que Cortou",
+      "url": "https://www.ojonquecortou.com.br",
       "telephone": "+553135866673",
-      "priceRange": "$$",
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": -19.9079,
-        "longitude": -43.9723
-      },
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Rua Francisco Ovidio, 184",
+        "streetAddress": "Rua Francisco Ovídio, 184",
         "addressLocality": "Belo Horizonte",
         "addressRegion": "MG",
         "postalCode": "30770-040",
         "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "-19.908634",
+        "longitude": "-43.967875"
       },
       "openingHoursSpecification": [
         {
@@ -76,7 +96,14 @@
           "closes": "17:00"
         }
       ],
-      "sameAs": ["https://www.instagram.com/ojonquecortou"]
+      "description": "Salão especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte. Método Leitura de Fio exclusivo.",
+      "priceRange": "$$",
+      "currenciesAccepted": "BRL",
+      "servesCuisine": null,
+      "image": "https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png",
+      "sameAs": [
+        "https://www.instagram.com/ojonquecortou"
+      ]
     }
     </script>
 
@@ -97,7 +124,6 @@
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     fbq('init', '1152310907009255');
-    fbq('init', '1414285063481375');
     fbq('track', 'PageView');
     </script>
     <!-- End Meta Pixel Code -->
@@ -114,9 +140,6 @@
   <body>
     <noscript><img height="1" width="1" style="display:none"
       src="https://www.facebook.com/tr?id=1152310907009255&ev=PageView&noscript=1"
-    /></noscript>
-    <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=1414285063481375&ev=PageView&noscript=1"
     /></noscript>
     <div id="cursor-dot"></div>
     <div id="root">

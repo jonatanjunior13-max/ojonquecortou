@@ -1,18 +1,32 @@
-/* CSS para o Aplicativo Mobile Administrador (Estilo Premium Terroso) */
+/* CSS para o Aplicativo Mobile Administrador — Redesign Premium */
 
 :root {
-  --mobile-bg: #F5EDDB; /* Creme quente */
+  --mobile-bg: #F7F0E3;                    /* Creme suave */
+  --mobile-bg-alt: #EFE6D5;               /* Creme ligeiramente mais escuro */
   --mobile-card-bg: #ffffff;
-  --mobile-text: #1A1310; /* Carvão escuro */
-  --mobile-muted: #6B5A4B; /* Marrom-acastanhado */
-  --mobile-rule: rgba(26, 19, 16, 0.08); /* Divisória muito suave */
-  --mobile-primary: #B05A2E; /* Cobre elegante */
-  --mobile-primary-light: #FAF5E8; /* Marfim quente */
-  --mobile-green: #4A5D4E; /* Verde sálvia elegante */
-  --mobile-green-light: #F0F4F1;
-  --mobile-red: #A94442; /* Dusty red */
-  --mobile-red-light: #FAF2F2;
-  --mobile-grey-block: #ede8db; /* Almoço/Ausência */
+  --mobile-text: #1A1310;                  /* Carvão escuro */
+  --mobile-text-secondary: #3D2B1F;        /* Carvão médio */
+  --mobile-muted: #7A6553;                 /* Marrom-acastanhado refinado */
+  --mobile-rule: rgba(26, 19, 16, 0.07);   /* Divisória muito suave */
+  --mobile-primary: #B05A2E;               /* Cobre elegante */
+  --mobile-primary-dark: #8A4120;          /* Cobre escuro */
+  --mobile-primary-light: #FAF5E8;         /* Marfim quente */
+  --mobile-primary-glow: rgba(176, 90, 46, 0.12);
+  --mobile-green: #3D5741;                 /* Verde sálvia profundo */
+  --mobile-green-light: #EBF1EC;
+  --mobile-amber: #C17E2A;                 /* Âmbar para pendente */
+  --mobile-amber-light: #FEF6E6;
+  --mobile-red: #9B3A38;                   /* Dusty red refinado */
+  --mobile-red-light: #FDF0F0;
+  --mobile-grey-block: #E5DDD0;            /* Bloqueado/Ausência */
+  --mobile-shadow-sm: 0 1px 4px rgba(26,19,16,0.06), 0 2px 8px rgba(26,19,16,0.04);
+  --mobile-shadow-md: 0 4px 12px rgba(26,19,16,0.08), 0 8px 24px rgba(26,19,16,0.05);
+  --mobile-shadow-lg: 0 8px 24px rgba(26,19,16,0.10), 0 16px 40px rgba(26,19,16,0.06);
+  --mobile-radius-sm: 10px;
+  --mobile-radius-md: 14px;
+  --mobile-radius-lg: 20px;
+  --mobile-transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --mobile-transition-fast: 0.15s ease-out;
 }
 
 /* Reset Geral Mobile */
@@ -20,27 +34,29 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--mobile-bg);
   color: var(--mobile-text);
   min-height: 100vh;
-  padding-bottom: 74px; /* Espaço para a barra de navegação */
+  padding-bottom: 80px;
   display: flex;
   flex-direction: column;
 }
 
-/* Topbar */
+/* Topbar — glassmorphism refinado */
 .mobile-header {
-  background: var(--mobile-card-bg);
-  padding: 10px 16px;
-  border-bottom: 1.5px solid var(--mobile-rule);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(26, 19, 16, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 10px rgba(255, 0, 127, 0.04);
+  box-shadow: 0 1px 0 rgba(26,19,16,0.05), 0 4px 16px rgba(26,19,16,0.04);
 }
 
 .mobile-logo-area {
@@ -50,16 +66,16 @@
 }
 
 .mobile-logo-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
   background: var(--mobile-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  border: 1.5px solid var(--mobile-rule);
-  box-shadow: 0 2px 6px rgba(255, 0, 127, 0.15);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  box-shadow: 0 2px 8px rgba(176, 90, 46, 0.25), inset 0 1px 0 rgba(255,255,255,0.2);
 }
 
 .mobile-logo-box img {
@@ -103,16 +119,30 @@
 
 /* Home / Início Screen styling */
 .mobile-welcome-banner {
-  background: linear-gradient(135deg, var(--mobile-primary) 0%, var(--mobile-text) 100%);
-  border-radius: 14px;
-  padding: 16px;
+  background: linear-gradient(135deg, #C06234 0%, #8A3F1E 60%, #1A1310 100%);
+  border-radius: var(--mobile-radius-md);
+  padding: 20px 18px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  box-shadow: 0 6px 18px rgba(26, 19, 16, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(176, 90, 46, 0.28), 0 2px 6px rgba(176,90,46,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .mobile-welcome-content h3 {
@@ -157,23 +187,30 @@
 }
 
 .mobile-shortcut-card {
-  flex: 0 0 130px;
+  flex: 0 0 128px;
   background: var(--mobile-card-bg);
-  padding: 16px 12px;
-  border-radius: 12px;
+  padding: 16px 14px;
+  border-radius: var(--mobile-radius-sm);
   border: 1px solid var(--mobile-rule);
   text-align: left;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 80px;
+  min-height: 88px;
   position: relative;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform var(--mobile-transition), box-shadow var(--mobile-transition-fast);
+  box-shadow: var(--mobile-shadow-sm);
+}
+
+.mobile-shortcut-card:hover {
+  box-shadow: var(--mobile-shadow-md);
+  transform: translateY(-1px);
 }
 
 .mobile-shortcut-card:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
+  box-shadow: var(--mobile-shadow-sm);
 }
 
 .mobile-shortcut-card .icon-top {
@@ -191,9 +228,10 @@
 /* Dados do meu Negócio */
 .mobile-business-card {
   background: var(--mobile-card-bg);
-  border-radius: 12px;
+  border-radius: var(--mobile-radius-md);
   border: 1px solid var(--mobile-rule);
-  padding: 16px;
+  padding: 20px 18px;
+  box-shadow: var(--mobile-shadow-sm);
 }
 
 .mobile-business-card h3 {
@@ -301,9 +339,10 @@
 
 .mobile-appointments-card {
   background: var(--mobile-card-bg);
-  border-radius: 12px;
+  border-radius: var(--mobile-radius-md);
   border: 1px solid var(--mobile-rule);
-  padding: 16px;
+  padding: 18px 16px;
+  box-shadow: var(--mobile-shadow-sm);
 }
 
 .mobile-empty-state {
@@ -318,9 +357,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 14px 12px;
   border-bottom: 1px solid var(--mobile-rule);
   cursor: pointer;
+  border-radius: var(--mobile-radius-sm);
+  transition: background-color var(--mobile-transition-fast);
+}
+
+.mobile-appt-list-row:active {
+  background-color: var(--mobile-bg-alt);
 }
 
 .mobile-appt-list-row:last-child {
@@ -363,11 +408,11 @@
   margin-top: 4px;
 }
 
-.appt-status.confirmado { background: var(--mobile-primary-light); color: var(--mobile-primary); }
-.appt-status.pendente { background: #FEF9E7; color: #C97B49; }
-.appt-status.finalizado { background: var(--mobile-green-light); color: var(--mobile-green); }
-.appt-status.cancelado { background: var(--mobile-red-light); color: var(--mobile-red); }
-.appt-status.bloqueado { background: var(--mobile-grey-block); color: var(--mobile-muted); }
+.appt-status.confirmado { background: var(--mobile-primary-light); color: var(--mobile-primary); border: 1px solid rgba(176,90,46,0.15); }
+.appt-status.pendente { background: var(--mobile-amber-light); color: var(--mobile-amber); border: 1px solid rgba(193,126,42,0.15); }
+.appt-status.finalizado { background: var(--mobile-green-light); color: var(--mobile-green); border: 1px solid rgba(61,87,65,0.15); }
+.appt-status.cancelado { background: var(--mobile-red-light); color: var(--mobile-red); border: 1px solid rgba(155,58,56,0.15); }
+.appt-status.bloqueado { background: var(--mobile-grey-block); color: var(--mobile-muted); border: 1px solid rgba(26,19,16,0.08); }
 
 /* Agenda / Calendário Screen styling */
 .mobile-agenda-header {
@@ -481,14 +526,15 @@
 
 /* Appointment block styled on timeline */
 .mobile-timeline-appt-block {
-  background: #fcf8f6;
+  background: linear-gradient(135deg, #FDF8F4 0%, #FAF4EE 100%);
   border-left: 3px solid var(--mobile-primary);
-  border-radius: 4px;
-  padding: 4px 6px;
+  border-radius: 6px;
+  padding: 5px 7px;
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  gap: 2px;
+  box-shadow: 0 1px 3px rgba(176,90,46,0.08), 0 2px 6px rgba(26,19,16,0.04);
+  transition: box-shadow var(--mobile-transition-fast);
 }
 
 .mobile-timeline-appt-block.bloqueado {
@@ -497,13 +543,14 @@
 }
 
 .mobile-timeline-appt-block.finalizado {
-  background: #f0fff4;
+  background: linear-gradient(135deg, #F2F7F3 0%, #EBF1EC 100%);
   border-left-color: var(--mobile-green);
 }
 
 .mobile-timeline-appt-block.cancelado {
-  background: #fff5f5;
+  background: linear-gradient(135deg, #FDF3F3 0%, #F8EBEB 100%);
   border-left-color: var(--mobile-red);
+  opacity: 0.7;
 }
 
 .mobile-timeline-appt-block .appt-block-client {
@@ -541,20 +588,27 @@
 
 .mobile-action-btn-card {
   background: var(--mobile-card-bg);
-  border-radius: 12px;
+  border-radius: var(--mobile-radius-md);
   border: 1px solid var(--mobile-rule);
-  padding: 20px 16px;
+  padding: 22px 18px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 24px;
+  gap: 22px;
   min-height: 120px;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform var(--mobile-transition), box-shadow var(--mobile-transition-fast);
+  box-shadow: var(--mobile-shadow-sm);
+}
+
+.mobile-action-btn-card:hover {
+  box-shadow: var(--mobile-shadow-md);
+  transform: translateY(-2px);
 }
 
 .mobile-action-btn-card:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
+  box-shadow: none;
 }
 
 .mobile-action-btn-card .icon-wrapper {
@@ -753,20 +807,23 @@
   font-weight: 600;
 }
 
-/* Bottom Nav bar styling */
+/* Bottom Nav bar — glassmorphism */
 .mobile-app-wrapper .mobile-bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 68px;
-  background: #ffffff;
-  border-top: 1px solid var(--mobile-rule);
+  height: 72px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(26, 19, 16, 0.07);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.03);
+  box-shadow: 0 -4px 20px rgba(26,19,16,0.06);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .mobile-app-wrapper .mobile-nav-item {
@@ -805,8 +862,9 @@
 }
 
 .mobile-app-wrapper .mobile-nav-item.active .icon-container {
-  background-color: var(--mobile-primary-light);
+  background: linear-gradient(135deg, rgba(176,90,46,0.14) 0%, rgba(176,90,46,0.08) 100%);
   color: var(--mobile-primary);
+  box-shadow: 0 2px 8px rgba(176,90,46,0.12);
 }
 
 /* Modals & Drawer Overlays */
@@ -816,42 +874,62 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(15, 10, 8, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 2000;
   display: flex;
-  align-items: flex-end; /* Bottom sheet style default */
+  align-items: flex-end;
   justify-content: center;
+  animation: overlay-in 0.2s ease-out;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .mobile-bottom-sheet {
   background: white;
   width: 100%;
   max-width: 480px;
-  border-radius: 16px 16px 0 0;
-  padding: 20px;
+  border-radius: 22px 22px 0 0;
+  padding: 24px 20px;
   box-sizing: border-box;
-  animation: slide-up 0.25s ease-out;
+  animation: slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 -8px 32px rgba(26,19,16,0.12);
+}
+
+/* Handle indicator para bottom sheets */
+.mobile-bottom-sheet::before {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 4px;
+  background: rgba(26,19,16,0.12);
+  border-radius: 2px;
+  margin: 0 auto 20px auto;
 }
 
 .mobile-popup-modal {
   background: white;
   width: 90%;
   max-width: 400px;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: var(--mobile-radius-md);
+  padding: 24px;
   box-sizing: border-box;
-  margin-bottom: auto;
-  margin-top: auto; /* Centralizado verticalmente */
-  animation: scale-up 0.2s ease-out;
+  margin: auto;
+  animation: scale-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: var(--mobile-shadow-lg);
 }
 
 @keyframes slide-up {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from { transform: translateY(100%); opacity: 0.8; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes scale-up {
-  from { transform: scale(0.95); opacity: 0; }
+  from { transform: scale(0.93); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
@@ -1007,9 +1085,9 @@
   background: #25d366;
   color: white;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  min-height: 48px;
+  border-radius: var(--mobile-radius-md);
+  font-size: 0.9rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1017,15 +1095,21 @@
   gap: 8px;
   cursor: pointer;
   width: 100%;
+  transition: transform var(--mobile-transition-fast), background-color var(--mobile-transition-fast);
+}
+
+.mobile-msg-btn-whatsapp:active {
+  transform: scale(0.98);
+  background: #20ba5a;
 }
 
 .mobile-msg-btn-api {
   background: var(--mobile-primary);
   color: white;
   border: none;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  min-height: 48px;
+  border-radius: var(--mobile-radius-md);
+  font-size: 0.9rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -1033,6 +1117,12 @@
   gap: 8px;
   cursor: pointer;
   width: 100%;
+  transition: transform var(--mobile-transition-fast), background-color var(--mobile-transition-fast);
+}
+
+.mobile-msg-btn-api:active {
+  transform: scale(0.98);
+  background: var(--mobile-primary-dark);
 }
 
 /* Central de Notificações */

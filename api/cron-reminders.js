@@ -70,11 +70,9 @@ export default async function handler(req, res) {
     const bookings = [];
     snapshot.forEach(doc => {
       const data = doc.data();
+      // Inclui todos os agendamentos de amanhã que ainda não receberam lembrete
       if ((data.status === 'pendente' || data.status === 'confirmado') && !data.reminderSent) {
-        const bHour = data.time ? data.time.split(':')[0] : '';
-        if (bHour === hour) {
-          bookings.push({ id: doc.id, ...data });
-        }
+        bookings.push({ id: doc.id, ...data });
       }
     });
 
@@ -88,27 +86,21 @@ export default async function handler(req, res) {
     const settingsDoc = await getDoc(doc(db, 'settings', 'studio'));
     const settings = settingsDoc.exists() ? settingsDoc.data() : null;
 
-    if (!settings || !settings.waReminderEnabled) {
-      return res.status(200).json({ message: 'Lembretes automáticos estão desativados no painel.' });
-    }
+    const waEnabled = settings?.waReminderEnabled;
+    const gateway = settings?.waReminderGateway || 'evolution';
 
-    const gateway = settings.waReminderGateway || 'zapi';
-    let url = '';
-    let headers = {
-      'Content-Type': 'application/json'
-    };
+    // Montar URL do gateway de WA (se ativo)
+    let waUrl = '';
+    let waHeaders = { 'Content-Type': 'application/json' };
 
-    if (gateway === 'evolution') {
-      if (!settings.evolutionApiUrl || !settings.evolutionApiKey || !settings.evolutionInstanceName) {
-        return res.status(500).json({ error: 'Faltam credenciais da Evolution API nas configurações.' });
+    if (waEnabled && gateway === 'evolution') {
+      if (settings.evolutionApiUrl && settings.evolutionApiKey && settings.evolutionInstanceName) {
+        waUrl = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
+        waHeaders['apikey'] = settings.evolutionApiKey;
       }
-      url = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
-      headers['apikey'] = settings.evolutionApiKey;
-    } else {
-      return res.status(400).json({ error: 'O Cron job atualmente foi otimizado para Evolution API.' });
     }
 
-    const template = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}.';
+    const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
 
     let successCount = 0;
     let failCount = 0;
@@ -126,31 +118,30 @@ export default async function handler(req, res) {
       if (msg.includes('{link_cancelamento}')) {
         msg = msg.replace('{link_cancelamento}', cancelLink);
       } else {
-        msg += `\n\nCaso precise cancelar ou remarcar seu horário, acesse: ${cancelLink}`;
+        msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
       }
 
       const phoneNum = b.clientPhone.replace(/\D/g, '');
       const waNumber = phoneNum.startsWith('55') ? phoneNum : `55${phoneNum}`;
 
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({
-            number: waNumber,
-            text: msg
-          })
-        });
-
-        if (response.ok) {
-          successCount++;
-        } else {
-          console.error(`Erro ao enviar para ${waNumber}:`, await response.text());
+      // Dispara WA apenas se gateway configurado
+      if (waUrl) {
+        try {
+          const response = await fetch(waUrl, {
+            method: 'POST',
+            headers: waHeaders,
+            body: JSON.stringify({ number: waNumber, text: msg })
+          });
+          if (response.ok) {
+            successCount++;
+          } else {
+            console.error(`Erro WA para ${waNumber}:`, await response.text());
+            failCount++;
+          }
+        } catch (err) {
+          console.error(`Erro de rede ao enviar WA para ${waNumber}:`, err);
           failCount++;
         }
-      } catch (err) {
-        console.error(`Erro de rede ao enviar para ${waNumber}:`, err);
-        failCount++;
       }
     }
 

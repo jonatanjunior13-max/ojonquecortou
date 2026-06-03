@@ -43,7 +43,7 @@ const DEFAULT_SETTINGS = {
   customWebhookUrl: '',
   waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨',
   professionals: [
-    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commissionService: 50, commissionProduct: 10, phone: '31995097613', email: 'jon@studio.com', active: true }
+    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commissionService: 50, commissionProduct: 10, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
 };
 

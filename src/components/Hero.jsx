@@ -23,7 +23,7 @@ const Hero = () => {
           
           <div className="hero-actions stagger-1">
             <div className="hero-btns-group">
-              <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary hero-btn">
+              <a href="/agendar" className="btn btn-primary hero-btn">
                 Agende seu Horário <ArrowRight size={20} style={{ marginLeft: '10px' }} />
               </a>
               <div className="hero-secondary-btns">
@@ -50,7 +50,7 @@ const Hero = () => {
         
         <div className="hero-visual reveal active stagger-3">
           <div className="visual-card">
-            <img src="/jon-perfil.jpg" alt="Jon, especialista em corte para cabelos cacheados e crespos em Belo Horizonte" className="hero-image" />
+            <img src="/jon-perfil.webp" alt="Jon, especialista em corte para cabelos cacheados e crespos em Belo Horizonte" className="hero-image" />
           </div>
         </div>
       </div>

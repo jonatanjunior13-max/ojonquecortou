@@ -132,14 +132,74 @@ function getEmailWrapper(title, content) {
 }
 
 function formatApptDate(dateString, timeString) {
-  // Simplificado para formatação manual base, se precisar de pt-BR Intl, pode adicionar.
   if (!dateString) return '';
+  // Handle DD/MM/YYYY format
+  if (dateString.includes('/')) {
+    const parts = dateString.split('/');
+    if (parts.length === 3) {
+      const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      return `${parts[0]} de ${months[parseInt(parts[1], 10)-1]}`;
+    }
+    return dateString;
+  }
   const [y, m, d] = dateString.split('-');
   const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   return `${d} de ${months[parseInt(m, 10)-1]}`;
 }
 
+function formatDuration(minutes) {
+  const mins = parseInt(minutes, 10) || 60;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h === 0) return `${m}min`;
+  if (m === 0) return `${h}h00`;
+  return `${h}h${String(m).padStart(2, '0')}`;
+}
+
+function buildGoogleCalendarLink(data) {
+  try {
+    // Parse date — accept YYYY-MM-DD or "Qua, 04/06/2025" or "04 de Jun"
+    let dateStr = data.rawDate || '';
+    if (!dateStr && data.date) {
+      // Try to extract YYYY-MM-DD from formatted date like "Qua, 04/06/2025"
+      const ddmmyyyy = data.date.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+      if (ddmmyyyy) {
+        dateStr = `${ddmmyyyy[3]}-${ddmmyyyy[2]}-${ddmmyyyy[1]}`;
+      }
+    }
+    if (!dateStr || !data.time) return null;
+
+    const [yr, mo, dy] = dateStr.split('-').map(Number);
+    const [hr, mn] = data.time.split(':').map(Number);
+    const durationMins = parseInt(data.duration, 10) || 60;
+
+    const pad = (n) => String(n).padStart(2, '0');
+    const start = `${yr}${pad(mo)}${pad(dy)}T${pad(hr)}${pad(mn)}00`;
+
+    const endDate = new Date(yr, mo - 1, dy, hr, mn + durationMins);
+    const end = `${endDate.getFullYear()}${pad(endDate.getMonth()+1)}${pad(endDate.getDate())}T${pad(endDate.getHours())}${pad(endDate.getMinutes())}00`;
+
+    const title = encodeURIComponent(`Corte no Studio do Jon — ${data.serviceName || 'Cabelo'}`);
+    const details = encodeURIComponent(`Serviço: ${data.serviceName || ''}\nDuração: ${formatDuration(durationMins)}\nRua Francisco Ovídio, 184 - Caiçara, BH`);
+    const location = encodeURIComponent('Rua Francisco Ovídio, 184, Caiçara, Belo Horizonte - MG');
+
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function sendAdminNotification(type, data, transporter, smtpFrom, settings) {
+  const automations = settings?.automations || {};
+  if (type === 'solicitacao_recebida' && automations.adminWaitingRequestEmailEnabled === false) {
+    console.log('Notificação por e-mail de nova solicitação desativada para admin.');
+    return;
+  }
+  if (type === 'horario_confirmado' && automations.adminBookingConfirmationEmailEnabled === false) {
+    console.log('Notificação por e-mail de confirmação de horário desativada para admin.');
+    return;
+  }
+
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'jon@studio.com';
   let subject = '';
   let body = '';
@@ -567,12 +627,16 @@ export default async function handler(req, res) {
     const formattedTime = data.time || '';
     const formattedService = data.serviceName || '';
     
+    const formattedDuration = formatDuration(data.duration);
+    const calLink = buildGoogleCalendarLink({ ...data, rawDate: data.rawDate }) || '#';
     emailContent = customAutomationHtml
       .replace(/{nome}/gi, firstName)
       .replace(/{data}/gi, formattedDate)
       .replace(/{horario}/gi, formattedTime)
       .replace(/{hora}/gi, formattedTime)
       .replace(/{servico}/gi, formattedService)
+      .replace(/{duracao}/gi, formattedDuration)
+      .replace(/{link_agenda}/gi, calLink)
       .replace(/{email}/gi, encodeURIComponent(clientEmail));
       
     emailSubject = subject || (
@@ -639,7 +703,10 @@ export default async function handler(req, res) {
       `;
       break;
 
-    case 'horario_confirmado':
+    case 'horario_confirmado': {
+      const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
+      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçara,+Belo+Horizonte';
+      const durationLabel = formatDuration(data.duration);
       emailSubject = `Está marcado — ${formatApptDate(data.date, data.time)} às ${data.time}`;
       emailContent = `
         <div class="eyebrow">Está marcado</div>
@@ -647,7 +714,7 @@ export default async function handler(req, res) {
         <p class="lead">Seu horário no Studio está confirmado. Antes de qualquer corte eu faço uma leitura do fio — porosidade, curvatura e histórico. Reserve uns 15 minutos a mais no relógio.</p>
         
         <div class="appt-card">
-          <div class="label">Agendamento</div>
+          <div class="label">Agendamento Confirmado</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
           <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
           
@@ -658,7 +725,7 @@ export default async function handler(req, res) {
             </div>
             <div class="cell">
               <div class="lbl">Duração</div>
-              <div class="val">${data.duration || '60'} min</div>
+              <div class="val">${durationLabel}</div>
             </div>
           </div>
         </div>
@@ -668,12 +735,18 @@ export default async function handler(req, res) {
         <div class="instructions-title">Antes de vir</div>
         <p class="instructions-body">Lave o cabelo na <strong>noite anterior</strong> com seu shampoo de sempre. Sem creme, sem leave-in, sem prancha. Quero ler o fio do jeito que ele acorda — não o disfarce.</p>
         
+        <div style="text-align: center; margin: 30px 0; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="${calendarLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold;">Adicionar à agenda</a>
+          <a href="${mapsLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold;">Ver localização no Maps</a>
+        </div>
+        
         <div class="signoff">
           <div class="sig-name">Jon,</div>
           <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
         </div>
       `;
       break;
+    }
 
     case 'aniversario':
       emailSubject = 'Feliz Aniversário! 🎉 - O Jon Que Cortou';
@@ -724,7 +797,7 @@ export default async function handler(req, res) {
             </div>
             <div class="cell">
               <div class="lbl">Duração</div>
-              <div class="val">${data.duration || '60'} min</div>
+              <div class="val">${formatDuration(data.duration)}</div>
             </div>
           </div>
         </div>
@@ -796,6 +869,27 @@ export default async function handler(req, res) {
       `;
       break;
 
+    case 'recuperacao_senha':
+      emailSubject = 'Recuperação de Senha - O Jon Que Cortou';
+      emailContent = `
+        <div class="eyebrow">Recuperação de Senha</div>
+        <h1 class="display-title">Redefina sua senha, <span>${firstName}.</span></h1>
+        <p class="lead">Recebemos uma solicitação para redefinir a senha da sua conta da Área do Cliente no Studio do Jon.</p>
+        <p class="lead" style="margin-top:-20px;">Clique no botão abaixo para escolher uma nova senha. Este link é válido por 60 minutos.</p>
+        
+        <div style="text-align: center;">
+          <a href="${data.link || '#'}" class="btn">Redefinir Minha Senha</a>
+        </div>
+        
+        <p class="lead" style="margin-top:20px; font-size: 13px; color: var(--muted);">Se você não solicitou essa redefinição, pode ignorar este e-mail com segurança.</p>
+        
+        <div class="signoff">
+          <div class="sig-name">Jon,</div>
+          <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+        </div>
+      `;
+      break;
+
     default:
       return res.status(400).json({ message: 'Tipo de e-mail inválido' });
   }
@@ -830,10 +924,29 @@ export default async function handler(req, res) {
   };
 
   try {
-    const info = await transporter.sendMail(mailOptions);
+    let messageId = 'skipped-client-email';
+    const automations = settings?.automations || {};
+    let shouldSendClientEmail = true;
+    if (type === 'solicitacao_recebida' && automations.waitingRequestEmailEnabled === false) {
+      shouldSendClientEmail = false;
+    } else if (type === 'horario_confirmado' && automations.bookingConfirmationEmailEnabled === false) {
+      shouldSendClientEmail = false;
+    } else if (type === 'lembrete_24h' && automations.reminder24hEmailEnabled === false) {
+      shouldSendClientEmail = false;
+    } else if (type === 'reativacao_5_meses' && automations.seqD150 === false) {
+      shouldSendClientEmail = false;
+    }
+
+    if (shouldSendClientEmail) {
+      const info = await transporter.sendMail(mailOptions);
+      messageId = info.messageId;
+      console.log(`E-mail de cliente enviado para ${clientEmail}. Tipo: ${type}`);
+    } else {
+      console.log(`E-mail de cliente do tipo ${type} está desativado nas configurações para ${clientEmail}. Pulando envio.`);
+    }
     
-    // Se agendado com menos de 24h, envia também o e-mail de lembrete de 24h
-    if (data.isUnder24h && sendReal) {
+    // Se agendado com menos de 24h, envia também o e-mail de lembrete de 24h (se ativado nas configurações)
+    if (data.isUnder24h && sendReal && automations.reminder24hEmailEnabled !== false) {
       try {
         const emailSubject24h = `Lembrete: Seu horário é em breve, ${firstName}`;
         const emailContent24h = getEmailWrapper(emailSubject24h, `
@@ -853,7 +966,7 @@ export default async function handler(req, res) {
               </div>
               <div class="cell">
                 <div class="lbl">Duração</div>
-                <div class="val">${data.duration || '60'} min</div>
+                <div class="val">${formatDuration(data.duration)}</div>
               </div>
             </div>
           </div>
@@ -906,7 +1019,7 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({ success: true, messageId: info.messageId });
+    return res.status(200).json({ success: true, messageId: messageId });
   } catch (error) {
     console.error('Erro ao enviar email SMTP:', error);
     return res.status(500).json({ success: false, error: error.message });

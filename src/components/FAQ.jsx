@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import './FAQ.css';
+import '../pages/ServicesPage.css';
 
 const faqs = [
   {
@@ -9,7 +11,7 @@ const faqs = [
   },
   {
     question: "Como faço para agendar um horário?",
-    answer: 'O agendamento é feito de forma simples pelo aplicativo Trinks (<a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" style="text-decoration: underline; font-weight: bold; color: inherit;">Acessar Calendário Online</a>) ou clicando no botão agendar disponível aqui no site.'
+    answer: 'O agendamento é feito de forma simples pelo nosso <a href="/agendar" style="text-decoration: underline; font-weight: bold; color: inherit;">calendário online</a> — escolha o serviço, a data e o horário direto pelo site, sem precisar ligar ou instalar nenhum aplicativo.'
   },
   {
     question: "Qual o valor do corte para cabelo cacheado em BH?",
@@ -60,11 +62,38 @@ const FAQ = () => {
             ))}
           </div>
 
-          <div className="text-center mt-4 reveal">
-            <p className="paragraph-md mb-2">Ainda tem alguma dúvida ou quer garantir sua vaga?</p>
-            <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary">
-              Agendar pelo Trinks
-            </a>
+          <div className="faq-booking-card reveal">
+            <div className="booking-inline-card">
+              <div className="bic-left">
+                <span className="bic-badge">✦ Agendamento Online</span>
+                <h2 className="bic-title">Pronta para transformar seus cachos?</h2>
+                <p className="bic-subtitle">
+                  Escolha data, horário e serviço direto aqui. Confirmação imediata, sem ligação.
+                </p>
+                <div className="bic-trust">
+                  <span>✓ Sem taxa de reserva</span>
+                  <span>✓ Cancelamento fácil</span>
+                  <span>✓ Confirmação por e-mail</span>
+                </div>
+              </div>
+              <div className="bic-right">
+                <div className="bic-availability">
+                  <div className="bic-dot green"></div>
+                  <span>Horários disponíveis esta semana</span>
+                </div>
+                <Link to="/agendar" className="btn btn-primary bic-btn">
+                  Escolher meu horário →
+                </Link>
+                <a
+                  href={`https://wa.me/553135866673?text=${encodeURIComponent('Olá Jon! Quero agendar um horário no Studio.')}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="bic-whatsapp-link"
+                >
+                  Prefere pelo WhatsApp? Fale agora
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>

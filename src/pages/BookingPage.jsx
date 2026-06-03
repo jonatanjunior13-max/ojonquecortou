@@ -12,7 +12,7 @@ import {
 import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
-import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert } from 'lucide-react';
+import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar } from 'lucide-react';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
 
@@ -210,6 +210,8 @@ const BookingPage = () => {
   const [authSuccess, setAuthSuccess] = useState(false);
   const [loginEmail, setLoginEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [clientBookings, setClientBookings] = useState([]);
+
 
   // Load booking to reschedule if rescheduleId is provided
   useEffect(() => {
@@ -362,6 +364,34 @@ const BookingPage = () => {
           notes: profile.observacoes || prev.notes || '',
         }));
         setExistingProfile(profile);
+
+        // Fetch this client's bookings
+        try {
+          if (!db || isDemoMode) {
+            const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+            const activeBookings = localBookings.filter(b => 
+              b.userId === uid || 
+              (profile.phone && b.clientPhone?.replace(/\D/g, '') === profile.phone) ||
+              (profile.email && b.clientEmail?.toLowerCase() === profile.email.toLowerCase())
+            );
+            setClientBookings(activeBookings);
+          } else {
+            const qBookings = query(
+              collection(db, 'bookings'),
+              where('clientPhone', '==', profile.phone)
+            );
+            const querySnapshot = await getDocs(qBookings);
+            const list = [];
+            querySnapshot.forEach((doc) => {
+              list.push({ id: doc.id, ...doc.data() });
+            });
+            // Filter out canceled ones and sort by date/time
+            const activeBookings = list.filter(b => b.status !== 'cancelado');
+            setClientBookings(activeBookings);
+          }
+        } catch (bkErr) {
+          console.warn('Erro ao carregar agendamentos do cliente:', bkErr);
+        }
       } else if (email) {
         setClientData(prev => ({
           ...prev,
@@ -652,6 +682,7 @@ const BookingPage = () => {
     setAuthError('');
     setLoginEmail('');
     setNewPassword('');
+    setClientBookings([]);
     setClientData(prev => ({
       ...prev,
       name: '',
@@ -837,8 +868,30 @@ const BookingPage = () => {
         });
         if (isBlockedSpecific) return false;
 
-        // 6. Check existing booking at this slot
-        if (bookedList.includes(slot)) return false;
+        // 6. Check existing booking at this slot or overlapping with it
+        const timeToMin = (t) => {
+          const [h, m] = t.split(':').map(Number);
+          return h * 60 + m;
+        };
+        const newServiceDuration = selectedService?.duration || 60;
+        const slotEndMin = slotMin + newServiceDuration;
+
+        const hasOverlap = bookedList.some(b => {
+          const bTime = typeof b === 'string' ? b : b.time;
+          const bDuration = typeof b === 'string' ? 60 : (b.duration || b.service?.duration || 60);
+          const bStart = timeToMin(bTime);
+          const bEnd = bStart + bDuration;
+          
+          // Slot start time is inside an existing booking
+          const slotStartOccupied = (slotMin >= bStart && slotMin < bEnd);
+          
+          // New service starting here would overlap with a booking starting later
+          const newServiceOverlaps = (bStart >= slotMin && bStart < slotEndMin);
+          
+          return slotStartOccupied || newServiceOverlaps;
+        });
+
+        if (hasOverlap) return false;
 
         return true;
       };
@@ -854,7 +907,10 @@ const BookingPage = () => {
           if (b.date === selectedDate && b.status !== 'cancelado') {
             const profId = b.professionalId || 'jon';
             if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
-            bookingsByProf[profId].push(b.time);
+            bookingsByProf[profId].push({
+              time: b.time,
+              duration: b.duration || b.service?.duration || 60
+            });
           }
         });
 
@@ -894,9 +950,12 @@ const BookingPage = () => {
         querySnapshot.forEach((doc) => {
           const data = doc.data();
           if (data.status !== 'cancelado') {
-            const profId = data.professionalId || 'jon';
+            const profId = data.profissional || data.professionalId || 'jon';
             if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
-            bookingsByProf[profId].push(data.time);
+            bookingsByProf[profId].push({
+              time: data.time,
+              duration: data.duration || data.service?.duration || 60
+            });
           }
         });
 
@@ -929,9 +988,12 @@ const BookingPage = () => {
         const bookingsByProf = {};
         localBookings.forEach(b => {
           if (b.date === selectedDate && b.status !== 'cancelado') {
-            const profId = b.professionalId || 'jon';
+            const profId = b.profissional || b.professionalId || 'jon';
             if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
-            bookingsByProf[profId].push(b.time);
+            bookingsByProf[profId].push({
+              time: b.time,
+              duration: b.duration || b.service?.duration || 60
+            });
           }
         });
 
@@ -1030,6 +1092,7 @@ const BookingPage = () => {
       createdAt: new Date().toISOString(),
       userId: finalUserId,
       professionalId: selectedProfessional?.id || 'jon',
+      profissional: selectedProfessional?.id || 'jon',
       professionalName: selectedProfessional?.name || 'Jon'
     };
 
@@ -1483,7 +1546,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                         }}
                       >
                         <img
-                          src={prof.avatar || '/jon-perfil.png'}
+                          src={prof.avatar || '/jon-perfil.webp'}
                           alt={prof.name}
                           style={{ width: 50, height: 50, borderRadius: '50%', objectFit: 'cover', marginBottom: 8, border: isSelected ? '2px solid var(--accent)' : '1px solid transparent' }}
                         />
@@ -1539,8 +1602,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 {loading ? (
                   <p>Buscando horários disponíveis...</p>
                 ) : (
-                  <div className="time-picker-grid">
-                    {timeSlots.map(slot => {
+                  (() => {
+                    const availableSlots = timeSlots.filter(slot => {
                       const isBooked = bookedTimes.includes(slot);
                       let isPast = false;
                       const now = new Date();
@@ -1560,21 +1623,32 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                           isPast = true;
                         }
                       }
-                      
-                      const isUnavailable = isBooked || isPast;
+                      return !isBooked && !isPast;
+                    });
+
+                    if (availableSlots.length === 0) {
                       return (
-                        <button
-                          key={slot}
-                          type="button"
-                          disabled={isUnavailable}
-                          className={`time-btn ${selectedTime === slot ? 'selected' : ''} ${isUnavailable ? 'booked' : ''}`}
-                          onClick={() => setSelectedTime(slot)}
-                        >
-                          {slot}
-                        </button>
+                        <p style={{ color: 'var(--muted)', fontSize: '0.95rem', margin: '20px 0', textAlign: 'center' }}>
+                          Nenhum horário disponível para esta data. Por favor, escolha outro dia.
+                        </p>
                       );
-                    })}
-                  </div>
+                    }
+
+                    return (
+                      <div className="time-picker-grid">
+                        {availableSlots.map(slot => (
+                          <button
+                            key={slot}
+                            type="button"
+                            className={`time-btn ${selectedTime === slot ? 'selected' : ''}`}
+                            onClick={() => setSelectedTime(slot)}
+                          >
+                            {slot}
+                          </button>
+                        ))}
+                      </div>
+                    );
+                  })()
                 )}
               </div>
             )}
@@ -1658,7 +1732,84 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 <p className="client-auth-card-desc">
                   Seus dados estão vinculados e protegidos. Agende com tranquilidade!
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', flexWrap: 'wrap', gap: '10px' }}>
+
+                {/* Seção de agendamentos ativos do cliente */}
+                {clientBookings && clientBookings.length > 0 && (
+                  <div className="client-active-bookings-list" style={{ marginTop: '16px', borderTop: '1px solid rgba(47,133,90,0.2)', paddingTop: '12px' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Calendar size={14} style={{ color: 'var(--accent)' }} /> Seus Agendamentos Ativos:
+                    </h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      {clientBookings.map((b) => {
+                        let displayDate = b.date;
+                        if (displayDate && displayDate.includes('-')) {
+                          displayDate = displayDate.split('-').reverse().join('/');
+                        }
+                        return (
+                          <div 
+                            key={b.id} 
+                            style={{ 
+                              padding: '10px', 
+                              background: 'var(--bg-warm)', 
+                              border: '1px solid var(--rule)', 
+                              borderRadius: '8px', 
+                              fontSize: '0.8rem', 
+                              display: 'flex', 
+                              flexDirection: 'column', 
+                              gap: '6px' 
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
+                              <span>{b.serviceName || b.service?.name}</span>
+                              <span style={{ color: 'var(--accent)' }}>{b.status}</span>
+                            </div>
+                            <div style={{ color: 'var(--muted)', display: 'flex', gap: '12px' }}>
+                              <span>📅 {displayDate}</span>
+                              <span>⏰ {b.time}</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                              <a 
+                                href={`/agendar?rescheduleId=${b.id}`} 
+                                className="btn"
+                                style={{ 
+                                  fontSize: '0.75rem', 
+                                  padding: '4px 10px', 
+                                  background: 'var(--accent)', 
+                                  color: 'var(--bg)', 
+                                  borderRadius: '4px',
+                                  textDecoration: 'none',
+                                  display: 'inline-block',
+                                  fontWeight: 600
+                                }}
+                              >
+                                Alterar Horário
+                              </a>
+                              <a 
+                                href={`/cancelar?id=${b.id}`} 
+                                className="btn btn-ghost"
+                                style={{ 
+                                  fontSize: '0.75rem', 
+                                  padding: '4px 10px', 
+                                  border: '1px solid #e53e3e', 
+                                  color: '#e53e3e', 
+                                  borderRadius: '4px',
+                                  textDecoration: 'none',
+                                  display: 'inline-block',
+                                  background: 'transparent',
+                                  fontWeight: 600
+                                }}
+                              >
+                                Cancelar
+                              </a>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', flexWrap: 'wrap', gap: '10px', borderTop: '1px dashed rgba(47,133,90,0.15)', paddingTop: '10px' }}>
                   <span className="auth-success-badge">✓ Perfil verificado com sucesso!</span>
                   <button 
                     type="button" 
@@ -1937,6 +2088,27 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         )}
 
       </div>
+
+      {/* Floating Summary Bar (UX Upgrade: Hick's Law & Progressive Context) */}
+      {step > 1 && step < 4 && (selectedProfessional || selectedService) && (
+        <div className="booking-summary-bar">
+          <div className="summary-content">
+            <span className="summary-item">
+              <strong>Profissional:</strong> {selectedProfessional?.name || 'Jon'}
+            </span>
+            {selectedService && (
+              <span className="summary-item">
+                <strong>Serviço:</strong> {selectedService.name} (R$ {typeof selectedService.price === 'number' ? selectedService.price.toFixed(2).replace('.', ',') : selectedService.price})
+              </span>
+            )}
+            {selectedDate && (
+              <span className="summary-item">
+                <strong>Data/Hora:</strong> {selectedDate.split('-').reverse().join('/')} {selectedTime ? `às ${selectedTime}` : ''}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 };

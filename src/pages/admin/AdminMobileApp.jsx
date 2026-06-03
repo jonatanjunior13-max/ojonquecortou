@@ -9,7 +9,7 @@ import {
   Home as HomeIcon, Calendar as CalendarIcon, Plus, Menu, HelpCircle, 
   Bell, ChevronLeft, ChevronRight, DollarSign, User, Scissors, 
   ArrowRight, Shield, MessageSquare, Check, X, Phone, FileText, Info,
-  Clock, Settings
+  Clock, Settings, Sparkles
 } from 'lucide-react';
 import './AdminMobile.css';
 
@@ -390,7 +390,7 @@ const AdminMobileApp = () => {
           navigator.serviceWorker.ready.then(registration => {
             registration.showNotification(title, {
               body: message,
-              icon: '/jon-perfil.jpg',
+              icon: '/jon-perfil.webp',
               tag: id,
               vibrate: [200, 100, 200, 100, 200]
             });
@@ -398,7 +398,7 @@ const AdminMobileApp = () => {
         } else {
           new Notification(title, {
             body: message,
-            icon: '/jon-perfil.jpg',
+            icon: '/jon-perfil.webp',
             tag: id
           });
         }
@@ -947,8 +947,9 @@ const AdminMobileApp = () => {
   };
 
   const handleImportContact = async () => {
-    if (!('contacts' in navigator && 'ContactsManager' in window)) {
-      alert('Seu dispositivo ou navegador não suporta a importação automática de contatos.');
+    const isSupported = navigator.contacts && typeof navigator.contacts.select === 'function';
+    if (!isSupported) {
+      alert('Seu dispositivo ou navegador não suporta a importação automática de contatos.\n\nPara usar este recurso no Android, certifique-se de estar usando o Chrome ou um navegador baseado em Chromium e de que o site está rodando em ambiente seguro (HTTPS). No iOS (Safari/Chrome), este recurso nativo não está disponível na plataforma web.');
       return;
     }
     try {
@@ -1234,6 +1235,20 @@ const AdminMobileApp = () => {
     window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
+  const getWhatsAppFeedbackUrl = (phone, booking) => {
+    if (!phone) return '';
+    const cleanPhone = phone.replace(/\D/g, '');
+    const clientName = booking.clientName || '';
+    const firstName = clientName.split(' ')[0];
+    const googleLink = 'https://g.page/r/CRmlu0sO48XmEBM/review';
+    const message = `${firstName}, obrigado por ter escolhido o Studio hoje.
+A confiança que você depositou no processo significa muito pra mim.
+Se você sentiu a diferença — me conta no Google. Uma avaliação sua ajuda outras cacheadas que ainda não me conhecem a chegar até aqui.
+${googleLink}
+— Jon`;
+    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+  };
+
   const handleSendReminderWhatsappGateway = async (booking) => {
     const gateway = settings?.waReminderGateway || 'zapi';
     const isGatewayConfigured = 
@@ -1349,6 +1364,29 @@ const AdminMobileApp = () => {
           console.error('Erro ao deletar transações financeiras (Mobile):', deleteErr);
         }
       }
+      
+      // Enviar e-mail de cancelamento
+      if (booking && booking.clientEmail && booking.clientEmail.includes('@')) {
+        try {
+          const displayDate = booking.date.split('-').reverse().join('/');
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: 'agendamento_cancelado',
+              clientEmail: booking.clientEmail,
+              clientName: booking.clientName,
+              serviceName: booking.service?.name || booking.serviceName || 'Serviço',
+              date: displayDate,
+              time: booking.time,
+              cancelledBy: 'admin'
+            })
+          });
+        } catch(err) {
+          console.warn('Falha ao enviar email de cancelamento', err);
+        }
+      }
+
       setSelectedBooking(null);
       alert('Agendamento cancelado.');
     } catch (e) {
@@ -1392,6 +1430,42 @@ const AdminMobileApp = () => {
           });
         } catch(err) {
           console.warn('Falha ao enviar email de confirmação', err);
+        }
+      }
+
+      // Enviar WA ao cliente confirmando o agendamento
+      if (bookingToConfirm?.clientPhone) {
+        try {
+          const s = settings;
+          const gateway = s?.waReminderGateway || 'evolution';
+          if (s?.waReminderEnabled) {
+            const cleanPhone = (bookingToConfirm.clientPhone || '').replace(/\D/g, '');
+            const waNumber = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+            const firstName = (bookingToConfirm.clientName || 'Cliente').split(' ')[0];
+            const dataBr = bookingToConfirm.date.split('-').reverse().join('/');
+            const svcName = bookingToConfirm.service?.name || bookingToConfirm.serviceName || 'serviço';
+            const msg = `Olá, ${firstName}! ✅ Seu agendamento foi confirmado pelo Studio do Jon.\n\n📅 *${dataBr}* às *${bookingToConfirm.time}*\n✂️ *${svcName}*\n\nTe esperamos! Qualquer dúvida é só responder aqui. 💇‍♂️`;
+
+            let waUrl = '';
+            let waHeaders = { 'Content-Type': 'application/json' };
+            let waBody = {};
+
+            if (gateway === 'evolution' && s?.evolutionApiUrl && s?.evolutionApiKey && s?.evolutionInstanceName) {
+              waUrl = `${s.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${s.evolutionInstanceName}`;
+              waHeaders['apikey'] = s.evolutionApiKey;
+              waBody = { number: waNumber, text: msg };
+            } else if (gateway === 'zapi' && s?.zApiInstanceId && s?.zApiToken) {
+              waUrl = `https://api.z-api.io/instances/${s.zApiInstanceId}/token/${s.zApiToken}/send-text`;
+              waBody = { phone: waNumber, message: msg };
+            }
+
+            if (waUrl) {
+              fetch(waUrl, { method: 'POST', headers: waHeaders, body: JSON.stringify(waBody) })
+                .catch(err => console.warn('WA confirmação cliente (mobile):', err));
+            }
+          }
+        } catch (waErr) {
+          console.warn('Erro ao enviar WA de confirmação ao cliente (mobile):', waErr);
         }
       }
       
@@ -1491,8 +1565,14 @@ const AdminMobileApp = () => {
   // Filtragem dos agendamentos de hoje para a tela Home
   const todayStr = new Date().toISOString().split('T')[0];
   const todayBookings = bookings
-    .filter(b => b.date === todayStr && b.status !== 'cancelado')
-    .sort((a, b) => a.time.localeCompare(b.time));
+    .filter(b => b && b.date === todayStr && b.status !== 'cancelado')
+    .sort((a, b) => {
+      try {
+        return (a.time || '00:00').localeCompare(b.time || '00:00');
+      } catch (_) {
+        return 0;
+      }
+    });
 
   const stats = getFinancialStats();
   const commissions = getCommissionData();
@@ -1593,14 +1673,14 @@ const AdminMobileApp = () => {
               </div>
             ) : (
               todayBookings.map(b => (
-                <div key={b.id} className="mobile-appt-list-row" onClick={() => setSelectedBooking(b)}>
+                <div key={b.id || b.clientName} className="mobile-appt-list-row" onClick={() => setSelectedBooking(b)}>
                   <div className="mobile-appt-left">
-                    <span className="appt-client">{b.clientName}</span>
-                    <span className="appt-service">{b.service?.name || b.serviceName}</span>
+                    <span className="appt-client">{b.clientName || '—'}</span>
+                    <span className="appt-service">{b.service?.name || b.serviceName || 'Serviço'}</span>
                   </div>
                   <div className="mobile-appt-right">
-                    <span className="appt-time">{b.time}</span>
-                    <span className={`appt-status ${b.status}`}>{b.status.toUpperCase()}</span>
+                    <span className="appt-time">{b.time || '—'}</span>
+                    <span className={`appt-status ${b.status || 'pendente'}`}>{(b.status || 'pendente').toUpperCase()}</span>
                   </div>
                 </div>
               ))
@@ -1640,8 +1720,9 @@ const AdminMobileApp = () => {
               const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
               
               const timeToMin = (t) => {
+                if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
                 const [h, m] = t.split(':').map(Number);
-                return h * 60 + m;
+                return (h || 0) * 60 + (m || 0);
               };
               const slotMin = timeToMin(slot);
               const ongoingAppt = !matchedAppt && bookings.find(b => {
@@ -1812,7 +1893,7 @@ const AdminMobileApp = () => {
           {/* Perfil do Jon */}
           <div className="mobile-profile-card">
             <div className="mobile-profile-avatar">
-              <img src="/jon-perfil.jpg" alt="Jonatan" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"; }} />
+              <img src="/jon-perfil.webp" alt="Jonatan" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"; }} />
             </div>
             <div className="mobile-profile-details">
               <h4>Jonatan de Oliveira Sobrinho Junior</h4>
@@ -2024,23 +2105,43 @@ const AdminMobileApp = () => {
 
                   {/* CRITICAL USER REQUEST: BOTÕES DE MENSAGEM */}
                   <div className="mobile-message-section">
-                    <h5>💬 Confirmar Agendamento por WhatsApp</h5>
-                    {sendingMsgStatus && (
-                      <div style={{ color: 'var(--mobile-primary)', fontSize: '0.75rem', fontWeight: 600, marginBottom: 8 }}>
-                        {sendingMsgStatus}
-                      </div>
+                    {selectedBooking.status === 'finalizado' ? (
+                      <>
+                        <h5>💬 Solicitar Feedback do Cliente</h5>
+                        <div className="mobile-message-options">
+                          <button 
+                            className="mobile-msg-btn-whatsapp" 
+                            style={{ background: '#25D366', color: 'white', minHeight: '48px' }} 
+                            onClick={() => {
+                              const url = getWhatsAppFeedbackUrl(selectedBooking.clientPhone, selectedBooking);
+                              if (url) window.open(url, '_blank');
+                            }}
+                          >
+                            <MessageSquare size={16} /> Pedir Avaliação
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <h5>💬 Confirmar Agendamento por WhatsApp</h5>
+                        {sendingMsgStatus && (
+                          <div style={{ color: 'var(--mobile-primary)', fontSize: '0.75rem', fontWeight: 600, marginBottom: 8 }}>
+                            {sendingMsgStatus}
+                          </div>
+                        )}
+                        <div className="mobile-message-options">
+                          <button className="mobile-msg-btn-whatsapp" onClick={() => handleSendReminderWhatsappManual(selectedBooking)}>
+                            <MessageSquare size={16} /> Enviar WhatsApp (Manual)
+                          </button>
+                          
+                          {settings?.waReminderEnabled && (
+                            <button className="mobile-msg-btn-api" onClick={() => handleSendReminderWhatsappGateway(selectedBooking)}>
+                              <Check size={16} /> Disparar Lembrete (Automático)
+                            </button>
+                          )}
+                        </div>
+                      </>
                     )}
-                    <div className="mobile-message-options">
-                      <button className="mobile-msg-btn-whatsapp" onClick={() => handleSendReminderWhatsappManual(selectedBooking)}>
-                        <MessageSquare size={16} /> Enviar WhatsApp (Manual)
-                      </button>
-                      
-                      {settings?.waReminderEnabled && (
-                        <button className="mobile-msg-btn-api" onClick={() => handleSendReminderWhatsappGateway(selectedBooking)}>
-                          <Check size={16} /> Disparar Lembrete (Automático)
-                        </button>
-                      )}
-                    </div>
                   </div>
                 </>
               )}

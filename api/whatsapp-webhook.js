@@ -13,56 +13,6 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
-// Helper para enviar a mensagem de resposta
-async function sendWhatsAppReply(settings, toPhone, messageText) {
-  let url = '';
-  let headers = { 'Content-Type': 'application/json' };
-  let body = {};
-
-  if (settings.waReminderGateway === 'zapi') {
-    const instance = settings.zApiInstanceId;
-    const token = settings.zApiToken;
-    if (!instance || !token) return;
-    url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
-    body = {
-      phone: toPhone,
-      message: messageText
-    };
-  } else if (settings.waReminderGateway === 'evolution') {
-    const apiUrl = settings.evolutionApiUrl;
-    const apiKey = settings.evolutionApiKey;
-    const instance = settings.evolutionInstanceName;
-    if (!apiUrl || !apiKey || !instance) return;
-    url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
-    headers['apikey'] = apiKey;
-    body = {
-      number: toPhone,
-      text: messageText
-    };
-  } else if (settings.waReminderGateway === 'custom') {
-    url = settings.customWebhookUrl;
-    if (!url) return;
-    body = {
-      phone: toPhone,
-      message: messageText,
-      type: 'webhook_confirmation_reply'
-    };
-  }
-
-  if (url) {
-    try {
-      await fetch(url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body)
-      });
-      console.log(`Mensagem de resposta enviada para ${toPhone}`);
-    } catch (err) {
-      console.error(`Erro ao enviar resposta via WhatsApp para ${toPhone}:`, err);
-    }
-  }
-}
-
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -202,17 +152,6 @@ export default async function handler(req, res) {
       confirmedVia: 'whatsapp_webhook',
       confirmedAt: new Date().toISOString()
     });
-
-    // 5. Envia mensagem de agradecimento de volta
-    const serviceName = matchedBooking.serviceName || matchedBooking.service?.name || 'seu serviço';
-    const [year, month, dayVal] = matchedBooking.date.split('-');
-    const dateObj = new Date(year, month - 1, dayVal);
-    const weekdayStr = dateObj.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-
-    const replyMsg = `Obrigado! Seu agendamento para o serviço *${serviceName}* no dia *${weekdayStr}* às *${matchedBooking.time}* foi confirmado com sucesso no sistema. Te aguardamos! 💇‍♂️✨`;
-
-    // Envia usando as credenciais do estúdio
-    await sendWhatsAppReply(settings, cleanedPhone, replyMsg);
 
     return res.status(200).json({
       success: true,

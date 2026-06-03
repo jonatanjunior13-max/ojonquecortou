@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const SEO = ({ title, description, image, url }) => {
+const SEO = ({ title, description, image, url, schema }) => {
   useEffect(() => {
     // Helper para atualizar ou criar meta tags
     const updateMeta = (name, content, isProperty = false) => {
@@ -42,7 +42,27 @@ const SEO = ({ title, description, image, url }) => {
       updateMeta('og:url', currentUrl, true);
     }
 
-  }, [title, description, image, url]);
+    // Dynamic schema insertion
+    if (schema) {
+      const existingScript = document.getElementById('dynamic-page-schema');
+      if (existingScript) {
+        existingScript.textContent = JSON.stringify(schema);
+      } else {
+        const script = document.createElement('script');
+        script.id = 'dynamic-page-schema';
+        script.type = 'application/ld+json';
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+      }
+    } else {
+      // Remove any leftover dynamic schema if not on a schema page
+      const existingScript = document.getElementById('dynamic-page-schema');
+      if (existingScript) {
+        existingScript.remove();
+      }
+    }
+
+  }, [title, description, image, url, schema]);
 
   return null;
 };

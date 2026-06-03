@@ -1,32 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import './ServicesPage.css';
 
 const WA_NUMBER = '553135866673';
 const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
-const TRINKS_URL = 'http://trinks.com/ojonquecortou';
+const TRINKS_URL = '/agendar';
 
 import { SEED_SERVICES } from '../data/seedServices';
-
-const services = SEED_SERVICES.map(s => ({
-  id: s.id,
-  emoji: s.emoji || '✨',
-  category: s.category,
-  name: s.name,
-  tagline: s.tagline || '',
-  description: s.description,
-  price: s.priceType === 'A partir de' 
-    ? `A partir de R$ ${s.price}` 
-    : s.promoPrice ? `De R$ ${s.price} por R$ ${s.promoPrice}` : `R$ ${s.price}`,
-  includes: s.includes || [],
-  highlight: s.promoPrice ? true : false,
-  cta: s.priceType === 'A partir de' 
-    ? WA_BASE + encodeURIComponent(`Olá! Gostaria de um orçamento para ${s.name}.`) 
-    : TRINKS_URL,
-  btnLabel: s.priceType === 'A partir de' ? 'Me chama no WhatsApp' : 'Agendar Horário'
-}));
+import { db } from '../config/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 
 const ServicesPage = () => {
+  const [servicesData, setServicesData] = useState([]);
+
+  useEffect(() => {
+    // Escuta em tempo real as mudanças no Firestore
+    const unsub = onSnapshot(collection(db, 'servicos'), (snapshot) => {
+      if (!snapshot.empty) {
+        const list = [];
+        snapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        // Ordena para manter um padrão visual
+        list.sort((a, b) => {
+          const idxA = SEED_SERVICES.findIndex(s => s.id === a.id || s.name.toLowerCase() === a.name.toLowerCase());
+          const idxB = SEED_SERVICES.findIndex(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return (a.name || '').localeCompare(b.name || '');
+        });
+        setServicesData(list);
+      } else {
+        setServicesData(SEED_SERVICES);
+      }
+    }, (error) => {
+      console.error("Erro ao carregar serviços do Firestore:", error);
+      setServicesData(SEED_SERVICES);
+    });
+
+    return () => unsub();
+  }, []);
+
+  const services = servicesData.map(s => ({
+    id: s.id,
+    emoji: s.emoji || '✨',
+    category: s.category || 'Outros',
+    name: s.name,
+    tagline: s.tagline || '',
+    description: s.description || '',
+    price: s.priceType === 'A partir de' 
+      ? `A partir de R$ ${s.price}` 
+      : s.promoPrice ? `De R$ ${s.price} por R$ ${s.promoPrice}` : `R$ ${s.price}`,
+    includes: s.includes || [],
+    highlight: s.promoPrice ? true : false,
+    cta: s.priceType === 'A partir de' 
+      ? WA_BASE + encodeURIComponent(`Olá! Gostaria de um orçamento para ${s.name}.`) 
+      : TRINKS_URL,
+    btnLabel: s.priceType === 'A partir de' ? 'WhatsApp' : 'Agendar'
+  }));
+
   const [activeFilter, setActiveFilter] = useState('Todos');
   const [expandedCards, setExpandedCards] = useState({});
   const toggleCard = (id) => {
@@ -109,9 +143,15 @@ const ServicesPage = () => {
 
                 <div className="sdc-footer">
                   <span className="sdc-price">{service.price}</span>
-                  <a href={service.cta} target="_blank" rel="noreferrer" className="btn btn-primary">
-                    {service.btnLabel || 'Reservar'}
-                  </a>
+                  {service.cta.startsWith('http') ? (
+                    <a href={service.cta} target="_blank" rel="noreferrer" className="btn btn-primary sdc-btn">
+                      {service.btnLabel || 'Reservar'}
+                    </a>
+                  ) : (
+                    <Link to={service.cta} className="btn btn-primary sdc-btn">
+                      {service.btnLabel || 'Agendar'}
+                    </Link>
+                  )}
                 </div>
               </div>
             ))}
@@ -119,14 +159,38 @@ const ServicesPage = () => {
         </div>
       </section>
       <section className="services-cta-bottom section-padding">
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Pronta para transformar seus cachos?</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Escolha o melhor horário para você e garanta sua vaga no Studio do Jon.
-          </p>
-          <a href={TRINKS_URL} target="_blank" rel="noreferrer" className="btn btn-primary">
-            Agendar Agora pelo Trinks
-          </a>
+        <div className="container reveal">
+          <div className="booking-inline-card">
+            <div className="bic-left">
+              <span className="bic-badge">✦ Agendamento Online</span>
+              <h2 className="bic-title">Pronta para transformar seus cachos?</h2>
+              <p className="bic-subtitle">
+                Escolha data, horário e serviço direto aqui. Confirmação imediata, sem ligação.
+              </p>
+              <div className="bic-trust">
+                <span>✓ Sem taxa de reserva</span>
+                <span>✓ Cancelamento fácil</span>
+                <span>✓ Confirmação por e-mail</span>
+              </div>
+            </div>
+            <div className="bic-right">
+              <div className="bic-availability">
+                <div className="bic-dot green"></div>
+                <span>Horários disponíveis esta semana</span>
+              </div>
+              <Link to="/agendar" className="btn btn-primary bic-btn">
+                Escolher meu horário →
+              </Link>
+              <a
+                href={`https://wa.me/553135866673?text=${encodeURIComponent('Olá Jon! Quero agendar um horário no Studio.')}`}
+                target="_blank"
+                rel="noreferrer"
+                className="bic-whatsapp-link"
+              >
+                Prefere pelo WhatsApp? Fale agora
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </main>

@@ -25,7 +25,8 @@ import {
   Copy,
   Scissors,
   Clipboard,
-  Edit
+  Edit,
+  MoreVertical
 } from 'lucide-react';
 import './Admin.css';
 
@@ -119,7 +120,7 @@ const DEFAULT_SETTINGS = {
   customWebhookUrl: '',
   waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728',
   professionals: [
-    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
 };
 
@@ -164,6 +165,22 @@ const AdminDashboard = () => {
   const [showSlotActionModal, setShowSlotActionModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [blockMotive, setBlockMotive] = useState('');
+  const [blockEndTime, setBlockEndTime] = useState('');
+
+  useEffect(() => {
+    if (selectedSlot && selectedSlot.time) {
+      const idx = TIME_SLOTS.indexOf(selectedSlot.time);
+      if (idx !== -1 && idx < TIME_SLOTS.length - 1) {
+        setBlockEndTime(TIME_SLOTS[idx + 1]);
+      } else if (selectedSlot.time === '20:00') {
+        setBlockEndTime('21:00');
+      } else {
+        setBlockEndTime('');
+      }
+    } else {
+      setBlockEndTime('');
+    }
+  }, [selectedSlot]);
 
   // Edit Booking States
   const [isEditingBooking, setIsEditingBooking] = useState(false);
@@ -476,6 +493,42 @@ const AdminDashboard = () => {
           }, 'agendamento_cancelado');
         }
       }
+
+      // Enviar WA ao cliente quando Jon confirmar o agendamento
+      if (newStatus === 'confirmado' && booking?.clientPhone) {
+        try {
+          const s = settings;
+          const gateway = s?.waReminderGateway || 'evolution';
+          if (s?.waReminderEnabled && booking.clientPhone) {
+            const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+            const waNumber = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+            const firstName = (booking.clientName || 'Cliente').split(' ')[0];
+            const dataBr = (booking.date || '').split('-').reverse().join('/');
+            const svcName = booking.serviceName || booking.service?.name || 'serviço';
+            const msg = `Olá, ${firstName}! ✅ Seu agendamento foi confirmado pelo Studio do Jon.\n\n📅 *${dataBr}* às *${booking.time}*\n✂️ *${svcName}*\n\nTe esperamos! Qualquer dúvida é só responder aqui. 💇‍♂️`;
+
+            let waUrl = '';
+            let waHeaders = { 'Content-Type': 'application/json' };
+            let waBody = {};
+
+            if (gateway === 'evolution' && s?.evolutionApiUrl && s?.evolutionApiKey && s?.evolutionInstanceName) {
+              waUrl = `${s.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${s.evolutionInstanceName}`;
+              waHeaders['apikey'] = s.evolutionApiKey;
+              waBody = { number: waNumber, text: msg };
+            } else if (gateway === 'zapi' && s?.zApiInstanceId && s?.zApiToken) {
+              waUrl = `https://api.z-api.io/instances/${s.zApiInstanceId}/token/${s.zApiToken}/send-text`;
+              waBody = { phone: waNumber, message: msg };
+            }
+
+            if (waUrl) {
+              fetch(waUrl, { method: 'POST', headers: waHeaders, body: JSON.stringify(waBody) })
+                .catch(err => console.warn('WA confirmação cliente:', err));
+            }
+          }
+        } catch (waErr) {
+          console.warn('Erro ao enviar WA de confirmação ao cliente:', waErr);
+        }
+      }
     } catch (err) {
       console.error('Erro ao atualizar status:', err);
       alert('Não foi possível atualizar o status do agendamento.');
@@ -648,6 +701,7 @@ const AdminDashboard = () => {
           clientName: payload.clientName,
           serviceName: payload.serviceName || payload.service?.name || payload.service || '',
           date: displayDate,
+          rawDate: payload.date, // YYYY-MM-DD para cálculo do Google Calendar
           time: payload.time,
           duration: payload.duration || payload.service?.duration || 60,
           notes: payload.notes || '',
@@ -832,27 +886,61 @@ const AdminDashboard = () => {
     e.preventDefault();
     if (!selectedSlot) return;
 
-    const payload = {
-      clientName: 'Horário Bloqueado',
-      clientPhone: '00000000000',
-      clientEmail: '',
-      service: {
-        name: 'Bloqueio Administrativo',
-        price: 0
-      },
-      date: selectedSlot.date,
-      time: selectedSlot.time,
-      profissional: selectedSlot.profissional || 'jon',
-      notes: blockMotive || 'Bloqueio administrativo',
-      status: 'bloqueado',
-      createdAt: new Date().toISOString()
-    };
+    // Identificar todos os slots a serem bloqueados na janela selecionada
+    const startIdx = TIME_SLOTS.indexOf(selectedSlot.time);
+    let endIdx = TIME_SLOTS.indexOf(blockEndTime);
+    if (blockEndTime === '21:00') {
+      endIdx = TIME_SLOTS.length;
+    }
+
+    const slotsToBlock = [];
+    if (startIdx !== -1 && endIdx !== -1 && endIdx > startIdx) {
+      for (let i = startIdx; i < endIdx; i++) {
+        slotsToBlock.push(TIME_SLOTS[i]);
+      }
+    } else {
+      slotsToBlock.push(selectedSlot.time);
+    }
 
     try {
       if (isDemoMode) {
-        setBookings(prev => [...prev, { id: 'demo-block-' + Date.now(), ...payload }]);
+        const newBlocks = slotsToBlock.map((slotTime, idx) => ({
+          id: 'demo-block-' + Date.now() + '-' + idx,
+          clientName: 'Horário Bloqueado',
+          clientPhone: '00000000000',
+          clientEmail: '',
+          service: {
+            name: 'Bloqueio Administrativo',
+            price: 0
+          },
+          date: selectedSlot.date,
+          time: slotTime,
+          profissional: selectedSlot.profissional || 'jon',
+          notes: blockMotive || 'Bloqueio administrativo',
+          status: 'bloqueado',
+          createdAt: new Date().toISOString()
+        }));
+        setBookings(prev => [...prev, ...newBlocks]);
       } else {
-        await addDoc(collection(db, 'bookings'), payload);
+        const promises = slotsToBlock.map(slotTime => {
+          const payload = {
+            clientName: 'Horário Bloqueado',
+            clientPhone: '00000000000',
+            clientEmail: '',
+            service: {
+              name: 'Bloqueio Administrativo',
+              price: 0
+            },
+            date: selectedSlot.date,
+            time: slotTime,
+            profissional: selectedSlot.profissional || 'jon',
+            notes: blockMotive || 'Bloqueio administrativo',
+            status: 'bloqueado',
+            createdAt: new Date().toISOString()
+          };
+          return addDoc(collection(db, 'bookings'), payload);
+        });
+        await Promise.all(promises);
       }
       setShowSlotActionModal(false);
       setBlockMotive('');
@@ -861,6 +949,25 @@ const AdminDashboard = () => {
       console.error('Erro ao bloquear horário:', err);
       alert('Não foi possível bloquear o horário.');
     }
+  };
+
+  const getBlockEndTimeOptions = () => {
+    if (!selectedSlot || !selectedSlot.time) return [];
+    const idx = TIME_SLOTS.indexOf(selectedSlot.time);
+    if (idx === -1) return [];
+    
+    const slotsAfter = TIME_SLOTS.slice(idx + 1);
+    if (slotsAfter.length > 0) {
+      const lastSlot = slotsAfter[slotsAfter.length - 1];
+      if (lastSlot === '20:00') {
+        slotsAfter.push('21:00');
+      }
+    } else {
+      if (selectedSlot.time === '20:00') {
+        slotsAfter.push('21:00');
+      }
+    }
+    return slotsAfter;
   };
 
   const addExtraService = () => {
@@ -1382,17 +1489,34 @@ Jon`;
     return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(finalMsg)}`;
   };
 
+  const getWhatsAppFeedbackUrl = (phone, booking) => {
+    if (!phone) return '';
+    const cleanPhone = phone.replace(/\D/g, '');
+    const clientName = booking.clientName || '';
+    const firstName = clientName.split(' ')[0];
+    const googleLink = 'https://g.page/r/CRmlu0sO48XmEBM/review';
+    const message = `${firstName}, obrigado por ter escolhido o Studio hoje.
+A confiança que você depositou no processo significa muito pra mim.
+Se você sentiu a diferença — me conta no Google. Uma avaliação sua ajuda outras cacheadas que ainda não me conhecem a chegar até aqui.
+${googleLink}
+— Jon`;
+    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
+  };
+
   const birthdayClients = (() => {
     const currentMonth = new Date().getMonth() + 1;
     return clients.filter(c => {
-      if (!c.aniversario) return false;
-      const parts = c.aniversario.split('-');
+      const bday = c.birthdate || c.aniversario;
+      if (!bday) return false;
+      const parts = bday.split('-');
       if (parts.length < 2) return false;
       const birthMonth = parseInt(parts[1], 10);
       return birthMonth === currentMonth;
     }).sort((a, b) => {
-      const dayA = parseInt(a.aniversario.split('-')[2], 10);
-      const dayB = parseInt(b.aniversario.split('-')[2], 10);
+      const bdayA = a.birthdate || a.aniversario || '';
+      const bdayB = b.birthdate || b.aniversario || '';
+      const dayA = parseInt(bdayA.split('-')[2] || '0', 10);
+      const dayB = parseInt(bdayB.split('-')[2] || '0', 10);
       return dayA - dayB;
     });
   })();
@@ -1697,7 +1821,8 @@ Jon`;
               
               <div className="birthdays-carousel-row">
                 {birthdayClients.map(c => {
-                  const day = c.aniversario.split('-')[2];
+                  const bday = c.birthdate || c.aniversario || '';
+                  const day = bday ? bday.split('-')[2] : '';
                   const initials = c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
                   
                   return (
@@ -2006,7 +2131,6 @@ Jon`;
                     
                     {columnsToRender.map(prof => {
                       const currentDateStr = currentDate.toISOString().split('T')[0];
-                      // Find appointment for this professional at this slot
                       const appt = filteredBookingsList.find(b => 
                         b.date === currentDateStr && 
                         b.time === slot && 
@@ -2015,8 +2139,9 @@ Jon`;
                       );
 
                       const timeToMin = (t) => {
+                        if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
                         const [h, m] = t.split(':').map(Number);
-                        return h * 60 + m;
+                        return (h || 0) * 60 + (m || 0);
                       };
                       const slotMin = timeToMin(slot);
                       
@@ -2026,6 +2151,47 @@ Jon`;
                         const bEnd = bStart + (b.duration || 60);
                         return bStart < slotMin && slotMin < bEnd;
                       });
+
+                      // Calculate duration and heights
+                      let apptHeight = '100%';
+                      let apptTimeText = '';
+                      if (appt) {
+                        const startStr = appt.time || '00:00';
+                        const duration = appt.duration || 60;
+                        const parts = startStr.split(':');
+                        const h = parts[0] ? Number(parts[0]) : 0;
+                        const m = parts[1] ? Number(parts[1]) : 0;
+                        const endMin = h * 60 + m + duration;
+                        const endH = Math.floor(endMin / 60);
+                        const endM = endMin % 60;
+                        const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                        apptTimeText = `${startStr} - ${endStr}`;
+                        
+                        if (duration <= 30) {
+                          apptHeight = '50%';
+                        }
+                      }
+
+                      let ongoingHeight = '100%';
+                      let ongoingTimeText = '';
+                      if (ongoingAppt) {
+                        const startStr = ongoingAppt.time || '00:00';
+                        const duration = ongoingAppt.duration || 60;
+                        const parts = startStr.split(':');
+                        const h = parts[0] ? Number(parts[0]) : 0;
+                        const m = parts[1] ? Number(parts[1]) : 0;
+                        const endMin = h * 60 + m + duration;
+                        const endH = Math.floor(endMin / 60);
+                        const endM = endMin % 60;
+                        const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                        ongoingTimeText = `${startStr} - ${endStr}`;
+
+                        const ongoingStartMin = h * 60 + m;
+                        const remainingMins = (ongoingStartMin + duration) - slotMin;
+                        if (remainingMins <= 30) {
+                          ongoingHeight = '50%';
+                        }
+                      }
 
                       const blockedBySettings = !appt && !ongoingAppt && isSlotBlocked(prof, currentDateStr, slot);
 
@@ -2058,9 +2224,10 @@ Jon`;
                             <div 
                               className="appt-card bloqueado"
                               style={{ 
-                                background: 'repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 10px, rgba(0,0,0,0) 10px, rgba(0,0,0,0) 20px)', 
-                                opacity: 0.6, 
-                                border: '1px dashed rgba(255,255,255,0.1)',
+                                background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)', 
+                                color: '#475569',
+                                borderLeft: '4px solid #94a3b8',
+                                opacity: 0.85, 
                                 pointerEvents: 'none'
                               }}
                             >
@@ -2085,8 +2252,9 @@ Jon`;
                                 setAddedProducts([]);
                               }}
                               onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
+                              style={{ height: apptHeight }}
                             >
-                              <span className="appt-time">{appt.time}</span>
+                              <span className="appt-time">{apptTimeText}</span>
                               <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                 <Lock size={12} /> Bloqueado
                               </span>
@@ -2101,10 +2269,12 @@ Jon`;
                               className={`appt-card ${appt.status}`}
                               onClick={(e) => handleBookingLeftClick(e, appt)}
                               onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
+                              style={{ height: apptHeight, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
                             >
-                              <span className="appt-time">{appt.time}</span>
-                              <span className="appt-client">{appt.clientName}</span>
-                              <span className="appt-service">{appt.service?.name || appt.serviceName}</span>
+                              <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
+                              <span className="appt-time">{apptTimeText}</span>
+                              <span className="appt-client" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{appt.clientName}</span>
+                              <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{appt.service?.name || appt.serviceName}</span>
                             </div>
                           )}
 
@@ -2120,12 +2290,18 @@ Jon`;
                                 borderTopRightRadius: 0,
                                 background: ongoingAppt.status === 'bloqueado' ? undefined : 'rgba(110, 47, 24, 0.08)',
                                 borderLeft: ongoingAppt.status === 'bloqueado' ? '3px solid #a0aec0' : '3px dashed var(--accent)',
-                                color: 'var(--text-muted)'
+                                color: 'var(--text-muted)',
+                                height: ongoingHeight,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                position: 'relative'
                               }}
                             >
-                              <span className="appt-time" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>↳ {slot} (Ocupado)</span>
-                              <span className="appt-client" style={{ fontSize: '0.78rem', fontWeight: 600 }}>{ongoingAppt.clientName}</span>
-                              <span className="appt-service" style={{ fontSize: '0.7rem' }}>{ongoingAppt.service?.name || ongoingAppt.serviceName}</span>
+                              <MoreVertical size={12} style={{ position: 'absolute', top: '4px', right: '4px', opacity: 0.5 }} />
+                              <span className="appt-time" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>↳ {ongoingTimeText} (Ocupado)</span>
+                              <span className="appt-client" style={{ fontSize: '0.78rem', fontWeight: 600, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{ongoingAppt.clientName}</span>
+                              <span className="appt-service" style={{ fontSize: '0.7rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{ongoingAppt.service?.name || ongoingAppt.serviceName}</span>
                             </div>
                           )}
                         </div>
@@ -2174,13 +2350,24 @@ Jon`;
             </div>
             <div className="booking-popover-row">
               <Phone size={12} className="text-muted" />
-              <a 
-                href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
-                target="_blank" 
-                rel="noopener noreferrer"
-              >
-                <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
-              </a>
+              {activePopover.booking.status === 'finalizado' ? (
+                <a 
+                  href={getWhatsAppFeedbackUrl(activePopover.booking.clientPhone, activePopover.booking)}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#25D366', fontWeight: '600' }}
+                >
+                  <Send size={11} style={{ marginRight: 4 }} /> Pedir Avaliação
+                </a>
+              ) : (
+                <a 
+                  href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
+                </a>
+              )}
             </div>
             <div className="booking-popover-row">
               <User size={12} className="text-muted" />
@@ -2237,6 +2424,15 @@ Jon`;
               <li className="context-menu-item" onClick={() => handleStartEditBooking(contextMenu.booking)}>
                 <Edit size={14} /> Ver/Editar Agendamento
               </li>
+              {contextMenu.booking.status === 'finalizado' && (
+                <li className="context-menu-item" style={{ color: '#25D366', fontWeight: '600' }} onClick={() => {
+                  const url = getWhatsAppFeedbackUrl(contextMenu.booking.clientPhone, contextMenu.booking);
+                  if (url) window.open(url, '_blank');
+                  setContextMenu({ visible: false });
+                }}>
+                  <Send size={14} /> Pedir Avaliação
+                </li>
+              )}
               <li className="context-menu-item" onClick={() => {
                 setSelectedSlot({
                   date: contextMenu.booking.date,
@@ -3291,6 +3487,19 @@ Jon`;
                   className="slot-block-form"
                   onClick={e => e.stopPropagation()}
                 >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 600 }}>Até às:</span>
+                    <select
+                      value={blockEndTime}
+                      onChange={e => setBlockEndTime(e.target.value)}
+                      className="slot-block-input"
+                      style={{ flex: 'none', width: '90px', padding: '6px', cursor: 'pointer' }}
+                    >
+                      {getBlockEndTimeOptions().map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                  </div>
                   <input
                     type="text"
                     placeholder="Motivo (ex: Almoço, Folga, Reunião)..."

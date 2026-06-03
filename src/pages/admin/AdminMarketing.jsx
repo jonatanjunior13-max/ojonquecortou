@@ -190,11 +190,11 @@ const AdminMarketing = () => {
     const fallbackPosts = [
       {
         text: 'Você sabe a real diferença entre Cabelo Cacheado e Crespo? ✂️\n\nA chave para o volume perfeito está na estrutura de cada fio. No Studio do Jon, usamos o método de leitura de fio antes da tesoura e corte a seco para garantir o caimento perfeito da sua curvatura.\n\n📍 Rua Francisco Ovídio, Caiçara - BH\n🔗 Reserve seu horário: www.ojonquecortou.com.br',
-        image: '/cacho-vs-crespo-hero.png'
+        image: '/cacho-vs-crespo-hero.webp'
       },
       {
         text: 'Frizz: Normal ou Dano Capilar? 🤔\n\nMuitas vezes o frizz é apenas a textura natural do fio querendo liberdade, e não necessariamente ressecamento. Conheça sua curvatura e aprenda a finalização ideal no seu atendimento de visagismo!\n\n📍 Studio do Jon - Especialista em Cachos BH\n🔗 Agende agora: www.ojonquecortou.com.br',
-        image: '/blog-secagem-hero.png'
+        image: '/blog-secagem-hero.webp'
       }
     ];
 
@@ -223,7 +223,7 @@ const AdminMarketing = () => {
           const data = await response.json();
           const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (generatedText) {
-            const images = ['/cacho-vs-crespo-hero.png', '/blog-secagem-hero.png'];
+            const images = ['/cacho-vs-crespo-hero.webp', '/blog-secagem-hero.webp'];
             const randomImg = images[Math.floor(Math.random() * images.length)];
             
             setGeneratedGbpPost({
@@ -418,17 +418,22 @@ const AdminMarketing = () => {
             const clientMap = new Map();
             bookings.forEach(b => {
               if (['Pendente', 'Confirmado', 'Concluído'].includes(b.status)) {
-                const existing = clientMap.get(b.phone) || { name: b.clientName, phone: b.phone, visits: [], lastServiceName: b.serviceName, email: '' };
+                const phone = b.clientPhone || b.phone;
+                if (!phone) return;
+                const existing = clientMap.get(phone) || { name: b.clientName, phone: phone, visits: [], lastServiceName: b.serviceName, email: '', birthdate: b.clientBirthdate || b.birthdate || '' };
                 existing.visits.push(new Date(b.date + 'T00:00:00'));
+                if (!existing.email && b.clientEmail) existing.email = b.clientEmail;
                 if (!existing.email && b.email) existing.email = b.email;
-                clientMap.set(b.phone, existing);
+                if (!existing.birthdate && (b.clientBirthdate || b.birthdate)) existing.birthdate = b.clientBirthdate || b.birthdate;
+                clientMap.set(phone, existing);
               }
             });
 
             profiles.forEach(p => {
-              const existing = clientMap.get(p.phone) || { name: p.name || 'Cliente', phone: p.phone, visits: [], lastServiceName: 'Nenhum', email: p.email || '' };
+              const existing = clientMap.get(p.phone) || { name: p.name || 'Cliente', phone: p.phone, visits: [], lastServiceName: 'Nenhum', email: p.email || '', birthdate: p.birthdate || '' };
               if (p.email) existing.email = p.email;
               if (p.name) existing.name = p.name;
+              if (p.birthdate) existing.birthdate = p.birthdate;
               clientMap.set(p.phone, existing);
             });
 

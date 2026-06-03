@@ -257,5 +257,101 @@ export default async function handler(req, res) {
     }
   }
 
+  // 4. AÇÃO: UPLOAD-MEDIA (Envia uma imagem diretamente para a galeria do Google Maps)
+  if (action === 'upload-media') {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Método não permitido. Utilize POST.' });
+    }
+
+    const { image, category } = req.body;
+
+    if (!image) {
+      return res.status(400).json({ error: 'Imagem (URL ou caminho) é obrigatória.' });
+    }
+
+    try {
+      const settingsSnap = await getDoc(doc(db, 'settings', 'studio'));
+      if (!settingsSnap.exists()) {
+        return res.status(500).json({ error: 'Configurações do Studio não encontradas no Firestore.' });
+      }
+
+      const settings = settingsSnap.data();
+      const automations = settings?.automations || {};
+      const refreshToken = automations.googleGbpRefreshToken;
+      const accountId = automations.googleGbpAccountId;
+      const locationId = automations.googleGbpLocationId;
+
+      if (!refreshToken || !accountId || !locationId) {
+        return res.status(400).json({ 
+          error: 'Google Business Profile não está conectado.', 
+          details: 'Faça login com sua conta do Google no painel administrativo primeiro.' 
+        });
+      }
+
+      // Renovar access token
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: process.env.GOOGLE_CLIENT_ID,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          refresh_token: refreshToken,
+          grant_type: 'refresh_token'
+        })
+      });
+
+      const tokenData = await tokenResponse.json();
+      if (!tokenResponse.ok) {
+        console.error('Erro ao renovar token:', tokenData);
+        return res.status(500).json({ error: 'Erro ao renovar token de acesso com o Google.', details: tokenData });
+      }
+
+      const accessToken = tokenData.access_token;
+
+      // Formatar URL da imagem
+      const imageUrl = image.startsWith('http') 
+        ? image 
+        : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
+
+      const mediaData = {
+        mediaFormat: 'PHOTO',
+        locationAssociation: {
+          category: category || 'ADDITIONAL'
+        },
+        sourceUrl: imageUrl
+      };
+
+      const mediaUrl = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${locationId}/media`;
+      const googleResponse = await fetch(mediaUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(mediaData)
+      });
+
+      const googleResult = await googleResponse.json();
+
+      if (!googleResponse.ok) {
+        console.error('Erro ao subir foto no Google:', googleResult);
+        return res.status(googleResponse.status).json({ 
+          error: 'Erro retornado pela API de Mídias do Google.', 
+          details: googleResult 
+        });
+      }
+
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Foto enviada com sucesso para a galeria do Google Maps!', 
+        data: googleResult 
+      });
+
+    } catch (error) {
+      console.error('Erro no processamento do upload de foto:', error);
+      return res.status(500).json({ error: 'Erro interno no processador de upload', details: error.message });
+    }
+  }
+
   return res.status(404).json({ error: 'Ação não encontrada.' });
 }

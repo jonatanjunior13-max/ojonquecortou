@@ -129,9 +129,7 @@ const Reviews = ({ isPage = false }) => {
               Deixe sua avaliação no Google
             </a>
             <a 
-              href="http://trinks.com/ojonquecortou" 
-              target="_blank" 
-              rel="noreferrer" 
+              href="/agendar" 
               className="btn btn-primary"
             >
               Agendar meu Horário

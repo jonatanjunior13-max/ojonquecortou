@@ -42,7 +42,7 @@
   background: var(--color-surface);
   border: 3px solid var(--color-dark);
   border-radius: var(--radius);
-  padding: 2.5rem;
+  padding: 1.5rem; /* Reduced from 2.5rem to give text more space */
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
@@ -88,23 +88,24 @@
 }
 
 .sdc-name {
-  font-size: 1.25rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.15rem; /* Reduced from 1.25rem */
+  margin-bottom: 0.4rem;
   color: var(--color-text-main);
+  line-height: 1.3;
 }
 
 .sdc-tagline {
-  font-size: 0.85rem;
+  font-size: 0.8rem; /* Reduced from 0.85rem */
   color: var(--color-accent);
   font-weight: 500;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem; /* Reduced from 1.5rem */
 }
 
 .sdc-description {
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* Reduced from 0.95rem */
   color: var(--color-text-secondary);
-  line-height: 1.7;
-  margin-bottom: 1.5rem;
+  line-height: 1.5; /* Reduced from 1.7 */
+  margin-bottom: 1rem;
 }
 
 .sdc-description.collapsed {
@@ -122,15 +123,15 @@
 }
 
 .sdc-includes {
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem; /* Reduced from 2rem */
   flex-grow: 1;
 }
 
 .sdc-includes-title {
-  font-size: 0.75rem;
+  font-size: 0.7rem; /* Reduced from 0.75rem */
   font-weight: 800;
   text-transform: uppercase;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   opacity: 0.8;
 }
 
@@ -141,7 +142,7 @@
 }
 
 .sdc-includes li {
-  font-size: 0.85rem;
+  font-size: 0.8rem; /* Reduced from 0.85rem */
   margin-bottom: 0.25rem;
   display: flex;
   align-items: center;
@@ -157,23 +158,169 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 1.5rem;
+  gap: 0.5rem; /* Reduced from 0.75rem */
+  padding-top: 1rem; /* Reduced from 1.5rem */
   border-top: 1px solid var(--color-border);
 }
 
 .sdc-price {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.05rem; /* Reduced from 1.15rem */
   font-weight: 800;
   color: var(--color-text-main);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.sdc-footer .btn {
-  padding: 0.75rem 1.5rem;
-  font-size: 0.75rem;
+.sdc-footer .btn,
+.sdc-btn {
+  padding: 0.4rem 0.8rem !important; /* Reduced padding */
+  font-size: 0.65rem !important; /* Slightly smaller button font */
+  letter-spacing: 0.05em;
+  border-radius: 4px !important; /* More compact radius */
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 @media (max-width: 768px) {
   .services-full-grid { grid-template-columns: 1fr; }
   .filter-bar { justify-content: flex-start; }
+}
+
+/* ── Inline Booking Card ─────────────────────────────── */
+.booking-inline-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  background: var(--color-dark);
+  color: var(--color-cream, #FAF5E8);
+  border-radius: 16px;
+  padding: 3rem 3.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-inline-card::before {
+  content: '';
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 280px;
+  height: 280px;
+  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.bic-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-yellow, #C8A96A);
+  border: 1px solid var(--color-yellow, #C8A96A);
+  border-radius: 999px;
+  padding: 4px 14px;
+  margin-bottom: 1.25rem;
+}
+
+.bic-title {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #FAF5E8;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.bic-subtitle {
+  font-size: 0.95rem;
+  color: rgba(250,245,232,0.65);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.bic-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.bic-trust span {
+  font-size: 0.75rem;
+  color: rgba(250,245,232,0.55);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Right side */
+.bic-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+.bic-availability {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: rgba(250,245,232,0.7);
+  font-weight: 500;
+}
+
+.bic-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.bic-dot.green {
+  background: #4ade80;
+  box-shadow: 0 0 8px rgba(74,222,128,0.6);
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 8px rgba(74,222,128,0.6); }
+  50%       { box-shadow: 0 0 16px rgba(74,222,128,1); }
+}
+
+.bic-btn {
+  width: 100%;
+  text-align: center;
+  font-size: 0.85rem !important;
+  padding: 1rem 2rem !important;
+  border-radius: 8px !important;
+}
+
+.bic-whatsapp-link {
+  font-size: 0.8rem;
+  color: rgba(250,245,232,0.5);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+  cursor: pointer;
+}
+
+.bic-whatsapp-link:hover {
+  color: rgba(250,245,232,0.85);
+}
+
+@media (max-width: 768px) {
+  .booking-inline-card {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2.5rem 1.75rem;
+  }
+
+  .bic-title { font-size: 1.4rem; }
+
+  .bic-right { align-items: stretch; }
+
+  .bic-btn { width: 100%; }
 }

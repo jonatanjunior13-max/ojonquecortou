@@ -1,118 +1,196 @@
-  // scripts/prerender.js
-// Gera HTML estático com meta tags únicos para cada rota
-// Roda automaticamente após `vite build` via postbuild
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { posts } from '../src/data/posts.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '../dist');
-const indexHtml = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+const templatePath = path.join(distDir, 'index.html');
 
-// =====================
-// PÁGINAS ESTÁTICAS
-// =====================
-const staticRoutes = [
+if (!fs.existsSync(templatePath)) {
+  console.error('Error: dist/index.html template not found! Run vite build first.');
+  process.exit(1);
+}
+
+const template = fs.readFileSync(templatePath, 'utf-8');
+
+// Helper to replace or add a meta tag in the HTML head
+function replaceOrAddMeta(html, nameOrProperty, content, isProperty = false) {
+  if (!content) return html;
+  const attrName = isProperty ? 'property' : 'name';
+  const cleanContent = content.replace(/"/g, '&quot;').replace(/\n/g, ' ').trim();
+  const regex = new RegExp(`<meta\\s+${attrName}=["']${nameOrProperty}["']\\s+content=["'].*?["']\\s*\\/?>`, 'i');
+  const newTag = `<meta ${attrName}="${nameOrProperty}" content="${cleanContent}" />`;
+  if (regex.test(html)) {
+    return html.replace(regex, newTag);
+  } else {
+    // Inject before </head>
+    return html.replace('</head>', `    ${newTag}\n  </head>`);
+  }
+}
+
+// Helper to replace the title tag
+function replaceTitle(html, title) {
+  if (!title) return html;
+  const cleanTitle = title.replace(/"/g, '&quot;').trim();
+  const regex = /<title>.*?<\/title>/i;
+  if (regex.test(html)) {
+    return html.replace(regex, `<title>${cleanTitle}</title>`);
+  }
+  return html.replace('</head>', `    <title>${cleanTitle}</title>\n  </head>`);
+}
+
+// Helper to convert date format from PT-BR "02 de Junho, 2026" to ISO "2026-06-02"
+function parseDateToISO(dateStr) {
+  if (!dateStr) return "2026-05-14";
+  try {
+    const cleanStr = dateStr.replace(/de/g, '').replace(/,/g, '').replace(/\s+/g, ' ').trim();
+    const parts = cleanStr.split(' ');
+    if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const monthName = parts[1].toLowerCase();
+      const year = parts[2];
+      const months = {
+        'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
+        'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
+        'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
+      };
+      const month = months[monthName] || '05';
+      return `${year}-${month}-${day}`;
+    }
+  } catch (e) {
+    console.warn('Failed parsing date:', dateStr, e);
+  }
+  return "2026-05-14";
+}
+
+// Definition of static pages with their specific metadata
+const pages = [
   {
-    path: 'servicos',
-    title: 'Corte Cacheado em BH | Serviços | Studio do Jon',
-    description: 'Corte técnico para cabelo cacheado, crespo e ondulado em BH. Leitura de Fio antes de tocar. Deva Cut, Wolf Cut, corte a seco. Studio do Jon, Caiçara.',
-    canonical: 'https://www.ojonquecortou.com.br/servicos',
+    route: '/servicos',
+    title: 'Serviços e Valores | Especialista em Cabelo Cacheado BH | Studio do Jon',
+    description: 'Veja nossos serviços de corte de cabelo cacheado a seco, visagismo, tratamentos e coloração. Agende seu horário online no Studio do Jon em BH.'
   },
   {
-    path: 'sobre',
-    title: 'Jon | Cabeleireiro Especialista em Cachos em BH | O Jon que Cortou',
-    description: 'Jon é especialista em cachos e crespos em BH. Lê o padrão de fio antes de cortar. Método Leitura de Fio: 7 etapas de diagnóstico. Studio do Jon, Caiçara.',
-    canonical: 'https://www.ojonquecortou.com.br/sobre',
+    route: '/sobre',
+    title: 'Sobre o Jonatan Junior | Especialista em Cachos BH | Studio do Jon',
+    description: 'Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.'
   },
   {
-    path: 'blog',
-    title: 'Blog de Cabelo Cacheado | Dicas do Jon que Cortou',
-    description: 'Dicas de cabelo cacheado, crespo e ondulado direto do especialista. Jon explica cortes, químicas e cuidados sem enrolação. O Jon que Cortou, BH.',
-    canonical: 'https://www.ojonquecortou.com.br/blog',
+    route: '/blog',
+    title: 'Blog do Jon | Dicas e Cuidados para Cabelo Cacheado e Crespo',
+    description: 'Dicas práticas, guias de produtos, técnicas de finalização e tudo o que você precisa saber sobre cabelos cacheados, crespos e ondulados.'
   },
   {
-    path: 'depoimentos',
-    title: 'Resultados Reais em Cachos e Crespos | Studio do Jon BH',
-    description: 'Veja os resultados reais de clientes do Studio do Jon em BH. Cachos, crespos e ondulados transformados com Leitura de Fio. Agende já.',
-    canonical: 'https://www.ojonquecortou.com.br/depoimentos',
+    route: '/depoimentos',
+    title: 'Depoimentos e Avaliações de Clientes | Studio do Jon BH',
+    description: 'Veja o que nossas clientes dizem sobre suas experiências de corte e tratamento de cachos com o Jon em Belo Horizonte. Avaliações reais de quem ama seus cachos.'
   },
   {
-    path: 'galeria',
-    title: 'Galeria de Transformações | Cachos e Crespos | Studio do Jon BH',
-    description: 'Antes e depois de cortes para cabelos cacheados, crespos e ondulados no Studio do Jon, BH. Técnica Leitura de Fio em ação.',
-    canonical: 'https://www.ojonquecortou.com.br/galeria',
-  },
+    route: '/galeria',
+    title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
+    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos e ondulados feitos pelo Jon.'
+  }
 ];
 
-// =====================
-// EXTRAIR POSTS VIA REGEX
-// =====================
-const postsContent = fs.readFileSync(
-  path.join(__dirname, '../src/data/posts.js'),
-  'utf-8'
-);
+// Add blog posts dynamically
+posts.forEach(post => {
+  const postDesc = post.metaDescription || `${post.excerpt || post.title}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
+  const isoDate = parseDateToISO(post.date);
+  
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": postDesc,
+    "image": post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`,
+    "author": {
+      "@type": "Person",
+      "name": "Jonatan Junior",
+      "url": "https://www.ojonquecortou.com.br/sobre"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Studio do Jon",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png"
+      }
+    },
+    "datePublished": post.datePublished || isoDate,
+    "dateModified": post.dateModified || isoDate,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`
+    }
+  };
 
-function extractField(content, fieldName) {
-  const results = [];
-  const regex = new RegExp(`${fieldName}:\\s*[\`'"]([^\`'"\\n]+)[\`'"]`, 'g');
-  let match;
-  while ((match = regex.exec(content)) !== null) {
-    results.push(match[1]);
+  const noscriptContent = `
+    <noscript>
+      <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
+        <h1>${post.title}</h1>
+        <p style="font-weight: bold; color: #555;">${post.excerpt || ''}</p>
+        <hr />
+        <div>${post.content}</div>
+      </article>
+    </noscript>
+  `;
+
+  pages.push({
+    route: `/blog/${post.slug}`,
+    title: post.title,
+    description: postDesc,
+    image: post.image,
+    schema: articleSchema,
+    bodyInsert: noscriptContent
+  });
+});
+
+console.log(`Starting Node SEO pre-rendering for ${pages.length} pages...`);
+
+pages.forEach(page => {
+  let html = template;
+  
+  // 1. Replace title
+  html = replaceTitle(html, page.title);
+  
+  // 2. Replace description
+  html = replaceOrAddMeta(html, 'description', page.description, false);
+  html = replaceOrAddMeta(html, 'og:description', page.description, true);
+  html = replaceOrAddMeta(html, 'twitter:description', page.description, false);
+  
+  // 3. Replace OG URL
+  html = replaceOrAddMeta(html, 'og:url', `https://www.ojonquecortou.com.br${page.route}`, true);
+  
+  // 4. Replace OG/Twitter titles
+  html = replaceOrAddMeta(html, 'og:title', page.title, true);
+  html = replaceOrAddMeta(html, 'twitter:title', page.title, false);
+  
+  // 5. Replace image tags
+  if (page.image) {
+    const fullImageUrl = page.image.startsWith('http') ? page.image : `https://www.ojonquecortou.com.br${page.image}`;
+    html = replaceOrAddMeta(html, 'og:image', fullImageUrl, true);
+    html = replaceOrAddMeta(html, 'twitter:image', fullImageUrl, false);
+    html = replaceOrAddMeta(html, 'twitter:card', 'summary_large_image', false);
   }
-  return results;
-}
-
-const slugs    = extractField(postsContent, 'slug');
-const titles   = extractField(postsContent, 'title');
-const metas    = extractField(postsContent, 'metaDescription');
-const excerpts = extractField(postsContent, 'excerpt');
-
-// =====================
-// INJETOR DE META TAGS
-// =====================
-
-function injectMeta(html, { title, description, canonical }) {
-  let r = html;
-  const esc = (s) => s.replace(/\$/g, '$$$$');
-  r = r.replace(/<title>[^<]*<\/title>/, '<title>' + esc(title) + '</title>');
-  r = r.replace(/(<meta name="description" content=")[^"]*/,  '$1' + esc(description));
-  r = r.replace(/(<meta property="og:title" content=")[^"]*/,  '$1' + esc(title));
-  r = r.replace(/(<meta property="og:description" content=")[^"]*/,  '$1' + esc(description));
-  r = r.replace(/(<meta property="og:url" content=")[^"]*/,  '$1' + esc(canonical));
-  if (r.includes('rel="canonical"')) {
-    r = r.replace(/(<link rel="canonical" href=")[^"]*/,  '$1' + esc(canonical));
-  } else {
-    r = r.replace('</head>', '  <link rel="canonical" href="' + canonical + '" />\n  </head>');
+  
+  // 6. Inject LD+JSON Schema
+  if (page.schema) {
+    const schemaScript = `\n    <script type="application/ld+json" id="dynamic-page-schema">\n    ${JSON.stringify(page.schema, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
+    html = html.replace('</head>', `${schemaScript}\n  </head>`);
   }
-  return r;
-}
+  
+  // 7. Inject Noscript Body Content for Crawlers
+  if (page.bodyInsert) {
+    html = html.replace('<div id="root">', `<div id="root">\n      ${page.bodyInsert.trim()}`);
+  }
+  
+  // Write index.html inside the route directory
+  const relativeRoute = page.route.startsWith('/') ? page.route.substring(1) : page.route;
+  const routeDir = path.join(distDir, relativeRoute);
+  
+  fs.mkdirSync(routeDir, { recursive: true });
+  fs.writeFileSync(path.join(routeDir, 'index.html'), html);
+});
 
-// GERAR HTMLs ESTÁTICOS
-let count = 0;
-
-for (const route of staticRoutes) {
-  const html = injectMeta(indexHtml, { title: route.title, description: route.description, canonical: route.canonical });
-  const dir = path.join(distDir, route.path);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), html);
-  console.log('✓ /' + route.path);
-  count++;
-}
-
-for (let i = 0; i < slugs.length; i++) {
-  const slug = slugs[i];
-  if (!slug) continue;
-  const title       = titles[i] + ' | Studio do Jon';
-  const description = metas[i] || excerpts[i] || '';
-  const canonical   = 'https://www.ojonquecortou.com.br/blog/' + slug;
-  const html = injectMeta(indexHtml, { title, description, canonical });
-  const dir  = path.join(distDir, 'blog/' + slug);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), html);
-  console.log('✓ /blog/' + slug);
-  count++;
-}
-
-console.log('\n✅ Prerendering concluído: ' + count + ' páginas com meta tags únicos');
+console.log('Static pre-rendering completed successfully!');

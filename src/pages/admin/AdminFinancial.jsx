@@ -15,7 +15,7 @@ const SEED_HISTORICAL_TRANSACTIONS = [];
 const SEED_HISTORICAL_BOOKINGS = [];
 
 const DEFAULT_PROFESSIONALS = [
-  { id: 'jon', name: 'Jon', avatar: '/jon-perfil.png', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+  { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
 ];
 
 const AdminFinancial = () => {
@@ -27,15 +27,17 @@ const AdminFinancial = () => {
   const [showDatePickerDropdown, setShowDatePickerDropdown] = useState(false);
   const [showProfDropdown, setShowProfDropdown] = useState(false);
 
-  // Time Window State (Default to Últimos 6 meses dynamically based on current date)
-  const [dateWindow, setDateWindow] = useState('6meses');
+  // Time Window State (Default to 'mes' - Esse mês)
+  const [dateWindow, setDateWindow] = useState('mes');
   const [startDate, setStartDate] = useState(() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() - 6);
-    return d.toISOString().split('T')[0];
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    return firstDay.toISOString().split('T')[0];
   });
   const [endDate, setEndDate] = useState(() => {
-    return new Date().toISOString().split('T')[0];
+    const today = new Date();
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return lastDay.toISOString().split('T')[0];
   });
 
   // Professional Filter State

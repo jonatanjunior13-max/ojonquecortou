@@ -210,13 +210,14 @@ const AdminClients = () => {
         hairType: prof.curvatura || 'Desconhecido',
         lastVisit: 'Nunca visitou',
         lastServiceName: 'Nenhum',
-        sexo: prof.sexo || 'Feminino'
+        sexo: prof.sexo || 'Feminino',
+        birthdate: prof.birthdate || ''
       };
     });
 
     // Mescla com os dados vindos dos agendamentos
     appts.forEach((appt) => {
-      const phone = appt.clientPhone;
+      const phone = appt.clientPhone || appt.phone;
       if (!phone) return;
 
       const dateStr = appt.date;
@@ -226,11 +227,12 @@ const AdminClients = () => {
         clientsMap[phone] = {
           name: appt.clientName || 'Cliente sem nome',
           phone: phone,
-          email: appt.clientEmail || 'Não informado',
+          email: appt.clientEmail || appt.email || 'Não informado',
           hairType: appt.hairType || 'Desconhecido',
           lastVisit: dateStr || 'Nunca visitou',
           lastServiceName: serviceName,
-          sexo: appt.sexo || 'Feminino'
+          sexo: appt.sexo || 'Feminino',
+          birthdate: appt.clientBirthdate || appt.birthdate || ''
         };
       } else {
         // Atualiza para a visita mais recente
@@ -240,6 +242,9 @@ const AdminClients = () => {
         }
         if (appt.sexo && clientsMap[phone].sexo === 'Feminino') {
           clientsMap[phone].sexo = appt.sexo;
+        }
+        if ((appt.clientBirthdate || appt.birthdate) && !clientsMap[phone].birthdate) {
+          clientsMap[phone].birthdate = appt.clientBirthdate || appt.birthdate;
         }
       }
     });
@@ -257,6 +262,7 @@ const AdminClients = () => {
   useEffect(() => {
     if (!selectedClientPhone) return;
     const clientProf = profiles.find(p => p.phone === selectedClientPhone);
+    const clientObj = clients.find(c => c.phone === selectedClientPhone);
     
     if (clientProf) {
       setHairProfile({
@@ -274,7 +280,6 @@ const AdminClients = () => {
       });
     } else {
       // Se não tem perfil salvo ainda, herda o tipo do agendamento
-      const clientObj = clients.find(c => c.phone === selectedClientPhone);
       setHairProfile({
         name: clientObj?.name || '',
         email: clientObj?.email || '',

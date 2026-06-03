@@ -1,36 +1,155 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { posts } from '../data/posts';
+import { posts as staticPosts } from '../data/posts';
+import { db } from '../config/firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import './Blog.css';
 import { ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
-  const post = posts.find((p) => p.slug === slug);
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [allPosts, setAllPosts] = useState(staticPosts);
+
+  useEffect(() => {
+    async function loadPostData() {
+      setLoading(true);
+      // Try finding static post first
+      const staticMatch = staticPosts.find((p) => p.slug === slug);
+      let foundPost = staticMatch || null;
+
+      // Load all posts (including Firestore) to render related posts
+      let merged = [...staticPosts];
+
+      if (db) {
+        try {
+          // Fetch all blog posts for related area
+          const qAll = query(collection(db, 'blog_posts'));
+          const snapAll = await getDocs(qAll);
+          const list = [];
+          snapAll.forEach((doc) => {
+            list.push({ id: doc.id, ...doc.data() });
+          });
+          merged = [...list, ...staticPosts];
+          setAllPosts(merged);
+
+          if (!foundPost) {
+            // Fetch the specific post by slug
+            const q = query(collection(db, 'blog_posts'), where('slug', '==', slug));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+              foundPost = { id: snap.docs[0].id, ...snap.docs[0].data() };
+            }
+          }
+        } catch (err) {
+          console.warn('Erro ao carregar post do Firestore:', err);
+        }
+      }
+
+      setPost(foundPost);
+      setLoading(false);
+    }
+    loadPostData();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <main className="post-page">
+        <div className="container" style={{ padding: '80px 20px', textAlign: 'center', color: 'var(--muted)' }}>
+          Carregando artigo...
+        </div>
+      </main>
+    );
+  }
 
   if (!post) {
     return <Navigate to="/blog" replace />;
   }
 
   // Obter posts relacionados de forma consistente e determinística:
-  // Filtra o próprio post, coloca os da mesma categoria primeiro, e depois ordena por id desc.
-  const relatedPosts = posts
+  const relatedPosts = allPosts
     .filter((p) => p.slug !== slug)
     .sort((a, b) => {
       if (a.category === post.category && b.category !== post.category) return -1;
       if (b.category === post.category && a.category !== post.category) return 1;
-      return b.id - a.id;
+      const idA = typeof a.id === 'number' ? a.id : 0;
+      const idB = typeof b.id === 'number' ? b.id : 0;
+      return idB - idA;
     })
     .slice(0, 3);
+
+  const generatePostDescription = (post) => {
+    if (post.metaDescription) return post.metaDescription;
+    
+    // Fallback based on user-requested model:
+    // "[Assunto do post em 1 frase direta]. [Benefício ou resultado]. Especialista em cachos em Belo Horizonte explica."
+    const subject = post.excerpt || post.title;
+    return `${subject}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
+  };
+
+  const parseDateToISO = (dateStr) => {
+    if (!dateStr) return "2026-05-14";
+    try {
+      const cleanStr = dateStr.replace(/de/g, '').replace(/,/g, '').replace(/\s+/g, ' ').trim();
+      const parts = cleanStr.split(' ');
+      if (parts.length === 3) {
+        const day = parts[0].padStart(2, '0');
+        const monthName = parts[1].toLowerCase();
+        const year = parts[2];
+        const months = {
+          'janeiro': '01', 'fevereiro': '02', 'março': '03', 'abril': '04',
+          'maio': '05', 'junho': '06', 'julho': '07', 'agosto': '08',
+          'setembro': '09', 'outubro': '10', 'novembro': '11', 'dezembro': '12'
+        };
+        const month = months[monthName] || '05';
+        return `${year}-${month}-${day}`;
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    return "2026-05-14";
+  };
+
+  const postDesc = generatePostDescription(post);
+  const isoDate = parseDateToISO(post.date);
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": postDesc,
+    "image": post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`,
+    "author": {
+      "@type": "Person",
+      "name": "Jonatan Junior",
+      "url": "https://www.ojonquecortou.com.br/sobre"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Studio do Jon",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png"
+      }
+    },
+    "datePublished": post.datePublished || isoDate,
+    "dateModified": post.dateModified || isoDate,
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`
+    }
+  };
 
   return (
     <main className="post-page">
       <SEO 
         title={post.title} 
-        description={post.metaDescription || post.excerpt}
+        description={postDesc}
         image={post.image}
         url={`/blog/${post.slug}`}
+        schema={articleSchema}
       />
       <div className="container">
         <Link to="/blog" className="post-back reveal active">
@@ -82,7 +201,7 @@ const BlogPostPage = () => {
 
           <footer className="post-cta-section section-padding reveal active">
             <div className="post-cta-card">
-              <img src="/jon-trabalhando.jpg" alt="Jon atendendo cliente" className="post-cta-image" />
+              <img src="/jon-trabalhando.webp" alt="Jon atendendo cliente" className="post-cta-image" />
               <div className="post-cta-content">
                 <h2 className="heading-lg">O seu cabelo não precisa de mais testes.</h2>
                 <p className="paragraph-md">
@@ -90,7 +209,7 @@ const BlogPostPage = () => {
                 </p>
                 
                 <div className="post-cta-btns">
-                  <a href="http://trinks.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
+                  <a href="/agendar" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
                     Agendar Horário
                   </a>
                   <a href={`https://wa.me/553135866673?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog">
