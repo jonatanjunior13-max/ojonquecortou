@@ -23,6 +23,13 @@ try {
 // Helper function for the shared email template shell
 
 function getStandaloneWrapper(title, content) {
+  const previewText = content
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 150);
+
   return `
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -32,6 +39,10 @@ function getStandaloneWrapper(title, content) {
   <title>${title}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #f0eee9; opacity: 0;">
+    ${previewText}
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f0eee9" style="background-color: #f0eee9;">
     <tr>
       <td align="center" style="padding: 40px 10px;">
@@ -51,6 +62,13 @@ function getStandaloneWrapper(title, content) {
 }
 
 function getEmailWrapper(title, content) {
+  const previewText = content
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 150);
+
   return `
   <!DOCTYPE html>
   <html lang="pt-BR">
@@ -85,6 +103,10 @@ function getEmailWrapper(title, content) {
     </style>
   </head>
   <body style="margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased;">
+    <!-- Preheader preview text for inbox -->
+    <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0;">
+      ${previewText}
+    </div>
     <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2;">
       <tr>
         <td align="center" style="padding: 40px 10px;">
@@ -735,9 +757,9 @@ export default async function handler(req, res) {
         <div class="instructions-title">Antes de vir</div>
         <p class="instructions-body">Lave o cabelo na <strong>noite anterior</strong> com seu shampoo de sempre. Sem creme, sem leave-in, sem prancha. Quero ler o fio do jeito que ele acorda — não o disfarce.</p>
         
-        <div style="text-align: center; margin: 30px 0; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-          <a href="${calendarLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold;">Adicionar à agenda</a>
-          <a href="${mapsLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold;">Ver localização no Maps</a>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${calendarLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 6px;">Adicionar à agenda</a>
+          <a href="${mapsLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 6px;">Ver localização no Maps</a>
         </div>
         
         <div class="signoff">
@@ -956,7 +978,7 @@ export default async function handler(req, res) {
           
           <div class="appt-card">
             <div class="label">Agendamento</div>
-            <p class="when">${formatApptDate(data.rawDate, data.time)} <span>às ${data.time}</span></p>
+            <p class="when">${formatApptDate(data.date || data.rawDate, data.time)} <span>às ${data.time}</span></p>
             <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
             
             <div class="meta-row">
