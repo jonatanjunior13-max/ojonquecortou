@@ -56,7 +56,9 @@ const FAQ = () => {
                   <ChevronDown className="accordion-icon" size={20} />
                 </div>
                 <div className="accordion-body">
-                  <p dangerouslySetInnerHTML={{ __html: faq.answer }}></p>
+                  <div>
+                    <p dangerouslySetInnerHTML={{ __html: faq.answer }}></p>
+                  </div>
                 </div>
               </div>
             ))}

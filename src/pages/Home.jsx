@@ -1,12 +1,91 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Arrow, Reveal, ContactCTA } from '../components/NewDesignComponents';
 import { posts as blogPosts } from '../data/posts';
+import Magnetic from '../components/Magnetic';
+
+// Scroll hint: vanishes once user starts scrolling
+function ScrollHint() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    const onScroll = () => { if (window.scrollY > 60) setHidden(true); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  return (
+    <div className={`scroll-hint${hidden ? ' hidden' : ''}`} aria-hidden="true">
+      <div className="scroll-hint-line" />
+      <span>scroll</span>
+    </div>
+  );
+}
+
+// CountUp: animates from 0 to target when element enters viewport
+function CountUp({ target, suffix = '', duration = 1400 }) {
+  const [value, setValue] = useState(0);
+  const ref = useRef(null);
+  const started = useRef(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Respect reduced motion
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) { setValue(target); return; }
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !started.current) {
+        started.current = true;
+        const start = performance.now();
+        const tick = (now) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setValue(Math.round(eased * target));
+          if (progress < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+        io.disconnect();
+      }
+    }, { threshold: 0.5 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [target, duration]);
+  return <span ref={ref}>{value}{suffix}</span>;
+}
+
+// SVG Star — consistent across all platforms
+const StarSVG = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+    <path d="M7 0.5l1.796 3.64 4.017.584-2.907 2.833.687 4-.593-.34L7 9.5l-3 1.717.687-4L1.187 4.724l4.017-.584L7 .5z"/>
+  </svg>
+);
 
 function HomeHero() {
+  const portraitRef = useRef(null);
+  const badgeRef = useRef(null);
+  const captionRef = useRef(null);
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+    const imgEl = portraitRef.current;
+    const badgeEl = badgeRef.current;
+    const captionEl = captionRef.current;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (imgEl) imgEl.style.transform = `translate3d(0, ${y * 0.05}px, 0)`;
+      if (badgeEl) badgeEl.style.transform = `translate3d(0, ${y * -0.06}px, 0)`;
+      if (captionEl) captionEl.style.transform = `translate3d(0, ${y * 0.08}px, 0)`;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <header id="top" className="hero">
+      <div className="hero-blob" aria-hidden="true" />
       <div className="container">
         <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
           Studio do Jon · Caiçara · Belo Horizonte
@@ -26,17 +105,23 @@ function HomeHero() {
             </Reveal>
 
             <Reveal delay={220} className="hero-actions">
-              <Link to="/agendar" className="btn btn-accent">
-                Agendar avaliação <Arrow />
-              </Link>
-              <a href="/sobre#metodo" className="btn btn-ghost">
-                Conhecer o método
-              </a>
+              <Magnetic>
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar avaliação <Arrow />
+                </Link>
+              </Magnetic>
+              <Magnetic>
+                <a href="/sobre#metodo" className="btn btn-ghost">
+                  Conhecer o método
+                </a>
+              </Magnetic>
             </Reveal>
 
             <Reveal delay={320} className="hero-meta">
               <div className="hero-stat">
-                <div className="n">9<span style={{ color: "var(--accent)" }}>+</span></div>
+                <div className="n">
+                  <CountUp target={9} suffix="+" />
+                </div>
                 <div className="l">Anos com cacheados</div>
               </div>
               <div className="hero-stat">
@@ -44,21 +129,32 @@ function HomeHero() {
                 <div className="l">As curvaturas</div>
               </div>
               <div className="hero-stat">
-                <div className="n">100<span style={{ color: "var(--accent)" }}>%</span></div>
+                <div className="n">
+                  <CountUp target={100} suffix="%" />
+                </div>
                 <div className="l">Avaliação prévia</div>
               </div>
             </Reveal>
           </div>
 
           <Reveal delay={180}>
-            <div className="hero-portrait">
-              <span className="badge">Studio · BH</span>
-              <div className="caption">"Antes da tesoura, a leitura."</div>
-              <img src="/jon-perfil.webp" alt="Foto do Jon" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="hero-portrait" style={{ willChange: 'transform' }}>
+              <span ref={badgeRef} className="badge" style={{ willChange: 'transform' }}>Studio · BH</span>
+              <div ref={captionRef} className="caption" style={{ willChange: 'transform' }}>"Antes da tesoura, a leitura."</div>
+              <img
+                ref={portraitRef}
+                src="/jon-perfil.webp"
+                alt="Jon, especialista em cabelo cacheado em Belo Horizonte"
+                width="480"
+                height="600"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '4/5', willChange: 'transform' }}
+              />
             </div>
           </Reveal>
         </div>
       </div>
+
+      <ScrollHint />
 
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
@@ -215,7 +311,9 @@ function HomeTestimonials() {
         <div className="testimonial-track">
           {list.map((t, i) => (
             <Reveal key={i} delay={i * 80} className="t-card">
-              <div className="stars">{"★★★★★".split("").map((s, k) => <span key={k}>{s}</span>)}</div>
+              <div className="stars" aria-label="5 estrelas">
+                {[0,1,2,3,4].map(k => <StarSVG key={k} />)}
+              </div>
               <p className="q">"{t.q}"</p>
               <div className="who">
                 <div className="av">{t.n[0]}</div>
@@ -284,7 +382,14 @@ function HomeBlog() {
               <Link className="post" to={`/blog/${p.slug}`}>
                 <div className="cover">
                   {p.image ? (
-                    <img src={p.image} alt={p.title} />
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      loading="lazy"
+                      decoding="async"
+                      width="600"
+                      height="450"
+                    />
                   ) : (
                     <div className="ph" style={{ background: p.grad, position: "absolute", inset: 0 }} />
                   )}
