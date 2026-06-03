@@ -39,6 +39,7 @@ const AdminMobileApp = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('inicio');
   const [currentDate, setCurrentDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [agendaView, setAgendaView] = useState('diario');
 
   // Firestore & local states
   const [bookings, setBookings] = useState([]);
@@ -666,6 +667,52 @@ const AdminMobileApp = () => {
     const d = new Date(currentDate + 'T00:00:00');
     d.setDate(d.getDate() + days);
     setCurrentDate(d.toISOString().split('T')[0]);
+  };
+
+  const handleWeekChange = (weeks) => {
+    const d = new Date(currentDate + 'T00:00:00');
+    d.setDate(d.getDate() + weeks * 7);
+    setCurrentDate(d.toISOString().split('T')[0]);
+  };
+
+  const handleMonthChange = (months) => {
+    const d = new Date(currentDate + 'T00:00:00');
+    d.setMonth(d.getMonth() + months);
+    setCurrentDate(d.toISOString().split('T')[0]);
+  };
+
+  const getWeekDays = (dateStr) => {
+    const current = new Date(dateStr + 'T00:00:00');
+    const dayOfWeek = current.getDay();
+    const start = new Date(current);
+    start.setDate(current.getDate() - dayOfWeek);
+    
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      days.push(d.toISOString().split('T')[0]);
+    }
+    return days;
+  };
+
+  const getDaysInMonth = (dateStr) => {
+    const [year, month] = dateStr.split('-').map(Number);
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0);
+    
+    const startDay = startOfMonth.getDay();
+    const daysInMonth = endOfMonth.getDate();
+    
+    const calendarCells = [];
+    for (let i = 0; i < startDay; i++) {
+      calendarCells.push(null);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dayStr = `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      calendarCells.push(dayStr);
+    }
+    return calendarCells;
   };
 
   // 4. Fluxo de Criação de Agendamentos e Bloqueios
@@ -1689,13 +1736,18 @@ ${googleLink}
         </div>
       )}
 
-      {/* 2. ABA AGENDA (TIMELINE DIÁRIA) */}
+      {/* 2. ABA AGENDA (TIMELINE DIÁRIA, WEEKLY TABLE, MONTHLY DOTS) */}
       {activeTab === 'agenda' && (
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           <div className="mobile-agenda-header">
-            <select className="mobile-agenda-select" defaultValue="diario">
+            <select 
+              className="mobile-agenda-select" 
+              value={agendaView} 
+              onChange={(e) => setAgendaView(e.target.value)}
+            >
               <option value="diario">Diário</option>
-              <option value="semanal" disabled>Semanal (Desktop)</option>
+              <option value="semanal">Semanal</option>
+              <option value="mensal">Mensal</option>
             </select>
             <div className="mobile-agenda-actions">
               <CalendarIcon size={18} />
@@ -1703,85 +1755,256 @@ ${googleLink}
           </div>
 
           <div className="mobile-day-switcher">
-            <button className="mobile-day-btn" onClick={() => handleDateChange(-1)}>
-              <ChevronLeft size={20} />
-            </button>
-            <div className="mobile-current-day-label">
-              <span className="date-string">{dateInfo.dateString}</span>
-              <span className="weekday-string">{dateInfo.weekdayString}</span>
-            </div>
-            <button className="mobile-day-btn" onClick={() => handleDateChange(1)}>
-              <ChevronRight size={20} />
-            </button>
-          </div>
-
-          <div className="mobile-timeline-scroll">
-            {hourSlots.map(slot => {
-              const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
-              
-              const timeToMin = (t) => {
-                if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
-                const [h, m] = t.split(':').map(Number);
-                return (h || 0) * 60 + (m || 0);
-              };
-              const slotMin = timeToMin(slot);
-              const ongoingAppt = !matchedAppt && bookings.find(b => {
-                if (b.date !== currentDate || b.status === 'cancelado') return false;
-                const bStart = timeToMin(b.time);
-                const bEnd = bStart + (b.duration || 60);
-                return bStart < slotMin && slotMin < bEnd;
-              });
-
-              const jonProf = settings?.professionals?.find(p => p.id === 'jon');
-              const blockedBySettings = !matchedAppt && !ongoingAppt && isSlotBlocked(jonProf, currentDate, slot);
-              
-              return (
-                <div key={slot} className="mobile-timeline-row" onClick={() => handleSlotClick(slot)}>
-                  <div className="mobile-timeline-time-col">{slot}</div>
-                  <div className="mobile-timeline-slot-col">
-                    {matchedAppt ? (
-                      <div className={`mobile-timeline-appt-block ${matchedAppt.status}`}>
-                        <div className="appt-block-client">{matchedAppt.clientName}</div>
-                        <div className="appt-block-service">{matchedAppt.service?.name || matchedAppt.serviceName}</div>
-                        <div className="appt-block-meta">
-                          <span>{matchedAppt.status.toUpperCase()}</span>
-                          {matchedAppt.status !== 'bloqueado' && (
-                            <span>R$ {(matchedAppt.service?.price || matchedAppt.servicePrice || 0).toFixed(0)}</span>
-                          )}
-                        </div>
-                      </div>
-                    ) : ongoingAppt ? (
-                      <div 
-                        className={`mobile-timeline-appt-block ${ongoingAppt.status}`}
-                        style={{ 
-                          opacity: 0.85, 
-                          borderLeftStyle: 'dashed',
-                          background: ongoingAppt.status === 'bloqueado' ? undefined : '#faf5ee'
-                        }}
-                      >
-                        <div className="appt-block-client" style={{ color: 'var(--mobile-text)' }}>↳ {ongoingAppt.clientName} (Ocupado)</div>
-                        <div className="appt-block-service">{ongoingAppt.service?.name || ongoingAppt.serviceName}</div>
-                        <div className="appt-block-meta">
-                          <span>{ongoingAppt.status.toUpperCase()}</span>
-                          {ongoingAppt.status !== 'bloqueado' && (
-                            <span>R$ {(ongoingAppt.service?.price || ongoingAppt.servicePrice || 0).toFixed(0)}</span>
-                          )}
-                        </div>
-                      </div>
-                    ) : blockedBySettings ? (
-                      <div className="mobile-empty-slot-btn bloqueado-escala" style={{ background: '#f5ebe0', border: '1px dashed #d4bda8', color: '#8b694b', opacity: 0.85 }}>
-                        <span>🚫 Bloqueado (Escala) · Toque para agendar</span>
-                      </div>
-                    ) : (
-                      <div className="mobile-empty-slot-btn">
-                        <span>+ Toque para agendar/bloquear</span>
-                      </div>
-                    )}
-                  </div>
+            {agendaView === 'diario' ? (
+              <>
+                <button className="mobile-day-btn" onClick={() => handleDateChange(-1)}>
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="mobile-current-day-label">
+                  <span className="date-string">{dateInfo.dateString}</span>
+                  <span className="weekday-string">{dateInfo.weekdayString}</span>
                 </div>
-              );
-            })}
+                <button className="mobile-day-btn" onClick={() => handleDateChange(1)}>
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            ) : agendaView === 'semanal' ? (
+              <>
+                <button className="mobile-day-btn" onClick={() => handleWeekChange(-1)}>
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="mobile-current-day-label">
+                  <span className="date-string">
+                    Semana de {formatLocalDate(getWeekDays(currentDate)[0]).dateString.split(' ')[0]} a {formatLocalDate(getWeekDays(currentDate)[6]).dateString}
+                  </span>
+                  <span className="weekday-string">Filtro Semanal</span>
+                </div>
+                <button className="mobile-day-btn" onClick={() => handleWeekChange(1)}>
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            ) : (
+              <>
+                <button className="mobile-day-btn" onClick={() => handleMonthChange(-1)}>
+                  <ChevronLeft size={20} />
+                </button>
+                <div className="mobile-current-day-label">
+                  <span className="date-string" style={{ textTransform: 'capitalize' }}>
+                    {new Date(currentDate + 'T00:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                  </span>
+                  <span className="weekday-string">Filtro Mensal</span>
+                </div>
+                <button className="mobile-day-btn" onClick={() => handleMonthChange(1)}>
+                  <ChevronRight size={20} />
+                </button>
+              </>
+            )}
           </div>
+
+          {/* VIEW: DIÁRIO */}
+          {agendaView === 'diario' && (
+            <div className="mobile-timeline-scroll">
+              {hourSlots.map(slot => {
+                const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
+                
+                const timeToMin = (t) => {
+                  if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
+                  const [h, m] = t.split(':').map(Number);
+                  return (h || 0) * 60 + (m || 0);
+                };
+                const slotMin = timeToMin(slot);
+                const ongoingAppt = !matchedAppt && bookings.find(b => {
+                  if (b.date !== currentDate || b.status === 'cancelado') return false;
+                  const bStart = timeToMin(b.time);
+                  const bEnd = bStart + (b.duration || 60);
+                  return bStart < slotMin && slotMin < bEnd;
+                });
+
+                const jonProf = settings?.professionals?.find(p => p.id === 'jon');
+                const blockedBySettings = !matchedAppt && !ongoingAppt && isSlotBlocked(jonProf, currentDate, slot);
+                
+                return (
+                  <div key={slot} className="mobile-timeline-row" onClick={() => handleSlotClick(slot)}>
+                    <div className="mobile-timeline-time-col">{slot}</div>
+                    <div className="mobile-timeline-slot-col">
+                      {matchedAppt ? (
+                        <div className={`mobile-timeline-appt-block ${matchedAppt.status}`}>
+                          <div className="appt-block-client">{matchedAppt.clientName}</div>
+                          <div className="appt-block-service">{matchedAppt.service?.name || matchedAppt.serviceName}</div>
+                          <div className="appt-block-meta">
+                            <span>{matchedAppt.status.toUpperCase()}</span>
+                            {matchedAppt.status !== 'bloqueado' && (
+                              <span>R$ {(matchedAppt.service?.price || matchedAppt.servicePrice || 0).toFixed(0)}</span>
+                            )}
+                          </div>
+                        </div>
+                      ) : ongoingAppt ? (
+                        <div 
+                          className={`mobile-timeline-appt-block ${ongoingAppt.status}`}
+                          style={{ 
+                            opacity: 0.85, 
+                            borderLeftStyle: 'dashed',
+                            background: ongoingAppt.status === 'bloqueado' ? undefined : '#faf5ee'
+                          }}
+                        >
+                          <div className="appt-block-client" style={{ color: 'var(--mobile-text)' }}>↳ {ongoingAppt.clientName} (Ocupado)</div>
+                          <div className="appt-block-service">{ongoingAppt.service?.name || ongoingAppt.serviceName}</div>
+                          <div className="appt-block-meta">
+                            <span>{ongoingAppt.status.toUpperCase()}</span>
+                            {ongoingAppt.status !== 'bloqueado' && (
+                              <span>R$ {(ongoingAppt.service?.price || ongoingAppt.servicePrice || 0).toFixed(0)}</span>
+                            )}
+                          </div>
+                        </div>
+                      ) : blockedBySettings ? (
+                        <div className="mobile-empty-slot-btn bloqueado-escala" style={{ background: '#f5ebe0', border: '1px dashed #d4bda8', color: '#8b694b', opacity: 0.85 }}>
+                          <span>🚫 Bloqueado (Escala) · Toque para agendar</span>
+                        </div>
+                      ) : (
+                        <div className="mobile-empty-slot-btn">
+                          <span>+ Toque para agendar/bloquear</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* VIEW: SEMANAL (TABELA) */}
+          {agendaView === 'semanal' && (
+            <div style={{ padding: 16, overflowX: 'auto', background: 'white', flex: 1, paddingBottom: 80 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid var(--mobile-rule)', textAlign: 'left' }}>
+                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)' }}>Dia/Hora</th>
+                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)' }}>Cliente</th>
+                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)' }}>Serviço</th>
+                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)', textAlign: 'right' }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(() => {
+                    const wDays = getWeekDays(currentDate);
+                    const weekBookings = bookings.filter(b => b.date && wDays.includes(b.date) && b.status !== 'cancelado');
+                    weekBookings.sort((a, b) => {
+                      const dateComp = a.date.localeCompare(b.date);
+                      if (dateComp !== 0) return dateComp;
+                      return a.time.localeCompare(b.time);
+                    });
+
+                    if (weekBookings.length === 0) {
+                      return (
+                        <tr>
+                          <td colSpan="4" style={{ textAlign: 'center', padding: '32px 0', color: 'var(--mobile-muted)' }}>
+                            Nenhum agendamento para esta semana.
+                          </td>
+                        </tr>
+                      );
+                    }
+
+                    return weekBookings.map(b => {
+                      const parts = b.date.split('-');
+                      const dayLabel = `${parts[2]}/${parts[1]}`;
+                      return (
+                        <tr 
+                          key={b.id} 
+                          onClick={() => setSelectedBooking(b)} 
+                          style={{ borderBottom: '1px solid var(--mobile-rule)', cursor: 'pointer' }}
+                        >
+                          <td style={{ padding: '12px 4px', fontWeight: 'bold' }}>{dayLabel} - {b.time}</td>
+                          <td style={{ padding: '12px 4px' }}>{b.clientName}</td>
+                          <td style={{ padding: '12px 4px', color: 'var(--mobile-muted)' }}>{b.service?.name || b.serviceName}</td>
+                          <td style={{ padding: '12px 4px', textAlign: 'right' }}>
+                            <span className={`appt-status ${b.status}`} style={{ fontSize: '0.65rem', padding: '2px 4px' }}>
+                              {b.status.toUpperCase()}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    });
+                  })()}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* VIEW: MENSAL (CALENDÁRIO COM PONTOS) */}
+          {agendaView === 'mensal' && (
+            <div style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 8, textAlign: 'center', fontWeight: 'bold', fontSize: '0.75rem', color: 'var(--mobile-muted)' }}>
+                <div>Dom</div>
+                <div>Seg</div>
+                <div>Ter</div>
+                <div>Qua</div>
+                <div>Qui</div>
+                <div>Sex</div>
+                <div>Sáb</div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6 }}>
+                {getDaysInMonth(currentDate).map((cell, idx) => {
+                  if (!cell) {
+                    return <div key={`empty-${idx}`} style={{ minHeight: 60, background: '#fcfcfc', opacity: 0.3 }} />;
+                  }
+                  
+                  const dayNum = Number(cell.split('-')[2]);
+                  const dayBookings = bookings.filter(b => b.date === cell && b.status !== 'cancelado');
+                  const isToday = cell === new Date().toISOString().split('T')[0];
+                  
+                  return (
+                    <div 
+                      key={cell} 
+                      onClick={() => {
+                        setCurrentDate(cell);
+                        setAgendaView('diario');
+                      }}
+                      style={{
+                        minHeight: 60,
+                        border: '1px solid var(--mobile-rule)',
+                        borderRadius: 8,
+                        padding: 4,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        background: isToday ? 'rgba(176, 90, 46, 0.08)' : '#fbfaf8',
+                        borderColor: isToday ? 'var(--mobile-primary)' : 'var(--mobile-rule)',
+                        cursor: 'pointer',
+                        transition: 'background 0.2s'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.8rem', fontWeight: isToday ? 'bold' : 'normal', color: isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)' }}>
+                        {dayNum}
+                      </span>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2, marginTop: 4 }}>
+                        {dayBookings.slice(0, 4).map((b, bIdx) => {
+                          let dotColor = '#C97B49'; // pendente
+                          if (b.status === 'confirmado') dotColor = '#B05A2E';
+                          if (b.status === 'finalizado') dotColor = '#4A5D4E';
+                          if (b.status === 'bloqueado') dotColor = '#a0aec0';
+                          return (
+                            <span 
+                              key={b.id || bIdx} 
+                              style={{
+                                width: 5,
+                                height: 5,
+                                borderRadius: '50%',
+                                backgroundColor: dotColor,
+                                display: 'inline-block'
+                              }} 
+                            />
+                          );
+                        })}
+                        {dayBookings.length > 4 && (
+                          <span style={{ fontSize: '0.6rem', fontWeight: 'bold', color: 'var(--mobile-muted)', lineHeight: '5px' }}>+</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
