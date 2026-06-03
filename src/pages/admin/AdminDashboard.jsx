@@ -370,6 +370,89 @@ const AdminDashboard = () => {
     }
   };
 
+  const [showAddClientModal, setShowAddClientModal] = useState(false);
+  const [newClientForm, setNewClientForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    curvatura: '3A',
+    porosidade: 'Média',
+    elasticidade: 'Normal',
+    quimicas: 'Nenhuma',
+    produtosRecomendados: '',
+    observacoes: '',
+    sexo: 'Feminino',
+    birthdate: ''
+  });
+
+  const handleCreateClientInline = async (e) => {
+    if (e) e.preventDefault();
+    if (!newClientForm.name || !newClientForm.phone) {
+      alert('Nome e Telefone são campos obrigatórios.');
+      return;
+    }
+
+    const cleanPhone = newClientForm.phone.replace(/\D/g, '');
+    const profilePayload = {
+      name: newClientForm.name,
+      phone: cleanPhone,
+      email: newClientForm.email || 'Não informado',
+      curvatura: newClientForm.curvatura,
+      porosidade: newClientForm.porosidade,
+      elasticidade: newClientForm.elasticidade,
+      quimicas: newClientForm.quimicas || 'Nenhuma',
+      produtosRecomendados: newClientForm.produtosRecomendados || '',
+      observacoes: newClientForm.observacoes || '',
+      sexo: newClientForm.sexo || 'Feminino',
+      birthdate: newClientForm.birthdate || '',
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (isDemoMode || !db) {
+        const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        localClients.push(profilePayload);
+        localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+        setClients(prev => [...prev, profilePayload]);
+      } else {
+        const docRef = doc(db, 'client_profiles', cleanPhone);
+        await setDoc(docRef, profilePayload);
+        setClients(prev => {
+          const list = prev.filter(c => c.phone !== cleanPhone);
+          return [...list, profilePayload];
+        });
+      }
+
+      alert('Cliente cadastrado com sucesso!');
+      
+      setNewBooking(prev => ({
+        ...prev,
+        clientName: newClientForm.name,
+        clientPhone: cleanPhone,
+        clientEmail: newClientForm.email || ''
+      }));
+
+      setShowAddClientModal(false);
+      
+      setNewClientForm({
+        name: '',
+        phone: '',
+        email: '',
+        curvatura: '3A',
+        porosidade: 'Média',
+        elasticidade: 'Normal',
+        quimicas: 'Nenhuma',
+        produtosRecomendados: '',
+        observacoes: '',
+        sexo: 'Feminino',
+        birthdate: ''
+      });
+    } catch (err) {
+      console.error('Erro ao cadastrar cliente:', err);
+      alert('Não foi possível salvar o cadastro.');
+    }
+  };
+
   // Formulário para novo agendamento manual
   const [newBooking, setNewBooking] = useState({
     clientName: '',
@@ -3281,7 +3364,7 @@ ${googleLink}
               </div>
               {/* BOTÃO CADASTRAR NOVO CLIENTE */}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
-                <button type="button" onClick={() => { window.location.href = '/admin/clientes'; }} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
+                <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
                   <Plus size={14} /> Cadastrar novo cliente (Ficha Completa)
                 </button>
               </div>
@@ -3433,6 +3516,155 @@ ${googleLink}
                 )}
                 <button type="submit" className="btn btn-accent">Salvar na Agenda</button>
               </div>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL 2.5: CADASTRAR CLIENTE INLINE */}
+      {showAddClientModal && (
+        <div className="modal-overlay" style={{ zIndex: 1100 }}>
+          <form
+            className="modal-content"
+            onSubmit={handleCreateClientInline}
+            style={{ maxHeight: '95vh', maxWidth: '600px', width: '95%', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '24px' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexShrink: 0 }}>
+              <h3 style={{ margin: 0, borderBottom: 'none', paddingBottom: 0 }}>Cadastrar Novo Cliente</h3>
+              <button type="button" className="btn-icon" onClick={() => setShowAddClientModal(false)}><X size={18} /></button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 16, rowGap: 12, overflowY: 'auto', flex: 1, paddingRight: 4, paddingBottom: 8 }}>
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Nome Completo *</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="Ex: Ana Souza"
+                  value={newClientForm.name}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>WhatsApp *</label>
+                <input 
+                  type="tel" 
+                  required 
+                  placeholder="Ex: 31999998888"
+                  value={newClientForm.phone}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, phone: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>E-mail (Opcional)</label>
+                <input 
+                  type="email" 
+                  placeholder="Ex: ana@email.com"
+                  value={newClientForm.email}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Sexo</label>
+                <select 
+                  value={newClientForm.sexo}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, sexo: e.target.value }))}
+                >
+                  <option value="Feminino">Feminino</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Data de Nascimento</label>
+                <input 
+                  type="date"
+                  value={newClientForm.birthdate}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, birthdate: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Curvatura</label>
+                <select 
+                  value={newClientForm.curvatura}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, curvatura: e.target.value }))}
+                >
+                  <option value="2A">2A</option>
+                  <option value="2B">2B</option>
+                  <option value="2C">2C</option>
+                  <option value="3A">3A</option>
+                  <option value="3B">3B</option>
+                  <option value="3C">3C</option>
+                  <option value="4A">4A</option>
+                  <option value="4B">4B</option>
+                  <option value="4C">4C</option>
+                  <option value="Liso">Liso</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Porosidade</label>
+                <select 
+                  value={newClientForm.porosidade}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, porosidade: e.target.value }))}
+                >
+                  <option value="Baixa">Baixa</option>
+                  <option value="Média">Média</option>
+                  <option value="Alta">Alta</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: 0 }}>
+                <label>Elasticidade</label>
+                <select 
+                  value={newClientForm.elasticidade}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, elasticidade: e.target.value }))}
+                >
+                  <option value="Normal">Normal</option>
+                  <option value="Fraca">Fraca</option>
+                  <option value="Alta">Alta</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>
+                <label>Histórico de Químicas</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Nenhuma, ou Luzes há 6 meses"
+                  value={newClientForm.quimicas}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, quimicas: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>
+                <label>Produtos Recomendados</label>
+                <textarea 
+                  rows="2"
+                  placeholder="Ex: Ativador de Cachos, Creme Leve..."
+                  value={newClientForm.produtosRecomendados}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, produtosRecomendados: e.target.value }))}
+                ></textarea>
+              </div>
+
+              <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>
+                <label>Observações Gerais</label>
+                <textarea 
+                  rows="2"
+                  placeholder="Observações ou particularidades do fio/couro..."
+                  value={newClientForm.observacoes}
+                  onChange={e => setNewClientForm(prev => ({ ...prev, observacoes: e.target.value }))}
+                ></textarea>
+              </div>
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowAddClientModal(false)}>Cancelar</button>
+              <button type="submit" className="btn btn-accent">Salvar e Selecionar</button>
             </div>
           </form>
         </div>

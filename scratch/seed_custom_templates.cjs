@@ -316,7 +316,7 @@ async function run() {
           </div>
           <div class="card-cell">
             <div class="meta-lbl">Duração Estimada</div>
-            <div class="meta-val">2h00</div>
+            <div class="meta-val">{duracao}</div>
           </div>
         </div>
       </div>
@@ -382,7 +382,7 @@ async function run() {
           </div>
           <div class="card-cell">
             <div class="meta-lbl">Duração</div>
-            <div class="meta-val">2h00</div>
+            <div class="meta-val">{duracao}</div>
           </div>
         </div>
       </div>
