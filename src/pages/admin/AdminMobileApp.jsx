@@ -63,6 +63,7 @@ const AdminMobileApp = () => {
   const [discount, setDiscount] = useState(0);
   const [editingBookingId, setEditingBookingId] = useState(null);
   const [activeAlert, setActiveAlert] = useState(null); // { id, title, message, booking }
+  const [isFabOpen, setIsFabOpen] = useState(false);
 
   // Venda Avulsa de Produtos
   const [showDirectSaleModal, setShowDirectSaleModal] = useState(false);
@@ -1672,7 +1673,7 @@ ${googleLink}
       
       {/* 1. ABA INÍCIO */}
       {activeTab === 'inicio' && (
-        <div className="mobile-home-container">
+        <div className="mobile-home-container mobile-tab-view">
           {/* Welcome Banner com Logo Harmonizada */}
           <div className="mobile-welcome-banner">
             <div className="mobile-welcome-content">
@@ -1749,7 +1750,7 @@ ${googleLink}
                   </div>
                   <div className="mobile-appt-right">
                     <span className="appt-time">{b.time || '—'}</span>
-                    <span className={`appt-status ${b.status || 'pendente'}`}>{(b.status || 'pendente').toUpperCase()}</span>
+                    <span className={`appt-status ${b.status || 'pendente'}`}>{ (b.status || 'pendente').toUpperCase() }</span>
                   </div>
                 </div>
               ))
@@ -1760,7 +1761,7 @@ ${googleLink}
 
       {/* 2. ABA AGENDA (TIMELINE DIÁRIA, WEEKLY TABLE, MONTHLY DOTS) */}
       {activeTab === 'agenda' && (
-        <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div className="mobile-tab-view" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           <div className="mobile-agenda-header">
             <select 
               className="mobile-agenda-select" 
@@ -2091,7 +2092,7 @@ ${googleLink}
 
       {/* 4. ABA COMISSÕES */}
       {activeTab === 'comissoes' && (
-        <div className="mobile-commissions-container">
+        <div className="mobile-commissions-container mobile-tab-view">
           <div className="mobile-comm-total-card">
             <div className="comm-card-title">
               <span>Total feito em comissão</span>
@@ -2134,7 +2135,7 @@ ${googleLink}
 
       {/* 5. ABA OPÇÕES */}
       {activeTab === 'opcoes' && (
-        <div className="mobile-options-container">
+        <div className="mobile-options-container mobile-tab-view">
           {/* Perfil do Jon */}
           <div className="mobile-profile-card">
             <div className="mobile-profile-avatar">
@@ -2250,6 +2251,29 @@ ${googleLink}
         </div>
       )}
 
+      {/* Floating Action Button (FAB) Menu */}
+      <div className="mobile-fab-container">
+        <button 
+          className={`mobile-fab-btn ${isFabOpen ? 'active' : ''}`} 
+          onClick={() => setIsFabOpen(!isFabOpen)}
+        >
+          <Plus size={24} />
+        </button>
+        {isFabOpen && (
+          <div className="mobile-fab-menu">
+            <div className="mobile-fab-item" onClick={() => { setIsFabOpen(false); setEditingBookingId(null); resetBookingForm(); setNewBooking(prev => ({ ...prev, date: new Date().toISOString().split('T')[0] })); setShowAddBookingModal(true); }}>
+              <CalendarIcon size={16} /> Novo agendamento
+            </div>
+            <div className="mobile-fab-item" onClick={() => { setIsFabOpen(false); setShowAddClientModal(true); }}>
+              <User size={16} /> Registrar cliente
+            </div>
+            <div className="mobile-fab-item" onClick={() => { setIsFabOpen(false); setShowDirectSaleModal(true); }}>
+              <DollarSign size={16} /> Venda avulsa de produtos
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* BARRA DE NAVEGAÇÃO INFERIOR FIXA */}
       <nav className="mobile-bottom-nav">
         <button className={`mobile-nav-item ${activeTab === 'inicio' ? 'active' : ''}`} onClick={() => setActiveTab('inicio')}>
@@ -2264,13 +2288,6 @@ ${googleLink}
             <CalendarIcon size={20} />
           </div>
           <span>Agenda</span>
-        </button>
-
-        <button className={`mobile-nav-item ${activeTab === 'acoes' ? 'active' : ''}`} onClick={() => setActiveTab('acoes')}>
-          <div className="icon-container">
-            <Plus size={20} />
-          </div>
-          <span>Ações</span>
         </button>
 
         <button className={`mobile-nav-item ${activeTab === 'comissoes' ? 'active' : ''}`} onClick={() => setActiveTab('comissoes')}>

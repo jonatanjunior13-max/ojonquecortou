@@ -1885,16 +1885,25 @@ ${googleLink}
           {/* Cards de Métricas */}
           <section className="admin-stats-grid">
             <div className="stat-card">
-              <h3>Agendamentos Ativos (Dia)</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>Agendamentos Ativos (Dia)</h3>
+                <Calendar size={18} style={{ color: 'var(--accent)', opacity: 0.8 }} />
+              </div>
               <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
             </div>
             <div className="stat-card">
-              <h3>Aguardando Confirmação</h3>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>Aguardando Confirmação</h3>
+                <Clock size={18} style={{ color: '#ecc94b', opacity: 0.8 }} />
+              </div>
               <div className="value" style={{ color: '#ecc94b' }}>{pendingCount}</div>
             </div>
             <div className="stat-card">
-              <h3>Receita Consolidada (Semana)</h3>
-              <div className="value" style={{ color: '#48bb78' }}>R$ {revenueThisWeek}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>Receita Consolidada (Semana)</h3>
+                <DollarSign size={18} style={{ color: '#4a5d4e', opacity: 0.8 }} />
+              </div>
+              <div className="value" style={{ color: '#4a5d4e' }}>R$ {revenueThisWeek}</div>
             </div>
           </section>
 

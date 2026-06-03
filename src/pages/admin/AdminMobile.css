@@ -25,8 +25,24 @@
   --mobile-radius-sm: 10px;
   --mobile-radius-md: 14px;
   --mobile-radius-lg: 20px;
-  --mobile-transition: 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --mobile-transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   --mobile-transition-fast: 0.15s ease-out;
+}
+
+/* Slide tab transitions */
+.mobile-tab-view {
+  animation: swipeFadeIn 0.35s var(--mobile-transition);
+}
+
+@keyframes swipeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Reset Geral Mobile */
@@ -1128,6 +1144,71 @@
 }
 
 /* Central de Notificações */
+.mobile-fab-container {
+  position: fixed;
+  bottom: 96px;
+  right: 18px;
+  z-index: 99;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.mobile-fab-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 28px;
+  background: var(--mobile-primary);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(176, 90, 46, 0.4);
+  cursor: pointer;
+  transition: transform 0.3s var(--mobile-transition);
+}
+
+.mobile-fab-btn.active {
+  transform: rotate(135deg);
+  background: var(--mobile-primary-dark);
+}
+
+.mobile-fab-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  animation: fabFadeIn 0.25s var(--mobile-transition);
+}
+
+@keyframes fabFadeIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.mobile-fab-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--mobile-rule);
+  box-shadow: var(--mobile-shadow-md);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--mobile-text);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s;
+}
+
+.mobile-fab-item:active {
+  transform: scale(0.95);
+}
+
 .bell-badge-container {
   display: flex;
   align-items: center;
