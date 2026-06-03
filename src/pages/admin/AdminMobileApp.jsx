@@ -36,10 +36,10 @@ const DEFAULT_SETTINGS = {
 };
 
 const AdminMobileApp = () => {
-  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('inicio');
   const [currentDate, setCurrentDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [agendaView, setAgendaView] = useState('diario');
+  const [businessPeriod, setBusinessPeriod] = useState('mes');
 
   // Firestore & local states
   const [bookings, setBookings] = useState([]);
@@ -635,16 +635,25 @@ const AdminMobileApp = () => {
     });
   };
 
-  // 2. Auxiliares Financeiros (Mês Corrente)
+  // 2. Auxiliares Financeiros (Mês ou Semana)
   const getFinancialStats = () => {
     const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
     const currentYear = now.getFullYear();
-    const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
-    const monthPrefix = `${currentYear}-${currentMonth}`;
+    
+    let filteredTx = [];
+    
+    if (businessPeriod === 'semana') {
+      const wDays = getWeekDays(todayStr);
+      filteredTx = transactions.filter(t => t.date && wDays.includes(t.date));
+    } else {
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+      const monthPrefix = `${currentYear}-${currentMonth}`;
+      filteredTx = transactions.filter(t => t.date && t.date.startsWith(monthPrefix));
+    }
 
-    const monthTx = transactions.filter(t => t.date && t.date.startsWith(monthPrefix));
-    const receitas = monthTx.filter(t => t.type === 'entrada').reduce((sum, t) => sum + (t.value || 0), 0);
-    const despesas = monthTx.filter(t => t.type === 'saida').reduce((sum, t) => sum + (t.value || 0), 0);
+    const receitas = filteredTx.filter(t => t.type === 'entrada').reduce((sum, t) => sum + (t.value || 0), 0);
+    const despesas = filteredTx.filter(t => t.type === 'saida').reduce((sum, t) => sum + (t.value || 0), 0);
 
     return { receitas, despesas };
   };
@@ -1691,8 +1700,21 @@ ${googleLink}
 
           {/* Dados do Meu Negócio */}
           <div className="mobile-business-card">
-            <h3>Dados do meu negócio</h3>
-            <div className="period-text">Este mês corrente (Faturamento)</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <h3 style={{ margin: 0 }}>Dados do meu negócio</h3>
+              <select 
+                className="stats-scope-select"
+                value={businessPeriod} 
+                onChange={(e) => setBusinessPeriod(e.target.value)}
+                style={{ fontSize: '0.75rem', padding: '4px 8px' }}
+              >
+                <option value="semana">Esta Semana</option>
+                <option value="mes">Este Mês</option>
+              </select>
+            </div>
+            <div className="period-text">
+              {businessPeriod === 'semana' ? 'Faturamento da semana atual' : 'Faturamento do mês corrente'}
+            </div>
             
             <div className="mobile-financial-row">
               <div className="mobile-financial-item">
