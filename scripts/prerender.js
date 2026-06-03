@@ -97,6 +97,7 @@ const pages = [
 posts.forEach(post => {
   const postDesc = post.metaDescription || `${post.excerpt || post.title}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
   const isoDate = parseDateToISO(post.date);
+  const currentDate = new Date().toISOString().split('T')[0];
   
   const articleSchema = {
     "@context": "https://schema.org",
@@ -118,7 +119,7 @@ posts.forEach(post => {
       }
     },
     "datePublished": post.datePublished || isoDate,
-    "dateModified": post.dateModified || isoDate,
+    "dateModified": currentDate,
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`
@@ -177,7 +178,7 @@ pages.forEach(page => {
   // 6. Inject LD+JSON Schema
   if (page.schema) {
     const schemaScript = `\n    <script type="application/ld+json" id="dynamic-page-schema">\n    ${JSON.stringify(page.schema, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
-    html = html.replace('</head>', `${schemaScript}\n  </head>`);
+    html = html.replace('<!-- Google Fonts -->', `${schemaScript}\n\n    <!-- Google Fonts -->`);
   }
   
   // 7. Inject Noscript Body Content for Crawlers
