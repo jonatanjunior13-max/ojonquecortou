@@ -481,7 +481,7 @@ const AdminMobileApp = () => {
 
     // 1. Check for New Bookings (created in the last 60 seconds)
     bookings.forEach(booking => {
-      if (booking.createdAt && booking.status !== 'cancelado') {
+      if (booking.createdAt && booking.status !== 'cancelado' && booking.status !== 'bloqueado') {
         const createdTime = new Date(booking.createdAt).getTime();
         const id = `new_booking_${booking.id || booking.createdAt}`;
         if (nowTime - createdTime < 60000 && !notifiedRef.current.has(id)) {
@@ -497,7 +497,7 @@ const AdminMobileApp = () => {
 
     // 2. Check for 30-minute Pre-Appointment Alert
     bookings.forEach(booking => {
-      if (booking.status !== 'cancelado' && booking.date && booking.time) {
+      if (booking.status !== 'cancelado' && booking.status !== 'bloqueado' && booking.date && booking.time) {
         try {
           const [yr, mo, dy] = booking.date.split('-').map(Number);
           const [hr, mn] = booking.time.split(':').map(Number);
@@ -533,7 +533,7 @@ const AdminMobileApp = () => {
     endOfWeek.setHours(23, 59, 59, 999);
 
     bookings.forEach(booking => {
-      if (booking.status !== 'cancelado' && booking.date) {
+      if (booking.status !== 'cancelado' && booking.status !== 'bloqueado' && booking.date) {
         try {
           const [yr, mo, dy] = booking.date.split('-').map(Number);
           const bookingTime = new Date(yr, mo - 1, dy);
