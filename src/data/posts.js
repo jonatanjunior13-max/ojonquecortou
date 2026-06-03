@@ -1,5 +1,142 @@
 export const posts = [
   {
+    id: 37,
+    slug: 'leitura-de-fio-metodo-exclusivo-studio-do-jon',
+    title: 'Leitura de Fio: O Método Exclusivo que Acontece Antes de Qualquer Tesoura | Studio do Jon',
+    excerpt: 'Leitura de Fio é o método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes do corte. Entenda por que ler o cabelo é mais importante do que a tesoura em si.',
+    metaDescription: 'Leitura de Fio é o método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes do corte. Entenda por que ler o cabelo é mais importante do que a tesoura em si.',
+    keywords: 'leitura de fio, metodo leitura de fio, corte cabelo cacheado bh, visagismo cacheado belo horizonte, studio do jon',
+    date: '03 de Junho, 2026',
+    author: 'Jon',
+    category: 'Método & Diagnóstico',
+    image: '/jon-perfil.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Leitura de Fio é um serviço pago?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quanto tempo leva a Leitura de Fio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Em média de 15 a 30 minutes antes do corte começar. Pode ser mais longa se o histórico for complexo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso agendar só a Leitura de Fio sem marcar corte?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. É possível agendar uma consulta de diagnóstico separada para entender o seu fio antes de decidir qualquer coisa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A Leitura de Fio funciona para cabelo liso também?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O método foi desenvolvido especificamente para cabelos ondulados, cacheados e crespos, onde a variação de textura e histórico químico é mais complexa."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>Leitura de Fio: O Que Acontece Antes da Minha Tesoura Tocar o Seu Cabelo</h2>
+      <p>A maioria dos cabeleireiros já pegou a tesoura antes de te perguntar qualquer coisa. Eu não. Antes de qualquer corte no Studio do Jon, eu leio o fio. São 7 etapas. E é por isso que o resultado é diferente.</p>
+
+      <h2>O Que é Leitura de Fio?</h2>
+      <p>Leitura de Fio é o nome do método diagnóstico exclusivo do Studio do Jon. Não é uma técnica de corte. É o que vem antes. É o processo de entender o fio, o couro, o histórico e o estilo de vida <a href="/blog/metodo-leitura-de-fio-antes-da-tesoura">antes do corte</a>.</p>
+      <p>Eu vejo a sua cabeça como um território único. Não existem duas cabeças iguais. Nem no mesmo cliente. A curvatura do topo da sua cabeça é diferente da curvatura da nuca. A porosidade do lado direito não é a mesma do lado esquerdo. O histórico químico deixa marcas invisíveis. Entender isso não é um extra. É o básico.</p>
+      <p>A maioria dos profissionais simplesmente joga água, penteia e começa a passar a tesoura. Isso não é cortar cabelo cacheado. Isso é sorte. Quando você não sabe a real porosidade do fio, você não sabe como ele vai encolher. O resultado? Cortes tortos, buracos na estrutura e frustração. Eu decidi mudar esse jogo.</p>
+      <p>A Leitura de Fio é a ciência por trás da estética. Eu analiso o seu fio sob sete ângulos diferentes. Entendo a densidade de fios por centímetro quadrado. Meço a elasticidade natural da sua queratina. Observo a saúde do seu couro cabeludo. Pergunto sobre a sua rotina real de finalização em casa. Só depois disso tudo, a tesoura entra em ação.</p>
+      <p>Nenhum cabeleireiro deveria tocar no seu cabelo sem ter feito esse diagnóstico primeiro. Se o seu profissional atual pula direto para o lavatório ou começa a cortar sem conversar por pelo menos 15 minutos, ele está cortando no escuro. Você merece mais do que sorte.</p>
+      <p>O diagnóstico é o que me permite garantir o resultado. Sem surpresas na hora de secar. Sem cacho que perde a definição no dia seguinte. Quando eu leio o seu cabelo, eu sei exatamente o que estou fazendo. Você sabe o que esperar. E o caimento perfeito acontece.</p>
+
+      <h2>Por Que a Maioria dos Cortes Cacheados Dão Errado</h2>
+      <p>O erro começa muito antes da tesoura. Cabeleireiro que não lê o fio está cortando no escuro. Pode até acertar por sorte. Mas nunca por método. E quando erra, não sabe por que errou. Não tem como repetir o resultado quando dá certo, nem corrigir o problema quando dá errado.</p>
+      <p>Eu atendo clientes traumatizadas toda semana. Semana passada, atendi uma moça que saiu de outro salão com um buraco enorme no volume lateral. O profissional tentou fazer um corte em camadas molhado. Ele não viu que aquela região tinha uma elasticidade diferente e um encolhimento de quase setenta por cento. Quando o cabelo secou, o volume simplesmente subiu e abriu uma clareira. Um desastre que vai levar um ano para corrigir.</p>
+      <p>Outro caso clássico: a cliente que chega com três texturas diferentes na cabeça e sai com o famoso corte pirâmide. A raiz fica murcha e as laterais formam um triângulo sem nexo. O cabeleireiro cortou como se a densidade fosse uniforme. Ele não leu a distribuição de peso. Ele não entendeu a diferença de curvatura entre os quadrantes da cabeça.</p>
+      <p>Tem também quem está em transição capilar e perde seis meses de crescimento num único corte errado. O profissional não sabe identificar onde a química residual começa e onde a curvatura natural termina. Ele corta no meio da transição, tirando comprimento saudável e deixando pontas alisadas penduradas. O caimento fica horrível e a cliente se sente desestimulada a continuar.</p>
+      <p>Cabelo ondulado, cacheado e crespo é física pura. Ele trabalha com forças de encolhimento, gravidade, densidade e umidade. Se você não calcula essas variáveis antes de começar a cortar, o erro é matemático. Não é uma questão de estilo ou de gosto pessoal. É falta de leitura técnica preliminar.</p>
+
+      <h2>As 7 Etapas da Leitura de Fio</h2>
+      <p>Meu método é estruturado em sete etapas sequenciais. Cada uma alimenta a próxima. Eu não pulo nenhuma. Nem mesmo para clientes antigas. A cada visita, o seu cabelo pode estar diferente. O clima muda, a sua rotina muda, a saúde do fio muda. Por isso, a leitura é refeita sempre.</p>
+
+      <h3>Etapa 1 — Escuta</h3>
+      <p>Antes de encostar na sua cabeça, eu ouço. O que realmente te incomoda no seu cabelo hoje? Qual é o seu histórico de traumas em outros salões? O que você já tentou fazer em casa? O que já funcionou e, de repente, parou de funcionar?</p>
+      <p>Essa conversa inicial dura mais do que parece necessário. Mas ela é fundamental. A maioria das informações cruciais aparece aqui. Não no toque físico, mas na forma como você descreve a sua relação com o seu cabelo. Eu quero saber como é a sua rotina real. Se você tem tempo de usar difusor ou se precisa lavar e sair correndo para pegar o ônibus. Um corte lindo que exige duas horas de finalização é um corte inútil se você só tem dez minutos pela manhã.</p>
+
+      <h3>Etapa 2 — Análise a Seco</h3>
+      <p>Eu vejo o seu cabelo exatamente como ele chega ao Studio. Sem molhar. Sem produto novo. Sem interferência. O cabelo seco conta a história real do seu dia a dia. É onde as pistas de quebra, porosidade real e distribuição de volume se revelam.</p>
+      <p>O cabelo seco me mostra onde o seu cabelo perde peso natural, onde a curvatura perde força e onde o frizz é mais ativo. Eu observo o caimento dos fios quando você se movimenta. Consigo ver se a sua nuca está mais curta devido ao atrito com roupas ou se o topo está quebrado pelo uso de prendedores inadequados. A análise a seco revela o caimento real que nós vamos esculpir.</p>
+
+      <h3>Etapa 3 — Diagnóstico do Couro Cabeludo</h3>
+      <p>A saúde do seu fio nasce na raiz. Se o couro cabeludo não está saudável, o cacho não tem força para se formar. Eu examino a sua raiz em busca de oleosidade excessiva, descamação, caspa, sensibilidade ou foliculite inflamada.</p>
+      <p>Tudo isso interfere nas minhas decisões técnicas. Um couro cabeludo oleoso que recebe o produto finalizador errado vira um foco de coceira e queda de cabelo. Um couro ressecado submetido a técnicas de higienização agressivas vai produzir fios fracos e quebradiços. Eu trato o couro cabeludo como o solo de uma plantação. O solo precisa estar equilibrado para que a flor cresça saudável.</p>
+
+      <h3>Etapa 4 — Histórico Químico</h3>
+      <p>Esta é a fase da verdade. Eu preciso saber tudo o que o seu cabelo já passou nos últimos anos. Teve progressiva? Botox capilar? Relaxamento? Descoloração recente? Coloração para cobrir brancos? Quando foi a última aplicação?</p>
+      <p>Muitas vezes, resíduos químicos imperceptíveis ao olho nu comprometem a estrutura interna do fio. Eu testo a resistência mecânica da fibra. Quero ter certeza de que o seu fio aguenta o processo que você deseja sem quebrar. Se você quer fazer uma <a href="/servicos/descoloracao-cabelo-cacheado">descoloração</a>, por exemplo, o histórico químico é a barreira de segurança que me diz se podemos avançar ou se precisamos tratar o fio primeiro.</p>
+
+      <h3>Etapa 5 — Análise Molhada</h3>
+      <p>Com o cabelo limpo e molhado, a textura real e a curvatura se manifestam sem a interferência de cremes antigos ou finalizadores. Eu avalio a elasticidade molhada e a porosidade através do toque e da velocidade de absorção da água.</p>
+      <p>Muitas vezes, um fio que parece 3B quando está seco revela um padrão 3C quando molhado. Isso muda completamente a técnica de corte. O cabelo molhado me mostra a verdadeira mola do seu cacho. Consigo prever o fator de encolhimento preciso de cada mecha e evitar assimetrias indesejadas no resultado final.</p>
+
+      <h3>Etapa 6 — Definição de Técnica</h3>
+      <p>Só depois de passar pelas cinco etapas anteriores eu decido a estratégia. Vamos fazer o corte a seco ou molhado? Para mim, o verdadeiro <a href="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">corte a seco</a> não é moda, é necessidade técnica para desenhar o volume em tempo real. Vamos usar camadas desconectadas para dar volume ou uma linha geométrica para controlar o caimento? Quanto comprimento vamos tirar?</p>
+      <p>Essa decisão não segue um padrão de revista ou de vídeo do Instagram. Ela é baseada nas necessidades específicas do seu fio naquele exato momento. O <a href="/servicos/visagismo-cacheado">visagismo</a> entra aqui com força, harmonizando o formato do corte com as linhas do seu rosto, valorizando a sua expressão pessoal.</p>
+
+      <h3>Etapa 7 — Finalização como Validação</h3>
+      <p>A finalização no meu Studio não é apenas o acabamento estético para você tirar fotos. Ela é o teste de estresse do corte. É o momento onde validamos se o diagnóstico estava correto.</p>
+      <p>Se o cacho não define como o esperado ou se o volume se comporta de forma inadequada durante a secagem, a finalização me mostra onde o corte precisa de pequenos ajustes milimétricos. É a prova real de que o método funcionou. Você sai do salão com a certeza de que o caimento vai se manter bonito na sua rotina diária.</p>
+
+      <h2>Leitura de Fio Não é Consultoria. É Pré-Requisito.</h2>
+      <p>Eu vejo salões cobrando caro por "avaliações capilares" ou "consultorias" como serviços separados. Para mim, isso não faz sentido. A Leitura de Fio não é um produto extra que eu vendo para aumentar o valor do seu atendimento. Ela é a base de tudo o que eu faço.</p>
+      <p>Não existe a opção de pular a Leitura de Fio para pagar menos. Eu me recuso a fazer um corte sem diagnóstico prévio. Seria irresponsabilidade profissional. Seria comprometer o meu nome e a saúde do seu cabelo. A leitura é o meu compromisso com a excelência técnica.</p>
+      <p>Eu faço isso por respeito ao seu tempo e ao seu dinheiro. Sei o quanto dói gastar horas em um salão e sair de lá querendo lavar o cabelo imediatamente para tirar o aspectomartirizante artificial. A Leitura de Fio garante que o seu corte vai respeitar a sua identidade e a sua rotina real.</p>
+
+      <h2>O Que Muda no Resultado</h2>
+      <p>Quando você corta o cabelo com um profissional que lê o seu fio, a diferença é visível no espelho e no dia a dia. O caimento fica natural. Os cachos se encaixam como um quebra-cabeça perfeito.</p>
+      <p>Aqui está o que muda de forma concreta:</p>
+      <p>— O corte é feito para aquele cabelo, não para um cabelo genérico de catálogo.</p>
+      <p>— O resultado dura mais tempo, porque foi pensado para a rotina daquela pessoa específica.</p>
+      <p>— Quando algo não sai como esperado, eu sei exatamente onde ajustar.</p>
+      <p>— A cliente entende o próprio cabelo depois da consulta, não apenas sai com o cabelo bonito no dia.</p>
+
+      <h2>Perguntas Frequentes sobre Leitura de Fio</h2>
+      <p>Sei que o método pode parecer novidade para quem está acostumada com o atendimento tradicional de salão de beleza. Respondi abaixo as principais dúvidas que as clientes trazem para o Studio.</p>
+
+      <h3>Leitura de Fio é um serviço pago?</h3>
+      <p>Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre. O valor do corte já engloba todo o diagnóstico inicial de forma integrada.</p>
+
+      <h3>Quanto tempo leva a Leitura de Fio?</h3>
+      <p>Varia bastante de acordo com o estado do cabelo. Em média, o diagnóstico inicial leva de quinze a trinta minutos antes de eu pegar na tesoura. Esse tempo pode ser maior se o histórico do fio for complexo, como em casos de transição capilar longa ou danos por químicas anteriores.</p>
+
+      <h3>Posso agendar só a Leitura de Fio sem marcar corte?</h3>
+      <p>Sim. Se você está indecisa sobre mudar o visual ou quer apenas um diagnóstico completo do seu fio para montar um cronograma de cuidados eficiente, você pode agendar uma sessão exclusiva de Leitura de Fio no Studio.</p>
+
+      <h3>A Leitura de Fio funciona pra cabelo liso também?</h3>
+      <p>O método foi desenvolvido especificamente para cabelos ondulados, cacheados e crespos. Nessas curvaturas, as variações de textura, porosidade e fator de encolhimento são extremamente complexas e o risco de erro técnico é muito maior.</p>
+
+      <h3>Por que outros cabeleireiros não fazem isso?</h3>
+      <p>Alguns profissionais fazem conversas informais rápidas, mas poucos utilizam um método estruturado de sete etapas com critérios de validação claros. A maioria dos salões foca na velocidade do atendimento para aumentar o fluxo de clientes, o que impede a realização de um diagnóstico profundo.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Pronta para cortar com método e segurança?</h3>
+        <p>Saia do visual pesado e sem definição. Agenda seu corte com quem lê seu fio antes de qualquer corte.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 36,
     slug: 'shaggy-cacheado-corte-seco',
     title: 'Shaggy Cacheado e Corte a Seco: O Guia do Volume e Definição | Studio do Jon',

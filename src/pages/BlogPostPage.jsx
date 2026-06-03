@@ -142,6 +142,8 @@ const BlogPostPage = () => {
     }
   };
 
+  const combinedSchema = post.faqSchema ? [articleSchema, post.faqSchema] : articleSchema;
+
   return (
     <main className="post-page">
       <SEO 
@@ -149,7 +151,7 @@ const BlogPostPage = () => {
         description={postDesc}
         image={post.image}
         url={`/blog/${post.slug}`}
-        schema={articleSchema}
+        schema={combinedSchema}
       />
       <div className="container">
         <Link to="/blog" className="post-back reveal active">
