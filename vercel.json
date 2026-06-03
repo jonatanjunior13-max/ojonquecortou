@@ -34,6 +34,10 @@
       "dest": "/blog/$1/index.html"
     },
     {
+      "src": "/servicos/([^/]+)/?",
+      "dest": "/servicos/$1/index.html"
+    },
+    {
       "src": "/(sobre|servicos|galeria|depoimentos|blog)/?",
       "dest": "/$1/index.html"
     },

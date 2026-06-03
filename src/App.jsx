@@ -9,6 +9,8 @@ import CanonicalTag from './components/CanonicalTag';
 import Home from './pages/Home';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
+import BleachServicePage from './pages/BleachServicePage';
+import VisagismServicePage from './pages/VisagismServicePage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ReviewsPage from './pages/ReviewsPage';
@@ -57,6 +59,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/servicos" element={<ServicesPage />} />
+          <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
+          <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />
           <Route path="/galeria" element={<GalleryPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />

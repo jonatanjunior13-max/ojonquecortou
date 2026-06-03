@@ -34,11 +34,27 @@ function Navbar() {
             <span className="word">O Jon que Cortou</span>
           </Link>
           <div className="nav-links">
-            {links.map((l) => (
-              <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""}>
-                {l.label}
-              </Link>
-            ))}
+            {links.map((l) => {
+              if (l.id === "/servicos") {
+                return (
+                  <div key={l.id} className="nav-dropdown-wrapper">
+                    <Link to={l.id} className={current.startsWith("/servicos") ? "active nav-dropdown-trigger" : "nav-dropdown-trigger"}>
+                      {l.label} <span className="dropdown-caret">▼</span>
+                    </Link>
+                    <div className="nav-dropdown-menu">
+                      <Link to="/servicos">Todos os Serviços</Link>
+                      <Link to="/servicos/descoloracao-cabelo-cacheado">Descoloração de Cachos</Link>
+                      <Link to="/servicos/visagismo-cacheado">Visagismo de Cachos</Link>
+                    </div>
+                  </div>
+                );
+              }
+              return (
+                <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""}>
+                  {l.label}
+                </Link>
+              );
+            })}
           </div>
           <div className="nav-cta">
             <Link to="/agendar" className="btn btn-primary hide-mobile">
@@ -61,11 +77,30 @@ function Navbar() {
               <button className="close" onClick={() => setOpen(false)}>×</button>
             </div>
             <div className="mobile-menu-links">
-              {links.map((l) => (
-                <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""} onClick={() => setOpen(false)}>
-                  {l.label}<Arrow />
-                </Link>
-              ))}
+              {links.map((l) => {
+                if (l.id === "/servicos") {
+                  return (
+                    <React.Fragment key={l.id}>
+                      <Link to={l.id} className={current === l.id ? "active" : ""} onClick={() => setOpen(false)}>
+                        {l.label}<Arrow />
+                      </Link>
+                      <div className="mobile-sublinks" style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '8px' }}>
+                        <Link to="/servicos/descoloracao-cabelo-cacheado" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
+                          ↳ Descoloração de Cachos
+                        </Link>
+                        <Link to="/servicos/visagismo-cacheado" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
+                          ↳ Visagismo de Cachos
+                        </Link>
+                      </div>
+                    </React.Fragment>
+                  );
+                }
+                return (
+                  <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""} onClick={() => setOpen(false)}>
+                    {l.label}<Arrow />
+                  </Link>
+                );
+              })}
             </div>
             <a href="https://wa.me/553135866673" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ marginTop: 28 }}>
               Agendar pelo WhatsApp <Arrow />

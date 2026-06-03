@@ -89,7 +89,17 @@ const pages = [
   {
     route: '/galeria',
     title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
-    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos e ondulados feitos pelo Jon.'
+    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.'
+  },
+  {
+    route: '/servicos/descoloracao-cabelo-cacheado',
+    title: 'Descoloração em Cabelo Cacheado em BH | Studio do Jon',
+    description: 'Descoloração em cabelo cacheado feita com protocolo especializado em BH. O Studio do Jon avalia porosidade, histórico químico e textura antes de qualquer processo. Agende.'
+  },
+  {
+    route: '/servicos/visagismo-cacheado',
+    title: 'Visagismo para Cabelos Cacheados em BH | Studio do Jon',
+    description: 'Visagismo especializado em cabelos cacheados em Belo Horizonte. O Studio do Jon analisa formato do rosto, textura e estilo de vida antes de definir o corte ideal para você.'
   }
 ];
 
