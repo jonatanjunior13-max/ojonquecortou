@@ -501,6 +501,8 @@ export const HTML_TEMPLATES = {
 `,
   'aniversario': `
 <div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <!-- Preview Text -->
+  <div style="display: none; max-height: 0px; overflow: hidden;">Que tal entrar no seu dia com o cabelo no ponto?</div>
   
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 40px;">
     <tr>
@@ -522,11 +524,11 @@ export const HTML_TEMPLATES = {
 
   <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.14); margin: 32px 0;" />
 
-  <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 22px; line-height: 1.4; color: #1A1310; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; margin: 28px 0 0; max-width: 50ch;">
-    [Nome], parabéns!<br>
-    Aniversário com o cabelo bem lido é diferente. Você sabe disso.<br><br>
-    Feliz aniversário. Se quiser passar pelo Studio esse mês: [link de agendamento]<br>
-    — Jon
+  <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 16.5px; line-height: 1.6; color: #1A1310; margin: 28px 0 0; max-width: 50ch;">
+    {nome},<br><br>
+    Daqui a alguns dias é o seu aniversário.<br><br>
+    É uma boa época pra passar pelo Studio — entrar no seu dia especial com o fio lido, o cacho no formato certo, sem se preocupar com nada.<br><br>
+    A agenda tem horário essa semana. Se quiser garantir o seu antes da data:
   </p>
 
   <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.14); margin: 32px 0;" />

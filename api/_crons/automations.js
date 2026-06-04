@@ -143,7 +143,7 @@ const templates = {
     linkText: 'Agendar Horário'
   },
   'aniversario': { 
-    subject: 'Parabéns, {nome}.', 
+    subject: 'Seu aniversário tá chegando, {nome}', 
     content: HTML_TEMPLATES['aniversario'],
     linkUrl: 'https://ojonquecortou.com.br/agendar',
     linkText: 'Agendar Horário'
