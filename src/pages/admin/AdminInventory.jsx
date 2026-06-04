@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Edit2, Trash2, AlertTriangle, ArrowUp } from 'lucide-react';
@@ -15,11 +16,48 @@ const SEED_PRODUCTS = [
 const CATEGORIES = ['Shampoo', 'Condicionador', 'Máscara', 'Finalizador', 'Óleo', 'Acessório', 'Outros'];
 
 const AdminInventory = () => {
+  const { setGlobalData } = useOutletContext() || {};
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+
+  const logProductExpense = async (productName, quantity, costPrice, actionType = 'Compra') => {
+    const cost = Number(quantity) * Number(costPrice);
+    if (cost <= 0) return;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const payload = {
+      date: todayStr,
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: 'Estoque/Almoxarifado',
+      type: 'saida',
+      paymentMethod: 'Outro',
+      value: cost,
+      description: `${actionType} de estoque: ${productName} (+${quantity} un.)`,
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (isDemoMode) {
+        const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
+        const updated = [{ id: 'tx_' + Date.now(), ...payload }, ...local];
+        localStorage.setItem('demo_financial', JSON.stringify(updated));
+        if (setGlobalData) {
+          setGlobalData(prev => ({
+            ...prev,
+            financial_transactions: updated
+          }));
+        }
+      } else {
+        await addDoc(collection(db, 'financial_transactions'), payload);
+      }
+      console.log('Despesa de produto adicionada com sucesso:', payload);
+    } catch (err) {
+      console.error('Erro ao registrar despesa de produto:', err);
+    }
+  };
   
   // Quick restock states
   const [quickRestockId, setQuickRestockId] = useState(null);
@@ -125,18 +163,28 @@ const AdminInventory = () => {
     try {
       if (isDemoMode) {
         if (editingProduct) {
+          const qtyDiff = payload.quantity - editingProduct.quantity;
           const updated = products.map(p => p.id === editingProduct.id ? { ...p, ...payload } : p);
           saveLocalProducts(updated);
+          if (qtyDiff > 0) {
+            await logProductExpense(payload.name, qtyDiff, payload.costPrice, 'Reabastecimento');
+          }
         } else {
           const newProd = { id: 'p_' + Date.now(), ...payload };
           saveLocalProducts([...products, newProd]);
+          await logProductExpense(payload.name, payload.quantity, payload.costPrice, 'Compra');
         }
       } else {
         if (editingProduct) {
+          const qtyDiff = payload.quantity - editingProduct.quantity;
           const docRef = doc(db, 'products', editingProduct.id);
           await updateDoc(docRef, payload);
+          if (qtyDiff > 0) {
+            await logProductExpense(payload.name, qtyDiff, payload.costPrice, 'Reabastecimento');
+          }
         } else {
           await addDoc(collection(db, 'products'), payload);
+          await logProductExpense(payload.name, payload.quantity, payload.costPrice, 'Compra');
         }
       }
       setShowModal(false);
@@ -163,14 +211,17 @@ const AdminInventory = () => {
   };
 
   const handleQuickRestock = async (product) => {
-    const newQty = product.quantity + Number(quickRestockAmount);
+    const amount = Number(quickRestockAmount);
+    const newQty = product.quantity + amount;
     try {
       if (isDemoMode) {
         const updated = products.map(p => p.id === product.id ? { ...p, quantity: newQty } : p);
         saveLocalProducts(updated);
+        await logProductExpense(product.name, amount, product.costPrice, 'Reabastecimento');
       } else {
         const docRef = doc(db, 'products', product.id);
         await updateDoc(docRef, { quantity: newQty });
+        await logProductExpense(product.name, amount, product.costPrice, 'Reabastecimento');
       }
       setQuickRestockId(null);
     } catch (err) {
