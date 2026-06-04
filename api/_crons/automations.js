@@ -166,6 +166,21 @@ export default async function handler(req, res) {
     const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
     const hostUrl = `${isLocal ? 'http' : 'https'}://${req.headers.host}`;
 
+    // Google Calendar Bidirectional Delta-Sync
+    try {
+      const gcalSyncResponse = await fetch(`${hostUrl}/api/gcal?action=syncAll`, {
+        method: 'POST'
+      });
+      const gcalSyncData = await gcalSyncResponse.json();
+      if (gcalSyncResponse.ok && gcalSyncData.success) {
+        console.log('Cron triggered Google Calendar sync successfully:', gcalSyncData.stats);
+      } else {
+        console.warn('Cron triggered Google Calendar sync failed:', gcalSyncData);
+      }
+    } catch (gcalErr) {
+      console.warn('Cron Google Calendar sync fetch error:', gcalErr);
+    }
+
     // Load settings
     const settingsDoc = await getDoc(doc(db, 'settings', 'studio'));
     const settings = settingsDoc.exists() ? settingsDoc.data() : null;

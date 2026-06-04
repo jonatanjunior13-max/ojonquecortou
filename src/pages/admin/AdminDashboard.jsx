@@ -28,6 +28,7 @@ import {
   Edit,
   MoreVertical
 } from 'lucide-react';
+import { syncBookingToGoogle } from '../../utils/gcalSync';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -167,6 +168,23 @@ const AdminDashboard = () => {
   const [discount, setDiscount] = useState(0);
 
   useEffect(() => {
+    const runBackgroundSync = async () => {
+      try {
+        const res = await fetch('/api/gcal?action=syncAll', { method: 'POST' });
+        const data = await res.json();
+        if (data.success && data.logs?.length > 0) {
+          console.log('Google Calendar background sync logs:', data.logs);
+        }
+      } catch (err) {
+        console.warn('Google Calendar background sync warning:', err);
+      }
+    };
+    if (!isDemoMode && db) {
+      runBackgroundSync();
+    }
+  }, [isDemoMode]);
+
+  useEffect(() => {
     if (isCheckoutOpen) {
       setDiscount(0);
       setInstallments('À vista');
@@ -220,6 +238,8 @@ const AdminDashboard = () => {
 
   // New States for Trinks layout
   const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [viewMode, setViewMode] = useState('diario'); // 'diario' | 'semanal' | 'mensal'
+  const [selectedWeeklyMonthlyProf, setSelectedWeeklyMonthlyProf] = useState('jon');
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
   const [activePopover, setActivePopover] = useState({ visible: false, x: 0, y: 0, booking: null });
   const [searchQuery, setSearchQuery] = useState('');
@@ -521,6 +541,136 @@ const AdminDashboard = () => {
     setMiniCalDate(new Date(d));
   };
 
+  const changeDate = (direction) => {
+    const d = new Date(currentDate);
+    if (viewMode === 'diario') {
+      d.setDate(currentDate.getDate() + direction);
+    } else if (viewMode === 'semanal') {
+      d.setDate(currentDate.getDate() + direction * 7);
+    } else if (viewMode === 'mensal') {
+      d.setMonth(currentDate.getMonth() + direction);
+    }
+    setCurrentDate(d);
+    setMiniCalDate(new Date(d));
+  };
+
+  const timeToMin = (t) => {
+    if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
+    const [h, m] = t.split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
+  };
+
+  const getWeekDays = (dateObj) => {
+    const dayOfWeek = dateObj.getDay();
+    const start = new Date(dateObj);
+    start.setDate(dateObj.getDate() - dayOfWeek);
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start);
+      d.setDate(start.getDate() + i);
+      days.push(d);
+    }
+    return days;
+  };
+
+  const getDaysInMonthGrid = (dateObj) => {
+    const year = dateObj.getFullYear();
+    const month = dateObj.getMonth();
+    const startOfMonth = new Date(year, month, 1);
+    const endOfMonth = new Date(year, month + 1, 0);
+    
+    const startDay = startOfMonth.getDay();
+    const daysInMonth = endOfMonth.getDate();
+    
+    const grid = [];
+    
+    // Previous month padding
+    const prevMonthEnd = new Date(year, month, 0);
+    const prevMonthDays = prevMonthEnd.getDate();
+    const prevYear = prevMonthEnd.getFullYear();
+    const prevMon = prevMonthEnd.getMonth();
+    
+    for (let i = startDay - 1; i >= 0; i--) {
+      const dNum = prevMonthDays - i;
+      grid.push({
+        dateObj: new Date(prevYear, prevMon, dNum),
+        dayNum: dNum,
+        isCurrentMonth: false
+      });
+    }
+    
+    // Current month days
+    for (let i = 1; i <= daysInMonth; i++) {
+      grid.push({
+        dateObj: new Date(year, month, i),
+        dayNum: i,
+        isCurrentMonth: true
+      });
+    }
+    
+    // Next month padding to reach exactly 42 cells (6 rows)
+    const totalCells = 42;
+    const remaining = totalCells - grid.length;
+    const nextMonthStart = new Date(year, month + 1, 1);
+    const nextYear = nextMonthStart.getFullYear();
+    const nextMon = nextMonthStart.getMonth();
+    
+    for (let i = 1; i <= remaining; i++) {
+      grid.push({
+        dateObj: new Date(nextYear, nextMon, i),
+        dayNum: i,
+        isCurrentMonth: false
+      });
+    }
+    
+    return grid;
+  };
+
+  const getDayBlocks = (prof, dateObj) => {
+    if (!prof) return [];
+    
+    const dateStr = getLocalDateString(dateObj);
+    const weekday = dateObj.getDay();
+    const blocks = [];
+    
+    // 1. Day off
+    if ((prof.daysOff || []).includes(weekday)) {
+      blocks.push({ start: '10:00', end: '19:00', label: 'Folga' });
+      return blocks;
+    }
+    
+    // 2. Blocked date
+    if ((prof.blockedDates || []).includes(dateStr)) {
+      blocks.push({ start: '10:00', end: '19:00', label: 'Bloqueado' });
+      return blocks;
+    }
+    
+    // 3. Recurring weekday blocks: "weekday-HH:MM-HH:MM"
+    const weekdayBlocks = prof.blockedWeekdayHours || [];
+    weekdayBlocks.forEach(block => {
+      const segments = block.split('-');
+      if (Number(segments[0]) === weekday) {
+        const start = segments[1];
+        const end = segments[2] || '19:00';
+        blocks.push({ start, end, label: 'Bloqueio' });
+      }
+    });
+    
+    // 4. Specific date blocks: "YYYY-MM-DD-HH:MM-HH:MM"
+    const specificBlocks = prof.blockedSpecificHours || [];
+    specificBlocks.forEach(block => {
+      if (block.startsWith(dateStr)) {
+        const rest = block.substring(dateStr.length + 1);
+        const restParts = rest.split('-');
+        const start = restParts[0];
+        const end = restParts[1] || '19:00';
+        blocks.push({ start, end, label: 'Bloqueado' });
+      }
+    });
+    
+    return blocks;
+  };
+
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
       const booking = bookings.find(b => b.id === bookingId);
@@ -547,6 +697,7 @@ const AdminDashboard = () => {
       } else {
         const apptRef = doc(db, 'bookings', bookingId);
         await updateDoc(apptRef, { status: newStatus });
+        syncBookingToGoogle(bookingId).catch(err => console.warn('Error syncing status:', err));
         setSelectedBooking(null);
 
         if (newStatus === 'cancelado') {
@@ -701,6 +852,7 @@ const AdminDashboard = () => {
       } else {
         const docRef = doc(db, 'bookings', bId);
         await updateDoc(docRef, updatedPayload);
+        syncBookingToGoogle(bId).catch(err => console.warn('Error syncing edited booking:', err));
         setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
       }
 
@@ -757,6 +909,7 @@ const AdminDashboard = () => {
       } else {
         const docRef = doc(db, 'bookings', bId);
         await updateDoc(docRef, updatedPayload);
+        syncBookingToGoogle(bId).catch(err => console.warn('Error syncing booking before checkout:', err));
         setSelectedBooking(savedBookingObj);
       }
       
@@ -881,6 +1034,7 @@ const AdminDashboard = () => {
         if (payload.prepayment > 0) {
           await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
         }
+        syncBookingToGoogle(docRef.id).catch(err => console.warn('Error syncing new booking:', err));
       }
 
       // Auto-cadastro de cliente
@@ -1034,7 +1188,10 @@ const AdminDashboard = () => {
             status: 'bloqueado',
             createdAt: new Date().toISOString()
           };
-          return addDoc(collection(db, 'bookings'), payload);
+          return addDoc(collection(db, 'bookings'), payload).then(docRef => {
+            syncBookingToGoogle(docRef.id).catch(err => console.warn('Error syncing block:', err));
+            return docRef;
+          });
         });
         await Promise.all(promises);
       }
@@ -1203,6 +1360,7 @@ const AdminDashboard = () => {
       } else {
         const apptRef = doc(db, 'bookings', booking.id);
         await updateDoc(apptRef, { status: 'finalizado' });
+        syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
         for (const added of addedProducts) {
           const prodRef = doc(db, 'products', added.productId);
@@ -1286,6 +1444,7 @@ const AdminDashboard = () => {
         } else {
           const ref = doc(db, 'bookings', sourceBooking.id);
           await updateDoc(ref, updatedPayload);
+          syncBookingToGoogle(sourceBooking.id).catch(err => console.warn(err));
         }
         setClipboard(null);
         alert('Agendamento movido com sucesso!');
@@ -1308,7 +1467,8 @@ const AdminDashboard = () => {
           arr.push({ id: newId, ...newPayload });
           localStorage.setItem('demo_bookings', JSON.stringify(arr));
         } else {
-          await addDoc(collection(db, 'bookings'), newPayload);
+          const docRef = await addDoc(collection(db, 'bookings'), newPayload);
+          syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
         }
         alert('Agendamento copiado com sucesso!');
       }
@@ -2143,32 +2303,69 @@ ${googleLink}
         {/* MAIN AGENDA AREA */}
         <main className="agenda-main-area">
           
-          <div className="agenda-top-bar">
+          <div className="agenda-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             
-            <div className="agenda-day-nav">
-              <button className="btn-icon" onClick={() => changeDay(-1)}><ChevronLeft size={16} /></button>
-              <span className="agenda-day-label">
-                {currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-              </span>
-              <button className="btn-icon" onClick={() => changeDay(1)}><ChevronRight size={16} /></button>
-              <button 
-                type="button" 
-                className="btn btn-ghost" 
-                style={{ padding: '6px 12px', fontSize: '0.85rem' }}
-                onClick={() => {
-                  setCurrentDate(new Date());
-                  setMiniCalDate(new Date());
-                }}
-              >
-                Hoje
-              </button>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+              <div className="agenda-day-nav">
+                <button className="btn-icon" onClick={() => changeDate(-1)}><ChevronLeft size={16} /></button>
+                <span className="agenda-day-label">
+                  {viewMode === 'diario' ? (
+                    currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+                  ) : viewMode === 'semanal' ? (
+                    `Semana de ${getWeekDays(currentDate)[0].toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })} a ${getWeekDays(currentDate)[6].toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' })}`
+                  ) : (
+                    currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+                  )}
+                </span>
+                <button className="btn-icon" onClick={() => changeDate(1)}><ChevronRight size={16} /></button>
+                <button 
+                  type="button" 
+                  className="btn btn-ghost" 
+                  style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                  onClick={() => {
+                    setCurrentDate(new Date());
+                    setMiniCalDate(new Date());
+                  }}
+                >
+                  Hoje
+                </button>
+              </div>
+
+              {/* View Switcher Tabs */}
+              <div className="view-mode-tabs" style={{ display: 'flex', border: '1px solid var(--rule)', borderRadius: 8, padding: 2, background: 'var(--surface)' }}>
+                {['diario', 'semanal', 'mensal'].map(mode => (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={`btn ${viewMode === mode ? 'btn-accent' : 'btn-ghost'}`}
+                    style={{ padding: '4px 12px', fontSize: '0.82rem', textTransform: 'capitalize', borderRadius: 6 }}
+                    onClick={() => setViewMode(mode)}
+                  >
+                    {mode === 'diario' ? 'Diário' : mode === 'semanal' ? 'Semanal' : 'Mensal'}
+                  </button>
+                ))}
+              </div>
+
+              {/* Professional Dropdown for Weekly/Monthly */}
+              {(viewMode === 'semanal' || viewMode === 'mensal') && (
+                <select
+                  value={selectedWeeklyMonthlyProf}
+                  onChange={e => setSelectedWeeklyMonthlyProf(e.target.value)}
+                  className="stats-scope-select"
+                  style={{ padding: '6px 12px', fontSize: '0.85rem' }}
+                >
+                  {activeProfessionalsList.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <input 
                 type="text" 
                 className="agenda-search-input" 
-                placeholder="Buscar cliente agendado hoje..."
+                placeholder="Buscar cliente agendado..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -2208,7 +2405,8 @@ ${googleLink}
             <p>Carregando agenda...</p>
           ) : (
             <div className="calendar-grid-wrapper">
-              <div className="calendar-grid">
+              {viewMode === 'diario' && (
+                <div className="calendar-grid">
               
               {/* Header column professionals */}
               <div 
@@ -2422,8 +2620,303 @@ ${googleLink}
               </div>
 
             </div>
-          </div>
-        )}
+          )}
+
+          {/* VIEW: SEMANAL (GRADE VISUAL DESKTOP) */}
+          {viewMode === 'semanal' && (
+            <div className="calendar-grid weekly-view">
+              {/* Header da semana */}
+              <div 
+                className="pro-columns-header" 
+                style={{ gridTemplateColumns: `80px repeat(7, 1fr)` }}
+              >
+                <div className="pro-header-cell" style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Hora</div>
+                {getWeekDays(currentDate).map(d => {
+                  const dStr = getLocalDateString(d);
+                  const isToday = dStr === getLocalDateString(new Date());
+                  const weekdaysShort = ['dom.', 'seg.', 'ter.', 'qua.', 'qui.', 'sex.', 'sáb.'];
+                  return (
+                    <div key={dStr} className={`pro-header-cell ${isToday ? 'active-day-header' : ''}`} style={{ borderBottom: isToday ? '3px solid var(--accent)' : 'none' }}>
+                      <span className="pro-name" style={{ fontSize: '0.9rem', color: isToday ? 'var(--accent)' : 'inherit', fontWeight: isToday ? 'bold' : 'normal' }}>
+                        {weekdaysShort[d.getDay()]} {d.getDate()}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Body da grade semanal */}
+              <div className="calendar-body" style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
+                {/* Horários no lado esquerdo */}
+                <div className="weekly-hours-column" style={{ width: 80, flexShrink: 0, borderRight: '1px solid var(--rule)', background: 'var(--bg-warm)' }}>
+                  {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(h => (
+                    <div key={h} className="time-label-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.75rem', borderBottom: '1px solid var(--rule)' }}>
+                      {h}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Colunas de dias da semana */}
+                <div className="weekly-days-columns" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', position: 'relative', height: 540 }}>
+                  {/* Linhas de grade horizontais */}
+                  <div className="weekly-grid-lines" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', pointerEvents: 'none', zIndex: 0 }}>
+                    {Array.from({ length: 9 }).map((_, i) => (
+                      <div key={i} style={{ height: 60, borderBottom: '1px solid var(--rule)' }} />
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const wDays = getWeekDays(currentDate);
+                    const prof = activeProfessionalsList.find(p => p.id === selectedWeeklyMonthlyProf);
+
+                    return wDays.map(d => {
+                      const dStr = getLocalDateString(d);
+                      const dayBookings = bookings.filter(b => 
+                        b.date === dStr && 
+                        (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
+                        b.status !== 'cancelado'
+                      );
+
+                      const dayBlocks = getDayBlocks(prof, d);
+
+                      return (
+                        <div 
+                          key={dStr} 
+                          className="weekly-day-column" 
+                          style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--rule)', zIndex: 1 }}
+                        >
+                          {/* Criar agendamento ao clicar em espaço vazio */}
+                          {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(slot => {
+                            const slotMin = timeToMin(slot);
+                            const hasAppt = dayBookings.some(b => {
+                              const start = timeToMin(b.time);
+                              return slotMin >= start && slotMin < start + (b.duration || 60);
+                            });
+                            const hasBlock = dayBlocks.some(b => {
+                              const start = timeToMin(b.start);
+                              const end = timeToMin(b.end);
+                              return slotMin >= start && slotMin < end;
+                            });
+
+                            if (hasAppt || hasBlock) return null;
+
+                            return (
+                              <div
+                                key={slot}
+                                style={{
+                                  position: 'absolute',
+                                  top: `${((slotMin - 600) / 540) * 100}%`,
+                                  height: `${(60 / 540) * 100}%`,
+                                  left: 0,
+                                  right: 0,
+                                  cursor: 'pointer',
+                                  zIndex: 1
+                                }}
+                                onClick={() => handleCellClick(dStr, slot, selectedWeeklyMonthlyProf, prof?.name || 'Jon')}
+                              />
+                            );
+                          })}
+
+                          {/* Desenhar bloqueios */}
+                          {dayBlocks.map((block, idx) => {
+                            const startMin = timeToMin(block.start);
+                            const endMin = timeToMin(block.end);
+                            const duration = Math.max(30, endMin - startMin);
+                            
+                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
+                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
+
+                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
+
+                            return (
+                              <div 
+                                key={`block-${idx}`} 
+                                className="appt-card bloqueado"
+                                style={{
+                                  top: `${topPercent}%`,
+                                  height: `${heightPercent}%`,
+                                  position: 'absolute',
+                                  left: 4,
+                                  right: 4,
+                                  background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
+                                  color: '#475569',
+                                  borderLeft: '4px solid #94a3b8',
+                                  opacity: 0.85,
+                                  padding: '6px 8px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  overflow: 'hidden',
+                                  zIndex: 2
+                                }}
+                              >
+                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{block.start} - {block.end}</span>
+                                <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                  <Lock size={12} /> {block.label}
+                                </span>
+                              </div>
+                            );
+                          })}
+
+                          {/* Desenhar agendamentos */}
+                          {dayBookings.map(b => {
+                            const startMin = timeToMin(b.time);
+                            const duration = b.duration || 60;
+                            
+                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
+                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
+
+                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
+
+                            return (
+                              <div 
+                                key={b.id} 
+                                className={`appt-card ${b.status}`}
+                                onClick={(e) => handleBookingLeftClick(e, b)}
+                                style={{
+                                  top: `${topPercent}%`,
+                                  height: `${heightPercent}%`,
+                                  position: 'absolute',
+                                  left: 4,
+                                  right: 4,
+                                  zIndex: 3,
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  overflow: 'hidden'
+                                }}
+                              >
+                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
+                                <span className="appt-client" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.clientName}</span>
+                                <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* VIEW: MENSAL (CALENDÁRIO COM LISTAGEM COMPACTA DESKTOP) */}
+          {viewMode === 'mensal' && (
+            <div className="calendar-grid monthly-view" style={{ padding: 16 }}>
+              {/* Dias da semana */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8, marginBottom: 12, textAlign: 'center', fontWeight: 'bold', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                <div>domingo</div>
+                <div>segunda-feira</div>
+                <div>terça-feira</div>
+                <div>quarta-feira</div>
+                <div>quinta-feira</div>
+                <div>sexta-feira</div>
+                <div>sábado</div>
+              </div>
+
+              {/* Dias do mês */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
+                {getDaysInMonthGrid(currentDate).map((cell, idx) => {
+                  const cellDateStr = getLocalDateString(cell.dateObj);
+                  const dayBookings = bookings.filter(b => 
+                    b.date === cellDateStr && 
+                    (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
+                    b.status !== 'cancelado'
+                  );
+                  
+                  const isToday = cellDateStr === getLocalDateString(new Date());
+                  const isCurrentMonth = cell.isCurrentMonth;
+                  
+                  return (
+                    <div 
+                      key={`${cellDateStr}-${idx}`} 
+                      onClick={() => {
+                        setCurrentDate(cell.dateObj);
+                        setViewMode('diario');
+                      }}
+                      style={{
+                        minHeight: 100,
+                        borderRadius: 12,
+                        padding: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'stretch',
+                        justifyContent: 'flex-start',
+                        background: !isCurrentMonth ? 'var(--bg-warm)' : 'var(--surface)',
+                        border: '1px solid var(--rule)',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        opacity: !isCurrentMonth ? 0.6 : 1
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                        <span style={{ 
+                          fontSize: '0.95rem', 
+                          fontWeight: isToday ? 'bold' : 'normal',
+                          color: isToday ? 'var(--accent)' : 'var(--ink)'
+                        }}>
+                          {cell.dayNum}
+                        </span>
+                        {isToday && (
+                          <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: 'white', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>Hoje</span>
+                        )}
+                      </div>
+                      
+                      {/* List of bookings inside cell on Desktop */}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, overflow: 'hidden', flex: 1 }}>
+                        {dayBookings.slice(0, 3).map(b => {
+                          let bg = 'rgba(176, 90, 46, 0.1)';
+                          let border = '1px solid rgba(176, 90, 46, 0.2)';
+                          let color = 'var(--accent)';
+                          
+                          if (b.status === 'finalizado') {
+                            bg = 'rgba(74, 93, 78, 0.1)';
+                            border = '1px solid rgba(74, 93, 78, 0.2)';
+                            color = 'var(--mobile-green, #4A5D4E)';
+                          } else if (b.status === 'bloqueado') {
+                            bg = '#f1f5f9';
+                            border = '1px solid #cbd5e1';
+                            color = '#475569';
+                          }
+                          
+                          return (
+                            <div
+                              key={b.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleBookingLeftClick(e, b);
+                              }}
+                              style={{
+                                fontSize: '0.68rem',
+                                padding: '2px 6px',
+                                borderRadius: 4,
+                                background: bg,
+                                border: border,
+                                color: color,
+                                whiteSpace: 'nowrap',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                fontWeight: 600
+                              }}
+                            >
+                              {b.time} - {b.clientName}
+                            </div>
+                          );
+                        })}
+                        {dayBookings.length > 3 && (
+                          <div style={{ fontSize: '0.68rem', color: 'var(--muted)', textAlign: 'center', fontWeight: 'bold' }}>
+                            + {dayBookings.length - 3} mais
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
         </main>
       </div>

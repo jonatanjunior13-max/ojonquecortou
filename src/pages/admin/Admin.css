@@ -1,11 +1,40 @@
-/* Admin Pages Styles — Redesign Premium */
+/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
 
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(26, 19, 16, 0.08);
-  --shadow-premium: 0 10px 30px rgba(26, 19, 16, 0.04), 0 30px 60px rgba(26, 19, 16, 0.06);
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-border: rgba(26, 19, 16, 0.07);
+  --shadow-premium: 0 12px 35px rgba(26, 19, 16, 0.03), 0 30px 70px rgba(26, 19, 16, 0.05);
   --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-tactile: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.2s ease;
 }
+
+/* Tactile Active feedback for buttons and interactive items */
+.btn:active, 
+.btn-icon:active, 
+.action-btn:active, 
+.category-tab-btn:active, 
+.crm-tab-btn:active,
+.filter-badge-btn:active {
+  transform: scale(0.97) translateY(1px) !important;
+}
+
+/* Custom Scrollbar styled for the premium palette */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(26, 19, 16, 0.12);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
 
 /* Login Card Centering */
 .admin-login-page {
@@ -487,6 +516,9 @@
   box-shadow: 0 8px 32px rgba(26, 19, 16, 0.12), 0 24px 64px rgba(26, 19, 16, 0.08);
   color: var(--ink);
   animation: modal-scale-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 @keyframes modal-scale-in {

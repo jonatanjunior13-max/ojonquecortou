@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit } from 'lucide-react';
+import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit, Calendar } from 'lucide-react';
 import { db } from '../../config/firebase';
-import { doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import './Admin.css';
 
 const DEFAULT_SETTINGS = {
@@ -55,6 +55,22 @@ const AdminSettings = () => {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [isSaved, setIsSaved] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [gcalSyncing, setGcalSyncing] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gcalStatus = params.get('gcal_status');
+    if (gcalStatus === 'success') {
+      alert('Google Agenda conectado com sucesso! 🎉');
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setActiveTab('google');
+    } else if (gcalStatus === 'error') {
+      const msg = params.get('msg') || 'Erro desconhecido';
+      alert(`Erro ao conectar com o Google Agenda: ${msg} ❌`);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      setActiveTab('google');
+    }
+  }, []);
 
   const [newProf, setNewProf] = useState({
     name: '',
@@ -305,6 +321,9 @@ const AdminSettings = () => {
         </button>
         <button type="button" className={`tab-btn ${activeTab === 'whatsapp' ? 'active' : ''}`} onClick={() => setActiveTab('whatsapp')}>
           <Send size={16} /> Integração WhatsApp
+        </button>
+        <button type="button" className={`tab-btn ${activeTab === 'google' ? 'active' : ''}`} onClick={() => setActiveTab('google')}>
+          <Calendar size={16} /> Google Agenda
         </button>
         <button type="button" className={`tab-btn ${activeTab === 'profissionais' ? 'active' : ''}`} onClick={() => setActiveTab('profissionais')}>
           <Users size={16} /> Profissionais
@@ -1042,6 +1061,114 @@ const AdminSettings = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* CONTEÚDO: GOOGLE AGENDA */}
+        {activeTab === 'google' && (
+          <div className="financial-card">
+            <h3>Integração com Google Agenda</h3>
+            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+              Sincronize automaticamente os agendamentos do Studio com a sua agenda pessoal do Google. 
+              As marcações criadas ou alteradas no sistema irão para o Google Agenda, e bloqueios feitos lá serão importados para cá.
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--rule)', paddingTop: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid var(--rule)' }}>
+                <div>
+                  <h4 style={{ margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+                    📅 Google Agenda
+                  </h4>
+                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--muted)' }}>
+                    {settings?.automations?.googleCalendarConnected 
+                      ? 'Conectado à sua conta do Google (Agenda Principal).' 
+                      : 'Não conectado. Clique para autorizar o acesso.'}
+                  </p>
+                </div>
+                <div>
+                  {settings?.automations?.googleCalendarConnected ? (
+                    <button 
+                      type="button"
+                      className="btn-danger"
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: 'pointer', background: '#dc2626', color: '#fff', border: 'none', fontWeight: 'bold' }}
+                      onClick={async () => {
+                        if (window.confirm('Tem certeza que deseja desconectar o Google Agenda?')) {
+                          if (isDemoMode || !db) {
+                            setSettings(prev => ({
+                              ...prev,
+                              automations: {
+                                ...prev.automations,
+                                googleCalendarConnected: false,
+                                googleCalendarAccessToken: null,
+                                googleCalendarRefreshToken: null
+                              }
+                            }));
+                            alert('Desconectado com sucesso (Modo Demo)!');
+                          } else {
+                            await updateDoc(doc(db, 'settings', 'studio'), {
+                              'automations.googleCalendarConnected': false,
+                              'automations.googleCalendarAccessToken': null,
+                              'automations.googleCalendarRefreshToken': null,
+                              'automations.googleCalendarId': null
+                            });
+                            alert('Google Agenda desconectado com sucesso!');
+                          }
+                        }
+                      }}
+                    >
+                      Desconectar
+                    </button>
+                  ) : (
+                    <button 
+                      type="button"
+                      className="btn-primary"
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: 'pointer', background: 'var(--accent)', color: '#0a0a0a', border: 'none', fontWeight: 'bold' }}
+                      onClick={() => {
+                        window.location.href = '/api/gcal?action=auth';
+                      }}
+                    >
+                      Conectar Google Agenda
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {settings?.automations?.googleCalendarConnected && (
+                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.01)', borderRadius: 8, border: '1px dashed var(--rule)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <h4 style={{ margin: 0, fontSize: '0.9rem' }}>Sincronização Bidirecional Ativa</h4>
+                  <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>
+                    O sistema executa uma sincronização delta em lote em segundo plano de tempos em tempos. Você também pode forçar a sincronização imediata de todos os horários dos últimos 30 dias e dos próximos 90 dias usando o botão abaixo.
+                  </p>
+                  <div>
+                    <button 
+                      type="button"
+                      className="btn-secondary"
+                      disabled={gcalSyncing}
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: gcalSyncing ? 'not-allowed' : 'pointer', background: 'var(--bg-warm)', color: 'var(--text)', border: '1px solid var(--rule)', fontWeight: 'bold' }}
+                      onClick={async () => {
+                        setGcalSyncing(true);
+                        try {
+                          const res = await fetch('/api/gcal?action=syncAll', { method: 'POST' });
+                          const data = await res.json();
+                          if (data.success) {
+                            const stats = data.stats || {};
+                            alert(`Sincronização concluída! 🎉\n- Importados do Google: ${stats.imported || 0}\n- Exportados do Firestore: ${stats.exported || 0}\n- Atualizados no Google: ${stats.updatedGoogle || 0}\n- Atualizados no Firestore: ${stats.updatedFirestore || 0}`);
+                          } else {
+                            alert(`Erro ao sincronizar: ${data.error || 'Erro desconhecido'}`);
+                          }
+                        } catch (err) {
+                          alert(`Erro de conexão com o servidor: ${err.message}`);
+                        } finally {
+                          setGcalSyncing(false);
+                        }
+                      }}
+                    >
+                      {gcalSyncing ? 'Sincronizando...' : 'Sincronizar Tudo Agora 🔄'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

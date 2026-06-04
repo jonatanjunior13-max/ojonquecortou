@@ -211,7 +211,7 @@ const AdminClients = () => {
         lastVisit: 'Nunca visitou',
         lastServiceName: 'Nenhum',
         sexo: prof.sexo || 'Feminino',
-        birthdate: prof.birthdate || ''
+        birthdate: prof.birthdate || prof.aniversario || ''
       };
     });
 
@@ -265,6 +265,9 @@ const AdminClients = () => {
     const clientObj = clients.find(c => c.phone === selectedClientPhone);
     
     if (clientProf) {
+      // DEBUG TEMPORÁRIO — ver campos reais do Firestore
+      console.log('[DEBUG birthdate] Firestore doc keys:', Object.keys(clientProf));
+      console.log('[DEBUG birthdate] birthdate:', clientProf.birthdate, '| aniversario:', clientProf.aniversario, '| all fields:', JSON.stringify(clientProf));
       setHairProfile({
         name: clientProf.name || clientObj?.name || '',
         email: clientProf.email || clientObj?.email || '',
@@ -276,7 +279,7 @@ const AdminClients = () => {
         produtosRecomendados: clientProf.produtosRecomendados || '',
         observacoes: clientProf.observacoes || '',
         sexo: clientProf.sexo || 'Feminino',
-        birthdate: clientProf.birthdate || ''
+        birthdate: clientProf.birthdate || clientProf.aniversario || ''
       });
     } else {
       // Se não tem perfil salvo ainda, herda o tipo do agendamento

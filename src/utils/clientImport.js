@@ -50,11 +50,17 @@ export function parseClientCSV(file, onResult) {
             return;
           }
 
-          // Date parsing helper
+          // Date parsing helper — suporta ISO (yyyy-mm-dd) e formato brasileiro (dd/mm/yyyy)
           const parseDate = (raw) => {
             if (!raw) return null;
-            const d = new Date(raw + 'T00:00:00');
-            return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
+            let normalized = raw.trim();
+            // Converte dd/mm/yyyy → yyyy-mm-dd
+            if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(normalized)) {
+              const [d, m, y] = normalized.split('/');
+              normalized = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+            }
+            const date = new Date(normalized + 'T00:00:00');
+            return isNaN(date.getTime()) ? null : date.toISOString().split('T')[0];
           };
 
           clients.push({
@@ -62,7 +68,7 @@ export function parseClientCSV(file, onResult) {
             phone: telefone,
             email: email || 'Não informado',
             lastVisit: parseDate(ultimaVisitaRaw),
-            aniversario: parseDate(aniversarioRaw),
+            birthdate: parseDate(aniversarioRaw),
             // Profile fields left blank intentionally
             sexo: 'Não informado',
             curvatura: '',

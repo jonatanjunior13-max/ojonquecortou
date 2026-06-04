@@ -4,6 +4,7 @@ import { db, withTimeout } from '../config/firebase';
 import { doc, getDoc, updateDoc, collection, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 import { Calendar, Clock, Scissors, User, CheckCircle2, AlertTriangle, ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
+import { syncBookingToGoogle } from '../utils/gcalSync';
 import './CancelBookingPage.css';
 
 export default function CancelBookingPage() {
@@ -85,6 +86,7 @@ export default function CancelBookingPage() {
       if (db && !isDemoMode) {
         const docRef = doc(db, 'bookings', booking.id);
         await updateDoc(docRef, { status: 'cancelado' });
+        syncBookingToGoogle(booking.id).catch(err => console.warn(err));
 
         try {
           // Deletar transação com base no bookingId

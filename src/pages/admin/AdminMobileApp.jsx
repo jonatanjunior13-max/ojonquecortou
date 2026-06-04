@@ -12,6 +12,7 @@ import {
   Clock, Settings, Sparkles
 } from 'lucide-react';
 import './AdminMobile.css';
+import { syncBookingToGoogle } from '../../utils/gcalSync';
 
 const DEFAULT_SETTINGS = {
   name: 'Studio do Jon',
@@ -39,6 +40,7 @@ const AdminMobileApp = () => {
   const [activeTab, setActiveTab] = useState('inicio');
   const [currentDate, setCurrentDate] = useState(() => new Date().toISOString().split('T')[0]);
   const [agendaView, setAgendaView] = useState('diario');
+  const [selectedWeeklyMonthlyProf, setSelectedWeeklyMonthlyProf] = useState('jon');
   const [businessPeriod, setBusinessPeriod] = useState('mes');
 
   // Firestore & local states
@@ -64,6 +66,7 @@ const AdminMobileApp = () => {
   const [editingBookingId, setEditingBookingId] = useState(null);
   const [activeAlert, setActiveAlert] = useState(null); // { id, title, message, booking }
   const [isFabOpen, setIsFabOpen] = useState(false);
+  const swipeTouchRef = useRef({ startX: null, startY: null });
 
   // Venda Avulsa de Produtos
   const [showDirectSaleModal, setShowDirectSaleModal] = useState(false);
@@ -691,6 +694,28 @@ const AdminMobileApp = () => {
     setCurrentDate(d.toISOString().split('T')[0]);
   };
 
+  // ── Swipe para navegar na agenda ──────────────────────────────────
+  const handleSwipeStart = (e) => {
+    const touch = e.changedTouches[0];
+    swipeTouchRef.current = { startX: touch.clientX, startY: touch.clientY };
+  };
+
+  const handleSwipeEnd = (e) => {
+    const { startX, startY } = swipeTouchRef.current;
+    if (startX === null) return;
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    // Ignora gestos mais verticais do que horizontais (scroll normal)
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+    const direction = dx < 0 ? 1 : -1; // esquerda = próximo (+1), direita = anterior (-1)
+    if (agendaView === 'diario') handleDateChange(direction);
+    else if (agendaView === 'semanal') handleWeekChange(direction);
+    else if (agendaView === 'mensal') handleMonthChange(direction);
+    swipeTouchRef.current = { startX: null, startY: null };
+  };
+  // ─────────────────────────────────────────────────────────────────
+
   const getWeekDays = (dateStr) => {
     const current = new Date(dateStr + 'T00:00:00');
     const dayOfWeek = current.getDay();
@@ -704,6 +729,12 @@ const AdminMobileApp = () => {
       days.push(d.toISOString().split('T')[0]);
     }
     return days;
+  };
+
+  const timeToMin = (t) => {
+    if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
+    const [h, m] = t.split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
   };
 
   const getDaysInMonth = (dateStr) => {
@@ -723,6 +754,105 @@ const AdminMobileApp = () => {
       calendarCells.push(dayStr);
     }
     return calendarCells;
+  };
+
+  const getDaysInMonthGrid = (dateStr) => {
+    const [year, month] = dateStr.split('-').map(Number);
+    const startOfMonth = new Date(year, month - 1, 1);
+    const endOfMonth = new Date(year, month, 0);
+    
+    const startDay = startOfMonth.getDay();
+    const daysInMonth = endOfMonth.getDate();
+    
+    const grid = [];
+    
+    // Previous month padding
+    const prevMonthEnd = new Date(year, month - 1, 0);
+    const prevMonthDays = prevMonthEnd.getDate();
+    const prevYear = prevMonthEnd.getFullYear();
+    const prevMon = prevMonthEnd.getMonth() + 1;
+    
+    for (let i = startDay - 1; i >= 0; i--) {
+      const dNum = prevMonthDays - i;
+      grid.push({
+        dateStr: `${prevYear}-${String(prevMon).padStart(2, '0')}-${String(dNum).padStart(2, '0')}`,
+        dayNum: dNum,
+        isCurrentMonth: false
+      });
+    }
+    
+    // Current month days
+    for (let i = 1; i <= daysInMonth; i++) {
+      grid.push({
+        dateStr: `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
+        dayNum: i,
+        isCurrentMonth: true
+      });
+    }
+    
+    // Next month padding to reach exactly 42 cells (6 rows)
+    const totalCells = 42;
+    const remaining = totalCells - grid.length;
+    const nextMonthStart = new Date(year, month, 1);
+    const nextYear = nextMonthStart.getFullYear();
+    const nextMon = nextMonthStart.getMonth() + 1;
+    
+    for (let i = 1; i <= remaining; i++) {
+      grid.push({
+        dateStr: `${nextYear}-${String(nextMon).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
+        dayNum: i,
+        isCurrentMonth: false
+      });
+    }
+    
+    return grid;
+  };
+
+  const getDayBlocks = (prof, dStr) => {
+    if (!prof) return [];
+    
+    const parts = dStr.split('-');
+    if (parts.length !== 3) return [];
+    const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const weekday = dateObj.getDay();
+    const blocks = [];
+    
+    // 1. Day off
+    if ((prof.daysOff || []).includes(weekday)) {
+      blocks.push({ start: '10:00', end: '19:00', label: 'Folga' });
+      return blocks;
+    }
+    
+    // 2. Blocked date
+    if ((prof.blockedDates || []).includes(dStr)) {
+      blocks.push({ start: '10:00', end: '19:00', label: 'Bloqueado' });
+      return blocks;
+    }
+    
+    // 3. Recurring weekday blocks: "weekday-HH:MM-HH:MM"
+    const weekdayBlocks = prof.blockedWeekdayHours || [];
+    weekdayBlocks.forEach(block => {
+      const segments = block.split('-');
+      if (Number(segments[0]) === weekday) {
+        const start = segments[1];
+        const end = segments[2] || '19:00';
+        blocks.push({ start, end, label: 'Bloqueio' });
+      }
+    });
+    
+    // 4. Specific date blocks: "YYYY-MM-DD-HH:MM-HH:MM"
+    const specificBlocks = prof.blockedSpecificHours || [];
+    specificBlocks.forEach(block => {
+      if (block.startsWith(dStr)) {
+        const rest = block.substring(dStr.length + 1);
+        const restParts = rest.split('-');
+        const start = restParts[0];
+        const end = restParts[1] || '19:00';
+        blocks.push({ start, end, label: 'Bloqueado' });
+      }
+    });
+    
+    return blocks;
   };
 
   // 4. Fluxo de Criação de Agendamentos e Bloqueios
@@ -854,6 +984,7 @@ const AdminMobileApp = () => {
         } else {
           const apptRef = doc(db, 'bookings', editingBookingId);
           await updateDoc(apptRef, payload);
+          syncBookingToGoogle(editingBookingId).catch(err => console.warn(err));
         }
 
         if (newPrepayment > oldPrepayment) {
@@ -869,6 +1000,7 @@ const AdminMobileApp = () => {
         } else {
           const docRef = await addDoc(collection(db, 'bookings'), payload);
           await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
+          syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
         }
       }
 
@@ -976,7 +1108,10 @@ const AdminMobileApp = () => {
         localStorage.setItem('demo_bookings', JSON.stringify(local));
       } else {
         await Promise.all(slotsToBlock.map(slot =>
-          addDoc(collection(db, 'bookings'), { ...basePayload, time: slot })
+          addDoc(collection(db, 'bookings'), { ...basePayload, time: slot }).then(docRef => {
+            syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
+            return docRef;
+          })
         ));
       }
       setShowBlockModal(false);
@@ -1154,6 +1289,7 @@ const AdminMobileApp = () => {
       } else {
         const apptRef = doc(db, 'bookings', checkoutBooking.id);
         await updateDoc(apptRef, { status: 'finalizado' });
+        syncBookingToGoogle(checkoutBooking.id).catch(err => console.warn(err));
         await addDoc(collection(db, 'financial_transactions'), payloadTx);
 
         if (totalServiceCost > 0) {
@@ -1396,6 +1532,7 @@ ${googleLink}
       } else {
         const docRef = doc(db, 'bookings', bookingId);
         await updateDoc(docRef, { status: 'cancelado' });
+        syncBookingToGoogle(bookingId).catch(err => console.warn(err));
 
         try {
           // Delete by bookingId
@@ -1463,6 +1600,7 @@ ${googleLink}
       } else {
         const docRef = doc(db, 'bookings', bookingId);
         await updateDoc(docRef, { status: 'confirmado' });
+        syncBookingToGoogle(bookingId).catch(err => console.warn(err));
       }
       
       setSelectedBooking(prev => prev ? { ...prev, status: 'confirmado' } : null);
@@ -1542,6 +1680,7 @@ ${googleLink}
       } else {
         const docRef = doc(db, 'bookings', bookingId);
         await updateDoc(docRef, { status: 'faltou' });
+        syncBookingToGoogle(bookingId).catch(err => console.warn(err));
       }
       
       setSelectedBooking(prev => prev ? { ...prev, status: 'faltou' } : null);
@@ -1613,6 +1752,9 @@ ${googleLink}
 
   // Datas e Timeline
   const dateInfo = formatLocalDate(currentDate);
+  const activeProfessionalsList = settings?.professionals || [
+    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
+  ];
   const hourSlots = [];
   for (let h = 8; h <= 20; h++) {
     const hs = String(h).padStart(2, '0');
@@ -1761,17 +1903,36 @@ ${googleLink}
 
       {/* 2. ABA AGENDA (TIMELINE DIÁRIA, WEEKLY TABLE, MONTHLY DOTS) */}
       {activeTab === 'agenda' && (
-        <div className="mobile-tab-view" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+        <div
+          className="mobile-tab-view"
+          style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
+          onTouchStart={handleSwipeStart}
+          onTouchEnd={handleSwipeEnd}
+        >
           <div className="mobile-agenda-header">
-            <select 
-              className="mobile-agenda-select" 
-              value={agendaView} 
-              onChange={(e) => setAgendaView(e.target.value)}
-            >
-              <option value="diario">Diário</option>
-              <option value="semanal">Semanal</option>
-              <option value="mensal">Mensal</option>
-            </select>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <select 
+                className="mobile-agenda-select" 
+                value={agendaView} 
+                onChange={(e) => setAgendaView(e.target.value)}
+              >
+                <option value="diario">Diário</option>
+                <option value="semanal">Semanal</option>
+                <option value="mensal">Mensal</option>
+              </select>
+              
+              {(agendaView === 'semanal' || agendaView === 'mensal') && (
+                <select 
+                  className="mobile-agenda-select" 
+                  value={selectedWeeklyMonthlyProf} 
+                  onChange={(e) => setSelectedWeeklyMonthlyProf(e.target.value)}
+                >
+                  {activeProfessionalsList.map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              )}
+            </div>
             <div className="mobile-agenda-actions">
               <CalendarIcon size={18} />
             </div>
@@ -1895,133 +2056,272 @@ ${googleLink}
             </div>
           )}
 
-          {/* VIEW: SEMANAL (TABELA) */}
+          {/* VIEW: SEMANAL (GRADE VISUAL) */}
           {agendaView === 'semanal' && (
-            <div style={{ padding: 16, overflowX: 'auto', background: 'white', flex: 1, paddingBottom: 80 }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                <thead>
-                  <tr style={{ borderBottom: '2px solid var(--mobile-rule)', textAlign: 'left' }}>
-                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)' }}>Dia/Hora</th>
-                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)' }}>Cliente</th>
-                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)' }}>Serviço</th>
-                    <th style={{ padding: '8px 4px', color: 'var(--mobile-muted)', textAlign: 'right' }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <div className="mobile-weekly-grid-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'white', overflow: 'hidden', paddingBottom: 80 }}>
+              {/* Header com dias da semana */}
+              <div className="mobile-weekly-header" style={{ display: 'flex', borderBottom: '1px solid var(--mobile-rule)', background: '#fafafa', padding: '6px 0' }}>
+                <div className="mobile-weekly-hour-spacer" style={{ width: 50, flexShrink: 0 }} />
+                <div className="mobile-weekly-days-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center' }}>
                   {(() => {
                     const wDays = getWeekDays(currentDate);
-                    const weekBookings = bookings.filter(b => b.date && wDays.includes(b.date) && b.status !== 'cancelado');
-                    weekBookings.sort((a, b) => {
-                      const dateComp = a.date.localeCompare(b.date);
-                      if (dateComp !== 0) return dateComp;
-                      return a.time.localeCompare(b.time);
-                    });
-
-                    if (weekBookings.length === 0) {
+                    const weekdaysShort = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+                    return wDays.map(dStr => {
+                      const d = new Date(dStr + 'T00:00:00');
+                      const isToday = dStr === todayStr;
                       return (
-                        <tr>
-                          <td colSpan="4" style={{ textAlign: 'center', padding: '32px 0', color: 'var(--mobile-muted)' }}>
-                            Nenhum agendamento para esta semana.
-                          </td>
-                        </tr>
-                      );
-                    }
-
-                    return weekBookings.map(b => {
-                      const parts = b.date.split('-');
-                      const dayLabel = `${parts[2]}/${parts[1]}`;
-                      return (
-                        <tr 
-                          key={b.id} 
-                          onClick={() => setSelectedBooking(b)} 
-                          style={{ borderBottom: '1px solid var(--mobile-rule)', cursor: 'pointer' }}
+                        <div 
+                          key={dStr} 
+                          className={`mobile-weekly-day-header ${isToday ? 'active' : ''}`}
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px 0',
+                            color: isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)'
+                          }}
                         >
-                          <td style={{ padding: '12px 4px', fontWeight: 'bold' }}>{dayLabel} - {b.time}</td>
-                          <td style={{ padding: '12px 4px' }}>{b.clientName}</td>
-                          <td style={{ padding: '12px 4px', color: 'var(--mobile-muted)' }}>{b.service?.name || b.serviceName}</td>
-                          <td style={{ padding: '12px 4px', textAlign: 'right' }}>
-                            <span className={`appt-status ${b.status}`} style={{ fontSize: '0.65rem', padding: '2px 4px' }}>
-                              {b.status.toUpperCase()}
-                            </span>
-                          </td>
-                        </tr>
+                          <span className="weekday-lbl" style={{ fontSize: '0.62rem', textTransform: 'lowercase', color: isToday ? 'var(--mobile-primary)' : 'var(--mobile-muted)', fontWeight: isToday ? 'bold' : 'normal' }}>
+                            {weekdaysShort[d.getDay()]}
+                          </span>
+                          <span className="day-num-lbl" style={{ fontSize: '0.85rem', fontWeight: 700 }}>
+                            {d.getDate()}
+                          </span>
+                        </div>
                       );
                     });
                   })()}
-                </tbody>
-              </table>
+                </div>
+              </div>
+
+              {/* Corpo da grade semanal */}
+              <div className="mobile-weekly-body" style={{ display: 'flex', flex: 1, overflowY: 'auto', position: 'relative' }}>
+                {/* Horários no lado esquerdo */}
+                <div className="mobile-weekly-hours-column" style={{ width: 50, flexShrink: 0, borderRight: '1px solid var(--mobile-rule)', background: '#fcfcfc', display: 'flex', flexDirection: 'column' }}>
+                  {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(h => (
+                    <div key={h} className="mobile-weekly-hour-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 700, color: 'var(--mobile-muted)', borderBottom: '1px solid var(--mobile-rule-soft, #f0f0f0)' }}>
+                      {h}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Colunas dos dias da semana */}
+                <div className="mobile-weekly-days-columns" style={{ flex: 1, position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', height: 540 }}>
+                  {/* Linhas de grade horizontais */}
+                  <div className="mobile-weekly-grid-lines" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', pointerEvents: 'none', zIndex: 0 }}>
+                    {Array.from({ length: 9 }).map((_, i) => (
+                      <div key={i} className="mobile-weekly-grid-line" style={{ height: 60, borderBottom: '1px solid var(--mobile-rule-soft, #f0f0f0)' }} />
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const wDays = getWeekDays(currentDate);
+                    const prof = activeProfessionalsList.find(p => p.id === selectedWeeklyMonthlyProf);
+
+                    return wDays.map(dStr => {
+                      const dayBookings = bookings.filter(b => 
+                        b.date === dStr && 
+                        (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
+                        b.status !== 'cancelado'
+                      );
+
+                      const dayBlocks = getDayBlocks(prof, dStr);
+
+                      return (
+                        <div key={dStr} className="mobile-weekly-day-column" style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--mobile-rule-soft, #f0f0f0)', zIndex: 1 }}>
+                          {/* Desenhar bloqueios */}
+                          {dayBlocks.map((block, idx) => {
+                            const startMin = timeToMin(block.start);
+                            const endMin = timeToMin(block.end);
+                            const duration = Math.max(30, endMin - startMin);
+                            
+                            // Posicionamento
+                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
+                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
+
+                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
+
+                            return (
+                              <div 
+                                key={`block-${idx}`} 
+                                className="mobile-weekly-appt-card bloqueado"
+                                style={{
+                                  top: `${topPercent}%`,
+                                  height: `${heightPercent}%`,
+                                  position: 'absolute',
+                                  left: 2,
+                                  right: 2,
+                                  background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
+                                  color: '#475569',
+                                  borderLeft: '3px solid #94a3b8',
+                                  opacity: 0.85,
+                                  fontSize: '0.62rem',
+                                  padding: '2px 4px',
+                                  borderRadius: 4,
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  overflow: 'hidden',
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  textAlign: 'center',
+                                  zIndex: 2
+                                }}
+                              >
+                                <span style={{ fontWeight: 'bold', fontSize: '0.55rem' }}>{block.label}</span>
+                                <span style={{ fontSize: '0.5rem' }}>{block.start}</span>
+                              </div>
+                            );
+                          })}
+
+                          {/* Desenhar agendamentos */}
+                          {dayBookings.map(b => {
+                            const startMin = timeToMin(b.time);
+                            const duration = b.duration || 60;
+                            
+                            // Posicionamento
+                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
+                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
+
+                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
+
+                            let bgGradient = 'linear-gradient(135deg, #FDF8F4 0%, #FAF4EE 100%)';
+                            let borderLeftColor = 'var(--mobile-primary)';
+                            let textColor = 'var(--mobile-primary)';
+                            
+                            if (b.status === 'finalizado') {
+                              bgGradient = 'linear-gradient(135deg, #F2F7F3 0%, #EBF1EC 100%)';
+                              borderLeftColor = 'var(--mobile-green)';
+                              textColor = 'var(--mobile-green)';
+                            } else if (b.status === 'pendente') {
+                              bgGradient = 'linear-gradient(135deg, #FEF9E7 0%, #FAF0D4 100%)';
+                              borderLeftColor = 'var(--mobile-amber)';
+                              textColor = 'var(--mobile-amber)';
+                            } else if (b.status === 'bloqueado') {
+                              bgGradient = 'var(--mobile-grey-block)';
+                              borderLeftColor = '#a0aec0';
+                              textColor = 'var(--mobile-muted)';
+                            }
+
+                            return (
+                              <div 
+                                key={b.id} 
+                                className={`mobile-weekly-appt-card ${b.status}`}
+                                onClick={() => setSelectedBooking(b)}
+                                style={{
+                                  top: `${topPercent}%`,
+                                  height: `${heightPercent}%`,
+                                  position: 'absolute',
+                                  left: 2,
+                                  right: 2,
+                                  fontSize: '0.6rem',
+                                  padding: '4px 3px',
+                                  borderRadius: 4,
+                                  background: bgGradient,
+                                  borderLeft: `3px solid ${borderLeftColor}`,
+                                  color: textColor,
+                                  overflow: 'hidden',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+                                  zIndex: 3,
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                <span style={{ fontWeight: 'bold', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#1a1310' }}>{b.clientName}</span>
+                                <span style={{ opacity: 0.9, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize: '0.52rem', color: '#4a3f35' }}>{b.service?.name || b.serviceName}</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
             </div>
           )}
 
-          {/* VIEW: MENSAL (CALENDÁRIO COM PONTOS) */}
+          {/* VIEW: MENSAL (CALENDÁRIO COM CÍRCULOS DE STATUS) */}
           {agendaView === 'mensal' && (
-            <div style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 8, textAlign: 'center', fontWeight: 'bold', fontSize: '0.75rem', color: 'var(--mobile-muted)' }}>
-                <div>Dom</div>
-                <div>Seg</div>
-                <div>Ter</div>
-                <div>Qua</div>
-                <div>Qui</div>
-                <div>Sex</div>
-                <div>Sáb</div>
+            <div style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 12, textAlign: 'center', fontWeight: 'bold', fontSize: '0.72rem', color: 'var(--mobile-muted)' }}>
+                <div>dom.</div>
+                <div>seg.</div>
+                <div>ter.</div>
+                <div>qua.</div>
+                <div>qui.</div>
+                <div>sex.</div>
+                <div>sáb.</div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6 }}>
-                {getDaysInMonth(currentDate).map((cell, idx) => {
-                  if (!cell) {
-                    return <div key={`empty-${idx}`} style={{ minHeight: 60, background: '#fcfcfc', opacity: 0.3 }} />;
-                  }
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
+                {getDaysInMonthGrid(currentDate).map((cell, idx) => {
+                  const dayBookings = bookings.filter(b => 
+                    b.date === cell.dateStr && 
+                    (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
+                    b.status !== 'cancelado'
+                  );
                   
-                  const dayNum = Number(cell.split('-')[2]);
-                  const dayBookings = bookings.filter(b => b.date === cell && b.status !== 'cancelado');
-                  const isToday = cell === new Date().toISOString().split('T')[0];
+                  const isToday = cell.dateStr === todayStr;
+                  const isCurrentMonth = cell.isCurrentMonth;
                   
                   return (
                     <div 
-                      key={cell} 
+                      key={`${cell.dateStr}-${idx}`} 
                       onClick={() => {
-                        setCurrentDate(cell);
+                        setCurrentDate(cell.dateStr);
                         setAgendaView('diario');
                       }}
                       style={{
-                        minHeight: 60,
-                        border: '1px solid var(--mobile-rule)',
-                        borderRadius: 8,
-                        padding: 4,
+                        minHeight: 68,
+                        borderRadius: 12,
+                        padding: '6px 4px',
                         display: 'flex',
                         flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        background: isToday ? 'rgba(176, 90, 46, 0.08)' : '#fbfaf8',
-                        borderColor: isToday ? 'var(--mobile-primary)' : 'var(--mobile-rule)',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        background: !isCurrentMonth ? '#F5F5F5' : 'transparent',
+                        color: !isCurrentMonth ? '#cbd5e1' : (isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)'),
                         cursor: 'pointer',
-                        transition: 'background 0.2s'
+                        transition: 'background 0.2s',
+                        position: 'relative'
                       }}
                     >
-                      <span style={{ fontSize: '0.8rem', fontWeight: isToday ? 'bold' : 'normal', color: isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)' }}>
-                        {dayNum}
+                      <span style={{ 
+                        fontSize: '0.9rem', 
+                        fontWeight: isToday || !isCurrentMonth ? 'bold' : 'normal',
+                        color: !isCurrentMonth ? '#a0aec0' : (isToday ? 'var(--mobile-primary)' : '#1a1310')
+                      }}>
+                        {cell.dayNum}
                       </span>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2, marginTop: 4 }}>
-                        {dayBookings.slice(0, 4).map((b, bIdx) => {
-                          let dotColor = '#C97B49'; // pendente
-                          if (b.status === 'confirmado') dotColor = '#B05A2E';
-                          if (b.status === 'finalizado') dotColor = '#4A5D4E';
-                          if (b.status === 'bloqueado') dotColor = '#a0aec0';
-                          return (
-                            <span 
-                              key={b.id || bIdx} 
-                              style={{
-                                width: 5,
-                                height: 5,
-                                borderRadius: '50%',
-                                backgroundColor: dotColor,
-                                display: 'inline-block'
-                              }} 
-                            />
-                          );
-                        })}
-                        {dayBookings.length > 4 && (
-                          <span style={{ fontSize: '0.6rem', fontWeight: 'bold', color: 'var(--mobile-muted)', lineHeight: '5px' }}>+</span>
-                        )}
-                      </div>
+                      
+                      {isCurrentMonth && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 4, alignItems: 'center' }}>
+                          {dayBookings.slice(0, 3).map((b, bIdx) => {
+                            let dotColor = '#cbd5e1'; // bloqueado / outro
+                            if (b.status === 'confirmado') dotColor = '#48bb78'; // verde para confirmado/finalizado
+                            if (b.status === 'finalizado') dotColor = '#48bb78';
+                            if (b.status === 'pendente') dotColor = '#ecc94b'; // laranja para pendente
+                            
+                            return (
+                              <span 
+                                key={b.id || bIdx} 
+                                style={{
+                                  width: 5,
+                                  height: 5,
+                                  borderRadius: '50%',
+                                  backgroundColor: dotColor,
+                                  display: 'block'
+                                }} 
+                              />
+                            );
+                          })}
+                          {dayBookings.length > 3 && (
+                            <span style={{ fontSize: '0.6rem', fontWeight: 'bold', color: 'var(--mobile-muted)', lineHeight: '4px', marginTop: -2 }}>...</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   );
                 })}

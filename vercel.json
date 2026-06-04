@@ -3,17 +3,31 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "api/cron-automations.js": {
-      "maxDuration": 60
-    },
-    "api/cron-reminders.js": {
-      "maxDuration": 60
-    },
-    "api/cron-blog.js": {
+    "api/cron.js": {
       "maxDuration": 60
     }
   },
   "routes": [
+    {
+      "src": "/api/indexnow",
+      "dest": "/api/cron.js?task=indexnow"
+    },
+    {
+      "src": "/api/cron-reminders",
+      "dest": "/api/cron.js?task=reminders"
+    },
+    {
+      "src": "/api/cron-automations",
+      "dest": "/api/cron.js?task=automations"
+    },
+    {
+      "src": "/api/cron-daily-digest",
+      "dest": "/api/cron.js?task=daily-digest"
+    },
+    {
+      "src": "/api/cron-blog",
+      "dest": "/api/cron.js?task=blog"
+    },
     {
       "src": "/api/whatsapp-webhook(.*)",
       "dest": "/api/whatsapp-webhook.js"

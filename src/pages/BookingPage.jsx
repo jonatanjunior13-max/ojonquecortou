@@ -13,6 +13,7 @@ import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateD
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
 import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar } from 'lucide-react';
+import { syncBookingToGoogle } from '../utils/gcalSync';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
 
@@ -1146,8 +1147,10 @@ const BookingPage = () => {
           if (rescheduleId) {
             const docRef = doc(db, 'bookings', rescheduleId);
             await withTimeout(updateDoc(docRef, bookingPayload), 8000);
+            syncBookingToGoogle(rescheduleId).catch(err => console.warn(err));
           } else {
-            await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
+            const docRef = await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
+            syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
           }
 
           // Auto-cadastro no Firestore

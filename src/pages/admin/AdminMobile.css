@@ -1,4 +1,4 @@
-/* CSS para o Aplicativo Mobile Administrador — Redesign Premium */
+/* CSS para o Aplicativo Mobile Administrador — Redesign Premium (Obsidian Bronze Edition) */
 
 :root {
   --mobile-bg: #F7F0E3;                    /* Creme suave */
@@ -28,6 +28,17 @@
   --mobile-transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   --mobile-transition-fast: 0.15s ease-out;
 }
+
+/* Touch active scale effect for premium mobile feedback */
+.mobile-nav-item:active, 
+.mobile-shortcut-card:active, 
+.mobile-btn:active, 
+.btn-mobile-action:active,
+.mobile-booking-card:active {
+  transform: scale(0.96) !important;
+  opacity: 0.9;
+}
+
 
 /* Slide tab transitions */
 .mobile-tab-view {
