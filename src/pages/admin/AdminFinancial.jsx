@@ -185,29 +185,49 @@ const AdminFinancial = () => {
 
     if (m === 'pix') {
       rate = fees.feePix;
+      return val * (1 - rate / 100);
     } else if (m === 'dinheiro') {
-      rate = 0;
+      return val;
     } else if (m.includes('débito') || m.includes('debito')) {
       rate = fees.feeDebit;
+      return val * (1 - rate / 100);
     } else if (m.includes('crédito') || m.includes('credito') || m.includes('credit')) {
-      // Detect installment type from strings like "Cartão de Crédito (2x)", "Crédito 2x", etc.
-      if (m.includes('3x')) {
-        rate = fees.feeCredit3x;
-      } else if (m.includes('2x')) {
+      // Detect installments from payment method label, e.g., "Cartão de Crédito (3x)" or "Crédito 2x"
+      let installments = 1;
+      const match = m.match(/(\d+)x/);
+      if (match) {
+        installments = parseInt(match[1], 10);
+      }
+
+      if (installments === 2) {
         rate = fees.feeCredit2x;
+      } else if (installments >= 3) {
+        rate = fees.feeCredit3x;
       } else {
-        // "À vista", "1x", or plain credit
         rate = fees.feeCredit;
+      }
+
+      const hasAnticipation = m.includes('antecip') || m.includes('adiant');
+      if (hasAnticipation) {
+        // Stone calculates anticipation fee per installment pro-rata (simple interest per month)
+        // Installment i is anticipated by (30 * i - 1) days if received on day 1 (tomorrow)
+        const valPerInstallment = val / installments;
+        let totalNet = 0;
+        const antRatePerMonth = fees.feeAnticipation / 100;
+        
+        for (let i = 1; i <= installments; i++) {
+          const days = 30 * i - 1;
+          const netInstallment = valPerInstallment * (1 - rate / 100);
+          const payout = netInstallment * (1 - antRatePerMonth * (days / 30));
+          totalNet += payout;
+        }
+        return totalNet;
+      } else {
+        return val * (1 - rate / 100);
       }
     }
 
-    // Add anticipation fee if flagged
-    const hasAnticipation = m.includes('antecip') || m.includes('adiant');
-    if (hasAnticipation) {
-      rate += fees.feeAnticipation;
-    }
-
-    return val * (1 - rate / 100);
+    return val;
   };
 
   const getTransactionFee = (val, method) => {
