@@ -98,6 +98,8 @@ const AdminMarketing = () => {
   const [selectedCampaignPhones, setSelectedCampaignPhones] = useState([]);
   
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailProgressCount, setEmailProgressCount] = useState(0);
+  const [emailProgressTotal, setEmailProgressTotal] = useState(0);
   const [showEmailPreviewModal, setShowEmailPreviewModal] = useState(false);
   const [showEmailEditModal, setShowEmailEditModal] = useState(false);
   const [editingTemplateKey, setEditingTemplateKey] = useState(null);
@@ -611,6 +613,8 @@ const AdminMarketing = () => {
     }
 
     setIsSendingEmail(true);
+    setEmailProgressTotal(total);
+    setEmailProgressCount(0);
     const logTime = () => new Date().toLocaleTimeString('pt-BR');
     setEmailLogs([
       `[${logTime()}] 🚀 Iniciando campanha com Proteção Anti-Spam (Modo Titan)`,
@@ -620,6 +624,7 @@ const AdminMarketing = () => {
     let count = 0;
     for (const client of targets) {
       count++;
+      setEmailProgressCount(count);
       
       // Delay de proteção individual
       if (count > 1) {
@@ -1130,6 +1135,16 @@ const AdminMarketing = () => {
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>
                         Alvos: {clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length} contatos sem visitas anteriores.
                       </p>
+                      {isSendingEmail && emailProgressTotal > 0 && (
+                        <div style={{ marginTop: '8px', minWidth: '200px' }}>
+                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent)' }}>
+                            Progresso: {emailProgressCount} de {emailProgressTotal} enviados ({Math.round((emailProgressCount / emailProgressTotal) * 100)}%)
+                          </span>
+                          <div style={{ width: '100%', height: '4px', background: 'var(--rule)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden' }}>
+                            <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s ease' }}></div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <button
                       className="btn btn-accent"
@@ -1149,6 +1164,8 @@ const AdminMarketing = () => {
 
                         if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos?\n\nIsso enviará o E-mail 1 de Lançamento.\n\nConfiguração de Proteção:\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.\n\nIMPORTANTE: Mantenha esta aba aberta durante o processo.`)) return;
                         
+                        setEmailProgressTotal(total);
+                        setEmailProgressCount(0);
                         setIsSendingEmail(true);
                         const logTime = () => new Date().toLocaleTimeString('pt-BR');
                         setEmailLogs([
@@ -1190,6 +1207,7 @@ const AdminMarketing = () => {
                           }
 
                           count++;
+                          setEmailProgressCount(count);
                           if (count < total) {
                             // Proteção Titan SMTP
                             if (count % BATCH_SIZE === 0) {
@@ -1398,6 +1416,18 @@ const AdminMarketing = () => {
                   <p className="sub-instruction">Dispare automaticamente via API Gateway configurada ou clique em "WhatsApp" em cada linha para enviar manualmente.</p>
                 ) : (
                   <p className="sub-instruction">Simule ou conecte o disparo de e-mails em massa através de nossa API integrada.</p>
+                )}
+
+                {marketingChannel === 'email' && isSendingEmail && emailProgressTotal > 0 && (
+                  <div style={{ margin: '12px 0', padding: '12px', background: 'rgba(176,90,46,0.1)', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent)' }}>
+                      <span>Progresso do Disparo</span>
+                      <span>{emailProgressCount} de {emailProgressTotal} enviados ({Math.round((emailProgressCount / emailProgressTotal) * 100)}%)</span>
+                    </div>
+                    <div style={{ width: '100%', height: '6px', background: 'var(--rule)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s ease' }}></div>
+                    </div>
+                  </div>
                 )}
 
                 {marketingChannel === 'whatsapp' && whatsappLogs.length > 0 && (
