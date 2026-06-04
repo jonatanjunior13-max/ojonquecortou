@@ -21,6 +21,7 @@ function Navbar() {
     { id: "/servicos", label: "Serviços" },
     { id: "/galeria", label: "Galeria" },
     { id: "/depoimentos", label: "Depoimentos" },
+    { id: "/faq", label: "FAQ" },
     { id: "/blog", label: "Blog" },
     { id: "/cliente", label: "Minha Conta" },
   ];
