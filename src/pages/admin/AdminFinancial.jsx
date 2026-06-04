@@ -66,10 +66,10 @@ const AdminFinancial = () => {
   const [feesForm, setFeesForm] = useState({
     feePix: 0,
     feeDebit: 1.9,
-    feeCredit: 3.5,
+    feeCredit: 3.49,
     feeCredit2x: 4.5,
     feeCredit3x: 5.5,
-    feeAnticipation: 2.0
+    feeAnticipation: 2.50
   });
 
   // Ledger Filter states
@@ -118,10 +118,10 @@ const AdminFinancial = () => {
       setFeesForm({
         feePix: settings.feePix ?? 0,
         feeDebit: settings.feeDebit ?? 1.9,
-        feeCredit: settings.feeCredit ?? 3.5,
+        feeCredit: settings.feeCredit ?? 3.49,
         feeCredit2x: settings.feeCredit2x ?? 4.5,
         feeCredit3x: settings.feeCredit3x ?? 5.5,
-        feeAnticipation: settings.feeAnticipation ?? 2.0
+        feeAnticipation: settings.feeAnticipation ?? 2.50
       });
     }
   }, [settings]);
@@ -180,19 +180,29 @@ const AdminFinancial = () => {
       feeAnticipation: settings.feeAnticipation ?? feesForm.feeAnticipation
     };
 
-    const cleanMethod = (method || '').toLowerCase();
+    const m = (method || '').toLowerCase();
     let rate = 0;
-    if (cleanMethod.includes('pix')) {
+
+    if (m === 'pix') {
       rate = fees.feePix;
-    } else if (cleanMethod.includes('débito') || cleanMethod.includes('debito')) {
+    } else if (m === 'dinheiro') {
+      rate = 0;
+    } else if (m.includes('débito') || m.includes('debito')) {
       rate = fees.feeDebit;
-    } else if (cleanMethod.includes('crédito') || cleanMethod.includes('credito') || cleanMethod.includes('cartão de crédito')) {
-      if (cleanMethod.includes('2x')) rate = fees.feeCredit2x;
-      else if (cleanMethod.includes('3x')) rate = fees.feeCredit3x;
-      else rate = fees.feeCredit;
+    } else if (m.includes('crédito') || m.includes('credito') || m.includes('credit')) {
+      // Detect installment type from strings like "Cartão de Crédito (2x)", "Crédito 2x", etc.
+      if (m.includes('3x')) {
+        rate = fees.feeCredit3x;
+      } else if (m.includes('2x')) {
+        rate = fees.feeCredit2x;
+      } else {
+        // "À vista", "1x", or plain credit
+        rate = fees.feeCredit;
+      }
     }
-    
-    const hasAnticipation = cleanMethod.includes('antecip') || cleanMethod.includes('adiant');
+
+    // Add anticipation fee if flagged
+    const hasAnticipation = m.includes('antecip') || m.includes('adiant');
     if (hasAnticipation) {
       rate += fees.feeAnticipation;
     }
@@ -248,6 +258,8 @@ const AdminFinancial = () => {
       .reduce((sum, t) => sum + getNetValue(t.value, t.paymentMethod), 0);
   }, [filteredTransactions]);
 
+
+
   const totalDespesa = useMemo(() => {
     return filteredTransactions
       .filter(t => t.type === 'saida')
@@ -279,13 +291,15 @@ const AdminFinancial = () => {
 
   const productNetProfit = productGrossRevenue - productCost;
 
+  // Total de taxas retidas pelas operadoras
   const totalTaxas = useMemo(() => {
     return filteredTransactions
       .filter(t => t.type === 'entrada')
       .reduce((sum, t) => sum + getTransactionFee(t.value, t.paymentMethod), 0);
   }, [filteredTransactions, settings, feesForm]);
 
-  const netResultado = grossReceita - totalTaxas - totalDespesa - productCost;
+  // Resultado = Receita Bruta - Taxas - Despesas
+  const netResultado = netReceita - totalDespesa;
 
   const totalBookingsCount = useMemo(() => {
     return filteredBookings.filter(b => b.status !== 'bloqueado' && b.status !== 'cancelado').length;
@@ -899,35 +913,45 @@ const AdminFinancial = () => {
         </div>
       </div>
 
-      {/* Primary KPI cards */}
+      {/* Primary KPI cards: Receita → Taxas → Despesas → Resultado */}
       <section className="admin-stats-grid">
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Bruta</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma de todas as entradas no período, antes de taxas" />
           </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+          <div className="value" style={{ color: '#2f855a', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
             R$ {grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
 
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Taxas Retidas</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Total de taxas descontadas por maquininhas de cartão/Pix" />
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Taxas de Maquininha</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Total de taxas retidas por operadoras de cartão/Pix no período" />
           </div>
           <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            - R$ {totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
 
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Despesa</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Despesas</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Saídas de caixa, custos de serviço e despesas avulsas" />
           </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+            - R$ {totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)', borderLeft: `4px solid ${netResultado >= 0 ? '#48bb78' : '#e53e3e'}` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado Líquido</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Receita Bruta - Taxas de Maquininha - Despesas" />
+          </div>
+          <div className="value" style={{ color: netResultado >= 0 ? '#48bb78' : '#e53e3e', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
 

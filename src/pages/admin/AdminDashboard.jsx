@@ -114,7 +114,7 @@ const DEFAULT_SETTINGS = {
   instagram: 'https://instagram.com/ojonquecortou',
   feePix: 0,
   feeDebit: 1.9,
-  feeCredit: 3.5,
+  feeCredit: 3.49,
   minAdvance: '2',
   autoApprove: false,
   waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento...',
@@ -157,6 +157,7 @@ const AdminDashboard = () => {
   const [addedProducts, setAddedProducts] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [installments, setInstallments] = useState('À vista');
+  const [applyAnticipation, setApplyAnticipation] = useState(false);
   const [selectedExtraService, setSelectedExtraService] = useState('');
   const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
@@ -166,6 +167,7 @@ const AdminDashboard = () => {
     if (isCheckoutOpen) {
       setDiscount(0);
       setInstallments('À vista');
+      setApplyAnticipation(false);
     }
   }, [isCheckoutOpen]);
 
@@ -1112,17 +1114,20 @@ const AdminDashboard = () => {
       ...addedProducts.map(p => `${p.quantity}x ${p.name}`)
     ].join(', ');
 
-    const transactionPayload = {
-      bookingId: booking.id,
-      date: booking.date || getLocalDateString(new Date()),
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      clientName: booking.clientName,
-      clientPhone: booking.clientPhone || '',
-      type: 'entrada',
-      paymentMethod: paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod,
-      value: totalComanda,
-      discount: discount,
-      description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
+      const baseMethodLabel = paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod;
+      const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+
+      const transactionPayload = {
+        bookingId: booking.id,
+        date: booking.date || getLocalDateString(new Date()),
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        clientName: booking.clientName,
+        clientPhone: booking.clientPhone || '',
+        type: 'entrada',
+        paymentMethod: methodLabel,
+        value: totalComanda,
+        discount: discount,
+        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
       professionalId: booking.profissional || 'jon',
       // Store products breakdown to discriminate costs and calculate profits
       productSales: addedProducts.map(p => {
@@ -1232,6 +1237,7 @@ const AdminDashboard = () => {
       setDiscount(0);
       setAddedServices([]);
       setAddedProducts([]);
+      setApplyAnticipation(false);
     } catch (err) {
       console.error('Erro ao fechar comanda:', err);
       alert('Falha ao concluir o fechamento da comanda.');
@@ -3301,7 +3307,7 @@ ${googleLink}
                 </div>
 
                 {paymentMethod === 'Cartão de Crédito' && (
-                  <div className="form-group" style={{ marginBottom: 20 }}>
+                  <div className="form-group" style={{ marginBottom: 12 }}>
                     <label>Número de Parcelas *</label>
                     <select 
                       value={installments} 
@@ -3312,6 +3318,22 @@ ${googleLink}
                       <option value="2x">2x</option>
                       <option value="3x">3x</option>
                     </select>
+                  </div>
+                )}
+
+                {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
+                  <div className="form-group" style={{ marginBottom: 20 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
+                      <input 
+                        type="checkbox" 
+                        checked={applyAnticipation}
+                        onChange={e => setApplyAnticipation(e.target.checked)}
+                      />
+                      Antecipar recebimento? (taxa extra de antecipação)
+                    </label>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+                      Marque se o recebimento será antecipado pela maquininha (aplica taxa adicional).
+                    </span>
                   </div>
                 )}
 
