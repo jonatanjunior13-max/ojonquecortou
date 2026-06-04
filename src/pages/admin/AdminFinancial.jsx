@@ -65,8 +65,8 @@ const AdminFinancial = () => {
   // Fees Form State
   const [feesForm, setFeesForm] = useState({
     feePix: 0,
-    feeDebit: 1.9,
-    feeCredit: 3.49,
+    feeDebit: 1.40,
+    feeCredit: 2.49,
     feeCredit2x: 4.5,
     feeCredit3x: 5.5,
     feeAnticipation: 2.50
@@ -117,8 +117,8 @@ const AdminFinancial = () => {
     if (settings) {
       setFeesForm({
         feePix: settings.feePix ?? 0,
-        feeDebit: settings.feeDebit ?? 1.9,
-        feeCredit: settings.feeCredit ?? 3.49,
+        feeDebit: settings.feeDebit ?? 1.40,
+        feeCredit: settings.feeCredit ?? 2.49,
         feeCredit2x: settings.feeCredit2x ?? 4.5,
         feeCredit3x: settings.feeCredit3x ?? 5.5,
         feeAnticipation: settings.feeAnticipation ?? 2.50

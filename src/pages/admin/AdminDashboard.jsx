@@ -113,8 +113,11 @@ const DEFAULT_SETTINGS = {
   address: 'Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG',
   instagram: 'https://instagram.com/ojonquecortou',
   feePix: 0,
-  feeDebit: 1.9,
-  feeCredit: 3.49,
+  feeDebit: 1.40,
+  feeCredit: 2.49,
+  feeCredit2x: 4.5,
+  feeCredit3x: 5.5,
+  feeAnticipation: 2.50,
   minAdvance: '2',
   autoApprove: false,
   waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento...',
@@ -126,7 +129,7 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728',
+  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨',
   professionals: [
     { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
