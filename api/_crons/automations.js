@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { HTML_TEMPLATES } from '../src/utils/emailTemplates.js';
+import { HTML_TEMPLATES } from '../../src/utils/emailTemplates.js';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -296,16 +296,17 @@ export default async function handler(req, res) {
 
           processedPhones.add(booking.clientPhone);
 
-          // Verify NO recent booking exists
           const recentQ = query(
             collection(db, 'bookings'),
-            where('clientPhone', '==', booking.clientPhone),
-            where('date', '>', targetDateStr),
-            where('status', 'in', ['Concluído', 'Confirmado', 'finalizado'])
+            where('clientPhone', '==', booking.clientPhone)
           );
           const recentSnap = await getDocs(recentQ);
+          const hasRecent = recentSnap.docs.some(doc => {
+            const b = doc.data();
+            return b.date > targetDateStr && ['Concluído', 'Confirmado', 'finalizado'].includes(b.status);
+          });
 
-          if (recentSnap.empty) {
+          if (!hasRecent) {
             // Determine which template to send based on daysAgo
             let tplKey = null;
             const chem = isChemistry(booking.serviceName || '');
