@@ -1134,20 +1134,74 @@ const AdminMarketing = () => {
                     <button
                       className="btn btn-accent"
                       onClick={async () => {
-                        if (!confirm('Deseja iniciar a campanha de lançamento? Isso simulará o envio do e-mail 1 para todos os contatos sem histórico.')) return;
-                        setIsSendingEmail(true);
-                        setEmailLogs(['[CAMPANHA] Iniciando disparo de lançamento (Simulado/Inativo)...']);
+                        const targets = clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity && c.email && c.email !== 'Não informado' && c.email.includes('@'));
+                        const total = targets.length;
+                        if (total === 0) {
+                          alert('Nenhum alvo válido encontrado.');
+                          return;
+                        }
+
+                        const BATCH_SIZE = 5;
+                        const BATCH_DELAY = 60000;
+                        const INDIVIDUAL_DELAY = 15000;
                         
-                        const targets = clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity);
+                        const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
+
+                        if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos?\n\nIsso enviará o E-mail 1 de Lançamento.\n\nConfiguração de Proteção:\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.\n\nIMPORTANTE: Mantenha esta aba aberta durante o processo.`)) return;
+                        
+                        setIsSendingEmail(true);
+                        const logTime = () => new Date().toLocaleTimeString('pt-BR');
+                        setEmailLogs([
+                          `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL (E-mail 1)`,
+                          `[${logTime()}] Alvos válidos: ${total} | Tempo estimado: ~${estTimeMinutes} min`
+                        ]);
+
+                        const tpl = settings?.email_templates?.launchE1 || EMAIL_PREVIEWS.launchE1;
+                        let count = 0;
+
                         for (const client of targets) {
-                          await new Promise(r => setTimeout(r, 600));
-                          if (!client.email || client.email === 'Não informado' || !client.email.includes('@')) {
-                            setEmailLogs(prev => [...prev, `[❌ Pulo] ${client.name} não possui e-mail válido.`]);
-                          } else {
-                            setEmailLogs(prev => [...prev, `[✅ Pronto para Enviar] E-mail 1 reservado para ${client.name} (${client.email})`]);
+                          try {
+                            const firstName = (client.name || 'Cliente').split(' ')[0];
+                            const subject = (tpl.subject || 'Agendamento online no Studio do Jon. Acabou de mudar.').replace(/{nome}/g, firstName);
+                            
+                            // Replace dynamic tags in template body
+                            let content = (tpl.body || '').replace(/{nome}/g, firstName);
+                            
+                            const response = await fetch('/api/send-email', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({
+                                type: 'campanha',
+                                subject: subject,
+                                htmlBody: content,
+                                clientEmail: client.email,
+                                clientName: client.name
+                              })
+                            });
+
+                            if (response.ok) {
+                              setEmailLogs(prev => [...prev, `[${logTime()}] ✅ E-mail 1 enviado para ${client.name} (${client.email})`]);
+                              await saveLog(client.name, client.phone, 'launch_e1', 'email');
+                            } else {
+                              setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro ao enviar para ${client.name}: Status ${response.status}`]);
+                            }
+                          } catch (err) {
+                            setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de rede para ${client.name}: ${err.message}`]);
+                          }
+
+                          count++;
+                          if (count < total) {
+                            // Proteção Titan SMTP
+                            if (count % BATCH_SIZE === 0) {
+                              setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Pausa anti-spam de ${BATCH_DELAY/1000}s...`]);
+                              await new Promise(r => setTimeout(r, BATCH_DELAY));
+                            } else {
+                              await new Promise(r => setTimeout(r, INDIVIDUAL_DELAY));
+                            }
                           }
                         }
-                        setEmailLogs(prev => [...prev, '[CAMPANHA] Lançamento finalizado (Nenhum e-mail disparado de fato ainda).']);
+
+                        setEmailLogs(prev => [...prev, `[${logTime()}] 🏁 Campanha de lançamento concluída com sucesso!`]);
                         setIsSendingEmail(false);
                       }}
                       disabled={isSendingEmail}
