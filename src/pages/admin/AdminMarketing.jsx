@@ -915,33 +915,43 @@ const AdminMarketing = () => {
                 </div>
 
                 <div style={{ marginTop: '30px' }}>
-                  <h5 style={{ margin: '0 0 10px 0' }}>Histórico de Disparos da Régua</h5>
-                  {automationLogs.length === 0 ? (
-                    <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado ainda.</p>
-                  ) : (
-                    <div style={{ maxHeight: '250px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px' }}>
-                      <table className="admin-table" style={{ margin: 0 }}>
-                        <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)' }}>
-                          <tr>
-                            <th>Data</th>
-                            <th>Cliente</th>
-                            <th>Etapa (Trigger)</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {automationLogs.slice(0, 50).map(log => (
-                            <tr key={log.id}>
-                              <td>{new Date(log.timestamp).toLocaleString('pt-BR')}</td>
-                              <td>{log.clientName}</td>
-                              <td><span className="status-badge concluded">{log.stage}</span></td>
-                              <td>✅ Enviado</td>
+                  <h5 style={{ margin: '0 0 10px 0' }}>Histórico de Disparos da Régua (Hoje)</h5>
+                  {(() => {
+                    const todayLogs = Array.isArray(automationLogs) ? automationLogs.filter(log => {
+                      if (!log || !log.timestamp) return false;
+                      const logDate = new Date(log.timestamp);
+                      return logDate.toDateString() === new Date().toDateString();
+                    });
+
+                    if (todayLogs.length === 0) {
+                      return <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado hoje.</p>;
+                    }
+
+                    return (
+                      <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                        <table className="admin-table" style={{ margin: 0 }}>
+                          <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
+                            <tr>
+                              <th>Hora</th>
+                              <th>Cliente</th>
+                              <th>Etapa (Trigger)</th>
+                              <th>Status</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
+                          </thead>
+                          <tbody>
+                            {todayLogs.map(log => (
+                              <tr key={log.id}>
+                                <td>{new Date(log.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</td>
+                                <td>{log.clientName}</td>
+                                <td><span className="status-badge concluded">{log.stage}</span></td>
+                                <td>✅ Enviado</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
 
@@ -1143,7 +1153,7 @@ const AdminMarketing = () => {
                       disabled={isSendingEmail}
                       style={{ padding: '10px 20px', fontSize: '0.85rem' }}
                     >
-                      🚀 Disparar Sequência (Fase de Teste)
+                      🚀 Disparar Sequência
                     </button>
                   </div>
                 </div>
@@ -1828,7 +1838,7 @@ const AdminMarketing = () => {
                   </head>
                   <body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased;">
                     <div class="mail-stage">
-                      ${emailPreviewContent.body.replace(/{nome}/g, '[Nome]')}
+                      ${(emailPreviewContent.body || '').replace(/{nome}/g, '[Nome]')}
                     </div>
                   </body>
                   </html>

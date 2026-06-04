@@ -50,62 +50,82 @@ const baseLayout = (content, linkUrl, linkText) => `
   <title>Studio do Jon</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2;">
-    <tr>
-      <td align="center" style="padding: 40px 10px;">
-        <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAF5E8" style="max-width: 600px; background-color: #FAF5E8; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);">
-          <!-- Header -->
-          <tr>
-            <td style="padding: 30px 40px 20px 40px; border-bottom: 1px solid rgba(26, 19, 16, 0.08);">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="left">
-                    <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: #1A1310; color: #FAF5E8; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; vertical-align: middle;">J</span>
-                    <span style="display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #1A1310; margin-left: 10px; vertical-align: middle; font-family: 'Manrope', sans-serif;">O Jon Que Cortou</span>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- Content -->
-          <tr>
-            <td style="padding: 40px; font-family: 'Manrope', sans-serif; color: #1A1310; font-size: 15.5px; line-height: 1.65;">
-              ${content}
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top: 30px;">
-                <tr>
-                  <td align="center">
-                    <a href="${linkUrl}" style="display: inline-block; text-align: center; border: 2px solid #C97B49; color: #C97B49 !important; text-decoration: none; padding: 12px 24px; border-radius: 4px; font-size: 13px; font-weight: bold; font-family: 'Manrope', sans-serif; text-transform: uppercase; letter-spacing: 0.05em;">
-                      ${linkText}
-                    </a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- Footer -->
-          <tr>
-            <td style="padding: 25px 40px; background-color: #FAF5E8; border-top: 1px solid rgba(26, 19, 16, 0.08); text-align: center; font-family: 'Manrope', sans-serif; font-size: 12px; color: #6B5A4B; line-height: 1.6;">
-              <div style="font-size: 14px; font-weight: 600; color: #1A1310; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">
-                Studio do Jon <span style="font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
-              </div>
-              <div style="margin-bottom: 15px;">
-                Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte · MG
-              </div>
-              <div style="font-size: 11px; color: #8A7866; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
-                © ${new Date().getFullYear()} Studio do Jon
-              </div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+  <div style="background-color: #EFE5D2; padding: 40px 20px; min-height: 100vh;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+      <tr>
+        <td style="padding: 56px 48px 48px;">
+          
+          <!-- HEADER -->
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+            <tr>
+              <td align="left" valign="middle">
+                <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+                <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+              </td>
+            </tr>
+          </table>
+
+          <!-- CONTENT -->
+          <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
+            ${content}
+          </div>
+          
+          <div style="margin-top: 32px; margin-bottom: 16px;">
+            <a href="${linkUrl}" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">${linkText}</a>
+          </div>
+
+          <!-- SIGNATURE -->
+          <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+          <div>
+            <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+          </div>
+          <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
+            <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+            Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+          </p>
+          
+        </td>
+      </tr>
+      <!-- FOOTER -->
+      <tr>
+        <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+          <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
+            Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+          </div>
+          <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+            Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+          </p>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+            &copy; ${new Date().getFullYear()} Studio do Jon &middot; @ojonquecortou
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </body>
 </html>
 `;
 
 
 const templates = {
+  'launchE1': { 
+    subject: 'O Studio do Jon mudou (e por que isso importa para o seu cabelo)', 
+    content: HTML_TEMPLATES['launch_e1'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Ver Novo Sistema'
+  },
+  'launchE2': { 
+    subject: 'Por que você nunca deve pedir apenas um "corte de pontinhas"', 
+    content: HTML_TEMPLATES['launch_e2'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
+  'launchE3': { 
+    subject: 'Garanta seu horário com prioridade.', 
+    content: HTML_TEMPLATES['launch_e3'],
+    linkUrl: 'https://ojonquecortou.com.br/agendar',
+    linkText: 'Agendar Horário'
+  },
   'd1': { 
     subject: '{nome}, como tá o fio hoje?', 
     content: HTML_TEMPLATES['d1'],
@@ -125,19 +145,19 @@ const templates = {
     linkText: 'Agendar Horário'
   },
   'd35': { 
-    subject: '{nome}, chegou a hora.', 
+    subject: 'Um mês de corte (e o segredo para ele durar mais)', 
     content: HTML_TEMPLATES['d35'],
     linkUrl: 'https://ojonquecortou.com.br/agendar',
     linkText: 'Agendar Horário'
   },
   'd60': { 
-    subject: 'Uma coisa que percebi depois de anos cortando cacheado', 
+    subject: 'Falta 1 mês para a sua janela de manutenção', 
     content: HTML_TEMPLATES['d60'],
     linkUrl: 'https://ojonquecortou.com.br/agendar',
     linkText: 'Agendar Horário'
   },
   'd90': { 
-    subject: 'Esse é o último email que mando, {nome}.', 
+    subject: 'Últimos dias do valor especial de manutenção, {nome}', 
     content: HTML_TEMPLATES['d90'],
     linkUrl: 'https://ojonquecortou.com.br/agendar',
     linkText: 'Agendar Horário'
@@ -372,6 +392,90 @@ export default async function handler(req, res) {
       }
     }
 
+    // ==========================================
+    // 3. CAMPANHA DE LANÇAMENTO (LISTA FRIA)
+    // ==========================================
+    if (automations.launchCampaignEnabled === true) {
+      const profilesSnap = await getDocs(collection(db, 'client_profiles'));
+      const launchTargets = [];
+      
+      for (const docSnap of profilesSnap.docs) {
+        const p = docSnap.data();
+        if (p.unsubscribed === true) continue;
+        if (!p.email || p.email === 'Não informado' || !p.email.includes('@')) continue;
+        // Alvos da lista fria (sem histórico de visita / getDaysAbsent(lastVisit) == Infinity)
+        if (!p.lastVisit) {
+          launchTargets.push(p);
+        }
+      }
+
+      if (launchTargets.length > 0) {
+        for (const target of launchTargets) {
+          const logQ = query(collection(db, 'automation_logs'), where('email', '==', target.email));
+          const logSnap = await getDocs(logQ);
+          let gotE1 = null, gotE2 = null, gotE3 = null;
+          
+          logSnap.forEach(l => {
+            const data = l.data();
+            if (data.stage === 'launch_e1') gotE1 = new Date(data.timestamp);
+            if (data.stage === 'launch_e2') gotE2 = new Date(data.timestamp);
+            if (data.stage === 'launch_e3') gotE3 = new Date(data.timestamp);
+          });
+          
+          let tplKey = null;
+          let stageLabel = null;
+          
+          const now = new Date();
+          const msPerDay = 1000 * 60 * 60 * 24;
+          
+          if (!gotE1) {
+            tplKey = 'launchE1';
+            stageLabel = 'launch_e1';
+          } else if (!gotE2 && (now - gotE1) / msPerDay >= 5) {
+            tplKey = 'launchE2';
+            stageLabel = 'launch_e2';
+          } else if (gotE1 && !gotE3 && (now - gotE1) / msPerDay >= 10) {
+            tplKey = 'launchE3';
+            stageLabel = 'launch_e3';
+          }
+          
+          if (tplKey && automations[tplKey] !== false) {
+             const firstName = (target.name || 'Cliente').split(' ')[0];
+             const customTpl = settings?.email_templates?.[tplKey];
+             const subject = (customTpl?.subject || templates[tplKey].subject).replace(/{nome}/g, firstName);
+             const content = formatBody(customTpl?.body || templates[tplKey].content, firstName);
+             
+             // Os templates de lançamento já vêm com HTML completo se usarem o default
+             const emailBody = customTpl?.body
+                ? baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText)
+                : content;
+
+             const payload = {
+                type: 'campanha',
+                subject: subject,
+                htmlBody: emailBody,
+                clientEmail: target.email,
+                clientName: target.name
+             };
+             
+             const ok = await dispatchEmail(payload, hostUrl);
+             if (ok) {
+               await addDoc(collection(db, 'automation_logs'), {
+                 timestamp: new Date().toISOString(),
+                 date: todayStr,
+                 clientName: target.name,
+                 email: target.email,
+                 stage: stageLabel
+               });
+               stats.launchMails = (stats.launchMails || 0) + 1;
+               logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
+             }
+             // Pausa de segurança de 15 segundos (Titan SMTP limits)
+             await sleep(15000);
+          }
+        }
+      }
+    }
     return res.status(200).json({
       message: 'Automações diárias processadas com nova régua.',
       todayStr,
