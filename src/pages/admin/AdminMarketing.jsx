@@ -921,7 +921,7 @@ const AdminMarketing = () => {
                       if (!log || !log.timestamp) return false;
                       const logDate = new Date(log.timestamp);
                       return logDate.toDateString() === new Date().toDateString();
-                    });
+                    }) : [];
 
                     if (todayLogs.length === 0) {
                       return <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado hoje.</p>;
