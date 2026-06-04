@@ -180,14 +180,19 @@ const AdminFinancial = () => {
       feeAnticipation: settings.feeAnticipation ?? feesForm.feeAnticipation
     };
 
+    const cleanMethod = (method || '').toLowerCase();
     let rate = 0;
-    if (method === 'Pix') rate = fees.feePix;
-    else if (method === 'Cartão de Débito' || method === 'Débito') rate = fees.feeDebit;
-    else if (method === 'Cartão de Crédito' || method === 'Crédito' || method === 'Crédito 1x') rate = fees.feeCredit;
-    else if (method === 'Crédito 2x') rate = fees.feeCredit2x;
-    else if (method === 'Crédito 3x') rate = fees.feeCredit3x;
+    if (cleanMethod.includes('pix')) {
+      rate = fees.feePix;
+    } else if (cleanMethod.includes('débito') || cleanMethod.includes('debito')) {
+      rate = fees.feeDebit;
+    } else if (cleanMethod.includes('crédito') || cleanMethod.includes('credito') || cleanMethod.includes('cartão de crédito')) {
+      if (cleanMethod.includes('2x')) rate = fees.feeCredit2x;
+      else if (cleanMethod.includes('3x')) rate = fees.feeCredit3x;
+      else rate = fees.feeCredit;
+    }
     
-    const hasAnticipation = method?.toLowerCase().includes('antecip') || method?.toLowerCase().includes('adiant');
+    const hasAnticipation = cleanMethod.includes('antecip') || cleanMethod.includes('adiant');
     if (hasAnticipation) {
       rate += fees.feeAnticipation;
     }
@@ -274,7 +279,13 @@ const AdminFinancial = () => {
 
   const productNetProfit = productGrossRevenue - productCost;
 
-  const netResultado = netReceita - totalDespesa;
+  const totalTaxas = useMemo(() => {
+    return filteredTransactions
+      .filter(t => t.type === 'entrada')
+      .reduce((sum, t) => sum + getTransactionFee(t.value, t.paymentMethod), 0);
+  }, [filteredTransactions, settings, feesForm]);
+
+  const netResultado = grossReceita - totalTaxas - totalDespesa - productCost;
 
   const totalBookingsCount = useMemo(() => {
     return filteredBookings.filter(b => b.status !== 'bloqueado' && b.status !== 'cancelado').length;
@@ -282,6 +293,10 @@ const AdminFinancial = () => {
 
   const onlineBookingsCount = useMemo(() => {
     return filteredBookings.filter(b => b.status !== 'bloqueado' && b.status !== 'cancelado' && b.userId).length;
+  }, [filteredBookings]);
+
+  const adminBookingsCount = useMemo(() => {
+    return filteredBookings.filter(b => b.status !== 'bloqueado' && b.status !== 'cancelado' && !b.userId).length;
   }, [filteredBookings]);
 
   const completedBookingsCount = useMemo(() => {
@@ -888,21 +903,21 @@ const AdminFinancial = () => {
       <section className="admin-stats-grid">
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: netResultado >= 0 ? activeColor : redColor, fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
           </div>
           <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
             R$ {grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Taxas Retidas</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Total de taxas descontadas por maquininhas de cartão/Pix" />
+          </div>
+          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+            R$ {totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
 
@@ -918,6 +933,16 @@ const AdminFinancial = () => {
 
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
+          </div>
+          <div className="value" style={{ color: netResultado >= 0 ? activeColor : redColor, fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
+            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        </div>
+
+        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
           </div>
@@ -928,11 +953,11 @@ const AdminFinancial = () => {
 
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos Online</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
+            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos Online vs Admin</h3>
+            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Comparativo de agendamentos realizados pelos próprios clientes online vs agendamentos criados manualmente pelo painel admin" />
           </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            {onlineBookingsCount}
+          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.4rem', marginTop: 8, fontWeight: 700 }}>
+            {onlineBookingsCount} <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 400 }}>online</span> <span style={{ color: 'var(--rule)', margin: '0 4px' }}>|</span> {adminBookingsCount} <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 400 }}>admin</span>
           </div>
         </div>
 
@@ -955,6 +980,7 @@ const AdminFinancial = () => {
             R$ {productCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
+
 
         <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
