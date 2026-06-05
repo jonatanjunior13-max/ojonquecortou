@@ -386,13 +386,39 @@ const AdminMobileApp = () => {
   }, []);
 
 
+  /**
+   * Aguarda o Firebase Auth resolver a sessão persistida (IndexedDB).
+   * Em mobile/PWA, auth.currentUser pode ser null enquanto o SDK ainda
+   * está restaurando a sessão — este helper espera até 8s antes de falhar.
+   */
+  const waitForCurrentUser = (timeoutMs = 8000) =>
+    new Promise((resolve, reject) => {
+      if (auth?.currentUser) {
+        resolve(auth.currentUser);
+        return;
+      }
+      const timer = setTimeout(() => {
+        unsubscribe();
+        reject(new Error('Sessão expirada. Faça login novamente.'));
+      }, timeoutMs);
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          clearTimeout(timer);
+          unsubscribe();
+          resolve(user);
+        }
+      });
+    });
+
   const handleManualSync = async () => {
     if (syncing) return;
     setSyncing(true);
     setSyncError(null);
     try {
-      const user = auth?.currentUser;
-      if (!user) throw new Error('Usuário não autenticado no Firebase.');
+      // Usa waitForCurrentUser em vez de auth.currentUser direto para evitar
+      // a race condition no mobile/PWA onde o IndexedDB ainda está restaurando a sessão.
+      const user = await waitForCurrentUser();
+      if (!user) throw new Error('Sessão expirada. Faça login novamente.');
 
       // Força renovação do ID token para evitar token expirado
       const idToken = await user.getIdToken(true);
