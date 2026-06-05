@@ -62,10 +62,12 @@ const AdminServices = () => {
         
         if (list.length === 0 && !localStorage.getItem('services_seeded')) {
           // Se o banco estiver vazio, semeia os dados iniciais uma única vez
-          SEED_SERVICES.forEach(async (serv) => {
-            await setDoc(doc(db, 'services', serv.id), serv);
-          });
-          localStorage.setItem('services_seeded', 'true');
+          (async () => {
+            await Promise.all(SEED_SERVICES.map(async (serv) => {
+              await setDoc(doc(db, 'services', serv.id), serv);
+            }));
+            localStorage.setItem('services_seeded', 'true');
+          })();
         }
         list.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
         setServices(list);
