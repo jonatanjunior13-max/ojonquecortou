@@ -1154,7 +1154,7 @@ const BookingPage = () => {
           }
 
           // Auto-cadastro no Firestore
-          if (cleanPhone) {
+          if (cleanPhone && finalUserId) {
             try {
               const clientRef = doc(db, 'client_profiles', cleanPhone);
               const clientSnap = await withTimeout(getDoc(clientRef), 5000);
