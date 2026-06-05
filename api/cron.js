@@ -5,6 +5,12 @@ import dailyDigestHandler from './_crons/daily-digest.js';
 import blogHandler from './_crons/blog.js';
 
 export default async function handler(req, res) {
+  // 1. Verify authorization
+  const authHeader = req.headers?.authorization;
+  if (!authHeader || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const { task } = req.query;
   console.log(`Running cron task: ${task}`);
   
