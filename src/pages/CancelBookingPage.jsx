@@ -92,9 +92,7 @@ export default function CancelBookingPage() {
           // Deletar transação com base no bookingId
           const q = query(collection(db, 'financial_transactions'), where('bookingId', '==', booking.id));
           const qSnap = await getDocs(q);
-          for (const docRef of qSnap.docs) {
-            await deleteDoc(docRef.ref);
-          }
+          await Promise.all(qSnap.docs.map(docRef => deleteDoc(docRef.ref)));
 
           // Deletar transação com base no telefone e data (fallback)
           if (booking.clientPhone && booking.date) {
@@ -104,9 +102,7 @@ export default function CancelBookingPage() {
               where('date', '==', booking.date)
             );
             const q2Snap = await getDocs(q2);
-            for (const docRef of q2Snap.docs) {
-              await deleteDoc(docRef.ref);
-            }
+            await Promise.all(q2Snap.docs.map(docRef => deleteDoc(docRef.ref)));
           }
         } catch (deleteErr) {
           console.error('Erro ao deletar transações financeiras (Cancel Page):', deleteErr);
