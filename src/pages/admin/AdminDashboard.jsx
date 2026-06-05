@@ -1362,14 +1362,14 @@ const AdminDashboard = () => {
         await updateDoc(apptRef, { status: 'finalizado' });
         syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
-        for (const added of addedProducts) {
+        await Promise.all(addedProducts.map(async (added) => {
           const prodRef = doc(db, 'products', added.productId);
           const match = products.find(p => p.id === added.productId);
           if (match) {
             const newQty = Math.max(0, match.quantity - added.quantity);
             await updateDoc(prodRef, { quantity: newQty });
           }
-        }
+        }));
 
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
 
