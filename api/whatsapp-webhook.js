@@ -13,10 +13,24 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
+const allowedOrigins = [
+  'https://ojonquecortou.com.br',
+  'https://www.ojonquecortou.com.br',
+  'http://localhost:5173'
+];
+
 export default async function handler(req, res) {
+  const origin = req.headers.origin;
+
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.ojonquecortou.com.br');
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
