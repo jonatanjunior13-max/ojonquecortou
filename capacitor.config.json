@@ -1,5 +1,9 @@
 {
   "appId": "com.ojonquecortou.app",
   "appName": "O Jon Que Cortou",
-  "webDir": "dist"
+  "webDir": "dist",
+  "server": {
+    "url": "https://www.ojonquecortou.com.br",
+    "cleartext": true
+  }
 }

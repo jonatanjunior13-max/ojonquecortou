@@ -790,6 +790,10 @@ export default async function handler(req, res) {
       break;
 
     case 'launch_campaign':
+      emailSubject = subject || 'Novidades do Jon Que Cortou';
+      emailContent = htmlBody;
+      currentType = 'campanha_raw';
+      break;
     case 'campanha':
       emailSubject = subject || 'Novidades do Jon Que Cortou';
       // In this case, htmlBody is fully provided from the CRM
@@ -961,7 +965,7 @@ export default async function handler(req, res) {
     }
 
     if (shouldSendClientEmail) {
-      const isSystemAutomation = ['campanha', 'campanha_raw', 'reativacao_5_meses'].includes(type);
+      const isSystemAutomation = ['campanha', 'campanha_raw', 'reativacao_5_meses', 'launch_campaign'].includes(type);
       const resendApiKey = process.env.RESEND_API_KEY;
 
       if (isSystemAutomation && resendApiKey) {

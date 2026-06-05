@@ -66,6 +66,30 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/api\//],
         skipWaiting: true,
         clientsClaim: true,
+        // Impede que o Service Worker intercepte chamadas do Firebase/Firestore
+        // Isso resolve o problema de sincronização no PWA
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/firestore\.googleapis\.com\/.*/i,
+            handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: /^https:\/\/firebase\.googleapis\.com\/.*/i,
+            handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: /^https:\/\/identitytoolkit\.googleapis\.com\/.*/i,
+            handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: /^https:\/\/securetoken\.googleapis\.com\/.*/i,
+            handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: /^https:\/\/.*\.firebaseio\.com\/.*/i,
+            handler: 'NetworkOnly',
+          },
+        ],
       },
       manifest: {
         name: 'O Jon Que Cortou - Admin',
