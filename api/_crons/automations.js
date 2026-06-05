@@ -207,7 +207,7 @@ export default async function handler(req, res) {
     const automations = settings?.automations || {};
     
     // Fallback: enabled by default if undefined
-    const sequenceEnabled = automations.retention30Enabled !== false;
+    const sequenceEnabled = automations.sequenceEnabled !== false;
 
     const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
     const parts = formatter.formatToParts(new Date());
@@ -246,7 +246,7 @@ export default async function handler(req, res) {
 
 
             const ok = await dispatchEmail({
-              type: 'campanha',
+              type: 'launch_campaign',
               subject: subject,
               htmlBody: emailBody,
               clientEmail: p.email,
@@ -264,8 +264,8 @@ export default async function handler(req, res) {
               stats.birthdays++;
               logs.push(`Aniversário (D-5) enviado para: ${p.name} (${p.email})`);
             }
-            // Pausa de segurança de 15 segundos (Titan SMTP limits)
-            await sleep(15000);
+            // Pausa de segurança de 5 segundos (Titan SMTP limits)
+            await sleep(5000);
           }
         }
       }
@@ -275,7 +275,7 @@ export default async function handler(req, res) {
     // 2. RÉGUA DE RELACIONAMENTO
     // ==========================================
     // Array of days to check
-    const windows = [1, 7, 21, 35, 50, 60, 90];
+    const windows = [1, 7, 21, 35, 50, 60, 90, 150];
 
     const isChemistry = (serviceName) => {
       if (!serviceName) return false;
@@ -363,7 +363,7 @@ export default async function handler(req, res) {
                   ? baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText)
                   : content;
                 payload = {
-                  type: 'campanha',
+                  type: 'launch_campaign',
                   subject: subject,
                   htmlBody: emailBody,
                   clientEmail: booking.clientEmail,
@@ -384,8 +384,8 @@ export default async function handler(req, res) {
                 stats.sequenceMails++;
                 logs.push(`Email D+${daysAgo} enviado para: ${booking.clientName} (${booking.clientEmail})`);
               }
-              // Pausa de segurança de 15 segundos (Titan SMTP limits)
-              await sleep(15000);
+              // Pausa de segurança de 5 segundos (Titan SMTP limits)
+              await sleep(5000);
             }
           }
         }
@@ -410,6 +410,7 @@ export default async function handler(req, res) {
       }
 
       if (launchTargets.length > 0) {
+        const MAX_LAUNCH_EMAILS_PER_RUN = 5;
         for (const target of launchTargets) {
           const logQ = query(collection(db, 'automation_logs'), where('email', '==', target.email));
           const logSnap = await getDocs(logQ);
@@ -449,9 +450,9 @@ export default async function handler(req, res) {
              const emailBody = customTpl?.body
                 ? baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText)
                 : content;
-
+ 
              const payload = {
-                type: 'campanha',
+                type: 'launch_campaign',
                 subject: subject,
                 htmlBody: emailBody,
                 clientEmail: target.email,
@@ -460,18 +461,23 @@ export default async function handler(req, res) {
              
              const ok = await dispatchEmail(payload, hostUrl);
              if (ok) {
-               await addDoc(collection(db, 'automation_logs'), {
-                 timestamp: new Date().toISOString(),
-                 date: todayStr,
-                 clientName: target.name,
-                 email: target.email,
-                 stage: stageLabel
-               });
-               stats.launchMails = (stats.launchMails || 0) + 1;
-               logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
+                await addDoc(collection(db, 'automation_logs'), {
+                  timestamp: new Date().toISOString(),
+                  date: todayStr,
+                  clientName: target.name,
+                  email: target.email,
+                  stage: stageLabel
+                });
+                stats.launchMails = (stats.launchMails || 0) + 1;
+                logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
+                
+                if (stats.launchMails >= MAX_LAUNCH_EMAILS_PER_RUN) {
+                  logs.push(`Limite diário de disparos da campanha de lançamento atingido (${MAX_LAUNCH_EMAILS_PER_RUN}). Interrompendo novos disparos hoje.`);
+                  break;
+                }
              }
-             // Pausa de segurança de 15 segundos (Titan SMTP limits)
-             await sleep(15000);
+             // Pausa de segurança de 5 segundos (Titan SMTP limits)
+             await sleep(5000);
           }
         }
       }
@@ -482,7 +488,6 @@ export default async function handler(req, res) {
       stats,
       logs
     });
-
   } catch (error) {
     console.error('Erro no cron-automations:', error);
     return res.status(500).json({ error: 'Erro interno no servidor.', details: error.message });

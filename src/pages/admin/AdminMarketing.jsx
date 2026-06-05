@@ -624,14 +624,14 @@ const AdminMarketing = () => {
     const targets = [...marketingTargetsList];
     const total = targets.length;
     
-    // Configurações de proteção contra suspensão de SMTP (Titan)
-    const BATCH_SIZE = 5;
-    const BATCH_DELAY = 60000;
-    const INDIVIDUAL_DELAY = 15000;
+    // Configurações de proteção otimizadas para Resend
+    const BATCH_SIZE = 10;
+    const BATCH_DELAY = 2000;
+    const INDIVIDUAL_DELAY = 200;
     
     const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
     
-    if (!confirm(`Deseja iniciar a campanha para ${total} clientes com a Proteção Anti-Spam ativada?\n\nConfiguração:\n- Intervalo entre e-mails: ${INDIVIDUAL_DELAY/1000}s\n- Lote de segurança: ${BATCH_SIZE} e-mails\n- Pausa entre lotes: ${BATCH_DELAY/1000}s\n- Tempo total estimado: ~${estTimeMinutes} minuto(s).\n\nRecomendado para evitar bloqueios na sua conta do Titan.`)) {
+    if (!confirm(`Deseja iniciar a campanha para ${total} clientes com a Proteção otimizada para Resend?\n\nConfiguração:\n- Intervalo entre e-mails: ${INDIVIDUAL_DELAY/1000}s\n- Lote de segurança: ${BATCH_SIZE} e-mails\n- Pausa entre lotes: ${BATCH_DELAY/1000}s\n- Tempo total estimado: ~${estTimeMinutes} minuto(s).`)) {
       return;
     }
 
@@ -641,7 +641,7 @@ const AdminMarketing = () => {
     setEmailProgressCount(0);
     const logTime = () => new Date().toLocaleTimeString('pt-BR');
     setEmailLogs([
-      `[${logTime()}] 🚀 Iniciando campanha com Proteção Anti-Spam (Modo Titan)`,
+      `[${logTime()}] 🚀 Iniciando campanha otimizada para Resend`,
       `[${logTime()}] 📬 Total de destinatários: ${total} | Tempo estimado: ~${estTimeMinutes} min`
     ]);
 
@@ -1223,7 +1223,7 @@ const AdminMarketing = () => {
                           
                           const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
 
-                          if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos?\n\nIsso enviará o E-mail 1 de Lançamento.\n\nConfiguração de Proteção:\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.\n\nIMPORTANTE: Mantenha esta aba aberta durante o processo.`)) return;
+                          if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos via SMTP/Titan?\n\nConfiguração de Proteção (SMTP):\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.`)) return;
                           
                           setEmailProgressTotal(total);
                           setEmailProgressCount(0);
@@ -1231,7 +1231,7 @@ const AdminMarketing = () => {
                           cancelSendingRef.current = false;
                           const logTime = () => new Date().toLocaleTimeString('pt-BR');
                           setEmailLogs([
-                            `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL (E-mail 1)`,
+                            `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL via SMTP (E-mail 1)`,
                             `[${logTime()}] Alvos válidos: ${total} | Tempo estimado: ~${estTimeMinutes} min`
                           ]);
 
@@ -1254,7 +1254,7 @@ const AdminMarketing = () => {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                  type: 'campanha',
+                                  type: 'launch_campaign',
                                   subject: subject,
                                   htmlBody: content,
                                   clientEmail: client.email,

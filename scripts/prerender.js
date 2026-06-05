@@ -104,6 +104,53 @@ const pages = [
     description: 'Veja o que nossas clientes dizem sobre suas experiências de corte e tratamento de cachos com o Jon em Belo Horizonte. Avaliações reais de quem ama seus cachos.'
   },
   {
+    route: '/faq',
+    title: 'Perguntas Frequentes — Studio do Jon | Especialista em Cachos BH',
+    description: 'Tire suas dúvidas sobre o Método Leitura de Fio, diagnóstico capilar, agendamento e cuidados com cabelo cacheado no Studio do Jon em Belo Horizonte.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Leitura de Fio é um serviço pago?", "acceptedAnswer": { "@type": "Answer", "text": "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre." } },
+        { "@type": "Question", "name": "Quanto tempo leva a Leitura de Fio?", "acceptedAnswer": { "@type": "Answer", "text": "Em média de 15 a 30 minutos antes do corte começar. Pode ser mais longa se o histórico for complexo." } },
+        { "@type": "Question", "name": "Posso agendar só a Leitura de Fio sem marcar corte?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. É possível agendar uma consulta de diagnóstico separada para entender o seu fio antes de decidir qualquer coisa." } },
+        { "@type": "Question", "name": "A Leitura de Fio funciona para cabelo liso também?", "acceptedAnswer": { "@type": "Answer", "text": "O método foi desenvolvido especificamente para cabelos ondulados, cacheados e crespos, onde a variação de textura e histórico químico é mais complexa." } },
+        { "@type": "Question", "name": "Posso usar condicionador em vez de máscara?", "acceptedAnswer": { "@type": "Answer", "text": "Pode, mas o condicionador apenas sela a cutícula. A máscara entrega tratamento. Se tiver que escolher um pro minimalismo, fique com a máscara e use uma quantidade menor." } },
+        { "@type": "Question", "name": "E o óleo capilar?", "acceptedAnswer": { "@type": "Answer", "text": "Ele entra como o 'plus'. Se o seu cabelo é muito seco (comum em curvaturas 4), ele é o quarto elemento indispensável. Se não, a máscara já resolve." } }
+      ]
+    }
+  },
+  {
+    route: '/metodo',
+    title: 'Método Leitura de Fio | Studio do Jon',
+    description: 'O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Método Leitura de Fio",
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "Studio do Jon",
+        "url": "https://www.ojonquecortou.com.br"
+      },
+      "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
+      "url": "https://www.ojonquecortou.com.br/metodo"
+    }
+  },
+  {
+    route: '/investimento',
+    title: 'Investimento | Studio do Jon — Especialista em Cachos BH',
+    description: 'Corte especializado com Método Leitura de Fio a partir de R$ 200. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "PriceSpecification",
+      "name": "Corte especializado cabelo cacheado",
+      "price": "190",
+      "priceCurrency": "BRL",
+      "url": "https://www.ojonquecortou.com.br/investimento"
+    }
+  },
+  {
     route: '/galeria',
     title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
     description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.'

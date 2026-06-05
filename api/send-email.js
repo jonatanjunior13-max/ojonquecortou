@@ -789,6 +789,7 @@ export default async function handler(req, res) {
       `;
       break;
 
+    case 'launch_campaign':
     case 'campanha':
       emailSubject = subject || 'Novidades do Jon Que Cortou';
       // In this case, htmlBody is fully provided from the CRM
@@ -960,9 +961,44 @@ export default async function handler(req, res) {
     }
 
     if (shouldSendClientEmail) {
-      const info = await transporter.sendMail(mailOptions);
-      messageId = info.messageId;
-      console.log(`E-mail de cliente enviado para ${clientEmail}. Tipo: ${type}`);
+      const isSystemAutomation = ['campanha', 'campanha_raw', 'reativacao_5_meses'].includes(type);
+      const resendApiKey = process.env.RESEND_API_KEY;
+
+      if (isSystemAutomation && resendApiKey) {
+        try {
+          const res = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: `"O Jon Que Cortou" <${smtpFrom}>`,
+              to: [clientEmail],
+              subject: emailSubject,
+              html: finalHtml
+            })
+          });
+          if (res.ok) {
+            const resData = await res.json();
+            messageId = resData.id || 'resend-ok';
+            console.log(`E-mail de automação/campanha enviado via RESEND para ${clientEmail}. Tipo: ${type}`);
+          } else {
+            const errMsg = await res.text();
+            console.error(`Falha ao enviar via Resend: ${errMsg}. Fazendo fallback para SMTP.`);
+            const info = await transporter.sendMail(mailOptions);
+            messageId = info.messageId;
+          }
+        } catch (resendErr) {
+          console.error(`Erro ao disparar via Resend: ${resendErr.message}. Fazendo fallback para SMTP.`);
+          const info = await transporter.sendMail(mailOptions);
+          messageId = info.messageId;
+        }
+      } else {
+        const info = await transporter.sendMail(mailOptions);
+        messageId = info.messageId;
+        console.log(`E-mail de cliente enviado para ${clientEmail}. Tipo: ${type}`);
+      }
     } else {
       console.log(`E-mail de cliente do tipo ${type} está desativado nas configurações para ${clientEmail}. Pulando envio.`);
     }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../../config/firebase';
+import { auth, db, fetchCollectionRest, fetchDocRest } from '../../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { 
   collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit, getDoc, setDoc, deleteDoc, where, getDocs 
@@ -52,6 +52,8 @@ const AdminMobileApp = () => {
   const [settings, setSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(!db);
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState(null);
 
   // Modais
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -168,8 +170,9 @@ const AdminMobileApp = () => {
     let unsubSettings;
     let unsubAuth;
 
-    // Load local storage mock data immediately for Offline-First responsiveness
-    loadLocalMockData();
+    // Carregar dados do cache imediatamente (offline-first)
+    const hasLocalData = loadLocalMockData();
+    if (hasLocalData) setLoading(false);
 
     if (!db) {
       setIsDemoMode(true);
@@ -177,60 +180,64 @@ const AdminMobileApp = () => {
       return;
     }
 
-    setLoading(true);
-
-    unsubAuth = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        console.warn('Usuário não autenticado no Mobile. Redirecionando para login.');
+    // Timeout de segurança: se Firebase não responder em 7s, mostra dados locais
+    let authFired = false;
+    const safetyTimer = setTimeout(() => {
+      if (!authFired) {
+        console.warn('Firebase timeout — usando cache local.');
         setIsDemoMode(true);
         setLoading(false);
-        navigate('/admin/login');
-        return;
       }
+    }, 7000);
 
-      setIsDemoMode(false);
-
+    // Carrega dados via Firestore REST API (HTTP puro — não usa WebChannel/streaming)
+    // O REST API funciona corretamente em PWA com Service Worker ativo.
+    const setupListeners = async (idToken) => {
       try {
-        unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
-          const list = [];
-          snapshot.forEach(doc => {
-            list.push({ id: doc.id, ...doc.data() });
-          });
-          setBookings(list);
-          localStorage.setItem('demo_bookings', JSON.stringify(list));
-          setLoading(false);
-        }, (err) => {
-          console.warn('Erro ao escutar bookings:', err);
-        });
+        setSyncError(null);
+        // ── FETCH IMEDIATO via REST API ─────────────────────────────────
+        const [
+          bookingsList,
+          clientsList,
+          txList,
+          servList,
+          inventoryList,
+          settingsData
+        ] = await Promise.allSettled([
+          fetchCollectionRest('bookings', idToken),
+          fetchCollectionRest('client_profiles', idToken),
+          fetchCollectionRest('financial_transactions', idToken),
+          fetchCollectionRest('services', idToken),
+          fetchCollectionRest('products', idToken),
+          fetchDocRest('settings', 'studio', idToken)
+        ]);
 
-        unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
-          const list = [];
-          snapshot.forEach(doc => {
-            list.push({ id: doc.id, ...doc.data() });
-          });
-          setClients(list);
-          localStorage.setItem('demo_client_profiles', JSON.stringify(list));
-        }, (err) => {
-          console.warn('Erro ao escutar client_profiles:', err);
-        });
+        let errors = [];
 
-        unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
-          const list = [];
-          snapshot.forEach(doc => {
-            list.push({ id: doc.id, ...doc.data() });
-          });
-          setTransactions(list);
-          localStorage.setItem('demo_transactions', JSON.stringify(list));
-          localStorage.setItem('demo_financial', JSON.stringify(list));
-        }, (err) => {
-          console.warn('Erro ao escutar financial_transactions:', err);
-        });
-
-        unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
-          const list = [];
-          snapshot.forEach(doc => {
-            list.push({ id: doc.id, ...doc.data() });
-          });
+        if (bookingsList.status === 'fulfilled') {
+          setBookings(bookingsList.value);
+          localStorage.setItem('demo_bookings', JSON.stringify(bookingsList.value));
+        } else {
+          console.error('Erro ao buscar bookings:', bookingsList.reason?.message);
+          errors.push(`Agendamentos: ${bookingsList.reason?.message}`);
+        }
+        if (clientsList.status === 'fulfilled') {
+          setClients(clientsList.value);
+          localStorage.setItem('demo_client_profiles', JSON.stringify(clientsList.value));
+        } else {
+          console.error('Erro ao buscar clients:', clientsList.reason?.message);
+          errors.push(`Clientes: ${clientsList.reason?.message}`);
+        }
+        if (txList.status === 'fulfilled') {
+          setTransactions(txList.value);
+          localStorage.setItem('demo_transactions', JSON.stringify(txList.value));
+          localStorage.setItem('demo_financial', JSON.stringify(txList.value));
+        } else {
+          console.error('Erro ao buscar transações:', txList.reason?.message);
+          errors.push(`Finanças: ${txList.reason?.message}`);
+        }
+        if (servList.status === 'fulfilled') {
+          const list = servList.value;
           setServices(list);
           if (list.length > 0) {
             setNewBooking(prev => ({
@@ -241,40 +248,133 @@ const AdminMobileApp = () => {
             }));
           }
           localStorage.setItem('demo_services', JSON.stringify(list));
-        }, (err) => {
-          console.warn('Erro ao escutar services:', err);
-        });
+        } else {
+          console.error('Erro ao buscar serviços:', servList.reason?.message);
+          errors.push(`Serviços: ${servList.reason?.message}`);
+        }
+        if (inventoryList.status === 'fulfilled') {
+          setInventory(inventoryList.value);
+          localStorage.setItem('demo_inventory', JSON.stringify(inventoryList.value));
+        } else {
+          console.error('Erro ao buscar estoque:', inventoryList.reason?.message);
+          errors.push(`Estoque: ${inventoryList.reason?.message}`);
+        }
+        if (settingsData.status === 'fulfilled' && settingsData.value) {
+          setSettings(settingsData.value);
+          localStorage.setItem('demo_studio_settings', JSON.stringify(settingsData.value));
+        } else if (settingsData.status === 'rejected') {
+          console.error('Erro ao buscar settings:', settingsData.reason?.message);
+          errors.push(`Ajustes: ${settingsData.reason?.message}`);
+        }
+
+        if (errors.length > 0) {
+          setSyncError(errors.join(' | '));
+        }
+
+        setLoading(false);
+
+        // ── REAL-TIME (onSnapshot) ────────────────────────────────────────
+        // Filtra para evitar que snapshots vazios vindos do cache offline sobrescrevam os dados do REST
+        unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setBookings(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_bookings', JSON.stringify(list));
+              return list;
+            }
+            return prev;
+          });
+        }, (err) => console.warn('onSnapshot bookings:', err.code || err.message));
+
+        unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setClients(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_client_profiles', JSON.stringify(list));
+              return list;
+            }
+            return prev;
+          });
+        }, (err) => console.warn('onSnapshot clients:', err.code || err.message));
+
+        unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setTransactions(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_transactions', JSON.stringify(list));
+              localStorage.setItem('demo_financial', JSON.stringify(list));
+              return list;
+            }
+            return prev;
+          });
+        }, (err) => console.warn('onSnapshot transactions:', err.code || err.message));
+
+        unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setServices(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_services', JSON.stringify(list));
+              return list;
+            }
+            return prev;
+          });
+        }, (err) => console.warn('onSnapshot services:', err.code || err.message));
 
         unsubInventory = onSnapshot(collection(db, 'products'), (snapshot) => {
-          const list = [];
-          snapshot.forEach(doc => {
-            list.push({ id: doc.id, ...doc.data() });
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setInventory(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_inventory', JSON.stringify(list));
+              return list;
+            }
+            return prev;
           });
-          setInventory(list);
-          localStorage.setItem('demo_inventory', JSON.stringify(list));
-        }, (err) => {
-          console.warn('Erro ao escutar inventory:', err);
-        });
+        }, (err) => console.warn('onSnapshot products:', err.code || err.message));
 
         unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
           if (snapshot.exists()) {
-            setSettings(snapshot.data());
-            localStorage.setItem('demo_studio_settings', JSON.stringify(snapshot.data()));
+            const data = snapshot.data();
+            setSettings(prev => {
+              if (!snapshot.metadata.fromCache || prev === null) {
+                localStorage.setItem('demo_studio_settings', JSON.stringify(data));
+                return data;
+              }
+              return prev;
+            });
           }
-          setLoading(false);
-        }, (err) => {
-          console.warn('Erro ao escutar settings:', err);
-          setLoading(false);
-        });
+        }, (err) => console.warn('onSnapshot settings:', err.code || err.message));
 
       } catch (e) {
-        console.error('Erro ao registrar listeners do Firebase:', e);
+        console.error('Erro ao buscar dados Firebase:', e);
+        setSyncError(e.message);
+        // Fallback para dados locais
         setIsDemoMode(true);
         setLoading(false);
       }
+    };
+
+    unsubAuth = onAuthStateChanged(auth, (user) => {
+      authFired = true;
+      clearTimeout(safetyTimer);
+
+      if (!user) {
+        console.warn('Sem sessão — redirecionando para login.');
+        setLoading(false);
+        navigate('/admin/login');
+        return;
+      }
+
+      setIsDemoMode(false);
+      setLoading(false);
+      // Pega o ID token para autenticar as chamadas REST
+      user.getIdToken().then(idToken => setupListeners(idToken)).catch(err => {
+        console.error('Erro ao obter ID token:', err);
+        setIsDemoMode(true);
+      });
     });
 
     return () => {
+      clearTimeout(safetyTimer);
       if (unsubAuth) unsubAuth();
       if (unsubBookings) unsubBookings();
       if (unsubClients) unsubClients();
@@ -284,6 +384,95 @@ const AdminMobileApp = () => {
       if (unsubSettings) unsubSettings();
     };
   }, []);
+
+
+  const handleManualSync = async () => {
+    if (syncing) return;
+    setSyncing(true);
+    setSyncError(null);
+    try {
+      const user = auth?.currentUser;
+      if (!user) throw new Error('Usuário não autenticado no Firebase.');
+
+      // Força renovação do ID token para evitar token expirado
+      const idToken = await user.getIdToken(true);
+      
+      const [
+        bookingsList,
+        clientsList,
+        txList,
+        servList,
+        inventoryList,
+        settingsData
+      ] = await Promise.allSettled([
+        fetchCollectionRest('bookings', idToken),
+        fetchCollectionRest('client_profiles', idToken),
+        fetchCollectionRest('financial_transactions', idToken),
+        fetchCollectionRest('services', idToken),
+        fetchCollectionRest('products', idToken),
+        fetchDocRest('settings', 'studio', idToken)
+      ]);
+
+      let errors = [];
+
+      if (bookingsList.status === 'fulfilled') {
+        setBookings(bookingsList.value);
+        localStorage.setItem('demo_bookings', JSON.stringify(bookingsList.value));
+      } else {
+        errors.push(`Agendamentos: ${bookingsList.reason?.message}`);
+      }
+
+      if (clientsList.status === 'fulfilled') {
+        setClients(clientsList.value);
+        localStorage.setItem('demo_client_profiles', JSON.stringify(clientsList.value));
+      } else {
+        errors.push(`Clientes: ${clientsList.reason?.message}`);
+      }
+
+      if (txList.status === 'fulfilled') {
+        setTransactions(txList.value);
+        localStorage.setItem('demo_transactions', JSON.stringify(txList.value));
+        localStorage.setItem('demo_financial', JSON.stringify(txList.value));
+      } else {
+        errors.push(`Finanças: ${txList.reason?.message}`);
+      }
+
+      if (servList.status === 'fulfilled') {
+        setServices(servList.value);
+        localStorage.setItem('demo_services', JSON.stringify(servList.value));
+      } else {
+        errors.push(`Serviços: ${servList.reason?.message}`);
+      }
+
+      if (inventoryList.status === 'fulfilled') {
+        setInventory(inventoryList.value);
+        localStorage.setItem('demo_inventory', JSON.stringify(inventoryList.value));
+      } else {
+        errors.push(`Estoque: ${inventoryList.reason?.message}`);
+      }
+
+      if (settingsData.status === 'fulfilled' && settingsData.value) {
+        setSettings(settingsData.value);
+        localStorage.setItem('demo_studio_settings', JSON.stringify(settingsData.value));
+      } else if (settingsData.status === 'rejected') {
+        errors.push(`Ajustes: ${settingsData.reason?.message}`);
+      }
+
+      if (errors.length > 0) {
+        const errorString = errors.join(' | ');
+        setSyncError(errorString);
+        alert(`Sincronização parcial com erros:\n${errors.join('\n')}`);
+      } else {
+        alert('Sincronização manual concluída com sucesso!');
+      }
+    } catch (e) {
+      console.error('Erro na sincronização manual:', e);
+      setSyncError(e.message);
+      alert(`Erro na sincronização: ${e.message}`);
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const loadLocalMockData = () => {
     const savedBookings = localStorage.getItem('demo_bookings');
@@ -325,6 +514,8 @@ const AdminMobileApp = () => {
     } else {
       setSettings(DEFAULT_SETTINGS);
     }
+    // Retorna true se algum dado foi encontrado no cache
+    return !!(savedBookings || savedClients || savedTransactions || savedServices);
   };
 
   // 1b. Motor de Notificações
@@ -1810,6 +2001,47 @@ ${googleLink}
         <Info size={12} style={{ marginRight: 6, color: 'var(--mobile-primary)' }} />
         Você está em: O Jon Que Cortou - Especialista em Cachos
       </div>
+
+      {/* Banner de Status de Sincronização */}
+      {!loading && !isDemoMode && bookings.length === 0 && (
+        <div
+          style={{
+            background: '#fff3cd',
+            borderBottom: '1px solid #ffc107',
+            padding: '8px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '0.78rem',
+            color: '#856404',
+            gap: '8px'
+          }}
+        >
+          <span>
+            {syncError 
+              ? `⚠️ Erro: ${syncError}` 
+              : '⚠️ Sem dados carregados. Possível falha de sincronização.'}
+          </span>
+          <button
+            onClick={handleManualSync}
+            disabled={syncing}
+            style={{
+              background: '#ffc107',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              color: '#333',
+              cursor: syncing ? 'not-allowed' : 'pointer',
+              opacity: syncing ? 0.7 : 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {syncing ? '🔄 Sincronizando...' : '🔄 Sincronizar'}
+          </button>
+        </div>
+      )}
 
       {/* RENDERIZAÇÃO DAS ABAS */}
       
