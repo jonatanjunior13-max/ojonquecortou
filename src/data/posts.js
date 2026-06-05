@@ -1,5 +1,81 @@
 export const posts = [
   {
+    id: 38,
+    slug: 'cabelo-cacheado-inverno-bh-frizz-ressecamento',
+    title: 'Cabelo Cacheado no Inverno de BH: O Guia de Sobrevivência contra o Frizz e Ressecamento | Studio do Jon',
+    excerpt: 'O inverno em Belo Horizonte traz um clima extremamente seco que rouba a umidade dos cachos. Aprenda como adaptar sua rotina de cuidados para combater o frizz e o ressecamento.',
+    metaDescription: 'Como cuidar de cabelos cacheados e crespos no inverno seco de Belo Horizonte. Dicas de um especialista para combater o frizz e manter a hidratação e o brilho dos fios.',
+    keywords: 'cabelo cacheado inverno bh, frizz cabelo cacheado bh, ressecamento cachos, hidratar cachos inverno, studio do jon, belo horizonte',
+    date: '05 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-inverno-cachos-bh.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que o inverno de Belo Horizonte resseca tanto os cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O inverno em BH é caracterizado por uma queda drástica na umidade relativa do ar. Sem umidade no ambiente, a água presente nos fios evapora muito mais rápido, levando ao ressecamento extremo e ao frizz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso usar óleo de coco para fazer umectação no inverno?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não recomendo. O óleo de coco solidifica em temperaturas mais baixas (abaixo de 25°C), o que pode enrijecer o fio e dificultar a remoção no banho frio/morno. Prefira óleos mais fluidos como o de semente de uva ou jojoba."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Com que frequência devo lavar os cachos no frio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evite lavar todos os dias, mas não fique mais de 4 dias sem lavar. O acúmulo de produtos e a oleosidade abafada no couro cabeludo podem causar caspa e queda. Duas a três vezes por semana com um xampu Low Poo é o ideal."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>O Clima de Belo Horizonte e Seus Cachos: Uma Relação Complicada no Inverno</h2>
+      <p>Quem vive em Belo Horizonte sabe: o inverno mineiro é lindo, ensolarado e... terrivelmente seco. Nos meses de junho e julho, a umidade relativa do ar na capital mineira frequentemente despenca para níveis críticos, muitas vezes abaixo de trinta por cento. Se a sua pele já sente o impacto desse "clima de deserto", imagine o seu cabelo.</p>
+      <p>Os cabelos ondulados, cacheados e crespos são naturalmente mais secos porque a oleosidade produzida no couro cabeludo tem dificuldade de descer pelo formato espiral do fio. Quando o ar está seco, a pouca água presente na fibra capilar evapora para a atmosfera em um processo físico inevitável. O resultado? Cutículas abertas, fios ásperos, perda de definição e aquele frizz persistente que parece não ceder a nenhum creme.</p>
+      <p>Se você continuar cuidando do seu cabelo no inverno da mesma forma que cuida no verão úmido, você vai brigar com o espelho. É preciso adaptar a rotina. E, como especialista, vou te mostrar o caminho técnico para proteger seus cachos sem mistérios.</p>
+
+      <h2>1. Substitua a Hidratação Simples por Nutrição e Umectação</h2>
+      <p>No inverno de BH, repor apenas água (hidratação) não é suficiente. A água que você coloca no fio vai evaporar em poucas horas por causa da baixa umidade do ar. O segredo para manter o cacho saudável é criar uma barreira física que impeça essa evaporação. É aqui que entram os lipídios (óleos e manteigas).</p>
+      <p>Aumente a frequência das etapas de <strong>nutrição</strong> no seu <a href="/blog/cronograma-capilar-cabelo-cacheado">cronograma capilar</a>. Procure máscaras ricas em manteiga de karité, óleo de argan, macadâmia ou abacate. Além disso, a umectação com óleos vegetais puros antes da lavagem (pré-shampoo) é uma excelente aliada para blindar o fio contra o ressecamento do xampu.</p>
+      <p><em>Dica de especialista:</em> Evite usar óleo de coco puro no inverno. Como a temperatura em BH cai bastante à noite, o óleo de coco tende a se solidificar no fio, deixando o cabelo rígido e difícil de enxaguar. Prefira óleos mais fluidos e que permanecem líquidos, como o óleo de semente de uva ou de jojoba.</p>
+
+      <h2>2. O Perigo da Água Pelando (E Como Evitar)</h2>
+      <p>Com o frio da manhã ou da noite em BH, a tentação de tomar aquele banho extremamente quente é enorme. Mas para o seu cabelo cacheado, a água superaquecida é um veneno.</p>
+      <p>A água quente remove toda a proteção lipídica natural do fio e do couro cabeludo. Isso causa dois problemas graves: no comprimento, o cabelo fica extremamente poroso e ressecado; na raiz, pode ocorrer um efeito rebote, onde o couro cabeludo produz ainda mais óleo para compensar o ressecamento, propiciando o surgimento de descamações (caspa) e enfraquecimento da raiz.</p>
+      <p>Tente lavar o cabelo com água morna para fria. Se não conseguir aguentar o banho morno, lave o cabelo separado no tanque ou no chuveiro antes de entrar no banho quente. Suas cutículas e seu couro cabeludo vão agradecer.</p>
+
+      <h2>3. Mude a Densidade do Seu Finalizador</h2>
+      <p>Se no verão você prefere leave-ins leves e gelatinas fluidas para manter o balanço, no inverno seco de BH você precisa de mais peso e proteção. Cremes muito leves e aquosos evaporam rápido e deixam o cabelo sem definição no meio do dia.</p>
+      <p>Experimente usar um creme de pentear mais consistente e denso, rico em óleos, aplicando a técnica de fitagem para distribuir bem o produto. Em substituíção de finalizadores leves, aplique um gel de boa qualidade. O gel cria uma película protetora (chamada de "cast") que segura a umidade dentro da fibra capilar. Depois que o cabelo estiver 100% seco, basta amassar os fios com algumas gotas de óleo finalizador leve para quebrar o durinho e revelar cachos macios e brilhantes.</p>
+
+      <h2>4. Secagem Inteligente: Não Saia com o Cabelo Úmido</h2>
+      <p>Sair de casa com o cabelo molhado no vento frio e seco da Avenida Afonso Pena ou do Contorno é pedir para ter frizz. A evaporação rápida da água no vento seco desmancha a estrutura do cacho antes mesmo dele terminar de secar.</p>
+      <p>A melhor opção no inverno é usar o difusor. No entanto, o calor do secador também pode ressecar o fio se usado incorretamente. Aplique sempre um protetor térmico antes de secar. Use o secador na temperatura morna ou fria e na velocidade média. Se você tem dúvidas de qual método se adapta melhor ao seu estilo de vida, veja nosso guia sobre <a href="/blog/secagem-cachos-difusor-vs-natural">secagem com difusor versus secagem natural</a>.</p>
+
+      <h2>Sinais de que o Seu Cabelo Precisa de uma Avaliação Profissional</h2>
+      <p>Se mesmo mudando os produtos e a rotina em casa o seu cabelo continua áspero, embaraçando em excesso ou sem definição, o problema pode estar mais profundo. Fatores como a porosidade real do fio e o acúmulo de resíduos químicos impedem os tratamentos de fazerem efeito.</p>
+      <p>No Studio do Jon, antes de qualquer procedimento ou indicação de corte, nós realizamos a <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Leitura de Fio</a>. Esse diagnóstico analisa a saúde do seu couro cabeludo, a elasticidade da fibra e a porosidade real sob sete etapas técnicas. Assim, conseguimos recomendar exatamente o que o seu cabelo precisa para enfrentar o clima de BH sem sofrimento.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Seus cachos estão sofrendo com o tempo seco de BH?</h3>
+        <p>Não jogue dinheiro fora testando dezenas de produtos. Agende um diagnóstico completo e recupere a definição e a saúde dos seus fios.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Leitura de Fio no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 37,
     slug: 'leitura-de-fio-metodo-exclusivo-studio-do-jon',
     title: 'Leitura de Fio: O Método Exclusivo que Acontece Antes de Qualquer Tesoura | Studio do Jon',

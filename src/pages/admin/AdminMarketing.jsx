@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3 } from 'lucide-react';
@@ -86,6 +86,7 @@ const AdminMarketing = () => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
+  const cancelSendingRef = useRef(false);
 
   // Marketing states
   const [searchTerm, setSearchTerm] = useState('');
@@ -513,13 +514,24 @@ const AdminMarketing = () => {
     const targets = getBirthdayClients(birthdayWindowDays);
     if (targets.length === 0) return;
     setIsSendingBirthdayWa(true);
+    cancelSendingRef.current = false;
     setBirthdayWaLogs(['[SISTEMA] Iniciando disparo de aniversário...']);
     for (const client of targets) {
+      if (cancelSendingRef.current) {
+        setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo cancelado pelo usuário.']);
+        break;
+      }
       await new Promise(r => setTimeout(r, 1000));
+      if (cancelSendingRef.current) {
+        setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo cancelado pelo usuário.']);
+        break;
+      }
       await saveLog(client.name, client.phone, 'Aniversário (WhatsApp)', 'whatsapp');
       setBirthdayWaLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
     }
-    setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo finalizado! Verifique o WhatsApp.']);
+    if (!cancelSendingRef.current) {
+      setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo finalizado! Verifique o WhatsApp.']);
+    }
     setIsSendingBirthdayWa(false);
   };
 
@@ -583,15 +595,26 @@ const AdminMarketing = () => {
   const handleSendWhatsappCampaign = async () => {
     if (marketingTargetsList.length === 0) return;
     setIsSendingWhatsapp(true);
+    cancelSendingRef.current = false;
     setWhatsappLogs(['[SYSTEM] Iniciando disparo em lote (WhatsApp)...']);
 
     for (const client of marketingTargetsList) {
+      if (cancelSendingRef.current) {
+        setWhatsappLogs(prev => [...prev, '[SYSTEM] Disparo cancelado pelo usuário.']);
+        break;
+      }
       await new Promise(r => setTimeout(r, 1200));
+      if (cancelSendingRef.current) {
+        setWhatsappLogs(prev => [...prev, '[SYSTEM] Disparo cancelado pelo usuário.']);
+        break;
+      }
       await saveLog(client.name, client.phone, 'Campanha Manual (WhatsApp)', 'whatsapp');
       setWhatsappLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
     }
 
-    setWhatsappLogs(prev => [...prev, '[SYSTEM] Lote finalizado!']);
+    if (!cancelSendingRef.current) {
+      setWhatsappLogs(prev => [...prev, '[SYSTEM] Lote finalizado!']);
+    }
     setIsSendingWhatsapp(false);
   };
 
@@ -613,6 +636,7 @@ const AdminMarketing = () => {
     }
 
     setIsSendingEmail(true);
+    cancelSendingRef.current = false;
     setEmailProgressTotal(total);
     setEmailProgressCount(0);
     const logTime = () => new Date().toLocaleTimeString('pt-BR');
@@ -623,6 +647,10 @@ const AdminMarketing = () => {
 
     let count = 0;
     for (const client of targets) {
+      if (cancelSendingRef.current) {
+        setEmailLogs(prev => [...prev, `[${logTime()}] 🛑 Disparo cancelado pelo usuário.`]);
+        break;
+      }
       count++;
       setEmailProgressCount(count);
       
@@ -632,11 +660,24 @@ const AdminMarketing = () => {
         const finishedBatch = (count - 1) % BATCH_SIZE === 0;
         if (finishedBatch) {
           setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Lote de ${BATCH_SIZE} e-mails concluído. Pausa de segurança de ${BATCH_DELAY/1000}s para evitar SPAM no Titan...`]);
-          await new Promise(r => setTimeout(r, BATCH_DELAY));
+          const delaySteps = BATCH_DELAY / 1000;
+          for (let s = 0; s < delaySteps; s++) {
+            if (cancelSendingRef.current) break;
+            await new Promise(r => setTimeout(r, 1000));
+          }
         } else {
           setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Aguardando ${INDIVIDUAL_DELAY/1000}s de intervalo regulamentar...`]);
-          await new Promise(r => setTimeout(r, INDIVIDUAL_DELAY));
+          const delaySteps = INDIVIDUAL_DELAY / 1000;
+          for (let s = 0; s < delaySteps; s++) {
+            if (cancelSendingRef.current) break;
+            await new Promise(r => setTimeout(r, 1000));
+          }
         }
+      }
+
+      if (cancelSendingRef.current) {
+        setEmailLogs(prev => [...prev, `[${logTime()}] 🛑 Disparo cancelado pelo usuário.`]);
+        break;
       }
 
       setEmailLogs(prev => [...prev, `[${logTime()}] 🔄 [${count}/${total}] Processando: ${client.name} (${client.email || 'sem e-mail'})...`]);
@@ -695,7 +736,9 @@ const AdminMarketing = () => {
       }
     }
 
-    setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha de e-mail concluída com sucesso!`]);
+    if (!cancelSendingRef.current) {
+      setEmailLogs(prev => [...prev, `[${logTime()}] ✅ Campanha de e-mail concluída com sucesso!`]);
+    }
     setIsSendingEmail(false);
   };
 
@@ -1010,14 +1053,23 @@ const AdminMarketing = () => {
                     <div style={{ border: '1px solid var(--rule)', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
                       <div style={{ padding: '10px 16px', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>🎂 {bClients.length} aniversariante{bClients.length > 1 ? 's' : ''} encontrado{bClients.length > 1 ? 's' : ''}</span>
-                        <button
-                          className="btn btn-accent"
-                          style={{ padding: '7px 16px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6 }}
-                          onClick={handleSendBirthdayWaCampaign}
-                          disabled={isSendingBirthdayWa}
-                        >
-                          <Send size={13} /> {isSendingBirthdayWa ? 'Disparando...' : '🚀 Disparar para todos'}
-                        </button>
+                        {isSendingBirthdayWa ? (
+                          <button
+                            className="btn btn-danger"
+                            style={{ padding: '7px 16px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6, background: '#d9534f', color: '#fff' }}
+                            onClick={() => { cancelSendingRef.current = true; }}
+                          >
+                            🛑 Parar Disparos
+                          </button>
+                        ) : (
+                          <button
+                            className="btn btn-accent"
+                            style={{ padding: '7px 16px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                            onClick={handleSendBirthdayWaCampaign}
+                          >
+                            <Send size={13} /> 🚀 Disparar para todos
+                          </button>
+                        )}
                       </div>
                       <div style={{ maxHeight: '220px', overflowY: 'auto' }}>
                         {bClients.map(c => {
@@ -1146,87 +1198,111 @@ const AdminMarketing = () => {
                         </div>
                       )}
                     </div>
-                    <button
-                      className="btn btn-accent"
-                      onClick={async () => {
-                        const targets = clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity && c.email && c.email !== 'Não informado' && c.email.includes('@'));
-                        const total = targets.length;
-                        if (total === 0) {
-                          alert('Nenhum alvo válido encontrado.');
-                          return;
-                        }
-
-                        const BATCH_SIZE = 5;
-                        const BATCH_DELAY = 60000;
-                        const INDIVIDUAL_DELAY = 15000;
-                        
-                        const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
-
-                        if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos?\n\nIsso enviará o E-mail 1 de Lançamento.\n\nConfiguração de Proteção:\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.\n\nIMPORTANTE: Mantenha esta aba aberta durante o processo.`)) return;
-                        
-                        setEmailProgressTotal(total);
-                        setEmailProgressCount(0);
-                        setIsSendingEmail(true);
-                        const logTime = () => new Date().toLocaleTimeString('pt-BR');
-                        setEmailLogs([
-                          `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL (E-mail 1)`,
-                          `[${logTime()}] Alvos válidos: ${total} | Tempo estimado: ~${estTimeMinutes} min`
-                        ]);
-
-                        const tpl = settings?.email_templates?.launchE1 || EMAIL_PREVIEWS.launchE1;
-                        let count = 0;
-
-                        for (const client of targets) {
-                          try {
-                            const firstName = (client.name || 'Cliente').split(' ')[0];
-                            const subject = (tpl.subject || 'Agendamento online no Studio do Jon. Acabou de mudar.').replace(/{nome}/g, firstName);
-                            
-                            // Replace dynamic tags in template body
-                            let content = (tpl.body || '').replace(/{nome}/g, firstName);
-                            
-                            const response = await fetch('/api/send-email', {
-                              method: 'POST',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({
-                                type: 'campanha',
-                                subject: subject,
-                                htmlBody: content,
-                                clientEmail: client.email,
-                                clientName: client.name
-                              })
-                            });
-
-                            if (response.ok) {
-                              setEmailLogs(prev => [...prev, `[${logTime()}] ✅ E-mail 1 enviado para ${client.name} (${client.email})`]);
-                              await saveLog(client.name, client.phone, 'launch_e1', 'email');
-                            } else {
-                              setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro ao enviar para ${client.name}: Status ${response.status}`]);
-                            }
-                          } catch (err) {
-                            setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de rede para ${client.name}: ${err.message}`]);
+                    {isSendingEmail ? (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => { cancelSendingRef.current = true; }}
+                        style={{ padding: '10px 20px', fontSize: '0.85rem', background: '#d9534f', color: '#fff' }}
+                      >
+                        🛑 Parar Disparos
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-accent"
+                        onClick={async () => {
+                          const targets = clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity && c.email && c.email !== 'Não informado' && c.email.includes('@'));
+                          const total = targets.length;
+                          if (total === 0) {
+                            alert('Nenhum alvo válido encontrado.');
+                            return;
                           }
 
-                          count++;
-                          setEmailProgressCount(count);
-                          if (count < total) {
-                            // Proteção Titan SMTP
-                            if (count % BATCH_SIZE === 0) {
-                              setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Pausa anti-spam de ${BATCH_DELAY/1000}s...`]);
-                              await new Promise(r => setTimeout(r, BATCH_DELAY));
-                            } else {
-                              await new Promise(r => setTimeout(r, INDIVIDUAL_DELAY));
+                          const BATCH_SIZE = 5;
+                          const BATCH_DELAY = 60000;
+                          const INDIVIDUAL_DELAY = 15000;
+                          
+                          const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
+
+                          if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos?\n\nIsso enviará o E-mail 1 de Lançamento.\n\nConfiguração de Proteção:\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.\n\nIMPORTANTE: Mantenha esta aba aberta durante o processo.`)) return;
+                          
+                          setEmailProgressTotal(total);
+                          setEmailProgressCount(0);
+                          setIsSendingEmail(true);
+                          cancelSendingRef.current = false;
+                          const logTime = () => new Date().toLocaleTimeString('pt-BR');
+                          setEmailLogs([
+                            `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL (E-mail 1)`,
+                            `[${logTime()}] Alvos válidos: ${total} | Tempo estimado: ~${estTimeMinutes} min`
+                          ]);
+
+                          const tpl = settings?.email_templates?.launchE1 || EMAIL_PREVIEWS.launchE1;
+                          let count = 0;
+
+                          for (const client of targets) {
+                            if (cancelSendingRef.current) {
+                              setEmailLogs(prev => [...prev, `[${logTime()}] 🛑 Disparo cancelado pelo usuário.`]);
+                              break;
+                            }
+                            try {
+                              const firstName = (client.name || 'Cliente').split(' ')[0];
+                              const subject = (tpl.subject || 'Agendamento online no Studio do Jon. Acabou de mudar.').replace(/{nome}/g, firstName);
+                              
+                              // Replace dynamic tags in template body
+                              let content = (tpl.body || '').replace(/{nome}/g, firstName);
+                              
+                              const response = await fetch('/api/send-email', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  type: 'campanha',
+                                  subject: subject,
+                                  htmlBody: content,
+                                  clientEmail: client.email,
+                                  clientName: client.name
+                                })
+                              });
+
+                              if (response.ok) {
+                                setEmailLogs(prev => [...prev, `[${logTime()}] ✅ E-mail 1 enviado para ${client.name} (${client.email})`]);
+                                await saveLog(client.name, client.phone, 'launch_e1', 'email');
+                              } else {
+                                setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro ao enviar para ${client.name}: Status ${response.status}`]);
+                              }
+                            } catch (err) {
+                              setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de rede para ${client.name}: ${err.message}`]);
+                            }
+
+                            count++;
+                            setEmailProgressCount(count);
+                            if (count < total) {
+                              // Proteção Titan SMTP
+                              if (count % BATCH_SIZE === 0) {
+                                setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Pausa anti-spam de ${BATCH_DELAY/1000}s...`]);
+                                const delaySteps = BATCH_DELAY / 1000;
+                                for (let s = 0; s < delaySteps; s++) {
+                                  if (cancelSendingRef.current) break;
+                                  await new Promise(r => setTimeout(r, 1000));
+                                }
+                              } else {
+                                const delaySteps = INDIVIDUAL_DELAY / 1000;
+                                for (let s = 0; s < delaySteps; s++) {
+                                  if (cancelSendingRef.current) break;
+                                  await new Promise(r => setTimeout(r, 1000));
+                                }
+                              }
                             }
                           }
-                        }
 
-                        setEmailLogs(prev => [...prev, `[${logTime()}] 🏁 Campanha de lançamento concluída com sucesso!`]);
-                        setIsSendingEmail(false);
-                      }}
-                      disabled={isSendingEmail}
-                      style={{ padding: '10px 20px', fontSize: '0.85rem' }}
-                    >
-                      🚀 Disparar Sequência
-                    </button>
+                          if (!cancelSendingRef.current) {
+                            setEmailLogs(prev => [...prev, `[${logTime()}] 🏁 Campanha de lançamento concluída com sucesso!`]);
+                          }
+                          setIsSendingEmail(false);
+                        }}
+                        style={{ padding: '10px 20px', fontSize: '0.85rem' }}
+                      >
+                        🚀 Disparar Sequência
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1390,25 +1466,45 @@ const AdminMarketing = () => {
                   <h4 style={{ margin: 0 }}>Alvos da Campanha ({marketingTargetsList.length} Clientes)</h4>
                   
                   {marketingChannel === 'email' && (
-                    <button 
-                      className="btn btn-accent" 
-                      onClick={handleSendEmailCampaign}
-                      disabled={isSendingEmail || marketingTargetsList.length === 0}
-                      style={{ padding: '8px 16px', fontSize: '0.85rem' }}
-                    >
-                      {isSendingEmail ? 'Disparando...' : 'Disparar E-mails'}
-                    </button>
+                    isSendingEmail ? (
+                      <button 
+                        className="btn btn-danger" 
+                        onClick={() => { cancelSendingRef.current = true; }}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#d9534f', color: '#fff' }}
+                      >
+                        🛑 Parar Disparos
+                      </button>
+                    ) : (
+                      <button 
+                        className="btn btn-accent" 
+                        onClick={handleSendEmailCampaign}
+                        disabled={marketingTargetsList.length === 0}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                      >
+                        Disparar E-mails
+                      </button>
+                    )
                   )}
 
                   {marketingChannel === 'whatsapp' && (
-                    <button 
-                      className="btn btn-accent" 
-                      onClick={handleSendWhatsappCampaign}
-                      disabled={isSendingWhatsapp || marketingTargetsList.length === 0}
-                      style={{ padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6 }}
-                    >
-                      {isSendingWhatsapp ? 'Disparando...' : '🚀 Disparar em Lote'}
-                    </button>
+                    isSendingWhatsapp ? (
+                      <button 
+                        className="btn btn-danger" 
+                        onClick={() => { cancelSendingRef.current = true; }}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#d9534f', color: '#fff' }}
+                      >
+                        🛑 Parar Disparos
+                      </button>
+                    ) : (
+                      <button 
+                        className="btn btn-accent" 
+                        onClick={handleSendWhatsappCampaign}
+                        disabled={marketingTargetsList.length === 0}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                      >
+                        🚀 Disparar em Lote
+                      </button>
+                    )
                   )}
                 </div>
 

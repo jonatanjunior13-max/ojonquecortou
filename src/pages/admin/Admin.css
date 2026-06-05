@@ -3419,3 +3419,52 @@
   .admin-table-container .admin-table td:nth-child(7)::before { content: "Valor:" !important; }
   .admin-table-container .admin-table td:nth-child(8)::before { content: "Ações:" !important; }
 }
+
+/* Toggle Switch Styles */
+.btn-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 54px;
+  height: 26px;
+  background-color: #e5e5e5;
+  border: 1px solid #dcdcdc;
+  border-radius: 999px;
+  color: #666;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  padding: 0;
+  outline: none;
+  justify-content: flex-end;
+  padding-right: 8px;
+  box-sizing: border-box;
+}
+
+.btn-toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-toggle.active {
+  background-color: #2f855a;
+  border-color: #276749;
+  color: #fff;
+  justify-content: flex-start;
+  padding-left: 8px;
+  padding-right: 0;
+}
+
+.btn-toggle.active::after {
+  left: calc(100% - 22px);
+}
+
