@@ -1637,13 +1637,15 @@ const AdminMobileApp = () => {
         }
         
         // Baixa no estoque
-        for (const prod of selectedProducts) {
+        const updatePromises = selectedProducts.map(prod => {
           const invRef = doc(db, 'products', prod.id);
           const currentItem = inventory.find(i => i.id === prod.id);
           if (currentItem) {
-            await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
+            return updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
           }
-        }
+          return Promise.resolve();
+        });
+        await Promise.all(updatePromises);
       }
       setShowCheckoutModal(false);
       setCheckoutBooking(null);
@@ -1718,13 +1720,15 @@ const AdminMobileApp = () => {
         await addDoc(collection(db, 'financial_transactions'), payloadTx);
         
         // Baixa no estoque
-        for (const prod of directSaleProducts) {
+        const updatePromises = directSaleProducts.map(prod => {
           const invRef = doc(db, 'products', prod.id);
           const currentItem = inventory.find(i => i.id === prod.id);
           if (currentItem) {
-            await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
+            return updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
           }
-        }
+          return Promise.resolve();
+        });
+        await Promise.all(updatePromises);
       }
       setShowDirectSaleModal(false);
       setDirectSaleProducts([]);
