@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db, auth, withTimeout } from '../../config/firebase';
+import { db, withTimeout } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload, ChevronLeft } from 'lucide-react';
 import { parseClientCSV } from '../../utils/clientImport';
