@@ -1490,28 +1490,48 @@ const AdminMobileApp = () => {
   // 5. Cadastrar Novo Cliente
   const submitClient = async (e) => {
     e.preventDefault();
+    const cleanPhone = newClient.phone.replace(/\D/g, '');
     const payload = {
-      name: newClient.name,
-      phone: newClient.phone.replace(/\D/g, ''),
+      name: newClient.name.trim(),
+      phone: cleanPhone,
       email: newClient.email || 'Não informado',
-      curvatura: newClient.curvatura,
-      observacoes: newClient.observacoes,
+      curvatura: newClient.curvatura || '3A',
+      porosidade: 'Média',
+      elasticidade: 'Normal',
+      quimicas: 'Nenhuma',
+      produtosRecomendados: '',
+      observacoes: newClient.observacoes || '',
+      sexo: 'Feminino',
       birthdate: newClient.birthdate || '',
       createdAt: new Date().toISOString()
     };
 
     try {
       if (isDemoMode) {
-        const local = [...clients, { id: payload.phone, ...payload }];
+        const local = [...clients, { id: cleanPhone, ...payload }];
         setClients(local);
         localStorage.setItem('demo_client_profiles', JSON.stringify(local));
       } else {
-        await setDoc(doc(db, 'client_profiles', payload.phone), payload);
+        await setDoc(doc(db, 'client_profiles', cleanPhone), payload);
+        // Atualiza a lista local de clientes para que o novo cliente apareça imediatamente
+        setClients(prev => [...prev.filter(c => c.phone !== cleanPhone), payload]);
       }
+
+      // Auto-preenche o formulário de agendamento com os dados do cliente recém-criado
+      if (showAddBookingModal) {
+        setNewBooking(prev => ({
+          ...prev,
+          clientName: payload.name,
+          clientPhone: payload.phone,
+          clientEmail: payload.email === 'Não informado' ? '' : payload.email
+        }));
+      }
+
       setShowAddClientModal(false);
       setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '', birthdate: '' });
       alert('Cliente cadastrado com sucesso!');
     } catch (e) {
+      console.error('Erro ao cadastrar cliente:', e);
       alert('Falha ao cadastrar cliente.');
     }
   };
