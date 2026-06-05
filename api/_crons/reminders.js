@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -134,6 +134,11 @@ export default async function handler(req, res) {
           });
           if (response.ok) {
             successCount++;
+            try {
+              await updateDoc(doc(db, 'bookings', b.id), { reminderSent: true });
+            } catch (dbErr) {
+              console.error(`Erro ao marcar reminderSent no Firestore para ${b.id}:`, dbErr);
+            }
           } else {
             console.error(`Erro WA para ${waNumber}:`, await response.text());
             failCount++;
@@ -178,12 +183,15 @@ export default async function handler(req, res) {
 
       if (ok) {
         emailSuccessCount++;
+        try {
+          await updateDoc(doc(db, 'bookings', b.id), { reminderSent: true });
+        } catch (dbErr) {}
       } else {
         emailFailCount++;
       }
       
-      // Pausa de segurança de 15 segundos (Titan SMTP limits)
-      await sleep(15000);
+      // Pausa de segurança de 5 segundos (Titan SMTP limits)
+      await sleep(5000);
     }
 
     return res.status(200).json({

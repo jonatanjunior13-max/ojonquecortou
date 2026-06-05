@@ -16,6 +16,8 @@ import BlogPostPage from './pages/BlogPostPage';
 import ReviewsPage from './pages/ReviewsPage';
 import GalleryPage from './pages/GalleryPage';
 import FaqPage from './pages/FaqPage';
+import MetodoPage from './pages/MetodoPage';
+import InvestimentoPage from './pages/InvestimentoPage';
 import BookingPage from './pages/BookingPage';
 import CancelBookingPage from './pages/CancelBookingPage';
 import ClientAreaPage from './pages/ClientAreaPage';
@@ -67,6 +69,8 @@ function App() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/depoimentos" element={<ReviewsPage />} />
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/metodo" element={<MetodoPage />} />
+          <Route path="/investimento" element={<InvestimentoPage />} />
           <Route path="/agendar" element={<BookingPage />} />
           <Route path="/cancelar" element={<CancelBookingPage />} />
           <Route path="/cliente" element={<ClientAreaPage />} />

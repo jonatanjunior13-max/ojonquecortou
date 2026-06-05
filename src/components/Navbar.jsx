@@ -19,9 +19,11 @@ function Navbar() {
     { id: "/", label: "Início" },
     { id: "/sobre", label: "Sobre o Jon" },
     { id: "/servicos", label: "Serviços" },
+    { id: "/investimento", label: "Investimento" },
     { id: "/galeria", label: "Galeria" },
     { id: "/depoimentos", label: "Depoimentos" },
     { id: "/faq", label: "FAQ" },
+    { id: "/metodo", label: "Método" },
     { id: "/blog", label: "Blog" },
     { id: "/cliente", label: "Minha Conta" },
   ];

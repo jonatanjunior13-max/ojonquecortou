@@ -121,6 +121,36 @@ const pages = [
     }
   },
   {
+    route: '/metodo',
+    title: 'Método Leitura de Fio | Studio do Jon',
+    description: 'O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Método Leitura de Fio",
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "Studio do Jon",
+        "url": "https://www.ojonquecortou.com.br"
+      },
+      "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
+      "url": "https://www.ojonquecortou.com.br/metodo"
+    }
+  },
+  {
+    route: '/investimento',
+    title: 'Investimento | Studio do Jon — Especialista em Cachos BH',
+    description: 'Corte especializado com Método Leitura de Fio a partir de R$ 200. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "PriceSpecification",
+      "name": "Corte especializado cabelo cacheado",
+      "price": "190",
+      "priceCurrency": "BRL",
+      "url": "https://www.ojonquecortou.com.br/investimento"
+    }
+  },
+  {
     route: '/galeria',
     title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
     description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.'
