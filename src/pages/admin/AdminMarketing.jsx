@@ -1355,7 +1355,14 @@ const AdminMarketing = () => {
                           style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.75rem', padding: '6px' }}
                           onClick={() => {
                             const customHtml = settings?.custom_automations?.[item.key];
-                            const fallback = ADMIN_HTML_TEMPLATES[item.key];
+                            const fallback = typeof ADMIN_HTML_TEMPLATES[item.key] === 'function' ? ADMIN_HTML_TEMPLATES[item.key]({
+                              nome: 'Cliente Exemplo',
+                              email: 'cliente@exemplo.com',
+                              data: '10/05/2026',
+                              horario: '14:00',
+                              servico: 'Corte com Leitura',
+                              telefone: '31999999999'
+                            }) : ADMIN_HTML_TEMPLATES[item.key];
                             if (customHtml || fallback) {
                               setEmailPreviewContent({ subject: item.label, body: customHtml || fallback });
                               setShowEmailPreviewModal(true);
