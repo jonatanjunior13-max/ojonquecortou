@@ -61,10 +61,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--mobile-bg);
   color: var(--mobile-text);
-  min-height: 100vh;
+  min-height: 100dvh;
   padding-bottom: 80px;
   display: flex;
   flex-direction: column;
@@ -1347,4 +1347,485 @@
   font-size: 0.75rem;
   color: var(--mobile-muted);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Premium Doppelrand (Double-Bezel) Architecture & Spring Animations
+   ───────────────────────────────────────────────────────────────────────── */
+.premium-shell {
+  background: rgba(26, 19, 16, 0.04);
+  padding: 6px;
+  border-radius: 20px;
+  box-shadow: 0 4px 14px rgba(26, 19, 16, 0.02);
+  border: 1px solid rgba(26, 19, 16, 0.04);
+  margin-bottom: 16px;
+}
+
+.premium-core {
+  background: var(--mobile-card-bg);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(26, 19, 16, 0.05);
+}
+
+.tab-transition-wrapper {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+
+/* Sub-views Headers styling */
+.mobile-subview-header {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--mobile-rule);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-subview-header h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--mobile-text);
+  flex: 1;
+}
+
+.btn-back-options {
+  background: none;
+  border: none;
+  color: var(--mobile-muted);
+  cursor: pointer;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  background-color: var(--mobile-bg-alt);
+}
+
+.btn-back-options:active {
+  transform: scale(0.9);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Sub-views Container & Content
+   ───────────────────────────────────────────────────────────────────────── */
+.mobile-backoffice-subview {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 96px;
+  min-height: calc(100vh - 150px);
+}
+
+/* Clientes Subview styling */
+.client-search-bar {
+  position: relative;
+  width: 100%;
+}
+
+.client-search-bar input {
+  width: 100%;
+  padding: 12px 16px 12px 42px;
+  border-radius: 20px;
+  border: 1.5px solid var(--mobile-rule);
+  font-size: 0.9rem;
+  background-color: white;
+  min-height: 48px;
+}
+
+.client-search-bar input:focus {
+  border-color: var(--mobile-primary);
+  outline: none;
+}
+
+.client-search-bar svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--mobile-muted);
+}
+
+.client-list-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.client-row-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid var(--mobile-rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.client-row-card:active {
+  background-color: var(--mobile-bg-alt);
+}
+
+.client-initials-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background-color: var(--mobile-primary-glow);
+  color: var(--mobile-primary);
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-info-main {
+  flex: 1;
+  padding-left: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.client-info-main .client-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--mobile-text);
+}
+
+.client-info-main .client-meta-line {
+  font-size: 0.72rem;
+  color: var(--mobile-muted);
+  margin-top: 2px;
+}
+
+.hair-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: var(--mobile-primary-light);
+  color: var(--mobile-primary);
+  border: 1px solid rgba(176,90,46,0.12);
+}
+
+/* Ficha Capilar Detalhada */
+.hair-profile-detail-panel {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--mobile-rule);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.technical-row-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.technical-grid-item {
+  border: 1.5px solid var(--mobile-rule);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.technical-grid-item.selected {
+  background-color: var(--mobile-primary-glow);
+  border-color: var(--mobile-primary);
+  color: var(--mobile-primary);
+  font-weight: 700;
+}
+
+/* Serviços Subview styling */
+.service-category-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.service-category-pill {
+  padding: 8px 14px;
+  background: white;
+  border: 1.5px solid var(--mobile-rule);
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.service-category-pill.active {
+  background: var(--mobile-primary);
+  color: white;
+  border-color: var(--mobile-primary);
+}
+
+.service-card-compact {
+  background: white;
+  border-radius: 16px;
+  border: 1.5px solid var(--mobile-rule);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.service-card-compact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.service-card-compact-header h4 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--mobile-text);
+  max-width: 70%;
+}
+
+.service-card-compact-price {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--mobile-primary);
+}
+
+.service-card-compact-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.72rem;
+  color: var(--mobile-muted);
+}
+
+.service-card-compact-actions {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid var(--mobile-rule);
+  padding-top: 10px;
+  justify-content: flex-end;
+}
+
+.btn-service-action {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--mobile-rule);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: white;
+  cursor: pointer;
+}
+
+/* Estoque Subview styling */
+.inventory-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.inventory-metric-card {
+  background: white;
+  border: 1px solid var(--mobile-rule);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.inventory-metric-card span {
+  font-size: 0.7rem;
+  color: var(--mobile-muted);
+  display: block;
+}
+
+.inventory-metric-card .metric-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-top: 4px;
+}
+
+.product-row-card {
+  background: white;
+  border: 1px solid var(--mobile-rule);
+  border-radius: 16px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-row-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.product-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.product-category-tag {
+  font-size: 0.65rem;
+  color: var(--mobile-muted);
+  text-transform: uppercase;
+}
+
+.product-stock-control {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--mobile-bg-alt);
+  border-radius: 8px;
+  padding: 6px 12px;
+  height: 48px;
+}
+
+.stock-adjust-btn {
+  background: white;
+  border: 1px solid var(--mobile-rule);
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.stock-current-display {
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.stock-current-display.low-stock {
+  color: var(--mobile-red);
+}
+
+/* Financeiro Subview styling */
+.finance-kpi-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid var(--mobile-rule);
+  padding: 16px;
+}
+
+.finance-kpi-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--mobile-rule);
+}
+
+.finance-kpi-row:last-child {
+  border-bottom: none;
+}
+
+.finance-kpi-row span {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.finance-kpi-row .value {
+  font-weight: 800;
+}
+
+.transaction-ledger-row {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--mobile-rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tx-ledger-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.tx-ledger-left .tx-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.tx-ledger-left .tx-meta {
+  font-size: 0.7rem;
+  color: var(--mobile-muted);
+}
+
+.tx-ledger-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tx-value {
+  font-weight: 800;
+  font-size: 0.9rem;
+}
+
+.tx-value.entrada {
+  color: var(--mobile-green);
+}
+
+.tx-value.saida {
+  color: var(--mobile-red);
+}
+
+/* Configurações & Marketing Layouts */
+.config-sub-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1.5px solid var(--mobile-rule);
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.config-sub-tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--mobile-muted);
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.config-sub-tab-btn.active {
+  color: var(--mobile-primary);
+  border-bottom-color: var(--mobile-primary);
+}
+
+.marketing-console-logs {
+  background: #1A1310;
+  color: #8cb870;
+  font-family: monospace;
+  font-size: 0.72rem;
+  padding: 12px;
+  border-radius: 10px;
+  max-height: 150px;
+  overflow-y: auto;
+  margin-top: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
 

@@ -9,7 +9,7 @@ import {
   Home as HomeIcon, Calendar as CalendarIcon, Plus, Menu, HelpCircle, 
   Bell, ChevronLeft, ChevronRight, DollarSign, User, Scissors, 
   ArrowRight, Shield, MessageSquare, Check, X, Phone, FileText, Info,
-  Clock, Settings, Sparkles
+  Clock, Settings, Sparkles, Search, Package, Users, Send, TrendingUp, TrendingDown
 } from 'lucide-react';
 import './AdminMobile.css';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
@@ -160,7 +160,105 @@ const AdminMobileApp = () => {
   const [installments, setInstallments] = useState('À vista');
   const [sendingMsgStatus, setSendingMsgStatus] = useState('');
 
+  // Novas states para sub-telas nativas
+  const [clientSearchTerm, setClientSearchTerm] = useState('');
+  const [selectedClientPhone, setSelectedClientPhone] = useState('');
+  const [hairProfile, setHairProfile] = useState({
+    curvatura: '3A',
+    porosidade: 'Média',
+    elasticidade: 'Normal',
+    quimicas: 'Nenhuma',
+    produtosRecomendados: '',
+    observacoes: '',
+    sexo: 'Feminino',
+    birthdate: ''
+  });
+  const [savingProfile, setSavingProfile] = useState(false);
+
+  const [serviceCategory, setServiceCategory] = useState('Todos');
+  const [editingService, setEditingService] = useState(null);
+  const [showServiceModal, setShowServiceModal] = useState(false);
+  const [serviceForm, setServiceForm] = useState({
+    name: '',
+    category: 'Cabelo',
+    description: '',
+    price: '',
+    priceType: 'Fixo',
+    promoPrice: '',
+    duration: '60',
+    cost: '',
+    isPrimary: true,
+    scheduledViaWhatsapp: false,
+    position: ''
+  });
+
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [productForm, setProductForm] = useState({
+    name: '',
+    category: 'Shampoo',
+    quantity: 0,
+    costPrice: 0,
+    sellingPrice: 0,
+    minStock: 3
+  });
+
+  const [financeSubTab, setFinanceSubTab] = useState('dashboard'); // 'dashboard', 'lancamentos'
+  const [dateWindow, setDateWindow] = useState('mes');
+  const [startDate, setStartDate] = useState(() => {
+    const today = new Date();
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    return firstDay.toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const today = new Date();
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return lastDay.toISOString().split('T')[0];
+  });
+  const [showFinanceModal, setShowFinanceModal] = useState(false); // manual entry
+  const [financeForm, setFinanceForm] = useState({
+    type: 'saida',
+    description: '',
+    value: '',
+    paymentMethod: 'Pix',
+    date: new Date().toISOString().split('T')[0]
+  });
+  const [ledgerSearch, setLedgerSearch] = useState('');
+  const [ledgerTypeFilter, setLedgerTypeFilter] = useState('todos');
+  const [ledgerMethodFilter, setLedgerMethodFilter] = useState('todos');
+
+  const [configSubTab, setConfigSubTab] = useState('perfil'); // 'perfil', 'horarios', 'politicas', 'whatsapp', 'profissionais'
+  const [profForm, setProfForm] = useState({
+    name: '',
+    avatar: '',
+    commissionService: 50,
+    commissionProduct: 10,
+    phone: '',
+    email: '',
+    active: true,
+    workStart: '09:00',
+    workEnd: '19:00',
+    lunchStart: '12:00',
+    lunchEnd: '13:00',
+    daysOff: [0, 1]
+  });
+  const [editingProfId, setEditingProfId] = useState(null);
+  const [showProfFormModal, setShowProfFormModal] = useState(false);
+
+  const [marketingSubTab, setMarketingSubTab] = useState('automacoes'); // 'automacoes', 'logs', 'campanha'
+  const [marketingCampaignTarget, setMarketingCampaignTarget] = useState('inativos_30');
+  const [marketingCampaignMessage, setMarketingCampaignMessage] = useState(
+    'Olá {nome}! Notamos que faz tempo que não corta seus cachos no Studio do Jon. Que tal marcar uma visita? Reserve seu horário: ojonquecortou.com.br'
+  );
+  const [marketingLogs, setMarketingLogs] = useState([]);
+  const [isSendingMarketingCampaign, setIsSendingMarketingCampaign] = useState(false);
+  const [marketingCampaignProgress, setMarketingCampaignProgress] = useState(0);
+  const [marketingCampaignTotal, setMarketingCampaignTotal] = useState(0);
+
+  const swipeTabTouchRef = useRef({ startX: null, startY: null });
+
   // 1. Listeners em Tempo Real
+
   useEffect(() => {
     let unsubBookings;
     let unsubClients;
@@ -1990,7 +2088,625 @@ ${googleLink}
       }
     });
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // Novas funções auxiliares para sub-telas nativas e Gestos de Swipe
+  // ─────────────────────────────────────────────────────────────────────────
+  
+  // Gestos de Swipe entre abas principais
+  const MAIN_TABS = ['inicio', 'agenda', 'comissoes', 'opcoes'];
+
+  const handleTabSwipeStart = (e) => {
+    if (MAIN_TABS.indexOf(activeTab) === -1) return;
+    if (e.target.closest('.mobile-overlay') || e.target.closest('.mobile-bottom-sheet') || e.target.closest('.mobile-popup-modal')) {
+      return;
+    }
+    const touch = e.changedTouches[0];
+    swipeTabTouchRef.current = { startX: touch.clientX, startY: touch.clientY };
+  };
+
+  const handleTabSwipeEnd = (e) => {
+    const { startX, startY } = swipeTabTouchRef.current;
+    if (startX === null) return;
+    swipeTabTouchRef.current = { startX: null, startY: null };
+
+    if (activeTab === 'agenda') return;
+    if (e.target.closest('.mobile-shortcuts-scroll') || e.target.closest('.service-category-pills') || e.target.closest('.config-sub-tabs') || e.target.closest('.mobile-timeline-scroll')) {
+      return;
+    }
+
+    const touch = e.changedTouches[0];
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+
+    if (Math.abs(dx) < 75 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
+
+    const currentIndex = MAIN_TABS.indexOf(activeTab);
+    if (currentIndex === -1) return;
+
+    if (dx < 0) {
+      if (currentIndex < MAIN_TABS.length - 1) {
+        setActiveTab(MAIN_TABS[currentIndex + 1]);
+      }
+    } else {
+      if (currentIndex > 0) {
+        setActiveTab(MAIN_TABS[currentIndex - 1]);
+      }
+    }
+  };
+
+  // Clientes - Agrupamento derivado e mesclado
+  const getDerivedClients = () => {
+    const clientsMap = {};
+    // 1. Inserir perfis existentes
+    clients.forEach((prof) => {
+      if (!prof.phone) return;
+      clientsMap[prof.phone] = {
+        id: prof.phone,
+        name: prof.name || 'Sem nome',
+        phone: prof.phone,
+        email: prof.email || 'Não informado',
+        hairType: prof.curvatura || '3A',
+        porosidade: prof.porosidade || 'Média',
+        elasticidade: prof.elasticidade || 'Normal',
+        quimicas: prof.quimicas || 'Nenhuma',
+        produtosRecomendados: prof.produtosRecomendados || '',
+        observacoes: prof.observacoes || '',
+        sexo: prof.sexo || 'Feminino',
+        birthdate: prof.birthdate || '',
+        lastVisit: 'Nunca visitou',
+        lastServiceName: 'Nenhum'
+      };
+    });
+    // 2. Mesclar com os dados dos agendamentos
+    bookings.forEach((appt) => {
+      const phone = appt.clientPhone || appt.phone;
+      if (!phone) return;
+      const dateStr = appt.date;
+      const serviceName = appt.service?.name || appt.serviceName || 'Serviço';
+      if (!clientsMap[phone]) {
+        clientsMap[phone] = {
+          id: phone,
+          name: appt.clientName || 'Cliente sem nome',
+          phone: phone,
+          email: appt.clientEmail || appt.email || 'Não informado',
+          hairType: appt.hairType || '3A',
+          porosidade: 'Média',
+          elasticidade: 'Normal',
+          quimicas: 'Nenhuma',
+          produtosRecomendados: '',
+          observacoes: appt.notes || '',
+          sexo: appt.sexo || 'Feminino',
+          birthdate: appt.clientBirthdate || appt.birthdate || '',
+          lastVisit: dateStr || 'Nunca visitou',
+          lastServiceName: serviceName
+        };
+      } else {
+        if (dateStr && (clientsMap[phone].lastVisit === 'Nunca visitou' || new Date(dateStr) > new Date(clientsMap[phone].lastVisit))) {
+          clientsMap[phone].lastVisit = dateStr;
+          clientsMap[phone].lastServiceName = serviceName;
+        }
+        if (appt.hairType && clientsMap[phone].hairType === '3A') {
+          clientsMap[phone].hairType = appt.hairType;
+        }
+        if ((appt.clientBirthdate || appt.birthdate) && !clientsMap[phone].birthdate) {
+          clientsMap[phone].birthdate = appt.clientBirthdate || appt.birthdate;
+        }
+      }
+    });
+    return Object.values(clientsMap);
+  };
+
+  const derivedClientsList = getDerivedClients();
+
+  // Buscar ficha capilar técnica do Firestore/local ao selecionar cliente
+  useEffect(() => {
+    if (!selectedClientPhone) return;
+    const clientProf = clients.find(p => p.phone === selectedClientPhone);
+    const clientObj = derivedClientsList.find(c => c.phone === selectedClientPhone);
+    
+    if (clientProf) {
+      setHairProfile({
+        name: clientProf.name || clientObj?.name || '',
+        email: clientProf.email || clientObj?.email || '',
+        phone: clientProf.phone || selectedClientPhone,
+        curvatura: clientProf.curvatura || '3A',
+        porosidade: clientProf.porosidade || 'Média',
+        elasticidade: clientProf.elasticidade || 'Normal',
+        quimicas: clientProf.quimicas || 'Nenhuma',
+        produtosRecomendados: clientProf.produtosRecomendados || '',
+        observacoes: clientProf.observacoes || '',
+        sexo: clientProf.sexo || 'Feminino',
+        birthdate: clientProf.birthdate || ''
+      });
+    } else {
+      setHairProfile({
+        name: clientObj?.name || '',
+        email: clientObj?.email || '',
+        phone: selectedClientPhone,
+        curvatura: clientObj?.hairType || '3A',
+        porosidade: 'Média',
+        elasticidade: 'Normal',
+        quimicas: 'Nenhuma',
+        produtosRecomendados: '',
+        observacoes: '',
+        sexo: clientObj?.sexo || 'Feminino',
+        birthdate: ''
+      });
+    }
+  }, [selectedClientPhone, clients]);
+
+  // Salvar ficha técnica capilar
+  const handleSaveHairProfile = async (e) => {
+    if (e) e.preventDefault();
+    if (!selectedClientPhone) return;
+    setSavingProfile(true);
+    const payload = { ...hairProfile, phone: selectedClientPhone };
+    try {
+      if (isDemoMode) {
+        const local = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        const updated = [...local.filter(c => c.phone !== selectedClientPhone), payload];
+        localStorage.setItem('demo_client_profiles', JSON.stringify(updated));
+        setClients(updated);
+      } else {
+        await setDoc(doc(db, 'client_profiles', selectedClientPhone), payload, { merge: true });
+        setClients(prev => [...prev.filter(c => c.phone !== selectedClientPhone), payload]);
+      }
+      alert('Ficha capilar técnica atualizada com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar ficha capilar: ' + err.message);
+    } finally {
+      setSavingProfile(false);
+    }
+  };
+
+  // Cadastrar novo cliente a partir da sub-tela
+  const handleSaveClientFromPanel = async (e) => {
+    if (e) e.preventDefault();
+    if (!newClient.name || !newClient.phone) {
+      alert('Nome e Telefone são campos obrigatórios.');
+      return;
+    }
+    const cleanPhone = newClient.phone.replace(/\D/g, '');
+    const payload = {
+      name: newClient.name,
+      phone: cleanPhone,
+      email: newClient.email || 'Não informado',
+      curvatura: newClient.curvatura || '3A',
+      porosidade: newClient.porosidade || 'Média',
+      elasticidade: newClient.elasticidade || 'Normal',
+      quimicas: newClient.quimicas || 'Nenhuma',
+      produtosRecomendados: newClient.produtosRecomendados || '',
+      observacoes: newClient.observacoes || '',
+      sexo: newClient.sexo || 'Feminino',
+      birthdate: newClient.birthdate || ''
+    };
+    try {
+      if (isDemoMode) {
+        const local = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        const updated = [...local.filter(c => c.phone !== cleanPhone), payload];
+        localStorage.setItem('demo_client_profiles', JSON.stringify(updated));
+        setClients(updated);
+      } else {
+        await setDoc(doc(db, 'client_profiles', cleanPhone), payload);
+        setClients(prev => [...prev.filter(c => c.phone !== cleanPhone), payload]);
+      }
+      alert('Cliente cadastrado com sucesso!');
+      setSelectedClientPhone(cleanPhone);
+      setShowAddClientModal(false);
+      setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '', birthdate: '' });
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao cadastrar cliente.');
+    }
+  };
+
+  // Serviços - Salvar
+  const handleSaveService = async (e) => {
+    if (e) e.preventDefault();
+    const payload = {
+      name: serviceForm.name,
+      category: serviceForm.category || 'Cabelo',
+      description: serviceForm.description || '',
+      price: Number(serviceForm.price) || 0,
+      priceType: serviceForm.priceType || 'Fixo',
+      promoPrice: serviceForm.promoPrice ? Number(serviceForm.promoPrice) : null,
+      duration: Number(serviceForm.duration) || 60,
+      cost: serviceForm.cost ? Number(serviceForm.cost) : 0,
+      isPrimary: serviceForm.isPrimary ?? true,
+      scheduledViaWhatsapp: !!serviceForm.scheduledViaWhatsapp,
+      position: serviceForm.position !== '' ? Number(serviceForm.position) : services.length
+    };
+    try {
+      if (editingService) {
+        if (isDemoMode) {
+          const updated = services.map(s => s.id === editingService.id ? { ...s, ...payload } : s);
+          setServices(updated);
+          localStorage.setItem('demo_services', JSON.stringify(updated));
+        } else {
+          await setDoc(doc(db, 'services', editingService.id), payload, { merge: true });
+        }
+      } else {
+        const id = serviceForm.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        if (isDemoMode) {
+          const updated = [...services, { id, ...payload }];
+          setServices(updated);
+          localStorage.setItem('demo_services', JSON.stringify(updated));
+        } else {
+          await setDoc(doc(db, 'services', id), payload);
+        }
+      }
+      setShowServiceModal(false);
+      setEditingService(null);
+      alert('Serviço salvo com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar serviço.');
+    }
+  };
+
+  // Serviços - Excluir
+  const handleDeleteService = async (id) => {
+    if (!confirm('Deseja realmente remover este serviço da grade do salão?')) return;
+    try {
+      if (isDemoMode) {
+        const updated = services.filter(s => s.id !== id);
+        setServices(updated);
+        localStorage.setItem('demo_services', JSON.stringify(updated));
+      } else {
+        await deleteDoc(doc(db, 'services', id));
+      }
+      alert('Serviço removido com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao excluir serviço.');
+    }
+  };
+
+  // Estoque - Reabastecimento rápido / decremento
+  const handleQuickStockAdjust = async (product, amount) => {
+    const newQty = Math.max(0, product.quantity + amount);
+    try {
+      if (isDemoMode) {
+        const updated = inventory.map(p => p.id === product.id ? { ...p, quantity: newQty } : p);
+        setInventory(updated);
+        localStorage.setItem('demo_inventory', JSON.stringify(updated));
+      } else {
+        await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
+      }
+      
+      // Se for reabastecimento (+), registra despesa automática no financeiro
+      if (amount > 0) {
+        const cost = amount * (product.costPrice || 20);
+        const expensePayload = {
+          date: new Date().toISOString().split('T')[0],
+          time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          clientName: 'Estoque/Almoxarifado',
+          type: 'saida',
+          paymentMethod: 'Outro',
+          value: cost,
+          description: `Compra de estoque: ${product.name} (+${amount} un.)`,
+          createdAt: new Date().toISOString()
+        };
+        if (isDemoMode) {
+          const updatedFinancial = [{ id: 'tx_' + Date.now(), ...expensePayload }, ...transactions];
+          setTransactions(updatedFinancial);
+          localStorage.setItem('demo_financial', JSON.stringify(updatedFinancial));
+        } else {
+          await addDoc(collection(db, 'financial_transactions'), expensePayload);
+        }
+      }
+      alert('Estoque atualizado!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao ajustar estoque.');
+    }
+  };
+
+  // Estoque - Salvar
+  const handleSaveProduct = async (e) => {
+    if (e) e.preventDefault();
+    const payload = {
+      name: productForm.name,
+      category: productForm.category || 'Shampoo',
+      quantity: Number(productForm.quantity) || 0,
+      costPrice: Number(productForm.costPrice) || 0,
+      sellingPrice: Number(productForm.sellingPrice) || 0,
+      minStock: Number(productForm.minStock) || 3
+    };
+    try {
+      if (editingProduct) {
+        if (isDemoMode) {
+          const updated = inventory.map(p => p.id === editingProduct.id ? { ...p, ...payload } : p);
+          setInventory(updated);
+          localStorage.setItem('demo_inventory', JSON.stringify(updated));
+        } else {
+          await updateDoc(doc(db, 'products', editingProduct.id), payload);
+        }
+      } else {
+        if (isDemoMode) {
+          const newId = 'p_' + Date.now();
+          const updated = [...inventory, { id: newId, ...payload }];
+          setInventory(updated);
+          localStorage.setItem('demo_inventory', JSON.stringify(updated));
+        } else {
+          await addDoc(collection(db, 'products'), payload);
+        }
+      }
+      setShowProductModal(false);
+      setEditingProduct(null);
+      alert('Produto salvo com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar produto.');
+    }
+  };
+
+  // Estoque - Excluir
+  const handleDeleteProduct = async (id) => {
+    if (!confirm('Deseja realmente remover este produto do estoque?')) return;
+    try {
+      if (isDemoMode) {
+        const updated = inventory.filter(p => p.id !== id);
+        setInventory(updated);
+        localStorage.setItem('demo_inventory', JSON.stringify(updated));
+      } else {
+        await deleteDoc(doc(db, 'products', id));
+      }
+      alert('Produto removido com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao remover produto.');
+    }
+  };
+
+  // Financeiro - Lançar despesa/receita manual
+  const handleAddExpense = async (e) => {
+    if (e) e.preventDefault();
+    const payload = {
+      date: financeForm.date,
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: financeForm.type === 'entrada' ? 'Lançamento Manual' : 'Despesa Avulsa',
+      type: financeForm.type,
+      paymentMethod: financeForm.paymentMethod,
+      value: Number(financeForm.value) || 0,
+      description: financeForm.description,
+      createdAt: new Date().toISOString()
+    };
+    try {
+      if (isDemoMode) {
+        const updated = [{ id: 'tx_' + Date.now(), ...payload }, ...transactions];
+        setTransactions(updated);
+        localStorage.setItem('demo_financial', JSON.stringify(updated));
+      } else {
+        await addDoc(collection(db, 'financial_transactions'), payload);
+      }
+      setShowFinanceModal(false);
+      setFinanceForm({
+        type: 'saida',
+        description: '',
+        value: '',
+        paymentMethod: 'Pix',
+        date: new Date().toISOString().split('T')[0]
+      });
+      alert('Transação financeira registrada com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar lançamento financeiro.');
+    }
+  };
+
+  // Financeiro - Excluir lançamento
+  const handleDeleteTransaction = async (id) => {
+    if (!confirm('Deseja realmente excluir este lançamento financeiro?')) return;
+    try {
+      if (isDemoMode) {
+        const updated = transactions.filter(t => t.id !== id);
+        setTransactions(updated);
+        localStorage.setItem('demo_financial', JSON.stringify(updated));
+      } else {
+        await deleteDoc(doc(db, 'financial_transactions', id));
+      }
+      alert('Lançamento financeiro removido!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao excluir lançamento.');
+    }
+  };
+
+  // Configurações - Salvar Estúdio Gerais
+  const handleSaveSettings = async (e) => {
+    if (e) e.preventDefault();
+    try {
+      if (isDemoMode) {
+        localStorage.setItem('demo_studio_settings', JSON.stringify(settings));
+      } else {
+        await setDoc(doc(db, 'settings', 'studio'), settings);
+      }
+      alert('Configurações do Estúdio salvas com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar as configurações.');
+    }
+  };
+
+  // Configurações - Salvar Profissional
+  const handleSaveProf = async (e) => {
+    if (e) e.preventDefault();
+    if (!profForm.name.trim()) {
+      alert('Nome do profissional é obrigatório.');
+      return;
+    }
+    const profId = editingProfId || profForm.name.toLowerCase().trim().replace(/\s+/g, '-');
+    const newProfPayload = {
+      ...profForm,
+      id: profId,
+      commissionService: Number(profForm.commissionService) || 50,
+      commissionProduct: Number(profForm.commissionProduct) || 10
+    };
+    const updatedProfs = editingProfId
+      ? (settings.professionals || []).map(p => p.id === editingProfId ? newProfPayload : p)
+      : [...(settings.professionals || []), newProfPayload];
+
+    const updatedSettings = { ...settings, professionals: updatedProfs };
+    try {
+      if (isDemoMode) {
+        localStorage.setItem('demo_studio_settings', JSON.stringify(updatedSettings));
+        setSettings(updatedSettings);
+      } else {
+        await setDoc(doc(db, 'settings', 'studio'), updatedSettings);
+      }
+      setShowProfFormModal(false);
+      setEditingProfId(null);
+      setProfForm({
+        name: '',
+        avatar: '',
+        commissionService: 50,
+        commissionProduct: 10,
+        phone: '',
+        email: '',
+        active: true,
+        workStart: '09:00',
+        workEnd: '19:00',
+        lunchStart: '12:00',
+        lunchEnd: '13:00',
+        daysOff: [0, 1]
+      });
+      alert('Profissional salvo com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao salvar profissional.');
+    }
+  };
+
+  // Configurações - Excluir Profissional
+  const handleDeleteProf = async (profId) => {
+    if (profId === 'jon') {
+      alert('O Jon não pode ser removido.');
+      return;
+    }
+    if (!confirm('Deseja realmente remover este profissional?')) return;
+    const updatedProfs = (settings.professionals || []).filter(p => p.id !== profId);
+    const updatedSettings = { ...settings, professionals: updatedProfs };
+    try {
+      if (isDemoMode) {
+        localStorage.setItem('demo_studio_settings', JSON.stringify(updatedSettings));
+        setSettings(updatedSettings);
+      } else {
+        await setDoc(doc(db, 'settings', 'studio'), updatedSettings);
+      }
+      alert('Profissional removido!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao remover profissional.');
+    }
+  };
+
+  // Marketing - Disparo de Campanha em Lote com Console logs
+  const handleSendMarketingCampaign = async () => {
+    const now = new Date();
+    const targets = derivedClientsList.filter(c => {
+      const lastVisitDate = c.lastVisit;
+      if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) {
+        return marketingCampaignTarget === 'nunca_visitaram' || marketingCampaignTarget === 'todos';
+      }
+      const diffTime = Math.abs(now - new Date(lastVisitDate));
+      const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (marketingCampaignTarget === 'inativos_30') return days >= 30 && days <= 60;
+      if (marketingCampaignTarget === 'inativos_60') return days > 60;
+      return marketingCampaignTarget === 'todos';
+    });
+
+    if (targets.length === 0) {
+      alert('Nenhum cliente elegível neste segmento.');
+      return;
+    }
+
+    if (!confirm(`Deseja disparar mensagens automáticas de WhatsApp para ${targets.length} clientes?`)) {
+      return;
+    }
+
+    setIsSendingMarketingCampaign(true);
+    setMarketingCampaignTotal(targets.length);
+    setMarketingCampaignProgress(0);
+    setMarketingLogs(['[SISTEMA] Iniciando campanha de relacionamento...']);
+
+    for (let i = 0; i < targets.length; i++) {
+      const client = targets[i];
+      const firstName = (client.name || '').split(' ')[0];
+      const lastVisitDate = client.lastVisit;
+      let daysText = 'muitos';
+      if (lastVisitDate !== 'Nunca visitou' && lastVisitDate) {
+        const diffTime = Math.abs(now - new Date(lastVisitDate));
+        daysText = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      }
+      const compiledMsg = marketingCampaignMessage
+        .replace(/{nome}/g, firstName)
+        .replace(/{dias_ausente}/g, daysText)
+        .replace(/{ultimo_servico}/g, client.lastServiceName || 'Procedimento');
+
+      const cleanPhone = (client.phone || '').replace(/\D/g, '');
+      const formattedPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+
+      setMarketingLogs(prev => [...prev, `[ENVIANDO] ${client.name} (${client.phone})...`]);
+
+      let sent = false;
+      const gateway = settings?.waReminderGateway || 'evolution';
+
+      if (gateway === 'evolution' && settings?.evolutionApiUrl && settings?.evolutionApiKey && settings?.evolutionInstanceName) {
+        try {
+          const url = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': settings.evolutionApiKey
+            },
+            body: JSON.stringify({
+              number: formattedPhone,
+              text: compiledMsg
+            })
+          });
+          sent = response.ok;
+        } catch (e) {
+          console.warn('Erro na chamada Evolution API:', e);
+        }
+      }
+
+      if (isDemoMode) {
+        sent = true;
+      }
+
+      if (sent) {
+        setMarketingLogs(prev => [...prev, `[OK] Mensagem enviada para ${client.name}`]);
+        const newLog = {
+          timestamp: new Date().toISOString(),
+          clientName: client.name,
+          clientPhone: client.phone,
+          stage: 'Campanha CRM Mobile',
+          channel: 'whatsapp',
+          status: 'success'
+        };
+        if (db) {
+          await addDoc(collection(db, 'automation_logs'), newLog);
+        } else {
+          const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs') || '[]');
+          localStorage.setItem('demo_automation_logs', JSON.stringify([newLog, ...localLogs]));
+        }
+      } else {
+        setMarketingLogs(prev => [...prev, `[FALHA] Erro de envio para ${client.name}. Verifique o gateway.`]);
+      }
+
+      setMarketingCampaignProgress(i + 1);
+      await new Promise(r => setTimeout(r, 1500));
+    }
+
+    setMarketingLogs(prev => [...prev, '[FIM] Campanha de marketing finalizada.']);
+    setIsSendingMarketingCampaign(false);
+  };
+
   const stats = getFinancialStats();
+
   const commissions = getCommissionData();
 
   if (loading) {
@@ -2004,29 +2720,49 @@ ${googleLink}
   }
 
   return (
-    <div className="mobile-app-wrapper">
-      {/* Header Fixo do App */}
-      <header className="mobile-header">
-        <div className="mobile-logo-area">
-          <div className="mobile-logo-box">
-            <img src="/logo-app.png" alt="Logo O Jon Que Cortou" />
-          </div>
-          <h2 className="mobile-owner-name">Jonatan</h2>
-        </div>
-        <div className="mobile-header-actions">
-          <HelpCircle size={20} />
-          <div className="bell-badge-container" onClick={() => setShowNotificationsModal(true)} style={{ position: 'relative', cursor: 'pointer' }}>
-            <Bell size={20} />
-            {pendingCount > 0 && <span className="bell-badge">{pendingCount}</span>}
-          </div>
-        </div>
-      </header>
+    <div className="mobile-app-wrapper" onTouchStart={handleTabSwipeStart} onTouchEnd={handleTabSwipeEnd}>
+      {/* Conditionally render header based on activeTab */}
+      {MAIN_TABS.includes(activeTab) ? (
+        <>
+          {/* Header Fixo do App */}
+          <header className="mobile-header">
+            <div className="mobile-logo-area">
+              <div className="mobile-logo-box">
+                <img src="/logo-app.png" alt="Logo O Jon Que Cortou" />
+              </div>
+              <h2 className="mobile-owner-name">Jonatan</h2>
+            </div>
+            <div className="mobile-header-actions">
+              <HelpCircle size={20} />
+              <div className="bell-badge-container" onClick={() => setShowNotificationsModal(true)} style={{ position: 'relative', cursor: 'pointer' }}>
+                <Bell size={20} />
+                {pendingCount > 0 && <span className="bell-badge">{pendingCount}</span>}
+              </div>
+            </div>
+          </header>
 
-      {/* Sub-header Contexto */}
-      <div className="mobile-subheader">
-        <Info size={12} style={{ marginRight: 6, color: 'var(--mobile-primary)' }} />
-        Você está em: O Jon Que Cortou - Especialista em Cachos
-      </div>
+          {/* Sub-header Contexto */}
+          <div className="mobile-subheader">
+            <Info size={12} style={{ marginRight: 6, color: 'var(--mobile-primary)' }} />
+            Você está em: O Jon Que Cortou - Especialista em Cachos
+          </div>
+        </>
+      ) : (
+        /* Sub-view Header */
+        <header className="mobile-subview-header">
+          <button className="btn-back-options" onClick={() => setActiveTab('opcoes')}>
+            <ChevronLeft size={20} />
+          </button>
+          <h3>
+            {activeTab === 'clientes' && 'Clientes & Ficha Capilar'}
+            {activeTab === 'servicos' && 'Grade de Serviços'}
+            {activeTab === 'estoque' && 'Estoque & Almoxarifado'}
+            {activeTab === 'financeiro' && 'Fluxo de Caixa'}
+            {activeTab === 'configuracoes' && 'Configurações'}
+            {activeTab === 'marketing' && 'Marketing CRM'}
+          </h3>
+        </header>
+      )}
 
       {/* Banner de Status de Sincronização */}
       {!loading && !isDemoMode && bookings.length === 0 && (
@@ -2129,8 +2865,8 @@ ${googleLink}
             </div>
 
             <div className="mobile-business-actions">
-              <button className="mobile-btn-outline" onClick={() => navigate('/admin/financeiro')}>Visão geral</button>
-              <button className="mobile-btn-solid" onClick={() => navigate('/admin/financeiro')}>Entradas e saídas</button>
+              <button className="mobile-btn-outline" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('dashboard'); }}>Visão geral</button>
+              <button className="mobile-btn-solid" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('lancamentos'); }}>Entradas e saídas</button>
             </div>
           </div>
 
@@ -2713,15 +3449,31 @@ ${googleLink}
 
           {/* Lista de links de Menu */}
           <div className="mobile-menu-list">
-            <div className="mobile-menu-item" onClick={() => navigate('/admin/servicos')}>
+            <div className="mobile-menu-item" onClick={() => setActiveTab('clientes')}>
               <div className="mobile-menu-item-left">
-                <Scissors size={18} />
-                <span>Serviços</span>
+                <Users size={18} />
+                <span>Clientes & Ficha Capilar</span>
               </div>
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
 
-            <div className="mobile-menu-item" onClick={() => navigate('/admin/financeiro?tab=comissao')}>
+            <div className="mobile-menu-item" onClick={() => setActiveTab('servicos')}>
+              <div className="mobile-menu-item-left">
+                <Scissors size={18} />
+                <span>Grade de Serviços</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => setActiveTab('estoque')}>
+              <div className="mobile-menu-item-left">
+                <Package size={18} />
+                <span>Estoque & Almoxarifado</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => { setActiveTab('configuracoes'); setConfigSubTab('profissionais'); }}>
               <div className="mobile-menu-item-left">
                 <User size={18} />
                 <span>Profissionais</span>
@@ -2729,7 +3481,7 @@ ${googleLink}
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
 
-            <div className="mobile-menu-item" onClick={() => navigate('/admin/financeiro')}>
+            <div className="mobile-menu-item" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('dashboard'); }}>
               <div className="mobile-menu-item-left">
                 <DollarSign size={18} />
                 <span>Controle de entrada e saída</span>
@@ -2737,15 +3489,23 @@ ${googleLink}
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
 
-            <div className="mobile-menu-item" onClick={() => navigate('/admin/financeiro?tab=fechadas')}>
+            <div className="mobile-menu-item" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('lancamentos'); }}>
               <div className="mobile-menu-item-left">
                 <FileText size={18} />
-                <span>Contas fechadas</span>
+                <span>Contas fechadas / Extrato</span>
               </div>
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
 
-            <div className="mobile-menu-item" onClick={() => navigate('/admin/configuracoes')}>
+            <div className="mobile-menu-item" onClick={() => setActiveTab('marketing')}>
+              <div className="mobile-menu-item-left">
+                <Send size={18} />
+                <span>Marketing & Automações CRM</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
+            <div className="mobile-menu-item" onClick={() => setActiveTab('configuracoes')}>
               <div className="mobile-menu-item-left">
                 <Settings size={18} />
                 <span>Configurações</span>
@@ -2806,6 +3566,1078 @@ ${googleLink}
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
           </div>
+        </div>
+      )}
+
+      {/* SUB-TELAS NATIVAS ADMINISTRATIVE (BACKOFFICE) */}
+      {activeTab === 'clientes' && (
+        <div className="mobile-backoffice-subview">
+          {selectedClientPhone ? (
+            /* TECHNICAL HAIR PROFILE VIEW */
+            <div className="hair-profile-detail-panel">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Ficha Capilar Técnica</h4>
+                <button 
+                  type="button"
+                  className="mobile-btn-outline" 
+                  style={{ padding: '4px 10px', fontSize: '0.75rem', minHeight: '30px' }}
+                  onClick={() => setSelectedClientPhone('')}
+                >
+                  Voltar
+                </button>
+              </div>
+
+              <div style={{ background: '#fbf8f3', padding: 12, borderRadius: 12, border: '1px solid #ebdcb9', marginBottom: 8 }}>
+                <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{hairProfile.name || 'Cliente Sem Nome'}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--mobile-muted)', marginTop: 2 }}>📞 {hairProfile.phone}</div>
+                {hairProfile.email && <div style={{ fontSize: '0.8rem', color: 'var(--mobile-muted)' }}>✉️ {hairProfile.email}</div>}
+              </div>
+
+              <form onSubmit={handleSaveHairProfile} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div className="mobile-form-group">
+                  <label>Sexo</label>
+                  <select 
+                    value={hairProfile.sexo || 'Feminino'} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, sexo: e.target.value }))}
+                  >
+                    <option value="Feminino">Feminino</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Data de Nascimento</label>
+                  <input 
+                    type="date" 
+                    value={hairProfile.birthdate || ''} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, birthdate: e.target.value }))}
+                  />
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Curvatura Principal</label>
+                  <select 
+                    value={hairProfile.curvatura || '3A'} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, curvatura: e.target.value }))}
+                  >
+                    <option value="2A">Ondulado (2A)</option>
+                    <option value="2B">Ondulado (2B)</option>
+                    <option value="2C">Ondulado (2C)</option>
+                    <option value="3A">Cacheado Aberto (3A)</option>
+                    <option value="3B">Cacheado Médio (3B)</option>
+                    <option value="3C">Cacheado Fechado (3C)</option>
+                    <option value="4A">Crespo Suave (4A)</option>
+                    <option value="4B">Crespo Médio (4B)</option>
+                    <option value="4C">Crespo Intenso (4C)</option>
+                  </select>
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Porosidade Capilar</label>
+                  <select 
+                    value={hairProfile.porosidade || 'Média'} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, porosidade: e.target.value }))}
+                  >
+                    <option value="Baixa">Baixa (Dificuldade de absorver água/tratamento)</option>
+                    <option value="Média">Média (Saudável/Normal)</option>
+                    <option value="Alta">Alta (Ressecado/Fios quebradiços)</option>
+                  </select>
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Elasticidade</label>
+                  <select 
+                    value={hairProfile.elasticidade || 'Normal'} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, elasticidade: e.target.value }))}
+                  >
+                    <option value="Fraca">Fraca / Emborrachado</option>
+                    <option value="Normal">Normal / Resistente</option>
+                    <option value="Excelente">Excelente / Muito Saudável</option>
+                  </select>
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Histórico de Químicas</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: Luzes há 6 meses, tintura regular..."
+                    value={hairProfile.quimicas || ''} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, quimicas: e.target.value }))}
+                  />
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Produtos Recomendados</label>
+                  <textarea 
+                    placeholder="Indique produtos para home care..."
+                    rows={2}
+                    value={hairProfile.produtosRecomendados || ''} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, produtosRecomendados: e.target.value }))}
+                  />
+                </div>
+
+                <div className="mobile-form-group">
+                  <label>Observações Técnicas / Diagnóstico</label>
+                  <textarea 
+                    placeholder="Detalhes adicionais do fio do cliente..."
+                    rows={3}
+                    value={hairProfile.observacoes || ''} 
+                    onChange={e => setHairProfile(prev => ({ ...prev, observacoes: e.target.value }))}
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="mobile-btn-solid" 
+                  style={{ minHeight: '48px', marginTop: 8 }}
+                  disabled={savingProfile}
+                >
+                  {savingProfile ? 'Salvando...' : 'Salvar Ficha Técnica'}
+                </button>
+              </form>
+
+              {/* Histórico do Cliente */}
+              <div style={{ marginTop: 24 }}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: 10, color: 'var(--mobile-text)' }}>Histórico de Agendamentos</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {bookings.filter(b => (b.clientPhone || b.phone) === selectedClientPhone).length === 0 ? (
+                    <div className="mobile-empty-state">Sem histórico de visitas recente.</div>
+                  ) : (
+                    bookings
+                      .filter(b => (b.clientPhone || b.phone) === selectedClientPhone)
+                      .sort((a,b) => b.date.localeCompare(a.date))
+                      .map(b => (
+                        <div key={b.id} className="transaction-ledger-row">
+                          <div className="tx-ledger-left">
+                            <span className="tx-title" style={{ fontSize: '0.85rem' }}>{b.serviceName || b.service?.name || 'Procedimento'}</span>
+                            <span className="tx-meta">{b.date.split('-').reverse().join('/')} às {b.time}</span>
+                          </div>
+                          <div className="tx-ledger-right">
+                            <span className={`appt-status ${b.status}`} style={{ fontSize: '0.7rem' }}>
+                              {b.status.toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* CLIENTS LIST VIEW */
+            <>
+              <div className="client-search-bar" style={{ marginBottom: 12 }}>
+                <Search size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Buscar cliente por nome ou celular..." 
+                  value={clientSearchTerm} 
+                  onChange={e => setClientSearchTerm(e.target.value)}
+                />
+              </div>
+
+              <button 
+                type="button"
+                className="mobile-btn-solid" 
+                style={{ minHeight: '48px', width: '100%' }}
+                onClick={() => setShowAddClientModal(true)}
+              >
+                <Plus size={18} /> Cadastrar Novo Cliente
+              </button>
+
+              <div className="client-list-scroll" style={{ marginTop: 12 }}>
+                {derivedClientsList
+                  .filter(c => {
+                    const search = clientSearchTerm.toLowerCase();
+                    return (c.name || '').toLowerCase().includes(search) || (c.phone || '').includes(search);
+                  })
+                  .slice(0, 50)
+                  .map(c => (
+                    <div 
+                      key={c.phone || c.id} 
+                      className="client-row-card"
+                      onClick={() => setSelectedClientPhone(c.phone)}
+                    >
+                      <div className="client-initials-avatar">
+                        {(c.name || 'S').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
+                      </div>
+                      <div className="client-info-main">
+                        <span className="client-name">{c.name}</span>
+                        <span className="client-meta-line">📱 {c.phone}</span>
+                        <span className="client-meta-line">🕒 Último: {c.lastVisit === 'Nunca visitou' ? 'Nunca visitou' : c.lastVisit.split('-').reverse().join('/')} ({c.lastServiceName})</span>
+                      </div>
+                      <div className="hair-badge">{c.hairType || '3A'}</div>
+                    </div>
+                  ))}
+                {derivedClientsList.length === 0 && (
+                  <div className="mobile-empty-state">Nenhum cliente cadastrado no sistema.</div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'servicos' && (
+        <div className="mobile-backoffice-subview">
+          <button 
+            type="button"
+            className="mobile-btn-solid" 
+            style={{ minHeight: '48px', width: '100%', marginBottom: 12 }}
+            onClick={() => {
+              setEditingService(null);
+              setServiceForm({
+                name: '',
+                category: 'Cabelo',
+                description: '',
+                price: '',
+                priceType: 'Fixo',
+                promoPrice: '',
+                duration: '60',
+                cost: '',
+                isPrimary: true,
+                scheduledViaWhatsapp: false,
+                position: ''
+              });
+              setShowServiceModal(true);
+            }}
+          >
+            <Plus size={18} /> Novo Serviço
+          </button>
+
+          <div className="service-category-pills" style={{ marginBottom: 12 }}>
+            {['Todos', 'Cabelo', 'Barba', 'Combos', 'Tratamentos', 'Outro'].map(cat => (
+              <button 
+                type="button"
+                key={cat} 
+                className={`service-category-pill ${serviceCategory === cat ? 'active' : ''}`}
+                onClick={() => setServiceCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {services
+              .filter(s => serviceCategory === 'Todos' || s.category === serviceCategory)
+              .sort((a, b) => (Number(a.position) || 0) - (Number(b.position) || 0))
+              .map(s => (
+                <div key={s.id} className="service-card-compact">
+                  <div className="service-card-compact-header">
+                    <div>
+                      <h4>{s.name}</h4>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--mobile-muted)', textTransform: 'uppercase' }}>{s.category}</span>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      {s.promoPrice ? (
+                        <>
+                          <span className="service-card-compact-price" style={{ color: 'var(--mobile-green)' }}>R$ {s.promoPrice}</span>
+                          <span style={{ display: 'block', fontSize: '0.7rem', textDecoration: 'line-through', color: 'var(--mobile-muted)' }}>R$ {s.price}</span>
+                        </>
+                      ) : (
+                        <span className="service-card-compact-price">R$ {s.price}</span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {s.description && (
+                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#4a3f35', lineHeight: 1.4 }}>{s.description}</p>
+                  )}
+
+                  <div className="service-card-compact-meta">
+                    <span>⏱️ {s.duration || 60} minutos</span>
+                    <span>💰 Custo: R$ {s.cost || 0}</span>
+                    {s.scheduledViaWhatsapp && <span style={{ color: 'var(--mobile-primary)', fontWeight: 'bold' }}>💬 Reserva via WhatsApp</span>}
+                  </div>
+
+                  <div className="service-card-compact-actions">
+                    <button 
+                      type="button"
+                      className="btn-service-action" 
+                      onClick={() => {
+                        setEditingService(s);
+                        setServiceForm({
+                          name: s.name || '',
+                          category: s.category || 'Cabelo',
+                          description: s.description || '',
+                          price: s.price || '',
+                          priceType: s.priceType || 'Fixo',
+                          promoPrice: s.promoPrice || '',
+                          duration: s.duration || '60',
+                          cost: s.cost || '',
+                          isPrimary: s.isPrimary ?? true,
+                          scheduledViaWhatsapp: !!s.scheduledViaWhatsapp,
+                          position: s.position ?? ''
+                        });
+                        setShowServiceModal(true);
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn-service-action" 
+                      style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }}
+                      onClick={() => handleDeleteService(s.id)}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </div>
+              ))}
+            {services.filter(s => serviceCategory === 'Todos' || s.category === serviceCategory).length === 0 && (
+              <div className="mobile-empty-state">Nenhum serviço cadastrado nesta categoria.</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'estoque' && (
+        <div className="mobile-backoffice-subview">
+          <div className="inventory-metrics-grid">
+            <div className="inventory-metric-card">
+              <span>Total de Produtos</span>
+              <div className="metric-val">{inventory.reduce((sum, p) => sum + (p.quantity || 0), 0)} un.</div>
+            </div>
+            <div className="inventory-metric-card">
+              <span>Valor Total de Venda</span>
+              <div className="metric-val" style={{ color: 'var(--mobile-green)' }}>
+                R$ {inventory.reduce((sum, p) => sum + ((p.sellingPrice || 0) * (p.quantity || 0)), 0).toFixed(0)}
+              </div>
+            </div>
+          </div>
+
+          <button 
+            type="button"
+            className="mobile-btn-solid" 
+            style={{ minHeight: '48px', width: '100%' }}
+            onClick={() => {
+              setEditingProduct(null);
+              setProductForm({ name: '', category: 'Shampoo', quantity: 0, costPrice: 0, sellingPrice: 0, minStock: 3 });
+              setShowProductModal(true);
+            }}
+          >
+            <Plus size={18} /> Novo Produto
+          </button>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {inventory.map(p => {
+              const isLow = (p.quantity || 0) <= (p.minStock || 3);
+              return (
+                <div key={p.id} className="product-row-card">
+                  <div className="product-row-info">
+                    <div>
+                      <span className="product-name">{p.name}</span>
+                      <span className="product-category-tag" style={{ display: 'block', marginTop: 2 }}>{p.category}</span>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block' }}>Venda: R$ {p.sellingPrice}</span>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--mobile-muted)' }}>Custo: R$ {p.costPrice}</span>
+                    </div>
+                  </div>
+
+                  <div className="product-stock-control">
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span className="stock-current-display">
+                        Qtd Atual: <strong className={isLow ? 'low-stock' : ''}>{p.quantity} un.</strong>
+                      </span>
+                      {isLow && <span style={{ fontSize: '0.62rem', color: 'var(--mobile-red)', fontWeight: 'bold' }}>⚠️ ESTOQUE BAIXO (Mín: {p.minStock})</span>}
+                    </div>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button 
+                        type="button" 
+                        className="stock-adjust-btn"
+                        onClick={() => handleQuickStockAdjust(p, -1)}
+                      >
+                        -
+                      </button>
+                      <button 
+                        type="button" 
+                        className="stock-adjust-btn"
+                        style={{ color: 'var(--mobile-green)' }}
+                        onClick={() => handleQuickStockAdjust(p, 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 8, justifycontent: 'flex-end', borderTop: '1px solid var(--mobile-rule)', paddingTop: 10 }}>
+                    <button 
+                      type="button"
+                      className="btn-service-action" 
+                      onClick={() => {
+                        setEditingProduct(p);
+                        setProductForm({
+                          name: p.name || '',
+                          category: p.category || 'Shampoo',
+                          quantity: p.quantity || 0,
+                          costPrice: p.costPrice || 0,
+                          sellingPrice: p.sellingPrice || 0,
+                          minStock: p.minStock || 3
+                        });
+                        setShowProductModal(true);
+                      }}
+                    >
+                      Editar
+                    </button>
+                    <button 
+                      type="button"
+                      className="btn-service-action" 
+                      style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }}
+                      onClick={() => handleDeleteProduct(p.id)}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+            {inventory.length === 0 && (
+              <div className="mobile-empty-state">Nenhum produto cadastrado no almoxarifado.</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'financeiro' && (
+        <div className="mobile-backoffice-subview">
+          {/* Subtelas Dashboard vs Lançamentos */}
+          <div className="config-sub-tabs">
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${financeSubTab === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setFinanceSubTab('dashboard')}
+            >
+              Painel Geral
+            </button>
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${financeSubTab === 'lancamentos' ? 'active' : ''}`}
+              onClick={() => setFinanceSubTab('lancamentos')}
+            >
+              Extrato & Lançamentos
+            </button>
+          </div>
+
+          {/* Filtro de Período */}
+          <div className="mobile-form-group">
+            <label>Filtrar Período</label>
+            <select value={dateWindow} onChange={e => setDateWindow(e.target.value)}>
+              <option value="hoje">Hoje</option>
+              <option value="semana">Esta Semana</option>
+              <option value="mes">Este Mês</option>
+              <option value="personalizado">Personalizado</option>
+            </select>
+          </div>
+
+          {dateWindow === 'personalizado' && (
+            <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>De</label>
+                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Até</label>
+                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+              </div>
+            </div>
+          )}
+
+          {(() => {
+            const getCustomPeriodStats = () => {
+              let filtered = transactions;
+              if (dateWindow === 'hoje') {
+                filtered = transactions.filter(t => t.date === todayStr);
+              } else if (dateWindow === 'semana') {
+                const wDays = getWeekDays(todayStr);
+                filtered = transactions.filter(t => t.date && wDays.includes(t.date));
+              } else if (dateWindow === 'mes') {
+                const prefix = todayStr.substring(0, 7); // YYYY-MM
+                filtered = transactions.filter(t => t.date && t.date.startsWith(prefix));
+              } else if (dateWindow === 'personalizado') {
+                filtered = transactions.filter(t => t.date && t.date >= startDate && t.date <= endDate);
+              }
+              const receitas = filtered.filter(t => t.type === 'entrada').reduce((sum, t) => sum + (t.value || 0), 0);
+              const despesas = filtered.filter(t => t.type === 'saida').reduce((sum, t) => sum + (t.value || 0), 0);
+              return { list: filtered, receitas, despesas, saldo: receitas - despesas };
+            };
+            const periodData = getCustomPeriodStats();
+            
+            if (financeSubTab === 'dashboard') {
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {/* KPIs */}
+                  <div className="finance-kpi-card">
+                    <div className="finance-kpi-row">
+                      <span>Faturamento Bruto</span>
+                      <span className="value" style={{ color: 'var(--mobile-green)', fontSize: '1.25rem' }}>
+                        R$ {periodData.receitas.toFixed(2).replace('.', ',')}
+                      </span>
+                    </div>
+                    <div className="finance-kpi-row">
+                      <span>Despesas Totais</span>
+                      <span className="value" style={{ color: 'var(--mobile-red)' }}>
+                        R$ {periodData.despesas.toFixed(2).replace('.', ',')}
+                      </span>
+                    </div>
+                    <div className="finance-kpi-row" style={{ borderTop: '1.5px solid var(--mobile-rule)', paddingTop: 10, marginTop: 4 }}>
+                      <span>Saldo Líquido</span>
+                      <span className="value" style={{ color: periodData.saldo >= 0 ? 'var(--mobile-green)' : 'var(--mobile-red)', fontSize: '1.15rem' }}>
+                        R$ {periodData.saldo.toFixed(2).replace('.', ',')}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Resumo por Forma de Pagamento */}
+                  <div className="technical-row-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+                    {['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro'].map(method => {
+                      const value = periodData.list
+                        .filter(t => t.type === 'entrada' && t.paymentMethod === method)
+                        .reduce((sum, t) => sum + (t.value || 0), 0);
+                      return (
+                        <div key={method} className="inventory-metric-card">
+                          <span>{method}</span>
+                          <div className="metric-val" style={{ fontSize: '0.95rem' }}>R$ {value.toFixed(0)}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            } else {
+              return (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <button 
+                    type="button"
+                    className="mobile-btn-solid" 
+                    style={{ minHeight: '48px', width: '100%' }}
+                    onClick={() => {
+                      setFinanceForm({
+                        type: 'saida',
+                        description: '',
+                        value: '',
+                        paymentMethod: 'Pix',
+                        date: new Date().toISOString().split('T')[0]
+                      });
+                      setShowFinanceModal(true);
+                    }}
+                  >
+                    <Plus size={18} /> Lançar Entrada/Saída Manual
+                  </button>
+
+                  <div className="client-search-bar">
+                    <Search size={18} />
+                    <input 
+                      type="text" 
+                      placeholder="Buscar por descrição ou cliente..."
+                      value={ledgerSearch}
+                      onChange={e => setLedgerSearch(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Filtros rápidos extrato */}
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <select 
+                      style={{ flex: 1, padding: 8, fontSize: '0.8rem', borderRadius: 8, border: '1px solid var(--mobile-rule)' }}
+                      value={ledgerTypeFilter} 
+                      onChange={e => setLedgerTypeFilter(e.target.value)}
+                    >
+                      <option value="todos">Todos os Lançamentos</option>
+                      <option value="entrada">Entradas (+)</option>
+                      <option value="saida">Saídas (-)</option>
+                    </select>
+
+                    <select 
+                      style={{ flex: 1, padding: 8, fontSize: '0.8rem', borderRadius: 8, border: '1px solid var(--mobile-rule)' }}
+                      value={ledgerMethodFilter} 
+                      onChange={e => setLedgerMethodFilter(e.target.value)}
+                    >
+                      <option value="todos">Todas as Formas</option>
+                      <option value="Pix">PIX</option>
+                      <option value="Cartão de Crédito">Crédito</option>
+                      <option value="Cartão de Débito">Débito</option>
+                      <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                  </div>
+
+                  {/* Histórico Extrato */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
+                    {periodData.list
+                      .filter(t => {
+                        const search = ledgerSearch.toLowerCase();
+                        const matchesSearch = (t.description || '').toLowerCase().includes(search) || (t.clientName || '').toLowerCase().includes(search);
+                        const matchesType = ledgerTypeFilter === 'todos' || t.type === ledgerTypeFilter;
+                        const matchesMethod = ledgerMethodFilter === 'todos' || t.paymentMethod === ledgerMethodFilter;
+                        return matchesSearch && matchesType && matchesMethod;
+                      })
+                      .map(t => (
+                        <div key={t.id} className="transaction-ledger-row">
+                          <div className="tx-ledger-left">
+                            <span className="tx-title">{t.clientName || 'Lançamento'} · <span style={{ fontWeight: 'normal', color: 'var(--mobile-muted)' }}>{t.description || 'Geral'}</span></span>
+                            <span className="tx-meta">{t.date.split('-').reverse().join('/')} · {t.paymentMethod}</span>
+                          </div>
+                          <div className="tx-ledger-right">
+                            <span className={`tx-value ${t.type}`}>
+                              {t.type === 'entrada' ? '+' : '-'} R$ {t.value.toFixed(2).replace('.', ',')}
+                            </span>
+                            <button 
+                              type="button" 
+                              onClick={() => handleDeleteTransaction(t.id)}
+                              style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 6, display: 'flex', alignItems: 'center' }}
+                            >
+                              <X size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    {periodData.list.length === 0 && (
+                      <div className="mobile-empty-state">Nenhum lançamento no período filtrado.</div>
+                    )}
+                  </div>
+                </div>
+              );
+            }
+          })()}
+        </div>
+      )}
+
+      {activeTab === 'configuracoes' && (
+        <div className="mobile-backoffice-subview">
+          <div className="config-sub-tabs">
+            {['perfil', 'horarios', 'politicas', 'whatsapp', 'profissionais'].map(sub => (
+              <button 
+                type="button"
+                key={sub} 
+                className={`config-sub-tab-btn ${configSubTab === sub ? 'active' : ''}`}
+                onClick={() => setConfigSubTab(sub)}
+                style={{ textTransform: 'capitalize' }}
+              >
+                {sub === 'politicas' ? 'Taxas & Políticas' : sub === 'whatsapp' ? 'WhatsApp Gateway' : sub}
+              </button>
+            ))}
+          </div>
+
+          {settings ? (
+            <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {/* SUBTAB: PERFIL */}
+              {configSubTab === 'perfil' && (
+                <>
+                  <div className="mobile-form-group">
+                    <label>Nome do Estúdio</label>
+                    <input 
+                      type="text" 
+                      value={settings.name || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, name: e.target.value }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Telefone Comercial</label>
+                    <input 
+                      type="text" 
+                      value={settings.phone || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, phone: e.target.value }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Endereço Completo</label>
+                    <textarea 
+                      rows={2}
+                      value={settings.address || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, address: e.target.value }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Instagram URL</label>
+                    <input 
+                      type="text" 
+                      value={settings.instagram || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, instagram: e.target.value }))} 
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* SUBTAB: HORARIOS */}
+              {configSubTab === 'horarios' && (
+                <div style={{ background: 'white', padding: 14, borderRadius: 12, border: '1px solid var(--mobile-rule)' }}>
+                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
+                    ℹ️ A grade horária padrão do estúdio é das <strong>09:00 às 19:00</strong>.<br/>
+                    Para gerenciar folgas semanais e bloqueios de escala personalizados de profissionais, acesse a aba <strong>Profissionais</strong>.
+                  </p>
+                </div>
+              )}
+
+              {/* SUBTAB: POLITICAS */}
+              {configSubTab === 'politicas' && (
+                <>
+                  <div className="mobile-form-group">
+                    <label>Taxa PIX (%)</label>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      value={settings.feePix ?? 0} 
+                      onChange={e => setSettings(prev => ({ ...prev, feePix: Number(e.target.value) }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Taxa Débito (%)</label>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      value={settings.feeDebit ?? 1.9} 
+                      onChange={e => setSettings(prev => ({ ...prev, feeDebit: Number(e.target.value) }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Taxa Crédito à Vista (%)</label>
+                    <input 
+                      type="number" 
+                      step="0.01"
+                      value={settings.feeCredit ?? 3.5} 
+                      onChange={e => setSettings(prev => ({ ...prev, feeCredit: Number(e.target.value) }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Antecedência Mínima para Reserva (Horas)</label>
+                    <input 
+                      type="number" 
+                      value={settings.minAdvance || 2} 
+                      onChange={e => setSettings(prev => ({ ...prev, minAdvance: Number(e.target.value) }))} 
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* SUBTAB: WHATSAPP */}
+              {configSubTab === 'whatsapp' && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '6px 0' }}>
+                    <input 
+                      type="checkbox" 
+                      id="waReminderEnabled"
+                      style={{ width: 20, height: 20 }}
+                      checked={!!settings.waReminderEnabled} 
+                      onChange={e => setSettings(prev => ({ ...prev, waReminderEnabled: e.target.checked }))} 
+                    />
+                    <label htmlFor="waReminderEnabled" style={{ fontWeight: 'bold', fontSize: '0.85rem', margin: 0, cursor: 'pointer' }}>
+                      Enviar lembretes automáticos de WhatsApp
+                    </label>
+                  </div>
+
+                  <div className="mobile-form-group">
+                    <label>Evolution API URL</label>
+                    <input 
+                      type="text" 
+                      value={settings.evolutionApiUrl || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, evolutionApiUrl: e.target.value }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Evolution API Key</label>
+                    <input 
+                      type="password" 
+                      value={settings.evolutionApiKey || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, evolutionApiKey: e.target.value }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Evolution Instance Name</label>
+                    <input 
+                      type="text" 
+                      value={settings.evolutionInstanceName || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, evolutionInstanceName: e.target.value }))} 
+                    />
+                  </div>
+                  <div className="mobile-form-group">
+                    <label>Template do Lembrete automático</label>
+                    <textarea 
+                      rows={3}
+                      value={settings.waReminderTemplate || ''} 
+                      onChange={e => setSettings(prev => ({ ...prev, waReminderTemplate: e.target.value }))} 
+                    />
+                    <span style={{ fontSize: '0.65rem', color: 'var(--mobile-muted)' }}>Use tags: {"{cliente}"}, {"{data}"}, {"{hora}"}, {"{servico}"}</span>
+                  </div>
+                </>
+              )}
+
+              {/* SUBTAB: PROFISSIONAIS */}
+              {configSubTab === 'profissionais' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  <button 
+                    type="button"
+                    className="mobile-btn-solid" 
+                    style={{ minHeight: '48px', width: '100%' }}
+                    onClick={() => {
+                      setEditingProfId(null);
+                      setProfForm({
+                        name: '',
+                        avatar: '',
+                        commissionService: 50,
+                        commissionProduct: 10,
+                        phone: '',
+                        email: '',
+                        active: true,
+                        workStart: '09:00',
+                        workEnd: '19:00',
+                        lunchStart: '12:00',
+                        lunchEnd: '13:00',
+                        daysOff: [0, 1]
+                      });
+                      setShowProfFormModal(true);
+                    }}
+                  >
+                    <Plus size={18} /> Adicionar Profissional
+                  </button>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {activeProfessionalsList.map(p => (
+                      <div key={p.id} className="transaction-ledger-row">
+                        <div className="tx-ledger-left">
+                          <span className="tx-title" style={{ fontSize: '0.9rem' }}>{p.name} {p.id === 'jon' && '👑'}</span>
+                          <span className="tx-meta">Comissões: {p.commissionService}% Serv. / {p.commissionProduct || 10}% Prod.</span>
+                          <span className="tx-meta">Horário: {p.workStart} - {p.workEnd} (Almoço: {p.lunchStart}-{p.lunchEnd})</span>
+                        </div>
+                        <div className="tx-ledger-right">
+                          <button 
+                            type="button" 
+                            className="btn-service-action"
+                            style={{ padding: '4px 8px', fontSize: '0.72rem' }}
+                            onClick={() => {
+                              setEditingProfId(p.id);
+                              setProfForm({
+                                name: p.name || '',
+                                avatar: p.avatar || '',
+                                commissionService: p.commissionService ?? 50,
+                                commissionProduct: p.commissionProduct ?? 10,
+                                phone: p.phone || '',
+                                email: p.email || '',
+                                active: p.active ?? true,
+                                workStart: p.workStart || '09:00',
+                                workEnd: p.workEnd || '19:00',
+                                lunchStart: p.lunchStart || '12:00',
+                                lunchEnd: p.lunchEnd || '13:00',
+                                daysOff: p.daysOff || [0, 1]
+                              });
+                              setShowProfFormModal(true);
+                            }}
+                          >
+                            Editar
+                          </button>
+                          {p.id !== 'jon' && (
+                            <button 
+                              type="button" 
+                              className="btn-service-action"
+                              style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', padding: '4px 8px', fontSize: '0.72rem' }}
+                              onClick={() => handleDeleteProf(p.id)}
+                            >
+                              Remover
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Botão de salvar geral (não exibido na sub-aba profissionais) */}
+              {configSubTab !== 'profissionais' && (
+                <button 
+                  type="submit" 
+                  className="mobile-btn-solid" 
+                  style={{ minHeight: '48px', marginTop: 12 }}
+                >
+                  Salvar Ajustes do Estúdio
+                </button>
+              )}
+            </form>
+          ) : (
+            <div className="mobile-empty-state">Carregando configurações...</div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'marketing' && (
+        <div className="mobile-backoffice-subview">
+          <div className="config-sub-tabs">
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${marketingSubTab === 'campanha' ? 'active' : ''}`}
+              onClick={() => setMarketingSubTab('campanha')}
+            >
+              Campanha Lote CRM
+            </button>
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${marketingSubTab === 'automacoes' ? 'active' : ''}`}
+              onClick={() => setMarketingSubTab('automacoes')}
+            >
+              Réguas de Reativação
+            </button>
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${marketingSubTab === 'logs' ? 'active' : ''}`}
+              onClick={() => setMarketingSubTab('logs')}
+            >
+              Histórico Disparos
+            </button>
+          </div>
+
+          {/* CRM CAMPANHA LOTE */}
+          {marketingSubTab === 'campanha' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div className="mobile-form-group">
+                <label>Segmento Alvo da Campanha</label>
+                <select 
+                  value={marketingCampaignTarget} 
+                  onChange={e => setMarketingCampaignTarget(e.target.value)}
+                >
+                  <option value="inativos_30">Inativos (Sem visitar de 30 a 60 dias)</option>
+                  <option value="inativos_60">Inativos Críticos (Mais de 60 dias sem visitar)</option>
+                  <option value="nunca_visitaram">Novos contatos (Nunca visitaram/Sem ficha)</option>
+                  <option value="todos">Todos os Clientes Cadastrados</option>
+                </select>
+              </div>
+
+              {/* Contagem imediata dos alvos */}
+              {(() => {
+                const now = new Date();
+                const count = derivedClientsList.filter(c => {
+                  const lastVisitDate = c.lastVisit;
+                  if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) {
+                    return marketingCampaignTarget === 'nunca_visitaram' || marketingCampaignTarget === 'todos';
+                  }
+                  const diffTime = Math.abs(now - new Date(lastVisitDate));
+                  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                  if (marketingCampaignTarget === 'inativos_30') return days >= 30 && days <= 60;
+                  if (marketingCampaignTarget === 'inativos_60') return days > 60;
+                  return marketingCampaignTarget === 'todos';
+                }).length;
+
+                return (
+                  <div style={{ background: '#f0f4f8', border: '1px solid #d2e3f3', borderRadius: 8, padding: '8px 12px', fontSize: '0.85rem', color: '#2b6cb0', fontWeight: 'bold' }}>
+                    🎯 Clientes elegíveis neste segmento: {count} contatos
+                  </div>
+                );
+              })()}
+
+              <div className="mobile-form-group">
+                <label>Mensagem de Disparo (WhatsApp)</label>
+                <textarea 
+                  rows={4}
+                  value={marketingCampaignMessage} 
+                  onChange={e => setMarketingCampaignMessage(e.target.value)}
+                  placeholder="Olá {nome}! Notamos que faz tempo..."
+                />
+                <span style={{ fontSize: '0.65rem', color: 'var(--mobile-muted)', lineHeight: 1.3, display: 'block', marginTop: 4 }}>
+                  Variáveis dinâmicas:<br/>
+                  • <strong>{"{nome}"}</strong>: primeiro nome do cliente<br/>
+                  • <strong>{"{dias_ausente}"}</strong>: número de dias sem agendamento<br/>
+                  • <strong>{"{ultimo_servico}"}</strong>: último serviço realizado
+                </span>
+              </div>
+
+              {/* Progress bar */}
+              {isSendingMarketingCampaign && (
+                <div style={{ background: 'white', border: '1px solid var(--mobile-rule)', borderRadius: 12, padding: 14, marginTop: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 'bold', marginBottom: 6 }}>
+                    <span>Enviando mensagens...</span>
+                    <span>{marketingCampaignProgress} / {marketingCampaignTotal}</span>
+                  </div>
+                  <div style={{ background: '#edf2f7', height: 8, borderRadius: 4, overflow: 'hidden' }}>
+                    <div 
+                      style={{ 
+                        background: 'var(--mobile-primary)', 
+                        height: '100%', 
+                        width: `${(marketingCampaignProgress / marketingCampaignTotal) * 100}%`,
+                        transition: 'width 0.3s ease'
+                      }} 
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Console Logs */}
+              {marketingLogs.length > 0 && (
+                <div className="marketing-console-logs">
+                  {marketingLogs.map((log, idx) => (
+                    <div key={idx}>{log}</div>
+                  ))}
+                </div>
+              )}
+
+              <button 
+                type="button"
+                className="mobile-btn-solid" 
+                style={{ minHeight: '48px', marginTop: 8, background: 'var(--mobile-primary)' }}
+                disabled={isSendingMarketingCampaign}
+                onClick={handleSendMarketingCampaign}
+              >
+                {isSendingMarketingCampaign ? '🚀 Disparando mensagens...' : '🚀 Disparar Campanha via WhatsApp'}
+              </button>
+            </div>
+          )}
+
+          {/* RÉGUAS DE REATIVAÇÃO */}
+          {marketingSubTab === 'automacoes' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div className="finance-kpi-card" style={{ padding: 14 }}>
+                <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>📅 Automação Pós-Atendimento (D1)</h5>
+                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
+                  Dispara automaticamente 24h após um corte para colher avaliação ou tirar dúvidas.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                  <span style={{ fontSize: '0.72rem', background: '#e6fffa', color: '#0987a0', fontWeight: 'bold', padding: '3px 8px', borderRadius: 8 }}>ATIVADO (Vercel Cron)</span>
+                </div>
+              </div>
+
+              <div className="finance-kpi-card" style={{ padding: 14 }}>
+                <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>📅 Reativação Crítica (D90)</h5>
+                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
+                  Campanha para clientes ausentes há 90 dias com cupom personalizado de retorno.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                  <span style={{ fontSize: '0.72rem', background: '#e6fffa', color: '#0987a0', fontWeight: 'bold', padding: '3px 8px', borderRadius: 8 }}>ATIVADO (Vercel Cron)</span>
+                </div>
+              </div>
+
+              <div className="finance-kpi-card" style={{ padding: 14 }}>
+                <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>🎂 Campanhas de Aniversariantes</h5>
+                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
+                  Dispara no início da semana parabenizando e oferecendo um brinde ou desconto.
+                </p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                  <span style={{ fontSize: '0.72rem', background: '#e6fffa', color: '#0987a0', fontWeight: 'bold', padding: '3px 8px', borderRadius: 8 }}>ATIVADO (Vercel Cron)</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* HISTÓRICO DISPAROS */}
+          {marketingSubTab === 'logs' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {(() => {
+                const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs') || '[]');
+                if (localLogs.length === 0) {
+                  return <div className="mobile-empty-state">Nenhum log de disparo recente no cache local.</div>;
+                }
+                return localLogs.slice(0, 30).map((log, index) => (
+                  <div key={index} className="transaction-ledger-row" style={{ padding: 10 }}>
+                    <div className="tx-ledger-left">
+                      <span className="tx-title" style={{ fontSize: '0.8rem' }}>{log.clientName} ({log.clientPhone})</span>
+                      <span className="tx-meta">{log.stage} · Canal: {log.channel}</span>
+                    </div>
+                    <div className="tx-ledger-right">
+                      <span style={{ fontSize: '0.7rem', color: 'var(--mobile-green)', fontWeight: 'bold' }}>✓ SUCCESS</span>
+                    </div>
+                  </div>
+                ));
+              })()}
+            </div>
+          )}
         </div>
       )}
 
@@ -3813,6 +5645,405 @@ ${googleLink}
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CADASTRAR/EDITAR SERVICO */}
+      {showServiceModal && (
+        <div className="mobile-overlay" onClick={() => { setShowServiceModal(false); setEditingService(null); }}>
+          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
+            <div className="mobile-sheet-header">
+              <h4>{editingService ? 'Editar Serviço' : 'Novo Serviço'}</h4>
+              <button type="button" onClick={() => { setShowServiceModal(false); setEditingService(null); }}><X size={20} /></button>
+            </div>
+
+            <form onSubmit={handleSaveService}>
+              <div className="mobile-form-group">
+                <label>Nome do Serviço *</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Corte de Cachos à Seco" 
+                  required
+                  value={serviceForm.name}
+                  onChange={e => setServiceForm(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Categoria *</label>
+                <select 
+                  value={serviceForm.category}
+                  onChange={e => setServiceForm(prev => ({ ...prev, category: e.target.value }))}
+                >
+                  <option value="Cabelo">Cabelo</option>
+                  <option value="Barba">Barba</option>
+                  <option value="Combos">Combos</option>
+                  <option value="Tratamentos">Tratamentos</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Preço Base (R$) *</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 190" 
+                  required
+                  value={serviceForm.price}
+                  onChange={e => setServiceForm(prev => ({ ...prev, price: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Preço Promocional (R$ - Opcional)</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 150" 
+                  value={serviceForm.promoPrice}
+                  onChange={e => setServiceForm(prev => ({ ...prev, promoPrice: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Duração (minutos) *</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 60" 
+                  required
+                  value={serviceForm.duration}
+                  onChange={e => setServiceForm(prev => ({ ...prev, duration: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Custo do Procedimento (R$ - Opcional)</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 15" 
+                  value={serviceForm.cost}
+                  onChange={e => setServiceForm(prev => ({ ...prev, cost: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Ordem de Posição na Grade</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 1" 
+                  value={serviceForm.position}
+                  onChange={e => setServiceForm(prev => ({ ...prev, position: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Descrição</label>
+                <textarea 
+                  placeholder="Descreva o serviço para o site de agendamentos..."
+                  rows={2}
+                  value={serviceForm.description}
+                  onChange={e => setServiceForm(prev => ({ ...prev, description: e.target.value }))}
+                />
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '10px 0' }}>
+                <input 
+                  type="checkbox" 
+                  id="scheduledViaWhatsapp"
+                  style={{ width: 18, height: 18 }}
+                  checked={!!serviceForm.scheduledViaWhatsapp}
+                  onChange={e => setServiceForm(prev => ({ ...prev, scheduledViaWhatsapp: e.target.checked }))}
+                />
+                <label htmlFor="scheduledViaWhatsapp" style={{ margin: 0, cursor: 'pointer', fontSize: '0.85rem' }}>Agendar somente via WhatsApp</label>
+              </div>
+
+              <div className="mobile-modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => { setShowServiceModal(false); setEditingService(null); }}>Cancelar</button>
+                <button type="submit" className="btn-save">Salvar Serviço</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CADASTRAR/EDITAR PRODUTO */}
+      {showProductModal && (
+        <div className="mobile-overlay" onClick={() => { setShowProductModal(false); setEditingProduct(null); }}>
+          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
+            <div className="mobile-sheet-header">
+              <h4>{editingProduct ? 'Editar Produto' : 'Novo Produto'}</h4>
+              <button type="button" onClick={() => { setShowProductModal(false); setEditingProduct(null); }}><X size={20} /></button>
+            </div>
+
+            <form onSubmit={handleSaveProduct}>
+              <div className="mobile-form-group">
+                <label>Nome do Produto *</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Creme de Pentear Caracóis" 
+                  required
+                  value={productForm.name}
+                  onChange={e => setProductForm(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Categoria *</label>
+                <select 
+                  value={productForm.category}
+                  onChange={e => setProductForm(prev => ({ ...prev, category: e.target.value }))}
+                >
+                  <option value="Shampoo">Shampoo</option>
+                  <option value="Condicionador">Condicionador</option>
+                  <option value="Creme de Pentear">Creme de Pentear</option>
+                  <option value="Óleo / Gel">Óleo / Gel</option>
+                  <option value="Acessórios">Acessórios</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Quantidade em Estoque *</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 10" 
+                  required
+                  value={productForm.quantity}
+                  onChange={e => setProductForm(prev => ({ ...prev, quantity: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Preço de Custo (R$) *</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  placeholder="Ex: 25.00" 
+                  required
+                  value={productForm.costPrice}
+                  onChange={e => setProductForm(prev => ({ ...prev, costPrice: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Preço de Venda (R$) *</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  placeholder="Ex: 50.00" 
+                  required
+                  value={productForm.sellingPrice}
+                  onChange={e => setProductForm(prev => ({ ...prev, sellingPrice: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Estoque Mínimo Alerta *</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 3" 
+                  required
+                  value={productForm.minStock}
+                  onChange={e => setProductForm(prev => ({ ...prev, minStock: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => { setShowProductModal(false); setEditingProduct(null); }}>Cancelar</button>
+                <button type="submit" className="btn-save">Salvar Produto</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE LANÇAMENTO FINANCEIRO MANUAL */}
+      {showFinanceModal && (
+        <div className="mobile-overlay" onClick={() => setShowFinanceModal(false)}>
+          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-sheet-header">
+              <h4>Lançar Transação Manual</h4>
+              <button type="button" onClick={() => setShowFinanceModal(false)}><X size={20} /></button>
+            </div>
+
+            <form onSubmit={handleAddExpense}>
+              <div className="mobile-form-group">
+                <label>Tipo de Transação *</label>
+                <select 
+                  value={financeForm.type}
+                  onChange={e => setFinanceForm(prev => ({ ...prev, type: e.target.value }))}
+                >
+                  <option value="saida">🔴 Saída / Despesa</option>
+                  <option value="entrada">🟢 Entrada / Receita</option>
+                </select>
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Descrição / Finalidade *</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Aluguel do espaço, Compra de café..." 
+                  required
+                  value={financeForm.description}
+                  onChange={e => setFinanceForm(prev => ({ ...prev, description: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Valor (R$) *</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  placeholder="Ex: 150.00" 
+                  required
+                  value={financeForm.value}
+                  onChange={e => setFinanceForm(prev => ({ ...prev, value: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Forma de Pagamento *</label>
+                <select 
+                  value={financeForm.paymentMethod}
+                  onChange={e => setFinanceForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                >
+                  <option value="Pix">PIX</option>
+                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                  <option value="Cartão de Débito">Cartão de Débito</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Data *</label>
+                <input 
+                  type="date" 
+                  required
+                  value={financeForm.date}
+                  onChange={e => setFinanceForm(prev => ({ ...prev, date: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => setShowFinanceModal(false)}>Cancelar</button>
+                <button type="submit" className="btn-save">Registrar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE CADASTRAR/EDITAR PROFISSIONAL */}
+      {showProfFormModal && (
+        <div className="mobile-overlay" onClick={() => { setShowProfFormModal(false); setEditingProfId(null); }}>
+          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
+            <div className="mobile-sheet-header">
+              <h4>{editingProfId ? 'Editar Profissional' : 'Novo Profissional'}</h4>
+              <button type="button" onClick={() => { setShowProfFormModal(false); setEditingProfId(null); }}><X size={20} /></button>
+            </div>
+
+            <form onSubmit={handleSaveProf}>
+              <div className="mobile-form-group">
+                <label>Nome do Profissional *</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Ana Cachos" 
+                  required
+                  value={profForm.name}
+                  onChange={e => setProfForm(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Comissão sobre Serviços (%) *</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 50" 
+                  required
+                  value={profForm.commissionService}
+                  onChange={e => setProfForm(prev => ({ ...prev, commissionService: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Comissão sobre Produtos (%) *</label>
+                <input 
+                  type="number" 
+                  placeholder="Ex: 10" 
+                  required
+                  value={profForm.commissionProduct}
+                  onChange={e => setProfForm(prev => ({ ...prev, commissionProduct: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>Celular / WhatsApp</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: 31988887777" 
+                  value={profForm.phone}
+                  onChange={e => setProfForm(prev => ({ ...prev, phone: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group">
+                <label>E-mail</label>
+                <input 
+                  type="email" 
+                  placeholder="prof@email.com" 
+                  value={profForm.email}
+                  onChange={e => setProfForm(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+
+              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>Início do Expediente</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: 09:00"
+                    value={profForm.workStart}
+                    onChange={e => setProfForm(prev => ({ ...prev, workStart: e.target.value }))}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Fim do Expediente</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: 19:00"
+                    value={profForm.workEnd}
+                    onChange={e => setProfForm(prev => ({ ...prev, workEnd: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
+                <div style={{ flex: 1 }}>
+                  <label>Início do Almoço</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: 12:00"
+                    value={profForm.lunchStart}
+                    onChange={e => setProfForm(prev => ({ ...prev, lunchStart: e.target.value }))}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label>Fim do Almoço</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: 13:00"
+                    value={profForm.lunchEnd}
+                    onChange={e => setProfForm(prev => ({ ...prev, lunchEnd: e.target.value }))}
+                  />
+                </div>
+              </div>
+
+              <div className="mobile-modal-actions">
+                <button type="button" className="btn-cancel" onClick={() => { setShowProfFormModal(false); setEditingProfId(null); }}>Cancelar</button>
+                <button type="submit" className="btn-save">Salvar Profissional</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
