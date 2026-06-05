@@ -207,7 +207,7 @@ export default async function handler(req, res) {
     const automations = settings?.automations || {};
     
     // Fallback: enabled by default if undefined
-    const sequenceEnabled = automations.retention30Enabled !== false;
+    const sequenceEnabled = automations.sequenceEnabled !== false;
 
     const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
     const parts = formatter.formatToParts(new Date());
@@ -236,6 +236,19 @@ export default async function handler(req, res) {
         if (p.unsubscribed === true) continue;
         if (p.birthdate && p.email && p.email !== 'Não informado' && p.email.includes('@')) {
           if (p.birthdate.endsWith(`-${monthDayStr}`)) {
+            // Check if already sent today
+            const logQ = query(
+              collection(db, 'automation_logs'),
+              where('email', '==', p.email),
+              where('date', '==', todayStr),
+              where('stage', '==', 'Aniversário')
+            );
+            const logSnap = await getDocs(logQ);
+            if (!logSnap.empty) {
+              console.log(`Aniversário já enviado hoje para: ${p.name} (${p.email})`);
+              continue;
+            }
+
             const firstName = (p.name || 'Cliente').split(' ')[0];
             const customTpl = settings?.email_templates?.['birthdayEnabled'];
             const subject = (customTpl?.subject || templates.aniversario.subject).replace(/{nome}/g, firstName);
@@ -244,9 +257,8 @@ export default async function handler(req, res) {
               ? baseLayout(content, templates.aniversario.linkUrl, templates.aniversario.linkText) 
               : content;
 
-
             const ok = await dispatchEmail({
-              type: 'campanha',
+              type: 'campanha_raw',
               subject: subject,
               htmlBody: emailBody,
               clientEmail: p.email,
@@ -264,8 +276,8 @@ export default async function handler(req, res) {
               stats.birthdays++;
               logs.push(`Aniversário (D-5) enviado para: ${p.name} (${p.email})`);
             }
-            // Pausa de segurança de 15 segundos (Titan SMTP limits)
-            await sleep(15000);
+            // Pausa de segurança de 5 segundos (Titan SMTP limits)
+            await sleep(5000);
           }
         }
       }
@@ -316,6 +328,19 @@ export default async function handler(req, res) {
 
           processedPhones.add(booking.clientPhone);
 
+          // Check if already sent today for this milestone
+          const logQ = query(
+            collection(db, 'automation_logs'),
+            where('email', '==', booking.clientEmail),
+            where('date', '==', todayStr),
+            where('stage', '==', `D+${daysAgo}`)
+          );
+          const logSnap = await getDocs(logQ);
+          if (!logSnap.empty) {
+            console.log(`Email D+${daysAgo} já enviado hoje para: ${booking.clientName} (${booking.clientEmail})`);
+            continue;
+          }
+
           const recentQ = query(
             collection(db, 'bookings'),
             where('clientPhone', '==', booking.clientPhone)
@@ -363,7 +388,7 @@ export default async function handler(req, res) {
                   ? baseLayout(content, templates[tplKey].linkUrl, templates[tplKey].linkText)
                   : content;
                 payload = {
-                  type: 'campanha',
+                  type: 'campanha_raw',
                   subject: subject,
                   htmlBody: emailBody,
                   clientEmail: booking.clientEmail,
@@ -384,8 +409,8 @@ export default async function handler(req, res) {
                 stats.sequenceMails++;
                 logs.push(`Email D+${daysAgo} enviado para: ${booking.clientName} (${booking.clientEmail})`);
               }
-              // Pausa de segurança de 15 segundos (Titan SMTP limits)
-              await sleep(15000);
+              // Pausa de segurança de 5 segundos (Titan SMTP limits)
+              await sleep(5000);
             }
           }
         }
@@ -410,7 +435,14 @@ export default async function handler(req, res) {
       }
 
       if (launchTargets.length > 0) {
+        const MAX_LAUNCH_EMAILS_PER_RUN = 5;
+        let launchMailsSentThisRun = 0;
+
         for (const target of launchTargets) {
+          if (launchMailsSentThisRun >= MAX_LAUNCH_EMAILS_PER_RUN) {
+            logs.push(`Limite diário de disparos da campanha de lançamento atingido (${MAX_LAUNCH_EMAILS_PER_RUN}). Interrompendo novos disparos hoje.`);
+            break;
+          }
           const logQ = query(collection(db, 'automation_logs'), where('email', '==', target.email));
           const logSnap = await getDocs(logQ);
           let gotE1 = null, gotE2 = null, gotE3 = null;
@@ -451,7 +483,7 @@ export default async function handler(req, res) {
                 : content;
 
              const payload = {
-                type: 'campanha',
+                type: 'campanha_raw',
                 subject: subject,
                 htmlBody: emailBody,
                 clientEmail: target.email,
@@ -460,18 +492,19 @@ export default async function handler(req, res) {
              
              const ok = await dispatchEmail(payload, hostUrl);
              if (ok) {
-               await addDoc(collection(db, 'automation_logs'), {
-                 timestamp: new Date().toISOString(),
-                 date: todayStr,
-                 clientName: target.name,
-                 email: target.email,
-                 stage: stageLabel
-               });
-               stats.launchMails = (stats.launchMails || 0) + 1;
-               logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
+                await addDoc(collection(db, 'automation_logs'), {
+                  timestamp: new Date().toISOString(),
+                  date: todayStr,
+                  clientName: target.name,
+                  email: target.email,
+                  stage: stageLabel
+                });
+                stats.launchMails = (stats.launchMails || 0) + 1;
+                launchMailsSentThisRun++;
+                logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
              }
-             // Pausa de segurança de 15 segundos (Titan SMTP limits)
-             await sleep(15000);
+             // Pausa de segurança de 5 segundos (Titan SMTP limits)
+             await sleep(5000);
           }
         }
       }
