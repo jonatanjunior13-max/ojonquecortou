@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { Routes, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -51,7 +51,7 @@ function PublicLayout() {
 
 function App() {
   return (
-    <Router>
+    <>
       <CustomCursor />
       <GoogleAnalytics />
       <ScrollToTop />
@@ -90,7 +90,7 @@ function App() {
           <Route path="configuracoes" element={<React.Suspense fallback={null}><AdminSettings /></React.Suspense>} />
         </Route>
       </Routes>
-    </Router>
+    </>
   );
 }
 
