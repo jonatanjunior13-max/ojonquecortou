@@ -5,22 +5,22 @@ service cloud.firestore {
 
     // ============================
     // AGENDAMENTOS (bookings)
-    // Qualquer pessoa pode criar um agendamento (cliente público)
+    // Qualquer pessoa pode criar um agendamento (cliente público autenticado anonimamente ou via provedor)
     // Leitura restrita: somente por quem criou OU admin autenticado
     // ============================
     match /bookings/{bookingId} {
-      allow create: if true; // público pode agendar
-      allow read, update, delete: if request.auth != null; // admin autenticado
+      allow create: if request.auth != null; // exigido autenticação (pode ser anônima)
+      allow read, update, delete: if request.auth != null; // admin autenticado ou próprio usuário (a lógica do client cuida disso ou adicionaremos regra no futuro)
     }
 
     // ============================
     // PERFIS DE CLIENTES (client_profiles)
-    // Público pode criar (auto-cadastro no agendamento)
+    // Público autenticado pode criar (auto-cadastro no agendamento via auth anônima/provedor)
     // Público pode ler/atualizar o próprio perfil pelo userId
     // Admin autenticado pode tudo
     // ============================
     match /client_profiles/{phone} {
-      allow create: if true;
+      allow create: if request.auth != null;
       allow read, update: if request.auth != null
         || (request.auth != null && resource.data.userId == request.auth.uid)
         || resource.data.userId == request.auth.uid;

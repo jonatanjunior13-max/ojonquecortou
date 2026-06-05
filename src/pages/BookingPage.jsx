@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   onAuthStateChanged,
-  signOut
+  signOut,
+  signInAnonymously
 } from 'firebase/auth';
 import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
@@ -1074,6 +1075,25 @@ const BookingPage = () => {
       } catch (authErr) {
         console.warn('Erro ao criar credenciais durante cadastro:', authErr);
         setAuthError(getFriendlyAuthMessage(authErr.code));
+        setLoading(false);
+        return;
+      }
+    } else if (!currentUser) {
+      try {
+        const isDemo = !auth || isDemoMode;
+        if (isDemo) {
+          finalUserId = 'demo-anon-uid-' + Date.now();
+          finalAuthProvider = 'anonymous';
+        } else {
+          const userCredential = await signInAnonymously(auth);
+          finalUserId = userCredential.user.uid;
+          finalAuthProvider = 'anonymous';
+        }
+      } catch (authErr) {
+        console.warn('Erro ao autenticar anonimamente:', authErr);
+        // Mesmo falhando, podemos prosseguir se as regras do firebase forem flexíveis,
+        // mas idealmente paramos se for estritamente seguro
+        setAuthError('Não foi possível autenticar a sessão do agendamento. Tente novamente.');
         setLoading(false);
         return;
       }
