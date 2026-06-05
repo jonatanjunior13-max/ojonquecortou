@@ -1,6 +1,11 @@
 export default async function handler(req, res) {
+  // Verify authorization
+  if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   const SITE_URL = 'https://www.ojonquecortou.com.br';
-  const key = 'ad570ba1c6ba4630b664a7f571d247d0';
+  const key = process.env.INDEXNOW_KEY || 'ad570ba1c6ba4630b664a7f571d247d0';
 
   try {
     console.log('Iniciando submissão IndexNow...');
