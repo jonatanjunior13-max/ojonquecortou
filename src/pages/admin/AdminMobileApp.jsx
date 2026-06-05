@@ -293,6 +293,12 @@ const AdminMobileApp = () => {
     // O REST API funciona corretamente em PWA com Service Worker ativo.
     const setupListeners = async (idToken) => {
       try {
+        const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
+        if (!projectId || projectId === 'undefined') {
+          setSyncError('Configuração Firebase ausente. Verifique as variáveis de ambiente.');
+          setLoading(false);
+          return;
+        }
         setSyncError(null);
         // ── FETCH IMEDIATO via REST API ─────────────────────────────────
         const [
@@ -467,7 +473,7 @@ const AdminMobileApp = () => {
       setConnectionWarning(false);
       setLoading(false);
       // Pega o ID token para autenticar as chamadas REST
-      user.getIdToken().then(idToken => setupListeners(idToken)).catch(err => {
+      user.getIdToken(true).then(idToken => setupListeners(idToken)).catch(err => {
         console.error('Erro ao obter ID token:', err);
         setIsDemoMode(true);
       });

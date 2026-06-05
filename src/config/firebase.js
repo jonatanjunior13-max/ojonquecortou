@@ -61,7 +61,7 @@ export const fetchCollectionRest = async (collectionPath, idToken) => {
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Firestore REST ${collectionPath}: ${res.status} ${errText}`);
+    throw new Error(`Firestore REST ${collectionPath}: HTTP ${res.status} — ${errText.substring(0, 200)}`);
   }
 
   const json = await res.json();
@@ -126,6 +126,16 @@ const withTimeout = (promise, ms = 4500) => {
       (err) => { clearTimeout(timer); reject(err); }
     );
   });
+};
+
+/**
+ * Obtém um ID token sempre fresco (force refresh = true).
+ * Essencial para Capacitor iOS onde o token cached pode ser stale.
+ */
+export const getRefreshedToken = async () => {
+  const user = auth?.currentUser;
+  if (!user) throw new Error('Usuário não autenticado no Firebase.');
+  return user.getIdToken(true);
 };
 
 export { auth, db, withTimeout };
