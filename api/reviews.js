@@ -1,7 +1,13 @@
 export default async function handler(req, res) {
   // CORS configuration
+  const allowedOrigins = ['https://www.ojonquecortou.com.br', 'https://ojonquecortou.com.br'];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.ojonquecortou.com.br');
+  }
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
