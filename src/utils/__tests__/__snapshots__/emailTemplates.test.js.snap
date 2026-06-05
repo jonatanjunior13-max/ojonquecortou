@@ -1,8 +1,287 @@
-// Arquivo gerado automaticamente pelo script de design premium.
-export const EMAIL_CSS = `@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;600&display=swap');`;
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-export const HTML_TEMPLATES = {
-  confirmacao_solicitacao: (data) => `<!DOCTYPE html>
+exports[`emailTemplates > ADMIN_HTML_TEMPLATES > should act as pure functions when replaced with actual data > pure-function-like-render-admin_horario_confirmado 1`] = `
+"<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+  <!-- PREVIEW TEXT OCULTO -->
+  <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
+    Um agendamento foi confirmado ou criado.
+    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+    <tr>
+      <td style="padding: 56px 48px 48px;">
+
+        <!-- HEADER -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+          <tr>
+            <td align="left" valign="middle">
+              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- TAG -->
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
+          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
+          Aviso de Sistema
+        </span>
+
+        <!-- TITLE -->
+        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
+          Agendamento <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Confirmado</span>
+        </h1>
+
+        <!-- CONTENT -->
+        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
+          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, um agendamento foi confirmado ou criado no sistema.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">10/10/2023</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">John Doe</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">Corte Especial</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
+    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
+  </div>
+        </div>
+
+        <!-- SIGNATURE -->
+        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+        <div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+        </div>
+        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
+          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+          Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+        </p>
+
+      </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+        <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
+          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+        </div>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+        </p>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+          &copy; 2026 Studio do Jon &middot; @ojonquecortou
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>"
+`;
+
+exports[`emailTemplates > ADMIN_HTML_TEMPLATES > should act as pure functions when replaced with actual data > pure-function-like-render-admin_solicitacao_recebida 1`] = `
+"<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+  <!-- PREVIEW TEXT OCULTO -->
+  <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
+    Nova solicitação de agendamento online.
+    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+    <tr>
+      <td style="padding: 56px 48px 48px;">
+
+        <!-- HEADER -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+          <tr>
+            <td align="left" valign="middle">
+              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- TAG -->
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
+          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
+          Aviso de Sistema
+        </span>
+
+        <!-- TITLE -->
+        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
+          Nova <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Solicitação</span>
+        </h1>
+
+        <!-- CONTENT -->
+        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
+          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, uma nova solicitação de agendamento online foi recebida e aguarda sua análise no painel.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">10/10/2023</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">John Doe</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">E-mail</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[E-mail]</div>      </td>    </tr>    <tr style="height: 24px;"><td></td><td></td></tr>    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">Corte Especial</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Telefone</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Telefone]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
+    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
+  </div>
+        </div>
+
+        <!-- SIGNATURE -->
+        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+        <div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+        </div>
+        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
+          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+          Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+        </p>
+
+      </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+        <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
+          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+        </div>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+        </p>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+          &copy; 2026 Studio do Jon &middot; @ojonquecortou
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>"
+`;
+
+exports[`emailTemplates > ADMIN_HTML_TEMPLATES > should match snapshots for admin templates > admin_horario_confirmado 1`] = `
+"<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+  <!-- PREVIEW TEXT OCULTO -->
+  <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
+    Um agendamento foi confirmado ou criado.
+    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+    <tr>
+      <td style="padding: 56px 48px 48px;">
+
+        <!-- HEADER -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+          <tr>
+            <td align="left" valign="middle">
+              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- TAG -->
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
+          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
+          Aviso de Sistema
+        </span>
+
+        <!-- TITLE -->
+        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
+          Agendamento <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Confirmado</span>
+        </h1>
+
+        <!-- CONTENT -->
+        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
+          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, um agendamento foi confirmado ou criado no sistema.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">[Data]</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Nome do Cliente]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Serviço]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
+    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
+  </div>
+        </div>
+
+        <!-- SIGNATURE -->
+        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+        <div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+        </div>
+        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
+          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+          Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+        </p>
+
+      </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+        <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
+          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+        </div>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+        </p>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+          &copy; 2026 Studio do Jon &middot; @ojonquecortou
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>"
+`;
+
+exports[`emailTemplates > ADMIN_HTML_TEMPLATES > should match snapshots for admin templates > admin_solicitacao_recebida 1`] = `
+"<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+  <!-- PREVIEW TEXT OCULTO -->
+  <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
+    Nova solicitação de agendamento online.
+    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+    <tr>
+      <td style="padding: 56px 48px 48px;">
+
+        <!-- HEADER -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+          <tr>
+            <td align="left" valign="middle">
+              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+            </td>
+          </tr>
+        </table>
+
+        <!-- TAG -->
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
+          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
+          Aviso de Sistema
+        </span>
+
+        <!-- TITLE -->
+        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
+          Nova <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Solicitação</span>
+        </h1>
+
+        <!-- CONTENT -->
+        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
+          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, uma nova solicitação de agendamento online foi recebida e aguarda sua análise no painel.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">[Data]</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Nome do Cliente]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">E-mail</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[E-mail]</div>      </td>    </tr>    <tr style="height: 24px;"><td></td><td></td></tr>    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Serviço]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Telefone</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Telefone]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
+    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
+  </div>
+        </div>
+
+        <!-- SIGNATURE -->
+        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+        <div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+        </div>
+        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
+          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+          Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+        </p>
+
+      </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+        <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
+          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+        </div>
+        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+        </p>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+          &copy; 2026 Studio do Jon &middot; @ojonquecortou
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>"
+`;
+
+exports[`emailTemplates > HTML_TEMPLATES > should correctly render the confirmacao_solicitacao function template > pure-function-like-render-confirmacao_solicitacao 1`] = `
+"<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -14,9 +293,9 @@ export const HTML_TEMPLATES = {
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 38px; color: #1A1310; margin: 0;">Olá ${data.nome || ''}, recebemos sua solicitação!</h1>
-              <p style="font-size: 15px; line-height: 1.65; color: #2E241E; margin-top: 24px;">Serviço: ${data.servico || ''}</p>
-              <p style="font-size: 15px; line-height: 1.65; color: #2E241E; margin-top: 8px;">Data: ${data.data || ''}</p>
+              <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 38px; color: #1A1310; margin: 0;">Olá Jane Doe, recebemos sua solicitação!</h1>
+              <p style="font-size: 15px; line-height: 1.65; color: #2E241E; margin-top: 24px;">Serviço: Corte</p>
+              <p style="font-size: 15px; line-height: 1.65; color: #2E241E; margin-top: 8px;">Data: 15/10/2023</p>
             </td>
           </tr>
         </table>
@@ -24,15 +303,116 @@ export const HTML_TEMPLATES = {
     </tr>
   </table>
 </body>
-</html>`,
-  d1: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+</html>"
+`;
+
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > aniversario 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
+
+              <!-- HEADER -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+                <tr>
+                  <td align="left" valign="middle">
+                    <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+                    <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle; font-weight: 400;">Studio do Jon</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- TAG / EYEBROW -->
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right: 10px; font-size: 0; line-height: 0;">
+                    <div style="width: 18px; height: 1px; background-color: #8A7866; display: inline-block; vertical-align: middle;"></div>
+                  </td>
+                  <td>
+                    <span style="font-family: 'Manrope', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; vertical-align: middle;">Parabéns</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- TITLE -->
+              <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 38px; letter-spacing: -0.018em; line-height: 1.15; color: #1A1310; margin: 24px 0 0 0;">
+                Seu aniversário <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #B05A2E;'>tá chegando.</span>
+              </h1>
+
+              <!-- CONTENT -->
+              <div style="margin-top: 32px; font-family: 'Manrope', Arial, sans-serif;">
+              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Oi {nome},</p>
+              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Daqui a alguns dias é o seu aniversário!</p>
+              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Para comemorar seu novo ciclo, que tal passar pelo Studio para um momento de autocuidado? Entrar no seu dia especial com os cachos no formato perfeito, hidratados e com o corte impecável é a melhor forma de celebrar.</p>
+              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Preparamos um horário especial para você nesta semana. Reserve o seu momento de celebração:</p>
+              </div>
+
+
+              <!-- CTA BUTTON -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 32px; margin-bottom: 16px;">
+                <tr>
+                  <td>
+                    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate !important; border-radius: 999px; background-color: #1A1310;">
+                      <tr>
+                        <td align="center" valign="middle" style="padding: 14px 28px;">
+                          <a href="https://ojonquecortou.com.br/agendar?utm_source=email_birthday&utm_medium=birthday_campaign&utm_campaign=celebration" target="_blank" style="font-family: 'Manrope', Arial, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #FAF5E8 !important; text-decoration: none; display: inline-block;">Ver Agenda do Studio</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+
+              <!-- SIGNATURE -->
+              <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">
+                    Jon
+                  </td>
+                </tr>
+              </table>
+              <p style="font-family: 'Manrope', Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0 0; max-width: 52ch;">
+                <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+                Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+              </p>
+
+            </td>
+          </tr>
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+              <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px 0;">
+                Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+              </div>
+              <p style="font-family: 'Manrope', Arial, sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+              </p>
+              <div style="font-family: 'Manrope', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+                &copy; 2026 Studio do Jon &middot; @ojonquecortou
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>"
+`;
+
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > d1 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
+    <tr>
+      <td align="center" valign="top" style="padding: 40px 10px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
+          <tr>
+            <td style="padding: 56px 48px; background-color: #FAF5E8;">
+
               <!-- HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
                 <tr>
@@ -83,7 +463,7 @@ export const HTML_TEMPLATES = {
                 <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
                 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
               </p>
-              
+
             </td>
           </tr>
           <!-- FOOTER -->
@@ -104,16 +484,18 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  d7: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > d7 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
+
               <!-- HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
                 <tr>
@@ -164,7 +546,7 @@ export const HTML_TEMPLATES = {
                 <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
                 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
               </p>
-              
+
             </td>
           </tr>
           <!-- FOOTER -->
@@ -185,16 +567,18 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  d21: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > d21 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
+
               <!-- HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
                 <tr>
@@ -245,7 +629,7 @@ export const HTML_TEMPLATES = {
                   </td>
                 </tr>
               </table>
-  
+
 
               <!-- SIGNATURE -->
               <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
@@ -260,7 +644,7 @@ export const HTML_TEMPLATES = {
                 <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
                 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
               </p>
-              
+
             </td>
           </tr>
           <!-- FOOTER -->
@@ -281,16 +665,18 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  d35: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > d35 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
+
               <!-- HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
                 <tr>
@@ -342,7 +728,7 @@ export const HTML_TEMPLATES = {
                   </td>
                 </tr>
               </table>
-  
+
 
               <!-- SIGNATURE -->
               <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
@@ -357,7 +743,7 @@ export const HTML_TEMPLATES = {
                 <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
                 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
               </p>
-              
+
             </td>
           </tr>
           <!-- FOOTER -->
@@ -378,16 +764,18 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  d60: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > d60 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
+
               <!-- HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
                 <tr>
@@ -438,7 +826,7 @@ export const HTML_TEMPLATES = {
                   </td>
                 </tr>
               </table>
-  
+
 
               <!-- SIGNATURE -->
               <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
@@ -453,7 +841,7 @@ export const HTML_TEMPLATES = {
                 <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
                 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
               </p>
-              
+
             </td>
           </tr>
           <!-- FOOTER -->
@@ -474,16 +862,18 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  d90: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > d90 1`] = `
+"<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
           <tr>
             <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
+
               <!-- HEADER -->
               <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
                 <tr>
@@ -534,7 +924,7 @@ export const HTML_TEMPLATES = {
                   </td>
                 </tr>
               </table>
-  
+
 
               <!-- SIGNATURE -->
               <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
@@ -549,7 +939,7 @@ export const HTML_TEMPLATES = {
                 <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
                 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
               </p>
-              
+
             </td>
           </tr>
           <!-- FOOTER -->
@@ -570,105 +960,11 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  aniversario: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
-    <tr>
-      <td align="center" valign="top" style="padding: 40px 10px;">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(26, 19, 16, 0.08);">
-          <tr>
-            <td style="padding: 56px 48px; background-color: #FAF5E8;">
-              
-              <!-- HEADER -->
-              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
-                <tr>
-                  <td align="left" valign="middle">
-                    <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
-                    <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle; font-weight: 400;">Studio do Jon</span>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- TAG / EYEBROW -->
-              <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding-right: 10px; font-size: 0; line-height: 0;">
-                    <div style="width: 18px; height: 1px; background-color: #8A7866; display: inline-block; vertical-align: middle;"></div>
-                  </td>
-                  <td>
-                    <span style="font-family: 'Manrope', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; vertical-align: middle;">Parabéns</span>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- TITLE -->
-              <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 38px; letter-spacing: -0.018em; line-height: 1.15; color: #1A1310; margin: 24px 0 0 0;">
-                Seu aniversário <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #B05A2E;'>tá chegando.</span>
-              </h1>
-
-              <!-- CONTENT -->
-              <div style="margin-top: 32px; font-family: 'Manrope', Arial, sans-serif;">
-              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Oi {nome},</p>
-              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Daqui a alguns dias é o seu aniversário!</p>
-              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Para comemorar seu novo ciclo, que tal passar pelo Studio para um momento de autocuidado? Entrar no seu dia especial com os cachos no formato perfeito, hidratados e com o corte impecável é a melhor forma de celebrar.</p>
-              <p style="margin: 0 0 16px 0; font-family: 'Manrope', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2E241E; max-width: 54ch;">Preparamos um horário especial para você nesta semana. Reserve o seu momento de celebração:</p>
-              </div>
-
-
-              <!-- CTA BUTTON -->
-              <table cellpadding="0" cellspacing="0" border="0" style="margin-top: 32px; margin-bottom: 16px;">
-                <tr>
-                  <td>
-                    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate !important; border-radius: 999px; background-color: #1A1310;">
-                      <tr>
-                        <td align="center" valign="middle" style="padding: 14px 28px;">
-                          <a href="https://ojonquecortou.com.br/agendar?utm_source=email_birthday&utm_medium=birthday_campaign&utm_campaign=celebration" target="_blank" style="font-family: 'Manrope', Arial, sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #FAF5E8 !important; text-decoration: none; display: inline-block;">Ver Agenda do Studio</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-  
-
-              <!-- SIGNATURE -->
-              <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
-              <table cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">
-                    Jon
-                  </td>
-                </tr>
-              </table>
-              <p style="font-family: 'Manrope', Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0 0; max-width: 52ch;">
-                <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
-                Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
-              </p>
-              
-            </td>
-          </tr>
-          <!-- FOOTER -->
-          <tr>
-            <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
-              <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px 0;">
-                Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
-              </div>
-              <p style="font-family: 'Manrope', Arial, sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
-              </p>
-              <div style="font-family: 'Manrope', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
-                &copy; 2026 Studio do Jon &middot; @ojonquecortou
-              </div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</div>`,
-
-  launch_e1: `<div style="background-color: #050505; padding: 60px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > launch_e1 1`] = `
+"<div style="background-color: #050505; padding: 60px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
   <!-- PREVIEW TEXT OCULTO -->
   <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
     O novo sistema de agendamento está no ar.
@@ -678,7 +974,7 @@ export const HTML_TEMPLATES = {
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #0A0A0A; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);">
     <tr>
       <td style="padding: 56px 48px 48px;">
-        
+
         <!-- HEADER -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 24px; margin-bottom: 48px;">
           <tr>
@@ -706,7 +1002,7 @@ export const HTML_TEMPLATES = {
           <p style="margin: 0 0 16px 0; max-width: 54ch;">O Studio sempre foi sobre precisão e experiência. Agora, estendi isso para o momento de marcar o seu horário.</p>
           <p style="margin: 0 0 16px 0; max-width: 54ch;">Acabei de lançar o novo sistema de agendamento online. Mais rápido, sem esperas no WhatsApp, e com controle total dos seus horários.</p>
           <p style="margin: 0 0 16px 0; max-width: 54ch;">Você já pode acessar e conhecer a nova plataforma.</p>
-          
+
           <!-- BUTTON -->
           <div style="margin-top: 40px; margin-bottom: 16px;">
             <a href="https://www.ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #FAF5E8; color: #050505; padding: 16px 32px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(250,245,232,0.15);">Conhecer o novo sistema &rarr;</a>
@@ -739,9 +1035,11 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  launch_e2: `<div style="background-color: #050505; padding: 60px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > launch_e2 1`] = `
+"<div style="background-color: #050505; padding: 60px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
   <!-- PREVIEW TEXT OCULTO -->
   <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
     Não é coincidência. E não é culpa do seu cabelo.
@@ -751,7 +1049,7 @@ export const HTML_TEMPLATES = {
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #0A0A0A; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);">
     <tr>
       <td style="padding: 56px 48px 48px;">
-        
+
         <!-- HEADER -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 24px; margin-bottom: 48px;">
           <tr>
@@ -783,7 +1081,7 @@ export const HTML_TEMPLATES = {
             <p style="margin: 0; color: #FAF5E8; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 22px; line-height: 1.4;">"No Studio do Jon, a tesoura é a última coisa que aparece."</p>
           </div>
           <p style="margin: 0 0 16px 0; max-width: 54ch;">Primeiro vem a escuta. Análise a seco, diagnóstico de couro, histórico químico, observação do padrão de queda. Isso é o <strong>Método Leitura de Fio</strong> — o processo que garante que o resultado não seja sorte, mas engenharia.</p>
-          
+
           <div style="margin-top: 40px; margin-bottom: 16px;">
             <a href="https://www.ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #FAF5E8; color: #050505; padding: 16px 32px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(250,245,232,0.15);">Agendar pelo novo sistema &rarr;</a>
           </div>
@@ -815,9 +1113,11 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`,
+</div>"
+`;
 
-  launch_e3: `<div style="background-color: #050505; padding: 60px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+exports[`emailTemplates > HTML_TEMPLATES > should match snapshots for all templates to prevent unexpected regressions > launch_e3 1`] = `
+"<div style="background-color: #050505; padding: 60px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
   <!-- PREVIEW TEXT OCULTO -->
   <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
     Acesso antecipado ao novo sistema. Horários limitados.
@@ -827,7 +1127,7 @@ export const HTML_TEMPLATES = {
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #0A0A0A; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05);">
     <tr>
       <td style="padding: 56px 48px 48px;">
-        
+
         <!-- HEADER -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 24px; margin-bottom: 48px;">
           <tr>
@@ -855,7 +1155,7 @@ export const HTML_TEMPLATES = {
           <p style="margin: 0 0 16px 0; max-width: 54ch;">Com o lançamento do novo sistema, estou abrindo uma janela de <strong>acesso antecipado</strong> para quem acompanhou a novidade desde o primeiro e-mail.</p>
           <p style="margin: 0 0 16px 0; max-width: 54ch;">Se você ainda não agendou: este é o momento para escolher os melhores dias e horários antes da agenda ser aberta publicamente no Instagram.</p>
           <p style="margin: 0 0 16px 0; max-width: 54ch;">É simples, direto ao ponto e respeita o seu tempo.</p>
-          
+
           <div style="margin-top: 40px; margin-bottom: 16px;">
             <a href="https://www.ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #FAF5E8; color: #050505; padding: 16px 32px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(250,245,232,0.15);">Quero meu horário com prioridade &rarr;</a>
           </div>
@@ -887,143 +1187,5 @@ export const HTML_TEMPLATES = {
       </td>
     </tr>
   </table>
-</div>`
-};
-
-export const ADMIN_HTML_TEMPLATES = {
-  admin_solicitacao_recebida: `<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
-  <!-- PREVIEW TEXT OCULTO -->
-  <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
-    Nova solicitação de agendamento online.
-    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
-  </div>
-
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
-    <tr>
-      <td style="padding: 56px 48px 48px;">
-        
-        <!-- HEADER -->
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
-          <tr>
-            <td align="left" valign="middle">
-              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
-              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
-            </td>
-          </tr>
-        </table>
-
-        <!-- TAG -->
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
-          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
-          Aviso de Sistema
-        </span>
-
-        <!-- TITLE -->
-        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
-          Nova <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Solicitação</span>
-        </h1>
-
-        <!-- CONTENT -->
-        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
-          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, uma nova solicitação de agendamento online foi recebida e aguarda sua análise no painel.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">[Data]</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Nome do Cliente]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">E-mail</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[E-mail]</div>      </td>    </tr>    <tr style="height: 24px;"><td></td><td></td></tr>    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Serviço]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Telefone</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Telefone]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
-    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
-  </div>
-        </div>
-
-        <!-- SIGNATURE -->
-        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
-        <div>
-          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
-        </div>
-        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
-          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
-          Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
-        </p>
-        
-      </td>
-    </tr>
-    <!-- FOOTER -->
-    <tr>
-      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
-        <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
-          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
-        </div>
-        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
-        </p>
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
-          &copy; 2026 Studio do Jon &middot; @ojonquecortou
-        </div>
-      </td>
-    </tr>
-  </table>
-</div>`,
-
-  admin_horario_confirmado: `<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
-  <!-- PREVIEW TEXT OCULTO -->
-  <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
-    Um agendamento foi confirmado ou criado.
-    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
-  </div>
-
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
-    <tr>
-      <td style="padding: 56px 48px 48px;">
-        
-        <!-- HEADER -->
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
-          <tr>
-            <td align="left" valign="middle">
-              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
-              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
-            </td>
-          </tr>
-        </table>
-
-        <!-- TAG -->
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
-          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
-          Aviso de Sistema
-        </span>
-
-        <!-- TITLE -->
-        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
-          Agendamento <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Confirmado</span>
-        </h1>
-
-        <!-- CONTENT -->
-        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
-          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, um agendamento foi confirmado ou criado no sistema.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">[Data]</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Nome do Cliente]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Serviço]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
-    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
-  </div>
-        </div>
-
-        <!-- SIGNATURE -->
-        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
-        <div>
-          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
-        </div>
-        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
-          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
-          Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
-        </p>
-        
-      </td>
-    </tr>
-    <!-- FOOTER -->
-    <tr>
-      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
-        <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
-          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
-        </div>
-        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
-        </p>
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
-          &copy; 2026 Studio do Jon &middot; @ojonquecortou
-        </div>
-      </td>
-    </tr>
-  </table>
-</div>`
-};
+</div>"
+`;
