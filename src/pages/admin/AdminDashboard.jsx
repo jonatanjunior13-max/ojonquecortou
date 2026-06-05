@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
+import { collection, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
 import { 
   ChevronLeft, 
