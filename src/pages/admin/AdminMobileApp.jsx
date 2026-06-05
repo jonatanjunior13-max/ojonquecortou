@@ -54,6 +54,7 @@ const AdminMobileApp = () => {
   const [isDemoMode, setIsDemoMode] = useState(!db);
   const [syncing, setSyncing] = useState(false);
   const [syncError, setSyncError] = useState(null);
+  const [connectionWarning, setConnectionWarning] = useState(false);
 
   // Modais
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -283,7 +284,7 @@ const AdminMobileApp = () => {
     const safetyTimer = setTimeout(() => {
       if (!authFired) {
         console.warn('Firebase timeout — usando cache local.');
-        setIsDemoMode(true);
+        setConnectionWarning(true);
         setLoading(false);
       }
     }, 7000);
@@ -463,6 +464,7 @@ const AdminMobileApp = () => {
       }
 
       setIsDemoMode(false);
+      setConnectionWarning(false);
       setLoading(false);
       // Pega o ID token para autenticar as chamadas REST
       user.getIdToken().then(idToken => setupListeners(idToken)).catch(err => {
@@ -592,7 +594,11 @@ const AdminMobileApp = () => {
     } catch (e) {
       console.error('Erro na sincronização manual:', e);
       setSyncError(e.message);
-      alert(`Erro na sincronização: ${e.message}`);
+      if (e.message?.includes('Sessão expirada') || !auth.currentUser) {
+        navigate('/admin/login');
+      } else {
+        alert(`Erro na sincronização: ${e.message}`);
+      }
     } finally {
       setSyncing(false);
     }
@@ -2762,6 +2768,43 @@ ${googleLink}
             {activeTab === 'marketing' && 'Marketing CRM'}
           </h3>
         </header>
+      )}
+
+      {/* Banner de Aguardando Conexão */}
+      {!loading && connectionWarning && (
+        <div
+          style={{
+            background: '#fff3cd',
+            borderBottom: '1px solid #ffc107',
+            padding: '8px 16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '0.78rem',
+            color: '#856404',
+            gap: '8px'
+          }}
+        >
+          <span>⚠️ Aguardando conexão com o Firebase (exibindo dados locais/cache).</span>
+          <button
+            onClick={handleManualSync}
+            disabled={syncing}
+            style={{
+              background: '#ffc107',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              color: '#333',
+              cursor: syncing ? 'not-allowed' : 'pointer',
+              opacity: syncing ? 0.7 : 1,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {syncing ? '🔄 Conectando...' : '🔄 Sincronizar'}
+          </button>
+        </div>
       )}
 
       {/* Banner de Status de Sincronização */}
