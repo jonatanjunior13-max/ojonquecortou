@@ -27,7 +27,7 @@
     
     <!-- Force unregister old service worker and clear old cache if build version changed -->
     <script>
-      const BUILD_VERSION = '20260605_v9';
+      const BUILD_VERSION = '20260605_v10';
       if (localStorage.getItem('site_version') !== BUILD_VERSION) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(function(registrations) {
