@@ -1,50 +1,123 @@
-export default async function handler(req, res) {
-  // CORS configuration
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+import { google } from 'googleapis';
 
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+// Função para validar se o agente de chamadas tem acesso
+function validateAuth(req) {
+  const authHeader = req.headers.authorization;
+  // Usamos o mesmo token de proteção das demais crons do site
+  const cronToken = process.env.CRON_SECRET || process.env.VERCEL_CRON_JWT;
+  if (cronToken && authHeader !== `Bearer ${cronToken}`) {
+    return false;
+  }
+  return true;
+}
+
+// Inicializa a autenticação do Google via Conta de Serviço
+function getGoogleAuth() {
+  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+    ? process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n')
+    : undefined;
+  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+
+  if (!privateKey || !clientEmail) {
+    throw new Error('Chaves da Conta de Serviço do Google não configuradas nas variáveis de ambiente.');
   }
 
-  // Cache na Vercel Edge Network por 15 minutos (900 segundos) para ser dinâmico
-  res.setHeader('Cache-Control', 's-maxage=900, stale-while-revalidate');
+  return new google.auth.JWT(
+    clientEmail,
+    null,
+    privateKey,
+    ['https://www.googleapis.com/auth/business.manage']
+  );
+}
+
+export default async function handler(req, res) {
+  // CORS Headers básicos
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // Validação simples de segurança
+  if (!validateAuth(req)) {
+    return res.status(401).json({ error: 'Não autorizado.' });
+  }
 
   try {
-    const API_KEY = process.env.GOOGLE_PLACES_API_KEY;
-    const PLACE_ID = process.env.GOOGLE_PLACE_ID; 
-
-    if (!API_KEY || !PLACE_ID) {
-      return res.status(500).json({ error: 'Configuração da API ausente (GOOGLE_PLACES_API_KEY ou GOOGLE_PLACE_ID)' });
-    }
-
-    const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${PLACE_ID}&fields=reviews,rating,user_ratings_total&language=pt-BR&reviews_sort=newest&key=${API_KEY}`;
+    const auth = getGoogleAuth();
+    const mybusiness = google.mybusinessbusinessinformation({
+      version: 'v1',
+      auth,
+    });
     
-    const response = await fetch(url);
-    const data = await response.json();
+    // As APIs de reviews necessitam do escopo do My Business do Google
+    // Opcionalmente podemos usar fetch direto com o token obtido pelo JWT da googleapis
+    const tokenInfo = await auth.authorize();
+    const accessToken = tokenInfo.access_token;
 
-    if (data.status === 'OK' && data.result.reviews) {
-      // Filtrar apenas avaliações com 4 ou 5 estrelas e que tenham texto
-      const goodReviews = data.result.reviews
-        .filter(review => review.rating >= 4 && review.text && review.text.length > 10)
-        .sort((a, b) => b.time - a.time); // mais recentes primeiro
+    const accountId = process.env.GOOGLE_BUSINESS_ACCOUNT_ID; // ex: 10674996025577230390
+    const locationId = process.env.GOOGLE_LOCATION_ID;        // ex: 1234567890
 
-      return res.status(200).json({
-        reviews: goodReviews.slice(0, 6), // Retornar as melhores
-        rating: data.result.rating,
-        total: data.result.user_ratings_total
-      });
-    } else {
-      return res.status(500).json({ error: 'Falha ao buscar avaliações', details: data });
+    if (!accountId || !locationId) {
+      return res.status(400).json({ error: 'GOOGLE_BUSINESS_ACCOUNT_ID ou GOOGLE_LOCATION_ID não configurados.' });
     }
+
+    const reviewsEndpoint = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${locationId}/reviews`;
+
+    // 1. LISTAR AVALIAÇÕES (GET)
+    if (req.method === 'GET') {
+      const response = await fetch(reviewsEndpoint, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        return res.status(response.status).json({ error: 'Erro ao buscar no Google API', details: errText });
+      }
+
+      const data = await response.json();
+      return res.status(200).json(data);
+    }
+
+    // 2. ENVIAR RESPOSTA (POST)
+    if (req.method === 'POST') {
+      const { reviewId, replyComment } = req.body;
+
+      if (!reviewId || !replyComment) {
+        return res.status(400).json({ error: 'Parâmetros reviewId e replyComment são obrigatórios.' });
+      }
+
+      const replyEndpoint = `${reviewsEndpoint}/${reviewId}/reply`;
+      const response = await fetch(replyEndpoint, {
+        method: 'PUT', // A API do Google usa PUT para criar/editar resposta de review
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          comment: replyComment
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        return res.status(response.status).json({ error: 'Erro ao responder no Google API', details: errText });
+      }
+
+      const data = await response.json();
+      return res.status(200).json({ success: true, data });
+    }
+
+    return res.status(405).json({ error: 'Método não permitido.' });
+
   } catch (error) {
-    console.error('Erro na API de Reviews:', error);
-    return res.status(500).json({ error: 'Erro interno no servidor' });
+    console.error('Erro no handler de reviews:', error);
+    return res.status(500).json({ error: 'Erro interno no servidor', message: error.message });
   }
 }
