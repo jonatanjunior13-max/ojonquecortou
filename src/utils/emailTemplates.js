@@ -3,6 +3,10 @@ export const EMAIL_CSS = `@import url('https://fonts.googleapis.com/css2?family=
 
 export const HTML_TEMPLATES = {
   d1: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    Não se assuste se o cacho parecer diferente hoje. O primeiro dia pós-corte não é o dia do caimento perfeito.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
@@ -84,6 +88,10 @@ export const HTML_TEMPLATES = {
 </div>`,
 
   d7: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    É agora que o cacho encontra o ângulo certo. Depois de algumas lavagens, a cutícula estabiliza e o formato real assenta.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
@@ -165,6 +173,10 @@ export const HTML_TEMPLATES = {
 </div>`,
 
   d21: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    O seu corte atingiu o pico do caimento. Três semanas de corte novo, agora vem a parte boa.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
@@ -261,6 +273,10 @@ export const HTML_TEMPLATES = {
 </div>`,
 
   d35: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    Um mês de corte. O segredo para ele durar mais e manter os cachos sob controle.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
@@ -358,6 +374,10 @@ export const HTML_TEMPLATES = {
 </div>`,
 
   d60: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    Falta um mês para a sua janela de manutenção. Agende seu horário para manter a forma e a saúde dos fios.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
@@ -454,6 +474,10 @@ export const HTML_TEMPLATES = {
 </div>`,
 
   d90: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    Últimos dias do valor especial de manutenção. Garanta o seu horário para renovar o corte.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
@@ -550,6 +574,10 @@ export const HTML_TEMPLATES = {
 </div>`,
 
   aniversario: `<div style="background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0; display: none !important; mso-hide: all;">
+    Seu aniversário tá chegando. Para comemorar, temos um mimo especial de autocuidado para você.
+  </div>
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
     <tr>
       <td align="center" valign="top" style="padding: 40px 10px;">
