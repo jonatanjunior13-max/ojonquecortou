@@ -279,7 +279,7 @@ function HomeMethodTeaser() {
 
         <Reveal delay={200}>
           <div style={{ marginTop: 48, display: "flex", justifyContent: "center" }}>
-            <Link to="/blog/metodo-leitura-de-fio-antes-da-tesoura" className="btn btn-light">
+            <Link to="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" className="btn btn-light">
               Ler o método completo <Arrow />
             </Link>
           </div>

@@ -9,6 +9,11 @@
   },
   "routes": [
     {
+      "src": "/blog/metodo-leitura-de-fio-antes-da-tesoura",
+      "status": 301,
+      "headers": { "Location": "/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" }
+    },
+    {
       "src": "/api/indexnow",
       "dest": "/api/cron.js?task=indexnow"
     },

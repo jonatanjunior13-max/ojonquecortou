@@ -11,6 +11,7 @@ import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import BleachServicePage from './pages/BleachServicePage';
 import VisagismServicePage from './pages/VisagismServicePage';
+import ServiceDetailPage from './pages/ServiceDetailPage';
 import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ReviewsPage from './pages/ReviewsPage';
@@ -64,6 +65,7 @@ function App() {
           <Route path="/servicos" element={<ServicesPage />} />
           <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
           <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />
+          <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
           <Route path="/galeria" element={<GalleryPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />

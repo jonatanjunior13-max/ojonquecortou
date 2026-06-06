@@ -112,7 +112,11 @@ const ServicesPage = () => {
                   <span className="sdc-emoji">{service.emoji}</span>
                   <span className="sdc-category">{service.category}</span>
                 </div>
-                <h2 className="sdc-name">{service.name}</h2>
+                <h2 className="sdc-name">
+                  <Link to={`/servicos/${service.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                    {service.name}
+                  </Link>
+                </h2>
                 <p className="sdc-tagline">{service.tagline}</p>
                 <div className="sdc-desc-container">
                   <p className={`sdc-description ${expandedCards[service.id] ? 'expanded' : 'collapsed'}`}>
@@ -140,6 +144,25 @@ const ServicesPage = () => {
                     </ul>
                   </div>
                 )}
+
+                <div style={{ marginTop: 'auto', marginBottom: '1rem' }}>
+                  <Link 
+                    to={`/servicos/${service.id}`} 
+                    style={{ 
+                      fontSize: '0.75rem', 
+                      fontWeight: 700, 
+                      textTransform: 'uppercase', 
+                      letterSpacing: '0.05em', 
+                      color: service.highlight ? 'var(--color-yellow)' : 'var(--color-accent)', 
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    Saber mais detalhes →
+                  </Link>
+                </div>
 
                 <div className="sdc-footer">
                   <span className="sdc-price">{service.price}</span>

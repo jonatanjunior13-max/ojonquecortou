@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { posts } from '../src/data/posts.js';
+import { SEED_SERVICES } from '../src/data/seedServices.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '../dist');
@@ -166,6 +167,35 @@ const pages = [
     description: 'Visagismo especializado em cabelos cacheados em Belo Horizonte. O Studio do Jon analisa formato do rosto, textura e estilo de vida antes de definir o corte ideal para você.'
   }
 ];
+
+// Add services dynamically
+SEED_SERVICES.forEach(service => {
+  const serviceDesc = service.description || `${service.name} no Studio do Jon em Belo Horizonte. Agende o seu atendimento online.`;
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": service.name,
+    "description": service.description,
+    "provider": {
+      "@type": "HairSalon",
+      "name": "Studio do Jon",
+      "url": "https://www.ojonquecortou.com.br"
+    },
+    "offers": {
+      "@type": "Offer",
+      "price": service.promoPrice || service.price,
+      "priceCurrency": "BRL",
+      "valueAddedTaxIncluded": "true"
+    }
+  };
+
+  pages.push({
+    route: `/servicos/${service.id}`,
+    title: `${service.name} em BH | Studio do Jon`,
+    description: serviceDesc.substring(0, 160),
+    schema: schema
+  });
+});
 
 // Add blog posts dynamically
 posts.forEach(post => {

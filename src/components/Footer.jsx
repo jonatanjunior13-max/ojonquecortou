@@ -30,7 +30,7 @@ function Footer() {
           <div>
             <h4>Diário</h4>
             <ul>
-              <li><Link to="/blog/metodo-leitura-de-fio-antes-da-tesoura">Método Leitura de Fio</Link></li>
+              <li><Link to="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</Link></li>
               <li><Link to="/blog/cronograma-capilar-cabelo-cacheado">Cronograma capilar</Link></li>
               <li><Link to="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">Mito do corte a seco</Link></li>
               <li><Link to="/blog">Todos os ensaios</Link></li>

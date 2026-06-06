@@ -129,7 +129,7 @@ export const posts = [
       <p>A maioria dos cabeleireiros já pegou a tesoura antes de te perguntar qualquer coisa. Eu não. Antes de qualquer corte no Studio do Jon, eu leio o fio. São 7 etapas. E é por isso que o resultado é diferente.</p>
 
       <h2>O Que é Leitura de Fio?</h2>
-      <p>Leitura de Fio é o nome do método diagnóstico exclusivo do Studio do Jon. Não é uma técnica de corte. É o que vem antes. É o processo de entender o fio, o couro, o histórico e o estilo de vida <a href="/blog/metodo-leitura-de-fio-antes-da-tesoura">antes do corte</a>.</p>
+      <p>Leitura de Fio é o nome do método diagnóstico exclusivo do Studio do Jon. Não é uma técnica de corte. É o que vem antes. É o processo de entender o fio, o couro, o histórico e o estilo de vida <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">antes do corte</a>.</p>
       <p>Eu vejo a sua cabeça como um território único. Não existem duas cabeças iguais. Nem no mesmo cliente. A curvatura do topo da sua cabeça é diferente da curvatura da nuca. A porosidade do lado direito não é a mesma do lado esquerdo. O histórico químico deixa marcas invisíveis. Entender isso não é um extra. É o básico.</p>
       <p>A maioria dos profissionais simplesmente joga água, penteia e começa a passar a tesoura. Isso não é cortar cabelo cacheado. Isso é sorte. Quando você não sabe a real porosidade do fio, você não sabe como ele vai encolher. O resultado? Cortes tortos, buracos na estrutura e frustração. Eu decidi mudar esse jogo.</p>
       <p>A Leitura de Fio é a ciência por trás da estética. Eu analiso o seu fio sob sete ângulos diferentes. Entendo a densidade de fios por centímetro quadrado. Meço a elasticidade natural da sua queratina. Observo a saúde do seu couro cabeludo. Pergunto sobre a sua rotina real de finalização em casa. Só depois disso tudo, a tesoura entra em ação.</p>
@@ -1013,7 +1013,7 @@ export const posts = [
       <p>Do mesmo jeito, fio com distribuição de peso errada vai continuar pesado, murcho e sem definição independente do cronograma que você montar. Isso é problema de corte, não de rotina.</p>
       <p>Se você está há meses seguindo cronograma e o cabelo continua igual, vale pausar e avaliar: o que está sendo tratado é o sintoma ou a causa?</p>
       <p>Um diagnóstico profissional — que inclui análise do fio seco, molhado e do couro cabeludo — muitas vezes revela que o cronograma está certo, mas o corte está errado. Ou vice-versa.</p>
-      <p>O <a href="/blog/metodo-leitura-de-fio-antes-da-tesoura">Método Leitura de Fio</a> que uso no Studio do Jon começa exatamente aí: antes de falar em produto, em corte ou em qualquer protocolo, o fio precisa ser lido.</p>
+      <p>O <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a> que uso no Studio do Jon começa exatamente aí: antes de falar em produto, em corte ou em qualquer protocolo, o fio precisa ser lido.</p>
 
       <h2>Sinais de Que o Seu Cronograma Está Errado</h2>
       <p>O fio avisa quando o protocolo não está funcionando — ou quando está sendo prejudicial. Aprenda a reconhecer esses sinais:</p>
@@ -1117,73 +1117,6 @@ export const posts = [
 
       <h2>Dica do Jon</h2>
       <p>A saúde do seu cabelo é o resultado do que você faz entre uma visita e outra ao meu Studio. Qual desses hábitos é o mais difícil para você desapegar?</p>
-    `
-  },
-  {
-    id: 27,
-    slug: 'metodo-leitura-de-fio-antes-da-tesoura',
-    title: 'Método Leitura de Fio: O Que Acontece Antes da Tesoura Tocar Seu Cabelo | Studio do Jon',
-    excerpt: 'Você já saiu de um salão com o resultado diferente do planejado? O erro não está no seu cabelo, mas na falta de leitura. Entenda os 7 passos da minha metodologia técnica.',
-    metaDescription: 'Antes de qualquer tesoura, Jon faz 7 etapas de diagnóstico no seu fio. Conheça o Método Leitura de Fio — o processo exclusivo que garante um corte certo para o seu cabelo, não para o cabelo de outra pessoa.',
-    keywords: 'leitura de fio, corte cabelo cacheado bh, especialista em cachos, tricologia capilar bh, transição capilar, studio do jon, o jon que cortou, visagismo bh',
-    date: '26 de Abril, 2026',
-    author: 'Jon',
-    category: 'Metodologia',
-    image: '/blog-leitura-fio-capa.webp',
-    content: `
-      <h2>Introdução</h2>
-      <p>Você já saiu de um salão com o cabelo diferente do que planejou? Não diferente no bom sentido. Diferente no sentido de "isso não era pra ser assim."</p>
-      <p>A maioria das pessoas culpa o profissional. Algumas culpam o próprio cabelo. Poucas conseguem identificar o que realmente aconteceu. O que aconteceu foi simples: ninguém leu o fio antes de cortar.</p>
-
-      <h2>O que é leitura de fio</h2>
-      <img src="/blog-leitura-fio-analise.webp" alt="Jon analisando mecha de cabelo úmido" class="post-inline-image" />
-      <p>Leitura de fio não é um termo bonito que inventei pra marketing. É uma metodologia que desenvolvi ao longo de anos estudando estrutura capilar, tricologia, técnicas de corte em cabelos cacheados, crespos e ondulados — e, principalmente, entendendo por que tantos cortes "certos" saíam errados.</p>
-      <p>A premissa é direta: o fio tem uma linguagem. Antes de qualquer corte, você precisa ouvi-la. Cabelo cacheado, crespo e ondulado é complexo de uma forma que corte reto não é. O mesmo fio pode se comportar diferente dependendo de hidratação, histórico químico, zona do couro, peso acumulado e como está sendo finalizado. Cortar sem mapear isso é adivinhar. E adivinhação gera erro.</p>
-
-      <h2>Por que a maioria dos cortes falha</h2>
-      <img src="/blog-leitura-fio-falha.webp" alt="Tesoura sobre cabelo cacheado seco e sem forma" class="post-inline-image" />
-      <p>Existe um padrão nos clientes que chegam até mim depois de um corte que não deu certo. O profissional anterior olhou para o cabelo finalizado, decidiu o corte na hora, cortou o que viu e confiou que o resultado seria o esperado.</p>
-      <p>O problema: cabelo cacheado com produto, com finalização errada ou com histórico químico não mostra a sua forma real. Ele mostra uma versão distorcida. Cortar em cima disso é construir em terreno que você não conhece. O Método Leitura de Fio existe para resolver exatamente esse problema.</p>
-
-      <h2>Os passos do método</h2>
-      
-      <h3>Passo 1 — Escuta antes do diagnóstico</h3>
-      <img src="/blog-leitura-fio-escuta.webp" alt="Jon em consulta atenta com cliente" class="post-inline-image" />
-      <p>O primeiro contato não é visual. É verbal. Antes de olhar para o cabelo, eu preciso entender quem é a pessoa que está na cadeira. Isso inclui histórico de procedimentos químicos, rotina de finalização, comportamento do cabelo e o que a pessoa realmente deseja.</p>
-      <p>Essa distinção importa. Muita cliente quer "só um shape" quando o que o fio precisa é de uma reconstrução estrutural do corte. Entender isso antes de pegar a tesoura evita um segundo erro em cima do primeiro.</p>
-
-      <h3>Passo 2 — Análise do fio seco, sem produto</h3>
-      <img src="/blog-leitura-fio-seco.webp" alt="Vista de cima de cabelo 4A solto e seco" class="post-inline-image" />
-      <p>Antes de qualquer água ou procedimento, observo o cabelo no estado em que chegou. O fio seco mostra o padrão real de curvatura, zonas de transição, distribuição de volume e o estado real das pontas. Esse mapa é o ponto de partida. Sem ele, qualquer decisão de corte é baseada em suposição.</p>
-
-      <h3>Passo 3 — Diagnóstico de couro cabeludo</h3>
-      <img src="/blog-leitura-fio-couro.webp" alt="Mãos separando cabelo para diagnóstico de couro cabeludo" class="post-inline-image" />
-      <p>Couro cabeludo saudável é a base de tudo. Ele determina como o fio nasce, como cresce e como se sustenta. Observo oleosidade, sensibilidade, padrão de crescimento e densidade real. Tricologia não é só tratamento. É informação para o corte.</p>
-
-      <h3>Passo 4 — Avaliação do histórico químico</h3>
-      <img src="/blog-leitura-fio-quimica.webp" alt="Comparação entre textura virgem e em transição" class="post-inline-image" />
-      <p>Fio que passou por química não se comporta como fio virgem. O processo químico altera a proteína, o ângulo de curvatura e a porosidade. Mapeio a linha de demarcação, o grau de porosidade e a elasticidade. Cortar uma transição sem entender onde está cada zona é garantia de corte desigual.</p>
-
-      <h3>Passo 5 — Análise molhada e avaliação do padrão real</h3>
-      <img src="/blog-leitura-fio-molhado.webp" alt="Cabelo 3B/3C molhado revelando curvatura autêntica" class="post-inline-image" />
-      <p>Depois da limpeza, com o fio úmido e sem produto, observo como o cacho se forma naturalmente. Isso revela a curvatura real sem interferência de produto, onde o fio precisa de peso ou leveza, e as assimetrias naturais. É aqui que a maioria das decisões de corte é tomada.</p>
-
-      <h3>Passo 6 — Definição da técnica de corte</h3>
-      <img src="/blog-leitura-fio-tecnica.webp" alt="Jon cortando mecha por mecha com precisão" class="post-inline-image" />
-      <p>Com tudo mapeado, escolho a técnica: corte molhado vs. seco, distribuição de camadas, técnica em espiral e ponto de queda. Essa decisão só é possível depois dos cinco passos anteriores. Pular algum deles é cortar no escuro.</p>
-
-      <h3>Passo 7 — Finalização como validação</h3>
-      <img src="/blog-leitura-fio-validacao.webp" alt="Cliente satisfeita com resultado do corte no espelho" class="post-inline-image" />
-      <p>A finalização serve para confirmar se o que foi planejado se realizou. Se o shape está correto, o cacho define com menos produto. Se o volume está equilibrado, não precisa de recurso para segurar a forma. O método prevê calibração final se necessário.</p>
-
-      <h2>O que muda quando o fio é lido corretamente</h2>
-      <p>A diferença não é estética. É funcional. Um corte baseado em leitura de fio dura mais, exige menos produto, facilita a rotina e respeita a transição. Cabelo cacheado não é difícil. Ele é específico. Exige leitura.</p>
-
-      <h2>Como funciona uma consulta no Studio do Jon</h2>
-      <p>Toda consulta começa com conversa. Você não senta na cadeira e já começa o corte. A primeira parte é diagnóstico e análise completa. Só depois disso a tesoura entra em cena. Não existe receita pronta. Existe leitura.</p>
-      <p>Manda um direct no Instagram @ojonquecortou ou acesse o link na bio para agendar.</p>
-
-      <p><i>Studio do Jon — Belo Horizonte. Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo.</i></p>
     `
   },
   {
