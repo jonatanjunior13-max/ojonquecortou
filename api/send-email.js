@@ -967,8 +967,9 @@ export default async function handler(req, res) {
     if (shouldSendClientEmail) {
       const isSystemAutomation = ['campanha', 'campanha_raw', 'reativacao_5_meses', 'launch_campaign'].includes(type);
       const resendApiKey = process.env.RESEND_API_KEY;
+      const isGmailSender = smtpFrom.toLowerCase().includes('gmail.com');
 
-      if (isSystemAutomation && resendApiKey) {
+      if (isSystemAutomation && resendApiKey && !isGmailSender) {
         try {
           const resendSender = smtpFrom.endsWith('@ojonquecortou.com.br') ? smtpFrom : 'contato@ojonquecortou.com.br';
           const fetchRes = await fetch('https://api.resend.com/emails', {
