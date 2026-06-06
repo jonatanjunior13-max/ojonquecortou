@@ -259,7 +259,7 @@ hr.technical-rule {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   border: 1px solid transparent;
-  transition: all 0.35s var(--ease);
+  transition: transform 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease), box-shadow 0.3s var(--ease);
   white-space: nowrap;
 }
 .btn .arrow {
@@ -267,19 +267,30 @@ hr.technical-rule {
   display: inline-block;
   transition: transform 0.35s var(--ease);
 }
-.btn:hover .arrow { transform: translate(2px, -2px); }
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:hover .arrow { transform: translate(4px, -4px); }
 
 .btn-primary {
   background: var(--ink);
   color: var(--bg);
+  box-shadow: 0 4px 12px rgba(26, 19, 16, 0.1);
 }
-.btn-primary:hover { background: var(--accent-deep); }
+.btn-primary:hover { 
+  background: var(--accent-deep);
+  box-shadow: 0 8px 20px rgba(110, 47, 24, 0.25);
+}
 
 .btn-accent {
   background: var(--accent);
   color: var(--bg-warm);
+  box-shadow: 0 4px 12px rgba(176, 90, 46, 0.15);
 }
-.btn-accent:hover { background: var(--accent-deep); }
+.btn-accent:hover { 
+  background: var(--accent-deep); 
+  box-shadow: 0 8px 20px rgba(110, 47, 24, 0.3);
+}
 
 .btn-ghost {
   background: transparent;
@@ -1112,10 +1123,10 @@ hr.technical-rule {
   justify-content: space-between;
 }
 .teaser:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.02);
   background: var(--surface);
   border-color: var(--accent-warm);
-  box-shadow: 0 12px 36px -16px rgba(176,90,46,0.25);
+  box-shadow: 0 20px 40px -15px rgba(176,90,46,0.18), 0 0 0 1px rgba(201, 123, 73, 0.2);
 }
 .teaser .n { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; }
 .teaser h3 {
@@ -1124,6 +1135,10 @@ hr.technical-rule {
   line-height: 1.05;
   letter-spacing: -0.015em;
   margin: 0;
+  transition: color 0.3s var(--ease);
+}
+.teaser:hover h3 {
+  color: var(--accent-deep);
 }
 .teaser .more {
   font-family: var(--mono);
@@ -1133,6 +1148,11 @@ hr.technical-rule {
   color: var(--ink);
   display: inline-flex; align-items: center; gap: 8px;
   margin-top: 4px;
+  transition: color 0.3s var(--ease), gap 0.3s var(--ease);
+}
+.teaser:hover .more {
+  color: var(--accent);
+  gap: 12px;
 }
 
 /* ---------- prose (blog article) ---------- */

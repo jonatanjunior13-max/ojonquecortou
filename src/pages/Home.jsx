@@ -107,12 +107,12 @@ function HomeHero() {
             <Reveal delay={220} className="hero-actions">
               <Magnetic>
                 <Link to="/agendar" className="btn btn-accent">
-                  Agendar avaliação <Arrow />
+                  Agendar corte e avaliação <Arrow />
                 </Link>
               </Magnetic>
               <Magnetic>
                 <a href="/sobre#metodo" className="btn btn-ghost">
-                  Conhecer o método
+                  Conhecer Método Leitura de Fio
                 </a>
               </Magnetic>
             </Reveal>
