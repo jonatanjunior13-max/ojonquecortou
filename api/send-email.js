@@ -935,13 +935,20 @@ export default async function handler(req, res) {
 
   let finalHtml = currentType === 'campanha_raw' ? emailContent : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent));
   
-  if (!finalHtml.includes('/api/unsubscribe')) {
-    if (currentType === 'campanha' || currentType === 'campanha_raw') {
-      finalHtml = finalHtml.replace('</body>', unsubLinkLight + '</body>');
-    } else {
-      finalHtml = finalHtml.replace('</body>', unsubLink + '</body>');
+  try {
+    if (!finalHtml.includes('/api/unsubscribe')) {
+      if (currentType === 'campanha' || currentType === 'campanha_raw') {
+        finalHtml = finalHtml.replace('</body>', unsubLinkLight + '</body>');
+      } else {
+        finalHtml = finalHtml.replace('</body>', unsubLink + '</body>');
+      }
     }
+  } catch (error) {
+    console.error('Error generating email template:', error);
+    return res.status(500).json({ success: false, error: error.message });
   }
+
+
 
   const mailOptions = {
     from: `"O Jon Que Cortou" <${smtpFrom}>`,
