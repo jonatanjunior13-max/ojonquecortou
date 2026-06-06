@@ -13,14 +13,24 @@ function validateAuth(req) {
 
 // Inicializa a autenticação do Google via Conta de Serviço
 function getGoogleAuth() {
-  const privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
-    ? process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n')
-    : undefined;
+  let privateKey = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 
   if (!privateKey || !clientEmail) {
     throw new Error('Chaves da Conta de Serviço do Google não configuradas nas variáveis de ambiente.');
   }
+
+  // Se a chave não contiver os delimitadores padrão do PEM, tentamos decodificar de Base64
+  if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+    try {
+      privateKey = Buffer.from(privateKey, 'base64').toString('utf8');
+    } catch (e) {
+      throw new Error('Erro ao decodificar GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY de Base64: ' + e.message);
+    }
+  }
+
+  // Substitui eventuais strings de quebra de linha textuais por novas linhas reais
+  privateKey = privateKey.replace(/\\n/g, '\n');
 
   return new google.auth.JWT(
     clientEmail,
