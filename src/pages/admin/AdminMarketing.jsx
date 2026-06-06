@@ -300,10 +300,13 @@ const AdminMarketing = () => {
   };
 
   const saveLog = async (clientName, clientPhone, stage, channel) => {
+    const clientObj = clients.find(c => c.phone === clientPhone);
+    const email = clientObj?.email || '';
     const newLog = {
       timestamp: new Date().toISOString(),
       clientName,
       clientPhone: clientPhone || '',
+      email: email || '',
       stage,
       channel, // 'email' or 'whatsapp'
       status: 'success'
@@ -1210,7 +1213,13 @@ const AdminMarketing = () => {
                       <button
                         className="btn btn-accent"
                         onClick={async () => {
-                          const targets = clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity && c.email && c.email !== 'Não informado' && c.email.includes('@'));
+                          const targets = clients.filter(c => {
+                             if (getDaysAbsent(c.lastVisit) !== Infinity) return false;
+                             if (!c.email || c.email === 'Não informado' || !c.email.includes('@')) return false;
+                             const phone = c.phone || '';
+                             const alreadySent = Array.isArray(automationLogs) && automationLogs.some(log => log.clientPhone === phone && log.stage === 'launch_e1');
+                             return !alreadySent;
+                           });
                           const total = targets.length;
                           if (total === 0) {
                             alert('Nenhum alvo válido encontrado.');
