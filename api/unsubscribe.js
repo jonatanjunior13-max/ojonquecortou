@@ -1,19 +1,34 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const admin = require('firebase-admin');
 
-const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.VITE_FIREBASE_APP_ID
-};
+// Initialize Firebase Admin if not already initialized
+if (!admin.apps.length) {
+  try {
+    const serviceAccountStr = process.env.FIREBASE_SERVICE_ACCOUNT;
+    if (!serviceAccountStr) {
+      throw new Error('FIREBASE_SERVICE_ACCOUNT env var is missing');
+    }
+    const serviceAccount = JSON.parse(serviceAccountStr);
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+  } catch (error) {
+    console.error('Failed to initialize Firebase Admin:', error);
+  }
+}
 
 export default async function handler(req, res) {
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
@@ -25,8 +40,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const q = query(collection(db, 'client_profiles'), where('email', '==', email));
-    const snapshot = await getDocs(q);
+    const db = admin.firestore();
+    const snapshot = await db.collection('client_profiles').where('email', '==', email).get();
 
     if (snapshot.empty) {
       // If we don't find it, we just say it's done to prevent enumeration.
@@ -43,7 +58,7 @@ export default async function handler(req, res) {
 
     const updates = [];
     snapshot.forEach((document) => {
-      updates.push(updateDoc(doc(db, 'client_profiles', document.id), { unsubscribed: true }));
+      updates.push(document.ref.update({ unsubscribed: true }));
     });
 
     await Promise.all(updates);
