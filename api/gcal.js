@@ -59,9 +59,23 @@ function parseGcalDateTime(dateTimeStr) {
   };
 }
 
+const allowedOrigins = [
+  'https://ojonquecortou.com.br',
+  'https://www.ojonquecortou.com.br',
+  'http://localhost:5173'
+];
+
 export default async function handler(req, res) {
+  const origin = req.headers.origin;
+
   res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', 'https://www.ojonquecortou.com.br');
+  }
+
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader(
     'Access-Control-Allow-Headers',
