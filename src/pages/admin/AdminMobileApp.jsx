@@ -1886,9 +1886,7 @@ ${googleLink}
           // Delete by bookingId
           const q = query(collection(db, 'financial_transactions'), where('bookingId', '==', bookingId));
           const qSnap = await getDocs(q);
-          for (const docRef of qSnap.docs) {
-            await deleteDoc(docRef.ref);
-          }
+          await Promise.all(qSnap.docs.map(docRef => deleteDoc(docRef.ref)));
 
           // Delete by client phone and date (fallback)
           if (booking?.clientPhone && booking?.date) {
@@ -1898,9 +1896,7 @@ ${googleLink}
               where('date', '==', booking.date)
             );
             const q2Snap = await getDocs(q2);
-            for (const docRef of q2Snap.docs) {
-              await deleteDoc(docRef.ref);
-            }
+            await Promise.all(q2Snap.docs.map(docRef => deleteDoc(docRef.ref)));
           }
         } catch (deleteErr) {
           console.error('Erro ao deletar transações financeiras (Mobile):', deleteErr);
