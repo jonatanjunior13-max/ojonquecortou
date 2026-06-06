@@ -970,25 +970,26 @@ export default async function handler(req, res) {
 
       if (isSystemAutomation && resendApiKey) {
         try {
-          const res = await fetch('https://api.resend.com/emails', {
+          const resendSender = smtpFrom.endsWith('@ojonquecortou.com.br') ? smtpFrom : 'contato@ojonquecortou.com.br';
+          const fetchRes = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${resendApiKey}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              from: `"O Jon Que Cortou" <${smtpFrom}>`,
+              from: `"O Jon Que Cortou" <${resendSender}>`,
               to: [clientEmail],
               subject: emailSubject,
               html: finalHtml
             })
           });
-          if (res.ok) {
-            const resData = await res.json();
+          if (fetchRes.ok) {
+            const resData = await fetchRes.json();
             messageId = resData.id || 'resend-ok';
             console.log(`E-mail de automação/campanha enviado via RESEND para ${clientEmail}. Tipo: ${type}`);
           } else {
-            const errMsg = await res.text();
+            const errMsg = await fetchRes.text();
             console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}. Sem fallback para SMTP.`);
             return res.status(500).json({ success: false, error: `Resend error: ${errMsg}` });
           }
