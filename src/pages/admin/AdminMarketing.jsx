@@ -436,10 +436,11 @@ const AdminMarketing = () => {
             });
 
             profiles.forEach(p => {
-              const existing = clientMap.get(p.phone) || { name: p.name || 'Cliente', phone: p.phone, visits: [], lastServiceName: 'Nenhum', email: p.email || '', birthdate: p.birthdate || '' };
+              const existing = clientMap.get(p.phone) || { name: p.name || 'Cliente', phone: p.phone, visits: [], lastServiceName: 'Nenhum', email: p.email || '', birthdate: p.birthdate || '', lastVisit: p.lastVisit || '' };
               if (p.email) existing.email = p.email;
               if (p.name) existing.name = p.name;
               if (p.birthdate) existing.birthdate = p.birthdate;
+              if (p.lastVisit) existing.lastVisit = p.lastVisit;
               clientMap.set(p.phone, existing);
             });
 
@@ -447,7 +448,7 @@ const AdminMarketing = () => {
               c.visits.sort((a, b) => b - a);
               return {
                 ...c,
-                lastVisit: c.visits.length > 0 ? c.visits[0].toISOString() : 'Nunca visitou',
+                lastVisit: c.visits.length > 0 ? c.visits[0].toISOString() : (c.lastVisit || 'Nunca visitou'),
                 totalVisits: c.visits.length
               };
             });
