@@ -97,7 +97,7 @@ function FaqItem({ question, answer, index }) {
     <div
       className="faq-item"
       style={{
-        borderBottom: '1px solid var(--border, rgba(255,255,255,0.08))',
+        borderBottom: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
         padding: '0',
       }}
     >
@@ -123,7 +123,7 @@ function FaqItem({ question, answer, index }) {
           fontSize: 'clamp(1rem, 2vw, 1.15rem)',
           fontWeight: 400,
           lineHeight: 1.35,
-          color: open ? 'var(--accent, #c8852a)' : 'var(--text, #faf5e8)',
+          color: open ? 'var(--accent, #B05A2E)' : 'var(--ink, #1A1310)',
           transition: 'color 0.2s ease',
         }}>
           {question}
@@ -133,12 +133,12 @@ function FaqItem({ question, answer, index }) {
           width: 28,
           height: 28,
           borderRadius: '50%',
-          border: '1px solid var(--border, rgba(255,255,255,0.15))',
+          border: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '1rem',
-          color: open ? 'var(--accent, #c8852a)' : 'var(--muted, #a39687)',
+          color: open ? 'var(--accent, #B05A2E)' : 'var(--muted, #6B5A4B)',
           transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
           transition: 'transform 0.25s ease, color 0.2s ease',
           lineHeight: 1,
@@ -157,7 +157,7 @@ function FaqItem({ question, answer, index }) {
           fontFamily: "'Manrope', sans-serif",
           fontSize: '0.975rem',
           lineHeight: 1.75,
-          color: 'var(--muted, #a39687)',
+          color: 'var(--muted, #6B5A4B)',
           margin: '0 0 28px 0',
           maxWidth: '62ch',
         }}>
@@ -181,7 +181,7 @@ const FaqPage = () => {
       {/* Hero da página */}
       <section style={{
         padding: 'clamp(60px, 8vw, 120px) 0 clamp(40px, 5vw, 64px)',
-        borderBottom: '1px solid var(--border, rgba(255,255,255,0.08))',
+        borderBottom: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
       }}>
         <div className="container" style={{ maxWidth: 800 }}>
           {/* Label superior */}
@@ -190,13 +190,13 @@ const FaqPage = () => {
             fontSize: '0.7rem',
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: 'var(--muted, #a39687)',
+            color: 'var(--muted, #6B5A4B)',
             marginBottom: '20px',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
           }}>
-            <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted, #a39687)' }} />
+            <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted, #6B5A4B)' }} />
             Studio do Jon · Perguntas Frequentes
           </p>
 
@@ -206,14 +206,14 @@ const FaqPage = () => {
             fontSize: 'clamp(2rem, 5vw, 3.25rem)',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
             margin: '0 0 24px',
           }}>
             Perguntas Frequentes{' '}
             <span style={{
               fontFamily: "'Instrument Serif', Georgia, serif",
               fontStyle: 'italic',
-              color: 'var(--accent, #c8852a)',
+              color: 'var(--accent, #B05A2E)',
               display: 'block',
             }}>
               — Studio do Jon
@@ -224,7 +224,7 @@ const FaqPage = () => {
             fontFamily: "'Manrope', sans-serif",
             fontSize: '1rem',
             lineHeight: 1.7,
-            color: 'var(--muted, #a39687)',
+            color: 'var(--muted, #6B5A4B)',
             maxWidth: '52ch',
             margin: 0,
           }}>
@@ -250,7 +250,7 @@ const FaqPage = () => {
       {/* CTA Final */}
       <section style={{
         padding: 'clamp(48px, 6vw, 80px) 0',
-        borderTop: '1px solid var(--border, rgba(255,255,255,0.08))',
+        borderTop: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
       }}>
         <div className="container" style={{
           maxWidth: 800,
@@ -265,20 +265,20 @@ const FaqPage = () => {
               fontSize: '0.7rem',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: 'var(--muted, #a39687)',
+              color: 'var(--muted, #6B5A4B)',
               marginBottom: '12px',
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
             }}>
-              <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted, #a39687)' }} />
+              <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted, #6B5A4B)' }} />
               Próximo passo
             </p>
             <p style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontWeight: 400,
               fontSize: 'clamp(1.3rem, 3vw, 1.75rem)',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               margin: 0,
               lineHeight: 1.2,
             }}>
