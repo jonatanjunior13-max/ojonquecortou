@@ -989,14 +989,12 @@ export default async function handler(req, res) {
             console.log(`E-mail de automação/campanha enviado via RESEND para ${clientEmail}. Tipo: ${type}`);
           } else {
             const errMsg = await res.text();
-            console.error(`Falha ao enviar via Resend: ${errMsg}. Fazendo fallback para SMTP.`);
-            const info = await transporter.sendMail(mailOptions);
-            messageId = info.messageId;
+            console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}. Sem fallback para SMTP.`);
+            return res.status(500).json({ success: false, error: `Resend error: ${errMsg}` });
           }
         } catch (resendErr) {
-          console.error(`Erro ao disparar via Resend: ${resendErr.message}. Fazendo fallback para SMTP.`);
-          const info = await transporter.sendMail(mailOptions);
-          messageId = info.messageId;
+          console.error(`Erro ao disparar via Resend para ${clientEmail}: ${resendErr.message}. Sem fallback para SMTP.`);
+          return res.status(500).json({ success: false, error: resendErr.message });
         }
       } else {
         const info = await transporter.sendMail(mailOptions);

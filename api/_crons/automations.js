@@ -420,7 +420,7 @@ export default async function handler(req, res) {
     // ==========================================
     // 3. CAMPANHA DE LANÇAMENTO (LISTA FRIA)
     // ==========================================
-    if (false) {
+    if (automations.launchCampaignEnabled === true) {
       const profilesSnap = await getDocs(collection(db, 'client_profiles'));
       const launchTargets = [];
       
