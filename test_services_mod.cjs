@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+const fs = require('fs');
+
+const content = fs.readFileSync('src/components/Services.jsx', 'utf-8');
+const newContent = `import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, getDocs } from 'firebase/firestore';
@@ -6,8 +9,8 @@ import { Scissors, Sparkles, Sun } from 'lucide-react';
 import './Services.css';
 
 const Services = () => {
-  const [, setCategories] = useState([]);
-  const [, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
@@ -42,7 +45,7 @@ const Services = () => {
             Serviços desenhados para realçar a curvatura natural e devolver a saúde dos seus fios.
           </p>
         </div>
-        
+
         {error ? (
           <div className="error-state" role="alert">
             <p>Não foi possível carregar os serviços. Tente novamente mais tarde.</p>
@@ -96,7 +99,7 @@ const Services = () => {
             </div>
           </div>
         )}
-        
+
         <div className="services-cta text-center mt-4">
            <a href="/agendar" className="btn btn-primary" onClick={(e) => { e.preventDefault(); navigate('/agendar'); }}>
               Ver Todos os Serviços
@@ -108,3 +111,6 @@ const Services = () => {
 };
 
 export default Services;
+`;
+
+fs.writeFileSync('src/components/Services.jsx', newContent);
