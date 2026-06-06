@@ -287,7 +287,7 @@ export default async function handler(req, res) {
     // 2. RÉGUA DE RELACIONAMENTO
     // ==========================================
     // Array of days to check
-    const windows = [1, 7, 21, 35, 50, 60, 90];
+    const windows = [1, 7, 21, 35, 50, 60, 90, 150];
 
     const isChemistry = (serviceName) => {
       if (!serviceName) return false;
