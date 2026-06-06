@@ -954,24 +954,19 @@ export default async function handler(req, res) {
     let messageId = 'skipped-client-email';
     const automations = settings?.automations || {};
     let shouldSendClientEmail = true;
-    if (type === 'solicitacao_recebida' && automations.waitingRequestEmailEnabled === false) {
-      shouldSendClientEmail = false;
-    } else if (type === 'horario_confirmado' && automations.bookingConfirmationEmailEnabled === false) {
-      shouldSendClientEmail = false;
-    } else if (type === 'lembrete_24h' && automations.reminder24hEmailEnabled === false) {
-      shouldSendClientEmail = false;
-    } else if (type === 'reativacao_5_meses' && automations.seqD150 === false) {
+    
+    // Birthday automation can be toggled off. Booking messages and relationship sequences are forced to run 24h.
+    if (type === 'aniversario' && automations.birthdayEnabled === false) {
       shouldSendClientEmail = false;
     }
 
     if (shouldSendClientEmail) {
-      const isSystemAutomation = ['campanha', 'campanha_raw', 'reativacao_5_meses', 'launch_campaign'].includes(type);
+      const isLaunchCampaign = type === 'launch_campaign';
       const resendApiKey = process.env.RESEND_API_KEY;
-      const isGmailSender = smtpFrom.toLowerCase().includes('gmail.com');
 
-      if (isSystemAutomation && resendApiKey && !isGmailSender) {
+      if (isLaunchCampaign && resendApiKey) {
         try {
-          const resendSender = smtpFrom.endsWith('@ojonquecortou.com.br') ? smtpFrom : 'contato@ojonquecortou.com.br';
+          const resendSender = 'contato@ojonquecortou.com.br';
           const fetchRes = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
@@ -988,7 +983,7 @@ export default async function handler(req, res) {
           if (fetchRes.ok) {
             const resData = await fetchRes.json();
             messageId = resData.id || 'resend-ok';
-            console.log(`E-mail de automação/campanha enviado via RESEND para ${clientEmail}. Tipo: ${type}`);
+            console.log(`E-mail de campanha de lançamento enviado via RESEND para ${clientEmail}.`);
           } else {
             const errMsg = await fetchRes.text();
             console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}. Sem fallback para SMTP.`);
@@ -1001,7 +996,7 @@ export default async function handler(req, res) {
       } else {
         const info = await transporter.sendMail(mailOptions);
         messageId = info.messageId;
-        console.log(`E-mail de cliente enviado para ${clientEmail}. Tipo: ${type}`);
+        console.log(`E-mail de cliente enviado via SMTP para ${clientEmail}. Tipo: ${type}`);
       }
     } else {
       console.log(`E-mail de cliente do tipo ${type} está desativado nas configurações para ${clientEmail}. Pulando envio.`);

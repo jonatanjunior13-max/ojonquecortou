@@ -206,8 +206,8 @@ export default async function handler(req, res) {
     const settings = settingsDoc.exists() ? settingsDoc.data() : null;
     const automations = settings?.automations || {};
     
-    // Fallback: enabled by default if undefined
-    const sequenceEnabled = automations.sequenceEnabled !== false;
+    // Fallback: enabled by default if undefined (Forçado a rodar 24h)
+    const sequenceEnabled = true;
 
     const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
     const parts = formatter.formatToParts(new Date());
@@ -365,7 +365,7 @@ export default async function handler(req, res) {
             else if (daysAgo === 90) tplKey = 'd90';
             else if (daysAgo === 150) tplKey = 'reativacao_5_meses';
 
-            if (tplKey && automations[`seqD${daysAgo === 50 ? 35 : daysAgo}`] !== false) {
+            if (tplKey) {
               const firstName = (booking.clientName || 'Cliente').split(' ')[0];
               const dbKey = `seqD${daysAgo === 50 ? 35 : daysAgo}`;
               const customTpl = settings?.email_templates?.[dbKey];
@@ -483,7 +483,7 @@ export default async function handler(req, res) {
                 : content;
 
              const payload = {
-                type: 'campanha_raw',
+                type: 'launch_campaign',
                 subject: subject,
                 htmlBody: emailBody,
                 clientEmail: target.email,
