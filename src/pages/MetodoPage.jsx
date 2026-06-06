@@ -6,12 +6,13 @@ const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
   "name": "Método Leitura de Fio",
+  "description": "Diagnóstico completo do fio antes de qualquer corte — 7 etapas incluídas em todo atendimento no Studio do Jon, sem custo extra.",
   "provider": {
-    "@type": "LocalBusiness",
+    "@type": "HairSalon",
     "name": "Studio do Jon",
     "url": "https://www.ojonquecortou.com.br"
   },
-  "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
+  "areaServed": "Belo Horizonte, MG",
   "url": "https://www.ojonquecortou.com.br/metodo"
 };
 
