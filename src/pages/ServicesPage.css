@@ -193,8 +193,9 @@
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
   align-items: center;
-  background: var(--color-dark);
-  color: var(--color-cream, #FAF5E8);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  color: var(--ink);
   border-radius: 16px;
   padding: 3rem 3.5rem;
   position: relative;

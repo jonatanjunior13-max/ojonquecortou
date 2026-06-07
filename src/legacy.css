@@ -6,7 +6,7 @@
 
 :root {
   /* ── Old token → new token mapping ── */
-  --color-dark:             var(--ink);
+  --color-dark:             #0a0a0a;
   --color-cream:            var(--bg);
   --color-bg:               var(--bg);
   --color-surface:          var(--surface);
