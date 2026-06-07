@@ -64,52 +64,65 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "HairSalon",
-      "name": "Studio do Jon",
-      "alternateName": "O Jon que Cortou",
-      "url": "https://www.ojonquecortou.com.br",
-      "telephone": "+553135866673",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "266",
-        "bestRating": "5",
-        "worstRating": "1"
-      },
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "Rua Francisco Ovídio, 184",
-        "addressLocality": "Belo Horizonte",
-        "addressRegion": "MG",
-        "postalCode": "30770-040",
-        "addressCountry": "BR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": "-19.908634",
-        "longitude": "-43.967875"
-      },
-      "openingHoursSpecification": [
+      "@graph": [
         {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday"],
-          "opens": "09:00",
-          "closes": "19:00"
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": "Saturday",
-          "opens": "09:00",
-          "closes": "17:00"
+          "@type": ["HairSalon", "LocalBusiness"],
+          "@id": "https://www.ojonquecortou.com.br/#localbusiness",
+          "name": "Studio do Jon",
+          "alternateName": "O Jon que Cortou",
+          "url": "https://www.ojonquecortou.com.br",
+          "logo": "https://www.ojonquecortou.com.br/logo.png",
+          "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
+          "telephone": "+553135866673",
+          "email": "contato@ojonquecortou.com.br",
+          "priceRange": "$$",
+          "hasMap": "https://www.google.com/maps?cid=16629671607593282841",
+          "sameAs": [
+            "https://www.instagram.com/ojonquecortou"
+          ],
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Rua Francisco Ovidio, 184",
+            "addressLocality": "Belo Horizonte",
+            "addressRegion": "MG",
+            "postalCode": "30720-320",
+            "addressCountry": "BR",
+            "streetAddressDetails": "Caiçara"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -19.908634,
+            "longitude": -43.967875
+          },
+          "openingHoursSpecification": [
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+              "opens": "09:00",
+              "closes": "19:00"
+            },
+            {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": "Saturday",
+              "opens": "09:00",
+              "closes": "17:00"
+            }
+          ],
+          "knowsAbout": [
+            "Corte de cabelo cacheado",
+            "Corte Híbrido",
+            "Transição capilar",
+            "Visagismo para cachos",
+            "Coloração em cabelo cacheado"
+          ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "266",
+            "bestRating": "5",
+            "worstRating": "1"
+          }
         }
-      ],
-      "description": "Salão especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte. Método Leitura de Fio exclusivo.",
-      "priceRange": "$$",
-      "currenciesAccepted": "BRL",
-      "servesCuisine": null,
-      "image": "https://www.ojonquecortou.com.br/jon-og.jpg",
-      "sameAs": [
-        "https://www.instagram.com/ojonquecortou"
       ]
     }
     </script>

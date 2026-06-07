@@ -165,6 +165,31 @@ const pages = [
     route: '/servicos/visagismo-cacheado',
     title: 'Visagismo para Cabelos Cacheados em BH | Studio do Jon',
     description: 'Visagismo especializado em cabelos cacheados em Belo Horizonte. O Studio do Jon analisa formato do rosto, textura e estilo de vida antes de definir o corte ideal para você.'
+  },
+  {
+    route: '/servicos/corte-hibrido',
+    title: 'Corte Híbrido Cabelo Cacheado BH | Studio do Jon',
+    description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já.'
+  },
+  {
+    route: '/servicos/transicao-capilar',
+    title: 'Transição Capilar BH | Studio do Jon — Especialista em Cachos',
+    description: 'Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende.'
+  },
+  {
+    route: '/servicos/visagismo-cachos',
+    title: 'Visagismo Cabelo Cacheado Belo Horizonte | Studio do Jon',
+    description: 'Valorize sua imagem através do visagismo para cabelos cacheados em Belo Horizonte. Cortes planejados para sua estrutura facial e rotina. Agende.'
+  },
+  {
+    route: '/servicos/masculino',
+    title: 'Corte Cabelo Cacheado Masculino BH | Studio do Jon',
+    description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende.'
+  },
+  {
+    route: '/metodologia',
+    title: 'Método Leitura de Fio | Studio do Jon — Cachos BH',
+    description: 'Conheça a Leitura de Fio. Metodologia exclusiva do Jon em Belo Horizonte. Análise técnica de curvatura e porosidade antes de qualquer corte de cacho.'
   }
 ];
 

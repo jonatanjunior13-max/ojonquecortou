@@ -11,8 +11,7 @@ function Footer() {
               O Jon que<br/><span className="italic">cortou.</span>
             </div>
             <p style={{ color: "var(--muted)", fontSize: 14.5, maxWidth: "38ch", margin: 0 }}>
-              Studio especializado em cabelos cacheados e crespos em Belo Horizonte.
-              Leitura técnica antes da tesoura. Caiçara, BH.
+              Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
             </p>
           </div>
 

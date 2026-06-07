@@ -61,7 +61,7 @@ const steps = [
     number: "06",
     title: "Definição de Técnica",
     paragraphs: [
-      "Só depois de passar pelas cinco etapas anteriores eu decido a estratégia. Vamos fazer o corte a seco ou molhado? Para mim, o verdadeiro corte a seco não é moda, é necessidade técnica para desenhar o volume em tempo real. Vamos usar camadas desconectadas para dar volume ou uma linha geométrica para controlar o caimento? Quanto comprimento vamos tirar?",
+      "Só depois de passar pelas cinco etapas anteriores eu decido a estratégia. Trabalho com o Corte Híbrido (feito molhado de precisão e lapidado a seco após a finalização). A técnica exata é decidida com base no comportamento do seu fio e o resultado desejado. Cortar apenas seco ou apenas molhado de forma arbitrária ignora a física real do cacho.",
       "Essa decisão não segue um padrão de revista ou de vídeo do Instagram. Ela é baseada nas necessidades específicas do seu fio naquele exato momento. O visagismo entra aqui com força, harmonizando o formato do corte com as linhas do seu rosto, valorizando a sua expressão pessoal."
     ]
   },

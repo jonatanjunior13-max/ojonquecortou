@@ -8,50 +8,98 @@ const faqSchema = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Leitura de Fio é um serviço pago?",
+      "name": "Com que frequência devo cortar cabelo cacheado?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre."
+        "text": "Para cabelos saudáveis, de 3 em 3 ou de 4 em 4 meses para manter o design. Se está em transição capilar ou tratando pontas muito danificadas, a cada 2 meses é o ideal para eliminar a quebra."
       }
     },
     {
       "@type": "Question",
-      "name": "Quanto tempo leva a Leitura de Fio?",
+      "name": "Corte a seco é melhor para cachos? Por quê?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Em média de 15 a 30 minutos antes do corte começar. Pode ser mais longa se o histórico for complexo."
+        "text": "O corte depende de como o seu cabelo se comporta. Eu trabalho com o Corte Híbrido (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a Leitura de Fio."
       }
     },
     {
       "@type": "Question",
-      "name": "Posso agendar só a Leitura de Fio sem marcar corte?",
+      "name": "O que é o Método Leitura de Fio?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sim. É possível agendar uma consulta de diagnóstico separada para entender o seu fio antes de decidir qualquer coisa."
+        "text": "Minha metodologia exclusiva de 7 etapas de análise antes de a tesoura tocar no cabelo. Mapeamos porosidade, curvaturas, histórico químico e caimento real para definir a técnica exata do seu atendimento."
       }
     },
     {
       "@type": "Question",
-      "name": "A Leitura de Fio funciona para cabelo liso também?",
+      "name": "Atende cabelos 4C?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "O método foi desenvolvido especificamente para cabelos ondulados, cacheados e crespos, onde a variação de textura e histórico químico é mais complexa."
+        "text": "Atendo todas as curvaturas. Cabelos crespos (tipo 4A, 4B, 4C) têm particularidades de volume e caimento que exigem técnicas específicas de precisão, seja no corte molhado ou seco. Sem alisamento disfarçado aqui."
       }
     },
     {
       "@type": "Question",
-      "name": "Posso usar condicionador em vez de máscara?",
+      "name": "Quanto tempo dura o atendimento?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Pode, mas o condicionador apenas sela a cutícula. A máscara entrega tratamento. Se tiver que escolher um pro minimalismo, fique com a máscara e use uma quantidade menor."
+        "text": "O corte completo integrado com o diagnóstico da Leitura de Fio leva por volta de 1h. Atendimento individual, focado em precisão técnica e sem pressa."
       }
     },
     {
       "@type": "Question",
-      "name": "E o óleo capilar?",
+      "name": "Faz transição capilar?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Ele entra como o 'plus'. Se o seu cabelo é muito seco (comum em curvaturas 4), ele é o quarto elemento indispensável. Se não, a máscara já resolve."
+        "text": "Sim. Desenvolvemos cortes de transição progressiva que ajudam a equilibrar a raiz natural e as pontas com química, permitindo que você mude de forma confortável sem precisar recorrer ao Big Chop radical imediato, a menos que seja seu desejo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Preciso lavar o cabelo antes de ir?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Venha com o cabelo seco, lavado no dia anterior ou no dia da visita, desembaraçado e finalizado do seu jeito comum. Não use coques, tranças ou presilhas que marquem o caimento natural do cacho."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Atende homens?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sim. Temos serviço especializado em cortes masculinos focados em curvaturas e visagismo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Como agendar?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Agendamento direto e seguro pelo link /agendar. Selecione o serviço, o dia e a hora. Confirmação instantânea sem enrolação."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "O que é visagismo para cachos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Técnica de planejar o corte e a distribuição de volumes baseada nas proporções faciais e na imagem que você quer transmitir, respeitando a física do cacho."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Faz química (progressiva, relaxamento)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Não. O Studio do Jon é focado em cabelos naturais e na sua saúde real. Não realizamos nenhum tipo de alisamento, relaxamento ou procedimento de modificação química da curvatura."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual a diferença de atendimento do Studio do Jon para outros salões?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela Leitura de Fio, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia."
       }
     }
   ]
@@ -59,34 +107,52 @@ const faqSchema = {
 
 const faqs = [
   {
-    question: "Leitura de Fio é um serviço pago?",
-    answer: "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre.",
-    source: "Método Leitura de Fio"
+    question: "Com que frequência devo cortar cabelo cacheado?",
+    answer: "Para cabelos saudáveis, de 3 em 3 ou de 4 em 4 meses para manter o design. Se está em transição capilar ou tratando pontas muito danificadas, a cada 2 meses é o ideal para eliminar a quebra."
   },
   {
-    question: "Quanto tempo leva a Leitura de Fio?",
-    answer: "Em média de 15 a 30 minutos antes do corte começar. Pode ser mais longa se o histórico for complexo.",
-    source: "Método Leitura de Fio"
+    question: "Corte a seco é melhor para cachos? Por quê?",
+    answer: <>O corte depende de como o seu cabelo se comporta. Eu trabalho com o <strong>Corte Híbrido</strong> (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Leitura de Fio</Link>.</>
   },
   {
-    question: "Posso agendar só a Leitura de Fio sem marcar corte?",
-    answer: "Sim. É possível agendar uma consulta de diagnóstico separada para entender o seu fio antes de decidir qualquer coisa.",
-    source: "Método Leitura de Fio"
+    question: "O que é o Método Leitura de Fio?",
+    answer: <>Minha metodologia exclusiva de 7 etapas de análise antes de a tesoura tocar no cabelo. Mapeamos porosidade, curvaturas, histórico químico e caimento real para definir a técnica exata do seu atendimento. Saiba mais detalhes na página do <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Método Leitura de Fio</Link>.</>
   },
   {
-    question: "A Leitura de Fio funciona para cabelo liso também?",
-    answer: "O método foi desenvolvido especificamente para cabelos ondulados, cacheados e crespos, onde a variação de textura e histórico químico é mais complexa.",
-    source: "Método Leitura de Fio"
+    question: "Atende cabelos 4C?",
+    answer: "Atendo todas as curvaturas. Cabelos crespos (tipo 4A, 4B, 4C) têm particularidades de volume e caimento que exigem técnicas específicas de precisão, seja no corte molhado ou seco. Sem alisamento disfarçado aqui."
   },
   {
-    question: "Posso usar condicionador em vez de máscara?",
-    answer: "Pode, mas o condicionador apenas sela a cutícula. A máscara entrega tratamento. Se tiver que escolher um pro minimalismo, fique com a máscara e use uma quantidade menor.",
-    source: "Antes da Tesoura"
+    question: "Quanto tempo dura o atendimento?",
+    answer: <>O corte completo integrado com o diagnóstico da <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Leitura de Fio</Link> leva <strong>por volta de 1h</strong>. Atendimento individual, focado em precisão técnica e sem pressa.</>
   },
   {
-    question: "E o óleo capilar?",
-    answer: "Ele entra como o 'plus'. Se o seu cabelo é muito seco (comum em curvaturas 4), ele é o quarto elemento indispensável. Se não, a máscara já resolve.",
-    source: "Antes da Tesoura"
+    question: "Faz transição capilar?",
+    answer: <>Sim. Desenvolvemos cortes de transição progressiva que ajudam a equilibrar a raiz natural e as pontas com química, permitindo que você mude de forma confortável sem precisar recorrer ao Big Chop radical imediato, a menos que seja seu desejo. Saiba mais em <Link to="/servicos/transicao-capilar" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Transição Capilar</Link>.</>
+  },
+  {
+    question: "Preciso lavar o cabelo antes de ir?",
+    answer: <>Venha com o cabelo seco, lavado no dia anterior ou no dia da visita, desembaraçado e finalizado do seu jeito comum. Não use coques, tranças ou presilhas que marquem o caimento natural do cacho para que possamos fazer a análise a seco da <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Leitura de Fio</Link> de forma precisa.</>
+  },
+  {
+    question: "Atende homens?",
+    answer: <>Sim. Temos serviço especializado em cortes masculinos focados em curvaturas e visagismo. Conheça o <Link to="/servicos/masculino" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Corte Masculino</Link>.</>
+  },
+  {
+    question: "Como agendar?",
+    answer: <>Agendamento direto e seguro pelo link <Link to="/agendar" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>/agendar</Link>. Selecione o serviço, o dia e a hora. Confirmação instantânea sem enrolação.</>
+  },
+  {
+    question: "O que é visagismo para cachos?",
+    answer: <>Técnica de planejar o corte e a distribuição de volumes baseada nas proporções faciais e na imagem que você quer transmitir, respeitando a física do cacho. Veja mais em <Link to="/servicos/visagismo-cachos" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Visagismo para Cachos</Link>.</>
+  },
+  {
+    question: "Faz química (progressiva, relaxamento)?",
+    answer: "Não. O Studio do Jon é focado em cabelos naturais e na sua saúde real. Não realizamos nenhum tipo de alisamento, relaxamento ou procedimento de modificação química da curvatura."
+  },
+  {
+    question: "Qual a diferença de atendimento do Studio do Jon para outros salões?",
+    answer: <>Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Leitura de Fio</Link>, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia.</>
   }
 ];
 
@@ -97,7 +163,7 @@ function FaqItem({ question, answer, index }) {
     <div
       className="faq-item"
       style={{
-        borderBottom: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
+        borderBottom: '1px solid var(--rule, rgba(255, 255, 255, 0.14))',
         padding: '0',
       }}
     >
@@ -113,17 +179,17 @@ function FaqItem({ question, answer, index }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           gap: '16px',
-          padding: '28px 0',
+          padding: '24px 0',
           textAlign: 'left',
-          color: 'inherit',
+          color: 'var(--ink, #ffffff)',
         }}
       >
         <span style={{
-          fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: 'clamp(1rem, 2vw, 1.15rem)',
+          fontFamily: "var(--serif)",
+          fontSize: 'clamp(1rem, 2vw, 1.25rem)',
           fontWeight: 400,
           lineHeight: 1.35,
-          color: open ? 'var(--accent, #B05A2E)' : 'var(--ink, #1A1310)',
+          color: open ? 'var(--accent)' : 'var(--ink)',
           transition: 'color 0.2s ease',
         }}>
           {question}
@@ -133,12 +199,12 @@ function FaqItem({ question, answer, index }) {
           width: 28,
           height: 28,
           borderRadius: '50%',
-          border: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
+          border: '1px solid var(--rule, rgba(255, 255, 255, 0.14))',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '1rem',
-          color: open ? 'var(--accent, #B05A2E)' : 'var(--muted, #6B5A4B)',
+          fontSize: '1.2rem',
+          color: open ? 'var(--accent)' : 'var(--muted)',
           transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
           transition: 'transform 0.25s ease, color 0.2s ease',
           lineHeight: 1,
@@ -154,12 +220,12 @@ function FaqItem({ question, answer, index }) {
         }}
       >
         <p style={{
-          fontFamily: "'Manrope', sans-serif",
-          fontSize: '0.975rem',
+          fontFamily: "var(--sans)",
+          fontSize: '1rem',
           lineHeight: 1.75,
-          color: 'var(--muted, #6B5A4B)',
-          margin: '0 0 28px 0',
-          maxWidth: '62ch',
+          color: 'var(--ink-2, #e5e5e5)',
+          margin: '0 0 24px 0',
+          maxWidth: '65ch',
         }}>
           {answer}
         </p>
@@ -172,8 +238,8 @@ const FaqPage = () => {
   return (
     <main style={{ paddingTop: '5rem' }}>
       <SEO
-        title="Perguntas Frequentes — Studio do Jon | Especialista em Cachos BH"
-        description="Tire suas dúvidas sobre o Método Leitura de Fio, agendamento, diagnóstico capilar e cuidados com cabelo cacheado no Studio do Jon em Belo Horizonte."
+        title="Perguntas Frequentes | Studio do Jon — Cachos BH"
+        description="Dúvidas sobre corte híbrido, transição capilar, valores e o Método Leitura de Fio. Respostas diretas e técnicas do Jon."
         url="/faq"
         schema={faqSchema}
       />
@@ -181,39 +247,39 @@ const FaqPage = () => {
       {/* Hero da página */}
       <section style={{
         padding: 'clamp(60px, 8vw, 120px) 0 clamp(40px, 5vw, 64px)',
-        borderBottom: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
+        borderBottom: '1px solid var(--rule, rgba(255, 255, 255, 0.14))',
       }}>
         <div className="container" style={{ maxWidth: 800 }}>
           {/* Label superior */}
           <p style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: "var(--mono)",
             fontSize: '0.7rem',
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
-            color: 'var(--muted, #6B5A4B)',
+            color: 'var(--muted)',
             marginBottom: '20px',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
           }}>
-            <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted, #6B5A4B)' }} />
+            <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted)' }} />
             Studio do Jon · Perguntas Frequentes
           </p>
 
           <h1 style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
+            fontFamily: "var(--serif)",
             fontWeight: 400,
             fontSize: 'clamp(2rem, 5vw, 3.25rem)',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
-            color: 'var(--ink, #1A1310)',
+            color: 'var(--ink)',
             margin: '0 0 24px',
           }}>
             Perguntas Frequentes{' '}
             <span style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "var(--serif-italic)",
               fontStyle: 'italic',
-              color: 'var(--accent, #B05A2E)',
+              color: 'var(--accent)',
               display: 'block',
             }}>
               — Studio do Jon
@@ -221,10 +287,10 @@ const FaqPage = () => {
           </h1>
 
           <p style={{
-            fontFamily: "'Manrope', sans-serif",
-            fontSize: '1rem',
+            fontFamily: "var(--sans)",
+            fontSize: '1.05rem',
             lineHeight: 1.7,
-            color: 'var(--muted, #6B5A4B)',
+            color: 'var(--ink-2)',
             maxWidth: '52ch',
             margin: 0,
           }}>
@@ -250,7 +316,7 @@ const FaqPage = () => {
       {/* CTA Final */}
       <section style={{
         padding: 'clamp(48px, 6vw, 80px) 0',
-        borderTop: '1px solid var(--rule, rgba(26, 19, 16, 0.14))',
+        borderTop: '1px solid var(--rule, rgba(255, 255, 255, 0.14))',
       }}>
         <div className="container" style={{
           maxWidth: 800,
@@ -261,24 +327,24 @@ const FaqPage = () => {
         }}>
           <div>
             <p style={{
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: "var(--mono)",
               fontSize: '0.7rem',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: 'var(--muted, #6B5A4B)',
+              color: 'var(--muted)',
               marginBottom: '12px',
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
             }}>
-              <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted, #6B5A4B)' }} />
+              <span style={{ display: 'inline-block', width: 18, height: 1, background: 'var(--muted)' }} />
               Próximo passo
             </p>
             <p style={{
-              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontFamily: "var(--serif)",
               fontWeight: 400,
               fontSize: 'clamp(1.3rem, 3vw, 1.75rem)',
-              color: 'var(--ink, #1A1310)',
+              color: 'var(--ink)',
               margin: 0,
               lineHeight: 1.2,
             }}>

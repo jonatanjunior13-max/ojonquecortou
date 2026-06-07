@@ -23,6 +23,11 @@ import BookingPage from './pages/BookingPage';
 import CancelBookingPage from './pages/CancelBookingPage';
 import ClientAreaPage from './pages/ClientAreaPage';
 
+import CorteHibridoPage from './pages/CorteHibridoPage';
+import TransicaoCapilarPage from './pages/TransicaoCapilarPage';
+import VisagismoCachosPage from './pages/VisagismoCachosPage';
+import MasculinoPage from './pages/MasculinoPage';
+
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
 const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
 const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
@@ -63,6 +68,10 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/servicos" element={<ServicesPage />} />
+          <Route path="/servicos/corte-hibrido" element={<CorteHibridoPage />} />
+          <Route path="/servicos/transicao-capilar" element={<TransicaoCapilarPage />} />
+          <Route path="/servicos/visagismo-cachos" element={<VisagismoCachosPage />} />
+          <Route path="/servicos/masculino" element={<MasculinoPage />} />
           <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
           <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />
           <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
@@ -72,6 +81,7 @@ function App() {
           <Route path="/depoimentos" element={<ReviewsPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/metodo" element={<MetodoPage />} />
+          <Route path="/metodologia" element={<MetodoPage />} />
           <Route path="/investimento" element={<InvestimentoPage />} />
           <Route path="/agendar" element={<BookingPage />} />
           <Route path="/cancelar" element={<CancelBookingPage />} />
