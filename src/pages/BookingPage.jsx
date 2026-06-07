@@ -1031,6 +1031,14 @@ const BookingPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validação estrita do campo de Telefone (WhatsApp)
+    const cleanPhone = clientData.phone.replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      setAuthError('Por favor, informe um número de WhatsApp válido com DDD.');
+      setLoading(false);
+      return;
+    }
+
     if (existingProfile && !authSuccess) {
       setAuthError('Você precisa confirmar sua identidade para agendar usando este perfil.');
       setTimeout(() => {
