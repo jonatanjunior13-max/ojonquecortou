@@ -1189,7 +1189,14 @@ const AdminMarketing = () => {
                     <div>
                       <h5 style={{ margin: '0 0 4px 0' }}>Disparar Sequência Manualmente</h5>
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>
-                        Alvos: {clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length} contatos sem visitas anteriores.
+                        Alvos: {
+                          clients.filter(c => {
+                            if (!c.email || c.email === 'Não informado' || !c.email.includes('@')) return false;
+                            const phone = c.phone || '';
+                            const alreadySent = Array.isArray(automationLogs) && automationLogs.some(log => log.clientPhone === phone && log.stage === 'launch_e1');
+                            return !alreadySent;
+                          }).length
+                        } contatos pendentes.
                       </p>
                       {isSendingEmail && emailProgressTotal > 0 && (
                         <div style={{ marginTop: '8px', minWidth: '200px' }}>
@@ -1215,7 +1222,6 @@ const AdminMarketing = () => {
                         className="btn btn-accent"
                         onClick={async () => {
                           const targets = clients.filter(c => {
-                             if (getDaysAbsent(c.lastVisit) !== Infinity) return false;
                              if (!c.email || c.email === 'Não informado' || !c.email.includes('@')) return false;
                              const phone = c.phone || '';
                              const alreadySent = Array.isArray(automationLogs) && automationLogs.some(log => log.clientPhone === phone && log.stage === 'launch_e1');

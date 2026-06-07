@@ -428,10 +428,8 @@ export default async function handler(req, res) {
         const p = docSnap.data();
         if (p.unsubscribed === true) continue;
         if (!p.email || p.email === 'Não informado' || !p.email.includes('@')) continue;
-        // Alvos da lista fria (sem histórico de visita / getDaysAbsent(lastVisit) == Infinity)
-        if (!p.lastVisit) {
-          launchTargets.push(p);
-        }
+        // Todos os clientes qualificados (com ou sem histórico de visitas)
+        launchTargets.push(p);
       }
 
       if (launchTargets.length > 0) {
