@@ -751,12 +751,12 @@ const AdminFinancial = () => {
         }
         .date-picker-dropdown {
           position: absolute;
-          background: #ffffff;
+          background: var(--surface);
           border: 1px solid var(--rule);
           border-radius: 8px;
           padding: 16px;
           width: 320px;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
           z-index: 100;
           margin-top: 8px;
         }
@@ -791,11 +791,11 @@ const AdminFinancial = () => {
           }
         }
         .chart-card {
-          background: #ffffff;
+          background: var(--surface);
           border: 1px solid var(--rule);
           border-radius: 12px;
           padding: 20px;
-          box-shadow: var(--shadow-sm);
+          box-shadow: var(--shadow-premium);
         }
         .chart-header {
           display: flex;
@@ -933,9 +933,8 @@ const AdminFinancial = () => {
         </div>
       </div>
 
-      {/* Primary KPI cards: Receita → Taxas → Despesas → Resultado */}
       <section className="admin-stats-grid">
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Bruta</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma de todas as entradas no período, antes de taxas" />
@@ -945,7 +944,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Taxas de Maquininha</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Total de taxas retidas por operadoras de cartão/Pix no período" />
@@ -955,7 +954,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Despesas</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Saídas de caixa, custos de serviço e despesas avulsas" />
@@ -965,7 +964,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)', borderLeft: `4px solid ${netResultado >= 0 ? '#48bb78' : '#e53e3e'}` }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)', borderLeft: `4px solid ${netResultado >= 0 ? '#48bb78' : '#e53e3e'}` }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado Líquido</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Receita Bruta - Taxas de Maquininha - Despesas" />
@@ -975,7 +974,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
@@ -985,7 +984,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
@@ -995,7 +994,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos Online vs Admin</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Comparativo de agendamentos realizados pelos próprios clientes online vs agendamentos criados manualmente pelo painel admin" />
@@ -1005,7 +1004,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Atendimentos</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
@@ -1015,7 +1014,7 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Custo de Produtos</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma dos custos de aquisição dos produtos vendidos no período" />
@@ -1026,7 +1025,7 @@ const AdminFinancial = () => {
         </div>
 
 
-        <div className="stat-card" style={{ background: '#ffffff', border: '1px solid var(--rule)' }}>
+        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Lucro de Produtos</h3>
             <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma do (valor de venda - preço de custo) dos produtos vendidos no período" />

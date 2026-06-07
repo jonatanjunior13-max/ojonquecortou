@@ -2713,11 +2713,12 @@
 }
 
 .agenda-day-label {
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.15rem;
-  font-weight: 700;
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--ink);
   text-transform: capitalize;
+  white-space: nowrap;
 }
 
 .agenda-search-input {
