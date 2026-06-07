@@ -433,7 +433,7 @@ export default async function handler(req, res) {
       }
 
       if (launchTargets.length > 0) {
-        const MAX_LAUNCH_EMAILS_PER_RUN = 5;
+        const MAX_LAUNCH_EMAILS_PER_RUN = 1500;
         let launchMailsSentThisRun = 0;
 
         for (const target of launchTargets) {
@@ -501,8 +501,8 @@ export default async function handler(req, res) {
                 launchMailsSentThisRun++;
                 logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
              }
-             // Pausa de segurança de 5 segundos (Titan SMTP limits)
-             await sleep(5000);
+             // Sem sleep longo para o Resend (apenas 100ms)
+             await sleep(100);
           }
         }
       }
