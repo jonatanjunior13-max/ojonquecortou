@@ -2208,13 +2208,47 @@ ${googleLink}
                                 new Date().getMonth() === dayObj.date.getMonth() && 
                                 new Date().getFullYear() === dayObj.date.getFullYear();
 
+                const dStr = getLocalDateString(dayObj.date);
+                const dayBookings = bookings.filter(b => b.date === dStr && b.status !== 'cancelado' && b.status !== 'bloqueado');
+                const bookingsCount = dayBookings.length;
+
                 return (
                   <span 
                     key={index} 
                     className={`mini-calendar-day ${isDayActive ? 'active' : ''} ${isToday ? 'today' : ''}`}
                     onClick={() => handleMiniCalDayClick(dayObj.date)}
+                    style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '38px', padding: '2px 0' }}
                   >
-                    {dayObj.day}
+                    <span className="day-number">{dayObj.day}</span>
+                    {bookingsCount > 0 && (
+                      <span className="mini-calendar-dots" style={{ display: 'flex', gap: '2px', marginTop: '2px', justifyContent: 'center', alignItems: 'center', height: '6px' }}>
+                        {Array.from({ length: Math.min(bookingsCount, 3) }).map((_, i) => (
+                          <span 
+                            key={i} 
+                            className="mini-calendar-dot" 
+                            style={{ 
+                              width: '4px', 
+                              height: '4px', 
+                              borderRadius: '50%', 
+                              backgroundColor: isDayActive ? '#fff' : 'var(--accent)' 
+                            }} 
+                          />
+                        ))}
+                        {bookingsCount > 3 && (
+                          <span 
+                            className="mini-calendar-dot-plus" 
+                            style={{ 
+                              fontSize: '0.6rem', 
+                              color: isDayActive ? '#fff' : 'var(--accent)', 
+                              lineHeight: 1, 
+                              fontWeight: 700 
+                            }}
+                          >
+                            +
+                          </span>
+                        )}
+                      </span>
+                    )}
                   </span>
                 );
               })}
