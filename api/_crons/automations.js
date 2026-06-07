@@ -433,7 +433,7 @@ export default async function handler(req, res) {
       }
 
       if (launchTargets.length > 0) {
-        const MAX_LAUNCH_EMAILS_PER_RUN = 1500;
+        const MAX_LAUNCH_EMAILS_PER_RUN = 300;
         let launchMailsSentThisRun = 0;
 
         for (const target of launchTargets) {
@@ -501,8 +501,8 @@ export default async function handler(req, res) {
                 launchMailsSentThisRun++;
                 logs.push(`Campanha de Lançamento (${stageLabel}) enviado para: ${target.name} (${target.email})`);
              }
-             // Sem sleep longo para o Resend (apenas 100ms)
-             await sleep(100);
+             // Delay de 150ms para respeitar o limite de 5 a 10 envios por segundo do Resend
+             await sleep(150);
           }
         }
       }
