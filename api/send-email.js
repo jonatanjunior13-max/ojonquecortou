@@ -926,20 +926,29 @@ export default async function handler(req, res) {
   // Se for uma campanha manual customizada (htmlBody fornecido já vem com tags próprias se quiser, 
   // mas aqui vamos sempre envelopar no wrapper para garantir a estética da marca, exceto se type for 'campanha_raw')
   
-  const unsubLink = `<div style="text-align: center; padding: 20px; font-size: 11px; color: #888; background-color: #0a0a0a; border-top: 1px solid #222;">
-    Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #888; text-decoration: underline;">clique aqui para descadastrar</a>.
-  </div>`;
-  const unsubLinkLight = `<div style="text-align: center; padding: 20px; font-size: 11px; color: #888; background-color: #f0eee9; border-top: 1px solid #ddd;">
-    Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #888; text-decoration: underline;">clique aqui para descadastrar</a>.
-  </div>`;
-
   let finalHtml = currentType === 'campanha_raw' ? emailContent : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent));
   
+  const isDark = finalHtml.includes('#050505') || finalHtml.includes('#0A0A0A');
+
+  const unsubLink = `<div style="text-align: center; padding: 40px 20px 20px; font-size: 11px; color: #666; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #888; text-decoration: underline;">clique aqui para descadastrar</a>.
+  </div>`;
+  const unsubLinkLight = `<div style="text-align: center; padding: 40px 20px 20px; font-size: 11px; color: #8A7866; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #6B5A4B; text-decoration: underline;">clique aqui para descadastrar</a>.
+  </div>`;
+
+  const chosenUnsub = isDark ? unsubLink : unsubLinkLight;
+
   if (!finalHtml.includes('/api/unsubscribe')) {
-    if (currentType === 'campanha' || currentType === 'campanha_raw') {
-      finalHtml = finalHtml.replace('</body>', unsubLinkLight + '</body>');
+    if (finalHtml.includes('</body>')) {
+      finalHtml = finalHtml.replace('</body>', chosenUnsub + '</body>');
     } else {
-      finalHtml = finalHtml.replace('</body>', unsubLink + '</body>');
+      const lastDivIndex = finalHtml.lastIndexOf('</div>');
+      if (lastDivIndex !== -1) {
+        finalHtml = finalHtml.substring(0, lastDivIndex) + chosenUnsub + finalHtml.substring(lastDivIndex);
+      } else {
+        finalHtml = finalHtml + chosenUnsub;
+      }
     }
   }
 
