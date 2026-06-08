@@ -1,5 +1,93 @@
 export const posts = [
   {
+    id: 39,
+    slug: 'voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz',
+    title: 'Você Tem Cabelo Ondulado e Não Sabe? O Mistério do "Liso com Frizz" Desvendado | Studio do Jon',
+    excerpt: 'Acha que seu cabelo é liso, indisciplinado e cheio de frizz? Descubra se você na verdade tem cabelos ondulados e como cuidar deles para revelar ondas perfeitas.',
+    metaDescription: 'Será que seu cabelo é mesmo liso com frizz ou ele é ondulado? Descubra como identificar cabelos ondulados do tipo 2A, 2B e 2C e aprenda a cuidar deles com dicas de especialista.',
+    keywords: 'cabelo ondulado, liso com frizz, cabelo ondulado 2b 2c, como saber se meu cabelo e ondulado, studio do jon, belo horizonte',
+    date: '08 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-ondulado-frizz.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Como saber se meu cabelo é ondulado ou liso com frizz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Se o seu cabelo ganha ondas quando está úmido ou seca com ondulações nas pontas e muito frizz no topo quando tratado como liso, ele provavelmente é ondulado (curvatura tipo 2). Cabelos genuinamente lisos secam retos e sem ondas mesmo sem finalização."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é o melhor finalizador para cabelo ondulado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cabelos ondulados precisam de produtos leves, como leave-ins fluidos ou gelatinas de fixação suave. Evite cremes de pentear muito pesados e ricos em óleos, que pesam nas ondas e deixam o cabelo sem volume e com aspecto oleoso."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como finalizar o cabelo ondulado para ativar as ondas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Com o cabelo úmido, aplique um leave-in leve usando a técnica de fitagem suave ou 'mãos de prece'. Em seguida, amasse as mechas de baixo para cima para estimular as ondas. Seque com difusor na temperatura morna e velocidade baixa ou deixe secar naturalmente."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>A Mentira do "Cabelo Liso Ruim" ou "Liso com Frizz"</h2>
+      <p>Quantas vezes você já ouviu ou disse: "meu cabelo não é liso nem cacheado, é só armado e cheio de frizz"? Ou talvez você gaste uma fortuna em secador, chapinha ou botox capilar para tentar domar fios que parecem simplesmente rebeldes.</p>
+      <p>Vou te contar uma verdade técnica que pode doer na sua rotina, mas vai salvar a sua autoimagem: <strong>cabelo liso com frizz não existe</strong>. Cabelo liso de verdade nasce liso, seca liso, e fica liso mesmo se você sair no vento da Pampulha. Se o seu cabelo arma, forma ondas quando está úmido ou tem aquele frizz persistente que não cede a nada, parabéns: você tem cabelo ondulado (curvatura tipo 2) e está tratando ele do jeito errado.</p>
+      <p>Tratar um cabelo ondulado como se fosse liso é como tentar abastecer um carro a gasolina com diesel e reclamar que ele está engasgando. Vamos desvendar esse mistério e te ensinar a revelar as ondas que estão escondidas sob esse frizz.</p>
+
+      <h2>Como Identificar o Cabelo Ondulado (Do 2A ao 2C)</h2>
+      <p>O cabelo ondulado é a curvatura mais incompreendida do salão. Como ele não forma espirais completas desde a raiz como os cachos tipo 3, muitas pessoas acham que ele é apenas um liso que deu errado. Na escala de curvaturas, nós classificamos o ondulado em três tipos principais:</p>
+      <ul>
+        <li><strong>Tipo 2A:</strong> É quase liso, mas tem uma leve onda em formato de "S" bem suave nas pontas. Geralmente tem pouco volume e perde a forma facilmente. É aquele cabelo que, se você amassar um pouquinho, já ganha movimento, mas se pentear seco vira um liso com frizz.</li>
+        <li><strong>Tipo 2B:</strong> A onda em "S" é mais definida e começa mais perto do meio do comprimento. A raiz ainda costuma ser lisa ou mais baixa, mas o comprimento tem textura de verdade. É o famoso "cabelo de praia". Se você usa creme pesado nele, ele pesa e fica com aspecto de sujo.</li>
+        <li><strong>Tipo 2C:</strong> É a onda mais intensa, quase um cacho. Começa bem rente à raiz e tem bastante volume. Se não for bem finalizado, arma com muita facilidade e tem bastante frizz natural. Muitas onduladas 2C passam a vida achando que têm cabelo cacheado tipo 3A, mas sem a formação de molas completas.</li>
+      </ul>
+
+      <img src="/blog-curvaturas.webp" alt="Tabela ilustrativa de tipos de curvatura capilar do ondulado 2A ao crespo 4C" class="post-inline-image" />
+
+      <h2>Por que Tratar Ondulado como Liso Destrói Suas Ondas</h2>
+      <p>A física do fio ondulado é delicada. Ao contrário dos cabelos cacheados e crespos, que possuem uma estrutura de fibra mais achatada e elíptica, o fio ondulado tem uma seção transversal ligeiramente oval. Ele tem mais facilidade para produzir e distribuir a oleosidade natural do couro cabeludo do que os cachos fechados, mas ainda assim sofre com o ressecamento nas pontas.</p>
+      <p>Quando você escova o cabelo seco ou usa xampus com sulfatos super agressivos recomendados para cabelos lisos e oleosos, você desfaz a união física que forma a onda. A cutícula se abre, o cimento intercelular do fio se perde no atrito da escova e... tcharam! A onda vira frizz desordenado.</p>
+      <p>Outro erro clássico é o excesso de fontes de calor. A chapinha e o secador sem proteção térmica mudam a estrutura das pontes de hidrogênio e enxofre do fio de forma temporária ou permanente. Com o tempo, o cabelo perde a memória da curvatura. Ele não fica nem liso bonito, nem ondulado definido. Vira o famoso "cabelo sem identidade".</p>
+
+      <h2>O Mito do Creme Pesado: O Pior Inimigo da Ondulada</h2>
+      <p>Quando a pessoa finalmente descobre que o cabelo é ondulado, ela comete o segundo erro mais comum: vai na internet, vê o tutorial de uma cacheada tipo 3C e compra os mesmos produtos. Máscaras ultra nutritivas com óleo de coco, leave-ins consistentes à base de manteiga de karité e gelatinas super densas.</p>
+      <p>O resultado? Um cabelo pesado, sem volume, com aspecto oleoso e sem nenhuma onda formada. O excesso de peso estica a onda do fio ondulado, fazendo-o parecer liso, mas com uma textura áspera e ensebada.</p>
+      <p>Cabelo ondulado precisa de <strong>água (hidratação) e fixação leve</strong>. Esqueça óleos pesados e cremes consistentes. O seu melhor amigo é um leave-in fluido (quase um leite ou loção leve) combinado com uma gelatina ou mousse de fixação suave. O produto precisa reter a umidade sem adicionar peso físico à fibra.</p>
+
+      <h2>A Rotina de Finalização Perfeita para Onduladas</h2>
+      <p>Finalizar cabelo ondulado é mais simples do que parece, mas exige técnica. Se você quer ondas definidas, brilhantes e com volume na medida certa, siga este passo a passo:</p>
+      <ol>
+        <li><strong>Finalize com o cabelo bem úmido:</strong> Não deixe o cabelo começar a secar sozinho antes de passar o produto. Aplique o finalizador ainda no banho ou logo após sair, com os fios encharcados. Isso ajuda a reter a umidade e a evitar o frizz prematuro.</li>
+        <li><strong>Use técnicas de distribuição leve:</strong> Evite fitagens muito estruturadas e apertadas. Prefira aplicar o leave-in com a técnica de "mãos de prece" (deslizando as mãos espalmadas pelas mechas) para distribuir o produto de forma uniforme.</li>
+        <li><strong>Amasse com vontade:</strong> Com os fios já com produto, amasse o cabelo de baixo para cima com as mãos. É esse movimento mecânico que vai ativar a memória da onda e formar as curvas em "S". Use uma toalha de microfibra ou camiseta de algodão para retirar o excesso de água.</li>
+        <li><strong>Seque com difusor na temperatura morna:</strong> O difusor ajuda a fixar a onda antes que o vento desmanche o formato. Use velocidade baixa para não criar frizz e não fique mexendo o secador o tempo todo. Se preferir secagem natural, evite ficar passando a mão no cabelo enquanto ele seca.</li>
+        <li><strong>Quebre o durinho:</strong> Depois que o cabelo estiver 100% seco, você vai sentir um leve aspect rígido ("cast" do gel). Aplique duas gotas de um óleo finalizador super leve nas mãos e amasse o cabelo delicadamente. O resultado serão ondas macias, soltas e super naturais.</li>
+      </ol>
+
+      <h2>Como a Leitura de Fio te Ajuda a Redescobrir Suas Ondas</h2>
+      <p>Se você tentou de tudo e seu cabelo continua parecendo uma nuvem de frizz na Savassi, o problema pode estar na porosidade e no histórico do seu fio. Fios ondulados que passaram por anos de progressiva ou descoloração perdem a elasticidade e precisam de tratamentos reconstrutores específicos antes de conseguirem formar ondas novamente.</p>
+      <p>No Studio do Jon, nós não acreditamos em receitas prontas. Antes de sugerir qualquer corte ou tratamento, nós realizamos a <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Leitura de Fio</a>. São 7 etapas de análise onde identificamos a elasticidade da sua fibra, a porosidade real, o histórico químico invisível e o caimento das diferentes texturas da sua cabeça. Só assim conseguimos desenhar um corte a seco que valorize o volume e definir a rotina de cuidados ideal para o seu estilo de vida.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Chega de brigar com o espelho e com o secador!</h3>
+        <p>Descubra o verdadeiro potencial do seu cabelo com um diagnóstico técnico personalizado.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Leitura de Fio no Studio do Jon</a>
+      </div>
+    `,
+  },
+  {
     id: 38,
     slug: 'cabelo-cacheado-inverno-bh-frizz-ressecamento',
     title: 'Cabelo Cacheado no Inverno de BH: O Guia de Sobrevivência contra o Frizz e Ressecamento | Studio do Jon',
