@@ -964,52 +964,52 @@ export const ADMIN_HTML_TEMPLATES = {
   </table>
 </div>`,
 
-  admin_horario_confirmado: `<div style="background-color: #EFE5D2; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
+  admin_horario_confirmado: `<div style="background-color: #050505; padding: 40px 20px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; min-height: 100vh;">
   <!-- PREVIEW TEXT OCULTO -->
   <div style="display: none; max-height: 0px; overflow: hidden; mso-hide: all; opacity: 0; font-size: 0; line-height: 0;">
     Um agendamento foi confirmado ou criado.
     &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
   </div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #0A0A0A; border-radius: 16px; overflow: hidden; box-shadow: 0 24px 48px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05);">
     <tr>
       <td style="padding: 56px 48px 48px;">
         
         <!-- HEADER -->
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 24px; margin-bottom: 48px;">
           <tr>
             <td align="left" valign="middle">
-              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
-              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+              <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #FAF5E8; color: #050505; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+              <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #FAF5E8; vertical-align: middle;">Studio do Jon</span>
             </td>
           </tr>
         </table>
 
         <!-- TAG -->
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866;">
-          <span style="display: inline-block; width: 18px; height: 1px; background-color: #8A7866; vertical-align: middle; margin-right: 10px;"></span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #A39687;">
+          <span style="display: inline-block; width: 18px; height: 1px; background-color: #A39687; vertical-align: middle; margin-right: 10px;"></span>
           Aviso de Sistema
         </span>
 
         <!-- TITLE -->
-        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #1A1310; margin: 24px 0 0; max-width: 14ch;">
-          Agendamento <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #6E2F18;'>Confirmado</span>
+        <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.1; color: #FAF5E8; margin: 24px 0 0; max-width: 14ch;">
+          Agendamento <span style='font-family: "Instrument Serif", Georgia, serif; font-style: italic; color: #D48C6A;'>Confirmado</span>
         </h1>
 
         <!-- CONTENT -->
-        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
-          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, um agendamento foi confirmado ou criado no sistema.</p><div style="background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.08); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #1A1310; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">[Data]</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Nome do Cliente]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #8A7866; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #1A1310;">[Serviço]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
-    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">Ver no Painel &rarr;</a>
+        <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #A39687;">
+          <p style="margin: 0 0 16px 0; max-width: 54ch;">Olá Jon, um agendamento foi confirmado ou criado no sistema.</p><div style="background-color: #121212; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 32px; margin: 32px 0;">  <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: #A39687; margin-bottom: 12px;">Detalhes</div>  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 32px; line-height: 1.1; letter-spacing: -0.01em; color: #FAF5E8; margin: 0 0 24px;"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #D48C6A;">[Data]</span> às [Horário]</p>  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 24px;">    <tr>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #A39687; margin-bottom: 6px;">Cliente</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #FAF5E8;">[Nome do Cliente]</div>      </td>      <td width="50%" valign="top">        <div style="font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: #A39687; margin-bottom: 6px;">Serviço</div>        <div style="font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 16px; color: #FAF5E8;">[Serviço]</div>      </td>    </tr>  </table></div>  <div style="margin-top: 32px; margin-bottom: 16px;">
+    <a href="https://ojonquecortou.com.br/admin/bookings" style="display: inline-block; background-color: #FAF5E8; color: #050505; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(250,245,232,0.15);">Ver no Painel &rarr;</a>
   </div>
         </div>
 
         <!-- SIGNATURE -->
-        <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+        <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 48px 0 32px;" />
         <div>
-          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+          <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #D48C6A;">Jon</div>
         </div>
-        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
-          <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+        <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #A39687; margin: 12px 0 0; max-width: 52ch;">
+          <strong style="color: #FAF5E8; font-weight: 600;">Studio do Jon</strong><br />
           Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
         </p>
         
@@ -1017,14 +1017,14 @@ export const ADMIN_HTML_TEMPLATES = {
     </tr>
     <!-- FOOTER -->
     <tr>
-      <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
+      <td style="background-color: #050505; padding: 40px 48px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
         <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
-          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+          Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #D48C6A; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
-        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+        <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.4); line-height: 1.6; margin: 0 0 24px 0;">
           Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
         </p>
-        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
         </div>
       </td>

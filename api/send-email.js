@@ -61,13 +61,26 @@ function getStandaloneWrapper(title, content) {
 `;
 }
 
-function getEmailWrapper(title, content) {
+function getEmailWrapper(title, content, isDark = false) {
   const previewText = content
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 150);
+
+  const bgOuter = isDark ? '#050505' : '#EFE5D2';
+  const bgInner = isDark ? '#0A0A0A' : '#FAF5E8';
+  const textColor = isDark ? '#FAF5E8' : '#1A1310';
+  const textColorLead = isDark ? '#A39687' : '#2E241E';
+  const accentColor = isDark ? '#D48C6A' : '#C97B49';
+  const apptCardBg = isDark ? '#121212' : '#F5EDDB';
+  const apptCardBorder = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(26, 19, 16, 0.12)';
+  const borderInner = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(26, 19, 16, 0.08)';
+  const tableBorder = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(26, 19, 16, 0.1)';
+  const logoBg = isDark ? '#FAF5E8' : '#1A1310';
+  const logoText = isDark ? '#050505' : '#FAF5E8';
+  const textMuted = isDark ? '#8A7866' : '#6B5A4B';
 
   return `
   <!DOCTYPE html>
@@ -77,48 +90,48 @@ function getEmailWrapper(title, content) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-      body { margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased; }
-      a { color: #C97B49 !important; text-decoration: none; }
-      .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #C97B49; font-weight: 600; margin-bottom: 10px; }
-      .display-title { font-size: 32px; font-weight: 400; color: #1A1310; margin-top: 0; margin-bottom: 20px; font-family: Georgia, serif; }
-      .display-title span { font-style: italic; color: #C97B49; }
-      .lead { font-size: 16px; line-height: 1.6; color: #2E241E; margin-bottom: 30px; }
-      .appt-card { background-color: #F5EDDB; border: 1px solid rgba(26, 19, 16, 0.12); border-radius: 6px; padding: 20px; margin-bottom: 30px; }
-      .appt-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #6B5A4B; margin-bottom: 12px; font-weight: 600; }
-      .appt-card .when { font-size: 18px; font-weight: 600; color: #1A1310; margin: 0 0 6px 0; }
-      .appt-card .when span { color: #C97B49; font-style: italic; font-weight: 400; font-family: Georgia, serif; }
-      .appt-card .where { font-size: 13px; color: #6B5A4B; margin: 0 0 16px 0; }
-      .meta-row { display: table; width: 100%; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 14px; margin-top: 14px; }
+      body { margin: 0; padding: 0; background-color: ${bgOuter}; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: ${textColor}; -webkit-font-smoothing: antialiased; }
+      a { color: ${accentColor} !important; text-decoration: none; }
+      .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: ${accentColor}; font-weight: 600; margin-bottom: 10px; }
+      .display-title { font-size: 32px; font-weight: 400; color: ${textColor}; margin-top: 0; margin-bottom: 20px; font-family: Georgia, serif; }
+      .display-title span { font-style: italic; color: ${accentColor}; }
+      .lead { font-size: 16px; line-height: 1.6; color: ${textColorLead}; margin-bottom: 30px; }
+      .appt-card { background-color: ${apptCardBg}; border: 1px solid ${apptCardBorder}; border-radius: 6px; padding: 20px; margin-bottom: 30px; }
+      .appt-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #8A7866; margin-bottom: 12px; font-weight: 600; }
+      .appt-card .when { font-size: 18px; font-weight: 600; color: ${textColor}; margin: 0 0 6px 0; }
+      .appt-card .when span { color: ${accentColor}; font-style: italic; font-weight: 400; font-family: Georgia, serif; }
+      .appt-card .where { font-size: 13px; color: #8A7866; margin: 0 0 16px 0; }
+      .meta-row { display: table; width: 100%; border-top: 1px solid ${borderInner}; padding-top: 14px; margin-top: 14px; }
       .cell { display: table-cell; width: 50%; }
       .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A7866; margin-bottom: 4px; font-weight: 600; }
-      .val { font-size: 14px; color: #1A1310; font-weight: 600; }
-      .rule { border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 30px 0; }
-      .btn { display: inline-block; text-align: center; border: 2px solid #C97B49; color: #C97B49 !important; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 30px 0; }
-      .instructions-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #C97B49; font-weight: 600; margin-bottom: 8px; }
-      .instructions-body { font-size: 15px; line-height: 1.6; color: #2E241E; }
-      .instructions-body strong { color: #1A1310; }
-      .signoff { margin-top: 35px; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 20px; }
-      .signoff .sig-name { font-size: 20px; font-family: Georgia, serif; font-style: italic; color: #1A1310; margin-bottom: 4px; }
-      .signoff .sig-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #6B5A4B; line-height: 1.5; }
+      .val { font-size: 14px; color: ${textColor}; font-weight: 600; }
+      .rule { border: 0; border-top: 1px solid ${borderInner}; margin: 30px 0; }
+      .btn { display: inline-block; text-align: center; border: 2px solid ${accentColor}; color: ${accentColor} !important; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 30px 0; }
+      .instructions-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: ${accentColor}; font-weight: 600; margin-bottom: 8px; }
+      .instructions-body { font-size: 15px; line-height: 1.6; color: ${textColorLead}; }
+      .instructions-body strong { color: ${textColor}; }
+      .signoff { margin-top: 35px; border-top: 1px solid ${borderInner}; padding-top: 20px; }
+      .signoff .sig-name { font-size: 20px; font-family: Georgia, serif; font-style: italic; color: ${textColor}; margin-bottom: 4px; }
+      .signoff .sig-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #8A7866; line-height: 1.5; }
     </style>
   </head>
-  <body style="margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased;">
+  <body style="margin: 0; padding: 0; background-color: ${bgOuter}; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: ${textColor}; -webkit-font-smoothing: antialiased;">
     <!-- Preheader preview text for inbox -->
-    <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #EFE5D2; opacity: 0;">
+    <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: ${bgOuter}; opacity: 0;">
       ${previewText}
     </div>
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#EFE5D2" style="background-color: #EFE5D2;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${bgOuter}" style="background-color: ${bgOuter};">
       <tr>
         <td align="center" style="padding: 40px 10px;">
-          <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#FAF5E8" style="max-width: 600px; background-color: #FAF5E8; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);">
+          <table width="100%" max-width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="${bgInner}" style="max-width: 600px; background-color: ${bgInner}; border-radius: 8px; overflow: hidden; border: 1px solid ${tableBorder}; box-shadow: 0 4px 20px rgba(0, 0, 0, ${isDark ? '0.4' : '0.08'});">
             <!-- Header -->
             <tr>
-              <td style="padding: 30px 40px 20px 40px; border-bottom: 1px solid rgba(26, 19, 16, 0.08);">
+              <td style="padding: 30px 40px 20px 40px; border-bottom: 1px solid ${borderInner};">
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td align="left">
-                      <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: #1A1310; color: #FAF5E8; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; vertical-align: middle;">J</span>
-                      <span style="display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #1A1310; margin-left: 10px; vertical-align: middle; font-family: 'Manrope', sans-serif;">O Jon Que Cortou</span>
+                      <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: ${logoBg}; color: ${logoText}; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; vertical-align: middle;">J</span>
+                      <span style="display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: ${isDark ? '#FAF5E8' : '#1A1310'}; margin-left: 10px; vertical-align: middle; font-family: 'Manrope', sans-serif;">O Jon Que Cortou</span>
                     </td>
                   </tr>
                 </table>
@@ -126,17 +139,17 @@ function getEmailWrapper(title, content) {
             </tr>
             <!-- Content -->
             <tr>
-              <td style="padding: 40px; font-family: 'Manrope', sans-serif; color: #1A1310;">
+              <td style="padding: 40px; font-family: 'Manrope', sans-serif; color: ${textColor};">
                 ${content}
               </td>
             </tr>
             <!-- Footer -->
             <tr>
-              <td style="padding: 25px 40px; background-color: #FAF5E8; border-top: 1px solid rgba(26, 19, 16, 0.08); text-align: center; font-family: 'Manrope', sans-serif;">
-                <div style="font-size: 14px; font-weight: 600; color: #1A1310; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">
-                  Studio do Jon <span style="font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
+              <td style="padding: 25px 40px; background-color: ${bgInner}; border-top: 1px solid ${borderInner}; text-align: center; font-family: 'Manrope', sans-serif;">
+                <div style="font-size: 14px; font-weight: 600; color: ${textColor}; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">
+                  Studio do Jon <span style="font-style: italic; font-weight: 400; color: ${accentColor}; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
                 </div>
-                <div style="font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 25px;">
+                <div style="font-size: 12px; color: ${textMuted}; line-height: 1.6; margin-bottom: 25px;">
                   Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
                 </div>
                 <div style="font-size: 11px; color: #8A7866; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
@@ -360,7 +373,8 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
       .replace(/{email}/gi, encodeURIComponent(clientEmail))
       .replace(/{telefone}/gi, clientPhone);
   } else {
-    finalHtml = getEmailWrapper(subject, body);
+    const isDark = type === 'horario_confirmado';
+    finalHtml = getEmailWrapper(subject, body, isDark);
   }
 
   const mailOptions = {
@@ -926,7 +940,8 @@ export default async function handler(req, res) {
   // Se for uma campanha manual customizada (htmlBody fornecido já vem com tags próprias se quiser, 
   // mas aqui vamos sempre envelopar no wrapper para garantir a estética da marca, exceto se type for 'campanha_raw')
   
-  let finalHtml = currentType === 'campanha_raw' ? emailContent : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent));
+  const isTypeDark = ['horario_confirmado', 'reativacao_5_meses', 'agendamento_cancelado'].includes(type);
+  let finalHtml = currentType === 'campanha_raw' ? emailContent : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent, isTypeDark));
   
   const isDark = finalHtml.includes('#050505') || finalHtml.includes('#0A0A0A');
 
