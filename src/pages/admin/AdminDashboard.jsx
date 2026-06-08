@@ -2337,9 +2337,9 @@ ${googleLink}
         {/* MAIN AGENDA AREA */}
         <main className="agenda-main-area">
           
-          <div className="agenda-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div className="agenda-top-bar">
             
-            <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
               <div className="agenda-day-nav">
                 <button className="btn-icon" onClick={() => changeDate(-1)}><ChevronLeft size={16} /></button>
                 <span className="agenda-day-label">
@@ -2395,7 +2395,7 @@ ${googleLink}
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexShrink: 0 }}>
               <input 
                 type="text" 
                 className="agenda-search-input" 

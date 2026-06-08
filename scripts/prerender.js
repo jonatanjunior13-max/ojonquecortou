@@ -79,22 +79,213 @@ function parseDateToISO(dateStr) {
   return "2026-05-14";
 }
 
+// Define complete structured FAQ questions and answers
+const fullFaqList = [
+  { q: "Com que frequência devo cortar cabelo cacheado?", a: "Para cabelos saudáveis, de 3 em 3 ou de 4 em 4 meses para manter o design. Se está em transição capilar ou tratando pontas muito danificadas, a cada 2 meses é o ideal para eliminar a quebra." },
+  { q: "Corte a seco é melhor para cachos? Por quê?", a: "O corte depende de como o seu cabelo se comporta. Eu trabalho com o Corte Híbrido (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a Leitura de Fio." },
+  { q: "O que é o Método Leitura de Fio?", a: "Minha metodologia exclusiva de 7 etapas de análise antes de a tesoura tocar no cabelo. Mapeamos porosidade, curvaturas, histórico químico e caimento real para definir a técnica exata do seu atendimento." },
+  { q: "Atende cabelos 4C?", a: "Atendo todas as curvaturas. Cabelos crespos (tipo 4A, 4B, 4C) têm particularidades de volume e caimento que exigem técnicas específicas de precisão, seja no corte molhado ou seco. Sem alisamento disfarçado aqui." },
+  { q: "Quanto tempo dura o atendimento?", a: "O corte completo integrado com o diagnóstico da Leitura de Fio leva por volta de 1h. Atendimento individual, focado em precisão técnica e sem pressa." },
+  { q: "Faz transição capilar?", a: "Sim. Desenvolvemos cortes de transição progressiva que ajudam a equilibrar a raiz natural e as pontas com química, permitindo que você mude de forma confortável sem precisar recorrer ao Big Chop radical imediato, a menos que seja seu desejo." },
+  { q: "Preciso lavar o cabelo antes de ir?", a: "Venha com o cabelo seco, lavado no dia anterior ou no dia da visita, desembaraçado e finalizado do seu jeito comum. Não use coques, tranças ou presilhas que marquem o caimento natural do cacho." },
+  { q: "Atende homens?", a: "Sim. Temos serviço especializado em cortes masculinos focados em curvaturas e visagismo." },
+  { q: "Como agendar?", a: "Agendamento direto e seguro pelo link /agendar. Selecione o serviço, o dia e a hora. Confirmação instantânea sem enrolação." },
+  { q: "O que é visagismo para cachos?", a: "Técnica de planejar o corte e a distribuição de volumes baseada nas proporções faciais e na imagem que você quer transmitir, respeitando a física do cacho." },
+  { q: "Faz química (progressiva, relaxamento)?", a: "Não. O Studio do Jon é focado em cabelos naturais e na sua saúde real. Não realizamos nenhum tipo de alisamento, relaxamento ou procedimento de modificação química da curvatura." },
+  { q: "Qual a diferença de atendimento do Studio do Jon para outros salões?", a: "Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela Leitura de Fio, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia." }
+];
+
+// Content blocks for noscript body injection
+const aboutBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <h1>Muito Prazer, O Jon.</h1>
+      <p>Especialista em curvaturas e visagismo no coração do bairro Caiçara, BH.</p>
+      <h2>O Cabelo não mente. O corte errado, sim.</h2>
+      <p>Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.</p>
+      <p>Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçara (BH), construí um espaço focado na liberdade do seu fio natural, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.</p>
+      <h2>Método & Técnica</h2>
+      <ul>
+        <li><strong>Leitura de Fio:</strong> Análise clínica de porosidade, espessura e saúde antes de qualquer tesoura.</li>
+        <li><strong>Corte com Técnica:</strong> Escultura do volume real, garantindo que o visual funcione no seu dia a dia.</li>
+        <li><strong>Visagismo:</strong> Harmonização do corte com o formato do seu rosto e sua personalidade.</li>
+      </ul>
+      <h2>Localização e Endereço</h2>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: (31) 3586-6673.</p>
+    </article>
+  </noscript>
+`;
+
+const investmentBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <h1>Investimento — Studio do Jon</h1>
+      <p>Antes de qualquer tesoura, vem o diagnóstico. O Método Leitura de Fio está incluído em todo atendimento — sem cobrança extra. O que você paga é pelo resultado que foi planejado desde o início.</p>
+      <h2>Nossos Valores e Serviços</h2>
+      <ul>
+        <li><strong>Corte especializado:</strong> R$ 190 a R$ 230. Inclui Leitura de Fio completa (7 etapas), corte, finalização como validação.</li>
+        <li><strong>Descoloração em cabelo cacheado:</strong> Sob consulta. Inclui diagnóstico de porosidade, análise de histórico químico, processo e finalização. Valor varia conforme comprimento e estado do fio.</li>
+        <li><strong>Consultoria Leitura de Fio:</strong> Sob consulta. Para quem quer só o diagnóstico, sem corte. Inclui análise completa do fio e orientações de cuidado personalizadas.</li>
+      </ul>
+    </article>
+  </noscript>
+`;
+
+// Build dynamically the FAQ body insert
+let faqBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <h1>Perguntas Frequentes — Studio do Jon</h1>
+      <p>Respostas diretas sobre o Método Leitura de Fio, diagnóstico capilar e cuidados com cabelos ondulados, cacheados e crespos.</p>
+      <dl>
+`;
+fullFaqList.forEach(faq => {
+  faqBody += `
+        <dt style="font-weight: bold; margin-top: 16px; font-size: 1.1rem;">${faq.q}</dt>
+        <dd style="margin-left: 0; margin-top: 8px; color: #ccc;">${faq.a}</dd>
+  `;
+});
+faqBody += `
+      </dl>
+    </article>
+  </noscript>
+`;
+
+// Build dynamically the Services page body insert
+let servicesBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <h1>Nossos Serviços — Studio do Jon</h1>
+      <p>Processos técnicos focados na saúde e na definição real do seu cacho. Especialidade em cabelos ondulados, cacheados e crespos em Belo Horizonte.</p>
+      <div style="display: grid; gap: 24px; margin-top: 24px;">
+`;
+SEED_SERVICES.forEach(s => {
+  servicesBody += `
+        <div style="border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 8px;">
+          <h2>${s.emoji || '✨'} ${s.name}</h2>
+          <p style="color: #c8852a; font-weight: bold;">Preço: R$ ${s.price}</p>
+          <p>${s.tagline || ''}</p>
+          <p>${s.description}</p>
+          ${s.includes && s.includes.length > 0 ? `<p><strong>O que inclui:</strong> ${s.includes.join(', ')}</p>` : ''}
+        </div>
+  `;
+});
+servicesBody += `
+      </div>
+    </article>
+  </noscript>
+`;
+
+// Global organization / local business schema graphs
+const localBusinessSchema = {
+  "@type": ["HairSalon", "LocalBusiness"],
+  "@id": "https://www.ojonquecortou.com.br/#localbusiness",
+  "name": "O Jon que Cortou — Studio do Jon",
+  "url": "https://www.ojonquecortou.com.br",
+  "logo": "https://www.ojonquecortou.com.br/logo.png",
+  "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
+  "telephone": "+553135866673",
+  "email": "contato@ojonquecortou.com.br",
+  "priceRange": "$$",
+  "hasMap": "https://www.google.com/maps?cid=16629671607593282841",
+  "sameAs": [
+    "https://www.instagram.com/ojonquecortou/",
+    "https://www.facebook.com/ojonquecortou/",
+    "https://linktr.ee/ojonquecortou"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Rua Francisco Ovídio, 184",
+    "addressLocality": "Belo Horizonte",
+    "addressRegion": "MG",
+    "postalCode": "30720-320",
+    "addressCountry": "BR"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -19.908634,
+    "longitude": -43.967875
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "09:00",
+      "closes": "19:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": "Saturday",
+      "opens": "09:00",
+      "closes": "17:00"
+    }
+  ]
+};
+
+const founderPersonSchema = {
+  "@type": "Person",
+  "@id": "https://www.ojonquecortou.com.br/#person",
+  "name": "Jonatan Junior",
+  "jobTitle": "Cabeleireiro Especialista em Cachos",
+  "worksFor": {
+    "@id": "https://www.ojonquecortou.com.br/#localbusiness"
+  },
+  "sameAs": [
+    "https://www.instagram.com/ojonquecortou/"
+  ]
+};
+
 // Definition of static pages with their specific metadata
 const pages = [
   {
     route: '/',
     title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
-    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Visagismo, corte a seco, transição capilar e tratamento personalizado.'
+    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Visagismo, corte a seco, transição capilar e tratamento personalizado.',
+    schema: {
+      "@context": "https://schema.org",
+      "@graph": [localBusinessSchema, founderPersonSchema]
+    }
   },
   {
     route: '/servicos',
     title: 'Serviços e Valores | Especialista em Cabelo Cacheado BH | Studio do Jon',
-    description: 'Veja nossos serviços de corte de cabelo cacheado a seco, visagismo, tratamentos e coloração. Agende seu horário online no Studio do Jon em BH.'
+    description: 'Veja nossos serviços de corte de cabelo cacheado a seco, visagismo, tratamentos e coloração. Agende seu horário online no Studio do Jon em BH.',
+    bodyInsert: servicesBody,
+    schema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        localBusinessSchema,
+        {
+          "@type": "ItemList",
+          "name": "Lista de Serviços do Studio do Jon",
+          "numberOfItems": SEED_SERVICES.length,
+          "itemListElement": SEED_SERVICES.map((s, idx) => ({
+            "@type": "ListItem",
+            "position": idx + 1,
+            "item": {
+              "@type": "Service",
+              "name": s.name,
+              "description": s.description,
+              "offers": {
+                "@type": "Offer",
+                "price": s.price,
+                "priceCurrency": "BRL"
+              }
+            }
+          }))
+        }
+      ]
+    }
   },
   {
     route: '/sobre',
     title: 'Sobre o Jonatan Junior | Especialista em Cachos BH | Studio do Jon',
-    description: 'Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.'
+    description: 'Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.',
+    bodyInsert: aboutBody,
+    schema: {
+      "@context": "https://schema.org",
+      "@graph": [localBusinessSchema, founderPersonSchema]
+    }
   },
   {
     route: '/blog',
@@ -110,17 +301,18 @@ const pages = [
     route: '/faq',
     title: 'Perguntas Frequentes — Studio do Jon | Especialista em Cachos BH',
     description: 'Tire suas dúvidas sobre o Método Leitura de Fio, diagnóstico capilar, agendamento e cuidados com cabelo cacheado no Studio do Jon em Belo Horizonte.',
+    bodyInsert: faqBody,
     schema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      "mainEntity": [
-        { "@type": "Question", "name": "Leitura de Fio é um serviço pago?", "acceptedAnswer": { "@type": "Answer", "text": "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre." } },
-        { "@type": "Question", "name": "Quanto tempo leva a Leitura de Fio?", "acceptedAnswer": { "@type": "Answer", "text": "Em média de 15 a 30 minutos antes do corte começar. Pode ser mais longa se o histórico for complexo." } },
-        { "@type": "Question", "name": "Posso agendar só a Leitura de Fio sem marcar corte?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. É possível agendar uma consulta de diagnóstico separada para entender o seu fio antes de decidir qualquer coisa." } },
-        { "@type": "Question", "name": "A Leitura de Fio funciona para cabelo liso também?", "acceptedAnswer": { "@type": "Answer", "text": "O método foi desenvolvido especificamente para cabelos ondulados, cacheados e crespos, onde a variação de textura e histórico químico é mais complexa." } },
-        { "@type": "Question", "name": "Posso usar condicionador em vez de máscara?", "acceptedAnswer": { "@type": "Answer", "text": "Pode, mas o condicionador apenas sela a cutícula. A máscara entrega tratamento. Se tiver que escolher um pro minimalismo, fique com a máscara e use uma quantidade menor." } },
-        { "@type": "Question", "name": "E o óleo capilar?", "acceptedAnswer": { "@type": "Answer", "text": "Ele entra como o 'plus'. Se o seu cabelo é muito seco (comum em curvaturas 4), ele é o quarto elemento indispensável. Se não, a máscara já resolve." } }
-      ]
+      "mainEntity": fullFaqList.map(faq => ({
+        "@type": "Question",
+        "name": faq.q,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.a
+        }
+      }))
     }
   },
   {
@@ -131,11 +323,7 @@ const pages = [
       "@context": "https://schema.org",
       "@type": "Service",
       "name": "Método Leitura de Fio",
-      "provider": {
-        "@type": "LocalBusiness",
-        "name": "Studio do Jon",
-        "url": "https://www.ojonquecortou.com.br"
-      },
+      "provider": localBusinessSchema,
       "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
       "url": "https://www.ojonquecortou.com.br/metodo"
     }
@@ -144,13 +332,20 @@ const pages = [
     route: '/investimento',
     title: 'Investimento | Studio do Jon — Especialista em Cachos BH',
     description: 'Corte especializado com Método Leitura de Fio a partir de R$ 200. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH.',
+    bodyInsert: investmentBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "PriceSpecification",
-      "name": "Corte especializado cabelo cacheado",
-      "price": "190",
-      "priceCurrency": "BRL",
-      "url": "https://www.ojonquecortou.com.br/investimento"
+      "@graph": [
+        localBusinessSchema,
+        {
+          "@type": "PriceSpecification",
+          "name": "Corte especializado cabelo cacheado",
+          "minPrice": "190",
+          "maxPrice": "230",
+          "priceCurrency": "BRL",
+          "url": "https://www.ojonquecortou.com.br/investimento"
+        }
+      ]
     }
   },
   {
@@ -203,11 +398,7 @@ SEED_SERVICES.forEach(service => {
     "@type": "Service",
     "name": service.name,
     "description": service.description,
-    "provider": {
-      "@type": "HairSalon",
-      "name": "Studio do Jon",
-      "url": "https://www.ojonquecortou.com.br"
-    },
+    "provider": localBusinessSchema,
     "offers": {
       "@type": "Offer",
       "price": service.promoPrice || service.price,
@@ -216,10 +407,23 @@ SEED_SERVICES.forEach(service => {
     }
   };
 
+  const serviceBody = `
+    <noscript>
+      <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+        <h1>${service.name} em Belo Horizonte</h1>
+        <p style="font-weight: bold; color: #ccc;">${service.tagline || ''}</p>
+        <hr />
+        <p>${service.description}</p>
+        ${service.includes && service.includes.length > 0 ? `<p><strong>O que está incluso:</strong> ${service.includes.join(', ')}</p>` : ''}
+      </article>
+    </noscript>
+  `;
+
   pages.push({
     route: `/servicos/${service.id}`,
     title: `${service.name} em BH | Studio do Jon`,
     description: serviceDesc.substring(0, 160),
+    bodyInsert: serviceBody,
     schema: schema
   });
 });
@@ -236,11 +440,7 @@ posts.forEach(post => {
     "headline": post.title,
     "description": postDesc,
     "image": post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`,
-    "author": {
-      "@type": "Person",
-      "name": "Jonatan Junior",
-      "url": "https://www.ojonquecortou.com.br/sobre"
-    },
+    "author": founderPersonSchema,
     "publisher": {
       "@type": "Organization",
       "name": "Studio do Jon",

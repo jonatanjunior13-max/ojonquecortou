@@ -25,7 +25,7 @@ const AboutPage = () => {
         <div className="container about-grid">
           <div className="about-visual reveal">
             <div className="about-image-wrap">
-              <img src="/jon-trabalhando.webp" alt="Jon atendendo cliente" className="about-image" />
+              <img src="/jon-trabalhando.webp" alt="Jonatan Junior realizando corte de cabelo cacheado no Studio do Jon em Belo Horizonte" className="about-image" />
             </div>
             <div className="experience-tag">
               <span className="exp-number">8+</span>

@@ -48,7 +48,9 @@ const AdminFinancial = () => {
     description: '',
     value: '',
     paymentMethod: 'Pix',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    category: 'Custos Fixos - Água, Luz e Telefone',
+    installments: 1
   });
 
   // Form states for product sale (Venda de Produto)
@@ -468,6 +470,25 @@ const AdminFinancial = () => {
     })).sort((a, b) => b.revenue - a.revenue);
   }, [filteredBookings]);
 
+  // Expense categorization and summing
+  const expenseCategoryStats = useMemo(() => {
+    const stats = {};
+    filteredTransactions
+      .filter(t => t.type === 'saida')
+      .forEach(t => {
+        const cat = t.category || 'Custos Variáveis - Outras Despesas Variáveis';
+        if (!stats[cat]) {
+          stats[cat] = 0;
+        }
+        stats[cat] += t.value;
+      });
+
+    return Object.keys(stats).map(name => ({
+      name,
+      value: stats[name]
+    })).sort((a, b) => b.value - a.value);
+  }, [filteredTransactions]);
+
   // Save new fee settings to database & local
   const handleSaveFees = async (e) => {
     e.preventDefault();
@@ -500,32 +521,72 @@ const AdminFinancial = () => {
   // Add Expense manual entry
   const handleAddExpense = async (e) => {
     e.preventDefault();
-    const payload = {
-      date: expenseForm.date,
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      clientName: 'Despesa Avulsa',
-      type: 'saida',
-      paymentMethod: expenseForm.paymentMethod,
-      value: Number(expenseForm.value),
-      description: expenseForm.description,
-      createdAt: new Date().toISOString()
+    
+    const addMonths = (dateStr, monthsToAdd) => {
+      const date = new Date(dateStr + 'T12:00:00');
+      date.setMonth(date.getMonth() + monthsToAdd);
+      return date.toISOString().split('T')[0];
     };
+
+    const totalVal = Number(expenseForm.value);
+    const installments = expenseForm.paymentMethod === 'Cartão de Crédito' ? Number(expenseForm.installments || 1) : 1;
+
+    const transactionsToInsert = [];
+
+    if (installments > 1) {
+      const valuePerInstallment = Number((totalVal / installments).toFixed(2));
+      const lastInstallmentValue = Number((totalVal - (valuePerInstallment * (installments - 1))).toFixed(2));
+
+      for (let i = 0; i < installments; i++) {
+        const installmentVal = i === installments - 1 ? lastInstallmentValue : valuePerInstallment;
+        const currentInstallmentDate = addMonths(expenseForm.date, i);
+
+        transactionsToInsert.push({
+          date: currentInstallmentDate,
+          time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          clientName: 'Despesa Avulsa',
+          type: 'saida',
+          category: expenseForm.category,
+          paymentMethod: expenseForm.paymentMethod,
+          value: installmentVal,
+          description: `${expenseForm.description} (${i + 1}/${installments})`,
+          createdAt: new Date().toISOString()
+        });
+      }
+    } else {
+      transactionsToInsert.push({
+        date: expenseForm.date,
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        clientName: 'Despesa Avulsa',
+        type: 'saida',
+        category: expenseForm.category,
+        paymentMethod: expenseForm.paymentMethod,
+        value: totalVal,
+        description: expenseForm.description,
+        createdAt: new Date().toISOString()
+      });
+    }
 
     try {
       if (isDemoMode) {
         const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
-        const updated = [{ id: 'tx_' + Date.now(), ...payload }, ...local];
+        const withIds = transactionsToInsert.map((t, idx) => ({ id: 'tx_' + (Date.now() + idx), ...t }));
+        const updated = [...withIds, ...local];
         localStorage.setItem('demo_financial', JSON.stringify(updated));
         setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
       } else {
-        await addDoc(collection(db, 'financial_transactions'), payload);
+        for (const t of transactionsToInsert) {
+          await addDoc(collection(db, 'financial_transactions'), t);
+        }
       }
       setShowExpenseModal(false);
       setExpenseForm({
         description: '',
         value: '',
         paymentMethod: 'Pix',
-        date: new Date().toISOString().split('T')[0]
+        date: new Date().toISOString().split('T')[0],
+        category: 'Custos Fixos - Água, Luz e Telefone',
+        installments: 1
       });
     } catch (err) {
       console.error('Erro ao registrar despesa:', err);
@@ -1398,6 +1459,41 @@ const AdminFinancial = () => {
                 </svg>
               </div>
             </div>
+
+            {/* Chart 8: Distribuição de Despesas por Categoria */}
+            <div className="chart-card" style={{ gridColumn: '1 / -1', marginTop: 12 }}>
+              <div className="chart-header">
+                <h4>Distribuição de Despesas por Categoria</h4>
+                <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Total acumulado por categoria no período</span>
+              </div>
+              <div style={{ width: '100%' }}>
+                {expenseCategoryStats.length === 0 ? (
+                  <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '24px 0', fontSize: '0.85rem' }}>
+                    Nenhuma despesa registrada no período selecionado.
+                  </p>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    {expenseCategoryStats.map((c, index) => {
+                      const totalExpenses = expenseCategoryStats.reduce((sum, item) => sum + item.value, 0);
+                      const pct = totalExpenses > 0 ? (c.value / totalExpenses) * 100 : 0;
+                      return (
+                        <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600 }}>
+                            <span style={{ color: 'var(--ink)' }}>{c.name}</span>
+                            <span style={{ color: 'var(--accent)' }}>
+                              R$ {c.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({pct.toFixed(1)}%)
+                            </span>
+                          </div>
+                          <div style={{ width: '100%', height: 8, background: 'var(--bg-warm)', borderRadius: 4, overflow: 'hidden' }}>
+                            <div style={{ width: `${pct}%`, height: '100%', background: '#e53e3e', borderRadius: 4 }}></div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </>
       )}
@@ -1482,7 +1578,14 @@ const AdminFinancial = () => {
                     return (
                       <tr key={t.id}>
                         <td>{t.date.split('-').reverse().join('/')} às {t.time || '00:00'}</td>
-                        <td style={{ fontWeight: 600 }}>{t.description}</td>
+                        <td style={{ fontWeight: 600 }}>
+                          {t.description}
+                          {t.category && (
+                            <span style={{ fontSize: '0.7rem', color: 'var(--accent)', background: 'rgba(200, 133, 42, 0.1)', padding: '2px 6px', borderRadius: 4, fontWeight: 'normal', marginLeft: 8, display: 'inline-block' }}>
+                              {t.category}
+                            </span>
+                          )}
+                        </td>
                         <td>{t.clientName || 'N/A'}</td>
                         <td>{t.paymentMethod}</td>
                         <td>
@@ -1876,6 +1979,51 @@ const AdminFinancial = () => {
                   <option value="Cartão de Crédito">Cartão de Crédito</option>
                 </select>
               </div>
+            </div>
+
+            {expenseForm.paymentMethod === 'Cartão de Crédito' && (
+              <div className="form-group" style={{ marginTop: 12 }}>
+                <label>Parcelamento *</label>
+                <select
+                  value={expenseForm.installments || 1}
+                  onChange={e => setExpenseForm(prev => ({ ...prev, installments: Number(e.target.value) }))}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--rule)', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                >
+                  {[...Array(12)].map((_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}x {i > 0 ? `(R$ ${(Number(expenseForm.value || 0) / (i + 1)).toFixed(2)} / mês)` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+             <div className="form-group" style={{ marginTop: 12 }}>
+              <label>Categoria da Despesa *</label>
+              <select 
+                value={expenseForm.category}
+                onChange={e => setExpenseForm(prev => ({ ...prev, category: e.target.value }))}
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--rule)', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+              >
+                <optgroup label="Custos Fixos">
+                  <option value="Custos Fixos - Aluguel e Condomínio">Aluguel e Condomínio</option>
+                  <option value="Custos Fixos - Água, Luz e Telefone">Água, Luz e Telefone</option>
+                  <option value="Custos Fixos - Sistemas e Assinaturas">Sistemas e Assinaturas</option>
+                  <option value="Custos Fixos - Marketing e Anúncios">Marketing e Anúncios</option>
+                  <option value="Custos Fixos - Salários e Pró-labore">Salários e Pró-labore</option>
+                  <option value="Custos Fixos - Limpeza e Manutenção">Limpeza e Manutenção</option>
+                  <option value="Custos Fixos - Serviços Profissionais (Contabilidade, etc.)">Serviços Profissionais</option>
+                  <option value="Custos Fixos - Tarifas Bancárias">Tarifas Bancárias</option>
+                </optgroup>
+                <optgroup label="Custos Variáveis">
+                  <option value="Custos Variáveis - Estoque e Produtos de Uso">Estoque e Produtos de Uso</option>
+                  <option value="Custos Variáveis - Comissão de Profissionais">Comissão de Profissionais</option>
+                  <option value="Custos Variáveis - Impostos e Taxas">Impostos e Taxas</option>
+                  <option value="Custos Variáveis - Embalagens e Descartáveis">Embalagens e Descartáveis</option>
+                  <option value="Custos Variáveis - Eventos e Treinamentos">Eventos e Treinamentos</option>
+                  <option value="Custos Variáveis - Outras Despesas Variáveis">Outras Despesas Variáveis</option>
+                </optgroup>
+              </select>
             </div>
 
             <div className="form-group" style={{ marginTop: 12 }}>

@@ -1,0 +1,9 @@
+# O Jon que Cortou — Studio do Jon
+Salão especializado em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçara), liderado pelo especialista Jonatan Junior.
+
+## Rotas Principais
+- Sobre o Jon: https://www.ojonquecortou.com.br/sobre
+- Serviços e Valores: https://www.ojonquecortou.com.br/servicos
+- Método Leitura de Fio: https://www.ojonquecortou.com.br/metodo
+- Perguntas Frequentes (FAQ): https://www.ojonquecortou.com.br/faq
+- Blog e Artigos: https://www.ojonquecortou.com.br/blog

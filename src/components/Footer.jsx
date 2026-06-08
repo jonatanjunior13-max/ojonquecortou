@@ -37,13 +37,17 @@ function Footer() {
           </div>
 
           <div>
-            <h4>Contato</h4>
-            <ul>
-              <li><a href="https://wa.me/553135866673" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
-              <li><a href="https://instagram.com/ojonquecortou" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-              <li><a href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+-+Especialista+em+Cachos" target="_blank" rel="noopener noreferrer">Caiçara · BH</a></li>
-              <li><a href="/agendar">Agendar</a></li>
-            </ul>
+            <h4>Contato & Endereço</h4>
+            <p style={{ color: "var(--muted)", fontSize: "14px", lineHeight: "1.5", margin: "0 0 10px 0" }}>
+              <strong>O Jon que Cortou — Studio do Jon</strong><br />
+              Rua Francisco Ovídio, 184<br />
+              Caiçara, Belo Horizonte - MG<br />
+              Telefone: (31) 3586-6673
+            </p>
+            <p style={{ color: "var(--muted)", fontSize: "14.5px", lineHeight: "1.5", margin: 0 }}>
+              Terça a Sexta: 9h às 19h<br />
+              Sábado: 9h às 17h
+            </p>
           </div>
         </div>
 
