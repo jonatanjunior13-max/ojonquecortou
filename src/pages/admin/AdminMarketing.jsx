@@ -1233,13 +1233,13 @@ const AdminMarketing = () => {
                             return;
                           }
 
-                          const BATCH_SIZE = 5;
-                          const BATCH_DELAY = 60000;
-                          const INDIVIDUAL_DELAY = 15000;
+                          const BATCH_SIZE = 10;
+                          const BATCH_DELAY = 2000;
+                          const INDIVIDUAL_DELAY = 150;
                           
                           const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
 
-                          if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos via SMTP/Titan?\n\nConfiguração de Proteção (SMTP):\n- Intervalo: ${INDIVIDUAL_DELAY/1000}s\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.`)) return;
+                          if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos via Resend?\n\nConfiguração de Proteção (Resend):\n- Intervalo: ${INDIVIDUAL_DELAY}ms\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.`)) return;
                           
                           setEmailProgressTotal(total);
                           setEmailProgressCount(0);
@@ -1247,7 +1247,7 @@ const AdminMarketing = () => {
                           cancelSendingRef.current = false;
                           const logTime = () => new Date().toLocaleTimeString('pt-BR');
                           setEmailLogs([
-                            `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL via SMTP (E-mail 1)`,
+                            `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL via Resend (E-mail 1)`,
                             `[${logTime()}] Alvos válidos: ${total} | Tempo estimado: ~${estTimeMinutes} min`
                           ]);
 
@@ -1291,20 +1291,15 @@ const AdminMarketing = () => {
                             count++;
                             setEmailProgressCount(count);
                             if (count < total) {
-                              // Proteção Titan SMTP
                               if (count % BATCH_SIZE === 0) {
-                                setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Pausa anti-spam de ${BATCH_DELAY/1000}s...`]);
+                                setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Pausa de segurança de ${BATCH_DELAY/1000}s...`]);
                                 const delaySteps = BATCH_DELAY / 1000;
                                 for (let s = 0; s < delaySteps; s++) {
                                   if (cancelSendingRef.current) break;
                                   await new Promise(r => setTimeout(r, 1000));
                                 }
                               } else {
-                                const delaySteps = INDIVIDUAL_DELAY / 1000;
-                                for (let s = 0; s < delaySteps; s++) {
-                                  if (cancelSendingRef.current) break;
-                                  await new Promise(r => setTimeout(r, 1000));
-                                }
+                                await new Promise(r => setTimeout(r, INDIVIDUAL_DELAY));
                               }
                             }
                           }
