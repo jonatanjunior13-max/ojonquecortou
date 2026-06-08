@@ -13,7 +13,9 @@ if (!fs.existsSync(templatePath)) {
   process.exit(1);
 }
 
-const template = fs.readFileSync(templatePath, 'utf-8');
+const buildVersion = `build_${new Date().toISOString().replace(/[-:T.]/g, '').substring(0, 12)}`;
+console.log(`Prerender: Replacing BUILD_TIMESTAMP with ${buildVersion}`);
+const template = fs.readFileSync(templatePath, 'utf-8').replace('BUILD_TIMESTAMP', buildVersion);
 
 // Helper to replace or add a meta tag in the HTML head
 function replaceOrAddMeta(html, nameOrProperty, content, isProperty = false) {
