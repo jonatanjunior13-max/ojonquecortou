@@ -48,17 +48,18 @@ export default async function handler(req, res) {
 
     // Data de hoje (YYYY-MM-DD no Brasil)
     const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hour12: false });
-    const parts = formatter.formatToParts(new Date());
+    const now = new Date();
+    const parts = formatter.formatToParts(now);
     const day = parts.find(p => p.type === 'day').value;
     const month = parts.find(p => p.type === 'month').value;
     const year = parts.find(p => p.type === 'year').value;
     const hour = parts.find(p => p.type === 'hour').value;
     const todayStr = `${year}-${month}-${day}`;
 
-    // Calcular data de amanhã (para o lembrete 24h por e-mail)
-    const tomorrowDate = new Date();
-    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-    const tomParts = formatter.formatToParts(tomorrowDate);
+    // Calcular data de amanhã (para o lembrete 24h por e-mail) de forma segura contra fusos horários
+    const todayBr = new Date(Date.UTC(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10), 12, 0, 0));
+    const tomorrowBr = new Date(todayBr.getTime() + 24 * 60 * 60 * 1000);
+    const tomParts = formatter.formatToParts(tomorrowBr);
     const tomDay = tomParts.find(p => p.type === 'day').value;
     const tomMonth = tomParts.find(p => p.type === 'month').value;
     const tomYear = tomParts.find(p => p.type === 'year').value;

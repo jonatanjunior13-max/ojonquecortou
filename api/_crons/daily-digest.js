@@ -39,25 +39,41 @@ function formatBrDate(dateStr) {
 }
 
 function getTomorrowInBrasilia() {
+  const now = new Date();
   const formatter = new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     year: 'numeric', month: '2-digit', day: '2-digit'
   });
-  const now = new Date();
-  // tomorrow in Brasilia time
-  const tomorrowBr = new Date(now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-  tomorrowBr.setDate(tomorrowBr.getDate() + 1);
-  const parts = formatter.formatToParts(tomorrowBr);
-  const day = parts.find(p => p.type === 'day').value;
-  const month = parts.find(p => p.type === 'month').value;
-  const year = parts.find(p => p.type === 'year').value;
+  const parts = formatter.formatToParts(now);
+  const day = parseInt(parts.find(p => p.type === 'day').value, 10);
+  const month = parseInt(parts.find(p => p.type === 'month').value, 10) - 1;
+  const year = parseInt(parts.find(p => p.type === 'year').value, 10);
+  
+  // Construct a date at 12:00 PM today in UTC to avoid daylight saving and timezone shift issues, then add 1 day
+  const todayBr = new Date(Date.UTC(year, month, day, 12, 0, 0));
+  const tomorrowBr = new Date(todayBr.getTime() + 24 * 60 * 60 * 1000);
+  
+  const tomorrowParts = formatter.formatToParts(tomorrowBr);
+  const tomorrowDay = tomorrowParts.find(p => p.type === 'day').value;
+  const tomorrowMonth = tomorrowParts.find(p => p.type === 'month').value;
+  const tomorrowYear = tomorrowParts.find(p => p.type === 'year').value;
+  
+  const weekdayFormatter = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    weekday: 'long'
+  });
+  let weekdayName = weekdayFormatter.format(tomorrowBr);
+  weekdayName = weekdayName.charAt(0).toUpperCase() + weekdayName.slice(1);
+  
+  const monthName = ptMonthShort(parseInt(tomorrowMonth, 10) - 1);
+  
   return {
-    isoStr: `${year}-${month}-${day}`,
-    display: `${ptWeekday(tomorrowBr)}, ${parseInt(day)} de ${ptMonthShort(parseInt(month, 10) - 1)} de ${year}`,
-    dayNumber: parseInt(day),
-    monthName: ptMonthShort(parseInt(month, 10) - 1),
-    year,
-    weekday: ptWeekday(tomorrowBr),
+    isoStr: `${tomorrowYear}-${tomorrowMonth}-${tomorrowDay}`,
+    display: `${weekdayName}, ${parseInt(tomorrowDay, 10)} de ${monthName} de ${tomorrowYear}`,
+    dayNumber: parseInt(tomorrowDay, 10),
+    monthName,
+    year: tomorrowYear,
+    weekday: weekdayName,
     jsDate: tomorrowBr
   };
 }
