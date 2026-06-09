@@ -1470,6 +1470,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   {selectedCategory === 'Pacotes' ? (
                     packages.map(pkg => {
                       const isSelected = selectedPackageTemplate?.id === pkg.id;
+                      const pkgOriginalTotal = pkg.services ? pkg.services.reduce((sum, item) => {
+                        const sObj = services.find(s => s.id === item.serviceId);
+                        const price = sObj ? (Number(sObj.price) || 0) : 0;
+                        return sum + (price * item.sessions);
+                      }, 0) : 0;
                       return (
                         <div 
                           key={pkg.id} 
@@ -1494,10 +1499,27 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             </div>
                           </div>
                           <h3 className="booking-service-title">{pkg.name}</h3>
-                          <div className="booking-service-price-row">
-                            <span className="booking-service-price">
-                              R$ {Number(pkg.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </span>
+                          <div className="booking-service-price-row" style={{ display: 'flex', flexDirection: 'column', gap: '2px', alignItems: 'flex-start' }}>
+                            {pkgOriginalTotal > pkg.price && (
+                              <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--muted)' }}>
+                                De R$ {pkgOriginalTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </span>
+                            )}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span className="booking-service-price" style={{ color: 'var(--accent)' }}>
+                                R$ {Number(pkg.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                              </span>
+                              {pkgOriginalTotal > pkg.price && (
+                                <span className="booking-service-tag-discount" style={{ background: 'rgba(140,80,39,0.15)', color: 'var(--accent)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                                  -{(100 - (pkg.price * 100 / pkgOriginalTotal)).toFixed(0)}% OFF
+                                </span>
+                              )}
+                            </div>
+                            {pkgOriginalTotal > pkg.price && (
+                              <span style={{ fontSize: '0.75rem', color: 'var(--accent)', fontWeight: 'bold' }}>
+                                Economia de R$ {(pkgOriginalTotal - pkg.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}!
+                              </span>
+                            )}
                           </div>
                           <p className="booking-service-desc">{pkg.description}</p>
                           <div style={{ marginTop: '12px', borderTop: '1px solid var(--rule)', paddingTop: '8px' }}>

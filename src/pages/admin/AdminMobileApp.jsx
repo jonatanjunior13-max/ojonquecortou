@@ -3913,14 +3913,32 @@ ${googleLink}
               {packages.length === 0 ? (
                 <div className="mobile-empty-state">Nenhum modelo de pacote cadastrado. Cadastre no painel web.</div>
               ) : (
-                packages.map(p => (
-                  <div key={p.id} className="service-card-compact" style={{ padding: 12, background: '#fff', borderRadius: 8, border: '1px solid var(--mobile-border)' }}>
-                    <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                      <strong style={{ fontSize: '0.95rem', color: '#1a202c' }}>{p.name}</strong>
-                      <span style={{ fontWeight: 'bold', color: 'var(--mobile-green)', fontSize: '0.9rem' }}>
-                        R$ {p.price.toFixed(2).replace('.', ',')}
-                      </span>
-                    </div>
+                packages.map(p => {
+                  const pkgOriginalTotal = p.services ? p.services.reduce((sum, item) => {
+                    const sObj = services.find(s => s.id === item.serviceId);
+                    const price = sObj ? (Number(sObj.price) || 0) : 0;
+                    return sum + (price * item.sessions);
+                  }, 0) : 0;
+                  return (
+                    <div key={p.id} className="service-card-compact" style={{ padding: 12, background: '#fff', borderRadius: 8, border: '1px solid var(--mobile-border)' }}>
+                      <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+                        <strong style={{ fontSize: '0.95rem', color: '#1a202c', flex: 1, paddingRight: '8px' }}>{p.name}</strong>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                          {pkgOriginalTotal > p.price && (
+                            <span style={{ fontSize: '0.75rem', textDecoration: 'line-through', color: '#a0aec0', marginBottom: '1px' }}>
+                              R$ {pkgOriginalTotal.toFixed(2).replace('.', ',')}
+                            </span>
+                          )}
+                          <span style={{ fontWeight: 'bold', color: 'var(--mobile-green)', fontSize: '0.9rem' }}>
+                            R$ {p.price.toFixed(2).replace('.', ',')}
+                          </span>
+                          {pkgOriginalTotal > p.price && (
+                            <span style={{ fontSize: '0.7rem', color: 'var(--mobile-green)', fontWeight: '600', marginTop: '2px' }}>
+                              Salva R$ {(pkgOriginalTotal - p.price).toFixed(2).replace('.', ',')}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     {p.description && (
                       <p style={{ margin: '0 0 8px 0', fontSize: '0.78rem', color: '#718096', lineHeight: 1.4 }}>{p.description}</p>
                     )}
@@ -3937,7 +3955,8 @@ ${googleLink}
                       })}
                     </div>
                   </div>
-                ))
+                );
+              })
               )}
             </div>
           ) : (

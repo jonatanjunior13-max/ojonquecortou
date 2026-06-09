@@ -47,6 +47,12 @@ const AdminServices = () => {
     services: [] // array of { serviceId, serviceName, sessions }
   });
 
+  const packageFormOriginalTotal = packageForm.services ? packageForm.services.reduce((sum, item) => {
+    const sObj = services.find(s => s.id === item.serviceId);
+    const price = sObj ? (Number(sObj.price) || 0) : 0;
+    return sum + (price * item.sessions);
+  }, 0) : 0;
+
   useEffect(() => {
     let unsubscribe;
     let timedOut = false;
@@ -687,35 +693,52 @@ const AdminServices = () => {
             </div>
           ) : (
             <div className="services-catalog-grid">
-              {packages.map((pkg) => (
-                <div key={pkg.id} className="service-catalog-card featured">
-                  <div className="card-top-decoration">
-                    <span className="service-category-tag">Pacote</span>
-                    <span className="service-badge highlight"><Sparkles size={11} /> Promocional</span>
-                  </div>
-                  <div className="service-card-body">
-                    <h3 className="service-card-title">{pkg.name}</h3>
-                    <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: '4px 0 12px' }}>
-                      {pkg.description || 'Sem descrição.'}
-                    </p>
-                    <div className="package-services-list" style={{ background: 'rgba(0,0,0,0.15)', padding: '10px', borderRadius: '6px', fontSize: '0.9rem' }}>
-                      <strong style={{ display: 'block', marginBottom: '6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Itens inclusos:</strong>
-                      <ul style={{ paddingLeft: '16px', margin: 0 }}>
-                        {pkg.services.map((item, idx) => (
-                          <li key={idx} style={{ marginBottom: '4px', color: 'var(--text)' }}>
-                            {item.sessions}x {item.serviceName}
-                          </li>
-                        ))}
-                      </ul>
+              {packages.map((pkg) => {
+                const pkgOriginalTotal = pkg.services ? pkg.services.reduce((sum, item) => {
+                  const sObj = services.find(s => s.id === item.serviceId);
+                  const price = sObj ? (Number(sObj.price) || 0) : 0;
+                  return sum + (price * item.sessions);
+                }, 0) : 0;
+
+                return (
+                  <div key={pkg.id} className="service-catalog-card featured">
+                    <div className="card-top-decoration">
+                      <span className="service-category-tag">Pacote</span>
+                      <span className="service-badge highlight"><Sparkles size={11} /> Promocional</span>
                     </div>
-                  </div>
-                  <div className="service-card-footer" style={{ borderTop: '1px solid var(--rule)', paddingTop: '12px', marginTop: '12px' }}>
-                    <div className="service-pricing-area">
-                      <span className="pricing-label">Valor do Combo</span>
-                      <span className="price-standard-value">
-                        <strong>R$ {pkg.price.toFixed(2)}</strong>
-                      </span>
+                    <div className="service-card-body">
+                      <h3 className="service-card-title">{pkg.name}</h3>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: '4px 0 12px' }}>
+                        {pkg.description || 'Sem descrição.'}
+                      </p>
+                      <div className="package-services-list" style={{ background: 'rgba(0,0,0,0.15)', padding: '10px', borderRadius: '6px', fontSize: '0.9rem' }}>
+                        <strong style={{ display: 'block', marginBottom: '6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Itens inclusos:</strong>
+                        <ul style={{ paddingLeft: '16px', margin: 0 }}>
+                          {pkg.services.map((item, idx) => (
+                            <li key={idx} style={{ marginBottom: '4px', color: 'var(--text)' }}>
+                              {item.sessions}x {item.serviceName}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
+                    <div className="service-card-footer" style={{ borderTop: '1px solid var(--rule)', paddingTop: '12px', marginTop: '12px' }}>
+                      <div className="service-pricing-area" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
+                        <span className="pricing-label">Valor do Combo</span>
+                        {pkgOriginalTotal > pkg.price && (
+                          <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--muted)' }}>
+                            De R$ {pkgOriginalTotal.toFixed(2).replace('.', ',')}
+                          </span>
+                        )}
+                        <span className="price-standard-value" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>
+                          Por R$ {pkg.price.toFixed(2).replace('.', ',')}
+                        </span>
+                        {pkgOriginalTotal > pkg.price && (
+                          <span style={{ fontSize: '0.8rem', color: 'var(--accent)', fontWeight: 'bold' }}>
+                            Economia de R$ {(pkgOriginalTotal - pkg.price).toFixed(2).replace('.', ',')}!
+                          </span>
+                        )}
+                      </div>
                     <div className="service-card-actions">
                       <button 
                         className="action-btn edit" 
@@ -734,7 +757,8 @@ const AdminServices = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              );
+            })}
             </div>
           )}
         </div>
@@ -783,6 +807,18 @@ const AdminServices = () => {
                   value={packageForm.price}
                   onChange={e => setPackageForm(prev => ({ ...prev, price: e.target.value }))}
                 />
+              </div>
+              
+              <div className="form-group-sleek" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>Valor Original Somado:</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 'bold', textDecoration: packageFormOriginalTotal > 0 ? 'line-through' : 'none', color: 'var(--text)' }}>
+                  R$ {packageFormOriginalTotal.toFixed(2).replace('.', ',')}
+                </span>
+                {packageFormOriginalTotal > Number(packageForm.price || 0) && (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 'bold', marginTop: '4px' }}>
+                    Economia de R$ {(packageFormOriginalTotal - Number(packageForm.price || 0)).toFixed(2).replace('.', ',')} ({(100 - (Number(packageForm.price || 0) * 100 / packageFormOriginalTotal)).toFixed(0)}% OFF)!
+                  </span>
+                )}
               </div>
             </div>
 
