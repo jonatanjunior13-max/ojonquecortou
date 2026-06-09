@@ -1,6 +1,11 @@
 .service-detail-page {
-  background-color: var(--color-background, #EFE5D2);
-  color: var(--color-text, #1A1310);
+  --color-background: #EFE5D2;
+  --color-surface: #FAF5E8;
+  --color-text: #1A1310;
+  --color-accent: #B05A2E;
+
+  background-color: var(--color-background);
+  color: var(--color-text);
   min-height: 100vh;
 }
 
