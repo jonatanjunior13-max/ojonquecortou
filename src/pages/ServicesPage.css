@@ -13,10 +13,10 @@
 
 .filter-btn {
   padding: 0.6rem 1.5rem;
-  border: 2px solid var(--color-dark);
+  border: 2px solid var(--color-border);
   border-radius: var(--radius);
   background: var(--color-surface);
-  color: var(--color-dark);
+  color: var(--color-text-secondary);
   font-size: 0.8rem;
   font-weight: 800;
   text-transform: uppercase;
