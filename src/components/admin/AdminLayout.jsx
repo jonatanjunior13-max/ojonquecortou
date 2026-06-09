@@ -453,7 +453,7 @@ const AdminLayout = () => {
                location.pathname.includes('/servicos') ? "Servi\u00e7os do Sal\u00e3o" :
                location.pathname.includes('/estoque') ? "Controle de Estoque" :
                location.pathname.includes('/financeiro') ? "Movimenta\u00e7\u00e3o & Fluxo de Caixa" :
-               location.pathname.includes('/marketing') ? "Fidelidade & Cupons" :
+               location.pathname.includes('/marketing') ? "Campanhas & CRM" :
                location.pathname.includes('/configuracoes') ? "Configura\u00e7\u00f5es do Estabelecimento" : "Agenda do Studio"}
             </div>
 
@@ -462,7 +462,7 @@ const AdminLayout = () => {
                 <Search size={14} className="search-icon" />
                 <input 
                   type="text" 
-                  placeholder="Buscar função (ex: comissão, cupons)..." 
+                  placeholder="Buscar função (ex: comissão, campanhas)..." 
                   value={searchQuery}
                   onChange={e => {
                     setSearchQuery(e.target.value);
