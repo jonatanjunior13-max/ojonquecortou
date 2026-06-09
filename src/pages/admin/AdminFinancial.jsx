@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
-import { collection, doc, addDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { 
   Plus, Trash2, DollarSign, TrendingUp, TrendingDown, CreditCard, 
   Users, Percent, ShieldCheck, Calendar, Download, Filter, 
-  FileText, ShoppingBag, Eye, Settings, HelpCircle, ArrowUpRight 
+  FileText, ShoppingBag, Eye, Settings, HelpCircle, ArrowUpRight,
+  Search, Edit3
 } from 'lucide-react';
 import './Admin.css';
 
@@ -79,12 +80,20 @@ const AdminFinancial = () => {
   const [ledgerTypeFilter, setLedgerTypeFilter] = useState('todos'); // 'todos', 'servico', 'produto', 'saida'
   const [ledgerMethodFilter, setLedgerMethodFilter] = useState('todos');
 
+  // Packages Management states
+  const [packageSearch, setPackageSearch] = useState('');
+  const [packageStatusFilter, setPackageStatusFilter] = useState('todos'); // 'todos', 'active', 'finished', 'pending_payment'
+  const [editingClientPackage, setEditingClientPackage] = useState(null);
+  const [editingBalanceForm, setEditingBalanceForm] = useState({});
+
   // Get data from global context
   const dbTransactions = useMemo(() => globalData.financial_transactions || [], [globalData.financial_transactions]);
   const dbBookings = useMemo(() => globalData.bookings || [], [globalData.bookings]);
   const products = useMemo(() => globalData.products || [], [globalData.products]);
   const services = useMemo(() => globalData.services || [], [globalData.services]);
   const settings = useMemo(() => globalData.settings || {}, [globalData.settings]);
+  const clientPackages = useMemo(() => globalData.client_packages || [], [globalData.client_packages]);
+  const packages = useMemo(() => globalData.packages || [], [globalData.packages]);
   const isDemoMode = !db;
 
   // Professionals list from settings
@@ -183,6 +192,7 @@ const AdminFinancial = () => {
     };
 
     const m = (method || '').toLowerCase();
+    if (val === 0 || m.includes('pacote')) return 0;
     let rate = 0;
 
     if (m === 'pix') {
@@ -1111,6 +1121,9 @@ const AdminFinancial = () => {
         <button className={`tab-btn ${activeSubTab === 'taxas' ? 'active' : ''}`} onClick={() => setActiveSubTab('taxas')}>
           <Percent size={16} /> Configurar Taxas
         </button>
+        <button className={`tab-btn ${activeSubTab === 'pacotes' ? 'active' : ''}`} onClick={() => setActiveSubTab('pacotes')}>
+          <Eye size={16} /> Controle de Pacotes
+        </button>
       </div>
 
       {/* SUBTAB: DASHBOARD DE GRÁFICOS */}
@@ -1825,6 +1838,203 @@ const AdminFinancial = () => {
         </div>
       )}
 
+      {/* SUBTAB: CONTROLE DE PACOTES */}
+      {activeSubTab === 'pacotes' && (() => {
+        // Compute dashboard metrics
+        const activeCount = clientPackages.filter(cp => cp.status === 'active').length;
+        const totalRevenue = clientPackages.reduce((acc, cp) => acc + (Number(cp.pricePaid) || 0), 0);
+        const remainingCredits = clientPackages.reduce((acc, cp) => {
+          if (cp.status !== 'active') return acc;
+          return acc + Object.values(cp.balance || {}).reduce((sum, val) => sum + val, 0);
+        }, 0);
+
+        // Filter purchased packages
+        const filteredPackages = clientPackages.filter(cp => {
+          const matchesSearch = 
+            (cp.clientName || '').toLowerCase().includes(packageSearch.toLowerCase()) ||
+            (cp.clientPhone || '').includes(packageSearch) ||
+            (cp.packageName || '').toLowerCase().includes(packageSearch.toLowerCase());
+          
+          const matchesStatus = packageStatusFilter === 'todos' || cp.status === packageStatusFilter;
+
+          return matchesSearch && matchesStatus;
+        });
+
+        const handleOpenEditBalance = (cp) => {
+          setEditingClientPackage(cp);
+          setEditingBalanceForm(cp.balance || {});
+        };
+
+        const handleDeleteClientPackage = async (id) => {
+          if (!confirm('Deseja realmente excluir este pacote do cliente? Isso removerá o saldo de créditos associado.')) return;
+          
+          try {
+            if (isDemoMode || !db) {
+              const local = localStorage.getItem('demo_client_packages');
+              const current = local ? JSON.parse(local) : [];
+              const next = current.filter(cp => cp.id !== id);
+              localStorage.setItem('demo_client_packages', JSON.stringify(next));
+              setGlobalData(prev => ({ ...prev, client_packages: next }));
+            } else {
+              await deleteDoc(doc(db, 'client_packages', id));
+            }
+          } catch (err) {
+            console.error('Erro ao remover pacote do cliente:', err);
+            alert('Não foi possível excluir o pacote.');
+          }
+        };
+
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* Quick Metrics */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
+                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Pacotes Ativos</h3>
+                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--ink)' }}>{activeCount}</div>
+              </div>
+              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
+                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Total Gerada</h3>
+                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: '#2f855a' }}>
+                  R$ {totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+              </div>
+              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
+                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Sessões Restantes</h3>
+                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--accent)' }}>{remainingCredits} sessões</div>
+              </div>
+            </div>
+
+            {/* List & Filters Card */}
+            <div className="financial-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <h3 style={{ margin: 0 }}>Histórico de Pacotes Adquiridos</h3>
+              </div>
+
+              {/* Filters */}
+              <div className="ledger-filters" style={{ marginBottom: 16 }}>
+                <div style={{ position: 'relative', flexGrow: 1, minWidth: '220px' }}>
+                  <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)' }} />
+                  <input 
+                    type="text" 
+                    placeholder="Buscar por cliente, telefone ou pacote..." 
+                    value={packageSearch}
+                    onChange={e => setPackageSearch(e.target.value)}
+                    style={{ paddingLeft: 36, width: '100%' }}
+                  />
+                </div>
+                
+                <select value={packageStatusFilter} onChange={e => setPackageStatusFilter(e.target.value)}>
+                  <option value="todos">Todos os Status</option>
+                  <option value="active">Ativos</option>
+                  <option value="finished">Finalizados</option>
+                  <option value="pending_payment">Aguardando Pagamento</option>
+                </select>
+              </div>
+
+              {/* Table */}
+              <div className="admin-table-container">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Pacote</th>
+                      <th>Data de Compra</th>
+                      <th>Valor Pago</th>
+                      <th>Saldo de Créditos</th>
+                      <th>Status</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredPackages.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>
+                          Nenhum pacote de cliente corresponde aos filtros atuais.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredPackages.map(cp => {
+                        const totalCredits = Object.values(cp.balance || {}).reduce((sum, val) => sum + val, 0);
+                        return (
+                          <tr key={cp.id}>
+                            <td>
+                              <div style={{ fontWeight: 600 }}>{cp.clientName}</div>
+                              <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{cp.clientPhone || 'Sem telefone'}</div>
+                            </td>
+                            <td>
+                              <div style={{ fontWeight: 600 }}>{cp.packageName}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Cód: {cp.packageId}</div>
+                            </td>
+                            <td>{cp.datePurchased ? cp.datePurchased.split('-').reverse().join('/') : 'N/A'}</td>
+                            <td style={{ fontWeight: 'bold', color: '#2f855a' }}>
+                              R$ {(Number(cp.pricePaid) || 0).toFixed(2)}
+                              <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 'normal' }}>
+                                {cp.paymentMethod || 'N/A'}
+                              </span>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                {Object.keys(cp.balance || {}).map(srvId => {
+                                  const srvObj = services.find(s => s.id === srvId);
+                                  const srvName = srvObj ? srvObj.name : srvId;
+                                  const rem = cp.balance[srvId];
+                                  return (
+                                    <div key={srvId} style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+                                      <span style={{ color: 'var(--ink)' }}>{srvName}</span>
+                                      <span style={{ fontWeight: 'bold', color: rem > 0 ? 'var(--accent)' : 'var(--muted)' }}>
+                                        {rem} sessões
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                                {totalCredits === 0 && (
+                                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+                                    Créditos esgotados
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td>
+                              <span className={`status-badge ${
+                                cp.status === 'active' ? 'confirmado' : 
+                                cp.status === 'finished' ? 'finalizado' : 'pendente'
+                              }`}>
+                                {cp.status === 'active' ? 'Ativo' : 
+                                 cp.status === 'finished' ? 'Finalizado' : 'Pendente'}
+                              </span>
+                            </td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 8 }}>
+                                <button 
+                                  className="btn btn-ghost" 
+                                  style={{ padding: 6 }} 
+                                  onClick={() => handleOpenEditBalance(cp)}
+                                  title="Ajustar créditos manualmente"
+                                >
+                                  <Edit3 size={14} />
+                                </button>
+                                <button 
+                                  className="btn btn-ghost" 
+                                  style={{ padding: 6, color: 'var(--accent)' }} 
+                                  onClick={() => handleDeleteClientPackage(cp.id)}
+                                  title="Remover pacote"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* MODAL: REGISTRAR VENDA DE PRODUTO */}
       {showProductSaleModal && (
         <div className="modal-overlay">
@@ -1886,7 +2096,15 @@ const AdminFinancial = () => {
                 <label>Forma de Recebimento *</label>
                 <select 
                   value={productSaleForm.paymentMethod}
-                  onChange={e => setProductSaleForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                  onChange={e => {
+                    const method = e.target.value;
+                    const isCard = method.includes('Cartão') || method.includes('Crédito');
+                    setProductSaleForm(prev => ({ 
+                      ...prev, 
+                      paymentMethod: method,
+                      applyAnticipation: isCard ? true : false
+                    }));
+                  }}
                 >
                   <option value="Pix">Pix</option>
                   <option value="Dinheiro">Dinheiro</option>
@@ -2043,6 +2261,83 @@ const AdminFinancial = () => {
           </form>
         </div>
       )}
+
+      {/* MODAL: AJUSTAR SALDO DE CRÉDITOS MANUALMENTE */}
+      {editingClientPackage && (() => {
+        const handleSaveClientPackageBalance = async (e) => {
+          e.preventDefault();
+          if (!editingClientPackage) return;
+          
+          const isFinished = Object.values(editingBalanceForm).every(val => Number(val) === 0);
+          const updatedCp = {
+            ...editingClientPackage,
+            balance: Object.keys(editingBalanceForm).reduce((acc, key) => {
+              acc[key] = Math.max(0, Number(editingBalanceForm[key]));
+              return acc;
+            }, {}),
+            status: isFinished ? 'finished' : 'active'
+          };
+
+          try {
+            if (isDemoMode || !db) {
+              const local = localStorage.getItem('demo_client_packages');
+              const current = local ? JSON.parse(local) : [];
+              const next = current.map(cp => cp.id === updatedCp.id ? updatedCp : cp);
+              localStorage.setItem('demo_client_packages', JSON.stringify(next));
+              setGlobalData(prev => ({ ...prev, client_packages: next }));
+            } else {
+              const cpRef = doc(db, 'client_packages', updatedCp.id);
+              await updateDoc(cpRef, {
+                balance: updatedCp.balance,
+                status: updatedCp.status
+              });
+            }
+            setEditingClientPackage(null);
+          } catch (err) {
+            console.error('Erro ao salvar saldo do pacote:', err);
+            alert('Não foi possível salvar as alterações.');
+          }
+        };
+
+        return (
+          <div className="modal-overlay">
+            <form className="modal-content" onSubmit={handleSaveClientPackageBalance}>
+              <h3>Ajustar Saldo de Créditos</h3>
+              <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: 16 }}>
+                Ajuste manualmente a quantidade de sessões restantes para cada serviço do pacote de <strong>{editingClientPackage.clientName}</strong>.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 20 }}>
+                {Object.keys(editingClientPackage.balance || {}).map(srvId => {
+                  const srvObj = services.find(s => s.id === srvId);
+                  const srvName = srvObj ? srvObj.name : srvId;
+                  return (
+                    <div key={srvId} className="form-group">
+                      <label style={{ display: 'block', marginBottom: 4, fontWeight: 600 }}>{srvName}</label>
+                      <input 
+                        type="number" 
+                        min="0"
+                        required
+                        value={editingBalanceForm[srvId] ?? 0}
+                        onChange={e => setEditingBalanceForm({
+                          ...editingBalanceForm,
+                          [srvId]: Math.max(0, Number(e.target.value))
+                        })}
+                        style={{ width: '100%', padding: '10px', borderRadius: 4, border: '1px solid var(--rule)' }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12 }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setEditingClientPackage(null)}>Cancelar</button>
+                <button type="submit" className="btn btn-accent" style={{ background: '#48bb78', borderColor: '#48bb78' }}>Salvar Alterações</button>
+              </div>
+            </form>
+          </div>
+        );
+      })()}
     </div>
   );
 };

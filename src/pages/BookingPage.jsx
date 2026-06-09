@@ -115,6 +115,39 @@ const BookingPage = () => {
   const [settings, setSettings] = useState(null);
   const [selectedProfessional, setSelectedProfessional] = useState(null);
 
+  // Packages integration states
+  const [packages, setPackages] = useState([]);
+  const [clientPackages, setClientPackages] = useState([]);
+  const [selectedPackageTemplate, setSelectedPackageTemplate] = useState(null);
+  const [usingPackageCredit, setUsingPackageCredit] = useState(false);
+  const [usingClientPackageId, setUsingClientPackageId] = useState('');
+  const [activePackageCredit, setActivePackageCredit] = useState(null);
+
+  const checkPackageCredits = (phone, email, service) => {
+    if (!service) return;
+    const cleanPhone = (phone || '').replace(/\D/g, '');
+    const cleanEmail = (email || '').trim().toLowerCase();
+    
+    // Find active purchased packages for this client with remaining credits for this service
+    const matched = clientPackages.find(cp => {
+      if (cp.status !== 'active') return false;
+      const isOwner = 
+        (cleanPhone && cp.clientPhone?.replace(/\D/g, '') === cleanPhone) ||
+        (cleanEmail && cp.clientEmail?.toLowerCase() === cleanEmail);
+      
+      return isOwner && cp.balance && cp.balance[service.id] > 0;
+    });
+
+    setActivePackageCredit(matched || null);
+    if (matched) {
+      setUsingPackageCredit(true);
+      setUsingClientPackageId(matched.id);
+    } else {
+      setUsingPackageCredit(false);
+      setUsingClientPackageId('');
+    }
+  };
+
   // Auto-scroll to top on step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -374,6 +407,7 @@ const BookingPage = () => {
           notes: profile.observacoes || prev.notes || '',
         }));
         setExistingProfile(profile);
+        checkPackageCredits(profile.phone, profile.email, selectedService);
 
         // Fetch this client's bookings
         try {
@@ -489,6 +523,7 @@ const BookingPage = () => {
         } else {
           setAuthMode('register');
         }
+        checkPackageCredits(matchedProfile.phone, matchedProfile.email, selectedService);
       } else {
         setExistingProfile(null);
         setAuthMode(null);
@@ -778,6 +813,32 @@ const BookingPage = () => {
       }
     };
     fetchServices();
+  }, []);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      if (!db) {
+        setPackages(JSON.parse(localStorage.getItem('demo_packages') || '[]'));
+        setClientPackages(JSON.parse(localStorage.getItem('demo_client_packages') || '[]'));
+        return;
+      }
+      try {
+        const snap = await getDocs(collection(db, 'packages'));
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+        setPackages(list);
+
+        const snapCp = await getDocs(collection(db, 'client_packages'));
+        const listCp = [];
+        snapCp.forEach(d => listCp.push({ id: d.id, ...d.data() }));
+        setClientPackages(listCp);
+      } catch (err) {
+        console.warn('Erro ao carregar pacotes:', err);
+        setPackages(JSON.parse(localStorage.getItem('demo_packages') || '[]'));
+        setClientPackages(JSON.parse(localStorage.getItem('demo_client_packages') || '[]'));
+      }
+    };
+    fetchPackages();
   }, []);
 
   const dates = getAvailableDates(selectedProfessional);
@@ -1111,7 +1172,11 @@ const BookingPage = () => {
       userId: finalUserId,
       professionalId: selectedProfessional?.id || 'jon',
       profissional: selectedProfessional?.id || 'jon',
-      professionalName: selectedProfessional?.name || 'Jon'
+      professionalName: selectedProfessional?.name || 'Jon',
+      packageId: selectedPackageTemplate ? selectedPackageTemplate.id : null,
+      packageName: selectedPackageTemplate ? selectedPackageTemplate.name : null,
+      usingPackageCredit: usingPackageCredit || false,
+      usingClientPackageId: usingPackageCredit ? usingClientPackageId : null
     };
 
     try {
@@ -1321,11 +1386,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
 
       {/* Indicador de passos */}
       <div className="step-indicator">
-        <div className={`step-dot ${step >= 1 ? 'active' : ''}`} onClick={() => step > 1 && setStep(1)}>1. Serviço</div>
+        <div className={`step-dot ${step >= 1 ? 'active' : ''}`} onClick={() => { if (step > 1) { setSelectedPackageTemplate(null); setStep(1); } }}>1. Serviço</div>
         <div className={`line ${step >= 2 ? 'active' : ''}`}></div>
         <div className={`step-dot ${step >= 2 ? 'active' : ''}`} onClick={() => step > 2 && setStep(2)}>2. Horário</div>
         <div className={`line ${step >= 3 ? 'active' : ''}`}></div>
-        <div className={`step-dot ${step >= 3 ? 'active' : ''}`} onClick={() => step > 3 && setStep(3)}>3. Seus Dados</div>
+        <div className={`step-dot ${step >= 3 ? 'active' : ''}`} onClick={() => { if (step > 3) { checkPackageCredits(clientData.phone, clientData.email, selectedService); setStep(3); } }}>3. Seus Dados</div>
       </div>
 
       <div className="booking-card-wrap">
@@ -1333,6 +1398,9 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         {/* PASSO 1: SELEÇÃO DE SERVIÇO */}
         {step === 1 && (() => {
           const categories = ['Todos', ...new Set(services.map(s => s.category || 'Outros'))];
+          if (packages && packages.length > 0) {
+            categories.push('Pacotes');
+          }
           let filteredServices = selectedCategory === 'Todos'
             ? [...services]
             : services.filter(s => (s.category || 'Outros') === selectedCategory);
@@ -1374,6 +1442,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 {categories.map(cat => {
                   const count = cat === 'Todos'
                     ? services.length
+                    : cat === 'Pacotes'
+                    ? packages.length
                     : services.filter(s => (s.category || 'Outros') === cat).length;
                   return (
                     <button
@@ -1390,132 +1460,185 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               </div>
 
               {/* Grid do Catálogo */}
-              {services.length === 0 ? (
+              {services.length === 0 && packages.length === 0 ? (
                 <div className="booking-catalog-loading">
                   <div className="spinner"></div>
                   <p>Buscando nosso menu de serviços...</p>
                 </div>
               ) : (
                 <div className="booking-services-grid">
-                  {filteredServices.map(service => {
-                    const isExpanded = !!expandedDescriptions[service.id];
-                    const hasPromo = !!service.promoPrice;
-                    const isFeatured = !!(service.isPrimary || service.featured);
-                    const isSelected = selectedService?.id === service.id;
-                    const isWaOnly = isWhatsappOnlyService(service);
-                    const { emoji, tagline } = getServiceExtraDetails(service.name);
-                    
-                    return (
-                      <div 
-                        key={service.id} 
-                        className={`booking-service-card ${isSelected ? 'selected' : ''} ${isFeatured ? 'featured' : ''} ${isWaOnly ? 'whatsapp-card' : ''}`}
-                        onClick={(e) => {
-                          if (isWaOnly) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            const text = encodeURIComponent(`Olá! Gostaria de um orçamento para ${service.name}.`);
-                            window.open(`https://wa.me/553135866673?text=${text}`, '_blank');
-                            return;
-                          }
-                          setSelectedService(service);
-                          setStep(2);
-                        }}
-                      >
-                        {/* Linha superior */}
-                        <div className="booking-card-top-decor">
-                          <div className="booking-card-emoji-category">
-                            <span className="booking-service-emoji">{emoji}</span>
-                            <span className="booking-service-category-tag">{service.category || 'Outros'}</span>
+                  {selectedCategory === 'Pacotes' ? (
+                    packages.map(pkg => {
+                      const isSelected = selectedPackageTemplate?.id === pkg.id;
+                      return (
+                        <div 
+                          key={pkg.id} 
+                          className={`booking-service-card ${isSelected ? 'selected' : ''}`}
+                          style={{ borderLeft: '4px solid var(--accent)' }}
+                          onClick={() => {
+                            const firstSrvId = pkg.services?.[0]?.serviceId;
+                            const matchedSrv = services.find(s => s.id === firstSrvId);
+                            if (matchedSrv) {
+                              setSelectedService(matchedSrv);
+                              setSelectedPackageTemplate(pkg);
+                              setStep(2);
+                            } else {
+                              alert('Nenhum serviço válido encontrado no pacote.');
+                            }
+                          }}
+                        >
+                          <div className="booking-card-top-decor">
+                            <div className="booking-card-emoji-category">
+                              <span className="booking-service-emoji">📦</span>
+                              <span className="booking-service-category-tag">Pacote</span>
+                            </div>
                           </div>
-                          <div className="booking-service-badges-row">
-                            {isFeatured && (
-                              <span className="booking-service-badge highlight">
-                                <Sparkles size={10} /> Destaque
-                              </span>
-                            )}
-                            {hasPromo && (
-                              <span className="booking-service-badge promo">
-                                Oferta
-                              </span>
-                            )}
+                          <h3 className="booking-service-title">{pkg.name}</h3>
+                          <div className="booking-service-price-row">
+                            <span className="booking-service-price">
+                              R$ {Number(pkg.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </span>
+                          </div>
+                          <p className="booking-service-desc">{pkg.description}</p>
+                          <div style={{ marginTop: '12px', borderTop: '1px solid var(--rule)', paddingTop: '8px' }}>
+                            <strong style={{ fontSize: '0.75rem', color: 'var(--muted)', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
+                              Itens Inclusos:
+                            </strong>
+                            <ul style={{ margin: 0, paddingLeft: '16px', fontSize: '0.8rem', color: 'var(--ink)' }}>
+                              {pkg.services && pkg.services.map((item, idx) => {
+                                const srv = services.find(s => s.id === item.serviceId);
+                                return (
+                                  <li key={idx}>
+                                    {item.sessions}x {srv ? srv.name : item.serviceId}
+                                  </li>
+                                );
+                              })}
+                            </ul>
                           </div>
                         </div>
-
-                        {/* Corpo do card */}
-                        <div className="booking-service-card-body">
-                          <h3 className="booking-service-card-title">{service.name}</h3>
-                          {tagline && <p className="booking-service-tagline">{tagline}</p>}
-                          
-                          <div className="booking-service-duration-info">
-                            <Clock size={12} />
-                            <span>Duração aproximada: {service.duration || 60} min</span>
-                          </div>
-                          
-                          {service.description && (
-                            <div className="booking-service-desc-wrapper">
-                              <p className={`booking-service-description ${isExpanded ? 'expanded' : 'collapsed'}`}>
-                                {service.description}
-                              </p>
-                              {service.description.length > 120 && (
-                                <button
-                                  type="button"
-                                  className="booking-btn-toggle-desc"
-                                  onClick={(e) => toggleDescription(service.id, e)}
-                                >
-                                  {isExpanded ? 'Ocultar descrição ▲' : 'Ver descrição completa ▼'}
-                                </button>
+                      );
+                    })
+                  ) : (
+                    filteredServices.map(service => {
+                      const isExpanded = !!expandedDescriptions[service.id];
+                      const hasPromo = !!service.promoPrice;
+                      const isFeatured = !!(service.isPrimary || service.featured);
+                      const isSelected = selectedService?.id === service.id;
+                      const isWaOnly = isWhatsappOnlyService(service);
+                      const { emoji, tagline } = getServiceExtraDetails(service.name);
+                      
+                      return (
+                        <div 
+                          key={service.id} 
+                          className={`booking-service-card ${isSelected ? 'selected' : ''} ${isFeatured ? 'featured' : ''} ${isWaOnly ? 'whatsapp-card' : ''}`}
+                          onClick={(e) => {
+                            if (isWaOnly) {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const text = encodeURIComponent(`Olá! Gostaria de um orçamento para ${service.name}.`);
+                              window.open(`https://wa.me/553135866673?text=${text}`, '_blank');
+                              return;
+                            }
+                            setSelectedService(service);
+                            setStep(2);
+                          }}
+                        >
+                          {/* Linha superior */}
+                          <div className="booking-card-top-decor">
+                            <div className="booking-card-emoji-category">
+                              <span className="booking-service-emoji">{emoji}</span>
+                              <span className="booking-service-category-tag">{service.category || 'Outros'}</span>
+                            </div>
+                            <div className="booking-service-badges-row">
+                              {isFeatured && (
+                                <span className="booking-service-badge highlight">
+                                  <Sparkles size={10} /> Destaque
+                                </span>
+                              )}
+                              {hasPromo && (
+                                <span className="booking-service-badge promo">
+                                  Oferta
+                                </span>
                               )}
                             </div>
-                          )}
+                          </div>
 
-                          {service.includes && service.includes.length > 0 && (isExpanded || !service.description || service.description.length <= 120) && (
-                            <div className="booking-service-includes">
-                              <p className="booking-service-includes-title">O que está incluso:</p>
-                              <ul>
-                                {service.includes.map((item, idx) => (
-                                  <li key={idx}>✓ {item}</li>
-                                ))}
-                              </ul>
+                          {/* Corpo do card */}
+                          <div className="booking-service-card-body">
+                            <h3 className="booking-service-card-title">{service.name}</h3>
+                            {tagline && <p className="booking-service-tagline">{tagline}</p>}
+                            
+                            <div className="booking-service-duration-info">
+                              <Clock size={12} />
+                              <span>Duração aproximada: {service.duration || 60} min</span>
                             </div>
-                          )}
-                        </div>
+                            
+                            {service.description && (
+                              <div className="booking-service-desc-wrapper">
+                                <p className={`booking-service-description ${isExpanded ? 'expanded' : 'collapsed'}`}>
+                                  {service.description}
+                                </p>
+                                {service.description.length > 120 && (
+                                  <button
+                                    type="button"
+                                    className="booking-btn-toggle-desc"
+                                    onClick={(e) => toggleDescription(service.id, e)}
+                                  >
+                                    {isExpanded ? 'Ocultar descrição ▲' : 'Ver descrição completa ▼'}
+                                  </button>
+                                )}
+                              </div>
+                            )}
 
-                        {/* Rodapé do card */}
-                        <div className="booking-service-card-footer">
-                          <div className="booking-service-pricing-area">
-                            <span className="booking-pricing-label">Valor</span>
-                            {hasPromo ? (
-                              <div className="booking-price-comparison">
-                                <span className="booking-price-old-strike">R$ {service.price.toFixed(2)}</span>
-                                <span className="booking-price-new-value">
-                                  <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                                  <strong>R$ {service.promoPrice.toFixed(2)}</strong>
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="booking-price-standard-value">
-                                <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                                <strong>R$ {service.price.toFixed(2)}</strong>
+                            {service.includes && service.includes.length > 0 && (isExpanded || !service.description || service.description.length <= 120) && (
+                              <div className="booking-service-includes">
+                                <p className="booking-service-includes-title">O que está incluso:</p>
+                                <ul>
+                                  {service.includes.map((item, idx) => (
+                                    <li key={idx}>✓ {item}</li>
+                                  ))}
+                                </ul>
                               </div>
                             )}
                           </div>
-                          
-                          <div className="booking-service-selection-indicator">
-                            {isWaOnly ? (
-                              <span className="booking-select-action-label whatsapp-btn">
-                                <MessageCircle size={12} style={{ marginRight: 4, display: 'inline-block', verticalAlign: 'middle' }} />
-                                Me chama no Whatsapp
-                              </span>
-                            ) : isSelected ? (
-                              <span className="booking-selected-pill"><Check size={12} /> Selecionado</span>
-                            ) : (
-                              <span className="booking-select-action-label">Agendar</span>
-                            )}
+
+                          {/* Rodapé do card */}
+                          <div className="booking-service-card-footer">
+                            <div className="booking-service-pricing-area">
+                              <span className="booking-pricing-label">Valor</span>
+                              {hasPromo ? (
+                                <div className="booking-price-comparison">
+                                  <span className="booking-price-old-strike">R$ {service.price.toFixed(2)}</span>
+                                  <span className="booking-price-new-value">
+                                    <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                                    <strong>R$ {service.promoPrice.toFixed(2)}</strong>
+                                  </span>
+                                </div>
+                              ) : (
+                                <div className="booking-price-standard-value">
+                                  <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
+                                  <strong>R$ {service.price.toFixed(2)}</strong>
+                                </div>
+                              )}
+                            </div>
+                            
+                            <div className="booking-service-selection-indicator">
+                              {isWaOnly ? (
+                                <span className="booking-select-action-label whatsapp-btn">
+                                  <MessageCircle size={12} style={{ marginRight: 4, display: 'inline-block', verticalAlign: 'middle' }} />
+                                  Me chama no Whatsapp
+                                </span>
+                              ) : isSelected ? (
+                                <span className="booking-selected-pill"><Check size={12} /> Selecionado</span>
+                              ) : (
+                                <span className="booking-select-action-label">Agendar</span>
+                              )}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               )}
               
@@ -1674,11 +1797,14 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
             )}
 
             <div className="step-actions">
-              <button className="btn btn-ghost" onClick={() => setStep(1)}>Voltar</button>
+              <button className="btn btn-ghost" onClick={() => { setSelectedPackageTemplate(null); setStep(1); }}>Voltar</button>
               <button 
                 className="btn btn-accent" 
                 disabled={!selectedDate || !selectedTime}
-                onClick={() => setStep(3)}
+                onClick={() => {
+                  checkPackageCredits(clientData.phone, clientData.email, selectedService);
+                  setStep(3);
+                }}
               >
                 Prosseguir para Dados <Arrow />
               </button>
@@ -1960,7 +2086,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       placeholder="Ex: 31988887777" 
                       value={clientData.phone} 
                       onChange={handleInputChange} 
-                      onBlur={handleFieldBlur}
+                      onBlur={(e) => { handleFieldBlur(e); checkPackageCredits(e.target.value, clientData.email, selectedService); }}
                     />
                     <span className="hint">Usaremos para enviar a confirmação de horário</span>
                   </div>
@@ -1975,7 +2101,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       placeholder="Ex: maria@exemplo.com" 
                       value={clientData.email} 
                       onChange={handleInputChange} 
-                      onBlur={handleFieldBlur}
+                      onBlur={(e) => { handleFieldBlur(e); checkPackageCredits(clientData.phone, e.target.value, selectedService); }}
                     />
                   </div>
                 </div>
@@ -1997,19 +2123,48 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     </select>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="birthdate">Data de Nascimento (Opcional)</label>
-                    <input 
-                      type="date" 
-                      id="birthdate" 
-                      name="birthdate" 
-                      value={clientData.birthdate || ''} 
-                      onChange={handleInputChange} 
-                    />
-                  </div>
-                </div>
-
                 <div className="form-group">
+                  <label htmlFor="birthdate">Data de Nascimento (Opcional)</label>
+                  <input 
+                    type="date" 
+                    id="birthdate" 
+                    name="birthdate" 
+                    value={clientData.birthdate || ''} 
+                    onChange={handleInputChange} 
+                  />
+                </div>
+              </div>
+
+              {activePackageCredit && (
+                <div style={{ margin: '16px 0', padding: '12px 16px', border: '1px solid var(--accent)', borderRadius: '8px', background: 'rgba(200, 133, 42, 0.05)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={usingPackageCredit}
+                      onChange={e => setUsingPackageCredit(e.target.checked)}
+                      style={{ width: '18px', height: '18px', accentColor: 'var(--accent)' }}
+                    />
+                    <span>Usar crédito do pacote: <strong>{activePackageCredit.packageName}</strong></span>
+                  </label>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginLeft: 28 }}>
+                    Você possui {activePackageCredit.balance[selectedService.id]} sessão(ões) restante(s) deste serviço. O valor cobrado na comanda deste agendamento será R$ 0.
+                  </span>
+                </div>
+              )}
+
+              {selectedPackageTemplate && (
+                <div style={{ margin: '16px 0', padding: '12px 16px', border: '1px solid #2f855a', borderRadius: '8px', background: 'rgba(47, 133, 90, 0.05)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 700, color: '#2f855a', fontSize: '0.9rem' }}>
+                    <span>📦 Pacote Selecionado:</span>
+                    <span>{selectedPackageTemplate.name}</span>
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                    Você está adquirindo o pacote por <strong>R$ {(Number(selectedPackageTemplate.price) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong> no momento do primeiro atendimento.
+                  </span>
+                </div>
+              )}
+
+              <div className="form-group">
                   <label htmlFor="notes">Algum comentário ou histórico químico importante?</label>
                   <textarea 
                     id="notes" 
@@ -2073,8 +2228,16 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
                 <strong>Orçamento:</strong>
                 <span>
-                  {selectedService?.priceType === 'A partir de' ? 'A partir de ' : ''}
-                  R$ {(selectedService?.promoPrice ?? selectedService?.price)?.toFixed(2)}
+                  {usingPackageCredit ? (
+                    'R$ 0,00 (Crédito de Pacote)'
+                  ) : selectedPackageTemplate ? (
+                    `R$ ${Number(selectedPackageTemplate.price).toFixed(2)} (Compra de Pacote)`
+                  ) : (
+                    <>
+                      {selectedService?.priceType === 'A partir de' ? 'A partir de ' : ''}
+                      R$ {(selectedService?.promoPrice ?? selectedService?.price)?.toFixed(2)}
+                    </>
+                  )}
                 </span>
               </div>
               <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>

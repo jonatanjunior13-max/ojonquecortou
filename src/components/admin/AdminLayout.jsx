@@ -14,7 +14,8 @@ const AdminLayout = () => {
   const [authorized, setAuthorized] = useState(null);
   const [globalData, setGlobalData] = useState({
     bookings: [], clients: [], services: [], products: [],
-    financial_transactions: [], settings: null, coupons: [], giftcards: []
+    financial_transactions: [], settings: null, coupons: [], giftcards: [],
+    packages: [], client_packages: []
   });
   const navigate = useNavigate();
   const location = useLocation();
@@ -203,6 +204,8 @@ const AdminLayout = () => {
       unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => setGlobalData(prev => ({ ...prev, financial_transactions: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'coupons'), (snap) => setGlobalData(prev => ({ ...prev, coupons: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'giftcards'), (snap) => setGlobalData(prev => ({ ...prev, giftcards: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => setGlobalData(prev => ({ ...prev, packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => setGlobalData(prev => ({ ...prev, client_packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }))));
     } else {
       // Demo Mode fallback
@@ -239,7 +242,9 @@ const AdminLayout = () => {
           clients: JSON.parse(localStorage.getItem('demo_client_profiles')) || [],
           services: JSON.parse(localStorage.getItem('demo_services')) || [],
           products: JSON.parse(localStorage.getItem('demo_inventory')) || [],
-          financial_transactions: JSON.parse(localStorage.getItem('demo_financial')) || []
+          financial_transactions: JSON.parse(localStorage.getItem('demo_financial')) || [],
+          packages: JSON.parse(localStorage.getItem('demo_packages')) || [],
+          client_packages: JSON.parse(localStorage.getItem('demo_client_packages')) || []
         }));
       } catch(e) {}
     }

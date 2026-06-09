@@ -13,10 +13,11 @@ const AdminServices = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
   
+  
   // Catalog View states
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
-  const [activeViewTab, setActiveViewTab] = useState('list'); // 'list' or 'reorder'
+  const [activeViewTab, setActiveViewTab] = useState('list'); // 'list', 'reorder', or 'packages'
 
   // Form states
   const [form, setForm] = useState({
@@ -31,6 +32,19 @@ const AdminServices = () => {
     isPrimary: true,
     scheduledViaWhatsapp: false,
     position: ''
+  });
+
+  // Package states
+  const [packages, setPackages] = useState([]);
+  const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
+  const [editingPackage, setEditingPackage] = useState(null);
+  const [selectedServiceForPackage, setSelectedServiceForPackage] = useState('');
+  const [serviceSessionsForPackage, setServiceSessionsForPackage] = useState('4');
+  const [packageForm, setPackageForm] = useState({
+    name: '',
+    description: '',
+    price: '',
+    services: [] // array of { serviceId, serviceName, sessions }
   });
 
   useEffect(() => {
@@ -85,6 +99,146 @@ const AdminServices = () => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    let unsubscribe;
+    if (isDemoMode) {
+      const local = localStorage.getItem('demo_packages');
+      setPackages(local ? JSON.parse(local) : []);
+      return;
+    }
+    if (!db) return;
+    try {
+      unsubscribe = onSnapshot(collection(db, 'packages'), (snapshot) => {
+        const list = [];
+        snapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        setPackages(list);
+      }, (error) => {
+        console.warn('Erro ao carregar pacotes:', error);
+      });
+      return () => {
+        if (unsubscribe) unsubscribe();
+      };
+    } catch (err) {
+      console.warn('Erro ao conectar pacotes:', err);
+    }
+  }, [isDemoMode]);
+
+  const saveLocalPackages = (updated) => {
+    setPackages(updated);
+    localStorage.setItem('demo_packages', JSON.stringify(updated));
+  };
+
+  const handleOpenCreatePackage = () => {
+    setEditingPackage(null);
+    setPackageForm({
+      name: '',
+      description: '',
+      price: '',
+      services: []
+    });
+    setSelectedServiceForPackage('');
+    setServiceSessionsForPackage('4');
+    setIsPackageModalOpen(true);
+  };
+
+  const handleOpenEditPackage = (pkg) => {
+    setEditingPackage(pkg);
+    setPackageForm({
+      name: pkg.name,
+      description: pkg.description || '',
+      price: pkg.price.toString(),
+      services: pkg.services || []
+    });
+    setSelectedServiceForPackage('');
+    setServiceSessionsForPackage('4');
+    setIsPackageModalOpen(true);
+  };
+
+  const handleAddServiceToPackage = () => {
+    if (!selectedServiceForPackage) return;
+    const serv = services.find(s => s.id === selectedServiceForPackage);
+    if (!serv) return;
+
+    // Check if already in the list
+    if (packageForm.services.some(s => s.serviceId === selectedServiceForPackage)) {
+      alert('Este serviço já foi adicionado ao pacote.');
+      return;
+    }
+
+    setPackageForm(prev => ({
+      ...prev,
+      services: [...prev.services, {
+        serviceId: selectedServiceForPackage,
+        serviceName: serv.name,
+        sessions: Number(serviceSessionsForPackage)
+      }]
+    }));
+    setSelectedServiceForPackage('');
+  };
+
+  const handleRemoveServiceFromPackage = (serviceId) => {
+    setPackageForm(prev => ({
+      ...prev,
+      services: prev.services.filter(s => s.serviceId !== serviceId)
+    }));
+  };
+
+  const handleSubmitPackage = async (e) => {
+    e.preventDefault();
+    if (packageForm.services.length === 0) {
+      alert('Adicione pelo menos um serviço ao pacote.');
+      return;
+    }
+
+    const payload = {
+      name: packageForm.name,
+      description: packageForm.description,
+      price: Number(packageForm.price),
+      services: packageForm.services,
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (editingPackage) {
+        if (isDemoMode) {
+          const updated = packages.map(p => p.id === editingPackage.id ? { ...p, ...payload } : p);
+          saveLocalPackages(updated);
+        } else {
+          await setDoc(doc(db, 'packages', editingPackage.id), payload, { merge: true });
+        }
+      } else {
+        const id = packageForm.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-pkg';
+        if (isDemoMode) {
+          const updated = [...packages, { id, ...payload }];
+          saveLocalPackages(updated);
+        } else {
+          await setDoc(doc(db, 'packages', id), payload);
+        }
+      }
+      setIsPackageModalOpen(false);
+    } catch (err) {
+      console.error('Erro ao salvar pacote:', err);
+      alert('Não foi possível salvar o pacote.');
+    }
+  };
+
+  const handleDeletePackage = async (id) => {
+    if (!confirm('Deseja realmente remover este pacote?')) return;
+    try {
+      if (isDemoMode) {
+        const updated = packages.filter(p => p.id !== id);
+        saveLocalPackages(updated);
+      } else {
+        await deleteDoc(doc(db, 'packages', id));
+      }
+    } catch (err) {
+      console.error('Erro ao excluir pacote:', err);
+      alert('Erro ao excluir pacote.');
+    }
+  };
 
   const saveLocalServices = (updated) => {
     setServices(updated);
@@ -243,9 +397,15 @@ const AdminServices = () => {
           {isDemoMode && <span className="demo-badge-inline" style={{ alignSelf: 'center', margin: '0 0 0 12px' }}>Modo Demo (Offline)</span>}
         </div>
         
-        <button className="btn btn-accent btn-add-service" onClick={handleOpenCreate}>
-          <Plus size={16} /> Novo Serviço
-        </button>
+        {activeViewTab === 'packages' ? (
+          <button className="btn btn-accent btn-add-service" onClick={handleOpenCreatePackage}>
+            <Plus size={16} /> Novo Pacote
+          </button>
+        ) : (
+          <button className="btn btn-accent btn-add-service" onClick={handleOpenCreate}>
+            <Plus size={16} /> Novo Serviço
+          </button>
+        )}
       </div>
 
       {/* Subtabs for List vs Order View */}
@@ -281,6 +441,22 @@ const AdminServices = () => {
           }}
         >
           Gerenciar Posição (Ordenação)
+        </button>
+        <button 
+          type="button"
+          onClick={() => setActiveViewTab('packages')}
+          style={{
+            background: 'none',
+            border: 'none',
+            borderBottom: activeViewTab === 'packages' ? '2px solid var(--accent)' : '2px solid transparent',
+            color: activeViewTab === 'packages' ? 'var(--text)' : 'var(--muted)',
+            fontWeight: 'bold',
+            padding: '8px 16px',
+            cursor: 'pointer',
+            fontSize: '0.95rem'
+          }}
+        >
+          Pacotes Promocionais
         </button>
       </div>
 
@@ -497,6 +673,191 @@ const AdminServices = () => {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {activeViewTab === 'packages' && (
+        <div className="packages-tab-container">
+          {packages.length === 0 ? (
+            <div className="catalog-empty-state">
+              <Tag size={48} className="empty-icon" />
+              <h3>Nenhum pacote cadastrado</h3>
+              <p>Cadastre um pacote de serviços promocionais para seus clientes.</p>
+              <button className="btn btn-outline" onClick={handleOpenCreatePackage}>Criar Pacote</button>
+            </div>
+          ) : (
+            <div className="services-catalog-grid">
+              {packages.map((pkg) => (
+                <div key={pkg.id} className="service-catalog-card featured">
+                  <div className="card-top-decoration">
+                    <span className="service-category-tag">Pacote</span>
+                    <span className="service-badge highlight"><Sparkles size={11} /> Promocional</span>
+                  </div>
+                  <div className="service-card-body">
+                    <h3 className="service-card-title">{pkg.name}</h3>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: '4px 0 12px' }}>
+                      {pkg.description || 'Sem descrição.'}
+                    </p>
+                    <div className="package-services-list" style={{ background: 'rgba(0,0,0,0.15)', padding: '10px', borderRadius: '6px', fontSize: '0.9rem' }}>
+                      <strong style={{ display: 'block', marginBottom: '6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Itens inclusos:</strong>
+                      <ul style={{ paddingLeft: '16px', margin: 0 }}>
+                        {pkg.services.map((item, idx) => (
+                          <li key={idx} style={{ marginBottom: '4px', color: 'var(--text)' }}>
+                            {item.sessions}x {item.serviceName}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="service-card-footer" style={{ borderTop: '1px solid var(--rule)', paddingTop: '12px', marginTop: '12px' }}>
+                    <div className="service-pricing-area">
+                      <span className="pricing-label">Valor do Combo</span>
+                      <span className="price-standard-value">
+                        <strong>R$ {pkg.price.toFixed(2)}</strong>
+                      </span>
+                    </div>
+                    <div className="service-card-actions">
+                      <button 
+                        className="action-btn edit" 
+                        onClick={() => handleOpenEditPackage(pkg)} 
+                        title="Editar Pacote"
+                      >
+                        <Edit3 size={15} />
+                      </button>
+                      <button 
+                        className="action-btn delete" 
+                        onClick={() => handleDeletePackage(pkg.id)} 
+                        title="Excluir Pacote"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Modal de Cadastro/Edição de Pacotes */}
+      {isPackageModalOpen && (
+        <div className="modal-overlay">
+          <form className="modal-content" onSubmit={handleSubmitPackage} style={{ maxWidth: 650 }}>
+            <div className="modal-header-with-icon" style={{ justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Tag size={20} className="modal-heading-icon" />
+                <h3>{editingPackage ? 'Editar Pacote' : 'Novo Pacote Promocional'}</h3>
+              </div>
+              <button 
+                type="button" 
+                className="btn-close" 
+                onClick={() => setIsPackageModalOpen(false)}
+                aria-label="Fechar"
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', cursor: 'pointer', background: 'transparent', border: 'none', color: 'var(--muted)' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="form-group-sleek">
+              <label>Nome do Pacote *</label>
+              <input 
+                type="text" 
+                required 
+                placeholder="Ex: Combo 4x Corte de Cabelo"
+                value={packageForm.name}
+                onChange={e => setPackageForm(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+
+            <div className="form-row-grid">
+              <div className="form-group-sleek">
+                <label>Preço Total Promocional (R$) *</label>
+                <input 
+                  type="number" 
+                  required
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={packageForm.price}
+                  onChange={e => setPackageForm(prev => ({ ...prev, price: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="form-group-sleek">
+              <label>Descrição (Opcional)</label>
+              <textarea 
+                rows="2"
+                placeholder="Insira detalhes sobre as regras de uso do pacote..."
+                value={packageForm.description}
+                onChange={e => setPackageForm(prev => ({ ...prev, description: e.target.value }))}
+                style={{ width: '100%' }}
+              />
+            </div>
+
+            <div className="form-group-sleek" style={{ borderTop: '1px solid var(--rule)', paddingTop: '16px', marginTop: '16px' }}>
+              <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Adicionar Serviços ao Pacote</label>
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
+                <select 
+                  value={selectedServiceForPackage}
+                  onChange={e => setSelectedServiceForPackage(e.target.value)}
+                  style={{ flexGrow: 1, padding: '8px' }}
+                >
+                  <option value="">-- Selecione o Serviço --</option>
+                  {services.map(s => (
+                    <option key={s.id} value={s.id}>{s.name} (R$ {s.price})</option>
+                  ))}
+                </select>
+                <input 
+                  type="number" 
+                  min="1"
+                  value={serviceSessionsForPackage}
+                  onChange={e => setServiceSessionsForPackage(e.target.value)}
+                  style={{ width: '70px', padding: '8px' }}
+                  placeholder="Qtd"
+                />
+                <button 
+                  type="button" 
+                  className="btn btn-accent"
+                  style={{ minWidth: '70px' }}
+                  onClick={handleAddServiceToPackage}
+                >
+                  Adicionar
+                </button>
+              </div>
+
+              {/* Selected services list */}
+              <div style={{ background: 'rgba(0,0,0,0.15)', padding: '12px', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                {packageForm.services.length === 0 ? (
+                  <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>Nenhum serviço adicionado ainda. Adicione pelo menos um.</span>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {packageForm.services.map((item, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '6px 12px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--text)' }}>
+                          <strong>{item.sessions}x</strong> {item.serviceName}
+                        </span>
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemoveServiceFromPackage(item.serviceId)}
+                          style={{ background: 'none', border: 'none', color: '#ff5c5c', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24, borderTop: '1px solid var(--rule)', paddingTop: '16px' }}>
+              <button type="button" className="btn btn-outline" onClick={() => setIsPackageModalOpen(false)}>Cancelar</button>
+              <button type="submit" className="btn btn-accent">Salvar Pacote</button>
+            </div>
+          </form>
         </div>
       )}
 

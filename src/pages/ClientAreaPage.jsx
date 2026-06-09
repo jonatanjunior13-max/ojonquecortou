@@ -10,7 +10,7 @@ import {
   signOut,
   sendPasswordResetEmail
 } from 'firebase/auth';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc, addDoc } from 'firebase/firestore';
 import { Calendar, Clock, Lock, Unlock, LogOut, Scissors, AlertCircle, ChevronRight, User, PlusCircle, ArrowLeft, Mail } from 'lucide-react';
 import SEO from '../components/SEO';
 import './ClientAreaPage.css';
@@ -25,6 +25,12 @@ export default function ClientAreaPage() {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  
+  // Pacotes Estados
+  const [packages, setPackages] = useState([]);
+  const [clientPackages, setClientPackages] = useState([]);
+  const [services, setServices] = useState([]);
+  const [showAcquirePackageModal, setShowAcquirePackageModal] = useState(false);
   
   // Recuperação de Senha
   const [resetMode, setResetMode] = useState(false);
@@ -156,6 +162,39 @@ export default function ClientAreaPage() {
 
       setActiveBookings(active);
       setPastBookings(past);
+
+      // Fetch packages templates and client packages balance
+      let pkgs = [];
+      let cps = [];
+      let srvs = [];
+
+      if (isDemo) {
+        pkgs = JSON.parse(localStorage.getItem('demo_packages') || '[]');
+        cps = JSON.parse(localStorage.getItem('demo_client_packages') || '[]');
+        srvs = JSON.parse(localStorage.getItem('demo_services') || '[]');
+      } else {
+        const snapPkgs = await getDocs(collection(db, 'packages'));
+        snapPkgs.forEach(d => pkgs.push({ id: d.id, ...d.data() }));
+
+        const snapCps = await getDocs(collection(db, 'client_packages'));
+        snapCps.forEach(d => cps.push({ id: d.id, ...d.data() }));
+
+        const snapSrvs = await getDocs(collection(db, 'services'));
+        snapSrvs.forEach(d => srvs.push({ id: d.id, ...d.data() }));
+      }
+
+      setPackages(pkgs);
+      setServices(srvs);
+
+      // Filter client packages for the current user/client
+      const filteredCps = cps.filter(cp => {
+        const cleanPhone = profile?.phone || '';
+        const cleanEmail = user.email?.toLowerCase() || '';
+        
+        return (cleanPhone && cp.clientPhone?.replace(/\D/g, '') === cleanPhone) ||
+               (cleanEmail && cp.clientEmail?.toLowerCase() === cleanEmail);
+      });
+      setClientPackages(filteredCps);
 
     } catch (err) {
       console.error('Erro ao carregar dados do cliente:', err);
@@ -660,6 +699,73 @@ export default function ClientAreaPage() {
                   </div>
                 </div>
 
+                {/* Seus Pacotes Promocionais */}
+                <div className="client-card">
+                  <h2 className="client-card-title">
+                    <Scissors size={20} style={{ color: 'var(--accent)' }} /> Seus Pacotes
+                  </h2>
+                  {clientPackages.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                      <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Você ainda não adquiriu nenhum pacote promocional.</p>
+                      <button 
+                        className="btn btn-outline" 
+                        style={{ marginTop: 12, fontSize: '0.8rem', width: '100%' }}
+                        onClick={() => setShowAcquirePackageModal(true)}
+                      >
+                        Adquirir um Pacote
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                      {clientPackages.map(cp => {
+                        const totalRemaining = Object.values(cp.balance || {}).reduce((sum, v) => sum + v, 0);
+                        return (
+                          <div key={cp.id} style={{ border: '1px solid var(--rule)', padding: 14, borderRadius: 8, background: 'var(--bg-warm)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                              <strong style={{ fontSize: '0.95rem' }}>{cp.packageName}</strong>
+                              <span className={`status-badge ${cp.status === 'active' ? 'confirmado' : cp.status === 'finished' ? 'finalizado' : 'pendente'}`}>
+                                {cp.status === 'active' ? 'Ativo' : cp.status === 'finished' ? 'Finalizado' : 'Aguardando Pagamento'}
+                              </span>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+                              {Object.keys(cp.balance || {}).map(srvId => {
+                                const srv = services.find(s => s.id === srvId);
+                                const srvName = srv ? srv.name : srvId;
+                                const remaining = cp.balance[srvId];
+                                return (
+                                  <div key={srvId} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                                    <span style={{ color: 'var(--muted)' }}>{srvName}:</span>
+                                    <strong style={{ color: remaining > 0 ? 'var(--accent)' : 'var(--muted)' }}>{remaining} sessões</strong>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            
+                            {totalRemaining > 0 && cp.status === 'active' && (
+                              <Link 
+                                to="/agendar" 
+                                className="btn btn-accent" 
+                                style={{ width: '100%', justifyContent: 'center', fontSize: '0.8rem', padding: '8px', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+                              >
+                                Agendar com Crédito
+                              </Link>
+                            )}
+                          </div>
+                        );
+                      })}
+                      
+                      <button 
+                        className="btn btn-ghost" 
+                        style={{ width: '100%', border: '1px dashed var(--rule)', fontSize: '0.8rem', background: 'transparent' }}
+                        onClick={() => setShowAcquirePackageModal(true)}
+                      >
+                        Adquirir Outro Pacote
+                      </button>
+                    </div>
+                  )}
+                </div>
+
                 <div className="client-card" style={{ background: 'var(--surface)' }}>
                   <h2 className="client-card-title" style={{ fontSize: '18px' }}>Ações Rápidas</h2>
                   <div className="client-quick-actions">
@@ -677,7 +783,117 @@ export default function ClientAreaPage() {
           </div>
         )}
 
-      </div>
-    </main>
-  );
+      {/* MODAL: ADQUIRIR PACOTE */}
+      {showAcquirePackageModal && (() => {
+        const handleAcquirePackage = async (pkgTemplate) => {
+          const isDemo = !db;
+          const initialBalance = {};
+          if (pkgTemplate.services) {
+            pkgTemplate.services.forEach(s => {
+              initialBalance[s.serviceId] = s.sessions;
+            });
+          }
+
+          const payload = {
+            clientId: clientProfile?.phone || currentUser.uid,
+            clientName: clientProfile?.name || currentUser.displayName || 'Cliente',
+            clientPhone: clientProfile?.phone || '',
+            clientEmail: currentUser.email || '',
+            packageId: pkgTemplate.id,
+            packageName: pkgTemplate.name,
+            pricePaid: pkgTemplate.price,
+            paymentMethod: 'Pendente',
+            datePurchased: new Date().toISOString().split('T')[0],
+            status: 'pending_payment',
+            balance: initialBalance,
+            usage: []
+          };
+
+          try {
+            setAuthLoading(true);
+            if (isDemo) {
+              const local = localStorage.getItem('demo_client_packages');
+              const current = local ? JSON.parse(local) : [];
+              const newCp = { id: 'cp_' + Date.now(), ...payload };
+              const next = [newCp, ...current];
+              localStorage.setItem('demo_client_packages', JSON.stringify(next));
+              setClientPackages(prev => [newCp, ...prev]);
+            } else {
+              const { collection: _col, addDoc: _addDoc } = await import('firebase/firestore');
+              const docRef = await _addDoc(_col(db, 'client_packages'), payload);
+              const newCp = { id: docRef.id, ...payload };
+              setClientPackages(prev => [newCp, ...prev]);
+            }
+            setShowAcquirePackageModal(false);
+            alert('Sua solicitação do pacote foi criada! Realize o pagamento de R$ ' + Number(pkgTemplate.price).toFixed(2) + ' no dia do seu primeiro atendimento para liberar seus créditos.');
+          } catch (err) {
+            console.error('Erro ao adquirir pacote:', err);
+            alert('Não foi possível registrar a solicitação do pacote.');
+          } finally {
+            setAuthLoading(false);
+          }
+        };
+
+        return (
+          <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+            <div className="modal-content" style={{ background: 'var(--surface)', padding: 24, borderRadius: 12, width: '90%', maxWidth: 500, maxMonth: '80%', overflowY: 'auto' }}>
+              <h3 style={{ margin: '0 0 10px 0' }}>Adquirir Pacote Promocional</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: 20 }}>
+                Selecione um pacote abaixo para solicitar a aquisição. A ativação ocorrerá mediante pagamento na recepção do salão.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
+                {packages.length === 0 ? (
+                  <p style={{ textAlign: 'center', fontSize: '0.85rem', color: 'var(--muted)' }}>Nenhum pacote disponível para aquisição.</p>
+                ) : (
+                  packages.map(pkg => (
+                    <div key={pkg.id} style={{ border: '1px solid var(--rule)', padding: 14, borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                          <strong style={{ fontSize: '0.95rem', display: 'block' }}>{pkg.name}</strong>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{pkg.description}</span>
+                        </div>
+                        <span style={{ fontWeight: 700, color: '#2f855a', fontSize: '1rem' }}>
+                          R$ {Number(pkg.price).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <div style={{ fontSize: '0.8rem', color: 'var(--ink)', background: 'var(--bg-warm)', padding: 8, borderRadius: 4 }}>
+                        <span style={{ fontWeight: 600, display: 'block', marginBottom: 4, fontSize: '0.75rem', color: 'var(--muted)' }}>Serviços Inclusos:</span>
+                        {pkg.services && pkg.services.map((item, idx) => {
+                          const srv = services.find(s => s.id === item.serviceId);
+                          return (
+                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                              <span>{srv ? srv.name : item.serviceId}</span>
+                              <strong>{item.sessions} sessões</strong>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <button 
+                        className="btn btn-accent" 
+                        style={{ marginTop: 8, width: '100%', fontSize: '0.8rem', padding: 8 }}
+                        onClick={() => handleAcquirePackage(pkg)}
+                      >
+                        Solicitar este Pacote
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowAcquirePackageModal(false)}>
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
+    </div>
+  </main>
+);
 }

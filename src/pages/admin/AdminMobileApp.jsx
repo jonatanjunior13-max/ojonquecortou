@@ -51,6 +51,11 @@ const AdminMobileApp = () => {
   const [services, setServices] = useState([]);
   const [inventory, setInventory] = useState([]);
   const [settings, setSettings] = useState(null);
+  const [packages, setPackages] = useState([]);
+  const [clientPackages, setClientPackages] = useState([]);
+  const [sellingPackageId, setSellingPackageId] = useState('');
+  const [usingClientPackageId, setUsingClientPackageId] = useState('');
+  const [packagesSubTab, setPackagesSubTab] = useState('modelos');
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(!db);
   const [syncing, setSyncing] = useState(false);
@@ -66,6 +71,38 @@ const AdminMobileApp = () => {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [checkoutBooking, setCheckoutBooking] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
+
+  const clientActivePackages = React.useMemo(() => {
+    if (!checkoutBooking) return [];
+    const phone = checkoutBooking.clientPhone;
+    const name = checkoutBooking.clientName;
+    return clientPackages.filter(cp => 
+      cp.status === 'active' && 
+      ((phone && cp.clientPhone === phone) || (!phone && cp.clientName === name))
+    );
+  }, [checkoutBooking, clientPackages]);
+
+  const availablePackagesForBooking = React.useMemo(() => {
+    if (!checkoutBooking || !services) return [];
+    const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
+    const servObj = services.find(s => s.name === bookingServiceName);
+    if (!servObj) return [];
+    
+    return clientActivePackages.filter(cp => cp.balance && cp.balance[servObj.id] > 0);
+  }, [checkoutBooking, clientActivePackages, services]);
+
+  const getCheckoutTotal = () => {
+    if (!checkoutBooking) return 0;
+    const base = usingClientPackageId 
+      ? 0 
+      : (sellingPackageId 
+          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
+          : (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
+        );
+    const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
+    const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
+    return Math.max(0, base + productsTotal - discount - prepay);
+  };
   const [discount, setDiscount] = useState(0);
   const [editingBookingId, setEditingBookingId] = useState(null);
   const [activeAlert, setActiveAlert] = useState(null); // { id, title, message, booking }
@@ -268,6 +305,8 @@ const AdminMobileApp = () => {
     let unsubServ;
     let unsubInventory;
     let unsubSettings;
+    let unsubPkgs;
+    let unsubClientPkgs;
     let unsubAuth;
 
     // Carregar dados do cache imediatamente (offline-first)
@@ -308,6 +347,8 @@ const AdminMobileApp = () => {
           txList,
           servList,
           inventoryList,
+          packagesList,
+          clientPkgsList,
           settingsData
         ] = await Promise.allSettled([
           fetchCollectionRest('bookings', idToken),
@@ -315,6 +356,8 @@ const AdminMobileApp = () => {
           fetchCollectionRest('financial_transactions', idToken),
           fetchCollectionRest('services', idToken),
           fetchCollectionRest('products', idToken),
+          fetchCollectionRest('packages', idToken),
+          fetchCollectionRest('client_packages', idToken),
           fetchDocRest('settings', 'studio', idToken)
         ]);
 
@@ -364,6 +407,20 @@ const AdminMobileApp = () => {
         } else {
           console.error('Erro ao buscar estoque:', inventoryList.reason?.message);
           errors.push(`Estoque: ${inventoryList.reason?.message}`);
+        }
+        if (packagesList.status === 'fulfilled') {
+          setPackages(packagesList.value);
+          localStorage.setItem('demo_packages', JSON.stringify(packagesList.value));
+        } else {
+          console.error('Erro ao buscar packages:', packagesList.reason?.message);
+          errors.push(`Pacotes: ${packagesList.reason?.message}`);
+        }
+        if (clientPkgsList.status === 'fulfilled') {
+          setClientPackages(clientPkgsList.value);
+          localStorage.setItem('demo_client_packages', JSON.stringify(clientPkgsList.value));
+        } else {
+          console.error('Erro ao buscar client packages:', clientPkgsList.reason?.message);
+          errors.push(`Pacotes adquiridos: ${clientPkgsList.reason?.message}`);
         }
         if (settingsData.status === 'fulfilled' && settingsData.value) {
           setSettings(settingsData.value);
@@ -437,6 +494,28 @@ const AdminMobileApp = () => {
           });
         }, (err) => console.warn('onSnapshot products:', err.code || err.message));
 
+        unsubPkgs = onSnapshot(collection(db, 'packages'), (snapshot) => {
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setPackages(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_packages', JSON.stringify(list));
+              return list;
+            }
+            return prev;
+          });
+        }, (err) => console.warn('onSnapshot packages:', err.code || err.message));
+
+        unsubClientPkgs = onSnapshot(collection(db, 'client_packages'), (snapshot) => {
+          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+          setClientPackages(prev => {
+            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
+              localStorage.setItem('demo_client_packages', JSON.stringify(list));
+              return list;
+            }
+            return prev;
+          });
+        }, (err) => console.warn('onSnapshot client_packages:', err.code || err.message));
+
         unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.data();
@@ -488,6 +567,8 @@ const AdminMobileApp = () => {
       if (unsubTx) unsubTx();
       if (unsubServ) unsubServ();
       if (unsubInventory) unsubInventory();
+      if (unsubPkgs) unsubPkgs();
+      if (unsubClientPkgs) unsubClientPkgs();
       if (unsubSettings) unsubSettings();
     };
   }, []);
@@ -536,6 +617,8 @@ const AdminMobileApp = () => {
         txList,
         servList,
         inventoryList,
+        packagesList,
+        clientPkgsList,
         settingsData
       ] = await Promise.allSettled([
         fetchCollectionRest('bookings', idToken),
@@ -543,6 +626,8 @@ const AdminMobileApp = () => {
         fetchCollectionRest('financial_transactions', idToken),
         fetchCollectionRest('services', idToken),
         fetchCollectionRest('products', idToken),
+        fetchCollectionRest('packages', idToken),
+        fetchCollectionRest('client_packages', idToken),
         fetchDocRest('settings', 'studio', idToken)
       ]);
 
@@ -584,6 +669,20 @@ const AdminMobileApp = () => {
         errors.push(`Estoque: ${inventoryList.reason?.message}`);
       }
 
+      if (packagesList.status === 'fulfilled') {
+        setPackages(packagesList.value);
+        localStorage.setItem('demo_packages', JSON.stringify(packagesList.value));
+      } else {
+        errors.push(`Pacotes: ${packagesList.reason?.message}`);
+      }
+
+      if (clientPkgsList.status === 'fulfilled') {
+        setClientPackages(clientPkgsList.value);
+        localStorage.setItem('demo_client_packages', JSON.stringify(clientPkgsList.value));
+      } else {
+        errors.push(`Pacotes adquiridos: ${clientPkgsList.reason?.message}`);
+      }
+
       if (settingsData.status === 'fulfilled' && settingsData.value) {
         setSettings(settingsData.value);
         localStorage.setItem('demo_studio_settings', JSON.stringify(settingsData.value));
@@ -617,6 +716,8 @@ const AdminMobileApp = () => {
     const savedTransactions = localStorage.getItem('demo_transactions');
     const savedServices = localStorage.getItem('demo_services');
     const savedInventory = localStorage.getItem('demo_inventory');
+    const savedPackages = localStorage.getItem('demo_packages');
+    const savedClientPackages = localStorage.getItem('demo_client_packages');
     const savedSettings = localStorage.getItem('demo_studio_settings');
 
     if (savedBookings) setBookings(JSON.parse(savedBookings));
@@ -635,6 +736,8 @@ const AdminMobileApp = () => {
       }
     }
     if (savedInventory) setInventory(JSON.parse(savedInventory));
+    if (savedPackages) setPackages(JSON.parse(savedPackages));
+    if (savedClientPackages) setClientPackages(JSON.parse(savedClientPackages));
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
@@ -1542,17 +1645,26 @@ const AdminMobileApp = () => {
     setSelectedBooking(null);
     setSelectedProducts([]);
     setDiscount(0);
+    setSellingPackageId('');
+    setUsingClientPackageId('');
     setShowCheckoutModal(true);
   };
 
   const submitCheckout = async () => {
     if (!checkoutBooking) return;
-    const baseServicePrice = checkoutBooking.service?.price || checkoutBooking.servicePrice || 150;
+    const baseServicePrice = usingClientPackageId 
+      ? 0 
+      : (sellingPackageId 
+          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
+          : (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
+        );
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
     const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
     const value = Math.max(0, baseServicePrice + productsTotal - discount - prepay);
     
-    let description = checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base';
+    let description = sellingPackageId 
+      ? `Compra de Pacote: ${packages.find(p => p.id === sellingPackageId)?.name || 'Pacote'}`
+      : (checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base');
     if (selectedProducts.length > 0) {
       description += ` + ${selectedProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
     }
@@ -1563,6 +1675,10 @@ const AdminMobileApp = () => {
       description += ` (Sinal/Adiantamento: -R$ ${prepay})`;
     }
 
+    const baseMethodLabel = usingClientPackageId 
+      ? `Pacote (Débito)` 
+      : (paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod);
+
     const payloadTx = {
       bookingId: checkoutBooking.id,
       date: checkoutBooking.date || new Date().toISOString().split('T')[0],
@@ -1570,7 +1686,7 @@ const AdminMobileApp = () => {
       clientName: checkoutBooking.clientName,
       clientPhone: checkoutBooking.clientPhone || '',
       type: 'entrada',
-      paymentMethod: paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod,
+      paymentMethod: baseMethodLabel,
       discount: discount,
       value: Number(value),
       description,
@@ -1592,11 +1708,116 @@ const AdminMobileApp = () => {
     // Calculate service cost
     const mainService = services.find(s => s.name === (checkoutBooking.service?.name || checkoutBooking.serviceName));
     const totalServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+    const serviceId = mainService ? mainService.id : '';
 
     try {
+      // 1. Process Packages (Sale or Debit)
+      if (sellingPackageId) {
+        const pkgTemplate = packages.find(p => p.id === sellingPackageId);
+        const initialBalance = {};
+        if (pkgTemplate && pkgTemplate.services) {
+          pkgTemplate.services.forEach(s => {
+            initialBalance[s.serviceId] = s.sessions;
+          });
+        }
+        if (serviceId && initialBalance[serviceId] !== undefined) {
+          initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
+        }
+
+        const clientPackagePayload = {
+          clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+          clientName: checkoutBooking.clientName,
+          clientPhone: checkoutBooking.clientPhone || '',
+          packageId: sellingPackageId,
+          packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
+          pricePaid: pkgTemplate ? pkgTemplate.price : 0,
+          paymentMethod: baseMethodLabel,
+          datePurchased: checkoutBooking.date || new Date().toISOString().split('T')[0],
+          status: 'active',
+          balance: initialBalance,
+          usage: [
+            {
+              bookingId: checkoutBooking.id,
+              dateUsed: checkoutBooking.date || new Date().toISOString().split('T')[0],
+              serviceId
+            }
+          ]
+        };
+
+        if (isDemoMode) {
+          const local = localStorage.getItem('demo_client_packages');
+          const current = local ? JSON.parse(local) : [];
+          const newCp = { id: 'cp_' + Date.now(), ...clientPackagePayload };
+          const updatedCp = [newCp, ...current];
+          localStorage.setItem('demo_client_packages', JSON.stringify(updatedCp));
+          setClientPackages(updatedCp);
+        } else {
+          await addDoc(collection(db, 'client_packages'), clientPackagePayload);
+        }
+      }
+
+      if (usingClientPackageId) {
+        if (isDemoMode) {
+          const local = localStorage.getItem('demo_client_packages');
+          if (local) {
+            const arr = JSON.parse(local);
+            const updated = arr.map(cp => {
+              if (cp.id === usingClientPackageId) {
+                const newBalance = { ...cp.balance };
+                if (newBalance[serviceId] !== undefined) {
+                  newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+                }
+                const isFinished = Object.values(newBalance).every(val => val === 0);
+                return {
+                  ...cp,
+                  balance: newBalance,
+                  status: isFinished ? 'finished' : 'active',
+                  usage: [...(cp.usage || []), {
+                    bookingId: checkoutBooking.id,
+                    dateUsed: checkoutBooking.date || new Date().toISOString().split('T')[0],
+                    serviceId
+                  }]
+                };
+              }
+              return cp;
+            });
+            localStorage.setItem('demo_client_packages', JSON.stringify(updated));
+            setClientPackages(updated);
+          }
+        } else {
+          const cpRef = doc(db, 'client_packages', usingClientPackageId);
+          const cpSnap = await getDoc(cpRef);
+          if (cpSnap.exists()) {
+            const cpData = cpSnap.data();
+            const newBalance = { ...cpData.balance };
+            if (newBalance[serviceId] !== undefined) {
+              newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+            }
+            const isFinished = Object.values(newBalance).every(val => val === 0);
+            const newUsage = [...(cpData.usage || []), {
+              bookingId: checkoutBooking.id,
+              dateUsed: checkoutBooking.date || new Date().toISOString().split('T')[0],
+              serviceId
+            }];
+            await updateDoc(cpRef, {
+              balance: newBalance,
+              status: isFinished ? 'finished' : 'active',
+              usage: newUsage
+            });
+          }
+        }
+      }
+
       if (isDemoMode) {
         // Atualiza booking
-        const updatedB = bookings.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado' } : b);
+        const updatedB = bookings.map(b => b.id === checkoutBooking.id ? { 
+          ...b, 
+          status: 'finalizado',
+          isPackageUse: !!usingClientPackageId,
+          isPackageAcquisition: !!sellingPackageId,
+          packageUsedId: usingClientPackageId || null,
+          packageSoldId: sellingPackageId || null
+        } : b);
         setBookings(updatedB);
         localStorage.setItem('demo_bookings', JSON.stringify(updatedB));
         
@@ -1613,7 +1834,7 @@ const AdminMobileApp = () => {
             clientName: checkoutBooking.clientName,
             clientPhone: checkoutBooking.clientPhone || '',
             type: 'saida',
-            paymentMethod,
+            paymentMethod: usingClientPackageId ? 'Pacote (Débito)' : paymentMethod,
             value: totalServiceCost,
             description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}`,
             professionalId: checkoutBooking.profissional || 'jon',
@@ -1636,7 +1857,13 @@ const AdminMobileApp = () => {
         localStorage.setItem('demo_inventory', JSON.stringify(updatedInv));
       } else {
         const apptRef = doc(db, 'bookings', checkoutBooking.id);
-        await updateDoc(apptRef, { status: 'finalizado' });
+        await updateDoc(apptRef, { 
+          status: 'finalizado',
+          isPackageUse: !!usingClientPackageId,
+          isPackageAcquisition: !!sellingPackageId,
+          packageUsedId: usingClientPackageId || null,
+          packageSoldId: sellingPackageId || null
+        });
         syncBookingToGoogle(checkoutBooking.id).catch(err => console.warn(err));
         await addDoc(collection(db, 'financial_transactions'), payloadTx);
 
@@ -1648,7 +1875,7 @@ const AdminMobileApp = () => {
             clientName: checkoutBooking.clientName,
             clientPhone: checkoutBooking.clientPhone || '',
             type: 'saida',
-            paymentMethod,
+            paymentMethod: usingClientPackageId ? 'Pacote (Débito)' : paymentMethod,
             value: totalServiceCost,
             description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}`,
             professionalId: checkoutBooking.profissional || 'jon',
@@ -2951,7 +3178,7 @@ ${googleLink}
               todayBookings.map(b => (
                 <div key={b.id || b.clientName} className="mobile-appt-list-row" onClick={() => setSelectedBooking(b)}>
                   <div className="mobile-appt-left">
-                    <span className="appt-client">{b.clientName || '—'}</span>
+                    <span className="appt-client">{b.clientName || '—'} {b.isPackageUse && '📦'} {b.isPackageAcquisition && '🛒📦'}</span>
                     <span className="appt-service">{b.service?.name || b.serviceName || 'Serviço'}</span>
                   </div>
                   <div className="mobile-appt-right">
@@ -3293,7 +3520,7 @@ ${googleLink}
                                   cursor: 'pointer'
                                 }}
                               >
-                                <span style={{ fontWeight: 'bold', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#1a1310' }}>{b.clientName}</span>
+                                <span style={{ fontWeight: 'bold', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#1a1310' }}>{b.clientName} {b.isPackageUse && '📦'} {b.isPackageAcquisition && '🛒📦'}</span>
                                 <span style={{ opacity: 0.9, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize: '0.52rem', color: '#4a3f35' }}>{b.service?.name || b.serviceName}</span>
                               </div>
                             );
@@ -3535,6 +3762,14 @@ ${googleLink}
               <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
             </div>
 
+            <div className="mobile-menu-item" onClick={() => setActiveTab('pacotes')}>
+              <div className="mobile-menu-item-left">
+                <Package size={18} />
+                <span>Pacotes Promocionais</span>
+              </div>
+              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
+            </div>
+
             <div className="mobile-menu-item" onClick={() => setActiveTab('estoque')}>
               <div className="mobile-menu-item-left">
                 <Package size={18} />
@@ -3640,6 +3875,124 @@ ${googleLink}
       )}
 
       {/* SUB-TELAS NATIVAS ADMINISTRATIVE (BACKOFFICE) */}
+      {activeTab === 'pacotes' && (
+        <div className="mobile-backoffice-subview">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+            <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Pacotes Promocionais</h4>
+            <button 
+              type="button"
+              className="mobile-btn-outline" 
+              style={{ padding: '4px 10px', fontSize: '0.75rem', minHeight: '30px' }}
+              onClick={() => setActiveTab('opcoes')}
+            >
+              Voltar
+            </button>
+          </div>
+
+          <div className="mobile-config-sub-tabs" style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${packagesSubTab === 'modelos' ? 'active' : ''}`}
+              onClick={() => setPackagesSubTab('modelos')}
+              style={{ flex: 1, padding: '8px', fontSize: '0.8rem', fontWeight: 'bold', borderRadius: '6px', border: '1px solid var(--mobile-border)' }}
+            >
+              📋 Modelos (Templates)
+            </button>
+            <button 
+              type="button"
+              className={`config-sub-tab-btn ${packagesSubTab === 'ativos' ? 'active' : ''}`}
+              onClick={() => setPackagesSubTab('ativos')}
+              style={{ flex: 1, padding: '8px', fontSize: '0.8rem', fontWeight: 'bold', borderRadius: '6px', border: '1px solid var(--mobile-border)' }}
+            >
+              👥 Pacotes dos Clientes
+            </button>
+          </div>
+
+          {packagesSubTab === 'modelos' ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {packages.length === 0 ? (
+                <div className="mobile-empty-state">Nenhum modelo de pacote cadastrado. Cadastre no painel web.</div>
+              ) : (
+                packages.map(p => (
+                  <div key={p.id} className="service-card-compact" style={{ padding: 12, background: '#fff', borderRadius: 8, border: '1px solid var(--mobile-border)' }}>
+                    <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <strong style={{ fontSize: '0.95rem', color: '#1a202c' }}>{p.name}</strong>
+                      <span style={{ fontWeight: 'bold', color: 'var(--mobile-green)', fontSize: '0.9rem' }}>
+                        R$ {p.price.toFixed(2).replace('.', ',')}
+                      </span>
+                    </div>
+                    {p.description && (
+                      <p style={{ margin: '0 0 8px 0', fontSize: '0.78rem', color: '#718096', lineHeight: 1.4 }}>{p.description}</p>
+                    )}
+                    <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: '#4a5568' }}>
+                      <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Serviços inclusos:</div>
+                      {p.services && p.services.map((ps, idx) => {
+                        const sObj = services.find(s => s.id === ps.serviceId);
+                        return (
+                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                            <span>• {sObj ? sObj.name : 'Serviço'}</span>
+                            <strong>{ps.sessions} sessões</strong>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {clientPackages.length === 0 ? (
+                <div className="mobile-empty-state">Nenhum pacote vendido/ativo no momento.</div>
+              ) : (
+                clientPackages.map(cp => {
+                  return (
+                    <div key={cp.id} className="service-card-compact" style={{ padding: 12, background: cp.status === 'active' ? '#fff' : 'rgba(0,0,0,0.01)', borderRadius: 8, border: cp.status === 'active' ? '1px solid var(--mobile-border)' : '1px solid transparent', opacity: cp.status === 'active' ? 1 : 0.6 }}>
+                      <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <div>
+                          <strong style={{ fontSize: '0.95rem', color: '#1a202c', display: 'block' }}>{cp.clientName}</strong>
+                          <span style={{ fontSize: '0.72rem', color: '#718096' }}>{cp.packageName}</span>
+                        </div>
+                        <span className={`appt-status ${cp.status}`} style={{ fontSize: '0.65rem', padding: '2px 6px', height: 'fit-content' }}>
+                          {cp.status === 'active' ? 'ATIVO' : cp.status === 'finished' ? 'CONCLUÍDO' : 'PENDENTE'}
+                        </span>
+                      </div>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#a0aec0', marginBottom: 8 }}>
+                        <span>Adquirido em: {cp.datePurchased ? cp.datePurchased.split('-').reverse().join('/') : '—'}</span>
+                        <span style={{ fontWeight: 600, color: 'var(--mobile-green)' }}>Pago: R$ {Number(cp.pricePaid || 0).toFixed(2).replace('.', ',')}</span>
+                      </div>
+
+                      <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: '#4a5568' }}>
+                        <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Saldos de Sessões:</div>
+                        {Object.entries(cp.balance || {}).map(([sId, remaining]) => {
+                          const sObj = services.find(s => s.id === sId);
+                          // find sessions in template if available to show ratio e.g. 1/4
+                          const template = packages.find(p => p.id === cp.packageId);
+                          const totalSessions = template?.services?.find(ts => ts.serviceId === sId)?.sessions || remaining;
+                          const pct = totalSessions > 0 ? (remaining / totalSessions) * 100 : 0;
+                          return (
+                            <div key={sId} style={{ marginBottom: 6 }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                                <span>{sObj ? sObj.name : 'Serviço'}</span>
+                                <strong style={{ color: remaining > 0 ? 'var(--mobile-primary)' : '#718096' }}>{remaining} / {totalSessions} sessões</strong>
+                              </div>
+                              <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
+                                <div style={{ width: `${pct}%`, height: '100%', background: remaining > 0 ? 'var(--mobile-primary)' : '#cbd5e0', borderRadius: '3px' }}></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       {activeTab === 'clientes' && (
         <div className="mobile-backoffice-subview">
           {selectedClientPhone ? (
@@ -4804,10 +5157,28 @@ ${googleLink}
                     <span className="label">SERVIÇO</span>
                     <span className="value">{selectedBooking.service?.name || selectedBooking.serviceName}</span>
                   </div>
+                  {selectedBooking.isPackageUse && (
+                    <div className="mobile-detail-row">
+                      <span className="label" style={{ color: 'var(--mobile-primary)' }}>PACOTE UTILIZADO</span>
+                      <span className="value" style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Package size={14} /> Uso de Pacote (Crédito)
+                      </span>
+                    </div>
+                  )}
+                  {selectedBooking.isPackageAcquisition && (
+                    <div className="mobile-detail-row">
+                      <span className="label" style={{ color: 'var(--mobile-primary)' }}>PACOTE ADQUIRIDO</span>
+                      <span className="value" style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <Package size={14} /> Aquisição de Pacote
+                      </span>
+                    </div>
+                  )}
                   <div className="mobile-detail-row">
                     <span className="label">VALOR</span>
                     <span className="value" style={{ color: 'var(--mobile-green)', fontWeight: 800 }}>
-                      R$ {(selectedBooking.service?.price || selectedBooking.servicePrice || 150).toFixed(2).replace('.', ',')}
+                      {selectedBooking.isPackageUse 
+                        ? 'R$ 0,00 (Pacote)' 
+                        : `R$ ${(selectedBooking.service?.price || selectedBooking.servicePrice || 150).toFixed(2).replace('.', ',')}`}
                     </span>
                   </div>
                   <div className="mobile-detail-row">
@@ -5334,6 +5705,77 @@ ${googleLink}
                 />
               </div>
 
+              {/* Pacotes options */}
+              {availablePackagesForBooking.length > 0 && (
+                <div className="mobile-form-group" style={{ marginBottom: 12, background: 'rgba(0,0,0,0.02)', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
+                    <input 
+                      type="checkbox"
+                      checked={!!usingClientPackageId}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setUsingClientPackageId(availablePackagesForBooking[0].id);
+                          setSellingPackageId('');
+                        } else {
+                          setUsingClientPackageId('');
+                        }
+                      }}
+                    />
+                    Pagar com créditos de pacote?
+                  </label>
+                  {usingClientPackageId && (
+                    <select
+                      value={usingClientPackageId}
+                      onChange={e => setUsingClientPackageId(e.target.value)}
+                      style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem', borderRadius: '4px' }}
+                    >
+                      {availablePackagesForBooking.map(cp => {
+                        const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
+                        const servObj = services.find(s => s.name === bookingServiceName);
+                        const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
+                        return (
+                          <option key={cp.id} value={cp.id}>
+                            {cp.packageName} ({remaining} sessões restantes)
+                          </option>
+                        );
+                      })}
+                    </select>
+                  )}
+                </div>
+              )}
+
+              {!usingClientPackageId && packages.length > 0 && (
+                <div className="mobile-form-group" style={{ marginBottom: 12, background: 'rgba(0,0,0,0.02)', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
+                    <input 
+                      type="checkbox"
+                      checked={!!sellingPackageId}
+                      onChange={e => {
+                        if (e.target.checked) {
+                          setSellingPackageId(packages[0].id);
+                        } else {
+                          setSellingPackageId('');
+                        }
+                      }}
+                    />
+                    Vender pacote nesta comanda?
+                  </label>
+                  {sellingPackageId && (
+                    <select
+                      value={sellingPackageId}
+                      onChange={e => setSellingPackageId(e.target.value)}
+                      style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem', borderRadius: '4px' }}
+                    >
+                      {packages.map(p => (
+                        <option key={p.id} value={p.id}>
+                          {p.name} (R$ {p.price.toFixed(2)})
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              )}
+
               {checkoutBooking.prepayment > 0 && (
                 <div style={{ marginTop: 6, fontSize: '0.85rem', color: '#e53e3e', fontWeight: 600 }}>
                   <span>Sinal/Adiantamento Pago: </span>
@@ -5344,19 +5786,25 @@ ${googleLink}
               <div>
                 <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginTop: 10 }}>VALOR TOTAL COBRADO (RESTANTE)</span>
                 <strong style={{ fontSize: '1.4rem', color: 'var(--mobile-green)' }}>
-                  R$ {Math.max(0, (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150) + selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - discount - (checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0)).toFixed(2).replace('.', ',')}
+                  R$ {getCheckoutTotal().toFixed(2).replace('.', ',')}
                 </strong>
               </div>
             </div>
 
             <div className="mobile-form-group">
               <label>Forma de Pagamento *</label>
-              <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
-                <option value="Pix">⚡ PIX</option>
-                <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
-                <option value="Cartão de Débito">💳 Cartão de Débito</option>
-                <option value="Dinheiro">💵 Dinheiro</option>
-              </select>
+              {usingClientPackageId ? (
+                <div style={{ padding: '10px', width: '100%', background: 'rgba(0,0,0,0.03)', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '0.9rem', color: 'var(--mobile-primary)', fontWeight: 600 }}>
+                  📦 Débito do Pacote
+                </div>
+              ) : (
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
+                  <option value="Pix">⚡ PIX</option>
+                  <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
+                  <option value="Cartão de Débito">💳 Cartão de Débito</option>
+                  <option value="Dinheiro">💵 Dinheiro</option>
+                </select>
+              )}
             </div>
 
             {paymentMethod === 'Cartão de Crédito' && (

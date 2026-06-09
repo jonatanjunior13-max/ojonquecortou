@@ -167,6 +167,32 @@ const AdminDashboard = () => {
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
   const [discount, setDiscount] = useState(0);
 
+  // Packages integration states
+  const [sellingPackageId, setSellingPackageId] = useState('');
+  const [usingClientPackageId, setUsingClientPackageId] = useState('');
+
+  const clientPackages = React.useMemo(() => globalData.client_packages || [], [globalData.client_packages]);
+  const packages = React.useMemo(() => globalData.packages || [], [globalData.packages]);
+
+  const clientActivePackages = React.useMemo(() => {
+    if (!selectedBooking) return [];
+    const phone = selectedBooking.clientPhone;
+    const name = selectedBooking.clientName;
+    return clientPackages.filter(cp => 
+      cp.status === 'active' && 
+      ((phone && cp.clientPhone === phone) || (!phone && cp.clientName === name))
+    );
+  }, [selectedBooking, clientPackages]);
+
+  const availablePackagesForBooking = React.useMemo(() => {
+    if (!selectedBooking || !globalData.services) return [];
+    const bookingServiceName = selectedBooking.service?.name || selectedBooking.serviceName;
+    const servObj = globalData.services.find(s => s.name === bookingServiceName);
+    if (!servObj) return [];
+    
+    return clientActivePackages.filter(cp => cp.balance && cp.balance[servObj.id] > 0);
+  }, [selectedBooking, clientActivePackages, globalData.services]);
+
   useEffect(() => {
     const runBackgroundSync = async () => {
       try {
@@ -189,6 +215,8 @@ const AdminDashboard = () => {
       setDiscount(0);
       setInstallments('À vista');
       setApplyAnticipation(false);
+      setSellingPackageId('');
+      setUsingClientPackageId('');
     }
   }, [isCheckoutOpen]);
 
@@ -1254,7 +1282,12 @@ const AdminDashboard = () => {
   };
 
   const calculateTotal = () => {
-    const base = overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.price || selectedBooking?.servicePrice || 150);
+    const base = usingClientPackageId 
+      ? 0 
+      : (sellingPackageId 
+          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
+          : (overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.price || selectedBooking?.servicePrice || 150))
+        );
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
@@ -1262,34 +1295,42 @@ const AdminDashboard = () => {
   };
 
   const handleCloseComanda = async (booking) => {
-    const baseServicePrice = overrideBasePrice !== null ? overrideBasePrice : (booking.service?.price || booking.servicePrice || 150);
+    const baseServicePrice = usingClientPackageId 
+      ? 0 
+      : (sellingPackageId 
+          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
+          : (overrideBasePrice !== null ? overrideBasePrice : (booking.service?.price || booking.servicePrice || 150))
+        );
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
     const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal - discount - prepay);
 
     const itemsDescription = [
-      booking.service?.name || booking.serviceName || 'Serviço Base',
+      sellingPackageId 
+        ? `Compra de Pacote: ${packages.find(p => p.id === sellingPackageId)?.name || 'Pacote'}`
+        : (booking.service?.name || booking.serviceName || 'Serviço Base'),
       ...addedServices.map(s => s.name),
       ...addedProducts.map(p => `${p.quantity}x ${p.name}`)
     ].join(', ');
 
-      const baseMethodLabel = paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod;
-      const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+    const baseMethodLabel = usingClientPackageId 
+      ? `Pacote (Débito)` 
+      : (paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod);
+    const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
 
-      const transactionPayload = {
-        bookingId: booking.id,
-        date: booking.date || getLocalDateString(new Date()),
-        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-        clientName: booking.clientName,
-        clientPhone: booking.clientPhone || '',
-        type: 'entrada',
-        paymentMethod: methodLabel,
-        value: totalComanda,
-        discount: discount,
-        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
-      professionalId: booking.profissional || 'jon',
-      // Store products breakdown to discriminate costs and calculate profits
+    const transactionPayload = {
+      bookingId: booking.id,
+      date: booking.date || getLocalDateString(new Date()),
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: booking.clientName,
+      clientPhone: booking.clientPhone || '',
+      type: 'entrada',
+      paymentMethod: methodLabel,
+      value: totalComanda,
+      discount: discount,
+      description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
+      professionalId: booking.professionalId || booking.profissional || 'jon',
       productSales: addedProducts.map(p => {
         const match = products.find(prod => prod.id === p.productId);
         return {
@@ -1312,9 +1353,118 @@ const AdminDashboard = () => {
     }, 0);
     const totalServiceCost = mainServiceCost + extraServicesCost;
 
+    const bookingServiceName = booking.service?.name || booking.serviceName;
+    const servObj = globalData.services.find(s => s.name === bookingServiceName);
+    const serviceId = servObj ? servObj.id : '';
+
     try {
+      // 1. Process Packages (Sale or Debit)
+      if (sellingPackageId) {
+        const pkgTemplate = packages.find(p => p.id === sellingPackageId);
+        const initialBalance = {};
+        if (pkgTemplate && pkgTemplate.services) {
+          pkgTemplate.services.forEach(s => {
+            initialBalance[s.serviceId] = s.sessions;
+          });
+        }
+        if (serviceId && initialBalance[serviceId] !== undefined) {
+          initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
+        }
+
+        const clientPackagePayload = {
+          clientId: booking.clientPhone || booking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+          clientName: booking.clientName,
+          clientPhone: booking.clientPhone || '',
+          packageId: sellingPackageId,
+          packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
+          pricePaid: pkgTemplate ? pkgTemplate.price : 0,
+          paymentMethod: methodLabel,
+          datePurchased: booking.date || getLocalDateString(new Date()),
+          status: 'active',
+          balance: initialBalance,
+          usage: [
+            {
+              bookingId: booking.id,
+              dateUsed: booking.date || getLocalDateString(new Date()),
+              serviceId
+            }
+          ]
+        };
+
+        if (isDemoMode || !db) {
+          const local = localStorage.getItem('demo_client_packages');
+          const current = local ? JSON.parse(local) : [];
+          const newCp = { id: 'cp_' + Date.now(), ...clientPackagePayload };
+          const updatedCp = [newCp, ...current];
+          localStorage.setItem('demo_client_packages', JSON.stringify(updatedCp));
+          setGlobalData(prev => ({ ...prev, client_packages: updatedCp }));
+        } else {
+          await addDoc(collection(db, 'client_packages'), clientPackagePayload);
+        }
+      }
+
+      if (usingClientPackageId) {
+        if (isDemoMode || !db) {
+          const local = localStorage.getItem('demo_client_packages');
+          if (local) {
+            const arr = JSON.parse(local);
+            const updated = arr.map(cp => {
+              if (cp.id === usingClientPackageId) {
+                const newBalance = { ...cp.balance };
+                if (newBalance[serviceId] !== undefined) {
+                  newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+                }
+                const isFinished = Object.values(newBalance).every(val => val === 0);
+                return {
+                  ...cp,
+                  balance: newBalance,
+                  status: isFinished ? 'finished' : 'active',
+                  usage: [...(cp.usage || []), {
+                    bookingId: booking.id,
+                    dateUsed: booking.date || getLocalDateString(new Date()),
+                    serviceId
+                  }]
+                };
+              }
+              return cp;
+            });
+            localStorage.setItem('demo_client_packages', JSON.stringify(updated));
+            setGlobalData(prev => ({ ...prev, client_packages: updated }));
+          }
+        } else {
+          const cpRef = doc(db, 'client_packages', usingClientPackageId);
+          const cpSnap = await getDoc(cpRef);
+          if (cpSnap.exists()) {
+            const cpData = cpSnap.data();
+            const newBalance = { ...cpData.balance };
+            if (newBalance[serviceId] !== undefined) {
+              newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+            }
+            const isFinished = Object.values(newBalance).every(val => val === 0);
+            const newUsage = [...(cpData.usage || []), {
+              bookingId: booking.id,
+              dateUsed: booking.date || getLocalDateString(new Date()),
+              serviceId
+            }];
+            await updateDoc(cpRef, {
+              balance: newBalance,
+              status: isFinished ? 'finished' : 'active',
+              usage: newUsage
+            });
+          }
+        }
+      }
+
+      // 2. Finalize Booking Status
       if (isDemoMode || !db) {
-        setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
+        setBookings(prev => prev.map(b => b.id === booking.id ? { 
+          ...b, 
+          status: 'finalizado',
+          isPackageUse: !!usingClientPackageId,
+          isPackageAcquisition: !!sellingPackageId,
+          packageUsedId: usingClientPackageId || null,
+          packageSoldId: sellingPackageId || null
+        } : b));
 
         const localProducts = localStorage.getItem('demo_products');
         let updatedProdsList = products;
@@ -1359,7 +1509,13 @@ const AdminDashboard = () => {
         setTransactions(updatedTxList);
       } else {
         const apptRef = doc(db, 'bookings', booking.id);
-        await updateDoc(apptRef, { status: 'finalizado' });
+        await updateDoc(apptRef, { 
+          status: 'finalizado',
+          isPackageUse: !!usingClientPackageId,
+          isPackageAcquisition: !!sellingPackageId,
+          packageUsedId: usingClientPackageId || null,
+          packageSoldId: sellingPackageId || null
+        });
         syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
         for (const added of addedProducts) {
@@ -2933,7 +3089,7 @@ ${googleLink}
                                 fontWeight: 600
                               }}
                             >
-                              {b.time} - {b.clientName}
+                              {b.time} - {b.clientName} {b.isPackageUse && '📦'} {b.isPackageAcquisition && '🛒📦'}
                             </div>
                           );
                         })}
@@ -3017,6 +3173,20 @@ ${googleLink}
               <span className={`appt-status-dot ${activePopover.booking.status}`} />
               <span style={{ textTransform: 'capitalize' }}>Status: {activePopover.booking.status}</span>
             </div>
+            
+            {activePopover.booking.isPackageUse && (
+              <div className="booking-popover-row" style={{ color: 'var(--accent)', fontWeight: 'bold', gap: 6 }}>
+                <Package size={12} />
+                <span>Uso de Pacote</span>
+              </div>
+            )}
+            
+            {activePopover.booking.isPackageAcquisition && (
+              <div className="booking-popover-row" style={{ color: 'var(--accent)', fontWeight: 'bold', gap: 6 }}>
+                <Package size={12} />
+                <span>Aquisição de Pacote</span>
+              </div>
+            )}
             
             <div className="booking-popover-actions">
               <button 
@@ -3822,18 +3992,103 @@ ${googleLink}
                   </div>
                 </div>
 
+                {/* Pacotes options */}
+                {availablePackagesForBooking.length > 0 && (
+                  <div className="form-group" style={{ marginBottom: 12, background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '6px', border: '1px solid var(--rule)' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
+                      <input 
+                        type="checkbox"
+                        checked={!!usingClientPackageId}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setUsingClientPackageId(availablePackagesForBooking[0].id);
+                            setSellingPackageId('');
+                          } else {
+                            setUsingClientPackageId('');
+                          }
+                        }}
+                      />
+                      Pagar com créditos de pacote?
+                    </label>
+                    {usingClientPackageId && (
+                      <select
+                        value={usingClientPackageId}
+                        onChange={e => setUsingClientPackageId(e.target.value)}
+                        style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem' }}
+                      >
+                        {availablePackagesForBooking.map(cp => {
+                          const bookingServiceName = selectedBooking?.service?.name || selectedBooking?.serviceName;
+                          const servObj = globalData.services.find(s => s.name === bookingServiceName);
+                          const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
+                          return (
+                            <option key={cp.id} value={cp.id}>
+                              {cp.packageName} ({remaining} sessões restantes)
+                            </option>
+                          );
+                        })}
+                      </select>
+                    )}
+                  </div>
+                )}
+
+                {!usingClientPackageId && packages.length > 0 && (
+                  <div className="form-group" style={{ marginBottom: 12, background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '6px', border: '1px solid var(--rule)' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
+                      <input 
+                        type="checkbox"
+                        checked={!!sellingPackageId}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSellingPackageId(packages[0].id);
+                          } else {
+                            setSellingPackageId('');
+                          }
+                        }}
+                      />
+                      Vender pacote nesta comanda?
+                    </label>
+                    {sellingPackageId && (
+                      <select
+                        value={sellingPackageId}
+                        onChange={e => setSellingPackageId(e.target.value)}
+                        style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem' }}
+                      >
+                        {packages.map(p => (
+                          <option key={p.id} value={p.id}>
+                            {p.name} (R$ {p.price.toFixed(2)})
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
+
                 <div className="form-group" style={{ marginBottom: 12 }}>
                   <label>Forma de Pagamento *</label>
-                  <select 
-                    value={paymentMethod} 
-                    onChange={e => setPaymentMethod(e.target.value)}
-                    style={{ padding: '8px', width: '100%' }}
-                  >
-                    <option value="Pix">Pix</option>
-                    <option value="Cartão de Crédito">Cartão de Crédito</option>
-                    <option value="Cartão de Débito">Cartão de Débito</option>
-                    <option value="Dinheiro">Dinheiro</option>
-                  </select>
+                  {usingClientPackageId ? (
+                    <div style={{ padding: '8px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid var(--rule)', fontSize: '0.9rem', color: 'var(--accent)', fontWeight: 600 }}>
+                      Débito do Pacote
+                    </div>
+                  ) : (
+                    <select 
+                      value={paymentMethod} 
+                      onChange={e => {
+                        const val = e.target.value;
+                        setPaymentMethod(val);
+                        if (val === 'Cartão de Crédito' || val === 'Cartão de Débito') {
+                          setApplyAnticipation(true);
+                        } else {
+                          setApplyAnticipation(false);
+                        }
+                      }}
+                      style={{ padding: '8px', width: '100%' }}
+                    >
+                      <option value="Pix">Pix</option>
+                      <option value="Cartão de Crédito">Cartão de Crédito</option>
+                      <option value="Cartão de Débito">Cartão de Débito</option>
+                      <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                  )}
                 </div>
 
                 {paymentMethod === 'Cartão de Crédito' && (
