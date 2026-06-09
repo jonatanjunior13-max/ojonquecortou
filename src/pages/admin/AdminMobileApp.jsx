@@ -5730,6 +5730,7 @@ ${googleLink}
                   <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
                     <input 
                       type="checkbox"
+                      style={{ width: '18px', height: '18px', minHeight: 'auto', flexShrink: 0, margin: 0, cursor: 'pointer' }}
                       checked={!!usingClientPackageId}
                       onChange={e => {
                         if (e.target.checked) {
@@ -5768,6 +5769,7 @@ ${googleLink}
                   <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
                     <input 
                       type="checkbox"
+                      style={{ width: '18px', height: '18px', minHeight: 'auto', flexShrink: 0, margin: 0, cursor: 'pointer' }}
                       checked={!!sellingPackageId}
                       onChange={e => {
                         if (e.target.checked) {
