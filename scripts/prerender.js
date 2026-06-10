@@ -142,7 +142,7 @@ let faqBody = `
 fullFaqList.forEach(faq => {
   faqBody += `
         <dt style="font-weight: bold; margin-top: 16px; font-size: 1.1rem;">${faq.q}</dt>
-        <dd style="margin-left: 0; margin-top: 8px; color: #ccc;">${faq.a}</dd>
+        <dd style="margin-left: 0; margin-top: 8px; color: #1a1310;">${faq.a}</dd>
   `;
 });
 faqBody += `
@@ -230,6 +230,7 @@ const localBusinessSchema = {
   "@type": ["HairSalon", "LocalBusiness"],
   "@id": "https://www.ojonquecortou.com.br/#localbusiness",
   "name": "O Jon que Cortou — Studio do Jon",
+  "alternateName": "Studio do Jon",
   "url": "https://www.ojonquecortou.com.br",
   "logo": "https://www.ojonquecortou.com.br/logo.png",
   "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
@@ -269,6 +270,21 @@ const localBusinessSchema = {
       "closes": "17:00"
     }
   ],
+  "knowsAbout": [
+    "Corte de cabelo cacheado",
+    "Corte Híbrido",
+    "Transição capilar",
+    "Visagismo para cachos",
+    "Coloração em cabelo cacheado",
+    "Método Leitura de Fio"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "266",
+    "bestRating": "5",
+    "worstRating": "1"
+  },
   "founder": {
     "@type": "Person",
     "@id": "https://www.ojonquecortou.com.br/#jonatan",
@@ -285,7 +301,7 @@ const localBusinessSchema = {
       "Método Leitura de Fio"
     ],
     "sameAs": [
-      "https://www.instagram.com/ojonquecortou"
+      "https://www.instagram.com/ojonquecortou/"
     ]
   },
   "areaServed": {
