@@ -438,7 +438,7 @@ const pages = [
   {
     route: '/',
     title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
-    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Visagismo, corte a seco, transição capilar e tratamento personalizado.',
+    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçara). Corte a seco, visagismo e transição capilar.',
     schema: {
       "@context": "https://schema.org",
       "@graph": [localBusinessSchema, founderPersonSchema]
@@ -493,7 +493,7 @@ const pages = [
   {
     route: '/depoimentos',
     title: 'Depoimentos e Avaliações de Clientes | Studio do Jon BH',
-    description: 'Veja o que nossas clientes dizem sobre suas experiências de corte e tratamento de cachos com o Jon em Belo Horizonte. Avaliações reais de quem ama seus cachos.',
+    description: 'Depoimentos e avaliações de clientes do Studio do Jon em Belo Horizonte. Veja fotos e relatos reais sobre cortes, tratamentos e resultados.',
     bodyInsert: reviewsBody,
     schema: reviewsSchema
   },
@@ -557,12 +557,12 @@ const pages = [
   {
     route: '/servicos/descoloracao-cabelo-cacheado',
     title: 'Descoloração em Cabelo Cacheado em BH | Studio do Jon',
-    description: 'Descoloração em cabelo cacheado feita com protocolo especializado em BH. O Studio do Jon avalia porosidade, histórico químico e textura antes de qualquer processo. Agende.'
+    description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho. Agende.'
   },
   {
     route: '/servicos/visagismo-cacheado',
     title: 'Visagismo para Cabelos Cacheados em BH | Studio do Jon',
-    description: 'Visagismo especializado em cabelos cacheados em Belo Horizonte. O Studio do Jon analisa formato do rosto, textura e estilo de vida antes de definir o corte ideal para você.'
+    description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal. Agende online.'
   },
   {
     route: '/servicos/corte-hibrido',
