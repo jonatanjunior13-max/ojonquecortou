@@ -511,7 +511,7 @@ hr.technical-rule {
 .method { background: var(--dark-bg); color: var(--ink-2); }
 .method .eyebrow { color: rgba(245,237,219,0.62); }
 .method .eyebrow::before { background: currentColor; }
-.method h2.display { color: var(--ink); }
+.method h2.display { color: var(--bg-warm); }
 .method .lead { color: rgba(245,237,219,0.78); }
 .method hr.rule { border-top-color: rgba(245,237,219,0.14); }
 .method-steps {
@@ -547,7 +547,7 @@ hr.technical-rule {
   font-size: 30px;
   line-height: 1.05;
   letter-spacing: -0.015em;
-  color: var(--ink);
+  color: var(--bg-warm);
 }
 .step .desc {
   color: rgba(245,237,219,0.7);
@@ -947,7 +947,7 @@ hr.technical-rule {
   position: relative; z-index: 1;
 }
 @media (min-width: 900px) { .cta-grid { grid-template-columns: 1.4fr 1fr; gap: 80px; } }
-.cta h2.display { color: var(--ink); }
+.cta h2.display { color: var(--bg-warm); }
 .cta h2.display .italic { color: var(--accent-warm); }
 .cta .lead { color: rgba(255,255,255,0.78); }
 .cta .info-list {
@@ -968,7 +968,7 @@ hr.technical-rule {
   font-family: var(--serif);
   font-size: 22px; line-height: 1.25;
   letter-spacing: -0.01em;
-  color: var(--ink);
+  color: var(--bg-warm);
 }
 .booking-card {
   background: rgba(255,255,255,0.05);
