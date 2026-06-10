@@ -6,28 +6,33 @@ import '../pages/ServicesPage.css';
 
 const faqs = [
   {
-    question: "Onde o Studio do Jon está localizado?",
-    answer: "Estamos no bairro Caiçara, em Belo Horizonte (BH), na Rua Francisco Ovidio, 184 — próximo à Avenida Pedro II e à Igreja Santa Teresinha."
+    question: "O que é o Método Leitura de Fio?",
+    answer: "O Método Leitura de Fio é uma metodologia de diagnóstico exclusiva criada pelo especialista Jon em Belo Horizonte. Ela consiste em analisar a saúde do couro cabeludo, o padrão real de curvatura, a porosidade e a elasticidade do fio através de 7 etapas técnicas antes de realizar qualquer corte. Isso garante que o corte respeite o fator de encolhimento e o caimento natural dos fios ondulados, cacheados e crespos, evitando surpresas indesejadas e permitindo que você mantenha a finalização perfeita no seu dia a dia."
   },
   {
-    question: "Como faço para agendar um horário?",
-    answer: 'O agendamento é feito de forma simples pelo nosso <a href="/agendar" style="text-decoration: underline; font-weight: bold; color: inherit;">calendário online</a> — escolha o serviço, a data e o horário direto pelo site, sem precisar ligar ou instalar nenhum aplicativo.'
+    key: "especialidade",
+    question: "Qual é a especialidade do Studio do Jon?",
+    answer: "O Studio do Jon é um salão especializado no atendimento técnico e personalizado de cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Nossa especialidade é a lapidação estética de curvaturas do tipo 2A ao 4C utilizando o visagismo para desenhar volumes e formas sob medida. Não realizamos procedimentos de alisamento, escovas alisadoras ou químicas de modificação térmica da fibra. Focamos 100% no tratamento, transição e valorização da curvatura natural do seu fio."
   },
   {
-    question: "Qual o valor do corte para cabelo cacheado em BH?",
-    answer: "O investimento para o corte especializado começa em R$ 190. Este valor inclui consultoria, higienização, corte técnico (seco ou molhado) e finalização personalizada."
+    question: "Quanto custa um corte no Studio do Jon?",
+    answer: "O investimento para o corte de cabelo especializado no Studio do Jon varia de R$ 190 a R$ 230. Esse valor engloba o protocolo de atendimento completo: o diagnóstico técnico da Leitura de Fio (7 etapas de análise), a higienização com produtos livres de sulfatos e petrolatos, o corte personalizado e a finalização com secagem em difusor para validação do caimento. Você não paga taxas adicionais pela consultoria capilar ou pela Leitura de Fio, pois ela é um pré-requisito obrigatório para garantir a excelência."
   },
   {
-    question: "Quais curvaturas de cabelo o Jon atende?",
-    answer: "Jon atende todas as curvaturas: ondulados (2A, 2B, 2C), cacheados (3A, 3B, 3C) e crespos (4A, 4B, 4C), incluindo transição capilar. Cada curvatura tem características diferentes de porosidade e contração — o corte respeita isso."
+    question: "O Studio do Jon faz descoloração em cabelo cacheado?",
+    answer: "Sim, realizamos mechas e descoloração em cabelos cacheados, crespos e ondulados. No entanto, o procedimento só é executado após a validação da saúde do fio no diagnóstico da Leitura de Fio. Avaliamos a porosidade, a elasticidade e o histórico químico para garantir que a fibra capilar suportará a descoloração sem perder a definição do cacho ou sofrer quebra. O serviço é focado em clarear mantendo a integridade e a saúde estrutural dos seus fios."
   },
   {
-    question: "Preciso lavar o cabelo antes de ir?",
-    answer: "Venha com o cabelo seco e sem produto de finalização pesado. Jon faz a leitura de fio com o cabelo seco — é assim que a curvatura real aparece. Isso define o corte antes de qualquer tesoura."
+    question: "Como agendar no Studio do Jon?",
+    answer: "O agendamento no Studio do Jon é feito diretamente pelo nosso site de forma totalmente online e instantânea. Basta acessar o link do calendário (/agendar), escolher o serviço desejado (como corte especializado, visagismo ou transição), selecionar a data e o melhor horário disponível e preencher seus dados de contato. A confirmação do seu horário é feita de forma automática por e-mail, sem a necessidade de ligações ou esperas no WhatsApp."
   },
   {
-    question: "Quais são os horários de funcionamento?",
-    answer: "Atendemos de Terça a Sexta, das 09:00 às 19:00, e aos Sábados, das 09:00 às 17:00."
+    question: "Como o corte se adapta a quem tem mais de uma textura na cabeça?",
+    answer: "É extremamente comum ter de duas a três curvaturas diferentes na mesma cabeça (como ondas suaves nas laterais e cachos fechados no topo). Através da Leitura de Fio a seco, identificamos onde cada textura se posiciona e calculamos a força de encolhimento de cada quadrante. A partir disso, o corte é desenhado de forma híbrida e desconectada para equilibrar a distribuição do volume, garantindo que o design final seja simétrico e tenha um caimento harmonioso."
+  },
+  {
+    question: "Como funciona o corte para quem está em transição capilar?",
+    answer: "Se você está passando pela transição capilar, oferecemos cortes progressivos que ajudam a remover as pontas com química de forma gradual. Isso permite que você mantenha um comprimento confortável sem a necessidade de fazer o Big Chop radical logo no primeiro dia, caso não queira. O corte é adaptado para disfarçar a diferença de texturas entre a raiz natural e a ponta lisa, proporcionando volume e movimento enquanto o cacho natural cresce."
   }
 ];
 

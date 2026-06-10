@@ -183,7 +183,7 @@ export const posts = [
           "name": "Leitura de Fio é um serviço pago?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre."
+            "text": "Não. É parte do atendimento padrão do Studio do Jon. Todo corte começa com as 7 etapas, sempre. O valor do corte já engloba todo o diagnóstico inicial de forma integrada."
           }
         },
         {
@@ -191,7 +191,7 @@ export const posts = [
           "name": "Quanto tempo leva a Leitura de Fio?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Em média de 15 a 30 minutes antes do corte começar. Pode ser mais longa se o histórico for complexo."
+            "text": "Em média, o diagnóstico inicial leva de quinze a trinta minutos antes de qualquer corte. Pode ser maior em casos de histórico químico complexo ou transição capilar longa."
           }
         },
         {

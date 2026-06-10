@@ -468,12 +468,31 @@ posts.forEach(post => {
     </noscript>
   `;
 
+  let pageSchema = articleSchema;
+  if (post.faqSchema) {
+    pageSchema = {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          ...articleSchema,
+          "@context": undefined // remove context for sub-items in @graph
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": post.faqSchema.mainEntity
+        }
+      ]
+    };
+    // Clean up the undefined context property
+    delete pageSchema["@graph"][0]["@context"];
+  }
+
   pages.push({
     route: `/blog/${post.slug}`,
     title: post.title,
     description: postDesc,
     image: post.image,
-    schema: articleSchema,
+    schema: pageSchema,
     bodyInsert: noscriptContent
   });
 });
