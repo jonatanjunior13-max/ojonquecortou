@@ -98,7 +98,7 @@ const fullFaqList = [
 // Content blocks for noscript body injection
 const aboutBody = `
   <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Muito Prazer, O Jon.</h1>
       <p>Especialista em curvaturas e visagismo no coração do bairro Caiçara, BH.</p>
       <h2>O Cabelo não mente. O corte errado, sim.</h2>
@@ -118,7 +118,7 @@ const aboutBody = `
 
 const investmentBody = `
   <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Investimento — Studio do Jon</h1>
       <p>Antes de qualquer tesoura, vem o diagnóstico. O Método Leitura de Fio está incluído em todo atendimento — sem cobrança extra. O que você paga é pelo resultado que foi planejado desde o início.</p>
       <h2>Nossos Valores e Serviços</h2>
@@ -134,7 +134,7 @@ const investmentBody = `
 // Build dynamically the FAQ body insert
 let faqBody = `
   <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Perguntas Frequentes — Studio do Jon</h1>
       <p>Respostas diretas sobre o Método Leitura de Fio, diagnóstico capilar e cuidados com cabelos ondulados, cacheados e crespos.</p>
       <dl>
@@ -154,7 +154,7 @@ faqBody += `
 // Build dynamically the Services page body insert
 let servicesBody = `
   <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Nossos Serviços — Studio do Jon</h1>
       <p>Processos técnicos focados na saúde e na definição real do seu cacho. Especialidade em cabelos ondulados, cacheados e crespos em Belo Horizonte.</p>
       <div style="display: grid; gap: 24px; margin-top: 24px;">
@@ -178,7 +178,7 @@ servicesBody += `
 
 const metodoBody = `
   <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Método Leitura de Fio — Studio do Jon</h1>
       <p>O Método Leitura de Fio não é meramente uma técnica de corte de cabelo, mas sim um protocolo clínico-estético e científico de análise capilar que precede qualquer intervenção com a tesoura. Desenvolvido para atender às complexidades biológicas, mecânicas e estruturais dos cabelos com curvatura (ondulados, cacheados, crespos e crespíssimos), este método visa decifrar o comportamento individual de cada fibra capilar. Para compreender a necessidade deste diagnóstico, é indispensável analisar a física, a biologia e a química do cabelo natural em Belo Horizonte.</p>
       
@@ -339,7 +339,7 @@ const fallbackReviews = [
 
 let reviewsBody = `
   <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Experiências de Clientes no Studio do Jon</h1>
       <p>Depoimentos e avaliações reais de clientes com cabelos cacheados, crespos e ondulados em Belo Horizonte.</p>
       <div style="display: grid; gap: 20px; margin-top: 20px;">
@@ -572,7 +572,7 @@ SEED_SERVICES.forEach(service => {
 
   const serviceBody = `
     <noscript>
-      <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
         <h1>${service.name} em Belo Horizonte</h1>
         <p style="font-weight: bold; color: #ccc;">${service.tagline || ''}</p>
         <hr />

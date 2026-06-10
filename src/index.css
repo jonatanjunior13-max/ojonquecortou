@@ -1,18 +1,18 @@
 :root {
-  --bg: #0a0a0a;
-  --bg-warm: #121212;
-  --surface: #171717;
-  --ink: #ffffff;
-  --ink-2: #e5e5e5;
-  --muted: #a3a3a3;
-  --muted-2: #737373;
-  --rule: rgba(255, 255, 255, 0.14);
-  --rule-soft: rgba(255, 255, 255, 0.08);
+  --bg: #EFE5D2;
+  --bg-warm: #F5EDDB;
+  --surface: #FAF5E8;
+  --ink: #1A1310;
+  --ink-2: #2E241E;
+  --muted: #6B5A4B;
+  --muted-2: #8A7866;
+  --rule: rgba(26, 19, 16, 0.14);
+  --rule-soft: rgba(26, 19, 16, 0.08);
   --accent: #c8852a;
   --accent-deep: #965f1c;
   --accent-warm: #dca354;
-  --dark-bg: #0a0a0a;
-  --dark-surface: #171717;
+  --dark-bg: #1A1310;
+  --dark-surface: #221915;
 
   --serif: "DM Serif Display", "Times New Roman", serif;
   --serif-italic: "Instrument Serif", "Times New Roman", serif;
@@ -135,7 +135,7 @@ hr.technical-rule {
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(10, 10, 10, 0.86);
+  background: rgba(239, 229, 210, 0.86);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   padding: 10px 0;
