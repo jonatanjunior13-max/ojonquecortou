@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X } from 'lucide-react';
+import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Percent, Layers, HelpCircle, X } from 'lucide-react';
 import './Admin.css';
 
 import { SEED_SERVICES } from '../../data/seedServices';
