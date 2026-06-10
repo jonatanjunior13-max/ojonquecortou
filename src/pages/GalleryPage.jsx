@@ -316,7 +316,7 @@ const GalleryPage = () => {
             {galleryImages.map((item, index) => (
               <div key={item.id} className={`gallery-item reveal active stagger-${(index % 4) + 1}`}>
                 <div className="gallery-img-wrap">
-                  <img src={item.url} alt={item.title} className="gallery-img" />
+                  <img src={item.url} alt={`${item.title} — ${item.description} no Studio do Jon em Belo Horizonte`} className="gallery-img" />
                   <div className="gallery-overlay">
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>

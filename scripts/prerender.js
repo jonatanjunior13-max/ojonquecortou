@@ -176,6 +176,55 @@ servicesBody += `
   </noscript>
 `;
 
+const metodoBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <h1>Método Leitura de Fio — Studio do Jon</h1>
+      <p>O Método Leitura de Fio não é meramente uma técnica de corte de cabelo, mas sim um protocolo clínico-estético e científico de análise capilar que precede qualquer intervenção com a tesoura. Desenvolvido para atender às complexidades biológicas, mecânicas e estruturais dos cabelos com curvatura (ondulados, cacheados, crespos e crespíssimos), este método visa decifrar o comportamento individual de cada fibra capilar. Para compreender a necessidade deste diagnóstico, é indispensável analisar a física, a biologia e a química do cabelo natural em Belo Horizonte.</p>
+      
+      <h2>A Física e a Mecânica do Cabelo com Curvatura</h2>
+      <p>O comportamento tridimensional de um cacho é regido por leis físicas de tensão, elasticidade, gravidade e o que chamamos de "fator de encolhimento". Enquanto o cabelo liso cresce de forma cilíndrica e uniforme, exercendo uma força de tração linear e descendente orientada pela gravidade, o cabelo com curvatura se comporta como um sistema de molas helicoidais de diâmetros variáveis.</p>
+      <p>Cada curva no fio de cabelo representa um ponto de concentração de tensão mecânica e de distribuição desigual de forças. Quando o cabelo está molhado, o peso da água rompe temporariamente as ligações de hidrogênio da fibra capilar, esticando a mola natural e mascarando o comprimento e o volume reais. Ao secar, as ligações de hidrogênio se reformam, e o fio encolhe. Esse encolhimento pode variar de 10% em cabelos ondulados até mais de 75% em cabelos crespos tipo 4C. Cortar o cabelo molhado sem compreender a física da sua mola individual resulta em assimetrias severas e na perda indesejada de comprimento, o famoso "efeito pirâmide" ou cortes excessivamente curtos. O Método Leitura de Fio mapeia essa força elástica antes da tesoura encostar no cabelo, prevendo com exatidão como cada mecha se comportará após a secagem e a finalização.</p>
+
+      <h2>A Biologia Celular do Folículo Piloso e a Queratinização</h2>
+      <p>A diferença fundamental entre os tipos de cabelo começa abaixo da pele, no folículo piloso. O folículo que dá origem ao cabelo liso é circular e perpendicular à superfície do couro cabeludo. Já o folículo de cabelos cacheados e crespos possui formato elíptico, achatado e curvo, assemelhando-se a um gancho ou uma letra "S".</p>
+      <p>Esse formato elíptico força as células germinativas na matriz do bulbo capilar a se dividirem de maneira assimétrica. À medida que o fio é empurrado para cima através do canal folicular curvo, as células sofrem um processo de queratinização desigual. A queratina (proteína estrutural rica em cisteína) é depositada de forma irregular ao longo do diâmetro do fio. Há uma concentração maior de ortocórtex (células corticais com queratina mais flexível e ligações mais distendidas) na parte externa da curvatura, e de paracórtex (células com queratina mais rígida e ligações densas) na parte interna. Essa distribuição assimétrica cria uma curvatura intrínseca na fibra. Além disso, a seção transversal do fio não é perfeitamente redonda: nos cabelos ondulados ela é ovalada, nos cacheados é elíptica e nos crespos é achatada e irregular. Essa variação geométrica torna o fio de cabelo inerentemente suscetível a pontos de fragilidade mecânica em cada dobra da espiral, onde a cutícula é naturalmente mais fina e exposta.</p>
+
+      <h2>O Diagnóstico Técnico de Porosidade e Elasticidade</h2>
+      <p>Para estruturar um cronograma capilar eficiente e executar um corte seguro, o Método Leitura de Fio realiza um mapeamento detalhado da integridade da fibra capilar em duas frentes fundamentais: porosidade e elasticidade.</p>
+      <ul>
+        <li><strong>Porosidade Capilar:</strong> Refere-se à capacidade da cutícula (a camada externa de escamas sobrepostas do fio) de absorver e reter umidade e nutrientes.
+          <ul>
+            <li><strong>Baixa Porosidade:</strong> As cutículas estão extremamente compactadas e fechadas, dificultando a penetração da água ou de agentes hidratantes, mas retendo-os por muito tempo uma vez que conseguem entrar. Exige técnicas de calor ameno ou produtos de base aquosa com baixo peso molecular.</li>
+            <li><strong>Média Porosidade:</strong> As cutículas estão levemente abertas, permitindo uma absorção equilibrada e retenção ideal de tratamentos. É o estado de saúde ideal do fio natural.</li>
+            <li><strong>Alta Porosidade:</strong> As cutículas estão abertas, danificadas ou ausentes devido a agressões químicas (como descolorações ou relaxamentos) ou físicas (exposição solar, calor excessivo). O fio absorve água instantaneamente, mas a perde com a mesma velocidade, tornando-se seco, áspero e opaco. Necessita de reposição lipídica profunda e selamento cuticular ácido para reter a hidratação.</li>
+          </ul>
+        </li>
+        <li><strong>Elasticidade Capilar:</strong> É a capacidade do fio de se alongar sob tensão mecânica e retornar ao seu estado original sem se romper. Em nossa análise, realizamos testes mecânicos suaves no fio úmido. Se o fio estica e não volta, ou se parte com facilidade ao menor esforço, há uma deficiência severa de proteínas estruturais (queratina). Nesses casos, procedimentos químicos como descolorações são expressamente contraindicados, priorizando-se a reconstrução ácida imediata. Se o fio está rígido, duro e quebra sem apresentar qualquer flexibilidade, há um excesso de queratina ou falta de hidratação lipídica, exigindo tratamentos amaciantes e nutritivos.</li>
+      </ul>
+
+      <h2>O Mapeamento de Curvaturas (Sistemas de Classificação)</h2>
+      <p>Embora as tabelas de classificação (2A a 4C) sirvam como ponto de partida acadêmico, o Método Leitura de Fio vai além ao identificar que uma única cabeça frequentemente abriga múltiplos padrões de curvatura.</p>
+      <ul>
+        <li><strong>Cabelos Ondulados (Tipo 2):</strong> Possuem padrão em formato de "S" suave. São caracterizados por uma raiz mais lisa e ondas que começam no comprimento. Exigem cortes que tragam leveza e retirem o peso excessivo das pontas sem criar frizz, pois o excesso de peso estica a onda, fazendo com que o cabelo perca definição e pareça sem forma.</li>
+        <li><strong>Cabelos Cacheados (Tipo 3):</strong> Apresentam espirais bem definidas desde a raiz ou do meio do fio. O fator de encolhimento é moderado a alto. O maior desafio é a distribuição natural da oleosidade produzida pelas glândulas sebáceas do couro cabeludo, que não consegue percorrer a extensão em espiral do fio, tornando o comprimento e as pontas naturalmente secos. Exigem corte híbrido com graduações precisas para distribuir o volume harmonicamente.</li>
+        <li><strong>Cabelos Crespos e Crespíssimos (Tipo 4):</strong> Possuem curvatura extremamente estreita, em formato de "Z" ou pequenas molas muito compactas. O fator de encolhimento é altíssimo e a fibra é extremamente fina e delicada, apesar da aparência volumosa. O corte para cabelos crespos exige precisão milimétrica e escultura geométrica que valorize o volume imponente, respeitando a fragilidade estrutural do fio.</li>
+      </ul>
+
+      <h2>O Visagismo Integrado ao Cabelo Natural</h2>
+      <p>Cortar cachos não é apenas uma questão de engenharia capilar; é uma arte de comunicação visual. O visagismo aplicado no Método Leitura de Fio analisa as proporções áureas do rosto, as linhas de força (horizontais, verticais e diagonais) e a linguagem não-verbal que o corte transmite.</p>
+      <ul>
+        <li><strong>Linhas Verticais e Diagonais Longas:</strong> Transmitem força, dinamismo e alongam a silhueta facial. Indicadas para suavizar rostos redondos ou mandíbulas proeminentes.</li>
+        <li><strong>Linhas Horizontais:</strong> Criam estabilidade, peso e alargam visualmente o rosto. Excelentes para equilibrar rostos longos ou testas proeminentes.</li>
+        <li><strong>Volume Superior:</strong> Eleva o olhar, transmite autoridade e alongam o perfil.</li>
+        <li><strong>Volume Lateral:</strong> Suaviza traços angulares e traz suavidade e acolhimento à imagem pessoal.</li>
+      </ul>
+      <p>Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçara em Belo Horizonte.</p>
+    </article>
+  </noscript>
+`;
+
+
 // Global organization / local business schema graphs
 const localBusinessSchema = {
   "@type": ["HairSalon", "LocalBusiness"],
@@ -227,6 +276,7 @@ const founderPersonSchema = {
   "@id": "https://www.ojonquecortou.com.br/#person",
   "name": "Jonatan Junior",
   "jobTitle": "Cabeleireiro Especialista em Cachos",
+  "description": "Jonatan Junior (O Jon) é especialista em curvaturas e visagismo no bairro Caiçara, Belo Horizonte. Criador do Método Leitura de Fio.",
   "worksFor": {
     "@id": "https://www.ojonquecortou.com.br/#localbusiness"
   },
@@ -234,6 +284,115 @@ const founderPersonSchema = {
     "https://www.instagram.com/ojonquecortou/"
   ]
 };
+
+const fallbackReviews = [
+  {
+    author_name: "Claudia Dantas",
+    text: "Fiquei encantada com o Jon. Nos meus quase 60 anos de vida, nunca ninguém cortou tão bem meu cabelo! E finalmente entendi como meus cachos funcionam. Ele é ESPETACULAR!!!!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Crespo · BH"
+  },
+  {
+    author_name: "Maria Isabel",
+    text: "Olha, eu tinha expectativas mas elas foram superadas. Indico muito corte com tratamento porque faz muita diferença. Meu cabelo chegou xoxo e anêmico e saiu lindíssimo.",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cacheado · BH"
+  },
+  {
+    author_name: "Fernanda Baiao",
+    text: "O Jon é fantástico! Super educado, atencioso, tem uma escuta super ativa, me entendeu, entendeu meu cabelo e me ensinou a finalizar de uma forma muito mais simples do que eu jamais imaginei! Amei o corte, valorizou demais meus cachos!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Ondulado · BH"
+  },
+  {
+    author_name: "Ana Beatriz",
+    text: "Eu amei o resultado, o Jon foi super gentil do início ao fim, ele é uma pessoa muito legal de conversar. Além disso, foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cacheado · Caiçara"
+  },
+  {
+    author_name: "Bernardo Pereira",
+    text: "Atendimento ótimo! Entendeu minhas necessidades e me ajudou no cuidado do meu cabelo, super leve e descontraído.",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cabelo masculino · BH"
+  },
+  {
+    author_name: "Cristinna da Silva",
+    text: "Incrível! Excelente profissional, atencioso! Fiz corte e coloração, e o resultado foi melhor que o esperado! Jon é muuuito talentoso! Recomendo, com toda certeza!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Coloração · BH"
+  },
+  {
+    author_name: "Thaisa Macedo",
+    text: "Profissional maravilhoso, muito agradável e cuidadoso. Gostei muito!",
+    rating: 5,
+    relative_time_description: "Avaliação no Google",
+    curl_type: "Cacheado · BH"
+  }
+];
+
+let reviewsBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #fff; background: #0a0a0a;">
+      <h1>Experiências de Clientes no Studio do Jon</h1>
+      <p>Depoimentos e avaliações reais de clientes com cabelos cacheados, crespos e ondulados em Belo Horizonte.</p>
+      <div style="display: grid; gap: 20px; margin-top: 20px;">
+`;
+fallbackReviews.forEach(r => {
+  reviewsBody += `
+        <div style="border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 8px;">
+          <h3>${r.author_name} — <small>${r.curl_type}</small></h3>
+          <p style="color: #c8852a;">Nota: ${"★".repeat(r.rating)} (${r.rating}/5)</p>
+          <p style="font-style: italic;">"${r.text}"</p>
+        </div>
+  `;
+});
+reviewsBody += `
+      </div>
+    </article>
+  </noscript>
+`;
+
+const reviewsSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    localBusinessSchema,
+    ...fallbackReviews.map(r => ({
+      "@type": "Review",
+      "itemReviewed": {
+        "@type": "HairSalon",
+        "name": "Studio do Jon",
+        "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
+        "telephone": "+553135866673",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Rua Francisco Ovídio, 184",
+          "addressLocality": "Belo Horizonte",
+          "addressRegion": "MG",
+          "postalCode": "30720-320",
+          "addressCountry": "BR"
+        }
+      },
+      "author": {
+        "@type": "Person",
+        "name": r.author_name
+      },
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": r.rating.toString(),
+        "bestRating": "5"
+      },
+      "reviewBody": r.text
+    }))
+  ]
+};
+
 
 // Definition of static pages with their specific metadata
 const pages = [
@@ -295,7 +454,9 @@ const pages = [
   {
     route: '/depoimentos',
     title: 'Depoimentos e Avaliações de Clientes | Studio do Jon BH',
-    description: 'Veja o que nossas clientes dizem sobre suas experiências de corte e tratamento de cachos com o Jon em Belo Horizonte. Avaliações reais de quem ama seus cachos.'
+    description: 'Veja o que nossas clientes dizem sobre suas experiências de corte e tratamento de cachos com o Jon em Belo Horizonte. Avaliações reais de quem ama seus cachos.',
+    bodyInsert: reviewsBody,
+    schema: reviewsSchema
   },
   {
     route: '/faq',
@@ -319,6 +480,7 @@ const pages = [
     route: '/metodo',
     title: 'Método Leitura de Fio | Studio do Jon',
     description: 'O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.',
+    bodyInsert: metodoBody,
     schema: {
       "@context": "https://schema.org",
       "@type": "Service",
@@ -386,7 +548,8 @@ const pages = [
   {
     route: '/metodologia',
     title: 'Método Leitura de Fio | Studio do Jon — Cachos BH',
-    description: 'Conheça a Leitura de Fio. Metodologia exclusiva do Jon em Belo Horizonte. Análise técnica de curvatura e porosidade antes de qualquer corte de cacho.'
+    description: 'Conheça a Leitura de Fio. Metodologia exclusiva do Jon em Belo Horizonte. Análise técnica de curvatura e porosidade antes de qualquer corte de cacho.',
+    bodyInsert: metodoBody
   }
 ];
 

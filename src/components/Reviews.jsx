@@ -98,7 +98,7 @@ const Reviews = ({ isPage = false }) => {
           </div>
         ) : (
           <div className="reviews-grid">
-            {reviews.slice(0, 3).map((review, index) => (
+            {(isPage ? reviews : reviews.slice(0, 3)).map((review, index) => (
               <div key={index} className={`review-card reveal stagger-${index + 1}`}>
                 <div className="review-stars">
                   {[...Array(review.rating || 5)].map((_, i) => (
@@ -109,7 +109,9 @@ const Reviews = ({ isPage = false }) => {
                 <div className="review-author">
                   <div className="author-info">
                     <h4>{review.author_name}</h4>
-                    <span>{review.relative_time_description || "Avaliação no Google"}</span>
+                    <span style={{ display: 'block', fontSize: '0.85rem', color: 'var(--muted)', marginTop: '2px' }}>
+                      {review.curl_type || 'Cabelo Natural'} · {review.relative_time_description || "Avaliação no Google"}
+                    </span>
                   </div>
                 </div>
               </div>

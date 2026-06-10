@@ -316,6 +316,120 @@ const MetodoPage = () => {
         </div>
       </section>
 
+      {/* Ciência e Biologia Section */}
+      <section style={{
+        padding: 'clamp(60px, 8vw, 100px) 0',
+        borderTop: '1px solid var(--border, rgba(255,255,255,0.08))',
+      }}>
+        <div className="container" style={{ maxWidth: 800 }}>
+          <h2 style={{
+            fontFamily: "'DM Serif Display', Georgia, serif",
+            fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+            fontWeight: 400,
+            marginBottom: '32px',
+            color: 'var(--text, #faf5e8)',
+          }}>
+            A Ciência por Trás da Curvatura e o Fator de Encolhimento
+          </h2>
+          
+          <div style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: '0.975rem',
+            lineHeight: 1.8,
+            color: 'var(--muted, #a39687)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px',
+            maxWidth: '65ch',
+          }}>
+            <p>
+              O Método Leitura de Fio não é meramente uma técnica de corte de cabelo, mas sim um protocolo clínico-estético e científico de análise capilar que precede qualquer intervenção com a tesoura. Desenvolvido para atender às complexidades biológicas, mecânicas e estruturais dos cabelos com curvatura (ondulados, cacheados, crespos e crespíssimos), este método visa decifrar o comportamento individual de cada fibra capilar. Para compreender a necessidade deste diagnóstico, é indispensável analisar a física, a biologia e a química do cabelo natural em Belo Horizonte.
+            </p>
+
+            <h3 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: '1.4rem',
+              color: 'var(--text, #faf5e8)',
+              marginTop: '16px',
+            }}>
+              A Física e a Mecânica do Cabelo com Curvatura
+            </h3>
+            <p>
+              O comportamento tridimensional de um cacho é regido por leis físicas de tensão, elasticidade, gravidade e o que chamamos de "fator de encolhimento". Enquanto o cabelo liso cresce de forma cilíndrica e uniforme, exercendo uma força de tração linear e descendente orientada pela gravidade, o cabelo com curvatura se comporta como um sistema de molas helicoidais de diâmetros variáveis.
+            </p>
+            <p>
+              Cada curva no fio de cabelo representa um ponto de concentração de tensão mecânica e de distribuição desigual de forças. Quando o cabelo está molhado, o peso da água rompe temporariamente as ligações de hidrogênio da fibra capilar, esticando a mola natural e mascarando o comprimento e o volume reais. Ao secar, as ligações de hidrogênio se reformam, e o fio encolhe. Esse encolhimento pode variar de 10% em cabelos ondulados até mais de 75% em cabelos crespos tipo 4C. Cortar o cabelo molhado sem compreender a física da sua mola individual resulta em assimetrias severas e na perda indesejada de comprimento, o famoso "efeito pirâmide" ou cortes excessivamente curtos. O Método Leitura de Fio mapeia essa força elástica antes da tesoura encostar no cabelo, prevendo com exatidão como cada mecha se comportará após a secagem e a finalização.
+            </p>
+
+            <h3 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: '1.4rem',
+              color: 'var(--text, #faf5e8)',
+              marginTop: '16px',
+            }}>
+              A Biologia Celular do Folículo Piloso e a Queratinização
+            </h3>
+            <p>
+              A diferença fundamental entre os tipos de cabelo começa abaixo da pele, no folículo piloso. O folículo que dá origem ao cabelo liso é circular e perpendicular à superfície do couro cabeludo. Já o folículo de cabelos cacheados e crespos possui formato elíptico, achatado e curvo, assemelhando-se a um gancho ou uma letra "S".
+            </p>
+            <p>
+              Esse formato elíptico força as células germinativas na matriz do bulbo capilar a se dividirem de maneira assimétrica. À medida que o fio é empurrado para cima através do canal folicular curvo, as células sofrem um processo de queratinização desigual. A queratina (proteína estrutural rica em cisteína) é depositada de forma irregular ao longo do diâmetro do fio. Há uma concentração maior de ortocórtex (células corticais com queratina mais flexível e ligações mais distendidas) na parte externa da curvatura, e de paracórtex (células com queratina mais rígida e ligações densas) na parte interna. Essa distribuição assimétrica cria uma curvatura intrínseca na fibra. Além disso, a seção transversal do fio não é perfeitamente redonda: nos cabelos ondulados ela é ovalada, nos cacheados é elíptica e nos crespos é achatada e irregular. Essa variação geométrica torna o fio de cabelo inerentemente suscetível a pontos de fragilidade mecânica em cada dobra da espiral, onde a cutícula é naturalmente mais fina e exposta.
+            </p>
+
+            <h3 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: '1.4rem',
+              color: 'var(--text, #faf5e8)',
+              marginTop: '16px',
+            }}>
+              O Diagnóstico Técnico de Porosidade e Elasticidade
+            </h3>
+            <p>
+              Para estruturar um cronograma capilar eficiente e executar um corte seguro, o Método Leitura de Fio realiza um mapeamento detalhado da integridade da fibra capilar em duas frentes fundamentais: porosidade e elasticidade.
+            </p>
+            <p>
+              <strong>Porosidade Capilar:</strong> Refere-se à capacidade da cutícula (a camada externa de escamas sobrepostas do fio) de absorver e reter umidade e nutrientes. Cabelos com baixa porosidade possuem cutículas extremamente compactadas e fechadas, dificultando a penetração da água ou de agentes hidratantes, mas retendo-os por muito tempo uma vez que conseguem entrar. Cabelos com média porosidade têm cutículas levemente abertas, permitindo uma absorção equilibrada e retenção ideal de tratamentos (estado de saúde ideal). Cabelos com alta porosidade apresentam cutículas abertas, danificadas ou ausentes devido a agressões químicas (como descolorações ou relaxamentos) ou físicas. O fio absorve água instantaneamente, mas a perde com a mesma velocidade, tornando-se seco, áspero e opaco. Necessita de reposição lipídica profunda e selamento cuticular ácido.
+            </p>
+            <p>
+              <strong>Elasticidade Capilar:</strong> É a capacidade do fio de se alongar sob tensão mecânica e retornar ao seu estado original sem se romper. Em nossa análise, realizamos testes mecânicos suaves no fio úmido. Se o fio estica e não volta, ou se parte com facilidade ao menor esforço, há uma deficiência severa de proteínas estruturais (queratina). Nesses casos, procedimentos químicos como descolorações são expressamente contraindicados. Se o fio está rígido, duro e quebra sem apresentar qualquer flexibilidade, há um excesso de queratina ou falta de hidratação lipídica, exigindo tratamentos amaciantes e nutritivos.
+            </p>
+
+            <h3 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: '1.4rem',
+              color: 'var(--text, #faf5e8)',
+              marginTop: '16px',
+            }}>
+              O Mapeamento de Curvaturas (Sistemas de Classificação)
+            </h3>
+            <p>
+              Embora as tabelas de classificação (2A a 4C) sirvam como ponto de partida acadêmico, o Método Leitura de Fio vai além ao identificar que uma única cabeça frequentemente abriga múltiplos padrões de curvatura.
+            </p>
+            <p>
+              Cabelos ondulados (Tipo 2) possuem padrão em formato de "S" suave. São caracterizados por uma raiz mais lisa e ondas que começam no comprimento. Exigem cortes que tragam leveza e retirem o peso excessivo das pontas sem criar frizz, pois o excesso de peso estica a onda, fazendo com que o cabelo perca definição. Cabelos cacheados (Tipo 3) apresentam espirais bem definidas desde a raiz ou do meio do fio. O fator de encolhimento é moderado a alto. O maior desafio é a distribuição natural da oleosidade produzida pelo couro cabeludo, que não consegue percorrer a extensão em espiral do fio, tornando o comprimento e as pontas naturalmente secos. Cabelos crespos (Tipo 4) possuem curvatura extremamente estreita, em formato de "Z" ou pequenas molas muito compactas. O fator de encolhimento é altíssimo e a fibra é extremamente fina e delicada, apesar da aparência volumosa. O corte para crespos exige precisão milimétrica e escultura geométrica.
+            </p>
+
+            <h3 style={{
+              fontFamily: "'DM Serif Display', Georgia, serif",
+              fontSize: '1.4rem',
+              color: 'var(--text, #faf5e8)',
+              marginTop: '16px',
+            }}>
+              O Visagismo Integrado ao Cabelo Natural
+            </h3>
+            <p>
+              Cortar cachos não é apenas uma questão de engenharia capilar; é uma arte de comunicação visual. O visagismo aplicado no Método Leitura de Fio analisa as proporções áureas do rosto, as linhas de força (horizontais, verticais e diagonais) e a linguagem não-verbal que o corte transmite.
+            </p>
+            <p>
+              Linhas verticais e diagonais longas transmitem força, dinamismo e alongam a silhueta facial. Indicadas para suavizar rostos redondos ou mandíbulas proeminentes. Linhas horizontais criam estabilidade, peso e alargam visualmente o rosto. Excelentes para equilibrar rostos longos ou testas proeminentes. O volume superior eleva o olhar, transmite autoridade e alonga o perfil, enquanto o volume lateral suaviza traços angulares e traz suavidade e acolhimento à imagem pessoal.
+            </p>
+            <p>
+              Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçara em Belo Horizonte.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section style={{
         padding: 'clamp(60px, 8vw, 100px) 0',
