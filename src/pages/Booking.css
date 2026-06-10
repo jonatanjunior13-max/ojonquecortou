@@ -497,26 +497,6 @@
   overflow: hidden;
 }
 
-.combos-tab-btn::after {
-  content: 'SALVAR R$';
-  position: absolute;
-  top: -1px;
-  right: 12px;
-  font-size: 0.55rem;
-  font-weight: 800;
-  background: #c8852a;
-  color: #fff;
-  padding: 0px 4px;
-  border-radius: 0 0 4px 4px;
-  letter-spacing: 0.05em;
-  transform: translateY(0);
-  transition: transform 0.2s ease;
-}
-
-.combos-tab-btn:hover::after {
-  transform: translateY(-2px);
-}
-
 .combos-tab-btn.active {
   background: linear-gradient(135deg, var(--accent) 0%, #d4953c 100%);
   border-style: solid;
@@ -524,10 +504,6 @@
   animation: tab-active-pulse 2s infinite;
 }
 
-.combos-tab-btn.active::after {
-  background: #fff;
-  color: var(--accent);
-}
 
 .booking-tab-count {
   font-size: 0.7rem;
