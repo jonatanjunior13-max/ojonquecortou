@@ -4,4 +4,35 @@ Disallow: /admin
 Disallow: /cliente
 Disallow: /agendar
 
+# AI Search Crawlers (Explicit Allow)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
 Sitemap: https://www.ojonquecortou.com.br/sitemap.xml

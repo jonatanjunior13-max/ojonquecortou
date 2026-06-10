@@ -5,7 +5,7 @@
   "start_url": "/admin/mobile",
   "display": "standalone",
   "background_color": "#fdf2f8",
-  "theme_color": "#ff007f",
+  "theme_color": "#c8852a",
   "orientation": "portrait",
   "icons": [
     {

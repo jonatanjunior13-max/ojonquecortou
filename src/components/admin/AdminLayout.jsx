@@ -323,7 +323,7 @@ const AdminLayout = () => {
             top: '8px',
             right: '8px',
             zIndex: 99999,
-            background: 'var(--accent, #ff007f)',
+            background: 'var(--accent, #c8852a)',
             color: '#fff',
             border: 'none',
             padding: '8px 16px',
