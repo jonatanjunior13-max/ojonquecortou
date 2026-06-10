@@ -224,7 +224,7 @@ const BookingPage = () => {
   const [activeWeekKey, setActiveWeekKey] = useState('');
   
   // Catálogo visual states
-  const [selectedCategory, setSelectedCategory] = useState('Todos');
+  const [selectedCategory, setSelectedCategory] = useState('Cabelo');
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   
   // Dados do cliente
@@ -1397,13 +1397,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         
         {/* PASSO 1: SELEÇÃO DE SERVIÇO */}
         {step === 1 && (() => {
-          const categories = ['Todos', ...new Set(services.map(s => s.category || 'Outros'))];
+          const categories = ['Cabelo'];
           if (packages && packages.length > 0) {
-            categories.push('Pacotes');
+            categories.push('Combos');
           }
-          let filteredServices = selectedCategory === 'Todos'
-            ? [...services]
-            : services.filter(s => (s.category || 'Outros') === selectedCategory);
+          let filteredServices = services;
             
           filteredServices.sort((a, b) => {
             const posA = a.position !== undefined ? a.position : (a.order !== undefined ? a.order : null);
@@ -1440,19 +1438,18 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               {/* Abas de Categorias */}
               <div className="booking-category-tabs">
                 {categories.map(cat => {
-                  const count = cat === 'Todos'
-                    ? services.length
-                    : cat === 'Pacotes'
+                  const count = cat === 'Combos'
                     ? packages.length
-                    : services.filter(s => (s.category || 'Outros') === cat).length;
+                    : services.length;
+                  const isCombos = cat === 'Combos';
                   return (
                     <button
                       key={cat}
                       type="button"
-                      className={`booking-category-tab-btn ${selectedCategory === cat ? 'active' : ''}`}
+                      className={`booking-category-tab-btn ${selectedCategory === cat ? 'active' : ''} ${isCombos ? 'combos-tab-btn' : 'cabelo-tab-btn'}`}
                       onClick={() => setSelectedCategory(cat)}
                     >
-                      {cat}
+                      {isCombos ? '🏷️ Combos Promocionais' : '💇 Cabelo'}
                       <span className="booking-tab-count">{count}</span>
                     </button>
                   );
@@ -1467,7 +1464,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 </div>
               ) : (
                 <div className="booking-services-grid">
-                  {selectedCategory === 'Pacotes' ? (
+                  {selectedCategory === 'Combos' ? (
                     packages.map(pkg => {
                       const isSelected = selectedPackageTemplate?.id === pkg.id;
                       const pkgOriginalTotal = pkg.services ? pkg.services.reduce((sum, item) => {
