@@ -20,6 +20,9 @@ function Footer() {
             <ul>
               <li><Link to="/sobre">Sobre o Jon</Link></li>
               <li><Link to="/servicos">Serviços</Link></li>
+              <li><Link to="/servicos/corte-hibrido">Corte Híbrido</Link></li>
+              <li><Link to="/servicos/transicao-capilar">Transição Capilar</Link></li>
+              <li><Link to="/servicos/visagismo-cachos">Visagismo de Cachos</Link></li>
               <li><Link to="/galeria">Galeria</Link></li>
               <li><Link to="/depoimentos">Depoimentos</Link></li>
               <li><Link to="/blog">Blog</Link></li>

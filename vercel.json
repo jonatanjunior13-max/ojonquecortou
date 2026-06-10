@@ -25,6 +25,11 @@
       "headers": { "Location": "/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" }
     },
     {
+      "src": "/metodologia",
+      "status": 301,
+      "headers": { "Location": "/metodo" }
+    },
+    {
       "src": "/api/indexnow",
       "dest": "/api/cron.js?task=indexnow"
     },
@@ -72,7 +77,7 @@
       "dest": "/servicos/$1/index.html"
     },
     {
-      "src": "/(sobre|servicos|galeria|depoimentos|blog|faq|metodo|metodologia|investimento)/?",
+      "src": "/(sobre|servicos|galeria|depoimentos|blog|faq|metodo|investimento)/?",
       "dest": "/$1/index.html"
     },
     {

@@ -112,7 +112,7 @@ const faqs = [
   },
   {
     question: "Corte a seco é melhor para cachos? Por quê?",
-    answer: <>O corte depende de como o seu cabelo se comporta. Eu trabalho com o <strong>Corte Híbrido</strong> (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Leitura de Fio</Link>.</>
+    answer: <>O corte depende de como o seu cabelo se comporta. Eu trabalho com o <Link to="/servicos/corte-hibrido" style={{ color: 'var(--accent)', textDecoration: 'underline' }}><strong>Corte Híbrido</strong></Link> (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a <Link to="/metodo" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Leitura de Fio</Link>.</>
   },
   {
     question: "O que é o Método Leitura de Fio?",

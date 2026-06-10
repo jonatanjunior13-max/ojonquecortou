@@ -583,12 +583,6 @@ const pages = [
     route: '/servicos/masculino',
     title: 'Corte Cabelo Cacheado Masculino BH | Studio do Jon',
     description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende.'
-  },
-  {
-    route: '/metodologia',
-    title: 'Método Leitura de Fio | Studio do Jon — Cachos BH',
-    description: 'Conheça a Leitura de Fio. Metodologia exclusiva do Jon em Belo Horizonte. Análise técnica de curvatura e porosidade antes de qualquer corte de cacho.',
-    bodyInsert: metodoBody
   }
 ];
 
