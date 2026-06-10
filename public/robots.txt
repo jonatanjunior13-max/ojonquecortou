@@ -1,23 +1,11 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-# AI Search Crawlers (Explicit Allow)
+# Crawlers de IA — acesso explícito permitido
 User-agent: GPTBot
 Allow: /
 Disallow: /admin
 Disallow: /cliente
 Disallow: /agendar
 
-User-agent: ClaudeBot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: PerplexityBot
+User-agent: ChatGPT-User
 Allow: /
 Disallow: /admin
 Disallow: /cliente
@@ -29,7 +17,62 @@ Disallow: /admin
 Disallow: /cliente
 Disallow: /agendar
 
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: claude-web
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: Perplexity-User
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: GoogleOther
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
 User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: CCBot
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+User-agent: cohere-ai
+Allow: /
+Disallow: /admin
+Disallow: /cliente
+Disallow: /agendar
+
+# Regra geral
+User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /cliente
