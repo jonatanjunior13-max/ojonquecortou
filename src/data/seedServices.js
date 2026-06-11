@@ -1,5 +1,20 @@
 export const SEED_SERVICES = [
   {
+    id: 'leitura-de-fio',
+    emoji: '🔍',
+    category: 'Análise',
+    name: 'Leitura de Fio',
+    tagline: 'Análise aprofundada de curvatura e saúde',
+    description: 'Antes de qualquer tesoura tocar o seu cabelo, existe uma etapa que quase ninguém faz: ler o fio. Aqui no studio, essa etapa virou serviço — pra você que quer entender o próprio cabelo antes de decidir qualquer coisa. Não é avaliação de balcão, daquelas de cinco minutos com olhar de longe. É meia hora de análise de verdade, só sua. O valor de R$ 80 é 100% revertido em crédito se você fechar corte ou tratamento.',
+    price: 80,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 30,
+    isPrimary: true,
+    position: 0,
+    includes: ['Escuta e avaliação de hábitos', 'Análise do couro cabeludo', 'Curvatura real, densidade e porosidade', 'Orientação personalizada de produtos', 'Mapa de finalizações ideais', 'Indicação de cortes recomendados']
+  },
+  {
     id: 'combo-corte-tratamento-personalizado',
     emoji: '✨',
     category: 'Combo',
@@ -11,7 +26,7 @@ export const SEED_SERVICES = [
     promoPrice: 230,
     duration: 60,
     isPrimary: true,
-    position: 0,
+    position: 1,
     includes: ['Corte Especializado', 'Tratamento de Alta Performance', 'Finalização Premium']
   },
   {
@@ -26,7 +41,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: true,
-    position: 1,
+    position: 2,
     includes: ['Leitura de Fio técnica', 'Corte a seco/técnico', 'Finalização educativa']
   },
   {
@@ -35,13 +50,13 @@ export const SEED_SERVICES = [
     category: 'Coloração',
     name: 'Luzes ou Morena Iluminada',
     tagline: 'Morena Iluminada e Loiros',
-    description: 'Ilumine seus fios sem agredir! Com nossa técnica exclusiva de Mechas Sem Descolorante, você consegue um efeito iluminado e natural, perfeito para quem quer uma transformação suave e saudável. Ideal para cabelos cacheados, ondulados e lisos, garantindo brilho e definição sem danificar a estrutura do fio.',
+    description: 'Ilumine seus fios sem agredir! Com nossa técnica exclusiva de Mechas Sem Descolorante, você consegue um effect iluminado e natural, perfeito para quem quer uma transformação suave e saudável. Ideal para cabelos cacheados, ondulados e lisos, garantindo brilho e definição sem danificar a estrutura do fio.',
     price: 699,
     priceType: 'A partir de',
     promoPrice: null,
     duration: 180,
     isPrimary: true,
-    position: 2,
+    position: 3,
     includes: ['Teste de mecha obrigatório', 'Proteção da estrutura']
   },
   {
@@ -56,7 +71,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 45,
     isPrimary: true,
-    position: 3,
+    position: 4,
     includes: ['Análise personalizada', 'Nutrição profunda', 'Devolução de maciez e brilho']
   },
   {
@@ -71,7 +86,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 120,
     isPrimary: false,
-    position: 4,
+    position: 5,
     includes: ['Diagnóstico de cor', 'Tonalização técnica']
   },
   {
@@ -86,7 +101,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 45,
     isPrimary: false,
-    position: 5,
+    position: 6,
     includes: ['Ajuste de volume', 'Limpeza de pontas']
   },
   {
@@ -101,7 +116,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: false,
-    position: 6,
+    position: 7,
     includes: ['Esfoliação de semente de damasco', 'Ativos refrescantes']
   },
   {
@@ -116,7 +131,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: false,
-    position: 7,
+    position: 8,
     includes: ['Análise clínica da fibra', 'Reposição proteica', 'Finalização Premium']
   },
   {
@@ -131,7 +146,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 60,
     isPrimary: false,
-    position: 8,
+    position: 9,
     includes: ['Higienização suave', 'Técnica de definição']
   },
   {
@@ -140,13 +155,13 @@ export const SEED_SERVICES = [
     category: 'Combo',
     name: 'Pacote Cachos Perfeitos',
     tagline: '4 sessões com 30% OFF',
-    description: 'Mantenha a saúde capilar em dia com um cronograma técnico. Ideal para quem está em transição ou quer recuperar fios danificados.',
+    description: 'Mantenha a saúde capilar in dia com um cronograma técnico. Ideal para quem está em transição ou quer recuperar fios danificados.',
     price: 520,
     priceType: 'Fixo',
     promoPrice: 390,
     duration: 60,
     isPrimary: false,
-    position: 9,
+    position: 10,
     includes: ['4 Sessões de Tratamento', 'Acompanhamento de evolução']
   },
   {
@@ -161,22 +176,7 @@ export const SEED_SERVICES = [
     promoPrice: null,
     duration: 90,
     isPrimary: false,
-    position: 10,
-    includes: ['Aplicação técnica', 'Proteção do comprimento']
-  },
-  {
-    id: 'leitura-de-fio',
-    emoji: '🔍',
-    category: 'Análise',
-    name: 'Leitura de Fio',
-    tagline: 'Análise aprofundada de curvatura e saúde',
-    description: 'Antes de qualquer tesoura tocar o seu cabelo, existe uma etapa que quase ninguém faz: ler o fio. Aqui no studio, essa etapa virou serviço — pra você que quer entender o próprio cabelo antes de decidir qualquer coisa. Não é avaliação de balcão, daquelas de cinco minutos com olhar de longe. É meia hora de análise de verdade, só sua. O valor de R$ 80 é 100% revertido em crédito se você fechar corte ou tratamento.',
-    price: 80,
-    priceType: 'Fixo',
-    promoPrice: null,
-    duration: 30,
-    isPrimary: true,
     position: 11,
-    includes: ['Escuta e avaliação de hábitos', 'Análise do couro cabeludo', 'Curvatura real, densidade e porosidade', 'Orientação personalizada de produtos', 'Mapa de finalizações ideais', 'Indicação de cortes recomendados']
+    includes: ['Aplicação técnica', 'Proteção do comprimento']
   }
 ];
