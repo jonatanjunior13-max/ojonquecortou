@@ -81,7 +81,7 @@
       "dest": "/$1/index.html"
     },
     {
-      "src": "/((?!api|.*\\.txt$).*)",
+      "src": "/((?!api|.*\\.(txt|webp|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot|mp4|webm|json|xml|pdf|csv|zip)$).*)",
       "dest": "/index.html"
     }
   ],

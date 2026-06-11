@@ -56,7 +56,7 @@ const MasculinoPage = () => {
         <div className="container about-grid">
           <div className="about-visual reveal">
             <div className="about-image-wrap">
-              <img src="/corte-masculino-cachos.webp" alt="Corte masculino cacheado no Studio do Jon em BH" className="about-image" />
+              <img src="/corte-masculino-cacheado-bh-resultado.webp" alt="Corte masculino cacheado no Studio do Jon em BH" className="about-image" />
             </div>
             <div className="experience-tag">
               <span className="exp-number">1h</span>

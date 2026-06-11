@@ -56,7 +56,7 @@ const CorteHibridoPage = () => {
         <div className="container about-grid">
           <div className="about-visual reveal">
             <div className="about-image-wrap">
-              <img src="/corte-seco-cachos-definicao.webp" alt="Corte Híbrido em cabelo cacheado no Studio do Jon" className="about-image" />
+              <img src="/corte-a-seco-cachos-definidos-bh.webp" alt="Corte Híbrido em cabelo cacheado no Studio do Jon" className="about-image" />
             </div>
             <div className="experience-tag">
               <span className="exp-number">1h</span>

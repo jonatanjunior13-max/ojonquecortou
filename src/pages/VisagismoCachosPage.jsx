@@ -56,7 +56,7 @@ const VisagismoCachosPage = () => {
         <div className="container about-grid">
           <div className="about-visual reveal">
             <div className="about-image-wrap">
-              <img src="/corte-seco-cachos-visagismo.webp" alt="Visagismo aplicado a cachos no Studio do Jon em BH" className="about-image" />
+              <img src="/blog-visagismo-capa.webp" alt="Visagismo aplicado a cachos no Studio do Jon em BH" className="about-image" />
             </div>
             <div className="experience-tag">
               <span className="exp-number">Exclusivo</span>

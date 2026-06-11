@@ -56,7 +56,7 @@ const TransicaoCapilarPage = () => {
         <div className="container about-grid">
           <div className="about-visual reveal">
             <div className="about-image-wrap">
-              <img src="/corte-seco-cachos-transicao.webp" alt="Transição capilar no Studio do Jon em BH" className="about-image" />
+              <img src="/blog-transicao-bh.webp" alt="Transição capilar no Studio do Jon em BH" className="about-image" />
             </div>
             <div className="experience-tag">
               <span className="exp-number">Saúde</span>
