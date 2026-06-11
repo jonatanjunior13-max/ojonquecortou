@@ -275,13 +275,22 @@ const AdminMarketing = () => {
     }
 
     try {
-      const promptText = `Você é o redator estratégico de "O Jon Que Cortou" (@ojonquecortou), especialista em cachos/crespos/ondulados em BH.
-Escreva a newsletter mensal "Leitura de Fio" baseando-se no seguinte tema: "${randomTopic}".
+      const promptText = `Você é um Psicólogo de Consumo, Especialista em Persuasão e Redator Estratégico de Elite para "O Jon Que Cortou" (@ojonquecortou), salão especializado em curvaturas (cachos, crespos e ondulados) em Belo Horizonte.
 
-Instruções críticas de escrita:
-1. Tom de voz: Altamente técnico, assertivo, mas acolhedor. Jon é autista e sua escrita é lógica, direta e baseada em fatos, sem floreios exagerados ou clichês de marketing ("fique linda", "arrase", "cachos perfeitos"). Ele usa analogias práticas.
-2. Evite frases clichês. Vá direto ao ponto técnico.
-3. Formato de saída:
+Escreva a edição mensal da newsletter "Leitura de Fio" baseando-se no seguinte tema: "${randomTopic}".
+
+Sua missão é estruturar a copy aplicando os seguintes gatilhos psicológicos com maestria:
+1. DESEJO: Desperte a vontade de ter um cabelo que funciona no dia a dia, livre de dependência de finalizadores caros ou rotinas exaustivas.
+2. NECESSIDADE: Mostre de forma lógica e irrefutável que o frizz e a falta de definição persistentes são problemas estruturais (ângulo de corte, cutícula exposta) e não falta de cosméticos.
+3. URGÊNCIA: Relembre sutilmente que o Jon atende individualmente de quarta a sábado com atenção máxima, tornando os horários extremamente escassos e disputados.
+4. ESPERANÇA: Mostre que o cabelo da cliente não é "difícil" ou "impossível", ele apenas nunca foi lido no estado seco com a metodologia correta (Método Leitura de Fio).
+
+Tom de Voz e Estilo do Jon:
+- Jon é autista e autoridade técnica. O tom de voz dele deve ser lógico, direto, ultra-especializado e baseado em fatos capilares (ciência do fio).
+- ZERO clichês de marketing genérico (nada de "ficou linda", "cachos perfeitos", "arrase", "empoderamento"). Use analogias exatas de arquitetura, geometria e física do cabelo.
+- Escrita sofisticada, crua, autêntica e altamente persuasiva.
+
+Formato de saída:
 Você deve retornar APENAS um JSON válido contendo exatamente dois campos: "subject" e "bodyHtml". Não inclua markdown, blocos de código markdown ou texto explicativo. Retorne APENAS o JSON puro.
 
 O campo "subject" deve ser um assunto provocativo e curto (máximo 60 caracteres) sobre o tema.
@@ -293,12 +302,10 @@ Use as seguintes tags no "bodyHtml":
   <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"Citação marcante do Jon aqui..."</p>
   <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
 </div>
-- Um CTA com botão exatamente neste formato:
+- Um CTA com botão exatamente neste formato (com gatilho de urgência suave de agendamento):
 <div style="margin-top: 8px; margin-bottom: 32px;">
   <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
-</div>
-
-Certifique-se de que o HTML gerado seja perfeitamente válido e estilizado de acordo com as instruções acima.`;
+</div>`;
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
