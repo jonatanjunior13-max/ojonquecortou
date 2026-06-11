@@ -179,7 +179,9 @@ export default async function handler(req, res) {
         subject: `Lembrete: Seu horário é amanhã, ${b.clientName.split(' ')[0]}`,
         date: b.date,
         time: b.time,
-        serviceName: b.service?.name || b.serviceName
+        serviceName: b.service?.name || b.serviceName,
+        id: b.id,
+        servicePrice: b.servicePrice ?? b.service?.price ?? b.price ?? null
       }, hostUrl);
 
       if (ok) {

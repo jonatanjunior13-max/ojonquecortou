@@ -569,9 +569,22 @@ export default async function handler(req, res) {
         data.clientPhone = bData.clientPhone || data.clientPhone;
         data.rawDate = bData.date; // YYYY-MM-DD
         if (!data.time) data.time = bData.time;
+        data.servicePrice = bData.servicePrice ?? bData.service?.price ?? bData.price ?? data.servicePrice;
+        data.serviceName = bData.service?.name ?? bData.serviceName ?? data.serviceName;
       }
     } catch (e) {
       console.warn('Erro ao carregar agendamento para checar telefone:', e);
+    }
+  }
+
+  // Format serviceName with price for transactional emails (agendamento, confirmação, lembrete, alteração, cancelamento)
+  const transactionalTypes = ['solicitacao_recebida', 'horario_confirmado', 'lembrete_24h', 'agendamento_cancelado', 'agendamento_alterado'];
+  if (transactionalTypes.includes(type)) {
+    const rawServicePrice = data.servicePrice ?? data.service?.price ?? data.price;
+    if (rawServicePrice !== undefined && rawServicePrice !== null && !isNaN(Number(rawServicePrice))) {
+      const formattedPrice = ` (R$ ${Number(rawServicePrice).toFixed(2).replace('.', ',')})`;
+      const cleanServiceName = (data.serviceName || 'Serviço').replace(/\s*\(R\$\s*\d+([.,]\d+)?\)/g, ''); // prevent duplicate appending
+      data.serviceName = `${cleanServiceName}${formattedPrice}`;
     }
   }
 
