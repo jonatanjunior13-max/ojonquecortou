@@ -2247,17 +2247,61 @@ ${googleLink}
   // Marcar Falta (No-Show)
   const markAsNoShow = async (bookingId) => {
     try {
+      const booking = bookings.find(b => b.id === bookingId);
       if (isDemoMode) {
         const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'faltou' } : b);
         setBookings(updated);
         localStorage.setItem('demo_bookings', JSON.stringify(updated));
+
+        const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
+        if (cleanPhone) {
+          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+          const updatedClients = localClients.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c);
+          localStorage.setItem('demo_client_profiles', JSON.stringify(updatedClients));
+        }
       } else {
         const docRef = doc(db, 'bookings', bookingId);
         await updateDoc(docRef, { status: 'faltou' });
         syncBookingToGoogle(bookingId).catch(err => console.warn(err));
+
+        const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
+        if (cleanPhone) {
+          try {
+            const clientRef = doc(db, 'client_profiles', cleanPhone);
+            await updateDoc(clientRef, { blocked: true });
+          } catch (err) {
+            console.warn('Erro ao bloquear cliente no Firestore:', err);
+          }
+        }
       }
       
       setSelectedBooking(prev => prev ? { ...prev, status: 'faltou' } : null);
+
+      if (booking && booking.clientEmail) {
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              type: 'agendamento_falta',
+              clientEmail: booking.clientEmail,
+              clientName: booking.clientName,
+              serviceName: booking.serviceName || booking.service?.name || booking.service || '',
+              date: booking.date?.includes('-') ? booking.date.split('-').reverse().join('/') : booking.date,
+              rawDate: booking.date,
+              time: booking.time,
+              duration: booking.duration || booking.service?.duration || 60,
+              notes: booking.notes || '',
+              professionalName: booking.professionalName || 'Jon'
+            })
+          });
+        } catch (mailErr) {
+          console.warn('Erro ao enviar e-mail de falta no mobile:', mailErr);
+        }
+      }
+
       alert('Agendamento marcado como falta.');
     } catch (e) {
       alert('Erro ao marcar falta.');

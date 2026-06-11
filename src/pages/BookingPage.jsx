@@ -1109,6 +1109,12 @@ const BookingPage = () => {
       return;
     }
 
+    if (existingProfile && existingProfile.blocked) {
+      setAuthError('Seu perfil está temporariamente bloqueado para agendamentos online pelo sistema. Por favor, solicite seu agendamento via WhatsApp.');
+      setLoading(false);
+      return;
+    }
+
     if (existingProfile && !authSuccess) {
       setAuthError('Você precisa confirmar sua identidade para agendar usando este perfil.');
       setTimeout(() => {
@@ -1836,8 +1842,28 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           <form className="booking-step" onSubmit={handleSubmit}>
             <h2>Confirme seus dados para contato</h2>
             
-            {/* Abas de Autenticação Upfront */}
-            {!authSuccess && (
+            {existingProfile && existingProfile.blocked && (
+              <div className="client-auth-card" style={{ borderColor: '#e53e3e', background: 'rgba(229, 62, 62, 0.05)', marginBottom: '20px', padding: '20px' }}>
+                <div className="client-auth-card-header" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <span style={{ color: '#e53e3e', fontSize: '1.4rem' }}>⚠️</span>
+                  <h3 className="client-auth-card-title" style={{ color: '#e53e3e', margin: 0 }}>Agendamento Bloqueado</h3>
+                </div>
+                <p className="client-auth-card-desc" style={{ color: '#c53030', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 15px 0' }}>
+                  Seu perfil está temporariamente bloqueado para agendamentos online automáticos pelo sistema devido a uma ausência anterior. Para agendar um novo horário, é necessário o pagamento de um sinal de R$ 95,00 (50% do valor do corte) que será integralmente abatido no dia do atendimento.
+                </p>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                  <a href="https://wa.me/553135866673?text=Ol%C3%A1%20Jon%2C%20meu%20perfil%20consta%20como%20bloqueado%20e%20gostaria%20de%20solicitar%20um%20novo%20agendamento%20com%20sinal." target="_blank" className="btn btn-accent" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#25D366', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                    Agendar pelo WhatsApp
+                  </a>
+                  <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>Voltar</button>
+                </div>
+              </div>
+            )}
+
+            {!(existingProfile && existingProfile.blocked) && (
+              <>
+                {/* Abas de Autenticação Upfront */}
+                {!authSuccess && (
               <div className="auth-selection-tabs">
                 <button 
                   type="button" 
@@ -2225,8 +2251,10 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 </button>
               )}
             </div>
-          </form>
+          </>
         )}
+      </form>
+    )}
 
         {/* PASSO 4: SUCESSO */}
         {step === 4 && success && (

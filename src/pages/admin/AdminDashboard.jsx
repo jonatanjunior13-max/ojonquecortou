@@ -721,6 +721,13 @@ const AdminDashboard = () => {
             localStorage.setItem('demo_transactions', JSON.stringify(filtered));
             setTransactions(filtered);
           }
+        } else if (newStatus === 'faltou') {
+          const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
+          if (cleanPhone) {
+            const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+            const updatedClients = localClients.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c);
+            localStorage.setItem('demo_client_profiles', JSON.stringify(updatedClients));
+          }
         }
       } else {
         const apptRef = doc(db, 'bookings', bookingId);
@@ -752,6 +759,16 @@ const AdminDashboard = () => {
           } catch (deleteErr) {
             console.error('Erro ao deletar transações financeiras:', deleteErr);
           }
+        } else if (newStatus === 'faltou') {
+          const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
+          if (cleanPhone) {
+            try {
+              const clientRef = doc(db, 'client_profiles', cleanPhone);
+              await updateDoc(clientRef, { blocked: true });
+            } catch (err) {
+              console.warn('Erro ao bloquear cliente no Firestore:', err);
+            }
+          }
         }
       }
 
@@ -766,6 +783,11 @@ const AdminDashboard = () => {
             ...booking,
             type: 'agendamento_cancelado'
           }, 'agendamento_cancelado');
+        } else if (newStatus === 'faltou') {
+          await triggerEmailNotification({
+            ...booking,
+            type: 'agendamento_falta'
+          }, 'agendamento_falta');
         }
       }
 
