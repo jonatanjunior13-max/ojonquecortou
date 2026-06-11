@@ -118,6 +118,7 @@ const AdminMobileApp = () => {
   const [directSaleInstallments, setDirectSaleInstallments] = useState('À vista');
   const [directSaleClient, setDirectSaleClient] = useState('');
   const [showDirectSaleSuggestions, setShowDirectSaleSuggestions] = useState(false);
+  const [isDirectSaleSalonUse, setIsDirectSaleSalonUse] = useState(false);
 
   useEffect(() => {
     if (!showCheckoutModal) {
@@ -1896,16 +1897,24 @@ const AdminMobileApp = () => {
   const submitDirectSale = async (e) => {
     if (e) e.preventDefault();
     if (directSaleProducts.length === 0) {
-      alert('Selecione pelo menos um produto para vender.');
+      alert('Selecione pelo menos um produto para dar baixa.');
       return;
     }
 
     const productsTotal = directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
-    const value = Math.max(0, productsTotal - directSaleDiscount);
-    const clientName = directSaleClient.trim() || 'Cliente Avulso';
+    const costTotal = directSaleProducts.reduce((acc, p) => {
+      const match = inventory.find(prod => prod.id === p.id);
+      const cost = match ? (match.costPrice || 0) : 0;
+      return acc + (cost * p.qty);
+    }, 0);
 
-    let description = `Venda Avulsa de Produto: ${directSaleProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
-    if (directSaleDiscount > 0) {
+    const value = isDirectSaleSalonUse ? costTotal : Math.max(0, productsTotal - directSaleDiscount);
+    const clientName = isDirectSaleSalonUse ? 'Uso do Salão' : (directSaleClient.trim() || 'Cliente Avulso');
+
+    let description = isDirectSaleSalonUse 
+      ? `Uso do Salão (Baixa de Produto): ${directSaleProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`
+      : `Venda Avulsa de Produto: ${directSaleProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
+    if (!isDirectSaleSalonUse && directSaleDiscount > 0) {
       description += ` (Desconto: R$ ${directSaleDiscount})`;
     }
 
@@ -1915,9 +1924,9 @@ const AdminMobileApp = () => {
       time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
       clientName,
       clientPhone: '',
-      type: 'entrada',
-      paymentMethod: directSalePaymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${directSaleInstallments})` : directSalePaymentMethod,
-      discount: directSaleDiscount,
+      type: isDirectSaleSalonUse ? 'saida' : 'entrada',
+      paymentMethod: isDirectSaleSalonUse ? 'Consumo' : (directSalePaymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${directSaleInstallments})` : directSalePaymentMethod),
+      discount: isDirectSaleSalonUse ? 0 : directSaleDiscount,
       value: Number(value),
       description,
       professionalId: 'jon',
@@ -1928,7 +1937,7 @@ const AdminMobileApp = () => {
           productId: p.id,
           name: p.name,
           quantity: p.qty,
-          sellingPrice: p.sellingPrice,
+          sellingPrice: isDirectSaleSalonUse ? (match ? (match.costPrice || 0) : 0) : p.sellingPrice,
           costPrice: match ? (match.costPrice || 0) : 0
         };
       }),
@@ -1967,8 +1976,9 @@ const AdminMobileApp = () => {
       setDirectSaleProducts([]);
       setDirectSaleDiscount(0);
       setDirectSaleClient('');
+      setIsDirectSaleSalonUse(false);
       setActiveTab('inicio');
-      alert('Venda avulsa registrada com sucesso! Faturamento e estoque atualizados.');
+      alert(isDirectSaleSalonUse ? 'Baixa para uso do salão registrada com sucesso! Custo deduzido do faturamento.' : 'Venda avulsa registrada com sucesso! Faturamento e estoque atualizados.');
     } catch (e) {
       alert('Erro ao registrar venda.');
     }
@@ -5908,40 +5918,56 @@ ${googleLink}
             </div>
 
             <form onSubmit={submitDirectSale}>
-              <div className="mobile-form-group">
-                <label>Nome do Cliente (Opcional)</label>
-                <div className="mobile-autocomplete-container">
-                  <input 
-                    type="text" 
-                    placeholder="Ex: Cliente Avulso ou nome" 
-                    value={directSaleClient}
-                    onChange={e => {
-                      setDirectSaleClient(e.target.value);
-                      setShowDirectSaleSuggestions(true);
-                    }}
-                    onFocus={() => setShowDirectSaleSuggestions(true)}
-                    onBlur={() => setShowDirectSaleSuggestions(false)}
-                  />
-                  {showDirectSaleSuggestions && getFilteredClients(directSaleClient).length > 0 && (
-                    <ul className="mobile-suggestions-list">
-                      {getFilteredClients(directSaleClient).map(c => (
-                        <li 
-                          key={c.id} 
-                          className="mobile-suggestion-item"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            setDirectSaleClient(c.name || '');
-                            setShowDirectSaleSuggestions(false);
-                          }}
-                        >
-                          <span className="mobile-suggestion-name">{c.name}</span>
-                          {c.phone && <span className="mobile-suggestion-phone">{c.phone}</span>}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
+              {/* CAIXA DE SELEÇÃO: USO DO SALÃO */}
+              <div className="mobile-form-group" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fcfcf9', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--mobile-rule)', marginBottom: 12 }}>
+                <input 
+                  type="checkbox" 
+                  id="directSaleSalonUse" 
+                  checked={isDirectSaleSalonUse} 
+                  onChange={e => setIsDirectSaleSalonUse(e.target.checked)} 
+                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                />
+                <label htmlFor="directSaleSalonUse" style={{ margin: 0, fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem', textTransform: 'none', color: 'var(--mobile-text)' }}>
+                  🧴 Uso do Salão (Uso Interno / Baixa de Custo)
+                </label>
               </div>
+
+              {!isDirectSaleSalonUse && (
+                <div className="mobile-form-group">
+                  <label>Nome do Cliente (Opcional)</label>
+                  <div className="mobile-autocomplete-container">
+                    <input 
+                      type="text" 
+                      placeholder="Ex: Cliente Avulso ou nome" 
+                      value={directSaleClient}
+                      onChange={e => {
+                        setDirectSaleClient(e.target.value);
+                        setShowDirectSaleSuggestions(true);
+                      }}
+                      onFocus={() => setShowDirectSaleSuggestions(true)}
+                      onBlur={() => setShowDirectSaleSuggestions(false)}
+                    />
+                    {showDirectSaleSuggestions && getFilteredClients(directSaleClient).length > 0 && (
+                      <ul className="mobile-suggestions-list">
+                        {getFilteredClients(directSaleClient).map(c => (
+                          <li 
+                            key={c.id} 
+                            className="mobile-suggestion-item"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setDirectSaleClient(c.name || '');
+                              setShowDirectSaleSuggestions(false);
+                            }}
+                          >
+                            <span className="mobile-suggestion-name">{c.name}</span>
+                            {c.phone && <span className="mobile-suggestion-phone">{c.phone}</span>}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div style={{ background: '#f8f9fa', padding: 12, borderRadius: 8, marginBottom: 14 }}>
                 <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginBottom: 4, fontWeight: '700' }}>PRODUTOS SELECIONADOS</span>
@@ -5949,21 +5975,27 @@ ${googleLink}
                 {directSaleProducts.length === 0 ? (
                   <span style={{ fontSize: '0.8rem', color: '#a0aec0' }}>Nenhum produto adicionado ainda.</span>
                 ) : (
-                  directSaleProducts.map((prod, index) => (
-                    <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.85rem' }}>{prod.qty}x {prod.name}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
-                        <button type="button" onClick={() => {
-                          const newProds = [...directSaleProducts];
-                          newProds.splice(index, 1);
-                          setDirectSaleProducts(newProds);
-                        }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 4 }}>
-                          <X size={14} />
-                        </button>
+                  directSaleProducts.map((prod, index) => {
+                    const match = inventory.find(i => i.id === prod.id);
+                    const costVal = match ? (match.costPrice || 0) : 0;
+                    return (
+                      <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.85rem' }}>{prod.qty}x {prod.name}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                            R$ {(isDirectSaleSalonUse ? (costVal * prod.qty) : (prod.sellingPrice * prod.qty)).toFixed(2).replace('.', ',')}
+                          </span>
+                          <button type="button" onClick={() => {
+                            const newProds = [...directSaleProducts];
+                            newProds.splice(index, 1);
+                            setDirectSaleProducts(newProds);
+                          }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 4 }}>
+                            <X size={14} />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
 
@@ -5977,7 +6009,9 @@ ${googleLink}
                   >
                     <option value="" disabled>Selecione um produto</option>
                     {inventory.filter(i => i.quantity > 0).map(i => (
-                      <option key={i.id} value={i.id}>{i.name} - R$ {i.sellingPrice.toFixed(2).replace('.', ',')}</option>
+                      <option key={i.id} value={i.id}>
+                        {i.name} - R$ {(isDirectSaleSalonUse ? (i.costPrice || 0) : i.sellingPrice).toFixed(2).replace('.', ',')}
+                      </option>
                     ))}
                   </select>
                   <button type="button" className="mobile-btn-solid" style={{ padding: '0 16px', background: 'var(--mobile-primary)' }} onClick={() => {
@@ -5999,49 +6033,63 @@ ${googleLink}
                 </div>
               </div>
 
-              <div className="mobile-form-group">
-                <label>Desconto (R$)</label>
-                <input 
-                  type="number"
-                  min="0"
-                  placeholder="0,00"
-                  value={directSaleDiscount || ''}
-                  onChange={e => setDirectSaleDiscount(Math.max(0, Number(e.target.value)))}
-                />
-              </div>
+              {!isDirectSaleSalonUse && (
+                <>
+                  <div className="mobile-form-group">
+                    <label>Desconto (R$)</label>
+                    <input 
+                      type="number"
+                      min="0"
+                      placeholder="0,00"
+                      value={directSaleDiscount || ''}
+                      onChange={e => setDirectSaleDiscount(Math.max(0, Number(e.target.value)))}
+                    />
+                  </div>
 
-              <div className="mobile-form-group">
-                <label>Forma de Pagamento *</label>
-                <select value={directSalePaymentMethod} onChange={e => setDirectSalePaymentMethod(e.target.value)}>
-                  <option value="Pix">⚡ PIX</option>
-                  <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
-                  <option value="Cartão de Débito">💳 Cartão de Débito</option>
-                  <option value="Dinheiro">💵 Dinheiro</option>
-                </select>
-              </div>
+                  <div className="mobile-form-group">
+                    <label>Forma de Pagamento *</label>
+                    <select value={directSalePaymentMethod} onChange={e => setDirectSalePaymentMethod(e.target.value)}>
+                      <option value="Pix">⚡ PIX</option>
+                      <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
+                      <option value="Cartão de Débito">💳 Cartão de Débito</option>
+                      <option value="Dinheiro">💵 Dinheiro</option>
+                    </select>
+                  </div>
 
-              {directSalePaymentMethod === 'Cartão de Crédito' && (
-                <div className="mobile-form-group">
-                  <label>Número de Parcelas *</label>
-                  <select value={directSaleInstallments} onChange={e => setDirectSaleInstallments(e.target.value)}>
-                    <option value="À vista">À vista</option>
-                    <option value="2x">2x</option>
-                    <option value="3x">3x</option>
-                  </select>
-                </div>
+                  {directSalePaymentMethod === 'Cartão de Crédito' && (
+                    <div className="mobile-form-group">
+                      <label>Número de Parcelas *</label>
+                      <select value={directSaleInstallments} onChange={e => setDirectSaleInstallments(e.target.value)}>
+                        <option value="À vista">À vista</option>
+                        <option value="2x">2x</option>
+                        <option value="3x">3x</option>
+                      </select>
+                    </div>
+                  )}
+                </>
               )}
 
               <div style={{ margin: '14px 0' }}>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>TOTAL A RECEBER</span>
-                <strong style={{ fontSize: '1.3rem', color: 'var(--mobile-green)' }}>
-                  R$ {Math.max(0, directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - directSaleDiscount).toFixed(2).replace('.', ',')}
+                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>
+                  {isDirectSaleSalonUse ? 'DEDUÇÃO TOTAL (PREÇO DE CUSTO)' : 'TOTAL A RECEBER'}
+                </span>
+                <strong style={{ fontSize: '1.3rem', color: isDirectSaleSalonUse ? 'var(--mobile-red)' : 'var(--mobile-green)' }}>
+                  R$ {
+                    (isDirectSaleSalonUse 
+                      ? directSaleProducts.reduce((acc, p) => {
+                          const match = inventory.find(prod => prod.id === p.id);
+                          return acc + ((match ? (match.costPrice || 0) : 0) * p.qty);
+                        }, 0)
+                      : Math.max(0, directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - directSaleDiscount)
+                    ).toFixed(2).replace('.', ',')
+                  }
                 </strong>
               </div>
 
               <div className="mobile-modal-actions">
                 <button type="button" className="btn-cancel" onClick={() => setShowDirectSaleModal(false)}>Cancelar</button>
-                <button type="submit" className="btn-save" style={{ background: 'var(--mobile-green)' }}>
-                  Confirmar Venda
+                <button type="submit" className="btn-save" style={{ background: isDirectSaleSalonUse ? 'var(--mobile-red)' : 'var(--mobile-green)' }}>
+                  {isDirectSaleSalonUse ? 'Confirmar Baixa (Custo)' : 'Confirmar Venda'}
                 </button>
               </div>
             </form>
