@@ -14,19 +14,19 @@ function Footer() {
               Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
             </p>
             <div style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              border: '1px solid rgba(255, 255, 255, 0.05)',
-              padding: '10px 12px',
+              background: 'rgba(255, 255, 255, 0.012)',
+              border: '1px solid rgba(255, 255, 255, 0.04)',
+              padding: '12px 14px',
               borderRadius: '6px',
               fontSize: '12px',
               lineHeight: '1.5',
               maxWidth: '38ch',
               color: 'var(--muted)'
             }}>
-              💡 <strong>Quer ver mais do nosso conteúdo no Google?</strong><br/>
-              <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-deep)', textDecoration: 'underline', fontWeight: 'bold' }}>
-                Clique aqui
-              </a>, marque a caixinha e o Google priorizará e mostrará mais do Studio do Jon para você!
+              <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-deep)', fontWeight: 600, display: 'block', marginBottom: '4px' }}>Algoritmo do Google</span>
+              Para garantir que as análises de fios e nossos ensaios de visagismo continuem aparecendo de forma orgânica nas suas buscas e no feed do Chrome, você pode <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-deep)', textDecoration: 'underline', fontWeight: 'bold' }}>
+                priorizar nosso site como fonte de conteúdo
+              </a>. Leva apenas um clique e mantém nossa comunicação direta.
             </div>
           </div>
 

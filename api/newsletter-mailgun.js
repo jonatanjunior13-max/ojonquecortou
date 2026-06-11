@@ -52,9 +52,9 @@ function wrapNewsletterHtml(subject, body) {
               <div style="font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 15px;">
                 Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG<br>Quarta a Sábado · 9h às 19h
               </div>
-              <div style="margin-bottom: 15px; font-size: 11px; line-height: 1.5; color: #6B5A4B; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(26,19,16,0.08); text-align: left; display: inline-block; max-width: 440px;">
-                💡 <strong>Quer acompanhar mais do nosso conteúdo no Google?</strong><br/>
-                <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" style="color: #C97B49 !important; text-decoration: underline; font-weight: bold;">Clique aqui</a>, marque a caixinha e o Google priorizará e mostrará mais novidades do Studio do Jon para você!
+              <div style="margin-bottom: 15px; font-size: 11px; line-height: 1.6; color: #6B5A4B; background: rgba(0,0,0,0.012); padding: 12px 14px; border-radius: 6px; border: 1px solid rgba(26,19,16,0.08); text-align: left; display: inline-block; max-width: 440px; font-family: 'Manrope', sans-serif;">
+                <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #C97B49; font-weight: 600; display: block; margin-bottom: 4px;">Preferências de Leitura</span>
+                Os algoritmos costumam limitar o alcance das publicações. Se você deseja que os ensaios de visagismo e novidades do Studio cheguem até você no Chrome ou na busca, você pode indicar sua preferência de conteúdo <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" style="color: #C97B49 !important; text-decoration: underline; font-weight: 600;">adicionando nosso site às suas fontes</a>. É rápido, simples e assegura que continuaremos nos comunicando.
               </div>
               <div style="font-size: 11px; color: #9A8A7A; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase;">
                 © ${new Date().getFullYear()} Studio do Jon

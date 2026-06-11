@@ -152,9 +152,9 @@ function getEmailWrapper(title, content, isDark = false) {
                 <div style="font-size: 12px; color: ${textMuted}; line-height: 1.6; margin-bottom: 15px;">
                   Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
                 </div>
-                <div style="margin-bottom: 20px; font-size: 11px; line-height: 1.5; color: ${textMuted}; background: ${isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)'}; padding: 10px; border-radius: 6px; border: 1px solid ${borderInner}; display: inline-block; max-width: 480px; text-align: left;">
-                  💡 <strong>Quer acompanhar mais do nosso conteúdo no Google?</strong><br/>
-                  <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" style="color: ${accentColor} !important; text-decoration: underline; font-weight: bold;">Clique aqui</a>, marque a caixinha e o Google priorizará e mostrará mais novidades e conteúdos do Studio do Jon para você!
+                <div style="margin-bottom: 20px; font-size: 11px; line-height: 1.6; color: ${textMuted}; background: ${isDark ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.012)'}; padding: 12px 14px; border-radius: 6px; border: 1px solid ${borderInner}; display: inline-block; max-width: 460px; text-align: left; font-family: 'Manrope', sans-serif;">
+                  <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: ${accentColor}; font-weight: 600; display: block; margin-bottom: 4px;">Preferências de Conteúdo</span>
+                  O Google costuma filtrar o que você lê. Se você deseja que a leitura de fios e os ensaios do Studio apareçam de forma contínua em suas buscas e no feed do Chrome, você pode indicar sua preferência <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" style="color: ${accentColor} !important; text-decoration: underline; font-weight: 600;">selecionando nosso canal aqui</a>. Leva dois segundos e mantém nossa conexão direta, livre de intermediários.
                 </div>
                 <div style="font-size: 11px; color: #8A7866; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
                   © ${new Date().getFullYear()} Studio do Jon
