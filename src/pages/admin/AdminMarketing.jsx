@@ -192,6 +192,7 @@ const AdminMarketing = () => {
   const [activeNewsletterId, setActiveNewsletterId] = useState('newsletter-junho-2026');
   const [showNewsletterPreview, setShowNewsletterPreview] = useState(false);
   const [isSendingNewsletter, setIsSendingNewsletter] = useState(false);
+  const [isGeneratingNewsletter, setIsGeneratingNewsletter] = useState(false);
   const [newsletterSendLog, setNewsletterSendLog] = useState([]);
   const [testEmailAddress, setTestEmailAddress] = useState('');
 
@@ -199,6 +200,186 @@ const AdminMarketing = () => {
 
   const handleApproveNewsletter = (id) => {
     setNewsletters(prev => prev.map(n => n.id === id ? { ...n, status: 'approved' } : n));
+  };
+
+  const handleRegenerateNewsletter = async (id) => {
+    setIsGeneratingNewsletter(true);
+    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || '';
+
+    const topics = [
+      "Como a porosidade afeta a absorção de água e finalizadores em cabelos com curvatura, e por que a Leitura de Fio resolve isso diagnosticando antes de cortar.",
+      "A verdade sobre o corte a seco: por que cortar cabelo molhado estica os cachos e causa surpresas desagradáveis depois de seco.",
+      "Por que o acúmulo de cremes pesados (build-up) sabota o volume natural dos cabelos crespos e ondulados.",
+      "O método Leitura de Fio e o visagismo: como harmonizar a estrutura natural do fio com a personalidade de cada cliente.",
+      "O clima de Belo Horizonte e como lidar com a definição vs volume nos dias mais secos ou úmidos.",
+      "Autismo e atendimento acolhedor no salão: como a metodologia estruturada do Método Leitura de Fio cria um ambiente calmo e previsível para pessoas neurodivergentes."
+    ];
+
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
+
+    if (!apiKey) {
+      setTimeout(() => {
+        const fallbackSubject = 'Por que a técnica supera o produto';
+        const fallbackBody = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+    <tr>
+      <td align="left" valign="middle">
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+      </td>
+      <td align="right" valign="middle">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+      </td>
+    </tr>
+  </table>
+
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+    Leitura de Fio · Edição Alternativa
+  </span>
+
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">Por que a técnica supera <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">qualquer produto.</span></h1>
+
+  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Muitas vezes compramos cremes caríssimos esperando um milagre que só um corte correto pode proporcionar.</p>
+  
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Um cabelo cacheado bem estruturado não necessita de finalizações complexas ou quilos de produto para ter definição e balanço.</p>
+
+  <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"Cabelo bonito é cabelo saudável e bem cortado. O resto é apenas complemento."</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+  </div>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">O Método Leitura de Fio prioriza a saúde e a praticidade do seu dia a dia.</p>
+
+  <div style="margin-top: 8px; margin-bottom: 32px;">
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+
+  <div style="margin-top: 28px;">
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+  </div>
+</div>`;
+        setNewsletters(prev => prev.map(n => n.id === id ? {
+          ...n,
+          subject: fallbackSubject,
+          htmlBody: fallbackBody,
+          status: 'draft'
+        } : n));
+        setIsGeneratingNewsletter(false);
+      }, 1500);
+      return;
+    }
+
+    try {
+      const promptText = `Você é o redator estratégico de "O Jon Que Cortou" (@ojonquecortou), especialista em cachos/crespos/ondulados em BH.
+Escreva a newsletter mensal "Leitura de Fio" baseando-se no seguinte tema: "${randomTopic}".
+
+Instruções críticas de escrita:
+1. Tom de voz: Altamente técnico, assertivo, mas acolhedor. Jon é autista e sua escrita é lógica, direta e baseada em fatos, sem floreios exagerados ou clichês de marketing ("fique linda", "arrase", "cachos perfeitos"). Ele usa analogias práticas.
+2. Evite frases clichês. Vá direto ao ponto técnico.
+3. Formato de saída:
+Você deve retornar APENAS um JSON válido contendo exatamente dois campos: "subject" e "bodyHtml". Não inclua markdown, blocos de código markdown ou texto explicativo. Retorne APENAS o JSON puro.
+
+O campo "subject" deve ser um assunto provocativo e curto (máximo 60 caracteres) sobre o tema.
+O campo "bodyHtml" deve conter o corpo do e-mail em HTML (apenas o conteúdo interno, os parágrafos e citações, pois o cabeçalho/rodapé e o contêiner externo já estão definidos).
+Use as seguintes tags no "bodyHtml":
+- Parágrafos simples: <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Seu texto aqui...</p>
+- Uma citação destacada (blockquote) exatamente neste formato:
+<div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"Citação marcante do Jon aqui..."</p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+</div>
+- Um CTA com botão exatamente neste formato:
+<div style="margin-top: 8px; margin-bottom: 32px;">
+  <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+</div>
+
+Certifique-se de que o HTML gerado seja perfeitamente válido e estilizado de acordo com as instruções acima.`;
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [{ text: promptText }]
+            }],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+          const parsed = JSON.parse(text);
+          if (parsed.subject && parsed.bodyHtml) {
+            const fullHtml = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+    <tr>
+      <td align="left" valign="middle">
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+      </td>
+      <td align="right" valign="middle">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+      </td>
+    </tr>
+  </table>
+
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+    Leitura de Fio · Edição Mensal
+  </span>
+
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">${parsed.subject}</h1>
+
+  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+
+  ${parsed.bodyHtml}
+
+  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+
+  <div style="margin-top: 28px;">
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+  </div>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+    Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+  </p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B; margin: 10px 0 0;">
+    @ojonquecortou · ojonquecortou.com.br/agendar
+  </p>
+  <div style="height: 48px;"></div>
+</div>`;
+
+            setNewsletters(prev => prev.map(n => n.id === id ? {
+              ...n,
+              subject: parsed.subject,
+              htmlBody: fullHtml,
+              status: 'draft'
+            } : n));
+            alert('Nova newsletter gerada com sucesso via IA! 🎉');
+          }
+        }
+      } else {
+        console.warn('Gemini API returned error status:', response.status);
+        alert('Erro ao chamar a API para gerar nova newsletter. Usando fallback.');
+      }
+    } catch (err) {
+      console.error('Error generating newsletter:', err);
+      alert('Erro inesperado ao gerar newsletter. Usando fallback.');
+    } finally {
+      setIsGeneratingNewsletter(false);
+    }
   };
 
   const handleSendNewsletterTest = async () => {
@@ -2077,6 +2258,17 @@ const AdminMarketing = () => {
                             onClick={() => handleApproveNewsletter(activeNewsletter.id)}
                           >
                             <CheckSquare size={13} /> Aprovar newsletter
+                          </button>
+                        )}
+
+                        {(activeNewsletter.status === 'draft' || activeNewsletter.status === 'approved') && (
+                          <button
+                            className="btn btn-outline btn-small"
+                            style={{ display: 'flex', alignItems: 'center', gap: 6, borderColor: '#e53e3e', color: '#e53e3e', background: 'transparent' }}
+                            onClick={() => handleRegenerateNewsletter(activeNewsletter.id)}
+                            disabled={isGeneratingNewsletter}
+                          >
+                            <RefreshCw size={13} style={{ animation: isGeneratingNewsletter ? 'spin 1.5s linear infinite' : 'none' }} /> {isGeneratingNewsletter ? 'Gerando...' : 'Desaprovar e Gerar Outra'}
                           </button>
                         )}
 
