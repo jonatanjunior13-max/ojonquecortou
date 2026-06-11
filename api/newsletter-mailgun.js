@@ -165,48 +165,83 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, sent: 0, message: 'Nenhuma cliente com email cadastrado.' });
   }
 
-  // Enviar com delay de 200ms entre cada para não sobrecarregar
-  let sent = 0;
-  let lastMessageId = '';
-  const errors = [];
+  // Enviar em lote (Batch Sending) via Mailgun para evitar timeouts na Vercel
+  try {
+    const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
+    const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
 
-  for (const recipient of recipients) {
-    try {
-      // Personalizar nome na saudação se usar {nome}
-      const personalizedHtml = fullHtml.replace(/{nome}/g, recipient.name);
-      const msgId = await sendMailgun(recipient.email, recipient.name, subject, personalizedHtml);
-      lastMessageId = msgId;
-      sent++;
-    } catch (err) {
-      errors.push({ email: recipient.email, error: err.message });
-      console.error(`Falha ao enviar para ${recipient.email}:`, err.message);
+    // Substituir {nome} pelo placeholder de variáveis do Mailgun (%recipient.name%)
+    const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
+
+    const recipientVariables = {};
+    const toEmails = [];
+
+    recipients.forEach(r => {
+      toEmails.push(r.email);
+      recipientVariables[r.email] = { name: r.name };
+    });
+
+    const bodyParams = new URLSearchParams();
+    bodyParams.append('from', FROM_EMAIL);
+    bodyParams.append('subject', subject);
+    bodyParams.append('html', batchHtml);
+    bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
+    bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
+    bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+    bodyParams.append('o:tag', 'newsletter');
+    bodyParams.append('o:tracking', 'yes');
+    bodyParams.append('o:tracking-clicks', 'yes');
+    bodyParams.append('o:tracking-opens', 'yes');
+
+    // Adiciona cada destinatário na query parameters do fetch
+    toEmails.forEach(email => {
+      bodyParams.append('to', email);
+    });
+
+    const resMailgun = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: bodyParams
+    });
+
+    if (!resMailgun.ok) {
+      const errText = await resMailgun.text();
+      throw new Error(`Mailgun Batch Error ${resMailgun.status}: ${errText}`);
     }
-    // Small delay to respect Mailgun rate limits
-    await new Promise(r => setTimeout(r, 150));
-  }
 
-  // Save send record to Firestore
-  if (db) {
-    try {
-      await addDoc(collection(db, 'newsletter_sends'), {
-        newsletterId: newsletterId || 'newsletter',
-        subject,
-        sentAt: new Date().toISOString(),
-        sentCount: sent,
-        errors: errors.length,
-        lastMessageId
-      });
-    } catch (e) {
-      console.warn('Firestore save failed:', e.message);
+    const resData = await resMailgun.json();
+    const messageId = resData.id || 'mailgun-batch-ok';
+
+    // Salvar no Firestore
+    if (db) {
+      try {
+        await addDoc(collection(db, 'newsletter_sends'), {
+          newsletterId: newsletterId || 'newsletter',
+          subject,
+          sentAt: new Date().toISOString(),
+          sentCount: recipients.length,
+          errors: 0,
+          messageId
+        });
+      } catch (e) {
+        console.warn('Firestore save failed:', e.message);
+      }
     }
-  }
 
-  return res.status(200).json({
-    success: true,
-    mode: 'production',
-    sent,
-    total: recipients.length,
-    errors: errors.length,
-    messageId: lastMessageId
-  });
+    return res.status(200).json({
+      success: true,
+      mode: 'production',
+      sent: recipients.length,
+      total: recipients.length,
+      errors: 0,
+      messageId
+    });
+
+  } catch (err) {
+    console.error('Mailgun batch send error:', err.message);
+    return res.status(500).json({ error: 'Falha no envio da newsletter em lote', details: err.message });
+  }
 }
