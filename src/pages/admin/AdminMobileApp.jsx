@@ -72,6 +72,7 @@ const AdminMobileApp = () => {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
   const [checkoutBooking, setCheckoutBooking] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [selectedExtraServices, setSelectedExtraServices] = useState([]);
 
   const clientActivePackages = React.useMemo(() => {
     if (!checkoutBooking) return [];
@@ -100,9 +101,10 @@ const AdminMobileApp = () => {
           ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
           : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
         );
+    const extras = selectedExtraServices.reduce((acc, s) => acc + s.price, 0);
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
     const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
-    return Math.max(0, base + productsTotal - discount - prepay);
+    return Math.max(0, base + extras + productsTotal - discount - prepay);
   };
   const [discount, setDiscount] = useState(0);
   const [editingBookingId, setEditingBookingId] = useState(null);
@@ -1392,6 +1394,7 @@ const AdminMobileApp = () => {
       createdAt: new Date().toISOString()
     };
 
+    const isEditing = !!editingBookingId;
     try {
       if (editingBookingId) {
         const oldBooking = bookings.find(b => b.id === editingBookingId);
@@ -1462,7 +1465,7 @@ const AdminMobileApp = () => {
         }
       }
 
-      // Enviar e-mail de confirmação de agendamento manual
+      // Enviar e-mail de confirmação ou atualização de agendamento manual
       if (payload.clientEmail && payload.clientEmail.includes('@')) {
         try {
           const displayDate = payload.date.split('-').reverse().join('/');
@@ -1470,7 +1473,8 @@ const AdminMobileApp = () => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              type: 'horario_confirmado',
+              type: isEditing ? 'agendamento_editado' : 'horario_confirmado',
+              id: isEditing ? editingBookingId : undefined,
               clientEmail: payload.clientEmail,
               clientName: payload.clientName,
               serviceName: payload.service?.name || 'Serviço',
@@ -1481,7 +1485,7 @@ const AdminMobileApp = () => {
             })
           });
         } catch (err) {
-          console.warn('Falha ao enviar email de confirmação no cadastro manual', err);
+          console.warn('Falha ao enviar email de confirmação/edição no cadastro manual', err);
         }
       }
 
@@ -1634,6 +1638,7 @@ const AdminMobileApp = () => {
     setCheckoutBooking(booking);
     setSelectedBooking(null);
     setSelectedProducts([]);
+    setSelectedExtraServices([]);
     setDiscount(0);
     setSellingPackageId('');
     setUsingClientPackageId('');
@@ -1648,13 +1653,18 @@ const AdminMobileApp = () => {
           ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
           : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
         );
+    const extrasTotal = selectedExtraServices.reduce((acc, s) => acc + s.price, 0);
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
     const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
-    const value = Math.max(0, baseServicePrice + productsTotal - discount - prepay);
+    const value = Math.max(0, baseServicePrice + extrasTotal + productsTotal - discount - prepay);
     
     let description = sellingPackageId 
       ? `Compra de Pacote: ${packages.find(p => p.id === sellingPackageId)?.name || 'Pacote'}`
       : (checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base');
+    
+    if (selectedExtraServices.length > 0) {
+      description += ` + Extras: ${selectedExtraServices.map(s => s.name).join(', ')}`;
+    }
     if (selectedProducts.length > 0) {
       description += ` + ${selectedProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
     }
@@ -1664,11 +1674,11 @@ const AdminMobileApp = () => {
     if (prepay > 0) {
       description += ` (Sinal/Adiantamento: -R$ ${prepay})`;
     }
-
+ 
     const baseMethodLabel = usingClientPackageId 
       ? `Pacote (Débito)` 
       : (paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod);
-
+ 
     const payloadTx = {
       bookingId: checkoutBooking.id,
       date: checkoutBooking.date || new Date().toISOString().split('T')[0],
@@ -1694,10 +1704,15 @@ const AdminMobileApp = () => {
       }),
       createdAt: new Date().toISOString()
     };
-
+ 
     // Calculate service cost
     const mainService = services.find(s => s.name === (checkoutBooking.service?.name || checkoutBooking.serviceName));
-    const totalServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+    const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+    const extraServicesCost = selectedExtraServices.reduce((sum, item) => {
+      const match = services.find(s => s.name === item.name);
+      return sum + (match ? (Number(match.cost) || 0) : 0);
+    }, 0);
+    const totalServiceCost = mainServiceCost + extraServicesCost;
     const serviceId = mainService ? mainService.id : '';
 
     try {
@@ -5748,182 +5763,249 @@ ${googleLink}
       {/* MODAL DE CHECKOUT (FECHAMENTO DE COMANDA) */}
       {showCheckoutModal && checkoutBooking && (
         <div className="mobile-overlay" onClick={() => setShowCheckoutModal(false)}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4>Fechar Comanda</h4>
-              <button onClick={() => setShowCheckoutModal(false)}><X size={20} /></button>
+          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ padding: '14px', width: '92%', maxWidth: '380px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflowY: 'auto', gap: '8px' }}>
+            <div className="mobile-sheet-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+              <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>Fechar Comanda</h4>
+              <button onClick={() => setShowCheckoutModal(false)} style={{ background: 'none', border: 'none', color: '#718096', cursor: 'pointer' }}><X size={18} /></button>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16 }}>
-              <div>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>CLIENTE</span>
-                <strong style={{ fontSize: '0.9rem' }}>{checkoutBooking.clientName}</strong>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ fontSize: '0.8rem' }}>
+                <span style={{ fontSize: '0.7rem', color: '#718096', display: 'block', textTransform: 'uppercase' }}>Cliente</span>
+                <strong>{checkoutBooking.clientName}</strong>
               </div>
               
-              <div style={{ background: '#f8f9fa', padding: 12, borderRadius: 8, marginTop: 8 }}>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginBottom: 4 }}>ITENS DA COMANDA</span>
+              <div style={{ background: '#f8f9fa', padding: '8px', borderRadius: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <span style={{ fontSize: '0.7rem', color: '#718096', display: 'block', fontWeight: 700 }}>ITENS DA COMANDA</span>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: '0.9rem' }}>{checkoutBooking.service?.name || checkoutBooking.serviceName}</span>
-                  <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>R$ {(checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}</span>
+                {/* Substituição do Serviço Agendado */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, borderBottom: '1px solid #edf2f7', paddingBottom: 4 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Serviço Principal</span>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>R$ {(checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}</span>
+                  </div>
+                  <select
+                    value={checkoutBooking.service?.name || checkoutBooking.serviceName}
+                    onChange={e => {
+                      const newName = e.target.value;
+                      const match = services.find(s => s.name === newName);
+                      if (match) {
+                        setCheckoutBooking(prev => ({
+                          ...prev,
+                          serviceName: newName,
+                          servicePrice: match.promoPrice || match.price,
+                          service: match
+                        }));
+                      }
+                    }}
+                    style={{ width: '100%', padding: '3px 6px', fontSize: '0.75rem', borderRadius: 4, border: '1px solid #cbd5e0', background: '#fff' }}
+                  >
+                    {services.map(s => (
+                      <option key={s.id} value={s.name}>
+                        {s.name} (R$ {s.promoPrice || s.price})
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
+                {/* Lista de Serviços Extras Adicionados */}
+                {selectedExtraServices.map((s, idx) => (
+                  <div key={'s-' + idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                    <span style={{ color: 'var(--mobile-primary)' }}>➕ {s.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontWeight: 600 }}>R$ {s.price.toFixed(2).replace('.', ',')}</span>
+                      <button type="button" onClick={() => setSelectedExtraServices(prev => prev.filter((_, i) => i !== idx))} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 2, cursor: 'pointer' }}>
+                        <X size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+
+                {/* Lista de Produtos Adicionados */}
                 {selectedProducts.map((prod, index) => (
-                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.9rem' }}>{prod.qty}x {prod.name}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
+                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                    <span style={{ color: '#4a5568' }}>📦 {prod.qty}x {prod.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
                       <button type="button" onClick={() => {
                         const newProds = [...selectedProducts];
                         newProds.splice(index, 1);
                         setSelectedProducts(newProds);
-                      }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 4 }}>
-                        <X size={14} />
+                      }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 2, cursor: 'pointer' }}>
+                        <X size={12} />
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div className="mobile-form-group" style={{ marginTop: 8 }}>
-                <label>Adicionar Produto</label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <select 
-                    id="checkout-product-select"
-                    style={{ flex: 1 }}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>Selecione um produto</option>
-                    {inventory.filter(i => i.quantity > 0).map(i => (
-                      <option key={i.id} value={i.id}>{i.name} - R$ {i.sellingPrice.toFixed(2).replace('.', ',')}</option>
-                    ))}
-                  </select>
-                  <button type="button" className="mobile-btn-solid" style={{ padding: '0 16px', background: 'var(--mobile-primary)' }} onClick={() => {
-                    const selectEl = document.getElementById('checkout-product-select');
-                    if (!selectEl.value) return;
-                    const prod = inventory.find(i => i.id === selectEl.value);
-                    if (prod) {
-                      const existing = selectedProducts.find(p => p.id === prod.id);
-                      if (existing) {
-                        setSelectedProducts(selectedProducts.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
-                      } else {
-                        setSelectedProducts([...selectedProducts, { ...prod, qty: 1 }]);
-                      }
+              {/* Lançamento de extras - Lado a Lado Compacto */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+                <div className="mobile-form-group" style={{ margin: 0 }}>
+                  <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Serviço Extra</label>
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    <select 
+                      id="checkout-service-select"
+                      style={{ flex: 1, padding: '3px 6px', fontSize: '0.75rem', height: '28px', minHeight: 'auto' }}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>Selecione</option>
+                      {services.map(s => (
+                        <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>{s.name}</option>
+                      ))}
+                    </select>
+                    <button type="button" className="mobile-btn-solid" style={{ padding: '0 8px', background: 'var(--mobile-primary)', height: '28px' }} onClick={() => {
+                      const selectEl = document.getElementById('checkout-service-select');
+                      if (!selectEl || !selectEl.value) return;
+                      const [name, priceStr] = selectEl.value.split('|');
+                      setSelectedExtraServices(prev => [...prev, { name, price: Number(priceStr) }]);
                       selectEl.value = "";
-                    }
-                  }}>
-                    <Plus size={16} />
-                  </button>
+                    }}>+</button>
+                  </div>
+                </div>
+
+                <div className="mobile-form-group" style={{ margin: 0 }}>
+                  <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Adicionar Produto</label>
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    <select 
+                      id="checkout-product-select"
+                      style={{ flex: 1, padding: '3px 6px', fontSize: '0.75rem', height: '28px', minHeight: 'auto' }}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>Selecione</option>
+                      {inventory.filter(i => i.quantity > 0).map(i => (
+                        <option key={i.id} value={i.id}>{i.name}</option>
+                      ))}
+                    </select>
+                    <button type="button" className="mobile-btn-solid" style={{ padding: '0 8px', background: 'var(--mobile-primary)', height: '28px' }} onClick={() => {
+                      const selectEl = document.getElementById('checkout-product-select');
+                      if (!selectEl || !selectEl.value) return;
+                      const prod = inventory.find(i => i.id === selectEl.value);
+                      if (prod) {
+                        const existing = selectedProducts.find(p => p.id === prod.id);
+                        if (existing) {
+                          setSelectedProducts(selectedProducts.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
+                        } else {
+                          setSelectedProducts([...selectedProducts, { ...prod, qty: 1 }]);
+                        }
+                        selectEl.value = "";
+                      }
+                    }}>+</button>
+                  </div>
                 </div>
               </div>
 
-              <div className="mobile-form-group" style={{ marginTop: 8 }}>
-                <label>Desconto (R$)</label>
+              {/* Pacotes / Vender Pacote - Compacto Lado a Lado */}
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0,0,0,0.01)', padding: '4px 6px', borderRadius: '6px', border: '1px solid #edf2f7' }}>
+                {availablePackagesForBooking.length > 0 && (
+                  <div className="mobile-form-group" style={{ margin: 0, flex: 1 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600 }}>
+                      <input 
+                        type="checkbox"
+                        style={{ width: '14px', height: '14px', minHeight: 'auto', margin: 0 }}
+                        checked={!!usingClientPackageId}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setUsingClientPackageId(availablePackagesForBooking[0].id);
+                            setSellingPackageId('');
+                          } else {
+                            setUsingClientPackageId('');
+                          }
+                        }}
+                      />
+                      Usar Pacote
+                    </label>
+                    {usingClientPackageId && (
+                      <select
+                        value={usingClientPackageId}
+                        onChange={e => setUsingClientPackageId(e.target.value)}
+                        style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.7rem', borderRadius: '3px' }}
+                      >
+                        {availablePackagesForBooking.map(cp => {
+                          const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
+                          const servObj = services.find(s => s.name === bookingServiceName);
+                          const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
+                          return (
+                            <option key={cp.id} value={cp.id}>
+                              {cp.packageName} ({remaining} rest.)
+                            </option>
+                          );
+                        })}
+                      </select>
+                    )}
+                  </div>
+                )}
+
+                {!usingClientPackageId && packages.length > 0 && (
+                  <div className="mobile-form-group" style={{ margin: 0, flex: 1 }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600 }}>
+                      <input 
+                        type="checkbox"
+                        style={{ width: '14px', height: '14px', minHeight: 'auto', margin: 0 }}
+                        checked={!!sellingPackageId}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSellingPackageId(packages[0].id);
+                          } else {
+                            setSellingPackageId('');
+                          }
+                        }}
+                      />
+                      Vender Pacote
+                    </label>
+                    {sellingPackageId && (
+                      <select
+                        value={sellingPackageId}
+                        onChange={e => setSellingPackageId(e.target.value)}
+                        style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.7rem', borderRadius: '3px' }}
+                      >
+                        {packages.map(p => (
+                          <option key={p.id} value={p.id}>
+                            {p.name} (R$ {p.price})
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Desconto */}
+              <div className="mobile-form-group" style={{ margin: 0 }}>
+                <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Desconto (R$)</label>
                 <input 
                   type="number"
                   min="0"
                   placeholder="0,00"
+                  style={{ height: '28px', minHeight: 'auto', padding: '3px 6px', fontSize: '0.78rem' }}
                   value={discount || ''}
                   onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
                 />
               </div>
 
-              {/* Pacotes options */}
-              {availablePackagesForBooking.length > 0 && (
-                <div className="mobile-form-group" style={{ marginBottom: 12, background: 'rgba(0,0,0,0.02)', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
-                    <input 
-                      type="checkbox"
-                      style={{ width: '18px', height: '18px', minHeight: 'auto', flexShrink: 0, margin: 0, cursor: 'pointer' }}
-                      checked={!!usingClientPackageId}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          setUsingClientPackageId(availablePackagesForBooking[0].id);
-                          setSellingPackageId('');
-                        } else {
-                          setUsingClientPackageId('');
-                        }
-                      }}
-                    />
-                    Pagar com créditos de pacote?
-                  </label>
-                  {usingClientPackageId && (
-                    <select
-                      value={usingClientPackageId}
-                      onChange={e => setUsingClientPackageId(e.target.value)}
-                      style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem', borderRadius: '4px' }}
-                    >
-                      {availablePackagesForBooking.map(cp => {
-                        const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
-                        const servObj = services.find(s => s.name === bookingServiceName);
-                        const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
-                        return (
-                          <option key={cp.id} value={cp.id}>
-                            {cp.packageName} ({remaining} sessões restantes)
-                          </option>
-                        );
-                      })}
-                    </select>
-                  )}
-                </div>
-              )}
-
-              {!usingClientPackageId && packages.length > 0 && (
-                <div className="mobile-form-group" style={{ marginBottom: 12, background: 'rgba(0,0,0,0.02)', padding: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>
-                    <input 
-                      type="checkbox"
-                      style={{ width: '18px', height: '18px', minHeight: 'auto', flexShrink: 0, margin: 0, cursor: 'pointer' }}
-                      checked={!!sellingPackageId}
-                      onChange={e => {
-                        if (e.target.checked) {
-                          setSellingPackageId(packages[0].id);
-                        } else {
-                          setSellingPackageId('');
-                        }
-                      }}
-                    />
-                    Vender pacote nesta comanda?
-                  </label>
-                  {sellingPackageId && (
-                    <select
-                      value={sellingPackageId}
-                      onChange={e => setSellingPackageId(e.target.value)}
-                      style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem', borderRadius: '4px' }}
-                    >
-                      {packages.map(p => (
-                        <option key={p.id} value={p.id}>
-                          {p.name} (R$ {p.price.toFixed(2)})
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                </div>
-              )}
-
               {checkoutBooking.prepayment > 0 && (
-                <div style={{ marginTop: 6, fontSize: '0.85rem', color: '#e53e3e', fontWeight: 600 }}>
-                  <span>Sinal/Adiantamento Pago: </span>
+                <div style={{ fontSize: '0.75rem', color: '#e53e3e', fontWeight: 600 }}>
+                  <span>Sinal Pago: </span>
                   <strong>- R$ {Number(checkoutBooking.prepayment).toFixed(2).replace('.', ',')}</strong>
                 </div>
               )}
 
-              <div>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginTop: 10 }}>VALOR TOTAL COBRADO (RESTANTE)</span>
-                <strong style={{ fontSize: '1.4rem', color: 'var(--mobile-green)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+                <span style={{ fontSize: '0.72rem', color: '#718096', fontWeight: 700 }}>TOTAL A COBRAR</span>
+                <strong style={{ fontSize: '1.15rem', color: 'var(--mobile-green)' }}>
                   R$ {getCheckoutTotal().toFixed(2).replace('.', ',')}
                 </strong>
               </div>
             </div>
 
-            <div className="mobile-form-group">
-              <label>Forma de Pagamento *</label>
+            <div className="mobile-form-group" style={{ margin: 0 }}>
+              <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Forma de Pagamento *</label>
               {usingClientPackageId ? (
-                <div style={{ padding: '10px', width: '100%', background: 'rgba(0,0,0,0.03)', borderRadius: '6px', border: '1px solid #cbd5e0', fontSize: '0.9rem', color: 'var(--mobile-primary)', fontWeight: 600 }}>
+                <div style={{ padding: '4px 6px', width: '100%', background: 'rgba(0,0,0,0.03)', borderRadius: '4px', border: '1px solid #cbd5e0', fontSize: '0.78rem', color: 'var(--mobile-primary)', fontWeight: 600 }}>
                   📦 Débito do Pacote
                 </div>
               ) : (
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} style={{ height: '28px', minHeight: 'auto', padding: '2px 6px', fontSize: '0.78rem' }}>
                   <option value="Pix">⚡ PIX</option>
                   <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
                   <option value="Cartão de Débito">💳 Cartão de Débito</option>
@@ -5933,9 +6015,9 @@ ${googleLink}
             </div>
 
             {paymentMethod === 'Cartão de Crédito' && (
-              <div className="mobile-form-group">
-                <label>Número de Parcelas *</label>
-                <select value={installments} onChange={e => setInstallments(e.target.value)}>
+              <div className="mobile-form-group" style={{ margin: 0 }}>
+                <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Parcelas *</label>
+                <select value={installments} onChange={e => setInstallments(e.target.value)} style={{ height: '28px', minHeight: 'auto', padding: '2px 6px', fontSize: '0.78rem' }}>
                   <option value="À vista">À vista</option>
                   <option value="2x">2x</option>
                   <option value="3x">3x</option>
@@ -5943,10 +6025,10 @@ ${googleLink}
               </div>
             )}
 
-            <div className="mobile-modal-actions">
-              <button type="button" className="btn-cancel" onClick={() => setShowCheckoutModal(false)}>Cancelar</button>
-              <button type="button" className="btn-save" style={{ background: 'var(--mobile-green)' }} onClick={submitCheckout}>
-                Confirmar Recebimento
+            <div className="mobile-modal-actions" style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+              <button type="button" className="btn-cancel" onClick={() => setShowCheckoutModal(false)} style={{ flex: 1, padding: '6px', fontSize: '0.78rem', height: '32px' }}>Cancelar</button>
+              <button type="button" className="btn-save" style={{ flex: 1.2, background: 'var(--mobile-green)', padding: '6px', fontSize: '0.78rem', height: '32px' }} onClick={submitCheckout}>
+                Confirmar
               </button>
             </div>
           </div>

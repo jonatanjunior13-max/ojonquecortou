@@ -910,6 +910,14 @@ const AdminDashboard = () => {
         await logPrepaymentTransaction(bId, updatedPayload, newPrepayment - oldPrepayment);
       }
 
+      if (updatedPayload.clientEmail && updatedPayload.clientEmail.includes('@')) {
+        await triggerEmailNotification({
+          ...updatedPayload,
+          id: bId,
+          type: 'agendamento_editado'
+        }, 'agendamento_editado').catch(err => console.warn('Erro ao enviar e-mail de edição:', err));
+      }
+
       setIsEditingBooking(false);
       setSelectedBooking(null);
     } catch (err) {
@@ -3885,268 +3893,297 @@ ${googleLink}
                 </>
               )
             ) : (
-              <div className="checkout-section">
-                <p style={{ fontSize: '0.9rem', marginBottom: 12, color: 'var(--muted)' }}>
-                  Gere o faturamento da cliente <strong>{selectedBooking.clientName}</strong>. Adicione itens se necessário.
+              <div className="checkout-section" style={{ fontSize: '0.82rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <p style={{ fontSize: '0.78rem', margin: '0 0 4px 0', color: 'var(--muted)' }}>
+                  Gere o faturamento da cliente <strong>{selectedBooking.clientName}</strong>.
                 </p>
                 
-                <div className="comanda-items-list">
-                  <div className="comanda-item-row" style={{ fontWeight: 600, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span>{selectedBooking.service?.name || selectedBooking.serviceName} (Serviço Agendado)</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>R$</span>
-                      <input 
-                        type="number"
-                        style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
-                        value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.promoPrice || selectedBooking.service?.price || selectedBooking.servicePrice || 150)}
-                        onChange={e => setOverrideBasePrice(Number(e.target.value))}
-                      />
+                <div className="comanda-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: 'rgba(255,255,255,0.015)', padding: '6px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                  
+                  {/* Trocar/Substituir o Serviço Agendado */}
+                  <div className="comanda-item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderBottom: '1px solid var(--rule)', paddingBottom: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Serviço Agendado</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.promoPrice || selectedBooking.service?.price || selectedBooking.servicePrice || 150)}
+                          onChange={e => setOverrideBasePrice(Number(e.target.value))}
+                        />
+                      </div>
                     </div>
+                    <select
+                      value={selectedBooking.service?.name || selectedBooking.serviceName}
+                      onChange={e => {
+                        const newName = e.target.value;
+                        const match = services.find(s => s.name === newName);
+                        if (match) {
+                          // Update selected booking's service info locally
+                          setSelectedBooking(prev => ({
+                            ...prev,
+                            serviceName: newName,
+                            servicePrice: match.promoPrice || match.price,
+                            service: match
+                          }));
+                          setOverrideBasePrice(match.promoPrice || match.price);
+                        }
+                      }}
+                      style={{ width: '100%', padding: '3px 6px', fontSize: '0.78rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                    >
+                      {services.map(s => (
+                        <option key={s.id} value={s.name}>
+                          {s.name} (R$ {s.promoPrice || s.price})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   
                   {addedServices.map((s, idx) => (
-                    <div key={'s-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>{s.name} (Serviço Extra)</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>R$</span>
+                    <div key={'s-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                      <span style={{ color: 'var(--accent)' }}>➕ {s.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
                           value={s.price}
                           onChange={e => {
                             const newPrice = Number(e.target.value);
                             setAddedServices(prev => prev.map((item, i) => i === idx ? { ...item, price: newPrice } : item));
                           }}
                         />
-                        <button type="button" className="btn-remove" onClick={() => removeService(idx)}>
-                          <Trash2 size={12} />
+                        <button type="button" className="btn-remove" onClick={() => removeService(idx)} style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: '2px' }}>
+                          <Trash2 size={11} />
                         </button>
                       </div>
                     </div>
                   ))}
                   
                   {addedProducts.map((p, idx) => (
-                    <div key={'p-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span>{p.quantity}x {p.name}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Unit: R$</span>
+                    <div key={'p-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
+                      <span style={{ color: '#4a5568' }}>📦 {p.quantity}x {p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '75px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
                           value={p.price}
                           onChange={e => {
                             const newPrice = Number(e.target.value);
                             setAddedProducts(prev => prev.map((item, i) => i === idx ? { ...item, price: newPrice } : item));
                           }}
                         />
-                        <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>= R$ {p.price * p.quantity}</span>
-                        <button type="button" className="btn-remove" onClick={() => removeProduct(idx)}>
-                          <Trash2 size={12} />
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, minWidth: '45px', textAlign: 'right' }}>R$ {p.price * p.quantity}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeProduct(idx)} style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: '2px' }}>
+                          <Trash2 size={11} />
                         </button>
                       </div>
                     </div>
                   ))}
                   
-                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--rule)', paddingTop: 8, marginTop: 8 }}>
-                    <span>Desconto</span>
+                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--rule)', paddingTop: 4, marginTop: 4 }}>
+                    <span style={{ fontSize: '0.78rem' }}>Desconto</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
                         value={discount}
                         onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
                       />
                     </div>
                   </div>
-
+ 
                   {selectedBooking.prepayment > 0 && (
-                    <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#c53030', fontWeight: 600 }}>
-                      <span>Valor Já Pago (Adiantamento)</span>
+                    <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#c53030', fontWeight: 600, fontSize: '0.78rem' }}>
+                      <span>Sinal Pago</span>
                       <span>- R$ {Number(selectedBooking.prepayment).toFixed(2)}</span>
                     </div>
                   )}
-
-                  <div className="comanda-total-row">
+ 
+                  <div className="comanda-total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--rule)', paddingTop: 6, marginTop: 4, fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--ink)' }}>
                     <span>Total a Receber</span>
-                    <span>R$ {calculateTotal()}</span>
+                    <span style={{ color: 'var(--accent)' }}>R$ {calculateTotal()}</span>
                   </div>
                 </div>
-
-                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                  <div className="form-group">
-                    <label style={{ fontSize: '0.8rem' }}>Lançar Serviço Extra</label>
-                    <div style={{ display: 'flex', gap: 6 }}>
+ 
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 2 }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Lançar Serviço Extra</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
                       <select 
                         value={selectedExtraService} 
                         onChange={e => setSelectedExtraService(e.target.value)}
-                        style={{ padding: '6px', fontSize: '0.8rem', flexGrow: 1 }}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
                       >
-                        <option value="">-- Selecione --</option>
+                        <option value="">Selecione</option>
                         {services.map(s => (
                           <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
                             {s.name} (R$ {s.promoPrice || s.price})
                           </option>
                         ))}
                       </select>
-                      <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.9rem' }} onClick={addExtraService}>+</button>
+                      <button type="button" className="btn btn-ghost" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={addExtraService}>+</button>
                     </div>
                   </div>
-
-                  <div className="form-group">
-                    <label style={{ fontSize: '0.8rem' }}>Lançar Produto</label>
-                    <div style={{ display: 'flex', gap: 6 }}>
+ 
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Lançar Produto</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
                       <select 
                         value={selectedExtraProduct} 
                         onChange={e => setSelectedExtraProduct(e.target.value)}
-                        style={{ padding: '6px', fontSize: '0.8rem', flexGrow: 1 }}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
                       >
-                        <option value="">-- Selecione --</option>
+                        <option value="">Selecione</option>
                         {products.map(p => (
                           <option key={p.id} value={`${p.id}|${p.name}|${p.sellingPrice}`} disabled={p.quantity <= 0}>
-                            {p.name} (R$ {p.sellingPrice}) {p.quantity <= 0 ? '[Sem Estoque]' : `[Qtd: ${p.quantity}]`}
+                            {p.name} (R$ {p.sellingPrice})
                           </option>
                         ))}
                       </select>
-                      <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.9rem' }} onClick={addExtraProduct}>+</button>
+                      <button type="button" className="btn btn-ghost" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={addExtraProduct}>+</button>
                     </div>
                   </div>
                 </div>
-
+ 
                 {/* Pacotes options */}
-                {availablePackagesForBooking.length > 0 && (
-                  <div className="form-group" style={{ marginBottom: 12, background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '6px', border: '1px solid var(--rule)' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
-                      <input 
-                        type="checkbox"
-                        checked={!!usingClientPackageId}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setUsingClientPackageId(availablePackagesForBooking[0].id);
-                            setSellingPackageId('');
-                          } else {
-                            setUsingClientPackageId('');
-                          }
-                        }}
-                      />
-                      Pagar com créditos de pacote?
-                    </label>
-                    {usingClientPackageId && (
-                      <select
-                        value={usingClientPackageId}
-                        onChange={e => setUsingClientPackageId(e.target.value)}
-                        style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem' }}
-                      >
-                        {availablePackagesForBooking.map(cp => {
-                          const bookingServiceName = selectedBooking?.service?.name || selectedBooking?.serviceName;
-                          const servObj = globalData.services.find(s => s.name === bookingServiceName);
-                          const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
-                          return (
-                            <option key={cp.id} value={cp.id}>
-                              {cp.packageName} ({remaining} sessões restantes)
-                            </option>
-                          );
-                        })}
-                      </select>
-                    )}
-                  </div>
-                )}
-
-                {!usingClientPackageId && packages.length > 0 && (
-                  <div className="form-group" style={{ marginBottom: 12, background: 'rgba(255,255,255,0.03)', padding: '10px', borderRadius: '6px', border: '1px solid var(--rule)' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
-                      <input 
-                        type="checkbox"
-                        checked={!!sellingPackageId}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setSellingPackageId(packages[0].id);
-                          } else {
-                            setSellingPackageId('');
-                          }
-                        }}
-                      />
-                      Vender pacote nesta comanda?
-                    </label>
-                    {sellingPackageId && (
-                      <select
-                        value={sellingPackageId}
-                        onChange={e => setSellingPackageId(e.target.value)}
-                        style={{ padding: '6px', width: '100%', marginTop: '8px', fontSize: '0.85rem' }}
-                      >
-                        {packages.map(p => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} (R$ {p.price.toFixed(2)})
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  </div>
-                )}
-
-                <div className="form-group" style={{ marginBottom: 12 }}>
-                  <label>Forma de Pagamento *</label>
-                  {usingClientPackageId ? (
-                    <div style={{ padding: '8px', width: '100%', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', border: '1px solid var(--rule)', fontSize: '0.9rem', color: 'var(--accent)', fontWeight: 600 }}>
-                      Débito do Pacote
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)', padding: '4px 6px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                  {availablePackagesForBooking.length > 0 && (
+                    <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.75rem' }}>
+                        <input 
+                          type="checkbox"
+                          checked={!!usingClientPackageId}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setUsingClientPackageId(availablePackagesForBooking[0].id);
+                              setSellingPackageId('');
+                            } else {
+                              setUsingClientPackageId('');
+                            }
+                          }}
+                        />
+                        Pagar com Pacote?
+                      </label>
+                      {usingClientPackageId && (
+                        <select
+                          value={usingClientPackageId}
+                          onChange={e => setUsingClientPackageId(e.target.value)}
+                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        >
+                          {availablePackagesForBooking.map(cp => {
+                            const bookingServiceName = selectedBooking?.service?.name || selectedBooking?.serviceName;
+                            const servObj = globalData.services.find(s => s.name === bookingServiceName);
+                            const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
+                            return (
+                              <option key={cp.id} value={cp.id}>
+                                {cp.packageName} ({remaining} rest.)
+                              </option>
+                            );
+                          })}
+                        </select>
+                      )}
                     </div>
-                  ) : (
-                    <select 
-                      value={paymentMethod} 
-                      onChange={e => {
-                        const val = e.target.value;
-                        setPaymentMethod(val);
-                        if (val === 'Cartão de Crédito' || val === 'Cartão de Débito') {
-                          setApplyAnticipation(true);
-                        } else {
-                          setApplyAnticipation(false);
-                        }
-                      }}
-                      style={{ padding: '8px', width: '100%' }}
-                    >
-                      <option value="Pix">Pix</option>
-                      <option value="Cartão de Crédito">Cartão de Crédito</option>
-                      <option value="Cartão de Débito">Cartão de Débito</option>
-                      <option value="Dinheiro">Dinheiro</option>
-                    </select>
+                  )}
+ 
+                  {!usingClientPackageId && packages.length > 0 && (
+                    <div className="form-group" style={{ margin: 0, flex: 1 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.75rem' }}>
+                        <input 
+                          type="checkbox"
+                          checked={!!sellingPackageId}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setSellingPackageId(packages[0].id);
+                            } else {
+                              setSellingPackageId('');
+                            }
+                          }}
+                        />
+                        Vender Pacote?
+                      </label>
+                      {sellingPackageId && (
+                        <select
+                          value={sellingPackageId}
+                          onChange={e => setSellingPackageId(e.target.value)}
+                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        >
+                          {packages.map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} (R$ {p.price})
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
                   )}
                 </div>
-
-                {paymentMethod === 'Cartão de Crédito' && (
-                  <div className="form-group" style={{ marginBottom: 12 }}>
-                    <label>Número de Parcelas *</label>
-                    <select 
-                      value={installments} 
-                      onChange={e => setInstallments(e.target.value)}
-                      style={{ padding: '8px', width: '100%' }}
-                    >
-                      <option value="À vista">À vista</option>
-                      <option value="2x">2x</option>
-                      <option value="3x">3x</option>
-                    </select>
+ 
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, alignItems: 'center' }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Forma de Pagamento *</label>
+                    {usingClientPackageId ? (
+                      <div style={{ padding: '3px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', border: '1px solid var(--rule)', fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 600 }}>
+                        Débito do Pacote
+                      </div>
+                    ) : (
+                      <select 
+                        value={paymentMethod} 
+                        onChange={e => {
+                          const val = e.target.value;
+                          setPaymentMethod(val);
+                          if (val === 'Cartão de Crédito' || val === 'Cartão de Débito') {
+                            setApplyAnticipation(true);
+                          } else {
+                            setApplyAnticipation(false);
+                          }
+                        }}
+                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                      >
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                      </select>
+                    )}
                   </div>
-                )}
-
-                {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
-                  <div className="form-group" style={{ marginBottom: 20 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontWeight: 600 }}>
-                      <input 
-                        type="checkbox" 
-                        checked={applyAnticipation}
-                        onChange={e => setApplyAnticipation(e.target.checked)}
-                      />
-                      Antecipar recebimento? (taxa extra de antecipação)
-                    </label>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
-                      Marque se o recebimento será antecipado pela maquininha (aplica taxa adicional).
-                    </span>
-                  </div>
-                )}
-
-                <div className="modal-actions" style={{ justifyContent: 'space-between' }}>
-                  <button type="button" className="btn btn-ghost" onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>
-                  <button type="button" className="btn btn-accent" onClick={() => handleCloseComanda(selectedBooking)}>Finalizar e Baixar Estoque</button>
+ 
+                  {paymentMethod === 'Cartão de Crédito' && (
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Parcelas *</label>
+                      <select 
+                        value={installments} 
+                        onChange={e => setInstallments(e.target.value)}
+                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                      >
+                        <option value="À vista">À vista</option>
+                        <option value="2x">2x</option>
+                        <option value="3x">3x</option>
+                      </select>
+                    </div>
+                  )}
+ 
+                  {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
+                    <div className="form-group" style={{ marginBottom: 0, gridColumn: 'span 2' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.75rem' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={applyAnticipation}
+                          onChange={e => setApplyAnticipation(e.target.checked)}
+                        />
+                        Antecipar recebimento? (taxa maquininha)
+                      </label>
+                    </div>
+                  )}
+                </div>
+ 
+                <div className="modal-actions" style={{ justifyContent: 'space-between', borderTop: '1px solid var(--rule)', paddingTop: '8px', marginTop: '2px', display: 'flex', gap: '8px' }}>
+                  <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>
+                  <button type="button" className="btn btn-accent" style={{ padding: '4px 12px', fontSize: '0.78rem' }} onClick={() => handleCloseComanda(selectedBooking)}>Finalizar Comanda</button>
                 </div>
               </div>
             )}

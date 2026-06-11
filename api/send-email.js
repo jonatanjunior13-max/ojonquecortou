@@ -355,6 +355,28 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
         </div>
       </div>
     `;
+  } else if (type === 'agendamento_editado') {
+    subject = `[AGENDAMENTO ATUALIZADO] Alteração de horário para ${clientName}`;
+    body = `
+      <div class="eyebrow" style="color: #c97b49;">Atualização</div>
+      <h1 class="display-title">Horário Editado</h1>
+      <p class="lead">Olá Jon, as definições do agendamento de ${clientName} foram atualizadas no painel administrativo.</p>
+      
+      <div class="appt-card" style="border-color: #c97b49;">
+        <div class="label" style="color: #c97b49;">Novos Detalhes do Agendamento</div>
+        <p class="when">${formattedDate} <span>às ${time}</span></p>
+        <div class="meta-row" style="margin-top:20px;">
+          <div class="cell">
+            <div class="lbl">Cliente</div>
+            <div class="val">${clientName}</div>
+          </div>
+          <div class="cell">
+            <div class="lbl">Serviço</div>
+            <div class="val">${serviceName}</div>
+          </div>
+        </div>
+      </div>
+    `;
   } else {
     return; // No admin notifications for other generic types
   }
@@ -439,6 +461,8 @@ async function sendAdminWhatsAppNotification(type, data, settings) {
       waText = `❌ *Agendamento Cancelado (${by})!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
     } else if (type === 'agendamento_alterado') {
       waText = `⚠️ *Pedido de Remarcação!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}\n\n👉 Clica e confirma: https://ojonquecortou.com.br/api/confirm-booking-direct?id=${data.id || ''}\n\nPainel completo: ojonquecortou.com.br/admin/bookings`;
+    } else if (type === 'agendamento_editado') {
+      waText = `✏️ *Agendamento Atualizado!*\n\n*Cliente:* ${clientName}\n*Serviço:* ${serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${time}`;
     }
 
     if (waText) {
@@ -578,7 +602,7 @@ export default async function handler(req, res) {
   }
 
   // Format serviceName with price for transactional emails (agendamento, confirmação, lembrete, alteração, cancelamento)
-  const transactionalTypes = ['solicitacao_recebida', 'horario_confirmado', 'lembrete_24h', 'agendamento_cancelado', 'agendamento_alterado', 'agendamento_falta'];
+  const transactionalTypes = ['solicitacao_recebida', 'horario_confirmado', 'lembrete_24h', 'agendamento_cancelado', 'agendamento_alterado', 'agendamento_falta', 'agendamento_editado'];
   if (transactionalTypes.includes(type)) {
     const rawServicePrice = data.servicePrice ?? data.service?.price ?? data.price;
     if (rawServicePrice !== undefined && rawServicePrice !== null && !isNaN(Number(rawServicePrice))) {
@@ -625,7 +649,7 @@ export default async function handler(req, res) {
   }
 
   // Disparar notificação de WhatsApp de forma 100% confiável independente do status SMTP/email
-  if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado') {
+  if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado' || type === 'agendamento_editado') {
     try {
       await sendAdminWhatsAppNotification(type, data, settings);
     } catch (waErr) {
@@ -936,6 +960,51 @@ export default async function handler(req, res) {
       `;
       break;
 
+    case 'agendamento_editado': {
+      const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
+      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçara,+Belo+Horizonte';
+      const durationLabel = formatDuration(data.duration);
+      emailSubject = `Horário Atualizado — ${formatApptDate(data.date, data.time)} às ${data.time}`;
+      emailContent = `
+        <div class="eyebrow" style="color: #c97b49;">Atualização</div>
+        <h1 class="display-title">Seu horário foi <span>atualizado.</span></h1>
+        <p class="lead">Oi, ${firstName}, passando para avisar que atualizamos os detalhes do seu agendamento no Studio. Tudo certo e confirmado para nos vermos!</p>
+        
+        <div class="appt-card" style="border-color: #c97b49;">
+          <div class="label" style="color: #c97b49;">Novos Detalhes Confirmados</div>
+          <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
+          <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+          
+          <div class="meta-row">
+            <div class="cell">
+              <div class="lbl">Serviço</div>
+              <div class="val">${data.serviceName}</div>
+            </div>
+            <div class="cell">
+              <div class="lbl">Duração</div>
+              <div class="val">${durationLabel}</div>
+            </div>
+          </div>
+        </div>
+        
+        <hr class="rule" />
+        
+        <div class="instructions-title">Lembrete Importante</div>
+        <p class="instructions-body">Lave o cabelo na <strong>noite anterior</strong> com seu shampoo de sempre. Sem creme, sem leave-in, sem prancha. Quero ler o fio do jeito que ele acorda.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${calendarLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 6px;">Atualizar na agenda</a>
+          <a href="${mapsLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 6px;">Ver localização no Maps</a>
+        </div>
+        
+        <div class="signoff">
+          <div class="sig-name">Jon,</div>
+          <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
+        </div>
+      `;
+      break;
+    }
+
     case 'agendamento_cancelado':
       emailSubject = 'Confirmação de Cancelamento - O Jon Que Cortou';
       emailContent = `
@@ -997,7 +1066,7 @@ export default async function handler(req, res) {
   // Se for uma campanha manual customizada (htmlBody fornecido já vem com tags próprias se quiser, 
   // mas aqui vamos sempre envelopar no wrapper para garantir a estética da marca, exceto se type for 'campanha_raw')
   
-  const isTypeDark = ['horario_confirmado', 'reativacao_5_meses', 'agendamento_cancelado'].includes(type);
+  const isTypeDark = ['horario_confirmado', 'reativacao_5_meses', 'agendamento_cancelado', 'agendamento_editado'].includes(type);
   let finalHtml = currentType === 'campanha_raw' ? (emailContent || '') : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent || '') : getEmailWrapper(emailSubject, emailContent || '', isTypeDark));
   
   const isDark = (finalHtml || '').includes('#050505') || (finalHtml || '').includes('#0A0A0A');
