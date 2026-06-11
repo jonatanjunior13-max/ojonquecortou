@@ -16,6 +16,9 @@
   "functions": {
     "api/cron.js": {
       "maxDuration": 300
+    },
+    "api/newsletter-mailgun.js": {
+      "maxDuration": 60
     }
   },
   "routes": [

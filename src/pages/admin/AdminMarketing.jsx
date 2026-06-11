@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
-import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3 } from 'lucide-react';
+import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
 
@@ -118,6 +118,167 @@ const AdminMarketing = () => {
   const [adminNotifications, setAdminNotifications] = useState([]);
   const [selectedAdminNotif, setSelectedAdminNotif] = useState(null);
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
+
+  // Newsletter states
+  const JUNE_2026_NEWSLETTER_HTML = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+    <tr>
+      <td align="left" valign="middle">
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+      </td>
+      <td align="right" valign="middle">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+      </td>
+    </tr>
+  </table>
+
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+    Leitura de Fio · Edição de Junho
+  </span>
+
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">O frizz que nenhum creme <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">vai resolver.</span></h1>
+
+  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Você trocou o leave-in. Trocou o gel. Trocou o shampoo. Talvez até a marca de água do banho. E o frizz voltou. Exatamente do mesmo jeito.</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Isso acontece porque o frizz que persiste raramente é problema de produto. É problema de <strong style="color: #1A1310;">ângulo de corte.</strong></p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Quando o fio é cortado no ângulo errado, a cutícula fica exposta de um jeito que nenhuma finalização consegue fechar. O creme sela por um dia. Depois a umidade entra, a cutícula levanta, e o frizz aparece. De novo.</p>
+
+  <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"O Método Leitura de Fio lê a curvatura antes da tesoura. Não para ter uma técnica bonita. Para cortar no ângulo que o <span style='font-style: italic; color: #6E2F18;'>seu</span> fio pede."</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+  </div>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">O diagnóstico que faz antes do corte — o que chamamos de Leitura de Fio — identifica a porosidade, a curvatura e o padrão de crescimento do seu cabelo. Só então a tesoura entra.</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 28px; max-width: 56ch;">O resultado é um corte que define sem depender de produto. Que dura mais. Que seca com forma, não com frizz.</p>
+
+  <div style="margin-top: 8px; margin-bottom: 32px;">
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+
+  <div style="margin-top: 28px;">
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+  </div>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+    Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+  </p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B; margin: 10px 0 0;">
+    @ojonquecortou · ojonquecortou.com.br/agendar
+  </p>
+  <div style="height: 48px;"></div>
+</div>`;
+
+  const [newsletters, setNewsletters] = useState([
+    {
+      id: 'newsletter-junho-2026',
+      month: 'Junho 2026',
+      subject: 'O frizz que nenhum creme vai resolver.',
+      status: 'draft', // draft | approved | sent
+      createdAt: new Date().toISOString(),
+      sentAt: null,
+      sentCount: 0,
+      htmlBody: JUNE_2026_NEWSLETTER_HTML
+    }
+  ]);
+  const [activeNewsletterId, setActiveNewsletterId] = useState('newsletter-junho-2026');
+  const [showNewsletterPreview, setShowNewsletterPreview] = useState(false);
+  const [isSendingNewsletter, setIsSendingNewsletter] = useState(false);
+  const [newsletterSendLog, setNewsletterSendLog] = useState([]);
+  const [testEmailAddress, setTestEmailAddress] = useState('');
+
+  const activeNewsletter = newsletters.find(n => n.id === activeNewsletterId);
+
+  const handleApproveNewsletter = (id) => {
+    setNewsletters(prev => prev.map(n => n.id === id ? { ...n, status: 'approved' } : n));
+  };
+
+  const handleSendNewsletterTest = async () => {
+    if (!testEmailAddress || !testEmailAddress.includes('@')) {
+      alert('Digite um email válido para teste.');
+      return;
+    }
+    const nl = activeNewsletter;
+    if (!nl) return;
+    setIsSendingNewsletter(true);
+    setNewsletterSendLog(['[SISTEMA] Enviando email de teste via Mailgun...']);
+    try {
+      const res = await fetch('/api/newsletter-mailgun', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
+        body: JSON.stringify({ subject: nl.subject, htmlBody: nl.htmlBody, newsletterId: nl.id, testEmail: testEmailAddress })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNewsletterSendLog(prev => [...prev, `[✅ OK] Email de teste enviado para ${testEmailAddress}. Message ID: ${data.messageId}`]);
+      } else {
+        setNewsletterSendLog(prev => [...prev, `[❌ ERRO] ${data.error} — ${data.details || ''}`]);
+      }
+    } catch (err) {
+      setNewsletterSendLog(prev => [...prev, `[❌ ERRO] Falha na requisição: ${err.message}`]);
+    } finally {
+      setIsSendingNewsletter(false);
+    }
+  };
+
+  const handleSendNewsletterToAll = async () => {
+    const nl = activeNewsletter;
+    if (!nl || nl.status !== 'approved') {
+      alert('Aprove a newsletter antes de enviar para todas as clientes.');
+      return;
+    }
+    const confirm1 = window.confirm(`Confirmar envio da newsletter "${nl.subject}" para TODAS as clientes com email cadastrado?`);
+    if (!confirm1) return;
+    setIsSendingNewsletter(true);
+    setNewsletterSendLog(['[SISTEMA] Conectando ao Mailgun...', '[SISTEMA] Buscando lista de clientes...']);
+    try {
+      const res = await fetch('/api/newsletter-mailgun', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
+        body: JSON.stringify({ subject: nl.subject, htmlBody: nl.htmlBody, newsletterId: nl.id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        const sentCount = data.sent;
+        setNewsletterSendLog(prev => [...prev,
+          `[✅ OK] Newsletter enviada com sucesso para ${sentCount} cliente(s)!`,
+          `[✅ OK] Message ID Mailgun: ${data.messageId}`
+        ]);
+        setNewsletters(prev => prev.map(n => n.id === nl.id ? {
+          ...n,
+          status: 'sent',
+          sentAt: new Date().toISOString(),
+          sentCount
+        } : n));
+        // Save to Firestore
+        if (db) {
+          try {
+            await addDoc(collection(db, 'newsletter_sends'), {
+              newsletterId: nl.id,
+              subject: nl.subject,
+              sentAt: new Date().toISOString(),
+              sentCount,
+              messageId: data.messageId
+            });
+          } catch (e) { console.warn('Firestore save newsletter log failed:', e); }
+        }
+      } else {
+        setNewsletterSendLog(prev => [...prev, `[❌ ERRO] ${data.error}`, data.details ? `[DETALHE] ${data.details}` : '']);
+      }
+    } catch (err) {
+      setNewsletterSendLog(prev => [...prev, `[❌ ERRO] Falha na requisição: ${err.message}`]);
+    } finally {
+      setIsSendingNewsletter(false);
+    }
+  };
 
   // Birthday WhatsApp automation
   const [birthdayWaMessage, setBirthdayWaMessage] = useState(
@@ -1856,6 +2017,163 @@ const AdminMarketing = () => {
 
                 </div>
               </div>
+
+              {/* ───────── NEWSLETTER LEITURA DE FIO ───────── */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Newspaper size={18} style={{ color: 'var(--accent)' }} />
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: '1rem' }}>Newsletter · Leitura de Fio</h4>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--muted)' }}>Gerada automaticamente · contato@ojonquecortou.com.br → todas as clientes</p>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {newsletters.map(nl => (
+                      <button
+                        key={nl.id}
+                        onClick={() => setActiveNewsletterId(nl.id)}
+                        className={`btn ${activeNewsletterId === nl.id ? 'btn-accent' : 'btn-outline'} btn-small`}
+                        style={{ fontSize: '0.75rem' }}
+                      >
+                        {nl.month}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {activeNewsletter && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20, alignItems: 'start' }}>
+                    {/* LEFT: info + actions */}
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                        <div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>Assunto</div>
+                          <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text)' }}>{activeNewsletter.subject}</div>
+                        </div>
+                        <span style={{
+                          marginLeft: 'auto',
+                          fontSize: '0.7rem', padding: '3px 10px', borderRadius: 12, fontWeight: 700,
+                          background: activeNewsletter.status === 'sent' ? 'rgba(56,161,105,0.15)' : activeNewsletter.status === 'approved' ? 'rgba(99,102,241,0.15)' : 'rgba(247,170,0,0.15)',
+                          color: activeNewsletter.status === 'sent' ? '#38a169' : activeNewsletter.status === 'approved' ? '#6366f1' : '#d69e00'
+                        }}>
+                          {activeNewsletter.status === 'sent' ? `✅ Enviada (${activeNewsletter.sentCount} clientes)` : activeNewsletter.status === 'approved' ? '🟣 Aprovada — pronta para envio' : '🟡 Rascunho — aguardando aprovação'}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
+                        <button
+                          className="btn btn-outline btn-small"
+                          style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                          onClick={() => setShowNewsletterPreview(true)}
+                        >
+                          <Eye size={13} /> Visualizar newsletter
+                        </button>
+
+                        {activeNewsletter.status === 'draft' && (
+                          <button
+                            className="btn btn-accent btn-small"
+                            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                            onClick={() => handleApproveNewsletter(activeNewsletter.id)}
+                          >
+                            <CheckSquare size={13} /> Aprovar newsletter
+                          </button>
+                        )}
+
+                        {activeNewsletter.status !== 'sent' && (
+                          <button
+                            className="btn btn-accent btn-small"
+                            style={{ display: 'flex', alignItems: 'center', gap: 6, background: activeNewsletter.status === 'approved' ? '#6E2F18' : undefined, borderColor: activeNewsletter.status === 'approved' ? '#6E2F18' : undefined }}
+                            onClick={handleSendNewsletterToAll}
+                            disabled={isSendingNewsletter || activeNewsletter.status !== 'approved'}
+                          >
+                            <Send size={13} /> {isSendingNewsletter ? 'Enviando...' : 'Enviar para todas as clientes'}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Test email */}
+                      {activeNewsletter.status !== 'sent' && (
+                        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 16, maxWidth: 480 }}>
+                          <input
+                            type="email"
+                            placeholder="seu@email.com (enviar teste)"
+                            value={testEmailAddress}
+                            onChange={e => setTestEmailAddress(e.target.value)}
+                            style={{ flex: 1, padding: '7px 12px', borderRadius: 4, border: '1px solid var(--rule)', fontSize: '0.85rem', background: 'var(--input-bg)', color: 'var(--text)' }}
+                          />
+                          <button
+                            className="btn btn-outline btn-small"
+                            style={{ whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5 }}
+                            onClick={handleSendNewsletterTest}
+                            disabled={isSendingNewsletter}
+                          >
+                            <Send size={12} /> Enviar teste
+                          </button>
+                        </div>
+                      )}
+
+                      {/* Send log */}
+                      {newsletterSendLog.length > 0 && (
+                        <div style={{ fontFamily: 'monospace', fontSize: '0.78rem', background: '#0d1117', color: '#e8f8e8', borderRadius: 6, padding: '10px 14px', maxHeight: 140, overflowY: 'auto', lineHeight: 1.7 }}>
+                          {newsletterSendLog.map((line, i) => <div key={i}>{line}</div>)}
+                        </div>
+                      )}
+
+                      {activeNewsletter.sentAt && (
+                        <p style={{ fontSize: '0.78rem', color: 'var(--muted)', marginTop: 10 }}>
+                          Enviada em {new Date(activeNewsletter.sentAt).toLocaleString('pt-BR')} · {activeNewsletter.sentCount} destinatária(s)
+                        </p>
+                      )}
+                    </div>
+
+                    {/* RIGHT: mini preview */}
+                    <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid var(--rule)', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', height: 420 }}>
+                      <div style={{ background: 'var(--sidebar-bg)', padding: '8px 14px', fontSize: '0.72rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f57', display: 'inline-block' }}></span>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#febc2e', display: 'inline-block' }}></span>
+                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#28c840', display: 'inline-block' }}></span>
+                        <span style={{ marginLeft: 8 }}>newsletter_{activeNewsletter.id}.html</span>
+                      </div>
+                      <iframe
+                        srcDoc={`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>Preview</title></head><body style="margin:0;padding:0;background:#EFE5D2;">${activeNewsletter.htmlBody}</body></html>`}
+                        style={{ width: '200%', height: '840px', border: 'none', transform: 'scale(0.5)', transformOrigin: 'top left', display: 'block' }}
+                        title="Newsletter Preview"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: PREVIEW NEWSLETTER FULL */}
+      {showNewsletterPreview && activeNewsletter && (
+        <div className="modal-overlay" onClick={() => setShowNewsletterPreview(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%', padding: '0', overflow: 'hidden' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
+              <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+                Newsletter · {activeNewsletter.month}
+              </div>
+              <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#fff' }}>{activeNewsletter.subject}</div>
+            </div>
+            <div style={{ backgroundColor: '#EFE5D2', width: '100%', height: '600px' }}>
+              <iframe
+                srcDoc={`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><title>Preview</title></head><body style="margin:0;padding:0;background:#EFE5D2;">${activeNewsletter.htmlBody}</body></html>`}
+                style={{ width: '100%', height: '100%', border: 'none' }}
+                title="Newsletter Full Preview"
+              />
+            </div>
+            <div className="modal-actions" style={{ padding: '20px' }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowNewsletterPreview(false)}>Fechar</button>
+              {activeNewsletter.status === 'draft' && (
+                <button type="button" className="btn btn-accent" onClick={() => { handleApproveNewsletter(activeNewsletter.id); setShowNewsletterPreview(false); }}>
+                  <CheckSquare size={14} style={{ marginRight: 6 }} /> Aprovar e fechar
+                </button>
+              )}
             </div>
           </div>
         </div>
