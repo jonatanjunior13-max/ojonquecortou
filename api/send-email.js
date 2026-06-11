@@ -631,8 +631,10 @@ export default async function handler(req, res) {
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br';
   
   // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
+  const isLaunchCampaign = type === 'launch_campaign';
+  const resendApiKey = process.env.RESEND_API_KEY;
   const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
-  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : hasSmtpConfig;
+  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (hasSmtpConfig || (isLaunchCampaign && resendApiKey));
 
   if (!sendReal) {
     console.log('Simulação de envio ativa (SMTP não configurado ou desativado). Para:', clientEmail);
@@ -642,13 +644,13 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
   }
 
-  const transporter = nodemailer.createTransport({
+  const transporter = (!isLaunchCampaign && hasSmtpConfig) ? nodemailer.createTransport({
     host: smtpHost,
     port: parseInt(smtpPort, 10),
     secure: smtpSecure,
     auth: { user: smtpUser, pass: smtpPass },
     tls: { rejectUnauthorized: false }
-  });
+  }) : null;
 
   let emailSubject = 'O Jon Que Cortou';
   let emailContent = '';
@@ -941,9 +943,9 @@ export default async function handler(req, res) {
   // mas aqui vamos sempre envelopar no wrapper para garantir a estética da marca, exceto se type for 'campanha_raw')
   
   const isTypeDark = ['horario_confirmado', 'reativacao_5_meses', 'agendamento_cancelado'].includes(type);
-  let finalHtml = currentType === 'campanha_raw' ? emailContent : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent) : getEmailWrapper(emailSubject, emailContent, isTypeDark));
+  let finalHtml = currentType === 'campanha_raw' ? (emailContent || '') : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent || '') : getEmailWrapper(emailSubject, emailContent || '', isTypeDark));
   
-  const isDark = finalHtml.includes('#050505') || finalHtml.includes('#0A0A0A');
+  const isDark = (finalHtml || '').includes('#050505') || (finalHtml || '').includes('#0A0A0A');
 
   const unsubLink = `<div style="text-align: center; padding: 40px 20px 20px; font-size: 11px; color: #666; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     Se não deseja mais receber nossos emails, <a href="https://ojonquecortou.com.br/api/unsubscribe?email=${clientEmail}" style="color: #888; text-decoration: underline;">clique aqui para descadastrar</a>.
@@ -990,32 +992,34 @@ export default async function handler(req, res) {
 
       if (isLaunchCampaign && resendApiKey) {
         try {
-          const resendSender = 'contato@ojonquecortou.com.br';
-          const fetchRes = await fetch('https://api.resend.com/emails', {
+          const mailgunSender = 'contato@ojonquecortou.com.br';
+          // Using Mailgun HTTP Basic Auth (api:YOUR_KEY) in Base64
+          const basicAuth = btoa(`api:${resendApiKey}`);
+          const fetchRes = await fetch('https://api.mailgun.net/v3/mg.ojonquecortou.com.br/messages', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${resendApiKey}`,
-              'Content-Type': 'application/json'
+              'Authorization': `Basic ${basicAuth}`,
+              'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify({
-              from: `"O Jon Que Cortou" <${resendSender}>`,
-              to: [clientEmail],
+            body: new URLSearchParams({
+              from: `"O Jon Que Cortou" <${mailgunSender}>`,
+              to: clientEmail,
               subject: emailSubject,
               html: finalHtml
             })
           });
           if (fetchRes.ok) {
             const resData = await fetchRes.json();
-            messageId = resData.id || 'resend-ok';
-            console.log(`E-mail de campanha de lançamento enviado via RESEND para ${clientEmail}.`);
+            messageId = resData.id || 'mailgun-ok';
+            console.log(`E-mail de campanha de lançamento enviado via MAILGUN para ${clientEmail}.`);
           } else {
             const errMsg = await fetchRes.text();
-            console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}. Sem fallback para SMTP.`);
-            return res.status(500).json({ success: false, error: `Resend error: ${errMsg}` });
+            console.error(`Falha ao enviar via Mailgun para ${clientEmail}: ${errMsg}. Sem fallback para SMTP.`);
+            return res.status(500).json({ success: false, error: `Mailgun error: ${errMsg}` });
           }
-        } catch (resendErr) {
-          console.error(`Erro ao disparar via Resend para ${clientEmail}: ${resendErr.message}. Sem fallback para SMTP.`);
-          return res.status(500).json({ success: false, error: resendErr.message });
+        } catch (mailgunErr) {
+          console.error(`Erro ao disparar via Mailgun para ${clientEmail}: ${mailgunErr.message}. Sem fallback para SMTP.`);
+          return res.status(500).json({ success: false, error: mailgunErr.message });
         }
       } else {
         const info = await transporter.sendMail(mailOptions);
