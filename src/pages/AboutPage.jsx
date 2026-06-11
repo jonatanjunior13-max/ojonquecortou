@@ -42,7 +42,7 @@ const AboutPage = () => {
               Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçara (BH), construí um espaço focado na <strong>liberdade do seu fio natural</strong>, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.
             </p>
             <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Consultoria</Link>
+              <Link to="/agendar" className="btn btn-primary">Agendar Leitura de Fio</Link>
               <Link to="/servicos" className="btn btn-outline">Ver Serviços</Link>
             </div>
           </div>

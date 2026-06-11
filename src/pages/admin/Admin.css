@@ -2741,7 +2741,7 @@
 /* Trinks Daily Professional Columns Header */
 .pro-columns-header {
   display: grid;
-  background: rgba(23, 23, 23, 0.9);
+  background: var(--surface);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--rule);

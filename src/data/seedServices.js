@@ -163,5 +163,20 @@ export const SEED_SERVICES = [
     isPrimary: false,
     position: 10,
     includes: ['Aplicação técnica', 'Proteção do comprimento']
+  },
+  {
+    id: 'leitura-de-fio',
+    emoji: '🔍',
+    category: 'Análise',
+    name: 'Leitura de Fio',
+    tagline: 'Análise aprofundada de curvatura e saúde',
+    description: 'Antes de qualquer tesoura tocar o seu cabelo, existe uma etapa que quase ninguém faz: ler o fio. Aqui no studio, essa etapa virou serviço — pra você que quer entender o próprio cabelo antes de decidir qualquer coisa. Não é avaliação de balcão, daquelas de cinco minutos com olhar de longe. É meia hora de análise de verdade, só sua. O valor de R$ 80 é 100% revertido em crédito se você fechar corte ou tratamento.',
+    price: 80,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 30,
+    isPrimary: true,
+    position: 11,
+    includes: ['Escuta e avaliação de hábitos', 'Análise do couro cabeludo', 'Curvatura real, densidade e porosidade', 'Orientação personalizada de produtos', 'Mapa de finalizações ideais', 'Indicação de cortes recomendados']
   }
 ];

@@ -27,6 +27,7 @@ import CorteHibridoPage from './pages/CorteHibridoPage';
 import TransicaoCapilarPage from './pages/TransicaoCapilarPage';
 import VisagismoCachosPage from './pages/VisagismoCachosPage';
 import MasculinoPage from './pages/MasculinoPage';
+import LeituraFioPage from './pages/LeituraFioPage';
 
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
 const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
@@ -69,6 +70,7 @@ function App() {
           <Route path="/sobre" element={<AboutPage />} />
           <Route path="/servicos" element={<ServicesPage />} />
           <Route path="/servicos/corte-hibrido" element={<CorteHibridoPage />} />
+          <Route path="/servicos/leitura-de-fio" element={<LeituraFioPage />} />
           <Route path="/servicos/transicao-capilar" element={<TransicaoCapilarPage />} />
           <Route path="/servicos/visagismo-cachos" element={<VisagismoCachosPage />} />
           <Route path="/servicos/masculino" element={<MasculinoPage />} />

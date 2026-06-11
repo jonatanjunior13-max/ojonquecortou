@@ -110,12 +110,11 @@
   width: 100%;
   height: auto;
   border-radius: var(--radius);
-  filter: grayscale(20%) contrast(1.1);
   transition: var(--transition);
 }
 
 .visual-card:hover .hero-image {
-  filter: grayscale(0%) contrast(1.1);
+  filter: none;
 }
 
 @media (max-width: 992px) {
