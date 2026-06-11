@@ -3336,7 +3336,7 @@ ${googleLink}
 
           {/* VIEW: DIÁRIO */}
           {agendaView === 'diario' && (
-            <div className="mobile-timeline-scroll">
+            <div key={currentDate} className="mobile-timeline-scroll slide-day-animation">
               {hourSlots.map(slot => {
                 const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
                 
@@ -3407,7 +3407,7 @@ ${googleLink}
 
           {/* VIEW: SEMANAL (GRADE VISUAL) */}
           {agendaView === 'semanal' && (
-            <div className="mobile-weekly-grid-container" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'white', overflow: 'hidden', paddingBottom: 80 }}>
+            <div key={`semanal-${currentDate}-${selectedWeeklyMonthlyProf}`} className="mobile-weekly-grid-container slide-day-animation" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'white', overflow: 'hidden', paddingBottom: 80 }}>
               {/* Header com dias da semana */}
               <div className="mobile-weekly-header" style={{ display: 'flex', borderBottom: '1px solid var(--mobile-rule)', background: '#fafafa', padding: '6px 0' }}>
                 <div className="mobile-weekly-hour-spacer" style={{ width: 50, flexShrink: 0 }} />
@@ -3594,7 +3594,7 @@ ${googleLink}
 
           {/* VIEW: MENSAL (CALENDÁRIO COM CÍRCULOS DE STATUS) */}
           {agendaView === 'mensal' && (
-            <div style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
+            <div key={`mensal-${currentDate}`} className="slide-day-animation" style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 12, textAlign: 'center', fontWeight: 'bold', fontSize: '0.72rem', color: 'var(--mobile-muted)' }}>
                 <div>dom.</div>
                 <div>seg.</div>
