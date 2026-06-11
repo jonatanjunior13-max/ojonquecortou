@@ -66,6 +66,7 @@ const AdminMobileApp = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [showAddBookingModal, setShowAddBookingModal] = useState(false);
+  const [showSlotActionModal, setShowSlotActionModal] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [showAddClientModal, setShowAddClientModal] = useState(false);
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
@@ -1317,19 +1318,7 @@ const AdminMobileApp = () => {
 
       setEditingBookingId(null);
       setSelectedSlot({ date: currentDate, time: timeStr });
-      setNewBooking(prev => ({
-        ...prev,
-        clientName: '',
-        clientPhone: '',
-        clientEmail: '',
-        serviceName: services[0]?.name || 'Corte com o Jon',
-        servicePrice: services[0]?.promoPrice || services[0]?.price || 150,
-        duration: services[0]?.duration || 60,
-        date: currentDate,
-        time: timeStr,
-        notes: ''
-      }));
-      setShowAddBookingModal(true);
+      setShowSlotActionModal(true);
     }
   };
 
@@ -5298,6 +5287,67 @@ ${googleLink}
                   Fechar / Voltar para a Agenda
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SELEÇÃO DE AÇÃO PARA O SLOT CLICADO */}
+      {showSlotActionModal && selectedSlot && (
+        <div className="mobile-overlay" onClick={() => setShowSlotActionModal(false)}>
+          <div className="mobile-popup-modal slot-action-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-sheet-header">
+              <h4 style={{ fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 6 }}>
+                ⚡ Nova Entrada
+              </h4>
+              <button onClick={() => setShowSlotActionModal(false)}><X size={20} /></button>
+            </div>
+            
+            <div style={{ textAlign: 'center', marginBottom: 16, fontSize: '0.88rem', color: 'var(--mobile-muted)' }}>
+              Horário selecionado: <strong style={{ color: 'var(--mobile-text)' }}>{selectedSlot.time}</strong> em {selectedSlot.date.split('-').reverse().join('/')}
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <button
+                className="mobile-btn-solid"
+                style={{ width: '100%', padding: '14px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '10px' }}
+                onClick={() => {
+                  setShowSlotActionModal(false);
+                  setNewBooking(prev => ({
+                    ...prev,
+                    clientName: '',
+                    clientPhone: '',
+                    clientEmail: '',
+                    serviceName: services[0]?.name || 'Corte com o Jon',
+                    servicePrice: services[0]?.promoPrice || services[0]?.price || 150,
+                    duration: services[0]?.duration || 60,
+                    date: selectedSlot.date,
+                    time: selectedSlot.time,
+                    notes: ''
+                  }));
+                  setShowAddBookingModal(true);
+                }}
+              >
+                <CalendarIcon size={18} /> Agendar Cliente
+              </button>
+              
+              <button
+                className="mobile-btn-outline"
+                style={{ width: '100%', padding: '14px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '10px' }}
+                onClick={() => {
+                  setShowSlotActionModal(false);
+                  setBlockEndTime('');
+                  setBlockMotive('');
+                  setNewBooking(prev => ({
+                    ...prev,
+                    date: selectedSlot.date,
+                    time: selectedSlot.time
+                  }));
+                  setShowBlockModal(true);
+                }}
+              >
+                🔒 Cadastrar Ausência
+              </button>
             </div>
           </div>
         </div>
