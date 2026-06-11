@@ -10,9 +10,24 @@ function Footer() {
             <div className="footer-brand">
               O Jon que<br/><span className="italic">cortou.</span>
             </div>
-            <p style={{ color: "var(--muted)", fontSize: 14.5, maxWidth: "38ch", margin: 0 }}>
+            <p style={{ color: "var(--muted)", fontSize: 14.5, maxWidth: "38ch", margin: "0 0 16px 0" }}>
               Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
             </p>
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
+              padding: '10px 12px',
+              borderRadius: '6px',
+              fontSize: '12px',
+              lineHeight: '1.5',
+              maxWidth: '38ch',
+              color: 'var(--muted)'
+            }}>
+              💡 <strong>Quer ver mais do nosso conteúdo no Google?</strong><br/>
+              <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-deep)', textDecoration: 'underline', fontWeight: 'bold' }}>
+                Clique aqui
+              </a>, marque a caixinha e o Google priorizará e mostrará mais do Studio do Jon para você!
+            </div>
           </div>
 
           <div>

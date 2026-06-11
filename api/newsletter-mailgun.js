@@ -49,10 +49,14 @@ function wrapNewsletterHtml(subject, body) {
           <tr><td align="left">${body}</td></tr>
           <tr>
             <td style="padding: 24px 40px; background-color: #EFE5D2; border-top: 1px solid rgba(26,19,16,0.1); text-align: center; font-family: 'Manrope', sans-serif;">
-              <div style="font-size: 12px; color: #6B5A4B; line-height: 1.6;">
+              <div style="font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 15px;">
                 Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG<br>Quarta a Sábado · 9h às 19h
               </div>
-              <div style="margin-top: 12px; font-size: 11px; color: #9A8A7A; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase;">
+              <div style="margin-bottom: 15px; font-size: 11px; line-height: 1.5; color: #6B5A4B; background: rgba(0,0,0,0.02); padding: 10px; border-radius: 6px; border: 1px solid rgba(26,19,16,0.08); text-align: left; display: inline-block; max-width: 440px;">
+                💡 <strong>Quer acompanhar mais do nosso conteúdo no Google?</strong><br/>
+                <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" style="color: #C97B49 !important; text-decoration: underline; font-weight: bold;">Clique aqui</a>, marque a caixinha e o Google priorizará e mostrará mais novidades do Studio do Jon para você!
+              </div>
+              <div style="font-size: 11px; color: #9A8A7A; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.06em; text-transform: uppercase;">
                 © ${new Date().getFullYear()} Studio do Jon
               </div>
             </td>
