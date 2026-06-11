@@ -53,8 +53,14 @@ const LeituraFioPage = () => {
       </section>
 
       <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div className="about-content reveal active" style={{ maxWidth: '100%' }}>
+        <div className="container about-grid">
+          <div className="about-visual reveal active">
+            <div className="about-image-wrap">
+              <img src="/jon-trabalhando.jpg" alt="Jonatan Junior realizando análise técnica e leitura de fio no Studio do Jon em Belo Horizonte" className="about-image" />
+            </div>
+          </div>
+
+          <div className="about-content reveal active">
             <h2 className="heading-lg mb-2">Não existe cabelo errado. Existe fio mal lido.</h2>
             <p className="paragraph-md mb-2">
               Antes de qualquer tesoura tocar o seu cabelo, existe uma etapa que quase ninguém faz: ler o fio. Aqui no studio, essa etapa virou serviço — pra você que quer entender o próprio cabelo antes de decidir qualquer coisa.
