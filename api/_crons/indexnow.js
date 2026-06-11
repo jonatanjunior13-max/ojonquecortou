@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   const SITE_URL = 'https://www.ojonquecortou.com.br';
-  const key = 'ad570ba1c6ba4630b664a7f571d247d0';
+  const key = '2778862fb97f435e968549a6ef8f4f05';
 
   try {
     console.log('Iniciando submissão IndexNow...');
