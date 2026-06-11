@@ -917,7 +917,7 @@ const AdminMobileApp = () => {
 
     // 1. Check for New Bookings (created in the last 60 seconds)
     bookings.forEach(booking => {
-      if (booking.createdAt && booking.status !== 'cancelado' && booking.status !== 'bloqueado') {
+      if (booking.createdAt && booking.status === 'pendente') {
         const createdTime = new Date(booking.createdAt).getTime();
         const id = `new_booking_${booking.id || booking.createdAt}`;
         if (nowTime - createdTime < 60000 && !notifiedRef.current.has(id)) {
@@ -1488,7 +1488,7 @@ const AdminMobileApp = () => {
       resetBookingForm();
       const isEdit = !!editingBookingId;
       setEditingBookingId(null);
-      alert(isEdit ? 'Agendamento atualizado com sucesso!' : 'Agendamento cadastrado com sucesso!');
+      alert(isEdit ? 'Agendamento atualizado com sucesso!' : 'Agendamento confirmado!');
     } catch (err) {
       alert('Erro ao registrar agendamento.');
     }
