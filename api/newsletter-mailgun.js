@@ -146,7 +146,7 @@ export default async function handler(req, res) {
 
   let recipients = [];
   try {
-    const snapshot = await getDocs(collection(db, 'clients'));
+    const snapshot = await getDocs(collection(db, 'client_profiles'));
     snapshot.forEach(docSnap => {
       const d = docSnap.data();
       if (d.email && d.email.includes('@') && d.newsletter !== false) {
