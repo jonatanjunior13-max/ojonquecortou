@@ -98,7 +98,7 @@ const AdminMobileApp = () => {
       ? 0 
       : (sellingPackageId 
           ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
-          : (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
+          : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
         );
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
     const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
@@ -1646,7 +1646,7 @@ const AdminMobileApp = () => {
       ? 0 
       : (sellingPackageId 
           ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
-          : (checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
+          : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
         );
     const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
     const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
@@ -5765,7 +5765,7 @@ ${googleLink}
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                   <span style={{ fontSize: '0.9rem' }}>{checkoutBooking.service?.name || checkoutBooking.serviceName}</span>
-                  <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>R$ {(checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}</span>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 600 }}>R$ {(checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}</span>
                 </div>
 
                 {selectedProducts.map((prod, index) => (

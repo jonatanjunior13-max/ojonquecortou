@@ -1308,7 +1308,7 @@ const AdminDashboard = () => {
       ? 0 
       : (sellingPackageId 
           ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
-          : (overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.price || selectedBooking?.servicePrice || 150))
+          : (overrideBasePrice !== null ? overrideBasePrice : (selectedBooking?.service?.promoPrice || selectedBooking?.service?.price || selectedBooking?.servicePrice || 150))
         );
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -1321,7 +1321,7 @@ const AdminDashboard = () => {
       ? 0 
       : (sellingPackageId 
           ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
-          : (overrideBasePrice !== null ? overrideBasePrice : (booking.service?.price || booking.servicePrice || 150))
+          : (overrideBasePrice !== null ? overrideBasePrice : (booking.service?.promoPrice || booking.service?.price || booking.servicePrice || 150))
         );
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -3898,7 +3898,7 @@ ${googleLink}
                       <input 
                         type="number"
                         style={{ width: '85px', padding: '3px 6px', fontSize: '0.85rem', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
-                        value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.price || 150)}
+                        value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.promoPrice || selectedBooking.service?.price || selectedBooking.servicePrice || 150)}
                         onChange={e => setOverrideBasePrice(Number(e.target.value))}
                       />
                     </div>
