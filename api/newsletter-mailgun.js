@@ -173,47 +173,56 @@ export default async function handler(req, res) {
     // Substituir {nome} pelo placeholder de variáveis do Mailgun (%recipient.name%)
     const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
 
-    const recipientVariables = {};
-    const toEmails = [];
+    const CHUNK_SIZE = 950; // Limite de lote do Mailgun é 1000, 950 é seguro
+    let sent = 0;
+    let lastMessageId = '';
 
-    recipients.forEach(r => {
-      toEmails.push(r.email);
-      recipientVariables[r.email] = { name: r.name };
-    });
+    for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+      const chunk = recipients.slice(i, i + CHUNK_SIZE);
 
-    const bodyParams = new URLSearchParams();
-    bodyParams.append('from', FROM_EMAIL);
-    bodyParams.append('subject', subject);
-    bodyParams.append('html', batchHtml);
-    bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
-    bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
-    bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-    bodyParams.append('o:tag', 'newsletter');
-    bodyParams.append('o:tracking', 'yes');
-    bodyParams.append('o:tracking-clicks', 'yes');
-    bodyParams.append('o:tracking-opens', 'yes');
+      const recipientVariables = {};
+      const toEmails = [];
 
-    // Adiciona cada destinatário na query parameters do fetch
-    toEmails.forEach(email => {
-      bodyParams.append('to', email);
-    });
+      chunk.forEach(r => {
+        toEmails.push(r.email);
+        recipientVariables[r.email] = { name: r.name };
+      });
 
-    const resMailgun = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Basic ${basicAuth}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: bodyParams
-    });
+      const bodyParams = new URLSearchParams();
+      bodyParams.append('from', FROM_EMAIL);
+      bodyParams.append('subject', subject);
+      bodyParams.append('html', batchHtml);
+      bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
+      bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
+      bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+      bodyParams.append('o:tag', 'newsletter');
+      bodyParams.append('o:tracking', 'yes');
+      bodyParams.append('o:tracking-clicks', 'yes');
+      bodyParams.append('o:tracking-opens', 'yes');
 
-    if (!resMailgun.ok) {
-      const errText = await resMailgun.text();
-      throw new Error(`Mailgun Batch Error ${resMailgun.status}: ${errText}`);
+      // Adiciona cada destinatário deste lote
+      toEmails.forEach(email => {
+        bodyParams.append('to', email);
+      });
+
+      const resMailgun = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${basicAuth}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: bodyParams
+      });
+
+      if (!resMailgun.ok) {
+        const errText = await resMailgun.text();
+        throw new Error(`Mailgun Batch Error ${resMailgun.status} no lote ${Math.floor(i/CHUNK_SIZE) + 1}: ${errText}`);
+      }
+
+      const resData = await resMailgun.json();
+      lastMessageId = resData.id || 'mailgun-batch-ok';
+      sent += chunk.length;
     }
-
-    const resData = await resMailgun.json();
-    const messageId = resData.id || 'mailgun-batch-ok';
 
     // Salvar no Firestore
     if (db) {
@@ -222,9 +231,9 @@ export default async function handler(req, res) {
           newsletterId: newsletterId || 'newsletter',
           subject,
           sentAt: new Date().toISOString(),
-          sentCount: recipients.length,
+          sentCount: sent,
           errors: 0,
-          messageId
+          messageId: lastMessageId
         });
       } catch (e) {
         console.warn('Firestore save failed:', e.message);
@@ -234,10 +243,10 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       mode: 'production',
-      sent: recipients.length,
+      sent,
       total: recipients.length,
       errors: 0,
-      messageId
+      messageId: lastMessageId
     });
 
   } catch (err) {
