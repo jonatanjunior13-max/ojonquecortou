@@ -227,7 +227,10 @@ const AdminMarketing = () => {
 
   const handleRegenerateNewsletter = async (id) => {
     setIsGeneratingNewsletter(true);
-    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || '';
+    let apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || '';
+    if (apiKey === 'undefined' || apiKey === 'null' || apiKey.includes('placeholder')) {
+      apiKey = '';
+    }
 
     const topics = [
       "Como a porosidade afeta a absorção de água e finalizadores em cabelos com curvatura, e por que a Leitura de Fio resolve isso diagnosticando antes de cortar.",
@@ -240,10 +243,9 @@ const AdminMarketing = () => {
 
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
-    if (!apiKey) {
-      setTimeout(() => {
-        const fallbackSubject = 'Por que a técnica supera o produto';
-        const fallbackBody = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    const runFallback = () => {
+      const fallbackSubject = 'Por que a técnica supera o produto';
+      const fallbackBody = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
@@ -286,14 +288,19 @@ const AdminMarketing = () => {
     <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
   </div>
 </div>`;
-        setNewsletters(prev => prev.map(n => n.id === id ? {
-          ...n,
-          subject: fallbackSubject,
-          htmlBody: fallbackBody,
-          status: 'draft'
-        } : n));
-        setIsGeneratingNewsletter(false);
-      }, 1500);
+      setNewsletters(prev => prev.map(n => n.id === id ? {
+        ...n,
+        subject: fallbackSubject,
+        htmlBody: fallbackBody,
+        status: 'draft'
+      } : n));
+      setIsGeneratingNewsletter(false);
+    };
+
+    if (!apiKey) {
+      setTimeout(() => {
+        runFallback();
+      }, 1200);
       return;
     }
 
@@ -398,15 +405,22 @@ Use as seguintes tags no "bodyHtml":
               status: 'draft'
             } : n));
             alert('Nova newsletter gerada com sucesso via IA! 🎉');
+            setIsGeneratingNewsletter(false);
+          } else {
+            runFallback();
           }
+        } else {
+          runFallback();
         }
       } else {
         console.warn('Gemini API returned error status:', response.status);
         alert('Erro ao chamar a API para gerar nova newsletter. Usando fallback.');
+        runFallback();
       }
     } catch (err) {
       console.error('Error generating newsletter:', err);
       alert('Erro inesperado ao gerar newsletter. Usando fallback.');
+      runFallback();
     } finally {
       setIsGeneratingNewsletter(false);
     }
