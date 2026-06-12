@@ -202,12 +202,21 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // Formatar imagem
+      // Formatar imagem (Google API não aceita formato .webp, apenas .jpg/.png)
       let mediaList = [];
       if (image) {
-        const imageUrl = image.startsWith('http') 
-          ? image 
-          : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
+        let cleanImage = image;
+        if (cleanImage.toLowerCase().endsWith('.webp')) {
+          if (cleanImage.includes('cacho-vs-crespo-hero')) {
+            cleanImage = '/cacho-vs-crespo-hero.png';
+          } else {
+            cleanImage = '/blog-finalizacao-perfeita.jpg';
+          }
+        }
+
+        const imageUrl = cleanImage.startsWith('http') 
+          ? cleanImage 
+          : `https://www.ojonquecortou.com.br${cleanImage.startsWith('/') ? '' : '/'}${cleanImage}`;
         
         mediaList.push({
           mediaFormat: 'PHOTO',
@@ -310,10 +319,19 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // Formatar URL da imagem
-      const imageUrl = image.startsWith('http') 
-        ? image 
-        : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
+      // Formatar URL da imagem (Google API não aceita formato .webp, apenas .jpg/.png)
+      let cleanImage = image;
+      if (cleanImage.toLowerCase().endsWith('.webp')) {
+        if (cleanImage.includes('cacho-vs-crespo-hero')) {
+          cleanImage = '/cacho-vs-crespo-hero.png';
+        } else {
+          cleanImage = '/blog-finalizacao-perfeita.jpg';
+        }
+      }
+
+      const imageUrl = cleanImage.startsWith('http') 
+        ? cleanImage 
+        : `https://www.ojonquecortou.com.br${cleanImage.startsWith('/') ? '' : '/'}${cleanImage}`;
 
       const mediaData = {
         mediaFormat: 'PHOTO',
