@@ -48,7 +48,7 @@ const InvestimentoPage = () => {
             fontSize: 'clamp(2.25rem, 6vw, 3.75rem)',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
             margin: '0 0 28px',
           }}>
             Investimento
@@ -93,7 +93,7 @@ const InvestimentoPage = () => {
                   fontFamily: "'DM Serif Display', Georgia, serif",
                   fontSize: 'clamp(1.35rem, 3vw, 1.65rem)',
                   fontWeight: 400,
-                  color: 'var(--text, #faf5e8)',
+                  color: 'var(--ink, #1A1310)',
                   margin: 0,
                 }}>
                   Corte especializado
@@ -139,7 +139,7 @@ const InvestimentoPage = () => {
                   fontFamily: "'DM Serif Display', Georgia, serif",
                   fontSize: 'clamp(1.35rem, 3vw, 1.65rem)',
                   fontWeight: 400,
-                  color: 'var(--text, #faf5e8)',
+                  color: 'var(--ink, #1A1310)',
                   margin: 0,
                 }}>
                   Descoloração em cabelo cacheado
@@ -192,7 +192,7 @@ const InvestimentoPage = () => {
                   fontFamily: "'DM Serif Display', Georgia, serif",
                   fontSize: 'clamp(1.35rem, 3vw, 1.65rem)',
                   fontWeight: 400,
-                  color: 'var(--text, #faf5e8)',
+                  color: 'var(--ink, #1A1310)',
                   margin: 0,
                 }}>
                   Consultoria Leitura de Fio
@@ -238,7 +238,7 @@ const InvestimentoPage = () => {
             fontFamily: "'DM Serif Display', Georgia, serif",
             fontWeight: 400,
             fontSize: 'clamp(1.3rem, 3vw, 1.85rem)',
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
             margin: 0,
             lineHeight: 1.25,
             maxWidth: '45ch',

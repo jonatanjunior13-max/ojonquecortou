@@ -135,7 +135,7 @@ function FAQItem({ question, answer }) {
           fontSize: 'clamp(1rem, 2vw, 1.15rem)',
           fontWeight: 400,
           lineHeight: 1.35,
-          color: open ? 'var(--accent, #c8852a)' : 'var(--text, #faf5e8)',
+          color: open ? 'var(--accent, #c8852a)' : 'var(--ink, #1A1310)',
           transition: 'color 0.2s ease',
         }}>
           {question}
@@ -217,7 +217,7 @@ const MetodoPage = () => {
             fontSize: 'clamp(2.25rem, 6vw, 3.75rem)',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
             margin: '0 0 28px',
           }}>
             Método Leitura{" "}
@@ -259,7 +259,7 @@ const MetodoPage = () => {
             fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
             fontWeight: 400,
             marginBottom: '48px',
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
           }}>
             As 7 Etapas do Diagnóstico
           </h2>
@@ -291,7 +291,7 @@ const MetodoPage = () => {
                     fontSize: 'clamp(1.25rem, 3vw, 1.5rem)',
                     fontWeight: 400,
                     margin: '0 0 16px 0',
-                    color: 'var(--text, #faf5e8)',
+                    color: 'var(--ink, #1A1310)',
                   }}>
                     Etapa {step.number} — {step.title}
                   </h3>
@@ -327,7 +327,7 @@ const MetodoPage = () => {
             fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
             fontWeight: 400,
             marginBottom: '32px',
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
           }}>
             A Ciência por Trás da Curvatura e o Fator de Encolhimento
           </h2>
@@ -349,7 +349,7 @@ const MetodoPage = () => {
             <h3 style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontSize: '1.4rem',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               marginTop: '16px',
             }}>
               A Física e a Mecânica do Cabelo com Curvatura
@@ -364,7 +364,7 @@ const MetodoPage = () => {
             <h3 style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontSize: '1.4rem',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               marginTop: '16px',
             }}>
               A Biologia Celular do Folículo Piloso e a Queratinização
@@ -379,7 +379,7 @@ const MetodoPage = () => {
             <h3 style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontSize: '1.4rem',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               marginTop: '16px',
             }}>
               O Diagnóstico Técnico de Porosidade e Elasticidade
@@ -397,7 +397,7 @@ const MetodoPage = () => {
             <h3 style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontSize: '1.4rem',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               marginTop: '16px',
             }}>
               O Mapeamento de Curvaturas (Sistemas de Classificação)
@@ -412,7 +412,7 @@ const MetodoPage = () => {
             <h3 style={{
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontSize: '1.4rem',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               marginTop: '16px',
             }}>
               O Visagismo Integrado ao Cabelo Natural
@@ -442,7 +442,7 @@ const MetodoPage = () => {
             fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
             fontWeight: 400,
             marginBottom: '16px',
-            color: 'var(--text, #faf5e8)',
+            color: 'var(--ink, #1A1310)',
           }}>
             Perguntas Frequentes
           </h2>
@@ -494,7 +494,7 @@ const MetodoPage = () => {
               fontFamily: "'DM Serif Display', Georgia, serif",
               fontWeight: 400,
               fontSize: 'clamp(1.3rem, 3vw, 1.85rem)',
-              color: 'var(--text, #faf5e8)',
+              color: 'var(--ink, #1A1310)',
               margin: 0,
               lineHeight: 1.25,
               maxWidth: '32ch'
