@@ -3,10 +3,10 @@ import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth, db } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
-import { 
-  Calendar, Users, LogOut, Package, DollarSign, 
+import {
+  Calendar, Users, LogOut, Package, DollarSign,
   Scissors, Settings, Megaphone, ChevronLeft, ChevronRight, Search, Smartphone,
-  Bell, Check
+  Bell, Check, LayoutDashboard
 } from 'lucide-react';
 import './AdminNavbar.css';
 import '../../styles/admin-tokens.css';
@@ -35,6 +35,7 @@ const AdminLayoutInner = () => {
     }
   }, []);
 
+  const searchInputRef = useRef(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -68,6 +69,22 @@ const AdminLayoutInner = () => {
     };
     document.addEventListener('click', handleOutsideClick);
     return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setShowSearchResults(true);
+      }
+      if (e.key === 'Escape') {
+        setShowSearchResults(false);
+        searchInputRef.current?.blur();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleAcceptBooking = async (booking) => {
@@ -311,41 +328,16 @@ const AdminLayoutInner = () => {
   if (authorized === null) {
     return (
       <div className="admin-loading">
-        <p>Verificando credenciais de acesso...</p>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+          <img src="/logo-app.png" alt="Logo" style={{ width: 48, height: 48, borderRadius: 8, opacity: 0.6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+          <span style={{ fontSize: '0.83rem', letterSpacing: 1 }}>Verificando acesso...</span>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={`admin-app admin-app-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
-      {isMobileViewport && location.pathname !== '/admin/mobile' && (
-        <button 
-          type="button"
-          style={{
-            position: 'fixed',
-            top: '8px',
-            right: '8px',
-            zIndex: 99999,
-            background: 'var(--accent, #c8852a)',
-            color: '#fff',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: '20px',
-            fontWeight: 'bold',
-            fontSize: '0.85rem',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            cursor: 'pointer',
-            fontFamily: 'inherit'
-          }} 
-          onClick={() => navigate('/admin/mobile')}
-        >
-          <Smartphone size={16} />
-          <span>Voltar para o App 📱</span>
-        </button>
-      )}
       {/* Sidebar de Navegação */}
       <aside className={`admin-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-brand" style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
@@ -371,13 +363,21 @@ const AdminLayoutInner = () => {
         </div>
         
         <nav className="sidebar-nav">
-          <Link 
-            to="/admin/agenda" 
+          <Link
+            to="/admin/hoje"
+            className={`nav-item ${location.pathname === '/admin' || location.pathname.includes('/hoje') ? 'active' : ''}`}
+            title="Hoje"
+          >
+            <LayoutDashboard size={18} />
+            <span>Hoje</span>
+          </Link>
+          <Link
+            to="/admin/agenda"
             className={`nav-item ${location.pathname.includes('/agenda') ? 'active' : ''}`}
-            title="Agenda Semanal"
+            title="Agenda"
           >
             <Calendar size={18} />
-            <span>Agenda Semanal</span>
+            <span>Agenda</span>
           </Link>
           <Link 
             to="/admin/servicos" 
@@ -387,32 +387,32 @@ const AdminLayoutInner = () => {
             <Scissors size={18} />
             <span>{"Servi\u00e7os"}</span>
           </Link>
-          <Link 
-            to="/admin/clientes" 
+          <Link
+            to="/admin/clientes"
             className={`nav-item ${location.pathname.includes('/clientes') ? 'active' : ''}`}
-            title="Clientes & Fichas"
+            title="Clientes"
           >
             <Users size={18} />
-            <span>Clientes & Fichas</span>
+            <span>Clientes</span>
           </Link>
-          <Link 
-            to="/admin/estoque" 
+          <Link
+            to="/admin/estoque"
             className={`nav-item ${location.pathname.includes('/estoque') ? 'active' : ''}`}
             title="Estoque"
           >
             <Package size={18} />
             <span>Estoque</span>
           </Link>
-          <Link 
-            to="/admin/financeiro" 
+          <Link
+            to="/admin/financeiro"
             className={`nav-item ${location.pathname.includes('/financeiro') ? 'active' : ''}`}
             title="Financeiro"
           >
             <DollarSign size={18} />
             <span>Financeiro</span>
           </Link>
-          <Link 
-            to="/admin/marketing" 
+          <Link
+            to="/admin/marketing"
             className={`nav-item ${location.pathname.includes('/marketing') ? 'active' : ''}`}
             title="Campanhas"
           >
@@ -426,16 +426,6 @@ const AdminLayoutInner = () => {
           >
             <Settings size={18} />
             <span>{"Configura\u00e7\u00f5es"}</span>
-          </Link>
-          <Link 
-            to="/admin/mobile" 
-            className="nav-item"
-            title="App Mobile"
-            target="_blank"
-            style={{ borderTop: '1px solid var(--rule)', marginTop: 8, paddingTop: 8 }}
-          >
-            <Smartphone size={18} style={{ color: 'var(--accent)' }} />
-            <span style={{ color: 'var(--accent)', fontWeight: 600 }}>App Mobile 📱</span>
           </Link>
         </nav>
 
@@ -463,9 +453,10 @@ const AdminLayoutInner = () => {
             <div className="topbar-search-container">
               <div className="search-input-wrapper">
                 <Search size={14} className="search-icon" />
-                <input 
-                  type="text" 
-                  placeholder="Buscar função (ex: comissão, campanhas)..." 
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder="Buscar… ou Ctrl+K"
                   value={searchQuery}
                   onChange={e => {
                     setSearchQuery(e.target.value);
@@ -495,7 +486,17 @@ const AdminLayoutInner = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <button
+              type="button"
+              onClick={() => navigate('/admin/mobile')}
+              title="App Mobile"
+              style={{ background: 'none', border: 'none', color: 'var(--adm-muted)', cursor: 'pointer', padding: 6, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--adm-card)'; e.currentTarget.style.color = 'var(--adm-gold)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--adm-muted)'; }}
+            >
+              <Smartphone size={20} />
+            </button>
             <div className="topbar-notifications-container">
               <button 
                 type="button" 
@@ -515,7 +516,7 @@ const AdminLayoutInner = () => {
                 <div className="notifications-dropdown">
                   <div className="notifications-header">
                     <span>Novas Solicitações</span>
-                    <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>
                       {globalData.bookings.filter(b => b.status === 'pendente').length} pendentes
                     </span>
                   </div>
@@ -555,22 +556,22 @@ const AdminLayoutInner = () => {
           </div>
         </header>
         <div className="admin-page-body">
-          <Outlet context={{ globalData, setGlobalData }} />
+          <Outlet context={{ globalData, setGlobalData, handleAcceptBooking }} />
         </div>
 
         {/* Mobile Bottom Navigation Bar */}
         <nav className="mobile-bottom-nav">
-          <Link to="/admin/mobile" className={`mobile-nav-item ${location.pathname.includes('/mobile') ? 'active' : ''}`}>
+          <Link to="/admin/hoje" className={`mobile-nav-item ${location.pathname === '/admin' || location.pathname.includes('/hoje') ? 'active' : ''}`}>
             <div className="icon-container">
-              <Smartphone size={20} />
+              <LayoutDashboard size={20} />
             </div>
-            <span>Hub App</span>
+            <span>Hoje</span>
           </Link>
-          <Link to="/admin/servicos" className={`mobile-nav-item ${location.pathname.includes('/servicos') ? 'active' : ''}`}>
+          <Link to="/admin/agenda" className={`mobile-nav-item ${location.pathname.includes('/agenda') ? 'active' : ''}`}>
             <div className="icon-container">
-              <Scissors size={20} />
+              <Calendar size={20} />
             </div>
-            <span>Serviços</span>
+            <span>Agenda</span>
           </Link>
           <Link to="/admin/clientes" className={`mobile-nav-item ${location.pathname.includes('/clientes') ? 'active' : ''}`}>
             <div className="icon-container">
