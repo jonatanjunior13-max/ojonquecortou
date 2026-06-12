@@ -1174,7 +1174,7 @@ const AdminFinancial = () => {
                             y={p.y - 12} 
                             textAnchor="middle" 
                             fontSize="10" 
-                            fill="var(--ink)" 
+                            fill="var(--adm-text)" 
                             fontWeight="600"
                           >
                             R$ {p.val.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
@@ -1185,7 +1185,7 @@ const AdminFinancial = () => {
                             y="250" 
                             textAnchor="middle" 
                             fontSize="11" 
-                            fill="var(--muted)"
+                            fill="var(--adm-muted)"
                           >
                             {p.label}
                           </text>
@@ -1239,7 +1239,7 @@ const AdminFinancial = () => {
                           <rect x={xBar2} y={y2} width={barW} height={h2} rx="3" fill={redColor} />
                           
                           {/* X label */}
-                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{d.label}</text>
+                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{d.label}</text>
                         </g>
                       );
                     });
@@ -1275,8 +1275,8 @@ const AdminFinancial = () => {
                       return (
                         <g key={d.key}>
                           <rect x={xBar} y={y} width={barW} height={h} rx="4" fill="#f2a477" />
-                          <text x={xCenter} y={y - 6} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--ink)">{d.atendimentos}</text>
-                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{d.label}</text>
+                          <text x={xCenter} y={y - 6} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--adm-text)">{d.atendimentos}</text>
+                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{d.label}</text>
                         </g>
                       );
                     });
@@ -1317,10 +1317,10 @@ const AdminFinancial = () => {
                         {points.map((p, idx) => (
                           <g key={idx}>
                             <circle cx={p.x} cy={p.y} r="4.5" fill="#ffffff" stroke="#f2a477" strokeWidth="2" />
-                            <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--ink)">
+                            <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--adm-text)">
                               R$ {p.val.toFixed(0)}
                             </text>
-                            <text x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{p.label}</text>
+                            <text x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{p.label}</text>
                           </g>
                         ))}
                       </>
@@ -1379,7 +1379,7 @@ const AdminFinancial = () => {
                           ))}
                           {/* Render bottom labels only once */}
                           {catName === 'Corte' && points.map((p, idx) => (
-                            <text key={idx} x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{p.label}</text>
+                            <text key={idx} x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{p.label}</text>
                           ))}
                         </g>
                       );
@@ -1404,9 +1404,9 @@ const AdminFinancial = () => {
                       const barW = (c.count / maxVal) * 320;
                       return (
                         <g key={c.name}>
-                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--ink)">{c.name}</text>
+                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--adm-text)">{c.name}</text>
                           <rect x="90" y={y + 3} width={Math.max(barW, 5)} height="14" rx="3" fill="#f2a477" />
-                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--muted)">{c.count}</text>
+                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--adm-muted)">{c.count}</text>
                         </g>
                       );
                     });
@@ -1430,9 +1430,9 @@ const AdminFinancial = () => {
                       const barW = (c.revenue / maxVal) * 300;
                       return (
                         <g key={c.name}>
-                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--ink)">{c.name}</text>
+                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--adm-text)">{c.name}</text>
                           <rect x="90" y={y + 3} width={Math.max(barW, 5)} height="14" rx="3" fill="#f2a477" />
-                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--muted)">
+                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--adm-muted)">
                             R$ {c.revenue.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
                           </text>
                         </g>
