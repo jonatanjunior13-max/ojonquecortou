@@ -1,0 +1,9 @@
+.adm-card {
+  background: var(--adm-card);
+  border: 0.5px solid var(--adm-rule);
+  border-radius: var(--adm-radius);
+  padding: var(--adm-space-3);
+}
+.adm-card--gold {
+  border-color: var(--adm-rule-gold);
+}

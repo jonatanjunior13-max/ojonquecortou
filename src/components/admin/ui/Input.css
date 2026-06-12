@@ -1,0 +1,17 @@
+.adm-input-wrap { display: flex; flex-direction: column; gap: 6px; }
+.adm-input-label { font-size: 0.78rem; color: var(--adm-muted); font-weight: 600; }
+.adm-input {
+  background: var(--adm-card);
+  border: 0.5px solid var(--adm-rule);
+  border-radius: var(--adm-radius-sm);
+  color: var(--adm-text);
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.adm-input:focus { border-color: var(--adm-gold); }
+.adm-input--error { border-color: var(--adm-danger); }
+.adm-input-error { font-size: 0.78rem; color: var(--adm-danger); }
+.adm-input::placeholder { color: var(--adm-muted); }
