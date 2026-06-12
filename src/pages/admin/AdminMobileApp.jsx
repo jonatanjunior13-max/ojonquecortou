@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, fetchCollectionRest, fetchDocRest } from '../../config/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -3031,7 +3031,7 @@ ${googleLink}
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F5EDDB' }}>
         <div style={{ width: '40px', height: '40px', border: '3px solid var(--mobile-primary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <p style={{ marginTop: 12, fontSize: '0.9rem', color: '#6b7280', fontWeight: 600 }}>Carregando Studio do Jon...</p>
+        <p style={{ marginTop: 12, fontSize: '0.9rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Carregando Studio do Jon...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -3407,9 +3407,9 @@ ${googleLink}
 
           {/* VIEW: SEMANAL (GRADE VISUAL) */}
           {agendaView === 'semanal' && (
-            <div key={`semanal-${currentDate}-${selectedWeeklyMonthlyProf}`} className="mobile-weekly-grid-container slide-day-animation" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'white', overflow: 'hidden', paddingBottom: 80 }}>
+            <div key={`semanal-${currentDate}-${selectedWeeklyMonthlyProf}`} className="mobile-weekly-grid-container slide-day-animation" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--adm-surface)', overflow: 'hidden', paddingBottom: 80 }}>
               {/* Header com dias da semana */}
-              <div className="mobile-weekly-header" style={{ display: 'flex', borderBottom: '1px solid var(--mobile-rule)', background: '#fafafa', padding: '6px 0' }}>
+              <div className="mobile-weekly-header" style={{ display: 'flex', borderBottom: '1px solid var(--mobile-rule)', background: 'var(--adm-card)', padding: '6px 0' }}>
                 <div className="mobile-weekly-hour-spacer" style={{ width: 50, flexShrink: 0 }} />
                 <div className="mobile-weekly-days-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center' }}>
                   {(() => {
@@ -3548,7 +3548,7 @@ ${googleLink}
                               textColor = 'var(--mobile-amber)';
                             } else if (b.status === 'bloqueado') {
                               bgGradient = 'var(--mobile-grey-block)';
-                              borderLeftColor = '#a0aec0';
+                              borderLeftColor = 'var(--adm-muted)';
                               textColor = 'var(--mobile-muted)';
                             }
 
@@ -3594,7 +3594,7 @@ ${googleLink}
 
           {/* VIEW: MENSAL (CALENDÁRIO COM CÍRCULOS DE STATUS) */}
           {agendaView === 'mensal' && (
-            <div key={`mensal-${currentDate}`} className="slide-day-animation" style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
+            <div key={`mensal-${currentDate}`} className="slide-day-animation" style={{ padding: 16, background: 'var(--adm-surface)', flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 12, textAlign: 'center', fontWeight: 'bold', fontSize: '0.72rem', color: 'var(--mobile-muted)' }}>
                 <div>dom.</div>
                 <div>seg.</div>
@@ -3630,7 +3630,7 @@ ${googleLink}
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'flex-start',
-                        background: !isCurrentMonth ? '#F5F5F5' : 'transparent',
+                        background: !isCurrentMonth ? 'var(--adm-card)' : 'transparent',
                         color: !isCurrentMonth ? '#cbd5e1' : (isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)'),
                         cursor: 'pointer',
                         transition: 'background 0.2s',
@@ -3640,7 +3640,7 @@ ${googleLink}
                       <span style={{ 
                         fontSize: '0.9rem', 
                         fontWeight: isToday || !isCurrentMonth ? 'bold' : 'normal',
-                        color: !isCurrentMonth ? '#a0aec0' : (isToday ? 'var(--mobile-primary)' : '#1a1310')
+                        color: !isCurrentMonth ? 'var(--adm-muted)' : (isToday ? 'var(--mobile-primary)' : '#1a1310')
                       }}>
                         {cell.dayNum}
                       </span>
@@ -3978,12 +3978,12 @@ ${googleLink}
                     return sum + (price * item.sessions);
                   }, 0) : 0;
                   return (
-                    <div key={p.id} className="service-card-compact" style={{ padding: 12, background: '#fff', borderRadius: 8, border: '1px solid var(--mobile-border)' }}>
+                    <div key={p.id} className="service-card-compact" style={{ padding: 12, background: 'var(--adm-surface)', borderRadius: 8, border: '1px solid var(--mobile-border)' }}>
                       <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                        <strong style={{ fontSize: '0.95rem', color: '#1a202c', flex: 1, paddingRight: '8px' }}>{p.name}</strong>
+                        <strong style={{ fontSize: '0.95rem', color: 'var(--adm-text)', flex: 1, paddingRight: '8px' }}>{p.name}</strong>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                           {pkgOriginalTotal > p.price && (
-                            <span style={{ fontSize: '0.75rem', textDecoration: 'line-through', color: '#a0aec0', marginBottom: '1px' }}>
+                            <span style={{ fontSize: '0.75rem', textDecoration: 'line-through', color: 'var(--adm-muted)', marginBottom: '1px' }}>
                               R$ {pkgOriginalTotal.toFixed(2).replace('.', ',')}
                             </span>
                           )}
@@ -3998,9 +3998,9 @@ ${googleLink}
                         </div>
                       </div>
                     {p.description && (
-                      <p style={{ margin: '0 0 8px 0', fontSize: '0.78rem', color: '#718096', lineHeight: 1.4 }}>{p.description}</p>
+                      <p style={{ margin: '0 0 8px 0', fontSize: '0.78rem', color: 'var(--adm-muted)', lineHeight: 1.4 }}>{p.description}</p>
                     )}
-                    <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: '#4a5568' }}>
+                    <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: 'var(--adm-text-2)' }}>
                       <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Serviços inclusos:</div>
                       {p.services && p.services.map((ps, idx) => {
                         const sObj = services.find(s => s.id === ps.serviceId);
@@ -4024,23 +4024,23 @@ ${googleLink}
               ) : (
                 clientPackages.map(cp => {
                   return (
-                    <div key={cp.id} className="service-card-compact" style={{ padding: 12, background: cp.status === 'active' ? '#fff' : 'rgba(0,0,0,0.01)', borderRadius: 8, border: cp.status === 'active' ? '1px solid var(--mobile-border)' : '1px solid transparent', opacity: cp.status === 'active' ? 1 : 0.6 }}>
+                    <div key={cp.id} className="service-card-compact" style={{ padding: 12, background: cp.status === 'active' ? 'var(--adm-card)' : 'rgba(0,0,0,0.01)', borderRadius: 8, border: cp.status === 'active' ? '1px solid var(--mobile-border)' : '1px solid transparent', opacity: cp.status === 'active' ? 1 : 0.6 }}>
                       <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                         <div>
-                          <strong style={{ fontSize: '0.95rem', color: '#1a202c', display: 'block' }}>{cp.clientName}</strong>
-                          <span style={{ fontSize: '0.72rem', color: '#718096' }}>{cp.packageName}</span>
+                          <strong style={{ fontSize: '0.95rem', color: 'var(--adm-text)', display: 'block' }}>{cp.clientName}</strong>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>{cp.packageName}</span>
                         </div>
                         <span className={`appt-status ${cp.status}`} style={{ fontSize: '0.65rem', padding: '2px 6px', height: 'fit-content' }}>
                           {cp.status === 'active' ? 'ATIVO' : cp.status === 'finished' ? 'CONCLUÍDO' : 'PENDENTE'}
                         </span>
                       </div>
                       
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#a0aec0', marginBottom: 8 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--adm-muted)', marginBottom: 8 }}>
                         <span>Adquirido em: {cp.datePurchased ? cp.datePurchased.split('-').reverse().join('/') : '—'}</span>
                         <span style={{ fontWeight: 600, color: 'var(--mobile-green)' }}>Pago: R$ {Number(cp.pricePaid || 0).toFixed(2).replace('.', ',')}</span>
                       </div>
 
-                      <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: '#4a5568' }}>
+                      <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: 'var(--adm-text-2)' }}>
                         <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Saldos de Sessões:</div>
                         {Object.entries(cp.balance || {}).map(([sId, remaining]) => {
                           const sObj = services.find(s => s.id === sId);
@@ -4052,10 +4052,10 @@ ${googleLink}
                             <div key={sId} style={{ marginBottom: 6 }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
                                 <span>{sObj ? sObj.name : 'Serviço'}</span>
-                                <strong style={{ color: remaining > 0 ? 'var(--mobile-primary)' : '#718096' }}>{remaining} / {totalSessions} sessões</strong>
+                                <strong style={{ color: remaining > 0 ? 'var(--mobile-primary)' : 'var(--adm-muted)' }}>{remaining} / {totalSessions} sessões</strong>
                               </div>
-                              <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
-                                <div style={{ width: `${pct}%`, height: '100%', background: remaining > 0 ? 'var(--mobile-primary)' : '#cbd5e0', borderRadius: '3px' }}></div>
+                              <div style={{ width: '100%', height: '6px', background: 'var(--adm-rule)', borderRadius: '3px', overflow: 'hidden' }}>
+                                <div style={{ width: `${pct}%`, height: '100%', background: remaining > 0 ? 'var(--mobile-primary)' : 'var(--adm-rule)', borderRadius: '3px' }}></div>
                               </div>
                             </div>
                           );
@@ -4762,7 +4762,7 @@ ${googleLink}
 
               {/* SUBTAB: HORARIOS */}
               {configSubTab === 'horarios' && (
-                <div style={{ background: 'white', padding: 14, borderRadius: 12, border: '1px solid var(--mobile-rule)' }}>
+                <div style={{ background: 'var(--adm-surface)', padding: 14, borderRadius: 12, border: '1px solid var(--mobile-rule)' }}>
                   <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
                     ℹ️ A grade horária padrão do estúdio é das <strong>09:00 às 19:00</strong>.<br/>
                     Para gerenciar folgas semanais e bloqueios de escala personalizados de profissionais, acesse a aba <strong>Profissionais</strong>.
@@ -5042,12 +5042,12 @@ ${googleLink}
 
               {/* Progress bar */}
               {isSendingMarketingCampaign && (
-                <div style={{ background: 'white', border: '1px solid var(--mobile-rule)', borderRadius: 12, padding: 14, marginTop: 8 }}>
+                <div style={{ background: 'var(--adm-surface)', border: '1px solid var(--mobile-rule)', borderRadius: 12, padding: 14, marginTop: 8 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 'bold', marginBottom: 6 }}>
                     <span>Enviando mensagens...</span>
                     <span>{marketingCampaignProgress} / {marketingCampaignTotal}</span>
                   </div>
-                  <div style={{ background: '#edf2f7', height: 8, borderRadius: 4, overflow: 'hidden' }}>
+                  <div style={{ background: 'var(--adm-rule)', height: 8, borderRadius: 4, overflow: 'hidden' }}>
                     <div 
                       style={{ 
                         background: 'var(--mobile-primary)', 
@@ -5339,7 +5339,7 @@ ${googleLink}
                   </button>
                 )}
                 {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && selectedBooking.status !== 'faltou' && selectedBooking.status !== 'cancelado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: '#6b7280', color: '#6b7280', flex: '1 1 40%' }} onClick={() => markAsNoShow(selectedBooking.id)}>
+                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--adm-muted)', color: 'var(--adm-muted)', flex: '1 1 40%' }} onClick={() => markAsNoShow(selectedBooking.id)}>
                     Marcar Falta
                   </button>
                 )}
@@ -5350,7 +5350,7 @@ ${googleLink}
                 )}
                 <button 
                   className="mobile-btn-outline" 
-                  style={{ borderColor: '#cbd5e0', color: '#4a5568', flex: '1 1 100%', marginTop: 8 }} 
+                  style={{ borderColor: 'var(--adm-rule)', color: 'var(--adm-text-2)', flex: '1 1 100%', marginTop: 8 }} 
                   onClick={() => setSelectedBooking(null)}
                 >
                   Fechar / Voltar para a Agenda
@@ -5766,17 +5766,17 @@ ${googleLink}
           <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ padding: '14px', width: '92%', maxWidth: '380px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflowY: 'auto', gap: '8px' }}>
             <div className="mobile-sheet-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
               <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>Fechar Comanda</h4>
-              <button onClick={() => setShowCheckoutModal(false)} style={{ background: 'none', border: 'none', color: '#718096', cursor: 'pointer' }}><X size={18} /></button>
+              <button onClick={() => setShowCheckoutModal(false)} style={{ background: 'none', border: 'none', color: 'var(--adm-muted)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               <div style={{ fontSize: '0.8rem' }}>
-                <span style={{ fontSize: '0.7rem', color: '#718096', display: 'block', textTransform: 'uppercase' }}>Cliente</span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', display: 'block', textTransform: 'uppercase' }}>Cliente</span>
                 <strong>{checkoutBooking.clientName}</strong>
               </div>
               
-              <div style={{ background: '#f8f9fa', padding: '8px', borderRadius: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <span style={{ fontSize: '0.7rem', color: '#718096', display: 'block', fontWeight: 700 }}>ITENS DA COMANDA</span>
+              <div style={{ background: 'var(--adm-card)', padding: '8px', borderRadius: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <span style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 700 }}>ITENS DA COMANDA</span>
                 
                 {/* Substituição do Serviço Agendado */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 3, borderBottom: '1px solid #edf2f7', paddingBottom: 4 }}>
@@ -5798,7 +5798,7 @@ ${googleLink}
                         }));
                       }
                     }}
-                    style={{ width: '100%', padding: '3px 6px', fontSize: '0.75rem', borderRadius: 4, border: '1px solid #cbd5e0', background: '#fff' }}
+                    style={{ width: '100%', padding: '3px 6px', fontSize: '0.75rem', borderRadius: 4, border: '1px solid #cbd5e0', background: 'var(--adm-surface)' }}
                   >
                     {services.map(s => (
                       <option key={s.id} value={s.name}>
@@ -5824,7 +5824,7 @@ ${googleLink}
                 {/* Lista de Produtos Adicionados */}
                 {selectedProducts.map((prod, index) => (
                   <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-                    <span style={{ color: '#4a5568' }}>📦 {prod.qty}x {prod.name}</span>
+                    <span style={{ color: 'var(--adm-text-2)' }}>📦 {prod.qty}x {prod.name}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                       <span style={{ fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
                       <button type="button" onClick={() => {
@@ -5984,14 +5984,14 @@ ${googleLink}
               </div>
 
               {checkoutBooking.prepayment > 0 && (
-                <div style={{ fontSize: '0.75rem', color: '#e53e3e', fontWeight: 600 }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--adm-danger)', fontWeight: 600 }}>
                   <span>Sinal Pago: </span>
                   <strong>- R$ {Number(checkoutBooking.prepayment).toFixed(2).replace('.', ',')}</strong>
                 </div>
               )}
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
-                <span style={{ fontSize: '0.72rem', color: '#718096', fontWeight: 700 }}>TOTAL A COBRAR</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', fontWeight: 700 }}>TOTAL A COBRAR</span>
                 <strong style={{ fontSize: '1.15rem', color: 'var(--mobile-green)' }}>
                   R$ {getCheckoutTotal().toFixed(2).replace('.', ',')}
                 </strong>
@@ -6095,11 +6095,11 @@ ${googleLink}
                 </div>
               )}
 
-              <div style={{ background: '#f8f9fa', padding: 12, borderRadius: 8, marginBottom: 14 }}>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginBottom: 4, fontWeight: '700' }}>PRODUTOS SELECIONADOS</span>
+              <div style={{ background: 'var(--adm-card)', padding: 12, borderRadius: 8, marginBottom: 14 }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block', marginBottom: 4, fontWeight: '700' }}>PRODUTOS SELECIONADOS</span>
                 
                 {directSaleProducts.length === 0 ? (
-                  <span style={{ fontSize: '0.8rem', color: '#a0aec0' }}>Nenhum produto adicionado ainda.</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>Nenhum produto adicionado ainda.</span>
                 ) : (
                   directSaleProducts.map((prod, index) => {
                     const match = inventory.find(i => i.id === prod.id);
@@ -6196,7 +6196,7 @@ ${googleLink}
               )}
 
               <div style={{ margin: '14px 0' }}>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>
                   {isDirectSaleSalonUse ? 'DEDUÇÃO TOTAL (PREÇO DE CUSTO)' : 'TOTAL A RECEBER'}
                 </span>
                 <strong style={{ fontSize: '1.3rem', color: isDirectSaleSalonUse ? 'var(--mobile-red)' : 'var(--mobile-green)' }}>
@@ -6229,17 +6229,17 @@ ${googleLink}
           <div className="mobile-popup-modal notifications-sheet" onClick={(e) => e.stopPropagation()} style={{ background: '#fbf7f0', border: '1px solid #e8dec9' }}>
             <div className="mobile-sheet-header" style={{ borderBottom: '1px solid #e8dec9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <h4 style={{ margin: 0, color: '#2d3748', fontSize: '1.05rem', fontWeight: 'bold' }}>Novas Solicitações</h4>
+                <h4 style={{ margin: 0, color: 'var(--adm-text)', fontSize: '1.05rem', fontWeight: 'bold' }}>Novas Solicitações</h4>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <span style={{ color: '#c05621', fontWeight: 'bold', fontSize: '0.85rem' }}>{pendingCount} pendentes</span>
-                <button onClick={() => setShowNotificationsModal(false)} style={{ border: 'none', background: 'none', color: '#718096', padding: 0 }}><X size={20} /></button>
+                <button onClick={() => setShowNotificationsModal(false)} style={{ border: 'none', background: 'none', color: 'var(--adm-muted)', padding: 0 }}><X size={20} /></button>
               </div>
             </div>
 
             <div className="notifications-list-container" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '4px 0' }}>
               {pendingRequests.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#a0aec0' }}>
+                <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--adm-muted)' }}>
                   <Check size={36} style={{ opacity: 0.3, marginBottom: 8, margin: '0 auto', color: '#48bb78' }} />
                   <p style={{ fontSize: '0.85rem' }}>Nenhuma nova solicitação pendente.</p>
                 </div>
@@ -6253,7 +6253,7 @@ ${googleLink}
                         style={{
                           padding: '16px',
                           borderRadius: '12px',
-                          background: '#ffffff',
+                          background: 'var(--adm-surface)',
                           boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
                           border: '1px solid #ede8db',
                           display: 'flex',
@@ -6262,20 +6262,20 @@ ${googleLink}
                           position: 'relative'
                         }}
                       >
-                        <div style={{ fontWeight: 'bold', fontSize: '0.95rem', color: '#1a202c', wordBreak: 'break-word' }}>
+                        <div style={{ fontWeight: 'bold', fontSize: '0.95rem', color: 'var(--adm-text)', wordBreak: 'break-word' }}>
                           {req.clientName}
                         </div>
                         
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: '0.825rem', color: '#4a5568' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: '0.825rem', color: 'var(--adm-text-2)' }}>
                           <div>
-                            <span style={{ fontWeight: '600', color: '#718096' }}>Serviço:</span> {req.service?.name || req.serviceName}
+                            <span style={{ fontWeight: '600', color: 'var(--adm-muted)' }}>Serviço:</span> {req.service?.name || req.serviceName}
                           </div>
                           <div>
-                            <span style={{ fontWeight: '600', color: '#718096' }}>Data/Hora:</span> {formattedDate} às {req.time}
+                            <span style={{ fontWeight: '600', color: 'var(--adm-muted)' }}>Data/Hora:</span> {formattedDate} às {req.time}
                           </div>
                           {req.clientPhone && (
                             <div>
-                              <span style={{ fontWeight: '600', color: '#718096' }}>WhatsApp:</span> {req.clientPhone}
+                              <span style={{ fontWeight: '600', color: 'var(--adm-muted)' }}>WhatsApp:</span> {req.clientPhone}
                             </div>
                           )}
                         </div>
@@ -6324,25 +6324,25 @@ ${googleLink}
               <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(140,80,39,0.1)', color: '#8c5027', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
                 <Sparkles size={28} />
               </div>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: 'bold', color: '#1a202c' }}>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: 'bold', color: 'var(--adm-text)' }}>
                 {activeAlert.title}
               </h3>
-              <p style={{ margin: '0 0 20px 0', fontSize: '0.875rem', color: '#4a5568', lineHeight: 1.5 }}>
+              <p style={{ margin: '0 0 20px 0', fontSize: '0.875rem', color: 'var(--adm-text-2)', lineHeight: 1.5 }}>
                 {activeAlert.message}
               </p>
               
               <div style={{ background: '#fcfcf9', border: '1px solid #ede8db', borderRadius: '8px', padding: '12px', marginBottom: '24px', textAlign: 'left' }}>
-                <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '4px' }}>Cliente</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#1a202c', marginBottom: '8px' }}>{activeAlert.booking.clientName}</div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '4px' }}>Cliente</div>
+                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: 'var(--adm-text)', marginBottom: '8px' }}>{activeAlert.booking.clientName}</div>
                 
                 <div style={{ display: 'flex', gap: '16px' }}>
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Data</div>
-                    <div style={{ fontSize: '0.85rem', color: '#2d3748' }}>{activeAlert.booking.date ? activeAlert.booking.date.split('-').reverse().join('/') : ''}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Data</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--adm-text)' }}>{activeAlert.booking.date ? activeAlert.booking.date.split('-').reverse().join('/') : ''}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Horário</div>
-                    <div style={{ fontSize: '0.85rem', color: '#2d3748' }}>{activeAlert.booking.time}</div>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Horário</div>
+                    <div style={{ fontSize: '0.85rem', color: 'var(--adm-text)' }}>{activeAlert.booking.time}</div>
                   </div>
                 </div>
               </div>
@@ -6376,7 +6376,7 @@ ${googleLink}
                   type="button" 
                   style={{
                     background: 'transparent',
-                    color: '#4a5568',
+                    color: 'var(--adm-text-2)',
                     border: '1px solid #cbd5e0',
                     borderRadius: '8px',
                     padding: '12px 16px',
@@ -6395,7 +6395,7 @@ ${googleLink}
                   type="button" 
                   style={{
                     background: 'transparent',
-                    color: '#a0aec0',
+                    color: 'var(--adm-muted)',
                     border: 'none',
                     fontSize: '0.8rem',
                     fontWeight: '500',
