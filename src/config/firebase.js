@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, setPersistence, indexedDBLocalPersistence, browserLocalPersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -18,6 +19,7 @@ const isConfigValid = firebaseConfig.apiKey &&
 let app = null;
 let auth = null;
 let db = null;
+let storage = null;
 
 if (isConfigValid) {
   try {
@@ -31,6 +33,7 @@ if (isConfigValid) {
 
     // Configuração mínima do Firestore — sem opções experimentais
     db = getFirestore(app);
+    storage = getStorage(app);
     console.log('Firebase inicializado.');
   } catch (err) {
     console.error('Erro ao inicializar Firebase:', err);
@@ -138,5 +141,5 @@ export const getRefreshedToken = async () => {
   return user.getIdToken(true);
 };
 
-export { auth, db, withTimeout };
+export { auth, db, storage, withTimeout };
 export default app;
