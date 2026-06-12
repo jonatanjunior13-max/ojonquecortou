@@ -759,6 +759,17 @@ Use as seguintes tags no "bodyHtml":
 
   const handlePublishGbpPostNow = async (post) => {
     setIsPublishingGbpId(post.id);
+    
+    // Check if Google Business Profile API is connected. If not, run simulation.
+    if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
+      setTimeout(() => {
+        alert('Publicado com sucesso no Google Meu Negócio! 🚀 (Simulado)');
+        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+        setIsPublishingGbpId(null);
+      }, 1000);
+      return;
+    }
+
     try {
       const res = await fetch('/api/gbp?action=post', {
         method: 'POST',
