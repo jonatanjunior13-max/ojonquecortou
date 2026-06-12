@@ -1363,13 +1363,13 @@ Use as seguintes tags no "bodyHtml":
                               <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
                                 <Mail size={12} /> E-mail
                               </div>
-                              <strong style={{ fontSize: '1.25rem', color: 'var(--text)' }}>{item.data.email}</strong>
+                              <strong style={{ fontSize: '1.25rem', color: 'var(--adm-text)' }}>{item.data.email}</strong>
                             </div>
                             <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--adm-rule)', borderRadius: '4px', textAlign: 'center' }}>
                               <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
                                 <Phone size={12} /> WhatsApp
                               </div>
-                              <strong style={{ fontSize: '1.25rem', color: 'var(--text)' }}>{item.data.whatsapp}</strong>
+                              <strong style={{ fontSize: '1.25rem', color: 'var(--adm-text)' }}>{item.data.whatsapp}</strong>
                             </div>
                           </div>
                         </div>
@@ -1663,7 +1663,7 @@ Use as seguintes tags no "bodyHtml":
                     rows={4}
                     value={birthdayWaMessage}
                     onChange={e => setBirthdayWaMessage(e.target.value)}
-                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--text)', fontSize: '0.88rem', lineHeight: 1.55, resize: 'vertical', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--adm-text)', fontSize: '0.88rem', lineHeight: 1.55, resize: 'vertical', boxSizing: 'border-box' }}
                     placeholder="Digite a mensagem de aniversário..."
                   />
                   <p style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', marginTop: 6, marginBottom: 0 }}>
@@ -2195,7 +2195,7 @@ Use as seguintes tags no "bodyHtml":
                       <span style={{ fontSize: '1.2rem', marginTop: '2px' }}>⚠️</span>
                       <div>
                         <strong style={{ color: '#d56414', fontSize: '0.85rem' }}>Acesso Restrito ao Google Business Profile (Quota Zero)</strong>
-                        <p style={{ margin: '8px 0', color: 'var(--text)', lineHeight: 1.5 }}>
+                        <p style={{ margin: '8px 0', color: 'var(--adm-text)', lineHeight: 1.5 }}>
                           Sua autenticação OAuth funcionou perfeitamente, mas o Google bloqueou o acesso à sua conta. Novos projetos no Google Cloud possuem um limite padrão de <strong>0 requisições por minuto</strong> para a API do Meu Negócio até que sejam aprovados.
                         </p>
                         <strong style={{ display: 'block', marginTop: '12px', marginBottom: '6px' }}>Como liberar o acesso:</strong>
@@ -2244,7 +2244,7 @@ Use as seguintes tags no "bodyHtml":
                             <span style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>{rev.date}</span>
                           </div>
                           <div style={{ color: '#ecc94b', marginBottom: 6 }}>{'★'.repeat(rev.rating)}</div>
-                          <p style={{ margin: '0 0 10px 0', color: 'var(--text)', fontStyle: 'italic' }}>"{rev.comment}"</p>
+                          <p style={{ margin: '0 0 10px 0', color: 'var(--adm-text)', fontStyle: 'italic' }}>"{rev.comment}"</p>
                           
                           {rev.reply ? (
                             <div style={{ padding: 8, background: 'rgba(176,90,46,0.06)', borderLeft: '3px solid var(--accent)', borderRadius: 4, marginTop: 8 }}>
@@ -2311,7 +2311,7 @@ Use as seguintes tags no "bodyHtml":
                             type="time"
                             value={postFreqTime}
                             onChange={e => handleSaveFreqTime(e.target.value)}
-                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--rule)', background: 'var(--sidebar-bg)', color: 'var(--text)', fontSize: '0.82rem' }}
+                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--rule)', background: 'var(--sidebar-bg)', color: 'var(--adm-text)', fontSize: '0.82rem' }}
                           />
                         </div>
                       </div>
@@ -2448,7 +2448,7 @@ Use as seguintes tags no "bodyHtml":
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                         <div>
                           <div style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>Assunto</div>
-                          <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text)' }}>{activeNewsletter.subject}</div>
+                          <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--adm-text)' }}>{activeNewsletter.subject}</div>
                         </div>
                         <span style={{
                           marginLeft: 'auto',
@@ -2510,7 +2510,7 @@ Use as seguintes tags no "bodyHtml":
                             placeholder="seu@email.com (enviar teste)"
                             value={testEmailAddress}
                             onChange={e => setTestEmailAddress(e.target.value)}
-                            style={{ flex: 1, padding: '7px 12px', borderRadius: 4, border: '1px solid var(--adm-rule)', fontSize: '0.85rem', background: 'var(--input-bg)', color: 'var(--text)' }}
+                            style={{ flex: 1, padding: '7px 12px', borderRadius: 4, border: '1px solid var(--adm-rule)', fontSize: '0.85rem', background: 'var(--input-bg)', color: 'var(--adm-text)' }}
                           />
                           <button
                             className="btn btn-outline btn-small"

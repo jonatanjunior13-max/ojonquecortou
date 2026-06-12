@@ -1,4 +1,4 @@
-﻿/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
+/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
 
 /* Tactile Active feedback for buttons and interactive items */
 .btn:active, 
@@ -3459,4 +3459,29 @@
 .btn-toggle.active::after {
   left: calc(100% - 22px);
 }
+
+/* Redesign Marketing & CRM Legibility Overrides */
+.admin-clients-page {
+  color: var(--adm-text) !important;
+}
+
+.admin-clients-page h3,
+.admin-clients-page h4,
+.admin-clients-page h5,
+.admin-clients-page p,
+.admin-clients-page span,
+.admin-clients-page label,
+.admin-clients-page strong,
+.admin-clients-page td,
+.admin-clients-page th {
+  color: inherit;
+}
+
+.admin-clients-page p,
+.admin-clients-page span.text-muted,
+.admin-clients-page .report-header p,
+.admin-clients-page .marketing-automations-card p {
+  color: var(--adm-muted) !important;
+}
+
 
