@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit, Calendar } from 'lucide-react';
 import { db } from '../../config/firebase';
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
@@ -307,7 +307,7 @@ const AdminSettings = () => {
   };
 
   return (
-    <div className="admin-settings-page">
+    <div className="admin-settings-page" style={{ color: 'var(--adm-text)' }}>
       {/* Abas */}
       <div className="tab-menu" style={{ marginBottom: 24 }}>
         <button type="button" className={`tab-btn ${activeTab === 'perfil' ? 'active' : ''}`} onClick={() => setActiveTab('perfil')}>

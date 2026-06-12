@@ -1,4 +1,4 @@
-﻿/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
+/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
 
 /* Tactile Active feedback for buttons and interactive items */
 .btn:active, 
@@ -3461,7 +3461,8 @@
 }
 
 /* Redesign Marketing & CRM Legibility Overrides */
-.admin-clients-page {
+.admin-clients-page,
+.admin-settings-page {
   color: var(--adm-text) !important;
 }
 
@@ -3473,14 +3474,27 @@
 .admin-clients-page label,
 .admin-clients-page strong,
 .admin-clients-page td,
-.admin-clients-page th {
+.admin-clients-page th,
+.admin-settings-page h3,
+.admin-settings-page h4,
+.admin-settings-page h5,
+.admin-settings-page p,
+.admin-settings-page span,
+.admin-settings-page label,
+.admin-settings-page strong,
+.admin-settings-page option,
+.admin-settings-page select,
+.admin-settings-page input {
   color: inherit;
 }
 
 .admin-clients-page p,
 .admin-clients-page span.text-muted,
 .admin-clients-page .report-header p,
-.admin-clients-page .marketing-automations-card p {
+.admin-clients-page .marketing-automations-card p,
+.admin-settings-page p,
+.admin-settings-page span.text-muted,
+.admin-settings-page .hours-settings-list span {
   color: var(--adm-muted) !important;
 }
 

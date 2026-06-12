@@ -21,7 +21,12 @@ import { syncBookingToGoogle } from '../../utils/gcalSync';
 // ═══════════════════════════════════════════════════════════════════
 const fmt = (n) => `R$\u00a0${Number(n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmtDate = (d) => { try { const dt = new Date(d + 'T00:00:00'); return dt.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }); } catch { return d; } };
-const dateStr = (d) => d.toISOString().split('T')[0];
+const dateStr = (d) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 const today = () => dateStr(new Date());
 
 const SLOTS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
@@ -660,6 +665,11 @@ export default function AdminMobileApp() {
           <div className="m-slot-list">
             {SLOTS.map(slot => {
               const bk = dayBookings.find(b => b.time === slot);
+              const isDefaultLunchBlock = (slot === '12:00' || slot === '12:30');
+              // Check if manually unlocked for this date
+              const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
+              const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
+
               return (
                 <div key={slot} className="m-slot-row" onClick={() => {
                   if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
@@ -674,6 +684,14 @@ export default function AdminMobileApp() {
                           <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
                         </div>
                         <StatusPill status={bk.status}/>
+                      </div>
+                    ) : isLocked ? (
+                      <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
+                        <div>
+                          <div className="m-slot-client" style={{ color: 'var(--m-red)' }}>Bloqueio de Almoço</div>
+                          <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
+                        </div>
+                        <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
                       </div>
                     ) : (
                       <span className="m-slot-empty">Disponível</span>
@@ -1218,6 +1236,10 @@ export default function AdminMobileApp() {
   // ── Slot Action Sheet ──────────────────────────────────────────
   const renderSlotSheet = () => {
     if (!showSlotSheet) return null;
+    const isDefaultLunchBlock = (selectedSlot === '12:00' || selectedSlot === '12:30');
+    const isUnlocked = localStorage.getItem(`unlock_${currentDate}_${selectedSlot}`) === 'true';
+    const isLocked = isDefaultLunchBlock && !isUnlocked;
+
     return (
       <div className="m-overlay" onClick={() => setShowSlotSheet(false)}>
         <div className="m-sheet" onClick={e => e.stopPropagation()}>
@@ -1227,15 +1249,46 @@ export default function AdminMobileApp() {
             <button onClick={() => setShowSlotSheet(false)} className="m-icon-btn"><X size={18}/></button>
           </div>
           <div className="m-sheet-body">
-            <div style={{ fontSize:'0.8rem', color:'var(--m-muted)', marginBottom:8 }}>{fmtDate(currentDate)} · Horário disponível</div>
+            <div style={{ fontSize:'0.8rem', color:'var(--m-muted)', marginBottom:8 }}>
+              {fmtDate(currentDate)} · {isLocked ? 'Horário Bloqueado (Almoço)' : 'Horário Disponível'}
+            </div>
             <div className="m-action-list">
-              <button className="m-action-btn" onClick={() => { setShowSlotSheet(false); setNbForm(prev => ({ ...prev, date: currentDate, time: selectedSlot })); setShowNewBookingSheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Plus size={16}/></div>
-                <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Novo Agendamento</div>
-                  <div className="m-action-btn-sub">Criar reserva para este horário</div>
-                </div>
-              </button>
+              {isLocked ? (
+                <button className="m-action-btn" onClick={() => {
+                  localStorage.setItem(`unlock_${currentDate}_${selectedSlot}`, 'true');
+                  setShowSlotSheet(false);
+                  showToast(`Horário ${selectedSlot} liberado para este dia!`, 'success');
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Check size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Liberar Horário</div>
+                    <div className="m-action-btn-sub">Permitir agendamentos neste dia</div>
+                  </div>
+                </button>
+              ) : (
+                <>
+                  <button className="m-action-btn" onClick={() => { setShowSlotSheet(false); setNbForm(prev => ({ ...prev, date: currentDate, time: selectedSlot })); setShowNewBookingSheet(true); }}>
+                    <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Plus size={16}/></div>
+                    <div className="m-action-btn-text">
+                      <div className="m-action-btn-label">Novo Agendamento</div>
+                      <div className="m-action-btn-sub">Criar reserva para este horário</div>
+                    </div>
+                  </button>
+                  {isDefaultLunchBlock && isUnlocked && (
+                    <button className="m-action-btn" onClick={() => {
+                      localStorage.removeItem(`unlock_${currentDate}_${selectedSlot}`);
+                      setShowSlotSheet(false);
+                      showToast(`Horário ${selectedSlot} bloqueado novamente!`, 'info');
+                    }}>
+                      <div className="m-action-btn-icon" style={{ background:'var(--m-red-bg)', color:'var(--m-red)' }}><X size={16}/></div>
+                      <div className="m-action-btn-text">
+                        <div className="m-action-btn-label" style={{ color: 'var(--m-red)' }}>Bloquear Novamente</div>
+                        <div className="m-action-btn-sub">Restaurar bloqueio de almoço</div>
+                      </div>
+                    </button>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
