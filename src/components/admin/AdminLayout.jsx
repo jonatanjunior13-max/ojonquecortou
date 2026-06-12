@@ -385,7 +385,7 @@ const AdminLayoutInner = () => {
             title="Servi\u00e7os"
           >
             <Scissors size={18} />
-            <span>{"Servi\u00e7os"}</span>
+            <span>Servi\u00e7os</span>
           </Link>
           <Link
             to="/admin/clientes"
@@ -425,7 +425,7 @@ const AdminLayoutInner = () => {
             title="Configura\u00e7\u00f5es"
           >
             <Settings size={18} />
-            <span>{"Configura\u00e7\u00f5es"}</span>
+            <span>Configura\u00e7\u00f5es</span>
           </Link>
         </nav>
 
