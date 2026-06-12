@@ -971,7 +971,7 @@ const AdminSettings = () => {
                     <button 
                       type="button" 
                       className="btn btn-outline" 
-                      style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--adm-rule)', background: 'none', color: 'var(--text)' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--adm-rule)', background: 'none', color: 'var(--adm-text)' }}
                       onClick={handleEditProfCancel}
                     >
                       Cancelar
@@ -1145,7 +1145,7 @@ const AdminSettings = () => {
                       type="button"
                       className="btn-secondary"
                       disabled={gcalSyncing}
-                      style={{ padding: '8px 16px', borderRadius: 4, cursor: gcalSyncing ? 'not-allowed' : 'pointer', background: 'var(--adm-card)', color: 'var(--text)', border: '1px solid var(--adm-rule)', fontWeight: 'bold' }}
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: gcalSyncing ? 'not-allowed' : 'pointer', background: 'var(--adm-card)', color: 'var(--adm-text)', border: '1px solid var(--adm-rule)', fontWeight: 'bold' }}
                       onClick={async () => {
                         setGcalSyncing(true);
                         try {

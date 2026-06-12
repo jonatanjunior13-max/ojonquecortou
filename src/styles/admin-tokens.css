@@ -8,6 +8,7 @@
   /* Text */
   --adm-text: #F5EDDB;
   --adm-text-2: #C9BCA8;
+  --adm-text-3: #7A6E63;
   --adm-muted: #9A8D7E;
 
   /* Brand */
@@ -35,4 +36,9 @@
   --adm-space-4: 24px;
   --adm-space-5: 32px;
   --adm-space-6: 48px;
+
+  /* Legacy / alias compatibility — maps old public-site vars to admin tokens */
+  --glass-border: rgba(245, 237, 219, 0.10);
+  --font-display: "DM Serif Display", "Times New Roman", serif;
+  --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 }

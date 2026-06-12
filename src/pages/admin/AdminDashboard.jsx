@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
@@ -2357,7 +2357,7 @@ ${googleLink}
             <div className="stat-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>Agendamentos Ativos (Dia)</h3>
-                <Calendar size={18} style={{ color: 'var(--accent)', opacity: 0.8 }} />
+                <Calendar size={18} style={{ color: 'var(--adm-gold)', opacity: 0.8 }} />
               </div>
               <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
             </div>
@@ -2531,7 +2531,7 @@ ${googleLink}
                               width: '4px', 
                               height: '4px', 
                               borderRadius: '50%', 
-                              backgroundColor: isDayActive ? '#fff' : 'var(--accent)' 
+                              backgroundColor: isDayActive ? '#fff' : 'var(--adm-gold)' 
                             }} 
                           />
                         ))}
@@ -2540,7 +2540,7 @@ ${googleLink}
                             className="mini-calendar-dot-plus" 
                             style={{ 
                               fontSize: '0.6rem', 
-                              color: isDayActive ? '#fff' : 'var(--accent)', 
+                              color: isDayActive ? '#fff' : 'var(--adm-gold)', 
                               lineHeight: 1, 
                               fontWeight: 700 
                             }}
@@ -2611,7 +2611,7 @@ ${googleLink}
               <span>{expandedAccordions.status ? '▲' : '▼'}</span>
             </div>
             {expandedAccordions.status && (
-              <div className="accordion-content" style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+              <div className="accordion-content" style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado" /> Confirmado</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot pendente" /> Pendente</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot finalizado" /> Finalizado</div>
@@ -2667,7 +2667,7 @@ ${googleLink}
               </div>
 
               {/* View Switcher Tabs */}
-              <div className="view-mode-tabs" style={{ display: 'flex', border: '1px solid var(--rule)', borderRadius: 8, padding: 2, background: 'var(--surface)' }}>
+              <div className="view-mode-tabs" style={{ display: 'flex', border: '1px solid var(--adm-rule)', borderRadius: 8, padding: 2, background: 'var(--adm-surface)' }}>
                 {['diario', 'semanal', 'mensal'].map(mode => (
                   <button
                     key={mode}
@@ -2931,7 +2931,7 @@ ${googleLink}
                                 borderTopLeftRadius: 0, 
                                 borderTopRightRadius: 0,
                                 background: ongoingAppt.status === 'bloqueado' ? undefined : 'rgba(110, 47, 24, 0.08)',
-                                borderLeft: ongoingAppt.status === 'bloqueado' ? '3px solid #a0aec0' : '3px dashed var(--accent)',
+                                borderLeft: ongoingAppt.status === 'bloqueado' ? '3px solid #a0aec0' : '3px dashed var(--adm-gold)',
                                 color: 'var(--text-muted)',
                                 height: ongoingHeight,
                                 display: 'flex',
@@ -2971,8 +2971,8 @@ ${googleLink}
                   const isToday = dStr === getLocalDateString(new Date());
                   const weekdaysShort = ['dom.', 'seg.', 'ter.', 'qua.', 'qui.', 'sex.', 'sáb.'];
                   return (
-                    <div key={dStr} className={`pro-header-cell ${isToday ? 'active-day-header' : ''}`} style={{ borderBottom: isToday ? '3px solid var(--accent)' : 'none' }}>
-                      <span className="pro-name" style={{ fontSize: '0.9rem', color: isToday ? 'var(--accent)' : 'inherit', fontWeight: isToday ? 'bold' : 'normal' }}>
+                    <div key={dStr} className={`pro-header-cell ${isToday ? 'active-day-header' : ''}`} style={{ borderBottom: isToday ? '3px solid var(--adm-gold)' : 'none' }}>
+                      <span className="pro-name" style={{ fontSize: '0.9rem', color: isToday ? 'var(--adm-gold)' : 'inherit', fontWeight: isToday ? 'bold' : 'normal' }}>
                         {weekdaysShort[d.getDay()]} {d.getDate()}
                       </span>
                     </div>
@@ -2983,9 +2983,9 @@ ${googleLink}
               {/* Body da grade semanal */}
               <div className="calendar-body" style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
                 {/* Horários no lado esquerdo */}
-                <div className="weekly-hours-column" style={{ width: 80, flexShrink: 0, borderRight: '1px solid var(--rule)', background: 'var(--bg-warm)' }}>
+                <div className="weekly-hours-column" style={{ width: 80, flexShrink: 0, borderRight: '1px solid var(--adm-rule)', background: 'var(--adm-card)' }}>
                   {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(h => (
-                    <div key={h} className="time-label-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.75rem', borderBottom: '1px solid var(--rule)' }}>
+                    <div key={h} className="time-label-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.75rem', borderBottom: '1px solid var(--adm-rule)' }}>
                       {h}
                     </div>
                   ))}
@@ -2996,7 +2996,7 @@ ${googleLink}
                   {/* Linhas de grade horizontais */}
                   <div className="weekly-grid-lines" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', pointerEvents: 'none', zIndex: 0 }}>
                     {Array.from({ length: 9 }).map((_, i) => (
-                      <div key={i} style={{ height: 60, borderBottom: '1px solid var(--rule)' }} />
+                      <div key={i} style={{ height: 60, borderBottom: '1px solid var(--adm-rule)' }} />
                     ))}
                   </div>
 
@@ -3018,7 +3018,7 @@ ${googleLink}
                         <div 
                           key={dStr} 
                           className="weekly-day-column" 
-                          style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--rule)', zIndex: 1 }}
+                          style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--adm-rule)', zIndex: 1 }}
                         >
                           {/* Criar agendamento ao clicar em espaço vazio */}
                           {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(slot => {
@@ -3177,8 +3177,8 @@ ${googleLink}
                         flexDirection: 'column',
                         alignItems: 'stretch',
                         justifyContent: 'flex-start',
-                        background: !isCurrentMonth ? 'var(--bg-warm)' : 'var(--surface)',
-                        border: '1px solid var(--rule)',
+                        background: !isCurrentMonth ? 'var(--adm-card)' : 'var(--adm-surface)',
+                        border: '1px solid var(--adm-rule)',
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         opacity: !isCurrentMonth ? 0.6 : 1
@@ -3188,12 +3188,12 @@ ${googleLink}
                         <span style={{ 
                           fontSize: '0.95rem', 
                           fontWeight: isToday ? 'bold' : 'normal',
-                          color: isToday ? 'var(--accent)' : 'var(--ink)'
+                          color: isToday ? 'var(--adm-gold)' : 'var(--adm-text)'
                         }}>
                           {cell.dayNum}
                         </span>
                         {isToday && (
-                          <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: 'white', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>Hoje</span>
+                          <span style={{ fontSize: '0.65rem', background: 'var(--adm-gold)', color: 'white', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>Hoje</span>
                         )}
                       </div>
                       
@@ -3202,7 +3202,7 @@ ${googleLink}
                         {dayBookings.slice(0, 3).map(b => {
                           let bg = 'rgba(176, 90, 46, 0.1)';
                           let border = '1px solid rgba(176, 90, 46, 0.2)';
-                          let color = 'var(--accent)';
+                          let color = 'var(--adm-gold)';
                           
                           if (b.status === 'finalizado') {
                             bg = 'rgba(74, 93, 78, 0.1)';
@@ -3239,7 +3239,7 @@ ${googleLink}
                           );
                         })}
                         {dayBookings.length > 3 && (
-                          <div style={{ fontSize: '0.68rem', color: 'var(--muted)', textAlign: 'center', fontWeight: 'bold' }}>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--adm-muted)', textAlign: 'center', fontWeight: 'bold' }}>
                             + {dayBookings.length - 3} mais
                           </div>
                         )}
@@ -3320,14 +3320,14 @@ ${googleLink}
             </div>
             
             {activePopover.booking.isPackageUse && (
-              <div className="booking-popover-row" style={{ color: 'var(--accent)', fontWeight: 'bold', gap: 6 }}>
+              <div className="booking-popover-row" style={{ color: 'var(--adm-gold)', fontWeight: 'bold', gap: 6 }}>
                 <Package size={12} />
                 <span>Uso de Pacote</span>
               </div>
             )}
             
             {activePopover.booking.isPackageAcquisition && (
-              <div className="booking-popover-row" style={{ color: 'var(--accent)', fontWeight: 'bold', gap: 6 }}>
+              <div className="booking-popover-row" style={{ color: 'var(--adm-gold)', fontWeight: 'bold', gap: 6 }}>
                 <Package size={12} />
                 <span>Aquisição de Pacote</span>
               </div>
@@ -3657,10 +3657,10 @@ ${googleLink}
                     </div>
                   </div>
 
-                  <div style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
                     <span>Ficha Completa: <strong>{(editBookingForm.cpf && editBookingForm.clientEmail) ? 'Sim' : 'Não'}</strong></span>
                     <span 
-                      style={{ color: 'var(--accent)', textDecoration: 'underline', cursor: 'pointer' }}
+                      style={{ color: 'var(--adm-gold)', textDecoration: 'underline', cursor: 'pointer' }}
                       onClick={() => {
                         alert('Navegue para o painel de Clientes para uma ficha detalhada.');
                       }}
@@ -3675,7 +3675,7 @@ ${googleLink}
                   <div className="trinks-avatar-placeholder">
                     {editBookingForm.clientName ? editBookingForm.clientName.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase() : '?'}
                   </div>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: 8 }}>Foto de Perfil</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginTop: 8 }}>Foto de Perfil</span>
                 </div>
               </div>
 
@@ -3805,7 +3805,7 @@ ${googleLink}
               <div className="form-group">
                 <label style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Observações do Agendamento</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>
                     {editBookingForm.notes ? editBookingForm.notes.length : 0} de 400
                   </span>
                 </label>
@@ -3895,7 +3895,7 @@ ${googleLink}
                 <>
                   <div className="detail-row">
                     <label>Tipo:</label>
-                    <span style={{ fontWeight: 'bold', color: 'var(--muted)' }}>Horário Bloqueado (Indisponível)</span>
+                    <span style={{ fontWeight: 'bold', color: 'var(--adm-muted)' }}>Horário Bloqueado (Indisponível)</span>
                   </div>
                   <div className="detail-row">
                     <label>Data/Hora:</label>
@@ -4193,21 +4193,21 @@ ${googleLink}
               )
             ) : (
               <div className="checkout-section" style={{ fontSize: '0.82rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <p style={{ fontSize: '0.78rem', margin: '0 0 4px 0', color: 'var(--muted)' }}>
+                <p style={{ fontSize: '0.78rem', margin: '0 0 4px 0', color: 'var(--adm-muted)' }}>
                   Gere o faturamento da cliente <strong>{selectedBooking.clientName}</strong>.
                 </p>
                 
-                <div className="comanda-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: 'rgba(255,255,255,0.015)', padding: '6px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                <div className="comanda-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: 'rgba(255,255,255,0.015)', padding: '6px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}>
                   
                   {/* Trocar/Substituir o Serviço Agendado */}
-                  <div className="comanda-item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderBottom: '1px solid var(--rule)', paddingBottom: '6px' }}>
+                  <div className="comanda-item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderBottom: '1px solid var(--adm-rule)', paddingBottom: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Serviço Agendado</span>
+                      <span style={{ fontWeight: 600, color: 'var(--adm-text)' }}>Serviço Agendado</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                           value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.promoPrice || selectedBooking.service?.price || selectedBooking.servicePrice || 150)}
                           onChange={e => setOverrideBasePrice(Number(e.target.value))}
                         />
@@ -4229,7 +4229,7 @@ ${googleLink}
                           setOverrideBasePrice(match.promoPrice || match.price);
                         }
                       }}
-                      style={{ width: '100%', padding: '3px 6px', fontSize: '0.78rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                      style={{ width: '100%', padding: '3px 6px', fontSize: '0.78rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                     >
                       {services.map(s => (
                         <option key={s.id} value={s.name}>
@@ -4241,12 +4241,12 @@ ${googleLink}
                   
                   {addedServices.map((s, idx) => (
                     <div key={'s-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-                      <span style={{ color: 'var(--accent)' }}>➕ {s.name}</span>
+                      <span style={{ color: 'var(--adm-gold)' }}>➕ {s.name}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                           value={s.price}
                           onChange={e => {
                             const newPrice = Number(e.target.value);
@@ -4264,10 +4264,10 @@ ${googleLink}
                     <div key={'p-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
                       <span style={{ color: '#4a5568' }}>📦 {p.quantity}x {p.name}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>R$</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                           value={p.price}
                           onChange={e => {
                             const newPrice = Number(e.target.value);
@@ -4282,14 +4282,14 @@ ${googleLink}
                     </div>
                   ))}
                   
-                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--rule)', paddingTop: 4, marginTop: 4 }}>
+                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--adm-rule)', paddingTop: 4, marginTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Desconto</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         value={discount}
                         onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
                       />
@@ -4299,11 +4299,11 @@ ${googleLink}
                   <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Valor Extra Cobrado</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         value={extraCharged}
                         onChange={e => setExtraCharged(Math.max(0, Number(e.target.value)))}
                       />
@@ -4313,11 +4313,11 @@ ${googleLink}
                   <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Custo Extra Interno (Insumos)</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         value={extraCost}
                         onChange={e => setExtraCost(Math.max(0, Number(e.target.value)))}
                       />
@@ -4331,9 +4331,9 @@ ${googleLink}
                     </div>
                   )}
  
-                  <div className="comanda-total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--rule)', paddingTop: 6, marginTop: 4, fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--ink)' }}>
+                  <div className="comanda-total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--adm-rule)', paddingTop: 6, marginTop: 4, fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--adm-text)' }}>
                     <span>Total a Receber</span>
-                    <span style={{ color: 'var(--accent)' }}>R$ {calculateTotal()}</span>
+                    <span style={{ color: 'var(--adm-gold)' }}>R$ {calculateTotal()}</span>
                   </div>
                 </div>
  
@@ -4344,7 +4344,7 @@ ${googleLink}
                       <select 
                         value={selectedExtraService} 
                         onChange={e => setSelectedExtraService(e.target.value)}
-                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="">Selecione</option>
                         {services.map(s => (
@@ -4363,7 +4363,7 @@ ${googleLink}
                       <select 
                         value={selectedExtraProduct} 
                         onChange={e => setSelectedExtraProduct(e.target.value)}
-                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="">Selecione</option>
                         {products.map(p => (
@@ -4378,7 +4378,7 @@ ${googleLink}
                 </div>
  
                 {/* Pacotes options */}
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)', padding: '4px 6px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)', padding: '4px 6px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}>
                   {availablePackagesForBooking.length > 0 && (
                     <div className="form-group" style={{ margin: 0, flex: 1 }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.75rem' }}>
@@ -4400,7 +4400,7 @@ ${googleLink}
                         <select
                           value={usingClientPackageId}
                           onChange={e => setUsingClientPackageId(e.target.value)}
-                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         >
                           {availablePackagesForBooking.map(cp => {
                             const bookingServiceName = selectedBooking?.service?.name || selectedBooking?.serviceName;
@@ -4437,7 +4437,7 @@ ${googleLink}
                         <select
                           value={sellingPackageId}
                           onChange={e => setSellingPackageId(e.target.value)}
-                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         >
                           {packages.map(p => (
                             <option key={p.id} value={p.id}>
@@ -4454,7 +4454,7 @@ ${googleLink}
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Forma de Pagamento *</label>
                     {usingClientPackageId ? (
-                      <div style={{ padding: '3px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', border: '1px solid var(--rule)', fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 600 }}>
+                      <div style={{ padding: '3px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', border: '1px solid var(--adm-rule)', fontSize: '0.78rem', color: 'var(--adm-gold)', fontWeight: 600 }}>
                         Débito do Pacote
                       </div>
                     ) : (
@@ -4469,7 +4469,7 @@ ${googleLink}
                             setApplyAnticipation(false);
                           }
                         }}
-                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="Pix">Pix</option>
                         <option value="Cartão de Crédito">Cartão de Crédito</option>
@@ -4485,7 +4485,7 @@ ${googleLink}
                       <select 
                         value={installments} 
                         onChange={e => setInstallments(e.target.value)}
-                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="À vista">À vista</option>
                         <option value="2x">2x</option>
@@ -4508,7 +4508,7 @@ ${googleLink}
                   )}
                 </div>
  
-                <div className="modal-actions" style={{ justifyContent: 'space-between', borderTop: '1px solid var(--rule)', paddingTop: '8px', marginTop: '2px', display: 'flex', gap: '8px' }}>
+                <div className="modal-actions" style={{ justifyContent: 'space-between', borderTop: '1px solid var(--adm-rule)', paddingTop: '8px', marginTop: '2px', display: 'flex', gap: '8px' }}>
                   <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>
                   <button type="button" className="btn btn-accent" style={{ padding: '4px 12px', fontSize: '0.78rem' }} onClick={() => handleCloseComanda(selectedBooking)}>Finalizar Comanda</button>
                 </div>
@@ -4566,7 +4566,7 @@ ${googleLink}
               </div>
               {/* BOTÃO CADASTRAR NOVO CLIENTE */}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
-                <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
+                <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--adm-gold)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
                   <Plus size={14} /> Cadastrar novo cliente (Ficha Completa)
                 </button>
               </div>
@@ -4696,7 +4696,7 @@ ${googleLink}
               </div>
             </div>
 
-            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--adm-rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancelar</button>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                 {newBooking.clientPhone && (
@@ -4864,7 +4864,7 @@ ${googleLink}
               </div>
             </div>
 
-            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--adm-rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddClientModal(false)}>Cancelar</button>
               <button type="submit" className="btn btn-accent">Salvar e Selecionar</button>
             </div>
@@ -4930,7 +4930,7 @@ ${googleLink}
                   onClick={e => e.stopPropagation()}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 600 }}>Até às:</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Até às:</span>
                     <select
                       value={blockEndTime}
                       onChange={e => setBlockEndTime(e.target.value)}

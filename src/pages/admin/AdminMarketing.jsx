@@ -2130,10 +2130,10 @@ Use as seguintes tags no "bodyHtml":
               </div>
 
               {/* Google Business Profile Automação */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)', marginTop: '20px' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)', marginTop: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: 10 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <Sparkles size={20} style={{ color: 'var(--accent)' }} />
+                    <Sparkles size={20} style={{ color: 'var(--adm-gold)' }} />
                     <h4 style={{ margin: 0 }}>📈 Google Business Profile (Automação de SEO Local)</h4>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -2175,14 +2175,14 @@ Use as seguintes tags no "bodyHtml":
                     )}
                   </div>
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: gbpConnected ? '20px' : '12px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: gbpConnected ? '20px' : '12px' }}>
                   Automatize as respostas aos seus clientes no Google Maps e agende postagens semanais com imagens e palavras-chave de SEO local para subir no ranking de buscas em BH.
                 </p>
 
                 {!gbpConnected && (
                   <div style={{ padding: '12px 16px', background: 'rgba(213,100,20,0.08)', border: '1px solid rgba(213,100,20,0.25)', borderRadius: 8, marginBottom: 20, fontSize: '0.82rem' }}>
                     <strong>⚠️ Para ativar com dados reais do seu Google Meu Negócio:</strong>
-                    <ol style={{ margin: '8px 0 0 0', paddingLeft: '18px', lineHeight: 1.9, color: 'var(--muted)' }}>
+                    <ol style={{ margin: '8px 0 0 0', paddingLeft: '18px', lineHeight: 1.9, color: 'var(--adm-muted)' }}>
                       <li>Crie a credencial OAuth no console do Google Cloud</li>
                       <li>Clique em <strong>"Conectar Google"</strong> acima para fazer login e autorizar o site</li>
                     </ol>
@@ -2199,12 +2199,12 @@ Use as seguintes tags no "bodyHtml":
                           Sua autenticação OAuth funcionou perfeitamente, mas o Google bloqueou o acesso à sua conta. Novos projetos no Google Cloud possuem um limite padrão de <strong>0 requisições por minuto</strong> para a API do Meu Negócio até que sejam aprovados.
                         </p>
                         <strong style={{ display: 'block', marginTop: '12px', marginBottom: '6px' }}>Como liberar o acesso:</strong>
-                        <ol style={{ margin: '0', paddingLeft: '18px', lineHeight: 1.6, color: 'var(--muted)' }}>
-                          <li>Acesse o <a href="https://developers.google.com/my-business/content/prereqs#request-access" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Formulário de Solicitação de Acesso</a> oficial do Google.</li>
+                        <ol style={{ margin: '0', paddingLeft: '18px', lineHeight: 1.6, color: 'var(--adm-muted)' }}>
+                          <li>Acesse o <a href="https://developers.google.com/my-business/content/prereqs#request-access" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--adm-gold)', textDecoration: 'underline' }}>Formulário de Solicitação de Acesso</a> oficial do Google.</li>
                           <li>Preencha informando o número do seu projeto: <strong>65586774085</strong>.</li>
                           <li>Explique que você está criando um painel interno de agendamentos próprio para gerenciar as avaliações e posts do seu salão "O Jon Que Cortou".</li>
                         </ol>
-                        <p style={{ margin: '12px 0 0 0', color: 'var(--muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                        <p style={{ margin: '12px 0 0 0', color: 'var(--adm-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
                           Enquanto o Google não aprova (leva de 2 a 5 dias), o painel continuará operando em modo de simulação, permitindo que você teste as integrações de SEO Local com IA!
                         </p>
                       </div>
@@ -2215,11 +2215,11 @@ Use as seguintes tags no "bodyHtml":
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
                   
                   {/* Coluna 1: Comentários e Avaliações */}
-                  <div style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                  <div style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                       <h5 style={{ margin: 0, fontWeight: 700 }}>💬 Responder Avaliações c/ IA</h5>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Auto-Responder</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Auto-Responder</span>
                         <button 
                           className={`btn-toggle ${settings?.automations?.google_reviews_enabled !== false ? 'active' : ''}`}
                           style={{ padding: '2px 6px', fontSize: '0.65rem' }}
@@ -2238,18 +2238,18 @@ Use as seguintes tags no "bodyHtml":
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '350px', overflowY: 'auto', paddingRight: 4 }}>
                       {googleReviews.map(rev => (
-                        <div key={rev.id} style={{ padding: 12, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--rule)', fontSize: '0.82rem' }}>
+                        <div key={rev.id} style={{ padding: 12, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--adm-rule)', fontSize: '0.82rem' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                             <strong>{rev.author}</strong>
-                            <span style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>{rev.date}</span>
+                            <span style={{ color: 'var(--adm-muted)', fontSize: '0.75rem' }}>{rev.date}</span>
                           </div>
                           <div style={{ color: '#ecc94b', marginBottom: 6 }}>{'★'.repeat(rev.rating)}</div>
                           <p style={{ margin: '0 0 10px 0', color: 'var(--adm-text)', fontStyle: 'italic' }}>"{rev.comment}"</p>
                           
                           {rev.reply ? (
-                            <div style={{ padding: 8, background: 'rgba(176,90,46,0.06)', borderLeft: '3px solid var(--accent)', borderRadius: 4, marginTop: 8 }}>
+                            <div style={{ padding: 8, background: 'rgba(176,90,46,0.06)', borderLeft: '3px solid var(--adm-gold)', borderRadius: 4, marginTop: 8 }}>
                               <strong>Resposta do Studio:</strong>
-                              <p style={{ margin: '4px 0 0 0', color: 'var(--muted)' }}>{rev.reply}</p>
+                              <p style={{ margin: '4px 0 0 0', color: 'var(--adm-muted)' }}>{rev.reply}</p>
                             </div>
                           ) : (
                             <button 
@@ -2266,11 +2266,11 @@ Use as seguintes tags no "bodyHtml":
                   </div>
 
                   {/* Coluna 2: Postagens com Imagens */}
-                  <div style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                  <div style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                       <h5 style={{ margin: 0, fontWeight: 700 }}>✍️ Posts Semanais c/ Imagens</h5>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Auto-Post</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Auto-Post</span>
                         <button 
                           className={`btn-toggle ${settings?.automations?.google_posting_enabled !== false ? 'active' : ''}`}
                           style={{ padding: '2px 6px', fontSize: '0.65rem' }}
@@ -2282,11 +2282,11 @@ Use as seguintes tags no "bodyHtml":
                     </div>
 
                     {/* Frequência de postagem */}
-                    <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: 6, padding: 12, marginBottom: 14 }}>
+                    <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--adm-rule)', borderRadius: 6, padding: 12, marginBottom: 14 }}>
                       <span style={{ fontSize: '0.82rem', fontWeight: 700, display: 'block', marginBottom: 10 }}>📅 Frequência de Publicação Automática</span>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, minWidth: 220 }}>
-                          <label style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 600 }}>Dias da semana para postar</label>
+                          <label style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Dias da semana para postar</label>
                           <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
                             {['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'].map(day => {
                               const label = { 'domingo': 'Dom', 'segunda': 'Seg', 'terca': 'Ter', 'quarta': 'Qua', 'quinta': 'Qui', 'sexta': 'Sex', 'sabado': 'Sáb' }[day];
@@ -2306,16 +2306,16 @@ Use as seguintes tags no "bodyHtml":
                           </div>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 85 }}>
-                          <label style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 600 }}>Horário</label>
+                          <label style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Horário</label>
                           <input
                             type="time"
                             value={postFreqTime}
                             onChange={e => handleSaveFreqTime(e.target.value)}
-                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--rule)', background: 'var(--sidebar-bg)', color: 'var(--adm-text)', fontSize: '0.82rem' }}
+                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--adm-rule)', background: 'var(--sidebar-bg)', color: 'var(--adm-text)', fontSize: '0.82rem' }}
                           />
                         </div>
                       </div>
-                      <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: '8px 0 0 0' }}>
+                      <p style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', margin: '8px 0 0 0' }}>
                         📡 Os posts serão gerados e publicados automaticamente nos dias e horários selecionados.
                       </p>
                     </div>
@@ -2332,7 +2332,7 @@ Use as seguintes tags no "bodyHtml":
                     </div>
 
                     {generatedGbpPost && (
-                      <div style={{ padding: 12, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--rule)', marginBottom: 16 }}>
+                      <div style={{ padding: 12, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--adm-rule)', marginBottom: 16 }}>
                         <h6 style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Post Sugerido pela IA:</h6>
                         <p style={{ fontSize: '0.8rem', whiteSpace: 'pre-line', margin: '0 0 12px 0', background: 'var(--sidebar-bg)', padding: 8, borderRadius: 4 }}>
                           {generatedGbpPost.text}
@@ -2367,7 +2367,7 @@ Use as seguintes tags no "bodyHtml":
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
                       {scheduledGbpPosts.map(post => (
-                        <div key={post.id} style={{ padding: 10, background: 'var(--panel-bg)', borderRadius: 6, border: `1px solid ${post.status === 'scheduled' ? 'rgba(247,170,0,0.3)' : 'var(--rule)'}`, display: 'flex', gap: 10, fontSize: '0.78rem' }}>
+                        <div key={post.id} style={{ padding: 10, background: 'var(--panel-bg)', borderRadius: 6, border: `1px solid ${post.status === 'scheduled' ? 'rgba(247,170,0,0.3)' : 'var(--adm-rule)'}`, display: 'flex', gap: 10, fontSize: '0.78rem' }}>
                           <img src={post.image} alt="Thumbnail" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <p style={{ margin: '0 0 4px 0', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontWeight: 600, lineHeight: 1.35 }}>{post.text}</p>
@@ -2379,7 +2379,7 @@ Use as seguintes tags no "bodyHtml":
                               }}>
                                 {post.status === 'scheduled' ? '🕒 Programado' : '✅ Publicado'}
                               </span>
-                              <span style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>{post.scheduledDate}</span>
+                              <span style={{ color: 'var(--adm-muted)', fontSize: '0.7rem' }}>{post.scheduledDate}</span>
                             </div>
                           </div>
                           <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignSelf: 'center', flexShrink: 0 }}>

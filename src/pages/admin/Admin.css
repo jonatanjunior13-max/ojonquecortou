@@ -1,4 +1,4 @@
-/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
+﻿/* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
 
 /* Tactile Active feedback for buttons and interactive items */
 .btn:active, 
@@ -42,7 +42,7 @@
   background: var(--adm-card, #211D1A);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--adm-rule);
   padding: 44px;
   border-radius: 20px;
   max-width: 420px;
@@ -133,7 +133,7 @@
   background: var(--adm-card, #211D1A);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--adm-rule);
   padding: 16px 20px;
   border-radius: 12px;
   color: var(--adm-text);

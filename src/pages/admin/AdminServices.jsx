@@ -423,7 +423,7 @@ const AdminServices = () => {
             background: 'none',
             border: 'none',
             borderBottom: activeViewTab === 'list' ? '2px solid var(--adm-gold)' : '2px solid transparent',
-            color: activeViewTab === 'list' ? 'var(--text)' : 'var(--adm-muted)',
+            color: activeViewTab === 'list' ? 'var(--adm-text)' : 'var(--adm-muted)',
             fontWeight: 'bold',
             padding: '8px 16px',
             cursor: 'pointer',
@@ -439,7 +439,7 @@ const AdminServices = () => {
             background: 'none',
             border: 'none',
             borderBottom: activeViewTab === 'reorder' ? '2px solid var(--adm-gold)' : '2px solid transparent',
-            color: activeViewTab === 'reorder' ? 'var(--text)' : 'var(--adm-muted)',
+            color: activeViewTab === 'reorder' ? 'var(--adm-text)' : 'var(--adm-muted)',
             fontWeight: 'bold',
             padding: '8px 16px',
             cursor: 'pointer',
@@ -455,7 +455,7 @@ const AdminServices = () => {
             background: 'none',
             border: 'none',
             borderBottom: activeViewTab === 'packages' ? '2px solid var(--adm-gold)' : '2px solid transparent',
-            color: activeViewTab === 'packages' ? 'var(--text)' : 'var(--adm-muted)',
+            color: activeViewTab === 'packages' ? 'var(--adm-text)' : 'var(--adm-muted)',
             fontWeight: 'bold',
             padding: '8px 16px',
             cursor: 'pointer',
@@ -602,7 +602,7 @@ const AdminServices = () => {
 
       {activeViewTab === 'reorder' && (
         <div className="reorder-catalog-container" style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--adm-rule)' }}>
-          <h3 style={{ marginBottom: '8px', color: 'var(--text)' }}>Ordenar Grade de Exibição</h3>
+          <h3 style={{ marginBottom: '8px', color: 'var(--adm-text)' }}>Ordenar Grade de Exibição</h3>
           <p style={{ color: 'var(--adm-muted)', marginBottom: '24px', fontSize: '0.9rem' }}>
             Use os botões de subir e descer para organizar a ordem em que os serviços serão listados na página de agendamento do cliente. O serviço no topo será o primeiro exibido.
           </p>
@@ -627,7 +627,7 @@ const AdminServices = () => {
                     {index + 1}
                   </div>
                   <div>
-                    <h4 style={{ margin: 0, color: 'var(--text)', fontSize: '0.95rem' }}>{s.name}</h4>
+                    <h4 style={{ margin: 0, color: 'var(--adm-text)', fontSize: '0.95rem' }}>{s.name}</h4>
                     <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.category}</span>
                   </div>
                 </div>
@@ -640,7 +640,7 @@ const AdminServices = () => {
                     style={{
                       background: 'none',
                       border: '1px solid var(--adm-rule)',
-                      color: index === 0 ? 'var(--adm-muted)' : 'var(--text)',
+                      color: index === 0 ? 'var(--adm-muted)' : 'var(--adm-text)',
                       borderRadius: '4px',
                       width: '36px',
                       height: '36px',
@@ -661,7 +661,7 @@ const AdminServices = () => {
                     style={{
                       background: 'none',
                       border: '1px solid var(--adm-rule)',
-                      color: index === services.length - 1 ? 'var(--adm-muted)' : 'var(--text)',
+                      color: index === services.length - 1 ? 'var(--adm-muted)' : 'var(--adm-text)',
                       borderRadius: '4px',
                       width: '36px',
                       height: '36px',
@@ -715,7 +715,7 @@ const AdminServices = () => {
                         <strong style={{ display: 'block', marginBottom: '6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Itens inclusos:</strong>
                         <ul style={{ paddingLeft: '16px', margin: 0 }}>
                           {pkg.services.map((item, idx) => (
-                            <li key={idx} style={{ marginBottom: '4px', color: 'var(--text)' }}>
+                            <li key={idx} style={{ marginBottom: '4px', color: 'var(--adm-text)' }}>
                               {item.sessions}x {item.serviceName}
                             </li>
                           ))}
@@ -811,7 +811,7 @@ const AdminServices = () => {
               
               <div className="form-group-sleek" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>Valor Original Somado:</span>
-                <span style={{ fontSize: '1.1rem', fontWeight: 'bold', textDecoration: packageFormOriginalTotal > 0 ? 'line-through' : 'none', color: 'var(--text)' }}>
+                <span style={{ fontSize: '1.1rem', fontWeight: 'bold', textDecoration: packageFormOriginalTotal > 0 ? 'line-through' : 'none', color: 'var(--adm-text)' }}>
                   R$ {packageFormOriginalTotal.toFixed(2).replace('.', ',')}
                 </span>
                 {packageFormOriginalTotal > Number(packageForm.price || 0) && (
@@ -872,7 +872,7 @@ const AdminServices = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {packageForm.services.map((item, idx) => (
                       <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '6px 12px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}>
-                        <span style={{ fontSize: '0.9rem', color: 'var(--text)' }}>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--adm-text)' }}>
                           <strong>{item.sessions}x</strong> {item.serviceName}
                         </span>
                         <button 
