@@ -725,7 +725,7 @@ export default function AdminMobileApp() {
             <Camera size={22}/>
             <span>Adicionar Foto</span>
           </div>
-          <input ref={galleryInputRef} type="file" accept="image/*" capture="environment" style={{ display:'none' }} onChange={handleGalleryFileSelect}/>
+          <input ref={galleryInputRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handleGalleryFileSelect}/>
 
           {filtered.map(photo => (
             <div key={photo.id} className="m-gallery-item" onClick={() => setPreviewPhoto(photo)}>
