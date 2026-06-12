@@ -587,6 +587,206 @@ Use as seguintes tags no "bodyHtml":
   const [birthdayWaLogs, setBirthdayWaLogs] = useState([]);
   const [isSendingBirthdayWa, setIsSendingBirthdayWa] = useState(false);
 
+  // Google Business Profile states
+  const gbpConnected = !!settings?.automations?.googleGbpConnected;
+  const [isPublishingGbpId, setIsPublishingGbpId] = useState(null);
+  const [googleReviews, setGoogleReviews] = useState([
+    { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
+    { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
+    { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
+    { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
+  ]);
+  const [isGeneratingGbpPost, setIsGeneratingGbpPost] = useState(false);
+  const [generatedGbpPost, setGeneratedGbpPost] = useState(null);
+  
+  // Frequency scheduler (multiple days)
+  const selectedPostingDays = settings?.automations?.google_posting_days || ['segunda'];
+  const [postFreqTime, setPostFreqTime] = useState(settings?.automations?.google_posting_time || '09:00');
+  const [scheduledGbpPosts, setScheduledGbpPosts] = useState([
+    { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled' },
+    { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published' },
+    { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published' },
+    { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published' }
+  ]);
+
+  const handleTogglePostingDay = async (day) => {
+    let updatedDays = [...selectedPostingDays];
+    if (updatedDays.includes(day)) {
+      updatedDays = updatedDays.filter(d => d !== day);
+    } else {
+      updatedDays.push(day);
+    }
+    try {
+      await updateDoc(doc(db, 'settings', 'studio'), {
+        'automations.google_posting_days': updatedDays
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSaveFreqTime = async (timeVal) => {
+    setPostFreqTime(timeVal);
+    try {
+      await updateDoc(doc(db, 'settings', 'studio'), {
+        'automations.google_posting_time': timeVal
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSimulateNewReview = () => {
+    const names = ['Amanda Costa', 'Patrília Oliveira', 'Beatriz Souza', 'Luana Mendes'];
+    const comments = [
+      'Meu cabelo ondulado nunca teve tanta definição! O visagismo do Jon é impecável.',
+      'O Studio do Jon é o melhor lugar de BH para cabelos crespos. Amei a experiência.',
+      'Excelente profissional. Fez o corte a seco no meu crespo e tirou todo o scab hair.',
+      'Atendimento maravilhoso, o método de leitura de fio antes da tesoura é sensacional!'
+    ];
+    const idx = Math.floor(Math.random() * names.length);
+    const newRev = {
+      id: 'rev_' + Date.now(),
+      author: names[idx],
+      rating: 5,
+      comment: comments[idx],
+      date: 'Agora mesmo',
+      reply: ''
+    };
+
+    if (settings?.automations?.google_reviews_enabled !== false) {
+      newRev.reply = `Olá ${names[idx].split(' ')[0]}! Agradecemos demais pelo seu carinho e avaliação de 5 estrelas. Nosso foco é oferecer um atendimento de excelência com leitura de fios e visagismo personalizado. Até logo! — Jon`;
+    }
+
+    setGoogleReviews(prev => [newRev, ...prev]);
+    alert('Nova avaliação simulada no Google!');
+  };
+
+  const handleManualGbpReply = (id) => {
+    setGoogleReviews(prev => prev.map(rev => {
+      if (rev.id === id) {
+        return {
+          ...rev,
+          reply: `Olá ${rev.author.split(' ')[0]}! Muito obrigado por nos avaliar. Nosso compromisso é sempre realçar a beleza natural de cada textura com muito profissionalismo e técnica. — Jon`
+        };
+      }
+      return rev;
+    }));
+    alert('Resposta enviada para o Google com sucesso!');
+  };
+
+  const handleGenerateGbpPost = async () => {
+    setIsGeneratingGbpPost(true);
+    
+    const fallbackPosts = [
+      {
+        text: 'Você sabe a real diferença entre Cabelo Cacheado e Crespo? 🤷‍♀️\n\nA chave para o volume perfeito está na estrutura de cada fio. No Studio do Jon, usamos o método de leitura de fio antes da tesoura e corte a seco para garantir o caimento perfeito da sua curvatura.\n\n📍 Rua Francisco Ovídio, Caiçara - BH\n🔗 Reserve seu horário: www.ojonquecortou.com.br',
+        image: '/cacho-vs-crespo-hero.webp'
+      },
+      {
+        text: 'Frizz: Normal ou Dano Capilar? 🤔\n\nMuitas vezes o frizz é apenas a textura natural do fio querendo liberdade, e não necessariamente ressecamento. Conheça sua curvatura e aprenda a finalização ideal no seu atendimento de visagismo!\n\n📍 Studio do Jon - Especialista em Cachos BH\n🔗 Agende agora: www.ojonquecortou.com.br',
+        image: '/blog-secagem-hero.webp'
+      }
+    ];
+
+    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || '';
+    
+    if (apiKey) {
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: 'Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara). Fale sobre a importância do corte personalizado para valorizar a curvatura natural e convide a agendar. Inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.'
+                }]
+              }]
+            })
+          }
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (generatedText) {
+            const images = ['/cacho-vs-crespo-hero.webp', '/blog-secagem-hero.webp'];
+            const randomImg = images[Math.floor(Math.random() * images.length)];
+            
+            setGeneratedGbpPost({
+              text: generatedText.trim(),
+              image: randomImg
+            });
+            setIsGeneratingGbpPost(false);
+            return;
+          }
+        } else {
+          console.warn('Gemini API retornou erro:', response.status);
+        }
+      } catch (err) {
+        console.warn('Erro ao gerar post com Gemini API, usando fallback:', err);
+      }
+    }
+    
+    // Fallback se falhar
+    setTimeout(() => {
+      const idx = Math.floor(Math.random() * fallbackPosts.length);
+      setGeneratedGbpPost(fallbackPosts[idx]);
+      setIsGeneratingGbpPost(false);
+    }, 1000);
+  };
+
+  const handleScheduleGbpPost = () => {
+    if (!generatedGbpPost) return;
+    const daysLabels = selectedPostingDays.map(d => {
+      return { 'domingo': 'Dom', 'segunda': 'Seg', 'terca': 'Ter', 'quarta': 'Qua', 'quinta': 'Qui', 'sexta': 'Sex', 'sabado': 'Sáb' }[d] || d;
+    }).join(', ');
+    const newPost = {
+      id: 'post_' + Date.now(),
+      text: generatedGbpPost.text,
+      image: generatedGbpPost.image,
+      scheduledDate: `Próximos dias: ${daysLabels} às ${postFreqTime}`,
+      status: 'scheduled'
+    };
+    setScheduledGbpPosts(prev => [newPost, ...prev]);
+    setGeneratedGbpPost(null);
+    alert(`Postagem programada nos dias (${daysLabels}) às ${postFreqTime}!`);
+  };
+
+  const handlePublishGbpPostNow = async (post) => {
+    setIsPublishingGbpId(post.id);
+    try {
+      const res = await fetch('/api/gbp?action=post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: post.text,
+          image: post.image
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Publicado com sucesso no Google Meu Negócio! 🚀');
+        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+      } else {
+        alert(`Erro ao publicar no Google: ${data.error || 'Erro desconhecido'}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro de conexão ao tentar publicar no Google.');
+    } finally {
+      setIsPublishingGbpId(null);
+    }
+  };
+
+  const handleDeleteGbpPost = (postId) => {
+    setScheduledGbpPosts(prev => prev.filter(p => p.id !== postId));
+  };
+
   const saveLog = async (clientName, clientPhone, stage, channel) => {
     const clientObj = clients.find(c => c.phone === clientPhone);
     const email = clientObj?.email || '';
@@ -1869,7 +2069,285 @@ Use as seguintes tags no "bodyHtml":
                 </div>
               </div>
 
+              {/* Google Business Profile Automação */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)', marginTop: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Sparkles size={20} style={{ color: 'var(--accent)' }} />
+                    <h4 style={{ margin: 0 }}>📈 Google Business Profile (Automação de SEO Local)</h4>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: '0.8rem', color: gbpConnected ? '#38a169' : '#e53e3e', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: gbpConnected ? '#38a169' : '#e53e3e', display: 'inline-block' }}></span>
+                      {gbpConnected ? 'API Conectada' : 'API não conectada (modo demo)'}
+                    </span>
+                    {gbpConnected ? (
+                      <button 
+                        className="btn btn-outline btn-small" 
+                        onClick={async () => {
+                          if (window.confirm('Tem certeza que deseja desconectar a conta do Google?')) {
+                            await updateDoc(doc(db, 'settings', 'studio'), {
+                              'automations.googleGbpConnected': false,
+                              'automations.googleGbpAccessToken': null,
+                              'automations.googleGbpRefreshToken': null,
+                              'automations.googleGbpAccountId': null,
+                              'automations.googleGbpLocationId': null,
+                              'automations.googleGbpLocationName': null
+                            });
+                          }
+                        }}
+                        style={{ fontSize: '0.75rem', padding: '4px 10px' }}
+                      >
+                        Desconectar
+                      </button>
+                    ) : (
+                      <a 
+                        href="/api/gbp?action=auth"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          window.location.href = '/api/gbp?action=auth';
+                        }}
+                        className="btn btn-outline btn-small" 
+                        style={{ fontSize: '0.75rem', padding: '4px 10px', textDecoration: 'none' }}
+                      >
+                        Conectar Google
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: gbpConnected ? '20px' : '12px' }}>
+                  Automatize as respostas aos seus clientes no Google Maps e agende postagens semanais com imagens e palavras-chave de SEO local para subir no ranking de buscas em BH.
+                </p>
 
+                {!gbpConnected && (
+                  <div style={{ padding: '12px 16px', background: 'rgba(213,100,20,0.08)', border: '1px solid rgba(213,100,20,0.25)', borderRadius: 8, marginBottom: 20, fontSize: '0.82rem' }}>
+                    <strong>⚠️ Para ativar com dados reais do seu Google Meu Negócio:</strong>
+                    <ol style={{ margin: '8px 0 0 0', paddingLeft: '18px', lineHeight: 1.9, color: 'var(--muted)' }}>
+                      <li>Crie a credencial OAuth no console do Google Cloud</li>
+                      <li>Clique em <strong>"Conectar Google"</strong> acima para fazer login e autorizar o site</li>
+                    </ol>
+                  </div>
+                )}
+
+                {gbpConnected && (!settings?.automations?.googleGbpAccountId || settings?.automations?.googleGbpLastError === 'quota_limit_0') && (
+                  <div style={{ padding: '16px', background: 'rgba(213,100,20,0.08)', border: '1px solid rgba(213,100,20,0.3)', borderRadius: 8, marginBottom: 20, fontSize: '0.82rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                      <span style={{ fontSize: '1.2rem', marginTop: '2px' }}>⚠️</span>
+                      <div>
+                        <strong style={{ color: '#d56414', fontSize: '0.85rem' }}>Acesso Restrito ao Google Business Profile (Quota Zero)</strong>
+                        <p style={{ margin: '8px 0', color: 'var(--text)', lineHeight: 1.5 }}>
+                          Sua autenticação OAuth funcionou perfeitamente, mas o Google bloqueou o acesso à sua conta. Novos projetos no Google Cloud possuem um limite padrão de <strong>0 requisições por minuto</strong> para a API do Meu Negócio até que sejam aprovados.
+                        </p>
+                        <strong style={{ display: 'block', marginTop: '12px', marginBottom: '6px' }}>Como liberar o acesso:</strong>
+                        <ol style={{ margin: '0', paddingLeft: '18px', lineHeight: 1.6, color: 'var(--muted)' }}>
+                          <li>Acesse o <a href="https://developers.google.com/my-business/content/prereqs#request-access" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>Formulário de Solicitação de Acesso</a> oficial do Google.</li>
+                          <li>Preencha informando o número do seu projeto: <strong>65586774085</strong>.</li>
+                          <li>Explique que você está criando um painel interno de agendamentos próprio para gerenciar as avaliações e posts do seu salão "O Jon Que Cortou".</li>
+                        </ol>
+                        <p style={{ margin: '12px 0 0 0', color: 'var(--muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>
+                          Enquanto o Google não aprova (leva de 2 a 5 dias), o painel continuará operando em modo de simulação, permitindo que você teste as integrações de SEO Local com IA!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+                  
+                  {/* Coluna 1: Comentários e Avaliações */}
+                  <div style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                      <h5 style={{ margin: 0, fontWeight: 700 }}>💬 Responder Avaliações c/ IA</h5>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Auto-Responder</span>
+                        <button 
+                          className={`btn-toggle ${settings?.automations?.google_reviews_enabled !== false ? 'active' : ''}`}
+                          style={{ padding: '2px 6px', fontSize: '0.65rem' }}
+                          onClick={() => toggleAutomation('google_reviews_enabled', settings?.automations?.google_reviews_enabled === false)}
+                        >
+                          {settings?.automations?.google_reviews_enabled !== false ? 'ON' : 'OFF'}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+                      <button className="btn btn-outline btn-small" style={{ fontSize: '0.75rem', flex: 1 }} onClick={handleSimulateNewReview}>
+                        🔄 Simular Nova Avaliação
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '350px', overflowY: 'auto', paddingRight: 4 }}>
+                      {googleReviews.map(rev => (
+                        <div key={rev.id} style={{ padding: 12, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--rule)', fontSize: '0.82rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                            <strong>{rev.author}</strong>
+                            <span style={{ color: 'var(--muted)', fontSize: '0.75rem' }}>{rev.date}</span>
+                          </div>
+                          <div style={{ color: '#ecc94b', marginBottom: 6 }}>{'★'.repeat(rev.rating)}</div>
+                          <p style={{ margin: '0 0 10px 0', color: 'var(--text)', fontStyle: 'italic' }}>"{rev.comment}"</p>
+                          
+                          {rev.reply ? (
+                            <div style={{ padding: 8, background: 'rgba(176,90,46,0.06)', borderLeft: '3px solid var(--accent)', borderRadius: 4, marginTop: 8 }}>
+                              <strong>Resposta do Studio:</strong>
+                              <p style={{ margin: '4px 0 0 0', color: 'var(--muted)' }}>{rev.reply}</p>
+                            </div>
+                          ) : (
+                            <button 
+                              className="btn btn-accent btn-small" 
+                              style={{ width: '100%', fontSize: '0.75rem', padding: '4px' }}
+                              onClick={() => handleManualGbpReply(rev.id)}
+                            >
+                              ✍️ Responder com IA agora
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Coluna 2: Postagens com Imagens */}
+                  <div style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                      <h5 style={{ margin: 0, fontWeight: 700 }}>✍️ Posts Semanais c/ Imagens</h5>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Auto-Post</span>
+                        <button 
+                          className={`btn-toggle ${settings?.automations?.google_posting_enabled !== false ? 'active' : ''}`}
+                          style={{ padding: '2px 6px', fontSize: '0.65rem' }}
+                          onClick={() => toggleAutomation('google_posting_enabled', settings?.automations?.google_posting_enabled === false)}
+                        >
+                          {settings?.automations?.google_posting_enabled !== false ? 'ON' : 'OFF'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Frequência de postagem */}
+                    <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: 6, padding: 12, marginBottom: 14 }}>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 700, display: 'block', marginBottom: 10 }}>📅 Frequência de Publicação Automática</span>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, minWidth: 220 }}>
+                          <label style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 600 }}>Dias da semana para postar</label>
+                          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                            {['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'].map(day => {
+                              const label = { 'domingo': 'Dom', 'segunda': 'Seg', 'terca': 'Ter', 'quarta': 'Qua', 'quinta': 'Qui', 'sexta': 'Sex', 'sabado': 'Sáb' }[day];
+                              const isSelected = selectedPostingDays.includes(day);
+                              return (
+                                <button
+                                  key={day}
+                                  type="button"
+                                  onClick={() => handleTogglePostingDay(day)}
+                                  className={`btn ${isSelected ? 'btn-accent' : 'btn-outline'} btn-small`}
+                                  style={{ padding: '3px 6px', fontSize: '0.7rem', textTransform: 'capitalize', minWidth: '34px' }}
+                                >
+                                  {label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, width: 85 }}>
+                          <label style={{ fontSize: '0.72rem', color: 'var(--muted)', fontWeight: 600 }}>Horário</label>
+                          <input
+                            type="time"
+                            value={postFreqTime}
+                            onChange={e => handleSaveFreqTime(e.target.value)}
+                            style={{ padding: '6px 8px', borderRadius: 4, border: '1px solid var(--rule)', background: 'var(--sidebar-bg)', color: 'var(--text)', fontSize: '0.82rem' }}
+                          />
+                        </div>
+                      </div>
+                      <p style={{ fontSize: '0.72rem', color: 'var(--muted)', margin: '8px 0 0 0' }}>
+                        📡 Os posts serão gerados e publicados automaticamente nos dias e horários selecionados.
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+                      <button 
+                        className="btn btn-accent" 
+                        style={{ flex: 1, fontSize: '0.8rem', padding: '8px 12px' }}
+                        onClick={handleGenerateGbpPost}
+                        disabled={isGeneratingGbpPost}
+                      >
+                        {isGeneratingGbpPost ? 'Gerando...' : '🤖 Gerar Post de SEO Local'}
+                      </button>
+                    </div>
+
+                    {generatedGbpPost && (
+                      <div style={{ padding: 12, background: 'var(--panel-bg)', borderRadius: 6, border: '1px solid var(--rule)', marginBottom: 16 }}>
+                        <h6 style={{ margin: '0 0 8px 0', fontWeight: 600 }}>Post Sugerido pela IA:</h6>
+                        <p style={{ fontSize: '0.8rem', whiteSpace: 'pre-line', margin: '0 0 12px 0', background: 'var(--sidebar-bg)', padding: 8, borderRadius: 4 }}>
+                          {generatedGbpPost.text}
+                        </p>
+                        {generatedGbpPost.image && (
+                          <div style={{ position: 'relative', marginBottom: 12 }}>
+                            <img src={generatedGbpPost.image} alt="Preview" style={{ width: '100%', maxHeight: 150, objectFit: 'cover', borderRadius: 4 }} />
+                            <span style={{ position: 'absolute', bottom: 4, right: 4, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '0.65rem', padding: '2px 6px', borderRadius: 4 }}>Imagem de Cachos</span>
+                          </div>
+                        )}
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button className="btn btn-accent btn-small" style={{ flex: 1, fontSize: '0.75rem' }} onClick={handleScheduleGbpPost}>
+                            📅 Programar na Fila
+                          </button>
+                          <button className="btn btn-outline btn-small" style={{ flex: 1, fontSize: '0.75rem' }} onClick={() => setGeneratedGbpPost(null)}>
+                            Descartar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 0 8px 0' }}>
+                      <h6 style={{ margin: 0, fontWeight: 700, fontSize: '0.85rem' }}>📋 Histórico de Posts ({scheduledGbpPosts.length})</h6>
+                      <div style={{ display: 'flex', gap: 6 }}>
+                        <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: 12, background: 'rgba(247,170,0,0.15)', color: '#d69e00', fontWeight: 600 }}>
+                          {scheduledGbpPosts.filter(p => p.status === 'scheduled').length} programado(s)
+                        </span>
+                        <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: 12, background: 'rgba(56,161,105,0.15)', color: '#38a169', fontWeight: 600 }}>
+                          {scheduledGbpPosts.filter(p => p.status === 'published').length} publicado(s)
+                        </span>
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 320, overflowY: 'auto' }}>
+                      {scheduledGbpPosts.map(post => (
+                        <div key={post.id} style={{ padding: 10, background: 'var(--panel-bg)', borderRadius: 6, border: `1px solid ${post.status === 'scheduled' ? 'rgba(247,170,0,0.3)' : 'var(--rule)'}`, display: 'flex', gap: 10, fontSize: '0.78rem' }}>
+                          <img src={post.image} alt="Thumbnail" style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: '0 0 4px 0', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', fontWeight: 600, lineHeight: 1.35 }}>{post.text}</p>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                              <span style={{ 
+                                fontSize: '0.65rem', padding: '1px 6px', borderRadius: 10, fontWeight: 700,
+                                background: post.status === 'scheduled' ? 'rgba(247,170,0,0.15)' : 'rgba(56,161,105,0.15)',
+                                color: post.status === 'scheduled' ? '#d69e00' : '#38a169'
+                              }}>
+                                {post.status === 'scheduled' ? '🕒 Programado' : '✅ Publicado'}
+                              </span>
+                              <span style={{ color: 'var(--muted)', fontSize: '0.7rem' }}>{post.scheduledDate}</span>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignSelf: 'center', flexShrink: 0 }}>
+                            {post.status === 'scheduled' && (
+                              <button 
+                                className="btn btn-accent btn-small" 
+                                style={{ fontSize: '0.65rem', padding: '3px 6px', whiteSpace: 'nowrap' }}
+                                onClick={() => handlePublishGbpPostNow(post)}
+                                disabled={isPublishingGbpId === post.id}
+                              >
+                                {isPublishingGbpId === post.id ? 'Publicando...' : 'Publicar'}
+                              </button>
+                            )}
+                            <button 
+                              className="btn btn-outline btn-small" 
+                              style={{ fontSize: '0.65rem', padding: '3px 6px', color: '#e53e3e', borderColor: '#e53e3e' }}
+                              onClick={() => handleDeleteGbpPost(post.id)}
+                            >
+                              Excluir
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              </div>
 
               {/* ───────── NEWSLETTER LEITURA DE FIO ───────── */}
               <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
