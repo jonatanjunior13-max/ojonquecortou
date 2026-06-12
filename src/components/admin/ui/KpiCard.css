@@ -1,0 +1,26 @@
+.adm-kpi-card {
+  background: var(--adm-card);
+  border: 0.5px solid var(--adm-rule-gold);
+  border-radius: var(--adm-radius);
+  padding: var(--adm-space-3) var(--adm-space-3);
+}
+.adm-kpi-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--adm-muted);
+  margin-bottom: var(--adm-space-2);
+}
+.adm-kpi-value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.8rem;
+  color: var(--adm-gold);
+  line-height: 1;
+}
+.adm-kpi-delta {
+  font-size: 0.78rem;
+  margin-top: var(--adm-space-1);
+  font-weight: 600;
+}
+.adm-kpi-delta--up { color: var(--adm-success); }
+.adm-kpi-delta--down { color: var(--adm-danger); }
