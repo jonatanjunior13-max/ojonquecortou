@@ -10,8 +10,10 @@ import {
 } from 'lucide-react';
 import './AdminNavbar.css';
 import '../../styles/admin-tokens.css';
+import { ToastProvider, useToast } from '../admin/ui/Toast';
 
-const AdminLayout = () => {
+const AdminLayoutInner = () => {
+  const toast = useToast();
   const [authorized, setAuthorized] = useState(null);
   const [globalData, setGlobalData] = useState({
     bookings: [], clients: [], services: [], products: [],
@@ -109,10 +111,10 @@ const AdminLayout = () => {
           })
         });
       }
-      alert('Agendamento confirmado com sucesso!');
+      toast('Agendamento confirmado com sucesso!', 'success');
     } catch (e) {
       console.error(e);
-      alert('Erro ao confirmar agendamento.');
+      toast('Erro ao confirmar agendamento.', 'error');
     }
   };
 
@@ -593,5 +595,11 @@ const AdminLayout = () => {
     </div>
   );
 };
+
+const AdminLayout = () => (
+  <ToastProvider>
+    <AdminLayoutInner />
+  </ToastProvider>
+);
 
 export default AdminLayout;
