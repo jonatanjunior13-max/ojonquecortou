@@ -91,6 +91,7 @@ const AdminInventory = () => {
       category: 'Corte',
       description: '',
       price: '',
+      cost: '',
       priceType: 'Fixo',
       duration: '60',
       isPrimary: true,
@@ -106,6 +107,7 @@ const AdminInventory = () => {
       category: service.category || 'Corte',
       description: service.description || '',
       price: service.price.toString(),
+      cost: service.cost !== undefined && service.cost !== null ? service.cost.toString() : '',
       priceType: service.priceType || 'Fixo',
       duration: service.duration.toString(),
       isPrimary: service.isPrimary ?? true,
@@ -126,6 +128,7 @@ const AdminInventory = () => {
       category: serviceForm.category,
       description: serviceForm.description,
       price: Number(serviceForm.price),
+      cost: Number(serviceForm.cost) || 0,
       priceType: serviceForm.priceType,
       duration: Number(serviceForm.duration),
       isPrimary: !!serviceForm.isPrimary,
@@ -608,6 +611,7 @@ const AdminInventory = () => {
                     <th>Categoria</th>
                     <th>Duração Média</th>
                     <th>Valor</th>
+                    <th>Custo</th>
                     <th>Preço Tipo</th>
                     <th>Status</th>
                     <th style={{ textAlign: 'right' }}>Ações</th>
@@ -616,7 +620,7 @@ const AdminInventory = () => {
                 <tbody>
                   {services.length === 0 ? (
                     <tr>
-                      <td colSpan="7" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
+                      <td colSpan="8" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
                         Nenhum serviço cadastrado na grade.
                       </td>
                     </tr>
@@ -632,6 +636,7 @@ const AdminInventory = () => {
                           </div>
                         </td>
                         <td style={{ fontWeight: 700 }}>R$ {Number(s.price).toFixed(2)}</td>
+                        <td style={{ color: 'var(--text-muted)' }}>R$ {Number(s.cost || 0).toFixed(2)}</td>
                         <td>{s.priceType || 'Fixo'}</td>
                         <td>
                           <div style={{ display: 'flex', gap: 6 }}>
@@ -796,7 +801,7 @@ const AdminInventory = () => {
               </div>
             </div>
 
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 12 }}>
               <div className="form-group">
                 <label>Valor (R$) *</label>
                 <input 
@@ -807,6 +812,18 @@ const AdminInventory = () => {
                   placeholder="0.00"
                   value={serviceForm.price}
                   onChange={e => setServiceForm(prev => ({ ...prev, price: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Custo do Serviço (R$)</label>
+                <input 
+                  type="number" 
+                  min="0"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={serviceForm.cost}
+                  onChange={e => setServiceForm(prev => ({ ...prev, cost: e.target.value }))}
                 />
               </div>
 

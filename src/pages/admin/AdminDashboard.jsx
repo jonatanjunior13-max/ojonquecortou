@@ -166,6 +166,8 @@ const AdminDashboard = () => {
   const [selectedExtraProduct, setSelectedExtraProduct] = useState('');
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
   const [discount, setDiscount] = useState(0);
+  const [extraCharged, setExtraCharged] = useState(0);
+  const [extraCost, setExtraCost] = useState(0);
 
   // Packages integration states
   const [sellingPackageId, setSellingPackageId] = useState('');
@@ -213,6 +215,8 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (isCheckoutOpen) {
       setDiscount(0);
+      setExtraCharged(0);
+      setExtraCost(0);
       setInstallments('À vista');
       setApplyAnticipation(false);
       setSellingPackageId('');
@@ -1321,7 +1325,7 @@ const AdminDashboard = () => {
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
-    return Math.max(0, base + extras + prods - discount - prepay);
+    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay);
   };
 
   const handleCloseComanda = async (booking) => {
@@ -1334,15 +1338,16 @@ const AdminDashboard = () => {
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
-    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal - discount - prepay);
+    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay);
 
     const itemsDescription = [
       sellingPackageId 
         ? `Compra de Pacote: ${packages.find(p => p.id === sellingPackageId)?.name || 'Pacote'}`
         : (booking.service?.name || booking.serviceName || 'Serviço Base'),
       ...addedServices.map(s => s.name),
-      ...addedProducts.map(p => `${p.quantity}x ${p.name}`)
-    ].join(', ');
+      ...addedProducts.map(p => `${p.quantity}x ${p.name}`),
+      Number(extraCharged) > 0 ? `Taxa Extra Cobrada (R$ ${extraCharged})` : ''
+    ].filter(Boolean).join(', ');
 
     const baseMethodLabel = usingClientPackageId 
       ? `Pacote (Débito)` 
@@ -1359,6 +1364,8 @@ const AdminDashboard = () => {
       paymentMethod: methodLabel,
       value: totalComanda,
       discount: discount,
+      extraCharged: Number(extraCharged) || 0,
+      extraCost: Number(extraCost) || 0,
       description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
       professionalId: booking.professionalId || booking.profissional || 'jon',
       productSales: addedProducts.map(p => {
@@ -1534,6 +1541,24 @@ const AdminDashboard = () => {
           updatedTxList = [serviceCostTx, ...updatedTxList];
         }
 
+        if (Number(extraCost) > 0) {
+          const extraCostTx = {
+            id: 'tx_extracost_' + Date.now(),
+            bookingId: booking.id,
+            date: booking.date || getLocalDateString(new Date()),
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: booking.clientName,
+            clientPhone: booking.clientPhone || '',
+            type: 'saida',
+            paymentMethod,
+            value: Number(extraCost),
+            description: `Custo Extra Comanda - ${booking.clientName}`,
+            professionalId: booking.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          updatedTxList = [extraCostTx, ...updatedTxList];
+        }
+
         localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
@@ -1574,6 +1599,23 @@ const AdminDashboard = () => {
             createdAt: new Date().toISOString()
           };
           await addDoc(collection(db, 'financial_transactions'), serviceCostTx);
+        }
+
+        if (Number(extraCost) > 0) {
+          const extraCostTx = {
+            bookingId: booking.id,
+            date: booking.date || getLocalDateString(new Date()),
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: booking.clientName,
+            clientPhone: booking.clientPhone || '',
+            type: 'saida',
+            paymentMethod,
+            value: Number(extraCost),
+            description: `Custo Extra Comanda - ${booking.clientName}`,
+            professionalId: booking.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), extraCostTx);
         }
       }
 
@@ -3993,6 +4035,34 @@ ${googleLink}
                         style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
                         value={discount}
                         onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
+                    <span style={{ fontSize: '0.78rem' }}>Valor Extra Cobrado</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <input 
+                        type="number"
+                        min="0"
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        value={extraCharged}
+                        onChange={e => setExtraCharged(Math.max(0, Number(e.target.value)))}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
+                    <span style={{ fontSize: '0.78rem' }}>Custo Extra Interno (Insumos)</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <input 
+                        type="number"
+                        min="0"
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        value={extraCost}
+                        onChange={e => setExtraCost(Math.max(0, Number(e.target.value)))}
                       />
                     </div>
                   </div>
