@@ -125,7 +125,7 @@ const AdminHoje = () => {
           </div>
 
           {nextClients.length === 0 ? (
-            <EmptyState icon={<Calendar size={32} />} title="Nada mais por hoje" description="Agenda livre para o resto do dia." />
+            <EmptyState icon={Calendar} message="Nada mais por hoje. Agenda livre para o resto do dia." />
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {nextClients.map(b => (
