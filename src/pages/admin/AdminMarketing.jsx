@@ -385,7 +385,7 @@ Escreva a edição mensal da newsletter "Leitura de Fio" baseando-se no seguinte
 
 Sua missão é estruturar a copy aplicando os seguintes gatilhos psicológicos com maestria:
 1. DESEJO: Desperte a vontade de ter um cabelo que funciona no dia a dia, livre de dependência de finalizadores caros ou rotinas exaustivas.
-2. NECESSIDADE: Mostre de forma lógica e irrefutável que o frizz e a falta de definição persistentes são problemas estruturais (ângulo de corte, cutícula exposta) e não falta de cosméticos.
+2. NECESSIDADE: Mostre de forma lógica e irrefutável a raiz do problema associado ao tema proposto, demonstrando que é uma questão anatômica, física ou geométrica do corte/fio, e não falta de cosméticos.
 3. URGÊNCIA: Relembre sutilmente que o Jon atende individualmente de quarta a sábado com atenção máxima, tornando os horários extremamente escassos e disputados.
 4. ESPERANÇA: Mostre que o cabelo da cliente não é "difícil" ou "impossível", ele apenas nunca foi lido no estado seco com a metodologia correta (Método Leitura de Fio).
 
