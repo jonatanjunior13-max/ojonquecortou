@@ -105,7 +105,7 @@ export default async function handler(req, res) {
               const matched = locationsData.locations.find(loc => loc.title.toLowerCase().includes('jon'));
               const location = matched || locationsData.locations[0];
               gbpLocation = location.name;
-              locationId = location.name.split('/')[3];
+              locationId = location.name.split('/').pop();
             } else {
               lastError = 'Nenhum local encontrado nesta conta do Google.';
             }
