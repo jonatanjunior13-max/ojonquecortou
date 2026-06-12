@@ -18,9 +18,8 @@ try {
   console.error('Firebase init error:', e);
 }
 
-// Same as send-email.js: uses RESEND_API_KEY as the Mailgun key
-const MAILGUN_API_KEY = process.env.RESEND_API_KEY;
-const MAILGUN_DOMAIN = 'mg.ojonquecortou.com.br';
+// Resend API (chave começa com re_...)
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = '"O Jon Que Cortou" <contato@ojonquecortou.com.br>';
 const UNSUBSCRIBE_BASE = 'https://ojonquecortou.com.br/api/unsubscribe?email=';
 
@@ -69,40 +68,37 @@ function wrapNewsletterHtml(subject, body) {
 </html>`;
 }
 
-// Send a single email via Mailgun REST API (same pattern as send-email.js)
-async function sendMailgun(to, toName, subject, html) {
-  const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-  const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
-
-  const body = new URLSearchParams({
-    from: FROM_EMAIL,
-    to: toName ? `"${toName}" <${to}>` : to,
-    subject,
-    html,
-    'h:List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`,
-    'h:List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-    'o:tag': 'newsletter',
-    'o:tracking': 'yes',
-    'o:tracking-clicks': 'yes',
-    'o:tracking-opens': 'yes'
-  });
+// Send a single email via Resend API
+async function sendResend(to, toName, subject, html, unsubscribeEmail) {
+  const url = 'https://api.resend.com/emails';
+  const unsubscribeUrl = `${UNSUBSCRIBE_BASE}${encodeURIComponent(unsubscribeEmail || to)}`;
 
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${basicAuth}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
     },
-    body
+    body: JSON.stringify({
+      from: FROM_EMAIL,
+      to: toName ? [`${toName} <${to}>`] : [to],
+      subject,
+      html,
+      headers: {
+        'List-Unsubscribe': `<${unsubscribeUrl}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+      },
+      tags: [{ name: 'category', value: 'newsletter' }]
+    })
   });
 
   if (!res.ok) {
     const errText = await res.text();
-    throw new Error(`Mailgun ${res.status}: ${errText}`);
+    throw new Error(`Resend ${res.status}: ${errText}`);
   }
 
   const data = await res.json();
-  return data.id || 'mailgun-ok';
+  return data.id || 'resend-ok';
 }
 
 export default async function handler(req, res) {
@@ -122,8 +118,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'subject e htmlBody são obrigatórios' });
   }
 
-  if (!MAILGUN_API_KEY) {
-    return res.status(500).json({ error: 'Chave Mailgun não configurada. Verifique RESEND_API_KEY nas variáveis de ambiente da Vercel.' });
+  if (!RESEND_API_KEY) {
+    return res.status(500).json({ error: 'Chave Resend não configurada. Verifique RESEND_API_KEY nas variáveis de ambiente da Vercel.' });
   }
 
   const fullHtml = wrapNewsletterHtml(subject, htmlBody);
@@ -131,10 +127,10 @@ export default async function handler(req, res) {
   // ── TEST MODE ─────────────────────────────────────────────────────────────
   if (testEmail) {
     try {
-      const msgId = await sendMailgun(testEmail, 'Teste', subject, fullHtml);
+      const msgId = await sendResend(testEmail, 'Teste', subject, fullHtml, testEmail);
       return res.status(200).json({ success: true, mode: 'test', messageId: msgId, sent: 1 });
     } catch (err) {
-      console.error('Mailgun test error:', err.message);
+      console.error('Resend test error:', err.message);
       return res.status(500).json({ error: 'Falha no envio de teste', details: err.message });
     }
   }
@@ -165,63 +161,37 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, sent: 0, message: 'Nenhuma cliente com email cadastrado.' });
   }
 
-  // Enviar em lote (Batch Sending) via Mailgun para evitar timeouts na Vercel
+  // Resend suporta até 50 destinatários por requisição no plano básico.
+  // Para listas maiores, enviamos em lotes de 50 com pequeno delay.
+  const CHUNK_SIZE = 50;
+  let sent = 0;
+  let lastMessageId = '';
+  const errors = [];
+
   try {
-    const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-    const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
-
-    // Substituir {nome} pelo placeholder de variáveis do Mailgun (%recipient.name%)
-    const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
-
-    const CHUNK_SIZE = 950; // Limite de lote do Mailgun é 1000, 950 é seguro
-    let sent = 0;
-    let lastMessageId = '';
-
     for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
       const chunk = recipients.slice(i, i + CHUNK_SIZE);
 
-      const recipientVariables = {};
-      const toEmails = [];
-
-      chunk.forEach(r => {
-        toEmails.push(r.email);
-        recipientVariables[r.email] = { name: r.name };
-      });
-
-      const bodyParams = new URLSearchParams();
-      bodyParams.append('from', FROM_EMAIL);
-      bodyParams.append('subject', subject);
-      bodyParams.append('html', batchHtml);
-      bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
-      bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
-      bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-      bodyParams.append('o:tag', 'newsletter');
-      bodyParams.append('o:tracking', 'yes');
-      bodyParams.append('o:tracking-clicks', 'yes');
-      bodyParams.append('o:tracking-opens', 'yes');
-
-      // Adiciona cada destinatário deste lote
-      toEmails.forEach(email => {
-        bodyParams.append('to', email);
-      });
-
-      const resMailgun = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${basicAuth}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: bodyParams
-      });
-
-      if (!resMailgun.ok) {
-        const errText = await resMailgun.text();
-        throw new Error(`Mailgun Batch Error ${resMailgun.status} no lote ${Math.floor(i/CHUNK_SIZE) + 1}: ${errText}`);
+      // Para personalização por nome, enviamos um por um dentro do chunk
+      // Isso garante personalização e confiabilidade
+      for (const recipient of chunk) {
+        try {
+          // Personalizar HTML com o nome da cliente
+          const personalizedHtml = fullHtml.replace(/{nome}/g, recipient.name);
+          const msgId = await sendResend(recipient.email, recipient.name, subject, personalizedHtml, recipient.email);
+          lastMessageId = msgId;
+          sent++;
+        } catch (recipientErr) {
+          console.error(`Erro ao enviar para ${recipient.email}:`, recipientErr.message);
+          errors.push({ email: recipient.email, error: recipientErr.message });
+          // Continua para os próximos mesmo com erro individual
+        }
       }
 
-      const resData = await resMailgun.json();
-      lastMessageId = resData.id || 'mailgun-batch-ok';
-      sent += chunk.length;
+      // Pequeno delay entre chunks para respeitar rate limits da Resend (2 req/s no plano gratuito)
+      if (i + CHUNK_SIZE < recipients.length) {
+        await new Promise(resolve => setTimeout(resolve, 600));
+      }
     }
 
     // Salvar no Firestore
@@ -232,7 +202,8 @@ export default async function handler(req, res) {
           subject,
           sentAt: new Date().toISOString(),
           sentCount: sent,
-          errors: 0,
+          errors: errors.length,
+          errorDetails: errors.slice(0, 20), // Salvar até 20 erros para diagnóstico
           messageId: lastMessageId
         });
       } catch (e) {
@@ -245,12 +216,12 @@ export default async function handler(req, res) {
       mode: 'production',
       sent,
       total: recipients.length,
-      errors: 0,
+      errors: errors.length,
       messageId: lastMessageId
     });
 
   } catch (err) {
-    console.error('Mailgun batch send error:', err.message);
+    console.error('Resend batch send error:', err.message);
     return res.status(500).json({ error: 'Falha no envio da newsletter em lote', details: err.message });
   }
 }

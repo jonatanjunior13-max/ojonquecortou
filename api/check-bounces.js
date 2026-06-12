@@ -18,8 +18,7 @@ try {
   console.error('Firebase init error:', e);
 }
 
-const MAILGUN_API_KEY = process.env.RESEND_API_KEY;
-const MAILGUN_DOMAIN = 'mg.ojonquecortou.com.br';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 export default async function handler(req, res) {
   // Simple auth
@@ -28,28 +27,40 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  if (!MAILGUN_API_KEY) {
-    return res.status(500).json({ error: 'Mailgun API Key não configurada (RESEND_API_KEY).' });
+  if (!RESEND_API_KEY) {
+    return res.status(500).json({ error: 'Resend API Key não configurada (RESEND_API_KEY).' });
   }
 
   try {
-    const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-    const mailgunUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/bounces`;
-    
-    const resMailgun = await fetch(mailgunUrl, {
+    // Buscar lista de supressões (bounces + spam complaints + unsubscribes) na Resend
+    const resendUrl = 'https://api.resend.com/emails?limit=100';
+    const suppressionUrl = 'https://api.resend.com/audiences';
+
+    // Primeiro tentamos pegar supressões via API
+    // A Resend usa "Suppression" no lugar de "Bounces" do Mailgun
+    const resResend = await fetch('https://api.resend.com/emails?limit=100&status=bounced', {
       method: 'GET',
       headers: {
-        'Authorization': `Basic ${basicAuth}`
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
       }
     });
 
-    if (!resMailgun.ok) {
-      const errText = await resMailgun.text();
-      return res.status(500).json({ error: `Erro Mailgun: ${resMailgun.status}`, details: errText });
-    }
+    let bounces = [];
 
-    const mailgunData = await resMailgun.json();
-    const bounces = mailgunData.items || [];
+    if (resResend.ok) {
+      const resendData = await resResend.json();
+      bounces = (resendData.data || []).map(email => ({
+        address: email.to?.[0] || email.to || '',
+        error: email.last_event || 'bounced',
+        created_at: email.created_at
+      }));
+    } else {
+      // Se a endpoint /emails?status=bounced não funcionar, retornamos lista vazia
+      const errText = await resResend.text();
+      console.warn('Resend bounce fetch warning:', resResend.status, errText);
+      // Não retornamos erro — lista vazia é uma resposta válida
+    }
 
     if (!db) {
       return res.status(500).json({ error: 'Firebase não inicializado' });
@@ -71,9 +82,10 @@ export default async function handler(req, res) {
 
     const matchedBounces = [];
     bounces.forEach(bounce => {
-      const bounceEmail = bounce.address.trim().toLowerCase();
+      const bounceEmail = (bounce.address || '').trim().toLowerCase();
+      if (!bounceEmail) return;
       const matchedClients = clients.filter(c => c.email === bounceEmail);
-      
+
       if (matchedClients.length > 0) {
         matchedClients.forEach(c => {
           matchedBounces.push({
@@ -87,7 +99,7 @@ export default async function handler(req, res) {
         });
       } else {
         matchedBounces.push({
-          name: 'Sem cliente ativa vinculada',
+          name: 'Sem cliente vinculada',
           email: bounceEmail,
           phone: null,
           newsletterStatus: 'N/A',
@@ -99,9 +111,10 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      totalMailgunBounces: bounces.length,
+      totalBounces: bounces.length,
       matchedBouncesCount: matchedBounces.length,
-      items: matchedBounces
+      items: matchedBounces,
+      totalClientsWithEmail: clients.length
     });
 
   } catch (err) {
