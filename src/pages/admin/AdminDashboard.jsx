@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
@@ -1337,7 +1337,8 @@ const AdminDashboard = () => {
     const { paymentMethod: pm, tipValue, addedProducts: ap, overrideBasePrice: obp } = payload;
     const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
     const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
-    const totalValue = servicePrice + (ap || []).reduce((s, p) => s + p.price * p.qty, 0) + (tipValue || 0);
+    const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
+    const totalValue = Math.max(0, servicePrice + (ap || []).reduce((s, p) => s + p.price * p.qty, 0) + (tipValue || 0) - prepay);
     const itemsDescription = [
       booking.service?.name || booking.serviceName || 'Serviço',
       ...(ap || []).map(p => `${p.qty}x ${p.name}`)
@@ -1352,7 +1353,9 @@ const AdminDashboard = () => {
       paymentMethod: pm,
       value: totalValue,
       discount: 0,
-      description: itemsDescription + (tipValue > 0 ? ` (Gorjeta: R$ ${tipValue.toFixed(2)})` : ''),
+      description: itemsDescription + 
+                   (tipValue > 0 ? ` (Gorjeta: R$ ${tipValue.toFixed(2)})` : '') + 
+                   (prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay.toFixed(2)})` : ''),
       professionalId: booking.professionalId || booking.profissional || 'jon',
       productSales: productsNorm.map(p => {
         const match = products.find(prod => prod.id === p.productId);

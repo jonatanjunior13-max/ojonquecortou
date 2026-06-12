@@ -35,6 +35,7 @@ const getFee = (settings, method) => {
 const ComandaModal = ({ booking, products = [], services = [], settings = {}, onClose, onConfirm }) => {
   const basePrice = booking?.servicePrice || booking?.service?.price || 0;
   const serviceName = booking?.serviceName || booking?.service?.name || 'Serviço';
+  const prepay = booking?.prepayment ? Number(booking.prepayment) : 0;
 
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [tipMode, setTipMode] = useState(0);
@@ -57,9 +58,10 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   );
 
   const subtotal = servicePrice + productTotal + tipValue;
+  const totalToPay = Math.max(0, subtotal - prepay);
   const feeRate = getFee(settings, paymentMethod);
-  const feeAmount = subtotal * (feeRate / 100);
-  const netTotal = subtotal - feeAmount;
+  const feeAmount = totalToPay * (feeRate / 100);
+  const netTotal = totalToPay - feeAmount;
 
   const professionalCommissionRate = useMemo(() => {
     const prof = (settings.professionals || []).find(p => p.id === (booking?.profissional || 'jon'));
@@ -99,7 +101,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
       tipValue,
       addedProducts,
       overrideBasePrice: overridePrice !== '' ? Number(overridePrice) : null,
-      total: subtotal,
+      total: totalToPay,
       netTotal,
       feeAmount,
     });
@@ -270,13 +272,18 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                 <span>Gorjeta</span><span>{fmtBRL(tipValue)}</span>
               </div>
             )}
+            {prepay > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
+                <span>Sinal / Adiantamento Pago</span><span>- {fmtBRL(prepay)}</span>
+              </div>
+            )}
             {feeAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
                 <span>Taxa ({feeRate}%)</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.1rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
-              <span>Total líquido</span><span>{fmtBRL(netTotal)}</span>
+              <span>Total a pagar (líquido)</span><span>{fmtBRL(netTotal)}</span>
             </div>
           </div>
 

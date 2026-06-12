@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db, storage, fetchCollectionRest, fetchDocRest } from '../../config/firebase';
+import { auth, db, storage } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc
@@ -81,6 +81,12 @@ export default function AdminMobileApp() {
   const [authReady, setAuthReady] = useState(false);
   const [syncError, setSyncError] = useState('');
 
+  // ── New States for Rescheduling and Fees ────────────────────────
+  const [installments, setInstallments] = useState('À vista');
+  const [applyAnticipation, setApplyAnticipation] = useState(false);
+  const [showEditBookingSheet, setShowEditBookingSheet] = useState(false);
+  const [editBookingForm, setEditBookingForm] = useState(null);
+
   // ── Toast ──────────────────────────────────────────────────────
   const [toast, setToast] = useState(null);
   const showToast = useCallback((msg, type = 'info') => {
@@ -104,8 +110,9 @@ export default function AdminMobileApp() {
   const [isFinalizingCheckout, setIsFinalizingCheckout] = useState(false);
 
   // ── New Booking Form ───────────────────────────────────────────
-  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'' });
+  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'', prepayment: '' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
+  const [ebSuggestions, setEbSuggestions] = useState([]);
 
   // ── Gallery ────────────────────────────────────────────────────
   const [galleryCategory, setGalleryCategory] = useState('Todos');
@@ -147,56 +154,108 @@ export default function AdminMobileApp() {
       return;
     }
 
-    const unsubAuth = onAuthStateChanged(auth, async (user) => {
+    let unsubs = [];
+    let failSafeTimeout = null;
+
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
       setAuthReady(true);
-      if (!user) { navigate('/admin/login'); return; }
+      if (!user) {
+        navigate('/admin/login');
+        return;
+      }
 
-      try {
-        const token = await user.getIdToken(true);
+      // Clear any previous listeners if auth changed
+      unsubs.forEach(unsub => unsub && unsub());
+      unsubs = [];
 
-        const [bk, cl, tx, sv, inv, pk, st, gal] = await Promise.allSettled([
-          fetchCollectionRest('bookings', token),
-          fetchCollectionRest('client_profiles', token),
-          fetchCollectionRest('financial_transactions', token),
-          fetchCollectionRest('services', token),
-          fetchCollectionRest('products', token),
-          fetchCollectionRest('packages', token),
-          fetchDocRest('settings', 'studio', token),
-          fetchCollectionRest('gallery_photos', token)
-        ]);
+      let bookingsLoaded = false;
+      let clientsLoaded = false;
+      let transactionsLoaded = false;
+      let servicesLoaded = false;
+      let inventoryLoaded = false;
+      let packagesLoaded = false;
+      let settingsLoaded = false;
+      let galleryLoaded = false;
 
-        if (bk.status === 'fulfilled') setBookings(bk.value);
-        if (cl.status === 'fulfilled') setClients(cl.value);
-        if (tx.status === 'fulfilled') setTransactions(tx.value);
-        if (sv.status === 'fulfilled') setServices(sv.value);
-        if (inv.status === 'fulfilled') setInventory(inv.value);
-        if (pk.status === 'fulfilled') setPackages(pk.value);
-        if (st.status === 'fulfilled' && st.value) setSettings(st.value);
-        if (gal.status === 'fulfilled') setGalleryPhotos(gal.value);
+      let loadedCount = 0;
+      const checkLoaded = (key) => {
+        if (key === 'bookings' && !bookingsLoaded) { bookingsLoaded = true; loadedCount++; }
+        if (key === 'clients' && !clientsLoaded) { clientsLoaded = true; loadedCount++; }
+        if (key === 'transactions' && !transactionsLoaded) { transactionsLoaded = true; loadedCount++; }
+        if (key === 'services' && !servicesLoaded) { servicesLoaded = true; loadedCount++; }
+        if (key === 'inventory' && !inventoryLoaded) { inventoryLoaded = true; loadedCount++; }
+        if (key === 'packages' && !packagesLoaded) { packagesLoaded = true; loadedCount++; }
+        if (key === 'settings' && !settingsLoaded) { settingsLoaded = true; loadedCount++; }
+        if (key === 'gallery' && !galleryLoaded) { galleryLoaded = true; loadedCount++; }
 
+        if (loadedCount >= 8) {
+          setLoading(false);
+          if (failSafeTimeout) clearTimeout(failSafeTimeout);
+        }
+      };
+
+      const handleError = (key, err) => {
+        console.error(`Error loading ${key}:`, err);
+        checkLoaded(key);
+      };
+
+      failSafeTimeout = setTimeout(() => {
         setLoading(false);
+      }, 3000);
 
-        // Real-time listeners
-        onSnapshot(collection(db, 'bookings'), snap => {
-          if (!snap.metadata.fromCache) setBookings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-        onSnapshot(collection(db, 'financial_transactions'), snap => {
-          if (!snap.metadata.fromCache) setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-        onSnapshot(collection(db, 'gallery_photos'), snap => {
-          if (!snap.metadata.fromCache) setGalleryPhotos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-        onSnapshot(collection(db, 'products'), snap => {
-          if (!snap.metadata.fromCache) setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
+      // Register the 8 listeners
+      try {
+        unsubs.push(onSnapshot(collection(db, 'bookings'), (snap) => {
+          setBookings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('bookings');
+        }, (err) => handleError('bookings', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => {
+          setClients(snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })));
+          checkLoaded('clients');
+        }, (err) => handleError('clients', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => {
+          setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('transactions');
+        }, (err) => handleError('transactions', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'services'), (snap) => {
+          setServices(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('services');
+        }, (err) => handleError('services', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'products'), (snap) => {
+          setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('inventory');
+        }, (err) => handleError('inventory', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => {
+          setPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('packages');
+        }, (err) => handleError('packages', err)));
+
+        unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
+          setSettings(snap.exists() ? { id: snap.id, ...snap.data() } : {});
+          checkLoaded('settings');
+        }, (err) => handleError('settings', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'gallery_photos'), (snap) => {
+          setGalleryPhotos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('gallery');
+        }, (err) => handleError('gallery', err)));
+
       } catch (err) {
-        console.error(err);
-        setSyncError(err.message);
+        console.error("Error subscribing to Firestore collections:", err);
         setLoading(false);
       }
     });
 
-    return () => unsubAuth();
+    return () => {
+      unsubAuth();
+      unsubs.forEach(unsub => unsub && unsub());
+      if (failSafeTimeout) clearTimeout(failSafeTimeout);
+    };
   }, [navigate]);
 
   // ── Derived: today's bookings ──────────────────────────────────
@@ -242,6 +301,8 @@ export default function AdminMobileApp() {
   const openCheckout = (booking) => {
     setCheckoutBooking(booking);
     setPaymentMethod('Pix');
+    setInstallments('À vista');
+    setApplyAnticipation(false);
     setSelectedProducts([]);
     setDiscount(0);
     setShowBookingSheet(false);
@@ -273,20 +334,41 @@ export default function AdminMobileApp() {
     setIsFinalizingCheckout(true);
     try {
       const total = getCheckoutTotal();
+      const baseMethodLabel = paymentMethod === 'Cartão de Crédito' 
+        ? `Cartão de Crédito (${installments})` 
+        : paymentMethod;
+      const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+
+      const itemsDescription = [
+        checkoutBooking.service?.name || checkoutBooking.serviceName,
+        ...selectedProducts.map(p => `${p.qty}x ${p.name}`)
+      ].filter(Boolean).join(', ');
+
+      const prepay = Number(checkoutBooking.prepayment || 0);
+
       // Save transaction
       const txData = {
         type: 'entrada',
-        description: `Atendimento — ${checkoutBooking.clientName || checkoutBooking.service?.name || 'Serviço'}`,
+        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
-        paymentMethod,
+        paymentMethod: methodLabel,
         date: today(),
         bookingId: checkoutBooking.id,
-        productSales: selectedProducts.map(p => ({ productId: p.id, name: p.name, qty: p.qty, price: p.sellingPrice })),
+        productSales: selectedProducts.map(p => {
+          const match = inventory.find(prod => prod.id === p.id);
+          return {
+            productId: p.id,
+            name: p.name,
+            quantity: p.qty,
+            sellingPrice: p.sellingPrice,
+            costPrice: match ? (match.costPrice || 0) : 0
+          };
+        }),
         createdAt: new Date().toISOString()
       };
       if (db) {
         await addDoc(collection(db, 'financial_transactions'), txData);
-        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { status: 'finalizado', paymentMethod, finalValue: total });
+        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { status: 'finalizado', paymentMethod: methodLabel, finalValue: total });
         // Decrement inventory
         for (const p of selectedProducts) {
           const prodRef = doc(db, 'products', p.id);
@@ -297,8 +379,8 @@ export default function AdminMobileApp() {
           }
         }
       }
-      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod, finalValue: total } : b));
-      setTransactions(prev => [...prev, { id: Date.now().toString(), ...txData }]);
+      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total } : b));
+      setTransactions(prev => [{ id: Date.now().toString(), ...txData }, ...prev]);
       setShowCheckoutSheet(false);
       setCheckoutBooking(null);
       showToast('Comanda fechada com sucesso!', 'success');
@@ -313,6 +395,7 @@ export default function AdminMobileApp() {
   const addBooking = async () => {
     if (!nbForm.clientName || !nbForm.serviceName) { showToast('Preencha cliente e serviço', 'error'); return; }
     const svc = services.find(s => s.name === nbForm.serviceName);
+    const prepay = Number(nbForm.prepayment || 0);
     const data = {
       clientName: nbForm.clientName,
       clientPhone: nbForm.clientPhone || '',
@@ -323,6 +406,7 @@ export default function AdminMobileApp() {
       time: nbForm.time,
       notes: nbForm.notes || '',
       status: 'confirmado',
+      prepayment: prepay,
       createdAt: new Date().toISOString()
     };
     try {
@@ -330,21 +414,190 @@ export default function AdminMobileApp() {
         const ref = await addDoc(collection(db, 'bookings'), data);
         setBookings(prev => [...prev, { id: ref.id, ...data }]);
         try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
+
+        // Log prepayment transaction if > 0
+        if (prepay > 0) {
+          const tx = {
+            bookingId: ref.id,
+            date: dateStr(new Date()),
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: nbForm.clientName,
+            clientPhone: nbForm.clientPhone || '',
+            type: 'entrada',
+            paymentMethod: 'Pix',
+            value: prepay,
+            description: `Adiantamento/Sinal: ${nbForm.serviceName} - ${nbForm.clientName}`,
+            professionalId: 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), tx);
+          setTransactions(prev => [{ id: Date.now().toString(), ...tx }, ...prev]);
+        }
       }
       setShowNewBookingSheet(false);
-      setNbForm({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'' });
+      setNbForm({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'', prepayment: '' });
       showToast('Agendamento criado!', 'success');
     } catch (err) {
       showToast('Erro: ' + err.message, 'error');
     }
   };
 
-  // ── Client name autocomplete ───────────────────────────────────
+  // ── Edit Booking / Reschedule ──────────────────────────────────
+  const updateBooking = async () => {
+    if (!editBookingForm.clientName || !editBookingForm.serviceName) {
+      showToast('Preencha cliente e serviço', 'error');
+      return;
+    }
+    const svc = services.find(s => s.name === editBookingForm.serviceName);
+    const oldB = bookings.find(b => b.id === editBookingForm.id);
+    const oldPrepayment = oldB ? (Number(oldB.prepayment) || 0) : 0;
+    const newPrepayment = Number(editBookingForm.prepayment || 0);
+
+    const data = {
+      clientName: editBookingForm.clientName,
+      clientPhone: editBookingForm.clientPhone || '',
+      service: svc || { name: editBookingForm.serviceName },
+      serviceName: editBookingForm.serviceName,
+      servicePrice: svc?.promoPrice || svc?.price || 0,
+      date: editBookingForm.date,
+      time: editBookingForm.time,
+      notes: editBookingForm.notes || '',
+      status: editBookingForm.status,
+      prepayment: newPrepayment
+    };
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'bookings', editBookingForm.id), data);
+        
+        // Log prepayment if increased
+        if (newPrepayment > oldPrepayment) {
+          const diff = newPrepayment - oldPrepayment;
+          const tx = {
+            bookingId: editBookingForm.id,
+            date: dateStr(new Date()),
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: editBookingForm.clientName,
+            clientPhone: editBookingForm.clientPhone || '',
+            type: 'entrada',
+            paymentMethod: 'Pix',
+            value: diff,
+            description: `Adiantamento/Sinal: ${editBookingForm.serviceName} - ${editBookingForm.clientName}`,
+            professionalId: oldB?.professionalId || oldB?.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), tx);
+          setTransactions(prev => [{ id: Date.now().toString(), ...tx }, ...prev]);
+        }
+      }
+      setBookings(prev => prev.map(b => b.id === editBookingForm.id ? { ...b, ...data } : b));
+      setShowEditBookingSheet(false);
+      showToast('Agendamento atualizado!', 'success');
+    } catch (err) {
+      showToast('Erro ao atualizar: ' + err.message, 'error');
+    }
+  };
+
+  // ── Send Feedback / Review Request WhatsApp ─────────────────────
+  const sendFeedbackWhatsApp = async (booking) => {
+    const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length < 10) {
+      showToast('Telefone inválido para envio.', 'error');
+      return;
+    }
+
+    const firstName = (booking.clientName || '').split(' ')[0];
+    const msgText = `${firstName}!
+
+Cada avaliação no Google ajuda uma cacheada nova a encontrar o Studio antes de tomar uma decisão errada de corte.
+
+Se você gostou do atendimento, leva 1 minuto:
+https://g.page/r/CRmlu0sO48XmEBM/review
+
+Jon`;
+
+    const gateway = settings?.waReminderGateway;
+    if (!gateway || gateway === 'none') {
+      const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+      window.open(`https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`, '_blank');
+      showToast('Redirecionando para WhatsApp...', 'info');
+      return;
+    }
+
+    const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+    let url = '';
+    let headers = { 'Content-Type': 'application/json' };
+    let body = {};
+
+    if (gateway === 'zapi') {
+      const instance = settings.zApiInstanceId;
+      const token = settings.zApiToken;
+      if (!instance || !token) {
+        showToast('Z-API não configurada', 'error');
+        return;
+      }
+      url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
+      body = { phone: phoneWithDDI, message: msgText };
+    } else if (gateway === 'evolution') {
+      const apiUrl = settings.evolutionApiUrl;
+      const apiKey = settings.evolutionApiKey;
+      const instance = settings.evolutionInstanceName;
+      if (!apiUrl || !apiKey || !instance) {
+        showToast('Evolution API não configurada', 'error');
+        return;
+      }
+      url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
+      headers['apikey'] = apiKey;
+      body = { number: phoneWithDDI, text: msgText };
+    } else if (gateway === 'custom') {
+      url = settings.customWebhookUrl;
+      if (!url) {
+        showToast('Webhook não configurado', 'error');
+        return;
+      }
+      body = {
+        phone: phoneWithDDI,
+        message: msgText,
+        bookingId: booking.id,
+        clientName: booking.clientName,
+        date: booking.date,
+        time: booking.time,
+        service: booking.serviceName || booking.service?.name
+      };
+    }
+
+    try {
+      showToast('Disparando avaliação via API...', 'info');
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+      });
+
+      if (response.ok) {
+        showToast('Pedido de avaliação enviado!', 'success');
+      } else {
+        throw new Error('Falha no gateway');
+      }
+    } catch (err) {
+      console.error(err);
+      window.open(`https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`, '_blank');
+      showToast('API falhou. Abrindo WhatsApp manual...', 'warning');
+    }
+  };
+
   useEffect(() => {
     if (nbForm.clientName.length < 2) { setNbSuggestions([]); return; }
     const q = nbForm.clientName.toLowerCase();
     setNbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
   }, [nbForm.clientName, clients]);
+
+  // ── Client name autocomplete for Edit ──────────────────────────
+  useEffect(() => {
+    if (!editBookingForm || !editBookingForm.clientName || editBookingForm.clientName.length < 2) { setEbSuggestions([]); return; }
+    const q = editBookingForm.clientName.toLowerCase();
+    setEbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
+  }, [editBookingForm?.clientName, clients]);
 
   // ── Change booking status ──────────────────────────────────────
   const changeStatus = async (bookingId, status) => {
@@ -1207,6 +1460,40 @@ export default function AdminMobileApp() {
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
+              {b.status !== 'cancelado' && b.status !== 'finalizado' && (
+                <button className="m-action-btn" onClick={() => {
+                  setEditBookingForm({
+                    id: b.id,
+                    clientName: b.clientName,
+                    clientPhone: b.clientPhone || '',
+                    serviceName: b.serviceName || b.service?.name || '',
+                    date: b.date,
+                    time: b.time || '09:00',
+                    prepayment: b.prepayment || '',
+                    notes: b.notes || '',
+                    status: b.status || 'confirmado'
+                  });
+                  setShowBookingSheet(false);
+                  setShowEditBookingSheet(true);
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Edit3 size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Remarcar / Editar</div>
+                    <div className="m-action-btn-sub">Alterar data, horário ou sinal</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.status === 'finalizado' && b.clientPhone && (
+                <button className="m-action-btn" onClick={() => sendFeedbackWhatsApp(b)}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Star size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Pedir Avaliação</div>
+                    <div className="m-action-btn-sub">Dispara link de review no WhatsApp</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
               {b.clientPhone && (
                 <button className="m-action-btn" onClick={() => window.open(`https://wa.me/55${b.clientPhone.replace(/\D/g,'')}`, '_blank')}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><MessageSquare size={16}/></div>
@@ -1321,6 +1608,12 @@ export default function AdminMobileApp() {
                 <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{b.service?.name || b.serviceName}</span>
                 <span style={{ fontWeight:800, color:'var(--m-gold)', fontFamily:'"DM Serif Display", serif' }}>{fmt(basePrice)}</span>
               </div>
+              {Number(b.prepayment || 0) > 0 && (
+                <div className="m-info-row" style={{ borderBottom:'none', padding:'0', marginTop: 4 }}>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>Sinal Pago</span>
+                  <span style={{ fontWeight:700, color:'var(--m-red)' }}>- {fmt(b.prepayment)}</span>
+                </div>
+              )}
             </div>
 
             {/* Products */}
@@ -1357,12 +1650,47 @@ export default function AdminMobileApp() {
             {/* Payment method */}
             <div>
               <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
-              <div className="m-payment-row">
-                {PAY_METHODS.map(m => (
-                  <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} onClick={() => setPaymentMethod(m)}>{m}</button>
+              <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
+                  <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
+                    setPaymentMethod(m);
+                    if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
+                      setApplyAnticipation(true);
+                    } else {
+                      setApplyAnticipation(false);
+                    }
+                  }}>{m}</button>
                 ))}
               </div>
             </div>
+
+            {/* Installments selection for Credit Card */}
+            {paymentMethod === 'Cartão de Crédito' && (
+              <div className="m-field">
+                <label className="m-label">Parcelas</label>
+                <select className="m-select" value={installments} onChange={e => setInstallments(e.target.value)}>
+                  <option value="À vista">À vista</option>
+                  <option value="2x">2x</option>
+                  <option value="3x">3x</option>
+                </select>
+              </div>
+            )}
+
+            {/* Anticipation toggle */}
+            {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                <input 
+                  type="checkbox" 
+                  id="m-anticipate"
+                  checked={applyAnticipation} 
+                  onChange={e => setApplyAnticipation(e.target.checked)}
+                  style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
+                />
+                <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
+                  Antecipar recebimento? (taxa maquininha)
+                </label>
+              </div>
+            )}
 
             {/* Total */}
             <div className="m-checkout-total">
@@ -1431,6 +1759,10 @@ export default function AdminMobileApp() {
               </div>
             </div>
             <div className="m-field">
+              <label className="m-label">Sinal / Adiantamento Pago (R$)</label>
+              <input className="m-input" type="number" placeholder="0,00" value={nbForm.prepayment} onChange={e => setNbForm(p => ({ ...p, prepayment: e.target.value }))}/>
+            </div>
+            <div className="m-field">
               <label className="m-label">Observações</label>
               <textarea className="m-textarea" rows={2} placeholder="Informações adicionais..." value={nbForm.notes} onChange={e => setNbForm(p => ({ ...p, notes: e.target.value }))}/>
             </div>
@@ -1438,6 +1770,86 @@ export default function AdminMobileApp() {
           <div className="m-sheet-footer">
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowNewBookingSheet(false)}>Cancelar</button>
             <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={addBooking}><Plus size={14}/> Agendar</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Edit Booking Sheet ─────────────────────────────────────────
+  const renderEditBookingSheet = () => {
+    if (!showEditBookingSheet || !editBookingForm) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowEditBookingSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Remarcar / Editar</div>
+            <button onClick={() => setShowEditBookingSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Cliente *</label>
+              <input className="m-input" placeholder="Nome do cliente" value={editBookingForm.clientName} onChange={e => setEditBookingForm(p => ({ ...p, clientName: e.target.value }))}/>
+              {ebSuggestions.length > 0 && (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden' }}>
+                  {ebSuggestions.map(c => (
+                    <div key={c.id} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => { setEditBookingForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setEbSuggestions([]); }}>
+                      {c.name} {c.phone ? <span style={{ color:'var(--m-muted)', fontWeight:400 }}>· {c.phone}</span> : ''}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="m-field">
+              <label className="m-label">Telefone</label>
+              <input className="m-input" type="tel" placeholder="(31) 99999-9999" value={editBookingForm.clientPhone} onChange={e => setEditBookingForm(p => ({ ...p, clientPhone: e.target.value }))}/>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Serviço *</label>
+              <select className="m-select" value={editBookingForm.serviceName} onChange={e => setEditBookingForm(p => ({ ...p, serviceName: e.target.value }))}>
+                <option value="">Selecione um serviço</option>
+                {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
+              </select>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Data *</label>
+                <input className="m-input" type="date" value={editBookingForm.date} onChange={e => setEditBookingForm(p => ({ ...p, date: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Horário *</label>
+                <select className="m-select" value={editBookingForm.time} onChange={e => setEditBookingForm(p => ({ ...p, time: e.target.value }))}>
+                  {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Sinal / Adiantamento (R$)</label>
+                <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.prepayment} onChange={e => setEditBookingForm(p => ({ ...p, prepayment: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Status</label>
+                <select className="m-select" value={editBookingForm.status} onChange={e => setEditBookingForm(p => ({ ...p, status: e.target.value }))}>
+                  <option value="confirmado">Confirmado</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="cancelado">Cancelado</option>
+                  <option value="finalizado">Finalizado</option>
+                  <option value="bloqueado">Bloqueado</option>
+                  <option value="faltou">Faltou</option>
+                </select>
+              </div>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Observações</label>
+              <textarea className="m-textarea" rows={2} placeholder="Informações adicionais..." value={editBookingForm.notes} onChange={e => setEditBookingForm(p => ({ ...p, notes: e.target.value }))}/>
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowEditBookingSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={updateBooking}>Salvar Alterações</button>
           </div>
         </div>
       </div>
@@ -1796,6 +2208,7 @@ export default function AdminMobileApp() {
       {renderSlotSheet()}
       {renderCheckoutSheet()}
       {renderNewBookingSheet()}
+      {renderEditBookingSheet()}
       {renderClientSheet()}
       {renderNewClientSheet()}
       {renderAddTxSheet()}
