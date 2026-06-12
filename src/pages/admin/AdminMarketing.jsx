@@ -244,7 +244,83 @@ const AdminMarketing = () => {
     const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
     const runFallback = () => {
-      const fallbackSubject = 'Por que a técnica supera o produto';
+      const fallbacks = [
+        {
+          subject: "Por que seu cabelo 'engole' o creme e continua seco",
+          title: "O frizz que a porosidade explica.",
+          subtitle: "Porosidade & Absorção · Leitura de Fio",
+          paragraphs: [
+            "Você passa creme, o cabelo absorve instantaneamente, mas meia hora depois os fios parecem secos e sem forma. Isso não é falta de produto; é porosidade alta ou desequilibrada.",
+            "Quando a cutícula está excessivamente aberta, a água entra e sai sem resistência. O Método Leitura de Fio analisa essa taxa de absorção antes do corte, ajustando a estrutura para reter a umidade natural do fio.",
+            "O ângulo correto da tesoura ajuda a selar a cutícula mecanicamente, permitindo que a finalização funcione sem exigir quilos de creme."
+          ],
+          quote: "O diagnóstico de porosidade dita como o fio reage ao corte. Sem ler o fio antes, cortar é apenas adivinhação."
+        },
+        {
+          subject: "A armadilha do cacho molhado",
+          title: "Cacho não se corta esticado.",
+          subtitle: "Corte Seco vs Molhado · Leitura de Fio",
+          paragraphs: [
+            "Cabelo com curvatura encolhe. Cortar o cabelo molhado esconde o padrão real de encolhimento de cada mecha, resultando em surpresas desagradáveis quando o cabelo seca.",
+            "No Studio do Jon, o corte é realizado totalmente a seco, respeitando o caimento natural de cada cacho em seu estado habitual de uso diário.",
+            "Assim, garantimos simetria, controle de volume e a certeza absoluta de como o corte ficará no seu dia a dia."
+          ],
+          quote: "Cortar cabelo cacheado molhado é como esculpir no escuro. O corte a seco traz a luz da forma real."
+        },
+        {
+          subject: "O peso invisível que sabota seu volume",
+          title: "Cuidado com o acúmulo de cremes.",
+          subtitle: "Build-up capilar · Leitura de Fio",
+          paragraphs: [
+            "Finalizadores pesados e óleos em excesso criam uma película impermeável ao redor do fio (build-up). O cabelo perde o brilho, pesa e os cachos perdem a definição na raiz.",
+            "A Leitura de Fio identifica esse acúmulo e indica a higienização correta para devolver a leveza natural que seu cabelo pede.",
+            "Muitas vezes, a definição que você procura está na remoção do excesso de produto, e não na adição de mais cremes."
+          ],
+          quote: "Menos produto, mais anatomia. O corte correto distribui o peso natural do cacho de forma harmônica."
+        },
+        {
+          subject: "Sua identidade revelada nos seus traços",
+          title: "Visagismo e a Leitura de Fio.",
+          subtitle: "Personalidade & Linhas · Leitura de Fio",
+          paragraphs: [
+            "Seu corte de cabelo deve emoldurar seu olhar e refletir sua personalidade. Linhas retas transmitem força, enquanto linhas curvas trazem suavidade e dinamismo.",
+            "O visagismo integrado ao Método Leitura de Fio estuda o formato do seu rosto, a direção dos seus olhos e suas expressões para personalizar o corte ideal.",
+            "Não é sobre seguir tendências genéricas, mas sobre revelar sua melhor versão."
+          ],
+          quote: "O cabelo é a moldura do rosto. O visagismo traduz quem você é através das linhas do corte."
+        },
+        {
+          subject: "Como lidar com o inverno seco de BH",
+          title: "Belo Horizonte e o frizz do clima seco.",
+          subtitle: "Clima & Definição · Leitura de Fio",
+          paragraphs: [
+            "Belo Horizonte tem períodos de secura extrema. A falta de umidade no ar rouba a água dos fios, deixando-os opacos e propensos ao frizz estático.",
+            "Para combater isso, ajustamos o corte para reter mais peso nas pontas e indicamos técnicas de finalização baseadas em hidratação profunda sem peso residual.",
+            "Mantenha a saúde do seu cacho em dia mesmo nos climas mais desafiadores."
+          ],
+          quote: "O clima muda, a estrutura do corte permanece. Um corte bem planejado resiste às variações do tempo."
+        },
+        {
+          subject: "Atendimento acolhedor e neurodiversidade",
+          title: "Espaço acolhedor e previsibilidade.",
+          subtitle: "Atendimento Humanizado · Leitura de Fio",
+          paragraphs: [
+            "Ir ao salão pode ser uma experiência sensorialmente exaustiva. Sons de secador, conversas cruzadas e toques inesperados trazem desconforto.",
+            "O Studio do Jon oferece atendimento individualizado com hora marcada, ambiente silencioso e uma rotina previsível de corte a seco, ideal para pessoas neurodivergentes.",
+            "Respeitamos o seu tempo e o seu espaço para que cuidar do cabelo seja um momento de puro conforto."
+          ],
+          quote: "O respeito sensorial é parte do corte. Acolher cada cliente em sua singularidade é nossa prioridade absoluta."
+        }
+      ];
+
+      // Exclude current newsletter subject if possible to ensure a change
+      const current = newsletters.find(n => n.id === id);
+      const candidates = current 
+        ? fallbacks.filter(f => f.subject !== current.subject) 
+        : fallbacks;
+      const fb = candidates[Math.floor(Math.random() * candidates.length)] || fallbacks[0];
+
+      const fallbackSubject = fb.subject;
       const fallbackBody = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
@@ -260,23 +336,19 @@ const AdminMarketing = () => {
 
   <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
     <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
-    Leitura de Fio · Edição Alternativa
+    ${fb.subtitle}
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">Por que a técnica supera <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">qualquer produto.</span></h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">${fb.title}</h1>
 
   <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Muitas vezes compramos cremes caríssimos esperando um milagre que só um corte correto pode proporcionar.</p>
-  
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Um cabelo cacheado bem estruturado não necessita de finalizações complexas ou quilos de produto para ter definição e balanço.</p>
+  ${fb.paragraphs.map(p => `<p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">${p}</p>`).join('\n')}
 
   <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"Cabelo bonito é cabelo saudável e bem cortado. O resto é apenas complemento."</p>
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"${fb.quote}"</p>
     <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
   </div>
-
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">O Método Leitura de Fio prioriza a saúde e a praticidade do seu dia a dia.</p>
 
   <div style="margin-top: 8px; margin-bottom: 32px;">
     <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
@@ -288,12 +360,14 @@ const AdminMarketing = () => {
     <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
   </div>
 </div>`;
+
       setNewsletters(prev => prev.map(n => n.id === id ? {
         ...n,
         subject: fallbackSubject,
         htmlBody: fallbackBody,
         status: 'draft'
       } : n));
+      alert(`Nova newsletter gerada com sucesso! Tema: "${fallbackSubject}" 🎉`);
       setIsGeneratingNewsletter(false);
     };
 
