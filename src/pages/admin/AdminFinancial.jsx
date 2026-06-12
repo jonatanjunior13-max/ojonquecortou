@@ -9,6 +9,7 @@ import {
   Search, Edit3
 } from 'lucide-react';
 import './Admin.css';
+import KpiCard from '../../components/admin/ui/KpiCard';
 
 // Seed data for historical comparison if database is empty/fresh (matches Figma layout screenshots)
 const SEED_HISTORICAL_TRANSACTIONS = [];
@@ -788,8 +789,8 @@ const AdminFinancial = () => {
   }, [filteredTransactions, ledgerSearch, ledgerTypeFilter, ledgerMethodFilter]);
 
   // CSS and Color Palettes (Harmonious Peach/Orange Coral palette matching screenshot)
-  const activeColor = 'rgb(249, 115, 22)'; // Coral orange
-  const redColor = '#f28b82'; // Soft red
+  const activeColor = '#DCA354'; // --adm-gold
+  const redColor = '#E24B4A'; // --adm-danger
   const greenColor = '#8cb870'; // Soft green
 
   return (
@@ -803,9 +804,9 @@ const AdminFinancial = () => {
           align-items: center;
         }
         .orange-pill {
-          background: #f97316;
-          color: white;
-          border: none;
+          background: var(--adm-card, #211D1A);
+          color: var(--adm-text, #F5EDDB);
+          border: 0.5px solid var(--adm-rule-gold, rgba(220,163,84,0.25));
           padding: 8px 16px;
           border-radius: 9999px;
           font-weight: 600;
@@ -814,22 +815,28 @@ const AdminFinancial = () => {
           align-items: center;
           gap: 8px;
           cursor: pointer;
-          transition: background 0.2s;
-          box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.2);
+          transition: border-color 0.2s, background 0.2s;
+          font-family: inherit;
         }
         .orange-pill:hover {
-          background: #ea580c;
+          background: var(--adm-card-hover, #282320);
+          border-color: var(--adm-gold, #DCA354);
+          color: var(--adm-gold, #DCA354);
         }
         .date-picker-dropdown {
           position: absolute;
-          background: var(--surface);
-          border: 1px solid var(--rule);
-          border-radius: 8px;
+          background: var(--adm-surface, #1A1715);
+          border: 0.5px solid var(--adm-rule-gold, rgba(220,163,84,0.25));
+          border-radius: 12px;
           padding: 16px;
           width: 320px;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.6);
           z-index: 100;
           margin-top: 8px;
+          color: var(--adm-text, #F5EDDB);
+        }
+        .date-picker-dropdown h5 {
+          color: var(--adm-text, #F5EDDB);
         }
         .picker-presets {
           display: grid;
@@ -840,15 +847,23 @@ const AdminFinancial = () => {
         .picker-presets button {
           padding: 6px;
           font-size: 0.8rem;
-          border-radius: 4px;
-          border: 1px solid var(--rule);
-          background: var(--bg-warm);
+          border-radius: 6px;
+          border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
+          background: var(--adm-card, #211D1A);
+          color: var(--adm-text-2, #C9BCA8);
           cursor: pointer;
+          font-family: inherit;
+          transition: all 0.2s;
+        }
+        .picker-presets button:hover {
+          border-color: var(--adm-gold, #DCA354);
+          color: var(--adm-gold, #DCA354);
         }
         .picker-presets button.active {
-          background: #f97316;
-          color: white;
-          border-color: #f97316;
+          background: rgba(220,163,84,0.15);
+          color: var(--adm-gold, #DCA354);
+          border-color: var(--adm-gold, #DCA354);
+          font-weight: 700;
         }
         .chart-grid {
           display: grid;
@@ -862,11 +877,10 @@ const AdminFinancial = () => {
           }
         }
         .chart-card {
-          background: var(--surface);
-          border: 1px solid var(--rule);
+          background: var(--adm-surface, #1A1715);
+          border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
           border-radius: 12px;
           padding: 20px;
-          box-shadow: var(--shadow-premium);
         }
         .chart-header {
           display: flex;
@@ -878,12 +892,13 @@ const AdminFinancial = () => {
           margin: 0;
           font-size: 0.95rem;
           font-weight: 600;
-          color: var(--ink);
+          color: var(--adm-text, #F5EDDB);
         }
         .chart-legend {
           display: flex;
           gap: 12px;
           font-size: 0.75rem;
+          color: var(--adm-muted, #9A8D7E);
         }
         .legend-item {
           display: flex;
@@ -915,8 +930,14 @@ const AdminFinancial = () => {
           padding: 8px 12px;
           font-size: 0.85rem;
           border-radius: 6px;
-          border: 1px solid var(--rule);
+          border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
+          background: var(--adm-card, #211D1A);
+          color: var(--adm-text, #F5EDDB);
           outline: none;
+          font-family: inherit;
+        }
+        .ledger-filters input::placeholder {
+          color: var(--adm-muted, #9A8D7E);
         }
       `}</style>
 
@@ -1004,126 +1025,74 @@ const AdminFinancial = () => {
         </div>
       </div>
 
-      <section className="admin-stats-grid">
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Bruta</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma de todas as entradas no período, antes de taxas" />
-          </div>
-          <div className="value" style={{ color: '#2f855a', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Taxas de Maquininha</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Total de taxas retidas por operadoras de cartão/Pix no período" />
-          </div>
-          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            - R$ {totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Despesas</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Saídas de caixa, custos de serviço e despesas avulsas" />
-          </div>
-          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            - R$ {totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)', borderLeft: `4px solid ${netResultado >= 0 ? '#48bb78' : '#e53e3e'}` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado Líquido</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Receita Bruta - Taxas de Maquininha - Despesas" />
-          </div>
-          <div className="value" style={{ color: netResultado >= 0 ? '#48bb78' : '#e53e3e', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: netResultado >= 0 ? activeColor : redColor, fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            {totalBookingsCount}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos Online vs Admin</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Comparativo de agendamentos realizados pelos próprios clientes online vs agendamentos criados manualmente pelo painel admin" />
-          </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.4rem', marginTop: 8, fontWeight: 700 }}>
-            {onlineBookingsCount} <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 400 }}>online</span> <span style={{ color: 'var(--rule)', margin: '0 4px' }}>|</span> {adminBookingsCount} <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 400 }}>admin</span>
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Atendimentos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            {completedBookingsCount}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Custo de Produtos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma dos custos de aquisição dos produtos vendidos no período" />
-          </div>
-          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {productCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Lucro de Produtos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma do (valor de venda - preço de custo) dos produtos vendidos no período" />
-          </div>
-          <div className="value" style={{ color: '#2f855a', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {productNetProfit.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-      </section>
+      {/* KPI Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16, marginBottom: 24 }}>
+        <KpiCard
+          label="Receita Bruta"
+          value={`R$ ${grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<TrendingUp size={16} />}
+          variant="success"
+        />
+        <KpiCard
+          label="Taxas Maquininha"
+          value={`- R$ ${totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<CreditCard size={16} />}
+          variant="danger"
+        />
+        <KpiCard
+          label="Despesas"
+          value={`- R$ ${totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<TrendingDown size={16} />}
+          variant="danger"
+        />
+        <KpiCard
+          label="Resultado Líquido"
+          value={`R$ ${netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={netResultado >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+          variant={netResultado >= 0 ? 'success' : 'danger'}
+        />
+        <KpiCard
+          label="Atendimentos"
+          value={`${completedBookingsCount}`}
+          sub={`${totalBookingsCount} no período`}
+          icon={<Calendar size={16} />}
+        />
+        <KpiCard
+          label="Lucro Produtos"
+          value={`R$ ${productNetProfit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          sub={`Custo: R$ ${productCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<ShoppingBag size={16} />}
+          variant={productNetProfit >= 0 ? 'success' : 'danger'}
+        />
+      </div>
 
       {/* Sub tabs Menu */}
-      <div className="tab-menu" style={{ margin: '24px 0 16px 0' }}>
-        <button className={`tab-btn ${activeSubTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveSubTab('dashboard')}>
-          <TrendingUp size={16} /> Painel de Gráficos
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'fluxo' ? 'active' : ''}`} onClick={() => setActiveSubTab('fluxo')}>
-          <DollarSign size={16} /> Extrato de Caixa
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'comissao' ? 'active' : ''}`} onClick={() => setActiveSubTab('comissao')}>
-          <Users size={16} /> Comissões & Repasses
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'taxas' ? 'active' : ''}`} onClick={() => setActiveSubTab('taxas')}>
-          <Percent size={16} /> Configurar Taxas
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'pacotes' ? 'active' : ''}`} onClick={() => setActiveSubTab('pacotes')}>
-          <Eye size={16} /> Controle de Pacotes
-        </button>
+      <div style={{ display: 'flex', gap: 4, margin: '0 0 20px 0', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 0, flexWrap: 'wrap' }}>
+        {[
+          { id: 'dashboard', label: 'Gráficos', icon: <TrendingUp size={14} /> },
+          { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
+          { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
+          { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
+          { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveSubTab(tab.id)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              background: 'none', border: 'none', cursor: 'pointer',
+              padding: '10px 16px',
+              fontSize: '0.85rem', fontWeight: 600, fontFamily: 'inherit',
+              color: activeSubTab === tab.id ? 'var(--adm-gold)' : 'var(--adm-muted)',
+              borderBottom: activeSubTab === tab.id ? '2px solid var(--adm-gold)' : '2px solid transparent',
+              marginBottom: -1,
+              transition: 'color 0.2s',
+            }}
+          >
+            {tab.icon} {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* SUBTAB: DASHBOARD DE GRÁFICOS */}
@@ -1492,12 +1461,12 @@ const AdminFinancial = () => {
                       return (
                         <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600 }}>
-                            <span style={{ color: 'var(--ink)' }}>{c.name}</span>
+                            <span style={{ color: 'var(--adm-text)' }}>{c.name}</span>
                             <span style={{ color: 'var(--accent)' }}>
                               R$ {c.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({pct.toFixed(1)}%)
                             </span>
                           </div>
-                          <div style={{ width: '100%', height: 8, background: 'var(--bg-warm)', borderRadius: 4, overflow: 'hidden' }}>
+                          <div style={{ width: '100%', height: 8, background: 'var(--adm-card)', borderRadius: 4, overflow: 'hidden' }}>
                             <div style={{ width: `${pct}%`, height: '100%', background: '#e53e3e', borderRadius: 4 }}></div>
                           </div>
                         </div>
@@ -1646,7 +1615,7 @@ const AdminFinancial = () => {
                 const commProd = p.commissionProduct !== undefined ? p.commissionProduct : 10;
                 const payout = calculateProfessionalCommission(p);
                 return (
-                  <div key={p.id} style={{ border: '1px solid var(--rule)', padding: 16, borderRadius: 8, background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div key={p.id} style={{ border: '0.5px solid var(--adm-rule)', padding: 16, borderRadius: 8, background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem' }}>{p.name}</h4>
                       <span style={{ fontSize: '1.1rem', color: '#48bb78', fontWeight: 700 }}>
@@ -1656,11 +1625,11 @@ const AdminFinancial = () => {
                     <div style={{ borderTop: '1px solid var(--rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Serviços ({commServ}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--ink)' }}>R$ {payout.services.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {payout.services.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
                       </div>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Produtos ({commProd}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--ink)' }}>R$ {payout.products.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {payout.products.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
                       </div>
                     </div>
                   </div>
@@ -1888,17 +1857,17 @@ const AdminFinancial = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             {/* Quick Metrics */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
+              <div className="stat-card" style={{ border: '0.5px solid var(--adm-rule)' }}>
                 <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Pacotes Ativos</h3>
-                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--ink)' }}>{activeCount}</div>
+                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--adm-text)' }}>{activeCount}</div>
               </div>
-              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
+              <div className="stat-card" style={{ border: '0.5px solid var(--adm-rule)' }}>
                 <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Total Gerada</h3>
                 <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: '#2f855a' }}>
                   R$ {totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
               </div>
-              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
+              <div className="stat-card" style={{ border: '0.5px solid var(--adm-rule)' }}>
                 <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Sessões Restantes</h3>
                 <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--accent)' }}>{remainingCredits} sessões</div>
               </div>
@@ -1980,7 +1949,7 @@ const AdminFinancial = () => {
                                   const rem = cp.balance[srvId];
                                   return (
                                     <div key={srvId} style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                                      <span style={{ color: 'var(--ink)' }}>{srvName}</span>
+                                      <span style={{ color: 'var(--adm-text)' }}>{srvName}</span>
                                       <span style={{ fontWeight: 'bold', color: rem > 0 ? 'var(--accent)' : 'var(--muted)' }}>
                                         {rem} sessões
                                       </span>
@@ -2205,7 +2174,7 @@ const AdminFinancial = () => {
                 <select
                   value={expenseForm.installments || 1}
                   onChange={e => setExpenseForm(prev => ({ ...prev, installments: Number(e.target.value) }))}
-                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--rule)', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                 >
                   {[...Array(12)].map((_, i) => (
                     <option key={i + 1} value={i + 1}>
@@ -2221,7 +2190,7 @@ const AdminFinancial = () => {
               <select 
                 value={expenseForm.category}
                 onChange={e => setExpenseForm(prev => ({ ...prev, category: e.target.value }))}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--rule)', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
               >
                 <optgroup label="Custos Fixos">
                   <option value="Custos Fixos - Aluguel e Condomínio">Aluguel e Condomínio</option>
@@ -2323,7 +2292,7 @@ const AdminFinancial = () => {
                           ...editingBalanceForm,
                           [srvId]: Math.max(0, Number(e.target.value))
                         })}
-                        style={{ width: '100%', padding: '10px', borderRadius: 4, border: '1px solid var(--rule)' }}
+                        style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)' }}
                       />
                     </div>
                   );
