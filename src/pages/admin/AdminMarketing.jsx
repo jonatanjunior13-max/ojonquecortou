@@ -196,10 +196,33 @@ const AdminMarketing = () => {
   const [newsletterSendLog, setNewsletterSendLog] = useState([]);
   const [testEmailAddress, setTestEmailAddress] = useState('');
 
+  // Bounces states
+  const [showBounceList, setShowBounceList] = useState(false);
+  const [bouncesData, setBouncesData] = useState([]);
+  const [isLoadingBounces, setIsLoadingBounces] = useState(false);
+
   const activeNewsletter = newsletters.find(n => n.id === activeNewsletterId);
 
   const handleApproveNewsletter = (id) => {
     setNewsletters(prev => prev.map(n => n.id === id ? { ...n, status: 'approved' } : n));
+  };
+
+  const handleFetchBounces = async () => {
+    setIsLoadingBounces(true);
+    try {
+      const res = await fetch('/api/check-bounces?token=studio-jon-admin');
+      const data = await res.json();
+      if (data.success) {
+        setBouncesData(data.items || []);
+        setShowBounceList(true);
+      } else {
+        alert('Erro ao buscar lista de bounces: ' + (data.error || 'Erro desconhecido'));
+      }
+    } catch (err) {
+      alert('Falha na requisição: ' + err.message);
+    } finally {
+      setIsLoadingBounces(false);
+    }
   };
 
   const handleRegenerateNewsletter = async (id) => {
@@ -1953,6 +1976,14 @@ Use as seguintes tags no "bodyHtml":
                         {nl.month}
                       </button>
                     ))}
+                    <button
+                      onClick={handleFetchBounces}
+                      className="btn btn-outline btn-small"
+                      style={{ fontSize: '0.75rem', borderColor: 'rgba(229,62,62,0.6)', color: '#e53e3e', display: 'flex', alignItems: 'center', gap: 6 }}
+                      disabled={isLoadingBounces}
+                    >
+                      <RefreshCw size={12} style={{ animation: isLoadingBounces ? 'spin 1.5s linear infinite' : 'none' }} /> {isLoadingBounces ? 'Carregando...' : 'Verificar Bounces'}
+                    </button>
                   </div>
                 </div>
 
@@ -2099,6 +2130,59 @@ Use as seguintes tags no "bodyHtml":
                   <CheckSquare size={14} style={{ marginRight: 6 }} /> Aprovar e fechar
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL: BOUNCE LIST */}
+      {showBounceList && (
+        <div className="modal-overlay" onClick={() => setShowBounceList(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '800px', width: '90%', maxHeight: '80vh', overflowY: 'auto', padding: '24px' }}>
+            <h3 style={{ margin: '0 0 8px 0', fontFamily: "'DM Serif Display', Georgia, serif" }}>Lista de Bounces (Emails Rejeitados)</h3>
+            <p style={{ margin: '0 0 20px 0', fontSize: '0.85rem', color: 'var(--muted)' }}>
+              Essas clientes tiveram e-mails marcados como inválidos ou inexistentes pelo servidor Mailgun. Recomendamos corrigir os cadastros no Firestore ou desativar o envio de newsletter para elas.
+            </p>
+
+            {bouncesData.length === 0 ? (
+              <p style={{ textAlign: 'center', padding: '30px 0', color: 'var(--muted)' }}>Nenhum e-mail rejeitado (bounce) encontrado no Mailgun! 🎉</p>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '2px solid var(--rule)', color: 'var(--muted)' }}>
+                      <th style={{ padding: '10px 8px' }}>Cliente</th>
+                      <th style={{ padding: '10px 8px' }}>E-mail</th>
+                      <th style={{ padding: '10px 8px' }}>Telefone (ID)</th>
+                      <th style={{ padding: '10px 8px' }}>Status News</th>
+                      <th style={{ padding: '10px 8px' }}>Motivo do Erro</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bouncesData.map((b, idx) => (
+                      <tr key={idx} style={{ borderBottom: '1px solid var(--rule)' }}>
+                        <td style={{ padding: '10px 8px', fontWeight: 600 }}>{b.name}</td>
+                        <td style={{ padding: '10px 8px', fontFamily: 'monospace' }}>{b.email}</td>
+                        <td style={{ padding: '10px 8px', color: 'var(--muted)' }}>{b.phone || 'N/A'}</td>
+                        <td style={{ padding: '10px 8px' }}>
+                          <span style={{
+                            fontSize: '0.7rem', padding: '2px 8px', borderRadius: 10,
+                            background: b.newsletterStatus === 'Ativo' ? 'rgba(56,161,105,0.15)' : 'rgba(229,62,62,0.15)',
+                            color: b.newsletterStatus === 'Ativo' ? '#38a169' : '#e53e3e'
+                          }}>
+                            {b.newsletterStatus}
+                          </span>
+                        </td>
+                        <td style={{ padding: '10px 8px', color: '#e53e3e', fontSize: '0.78rem' }}>{b.error || 'Desconhecido'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24 }}>
+              <button className="btn btn-outline" onClick={() => setShowBounceList(false)}>Fechar</button>
             </div>
           </div>
         </div>
