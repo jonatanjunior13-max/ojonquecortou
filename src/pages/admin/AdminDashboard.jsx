@@ -29,6 +29,8 @@ import {
   MoreVertical
 } from 'lucide-react';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
+import ComandaModal from '../../components/admin/ComandaModal';
+import { useToast } from '../../components/admin/ui/Toast';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -155,8 +157,11 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(!db);
   
+  const toast = useToast();
+
   // Checkout / Comanda states
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [comandaBooking, setComandaBooking] = useState(null);
   const [addedServices, setAddedServices] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
   const [paymentMethod, setPaymentMethod] = useState('Pix');
@@ -1328,6 +1333,74 @@ const AdminDashboard = () => {
     return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay);
   };
 
+  const handleFinalizeFromComanda = async (booking, payload) => {
+    const { paymentMethod: pm, tipValue, addedProducts: ap, overrideBasePrice: obp } = payload;
+    const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
+    const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
+    const totalValue = servicePrice + (ap || []).reduce((s, p) => s + p.price * p.qty, 0) + (tipValue || 0);
+    const itemsDescription = [
+      booking.service?.name || booking.serviceName || 'Serviço',
+      ...(ap || []).map(p => `${p.qty}x ${p.name}`)
+    ].join(', ');
+    const transactionPayload = {
+      bookingId: booking.id,
+      date: booking.date || getLocalDateString(new Date()),
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: booking.clientName,
+      clientPhone: booking.clientPhone || '',
+      type: 'entrada',
+      paymentMethod: pm,
+      value: totalValue,
+      discount: 0,
+      description: itemsDescription + (tipValue > 0 ? ` (Gorjeta: R$ ${tipValue.toFixed(2)})` : ''),
+      professionalId: booking.professionalId || booking.profissional || 'jon',
+      productSales: productsNorm.map(p => {
+        const match = products.find(prod => prod.id === p.productId);
+        return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
+      }),
+      createdAt: new Date().toISOString()
+    };
+    try {
+      if (isDemoMode || !db) {
+        setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
+        if (productsNorm.length > 0) {
+          const localProds = localStorage.getItem('demo_products');
+          if (localProds) {
+            const prods = JSON.parse(localProds);
+            const updated = prods.map(p => {
+              const added = productsNorm.find(ap => ap.productId === p.id);
+              return added ? { ...p, quantity: Math.max(0, p.quantity - added.quantity) } : p;
+            });
+            localStorage.setItem('demo_products', JSON.stringify(updated));
+            setProducts(updated);
+          }
+        }
+        const localTx = localStorage.getItem('demo_financial') || '[]';
+        const currentTx = JSON.parse(localTx);
+        const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
+        const updatedTxList = [newTx, ...currentTx];
+        localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
+        localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
+        setTransactions(updatedTxList);
+      } else {
+        await updateDoc(doc(db, 'bookings', booking.id), { status: 'finalizado' });
+        syncBookingToGoogle(booking.id).catch(err => console.warn(err));
+        for (const p of productsNorm) {
+          const match = products.find(prod => prod.id === p.productId);
+          if (match) {
+            await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
+          }
+        }
+        await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+      }
+      toast('Comanda fechada com sucesso!', 'success');
+      setComandaBooking(null);
+    } catch (err) {
+      console.error('Erro ao fechar comanda:', err);
+      toast('Falha ao fechar comanda.', 'error');
+    }
+  };
+
   const handleCloseComanda = async (booking) => {
     const baseServicePrice = usingClientPackageId 
       ? 0 
@@ -1619,7 +1692,7 @@ const AdminDashboard = () => {
         }
       }
 
-      alert('Comanda fechada com sucesso! Estoque deduzido e receita registrada.');
+      toast('Comanda fechada com sucesso!', 'success');
       setSelectedBooking(null);
       setIsCheckoutOpen(false);
       setOverrideBasePrice(null);
@@ -1629,7 +1702,7 @@ const AdminDashboard = () => {
       setApplyAnticipation(false);
     } catch (err) {
       console.error('Erro ao fechar comanda:', err);
-      alert('Falha ao concluir o fechamento da comanda.');
+      toast('Falha ao fechar comanda.', 'error');
     }
   };
 
@@ -3272,13 +3345,11 @@ ${googleLink}
                 Editar
               </button>
               {activePopover.booking.status === 'confirmado' && (
-                <button 
-                  className="btn btn-accent" 
+                <button
+                  className="btn btn-accent"
                   style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
                   onClick={() => {
-                    setSelectedBooking(activePopover.booking);
-                    setOverrideBasePrice(activePopover.booking.servicePrice || activePopover.booking.service?.price || 150);
-                    setIsCheckoutOpen(true);
+                    setComandaBooking(activePopover.booking);
                     setActivePopover({ visible: false, x: 0, y: 0, booking: null });
                   }}
                 >
@@ -4703,6 +4774,16 @@ ${googleLink}
         </div>
       )}
 
+      {comandaBooking && (
+        <ComandaModal
+          booking={comandaBooking}
+          products={products}
+          services={services}
+          settings={settings}
+          onClose={() => setComandaBooking(null)}
+          onConfirm={(payload) => handleFinalizeFromComanda(comandaBooking, payload)}
+        />
+      )}
     </div>
   );
 };
