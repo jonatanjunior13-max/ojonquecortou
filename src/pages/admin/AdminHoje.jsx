@@ -4,6 +4,7 @@ import { Check, Phone, Clock, TrendingUp, TrendingDown, Users, Calendar, AlertCi
 import KpiCard from '../../components/admin/ui/KpiCard';
 import Card from '../../components/admin/ui/Card';
 import EmptyState from '../../components/admin/ui/EmptyState';
+import '../../styles/admin-tokens.css';
 
 const todayStr = () => {
   const n = new Date();
@@ -36,7 +37,8 @@ const statusColor = {
 };
 
 const AdminHoje = () => {
-  const { globalData, handleAcceptBooking } = useOutletContext();
+  const context = useOutletContext() || {};
+  const { globalData = {}, handleAcceptBooking } = context;
   const navigate = useNavigate();
   const today = todayStr();
 
@@ -79,7 +81,7 @@ const AdminHoje = () => {
   }, [todayBookings, nowMin]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div className="admin-app" style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: '24px' }}>
       {/* KPI Row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
         <KpiCard
