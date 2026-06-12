@@ -662,17 +662,48 @@ Use as seguintes tags no "bodyHtml":
     alert('Nova avaliação simulada no Google!');
   };
 
-  const handleManualGbpReply = (id) => {
-    setGoogleReviews(prev => prev.map(rev => {
-      if (rev.id === id) {
-        return {
-          ...rev,
-          reply: `Olá ${rev.author.split(' ')[0]}! Muito obrigado por nos avaliar. Nosso compromisso é sempre realçar a beleza natural de cada textura com muito profissionalismo e técnica. — Jon`
-        };
+  const handleManualGbpReply = async (id) => {
+    const review = googleReviews.find(r => r.id === id);
+    if (!review) return;
+
+    const replyText = `Olá ${review.author.split(' ')[0]}! Muito obrigado por nos avaliar. Nosso compromisso é sempre realçar a beleza natural de cada textura com muito profissionalismo e técnica. — Jon`;
+
+    if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
+      setGoogleReviews(prev => prev.map(rev => {
+        if (rev.id === id) {
+          return { ...rev, reply: replyText };
+        }
+        return rev;
+      }));
+      alert('Resposta enviada com sucesso! 🚀 (Simulado)');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/gbp?action=reply-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reviewId: id,
+          replyComment: replyText
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setGoogleReviews(prev => prev.map(rev => {
+          if (rev.id === id) {
+            return { ...rev, reply: replyText };
+          }
+          return rev;
+        }));
+        alert('Resposta enviada para o Google Maps com sucesso! 🚀');
+      } else {
+        alert(`Erro ao enviar resposta: ${data.error || 'Erro desconhecido'}`);
       }
-      return rev;
-    }));
-    alert('Resposta enviada para o Google com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro de conexão ao enviar resposta ao Google.');
+    }
   };
 
   const handleGenerateGbpPost = async () => {
@@ -981,6 +1012,24 @@ Use as seguintes tags no "bodyHtml":
       if (unsubscribeAdminNotifs) unsubscribeAdminNotifs();
     };
   }, []);
+
+  useEffect(() => {
+    const fetchRealReviews = async () => {
+      if (!gbpConnected) return;
+      try {
+        const res = await fetch('/api/gbp?action=get-reviews');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.reviews && data.reviews.length > 0) {
+            setGoogleReviews(data.reviews);
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao carregar avaliações reais:', err);
+      }
+    };
+    fetchRealReviews();
+  }, [gbpConnected, settings]);
 
   const getDaysAbsent = (lastVisitDate) => {
     if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) return Infinity;
