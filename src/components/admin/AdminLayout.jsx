@@ -9,6 +9,7 @@ import {
   Bell, Check
 } from 'lucide-react';
 import './AdminNavbar.css';
+import '../../styles/admin-tokens.css';
 
 const AdminLayout = () => {
   const [authorized, setAuthorized] = useState(null);
@@ -314,7 +315,7 @@ const AdminLayout = () => {
   }
 
   return (
-    <div className={`admin-app-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
+    <div className={`admin-app admin-app-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
       {isMobileViewport && location.pathname !== '/admin/mobile' && (
         <button 
           type="button"
