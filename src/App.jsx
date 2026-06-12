@@ -39,7 +39,7 @@ const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'));
 const AdminMarketing = React.lazy(() => import('./pages/admin/AdminMarketing'));
 const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'));
 const AdminMobileApp = React.lazy(() => import('./pages/admin/AdminMobileApp'));
-const AdminHoje = React.lazy(() => import('./pages/admin/AdminHoje'));
+import AdminHoje from './pages/admin/AdminHoje';
 
 import GoogleAnalytics from './components/GoogleAnalytics';
 import CustomCursor from './components/CustomCursor';
@@ -92,18 +92,18 @@ function App() {
         </Route>
 
         {/* Rotas Administrativas */}
-        <Route path="/admin/login" element={<React.Suspense fallback={null}><AdminLogin /></React.Suspense>} />
-        <Route path="/admin/mobile" element={<React.Suspense fallback={null}><AdminMobileApp /></React.Suspense>} />
-        <Route path="/admin" element={<React.Suspense fallback={null}><AdminLayout /></React.Suspense>}>
+        <Route path="/admin/login" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Acesso...</div>}><AdminLogin /></React.Suspense>} />
+        <Route path="/admin/mobile" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense>} />
+        <Route path="/admin" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Painel...</div>}><AdminLayout /></React.Suspense>}>
           <Route index element={<Navigate to="/admin/hoje" replace />} />
-          <Route path="hoje" element={<React.Suspense fallback={null}><AdminHoje /></React.Suspense>} />
-          <Route path="agenda" element={<React.Suspense fallback={null}><AdminDashboard /></React.Suspense>} />
-          <Route path="servicos" element={<React.Suspense fallback={null}><AdminServices /></React.Suspense>} />
-          <Route path="clientes" element={<React.Suspense fallback={null}><AdminClients /></React.Suspense>} />
-          <Route path="estoque" element={<React.Suspense fallback={null}><AdminInventory /></React.Suspense>} />
-          <Route path="financeiro" element={<React.Suspense fallback={null}><AdminFinancial /></React.Suspense>} />
-          <Route path="marketing" element={<React.Suspense fallback={null}><AdminMarketing /></React.Suspense>} />
-          <Route path="configuracoes" element={<React.Suspense fallback={null}><AdminSettings /></React.Suspense>} />
+          <Route path="hoje" element={<AdminHoje />} />
+          <Route path="agenda" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Agenda...</div>}><AdminDashboard /></React.Suspense>} />
+          <Route path="servicos" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Serviços...</div>}><AdminServices /></React.Suspense>} />
+          <Route path="clientes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense>} />
+          <Route path="estoque" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Estoque...</div>}><AdminInventory /></React.Suspense>} />
+          <Route path="financeiro" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Financeiro...</div>}><AdminFinancial /></React.Suspense>} />
+          <Route path="marketing" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Marketing...</div>}><AdminMarketing /></React.Suspense>} />
+          <Route path="configuracoes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense>} />
         </Route>
       </Routes>
     </Router>
