@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight } from 'lucide-react';
@@ -1327,7 +1327,7 @@ Use as seguintes tags no "bodyHtml":
       </div>
 
       {loading ? (
-        <div style={{ padding: 24, textAlign: 'center', color: 'var(--muted)' }}>Carregando dados...</div>
+        <div style={{ padding: 24, textAlign: 'center', color: 'var(--adm-muted)' }}>Carregando dados...</div>
       ) : (
         <div className="crm-body-content">
           <div className="marketing-tab-view">
@@ -1342,9 +1342,9 @@ Use as seguintes tags no "bodyHtml":
               {(() => {
                 const stats = getDeliveryStats();
                 return (
-                  <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                  <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                      <BarChart3 size={18} style={{ color: 'var(--accent)' }} />
+                      <BarChart3 size={18} style={{ color: 'var(--adm-gold)' }} />
                       <h4 style={{ margin: 0 }}>Histórico de Envios (Acompanhamento)</h4>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
@@ -1353,20 +1353,20 @@ Use as seguintes tags no "bodyHtml":
                         { title: 'Acompanhamento Semanal', subtitle: 'Últimos 7 dias', data: stats.week },
                         { title: 'Acompanhamento Mensal', subtitle: 'Últimos 30 dias', data: stats.month }
                       ].map((item, idx) => (
-                        <div key={idx} style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--rule)', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        <div key={idx} style={{ padding: '16px', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: 12 }}>
                           <div>
                             <span style={{ fontWeight: 600, fontSize: '0.9rem', display: 'block' }}>{item.title}</span>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>{item.subtitle}</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.subtitle}</span>
                           </div>
                           <div style={{ display: 'flex', gap: 12 }}>
-                            <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'center' }}>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+                            <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--adm-rule)', borderRadius: '4px', textAlign: 'center' }}>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
                                 <Mail size={12} /> E-mail
                               </div>
                               <strong style={{ fontSize: '1.25rem', color: 'var(--text)' }}>{item.data.email}</strong>
                             </div>
-                            <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: '4px', textAlign: 'center' }}>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+                            <div style={{ flex: 1, padding: '8px', background: 'var(--panel-bg)', border: '1px solid var(--adm-rule)', borderRadius: '4px', textAlign: 'center' }}>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
                                 <Phone size={12} /> WhatsApp
                               </div>
                               <strong style={{ fontSize: '1.25rem', color: 'var(--text)' }}>{item.data.whatsapp}</strong>
@@ -1380,7 +1380,7 @@ Use as seguintes tags no "bodyHtml":
               })()}
               
               {/* Client Selection Tool */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <h4 style={{ margin: '0 0 12px 0' }}>Buscar e Marcar Clientes</h4>
                 <div className="search-wrap" style={{ marginBottom: '16px', maxWidth: '400px' }}>
                   <Search size={14} className="search-icon" />
@@ -1389,11 +1389,11 @@ Use as seguintes tags no "bodyHtml":
                     placeholder="Pesquisar por nome ou telefone..." 
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    style={{ width: '100%', padding: '8px 8px 8px 32px', borderRadius: '4px', border: '1px solid var(--rule)' }}
+                    style={{ width: '100%', padding: '8px 8px 8px 32px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}
                   />
                 </div>
 
-                <div style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                <div style={{ maxHeight: '200px', overflowY: 'auto', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
                   <table className="admin-table" style={{ margin: 0 }}>
                     <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
                       <tr>
@@ -1439,16 +1439,16 @@ Use as seguintes tags no "bodyHtml":
                   </table>
                 </div>
                 {selectedCampaignPhones.length > 0 && (
-                  <p style={{ fontSize: '0.85rem', color: 'var(--accent)', marginTop: '8px', fontWeight: 600 }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--adm-gold)', marginTop: '8px', fontWeight: 600 }}>
                     {selectedCampaignPhones.length} clientes marcados. (Escolha "Selecionadas no Relatório" abaixo).
                   </p>
                 )}
               </div>
               
               {/* Automações Fixas */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <h4 style={{ margin: '0 0 6px 0' }}>Régua de Relacionamento (Automática)</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '20px', marginTop: 0 }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginBottom: '20px', marginTop: 0 }}>
                   Acompanhe a jornada pós-atendimento. O sistema verifica diariamente e dispara a sequência abaixo.
                 </p>
 
@@ -1474,7 +1474,7 @@ Use as seguintes tags no "bodyHtml":
                     { key: 'birthdayEnabled', label: 'Aniversário (D-5)', desc: 'Convite c/ antecedência' }
                   ].map(step => (
 
-                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
+                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--adm-rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{step.label}</span>
                         <button 
@@ -1485,7 +1485,7 @@ Use as seguintes tags no "bodyHtml":
                           {settings?.automations?.[step.key] !== false ? 'ON' : 'OFF'}
                         </button>
                       </div>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{step.desc}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>{step.desc}</span>
                       
                       <div style={{ display: 'flex', gap: '6px', marginTop: '10px' }}>
                         <button 
@@ -1524,11 +1524,11 @@ Use as seguintes tags no "bodyHtml":
                     }) : [];
 
                     if (todayLogs.length === 0) {
-                      return <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado hoje.</p>;
+                      return <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado hoje.</p>;
                     }
 
                     return (
-                      <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--rule)', borderRadius: '6px' }}>
+                      <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
                         <table className="admin-table" style={{ margin: 0 }}>
                           <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
                             <tr>
@@ -1556,7 +1556,7 @@ Use as seguintes tags no "bodyHtml":
               </div>
 
               {/* Automação de Aniversário — WhatsApp */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <h4 style={{ margin: 0 }}>🎂 Automação de Aniversário (WhatsApp)</h4>
                   <button
@@ -1566,13 +1566,13 @@ Use as seguintes tags no "bodyHtml":
                     {settings?.automations?.birthdayWaEnabled !== false ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: '20px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: '20px' }}>
                   Dispara uma mensagem personalizada no WhatsApp para clientes que fazem aniversário hoje ou nos próximos dias. O Jon é notificado e abre cada conversa com 1 clique.
                 </p>
 
                 {/* Janela de disparo */}
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted)' }}>Exibir aniversariantes:</span>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Exibir aniversariantes:</span>
                   {[
                     { label: 'Somente hoje', value: 0 },
                     { label: 'Próximos 3 dias', value: 3 },
@@ -1583,9 +1583,9 @@ Use as seguintes tags no "bodyHtml":
                       onClick={() => setBirthdayWindowDays(opt.value)}
                       style={{
                         padding: '6px 14px', borderRadius: '999px', fontSize: '0.8rem', fontWeight: 600,
-                        border: birthdayWindowDays === opt.value ? '2px solid var(--accent)' : '1px solid var(--rule)',
+                        border: birthdayWindowDays === opt.value ? '2px solid var(--adm-gold)' : '1px solid var(--adm-rule)',
                         background: birthdayWindowDays === opt.value ? 'rgba(176,90,46,0.12)' : 'transparent',
-                        color: birthdayWindowDays === opt.value ? 'var(--accent)' : 'var(--muted)',
+                        color: birthdayWindowDays === opt.value ? 'var(--adm-gold)' : 'var(--adm-muted)',
                         cursor: 'pointer'
                       }}
                     >
@@ -1598,17 +1598,17 @@ Use as seguintes tags no "bodyHtml":
                 {(() => {
                   const bClients = getBirthdayClients(birthdayWindowDays);
                   return bClients.length === 0 ? (
-                    <div style={{ padding: '20px', textAlign: 'center', border: '1px dashed var(--rule)', borderRadius: '8px', color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '20px' }}>
+                    <div style={{ padding: '20px', textAlign: 'center', border: '1px dashed var(--adm-rule)', borderRadius: '8px', color: 'var(--adm-muted)', fontSize: '0.9rem', marginBottom: '20px' }}>
                       🎉 Nenhum aniversariante {birthdayWindowDays === 0 ? 'hoje' : `nos próximos ${birthdayWindowDays} dias`}.
                     </div>
                   ) : (
-                    <div style={{ border: '1px solid var(--rule)', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
-                      <div style={{ padding: '10px 16px', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ border: '1px solid var(--adm-rule)', borderRadius: '8px', overflow: 'hidden', marginBottom: '20px' }}>
+                      <div style={{ padding: '10px 16px', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--adm-rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>🎂 {bClients.length} aniversariante{bClients.length > 1 ? 's' : ''} encontrado{bClients.length > 1 ? 's' : ''}</span>
                         {isSendingBirthdayWa ? (
                           <button
                             className="btn btn-danger"
-                            style={{ padding: '7px 16px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6, background: '#d9534f', color: '#fff' }}
+                            style={{ padding: '7px 16px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6, background: 'var(--adm-danger)', color: '#fff' }}
                             onClick={() => { cancelSendingRef.current = true; }}
                           >
                             🛑 Parar Disparos
@@ -1628,13 +1628,13 @@ Use as seguintes tags no "bodyHtml":
                           const bParts = (c.birthdate || '').split('-');
                           const bDate = bParts.length === 3 ? `${bParts[2]}/${bParts[1]}` : '—';
                           return (
-                            <div key={c.phone} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--rule)' }}>
+                            <div key={c.phone} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderBottom: '1px solid var(--adm-rule)' }}>
                               <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #C97B49, #6E2F18)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: '0.9rem', flexShrink: 0 }}>
                                 {(c.name || '?')[0].toUpperCase()}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{c.name}</div>
-                                <div style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>{c.phone} · Aniversário: {bDate}</div>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>{c.phone} · Aniversário: {bDate}</div>
                               </div>
                               <a
                                 href={getBirthdayWaLink(c)}
@@ -1654,20 +1654,20 @@ Use as seguintes tags no "bodyHtml":
                 })()}
 
                 {/* Editor de mensagem */}
-                <div style={{ background: 'var(--sidebar-bg)', borderRadius: '8px', padding: '16px', border: '1px solid var(--rule)' }}>
+                <div style={{ background: 'var(--sidebar-bg)', borderRadius: '8px', padding: '16px', border: '1px solid var(--adm-rule)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                     <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>✏️ Mensagem de Aniversário</span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Tag: <code style={{ background: 'rgba(176,90,46,0.1)', color: 'var(--accent)', padding: '1px 5px', borderRadius: 3 }}>{'{nome}'}</code></span>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Tag: <code style={{ background: 'rgba(176,90,46,0.1)', color: 'var(--adm-gold)', padding: '1px 5px', borderRadius: 3 }}>{'{nome}'}</code></span>
                   </div>
                   <textarea
                     rows={4}
                     value={birthdayWaMessage}
                     onChange={e => setBirthdayWaMessage(e.target.value)}
-                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--panel-bg)', color: 'var(--text)', fontSize: '0.88rem', lineHeight: 1.55, resize: 'vertical', boxSizing: 'border-box' }}
+                    style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--text)', fontSize: '0.88rem', lineHeight: 1.55, resize: 'vertical', boxSizing: 'border-box' }}
                     placeholder="Digite a mensagem de aniversário..."
                   />
-                  <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: 6, marginBottom: 0 }}>
-                    A tag <code style={{ color: 'var(--accent)' }}>{'{nome}'}</code> será substituída pelo primeiro nome do cliente no disparo.
+                  <p style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', marginTop: 6, marginBottom: 0 }}>
+                    A tag <code style={{ color: 'var(--adm-gold)' }}>{'{nome}'}</code> será substituída pelo primeiro nome do cliente no disparo.
                   </p>
                 </div>
 
@@ -1680,7 +1680,7 @@ Use as seguintes tags no "bodyHtml":
               </div>
 
               {/* Campanha de Lançamento (Novo Sistema) */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                   <h4 style={{ margin: 0 }}>🚀 Campanha de Lançamento — Novo Sistema de Agendamento</h4>
                   <button
@@ -1690,7 +1690,7 @@ Use as seguintes tags no "bodyHtml":
                     {settings?.automations?.launchCampaignEnabled !== false ? 'ON' : 'OFF'}
                   </button>
                 </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginTop: 0, marginBottom: '20px' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: '20px' }}>
                   Campanha para a lista fria (leads sem histórico de visita no Studio). Envia uma sequência de 3 e-mails para atrair os primeiros agendamentos pelo site.
                 </p>
 
@@ -1700,11 +1700,11 @@ Use as seguintes tags no "bodyHtml":
                     { key: 'launchE2', label: 'E-mail 2 (D+5)', desc: 'Construção de Valor (Método)' },
                     { key: 'launchE3', label: 'E-mail 3 (D+10)', desc: 'Exclusividade & Urgência' }
                   ].map(step => (
-                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
+                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--adm-rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                         <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{step.label}</span>
                       </div>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '12px' }}>{step.desc}</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: '12px' }}>{step.desc}</span>
                       <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
                         <button 
                           className="btn btn-outline btn-small"
@@ -1732,11 +1732,11 @@ Use as seguintes tags no "bodyHtml":
                   ))}
                 </div>
 
-                <div style={{ background: 'var(--sidebar-bg)', padding: '16px', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+                <div style={{ background: 'var(--sidebar-bg)', padding: '16px', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
                     <div>
                       <h5 style={{ margin: '0 0 4px 0' }}>Disparar Sequência Manualmente</h5>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>
+                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
                         Alvos: {
                           clients.filter(c => {
                             if (!c.email || c.email === 'Não informado' || !c.email.includes('@')) return false;
@@ -1748,11 +1748,11 @@ Use as seguintes tags no "bodyHtml":
                       </p>
                       {isSendingEmail && emailProgressTotal > 0 && (
                         <div style={{ marginTop: '8px', minWidth: '200px' }}>
-                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--accent)' }}>
+                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--adm-gold)' }}>
                             Progresso: {emailProgressCount} de {emailProgressTotal} enviados ({Math.round((emailProgressCount / emailProgressTotal) * 100)}%)
                           </span>
-                          <div style={{ width: '100%', height: '4px', background: 'var(--rule)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden' }}>
-                            <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s ease' }}></div>
+                          <div style={{ width: '100%', height: '4px', background: 'var(--adm-rule)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden' }}>
+                            <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--adm-gold)', transition: 'width 0.3s ease' }}></div>
                           </div>
                         </div>
                       )}
@@ -1761,7 +1761,7 @@ Use as seguintes tags no "bodyHtml":
                       <button
                         className="btn btn-danger"
                         onClick={() => { cancelSendingRef.current = true; }}
-                        style={{ padding: '10px 20px', fontSize: '0.85rem', background: '#d9534f', color: '#fff' }}
+                        style={{ padding: '10px 20px', fontSize: '0.85rem', background: 'var(--adm-danger)', color: '#fff' }}
                       >
                         🛑 Parar Disparos
                       </button>
@@ -1867,9 +1867,9 @@ Use as seguintes tags no "bodyHtml":
               </div>
 
               {/* E-mails do Sistema e Notificações */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)', marginBottom: '20px' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)', marginBottom: '20px' }}>
                 <h4 style={{ margin: '0 0 6px 0' }}>E-mails do Sistema e Notificações</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '20px', marginTop: 0 }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginBottom: '20px', marginTop: 0 }}>
                   Edite o HTML das automações automáticas do sistema e acompanhe o histórico de notificações de agendamentos.
                 </p>
 
@@ -1882,7 +1882,7 @@ Use as seguintes tags no "bodyHtml":
                     { key: 'admin_solicitacao_recebida', label: 'Pedido em Espera (Admin)', desc: 'Enviado para você (Administrador) quando há uma nova solicitação.', toggleKey: 'adminWaitingRequestEmailEnabled' },
                     { key: 'admin_horario_confirmado', label: 'Confirmação de Horário (Admin)', desc: 'Enviado para você (Administrador) quando um agendamento é confirmado.', toggleKey: 'adminBookingConfirmationEmailEnabled' }
                   ].map(item => (
-                    <div key={item.key} style={{ padding: '16px', border: '1px solid var(--rule)', borderRadius: '8px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <div key={item.key} style={{ padding: '16px', border: '1px solid var(--adm-rule)', borderRadius: '8px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                       <div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                           <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{item.label}</span>
@@ -1894,7 +1894,7 @@ Use as seguintes tags no "bodyHtml":
                             {settings?.automations?.[item.toggleKey] !== false ? 'ON' : 'OFF'}
                           </button>
                         </div>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '0 0 16px 0', lineHeight: 1.4 }}>{item.desc}</p>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', margin: '0 0 16px 0', lineHeight: 1.4 }}>{item.desc}</p>
                       </div>
                       
                       <div style={{ display: 'flex', gap: '8px', marginTop: 'auto' }}>
@@ -2029,7 +2029,7 @@ Use as seguintes tags no "bodyHtml":
                       <button 
                         className="btn btn-danger" 
                         onClick={() => { cancelSendingRef.current = true; }}
-                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#d9534f', color: '#fff' }}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: 'var(--adm-danger)', color: '#fff' }}
                       >
                         🛑 Parar Disparos
                       </button>
@@ -2050,7 +2050,7 @@ Use as seguintes tags no "bodyHtml":
                       <button 
                         className="btn btn-danger" 
                         onClick={() => { cancelSendingRef.current = true; }}
-                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: '#d9534f', color: '#fff' }}
+                        style={{ padding: '8px 16px', fontSize: '0.85rem', background: 'var(--adm-danger)', color: '#fff' }}
                       >
                         🛑 Parar Disparos
                       </button>
@@ -2074,13 +2074,13 @@ Use as seguintes tags no "bodyHtml":
                 )}
 
                 {marketingChannel === 'email' && isSendingEmail && emailProgressTotal > 0 && (
-                  <div style={{ margin: '12px 0', padding: '12px', background: 'rgba(176,90,46,0.1)', border: '1px solid var(--rule)', borderRadius: '6px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--accent)' }}>
+                  <div style={{ margin: '12px 0', padding: '12px', background: 'rgba(176,90,46,0.1)', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-gold)' }}>
                       <span>Progresso do Disparo</span>
                       <span>{emailProgressCount} de {emailProgressTotal} enviados ({Math.round((emailProgressCount / emailProgressTotal) * 100)}%)</span>
                     </div>
-                    <div style={{ width: '100%', height: '6px', background: 'var(--rule)', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s ease' }}></div>
+                    <div style={{ width: '100%', height: '6px', background: 'var(--adm-rule)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--adm-gold)', transition: 'width 0.3s ease' }}></div>
                     </div>
                   </div>
                 )}
@@ -2119,7 +2119,7 @@ Use as seguintes tags no "bodyHtml":
                             <Send size={12} /> WhatsApp
                           </a>
                         ) : (
-                          <span style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
                             {c.email && c.email !== 'Não informado' ? c.email : 'Sem E-mail'}
                           </span>
                         )}
@@ -2410,13 +2410,13 @@ Use as seguintes tags no "bodyHtml":
               </div>
 
               {/* ───────── NEWSLETTER LEITURA DE FIO ───────── */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Newspaper size={18} style={{ color: 'var(--accent)' }} />
+                    <Newspaper size={18} style={{ color: 'var(--adm-gold)' }} />
                     <div>
                       <h4 style={{ margin: 0, fontSize: '1rem' }}>Newsletter · Leitura de Fio</h4>
-                      <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--muted)' }}>Gerada automaticamente · contato@ojonquecortou.com.br → todas as clientes</p>
+                      <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>Gerada automaticamente · contato@ojonquecortou.com.br → todas as clientes</p>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: 8 }}>
@@ -2433,7 +2433,7 @@ Use as seguintes tags no "bodyHtml":
                     <button
                       onClick={handleFetchBounces}
                       className="btn btn-outline btn-small"
-                      style={{ fontSize: '0.75rem', borderColor: 'rgba(229,62,62,0.6)', color: '#e53e3e', display: 'flex', alignItems: 'center', gap: 6 }}
+                      style={{ fontSize: '0.75rem', borderColor: 'rgba(229,62,62,0.6)', color: 'var(--adm-danger)', display: 'flex', alignItems: 'center', gap: 6 }}
                       disabled={isLoadingBounces}
                     >
                       <RefreshCw size={12} style={{ animation: isLoadingBounces ? 'spin 1.5s linear infinite' : 'none' }} /> {isLoadingBounces ? 'Carregando...' : 'Verificar Bounces'}
@@ -2447,14 +2447,14 @@ Use as seguintes tags no "bodyHtml":
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
                         <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>Assunto</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 2 }}>Assunto</div>
                           <div style={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text)' }}>{activeNewsletter.subject}</div>
                         </div>
                         <span style={{
                           marginLeft: 'auto',
                           fontSize: '0.7rem', padding: '3px 10px', borderRadius: 12, fontWeight: 700,
                           background: activeNewsletter.status === 'sent' ? 'rgba(56,161,105,0.15)' : activeNewsletter.status === 'approved' ? 'rgba(99,102,241,0.15)' : 'rgba(247,170,0,0.15)',
-                          color: activeNewsletter.status === 'sent' ? '#38a169' : activeNewsletter.status === 'approved' ? '#6366f1' : '#d69e00'
+                          color: activeNewsletter.status === 'sent' ? 'var(--adm-success)' : activeNewsletter.status === 'approved' ? '#6366f1' : '#d69e00'
                         }}>
                           {activeNewsletter.status === 'sent' ? `✅ Enviada (${activeNewsletter.sentCount} clientes)` : activeNewsletter.status === 'approved' ? '🟣 Aprovada — pronta para envio' : '🟡 Rascunho — aguardando aprovação'}
                         </span>
@@ -2482,7 +2482,7 @@ Use as seguintes tags no "bodyHtml":
                         {(activeNewsletter.status === 'draft' || activeNewsletter.status === 'approved') && (
                           <button
                             className="btn btn-outline btn-small"
-                            style={{ display: 'flex', alignItems: 'center', gap: 6, borderColor: '#e53e3e', color: '#e53e3e', background: 'transparent' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: 6, borderColor: 'var(--adm-danger)', color: 'var(--adm-danger)', background: 'transparent' }}
                             onClick={() => handleRegenerateNewsletter(activeNewsletter.id)}
                             disabled={isGeneratingNewsletter}
                           >
@@ -2510,7 +2510,7 @@ Use as seguintes tags no "bodyHtml":
                             placeholder="seu@email.com (enviar teste)"
                             value={testEmailAddress}
                             onChange={e => setTestEmailAddress(e.target.value)}
-                            style={{ flex: 1, padding: '7px 12px', borderRadius: 4, border: '1px solid var(--rule)', fontSize: '0.85rem', background: 'var(--input-bg)', color: 'var(--text)' }}
+                            style={{ flex: 1, padding: '7px 12px', borderRadius: 4, border: '1px solid var(--adm-rule)', fontSize: '0.85rem', background: 'var(--input-bg)', color: 'var(--text)' }}
                           />
                           <button
                             className="btn btn-outline btn-small"
@@ -2531,15 +2531,15 @@ Use as seguintes tags no "bodyHtml":
                       )}
 
                       {activeNewsletter.sentAt && (
-                        <p style={{ fontSize: '0.78rem', color: 'var(--muted)', marginTop: 10 }}>
+                        <p style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', marginTop: 10 }}>
                           Enviada em {new Date(activeNewsletter.sentAt).toLocaleString('pt-BR')} · {activeNewsletter.sentCount} destinatária(s)
                         </p>
                       )}
                     </div>
 
                     {/* RIGHT: mini preview */}
-                    <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid var(--rule)', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', height: 420 }}>
-                      <div style={{ background: 'var(--sidebar-bg)', padding: '8px 14px', fontSize: '0.72rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <div style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid var(--adm-rule)', boxShadow: '0 2px 12px rgba(0,0,0,0.15)', height: 420 }}>
+                      <div style={{ background: 'var(--sidebar-bg)', padding: '8px 14px', fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f57', display: 'inline-block' }}></span>
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#febc2e', display: 'inline-block' }}></span>
                         <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#28c840', display: 'inline-block' }}></span>
@@ -2564,8 +2564,8 @@ Use as seguintes tags no "bodyHtml":
       {showNewsletterPreview && activeNewsletter && (
         <div className="modal-overlay" onClick={() => setShowNewsletterPreview(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%', padding: '0', overflow: 'hidden' }}>
-            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
-              <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--adm-rule)' }}>
+              <div style={{ color: 'var(--adm-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                 Newsletter · {activeNewsletter.month}
               </div>
               <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#fff' }}>{activeNewsletter.subject}</div>
@@ -2594,17 +2594,17 @@ Use as seguintes tags no "bodyHtml":
         <div className="modal-overlay" onClick={() => setShowBounceList(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '800px', width: '90%', maxHeight: '80vh', overflowY: 'auto', padding: '24px' }}>
             <h3 style={{ margin: '0 0 8px 0', fontFamily: "'DM Serif Display', Georgia, serif" }}>Lista de Bounces (Emails Rejeitados)</h3>
-            <p style={{ margin: '0 0 20px 0', fontSize: '0.85rem', color: 'var(--muted)' }}>
+            <p style={{ margin: '0 0 20px 0', fontSize: '0.85rem', color: 'var(--adm-muted)' }}>
               Essas clientes tiveram e-mails marcados como inválidos ou inexistentes pelo servidor Mailgun. Recomendamos corrigir os cadastros no Firestore ou desativar o envio de newsletter para elas.
             </p>
 
             {bouncesData.length === 0 ? (
-              <p style={{ textAlign: 'center', padding: '30px 0', color: 'var(--muted)' }}>Nenhum e-mail rejeitado (bounce) encontrado no Mailgun! 🎉</p>
+              <p style={{ textAlign: 'center', padding: '30px 0', color: 'var(--adm-muted)' }}>Nenhum e-mail rejeitado (bounce) encontrado no Mailgun! 🎉</p>
             ) : (
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
                   <thead>
-                    <tr style={{ borderBottom: '2px solid var(--rule)', color: 'var(--muted)' }}>
+                    <tr style={{ borderBottom: '2px solid var(--adm-rule)', color: 'var(--adm-muted)' }}>
                       <th style={{ padding: '10px 8px' }}>Cliente</th>
                       <th style={{ padding: '10px 8px' }}>E-mail</th>
                       <th style={{ padding: '10px 8px' }}>Telefone (ID)</th>
@@ -2614,20 +2614,20 @@ Use as seguintes tags no "bodyHtml":
                   </thead>
                   <tbody>
                     {bouncesData.map((b, idx) => (
-                      <tr key={idx} style={{ borderBottom: '1px solid var(--rule)' }}>
+                      <tr key={idx} style={{ borderBottom: '1px solid var(--adm-rule)' }}>
                         <td style={{ padding: '10px 8px', fontWeight: 600 }}>{b.name}</td>
                         <td style={{ padding: '10px 8px', fontFamily: 'monospace' }}>{b.email}</td>
-                        <td style={{ padding: '10px 8px', color: 'var(--muted)' }}>{b.phone || 'N/A'}</td>
+                        <td style={{ padding: '10px 8px', color: 'var(--adm-muted)' }}>{b.phone || 'N/A'}</td>
                         <td style={{ padding: '10px 8px' }}>
                           <span style={{
                             fontSize: '0.7rem', padding: '2px 8px', borderRadius: 10,
                             background: b.newsletterStatus === 'Ativo' ? 'rgba(56,161,105,0.15)' : 'rgba(229,62,62,0.15)',
-                            color: b.newsletterStatus === 'Ativo' ? '#38a169' : '#e53e3e'
+                            color: b.newsletterStatus === 'Ativo' ? 'var(--adm-success)' : 'var(--adm-danger)'
                           }}>
                             {b.newsletterStatus}
                           </span>
                         </td>
-                        <td style={{ padding: '10px 8px', color: '#e53e3e', fontSize: '0.78rem' }}>{b.error || 'Desconhecido'}</td>
+                        <td style={{ padding: '10px 8px', color: 'var(--adm-danger)', fontSize: '0.78rem' }}>{b.error || 'Desconhecido'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -2646,7 +2646,7 @@ Use as seguintes tags no "bodyHtml":
         <div className="modal-overlay" onClick={() => setShowEmailEditModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px', width: '100%' }}>
             <h3>Editar E-mail da Régua</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>As tags dinâmicas como <b>{'{'}nome{'}'}</b> serão substituídas no disparo.</p>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>As tags dinâmicas como <b>{'{'}nome{'}'}</b> serão substituídas no disparo.</p>
             
             <div className="form-group-sleek">
               <label>Assunto</label>
@@ -2679,7 +2679,7 @@ Use as seguintes tags no "bodyHtml":
         <div className="modal-overlay" onClick={() => setShowCustomHtmlModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%' }}>
             <h3>Configurar HTML para Automação</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Suba um arquivo HTML ou cole o código fonte abaixo. Use a tag <b>{'{nome}'}</b> para exibir o nome da cliente.</p>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Suba um arquivo HTML ou cole o código fonte abaixo. Use a tag <b>{'{nome}'}</b> para exibir o nome da cliente.</p>
             
             <div style={{ marginBottom: 16 }}>
               <input 
@@ -2717,8 +2717,8 @@ Use as seguintes tags no "bodyHtml":
       {showCustomPreviewModal && (
         <div className="modal-overlay" onClick={() => setShowCustomPreviewModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%', padding: '0', overflow: 'hidden' }}>
-            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
-              <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--adm-rule)' }}>
+              <div style={{ color: 'var(--adm-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                 Visualização do Template HTML
               </div>
               <strong style={{ color: '#fff' }}>Preview</strong>
@@ -2754,10 +2754,10 @@ Use as seguintes tags no "bodyHtml":
       {showAdminNotifModal && selectedAdminNotif && (
         <div className="modal-overlay" onClick={() => setShowAdminNotifModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '95%', padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '80vh' }}>
-            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--adm-rule)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
+                  <div style={{ color: 'var(--adm-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>
                     E-mail Enviado ao Administrador
                   </div>
                   <strong style={{ color: '#fff' }}>{selectedAdminNotif.subject}</strong>
@@ -2766,13 +2766,13 @@ Use as seguintes tags no "bodyHtml":
               </div>
             </div>
             
-            <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--rule)', background: 'var(--sidebar-bg)', fontSize: '0.85rem' }}>
+            <div style={{ padding: '12px 20px', borderBottom: '1px solid var(--adm-rule)', background: 'var(--sidebar-bg)', fontSize: '0.85rem' }}>
               <div style={{ marginBottom: '4px' }}><strong>Destinatário:</strong> Notificação do Salão</div>
               <div style={{ marginBottom: '4px' }}><strong>Data de Envio:</strong> {new Date(selectedAdminNotif.timestamp).toLocaleString('pt-BR')}</div>
               <div><strong>Cliente Relacionado:</strong> {selectedAdminNotif.clientName}</div>
             </div>
             
-            <div style={{ backgroundColor: '#fff', width: '100%', flex: 1, overflow: 'hidden' }}>
+            <div style={{ backgroundColor: 'var(--adm-surface)', width: '100%', flex: 1, overflow: 'hidden' }}>
               <iframe 
                 srcDoc={selectedAdminNotif.htmlBody || '<h3>Nenhum conteúdo no e-mail.</h3>'}
                 style={{ width: '100%', height: '100%', border: 'none' }}
@@ -2780,7 +2780,7 @@ Use as seguintes tags no "bodyHtml":
               />
             </div>
             
-            <div className="modal-actions" style={{ padding: '16px', borderTop: '1px solid var(--rule)' }}>
+            <div className="modal-actions" style={{ padding: '16px', borderTop: '1px solid var(--adm-rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAdminNotifModal(false)}>Fechar</button>
             </div>
           </div>
@@ -2791,8 +2791,8 @@ Use as seguintes tags no "bodyHtml":
       {showEmailPreviewModal && (
         <div className="modal-overlay" onClick={() => setShowEmailPreviewModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px', width: '100%', padding: '0', overflow: 'hidden' }}>
-            <div style={{ padding: '20px', borderBottom: '1px solid var(--rule)' }}>
-              <div style={{ color: 'var(--muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+            <div style={{ padding: '20px', borderBottom: '1px solid var(--adm-rule)' }}>
+              <div style={{ color: 'var(--adm-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                 Preview de E-mail
               </div>
               <div style={{ fontWeight: 600, fontSize: '1.05rem', color: '#fff' }}>{emailPreviewContent.subject.replace(/{nome}/g, '[Nome]')}</div>

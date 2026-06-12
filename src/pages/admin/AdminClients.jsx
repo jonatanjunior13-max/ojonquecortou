@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+﻿import React, { useState, useEffect, useRef } from 'react';
 import { db, auth, withTimeout } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload, ChevronLeft } from 'lucide-react';
@@ -539,7 +539,7 @@ const AdminClients = () => {
     if (days === Infinity) return { code: 'nunca', text: 'Sem Visitas', color: '#8A7866' };
     if (days < 30) return { code: 'ativo', text: 'Ativo (<30d)', color: '#2f855a' };
     if (days >= 30 && days <= 60) return { code: 'inativo_30', text: 'Ausente (30-60d)', color: '#b05a2e' };
-    return { code: 'inativo_60', text: 'Adormecido (>60d)', color: '#c53030' };
+    return { code: 'inativo_60', text: 'Adormecido (>60d)', color: 'var(--adm-danger)' };
   };
 
   // Clientes filtrados na barra de pesquisa
@@ -854,7 +854,7 @@ const AdminClients = () => {
       </div>
 
       {loading ? (
-        <div style={{ padding: 24, textAlign: 'center', color: 'var(--muted)' }}>
+        <div style={{ padding: 24, textAlign: 'center', color: 'var(--adm-muted)' }}>
           Carregando base de relacionamento...
         </div>
       ) : (
@@ -1161,13 +1161,13 @@ const AdminClients = () => {
               </div>
 
               {/* Filtros Avançados de Relatório */}
-              <div className="report-filters-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', margin: '16px 0', padding: '16px', background: 'var(--card-bg)', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div className="report-filters-bar" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', margin: '16px 0', padding: '16px', background: 'var(--card-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 <div className="filter-group-sleek" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <label style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>Sexo / Gênero</label>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 'bold' }}>Sexo / Gênero</label>
                   <select 
                     value={genderFilter} 
                     onChange={e => setGenderFilter(e.target.value)}
-                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--panel-bg)', color: 'var(--text-main)', fontSize: '0.85rem' }}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--text-main)', fontSize: '0.85rem' }}
                   >
                     <option value="todos">Todos</option>
                     <option value="Feminino">Feminino</option>
@@ -1177,11 +1177,11 @@ const AdminClients = () => {
                 </div>
 
                 <div className="filter-group-sleek" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                  <label style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 'bold' }}>Último Serviço Realizado</label>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 'bold' }}>Último Serviço Realizado</label>
                   <select 
                     value={serviceFilter} 
                     onChange={setServiceFilter}
-                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--panel-bg)', color: 'var(--text-main)', fontSize: '0.85rem' }}
+                    style={{ padding: '6px 12px', borderRadius: '6px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--text-main)', fontSize: '0.85rem' }}
                   >
                     <option value="todos">Todos os Serviços</option>
                     {uniqueServices.map(srv => (
@@ -1249,7 +1249,7 @@ const AdminClients = () => {
                   <tbody>
                     {reportClients.length === 0 ? (
                       <tr>
-                        <td colSpan="9" style={{ textAlign: 'center', padding: 24, color: 'var(--muted)' }}>
+                        <td colSpan="9" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
                           Nenhum cliente atende ao critério de segmentação selecionado.
                         </td>
                       </tr>
@@ -1282,7 +1282,7 @@ const AdminClients = () => {
                             </td>
                             <td>
                               {c.lastVisit === 'Nunca visitou' ? (
-                                <span style={{ color: 'var(--muted)' }}>Sem visitas</span>
+                                <span style={{ color: 'var(--adm-muted)' }}>Sem visitas</span>
                               ) : (
                                 `${new Date(c.lastVisit).toLocaleDateString('pt-BR')} (${days}d atrás)`
                               )}
@@ -1335,9 +1335,9 @@ const AdminClients = () => {
                   required
                   onChange={e => { setImportFile(e.target.files[0]); setImportProgress(0); setImportErrors([]); setImportSummary(''); }}
                 />
-                <small style={{ color: 'var(--muted)', marginTop: 4, display: 'block' }}>
+                <small style={{ color: 'var(--adm-muted)', marginTop: 4, display: 'block' }}>
                   Colunas esperadas: <code>nome, telefone, email, ultimaVisita, aniversario</code> &nbsp;|
-                  &nbsp;<a href="/client_import_template.csv" download style={{ color: 'var(--accent)' }}>Baixar template</a>
+                  &nbsp;<a href="/client_import_template.csv" download style={{ color: 'var(--adm-gold)' }}>Baixar template</a>
                 </small>
               </div>
 
@@ -1354,11 +1354,11 @@ const AdminClients = () => {
 
               {importProgress > 0 && (
                 <div style={{ marginTop: 16 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--muted)', marginBottom: 4 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: 4 }}>
                     <span>Progresso</span><span>{importProgress}%</span>
                   </div>
-                  <div style={{ background: 'var(--rule)', borderRadius: 99, height: 6, overflow: 'hidden' }}>
-                    <div style={{ width: `${importProgress}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s ease' }} />
+                  <div style={{ background: 'var(--adm-rule)', borderRadius: 99, height: 6, overflow: 'hidden' }}>
+                    <div style={{ width: `${importProgress}%`, height: '100%', background: 'var(--adm-gold)', transition: 'width 0.3s ease' }} />
                   </div>
                 </div>
               )}
@@ -1370,7 +1370,7 @@ const AdminClients = () => {
               )}
 
               {importErrors.length > 0 && (
-                <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 8, background: '#c5303018', color: '#c53030', fontSize: '0.82rem' }}>
+                <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 8, background: 'var(--adm-danger)18', color: 'var(--adm-danger)', fontSize: '0.82rem' }}>
                   <strong>Lista de erros/status ({importErrors.length}):</strong>
                   <ul style={{ margin: '6px 0 0 16px', padding: 0, maxHeight: '180px', overflowY: 'auto' }}>
                     {importErrors.slice(0, 50).map((err, i) => <li key={i}>{err}</li>)}
@@ -1457,7 +1457,7 @@ const AdminClients = () => {
                 </div>
               </div>
 
-              <h4 style={{ margin: '16px 0 8px', borderBottom: '1px solid var(--rule)', paddingBottom: '4px', fontSize: '0.9rem', color: 'var(--muted)' }}>
+              <h4 style={{ margin: '16px 0 8px', borderBottom: '1px solid var(--adm-rule)', paddingBottom: '4px', fontSize: '0.9rem', color: 'var(--adm-muted)' }}>
                 Ficha Técnica Inicial
               </h4>
 

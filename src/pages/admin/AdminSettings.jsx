@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit, Calendar } from 'lucide-react';
 import { db } from '../../config/firebase';
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
@@ -382,7 +382,7 @@ const AdminSettings = () => {
         {activeTab === 'horarios' && (
           <div className="financial-card">
             <h3>Grade Horária Semanal</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
               Defina os dias da semana e os intervalos de horários nos quais a grade do Studio estará ativa para agendamentos.
             </p>
 
@@ -397,9 +397,9 @@ const AdminSettings = () => {
                       gridTemplateColumns: '150px 120px 1fr', 
                       alignItems: 'center', 
                       padding: 12, 
-                      background: hourData.active ? 'var(--bg-warm)' : 'none', 
+                      background: hourData.active ? 'var(--adm-card)' : 'none', 
                       borderRadius: 6,
-                      border: '1px solid var(--rule)'
+                      border: '1px solid var(--adm-rule)'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -438,7 +438,7 @@ const AdminSettings = () => {
                         />
                       </div>
                     ) : (
-                      <span style={{ color: 'var(--muted)', fontSize: '0.85rem' }}>Não há atendimento neste dia.</span>
+                      <span style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Não há atendimento neste dia.</span>
                     )}
                   </div>
                 );
@@ -476,7 +476,7 @@ const AdminSettings = () => {
                 />
                 Aprovação automática de novos agendamentos via site
               </label>
-              <p style={{ color: 'var(--muted)', fontSize: '0.82rem', marginLeft: 22, marginTop: 4 }}>
+              <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', marginLeft: 22, marginTop: 4 }}>
                 Se marcado, os agendamentos feitos por clientes são criados automaticamente como "Confirmado". 
                 Caso contrário, entram no status "Pendente" aguardando ação do administrador.
               </p>
@@ -489,9 +489,9 @@ const AdminSettings = () => {
                 value={settings.waTemplate}
                 onChange={e => setSettings({ ...settings, waTemplate: e.target.value })}
                 placeholder="Ex: Olá Jon, agendei o serviço..."
-                style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--rule)', borderRadius: 6 }}
+                style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
               />
-              <span style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+              <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
                 Use as tags mágicas <code>{"{servico}"}</code>, <code>{"{data}"}</code> e <code>{"{hora}"}</code> para preencher os dados dinamicamente.
               </span>
             </div>
@@ -502,7 +502,7 @@ const AdminSettings = () => {
         {activeTab === 'whatsapp' && (
           <div className="financial-card">
             <h3>Disparos Automáticos de Confirmação (24h Antes)</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
               Ative e configure o envio automático de lembretes aos clientes com agendamento para o dia seguinte. A automação ocorre em segundo plano sempre que você ou sua equipe acessam o painel de controle.
             </p>
 
@@ -518,7 +518,7 @@ const AdminSettings = () => {
             </div>
 
             {settings.waReminderEnabled && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--rule)', paddingTop: 20 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--adm-rule)', paddingTop: 20 }}>
                 <div className="form-group" style={{ maxWidth: 300 }}>
                   <label>Gateway de Disparo WhatsApp</label>
                   <select 
@@ -600,7 +600,7 @@ const AdminSettings = () => {
                       onChange={e => setSettings({ ...settings, customWebhookUrl: e.target.value })}
                       placeholder="Ex: https://n8n.meuservidor.com/webhook/lembrete"
                     />
-                    <span style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+                    <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
                       Enviaremos uma requisição HTTP POST contendo os campos <code>phone</code>, <code>message</code>, <code>bookingId</code>, <code>clientName</code>, <code>date</code>, <code>time</code> e <code>service</code>.
                     </span>
                   </div>
@@ -613,9 +613,9 @@ const AdminSettings = () => {
                     value={settings.waReminderTemplate || ''}
                     onChange={e => setSettings({ ...settings, waReminderTemplate: e.target.value })}
                     placeholder="Ex: Olá, {cliente}..."
-                    style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--rule)', borderRadius: 6 }}
+                    style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
                   />
-                  <span style={{ fontSize: '0.78rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
                     Use as tags: <code>{"{cliente}"}</code> para o nome do cliente, <code>{"{data}"}</code> para a data formatada por extenso, <code>{"{hora}"}</code> para o horário e <code>{"{servico}"}</code> para o serviço.
                   </span>
                 </div>
@@ -629,7 +629,7 @@ const AdminSettings = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div className="financial-card">
               <h3>{editingProfId ? `Editar Profissional: ${newProf.name}` : 'Cadastrar Novo Profissional'}</h3>
-              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+              <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 16 }}>
                 {editingProfId 
                   ? 'Atualize os dados e comissão deste profissional.' 
                   : 'Adicione um profissional para que ele apareça como coluna na agenda e configure seu e-mail, telefone e comissão.'}
@@ -748,7 +748,7 @@ const AdminSettings = () => {
                     ].map(d => {
                       const isChecked = (newProf.daysOff || []).includes(d.val);
                       return (
-                        <label key={d.val} style={{ display: 'flex', alignItems: 'center', gap: 4, background: isChecked ? 'var(--accent)' : 'var(--bg-warm)', padding: '6px 10px', borderRadius: 4, fontSize: '0.8rem', cursor: 'pointer', color: isChecked ? '#0a0a0a' : 'inherit', fontWeight: isChecked ? 'bold' : 'normal', border: '1px solid var(--rule)' }}>
+                        <label key={d.val} style={{ display: 'flex', alignItems: 'center', gap: 4, background: isChecked ? 'var(--adm-gold)' : 'var(--adm-card)', padding: '6px 10px', borderRadius: 4, fontSize: '0.8rem', cursor: 'pointer', color: isChecked ? '#0a0a0a' : 'inherit', fontWeight: isChecked ? 'bold' : 'normal', border: '1px solid var(--adm-rule)' }}>
                           <input 
                             type="checkbox"
                             checked={isChecked}
@@ -794,8 +794,8 @@ const AdminSettings = () => {
                 </div>
               </div>
 
-              <div style={{ borderTop: '1px dashed var(--rule)', marginTop: 20, paddingTop: 20 }}>
-                <h4 style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Grade de Horários Bloqueados</h4>
+              <div style={{ borderTop: '1px dashed var(--adm-rule)', marginTop: 20, paddingTop: 20 }}>
+                <h4 style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'var(--adm-gold)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Grade de Horários Bloqueados</h4>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   {/* Bloqueio Recorrente (Semanal) */}
@@ -804,7 +804,7 @@ const AdminSettings = () => {
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8, flexWrap: 'wrap' }}>
                       <select 
                         id="block-weekday-select"
-                        style={{ flex: 1, minWidth: 100, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1, minWidth: 100, padding: 8, borderRadius: 4, background: 'var(--adm-card)', border: '1px solid var(--adm-rule)' }}
                       >
                         <option value="0">Domingo</option>
                         <option value="1">Segunda</option>
@@ -816,16 +816,16 @@ const AdminSettings = () => {
                       </select>
                       <select 
                         id="block-weekday-start"
-                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--adm-card)', border: '1px solid var(--adm-rule)' }}
                       >
                         {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>até</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', whiteSpace: 'nowrap' }}>até</span>
                       <select 
                         id="block-weekday-end"
-                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--adm-card)', border: '1px solid var(--adm-rule)' }}
                       >
                         {['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'].map(t => (
                           <option key={t} value={t}>{t}</option>
@@ -859,12 +859,12 @@ const AdminSettings = () => {
                         return (
                           <span 
                             key={block}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--adm-rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
                           >
                             {weekdayLabel} {start}{end !== start ? ` – ${end}` : ''}
                             <button 
                               type="button"
-                              style={{ border: 'none', background: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                              style={{ border: 'none', background: 'none', color: 'var(--adm-danger)', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
                               onClick={() => setNewProf({ ...newProf, blockedWeekdayHours: (newProf.blockedWeekdayHours || []).filter(x => x !== block) })}
                             >
                               ×
@@ -873,7 +873,7 @@ const AdminSettings = () => {
                         );
                       })}
                       {(newProf.blockedWeekdayHours || []).length === 0 && (
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>Nenhum horário recorrente bloqueado.</p>
+                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Nenhum horário recorrente bloqueado.</p>
                       )}
                     </div>
                   </div>
@@ -885,20 +885,20 @@ const AdminSettings = () => {
                       <input 
                         type="date"
                         id="block-specific-date"
-                        style={{ flex: 1.5, minWidth: 130, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1.5, minWidth: 130, padding: 8, borderRadius: 4, background: 'var(--adm-card)', border: '1px solid var(--adm-rule)' }}
                       />
                       <select 
                         id="block-specific-start"
-                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--adm-card)', border: '1px solid var(--adm-rule)' }}
                       >
                         {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
                           <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--muted)', whiteSpace: 'nowrap' }}>até</span>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', whiteSpace: 'nowrap' }}>até</span>
                       <select 
                         id="block-specific-end"
-                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--bg-warm)', border: '1px solid var(--rule)' }}
+                        style={{ flex: 1, minWidth: 80, padding: 8, borderRadius: 4, background: 'var(--adm-card)', border: '1px solid var(--adm-rule)' }}
                       >
                         {['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'].map(t => (
                           <option key={t} value={t}>{t}</option>
@@ -936,12 +936,12 @@ const AdminSettings = () => {
                         return (
                           <span 
                             key={block}
-                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--adm-rule)', padding: '4px 8px', borderRadius: 4, fontSize: '0.75rem' }}
                           >
                             {displayDate} {startT}{endT !== startT ? ` – ${endT}` : ''}
                             <button 
                               type="button"
-                              style={{ border: 'none', background: 'none', color: '#ff6b6b', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
+                              style={{ border: 'none', background: 'none', color: 'var(--adm-danger)', cursor: 'pointer', padding: 0, fontWeight: 'bold' }}
                               onClick={() => setNewProf({ ...newProf, blockedSpecificHours: (newProf.blockedSpecificHours || []).filter(x => x !== block) })}
                             >
                               ×
@@ -950,7 +950,7 @@ const AdminSettings = () => {
                         );
                       })}
                       {(newProf.blockedSpecificHours || []).length === 0 && (
-                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--muted)' }}>Nenhum horário pontual bloqueado.</p>
+                        <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Nenhum horário pontual bloqueado.</p>
                       )}
                     </div>
                   </div>
@@ -971,7 +971,7 @@ const AdminSettings = () => {
                     <button 
                       type="button" 
                       className="btn btn-outline" 
-                      style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--rule)', background: 'none', color: 'var(--text)' }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid var(--adm-rule)', background: 'none', color: 'var(--text)' }}
                       onClick={handleEditProfCancel}
                     >
                       Cancelar
@@ -1001,23 +1001,23 @@ const AdminSettings = () => {
                       alignItems: 'center', 
                       justifyContent: 'space-between', 
                       padding: 16, 
-                      background: 'var(--bg-warm)', 
+                      background: 'var(--adm-card)', 
                       borderRadius: 8, 
-                      border: '1px solid var(--rule)' 
+                      border: '1px solid var(--adm-rule)' 
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                       <img 
                         src={prof.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80'} 
                         alt={prof.name} 
-                        style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent)' }}
+                        style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--adm-gold)' }}
                       />
                       <div>
                         <strong style={{ fontSize: '1rem', display: 'block' }}>{prof.name}</strong>
-                        <span style={{ fontSize: '0.82rem', color: 'var(--muted)', display: 'block' }}>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--adm-muted)', display: 'block' }}>
                           Comissão Serviços: {prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 0)}% | Comissão Produtos: {prof.commissionProduct !== undefined ? prof.commissionProduct : 0}% | Contato: {prof.phone || 'Sem telefone'} | E-mail: {prof.email || 'Sem e-mail'}
                         </span>
-                        <span style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
                           Expediente: <strong>{prof.workStart || '09:00'} às {prof.workEnd || '19:00'}</strong> (Almoço: {prof.lunchStart || '12:00'} - {prof.lunchEnd || '13:00'}) | 
                           Folgas: <strong>{prof.daysOff && prof.daysOff.length > 0 ? prof.daysOff.map(d => ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'][d]).join(', ') : 'Nenhuma'}</strong>
                           {prof.blockedDates && prof.blockedDates.length > 0 && (' | Datas Bloqueadas: ' + prof.blockedDates.map(d => d.split('-').reverse().join('/')).join(', '))}
@@ -1040,7 +1040,7 @@ const AdminSettings = () => {
 
                       <button 
                         type="button" 
-                        style={{ background: 'none', border: 'none', color: 'var(--accent)', cursor: 'pointer', padding: 4 }}
+                        style={{ background: 'none', border: 'none', color: 'var(--adm-gold)', cursor: 'pointer', padding: 4 }}
                         onClick={() => handleEditProfStart(prof)}
                         title="Editar profissional"
                       >
@@ -1050,7 +1050,7 @@ const AdminSettings = () => {
                       {prof.id !== 'jon' && (
                         <button 
                           type="button" 
-                          style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: 4 }}
+                          style={{ background: 'none', border: 'none', color: 'var(--adm-danger)', cursor: 'pointer', padding: 4 }}
                           onClick={() => handleDeleteProf(prof.id)}
                           title="Remover profissional"
                         >
@@ -1069,18 +1069,18 @@ const AdminSettings = () => {
         {activeTab === 'google' && (
           <div className="financial-card">
             <h3>Integração com Google Agenda</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
               Sincronize automaticamente os agendamentos do Studio com a sua agenda pessoal do Google. 
               As marcações criadas ou alteradas no sistema irão para o Google Agenda, e bloqueios feitos lá serão importados para cá.
             </p>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--rule)', paddingTop: 20 }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid var(--rule)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--adm-rule)', paddingTop: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid var(--adm-rule)' }}>
                 <div>
                   <h4 style={{ margin: '0 0 6px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
                     📅 Google Agenda
                   </h4>
-                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--muted)' }}>
+                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
                     {settings?.automations?.googleCalendarConnected 
                       ? 'Conectado à sua conta do Google (Agenda Principal).' 
                       : 'Não conectado. Clique para autorizar o acesso.'}
@@ -1091,7 +1091,7 @@ const AdminSettings = () => {
                     <button 
                       type="button"
                       className="btn-danger"
-                      style={{ padding: '8px 16px', borderRadius: 4, cursor: 'pointer', background: '#dc2626', color: '#fff', border: 'none', fontWeight: 'bold' }}
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: 'pointer', background: 'var(--adm-danger)', color: '#fff', border: 'none', fontWeight: 'bold' }}
                       onClick={async () => {
                         if (window.confirm('Tem certeza que deseja desconectar o Google Agenda?')) {
                           if (isDemoMode || !db) {
@@ -1123,7 +1123,7 @@ const AdminSettings = () => {
                     <button 
                       type="button"
                       className="btn-primary"
-                      style={{ padding: '8px 16px', borderRadius: 4, cursor: 'pointer', background: 'var(--accent)', color: '#0a0a0a', border: 'none', fontWeight: 'bold' }}
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: 'pointer', background: 'var(--adm-gold)', color: '#0a0a0a', border: 'none', fontWeight: 'bold' }}
                       onClick={() => {
                         window.location.href = '/api/gcal?action=auth';
                       }}
@@ -1135,9 +1135,9 @@ const AdminSettings = () => {
               </div>
 
               {settings?.automations?.googleCalendarConnected && (
-                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.01)', borderRadius: 8, border: '1px dashed var(--rule)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ padding: '16px', background: 'rgba(255,255,255,0.01)', borderRadius: 8, border: '1px dashed var(--adm-rule)', display: 'flex', flexDirection: 'column', gap: 12 }}>
                   <h4 style={{ margin: 0, fontSize: '0.9rem' }}>Sincronização Bidirecional Ativa</h4>
-                  <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--muted)' }}>
+                  <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
                     O sistema executa uma sincronização delta em lote em segundo plano de tempos em tempos. Você também pode forçar a sincronização imediata de todos os horários dos últimos 30 dias e dos próximos 90 dias usando o botão abaixo.
                   </p>
                   <div>
@@ -1145,7 +1145,7 @@ const AdminSettings = () => {
                       type="button"
                       className="btn-secondary"
                       disabled={gcalSyncing}
-                      style={{ padding: '8px 16px', borderRadius: 4, cursor: gcalSyncing ? 'not-allowed' : 'pointer', background: 'var(--bg-warm)', color: 'var(--text)', border: '1px solid var(--rule)', fontWeight: 'bold' }}
+                      style={{ padding: '8px 16px', borderRadius: 4, cursor: gcalSyncing ? 'not-allowed' : 'pointer', background: 'var(--adm-card)', color: 'var(--text)', border: '1px solid var(--adm-rule)', fontWeight: 'bold' }}
                       onClick={async () => {
                         setGcalSyncing(true);
                         try {
@@ -1175,7 +1175,7 @@ const AdminSettings = () => {
 
         {/* Barra de Ação */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16, marginTop: 24 }}>
-          {isSaved && <span style={{ color: '#48bb78', fontWeight: 600, fontSize: '0.9rem' }}>Configurações salvas com sucesso!</span>}
+          {isSaved && <span style={{ color: 'var(--adm-success)', fontWeight: 600, fontSize: '0.9rem' }}>Configurações salvas com sucesso!</span>}
           <button type="submit" className="btn btn-accent" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <Save size={16} /> Salvar Configurações
           </button>
