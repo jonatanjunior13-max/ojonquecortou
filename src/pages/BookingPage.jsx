@@ -1115,6 +1115,84 @@ const BookingPage = () => {
       return;
     }
 
+    // Validação de Manutenção de Corte nos últimos 90 dias
+    const svcNameNorm = selectedService?.name?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+    const isManutencaoCorte = svcNameNorm.includes("manutencao") && svcNameNorm.includes("corte");
+
+    if (isManutencaoCorte) {
+      setLoading(true);
+      let clientBookings = [];
+      
+      if (bookingDemoMode || !db) {
+        const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+        clientBookings = localBookings.filter(b => 
+          b.clientPhone && b.clientPhone.replace(/\D/g, '') === cleanPhone
+        );
+      } else {
+        try {
+          const bookingsRef = collection(db, 'bookings');
+          const q = query(bookingsRef, where('clientPhone', '==', clientData.phone));
+          const querySnapshot = await getDocs(q);
+          clientBookings = querySnapshot.docs.map(doc => doc.data());
+          
+          if (cleanPhone !== clientData.phone) {
+            const qClean = query(bookingsRef, where('clientPhone', '==', cleanPhone));
+            const querySnapshotClean = await getDocs(qClean);
+            const cleanList = querySnapshotClean.docs.map(doc => doc.data());
+            clientBookings = [...clientBookings, ...cleanList];
+          }
+        } catch (dbErr) {
+          console.warn('Erro ao buscar histórico de agendamentos no Firestore:', dbErr);
+        }
+      }
+      
+      const ninetyDaysAgo = new Date();
+      ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+      
+      const hasRecentCorte = clientBookings.some(b => {
+        if (!b.date || (b.status !== 'finalizado' && b.status !== 'confirmado')) return false;
+        
+        const bookingDate = new Date(b.date + 'T00:00:00');
+        if (bookingDate < ninetyDaysAgo) return false;
+        
+        const bSvcNameNorm = (b.service?.name || b.serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const isFullCorte = bSvcNameNorm.includes('corte') && !bSvcNameNorm.includes('manutencao');
+        return isFullCorte;
+      });
+      
+      if (!hasRecentCorte) {
+        setLoading(false);
+        setAuthError(
+          <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', padding: '16px', background: 'rgba(200, 133, 42, 0.05)', border: '1px solid var(--accent)', borderRadius: '8px' }}>
+            <p style={{ margin: 0, fontWeight: 700, color: 'var(--ink)' }}>Atenção: Serviço Exclusivo</p>
+            <p style={{ margin: 0, fontSize: '0.88rem' }}>O serviço de <strong>Manutenção de Corte</strong> é exclusivo para clientes que realizaram um Corte ou Corte + Tratamento completo conosco nos últimos 90 dias.</p>
+            <p style={{ margin: 0, fontSize: '0.88rem' }}>Não identificamos esse histórico em seu cadastro. Por favor, fale diretamente com o Jon pelo WhatsApp para agendar ou tirar dúvidas.</p>
+            <a 
+              href={`https://wa.me/553135866673?text=Olá%20Jon!%20Gostaria%20de%20solicitar%20uma%20Manutenção%20de%20Corte.%20Meu%20telefone%20é%20${cleanPhone}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-accent"
+              style={{ 
+                background: '#25d366', 
+                color: 'white', 
+                fontWeight: 'bold', 
+                textDecoration: 'none', 
+                textAlign: 'center', 
+                padding: '12px', 
+                borderRadius: '999px',
+                marginTop: '6px',
+                border: 'none',
+                boxShadow: '0 4px 12px rgba(37,211,102,0.2)'
+              }}
+            >
+              Falar com o Jon no WhatsApp
+            </a>
+          </div>
+        );
+        return;
+      }
+    }
+
     if (existingProfile && !authSuccess) {
       setAuthError('Você precisa confirmar sua identidade para agendar usando este perfil.');
       setTimeout(() => {
