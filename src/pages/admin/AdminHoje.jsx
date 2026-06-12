@@ -63,7 +63,7 @@ const AdminHoje = () => {
         const d = t.date || t.createdAt || '';
         return (typeof d === 'string' ? d : d?.toDate?.()?.toISOString?.() || '').startsWith(today);
       })
-      .filter(t => t.type === 'entrada' || t.value > 0)
+      .filter(t => t.type === 'entrada')
       .reduce((sum, t) => sum + (Number(t.value) || 0), 0);
   }, [transactions, today]);
 
