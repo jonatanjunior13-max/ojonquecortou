@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -248,13 +248,13 @@ const AdminInventory = () => {
         </div>
         <div className="stat-card">
           <h3>Alerta Estoque Baixo</h3>
-          <div className="value" style={{ color: lowStockProducts.length > 0 ? '#e53e3e' : 'var(--ink)' }}>
+          <div className="value" style={{ color: lowStockProducts.length > 0 ? 'var(--adm-danger)' : 'var(--adm-text)' }}>
             {lowStockProducts.length}
           </div>
         </div>
         <div className="stat-card">
           <h3>Valor Comercial em Estoque</h3>
-          <div className="value" style={{ color: '#48bb78' }}>R$ {totalValue.toFixed(2)}</div>
+          <div className="value" style={{ color: 'var(--adm-success)' }}>R$ {totalValue.toFixed(2)}</div>
         </div>
       </section>
 
@@ -272,7 +272,7 @@ const AdminInventory = () => {
 
       {/* Alerta de atenção para estoque baixo */}
       {lowStockProducts.length > 0 && (
-        <div className="error-message" style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(229, 62, 62, 0.05)', color: '#c53030' }}>
+        <div className="error-message" style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(229, 62, 62, 0.05)', color: 'var(--adm-danger)' }}>
           <AlertTriangle size={18} />
           <span>Atenção: Existem {lowStockProducts.length} produto(s) com nível de estoque abaixo do limite mínimo de segurança!</span>
         </div>
@@ -318,7 +318,7 @@ const AdminInventory = () => {
                               type="number" 
                               value={quickRestockAmount} 
                               onChange={e => setQuickRestockAmount(e.target.value)} 
-                              style={{ width: 60, padding: '4px 8px', borderRadius: 4, border: '1px solid var(--rule)' }}
+                              style={{ width: 60, padding: '4px 8px', borderRadius: 4, border: '1px solid var(--adm-rule)' }}
                             />
                             <button 
                               className="btn btn-accent" 
@@ -355,7 +355,7 @@ const AdminInventory = () => {
                       <td style={{ color: 'var(--text-muted)' }}>{p.minStock} unid.</td>
                       <td>R$ {Number(p.costPrice).toFixed(2)}</td>
                       <td>R$ {Number(p.sellingPrice).toFixed(2)}</td>
-                      <td style={{ color: '#48bb78', fontWeight: 600 }}>R$ {(Number(p.sellingPrice) - Number(p.costPrice)).toFixed(2)}</td>
+                      <td style={{ color: 'var(--adm-success)', fontWeight: 600 }}>R$ {(Number(p.sellingPrice) - Number(p.costPrice)).toFixed(2)}</td>
                       <td>
                         <span className={`stock-badge ${isLow ? 'low' : 'normal'}`}>
                           {isLow ? 'Estoque Baixo' : 'Normal'}
@@ -364,7 +364,7 @@ const AdminInventory = () => {
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'inline-flex', gap: 6 }}>
                           <button className="btn-icon" onClick={() => handleOpenEdit(p)} title="Editar"><Edit2 size={14} /></button>
-                          <button className="btn-icon" style={{ color: '#e53e3e' }} onClick={() => handleDelete(p.id)} title="Excluir"><Trash2 size={14} /></button>
+                          <button className="btn-icon" style={{ color: 'var(--adm-danger)' }} onClick={() => handleDelete(p.id)} title="Excluir"><Trash2 size={14} /></button>
                         </div>
                       </td>
                     </tr>
