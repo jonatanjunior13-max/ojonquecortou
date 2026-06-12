@@ -210,7 +210,7 @@ export default async function handler(req, res) {
           if (cleanImage.includes('cacho-vs-crespo-hero')) {
             cleanImage = '/cacho-vs-crespo-hero.png';
           } else {
-            cleanImage = '/blog-finalizacao-perfeita.jpg';
+            cleanImage = '/jon-trabalhando.jpg';
           }
         }
 
@@ -325,7 +325,7 @@ export default async function handler(req, res) {
         if (cleanImage.includes('cacho-vs-crespo-hero')) {
           cleanImage = '/cacho-vs-crespo-hero.png';
         } else {
-          cleanImage = '/blog-finalizacao-perfeita.jpg';
+          cleanImage = '/jon-trabalhando.jpg';
         }
       }
 
