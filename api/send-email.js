@@ -1121,8 +1121,8 @@ export default async function handler(req, res) {
       if (isLaunchCampaign && resendApiKey) {
         try {
           const mailgunSender = 'contato@ojonquecortou.com.br';
-          // Using Mailgun HTTP Basic Auth (api:YOUR_KEY) in Base64
-          const basicAuth = btoa(`api:${resendApiKey}`);
+          // Using Mailgun HTTP Basic Auth (api:YOUR_KEY) in Base64 — Buffer is required for Node.js
+          const basicAuth = Buffer.from(`api:${resendApiKey}`).toString('base64');
           const fetchRes = await fetch('https://api.mailgun.net/v3/mg.ojonquecortou.com.br/messages', {
             method: 'POST',
             headers: {
