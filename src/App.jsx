@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -39,6 +39,7 @@ const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'));
 const AdminMarketing = React.lazy(() => import('./pages/admin/AdminMarketing'));
 const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'));
 const AdminMobileApp = React.lazy(() => import('./pages/admin/AdminMobileApp'));
+const AdminHoje = React.lazy(() => import('./pages/admin/AdminHoje'));
 
 import GoogleAnalytics from './components/GoogleAnalytics';
 import CustomCursor from './components/CustomCursor';
@@ -94,7 +95,8 @@ function App() {
         <Route path="/admin/login" element={<React.Suspense fallback={null}><AdminLogin /></React.Suspense>} />
         <Route path="/admin/mobile" element={<React.Suspense fallback={null}><AdminMobileApp /></React.Suspense>} />
         <Route path="/admin" element={<React.Suspense fallback={null}><AdminLayout /></React.Suspense>}>
-          <Route index element={<React.Suspense fallback={null}><AdminDashboard /></React.Suspense>} />
+          <Route index element={<Navigate to="/admin/hoje" replace />} />
+          <Route path="hoje" element={<React.Suspense fallback={null}><AdminHoje /></React.Suspense>} />
           <Route path="agenda" element={<React.Suspense fallback={null}><AdminDashboard /></React.Suspense>} />
           <Route path="servicos" element={<React.Suspense fallback={null}><AdminServices /></React.Suspense>} />
           <Route path="clientes" element={<React.Suspense fallback={null}><AdminClients /></React.Suspense>} />
