@@ -953,13 +953,8 @@ const BookingPage = () => {
           const bStart = timeToMin(bTime);
           const bEnd = bStart + bDuration;
           
-          // Slot start time is inside an existing booking
-          const slotStartOccupied = (slotMin >= bStart && slotMin < bEnd);
-          
-          // New service starting here would overlap with a booking starting later
-          const newServiceOverlaps = (bStart >= slotMin && bStart < slotEndMin);
-          
-          return slotStartOccupied || newServiceOverlaps;
+          // Check if the two intervals [slotMin, slotEndMin) and [bStart, bEnd) overlap
+          return Math.max(slotMin, bStart) < Math.min(slotEndMin, bEnd);
         });
 
         if (hasOverlap) return false;
