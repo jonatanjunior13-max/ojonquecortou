@@ -26,7 +26,9 @@ const UNSUBSCRIBE_BASE = 'https://ojonquecortou.com.br/api/unsubscribe?email=';
 
 // Wrap newsletter HTML in a full email document
 function wrapNewsletterHtml(subject, body) {
-  const previewText = body
+  // Remove the initial header table so previewText doesn't contain the logo "J Studio do Jon"
+  const bodyWithoutHeader = body.replace(/<table[^>]*>[\s\S]*?<\/table>/i, '');
+  const previewText = bodyWithoutHeader
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
