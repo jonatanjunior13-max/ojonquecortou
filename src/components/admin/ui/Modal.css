@@ -15,6 +15,7 @@
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  color: var(--adm-text);
 }
 .adm-modal-header {
   display: flex;

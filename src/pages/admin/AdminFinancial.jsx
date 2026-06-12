@@ -881,6 +881,7 @@ const AdminFinancial = () => {
           border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
           border-radius: 12px;
           padding: 20px;
+          color: var(--adm-text, #F5EDDB);
         }
         .chart-header {
           display: flex;

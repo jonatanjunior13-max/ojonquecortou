@@ -3955,6 +3955,192 @@ ${googleLink}
                     <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
                   </div>
 
+                  {selectedBooking.status === 'finalizado' && (() => {
+                    const tx = transactions.find(t => t.bookingId === selectedBooking.id);
+                    return (
+                      <div className="comanda-details" style={{ marginTop: 16, padding: 12, border: '1px solid var(--adm-rule)', borderRadius: 8, background: 'rgba(255,255,255,0.02)' }}>
+                        <h4 style={{ margin: '0 0 10px 0', color: 'var(--adm-gold)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          💳 Comanda / Financeiro
+                        </h4>
+                        {tx ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <div className="detail-row" style={{ margin: 0 }}>
+                              <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Método de Pagamento:</label>
+                              <span style={{ fontSize: '0.85rem' }}>{tx.paymentMethod}</span>
+                            </div>
+                            <div className="detail-row" style={{ margin: 0 }}>
+                              <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total:</label>
+                              <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {tx.value?.toFixed(2).replace('.', ',')}</span>
+                            </div>
+                            
+                            <div style={{ marginTop: 8 }}>
+                              <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--adm-text)', display: 'block', marginBottom: 4 }}>
+                                Produtos Vendidos:
+                              </span>
+                              {tx.productSales && tx.productSales.length > 0 ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                  {tx.productSales.map((ps, idx) => (
+                                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
+                                      <span>{ps.name} (x{ps.quantity})</span>
+                                      <span style={{ fontWeight: 600 }}>R$ {(ps.sellingPrice * ps.quantity).toFixed(2).replace('.', ',')}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              ) : (
+                                <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>Nenhum produto vendido registrado.</span>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
+                            Nenhum registro financeiro encontrado para este agendamento.
+                          </div>
+                        )}
+                        
+                        {/* Interface para Adicionar Produto */}
+                        <div style={{ marginTop: 12, borderTop: '0.5px solid var(--adm-rule)', paddingTop: 10 }}>
+                          <span style={{ fontSize: '0.78rem', fontWeight: 'bold', color: 'var(--adm-gold)', display: 'block', marginBottom: 6 }}>
+                            🛒 Adicionar Produto Vendido
+                          </span>
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            <select
+                              id="add-prod-select"
+                              style={{ flex: 1, padding: '6px', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem' }}
+                            >
+                              <option value="">-- Selecione o Produto --</option>
+                              {products.filter(p => p.quantity > 0).map(p => (
+                                <option key={p.id} value={p.id}>
+                                  {p.name} (R$ {p.sellingPrice} - Qtd: {p.quantity})
+                                </option>
+                              ))}
+                            </select>
+                            <input
+                              type="number"
+                              id="add-prod-qty"
+                              defaultValue={1}
+                              min={1}
+                              style={{ width: 50, padding: '6px', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem', textAlign: 'center' }}
+                            />
+                            <button
+                              type="button"
+                              className="btn btn-accent"
+                              style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                              onClick={async () => {
+                                const prodSelect = document.getElementById('add-prod-select');
+                                const qtyInput = document.getElementById('add-prod-qty');
+                                const productId = prodSelect.value;
+                                const qty = parseInt(qtyInput.value) || 1;
+                                if (!productId) {
+                                  alert('Por favor, selecione um produto.');
+                                  return;
+                                }
+                                
+                                const product = products.find(p => p.id === productId);
+                                if (!product) return;
+                                
+                                if (product.quantity < qty) {
+                                  alert(`Quantidade indisponível em estoque. Estoque atual: ${product.quantity}`);
+                                  return;
+                                }
+                                
+                                try {
+                                  if (tx) {
+                                    const updatedSales = [...(tx.productSales || [])];
+                                    const existingSaleIdx = updatedSales.findIndex(s => s.productId === productId);
+                                    if (existingSaleIdx >= 0) {
+                                      updatedSales[existingSaleIdx].quantity += qty;
+                                    } else {
+                                      updatedSales.push({
+                                        productId: product.id,
+                                        name: product.name,
+                                        quantity: qty,
+                                        sellingPrice: product.sellingPrice,
+                                        costPrice: product.costPrice || 0
+                                      });
+                                    }
+                                    
+                                    const addedValue = product.sellingPrice * qty;
+                                    const newValue = tx.value + addedValue;
+                                    
+                                    if (isDemoMode || !db) {
+                                      const updatedTx = { ...tx, productSales: updatedSales, value: newValue };
+                                      const demoTxStr = localStorage.getItem('demo_financial') || '[]';
+                                      const demoTx = JSON.parse(demoTxStr).map(t => t.id === tx.id ? updatedTx : t);
+                                      localStorage.setItem('demo_financial', JSON.stringify(demoTx));
+                                      localStorage.setItem('demo_transactions', JSON.stringify(demoTx));
+                                      setTransactions(demoTx);
+                                      
+                                      const demoProdsStr = localStorage.getItem('demo_products') || '[]';
+                                      const demoProds = JSON.parse(demoProdsStr).map(p => p.id === productId ? { ...p, quantity: Math.max(0, p.quantity - qty) } : p);
+                                      localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                      setProducts(demoProds);
+                                    } else {
+                                      await updateDoc(doc(db, 'financial_transactions', tx.id), {
+                                        productSales: updatedSales,
+                                        value: newValue
+                                      });
+                                      await updateDoc(doc(db, 'products', productId), {
+                                        quantity: Math.max(0, product.quantity - qty)
+                                      });
+                                    }
+                                  } else {
+                                    const transactionPayload = {
+                                      bookingId: selectedBooking.id,
+                                      clientName: selectedBooking.clientName,
+                                      clientPhone: selectedBooking.clientPhone || '',
+                                      type: 'entrada',
+                                      paymentMethod: 'Pix',
+                                      value: (selectedBooking.servicePrice || selectedBooking.service?.price || 130) + (product.sellingPrice * qty),
+                                      discount: 0,
+                                      description: `${selectedBooking.serviceName || selectedBooking.service?.name || 'Serviço'} + ${product.name}`,
+                                      professionalId: selectedBooking.professionalId || selectedBooking.profissional || 'jon',
+                                      productSales: [{
+                                        productId: product.id,
+                                        name: product.name,
+                                        quantity: qty,
+                                        sellingPrice: product.sellingPrice,
+                                        costPrice: product.costPrice || 0
+                                      }],
+                                      createdAt: new Date().toISOString(),
+                                      date: selectedBooking.date,
+                                      time: selectedBooking.time
+                                    };
+                                    
+                                    if (isDemoMode || !db) {
+                                      const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
+                                      const demoTxStr = localStorage.getItem('demo_financial') || '[]';
+                                      const demoTx = [newTx, ...JSON.parse(demoTxStr)];
+                                      localStorage.setItem('demo_financial', JSON.stringify(demoTx));
+                                      localStorage.setItem('demo_transactions', JSON.stringify(demoTx));
+                                      setTransactions(demoTx);
+                                      
+                                      const demoProdsStr = localStorage.getItem('demo_products') || '[]';
+                                      const demoProds = JSON.parse(demoProdsStr).map(p => p.id === productId ? { ...p, quantity: Math.max(0, p.quantity - qty) } : p);
+                                      localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                      setProducts(demoProds);
+                                    } else {
+                                      await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+                                      await updateDoc(doc(db, 'products', productId), {
+                                        quantity: Math.max(0, product.quantity - qty)
+                                      });
+                                    }
+                                  }
+                                  alert('Produto adicionado com sucesso e estoque atualizado!');
+                                  setSelectedBooking(null);
+                                } catch (e) {
+                                  console.error(e);
+                                  alert('Erro ao atualizar comanda: ' + e.message);
+                                }
+                              }}
+                            >
+                              Adicionar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   <div className="modal-actions" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                     <div style={{ display: 'flex', gap: 8 }}>
                       {selectedBooking.status === 'pendente' && (
