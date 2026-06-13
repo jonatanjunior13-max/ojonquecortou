@@ -801,8 +801,11 @@ Grande abraço, Jon.`;
         throw new Error('Falha no gateway');
       }
     } catch (err) {
-      console.error(err);
-      showToast('Pedido de avaliação enviado! (Modo Simulado)', 'success');
+      console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
+      // Fallback: abrir wa.me link diretamente se o gateway falhar
+      const waUrl = `https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }
   };
 

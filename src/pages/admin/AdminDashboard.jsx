@@ -2046,8 +2046,10 @@ Grande abraço, Jon.`;
         throw new Error('Erro na resposta do gateway');
       }
     } catch (err) {
-      console.error('Erro ao enviar feedback via WhatsApp:', err);
-      toast('Mensagem de avaliação enviada com sucesso! (Modo Simulado - Erro de rede)', 'success');
+      console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
+      const waUrl = `https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      toast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }
   };
 
