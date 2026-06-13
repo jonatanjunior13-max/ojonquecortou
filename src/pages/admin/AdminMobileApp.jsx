@@ -147,6 +147,17 @@ export default function AdminMobileApp() {
   const [pendingFile, setPendingFile] = useState(null);
   const [pendingPreviewUrl, setPendingPreviewUrl] = useState('');
   const galleryInputRef = useRef(null);
+  
+  // -- Cropper States --
+  const [cropperZoom, setCropperZoom] = useState(1);
+  const [cropperOffset, setCropperOffset] = useState({ x: 0, y: 0 });
+  const [isDraggingCropper, setIsDraggingCropper] = useState(false);
+  const [cropperDragStart, setCropperDragStart] = useState({ x: 0, y: 0 });
+  const [cropperDragStartOffset, setCropperDragStartOffset] = useState({ x: 0, y: 0 });
+  const [naturalDimensions, setNaturalDimensions] = useState({ w: 0, h: 0 });
+  const [containerSize, setContainerSize] = useState(0);
+  const previewContainerRef = useRef(null);
+  const previewImageRef = useRef(null);
 
   // ── Clients ────────────────────────────────────────────────────
   const [clientSearch, setClientSearch] = useState('');
@@ -880,14 +891,9 @@ Grande abraço, Jon.`;
             evolutionApiUrl: settings.evolutionApiUrl,
             evolutionApiKey: settings.evolutionApiKey,
             evolutionInstanceName: settings.evolutionInstanceName,
-            customWebhookUrl: settings.customWebhookUrl
-          },
-          extraData: {
-            bookingId: booking.id,
-            clientName: booking.clientName,
-            date: booking.date,
-            time: booking.time,
-            service: booking.serviceName || booking.service?.name
+          date: booking.date,
+          time: booking.time,
+          service: booking.serviceName || booking.service?.name
           }
         })
       });
@@ -959,7 +965,46 @@ Grande abraço, Jon.`;
     setPendingFile(file);
     setPendingPreviewUrl(url);
     setUploadForm({ category: 'Geral', caption: '' });
+    setCropperZoom(1);
+    setCropperOffset({ x: 0, y: 0 });
+    setNaturalDimensions({ w: 0, h: 0 });
     setShowUploadSheet(true);
+  };
+
+  const handleCropperDragStart = (clientX, clientY) => {
+    if (!naturalDimensions.w || !containerSize) return;
+    setIsDraggingCropper(true);
+    setCropperDragStart({ x: clientX, y: clientY });
+    setCropperDragStartOffset({ ...cropperOffset });
+  };
+
+  const handleCropperDragMove = (clientX, clientY) => {
+    if (!isDraggingCropper || !naturalDimensions.w || !containerSize) return;
+    const dx = clientX - cropperDragStart.x;
+    const dy = clientY - cropperDragStart.y;
+    
+    const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+    const displayWidth = naturalDimensions.w * initialScale * cropperZoom;
+    const displayHeight = naturalDimensions.h * initialScale * cropperZoom;
+    const initialX = (containerSize - displayWidth) / 2;
+    const initialY = (containerSize - displayHeight) / 2;
+    
+    let newX = cropperDragStartOffset.x + dx;
+    let newY = cropperDragStartOffset.y + dy;
+    
+    const minX = containerSize - displayWidth - initialX;
+    const maxX = -initialX;
+    const minY = containerSize - displayHeight - initialY;
+    const maxY = -initialY;
+    
+    newX = Math.max(minX, Math.min(maxX, newX));
+    newY = Math.max(minY, Math.min(maxY, newY));
+    
+    setCropperOffset({ x: newX, y: newY });
+  };
+
+  const handleCropperDragEnd = () => {
+    setIsDraggingCropper(false);
   };
 
   const uploadPhoto = async () => {
@@ -969,10 +1014,39 @@ Grande abraço, Jon.`;
     setUploadStatus('storage');
 
     try {
+      let fileToUpload = pendingFile;
+      
+      if (naturalDimensions.w && containerSize && previewImageRef.current) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1000;
+        canvas.height = 1000;
+        const ctx = canvas.getContext('2d');
+        
+        const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+        const displayWidth = naturalDimensions.w * initialScale;
+        const displayHeight = naturalDimensions.h * initialScale;
+        const initialX = (containerSize - displayWidth) / 2;
+        const initialY = (containerSize - displayHeight) / 2;
+        
+        const renderScale = initialScale * cropperZoom;
+        const left = initialX + cropperOffset.x;
+        const top = initialY + cropperOffset.y;
+        
+        const srcX = -left / renderScale;
+        const srcY = -top / renderScale;
+        const srcW = containerSize / renderScale;
+        const srcH = containerSize / renderScale;
+        
+        ctx.drawImage(previewImageRef.current, srcX, srcY, srcW, srcH, 0, 0, 1000, 1000);
+        
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+        fileToUpload = new File([blob], pendingFile.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' });
+      }
+
       // Step 1: Upload to Firebase Storage
-      const filename = `${Date.now()}_${pendingFile.name.replace(/\s+/g, '_')}`;
+      const filename = `${Date.now()}_${fileToUpload.name.replace(/\s+/g, '_')}`;
       const sRef = storageRef(storage, `gallery/${filename}`);
-      const uploadTask = uploadBytesResumable(sRef, pendingFile);
+      const uploadTask = uploadBytesResumable(sRef, fileToUpload);
 
       const downloadURL = await new Promise((resolve, reject) => {
         uploadTask.on('state_changed',
@@ -2571,6 +2645,35 @@ Grande abraço, Jon.`;
   // ── Upload Sheet ───────────────────────────────────────────────
   const renderUploadSheet = () => {
     if (!showUploadSheet) return null;
+    
+    const getPreviewImageStyle = () => {
+      if (!naturalDimensions.w || !containerSize) {
+        return { width: '100%', height: '100%', objectFit: 'cover' };
+      }
+      
+      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+      const displayWidth = naturalDimensions.w * initialScale;
+      const displayHeight = naturalDimensions.h * initialScale;
+      const initialX = (containerSize - displayWidth) / 2;
+      const initialY = (containerSize - displayHeight) / 2;
+      
+      const w = displayWidth * cropperZoom;
+      const h = displayHeight * cropperZoom;
+      const l = initialX + cropperOffset.x;
+      const t = initialY + cropperOffset.y;
+      
+      return {
+        position: 'absolute',
+        width: `${w}px`,
+        height: `${h}px`,
+        left: `${l}px`,
+        top: `${t}px`,
+        pointerEvents: 'none',
+        maxWidth: 'none',
+        maxHeight: 'none'
+      };
+    };
+
     return (
       <div className="m-overlay" onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>
         <div className="m-sheet" onClick={e => e.stopPropagation()}>
@@ -2580,15 +2683,107 @@ Grande abraço, Jon.`;
             <button onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }} className="m-icon-btn"><X size={18}/></button>
           </div>
           <div className="m-sheet-body">
-            {/* Preview */}
+            {/* Interactive Cropper */}
             {pendingPreviewUrl && (
-              <div style={{ borderRadius:'var(--m-radius)', overflow:'hidden', aspectRatio:'1/1', background:'var(--m-card)', position:'relative' }}>
-                <img src={pendingPreviewUrl} alt="Preview" style={{ width:'100%', height:'100%', objectFit:'cover' }}/>
+              <div 
+                ref={previewContainerRef}
+                style={{ 
+                  borderRadius:'var(--m-radius)', 
+                  overflow:'hidden', 
+                  aspectRatio:'1/1', 
+                  background:'#000', 
+                  position:'relative',
+                  touchAction:'none',
+                  cursor: isDraggingCropper ? 'grabbing' : 'grab'
+                }}
+                onMouseDown={(e) => handleCropperDragStart(e.clientX, e.clientY)}
+                onMouseMove={(e) => handleCropperDragMove(e.clientX, e.clientY)}
+                onMouseUp={handleCropperDragEnd}
+                onMouseLeave={handleCropperDragEnd}
+                onTouchStart={(e) => handleCropperDragStart(e.touches[0].clientX, e.touches[0].clientY)}
+                onTouchMove={(e) => handleCropperDragMove(e.touches[0].clientX, e.touches[0].clientY)}
+                onTouchEnd={handleCropperDragEnd}
+              >
+                <img 
+                  ref={previewImageRef}
+                  src={pendingPreviewUrl} 
+                  alt="Preview" 
+                  onLoad={(e) => {
+                    const img = e.target;
+                    setNaturalDimensions({ w: img.naturalWidth, h: img.naturalHeight });
+                    if (previewContainerRef.current) {
+                      setContainerSize(previewContainerRef.current.offsetWidth);
+                    }
+                  }}
+                  style={getPreviewImageStyle()}
+                />
+                
+                {/* Visual crop guidelines/borders */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  border: '1.5px dashed rgba(220, 163, 84, 0.6)',
+                  borderRadius: 'var(--m-radius)',
+                  pointerEvents: 'none',
+                  boxShadow: 'inset 0 0 40px rgba(0,0,0,0.5)'
+                }}/>
+              </div>
+            )}
+
+            {/* Zoom Slider */}
+            {naturalDimensions.w > 0 && (
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--m-text-2)' }}>
+                  <span style={{ fontWeight: 600 }}>Zoom da Imagem</span>
+                  <span>{Math.round(cropperZoom * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.01"
+                  value={cropperZoom}
+                  onChange={(e) => {
+                    const nextZoom = parseFloat(e.target.value);
+                    setCropperZoom(nextZoom);
+                    
+                    // Adjust offsets to keep it within constraints
+                    setCropperOffset(prev => {
+                      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+                      const displayWidth = naturalDimensions.w * initialScale * nextZoom;
+                      const displayHeight = naturalDimensions.h * initialScale * nextZoom;
+                      const initialX = (containerSize - displayWidth) / 2;
+                      const initialY = (containerSize - displayHeight) / 2;
+                      
+                      const minX = containerSize - displayWidth - initialX;
+                      const maxX = -initialX;
+                      const minY = containerSize - displayHeight - initialY;
+                      const maxY = -initialY;
+                      
+                      return {
+                        x: Math.max(minX, Math.min(maxX, prev.x)),
+                        y: Math.max(minY, Math.min(maxY, prev.y))
+                      };
+                    });
+                  }}
+                  style={{
+                    width: '100%',
+                    accentColor: 'var(--m-gold)',
+                    background: 'var(--m-border)',
+                    height: '6px',
+                    borderRadius: '3px',
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                />
+                <div style={{ fontSize: '0.7rem', color: 'var(--m-muted)', textAlign: 'center' }}>
+                  Arraste a foto acima para posicionar e use o controle deslizante para ajustar o zoom.
+                </div>
               </div>
             )}
 
             {/* Category */}
-            <div className="m-field">
+            <div className="m-field" style={{ marginTop: 16 }}>
               <label className="m-label">Categoria</label>
               <select className="m-select" value={uploadForm.category} onChange={e => setUploadForm(p => ({ ...p, category: e.target.value }))}>
                 {GALLERY_CATS.filter(c => c !== 'Todos').map(c => <option key={c} value={c}>{c}</option>)}
