@@ -57,6 +57,10 @@
       "dest": "/api/whatsapp-webhook.js"
     },
     {
+      "src": "/api/whatsapp/?$",
+      "dest": "/api/whatsapp-webhook.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
