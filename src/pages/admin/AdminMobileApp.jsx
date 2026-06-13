@@ -263,7 +263,10 @@ export default function AdminMobileApp() {
         }, (err) => handleError('settings', err)));
 
         unsubs.push(onSnapshot(collection(db, 'gallery_photos'), (snap) => {
-          setGalleryPhotos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const sorted = snap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setGalleryPhotos(sorted);
           checkLoaded('gallery');
         }, (err) => handleError('gallery', err)));
 
@@ -920,8 +923,7 @@ Grande abraço, Jon.`;
       };
 
       if (db) {
-        const ref = await addDoc(collection(db, 'gallery_photos'), photoData);
-        setGalleryPhotos(prev => [{ id: ref.id, ...photoData }, ...prev]);
+        await addDoc(collection(db, 'gallery_photos'), photoData);
       }
 
       setUploadProgress(100);
