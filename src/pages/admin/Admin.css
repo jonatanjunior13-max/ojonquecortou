@@ -3498,4 +3498,16 @@
   color: var(--adm-muted) !important;
 }
 
+/* Override btn-ghost for admin dark theme legibility */
+.btn-ghost {
+  color: var(--adm-text) !important;
+  border-color: var(--adm-rule) !important;
+  background: transparent !important;
+}
+.btn-ghost:hover {
+  background: var(--adm-text) !important;
+  color: #121110 !important;
+  border-color: var(--adm-text) !important;
+}
+
 
