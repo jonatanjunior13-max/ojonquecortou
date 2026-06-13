@@ -1,4 +1,3 @@
-import React from 'react';
 import './Ticker.css';
 
 const Ticker = () => {
