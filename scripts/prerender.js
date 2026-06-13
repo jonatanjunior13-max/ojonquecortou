@@ -482,7 +482,29 @@ const pages = [
     bodyInsert: aboutBody,
     schema: {
       "@context": "https://schema.org",
-      "@graph": [localBusinessSchema, founderPersonSchema]
+      "@type": "Person",
+      "name": "Jonatan Junior",
+      "alternateName": "Jon",
+      "jobTitle": "Especialista em cabelos ondulados, cacheados e crespos",
+      "description": "Cabeleireiro especialista em cabelos cacheados, crespos e ondulados em Belo Horizonte. Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas antes de qualquer corte.",
+      "worksFor": {
+        "@type": "HairSalon",
+        "name": "Studio do Jon",
+        "url": "https://www.ojonquecortou.com.br"
+      },
+      "url": "https://www.ojonquecortou.com.br/sobre",
+      "sameAs": [
+        "https://www.instagram.com/ojonquecortou"
+      ],
+      "knowsAbout": [
+        "Método Leitura de Fio",
+        "Corte a seco para cabelos cacheados",
+        "Visagismo capilar",
+        "Transição capilar",
+        "Descoloração em cabelos cacheados",
+        "Porosidade capilar",
+        "Curvatura capilar tipos 2A ao 4C"
+      ]
     }
   },
   {
