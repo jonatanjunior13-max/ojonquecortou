@@ -6,6 +6,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import './Blog.css';
 import { ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
+import DOMPurify from 'dompurify';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
@@ -172,7 +173,7 @@ const BlogPostPage = () => {
 
           <div 
             className="post-content reveal active stagger-2" 
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
           
           <section className="related-posts-section reveal active">
