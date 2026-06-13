@@ -3372,11 +3372,30 @@ Grande abraço, Jon.`;
             
             <div className="booking-popover-actions">
               <button 
-                className="btn btn-ghost" 
-                style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+                className="btn" 
+                style={{ 
+                  padding: '4px 8px', 
+                  fontSize: '0.75rem', 
+                  flexGrow: 1,
+                  background: 'transparent',
+                  color: 'var(--adm-text)',
+                  borderColor: 'var(--adm-rule)',
+                  borderStyle: 'solid',
+                  borderWidth: '1px'
+                }}
                 onClick={() => {
                   setSelectedBooking(activePopover.booking);
                   handleStartEditBooking(activePopover.booking);
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'var(--adm-text)';
+                  e.currentTarget.style.color = '#121110';
+                  e.currentTarget.style.borderColor = 'var(--adm-text)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--adm-text)';
+                  e.currentTarget.style.borderColor = 'var(--adm-rule)';
                 }}
               >
                 Editar
