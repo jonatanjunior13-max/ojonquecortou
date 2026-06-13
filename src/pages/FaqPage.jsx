@@ -8,34 +8,34 @@ const faqSchema = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Com que frequência devo cortar cabelo cacheado?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Para cabelos saudáveis, de 3 em 3 ou de 4 em 4 meses para manter o design. Se está em transição capilar ou tratando pontas muito danificadas, a cada 2 meses é o ideal para eliminar a quebra."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Corte a seco é melhor para cachos? Por quê?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "O corte depende de como o seu cabelo se comporta. Eu trabalho com o Corte Híbrido (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a Leitura de Fio."
-      }
-    },
-    {
-      "@type": "Question",
       "name": "O que é o Método Leitura de Fio?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Minha metodologia exclusiva de 7 etapas de análise antes de a tesoura tocar no cabelo. Mapeamos porosidade, curvaturas, histórico químico e caimento real para definir a técnica exata do seu atendimento."
+        "text": "Metodologia exclusiva do Studio do Jon com 7 etapas de análise antes da tesoura tocar no cabelo: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Incluso em todos os atendimentos sem custo adicional."
       }
     },
     {
       "@type": "Question",
-      "name": "Atende cabelos 4C?",
+      "name": "Com que frequência devo cortar cabelo cacheado?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Atendo todas as curvaturas. Cabelos crespos (tipo 4A, 4B, 4C) têm particularidades de volume e caimento que exigem técnicas específicas de precisão, seja no corte molhado ou seco. Sem alisamento disfarçado aqui."
+        "text": "Para cabelos saudáveis, de 3 em 3 ou de 4 em 4 meses para manter o design. Em transição capilar ou com pontas danificadas, a cada 2 meses para eliminar a quebra."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Corte a seco é melhor para cachos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Depende do cabelo. No Studio do Jon trabalhamos com o Corte Híbrido — feito molhado de precisão e lapidado a seco após a finalização. A decisão técnica é tomada durante a Leitura de Fio, respeitando a individualidade de cada cacho."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Atende cabelo 4C?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sim. Atendemos todas as curvaturas, do 2A ao 4C. Cabelos crespos (4A, 4B, 4C) têm particularidades de volume e caimento que exigem técnicas específicas de precisão. Sem alisamento disfarçado."
       }
     },
     {
@@ -43,20 +43,36 @@ const faqSchema = {
       "name": "Quanto tempo dura o atendimento?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "O corte completo integrado com o diagnóstico da Leitura de Fio leva por volta de 1h. Atendimento individual, focado em precisão técnica e sem pressa."
+        "text": "O corte completo com diagnóstico da Leitura de Fio leva aproximadamente 1 hora. Atendimento individual, focado em precisão técnica e sem pressa."
       }
     },
     {
       "@type": "Question",
-      "name": "Faz transição capilar?",
+      "name": "O Studio do Jon faz progressiva ou relaxamento?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sim. Desenvolvemos cortes de transição progressiva que ajudam a equilibrar a raiz natural e as pontas com química, permitindo que você mude de forma confortável sem precisar recorrer ao Big Chop radical imediato, a menos que seja seu desejo."
+        "text": "Não. O Studio do Jon é focado em cabelos naturais e na saúde real do fio. Não realizamos nenhum tipo de alisamento, relaxamento ou modificação química da curvatura."
       }
     },
     {
       "@type": "Question",
-      "name": "Preciso lavar o cabelo antes de ir?",
+      "name": "Como agendar no Studio do Jon?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pelo link https://www.ojonquecortou.com.br/agendar. Selecione o serviço, o dia e o horário. Confirmação instantânea. Também é possível agendar via DM no Instagram @ojonquecortou."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Qual a diferença do Studio do Jon para outros salões de cachos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Todo atendimento é precedido pelo Método Leitura de Fio — 7 etapas de diagnóstico antes de qualquer corte. Sem fórmulas prontas ou cortes de revista. O foco é a identidade e a facilidade de cuidar do cabelo no dia a dia de cada cliente."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Preciso lavar o cabelo antes de ir ao Studio do Jon?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Venha com o cabelo seco, lavado no dia anterior ou no dia da visita, desembaraçado e finalizado do seu jeito comum. Não use coques, tranças ou presilhas que marquem o caimento natural do cacho."
@@ -64,42 +80,10 @@ const faqSchema = {
     },
     {
       "@type": "Question",
-      "name": "Atende homens?",
+      "name": "O Studio do Jon atende homens?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sim. Temos serviço especializado em cortes masculinos focados em curvaturas e visagismo."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Como agendar?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Agendamento direto e seguro pelo link /agendar. Selecione o serviço, o dia e a hora. Confirmação instantânea sem enrolação."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "O que é visagismo para cachos?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Técnica de planejar o corte e a distribuição de volumes baseada nas proporções faciais e na imagem que você quer transmitir, respeitando a física do cacho."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Faz química (progressiva, relaxamento)?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Não. O Studio do Jon é focado em cabelos naturais e na sua saúde real. Não realizamos nenhum tipo de alisamento, relaxamento ou procedimento de modificação química da curvatura."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Qual a diferença de atendimento do Studio do Jon para outros salões?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela Leitura de Fio, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia."
+        "text": "Sim. Temos serviço especializado em cortes masculinos com foco em curvaturas e visagismo."
       }
     }
   ]
