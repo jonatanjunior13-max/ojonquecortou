@@ -823,7 +823,9 @@ Grande abraço, Jon.`;
         if (status === 'confirmado') {
           triggerEmailNotification(updatedBooking, 'horario_confirmado');
         } else if (status === 'cancelado') {
-          triggerEmailNotification(updatedBooking, 'agendamento_cancelado');
+          triggerEmailNotification({ ...updatedBooking, cancelledBy: 'admin' }, 'agendamento_cancelado');
+        } else if (status === 'faltou') {
+          triggerEmailNotification(updatedBooking, 'agendamento_falta');
         }
       }
     } catch (err) {

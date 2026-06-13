@@ -781,22 +781,22 @@ const AdminDashboard = () => {
         }
       }
 
-      if (booking && booking.clientEmail) {
+      // Resolve email: prefer stored clientEmail, fallback to client_profiles lookup by phone
+      let emailForStatus = booking?.clientEmail || '';
+      if (!emailForStatus && booking?.clientPhone) {
+        const cleanPhone = booking.clientPhone.replace(/\D/g, '');
+        const matched = clients.find(c => (c.phone || '').replace(/\D/g, '') === cleanPhone);
+        emailForStatus = matched?.email || '';
+      }
+
+      if (booking && emailForStatus && emailForStatus.includes('@') && emailForStatus !== 'Não informado') {
+        const bookingWithEmail = { ...booking, clientEmail: emailForStatus };
         if (newStatus === 'confirmado') {
-          await triggerEmailNotification({
-            ...booking,
-            type: 'horario_confirmado'
-          }, 'horario_confirmado');
+          await triggerEmailNotification({ ...bookingWithEmail, type: 'horario_confirmado' }, 'horario_confirmado');
         } else if (newStatus === 'cancelado') {
-          await triggerEmailNotification({
-            ...booking,
-            type: 'agendamento_cancelado'
-          }, 'agendamento_cancelado');
+          await triggerEmailNotification({ ...bookingWithEmail, type: 'agendamento_cancelado', cancelledBy: 'admin' }, 'agendamento_cancelado');
         } else if (newStatus === 'faltou') {
-          await triggerEmailNotification({
-            ...booking,
-            type: 'agendamento_falta'
-          }, 'agendamento_falta');
+          await triggerEmailNotification({ ...bookingWithEmail, type: 'agendamento_falta' }, 'agendamento_falta');
         }
       }
 
