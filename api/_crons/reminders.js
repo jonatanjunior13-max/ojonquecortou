@@ -106,47 +106,67 @@ export default async function handler(req, res) {
     let successCount = 0;
     let failCount = 0;
 
-    for (const b of bookings) {
-      if (!b.clientPhone) continue;
+    const CHUNK_SIZE = 10;
+    const bookingsChunks = [];
+    for (let i = 0; i < bookings.length; i += CHUNK_SIZE) {
+      bookingsChunks.push(bookings.slice(i, i + CHUNK_SIZE));
+    }
 
-      const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
-      let msg = template
-        .replace('{cliente}', b.clientName.split(' ')[0])
-        .replace('{data}', b.date.split('-').reverse().join('/'))
-        .replace('{hora}', b.time)
-        .replace('{servico}', b.service?.name || b.serviceName);
+    for (const chunk of bookingsChunks) {
+      const waPromises = chunk.map(async (b) => {
+        if (!b.clientPhone) return { success: false, id: null };
 
-      if (msg.includes('{link_cancelamento}')) {
-        msg = msg.replace('{link_cancelamento}', cancelLink);
-      } else {
-        msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
-      }
+        const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
+        let msg = template
+          .replace('{cliente}', b.clientName.split(' ')[0])
+          .replace('{data}', b.date.split('-').reverse().join('/'))
+          .replace('{hora}', b.time)
+          .replace('{servico}', b.service?.name || b.serviceName);
 
-      const phoneNum = b.clientPhone.replace(/\D/g, '');
-      const waNumber = phoneNum.startsWith('55') ? phoneNum : `55${phoneNum}`;
+        if (msg.includes('{link_cancelamento}')) {
+          msg = msg.replace('{link_cancelamento}', cancelLink);
+        } else {
+          msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
+        }
 
-      // Dispara WA apenas se gateway configurado
-      if (waUrl) {
-        try {
-          const response = await fetch(waUrl, {
-            method: 'POST',
-            headers: waHeaders,
-            body: JSON.stringify({ number: waNumber, text: msg })
-          });
-          if (response.ok) {
-            successCount++;
-            try {
-              await updateDoc(doc(db, 'bookings', b.id), { reminderSent: true });
-            } catch (dbErr) {
-              console.error(`Erro ao marcar reminderSent no Firestore para ${b.id}:`, dbErr);
+        const phoneNum = b.clientPhone.replace(/\D/g, '');
+        const waNumber = phoneNum.startsWith('55') ? phoneNum : `55${phoneNum}`;
+
+        // Dispara WA apenas se gateway configurado
+        if (waUrl) {
+          try {
+            const response = await fetch(waUrl, {
+              method: 'POST',
+              headers: waHeaders,
+              body: JSON.stringify({ number: waNumber, text: msg })
+            });
+            if (response.ok) {
+              try {
+                await updateDoc(doc(db, 'bookings', b.id), { reminderSent: true });
+              } catch (dbErr) {
+                console.error(`Erro ao marcar reminderSent no Firestore para ${b.id}:`, dbErr);
+              }
+              return { success: true, id: b.id };
+            } else {
+              console.error(`Erro WA para ${waNumber}:`, await response.text());
+              return { success: false, id: b.id };
             }
+          } catch (err) {
+            console.error(`Erro de rede ao enviar WA para ${waNumber}:`, err);
+            return { success: false, id: b.id };
+          }
+        }
+        return { success: false, id: null }; // No gateway
+      });
+
+      const results = await Promise.all(waPromises);
+      for (const res of results) {
+        if (res.id) {
+          if (res.success) {
+            successCount++;
           } else {
-            console.error(`Erro WA para ${waNumber}:`, await response.text());
             failCount++;
           }
-        } catch (err) {
-          console.error(`Erro de rede ao enviar WA para ${waNumber}:`, err);
-          failCount++;
         }
       }
     }
