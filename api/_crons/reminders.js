@@ -15,8 +15,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 // Helper to dispatch email
 async function dispatchEmail(payload, hostUrl) {
   try {
@@ -157,8 +155,8 @@ export default async function handler(req, res) {
     const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
     const hostUrl = `${isLocal ? 'http' : 'https'}://${req.headers.host}`;
 
-    for (const b of tomorrowBookings) {
-      if (!b.clientEmail || !b.clientEmail.includes('@') || b.clientEmail === 'Não informado') continue;
+    const emailPromises = tomorrowBookings.map(async (b) => {
+      if (!b.clientEmail || !b.clientEmail.includes('@') || b.clientEmail === 'Não informado') return null;
 
       // Verificar opt-out do cliente
       try {
@@ -166,7 +164,7 @@ export default async function handler(req, res) {
         const profileDoc = await getDoc(doc(db, 'client_profiles', phoneKey));
         if (profileDoc.exists() && profileDoc.data().unsubscribed === true) {
           console.log(`Ignorando lembrete de e-mail para cliente descadastrado: ${b.clientName} (${b.clientEmail})`);
-          continue;
+          return null;
         }
       } catch (err) {
         console.warn('Erro ao checar opt-out:', err);
@@ -185,16 +183,21 @@ export default async function handler(req, res) {
       }, hostUrl);
 
       if (ok) {
-        emailSuccessCount++;
         try {
           await updateDoc(doc(db, 'bookings', b.id), { reminderSent: true });
-        } catch (dbErr) {}
+        } catch (dbErr) {
+          // ignore error
+        }
+        return true;
       } else {
-        emailFailCount++;
+        return false;
       }
-      
-      // Pausa de segurança de 5 segundos (Titan SMTP limits)
-      await sleep(5000);
+    });
+
+    const emailResults = await Promise.all(emailPromises);
+    for (const res of emailResults) {
+      if (res === true) emailSuccessCount++;
+      if (res === false) emailFailCount++;
     }
 
     return res.status(200).json({
