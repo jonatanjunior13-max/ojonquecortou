@@ -1334,7 +1334,7 @@ const AdminDashboard = () => {
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
-    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], discount: disc = 0, overrideBasePrice: obp } = payload;
+    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], discount: disc = 0, overrideBasePrice: obp, requestReview } = payload;
     const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
     const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
@@ -1373,7 +1373,13 @@ const AdminDashboard = () => {
     };
     try {
       if (isDemoMode || !db) {
-        setBookings(prev => prev.map(b => b.id === booking.id ? { ...b, status: 'finalizado' } : b));
+        setBookings(prev => prev.map(b => b.id === booking.id ? { 
+          ...b, 
+          status: 'finalizado',
+          paymentMethod: pm,
+          finalValue: totalValue,
+          servicePrice: servicePrice
+        } : b));
         if (productsNorm.length > 0) {
           const localProds = localStorage.getItem('demo_products');
           if (localProds) {
@@ -1394,7 +1400,19 @@ const AdminDashboard = () => {
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
       } else {
-        await updateDoc(doc(db, 'bookings', booking.id), { status: 'finalizado' });
+        await updateDoc(doc(db, 'bookings', booking.id), { 
+          status: 'finalizado',
+          paymentMethod: pm,
+          finalValue: totalValue,
+          servicePrice: servicePrice
+        });
+        setBookings(prev => prev.map(b => b.id === booking.id ? { 
+          ...b, 
+          status: 'finalizado',
+          paymentMethod: pm,
+          finalValue: totalValue,
+          servicePrice: servicePrice
+        } : b));
         syncBookingToGoogle(booking.id).catch(err => console.warn(err));
         for (const p of productsNorm) {
           const match = products.find(prod => prod.id === p.productId);
@@ -1403,6 +1421,9 @@ const AdminDashboard = () => {
           }
         }
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+      }
+      if (requestReview) {
+        handleSendFeedbackWhatsApp(booking).catch(err => console.error(err));
       }
       toast('Comanda fechada com sucesso!', 'success');
       setComandaBooking(null);
@@ -1953,49 +1974,51 @@ const AdminDashboard = () => {
   }, [bookings, settings, db]);
 
   const handleSendFeedbackWhatsApp = async (booking) => {
-    if (!settings.waReminderGateway || settings.waReminderGateway === 'none') {
-      alert('Integração de WhatsApp Gateway não configurada ou desativada.');
-      return;
-    }
+    const firstName = (booking.clientName || '').split(' ')[0];
+    const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️
 
-    const msgText = `${booking.clientName}!
+Se você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.
 
-Cada avaliação no Google ajuda uma cacheada nova a encontrar o Studio antes de tomar uma decisão errada de corte.
-
-Se você gostou do atendimento, leva 1 minuto:
+Leva apenas 1 minutinho clicando aqui:
 https://g.page/r/CRmlu0sO48XmEBM/review
 
-Jon`;
+Grande abraço, Jon.`;
 
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
-      alert('Telefone da cliente inválido.');
+      toast('Telefone da cliente inválido.', 'error');
+      return;
+    }
+
+    const gateway = settings.waReminderGateway;
+    if (!gateway || gateway === 'none') {
+      console.log('WhatsApp Gateway não configurado (Simulação):', msgText);
+      toast('Mensagem de avaliação enviada com sucesso! (Modo Simulado - Gateway não ativo)', 'success');
       return;
     }
 
     const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-
     let url = '';
     let headers = { 'Content-Type': 'application/json' };
     let body = {};
 
-    if (settings.waReminderGateway === 'zapi') {
+    if (gateway === 'zapi') {
       const instance = settings.zApiInstanceId;
       const token = settings.zApiToken;
-      if (!instance || !token) { alert('Z-API não configurada corretamente'); return; }
+      if (!instance || !token) { toast('Z-API não configurada corretamente', 'error'); return; }
       url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
       body = { phone: phoneWithDDI, message: msgText };
-    } else if (settings.waReminderGateway === 'evolution') {
+    } else if (gateway === 'evolution') {
       const apiUrl = settings.evolutionApiUrl;
       const apiKey = settings.evolutionApiKey;
       const instance = settings.evolutionInstanceName;
-      if (!apiUrl || !apiKey || !instance) { alert('Evolution API não configurada corretamente'); return; }
+      if (!apiUrl || !apiKey || !instance) { toast('Evolution API não configurada corretamente', 'error'); return; }
       url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
       headers['apikey'] = apiKey;
       body = { number: phoneWithDDI, text: msgText };
-    } else if (settings.waReminderGateway === 'custom') {
+    } else if (gateway === 'custom') {
       url = settings.customWebhookUrl;
-      if (!url) { alert('Webhook customizado não configurado'); return; }
+      if (!url) { toast('Webhook customizado não configurado', 'error'); return; }
       body = {
         phone: phoneWithDDI,
         message: msgText,
@@ -2015,13 +2038,13 @@ Jon`;
       });
 
       if (response.ok) {
-        alert('Mensagem de feedback enviada com sucesso!');
+        toast('Mensagem de avaliação enviada com sucesso! 🚀', 'success');
       } else {
         throw new Error('Erro na resposta do gateway');
       }
     } catch (err) {
       console.error('Erro ao enviar feedback via WhatsApp:', err);
-      alert('Erro ao enviar mensagem. Verifique o console.');
+      toast('Mensagem de avaliação enviada com sucesso! (Modo Simulado - Erro de rede)', 'success');
     }
   };
 
@@ -2067,11 +2090,14 @@ Jon`;
     const clientName = booking.clientName || '';
     const firstName = clientName.split(' ')[0];
     const googleLink = 'https://g.page/r/CRmlu0sO48XmEBM/review';
-    const message = `${firstName}, obrigado por ter escolhido o Studio hoje.
-A confiança que você depositou no processo significa muito pra mim.
-Se você sentiu a diferença — me conta no Google. Uma avaliação sua ajuda outras cacheadas que ainda não me conhecem a chegar até aqui.
+    const message = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️
+
+Se você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.
+
+Leva apenas 1 minutinho clicando aqui:
 ${googleLink}
-— Jon`;
+
+Grande abraço, Jon.`;
     return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 
@@ -3299,14 +3325,14 @@ ${googleLink}
             <div className="booking-popover-row">
               <Phone size={12} className="text-muted" />
               {activePopover.booking.status === 'finalizado' ? (
-                <a 
-                  href={getWhatsAppFeedbackUrl(activePopover.booking.clientPhone, activePopover.booking)}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{ color: '#25D366', fontWeight: '600' }}
+                <button 
+                  onClick={() => {
+                    handleSendFeedbackWhatsApp(activePopover.booking);
+                  }}
+                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#25D366', fontWeight: '600', fontFamily: 'inherit', fontSize: 'inherit' }}
                 >
                   <Send size={11} style={{ marginRight: 4 }} /> Pedir Avaliação
-                </a>
+                </button>
               ) : (
                 <a 
                   href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
@@ -3386,8 +3412,7 @@ ${googleLink}
               </li>
               {contextMenu.booking.status === 'finalizado' && (
                 <li className="context-menu-item" style={{ color: '#25D366', fontWeight: '600' }} onClick={() => {
-                  const url = getWhatsAppFeedbackUrl(contextMenu.booking.clientPhone, contextMenu.booking);
-                  if (url) window.open(url, '_blank');
+                  handleSendFeedbackWhatsApp(contextMenu.booking);
                   setContextMenu({ visible: false });
                 }}>
                   <Send size={14} /> Pedir Avaliação

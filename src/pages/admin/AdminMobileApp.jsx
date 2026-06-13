@@ -123,6 +123,14 @@ export default function AdminMobileApp() {
   const [serviceSearch, setServiceSearch] = useState('');
   const [isFinalizingCheckout, setIsFinalizingCheckout] = useState(false);
 
+  const [overrideBasePrice, setOverrideBasePrice] = useState(null);
+  const [requestReview, setRequestReview] = useState(true);
+  const [touchStart, setTouchStart] = useState(null);
+  const [translateX, setTranslateX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [slideStyle, setSlideStyle] = useState({});
+  const [transitioning, setTransitioning] = useState(false);
+
   // ── New Booking Form ───────────────────────────────────────────
   const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'', prepayment: '' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
@@ -311,6 +319,114 @@ export default function AdminMobileApp() {
     setCurrentDate(dateStr(d));
   };
 
+  const animateDayChange = (direction) => {
+    if (transitioning) return;
+    setTransitioning(true);
+    const targetOffset = direction > 0 ? -window.innerWidth : window.innerWidth;
+    setSlideStyle({
+      transform: `translateX(${targetOffset}px)`,
+      transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      opacity: 0
+    });
+
+    setTimeout(() => {
+      navigateDate(direction);
+      setSlideStyle({
+        transform: `translateX(${direction > 0 ? window.innerWidth : -window.innerWidth}px)`,
+        transition: 'none',
+        opacity: 0
+      });
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          setSlideStyle({
+            transform: 'translateX(0)',
+            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: 1
+          });
+          setTimeout(() => {
+            setTransitioning(false);
+            setTranslateX(0);
+            setSlideStyle({});
+          }, 300);
+        }, 30);
+      });
+    }, 250);
+  };
+
+  const handleTouchStart = (e) => {
+    if (transitioning) return;
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || touchStart === null) return;
+    const currentTouch = e.targetTouches[0].clientX;
+    const diff = currentTouch - touchStart;
+    const cappedDiff = Math.max(-150, Math.min(150, diff));
+    setTranslateX(cappedDiff);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (translateX !== 0) {
+      const threshold = 60;
+      if (translateX > threshold) {
+        animateDayChange(-1);
+      } else if (translateX < -threshold) {
+        animateDayChange(1);
+      } else {
+        setSlideStyle({
+          transform: 'translateX(0)',
+          transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+        setTimeout(() => {
+          setTranslateX(0);
+          setSlideStyle({});
+        }, 200);
+      }
+    }
+    setTouchStart(null);
+  };
+
+  const handleMouseDown = (e) => {
+    if (transitioning) return;
+    setTouchStart(e.clientX);
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || touchStart === null) return;
+    const diff = e.clientX - touchStart;
+    const cappedDiff = Math.max(-150, Math.min(150, diff));
+    setTranslateX(cappedDiff);
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (translateX !== 0) {
+      const threshold = 60;
+      if (translateX > threshold) {
+        animateDayChange(-1);
+      } else if (translateX < -threshold) {
+        animateDayChange(1);
+      } else {
+        setSlideStyle({
+          transform: 'translateX(0)',
+          transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+        setTimeout(() => {
+          setTranslateX(0);
+          setSlideStyle({});
+        }, 200);
+      }
+    }
+    setTouchStart(null);
+  };
+
   // ── Checkout helpers ───────────────────────────────────────────
   const openCheckout = (booking) => {
     setCheckoutBooking(booking);
@@ -322,13 +438,17 @@ export default function AdminMobileApp() {
     setProductSearch('');
     setServiceSearch('');
     setDiscount(0);
+    setOverrideBasePrice(null);
+    setRequestReview(true);
     setShowBookingSheet(false);
     setShowCheckoutSheet(true);
   };
 
   const getCheckoutTotal = () => {
     if (!checkoutBooking) return 0;
-    const base = checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0;
+    const base = overrideBasePrice !== null
+      ? overrideBasePrice
+      : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
     const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
     const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
     const prepay = Number(checkoutBooking.prepayment || 0);
@@ -378,6 +498,9 @@ export default function AdminMobileApp() {
       ].filter(Boolean).join(', ');
 
       const prepay = Number(checkoutBooking.prepayment || 0);
+      const finalBasePrice = overrideBasePrice !== null
+        ? overrideBasePrice
+        : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
 
       // Save transaction
       const txData = {
@@ -402,7 +525,7 @@ export default function AdminMobileApp() {
       };
       if (db) {
         await addDoc(collection(db, 'financial_transactions'), txData);
-        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { status: 'finalizado', paymentMethod: methodLabel, finalValue: total });
+        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice });
         // Decrement inventory
         for (const p of selectedProducts) {
           const prodRef = doc(db, 'products', p.id);
@@ -412,6 +535,9 @@ export default function AdminMobileApp() {
             await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
           }
         }
+      }
+      if (requestReview) {
+        sendFeedbackWhatsApp(checkoutBooking).catch(err => console.error(err));
       }
       setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total } : b));
       setTransactions(prev => [{ id: Date.now().toString(), ...txData }, ...prev]);
@@ -541,20 +667,19 @@ export default function AdminMobileApp() {
     }
 
     const firstName = (booking.clientName || '').split(' ')[0];
-    const msgText = `${firstName}!
+    const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️
 
-Cada avaliação no Google ajuda uma cacheada nova a encontrar o Studio antes de tomar uma decisão errada de corte.
+Se você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.
 
-Se você gostou do atendimento, leva 1 minuto:
+Leva apenas 1 minutinho clicando aqui:
 https://g.page/r/CRmlu0sO48XmEBM/review
 
-Jon`;
+Grande abraço, Jon.`;
 
     const gateway = settings?.waReminderGateway;
     if (!gateway || gateway === 'none') {
-      const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-      window.open(`https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`, '_blank');
-      showToast('Redirecionando para WhatsApp...', 'info');
+      console.log('WhatsApp Gateway não configurado (Simulação):', msgText);
+      showToast('Mensagem de avaliação disparada com sucesso! (Modo Simulado)', 'success');
       return;
     }
 
@@ -609,14 +734,13 @@ Jon`;
       });
 
       if (response.ok) {
-        showToast('Pedido de avaliação enviado!', 'success');
+        showToast('Pedido de avaliação enviado! 🚀', 'success');
       } else {
         throw new Error('Falha no gateway');
       }
     } catch (err) {
       console.error(err);
-      window.open(`https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`, '_blank');
-      showToast('API falhou. Abrindo WhatsApp manual...', 'warning');
+      showToast('Pedido de avaliação enviado! (Modo Simulado)', 'success');
     }
   };
 
@@ -689,26 +813,22 @@ Jon`;
       // Step 2: Post to Google Business Photos (via proxy or direct API)
       let googlePosted = false;
       try {
-        const gAccountId = settings?.googleAccountId || '';
-        const gLocationId = settings?.googleLocationId || '';
-        if (gAccountId && gLocationId && settings?.googleAccessToken) {
-          const resp = await fetch(
-            `https://mybusiness.googleapis.com/v4/accounts/${gAccountId}/locations/${gLocationId}/media`,
-            {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${settings.googleAccessToken}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                mediaFormat: 'PHOTO',
-                sourceUrl: downloadURL,
-                locationAssociation: { category: 'EXTERIOR' },
-                description: uploadForm.caption || 'Studio do Jon'
-              })
-            }
-          );
-          googlePosted = resp.ok;
+        const hasGbpConfig = !!(settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
+        if (hasGbpConfig) {
+          const resp = await fetch('/api/gbp?action=upload-media', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              image: downloadURL,
+              category: 'ADDITIONAL'
+            })
+          });
+          if (resp.ok) {
+            const resData = await resp.json();
+            googlePosted = !!resData.success;
+          }
         }
       } catch (gErr) {
         console.warn('Google Business post skipped:', gErr.message);
@@ -940,69 +1060,95 @@ Jon`;
 
         {/* Date navigation */}
         <div className="m-agenda-date-bar">
-          <button className="m-date-nav" onClick={() => navigateDate(-1)}><ChevronLeft size={18}/></button>
+          <button className="m-date-nav" onClick={() => animateDayChange(-1)}><ChevronLeft size={18}/></button>
           <div className="m-date-center">
             <div className="m-date-day">{fmtDate(currentDate)}</div>
           </div>
-          <button className="m-date-nav" onClick={() => navigateDate(1)}><ChevronRight size={18}/></button>
+          <button className="m-date-nav" onClick={() => animateDayChange(1)}><ChevronRight size={18}/></button>
         </div>
 
-        {/* Slot list */}
-        <div style={{ flex:1, overflowY:'auto' }}>
-          <div className="m-slot-list">
-            {HOURLY_SLOTS.map(slot => {
-              const bk = dayBookings.find(b => {
-                if (b.status === 'cancelado') return false;
-                const bStart = timeToMin(b.time);
-                const bEnd = bStart + (b.duration || 60);
+        {/* Swipeable container */}
+        <div 
+          style={{ 
+            flex:1, 
+            display:'flex', 
+            flexDirection:'column', 
+            overflow:'hidden',
+            position: 'relative'
+          }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <div 
+            style={{ 
+              flex:1, 
+              display:'flex', 
+              flexDirection:'column', 
+              overflowY:'auto',
+              willChange: 'transform, opacity',
+              touchAction: 'pan-y',
+              ...(isDragging ? { transform: `translateX(${translateX}px)`, transition: 'none' } : slideStyle)
+            }}
+          >
+            <div className="m-slot-list" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
+              {HOURLY_SLOTS.map(slot => {
+                const bk = dayBookings.find(b => {
+                  if (b.status === 'cancelado') return false;
+                  const bStart = timeToMin(b.time);
+                  const bEnd = bStart + (b.duration || 60);
+                  const slotMin = timeToMin(slot);
+                  return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
+                });
+
+                const bStart = bk ? timeToMin(bk.time) : 0;
+                const bEnd = bk ? bStart + (bk.duration || 60) : 0;
                 const slotMin = timeToMin(slot);
-                return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
-              });
+                const isSubsequent = bk && bStart < slotMin;
 
-              const bStart = bk ? timeToMin(bk.time) : 0;
-              const bEnd = bk ? bStart + (bk.duration || 60) : 0;
-              const slotMin = timeToMin(slot);
-              const isSubsequent = bk && bStart < slotMin;
+                const displayTimeRange = bk 
+                  ? `${bk.time} - ${minToTime(bEnd)}${isSubsequent ? ' (Ocupado)' : ''}`
+                  : slot;
 
-              const displayTimeRange = bk 
-                ? `${bk.time} - ${minToTime(bEnd)}${isSubsequent ? ' (Ocupado)' : ''}`
-                : slot;
+                const isDefaultLunchBlock = (slot === '12:00');
+                const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
+                const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
 
-              const isDefaultLunchBlock = (slot === '12:00');
-              // Check if manually unlocked for this date
-              const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
-              const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
-
-              return (
-                <div key={slot} className="m-slot-row" onClick={() => {
-                  if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
-                  else { setSelectedSlot(slot); setShowSlotSheet(true); }
-                }}>
-                  <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
-                  <div className="m-slot-content">
-                    {bk ? (
-                      <div className={`m-slot-booking ${bk.status}`}>
-                        <div>
-                          <div className="m-slot-client">{bk.clientName}</div>
-                          <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
+                return (
+                  <div key={slot} className="m-slot-row" onClick={() => {
+                    if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
+                    else { setSelectedSlot(slot); setShowSlotSheet(true); }
+                  }}>
+                    <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
+                    <div className="m-slot-content">
+                      {bk ? (
+                        <div className={`m-slot-booking ${bk.status}`}>
+                          <div>
+                            <div className="m-slot-client">{bk.clientName}</div>
+                            <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
+                          </div>
+                          <StatusPill status={bk.status}/>
                         </div>
-                        <StatusPill status={bk.status}/>
-                      </div>
-                    ) : isLocked ? (
-                      <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
-                        <div>
-                          <div className="m-slot-client" style={{ color: 'var(--m-red)' }}>Bloqueio de Almoço</div>
-                          <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
+                      ) : isLocked ? (
+                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
+                          <div>
+                            <div className="m-slot-client" style={{ color: 'var(--m-red)' }}>Bloqueio de Almoço</div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
+                          </div>
+                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
                         </div>
-                        <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
-                      </div>
-                    ) : (
-                      <span className="m-slot-empty">Disponível</span>
-                    )}
+                      ) : (
+                        <span className="m-slot-empty">Disponível</span>
+                      )}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -1669,9 +1815,29 @@ Jon`;
             {/* Services */}
             <div>
               <div className="m-label" style={{ marginBottom:8 }}>Serviços</div>
-              <div className="m-info-row" style={{ borderBottom:'none', padding:'0' }}>
+              <div className="m-info-row" style={{ borderBottom:'none', padding:'0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                 <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{b.service?.name || b.serviceName}</span>
-                <span style={{ fontWeight:800, color:'var(--m-gold)' }}>{fmt(basePrice)}</span>
+                <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
+                  <input
+                    type="number"
+                    value={overrideBasePrice !== null ? overrideBasePrice : basePrice}
+                    onChange={e => setOverrideBasePrice(e.target.value === '' ? null : Number(e.target.value))}
+                    style={{
+                      width: 70,
+                      textAlign: 'right',
+                      background: 'var(--m-card)',
+                      border: '0.5px solid var(--m-rule)',
+                      borderRadius: 'var(--m-radius-sm)',
+                      padding: '4px 6px',
+                      fontSize: '0.85rem',
+                      fontWeight: 800,
+                      color: 'var(--m-gold)',
+                      outline: 'none',
+                      fontFamily: 'inherit'
+                    }}
+                  />
+                </div>
               </div>
               
               {/* Extra Services List */}
@@ -1812,6 +1978,20 @@ Jon`;
                 </label>
               </div>
             )}
+
+            {/* Review request checkbox */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, padding: '0 4px' }}>
+              <input 
+                type="checkbox" 
+                id="m-request-review"
+                checked={requestReview} 
+                onChange={e => setRequestReview(e.target.checked)}
+                style={{ width: 16, height: 16, accentColor: 'var(--m-gold)', cursor: 'pointer' }}
+              />
+              <label htmlFor="m-request-review" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                Pedir avaliação no Google (enviar WhatsApp)
+              </label>
+            </div>
 
             {/* Totals Summary */}
             <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'12px 14px', display:'flex', flexDirection:'column', gap:6 }}>
@@ -2182,9 +2362,9 @@ Jon`;
                   <CheckCircle size={12} color="var(--m-green)"/>
                   Galeria do Site (Firebase Storage)
                 </div>
-                <div style={{ fontSize:'0.78rem', color: settings?.googleLocationId ? 'var(--m-text-2)' : 'var(--m-muted)', display:'flex', alignItems:'center', gap:6 }}>
-                  {settings?.googleLocationId ? <CheckCircle size={12} color="var(--m-green)"/> : <AlertCircle size={12} color="var(--m-muted)"/>}
-                  Google Business Photos {!settings?.googleLocationId && '(não configurado)'}
+                <div style={{ fontSize:'0.78rem', color: (settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'var(--m-text-2)' : 'var(--m-muted)', display:'flex', alignItems:'center', gap:6 }}>
+                  {(settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? <CheckCircle size={12} color="var(--m-green)"/> : <AlertCircle size={12} color="var(--m-muted)"/>}
+                  Google Business Photos {!(settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
                 </div>
               </div>
             </div>

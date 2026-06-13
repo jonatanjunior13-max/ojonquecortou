@@ -46,6 +46,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const [addedServices, setAddedServices] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [overridePrice, setOverridePrice] = useState('');
+  const [requestReview, setRequestReview] = useState(true);
 
   const servicePrice = overridePrice !== '' ? Number(overridePrice) || 0 : basePrice;
 
@@ -142,6 +143,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
       total: totalToPay,
       netTotal,
       feeAmount,
+      requestReview,
     });
   };
 
@@ -405,6 +407,19 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
           <div style={{ padding: '8px 12px', background: 'rgba(220,163,84,0.06)', borderRadius: 8, border: '0.5px solid var(--adm-rule)', marginBottom: 14, fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'flex', justifyContent: 'space-between' }}>
             <span>Comissão do profissional ({professionalCommissionRate}%)</span>
             <span style={{ fontWeight: 700, color: 'var(--adm-text-2)' }}>{fmtBRL(commissionValue)}</span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, marginBottom: 14 }}>
+            <input 
+              type="checkbox" 
+              id="comanda-req-review" 
+              checked={requestReview}
+              onChange={e => setRequestReview(e.target.checked)}
+              style={{ width: 16, height: 16, accentColor: 'var(--adm-gold)', cursor: 'pointer' }}
+            />
+            <label htmlFor="comanda-req-review" style={{ fontSize: '0.85rem', color: 'var(--adm-text)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+              Pedir avaliação no Google por WhatsApp
+            </label>
           </div>
 
           <button
