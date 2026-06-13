@@ -741,6 +741,7 @@ const AdminDashboard = () => {
       } else {
         const apptRef = doc(db, 'bookings', bookingId);
         await updateDoc(apptRef, { status: newStatus });
+        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
         syncBookingToGoogle(bookingId).catch(err => console.warn('Error syncing status:', err));
         setSelectedBooking(null);
 

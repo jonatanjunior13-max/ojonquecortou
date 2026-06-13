@@ -1824,6 +1824,35 @@ Grande abraço, Jon.`;
                       <div className="m-action-btn-sub">Criar reserva para este horário</div>
                     </div>
                   </button>
+                  <button className="m-action-btn" onClick={async () => {
+                    const payload = {
+                      clientName: 'Horário Bloqueado',
+                      clientPhone: '00000000000',
+                      clientEmail: '',
+                      service: { name: 'Bloqueio Administrativo', price: 0 },
+                      date: currentDate,
+                      time: selectedSlot,
+                      profissional: 'jon',
+                      notes: 'Bloqueio administrativo',
+                      status: 'bloqueado',
+                      createdAt: new Date().toISOString()
+                    };
+                    if (db) {
+                      const ref = await addDoc(collection(db, 'bookings'), payload);
+                      setBookings(prev => [...prev, { id: ref.id, ...payload }]);
+                    } else {
+                      const fakeId = 'demo-block-' + Date.now();
+                      setBookings(prev => [...prev, { id: fakeId, ...payload }]);
+                    }
+                    setShowSlotSheet(false);
+                    showToast(`Horário ${selectedSlot} bloqueado!`, 'info');
+                  }}>
+                    <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><AlertCircle size={16}/></div>
+                    <div className="m-action-btn-text">
+                      <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Bloquear Horário</div>
+                      <div className="m-action-btn-sub">Impedir agendamentos neste horário</div>
+                    </div>
+                  </button>
                   {isDefaultLunchBlock && isUnlocked && (
                     <button className="m-action-btn" onClick={() => {
                       localStorage.removeItem(`unlock_${currentDate}_${selectedSlot}`);
