@@ -391,43 +391,46 @@ Observações: ${booking.notes || ''}`;
       // ==============================================================
       // FLUXO A: FIRESTORE -> GOOGLE CALENDAR
       // ==============================================================
-      for (const booking of bookingsList) {
-        if (booking.status === 'cancelado') {
-          // Se já está cancelado, remove se houver ID
-          if (booking.googleCalendarEventId) {
-            const deleteUrl = `https://www.googleapis.com/calendar/v3/calendars/primary/events/${booking.googleCalendarEventId}`;
-            await fetch(deleteUrl, {
-              method: 'DELETE',
-              headers: { 'Authorization': `Bearer ${accessToken}` }
-            });
-            await updateDoc(doc(db, 'bookings', booking.id), {
-              googleCalendarEventId: null
-            });
-            stats.deletedFirestore++;
-            logs.push(`Removido evento do Google para agendamento cancelado: ${booking.clientName}`);
+      const batchSize = 10;
+      for (let i = 0; i < bookingsList.length; i += batchSize) {
+        const batch = bookingsList.slice(i, i + batchSize);
+        await Promise.all(batch.map(async (booking) => {
+          if (booking.status === 'cancelado') {
+            // Se já está cancelado, remove se houver ID
+            if (booking.googleCalendarEventId) {
+              const deleteUrl = `https://www.googleapis.com/calendar/v3/calendars/primary/events/${booking.googleCalendarEventId}`;
+              await fetch(deleteUrl, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+              });
+              await updateDoc(doc(db, 'bookings', booking.id), {
+                googleCalendarEventId: null
+              });
+              stats.deletedFirestore++;
+              logs.push(`Removido evento do Google para agendamento cancelado: ${booking.clientName}`);
+            }
+            return;
           }
-          continue;
-        }
 
-        const [yr, mo, dy] = booking.date.split('-').map(Number);
-        const [hr, mn] = booking.time.split(':').map(Number);
-        const start = new Date(yr, mo - 1, dy, hr, mn, 0);
-        const durationMin = booking.duration || 60;
-        const end = new Date(start.getTime() + durationMin * 60000);
+          const [yr, mo, dy] = booking.date.split('-').map(Number);
+          const [hr, mn] = booking.time.split(':').map(Number);
+          const start = new Date(yr, mo - 1, dy, hr, mn, 0);
+          const durationMin = booking.duration || 60;
+          const end = new Date(start.getTime() + durationMin * 60000);
 
-        const startStr = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}T${pad(start.getHours())}:${pad(start.getMinutes())}:00`;
-        const endStr = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}T${pad(end.getHours())}:${pad(end.getMinutes())}:00`;
+          const startStr = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}T${pad(start.getHours())}:${pad(start.getMinutes())}:00`;
+          const endStr = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}T${pad(end.getHours())}:${pad(end.getMinutes())}:00`;
 
-        let summary = '';
-        if (booking.status === 'bloqueado') {
-          summary = `[BLOQUEADO] ${booking.clientName || 'Horário Bloqueado'}`;
-        } else if (booking.status === 'pendente') {
-          summary = `[PENDENTE] ${booking.clientName} - ${booking.serviceName || 'Serviço'}`;
-        } else {
-          summary = `[Studio] ${booking.clientName} - ${booking.serviceName || 'Serviço'}`;
-        }
+          let summary = '';
+          if (booking.status === 'bloqueado') {
+            summary = `[BLOQUEADO] ${booking.clientName || 'Horário Bloqueado'}`;
+          } else if (booking.status === 'pendente') {
+            summary = `[PENDENTE] ${booking.clientName} - ${booking.serviceName || 'Serviço'}`;
+          } else {
+            summary = `[Studio] ${booking.clientName} - ${booking.serviceName || 'Serviço'}`;
+          }
 
-        const description = `Cliente: ${booking.clientName || ''}
+          const description = `Cliente: ${booking.clientName || ''}
 Serviço: ${booking.serviceName || ''}
 Profissional: ${booking.professionalName || 'Jon'}
 Status: ${booking.status || ''}
@@ -435,142 +438,147 @@ WhatsApp: ${booking.clientPhone || ''}
 E-mail: ${booking.clientEmail || ''}
 Observações: ${booking.notes || ''}`;
 
-        let colorId = '10';
-        if (booking.status === 'pendente') colorId = '6';
-        else if (booking.status === 'bloqueado') colorId = '8';
+          let colorId = '10';
+          if (booking.status === 'pendente') colorId = '6';
+          else if (booking.status === 'bloqueado') colorId = '8';
 
-        const eventData = {
-          summary,
-          description,
-          colorId,
-          start: {
-            dateTime: startStr,
-            timeZone: 'America/Sao_Paulo'
-          },
-          end: {
-            dateTime: endStr,
-            timeZone: 'America/Sao_Paulo'
-          }
-        };
+          const eventData = {
+            summary,
+            description,
+            colorId,
+            start: {
+              dateTime: startStr,
+              timeZone: 'America/Sao_Paulo'
+            },
+            end: {
+              dateTime: endStr,
+              timeZone: 'America/Sao_Paulo'
+            }
+          };
 
-        if (booking.googleCalendarEventId) {
-          const gEvent = googleEventsById[booking.googleCalendarEventId];
-          if (gEvent) {
-            // Verificar se precisa atualizar
-            const gStart = gEvent.start.dateTime || gEvent.start.date;
-            const isDifferentTime = !gStart.startsWith(startStr);
-            const isDifferentSummary = gEvent.summary !== summary;
+          if (booking.googleCalendarEventId) {
+            const gEvent = googleEventsById[booking.googleCalendarEventId];
+            if (gEvent) {
+              // Verificar se precisa atualizar
+              const gStart = gEvent.start.dateTime || gEvent.start.date;
+              const isDifferentTime = !gStart.startsWith(startStr);
+              const isDifferentSummary = gEvent.summary !== summary;
 
-            if (isDifferentTime || isDifferentSummary) {
-              const updateUrl = `https://www.googleapis.com/calendar/v3/calendars/primary/events/${booking.googleCalendarEventId}`;
-              await fetch(updateUrl, {
-                method: 'PUT',
-                headers: {
-                  'Authorization': `Bearer ${accessToken}`,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(eventData)
+              if (isDifferentTime || isDifferentSummary) {
+                const updateUrl = `https://www.googleapis.com/calendar/v3/calendars/primary/events/${booking.googleCalendarEventId}`;
+                await fetch(updateUrl, {
+                  method: 'PUT',
+                  headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(eventData)
+                });
+                stats.updatedGoogle++;
+                logs.push(`Atualizado Google Agenda para agendamento modificado: ${booking.clientName}`);
+              }
+            } else {
+              // O evento foi excluído do Google Agenda diretamente
+              // Marcamos o agendamento no Firestore como cancelado!
+              await updateDoc(doc(db, 'bookings', booking.id), {
+                status: 'cancelado',
+                googleCalendarEventId: null
               });
-              stats.updatedGoogle++;
-              logs.push(`Atualizado Google Agenda para agendamento modificado: ${booking.clientName}`);
+              stats.updatedFirestore++;
+              logs.push(`Agendamento cancelado no Firestore pois foi excluído no Google: ${booking.clientName}`);
             }
           } else {
-            // O evento foi excluído do Google Agenda diretamente
-            // Marcamos o agendamento no Firestore como cancelado!
-            await updateDoc(doc(db, 'bookings', booking.id), {
-              status: 'cancelado',
-              googleCalendarEventId: null
+            // Criar no Google Agenda
+            const createUrl = `https://www.googleapis.com/calendar/v3/calendars/primary/events`;
+            const resGcal = await fetch(createUrl, {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(eventData)
             });
-            stats.updatedFirestore++;
-            logs.push(`Agendamento cancelado no Firestore pois foi excluído no Google: ${booking.clientName}`);
+            const newEvent = await resGcal.json();
+            if (resGcal.ok && newEvent.id) {
+              await updateDoc(doc(db, 'bookings', booking.id), {
+                googleCalendarEventId: newEvent.id
+              });
+              stats.exported++;
+              logs.push(`Exportado para o Google Agenda: ${booking.clientName}`);
+            }
           }
-        } else {
-          // Criar no Google Agenda
-          const createUrl = `https://www.googleapis.com/calendar/v3/calendars/primary/events`;
-          const resGcal = await fetch(createUrl, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(eventData)
-          });
-          const newEvent = await resGcal.json();
-          if (resGcal.ok && newEvent.id) {
-            await updateDoc(doc(db, 'bookings', booking.id), {
-              googleCalendarEventId: newEvent.id
-            });
-            stats.exported++;
-            logs.push(`Exportado para o Google Agenda: ${booking.clientName}`);
-          }
-        }
+        }));
       }
 
       // ==============================================================
       // FLUXO B: GOOGLE CALENDAR -> FIRESTORE
       // ==============================================================
-      for (const event of gcalEvents) {
-        if (event.status === 'cancelled') continue;
+      const bBatchSize = 10;
+      for (let i = 0; i < gcalEvents.length; i += bBatchSize) {
+        const batch = gcalEvents.slice(i, i + bBatchSize);
+        await Promise.all(batch.map(async (event) => {
+          if (event.status === 'cancelled') return;
 
-        const booking = bookingsByEventId[event.id];
+          const booking = bookingsByEventId[event.id];
 
-        if (booking) {
-          // Já existe correspondência. Verificar se a data/hora mudou no Google Agenda
-          const eventStartStr = event.start.dateTime;
-          if (eventStartStr) {
-            const localGcal = parseGcalDateTime(eventStartStr);
-            const isChanged = localGcal.date !== booking.date || localGcal.time !== booking.time;
+          if (booking) {
+            // Já existe correspondência. Verificar se a data/hora mudou no Google Agenda
+            const eventStartStr = event.start.dateTime;
+            if (eventStartStr) {
+              const localGcal = parseGcalDateTime(eventStartStr);
+              const isChanged = localGcal.date !== booking.date || localGcal.time !== booking.time;
 
-            if (isChanged) {
-              await updateDoc(doc(db, 'bookings', booking.id), {
-                date: localGcal.date,
-                time: localGcal.time
-              });
-              stats.updatedFirestore++;
-              logs.push(`Reagendado Firestore a partir do Google Agenda: ${booking.clientName} para ${localGcal.date} às ${localGcal.time}`);
+              if (isChanged) {
+                await updateDoc(doc(db, 'bookings', booking.id), {
+                  date: localGcal.date,
+                  time: localGcal.time
+                });
+                stats.updatedFirestore++;
+                logs.push(`Reagendado Firestore a partir do Google Agenda: ${booking.clientName} para ${localGcal.date} às ${localGcal.time}`);
+              }
             }
-          }
-        } else {
-          // Evento foi criado diretamente no Google Agenda
-          // Importa como Horário Bloqueado
-          const eventStartStr = event.start.dateTime || event.start.date;
-          let localGcal;
-
-          if (eventStartStr.includes('T')) {
-            localGcal = parseGcalDateTime(eventStartStr);
           } else {
-            // All-day event
-            localGcal = { date: eventStartStr, time: '09:00' };
+            // Evento foi criado diretamente no Google Agenda
+            // Importa como Horário Bloqueado
+            const eventStartStr = event.start.dateTime || event.start.date;
+            let localGcal;
+
+            if (eventStartStr.includes('T')) {
+              localGcal = parseGcalDateTime(eventStartStr);
+            } else {
+              // All-day event
+              localGcal = { date: eventStartStr, time: '09:00' };
+            }
+
+            // Calcular duração do bloqueio
+            let duration = 60;
+            if (event.start.dateTime && event.end.dateTime) {
+              const diffMs = new Date(event.end.dateTime) - new Date(event.start.dateTime);
+              duration = Math.max(30, Math.round(diffMs / 60000));
+            } else {
+              duration = 1440; // All-day = 24h
+            }
+
+            const newBookingPayload = {
+              clientName: event.summary || 'Bloqueado (Google Calendar)',
+              clientPhone: '',
+              clientEmail: '',
+              date: localGcal.date,
+              time: localGcal.time,
+              duration: duration,
+              serviceName: 'Bloqueio Manual',
+              professionalId: 'jon',
+              professionalName: 'Jon',
+              status: 'bloqueado',
+              notes: event.description || 'Importado do Google Agenda',
+              googleCalendarEventId: event.id
+            };
+
+            await addDoc(collection(db, 'bookings'), newBookingPayload);
+            stats.imported++;
+            logs.push(`Importado bloqueio do Google Agenda: ${newBookingPayload.clientName} em ${localGcal.date}`);
           }
-
-          // Calcular duração do bloqueio
-          let duration = 60;
-          if (event.start.dateTime && event.end.dateTime) {
-            const diffMs = new Date(event.end.dateTime) - new Date(event.start.dateTime);
-            duration = Math.max(30, Math.round(diffMs / 60000));
-          } else {
-            duration = 1440; // All-day = 24h
-          }
-
-          const newBookingPayload = {
-            clientName: event.summary || 'Bloqueado (Google Calendar)',
-            clientPhone: '',
-            clientEmail: '',
-            date: localGcal.date,
-            time: localGcal.time,
-            duration: duration,
-            serviceName: 'Bloqueio Manual',
-            professionalId: 'jon',
-            professionalName: 'Jon',
-            status: 'bloqueado',
-            notes: event.description || 'Importado do Google Agenda',
-            googleCalendarEventId: event.id
-          };
-
-          await addDoc(collection(db, 'bookings'), newBookingPayload);
-          stats.imported++;
-          logs.push(`Importado bloqueio do Google Agenda: ${newBookingPayload.clientName} em ${localGcal.date}`);
-        }
+        }));
       }
 
       return res.status(200).json({
