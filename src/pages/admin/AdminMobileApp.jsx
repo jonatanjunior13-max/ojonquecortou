@@ -551,15 +551,56 @@ export default function AdminMobileApp() {
     }
   };
 
+  const triggerEmailNotification = async (payload, type = 'horario_confirmado') => {
+    if (!payload.clientEmail) return;
+    try {
+      let displayDate = payload.date;
+      if (displayDate && displayDate.includes('-')) {
+        displayDate = displayDate.split('-').reverse().join('/');
+      }
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: type,
+          id: payload.id,
+          clientEmail: payload.clientEmail,
+          clientName: payload.clientName,
+          serviceName: payload.serviceName || payload.service?.name || 'Serviço',
+          date: displayDate,
+          rawDate: payload.date,
+          time: payload.time,
+          duration: payload.duration || payload.service?.duration || 60,
+          notes: payload.notes || '',
+          professionalName: 'Jon',
+          price: payload.servicePrice ?? payload.price ?? null
+        }),
+      });
+      const data = await response.json();
+      console.log('Mobile Email API response:', data);
+    } catch (err) {
+      console.error(`Failed to send email notification (${type}):`, err);
+    }
+  };
+
   // ── New Booking ────────────────────────────────────────────────
   const addBooking = async () => {
     if (!nbForm.clientName || !nbForm.serviceName) { showToast('Preencha cliente e serviço', 'error'); return; }
     const svc = services.find(s => s.name === nbForm.serviceName);
     const prepay = Number(nbForm.prepayment || 0);
     const price = nbForm.servicePrice !== '' ? Number(nbForm.servicePrice) : (svc?.promoPrice || svc?.price || 0);
+    
+    // Look up client profile to find email
+    const cleanPhone = (nbForm.clientPhone || '').replace(/\D/g, '');
+    const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+    const clientEmail = matchedClient?.email || '';
+
     const data = {
       clientName: nbForm.clientName,
       clientPhone: nbForm.clientPhone || '',
+      clientEmail: clientEmail,
       service: svc || { name: nbForm.serviceName },
       serviceName: nbForm.serviceName,
       servicePrice: price,
@@ -575,6 +616,10 @@ export default function AdminMobileApp() {
         const ref = await addDoc(collection(db, 'bookings'), data);
         setBookings(prev => [...prev, { id: ref.id, ...data }]);
         try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
+
+        if (clientEmail && clientEmail !== 'Não informado' && clientEmail.includes('@')) {
+          triggerEmailNotification({ ...data, id: ref.id });
+        }
 
         // Log prepayment transaction if > 0
         if (prepay > 0) {
@@ -758,13 +803,29 @@ Grande abraço, Jon.`;
     setEbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
   }, [editBookingForm?.clientName, clients]);
 
-  // ── Change booking status ──────────────────────────────────────
   const changeStatus = async (bookingId, status) => {
     try {
+      const booking = bookings.find(b => b.id === bookingId);
+      let emailToUse = booking?.clientEmail || '';
+      if (!emailToUse && booking?.clientPhone) {
+        const cleanPhone = booking.clientPhone.replace(/\D/g, '');
+        const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+        emailToUse = matchedClient?.email || '';
+      }
+
       if (db) await updateDoc(doc(db, 'bookings', bookingId), { status });
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status } : b));
       setShowBookingSheet(false);
       showToast(`Status atualizado: ${status}`, 'success');
+
+      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
+        const updatedBooking = { ...booking, id: bookingId, clientEmail: emailToUse };
+        if (status === 'confirmado') {
+          triggerEmailNotification(updatedBooking, 'horario_confirmado');
+        } else if (status === 'cancelado') {
+          triggerEmailNotification(updatedBooking, 'agendamento_cancelado');
+        }
+      }
     } catch (err) {
       showToast('Erro: ' + err.message, 'error');
     }

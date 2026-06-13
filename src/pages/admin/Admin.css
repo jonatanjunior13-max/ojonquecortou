@@ -3533,3 +3533,37 @@
   color: var(--adm-gold) !important;
   border-color: var(--adm-gold) !important;
 }
+
+/* Contrast Fix: CSS variables mappings for legacy panel and sidebar colors in admin pages */
+:root {
+  --panel-bg: var(--adm-surface);
+  --sidebar-bg: var(--adm-card);
+}
+
+/* Ensure Marketing CRM page has high-contrast text and inputs */
+.admin-clients-page h3,
+.admin-clients-page h4,
+.admin-clients-page h5,
+.admin-clients-page p,
+.admin-clients-page span,
+.admin-clients-page label,
+.admin-clients-page strong,
+.admin-clients-page td,
+.admin-clients-page th,
+.admin-clients-page div {
+  color: var(--adm-text);
+}
+.admin-clients-page p,
+.admin-clients-page span.text-muted,
+.admin-clients-page .report-header p,
+.admin-clients-page .marketing-automations-card p {
+  color: var(--adm-text-2) !important;
+}
+.admin-clients-page input,
+.admin-clients-page select,
+.admin-clients-page textarea {
+  color: var(--adm-text) !important;
+  background-color: var(--adm-card) !important;
+  border-color: var(--adm-rule-gold) !important;
+}
+

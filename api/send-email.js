@@ -181,9 +181,13 @@ function formatApptDate(dateString, timeString) {
     }
     return dateString;
   }
-  const [y, m, d] = dateString.split('-');
-  const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-  return `${d} de ${months[parseInt(m, 10)-1]}`;
+  const parts = dateString.split('-');
+  if (parts.length === 3) {
+    const [y, m, d] = parts;
+    const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    return `${d} de ${months[parseInt(m, 10)-1]}`;
+  }
+  return dateString;
 }
 
 function formatDuration(minutes) {

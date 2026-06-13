@@ -1090,19 +1090,21 @@ const AdminDashboard = () => {
 
     try {
       const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
+      let finalId = '';
 
       if (isDemoMode) {
-        const generatedId = 'demo-' + Date.now();
-        setBookings(prev => [...prev, { id: generatedId, ...payload }]);
+        finalId = 'demo-' + Date.now();
+        setBookings(prev => [...prev, { id: finalId, ...payload }]);
         if (payload.prepayment > 0) {
-          await logPrepaymentTransaction(generatedId, payload, payload.prepayment);
+          await logPrepaymentTransaction(finalId, payload, payload.prepayment);
         }
       } else {
         const docRef = await addDoc(collection(db, 'bookings'), payload);
+        finalId = docRef.id;
         if (payload.prepayment > 0) {
-          await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
+          await logPrepaymentTransaction(finalId, payload, payload.prepayment);
         }
-        syncBookingToGoogle(docRef.id).catch(err => console.warn('Error syncing new booking:', err));
+        syncBookingToGoogle(finalId).catch(err => console.warn('Error syncing new booking:', err));
       }
 
       // Auto-cadastro de cliente
@@ -1144,7 +1146,7 @@ const AdminDashboard = () => {
       }
 
       if (payload.clientEmail) {
-        triggerEmailNotification(payload);
+        triggerEmailNotification({ ...payload, id: finalId });
       }
 
       setShowAddModal(false);
