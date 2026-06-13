@@ -17,7 +17,7 @@ const isConfigValid = firebaseConfig.apiKey &&
                       !firebaseConfig.apiKey.includes('your_');
 
 let app = null;
-let auth = null;
+let auth = { currentUser: null };
 let db = null;
 let storage = null;
 
@@ -136,9 +136,15 @@ const withTimeout = (promise, ms = 4500) => {
  * Essencial para Capacitor iOS onde o token cached pode ser stale.
  */
 export const getRefreshedToken = async () => {
-  const user = auth?.currentUser;
-  if (!user) throw new Error('Usuário não autenticado no Firebase.');
-  return user.getIdToken(true);
+  const currentUser = auth.currentUser;
+  if (!currentUser) return null;
+  try {
+    // Force refresh the token to ensure we have the latest claims
+    return await currentUser.getIdToken(true);
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    return null;
+  }
 };
 
 export { auth, db, storage, withTimeout };
