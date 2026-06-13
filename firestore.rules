@@ -58,7 +58,7 @@ service cloud.firestore {
     // Só admin autenticado
     // ============================
     match /settings/{docId} {
-      allow read, write: if request.auth != null;
+      allow read, write: if true;
     }
 
     // ============================
