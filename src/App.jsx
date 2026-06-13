@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
@@ -59,7 +59,7 @@ function PublicLayout() {
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <CustomCursor />
       <GoogleAnalytics />
       <ScrollToTop />
@@ -106,7 +106,7 @@ function App() {
           <Route path="configuracoes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense>} />
         </Route>
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
