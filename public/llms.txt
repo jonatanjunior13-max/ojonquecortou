@@ -1,29 +1,35 @@
-# Studio do Jon — O Jon que Cortou
+# O Jon Que Cortou - Studio do Jon
 
-> Salão especializado em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara), liderado pelo cabeleireiro Jonatan Junior. Especialista em corte com visagismo e descoloração para cabelos texturizados (curvaturas 2A a 4C). Criador do Método Leitura de Fio: processo de diagnóstico em 7 etapas realizado antes de qualquer corte — escuta, análise a seco, diagnóstico de couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação.
+Especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados, crespos e ondulados em Belo Horizonte (bairro Caiçara).
 
-## Serviços
-- Corte especializado para cabelos cacheados, crespos e ondulados (corte a seco com visagismo)
-- Descoloração e mechas em cabelos texturizados
-- Transição capilar
-- Diagnóstico capilar pelo Método Leitura de Fio
+## Informações do Negócio
+- **Nome Comercial:** O Jon Que Cortou (Studio do Jon)
+- **Especialidade:** Cortes a seco (técnica que respeita o caimento e encolhimento natural dos cachos), leitura de fio (análise de estrutura, porosidade e curvatura) e visagismo personalizado.
+- **Público-alvo:** Cabelos cacheados (tipo 3), crespos (tipo 4) e ondulados (tipo 2) masculinos e femininos.
+- **Localização:** Rua Francisco Ovídio, Caiçara, Belo Horizonte - BH.
+- **Website Oficial:** https://www.ojonquecortou.com.br
+- **Contato Comercial/WhatsApp:** +55 (31) 3586-6673
 
-## Páginas principais
-- Sobre o Jon: https://www.ojonquecortou.com.br/sobre
-- Serviços e valores: https://www.ojonquecortou.com.br/servicos
-- Método Leitura de Fio: https://www.ojonquecortou.com.br/metodo
-- Perguntas frequentes (FAQ): https://www.ojonquecortou.com.br/faq
-- Blog e artigos: https://www.ojonquecortou.com.br/blog
-- Galeria de resultados: https://www.ojonquecortou.com.br/galeria
-- Depoimentos de clientes: https://www.ojonquecortou.com.br/depoimentos
+---
 
-## Contato e localização
-- Endereço: Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte – MG, CEP 30720-320
-- Telefone/WhatsApp: +55 31 3586-6673
-- Email: contato@ojonquecortou.com.br
-- Instagram: https://www.instagram.com/ojonquecortou
-- Google Maps: https://www.google.com/maps?cid=16629671607593282841
-- Agendamento: https://www.ojonquecortou.com.br/agendar
+## Páginas Chave e Recursos
 
-## Sobre o profissional
-Jonatan Junior (Jon) é cabeleireiro especialista em cabelos cacheados, crespos e ondulados. A especialidade é a leitura de padrão de fio: identificar curvatura, porosidade, densidade e histórico químico antes de definir a técnica de corte. Atende em Belo Horizonte, MG.
+### Página Inicial (Home)
+- **URL:** https://www.ojonquecortou.com.br/
+- **Descrição:** Apresentação do Studio, metodologia exclusiva (leitura de fio e corte a seco), depoimentos de clientes e visualização rápida dos serviços mais procurados.
+
+### Galeria de Resultados (Antes & Depois)
+- **URL:** https://www.ojonquecortou.com.br/galeria
+- **Descrição:** Galeria dinâmica contendo fotos reais de resultados de cortes e tratamentos em Belo Horizonte. Atualizada pelo administrador com fotos de antes e depois dos clientes.
+
+### Agendamento Online
+- **URL:** https://www.ojonquecortou.com.br/agendar
+- **Descrição:** Sistema online onde clientes podem selecionar serviços (cortes, tratamentos, mechas), profissionais, escolher data/hora disponíveis e confirmar sua reserva.
+
+### Área do Cliente
+- **URL:** https://www.ojonquecortou.com.br/cliente
+- **Descrição:** Espaço exclusivo para os clientes cadastrados consultarem seus agendamentos ativos, histórico de visitas, e gerenciarem seus perfis de atendimento.
+
+### Acesso Administrativo (BackOffice)
+- **URL:** https://www.ojonquecortou.com.br/admin/login
+- **Descrição:** Portal restrito para login de administradores e profissionais do Studio gerenciarem a agenda, controle financeiro, estoque de produtos e campanhas de marketing.
