@@ -1334,15 +1334,22 @@ const AdminDashboard = () => {
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
-    const { paymentMethod: pm, tipValue, addedProducts: ap, overrideBasePrice: obp } = payload;
+    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], discount: disc = 0, overrideBasePrice: obp } = payload;
     const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
     const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
-    const totalValue = Math.max(0, servicePrice + (ap || []).reduce((s, p) => s + p.price * p.qty, 0) + (tipValue || 0) - prepay);
+    
+    const extraServicesTotal = (as || []).reduce((s, x) => s + x.price * x.qty, 0);
+    const productsTotal = (ap || []).reduce((s, p) => s + p.price * p.qty, 0);
+    const subtotal = servicePrice + extraServicesTotal + productsTotal + (tipValue || 0);
+    const totalValue = Math.max(0, subtotal - disc - prepay);
+
     const itemsDescription = [
       booking.service?.name || booking.serviceName || 'Serviço',
+      ...(as || []).map(s => `${s.qty}x ${s.name}`),
       ...(ap || []).map(p => `${p.qty}x ${p.name}`)
-    ].join(', ');
+    ].filter(Boolean).join(', ');
+
     const transactionPayload = {
       bookingId: booking.id,
       date: booking.date || getLocalDateString(new Date()),
@@ -1352,9 +1359,10 @@ const AdminDashboard = () => {
       type: 'entrada',
       paymentMethod: pm,
       value: totalValue,
-      discount: 0,
+      discount: disc,
       description: itemsDescription + 
                    (tipValue > 0 ? ` (Gorjeta: R$ ${tipValue.toFixed(2)})` : '') + 
+                   (disc > 0 ? ` (Desconto: R$ ${disc.toFixed(2)})` : '') +
                    (prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay.toFixed(2)})` : ''),
       professionalId: booking.professionalId || booking.profissional || 'jon',
       productSales: productsNorm.map(p => {

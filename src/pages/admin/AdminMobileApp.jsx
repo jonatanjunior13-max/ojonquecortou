@@ -30,6 +30,17 @@ const dateStr = (d) => {
 const today = () => dateStr(new Date());
 
 const SLOTS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
+const HOURLY_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+const timeToMin = (t) => {
+  if (!t) return 0;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m || 0);
+};
+const minToTime = (min) => {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+};
 const PAY_METHODS = ['Pix','Dinheiro','Débito','Crédito','Cortesia'];
 const GALLERY_CATS = ['Todos','Antes/Depois','Cortes','Coloração','Tratamento','Geral'];
 const CURL_TYPES = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C'];
@@ -107,6 +118,9 @@ export default function AdminMobileApp() {
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [discount, setDiscount] = useState(0);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [productSearch, setProductSearch] = useState('');
+  const [serviceSearch, setServiceSearch] = useState('');
   const [isFinalizingCheckout, setIsFinalizingCheckout] = useState(false);
 
   // ── New Booking Form ───────────────────────────────────────────
@@ -304,6 +318,9 @@ export default function AdminMobileApp() {
     setInstallments('À vista');
     setApplyAnticipation(false);
     setSelectedProducts([]);
+    setSelectedServices([]);
+    setProductSearch('');
+    setServiceSearch('');
     setDiscount(0);
     setShowBookingSheet(false);
     setShowCheckoutSheet(true);
@@ -312,21 +329,36 @@ export default function AdminMobileApp() {
   const getCheckoutTotal = () => {
     if (!checkoutBooking) return 0;
     const base = checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0;
+    const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
     const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
     const prepay = Number(checkoutBooking.prepayment || 0);
-    return Math.max(0, base + prods - discount - prepay);
+    return Math.max(0, base + extraServices + prods - discount - prepay);
   };
 
-  const toggleProduct = (prod) => {
+  const addProductToCheckout = (prod) => {
     setSelectedProducts(prev => {
-      const idx = prev.findIndex(p => p.id === prod.id);
-      if (idx >= 0) return prev.filter(p => p.id !== prod.id);
+      const existing = prev.find(p => p.id === prod.id);
+      if (existing) return prev.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p);
       return [...prev, { ...prod, qty: 1 }];
     });
+    setProductSearch('');
   };
 
   const changeProductQty = (prodId, delta) => {
-    setSelectedProducts(prev => prev.map(p => p.id === prodId ? { ...p, qty: Math.max(1, p.qty + delta) } : p));
+    setSelectedProducts(prev => prev.map(p => p.id === prodId ? { ...p, qty: Math.max(0, p.qty + delta) } : p).filter(p => p.qty > 0));
+  };
+
+  const addServiceToCheckout = (svc) => {
+    setSelectedServices(prev => {
+      const existing = prev.find(s => s.id === svc.id);
+      if (existing) return prev.map(s => s.id === svc.id ? { ...s, qty: s.qty + 1 } : s);
+      return [...prev, { id: svc.id, name: svc.name, price: svc.promoPrice || svc.price || 0, qty: 1 }];
+    });
+    setServiceSearch('');
+  };
+
+  const changeServiceQty = (svcId, delta) => {
+    setSelectedServices(prev => prev.map(s => s.id === svcId ? { ...s, qty: Math.max(0, s.qty + delta) } : s).filter(s => s.qty > 0));
   };
 
   const finalizeCheckout = async () => {
@@ -341,6 +373,7 @@ export default function AdminMobileApp() {
 
       const itemsDescription = [
         checkoutBooking.service?.name || checkoutBooking.serviceName,
+        ...selectedServices.map(s => `${s.qty}x ${s.name}`),
         ...selectedProducts.map(p => `${p.qty}x ${p.name}`)
       ].filter(Boolean).join(', ');
 
@@ -352,6 +385,7 @@ export default function AdminMobileApp() {
         description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
         paymentMethod: methodLabel,
+        discount: discount,
         date: today(),
         bookingId: checkoutBooking.id,
         productSales: selectedProducts.map(p => {
@@ -916,9 +950,25 @@ Jon`;
         {/* Slot list */}
         <div style={{ flex:1, overflowY:'auto' }}>
           <div className="m-slot-list">
-            {SLOTS.map(slot => {
-              const bk = dayBookings.find(b => b.time === slot);
-              const isDefaultLunchBlock = (slot === '12:00' || slot === '12:30');
+            {HOURLY_SLOTS.map(slot => {
+              const bk = dayBookings.find(b => {
+                if (b.status === 'cancelado') return false;
+                const bStart = timeToMin(b.time);
+                const bEnd = bStart + (b.duration || 60);
+                const slotMin = timeToMin(slot);
+                return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
+              });
+
+              const bStart = bk ? timeToMin(bk.time) : 0;
+              const bEnd = bk ? bStart + (bk.duration || 60) : 0;
+              const slotMin = timeToMin(slot);
+              const isSubsequent = bk && bStart < slotMin;
+
+              const displayTimeRange = bk 
+                ? `${bk.time} - ${minToTime(bEnd)}${isSubsequent ? ' (Ocupado)' : ''}`
+                : slot;
+
+              const isDefaultLunchBlock = (slot === '12:00');
               // Check if manually unlocked for this date
               const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
               const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
@@ -928,7 +978,7 @@ Jon`;
                   if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
                   else { setSelectedSlot(slot); setShowSlotSheet(true); }
                 }}>
-                  <div className="m-slot-time">{slot}</div>
+                  <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
                   <div className="m-slot-content">
                     {bk ? (
                       <div className={`m-slot-booking ${bk.status}`}>
@@ -1589,6 +1639,21 @@ Jon`;
     const b = checkoutBooking;
     const basePrice = b.service?.promoPrice || b.service?.price || b.servicePrice || 0;
 
+    const filteredServices = serviceSearch.trim().length >= 3
+      ? services.filter(s => (s.name || '').toLowerCase().includes(serviceSearch.toLowerCase())).slice(0, 5)
+      : [];
+
+    const filteredProducts = productSearch.trim().length >= 3
+      ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
+      : [];
+
+    const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
+    const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
+    const subtotal = basePrice + extraServicesVal + productsVal;
+    const valorTotal = Math.max(0, subtotal - discount);
+    const prepay = Number(b.prepayment || 0);
+    const remaining = Math.max(0, valorTotal - prepay);
+
     return (
       <div className="m-overlay" onClick={() => setShowCheckoutSheet(false)}>
         <div className="m-sheet" style={{ maxHeight:'95dvh' }} onClick={e => e.stopPropagation()}>
@@ -1601,50 +1666,106 @@ Jon`;
             <button onClick={() => setShowCheckoutSheet(false)} className="m-icon-btn"><X size={18}/></button>
           </div>
           <div className="m-sheet-body" style={{ gap:16 }}>
-            {/* Base service */}
+            {/* Services */}
             <div>
-              <div className="m-label" style={{ marginBottom:8 }}>Serviço</div>
+              <div className="m-label" style={{ marginBottom:8 }}>Serviços</div>
               <div className="m-info-row" style={{ borderBottom:'none', padding:'0' }}>
                 <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{b.service?.name || b.serviceName}</span>
-                <span style={{ fontWeight:800, color:'var(--m-gold)', fontFamily:'"DM Serif Display", serif' }}>{fmt(basePrice)}</span>
+                <span style={{ fontWeight:800, color:'var(--m-gold)' }}>{fmt(basePrice)}</span>
               </div>
-              {Number(b.prepayment || 0) > 0 && (
-                <div className="m-info-row" style={{ borderBottom:'none', padding:'0', marginTop: 4 }}>
-                  <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>Sinal Pago</span>
-                  <span style={{ fontWeight:700, color:'var(--m-red)' }}>- {fmt(b.prepayment)}</span>
+              
+              {/* Extra Services List */}
+              {selectedServices.map(s => (
+                <div key={s.id} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0 0 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{s.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>{fmt(s.price * s.qty)}</span>
+                    <div className="m-qty-row" style={{ margin: 0 }}>
+                      <button className="m-qty-btn" onClick={() => changeServiceQty(s.id, -1)}>−</button>
+                      <span style={{ fontSize:'0.8rem', fontWeight:800, color:'var(--m-gold)', minWidth:12, textAlign:'center' }}>{s.qty}</span>
+                      <button className="m-qty-btn" onClick={() => changeServiceQty(s.id, 1)}>+</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add Service input */}
+            <div className="m-field">
+              <label className="m-label">Adicionar Serviços Extras</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
+                <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  placeholder="Buscar serviço (mín. 3 letras)..."
+                  value={serviceSearch}
+                  onChange={e => setServiceSearch(e.target.value)}
+                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
+                />
+              </div>
+              {filteredServices.length > 0 && (
+                <div style={{ background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', overflow: 'hidden', marginTop: 4 }}>
+                  {filteredServices.map(svc => (
+                    <div key={svc.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
+                      onClick={() => addServiceToCheckout(svc)}>
+                      <span>{svc.name}</span>
+                      <span style={{ color: 'var(--m-gold)' }}>{fmt(svc.promoPrice || svc.price)}</span>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Products */}
-            {inventory.length > 0 && (
+            {/* Products List */}
+            {selectedProducts.length > 0 && (
               <div>
-                <div className="m-label" style={{ marginBottom:8 }}>Adicionar Produtos</div>
-                <div className="m-product-grid">
-                  {inventory.filter(p => p.quantity > 0).slice(0, 6).map(prod => {
-                    const sel = selectedProducts.find(p => p.id === prod.id);
-                    return (
-                      <div key={prod.id} className={`m-product-chip ${sel ? 'selected' : ''}`} onClick={() => toggleProduct(prod)}>
-                        <div className="m-product-chip-name">{prod.name}</div>
-                        <div className="m-product-chip-price">{fmt(prod.sellingPrice)}</div>
-                        {sel && (
-                          <div className="m-qty-row">
-                            <button className="m-qty-btn" onClick={e => { e.stopPropagation(); changeProductQty(prod.id, -1); }}>−</button>
-                            <span style={{ fontSize:'0.82rem', fontWeight:800, color:'var(--m-gold)', minWidth:16, textAlign:'center' }}>{sel.qty}</span>
-                            <button className="m-qty-btn" onClick={e => { e.stopPropagation(); changeProductQty(prod.id, 1); }}>+</button>
-                          </div>
-                        )}
+                <div className="m-label" style={{ marginBottom:8 }}>Produtos Adicionados</div>
+                {selectedProducts.map(p => (
+                  <div key={p.id} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0 0 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                    <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{p.name}</span>
+                    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                      <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>{fmt(p.sellingPrice * p.qty)}</span>
+                      <div className="m-qty-row" style={{ margin: 0 }}>
+                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, -1)}>−</button>
+                        <span style={{ fontSize:'0.8rem', fontWeight:800, color:'var(--m-gold)', minWidth:12, textAlign:'center' }}>{p.qty}</span>
+                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, 1)}>+</button>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
+
+            {/* Add Product input */}
+            <div className="m-field">
+              <label className="m-label">Adicionar Produtos</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
+                <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  placeholder="Buscar produto (mín. 3 letras)..."
+                  value={productSearch}
+                  onChange={e => setProductSearch(e.target.value)}
+                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
+                />
+              </div>
+              {filteredProducts.length > 0 && (
+                <div style={{ background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', overflow: 'hidden', marginTop: 4 }}>
+                  {filteredProducts.map(prod => (
+                    <div key={prod.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
+                      onClick={() => addProductToCheckout(prod)}>
+                      <span>{prod.name}</span>
+                      <span style={{ color: 'var(--m-gold)' }}>{fmt(prod.sellingPrice)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Discount */}
             <div className="m-field">
               <label className="m-label">Desconto (R$)</label>
-              <input className="m-input" type="number" min="0" value={discount} onChange={e => setDiscount(Number(e.target.value))} placeholder="0,00"/>
+              <input className="m-input" type="number" min="0" value={discount || ''} onChange={e => setDiscount(Number(e.target.value) || 0)} placeholder="0,00"/>
             </div>
 
             {/* Payment method */}
@@ -1692,16 +1813,44 @@ Jon`;
               </div>
             )}
 
-            {/* Total */}
-            <div className="m-checkout-total">
-              <div className="m-checkout-total-label">Total a Pagar</div>
-              <div className="m-checkout-total-value">{fmt(getCheckoutTotal())}</div>
+            {/* Totals Summary */}
+            <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'12px 14px', display:'flex', flexDirection:'column', gap:6 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
+                <span>Subtotal Serviços</span>
+                <span>{fmt(basePrice + extraServicesVal)}</span>
+              </div>
+              {productsVal > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
+                  <span>Subtotal Produtos</span>
+                  <span>{fmt(productsVal)}</span>
+                </div>
+              )}
+              {discount > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
+                  <span>Desconto</span>
+                  <span>- {fmt(discount)}</span>
+                </div>
+              )}
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4 }}>
+                <span>Valor Total</span>
+                <span>{fmt(subtotal - discount)}</span>
+              </div>
+              {prepay > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
+                  <span>Sinal Pago</span>
+                  <span>- {fmt(prepay)}</span>
+                </div>
+              )}
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.95rem', fontWeight:800, color:'var(--m-gold)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4, marginTop:2 }}>
+                <span>Valor Restante</span>
+                <span>{fmt(remaining)}</span>
+              </div>
             </div>
           </div>
           <div className="m-sheet-footer">
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowCheckoutSheet(false)}>Cancelar</button>
             <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={finalizeCheckout} disabled={isFinalizingCheckout}>
-              {isFinalizingCheckout ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Processando...</> : <><Check size={14}/> Confirmar</>}
+              {isFinalizingCheckout ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Processando...</> : <><Check size={14}/> Receber {fmt(remaining)}</>}
             </button>
           </div>
         </div>

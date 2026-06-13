@@ -41,7 +41,10 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const [tipMode, setTipMode] = useState(0);
   const [customTip, setCustomTip] = useState('');
   const [productSearch, setProductSearch] = useState('');
+  const [serviceSearch, setServiceSearch] = useState('');
   const [addedProducts, setAddedProducts] = useState([]);
+  const [addedServices, setAddedServices] = useState([]);
+  const [discount, setDiscount] = useState(0);
   const [overridePrice, setOverridePrice] = useState('');
 
   const servicePrice = overridePrice !== '' ? Number(overridePrice) || 0 : basePrice;
@@ -52,13 +55,19 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
     return (servicePrice * tipMode) / 100;
   }, [tipMode, customTip, servicePrice]);
 
+  const extraServicesTotal = useMemo(
+    () => addedServices.reduce((s, x) => s + x.price * x.qty, 0),
+    [addedServices]
+  );
+
   const productTotal = useMemo(
     () => addedProducts.reduce((s, p) => s + p.price * p.qty, 0),
     [addedProducts]
   );
 
-  const subtotal = servicePrice + productTotal + tipValue;
-  const totalToPay = Math.max(0, subtotal - prepay);
+  const subtotal = servicePrice + extraServicesTotal + productTotal + tipValue;
+  const valorTotal = Math.max(0, subtotal - discount);
+  const totalToPay = Math.max(0, valorTotal - prepay);
   const feeRate = getFee(settings, paymentMethod);
   const feeAmount = totalToPay * (feeRate / 100);
   const netTotal = totalToPay - feeAmount;
@@ -68,15 +77,23 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
     return prof?.commission ?? 50;
   }, [settings, booking]);
 
-  const commissionValue = (servicePrice * professionalCommissionRate) / 100;
+  const totalServicesPrice = servicePrice + extraServicesTotal;
+  const commissionValue = (totalServicesPrice * professionalCommissionRate) / 100;
 
-  const filteredProducts = useMemo(
-    () => products.filter(p =>
+  const filteredProducts = useMemo(() => {
+    if (productSearch.trim().length < 3) return [];
+    return products.filter(p =>
       p.quantity > 0 &&
       (p.name || '').toLowerCase().includes(productSearch.toLowerCase())
-    ).slice(0, 8),
-    [products, productSearch]
-  );
+    ).slice(0, 5);
+  }, [products, productSearch]);
+
+  const filteredServices = useMemo(() => {
+    if (serviceSearch.trim().length < 3) return [];
+    return services.filter(s =>
+      (s.name || '').toLowerCase().includes(serviceSearch.toLowerCase())
+    ).slice(0, 5);
+  }, [services, serviceSearch]);
 
   const handleAddProduct = useCallback((prod) => {
     setAddedProducts(prev => {
@@ -86,6 +103,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
       }
       return [...prev, { productId: prod.id, name: prod.name, price: prod.sellingPrice || prod.price || 0, qty: 1 }];
     });
+    setProductSearch('');
   }, []);
 
   const handleQtyChange = useCallback((productId, delta) => {
@@ -95,11 +113,31 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
     );
   }, []);
 
+  const handleAddService = useCallback((svc) => {
+    setAddedServices(prev => {
+      const existing = prev.find(s => s.serviceId === svc.id);
+      if (existing) {
+        return prev.map(s => s.serviceId === svc.id ? { ...s, qty: s.qty + 1 } : s);
+      }
+      return [...prev, { serviceId: svc.id, name: svc.name, price: svc.promoPrice || svc.price || 0, qty: 1 }];
+    });
+    setServiceSearch('');
+  }, []);
+
+  const handleServiceQtyChange = useCallback((serviceId, delta) => {
+    setAddedServices(prev =>
+      prev.map(s => s.serviceId === serviceId ? { ...s, qty: Math.max(0, s.qty + delta) } : s)
+        .filter(s => s.qty > 0)
+    );
+  }, []);
+
   const handleConfirm = () => {
     onConfirm({
       paymentMethod,
       tipValue,
       addedProducts,
+      addedServices,
+      discount,
       overrideBasePrice: overridePrice !== '' ? Number(overridePrice) : null,
       total: totalToPay,
       netTotal,
@@ -136,7 +174,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
           {/* Service */}
           <section>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Serviço</div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--adm-card)', borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--adm-card)', borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)', marginBottom: 8 }}>
               <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--adm-text)' }}>{serviceName}</span>
               <input
                 type="number"
@@ -147,6 +185,51 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             </div>
           </section>
 
+          {/* Add Services */}
+          <section>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Adicionar Serviços Extras</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 8 }}>
+              <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
+              <input
+                type="text"
+                placeholder="Buscar serviço (mín. 3 letras)..."
+                value={serviceSearch}
+                onChange={e => setServiceSearch(e.target.value)}
+                style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
+              />
+            </div>
+            {serviceSearch.trim().length >= 3 && filteredServices.length > 0 && (
+              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 8 }}>
+                {filteredServices.map(svc => (
+                  <button
+                    key={svc.id}
+                    type="button"
+                    onClick={() => handleAddService(svc)}
+                    style={{ width: '100%', background: 'var(--adm-card)', border: 'none', borderBottom: '0.5px solid var(--adm-rule)', padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--adm-text)', fontSize: '0.83rem' }}
+                  >
+                    <span>{svc.name}</span>
+                    <span style={{ color: 'var(--adm-gold)', fontWeight: 700 }}>{fmtBRL(svc.promoPrice || svc.price)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {addedServices.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
+                {addedServices.map(s => (
+                  <div key={s.serviceId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
+                    <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{s.name}</span>
+                    <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>{fmtBRL(s.price)}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <button type="button" onClick={() => handleServiceQtyChange(s.serviceId, -1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
+                      <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{s.qty}</span>
+                      <button type="button" onClick={() => handleServiceQtyChange(s.serviceId, 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
           {/* Products */}
           <section>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Produtos (opcional)</div>
@@ -154,13 +237,13 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Buscar produto..."
+                placeholder="Buscar produto (mín. 3 letras)..."
                 value={productSearch}
                 onChange={e => setProductSearch(e.target.value)}
                 style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
               />
             </div>
-            {productSearch && filteredProducts.length > 0 && (
+            {productSearch.trim().length >= 3 && filteredProducts.length > 0 && (
               <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 8 }}>
                 {filteredProducts.map(prod => (
                   <button
@@ -190,6 +273,21 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                 ))}
               </div>
             )}
+          </section>
+
+          {/* Discount */}
+          <section>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Desconto</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px' }}>
+              <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>R$</span>
+              <input
+                type="number"
+                placeholder="0,00"
+                value={discount || ''}
+                onChange={e => setDiscount(Number(e.target.value) || 0)}
+                style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.9rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
+              />
+            </div>
           </section>
 
           {/* Tip */}
@@ -260,8 +358,13 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
           {/* Summary */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
-              <span>Serviço</span><span>{fmtBRL(servicePrice)}</span>
+              <span>Serviço Base</span><span>{fmtBRL(servicePrice)}</span>
             </div>
+            {addedServices.length > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+                <span>Serviços Extras</span><span>{fmtBRL(extraServicesTotal)}</span>
+              </div>
+            )}
             {productTotal > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
                 <span>Produtos</span><span>{fmtBRL(productTotal)}</span>
@@ -272,18 +375,29 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                 <span>Gorjeta</span><span>{fmtBRL(tipValue)}</span>
               </div>
             )}
+            {discount > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
+                <span>Desconto</span><span>- {fmtBRL(discount)}</span>
+              </div>
+            )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)' }}>
+              <span>Valor Total</span><span>{fmtBRL(subtotal - discount)}</span>
+            </div>
             {prepay > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
                 <span>Sinal / Adiantamento Pago</span><span>- {fmtBRL(prepay)}</span>
               </div>
             )}
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: 'var(--adm-text)', borderTop: '0.5px dashed var(--adm-rule)', paddingTop: 4 }}>
+              <span>Valor Restante (A Cobrar)</span><span>{fmtBRL(totalToPay)}</span>
+            </div>
             {feeAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
-                <span>Taxa ({feeRate}%)</span><span>- {fmtBRL(feeAmount)}</span>
+                <span>Taxa da Maquininha ({feeRate}%)</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.1rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
-              <span>Total a pagar (líquido)</span><span>{fmtBRL(netTotal)}</span>
+              <span>Valor Líquido Recebido</span><span>{fmtBRL(netTotal)}</span>
             </div>
           </div>
 
@@ -305,7 +419,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--adm-gold-deep)'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'var(--adm-gold)'; }}
           >
-            <DollarSign size={18} /> Receber e Fechar Comanda
+            <DollarSign size={18} /> Receber {fmtBRL(totalToPay)} e Fechar Comanda
           </button>
         </div>
       </div>
