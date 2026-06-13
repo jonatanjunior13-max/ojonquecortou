@@ -1366,10 +1366,13 @@ const AdminDashboard = () => {
                    (disc > 0 ? ` (Desconto: R$ ${disc.toFixed(2)})` : '') +
                    (prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay.toFixed(2)})` : ''),
       professionalId: booking.professionalId || booking.profissional || 'jon',
-      productSales: productsNorm.map(p => {
-        const match = products.find(prod => prod.id === p.productId);
-        return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
-      }),
+      productSales: (() => {
+        const productsMap = new Map(products.map(prod => [prod.id, prod]));
+        return productsNorm.map(p => {
+          const match = productsMap.get(p.productId);
+          return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
+        });
+      })(),
       createdAt: new Date().toISOString()
     };
     try {
@@ -1385,8 +1388,9 @@ const AdminDashboard = () => {
           const localProds = localStorage.getItem('demo_products');
           if (localProds) {
             const prods = JSON.parse(localProds);
+            const productsNormMap = new Map(productsNorm.map(ap => [ap.productId, ap]));
             const updated = prods.map(p => {
-              const added = productsNorm.find(ap => ap.productId === p.id);
+              const added = productsNormMap.get(p.id);
               return added ? { ...p, quantity: Math.max(0, p.quantity - added.quantity) } : p;
             });
             localStorage.setItem('demo_products', JSON.stringify(updated));
@@ -1415,8 +1419,9 @@ const AdminDashboard = () => {
           servicePrice: servicePrice
         } : b));
         syncBookingToGoogle(booking.id).catch(err => console.warn(err));
+        const productsMapFinalize = new Map(products.map(prod => [prod.id, prod]));
         for (const p of productsNorm) {
-          const match = products.find(prod => prod.id === p.productId);
+          const match = productsMapFinalize.get(p.productId);
           if (match) {
             await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
           }
@@ -1474,16 +1479,19 @@ const AdminDashboard = () => {
       extraCost: Number(extraCost) || 0,
       description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay})` : ''}`,
       professionalId: booking.professionalId || booking.profissional || 'jon',
-      productSales: addedProducts.map(p => {
-        const match = products.find(prod => prod.id === p.productId);
-        return {
-          productId: p.productId,
-          name: p.name,
-          quantity: p.quantity,
-          sellingPrice: p.price,
-          costPrice: match ? (match.costPrice || 0) : 0
-        };
-      }),
+      productSales: (() => {
+        const productsMap = new Map(products.map(prod => [prod.id, prod]));
+        return addedProducts.map(p => {
+          const match = productsMap.get(p.productId);
+          return {
+            productId: p.productId,
+            name: p.name,
+            quantity: p.quantity,
+            sellingPrice: p.price,
+            costPrice: match ? (match.costPrice || 0) : 0
+          };
+        });
+      })(),
       createdAt: new Date().toISOString()
     };
 
@@ -1679,9 +1687,10 @@ const AdminDashboard = () => {
         });
         syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
+        const productsMapClose = new Map(products.map(p => [p.id, p]));
         for (const added of addedProducts) {
           const prodRef = doc(db, 'products', added.productId);
-          const match = products.find(p => p.id === added.productId);
+          const match = productsMapClose.get(added.productId);
           if (match) {
             const newQty = Math.max(0, match.quantity - added.quantity);
             await updateDoc(prodRef, { quantity: newQty });
