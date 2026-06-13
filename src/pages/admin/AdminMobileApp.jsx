@@ -433,16 +433,91 @@ export default function AdminMobileApp() {
   // ── Checkout helpers ───────────────────────────────────────────
   const openCheckout = (booking) => {
     setCheckoutBooking(booking);
-    setPaymentMethod('Pix');
-    setInstallments('À vista');
-    setApplyAnticipation(false);
-    setSelectedProducts([]);
-    setSelectedServices([]);
+    
+    if (booking.status === 'finalizado') {
+      const tx = transactions.find(t => t.bookingId === booking.id);
+      if (tx) {
+        setDiscount(tx.discount || 0);
+        
+        let method = 'Pix';
+        let inst = 'À vista';
+        let anticip = false;
+        if (tx.paymentMethod) {
+          let pm = tx.paymentMethod;
+          if (pm.includes('(Antecipado)')) {
+            anticip = true;
+            pm = pm.replace(' (Antecipado)', '').trim();
+          }
+          if (pm.startsWith('Cartão de Crédito')) {
+            method = 'Cartão de Crédito';
+            const match = pm.match(/\(([^)]+)\)/);
+            if (match) {
+              inst = match[1];
+            }
+          } else {
+            method = pm;
+          }
+        }
+        setPaymentMethod(method);
+        setInstallments(inst);
+        setApplyAnticipation(anticip);
+        
+        setSelectedProducts((tx.productSales || []).map(p => ({
+          id: p.productId,
+          name: p.name,
+          sellingPrice: p.sellingPrice,
+          qty: p.quantity
+        })));
+
+        const loadedExtra = [];
+        if (tx.extraServices) {
+          loadedExtra.push(...tx.extraServices);
+        } else if (tx.description) {
+          const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          services.forEach(svc => {
+            if (svc.id === booking.serviceId || svc.name === booking.serviceName || svc.name === booking.service?.name) return;
+            const regex = new RegExp(`(\\d+)x\\s+${escapeRegExp(svc.name)}`);
+            const match = tx.description.match(regex);
+            if (match) {
+              loadedExtra.push({
+                id: svc.id,
+                name: svc.name,
+                price: svc.promoPrice || svc.price || 0,
+                qty: parseInt(match[1], 10)
+              });
+            } else if (tx.description.includes(svc.name)) {
+              loadedExtra.push({
+                id: svc.id,
+                name: svc.name,
+                price: svc.promoPrice || svc.price || 0,
+                qty: 1
+              });
+            }
+          });
+        }
+        setSelectedServices(loadedExtra);
+      } else {
+        setPaymentMethod('Pix');
+        setInstallments('À vista');
+        setApplyAnticipation(false);
+        setSelectedProducts([]);
+        setSelectedServices([]);
+        setDiscount(0);
+      }
+      setOverrideBasePrice(booking.servicePrice !== undefined ? booking.servicePrice : null);
+    } else {
+      setPaymentMethod('Pix');
+      setInstallments('À vista');
+      setApplyAnticipation(false);
+      setSelectedProducts([]);
+      setSelectedServices([]);
+      setDiscount(0);
+      setOverrideBasePrice(null);
+    }
+    
     setProductSearch('');
     setServiceSearch('');
-    setDiscount(0);
-    setOverrideBasePrice(null);
-    setRequestReview(true);
+    setRequestReview(booking.status !== 'finalizado');
     setShowBookingSheet(false);
     setShowCheckoutSheet(true);
   };
@@ -512,7 +587,7 @@ export default function AdminMobileApp() {
         value: total,
         paymentMethod: methodLabel,
         discount: discount,
-        date: today(),
+        date: checkoutBooking.date || today(),
         bookingId: checkoutBooking.id,
         productSales: selectedProducts.map(p => {
           const match = inventory.find(prod => prod.id === p.id);
@@ -524,12 +599,42 @@ export default function AdminMobileApp() {
             costPrice: match ? (match.costPrice || 0) : 0
           };
         }),
+        extraServices: selectedServices.map(s => ({
+          id: s.id,
+          name: s.name,
+          price: s.price,
+          qty: s.qty
+        })),
         createdAt: new Date().toISOString()
       };
+
       if (db) {
-        await addDoc(collection(db, 'financial_transactions'), txData);
-        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice });
-        // Decrement inventory
+        const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id);
+        if (bookingTx) {
+          // Revert old product inventory adjustments
+          if (bookingTx.productSales) {
+            for (const oldP of bookingTx.productSales) {
+              const prodRef = doc(db, 'products', oldP.productId);
+              const snap = await getDoc(prodRef);
+              if (snap.exists()) {
+                const cur = snap.data().quantity || 0;
+                await updateDoc(prodRef, { quantity: cur + oldP.quantity });
+              }
+            }
+          }
+          await updateDoc(doc(db, 'financial_transactions', bookingTx.id), txData);
+        } else {
+          await addDoc(collection(db, 'financial_transactions'), txData);
+        }
+
+        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { 
+          status: 'finalizado', 
+          paymentMethod: methodLabel, 
+          finalValue: total, 
+          servicePrice: finalBasePrice 
+        });
+
+        // Apply new product inventory adjustments
         for (const p of selectedProducts) {
           const prodRef = doc(db, 'products', p.id);
           const snap = await getDoc(prodRef);
@@ -542,11 +647,18 @@ export default function AdminMobileApp() {
       if (requestReview) {
         sendFeedbackWhatsApp(checkoutBooking).catch(err => console.error(err));
       }
-      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total } : b));
-      setTransactions(prev => [{ id: Date.now().toString(), ...txData }, ...prev]);
+      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice } : b));
+      
+      const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id);
+      if (bookingTx) {
+        setTransactions(prev => prev.map(t => t.id === bookingTx.id ? { ...t, ...txData } : t));
+      } else {
+        setTransactions(prev => [{ id: Date.now().toString(), ...txData }, ...prev]);
+      }
+      
       setShowCheckoutSheet(false);
       setCheckoutBooking(null);
-      showToast('Comanda fechada com sucesso!', 'success');
+      showToast(bookingTx ? 'Comanda atualizada com sucesso!' : 'Comanda fechada com sucesso!', 'success');
     } catch (err) {
       showToast('Erro ao fechar comanda: ' + err.message, 'error');
     } finally {
@@ -1728,6 +1840,16 @@ Grande abraço, Jon.`;
                   <div className="m-action-btn-text">
                     <div className="m-action-btn-label">Fechar Comanda</div>
                     <div className="m-action-btn-sub">Registrar pagamento</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.status === 'finalizado' && (
+                <button className="m-action-btn" onClick={() => openCheckout(b)}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><DollarSign size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Ver / Editar Comanda</div>
+                    <div className="m-action-btn-sub">Ver ou editar os detalhes financeiros</div>
                   </div>
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
