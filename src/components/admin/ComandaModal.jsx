@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { X, Plus, Minus, Search, CreditCard, Banknote, Smartphone as SmartIcon, DollarSign } from 'lucide-react';
 
 const fmtBRL = (v) =>
