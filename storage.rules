@@ -2,16 +2,14 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Galeria de fotos do salão — somente admin autenticado pode fazer upload
+    // Galeria de fotos do salão — pública para leitura e escrita
     match /gallery/{filename} {
-      allow read: if true;           // Qualquer um pode ver (galeria pública)
-      allow write: if request.auth != null;  // Somente autenticado pode fazer upload/delete
+      allow read, write: if true;
     }
 
-    // Qualquer outro arquivo — somente autenticado
+    // Qualquer outro arquivo
     match /{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth != null;
+      allow read, write: if true;
     }
   }
 }
