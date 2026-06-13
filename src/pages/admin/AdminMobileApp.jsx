@@ -697,6 +697,22 @@ export default function AdminMobileApp() {
         }
       }
       setBookings(prev => prev.map(b => b.id === editBookingForm.id ? { ...b, ...data } : b));
+      
+      let emailToUse = oldB?.clientEmail || '';
+      if (!emailToUse && editBookingForm.clientPhone) {
+        const cleanPhone = editBookingForm.clientPhone.replace(/\D/g, '');
+        const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+        emailToUse = matchedClient?.email || '';
+      }
+
+      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
+        triggerEmailNotification({
+          ...data,
+          id: editBookingForm.id,
+          clientEmail: emailToUse
+        }, 'agendamento_editado');
+      }
+
       setShowEditBookingSheet(false);
       showToast('Agendamento atualizado!', 'success');
     } catch (err) {

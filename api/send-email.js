@@ -1228,7 +1228,7 @@ export default async function handler(req, res) {
     }
 
     // Enviar notificação para o administrador
-    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado') {
+    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado' || type === 'agendamento_editado') {
       try {
         await sendAdminNotification(type, data, transporter, smtpFrom, settings);
       } catch (err) {
