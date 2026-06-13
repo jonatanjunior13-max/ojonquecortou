@@ -210,7 +210,8 @@ const AdminMarketing = () => {
   const handleFetchBounces = async () => {
     setIsLoadingBounces(true);
     try {
-      const res = await fetch('/api/check-bounces?token=studio-jon-admin');
+      const adminToken = import.meta.env.VITE_ADMIN_TOKEN || '';
+      const res = await fetch(`/api/check-bounces?token=${adminToken}`);
       const data = await res.json();
       if (data.success) {
         setBouncesData(data.items || []);
@@ -510,9 +511,10 @@ Use as seguintes tags no "bodyHtml":
     setIsSendingNewsletter(true);
     setNewsletterSendLog(['[SISTEMA] Enviando email de teste via Mailgun...']);
     try {
+      const adminToken = import.meta.env.VITE_ADMIN_TOKEN || '';
       const res = await fetch('/api/newsletter-mailgun', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
         body: JSON.stringify({ subject: nl.subject, htmlBody: nl.htmlBody, newsletterId: nl.id, testEmail: testEmailAddress })
       });
       const data = await res.json();
@@ -539,9 +541,10 @@ Use as seguintes tags no "bodyHtml":
     setIsSendingNewsletter(true);
     setNewsletterSendLog(['[SISTEMA] Conectando ao Mailgun...', '[SISTEMA] Buscando lista de clientes...']);
     try {
+      const adminToken = import.meta.env.VITE_ADMIN_TOKEN || '';
       const res = await fetch('/api/newsletter-mailgun', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': adminToken },
         body: JSON.stringify({ subject: nl.subject, htmlBody: nl.htmlBody, newsletterId: nl.id })
       });
       const data = await res.json();

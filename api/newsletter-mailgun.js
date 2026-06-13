@@ -113,8 +113,9 @@ export default async function handler(req, res) {
   }
 
   // Simple auth — same x-admin-token pattern
+  const expectedToken = process.env.ADMIN_TOKEN;
   const adminToken = req.headers['x-admin-token'];
-  if (!adminToken) {
+  if (!adminToken || adminToken !== expectedToken) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 

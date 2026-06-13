@@ -24,8 +24,9 @@ const MAILGUN_DOMAIN = 'mg.ojonquecortou.com.br';
 
 export default async function handler(req, res) {
   // Simple auth
+  const expectedToken = process.env.ADMIN_TOKEN;
   const adminToken = req.headers['x-admin-token'] || req.query.token;
-  if (!adminToken || adminToken !== 'studio-jon-admin') {
+  if (!adminToken || adminToken !== expectedToken) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
