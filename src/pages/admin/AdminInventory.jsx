@@ -1,16 +1,16 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { Plus, Edit2, Trash2, AlertTriangle, ArrowUp } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowUp, Scissors } from 'lucide-react';
 import './Admin.css';
 
 const SEED_PRODUCTS = [
-  { id: 'p1', name: 'Shampoo Curly Special 250ml', category: 'Shampoo', quantity: 15, costPrice: 25, sellingPrice: 55, minStock: 5 },
-  { id: 'p2', name: 'Condicionador Curly Hydrate 250ml', category: 'Condicionador', quantity: 12, costPrice: 28, sellingPrice: 60, minStock: 4 },
-  { id: 'p3', name: 'Ativador de Cachos Premium 500ml', category: 'Finalizador', quantity: 3, costPrice: 35, sellingPrice: 80, minStock: 5 },
-  { id: 'p4', name: 'Gelatina Capilar Modeladora 300g', category: 'Finalizador', quantity: 8, costPrice: 20, sellingPrice: 45, minStock: 3 },
-  { id: 'p5', name: 'Óleo Reparador de Argan 60ml', category: 'Óleo', quantity: 20, costPrice: 40, sellingPrice: 90, minStock: 5 }
+  { id: 'p1', name: 'Shampoo Curly Special 250ml', category: 'Shampoo', quantity: 15, costPrice: 25, sellingPrice: 55 },
+  { id: 'p2', name: 'Condicionador Curly Hydrate 250ml', category: 'Condicionador', quantity: 12, costPrice: 28, sellingPrice: 60 },
+  { id: 'p3', name: 'Ativador de Cachos Premium 500ml', category: 'Finalizador', quantity: 3, costPrice: 35, sellingPrice: 80 },
+  { id: 'p4', name: 'Gelatina Capilar Modeladora 300g', category: 'Finalizador', quantity: 8, costPrice: 20, sellingPrice: 45 },
+  { id: 'p5', name: 'Óleo Reparador de Argan 60ml', category: 'Óleo', quantity: 20, costPrice: 40, sellingPrice: 90 }
 ];
 
 const CATEGORIES = ['Shampoo', 'Condicionador', 'Máscara', 'Finalizador', 'Óleo', 'Acessório', 'Outros'];
@@ -35,7 +35,9 @@ const AdminInventory = () => {
       type: 'saida',
       paymentMethod: 'Outro',
       value: cost,
-      description: `${actionType} de estoque: ${productName} (+${quantity} un.)`,
+      description: actionType === 'Uso do Salão'
+        ? `Uso do Salão: ${productName} (-${quantity} un.)`
+        : `${actionType} de estoque: ${productName} (+${quantity} un.)`,
       createdAt: new Date().toISOString()
     };
 
@@ -69,13 +71,11 @@ const AdminInventory = () => {
     category: 'Shampoo',
     quantity: 0,
     costPrice: 0,
-    sellingPrice: 0,
-    minStock: 3
+    sellingPrice: 0
   });
 
   useEffect(() => {
     let unsubscribe;
-    let timedOut = false;
 
     const getMockProducts = () => {
       const localData = localStorage.getItem('demo_products');
@@ -130,8 +130,7 @@ const AdminInventory = () => {
       category: 'Shampoo',
       quantity: 10,
       costPrice: 20,
-      sellingPrice: 45,
-      minStock: 3
+      sellingPrice: 45
     });
     setShowModal(true);
   };
@@ -143,8 +142,7 @@ const AdminInventory = () => {
       category: product.category,
       quantity: product.quantity,
       costPrice: product.costPrice,
-      sellingPrice: product.sellingPrice,
-      minStock: product.minStock
+      sellingPrice: product.sellingPrice
     });
     setShowModal(true);
   };
@@ -156,8 +154,7 @@ const AdminInventory = () => {
       category: form.category,
       quantity: Number(form.quantity),
       costPrice: Number(form.costPrice),
-      sellingPrice: Number(form.sellingPrice),
-      minStock: Number(form.minStock)
+      sellingPrice: Number(form.sellingPrice)
     };
 
     try {
@@ -229,10 +226,40 @@ const AdminInventory = () => {
     }
   };
 
+  const handleUseInSalon = async (product) => {
+    const amountStr = prompt(`Quantidade de "${product.name}" usada no salão (estoque atual: ${product.quantity}):`, "1");
+    if (amountStr === null) return;
+    const amount = Number(amountStr);
+    if (isNaN(amount) || amount <= 0) {
+      alert("Quantidade inválida.");
+      return;
+    }
+    if (amount > product.quantity) {
+      alert("Quantidade insuficiente em estoque.");
+      return;
+    }
+
+    const newQty = product.quantity - amount;
+    try {
+      if (isDemoMode) {
+        const updated = products.map(p => p.id === product.id ? { ...p, quantity: newQty } : p);
+        saveLocalProducts(updated);
+        await logProductExpense(product.name, amount, product.costPrice, 'Uso do Salão');
+      } else {
+        const docRef = doc(db, 'products', product.id);
+        await updateDoc(docRef, { quantity: newQty });
+        await logProductExpense(product.name, amount, product.costPrice, 'Uso do Salão');
+      }
+      alert(`Registrado com sucesso: saída de ${amount} un. de "${product.name}" para uso do salão.`);
+    } catch (err) {
+      console.error('Erro ao registrar uso do salão:', err);
+      alert('Erro ao processar a saída.');
+    }
+  };
+
   // Estatísticas de almoxarifado
   const totalItems = products.reduce((acc, curr) => acc + curr.quantity, 0);
   const totalValue = products.reduce((acc, curr) => acc + (curr.quantity * curr.sellingPrice), 0);
-  const lowStockProducts = products.filter(p => p.quantity <= p.minStock);
 
   return (
     <div className="admin-inventory-page">
@@ -245,12 +272,6 @@ const AdminInventory = () => {
         <div className="stat-card">
           <h3>Total de Itens em Estoque</h3>
           <div className="value">{totalItems}</div>
-        </div>
-        <div className="stat-card">
-          <h3>Alerta Estoque Baixo</h3>
-          <div className="value" style={{ color: lowStockProducts.length > 0 ? 'var(--adm-danger)' : 'var(--adm-text)' }}>
-            {lowStockProducts.length}
-          </div>
         </div>
         <div className="stat-card">
           <h3>Valor Comercial em Estoque</h3>
@@ -270,14 +291,6 @@ const AdminInventory = () => {
         </button>
       </div>
 
-      {/* Alerta de atenção para estoque baixo */}
-      {lowStockProducts.length > 0 && (
-        <div className="error-message" style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(229, 62, 62, 0.05)', color: 'var(--adm-danger)' }}>
-          <AlertTriangle size={18} />
-          <span>Atenção: Existem {lowStockProducts.length} produto(s) com nível de estoque abaixo do limite mínimo de segurança!</span>
-        </div>
-      )}
-
       {/* Tabela de Estoque */}
       {loading ? (
         <p>Carregando almoxarifado...</p>
@@ -289,52 +302,49 @@ const AdminInventory = () => {
                 <th>Produto</th>
                 <th>Categoria</th>
                 <th>Qtd Atual</th>
-                <th>Estoque Mínimo</th>
                 <th>Custo Unit.</th>
                 <th>Preço Venda</th>
                 <th>Lucro Unit.</th>
-                <th>Status</th>
                 <th style={{ textAlign: 'right' }}>Ações</th>
               </tr>
             </thead>
             <tbody>
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
+                  <td colSpan="7" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
                     Nenhum produto cadastrado no estoque.
                   </td>
                 </tr>
               ) : (
                 products.map((p) => {
-                  const isLow = p.quantity <= p.minStock;
                   return (
                     <tr key={p.id}>
                       <td style={{ fontWeight: 600 }}>{p.name}</td>
                       <td>{p.category}</td>
                       <td>
                         {quickRestockId === p.id ? (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <input 
-                              type="number" 
-                              value={quickRestockAmount} 
-                              onChange={e => setQuickRestockAmount(e.target.value)} 
-                              style={{ width: 60, padding: '4px 8px', borderRadius: 4, border: '1px solid var(--adm-rule)' }}
-                            />
-                            <button 
-                              className="btn btn-accent" 
-                              style={{ padding: '4px 8px', fontSize: '0.8rem' }}
-                              onClick={() => handleQuickRestock(p)}
-                            >
-                              Salvar
-                            </button>
-                            <button 
-                              className="btn btn-ghost" 
-                              style={{ padding: '4px 8px', fontSize: '0.8rem' }}
-                              onClick={() => setQuickRestockId(null)}
-                            >
-                              X
-                            </button>
-                          </div>
+                           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                             <input 
+                               type="number" 
+                               value={quickRestockAmount} 
+                               onChange={e => setQuickRestockAmount(e.target.value)} 
+                               style={{ width: 60, padding: '4px 8px', borderRadius: 4, border: '1px solid var(--adm-rule)' }}
+                             />
+                             <button 
+                               className="btn btn-accent" 
+                               style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                               onClick={() => handleQuickRestock(p)}
+                             >
+                               Salvar
+                             </button>
+                             <button 
+                               className="btn btn-ghost" 
+                               style={{ padding: '4px 8px', fontSize: '0.8rem' }}
+                               onClick={() => setQuickRestockId(null)}
+                             >
+                               X
+                             </button>
+                           </div>
                         ) : (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                             <span>{p.quantity} unid.</span>
@@ -352,17 +362,12 @@ const AdminInventory = () => {
                           </div>
                         )}
                       </td>
-                      <td style={{ color: 'var(--text-muted)' }}>{p.minStock} unid.</td>
                       <td>R$ {Number(p.costPrice).toFixed(2)}</td>
                       <td>R$ {Number(p.sellingPrice).toFixed(2)}</td>
                       <td style={{ color: 'var(--adm-success)', fontWeight: 600 }}>R$ {(Number(p.sellingPrice) - Number(p.costPrice)).toFixed(2)}</td>
-                      <td>
-                        <span className={`stock-badge ${isLow ? 'low' : 'normal'}`}>
-                          {isLow ? 'Estoque Baixo' : 'Normal'}
-                        </span>
-                      </td>
                       <td style={{ textAlign: 'right' }}>
                         <div style={{ display: 'inline-flex', gap: 6 }}>
+                          <button className="btn-icon" style={{ color: 'var(--adm-accent, var(--m-gold))' }} onClick={() => handleUseInSalon(p)} title="Uso do Salão"><Scissors size={14} /></button>
                           <button className="btn-icon" onClick={() => handleOpenEdit(p)} title="Editar"><Edit2 size={14} /></button>
                           <button className="btn-icon" style={{ color: 'var(--adm-danger)' }} onClick={() => handleDelete(p.id)} title="Excluir"><Trash2 size={14} /></button>
                         </div>
@@ -418,7 +423,7 @@ const AdminInventory = () => {
               </div>
             </div>
 
-            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 12 }}>
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
               <div className="form-group">
                 <label>Preço Custo (R$) *</label>
                 <input 
@@ -440,17 +445,6 @@ const AdminInventory = () => {
                   step="0.01"
                   value={form.sellingPrice}
                   onChange={e => setForm(prev => ({ ...prev, sellingPrice: e.target.value }))}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Estoque Mín. *</label>
-                <input 
-                  type="number" 
-                  required 
-                  min="0"
-                  value={form.minStock}
-                  onChange={e => setForm(prev => ({ ...prev, minStock: e.target.value }))}
                 />
               </div>
             </div>

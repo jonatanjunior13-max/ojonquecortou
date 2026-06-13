@@ -813,7 +813,7 @@ Grande abraço, Jon.`;
       // Step 2: Post to Google Business Photos (via proxy or direct API)
       let googlePosted = false;
       try {
-        const hasGbpConfig = !!(settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
+        const hasGbpConfig = !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
         if (hasGbpConfig) {
           const resp = await fetch('/api/gbp?action=upload-media', {
             method: 'POST',
@@ -1793,9 +1793,10 @@ Grande abraço, Jon.`;
       ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
       : [];
 
+    const currentBasePrice = overrideBasePrice !== null ? overrideBasePrice : basePrice;
     const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
     const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
-    const subtotal = basePrice + extraServicesVal + productsVal;
+    const subtotal = currentBasePrice + extraServicesVal + productsVal;
     const valorTotal = Math.max(0, subtotal - discount);
     const prepay = Number(b.prepayment || 0);
     const remaining = Math.max(0, valorTotal - prepay);
@@ -1997,7 +1998,7 @@ Grande abraço, Jon.`;
             <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'12px 14px', display:'flex', flexDirection:'column', gap:6 }}>
               <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
                 <span>Subtotal Serviços</span>
-                <span>{fmt(basePrice + extraServicesVal)}</span>
+                <span>{fmt(currentBasePrice + extraServicesVal)}</span>
               </div>
               {productsVal > 0 && (
                 <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
@@ -2362,9 +2363,9 @@ Grande abraço, Jon.`;
                   <CheckCircle size={12} color="var(--m-green)"/>
                   Galeria do Site (Firebase Storage)
                 </div>
-                <div style={{ fontSize:'0.78rem', color: (settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'var(--m-text-2)' : 'var(--m-muted)', display:'flex', alignItems:'center', gap:6 }}>
-                  {(settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? <CheckCircle size={12} color="var(--m-green)"/> : <AlertCircle size={12} color="var(--m-muted)"/>}
-                  Google Business Photos {!(settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
+                <div style={{ fontSize:'0.78rem', color: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'var(--m-text-2)' : 'var(--m-muted)', display:'flex', alignItems:'center', gap:6 }}>
+                  {(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? <CheckCircle size={12} color="var(--m-green)"/> : <AlertCircle size={12} color="var(--m-muted)"/>}
+                  Google Business Photos {!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
                 </div>
               </div>
             </div>
