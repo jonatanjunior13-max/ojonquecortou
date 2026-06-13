@@ -1075,7 +1075,8 @@ Grande abraço, Jon.`;
             display:'flex', 
             flexDirection:'column', 
             overflow:'hidden',
-            position: 'relative'
+            position: 'relative',
+            cursor: isDragging ? 'grabbing' : 'grab',
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -1090,7 +1091,8 @@ Grande abraço, Jon.`;
               flex:1, 
               display:'flex', 
               flexDirection:'column', 
-              overflowY:'auto',
+              overflowY: isDragging ? 'hidden' : 'auto',
+              overflowX: 'hidden',
               willChange: 'transform, opacity',
               touchAction: 'pan-y',
               ...(isDragging ? { transform: `translateX(${translateX}px)`, transition: 'none' } : slideStyle)

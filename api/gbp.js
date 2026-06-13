@@ -202,22 +202,14 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // Formatar imagem (Google API não aceita formato .webp, apenas .jpg/.png)
+      // URLs absolutas (ex: Firebase Storage) são usadas diretamente.
+      // Apenas caminhos relativos recebem o prefixo do domínio.
       let mediaList = [];
       if (image) {
-        let cleanImage = image;
-        if (cleanImage.toLowerCase().endsWith('.webp')) {
-          if (cleanImage.includes('cacho-vs-crespo-hero')) {
-            cleanImage = '/cacho-vs-crespo-hero.png';
-          } else {
-            cleanImage = '/jon-trabalhando.jpg';
-          }
-        }
+        const imageUrl = image.startsWith('http')
+          ? image
+          : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
 
-        const imageUrl = cleanImage.startsWith('http') 
-          ? cleanImage 
-          : `https://www.ojonquecortou.com.br${cleanImage.startsWith('/') ? '' : '/'}${cleanImage}`;
-        
         mediaList.push({
           mediaFormat: 'PHOTO',
           sourceUrl: imageUrl
@@ -319,19 +311,10 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // Formatar URL da imagem (Google API não aceita formato .webp, apenas .jpg/.png)
-      let cleanImage = image;
-      if (cleanImage.toLowerCase().endsWith('.webp')) {
-        if (cleanImage.includes('cacho-vs-crespo-hero')) {
-          cleanImage = '/cacho-vs-crespo-hero.png';
-        } else {
-          cleanImage = '/jon-trabalhando.jpg';
-        }
-      }
-
-      const imageUrl = cleanImage.startsWith('http') 
-        ? cleanImage 
-        : `https://www.ojonquecortou.com.br${cleanImage.startsWith('/') ? '' : '/'}${cleanImage}`;
+      // URLs absolutas (ex: Firebase Storage) são usadas diretamente.
+      const imageUrl = image.startsWith('http')
+        ? image
+        : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
 
       const mediaData = {
         mediaFormat: 'PHOTO',

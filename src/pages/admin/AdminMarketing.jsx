@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight } from 'lucide-react';
@@ -708,29 +708,83 @@ Use as seguintes tags no "bodyHtml":
 
   const handleGenerateGbpPost = async () => {
     setIsGeneratingGbpPost(true);
-    
-    const fallbackPosts = [
-      {
-        text: 'Você sabe a real diferença entre Cabelo Cacheado e Crespo? 🤷‍♀️\n\nA chave para o volume perfeito está na estrutura de cada fio. No Studio do Jon, usamos o método de leitura de fio antes da tesoura e corte a seco para garantir o caimento perfeito da sua curvatura.\n\n📍 Rua Francisco Ovídio, Caiçara - BH\n🔗 Reserve seu horário: www.ojonquecortou.com.br',
-        image: '/cacho-vs-crespo-hero.webp'
-      },
-      {
-        text: 'Frizz: Normal ou Dano Capilar? 🤔\n\nMuitas vezes o frizz é apenas a textura natural do fio querendo liberdade, e não necessariamente ressecamento. Conheça sua curvatura e aprenda a finalização ideal no seu atendimento de visagismo!\n\n📍 Studio do Jon - Especialista em Cachos BH\n🔗 Agende agora: www.ojonquecortou.com.br',
-        image: '/blog-secagem-hero.webp'
-      }
+
+    const GBP_IMAGES = [
+      '/cachos-longos-castanhos-definidos.webp',
+      '/corte-crespo-com-volume.webp',
+      '/cachos-medios-volumosos-bh.webp',
+      '/corte-a-seco-cachos-definidos-bh.webp',
+      '/blog-visagismo-capa.webp',
+      '/blog-leitura-fio-capa.webp',
+      '/blog-frizz.webp',
+      '/blog-curvaturas.webp',
+      '/especialista-em-cabelo-cacheado-resultado.webp',
+      '/cachos-longos-luzes.webp',
+      '/volume-afro-crespo-bh.webp',
+      '/corte-curto-cacheado-feminino-bh.webp',
+      '/cachos-escuros-sorridentes-estudio.webp',
+      '/cacho-vs-crespo-hero.webp',
+      '/blog-secagem-hero.webp',
+      '/blog-cronograma-capilar.webp',
+      '/cachos-ruivos-definicao.webp',
+      '/corte-pixie-cacheado.webp',
+      '/mixed-curls-volume.webp',
+      '/blog-porosidade.webp',
+      '/blog-embaraco.webp',
+      '/blog-frequencia-corte-capa.webp',
     ];
 
-    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || '';
-    
+    const generateDynamicFallbackPost = () => {
+      const hooks = [
+        'Seu fio tem memória — você sabia? 💡',
+        'Corte a seco: por que faz toda a diferença? ✂️',
+        'Cachos e crespos não são iguais. Sabia disso? 🤷♀️',
+        'Frizz: textura natural ou sinal de dano? 🔍',
+        'Qual é o segredo de um cacho bem definido? 🌀',
+        'A curvatura do seu fio diz muito sobre o corte ideal! ✨',
+        'Leitura de fio: o passo que a maioria dos salões pula ❌',
+        'Visagismo para cachos e crespos: entenda por que importa 🎯',
+        'Transição capilar? O corte certo acelera tudo! 🌿',
+        'Volume, definição e leveza no mesmo corte — é possível! 🎉',
+        'Cada curvatura pede uma técnica diferente. Conheça a sua! 💫',
+        'O corte que respeita seu fio é o que dura mais ⏳',
+      ];
+
+      const bodies = [
+        'No Studio do Jon, cada atendimento começa com a leitura de fio — uma análise da estrutura, porosidade e curvatura antes de qualquer tesoura. Isso garante que o corte potencialize o que o seu cabelo já tem de melhor.',
+        'O corte a seco é a técnica que revela o verdadeiro comportamento do fio. Sem água, vemos como cada mecha cai, onde há volume em excesso e onde falta definição. O resultado é um caimento natural e duradouro.',
+        'Cacheados e crespos têm necessidades completamente diferentes. Por isso, nosso método é personalizado: analisamos sua curvatura, porosidade e histórico de química antes de começar.',
+        'Frizz nem sempre é ressecamento — muitas vezes é a textura natural do fio pedindo liberdade. Aprenda a finalizá-lo corretamente no seu atendimento de visagismo no Studio do Jon.',
+        'Visagismo vai muito além do rosto. Levamos em conta volume, comprimento e a forma como seu cabelo cresce para criar um resultado que valorize você como um todo.',
+        'A transição capilar é uma jornada. Com o corte certo, você acelera o processo, elimina pontas com química e começa a ver seus cachos naturais florescerem mais rápido.',
+        'Cronograma capilar, porosidade e pH: entender seu fio não é complicado quando você tem o parceiro certo. No Studio do Jon, cada cliente recebe uma orientação de rotina personalizada.',
+        'Embaraço, volume excessivo e perda de definição são sinais de que seu fio precisa de uma abordagem especializada. O corte a seco resolve na raiz — literalmente!',
+        'Cabelos crespos com volume, definição e elasticidade ao mesmo tempo: esse é o resultado de um corte técnico com leitura de fio no Studio do Jon, no coração do Caiçara, em BH.',
+      ];
+
+      const ctas = [
+        '\n\n📍 Rua Francisco Ovídio, Caiçara — BH\n🔗 Agende: www.ojonquecortou.com.br',
+        '\n\n📍 Studio do Jon — Especialista em Cachos e Crespos, BH\n🔗 Reserve agora: www.ojonquecortou.com.br',
+        '\n\n✂️ Studio do Jon | Caiçara, Belo Horizonte\n🔗 www.ojonquecortou.com.br',
+        '\n\n📲 Agende seu horário: www.ojonquecortou.com.br\n📍 Caiçara — BH | Studio do Jon',
+        '\n\n🌟 Studio do Jon — O especialista em cachos e crespos de BH\n🔗 www.ojonquecortou.com.br',
+      ];
+
+      const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const image = GBP_IMAGES[Math.floor(Math.random() * GBP_IMAGES.length)];
+      const text = `${pick(hooks)}\n\n${pick(bodies)}${pick(ctas)}`;
+      return { text, image };
+    };
+
+    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY || '';
+
     if (apiKey) {
       try {
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
           {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               contents: [{
                 parts: [{
@@ -740,18 +794,13 @@ Use as seguintes tags no "bodyHtml":
             })
           }
         );
-        
+
         if (response.ok) {
           const data = await response.json();
           const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (generatedText) {
-            const images = ['/cacho-vs-crespo-hero.webp', '/blog-secagem-hero.webp'];
-            const randomImg = images[Math.floor(Math.random() * images.length)];
-            
-            setGeneratedGbpPost({
-              text: generatedText.trim(),
-              image: randomImg
-            });
+            const randomImg = GBP_IMAGES[Math.floor(Math.random() * GBP_IMAGES.length)];
+            setGeneratedGbpPost({ text: generatedText.trim(), image: randomImg });
             setIsGeneratingGbpPost(false);
             return;
           }
@@ -762,13 +811,12 @@ Use as seguintes tags no "bodyHtml":
         console.warn('Erro ao gerar post com Gemini API, usando fallback:', err);
       }
     }
-    
-    // Fallback se falhar
+
+    // Fallback dinâmico — sempre gera variação nova
     setTimeout(() => {
-      const idx = Math.floor(Math.random() * fallbackPosts.length);
-      setGeneratedGbpPost(fallbackPosts[idx]);
+      setGeneratedGbpPost(generateDynamicFallbackPost());
       setIsGeneratingGbpPost(false);
-    }, 1000);
+    }, 800);
   };
 
   const handleScheduleGbpPost = () => {
