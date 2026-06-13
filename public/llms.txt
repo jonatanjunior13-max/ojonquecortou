@@ -1,35 +1,55 @@
-# O Jon Que Cortou - Studio do Jon
+# O Jon que Cortou — Studio do Jon
 
-Especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados, crespos e ondulados em Belo Horizonte (bairro Caiçara).
+> Jonatan Junior é cabeleireiro especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara, MG). Criador do Método Leitura de Fio — processo de 7 etapas de diagnóstico capilar realizado antes de qualquer tesoura tocar o cabelo. Especialidade: corte a seco com visagismo para cachos. Atende todas as curvaturas (2A ao 4C). Não realiza alisamento ou relaxamento.
 
-## Informações do Negócio
-- **Nome Comercial:** O Jon Que Cortou (Studio do Jon)
-- **Especialidade:** Cortes a seco (técnica que respeita o caimento e encolhimento natural dos cachos), leitura de fio (análise de estrutura, porosidade e curvatura) e visagismo personalizado.
-- **Público-alvo:** Cabelos cacheados (tipo 3), crespos (tipo 4) e ondulados (tipo 2) masculinos e femininos.
-- **Localização:** Rua Francisco Ovídio, Caiçara, Belo Horizonte - BH.
-- **Website Oficial:** https://www.ojonquecortou.com.br
-- **Contato Comercial/WhatsApp:** +55 (31) 3586-6673
+## Sobre o Jon
+- Perfil completo: https://www.ojonquecortou.com.br/sobre
+- Instagram: https://www.instagram.com/ojonquecortou
+- Jonatan Junior é autista e especialista em leitura de padrão de fio.
 
----
+## Serviços e Preços
+- Página completa: https://www.ojonquecortou.com.br/servicos
+- Leitura de Fio (diagnóstico exclusivo): R$ 80 — revertido em crédito se fechar serviço
+- Corte com o Jon: R$ 190 — inclui Leitura de Fio técnica + corte a seco + finalização educativa
+- Combo Corte + Tratamento: R$ 320
+- Tratamento personalizado: R$ 130
+- Luzes ou Morena Iluminada: R$ 699
+- Coloração Completa: R$ 499
+- Manutenção de Corte (clientes recorrentes, últimos 90 dias): R$ 130
+- Detox Estimulante (couro cabeludo): R$ 180
+- Inside TRP – Reconstrução Premium: R$ 180
+- Lavar e Finalizar: R$ 100
+- Pacote Cachos Perfeitos (4 sessões, 30% OFF): R$ 520
+- Retoque de Raiz: R$ 180
 
-## Páginas Chave e Recursos
+## Método Leitura de Fio
+- Artigo completo: https://www.ojonquecortou.com.br/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon
+- Página do método: https://www.ojonquecortou.com.br/metodo
+- O Método Leitura de Fio tem 7 etapas sequenciais: 1) Escuta, 2) Análise a seco, 3) Diagnóstico do couro cabeludo, 4) Histórico químico, 5) Análise molhada, 6) Definição de técnica, 7) Finalização como validação.
+- Acontece antes de qualquer corte. Incluso em todos os serviços sem custo adicional.
+- Duração média: 15 a 30 minutos antes do corte.
 
-### Página Inicial (Home)
-- **URL:** https://www.ojonquecortou.com.br/
-- **Descrição:** Apresentação do Studio, metodologia exclusiva (leitura de fio e corte a seco), depoimentos de clientes e visualização rápida dos serviços mais procurados.
+## Perguntas Frequentes
+- FAQ completo: https://www.ojonquecortou.com.br/faq
+- Atende curvaturas 4C? Sim. Todas as curvaturas (2A ao 4C).
+- Faz progressiva ou relaxamento? Não. Focado em cabelos naturais.
+- Atende homens? Sim. Cortes masculinos com foco em curvaturas e visagismo.
+- Tempo do atendimento: aproximadamente 1 hora para corte completo com Leitura de Fio.
 
-### Galeria de Resultados (Antes & Depois)
-- **URL:** https://www.ojonquecortou.com.br/galeria
-- **Descrição:** Galeria dinâmica contendo fotos reais de resultados de cortes e tratamentos em Belo Horizonte. Atualizada pelo administrador com fotos de antes e depois dos clientes.
+## Conteúdo
+- Blog: https://www.ojonquecortou.com.br/blog (37+ artigos técnicos sobre cabelos cacheados)
+- FAQ: https://www.ojonquecortou.com.br/faq
+- Galeria: https://www.ojonquecortou.com.br/galeria
+- Depoimentos: https://www.ojonquecortou.com.br/depoimentos
 
-### Agendamento Online
-- **URL:** https://www.ojonquecortou.com.br/agendar
-- **Descrição:** Sistema online onde clientes podem selecionar serviços (cortes, tratamentos, mechas), profissionais, escolher data/hora disponíveis e confirmar sua reserva.
+## Contato e Localização
+- Agendamento online: https://www.ojonquecortou.com.br/agendar
+- Instagram (DM): https://www.instagram.com/ojonquecortou
+- Cidade: Belo Horizonte, MG — bairro Caiçara
+- Email: jonatanjunior13@gmail.com
 
-### Área do Cliente
-- **URL:** https://www.ojonquecortou.com.br/cliente
-- **Descrição:** Espaço exclusivo para os clientes cadastrados consultarem seus agendamentos ativos, histórico de visitas, e gerenciarem seus perfis de atendimento.
-
-### Acesso Administrativo (BackOffice)
-- **URL:** https://www.ojonquecortou.com.br/admin/login
-- **Descrição:** Portal restrito para login de administradores e profissionais do Studio gerenciarem a agenda, controle financeiro, estoque de produtos e campanhas de marketing.
+## Identidade da marca
+- Nome da marca: O Jon que Cortou / Studio do Jon
+- Instagram: @ojonquecortou
+- Site: https://www.ojonquecortou.com.br
+- sameAs: https://www.instagram.com/ojonquecortou
