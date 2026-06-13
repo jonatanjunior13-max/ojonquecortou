@@ -65,6 +65,10 @@
       "dest": "/api/whatsapp-webhook.js"
     },
     {
+      "src": "/api/unsubscribe",
+      "dest": "/api/newsletter-mailgun.js"
+    },
+    {
       "src": "/api/(.*)",
       "dest": "/api/$1"
     },
