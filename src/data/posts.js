@@ -1,5 +1,89 @@
 export const posts = [
   {
+    id: 40,
+    slug: 'day-after-cabelo-cacheado-bh-como-reativar-sem-lavar',
+    title: 'O Segredo do Day After Perfeito: Como Reativar Cachos Sem Lavar de Novo no Clima de BH | Studio do Jon',
+    excerpt: 'Acordar com os cachos amassados, sem definição e com frizz é o pesadelo de toda cacheada, especialmente no clima seco de Belo Horizonte. Descubra como ter um day after impecável.',
+    metaDescription: 'Cabelo cacheado amassado e com frizz no day after? Aprenda como reativar os cachos sem lavar o cabelo todo dia no clima seco de BH. Dicas de especialista.',
+    keywords: 'day after cabelo cacheado, como reativar cachos, frizz day after bh, cabelo cacheado amassado, studio do jon, belo horizonte',
+    date: '12 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-day-after-cachos.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que os cachos desmancham tanto durante a noite?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Durante o sono, o atrito com o travesseiro de algodão absorve a umidade do cabelo e desfaz as ondas e espirais do fio. O peso do corpo sobre o cabelo também amassa a estrutura física dos cachos."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso encharcar o cabelo para reativar os cachos no day after?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não recomendo. Molhar o cabelo por completo retira o produto que você aplicou no dia da lavagem e reinicia o processo de secagem, o que pode aumentar o frizz. O ideal é umedecer apenas as mechas sem definição usando um borrifador leve."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A fronha de cetim realmente funciona?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. O cetim possui uma surface extremamente lisa que reduz o atrito mecânico dos fios em até 70% comparado ao algodão, além de não absorver os óleos naturais e a umidade do cabelo."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>O Grande Desafio da Cacheada: A Manhã Seguinte</h2>
+      <p>Você passa horas lavando, tratando, fazendo fitagem mecha por mecha, seca com o difusor e vai dormir se sentindo a própria rainha dos cachos. Mas aí você acorda, olha no espelho e... o pesadelo se instalou. Um lado está amassado, o outro perdeu a definição e o topo está com aquela nuvem de frizz que parece uma tempestade na Pampulha.</p>
+      <p>Quem tem cabelo cacheado, crespo ou ondulado sabe que o <strong>day after</strong> (o dia seguinte à lavagem) é um dos maiores desafios da rotina capilar. No clima de Belo Horizonte, que no inverno e outono é incrivelmente seco, esse desafio dobra de tamanho. O ar seco suga a pouca umidade que resta no fio, fazendo com que os cachos percam a forma e armem com muita facilidade.</p>
+      <p>Mas acalme-se! Você não precisa lavar o seu cabelo todo santo dia para tê-lo bonito. Lavar em excesso retira a oleosidade natural protetora e resseca ainda mais a fibra. Como especialista, vou te mostrar o método técnico e simples para reativar seus cachos, combater o frizz e acordar pronta sem precisar entrar no chuveiro.</p>
+      
+      <h2>1. Proteção Noturna: O Segredo Começa Antes de Dormir</h2>
+      <p>O maior erro sobre o day after é achar que ele começa de manhã. O seu day after é decidido na noite anterior. O atrito do cabelo com uma fronha de algodão comum durante as 6 ou 8 horas de sono é o maior vilão da definição. O algodão é um tecido áspero em nível microscópico que suga a água e os óleos do fio, gerando frizz e quebra.</p>
+      <p>Aqui estão as duas regras de ouro para a hora de dormir:</p>
+      <ul>
+        <li><strong>Fronha ou Touca de Cetim:</strong> Ao contrário do algodão, o cetim é um tecido escorregadio que não gera atrito com o fio e não absorve a umidade. Seu cabelo desliza suavemente enquanto você se mexe à noite, preservando os cachos intactos.</li>
+        <li><strong>Penteado Abacaxi:</strong> Se você tem cabelos médios ou longos, prenda o cabelo no topo da cabeça de forma bem frouxa, usando um elástico de cetim (scrunchie). Isso impede que você durma em cima dos cachos do topo e das laterais, protegendo o volume e a definição.</li>
+      </ul>
+      
+      <h2>2. O Poder do Borrifador Inteligente</h2>
+      <p>Esqueça a ideia de enfiar a cabeça debaixo da torneira de manhã. Encharcar o cabelo no day after apenas remove o finalizador que já estava lá e aumenta o tempo de secagem, gerando mais frizz e porosidade.</p>
+      <p>A solução é usar um borrifador com uma névoa fina. Faça uma mistura simples no borrifador: 90% de água filtrada e 10% de um leave-in leve e aquoso (evite cremes pesados com óleo de coco ou manteigas para não criar acúmulo de produto). Borrife essa névoa a uma distância de 20 centímetros apenas nas áreas que estão amassadas ou sem definição. O objetivo é apenas <strong>umedecer</strong> o fio para reativar os polímeros do finalizador do dia anterior, e não molhar o couro cabeludo.</p>
+      
+      <h2>3. A Técnica de Reativação Mecha a Mecha</h2>
+      <p>Depois de umedecer as áreas críticas do cabelo, não saia penteando com escova. Use as mãos:</p>
+      <ol>
+        <li>Aplique uma moeda de leave-in leve ou de gelatina de fixação suave nas palmas das mãos.</li>
+        <li>Espalhe bem o produto pelas mãos e use a técnica de "mãos de prece" para deslizar o produto suavemente sobre as mechas sem definição.</li>
+        <li>Amassa as mechas de baixo para cima com movimentos suaves. Se houver algum cacho específico que virou frizz total, enrole-o no dedo (técnica do Dedoliss) apenas naquela mecha para forçar a memorização da curva.</li>
+        <li>Deixe secar naturalmente ou use o difusor por 3 minutos na temperatura morna e velocidade baixa para fixar o formato.</li>
+      </ol>
+      <p>Essa rotina não leva mais do que 5 minutos e devolve a definição sem pegar os fios.</p>
+      
+      <h2>4. Cuidado com o Efeito "Build-up" (Acúmulo de Produtos)</h2>
+      <p>Um erro clássico é passar mais e mais creme pesado a cada day after. Em três dias, o seu cabelo estará opaco, sem brilho, pesado e com aquela textura ensebada. Isso se chama efeito <em>build-up</em>: o acúmulo de cosméticos que obstrui a fibra capilar e impede a entrada de água e tratamentos.</p>
+      <p>No day after, use sempre produtos com texturas fluidas, sprays reativadores ou gelatinas leves. Se você sentir que o seu cabelo precisa de muito creme para ficar bonito no dia seguinte, o problema não é o day after, mas sim a higienização ou a hidratação no dia da lavagem.</p>
+      
+      <h2>Quando o Cabelo Não Segura o Day After: O Que Fazer?</h2>
+      <p>Se mesmo usando touca de cetim e finalizadores leves o seu cabelo simplesmente acorda sem nenhuma definição todos os dias, o seu fio está emitindo um sinal de alerta. Cabelos com alta porosidade ou danos estruturais (decorrentes de químicas ou excesso de calor) perdem a capacidade de reter umidade e "desabam" poucas horas após a finalização.</p>
+      <p>Para resolver isso, você precisa ir além do borrifador. No Studio do Jon, nós realizamos a <a href="/metodo">Leitura de Fio</a> — um diagnóstico científico em 7 etapas que analisa a elasticidade da fibra, a porosidade real, o estado do couro cabeludo e o histórico de químicas invisíveis. Com essa leitura, identificamos se o seu cabelo precisa de reconstrução de queratina, acidificação para selar as cutículas ou apenas um corte a seco personalizado para distribuir o volume.</p>
+      
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+          <h3>Seus cachos perdem a definição muito rápido?</h3>
+          <p>Descubra as reais necessidades do seu cabelo com o Método Leitura de Fio e tenha day afters muito mais duradouros.</p>
+          <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Diagnóstico no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 39,
     slug: 'voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz',
     title: 'Você Tem Cabelo Ondulado e Não Sabe? O Mistério do "Liso com Frizz" Desvendado | Studio do Jon',
