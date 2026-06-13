@@ -1,4 +1,3 @@
-import React from 'react';
 import { Scissors, Sparkles, Sun } from 'lucide-react';
 import './Services.css';
 
