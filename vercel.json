@@ -23,6 +23,10 @@
   },
   "routes": [
     {
+      "src": "/api/media/([^/]+)",
+      "dest": "/api/media-proxy.js?file=$1"
+    },
+    {
       "src": "/blog/metodo-leitura-de-fio-antes-da-tesoura",
       "status": 301,
       "headers": { "Location": "/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" }

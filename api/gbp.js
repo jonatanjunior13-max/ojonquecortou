@@ -13,6 +13,21 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
+function formatGoogleImageUrl(image) {
+  if (!image) return '';
+  let imageUrl = image;
+  if (imageUrl.includes('firebasestorage.googleapis.com')) {
+    const match = imageUrl.match(/o\/gallery%2F([^?]+)/);
+    if (match && match[1]) {
+      const filename = decodeURIComponent(match[1]);
+      imageUrl = `https://www.ojonquecortou.com.br/api/media/${filename}`;
+    }
+  } else if (!imageUrl.startsWith('http')) {
+    imageUrl = `https://www.ojonquecortou.com.br${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+  }
+  return imageUrl;
+}
+
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -202,14 +217,9 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // URLs absolutas (ex: Firebase Storage) são usadas diretamente.
-      // Apenas caminhos relativos recebem o prefixo do domínio.
       let mediaList = [];
       if (image) {
-        const imageUrl = image.startsWith('http')
-          ? image
-          : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
-
+        const imageUrl = formatGoogleImageUrl(image);
         mediaList.push({
           mediaFormat: 'PHOTO',
           sourceUrl: imageUrl
@@ -311,10 +321,7 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // URLs absolutas (ex: Firebase Storage) são usadas diretamente.
-      const imageUrl = image.startsWith('http')
-        ? image
-        : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
+      const imageUrl = formatGoogleImageUrl(image);
 
       const mediaData = {
         mediaFormat: 'PHOTO',
