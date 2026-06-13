@@ -877,23 +877,29 @@ Grande abraço, Jon.`;
       setUploadStatus('google');
 
       // Step 2: Post to Google Business Photos (via proxy or direct API)
+      // Etapa secundária — NUNCA pode bloquear o salvamento na galeria.
+      // O endpoint /api/gbp usa o Firebase SDK no serverless, que pode
+      // pendurar (gRPC/Firestore instável fora do browser); por isso usamos
+      // AbortController com timeout. Se falhar/estourar, segue sem o Google.
       let googlePosted = false;
       try {
         const hasGbpConfig = !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
         if (hasGbpConfig) {
-          const resp = await fetch('/api/gbp?action=upload-media', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              image: downloadURL,
-              category: 'ADDITIONAL'
-            })
-          });
-          if (resp.ok) {
-            const resData = await resp.json();
-            googlePosted = !!resData.success;
+          const ctrl = new AbortController();
+          const gbpTimeout = setTimeout(() => ctrl.abort(), 8000);
+          try {
+            const resp = await fetch('/api/gbp?action=upload-media', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: downloadURL, category: 'ADDITIONAL' }),
+              signal: ctrl.signal
+            });
+            if (resp.ok) {
+              const resData = await resp.json();
+              googlePosted = !!resData.success;
+            }
+          } finally {
+            clearTimeout(gbpTimeout);
           }
         }
       } catch (gErr) {
