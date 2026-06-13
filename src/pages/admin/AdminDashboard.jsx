@@ -1993,14 +1993,17 @@ Grande abraço, Jon.`;
       return;
     }
 
+    const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+
     const gateway = settings.waReminderGateway;
     if (!gateway || gateway === 'none') {
-      console.log('WhatsApp Gateway não configurado (Simulação):', msgText);
-      toast('Mensagem de avaliação enviada com sucesso! (Modo Simulado - Gateway não ativo)', 'success');
+      console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
+      const waUrl = `https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      toast('Abrindo WhatsApp diretamente... 🚀', 'success');
       return;
     }
 
-    const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
     let url = '';
     let headers = { 'Content-Type': 'application/json' };
     let body = {};
