@@ -11,7 +11,7 @@ import {
   sendPasswordResetEmail
 } from 'firebase/auth';
 import { collection, getDocs, query, where, doc, updateDoc, addDoc } from 'firebase/firestore';
-import { Calendar, Clock, Lock, Unlock, LogOut, Scissors, AlertCircle, ChevronRight, User, PlusCircle, ArrowLeft, Mail } from 'lucide-react';
+import { Calendar, Lock, Unlock, LogOut, Scissors, AlertCircle, ChevronRight, User, PlusCircle, ArrowLeft, Mail } from 'lucide-react';
 import SEO from '../components/SEO';
 import './ClientAreaPage.css';
 
