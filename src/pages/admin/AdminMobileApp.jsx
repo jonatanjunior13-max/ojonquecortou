@@ -159,6 +159,10 @@ export default function AdminMobileApp() {
   const previewContainerRef = useRef(null);
   const previewImageRef = useRef(null);
 
+  // -- Destination Upload States --
+  const [postToGallery, setPostToGallery] = useState(true);
+  const [postToGoogle, setPostToGoogle] = useState(true);
+
   // ── Clients ────────────────────────────────────────────────────
   const [clientSearch, setClientSearch] = useState('');
   const [selectedClient, setSelectedClient] = useState(null);
@@ -968,6 +972,8 @@ Grande abraço, Jon.`;
     setCropperZoom(1);
     setCropperOffset({ x: 0, y: 0 });
     setNaturalDimensions({ w: 0, h: 0 });
+    setPostToGallery(true);
+    setPostToGoogle(true);
     setShowUploadSheet(true);
   };
 
@@ -1066,50 +1072,50 @@ Grande abraço, Jon.`;
       setUploadStatus('google');
 
       // Step 2: Post to Google Business Photos (via proxy or direct API)
-      // Etapa secundária — NUNCA pode bloquear o salvamento na galeria.
-      // O endpoint /api/gbp usa o Firebase SDK no serverless, que pode
-      // pendurar (gRPC/Firestore instável fora do browser); por isso usamos
-      // AbortController com timeout. Se falhar/estourar, segue sem o Google.
       let googlePosted = false;
-      try {
-        const hasGbpConfig = !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
-        if (hasGbpConfig) {
-          const ctrl = new AbortController();
-          const gbpTimeout = setTimeout(() => ctrl.abort(), 8000);
-          try {
-            const resp = await fetch('/api/gbp?action=upload-media', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ image: downloadURL, category: 'ADDITIONAL' }),
-              signal: ctrl.signal
-            });
-            if (resp.ok) {
-              const resData = await resp.json();
-              googlePosted = !!resData.success;
+      if (postToGoogle) {
+        try {
+          const hasGbpConfig = !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
+          if (hasGbpConfig) {
+            const ctrl = new AbortController();
+            const gbpTimeout = setTimeout(() => ctrl.abort(), 8000);
+            try {
+              const resp = await fetch('/api/gbp?action=upload-media', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: downloadURL, category: 'ADDITIONAL' }),
+                signal: ctrl.signal
+              });
+              if (resp.ok) {
+                const resData = await resp.json();
+                googlePosted = !!resData.success;
+              }
+            } finally {
+              clearTimeout(gbpTimeout);
             }
-          } finally {
-            clearTimeout(gbpTimeout);
           }
+        } catch (gErr) {
+          console.warn('Google Business post skipped:', gErr.message);
         }
-      } catch (gErr) {
-        console.warn('Google Business post skipped:', gErr.message);
       }
 
       setUploadProgress(95);
 
       // Step 3: Save to Firestore gallery_photos
-      const photoData = {
-        url: downloadURL,
-        filename,
-        category: uploadForm.category,
-        caption: uploadForm.caption || '',
-        googlePosted,
-        createdAt: new Date().toISOString(),
-        storagePath: `gallery/${filename}`
-      };
+      if (postToGallery) {
+        const photoData = {
+          url: downloadURL,
+          filename,
+          category: uploadForm.category,
+          caption: uploadForm.caption || '',
+          googlePosted,
+          createdAt: new Date().toISOString(),
+          storagePath: `gallery/${filename}`
+        };
 
-      if (db) {
-        await addDoc(collection(db, 'gallery_photos'), photoData);
+        if (db) {
+          await addDoc(collection(db, 'gallery_photos'), photoData);
+        }
       }
 
       setUploadProgress(100);
@@ -1118,7 +1124,11 @@ Grande abraço, Jon.`;
       setPendingFile(null);
       setPendingPreviewUrl('');
       showToast(
-        googlePosted ? 'Foto publicada no Studio e no Google! 🎉' : 'Foto salva na galeria!',
+        googlePosted && postToGallery
+          ? 'Foto publicada no Studio e no Google! 🎉'
+          : googlePosted
+            ? 'Foto publicada no Google! 🎉'
+            : 'Foto salva na galeria!',
         'success'
       );
     } catch (err) {
@@ -2796,24 +2806,40 @@ Grande abraço, Jon.`;
               <input className="m-input" placeholder="Descreva o trabalho..." value={uploadForm.caption} onChange={e => setUploadForm(p => ({ ...p, caption: e.target.value }))}/>
             </div>
 
-            {/* Destination info */}
-            <div style={{ background:'var(--m-gold-subtle)', border:'0.5px solid var(--m-gold)', borderRadius:'var(--m-radius-sm)', padding:'12px 14px' }}>
-              <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:6 }}>📸 Destinos de Publicação</div>
-              <div style={{ display:'flex', flexDirection:'column', gap:4 }}>
-                <div style={{ fontSize:'0.78rem', color:'var(--m-text-2)', display:'flex', alignItems:'center', gap:6 }}>
-                  <CheckCircle size={12} color="var(--m-green)"/>
-                  Galeria do Site (Firebase Storage)
-                </div>
-                <div style={{ fontSize:'0.78rem', color: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'var(--m-text-2)' : 'var(--m-muted)', display:'flex', alignItems:'center', gap:6 }}>
-                  {(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? <CheckCircle size={12} color="var(--m-green)"/> : <AlertCircle size={12} color="var(--m-muted)"/>}
-                  Google Business Photos {!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
-                </div>
+            {/* Destination Selection */}
+            <div style={{ background:'var(--m-gold-subtle)', border:'0.5px solid var(--m-gold)', borderRadius:'var(--m-radius-sm)', padding:'12px 14px', display:'flex', flexDirection:'column', gap:10 }}>
+              <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px' }}>📸 Escolha onde publicar</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <label style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer', userSelect:'none' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={postToGallery} 
+                    onChange={e => setPostToGallery(e.target.checked)}
+                    style={{ width:18, height:18, accentColor:'var(--m-gold)' }}
+                  />
+                  <span style={{ fontSize:'0.78rem', color:'var(--m-text-2)', fontWeight: 600 }}>
+                    Galeria do Site (Galeria Pública)
+                  </span>
+                </label>
+
+                <label style={{ display:'flex', alignItems:'center', gap:10, cursor: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'pointer' : 'not-allowed', userSelect:'none', opacity: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 1 : 0.6 }}>
+                  <input 
+                    type="checkbox" 
+                    checked={postToGoogle && !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)} 
+                    disabled={!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)}
+                    onChange={e => setPostToGoogle(e.target.checked)}
+                    style={{ width:18, height:18, accentColor:'var(--m-gold)' }}
+                  />
+                  <span style={{ fontSize:'0.78rem', color:'var(--m-text-2)', fontWeight: 600 }}>
+                    Google Business Photos {!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
+                  </span>
+                </label>
               </div>
             </div>
           </div>
           <div className="m-sheet-footer">
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>Cancelar</button>
-            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={uploadPhoto} disabled={isUploading}>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={uploadPhoto} disabled={isUploading || (!postToGallery && !postToGoogle)}>
               {isUploading ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Publicando...</> : <><Upload size={14}/> Publicar</>}
             </button>
           </div>
