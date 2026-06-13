@@ -1077,6 +1077,7 @@ const AdminDashboard = () => {
         price: activeServPrice,
         duration: activeDuration
       },
+      servicePrice: activeServPrice,
       duration: activeDuration,
       date: newBooking.date,
       time: newBooking.time,
@@ -3751,20 +3752,21 @@ Grande abraço, Jon.`;
                 <div className="form-group">
                   <label>Serviço Principal *</label>
                   <select 
-                    value={`${editBookingForm.serviceName}|${editBookingForm.servicePrice}`}
+                    value={editBookingForm.serviceName}
                     onChange={e => {
-                      const [name, priceStr] = e.target.value.split('|');
+                      const name = e.target.value;
                       const matched = services.find(s => s.name === name);
                       setEditBookingForm(prev => ({ 
                         ...prev, 
                         serviceName: name, 
-                        servicePrice: Number(priceStr),
+                        servicePrice: matched ? (matched.promoPrice || matched.price || 0) : 0,
                         duration: matched ? (matched.duration || 60) : 60
                       }));
                     }}
                   >
+                    <option value="">Selecione um serviço</option>
                     {services.map(s => (
-                      <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                      <option key={s.id} value={s.name}>
                         {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
                       </option>
                     ))}
@@ -4665,20 +4667,21 @@ Grande abraço, Jon.`;
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>Serviço *</label>
                 <select 
-                  value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
+                  value={newBooking.serviceName}
                   onChange={e => {
-                    const [name, priceStr] = e.target.value.split('|');
+                    const name = e.target.value;
                     const matched = services.find(s => s.name === name);
                     setNewBooking(prev => ({ 
                       ...prev, 
                       serviceName: name, 
-                      servicePrice: Number(priceStr),
+                      servicePrice: matched ? (matched.promoPrice || matched.price || 0) : 0,
                       duration: matched ? (matched.duration || 60) : 60
                     }));
                   }}
                 >
+                  <option value="">Selecione um serviço</option>
                   {services.map(s => (
-                    <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
+                    <option key={s.id} value={s.name}>
                       {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
                     </option>
                   ))}

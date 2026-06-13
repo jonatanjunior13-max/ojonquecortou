@@ -132,7 +132,7 @@ export default function AdminMobileApp() {
   const [transitioning, setTransitioning] = useState(false);
 
   // ── New Booking Form ───────────────────────────────────────────
-  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
   const [ebSuggestions, setEbSuggestions] = useState([]);
 
@@ -556,12 +556,13 @@ export default function AdminMobileApp() {
     if (!nbForm.clientName || !nbForm.serviceName) { showToast('Preencha cliente e serviço', 'error'); return; }
     const svc = services.find(s => s.name === nbForm.serviceName);
     const prepay = Number(nbForm.prepayment || 0);
+    const price = nbForm.servicePrice !== '' ? Number(nbForm.servicePrice) : (svc?.promoPrice || svc?.price || 0);
     const data = {
       clientName: nbForm.clientName,
       clientPhone: nbForm.clientPhone || '',
       service: svc || { name: nbForm.serviceName },
       serviceName: nbForm.serviceName,
-      servicePrice: svc?.promoPrice || svc?.price || 0,
+      servicePrice: price,
       date: nbForm.date,
       time: nbForm.time,
       notes: nbForm.notes || '',
@@ -595,7 +596,7 @@ export default function AdminMobileApp() {
         }
       }
       setShowNewBookingSheet(false);
-      setNbForm({ clientName:'', clientPhone:'', serviceName:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+      setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
       showToast('Agendamento criado!', 'success');
     } catch (err) {
       showToast('Erro: ' + err.message, 'error');
@@ -618,7 +619,7 @@ export default function AdminMobileApp() {
       clientPhone: editBookingForm.clientPhone || '',
       service: svc || { name: editBookingForm.serviceName },
       serviceName: editBookingForm.serviceName,
-      servicePrice: svc?.promoPrice || svc?.price || 0,
+      servicePrice: editBookingForm.servicePrice !== '' ? Number(editBookingForm.servicePrice) : (svc?.promoPrice || svc?.price || 0),
       date: editBookingForm.date,
       time: editBookingForm.time,
       notes: editBookingForm.notes || '',
@@ -1663,6 +1664,7 @@ Grande abraço, Jon.`;
                     clientName: b.clientName,
                     clientPhone: b.clientPhone || '',
                     serviceName: b.serviceName || b.service?.name || '',
+                    servicePrice: b.servicePrice !== undefined ? b.servicePrice : (b.service?.promoPrice || b.service?.price || ''),
                     date: b.date,
                     time: b.time || '09:00',
                     prepayment: b.prepayment || '',
@@ -2071,10 +2073,19 @@ Grande abraço, Jon.`;
             </div>
             <div className="m-field">
               <label className="m-label">Serviço *</label>
-              <select className="m-select" value={nbForm.serviceName} onChange={e => setNbForm(p => ({ ...p, serviceName: e.target.value }))}>
+              <select className="m-select" value={nbForm.serviceName} onChange={e => {
+                const sName = e.target.value;
+                const matched = services.find(s => s.name === sName);
+                const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
+                setNbForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+              }}>
                 <option value="">Selecione um serviço</option>
                 {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
               </select>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Valor do Serviço (R$)</label>
+              <input className="m-input" type="number" placeholder="0,00" value={nbForm.servicePrice} onChange={e => setNbForm(p => ({ ...p, servicePrice: e.target.value }))}/>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <div className="m-field">
@@ -2138,10 +2149,19 @@ Grande abraço, Jon.`;
             </div>
             <div className="m-field">
               <label className="m-label">Serviço *</label>
-              <select className="m-select" value={editBookingForm.serviceName} onChange={e => setEditBookingForm(p => ({ ...p, serviceName: e.target.value }))}>
+              <select className="m-select" value={editBookingForm.serviceName} onChange={e => {
+                const sName = e.target.value;
+                const matched = services.find(s => s.name === sName);
+                const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
+                setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+              }}>
                 <option value="">Selecione um serviço</option>
                 {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
               </select>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Valor do Serviço (R$)</label>
+              <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.servicePrice} onChange={e => setEditBookingForm(p => ({ ...p, servicePrice: e.target.value }))}/>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <div className="m-field">
