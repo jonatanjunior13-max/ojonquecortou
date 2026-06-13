@@ -642,6 +642,7 @@ export default function AdminMobileApp() {
       }
       setShowNewBookingSheet(false);
       setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+      setTab('hoje');
       showToast('Agendamento criado!', 'success');
     } catch (err) {
       showToast('Erro: ' + err.message, 'error');
@@ -816,6 +817,7 @@ Grande abraço, Jon.`;
       if (db) await updateDoc(doc(db, 'bookings', bookingId), { status });
       setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status } : b));
       setShowBookingSheet(false);
+      if (status === 'cancelado') setTab('hoje');
       showToast(`Status atualizado: ${status}`, 'success');
 
       if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
