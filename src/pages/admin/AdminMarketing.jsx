@@ -1116,18 +1116,30 @@ Use as seguintes tags no "bodyHtml":
     setIsSendingBirthdayWa(true);
     cancelSendingRef.current = false;
     setBirthdayWaLogs(['[SISTEMA] Iniciando disparo de aniversário...']);
-    for (const client of targets) {
+
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < targets.length; i += BATCH_SIZE) {
       if (cancelSendingRef.current) {
         setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo cancelado pelo usuário.']);
         break;
       }
-      await new Promise(r => setTimeout(r, 1000));
+
+      const batch = targets.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async client => {
+        if (cancelSendingRef.current) return;
+        await saveLog(client.name, client.phone, 'Aniversário (WhatsApp)', 'whatsapp');
+        setBirthdayWaLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+      }));
+
       if (cancelSendingRef.current) {
         setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo cancelado pelo usuário.']);
         break;
       }
-      await saveLog(client.name, client.phone, 'Aniversário (WhatsApp)', 'whatsapp');
-      setBirthdayWaLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+
+      // Delay between batches to respect rate limits
+      if (i + BATCH_SIZE < targets.length) {
+        await new Promise(r => setTimeout(r, 1000));
+      }
     }
     if (!cancelSendingRef.current) {
       setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo finalizado! Verifique o WhatsApp.']);
@@ -1198,18 +1210,29 @@ Use as seguintes tags no "bodyHtml":
     cancelSendingRef.current = false;
     setWhatsappLogs(['[SYSTEM] Iniciando disparo em lote (WhatsApp)...']);
 
-    for (const client of marketingTargetsList) {
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < marketingTargetsList.length; i += BATCH_SIZE) {
       if (cancelSendingRef.current) {
         setWhatsappLogs(prev => [...prev, '[SYSTEM] Disparo cancelado pelo usuário.']);
         break;
       }
-      await new Promise(r => setTimeout(r, 1200));
+
+      const batch = marketingTargetsList.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async client => {
+        if (cancelSendingRef.current) return;
+        await saveLog(client.name, client.phone, 'Campanha Manual (WhatsApp)', 'whatsapp');
+        setWhatsappLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+      }));
+
       if (cancelSendingRef.current) {
         setWhatsappLogs(prev => [...prev, '[SYSTEM] Disparo cancelado pelo usuário.']);
         break;
       }
-      await saveLog(client.name, client.phone, 'Campanha Manual (WhatsApp)', 'whatsapp');
-      setWhatsappLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+
+      // Delay between batches to respect rate limits
+      if (i + BATCH_SIZE < marketingTargetsList.length) {
+        await new Promise(r => setTimeout(r, 1200));
+      }
     }
 
     if (!cancelSendingRef.current) {
