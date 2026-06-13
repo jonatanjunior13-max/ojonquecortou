@@ -1998,59 +1998,46 @@ Grande abraço, Jon.`;
     const gateway = settings.waReminderGateway;
     if (!gateway || gateway === 'none') {
       console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
-      const waUrl = `https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`;
+      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
       window.open(waUrl, '_blank');
       toast('Abrindo WhatsApp diretamente... 🚀', 'success');
       return;
     }
 
-    let url = '';
-    let headers = { 'Content-Type': 'application/json' };
-    let body = {};
-
-    if (gateway === 'zapi') {
-      const instance = settings.zApiInstanceId;
-      const token = settings.zApiToken;
-      if (!instance || !token) { toast('Z-API não configurada corretamente', 'error'); return; }
-      url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
-      body = { phone: phoneWithDDI, message: msgText };
-    } else if (gateway === 'evolution') {
-      const apiUrl = settings.evolutionApiUrl;
-      const apiKey = settings.evolutionApiKey;
-      const instance = settings.evolutionInstanceName;
-      if (!apiUrl || !apiKey || !instance) { toast('Evolution API não configurada corretamente', 'error'); return; }
-      url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
-      headers['apikey'] = apiKey;
-      body = { number: phoneWithDDI, text: msgText };
-    } else if (gateway === 'custom') {
-      url = settings.customWebhookUrl;
-      if (!url) { toast('Webhook customizado não configurado', 'error'); return; }
-      body = {
-        phone: phoneWithDDI,
-        message: msgText,
-        bookingId: booking.id,
-        clientName: booking.clientName,
-        date: booking.date,
-        time: booking.time,
-        service: booking.serviceName || booking.service?.name
-      };
-    }
-
     try {
-      const response = await fetch(url, {
+      const response = await fetch('/api/whatsapp', {
         method: 'POST',
-        headers,
-        body: JSON.stringify(body)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gateway,
+          phone: phoneWithDDI,
+          message: msgText,
+          config: {
+            zApiInstanceId: settings.zApiInstanceId,
+            zApiToken: settings.zApiToken,
+            evolutionApiUrl: settings.evolutionApiUrl,
+            evolutionApiKey: settings.evolutionApiKey,
+            evolutionInstanceName: settings.evolutionInstanceName,
+            customWebhookUrl: settings.customWebhookUrl
+          },
+          extraData: {
+            bookingId: booking.id,
+            clientName: booking.clientName,
+            date: booking.date,
+            time: booking.time,
+            service: booking.serviceName || booking.service?.name
+          }
+        })
       });
 
       if (response.ok) {
         toast('Mensagem de avaliação enviada com sucesso! 🚀', 'success');
       } else {
-        throw new Error('Erro na resposta do gateway');
+        throw new Error('Erro na resposta do gateway de WhatsApp');
       }
     } catch (err) {
       console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
-      const waUrl = `https://wa.me/${phoneWithDDI}?text=${encodeURIComponent(msgText)}`;
+      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
       window.open(waUrl, '_blank');
       toast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }

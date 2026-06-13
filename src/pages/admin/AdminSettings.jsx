@@ -522,11 +522,12 @@ const AdminSettings = () => {
                 <div className="form-group" style={{ maxWidth: 300 }}>
                   <label>Gateway de Disparo WhatsApp</label>
                   <select 
-                    value={settings.waReminderGateway || 'zapi'} 
+                    value={settings.waReminderGateway || 'none'} 
                     onChange={e => setSettings({ ...settings, waReminderGateway: e.target.value })}
                   >
-                    <option value="zapi">Z-API (Recomendado)</option>
-                    <option value="evolution">Evolution API (Open Source)</option>
+                    <option value="none">WhatsApp Direto (Sem API Gateway)</option>
+                    <option value="zapi">Z-API (Envio Automático)</option>
+                    <option value="evolution">Evolution API (Envio Automático)</option>
                     <option value="custom">Webhook Customizado</option>
                   </select>
                 </div>
