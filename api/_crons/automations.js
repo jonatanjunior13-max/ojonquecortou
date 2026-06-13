@@ -424,11 +424,46 @@ export default async function handler(req, res) {
       const profilesSnap = await getDocs(collection(db, 'client_profiles'));
       const launchTargets = [];
       
+      const profilePhones = [];
+      for (const docSnap of profilesSnap.docs) {
+        const p = docSnap.data();
+        if (p.phone) {
+          profilePhones.push(p.phone);
+        }
+      }
+
+      // Bulk query for recent bookings to avoid N+1 query issue for Client Profiles
+      const recentBookingsByProfilePhone = {};
+      const sixtyDaysAgo = new Date();
+      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+
+      for (let i = 0; i < profilePhones.length; i += 30) {
+        const chunk = profilePhones.slice(i, i + 30);
+        if (chunk.length === 0) break;
+        const chunkQ = query(collection(db, 'bookings'), where('clientPhone', 'in', chunk));
+        const chunkSnap = await getDocs(chunkQ);
+        for (const bDoc of chunkSnap.docs) {
+          const bd = bDoc.data();
+          if (bd.date && new Date(bd.date) >= sixtyDaysAgo && ['Concluído', 'Confirmado', 'finalizado'].includes(bd.status)) {
+            recentBookingsByProfilePhone[bd.clientPhone] = true;
+          }
+        }
+      }
+
       for (const docSnap of profilesSnap.docs) {
         const p = docSnap.data();
         if (p.unsubscribed === true) continue;
         if (!p.email || p.email === 'Não informado' || !p.email.includes('@')) continue;
-        // Todos os clientes qualificados (com ou sem histórico de visitas)
+
+        // Filter out clients with recent bookings efficiently via memory lookup
+        let hasRecent = false;
+        if (p.phone && recentBookingsByProfilePhone[p.phone]) {
+          hasRecent = true;
+        }
+
+        if (hasRecent) continue;
+
+        // Todos os clientes qualificados (sem visitas recentes)
         launchTargets.push(p);
       }
 
