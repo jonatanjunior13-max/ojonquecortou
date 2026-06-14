@@ -1,0 +1,29 @@
+{
+  "name": "aviso_horario_cancelado",
+  "category": "UTILITY",
+  "language": "pt_BR",
+  "components": [
+    {
+      "type": "BODY",
+      "text": "Olá, {{1}}.\nSeu horário no Studio do Jon em {{2}} foi cancelado por não comparecimento.\nPara remarcar, entre em contato diretamente pelo WhatsApp. Sua ficha permanece ativa por 48 horas.\nStudio do Jon — @ojonquecortou",
+      "example": {
+        "body_text": [
+          [
+            "Cliente",
+            "14/06/2026 às 16:00"
+          ]
+        ]
+      }
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        {
+          "type": "URL",
+          "text": "Remarcar agora",
+          "url": "https://wa.me/553135866673"
+        }
+      ]
+    }
+  ]
+}
