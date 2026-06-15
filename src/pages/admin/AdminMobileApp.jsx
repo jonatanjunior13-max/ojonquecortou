@@ -58,6 +58,37 @@ const slotInRange = (slot, start, end) => {
   return slot >= start && slot < end;
 };
 
+const isFeriado = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return false;
+  const mmdd = `${parts[1]}-${parts[2]}`;
+  
+  const fixedHolidays = [
+    '01-01', // Ano Novo
+    '04-21', // Tiradentes
+    '05-01', // Dia do Trabalho
+    '08-15', // Assunção de Nossa Senhora (BH)
+    '09-07', // Independência
+    '10-12', // Nossa Senhora Aparecida
+    '11-02', // Finados
+    '11-15', // Proclamação da República
+    '11-20', // Dia da Consciência Negra
+    '12-08', // Imaculada Conceição (BH)
+    '12-25', // Natal
+  ];
+  if (fixedHolidays.includes(mmdd)) return true;
+
+  const mobileHolidays = [
+    '2025-03-03', '2025-03-04', '2025-04-18', '2025-06-19',
+    '2026-02-16', '2026-02-17', '2026-04-03', '2026-06-04',
+    '2027-02-08', '2027-02-09', '2027-03-26', '2027-05-27'
+  ];
+  if (mobileHolidays.includes(dateStr)) return true;
+
+  return false;
+};
+
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
@@ -65,6 +96,12 @@ const isSlotBlocked = (prof, dateStr, slot) => {
   if (parts.length === 3) {
     const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     const weekday = dateObj.getDay();
+    
+    // Force Sundays (0) and Mondays (1) to be blocked
+    if (weekday === 0 || weekday === 1) return true;
+
+    // Force Holidays to be blocked
+    if (isFeriado(dateStr)) return true;
     
     // 1. Check day off
     if ((prof.daysOff || []).includes(weekday)) return true;
@@ -1448,6 +1485,11 @@ Grande abraço, Jon.`;
                 const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
                 const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
 
+                const dtForLabel = parseLocalDate(currentDate);
+                const isSunMon = (dtForLabel.getDay() === 0 || dtForLabel.getDay() === 1);
+                const isHolidayDay = isFeriado(currentDate);
+                const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
+
                 return (
                   <div key={slot} className="m-slot-row" onClick={() => {
                     if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
@@ -1482,7 +1524,7 @@ Grande abraço, Jon.`;
                             <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4 }}>
                               <Lock size={12} /> Bloqueado
                             </div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)' }}>Configurações de Escala</div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)' }}>{blockLabel}</div>
                           </div>
                           <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
                         </div>
