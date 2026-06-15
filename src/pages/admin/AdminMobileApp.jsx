@@ -91,11 +91,7 @@ const isFeriado = (dateStr) => {
 };
 
 const getAdjustedDay = (date) => {
-  const day = date.getDay();
-  if (date.getFullYear() === 2026) {
-    return (day + 6) % 7;
-  }
-  return day;
+  return date.getDay();
 };
 
 const isSlotBlocked = (prof, dateStr, slot) => {
@@ -236,6 +232,7 @@ export default function AdminMobileApp() {
   const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
   const [ebSuggestions, setEbSuggestions] = useState([]);
+  const [nbRegisterClient, setNbRegisterClient] = useState(false);
 
   // ── Block States ───────────────────────────────────────────────
   const [blockEndTime, setBlockEndTime] = useState('');
@@ -943,10 +940,47 @@ export default function AdminMobileApp() {
       return;
     }
 
-    // Look up client profile to find email
-    const cleanPhone = (nbForm.clientPhone || '').replace(/\D/g, '');
-    const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
-    const clientEmail = matchedClient?.email || '';
+    let clientEmail = '';
+
+    if (nbRegisterClient) {
+      if (!nbForm.clientPhone) {
+        showToast('Telefone é obrigatório para cadastrar o cliente', 'error');
+        return;
+      }
+      const cleanPhone = nbForm.clientPhone.replace(/\D/g, '');
+      const newClientData = {
+        name: nbForm.clientName,
+        phone: cleanPhone,
+        email: nbForm.clientEmail || 'Não informado',
+        curvatura: nbForm.clientCurvatura || '3A',
+        observacoes: nbForm.clientNotes || '',
+        createdAt: new Date().toISOString()
+      };
+      try {
+        if (db) {
+          const docRef = doc(db, 'client_profiles', cleanPhone);
+          await setDoc(docRef, newClientData);
+          setClients(prev => {
+            const list = prev.filter(c => c.phone !== cleanPhone);
+            return [{ id: cleanPhone, ...newClientData }, ...list];
+          });
+        } else {
+          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+          localClients.push(newClientData);
+          localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+          setClients(prev => [{ id: cleanPhone, ...newClientData }, ...prev]);
+        }
+        clientEmail = newClientData.email;
+        showToast('Cliente cadastrado com sucesso!', 'success');
+      } catch (err) {
+        showToast('Erro ao cadastrar cliente: ' + err.message, 'error');
+        return;
+      }
+    } else {
+      const cleanPhone = (nbForm.clientPhone || '').replace(/\D/g, '');
+      const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+      clientEmail = matchedClient?.email || '';
+    }
 
     const data = {
       clientName: nbForm.clientName,
@@ -991,8 +1025,12 @@ export default function AdminMobileApp() {
           await addDoc(collection(db, 'financial_transactions'), tx);
           setTransactions(prev => [{ id: Date.now().toString(), ...tx }, ...prev]);
         }
+      } else {
+        const fakeId = 'demo-bk-' + Date.now();
+        setBookings(prev => [...prev, { id: fakeId, ...data }]);
       }
       setShowNewBookingSheet(false);
+      setNbRegisterClient(false);
       setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
       setTab('hoje');
       showToast('Agendamento criado!', 'success');
@@ -1889,9 +1927,26 @@ Grande abraço, Jon.`;
         {/* Aniversariantes */}
         {birthdays.length > 0 && (
           <div style={{ background:'var(--m-gold-subtle)', border:'0.5px solid var(--m-gold)', borderRadius:'var(--m-radius)', padding:'12px 14px' }}>
-            <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:6 }}>🎂 Aniversariante{birthdays.length > 1 ? 's':''} Hoje</div>
+            <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>🎂 Aniversariante{birthdays.length > 1 ? 's':''} Hoje</div>
             {birthdays.map(c => (
-              <div key={c.id} style={{ fontSize:'0.85rem', color:'var(--m-text)', fontWeight:700 }}>{c.name}</div>
+              <button
+                key={c.id}
+                onClick={() => { setBirthdayClient(c); setShowBirthdaySheet(true); }}
+                style={{
+                  display:'flex', alignItems:'center', justifyContent:'space-between',
+                  width:'100%', background:'none', border:'none', padding:'6px 0',
+                  cursor:'pointer', fontFamily:'inherit', borderBottom: birthdays.indexOf(c) < birthdays.length - 1 ? '0.5px solid var(--m-rule)' : 'none'
+                }}
+              >
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontSize:'1.1rem' }}>🎉</span>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-text)', fontWeight:700 }}>{c.name}</span>
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                  {c.phone && <span style={{ fontSize:'0.68rem', color:'var(--m-muted)' }}>{c.phone}</span>}
+                  <span style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', background:'rgba(220,163,84,0.15)', borderRadius:8, padding:'3px 8px' }}>Parabenizar →</span>
+                </div>
+              </button>
             ))}
           </div>
         )}
@@ -3400,6 +3455,36 @@ Grande abraço, Jon.`;
               <label className="m-label">Telefone</label>
               <input className="m-input" type="tel" placeholder="(31) 99999-9999" value={nbForm.clientPhone} onChange={e => setNbForm(p => ({ ...p, clientPhone: e.target.value }))}/>
             </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '12px 0 16px 0' }}>
+              <input 
+                type="checkbox" 
+                id="nbRegisterClient"
+                checked={nbRegisterClient} 
+                onChange={e => setNbRegisterClient(e.target.checked)} 
+                style={{ width: '16px', height: '16px' }}
+              />
+              <label htmlFor="nbRegisterClient" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--m-text)' }}>
+                Cadastrar cliente no sistema
+              </label>
+            </div>
+            {nbRegisterClient && (
+              <div style={{ padding: '12px', background: 'var(--m-card-border)', borderRadius: 'var(--m-radius-sm)', marginBottom: '16px', border: '0.5px solid var(--m-rule)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div className="m-field" style={{ margin: 0 }}>
+                  <label className="m-label">E-mail</label>
+                  <input className="m-input" type="email" placeholder="email@exemplo.com" value={nbForm.clientEmail || ''} onChange={e => setNbForm(p => ({ ...p, clientEmail: e.target.value }))}/>
+                </div>
+                <div className="m-field" style={{ margin: 0 }}>
+                  <label className="m-label">Tipo de Cacho</label>
+                  <select className="m-select" value={nbForm.clientCurvatura || '3A'} onChange={e => setNbForm(p => ({ ...p, clientCurvatura: e.target.value }))}>
+                    {CURL_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div className="m-field" style={{ margin: 0 }}>
+                  <label className="m-label">Observações do Cliente</label>
+                  <textarea className="m-textarea" rows={2} placeholder="Informações adicionais do cliente..." value={nbForm.clientNotes || ''} onChange={e => setNbForm(p => ({ ...p, clientNotes: e.target.value }))}/>
+                </div>
+              </div>
+            )}
             <div className="m-field">
               <label className="m-label">Serviço *</label>
               <select className="m-select" value={nbForm.serviceName} onChange={e => {

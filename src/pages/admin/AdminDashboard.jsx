@@ -86,11 +86,7 @@ const isFeriado = (dateStr) => {
 };
 
 const getAdjustedDay = (date) => {
-  const day = date.getDay();
-  if (date.getFullYear() === 2026) {
-    return (day + 6) % 7;
-  }
-  return day;
+  return date.getDay();
 };
 
 const isSlotBlocked = (prof, dateStr, slot) => {
