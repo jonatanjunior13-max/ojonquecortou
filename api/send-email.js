@@ -929,7 +929,7 @@ export default async function handler(req, res) {
     case 'agendamento_falta': {
       emailSubject = 'Seu horário no Studio do Jon foi cancelado';
       const formattedDateTime = `${formatApptDate(data.date, data.time)} às ${data.time}`;
-      const waText = encodeURIComponent(`Olá Jon, meu agendamento previsto para ${formattedDateTime} foi cancelado por ausência e gostaria de remarcar dentro do prazo de 48 horas.`);
+      const waText = encodeURIComponent(`Olá Jon, meu agendamento previsto para ${formattedDateTime} foi cancelado por ausência e gostaria de remarcar com sinal de 50%.`);
       const waLink = `https://wa.me/553135866673?text=${waText}`;
 
       emailContent = `
@@ -939,6 +939,8 @@ export default async function handler(req, res) {
         <p class="lead">Olá, ${firstName}.</p>
         
         <p class="lead" style="margin-top:-20px;">Seu agendamento previsto para <strong>${formattedDateTime}</strong> foi cancelado automaticamente por não comparecimento.</p>
+        
+        <p class="lead" style="margin-top:-20px;">Como você não compareceu e não justificou a tempo, para realizar um próximo agendamento online ou pelo WhatsApp, será necessário o pagamento de um <strong>sinal de 50% de entrada</strong>.</p>
         
         <p class="lead" style="margin-top:-20px;">Sua ficha continua ativa no nosso sistema por <strong>48 horas</strong>. Após esse prazo, a vaga entra para a fila normal de espera.</p>
         

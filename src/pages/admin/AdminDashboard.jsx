@@ -781,8 +781,13 @@ const AdminDashboard = () => {
         }
       } else {
         const apptRef = doc(db, 'bookings', bookingId);
-        await updateDoc(apptRef, { status: newStatus });
-        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status: newStatus } : b));
+        const updatePayload = { status: newStatus };
+        if (newStatus === 'faltou') {
+          updatePayload.missedAt = new Date().toISOString();
+          updatePayload.missedEmailSent = false;
+        }
+        await updateDoc(apptRef, updatePayload);
+        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, ...updatePayload } : b));
         syncBookingToGoogle(bookingId).catch(err => console.warn('Error syncing status:', err));
         setSelectedBooking(null);
 
@@ -837,8 +842,6 @@ const AdminDashboard = () => {
           await triggerEmailNotification({ ...bookingWithEmail, type: 'horario_confirmado' }, 'horario_confirmado');
         } else if (newStatus === 'cancelado') {
           await triggerEmailNotification({ ...bookingWithEmail, type: 'agendamento_cancelado', cancelledBy: 'admin' }, 'agendamento_cancelado');
-        } else if (newStatus === 'faltou') {
-          await triggerEmailNotification({ ...bookingWithEmail, type: 'agendamento_falta' }, 'agendamento_falta');
         }
       }
 

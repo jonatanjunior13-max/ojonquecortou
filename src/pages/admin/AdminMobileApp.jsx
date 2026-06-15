@@ -1209,8 +1209,31 @@ Grande abraço, Jon.`;
         emailToUse = matchedClient?.email || '';
       }
 
-      if (db) await updateDoc(doc(db, 'bookings', bookingId), { status });
-      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, status } : b));
+      const dataToUpdate = { status };
+      if (status === 'faltou') {
+        dataToUpdate.missedAt = new Date().toISOString();
+        dataToUpdate.missedEmailSent = false;
+
+        const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
+        if (cleanPhone) {
+          try {
+            if (db) {
+              const clientRef = doc(db, 'client_profiles', cleanPhone);
+              await updateDoc(clientRef, { blocked: true });
+            } else {
+              const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+              const updatedClients = localClients.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c);
+              localStorage.setItem('demo_client_profiles', JSON.stringify(updatedClients));
+            }
+            setClients(prev => prev.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c));
+          } catch (err) {
+            console.warn('Erro ao bloquear cliente:', err);
+          }
+        }
+      }
+
+      if (db) await updateDoc(doc(db, 'bookings', bookingId), dataToUpdate);
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, ...dataToUpdate } : b));
       setShowBookingSheet(false);
       if (status === 'cancelado') setTab('hoje');
       showToast(`Status atualizado: ${status}`, 'success');
@@ -1221,8 +1244,6 @@ Grande abraço, Jon.`;
           triggerEmailNotification(updatedBooking, 'horario_confirmado');
         } else if (status === 'cancelado') {
           triggerEmailNotification({ ...updatedBooking, cancelledBy: 'admin' }, 'agendamento_cancelado');
-        } else if (status === 'faltou') {
-          triggerEmailNotification(updatedBooking, 'agendamento_falta');
         }
       }
     } catch (err) {
@@ -2966,6 +2987,16 @@ Grande abraço, Jon.`;
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
+              {b.status !== 'cancelado' && b.status !== 'finalizado' && b.status !== 'faltou' && (
+                <button className="m-action-btn" onClick={() => changeStatus(b.id, 'faltou')} style={{ marginBottom: 8 }}>
+                  <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><X size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Cliente Faltou</div>
+                    <div className="m-action-btn-sub">Marca como falta e bloqueia para agendamento online</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
               {b.status !== 'cancelado' && b.status !== 'finalizado' && (
                 <button className="m-action-btn" onClick={() => changeStatus(b.id, 'cancelado')}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-red-bg)', color:'var(--m-red)' }}><X size={16}/></div>
@@ -3658,7 +3689,7 @@ Grande abraço, Jon.`;
             </div>
 
             {/* Actions */}
-            <div style={{ display:'flex', gap:8 }}>
+            <div style={{ display:'flex', gap:8, marginBottom: 12 }}>
               {c.phone && (
                 <button className="m-btn m-btn-ghost" style={{ flex:1 }} onClick={() => window.open(`https://wa.me/55${c.phone.replace(/\D/g,'')}`)}>
                   <MessageSquare size={14}/> WhatsApp
@@ -3668,6 +3699,17 @@ Grande abraço, Jon.`;
                 <Plus size={14}/> Agendar
               </button>
             </div>
+            {visits.some(v => v.status === 'confirmado' || v.status === 'pendente') && (
+              <button className="m-btn" style={{ width: '100%', background: 'rgba(235,94,85,0.12)', color: 'var(--m-red)', border: 'none', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }} onClick={async () => {
+                const latestActive = visits.find(v => v.status === 'confirmado' || v.status === 'pendente');
+                if (latestActive && window.confirm(`Deseja marcar o agendamento de ${fmtDate(latestActive.date)} às ${latestActive.time} como Falta?`)) {
+                  await changeStatus(latestActive.id, 'faltou');
+                  showToast('Falta registrada!', 'success');
+                }
+              }}>
+                <X size={14}/> Cliente Faltou
+              </button>
+            )}
 
             {/* Visit history */}
             <div>
