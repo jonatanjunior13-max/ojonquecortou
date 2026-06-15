@@ -926,47 +926,38 @@ export default async function handler(req, res) {
       }
       break;
 
-    case 'agendamento_falta':
-      emailSubject = `${firstName}, sentimos sua falta — e o seu horário também`;
+    case 'agendamento_falta': {
+      emailSubject = 'Seu horário no Studio do Jon foi cancelado';
+      const formattedDateTime = `${formatApptDate(data.date, data.time)} às ${data.time}`;
+      const waText = encodeURIComponent(`Olá Jon, meu agendamento previsto para ${formattedDateTime} foi cancelado por ausência e gostaria de remarcar dentro do prazo de 48 horas.`);
+      const waLink = `https://wa.me/553135866673?text=${waText}`;
+
       emailContent = `
-        <div class="eyebrow" style="color: #c97b49;">Ausência</div>
-        <h1 class="display-title">Sentimos sua falta, <span>${firstName}.</span></h1>
+        <div class="eyebrow" style="color: #c97b49;">Cancelamento</div>
+        <h1 class="display-title">Horário cancelado, <span>${firstName}.</span></h1>
         
-        <p class="lead">Oi, ${firstName},</p>
+        <p class="lead">Olá, ${firstName}.</p>
         
-        <p class="lead" style="margin-top:-25px;">Você tinha um horário reservado comigo no dia ${formatApptDate(data.date, data.time)} às ${data.time} e não conseguiu vir. Acontece — imprevisto faz parte da vida e tá tudo bem.</p>
+        <p class="lead" style="margin-top:-20px;">Seu agendamento previsto para <strong>${formattedDateTime}</strong> foi cancelado automaticamente por não comparecimento.</p>
         
-        <p class="lead" style="margin-top:-20px;">Mas preciso te contar o que acontece do lado de cá quando isso rola: aquela 1h30 era sua. Separada, bloqueada, com outra pessoa querendo o mesmo horário e ouvindo "não tenho vaga". Quando a cadeira fica vazia, alguém que precisava ser atendida ficou sem — e o studio parado.</p>
+        <p class="lead" style="margin-top:-20px;">Sua ficha continua ativa no nosso sistema por <strong>48 horas</strong>. Após esse prazo, a vaga entra para a fila normal de espera.</p>
         
-        <p class="lead" style="margin-top:-20px;">Por isso, para fazer um novo agendamento, vou te pedir um sinal de <strong>R$ 95 (metade do valor do corte)</strong>.</p>
-        
-        <p class="lead" style="margin-top:-20px;">Antes que pareça cobrança a mais: não é. Esse valor abate integralmente do seu serviço no dia. Você não paga nada além do corte — só garante de verdade o horário que é seu. Sinal pago, cadeira reservada, e a gente se vê.</p>
-        
-        <p class="lead" style="margin-top:-20px;">E se precisar remarcar, sem problema: avisando com até 24h de antecedência, o sinal vale para o novo horário.</p>
-        
-        <div class="appt-card" style="border-color: #c97b49; padding: 20px; background-color: #FAF5E8; border-style: dashed; margin-bottom: 25px;">
-          <div class="label" style="color: #c97b49; font-weight: 600; font-size: 11px; margin-bottom: 8px;">Aviso Importante</div>
-          <p style="font-size: 13px; line-height: 1.6; margin: 0; color: #6B5A4B;">
-            Como seu perfil foi temporariamente bloqueado para agendamentos automáticos pelo sistema, seus próximos agendamentos devem ser solicitados <strong>exclusivamente pelo WhatsApp</strong>.
-          </p>
-        </div>
+        <p class="lead" style="margin-top:-20px;">Para remarcar dentro do prazo:</p>
         
         <div style="text-align: center; margin: 30px 0;">
-          <a href="https://wa.me/553135866673?text=Ol%C3%A1%20Jon%2C%20gostaria%20de%20fazer%20um%20novo%20agendamento." target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: bold;">Garantir meu horário via WhatsApp</a>
+          <a href="${waLink}" target="_blank" class="btn" style="display: inline-block; border: 2px solid #C97B49; color: #C97B49; text-decoration: none; padding: 12px 24px; border-radius: 4px; font-size: 14px; font-weight: bold;">👉 Remarcar no WhatsApp</a>
         </div>
         
-        <p class="lead" style="margin-top:20px;">Seu cabelo continua merecendo ser lido antes de ser cortado. Te espero.</p>
-        
-        <div class="signoff" style="margin-top: 35px; border-top: 1px solid rgba(26, 19, 16, 0.08); padding-top: 20px;">
-          <div class="sig-name" style="font-size: 20px; font-family: Georgia, serif; font-style: italic; color: #1A1310; margin-bottom: 4px;">Jon,</div>
+        <div class="signoff" style="margin-top: 35px; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 20px;">
+          <div class="sig-name" style="font-size: 20px; font-family: Georgia, serif; font-style: italic; color: #FAF5E8; margin-bottom: 4px;">Studio do Jon</div>
           <div class="sig-meta" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #8A7866; line-height: 1.5;">
-            <div>STUDIO DO JON</div>
-            <div style="text-transform: none; letter-spacing: normal;">Especialista em cabelos ondulados, cacheados e crespos</div>
-            <div style="text-transform: none; letter-spacing: normal;">Rua Francisco Ovídio, 184 — Caiçara, BH · @ojonquecortou</div>
+            <div>Belo Horizonte</div>
+            <div>@ojonquecortou</div>
           </div>
         </div>
       `;
       break;
+    }
 
     case 'agendamento_editado': {
       const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
@@ -1074,7 +1065,7 @@ export default async function handler(req, res) {
   // Se for uma campanha manual customizada (htmlBody fornecido já vem com tags próprias se quiser, 
   // mas aqui vamos sempre envelopar no wrapper para garantir a estética da marca, exceto se type for 'campanha_raw')
   
-  const isTypeDark = ['horario_confirmado', 'reativacao_5_meses', 'agendamento_cancelado', 'agendamento_editado'].includes(type);
+  const isTypeDark = ['horario_confirmado', 'reativacao_5_meses', 'agendamento_cancelado', 'agendamento_editado', 'agendamento_falta'].includes(type);
   let finalHtml = currentType === 'campanha_raw' ? (emailContent || '') : (currentType === 'campanha' ? getStandaloneWrapper(emailSubject, emailContent || '') : getEmailWrapper(emailSubject, emailContent || '', isTypeDark));
   
   const isDark = (finalHtml || '').includes('#050505') || (finalHtml || '').includes('#0A0A0A');
