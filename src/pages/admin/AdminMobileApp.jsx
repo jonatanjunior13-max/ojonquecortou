@@ -241,6 +241,14 @@ export default function AdminMobileApp() {
   const [blockMotive, setBlockMotive] = useState('');
   const [isBlockingRange, setIsBlockingRange] = useState(false);
 
+  // -- Mobile Options Block states --
+  const [mBlockWeekday, setMBlockWeekday] = useState('1');
+  const [mBlockWeekdayStart, setMBlockWeekdayStart] = useState('08:00');
+  const [mBlockWeekdayEnd, setMBlockWeekdayEnd] = useState('19:00');
+  const [mBlockSpecificDate, setMBlockSpecificDate] = useState('');
+  const [mBlockSpecificStart, setMBlockSpecificStart] = useState('08:00');
+  const [mBlockSpecificEnd, setMBlockSpecificEnd] = useState('19:00');
+
   // ── Gallery ────────────────────────────────────────────────────
   const [galleryCategory, setGalleryCategory] = useState('Todos');
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -1293,6 +1301,132 @@ Grande abraço, Jon.`;
     }
   };
 
+  const addRecurringBlock = async () => {
+    if (mBlockWeekdayStart >= mBlockWeekdayEnd) {
+      showToast('Horário de fim deve ser após o início', 'error');
+      return;
+    }
+    const blockStr = `${mBlockWeekday}-${mBlockWeekdayStart}-${mBlockWeekdayEnd}`;
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const current = jonProf.blockedWeekdayHours || [];
+    if (current.includes(blockStr)) {
+      showToast('Este bloqueio já existe', 'error');
+      return;
+    }
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedWeekdayHours: [...current, blockStr]
+        };
+      }
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio recorrente adicionado!', 'success');
+      }
+    } catch (err) {
+      showToast('Erro ao salvar: ' + err.message, 'error');
+    }
+  };
+
+  const removeRecurringBlock = async (blockStr) => {
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedWeekdayHours: (p.blockedWeekdayHours || []).filter(x => x !== blockStr)
+        };
+      }
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio recorrente removido', 'success');
+      }
+    } catch (err) {
+      showToast('Erro ao remover: ' + err.message, 'error');
+    }
+  };
+
+  const addSpecificBlock = async () => {
+    if (!mBlockSpecificDate) {
+      showToast('Selecione uma data', 'error');
+      return;
+    }
+    if (mBlockSpecificStart >= mBlockSpecificEnd) {
+      showToast('Horário de fim deve ser após o início', 'error');
+      return;
+    }
+    const blockStr = `${mBlockSpecificDate}-${mBlockSpecificStart}-${mBlockSpecificEnd}`;
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const current = jonProf.blockedSpecificHours || [];
+    if (current.includes(blockStr)) {
+      showToast('Este bloqueio já existe', 'error');
+      return;
+    }
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedSpecificHours: [...current, blockStr]
+        };
+      }
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio pontual adicionado!', 'success');
+      }
+    } catch (err) {
+      showToast('Erro ao salvar: ' + err.message, 'error');
+    }
+  };
+
+  const removeSpecificBlock = async (blockStr) => {
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedSpecificHours: (p.blockedSpecificHours || []).filter(x => x !== blockStr)
+        };
+      }
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio pontual removido', 'success');
+      }
+    } catch (err) {
+      showToast('Erro ao remover: ' + err.message, 'error');
+    }
+  };
+
   // ── Loading screen ─────────────────────────────────────────────
   if (loading || !authReady) {
     return (
@@ -1985,6 +2119,154 @@ Grande abraço, Jon.`;
                 <span className="m-info-value">{item.val}</span>
               </div>
             ))}
+          </div>
+
+          {/* Recurring Blocks */}
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Bloqueios Recorrentes (Semanais)</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:16 }}>
+              <div style={{ display:'flex', gap:8 }}>
+                <select 
+                  value={mBlockWeekday} 
+                  onChange={e => setMBlockWeekday(e.target.value)}
+                  style={{ flex:1.5, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                >
+                  <option value="0">Domingo</option>
+                  <option value="1">Segunda</option>
+                  <option value="2">Terça</option>
+                  <option value="3">Quarta</option>
+                  <option value="4">Quinta</option>
+                  <option value="5">Sexta</option>
+                  <option value="6">Sábado</option>
+                </select>
+                <select 
+                  value={mBlockWeekdayStart} 
+                  onChange={e => setMBlockWeekdayStart(e.target.value)}
+                  style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                >
+                  {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <span style={{ alignSelf:'center', fontSize:'0.75rem', color:'var(--m-muted)' }}>às</span>
+                <select 
+                  value={mBlockWeekdayEnd} 
+                  onChange={e => setMBlockWeekdayEnd(e.target.value)}
+                  style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                >
+                  {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <button 
+                className="m-btn" 
+                style={{ width:'100%', background:'var(--m-gold)', color:'#000', fontWeight:700, padding:'8px 0', fontSize:'0.8rem', borderRadius:8 }} 
+                onClick={addRecurringBlock}
+              >
+                Bloquear Horário
+              </button>
+            </div>
+            
+            {/* List */}
+            <div style={{ display:'flex', flexDirection:'column', gap:8, maxHeight:180, overflowY:'auto' }}>
+              {(() => {
+                const profs = settings.professionals || [];
+                const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+                const list = jonProf?.blockedWeekdayHours || [];
+                if (list.length === 0) {
+                  return <div style={{ fontSize:'0.75rem', color:'var(--m-muted)', textAlign:'center', padding:'10px 0' }}>Nenhum bloqueio recorrente configurado.</div>;
+                }
+                const DAYS_NAMES = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+                // Sort by day then by time
+                const sorted = [...list].sort((a, b) => a.localeCompare(b));
+                return sorted.map(item => {
+                  const parts = item.split('-');
+                  const weekday = DAYS_NAMES[Number(parts[0])];
+                  const start = parts[1];
+                  const end = parts[2] || parts[1];
+                  return (
+                    <div key={item} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', background:'var(--m-bg)', padding:'8px 12px', borderRadius:8, border:'0.5px solid var(--m-rule)' }}>
+                      <span style={{ fontSize:'0.8rem', fontWeight:600 }}>{weekday} · {start} às {end}</span>
+                      <button 
+                        onClick={() => removeRecurringBlock(item)} 
+                        style={{ background:'none', border:'none', color:'var(--m-red)', cursor:'pointer', fontWeight:700, fontSize:'0.8rem' }}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+
+          {/* Specific Blocks */}
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Bloqueios Pontuais (Data/Hora)</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:16 }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <input 
+                  type="date" 
+                  value={mBlockSpecificDate}
+                  onChange={e => setMBlockSpecificDate(e.target.value)}
+                  style={{ width:'100%', background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem', boxSizing:'border-box' }}
+                />
+                <div style={{ display:'flex', gap:8 }}>
+                  <select 
+                    value={mBlockSpecificStart} 
+                    onChange={e => setMBlockSpecificStart(e.target.value)}
+                    style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                  >
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <span style={{ alignSelf:'center', fontSize:'0.75rem', color:'var(--m-muted)' }}>às</span>
+                  <select 
+                    value={mBlockSpecificEnd} 
+                    onChange={e => setMBlockSpecificEnd(e.target.value)}
+                    style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                  >
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+              <button 
+                className="m-btn" 
+                style={{ width:'100%', background:'var(--m-gold)', color:'#000', fontWeight:700, padding:'8px 0', fontSize:'0.8rem', borderRadius:8 }} 
+                onClick={addSpecificBlock}
+              >
+                Bloquear Horário
+              </button>
+            </div>
+            
+            {/* List */}
+            <div style={{ display:'flex', flexDirection:'column', gap:8, maxHeight:180, overflowY:'auto' }}>
+              {(() => {
+                const profs = settings.professionals || [];
+                const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+                const list = jonProf?.blockedSpecificHours || [];
+                if (list.length === 0) {
+                  return <div style={{ fontSize:'0.75rem', color:'var(--m-muted)', textAlign:'center', padding:'10px 0' }}>Nenhum bloqueio pontual configurado.</div>;
+                }
+                const sorted = [...list].sort((a, b) => a.localeCompare(b));
+                return sorted.map(item => {
+                  // format: YYYY-MM-DD-HH:MM-HH:MM
+                  const datePart = item.substring(0, 10);
+                  const rest = item.substring(11);
+                  const restParts = rest.split('-');
+                  const start = restParts[0];
+                  const end = restParts[1] || restParts[0];
+                  const formattedD = datePart.split('-').reverse().join('/');
+                  return (
+                    <div key={item} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', background:'var(--m-bg)', padding:'8px 12px', borderRadius:8, border:'0.5px solid var(--m-rule)' }}>
+                      <span style={{ fontSize:'0.8rem', fontWeight:600 }}>{formattedD} · {start} às {end}</span>
+                      <button 
+                        onClick={() => removeSpecificBlock(item)} 
+                        style={{ background:'none', border:'none', color:'var(--m-red)', cursor:'pointer', fontWeight:700, fontSize:'0.8rem' }}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
           </div>
 
           <button className="m-btn m-btn-outline" onClick={() => window.open('https://www.ojonquecortou.com.br/admin/configuracoes', '_blank')}>
