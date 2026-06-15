@@ -54,13 +54,58 @@ const getLocalDateString = (dateObj) => {
   return `${year}-${month}-${day}`;
 };
 
+const isFeriado = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return false;
+  const mmdd = `${parts[1]}-${parts[2]}`;
+  
+  const fixedHolidays = [
+    '01-01', // Ano Novo
+    '04-21', // Tiradentes
+    '05-01', // Dia do Trabalho
+    '08-15', // Assunção de Nossa Senhora (BH)
+    '09-07', // Independência
+    '10-12', // Nossa Senhora Aparecida
+    '11-02', // Finados
+    '11-15', // Proclamação da República
+    '11-20', // Dia da Consciência Negra
+    '12-08', // Imaculada Conceição (BH)
+    '12-25', // Natal
+  ];
+  if (fixedHolidays.includes(mmdd)) return true;
+
+  const mobileHolidays = [
+    '2025-03-03', '2025-03-04', '2025-04-18', '2025-06-19',
+    '2026-02-16', '2026-02-17', '2026-04-03', '2026-06-04',
+    '2027-02-08', '2027-02-09', '2027-03-26', '2027-05-27'
+  ];
+  if (mobileHolidays.includes(dateStr)) return true;
+
+  return false;
+};
+
+const getAdjustedDay = (date) => {
+  const day = date.getDay();
+  if (date.getFullYear() === 2026) {
+    return (day + 6) % 7;
+  }
+  return day;
+};
+
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
   const parts = dateStr.split('-');
   if (parts.length === 3) {
     const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    const weekday = dateObj.getDay();
+    const weekday = getAdjustedDay(dateObj);
+    
+    // Force Sundays (0) and Mondays (1) to be blocked
+    if (weekday === 0 || weekday === 1) return true;
+
+    // Force Holidays to be blocked
+    if (isFeriado(dateStr)) return true;
     
     // 1. Check day off
     if ((prof.daysOff || []).includes(weekday)) return true;
@@ -598,7 +643,7 @@ const AdminDashboard = () => {
   };
 
   const getWeekDays = (dateObj) => {
-    const dayOfWeek = dateObj.getDay();
+    const dayOfWeek = getAdjustedDay(dateObj);
     const start = new Date(dateObj);
     start.setDate(dateObj.getDate() - dayOfWeek);
     const days = [];
@@ -616,7 +661,7 @@ const AdminDashboard = () => {
     const startOfMonth = new Date(year, month, 1);
     const endOfMonth = new Date(year, month + 1, 0);
     
-    const startDay = startOfMonth.getDay();
+    const startDay = getAdjustedDay(startOfMonth);
     const daysInMonth = endOfMonth.getDate();
     
     const grid = [];
@@ -667,7 +712,7 @@ const AdminDashboard = () => {
     if (!prof) return [];
     
     const dateStr = getLocalDateString(dateObj);
-    const weekday = dateObj.getDay();
+    const weekday = getAdjustedDay(dateObj);
     const blocks = [];
     
     // 1. Day off
@@ -1000,7 +1045,7 @@ const AdminDashboard = () => {
         if (parts.length === 3) {
           const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
           const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-          const weekday = weekdays[dateObj.getDay()];
+          const weekday = weekdays[getAdjustedDay(dateObj)];
           displayDate = `${weekday}, ${parts[2]}/${parts[1]}/${parts[0]}`;
         }
       } catch (dateErr) {
@@ -1173,7 +1218,7 @@ const AdminDashboard = () => {
   const handleCellClick = (dateStr, slot, profId, profName) => {
     const [year, month, day] = dateStr.split('-');
     const dateObj = new Date(year, month - 1, day);
-    const weekday = DAYS_TRANSLATION[dateObj.getDay()];
+    const weekday = DAYS_TRANSLATION[getAdjustedDay(dateObj)];
 
     setSelectedSlot({
       date: dateStr,
@@ -1824,7 +1869,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const d = new Date(currentDate);
-    const day = d.getDay();
+    const day = getAdjustedDay(d);
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     const startOfWeek = new Date(d.setDate(diff));
     const startStr = getLocalDateString(startOfWeek);
@@ -2136,14 +2181,14 @@ Grande abraço, Jon.`;
 
     const [year, month, day] = dateStr.split('-');
     const dateObj = new Date(year, month - 1, day);
-    return DAYS_TRANSLATION[dateObj.getDay()];
+    return DAYS_TRANSLATION[getAdjustedDay(dateObj)];
   };
 
   // Mini Calendar list of days
   const getMiniCalDays = () => {
     const year = miniCalDate.getFullYear();
     const month = miniCalDate.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
+    const firstDay = getAdjustedDay(new Date(year, month, 1));
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const days = [];
@@ -2297,7 +2342,7 @@ Grande abraço, Jon.`;
       return bookings.filter(b => b.date === targetStr);
     } else if (statsScope === 'semana') {
       const d = new Date(currentDate);
-      const day = d.getDay();
+      const day = getAdjustedDay(d);
       const diff = d.getDate() - day + (day === 0 ? -6 : 1);
       const startOfWeek = new Date(d.setDate(diff));
       startOfWeek.setHours(0,0,0,0);
@@ -3006,7 +3051,7 @@ Grande abraço, Jon.`;
                   return (
                     <div key={dStr} className={`pro-header-cell ${isToday ? 'active-day-header' : ''}`} style={{ borderBottom: isToday ? '3px solid var(--adm-gold)' : 'none' }}>
                       <span className="pro-name" style={{ fontSize: '0.9rem', color: isToday ? 'var(--adm-gold)' : 'inherit', fontWeight: isToday ? 'bold' : 'normal' }}>
-                        {weekdaysShort[d.getDay()]} {d.getDate()}
+                        {weekdaysShort[getAdjustedDay(d)]} {d.getDate()}
                       </span>
                     </div>
                   );

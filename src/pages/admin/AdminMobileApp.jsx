@@ -89,13 +89,21 @@ const isFeriado = (dateStr) => {
   return false;
 };
 
+const getAdjustedDay = (date) => {
+  const day = date.getDay();
+  if (date.getFullYear() === 2026) {
+    return (day + 6) % 7;
+  }
+  return day;
+};
+
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
   const parts = dateStr.split('-');
   if (parts.length === 3) {
     const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    const weekday = dateObj.getDay();
+    const weekday = getAdjustedDay(dateObj);
     
     // Force Sundays (0) and Mondays (1) to be blocked
     if (weekday === 0 || weekday === 1) return true;
@@ -413,15 +421,14 @@ export default function AdminMobileApp() {
 
   const pendingCount = bookings.filter(b => b.status === 'pendente').length;
 
-  // ── Week Strip ─────────────────────────────────────────────────
   const getWeekDays = (centerDate) => {
     const d = parseLocalDate(centerDate);
-    const day = d.getDay();
-    const monday = new Date(d);
-    monday.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
+    const day = getAdjustedDay(d);
+    const sunday = new Date(d);
+    sunday.setDate(d.getDate() - day);
     return Array.from({ length: 7 }, (_, i) => {
-      const wd = new Date(monday);
-      wd.setDate(monday.getDate() + i);
+      const wd = new Date(sunday);
+      wd.setDate(sunday.getDate() + i);
       return dateStr(wd);
     });
   };
@@ -1413,7 +1420,7 @@ Grande abraço, Jon.`;
         <div className="m-week-strip">
           {weekDays.map(d => {
             const dt = parseLocalDate(d);
-            const dayIdx = dt.getDay();
+            const dayIdx = getAdjustedDay(dt);
             const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
             return (
               <button key={d} className={`m-week-day ${d === currentDate ? 'active' : ''} ${hasBk ? 'has-bookings' : ''}`} onClick={() => setCurrentDate(d)}>
@@ -1491,7 +1498,7 @@ Grande abraço, Jon.`;
                 const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
 
                 const dtForLabel = parseLocalDate(currentDate);
-                const isSunMon = (dtForLabel.getDay() === 0 || dtForLabel.getDay() === 1);
+                const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
                 const isHolidayDay = isFeriado(currentDate);
                 const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
 

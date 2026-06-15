@@ -17,6 +17,14 @@ import { syncBookingToGoogle } from '../utils/gcalSync';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
 
+const getAdjustedDay = (date) => {
+  const day = date.getDay();
+  if (date.getFullYear() === 2026) {
+    return (day + 6) % 7;
+  }
+  return day;
+};
+
 // Helper: gera datas disponíveis para agendamento (próximos 60 dias, respeitando folgas e bloqueios)
 const getAvailableDates = (prof) => {
   const dates = [];
@@ -29,7 +37,7 @@ const getAvailableDates = (prof) => {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
     
-    const dayOfWeek = nextDate.getDay();
+    const dayOfWeek = getAdjustedDay(nextDate);
     const year = nextDate.getFullYear();
     const month = String(nextDate.getMonth() + 1).padStart(2, '0');
     const day = String(nextDate.getDate()).padStart(2, '0');
@@ -40,7 +48,8 @@ const getAvailableDates = (prof) => {
     
     if (!isDayOff && !isBlocked) {
       const monday = new Date(nextDate);
-      const diff = nextDate.getDay() === 0 ? -6 : 1 - nextDate.getDay();
+      const nextDateAdj = getAdjustedDay(nextDate);
+      const diff = nextDateAdj === 0 ? -6 : 1 - nextDateAdj;
       monday.setDate(nextDate.getDate() + diff);
       
       const mYear = monday.getFullYear();
@@ -48,13 +57,20 @@ const getAvailableDates = (prof) => {
       const mDay = String(monday.getDate()).padStart(2, '0');
       const weekKey = `${mYear}-${mMonth}-${mDay}`;
       
+      // Since toLocaleDateString might display the real (non-adjusted) day name, let's build the formatting using adjusted day names for 2026.
+      const DAYS_SHORT = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+      const MONTHS_SHORT = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+      const adjDayName = DAYS_SHORT[dayOfWeek];
+      const monthName = MONTHS_SHORT[nextDate.getMonth()];
+      const formattedDate = `${adjDayName}, ${day} de ${monthName}`;
+
       let weekLabel = monday.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
       weekLabel = `Semana de ${weekLabel.replace('.', '')}`;
  
       dates.push({
         raw: dateStr,
-        formatted: nextDate.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }),
-        display: nextDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        formatted: formattedDate,
+        display: `${day}/${month}/${year}`,
         weekKey,
         weekLabel
       });
@@ -875,7 +891,7 @@ const BookingPage = () => {
       let weekday = 0;
       if (parts.length === 3) {
         const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-        weekday = dateObj.getDay();
+        weekday = getAdjustedDay(dateObj);
       }
 
       const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
