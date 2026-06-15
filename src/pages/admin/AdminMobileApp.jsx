@@ -11,7 +11,7 @@ import {
   Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
   Scissors, Package, TrendingUp, TrendingDown, Search, Settings, Trash2,
   Edit3, ArrowRight, LogOut, BarChart2, Send, ShoppingBag, Clock,
-  Zap, Star, AlertCircle, CheckCircle, Upload, Image, RefreshCw, Eye
+  Zap, Star, AlertCircle, CheckCircle, Upload, Image, RefreshCw, Eye, Lock
 } from 'lucide-react';
 import './AdminMobile.css';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
@@ -44,6 +44,53 @@ const minToTime = (min) => {
 const PAY_METHODS = ['Pix','Dinheiro','Débito','Crédito','Cortesia'];
 const GALLERY_CATS = ['Todos','Antes/Depois','Cortes','Coloração','Tratamento','Geral'];
 const CURL_TYPES = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C'];
+
+const slotInRange = (slot, start, end) => {
+  if (!end || end === start) return slot === start;
+  return slot >= start && slot < end;
+};
+
+const isSlotBlocked = (prof, dateStr, slot) => {
+  if (!prof) return false;
+  
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const weekday = dateObj.getDay();
+    
+    // 1. Check day off
+    if ((prof.daysOff || []).includes(weekday)) return true;
+    
+    // 2. Check blocked date
+    if ((prof.blockedDates || []).includes(dateStr)) return true;
+
+    // 3. Recurring weekday blocks
+    const weekdayBlocks = prof.blockedWeekdayHours || [];
+    const hasWeekdayBlock = weekdayBlocks.some(block => {
+      const segments = block.split('-');
+      const w = segments[0];
+      const start = segments[1];
+      const end = segments[2] || null;
+      if (Number(w) !== weekday) return false;
+      return slotInRange(slot, start, end);
+    });
+    if (hasWeekdayBlock) return true;
+
+    // 4. Specific date blocks
+    const specificBlocks = prof.blockedSpecificHours || [];
+    const hasSpecificBlock = specificBlocks.some(block => {
+      if (!block.startsWith(dateStr)) return false;
+      const rest = block.substring(dateStr.length + 1);
+      const restParts = rest.split('-');
+      const start = restParts[0];
+      const end = restParts[1] || null;
+      return slotInRange(slot, start, end);
+    });
+    if (hasSpecificBlock) return true;
+  }
+  
+  return false;
+};
 
 const initials = (name = '') => name.split(' ').filter(Boolean).slice(0,2).map(p => p[0].toUpperCase()).join('');
 
@@ -1390,9 +1437,17 @@ Grande abraço, Jon.`;
                 const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
                 const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
 
+                const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
+                const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
+
                 return (
                   <div key={slot} className="m-slot-row" onClick={() => {
                     if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
+                    else if (isBlockedByScale) {
+                      if (window.confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
+                        setSelectedSlot(slot); setShowSlotSheet(true);
+                      }
+                    }
                     else { setSelectedSlot(slot); setShowSlotSheet(true); }
                   }}>
                     <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
@@ -1412,6 +1467,16 @@ Grande abraço, Jon.`;
                             <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
                           </div>
                           <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
+                        </div>
+                      ) : isBlockedByScale ? (
+                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(163, 150, 135, 0.1)', borderLeft: '4px solid #8A7866', color: '#8A7866' }}>
+                          <div>
+                            <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <Lock size={12} /> Bloqueado
+                            </div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)' }}>Configurações de Escala</div>
+                          </div>
+                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
                         </div>
                       ) : (
                         <span className="m-slot-empty">Disponível</span>
