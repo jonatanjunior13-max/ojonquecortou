@@ -709,31 +709,6 @@ Use as seguintes tags no "bodyHtml":
   const handleGenerateGbpPost = async () => {
     setIsGeneratingGbpPost(true);
 
-    const GBP_IMAGES = [
-      '/cachos-longos-castanhos-definidos.webp',
-      '/corte-crespo-com-volume.webp',
-      '/cachos-medios-volumosos-bh.webp',
-      '/corte-a-seco-cachos-definidos-bh.webp',
-      '/blog-visagismo-capa.webp',
-      '/blog-leitura-fio-capa.webp',
-      '/blog-frizz.webp',
-      '/blog-curvaturas.webp',
-      '/especialista-em-cabelo-cacheado-resultado.webp',
-      '/cachos-longos-luzes.webp',
-      '/volume-afro-crespo-bh.webp',
-      '/corte-curto-cacheado-feminino-bh.webp',
-      '/cachos-escuros-sorridentes-estudio.webp',
-      '/cacho-vs-crespo-hero.webp',
-      '/blog-secagem-hero.webp',
-      '/blog-cronograma-capilar.webp',
-      '/cachos-ruivos-definicao.webp',
-      '/corte-pixie-cacheado.webp',
-      '/mixed-curls-volume.webp',
-      '/blog-porosidade.webp',
-      '/blog-embaraco.webp',
-      '/blog-frequencia-corte-capa.webp',
-    ];
-
     const generateDynamicFallbackPost = () => {
       const hooks = [
         'Seu fio tem memória — você sabia? 💡',
@@ -752,7 +727,7 @@ Use as seguintes tags no "bodyHtml":
 
       const bodies = [
         'No Studio do Jon, cada atendimento começa com a leitura de fio — uma análise da estrutura, porosidade e curvatura antes de qualquer tesoura. Isso garante que o corte potencialize o que o seu cabelo já tem de melhor.',
-        'O corte a seco é a técnica que revela o verdadeiro comportamento do fio. Sem água, vemos como cada mecha cai, onde há volume em excesso e onde falta definição. O resultado é um caimento natural e duradouro.',
+        'O corte a seco é a técnica que reveals o verdadeiro comportamento do fio. Sem água, vemos como cada mecha cai, onde há volume em excesso e onde falta definição. O resultado é um caimento natural e duradouro.',
         'Cacheados e crespos têm necessidades completamente diferentes. Por isso, nosso método é personalizado: analisamos sua curvatura, porosidade e histórico de química antes de começar.',
         'Frizz nem sempre é ressecamento — muitas vezes é a textura natural do fio pedindo liberdade. Aprenda a finalizá-lo corretamente no seu atendimento de visagismo no Studio do Jon.',
         'Visagismo vai muito além do rosto. Levamos em conta volume, comprimento e a forma como seu cabelo cresce para criar um resultado que valorize você como um todo.',
@@ -770,8 +745,19 @@ Use as seguintes tags no "bodyHtml":
         '\n\n🌟 Studio do Jon — O especialista em cachos e crespos de BH\n🔗 www.ojonquecortou.com.br',
       ];
 
+      const fallbackPrompts = [
+        'beautiful defined curly hair, realistic, high quality, professional salon setting',
+        'crespo hair with volume, natural texture, gorgeous smile, studio lighting',
+        'hairdresser cutting curly hair dry technique, professional salon, close up, detailed',
+        'woman with curly red hair, definition and volume, natural look, professional photography',
+        'curly hair transition journey, healthy curls, beautiful texture',
+        'visagism curly hair consult, smiling client, hair studio'
+      ];
+
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-      const image = GBP_IMAGES[Math.floor(Math.random() * GBP_IMAGES.length)];
+      const randomPrompt = pick(fallbackPrompts);
+      const randomSeed = Math.floor(Math.random() * 1000000);
+      const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(randomPrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
       const text = `${pick(hooks)}\n\n${pick(bodies)}${pick(ctas)}`;
       return { text, image };
     };
@@ -788,21 +774,33 @@ Use as seguintes tags no "bodyHtml":
             body: JSON.stringify({
               contents: [{
                 parts: [{
-                  text: 'Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara). Fale sobre a importância do corte personalizado para valorizar a curvatura natural e convide a agendar. Inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.'
+                  text: 'Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara). Fale sobre a importância do corte personalizado para valorizar a curvatura natural e convide a agendar. Inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.\n\nVocê deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:\n{\n  "text": "o texto do post em português",\n  "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"\n}'
                 }]
-              }]
+              }],
+              generationConfig: {
+                responseMimeType: 'application/json'
+              }
             })
           }
         );
 
         if (response.ok) {
           const data = await response.json();
-          const generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (generatedText) {
-            const randomImg = GBP_IMAGES[Math.floor(Math.random() * GBP_IMAGES.length)];
-            setGeneratedGbpPost({ text: generatedText.trim(), image: randomImg });
-            setIsGeneratingGbpPost(false);
-            return;
+          const generatedJsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (generatedJsonText) {
+            try {
+              const parsed = JSON.parse(generatedJsonText.trim());
+              const text = parsed.text || '';
+              const imagePrompt = parsed.image_prompt || 'gorgeous curly hair, professional salon, realistic';
+              const randomSeed = Math.floor(Math.random() * 1000000);
+              const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
+              
+              setGeneratedGbpPost({ text: text.trim(), image });
+              setIsGeneratingGbpPost(false);
+              return;
+            } catch (jsonErr) {
+              console.warn('Erro ao parsear JSON do Gemini, usando fallback de extração:', jsonErr);
+            }
           }
         } else {
           console.warn('Gemini API retornou erro:', response.status);
