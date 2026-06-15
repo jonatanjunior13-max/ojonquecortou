@@ -252,6 +252,7 @@ export default function AdminMobileApp() {
   // -- States for FAB menu and quick sheets --
   const [showFabMenu, setShowFabMenu] = useState(false);
   const [showProductExitSheet, setShowProductExitSheet] = useState(false);
+  const [showProductEntrySheet, setShowProductEntrySheet] = useState(false);
   const [showQuickBlockSheet, setShowQuickBlockSheet] = useState(false);
 
   // Product exit states
@@ -259,11 +260,17 @@ export default function AdminMobileApp() {
   const [prodExitQuantity, setProdExitQuantity] = useState(1);
   const [prodExitType, setProdExitType] = useState('venda');
 
+  // Product entry states
+  const [prodEntryName, setProdEntryName] = useState('');
+  const [prodEntryQuantity, setProdEntryQuantity] = useState(1);
+  const [prodEntryCost, setProdEntryCost] = useState('');
+
   // Quick block states
   const [qbDate, setQbDate] = useState(today());
   const [qbStart, setQbStart] = useState('08:00');
   const [qbEnd, setQbEnd] = useState('09:00');
   const [qbMotive, setQbMotive] = useState('');
+  const [qbType, setQbType] = useState('folga');
 
   // ── Gallery ────────────────────────────────────────────────────
   const [galleryCategory, setGalleryCategory] = useState('Todos');
@@ -1545,6 +1552,74 @@ Grande abraço, Jon.`;
     }
   };
 
+  const handleProductEntry = async () => {
+    const name = prodEntryName.trim();
+    if (!name) {
+      showToast('Informe o nome do produto', 'error');
+      return;
+    }
+    const qty = Number(prodEntryQuantity);
+    if (isNaN(qty) || qty <= 0) {
+      showToast('Quantidade inválida', 'error');
+      return;
+    }
+    const cost = Number(prodEntryCost);
+    if (isNaN(cost) || cost < 0) {
+      showToast('Preço de custo inválido', 'error');
+      return;
+    }
+
+    try {
+      // Se já existe produto com mesmo nome, soma ao estoque; senão cria novo.
+      const existing = inventory.find(p => (p.name || '').trim().toLowerCase() === name.toLowerCase());
+
+      if (existing) {
+        const newQty = (existing.quantity || 0) + qty;
+        if (db) {
+          await updateDoc(doc(db, 'products', existing.id), { quantity: newQty, costPrice: cost });
+        } else {
+          setInventory(prev => prev.map(p => p.id === existing.id ? { ...p, quantity: newQty, costPrice: cost } : p));
+        }
+      } else {
+        const payload = {
+          name,
+          category: 'Geral',
+          quantity: qty,
+          costPrice: cost,
+          sellingPrice: 0,
+          minStock: 3,
+          createdAt: new Date().toISOString()
+        };
+        if (db) {
+          const ref = await addDoc(collection(db, 'products'), payload);
+          setInventory(prev => [...prev, { id: ref.id, ...payload }]);
+        } else {
+          setInventory(prev => [...prev, { id: 'demo-prod-' + Date.now(), ...payload }]);
+        }
+      }
+
+      // Registra a compra como despesa (igual ao desktop)
+      const txData = {
+        type: 'saida',
+        category: 'estoque',
+        value: cost * qty,
+        description: `Compra de estoque: ${name} (+${qty} un.)`,
+        date: today(),
+        paymentMethod: 'Pix',
+        createdAt: new Date().toISOString()
+      };
+      if (db) await addDoc(collection(db, 'financial_transactions'), txData);
+
+      showToast('Entrada de produto registrada! 📦', 'success');
+      setShowProductEntrySheet(false);
+      setProdEntryName('');
+      setProdEntryQuantity(1);
+      setProdEntryCost('');
+    } catch (err) {
+      showToast('Erro ao registrar entrada: ' + err.message, 'error');
+    }
+  };
+
   const handleQuickBlock = async () => {
     const startMin = timeToMin(qbStart);
     const endMin = timeToMin(qbEnd);
@@ -1554,6 +1629,11 @@ Grande abraço, Jon.`;
     }
     const duration = endMin - startMin;
 
+    const typeLabels = { folga: 'Folga', compromisso: 'Compromisso pessoal', feriado: 'Feriado' };
+    const reason = qbMotive.trim()
+      ? `${typeLabels[qbType]}: ${qbMotive.trim()}`
+      : typeLabels[qbType];
+
     const payload = {
       clientName: 'Horário Bloqueado',
       clientPhone: '00000000000',
@@ -1562,7 +1642,8 @@ Grande abraço, Jon.`;
       date: qbDate,
       time: qbStart,
       profissional: 'jon',
-      notes: qbMotive || 'Bloqueio administrativo',
+      notes: reason,
+      absenceType: qbType,
       status: 'bloqueado',
       duration: duration,
       createdAt: new Date().toISOString()
@@ -1577,7 +1658,7 @@ Grande abraço, Jon.`;
         setBookings(prev => [...prev, { id: fakeId, ...payload }]);
       }
 
-      showToast(`Horário bloqueado com sucesso!`, 'info');
+      showToast(`Ausência registrada!`, 'info');
       setShowQuickBlockSheet(false);
       setQbMotive('');
     } catch (err) {
@@ -3631,35 +3712,35 @@ Grande abraço, Jon.`;
           </div>
           <div className="m-sheet-body" style={{ paddingBottom: 24 }}>
             <div className="m-action-list">
-              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowNewBookingSheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Calendar size={16}/></div>
+              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
+                <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Users size={16}/></div>
                 <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Agendar Horário</div>
-                  <div className="m-action-btn-sub">Reservar horário na agenda</div>
+                  <div className="m-action-btn-label">Cadastrar Cliente</div>
+                  <div className="m-action-btn-sub">Adicionar novo perfil de cliente</div>
                 </div>
               </button>
 
               <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setQbDate(currentDate); setShowQuickBlockSheet(true); }}>
                 <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><Lock size={16}/></div>
                 <div className="m-action-btn-text">
-                  <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Bloquear Horário</div>
-                  <div className="m-action-btn-sub">Impedir agendamentos na agenda</div>
+                  <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Registrar Ausência</div>
+                  <div className="m-action-btn-sub">Bloquear agenda: folga, compromisso ou feriado</div>
+                </div>
+              </button>
+
+              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowProductEntrySheet(true); }}>
+                <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Package size={16}/></div>
+                <div className="m-action-btn-text">
+                  <div className="m-action-btn-label">Entrada de Produto</div>
+                  <div className="m-action-btn-sub">Adicionar produto ou repor estoque</div>
                 </div>
               </button>
 
               <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowProductExitSheet(true); }}>
                 <div className="m-action-btn-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Package size={16}/></div>
                 <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Saída Avulsa de Produto</div>
+                  <div className="m-action-btn-label">Saída de Produto</div>
                   <div className="m-action-btn-sub">Registrar venda ou uso interno de produto</div>
-                </div>
-              </button>
-
-              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Users size={16}/></div>
-                <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Cadastrar Cliente</div>
-                  <div className="m-action-btn-sub">Adicionar novo perfil de cliente</div>
                 </div>
               </button>
             </div>
@@ -3724,6 +3805,61 @@ Grande abraço, Jon.`;
   };
 
   // ── Quick Block Sheet ───────────────────────────────────────────
+  // ── Product Entry Sheet ─────────────────────────────────────────
+  const renderProductEntrySheet = () => {
+    if (!showProductEntrySheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowProductEntrySheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Entrada de Produto</div>
+            <button onClick={() => setShowProductEntrySheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Nome do Produto *</label>
+              <input
+                className="m-input"
+                placeholder="Ex: Shampoo Curly 250ml"
+                value={prodEntryName}
+                onChange={e => setProdEntryName(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Quantidade *</label>
+              <input
+                className="m-input"
+                type="number"
+                min="1"
+                value={prodEntryQuantity}
+                onChange={e => setProdEntryQuantity(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Preço de Custo (un.) *</label>
+              <input
+                className="m-input"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0,00"
+                value={prodEntryCost}
+                onChange={e => setProdEntryCost(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowProductEntrySheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleProductEntry}><Check size={14}/> Confirmar Entrada</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderQuickBlockSheet = () => {
     if (!showQuickBlockSheet) return null;
     return (
@@ -3731,16 +3867,24 @@ Grande abraço, Jon.`;
         <div className="m-sheet" onClick={e => e.stopPropagation()}>
           <div className="m-sheet-handle"/>
           <div className="m-sheet-header">
-            <div className="m-sheet-title">Bloquear Horário(s)</div>
+            <div className="m-sheet-title">Registrar Ausência</div>
             <button onClick={() => setShowQuickBlockSheet(false)} className="m-icon-btn"><X size={18}/></button>
           </div>
           <div className="m-sheet-body">
             <div className="m-field">
+              <label className="m-label">Tipo</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${qbType === 'folga' ? 'active' : ''}`} onClick={() => setQbType('folga')}>🛌 Folga</button>
+                <button className={`m-seg-btn ${qbType === 'compromisso' ? 'active' : ''}`} onClick={() => setQbType('compromisso')}>📌 Compromisso</button>
+                <button className={`m-seg-btn ${qbType === 'feriado' ? 'active' : ''}`} onClick={() => setQbType('feriado')}>🎉 Feriado</button>
+              </div>
+            </div>
+            <div className="m-field">
               <label className="m-label">Data</label>
-              <input 
-                className="m-input" 
-                type="date" 
-                value={qbDate} 
+              <input
+                className="m-input"
+                type="date"
+                value={qbDate}
                 onChange={e => setQbDate(e.target.value)}
               />
             </div>
@@ -3778,7 +3922,7 @@ Grande abraço, Jon.`;
           </div>
           <div className="m-sheet-footer">
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowQuickBlockSheet(false)}>Cancelar</button>
-            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleQuickBlock}><Check size={14}/> Bloquear</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleQuickBlock}><Check size={14}/> Registrar Ausência</button>
           </div>
         </div>
       </div>
@@ -3877,6 +4021,7 @@ Grande abraço, Jon.`;
       {/* Sheets */}
       {renderFabMenu()}
       {renderProductExitSheet()}
+      {renderProductEntrySheet()}
       {renderQuickBlockSheet()}
       {renderBookingSheet()}
       {renderSlotSheet()}
