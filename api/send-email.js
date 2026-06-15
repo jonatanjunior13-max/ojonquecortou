@@ -666,14 +666,14 @@ export default async function handler(req, res) {
   }
 
   // Retrieve SMTP variables from environment
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpPort = process.env.SMTP_PORT || '587';
-  const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === '465';
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPass = process.env.SMTP_PASS;
-  const smtpFrom = process.env.SMTP_FROM || 'contato@ojonquecortou.com.br';
+  const smtpHost = (process.env.SMTP_HOST || '').trim();
+  const smtpPort = (process.env.SMTP_PORT || '587').trim();
+  const smtpSecure = (process.env.SMTP_SECURE || '').trim() === 'true' || smtpPort === '465';
+  const smtpUser = (process.env.SMTP_USER || '').trim();
+  const smtpPass = (process.env.SMTP_PASS || '').trim();
+  const smtpFrom = (process.env.SMTP_FROM || 'contato@ojonquecortou.com.br').trim();
 
-  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br';
+  const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br').trim();
   
   // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
   const isLaunchCampaign = type === 'launch_campaign';

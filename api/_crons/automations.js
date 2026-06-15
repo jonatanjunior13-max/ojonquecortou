@@ -174,8 +174,8 @@ const templates = {
 
 export default async function handler(req, res) {
   try {
-    const adminEmail = process.env.CRON_FIREBASE_EMAIL;
-    const adminPassword = process.env.CRON_FIREBASE_PASSWORD;
+    const adminEmail = (process.env.CRON_FIREBASE_EMAIL || '').trim();
+    const adminPassword = (process.env.CRON_FIREBASE_PASSWORD || '').trim();
 
     if (!adminEmail || !adminPassword) {
       return res.status(500).json({ error: 'Faltam credenciais CRON_FIREBASE_EMAIL e PASSWORD.' });
