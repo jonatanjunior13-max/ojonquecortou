@@ -325,18 +325,19 @@ export default function AdminMobileApp() {
         setInventory(JSON.parse(localStorage.getItem('demo_products')) || []);
         setPackages(JSON.parse(localStorage.getItem('demo_packages')) || []);
         setSettings(JSON.parse(localStorage.getItem('demo_settings')) || {
-          name: 'Studio do Jon (Demo)',
+          name: 'Studio do Jon',
           professionals: [{ id: 'jon', name: 'Jon', active: true }]
         });
         setGalleryPhotos(JSON.parse(localStorage.getItem('demo_gallery')) || []);
       } catch (e) {
-        console.error("Error loading demo data in mobile app:", e);
+        console.error('Error loading demo data in mobile app:', e);
+        setSettings({ name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] });
       }
+      setAuthReady(true);
       setLoading(false);
     };
 
     if (!db) {
-      setAuthReady(true);
       if (isLocalLogged) {
         loadDemoData();
       } else {
@@ -347,9 +348,25 @@ export default function AdminMobileApp() {
 
     let unsubs = [];
     let failSafeTimeout = null;
+    let authFired = false;
+
+    // Auth timeout — if Firebase auth takes >5s on mobile, fall back
+    const authTimeout = setTimeout(() => {
+      if (!authFired) {
+        console.warn('Auth timeout reached on mobile — using fallback');
+        if (isLocalLogged) {
+          loadDemoData();
+        } else {
+          navigate('/admin/login');
+        }
+      }
+    }, 5000);
 
     const unsubAuth = onAuthStateChanged(auth, (user) => {
+      authFired = true;
+      clearTimeout(authTimeout);
       setAuthReady(true);
+
       if (!user && !isLocalLogged) {
         navigate('/admin/login');
         return;
@@ -395,9 +412,10 @@ export default function AdminMobileApp() {
         checkLoaded(key);
       };
 
+      // Failsafe: unlock UI after 1.5s even if some collections are slow
       failSafeTimeout = setTimeout(() => {
         setLoading(false);
-      }, 3000);
+      }, 1500);
 
       // Register the 8 listeners
       try {
@@ -432,7 +450,7 @@ export default function AdminMobileApp() {
         }, (err) => handleError('packages', err)));
 
         unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
-          setSettings(snap.exists() ? { id: snap.id, ...snap.data() } : {});
+          setSettings(snap.exists() ? { id: snap.id, ...snap.data() } : { name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] });
           checkLoaded('settings');
         }, (err) => handleError('settings', err)));
 
@@ -445,13 +463,14 @@ export default function AdminMobileApp() {
         }, (err) => handleError('gallery', err)));
 
       } catch (err) {
-        console.error("Error subscribing to Firestore collections:", err);
+        console.error('Error subscribing to Firestore collections:', err);
         setLoading(false);
       }
     });
 
     return () => {
       unsubAuth();
+      clearTimeout(authTimeout);
       unsubs.forEach(unsub => unsub && unsub());
       if (failSafeTimeout) clearTimeout(failSafeTimeout);
     };
@@ -1569,10 +1588,14 @@ Grande abraço, Jon.`;
   // ── Loading screen ─────────────────────────────────────────────
   if (loading || !authReady) {
     return (
-      <div className="m-loading">
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', height: '100dvh', background: '#0E0C0B',
+        color: '#F5EDDB', gap: '20px', fontFamily: '"Manrope", sans-serif'
+      }}>
         <div style={{ fontSize: '2rem', fontFamily: '"DM Serif Display", serif', color: '#DCA354' }}>Studio do Jon</div>
         <div className="m-spinner" />
-        <span>Carregando dados...</span>
+        <span style={{ fontSize: '0.85rem', color: '#7A6E63' }}>Carregando dados...</span>
       </div>
     );
   }
