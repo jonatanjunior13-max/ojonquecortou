@@ -19,8 +19,16 @@ import { syncBookingToGoogle } from '../../utils/gcalSync';
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════════════════════════════
+const parseLocalDate = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return new Date();
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 0, 0, 0, 0);
+  }
+  return new Date(dateStr);
+};
 const fmt = (n) => `R$\u00a0${Number(n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-const fmtDate = (d) => { try { const dt = new Date(d + 'T00:00:00'); return dt.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }); } catch { return d; } };
+const fmtDate = (d) => { try { const dt = parseLocalDate(d); return dt.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }); } catch { return d; } };
 const dateStr = (d) => {
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -365,7 +373,7 @@ export default function AdminMobileApp() {
 
   // ── Week Strip ─────────────────────────────────────────────────
   const getWeekDays = (centerDate) => {
-    const d = new Date(centerDate + 'T00:00:00');
+    const d = parseLocalDate(centerDate);
     const day = d.getDay();
     const monday = new Date(d);
     monday.setDate(d.getDate() - (day === 0 ? 6 : day - 1));
@@ -379,7 +387,7 @@ export default function AdminMobileApp() {
   const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
   const navigateDate = (delta) => {
-    const d = new Date(currentDate + 'T00:00:00');
+    const d = parseLocalDate(currentDate);
     d.setDate(d.getDate() + delta);
     setCurrentDate(dateStr(d));
   };
@@ -1362,7 +1370,7 @@ Grande abraço, Jon.`;
         {/* Week strip */}
         <div className="m-week-strip">
           {weekDays.map(d => {
-            const dt = new Date(d + 'T00:00:00');
+            const dt = parseLocalDate(d);
             const dayIdx = dt.getDay();
             const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
             return (
