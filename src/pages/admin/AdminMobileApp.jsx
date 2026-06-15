@@ -6,6 +6,7 @@ import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc
 } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { getEffectiveAbsences, getAbsenceForSlot } from '../../utils/absences';
 import {
   Home, Calendar, Camera, Users, DollarSign, MoreHorizontal,
   Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
@@ -271,6 +272,18 @@ export default function AdminMobileApp() {
   const [qbEnd, setQbEnd] = useState('09:00');
   const [qbMotive, setQbMotive] = useState('');
   const [qbType, setQbType] = useState('folga');
+
+  // Absences (Minhas Ausências) states
+  const [showAbsenceSheet, setShowAbsenceSheet] = useState(false);
+  const [editingAbsenceId, setEditingAbsenceId] = useState(null);
+  const [absTitle, setAbsTitle] = useState('');
+  const [absStartDate, setAbsStartDate] = useState(today());
+  const [absSingleDay, setAbsSingleDay] = useState(true);
+  const [absEndDate, setAbsEndDate] = useState(today());
+  const [absAllDay, setAbsAllDay] = useState(false);
+  const [absStartTime, setAbsStartTime] = useState('09:00');
+  const [absEndTime, setAbsEndTime] = useState('10:00');
+  const [absRecurrence, setAbsRecurrence] = useState('none');
 
   // ── Gallery ────────────────────────────────────────────────────
   const [galleryCategory, setGalleryCategory] = useState('Todos');
@@ -1666,6 +1679,91 @@ Grande abraço, Jon.`;
     }
   };
 
+  // ── Minhas Ausências (CRUD) ─────────────────────────────────────
+  const openNewAbsence = () => {
+    setEditingAbsenceId(null);
+    setAbsTitle('');
+    setAbsStartDate(currentDate || today());
+    setAbsSingleDay(true);
+    setAbsEndDate(currentDate || today());
+    setAbsAllDay(false);
+    setAbsStartTime('09:00');
+    setAbsEndTime('10:00');
+    setAbsRecurrence('none');
+    setShowAbsenceSheet(true);
+  };
+
+  const openEditAbsence = (a) => {
+    setEditingAbsenceId(a.id);
+    setAbsTitle(a.title || '');
+    setAbsStartDate(a.startDate || today());
+    setAbsSingleDay(!a.endDate);
+    setAbsEndDate(a.endDate || a.startDate || today());
+    setAbsAllDay(!!a.allDay);
+    setAbsStartTime(a.startTime || '09:00');
+    setAbsEndTime(a.endTime || '10:00');
+    setAbsRecurrence(a.recurrence || 'none');
+    setShowAbsenceSheet(true);
+  };
+
+  const saveAbsence = async () => {
+    if (!absTitle.trim()) {
+      showToast('Informe um título', 'error');
+      return;
+    }
+    if (!absAllDay && absStartTime >= absEndTime) {
+      showToast('Horário de fim deve ser após o início', 'error');
+      return;
+    }
+    if (absRecurrence === 'none' && !absSingleDay && absEndDate < absStartDate) {
+      showToast('Data fim deve ser após a data início', 'error');
+      return;
+    }
+
+    const dt = parseLocalDate(absStartDate);
+    const absence = {
+      id: editingAbsenceId || ('abs-' + Date.now()),
+      title: absTitle.trim(),
+      startDate: absStartDate,
+      endDate: (absRecurrence === 'none' && !absSingleDay) ? absEndDate : null,
+      allDay: absAllDay,
+      startTime: absAllDay ? null : absStartTime,
+      endTime: absAllDay ? null : absEndTime,
+      recurrence: absRecurrence,
+      weekday: absRecurrence === 'weekly' ? getAdjustedDay(dt) : null
+    };
+
+    const current = (settings?.absences || []).filter(a => a.id !== absence.id);
+    const updated = [...current, absence];
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { absences: updated });
+      } else {
+        setSettings(prev => ({ ...prev, absences: updated }));
+      }
+      showToast(editingAbsenceId ? 'Ausência atualizada!' : 'Ausência cadastrada!', 'success');
+      setShowAbsenceSheet(false);
+    } catch (err) {
+      showToast('Erro ao salvar ausência: ' + err.message, 'error');
+    }
+  };
+
+  const deleteAbsence = async (id) => {
+    if (!window.confirm('Excluir esta ausência?')) return;
+    const updated = (settings?.absences || []).filter(a => a.id !== id);
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { absences: updated });
+      } else {
+        setSettings(prev => ({ ...prev, absences: updated }));
+      }
+      showToast('Ausência excluída', 'success');
+    } catch (err) {
+      showToast('Erro ao excluir: ' + err.message, 'error');
+    }
+  };
+
   // ── Loading screen ─────────────────────────────────────────────
   if (loading || !authReady) {
     return (
@@ -1873,6 +1971,7 @@ Grande abraço, Jon.`;
 
                 const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
                 const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
+                const absence = !bk ? getAbsenceForSlot(getEffectiveAbsences(settings), currentDate, slot) : null;
 
                 const dtForLabel = parseLocalDate(currentDate);
                 const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
@@ -1882,6 +1981,11 @@ Grande abraço, Jon.`;
                 return (
                   <div key={slot} className="m-slot-row" onClick={() => {
                     if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
+                    else if (absence) {
+                      if (window.confirm(`Este horário está bloqueado por uma ausência (${absence.title}). Deseja agendar mesmo assim?`)) {
+                        setSelectedSlot(slot); setShowSlotSheet(true);
+                      }
+                    }
                     else if (isBlockedByScale) {
                       if (window.confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
                         setSelectedSlot(slot); setShowSlotSheet(true);
@@ -1906,6 +2010,16 @@ Grande abraço, Jon.`;
                             <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
                           </div>
                           <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
+                        </div>
+                      ) : absence ? (
+                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(139, 124, 200, 0.12)', borderLeft: '4px solid #8b7cc8', color: '#8b7cc8' }}>
+                          <div>
+                            <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <Lock size={12} /> {absence.title}
+                            </div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)' }}>Ausência</div>
+                          </div>
+                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(139, 124, 200, 0.22)', color: '#8b7cc8' }}>Ausência</span>
                         </div>
                       ) : isBlockedByScale ? (
                         <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(163, 150, 135, 0.1)', borderLeft: '4px solid #8A7866', color: '#8A7866' }}>
@@ -2155,6 +2269,7 @@ Grande abraço, Jon.`;
       { key:'servicos', icon:<Scissors size={18}/>, label:'Serviços', sub:`${services.length} serviços`, color:'var(--m-gold)' },
       { key:'estoque', icon:<Package size={18}/>, label:'Estoque', sub:`${inventory.length} produtos`, color:'var(--m-blue)' },
       { key:'comissoes', icon:<BarChart2 size={18}/>, label:'Comissões', sub:'Relatório de equipe', color:'var(--m-green)' },
+      { key:'ausencias', icon:<Calendar size={18}/>, label:'Minhas Ausências', sub:'Folgas e bloqueios', color:'#8b7cc8' },
       { key:'marketing', icon:<Send size={18}/>, label:'Marketing', sub:'Campanhas e CRM', color:'var(--m-amber)' },
       { key:'config', icon:<Settings size={18}/>, label:'Configurações', sub:'Estúdio e integrações', color:'var(--m-muted)' },
     ];
@@ -2201,6 +2316,62 @@ Grande abraço, Jon.`;
         <div style={{ fontSize:'1rem', fontWeight:800, fontFamily:'"DM Serif Display", serif', color:'var(--m-text)' }}>{title}</div>
       </div>
     );
+
+    if (section === 'ausencias') {
+      const DAYS_FULL = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+      const customAbsences = settings?.absences || [];
+      const fixedAbsences = getEffectiveAbsences(settings).filter(a => a.fixed);
+
+      const summary = (a) => {
+        const timePart = a.allDay ? 'Dia inteiro' : `${a.startTime} às ${a.endTime}`;
+        if (a.recurrence === 'weekly') {
+          const wd = (a.weekday !== undefined && a.weekday !== null) ? Number(a.weekday) : getAdjustedDay(parseLocalDate(a.startDate));
+          return `Toda ${DAYS_FULL[wd]} · ${timePart}`;
+        }
+        if (a.recurrence === 'monthly') {
+          return `Todo dia ${parseLocalDate(a.startDate).getDate()} do mês · ${timePart}`;
+        }
+        const datePart = a.endDate ? `${fmtDate(a.startDate)} até ${fmtDate(a.endDate)}` : fmtDate(a.startDate);
+        return `${datePart} · ${timePart}`;
+      };
+
+      return (
+        <div className="m-tab m-page" key="ausencias">
+          <MaisHeader title="Minhas Ausências"/>
+
+          <button className="m-btn m-btn-gold" onClick={openNewAbsence} style={{ gap:8 }}>
+            <Plus size={16}/> Nova Ausência
+          </button>
+
+          {fixedAbsences.map(a => (
+            <div key={a.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:'rgba(139,124,200,0.14)', color:'#8b7cc8', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Lock size={16}/></div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{a.title}</div>
+                <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{summary(a)}</div>
+              </div>
+              <span style={{ fontSize:'0.62rem', fontWeight:700, color:'#8b7cc8', background:'rgba(139,124,200,0.14)', padding:'3px 8px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.5px', flexShrink:0 }}>Fixo</span>
+            </div>
+          ))}
+
+          {customAbsences.map(a => (
+            <div key={a.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:'rgba(139,124,200,0.14)', color:'#8b7cc8', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Calendar size={16}/></div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{a.title}</div>
+                <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{summary(a)}</div>
+              </div>
+              <button onClick={() => openEditAbsence(a)} className="m-icon-btn" style={{ flexShrink:0 }}><Edit3 size={16}/></button>
+              <button onClick={() => deleteAbsence(a.id)} className="m-icon-btn" style={{ flexShrink:0, color:'var(--m-red)' }}><Trash2 size={16}/></button>
+            </div>
+          ))}
+
+          {customAbsences.length === 0 && (
+            <div className="m-empty"><Calendar className="m-empty-icon" size={32}/><div className="m-empty-title">Nenhuma ausência cadastrada</div></div>
+          )}
+        </div>
+      );
+    }
 
     if (section === 'servicos') {
       const cats = ['Todos', ...new Set(services.map(s => s.category).filter(Boolean))];
@@ -3929,6 +4100,107 @@ Grande abraço, Jon.`;
     );
   };
 
+  // ── Absence Sheet (Nova / Editar Ausência) ──────────────────────
+  const renderAbsenceSheet = () => {
+    if (!showAbsenceSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowAbsenceSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">{editingAbsenceId ? 'Editar Ausência' : 'Nova Ausência'}</div>
+            <button onClick={() => setShowAbsenceSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Título *</label>
+              <input
+                className="m-input"
+                placeholder="Ex: Consulta, Viagem, Folga"
+                value={absTitle}
+                onChange={e => setAbsTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Recorrência</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${absRecurrence === 'none' ? 'active' : ''}`} onClick={() => setAbsRecurrence('none')}>Não repete</button>
+                <button className={`m-seg-btn ${absRecurrence === 'weekly' ? 'active' : ''}`} onClick={() => setAbsRecurrence('weekly')}>Semanal</button>
+                <button className={`m-seg-btn ${absRecurrence === 'monthly' ? 'active' : ''}`} onClick={() => setAbsRecurrence('monthly')}>Mensal</button>
+              </div>
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">
+                {absRecurrence === 'weekly' ? 'Data (define o dia da semana)' : absRecurrence === 'monthly' ? 'Data (define o dia do mês)' : 'Data início'}
+              </label>
+              <input
+                className="m-input"
+                type="date"
+                value={absStartDate}
+                onChange={e => { setAbsStartDate(e.target.value); if (absSingleDay) setAbsEndDate(e.target.value); }}
+              />
+            </div>
+
+            {absRecurrence === 'none' && (
+              <>
+                <div className="m-field">
+                  <label className="m-label">Período</label>
+                  <div className="m-segmented">
+                    <button className={`m-seg-btn ${absSingleDay ? 'active' : ''}`} onClick={() => { setAbsSingleDay(true); setAbsEndDate(absStartDate); }}>Apenas este dia</button>
+                    <button className={`m-seg-btn ${!absSingleDay ? 'active' : ''}`} onClick={() => setAbsSingleDay(false)}>Intervalo de dias</button>
+                  </div>
+                </div>
+                {!absSingleDay && (
+                  <div className="m-field">
+                    <label className="m-label">Data fim</label>
+                    <input
+                      className="m-input"
+                      type="date"
+                      value={absEndDate}
+                      min={absStartDate}
+                      onChange={e => setAbsEndDate(e.target.value)}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="m-field">
+              <label className="m-label">Horário</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${absAllDay ? 'active' : ''}`} onClick={() => setAbsAllDay(true)}>Dia inteiro</button>
+                <button className={`m-seg-btn ${!absAllDay ? 'active' : ''}`} onClick={() => setAbsAllDay(false)}>Horário específico</button>
+              </div>
+            </div>
+
+            {!absAllDay && (
+              <div style={{ display:'flex', gap:12 }}>
+                <div className="m-field" style={{ flex:1 }}>
+                  <label className="m-label">Início</label>
+                  <select className="m-select" value={absStartTime} onChange={e => setAbsStartTime(e.target.value)}>
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div className="m-field" style={{ flex:1 }}>
+                  <label className="m-label">Fim</label>
+                  <select className="m-select" value={absEndTime} onChange={e => setAbsEndTime(e.target.value)}>
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowAbsenceSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={saveAbsence}><Check size={14}/> Salvar Ausência</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // ═══════════════════════════════════════════════════════════════
   // MAIN RENDER
   // ═══════════════════════════════════════════════════════════════
@@ -4022,6 +4294,7 @@ Grande abraço, Jon.`;
       {renderFabMenu()}
       {renderProductExitSheet()}
       {renderProductEntrySheet()}
+      {renderAbsenceSheet()}
       {renderQuickBlockSheet()}
       {renderBookingSheet()}
       {renderSlotSheet()}

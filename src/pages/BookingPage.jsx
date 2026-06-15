@@ -14,6 +14,7 @@ import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
 import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar } from 'lucide-react';
 import { syncBookingToGoogle } from '../utils/gcalSync';
+import { getEffectiveAbsences, isSlotBlockedByAbsence } from '../utils/absences';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
 
@@ -897,9 +898,13 @@ const BookingPage = () => {
       const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
       const ALL_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
       const activeProfs = (settings?.professionals || []).filter(p => p.active !== false);
+      const effectiveAbsences = getEffectiveAbsences(settings);
 
       // Helper helper to check if a professional is available at a slot
       const checkProfAvailability = (prof, slot, bookedList) => {
+        // 0. Ausências / bloqueios permanentes (Psicóloga, folgas, viagens etc.)
+        if (isSlotBlockedByAbsence(effectiveAbsences, selectedDate, slot)) return false;
+
         // 1. Check daysOff
         const daysOff = prof.daysOff !== undefined ? prof.daysOff : [0, 1];
         if (daysOff.includes(weekday)) return false;
