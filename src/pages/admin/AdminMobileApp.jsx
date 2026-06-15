@@ -913,12 +913,36 @@ export default function AdminMobileApp() {
   };
 
   // ── New Booking ────────────────────────────────────────────────
+  // Verifica se um intervalo [time, time+duration) colide com agendamento/bloqueio
+  // existente no mesmo dia (ignora cancelados). Evita horários duplicados.
+  const bookingOverlaps = (dateStr, time, duration, excludeId = null) => {
+    const slotStart = timeToMin(time);
+    const slotEnd = slotStart + (Number(duration) || 60);
+    return bookings.some(b => {
+      if (excludeId && b.id === excludeId) return false;
+      if (b.date !== dateStr) return false;
+      if (b.status === 'cancelado') return false;
+      const bStart = timeToMin(b.time);
+      const bEnd = bStart + (Number(b.duration) || 60);
+      return Math.max(bStart, slotStart) < Math.min(bEnd, slotEnd);
+    });
+  };
+
   const addBooking = async () => {
     if (!nbForm.clientName || !nbForm.serviceName) { showToast('Preencha cliente e serviço', 'error'); return; }
     const svc = services.find(s => s.name === nbForm.serviceName);
     const prepay = Number(nbForm.prepayment || 0);
     const price = nbForm.servicePrice !== '' ? Number(nbForm.servicePrice) : (svc?.promoPrice || svc?.price || 0);
-    
+
+    // Duração ocupa pelo menos 1h, conforme o tempo do serviço (ex: 4h = 240min)
+    const duration = Math.max(60, Number(svc?.duration) || 60);
+
+    // Evita horários duplicados: bloqueia se sobrepõe agendamento/bloqueio existente
+    if (bookingOverlaps(nbForm.date, nbForm.time, duration)) {
+      showToast('Conflito: já existe agendamento neste intervalo', 'error');
+      return;
+    }
+
     // Look up client profile to find email
     const cleanPhone = (nbForm.clientPhone || '').replace(/\D/g, '');
     const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
@@ -933,6 +957,7 @@ export default function AdminMobileApp() {
       servicePrice: price,
       date: nbForm.date,
       time: nbForm.time,
+      duration: duration,
       notes: nbForm.notes || '',
       status: 'confirmado',
       prepayment: prepay,
@@ -987,6 +1012,15 @@ export default function AdminMobileApp() {
     const oldPrepayment = oldB ? (Number(oldB.prepayment) || 0) : 0;
     const newPrepayment = Number(editBookingForm.prepayment || 0);
 
+    // Duração ocupa pelo menos 1h, conforme o tempo do serviço
+    const duration = Math.max(60, Number(svc?.duration) || Number(oldB?.duration) || 60);
+
+    // Evita horários duplicados ao reagendar (ignora o próprio agendamento)
+    if (bookingOverlaps(editBookingForm.date, editBookingForm.time, duration, editBookingForm.id)) {
+      showToast('Conflito: já existe agendamento neste intervalo', 'error');
+      return;
+    }
+
     const data = {
       clientName: editBookingForm.clientName,
       clientPhone: editBookingForm.clientPhone || '',
@@ -995,6 +1029,7 @@ export default function AdminMobileApp() {
       servicePrice: editBookingForm.servicePrice !== '' ? Number(editBookingForm.servicePrice) : (svc?.promoPrice || svc?.price || 0),
       date: editBookingForm.date,
       time: editBookingForm.time,
+      duration: duration,
       notes: editBookingForm.notes || '',
       status: editBookingForm.status,
       prepayment: newPrepayment

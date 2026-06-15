@@ -965,7 +965,7 @@ const BookingPage = () => {
           const [h, m] = t.split(':').map(Number);
           return h * 60 + m;
         };
-        const newServiceDuration = selectedService?.duration || 60;
+        const newServiceDuration = Math.max(60, selectedService?.duration || 60);
         const slotEndMin = slotMin + newServiceDuration;
 
         const hasOverlap = bookedList.some(b => {
@@ -1259,6 +1259,7 @@ const BookingPage = () => {
 
     const bookingPayload = {
       service: selectedService,
+      duration: Math.max(60, selectedService?.duration || 60),
       date: selectedDate,
       time: selectedTime,
       clientName: clientData.name,
