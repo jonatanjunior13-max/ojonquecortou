@@ -228,6 +228,11 @@ export default function AdminMobileApp() {
   const [nbSuggestions, setNbSuggestions] = useState([]);
   const [ebSuggestions, setEbSuggestions] = useState([]);
 
+  // ── Block States ───────────────────────────────────────────────
+  const [blockEndTime, setBlockEndTime] = useState('');
+  const [blockMotive, setBlockMotive] = useState('');
+  const [isBlockingRange, setIsBlockingRange] = useState(false);
+
   // ── Gallery ────────────────────────────────────────────────────
   const [galleryCategory, setGalleryCategory] = useState('Todos');
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -1995,6 +2000,51 @@ Grande abraço, Jon.`;
     const b = selectedBooking;
     const svcPrice = b.service?.promoPrice || b.service?.price || b.servicePrice || 0;
 
+    if (b.status === 'bloqueado') {
+      return (
+        <div className="m-overlay" onClick={() => setShowBookingSheet(false)}>
+          <div className="m-sheet" onClick={e => e.stopPropagation()}>
+            <div className="m-sheet-handle"/>
+            <div className="m-sheet-header">
+              <div className="m-sheet-title">Horário Bloqueado</div>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
+                <button onClick={() => setShowBookingSheet(false)} className="m-icon-btn"><X size={18}/></button>
+              </div>
+            </div>
+            <div className="m-sheet-body">
+              <div style={{ background:'var(--m-card)', borderRadius:'var(--m-radius)', padding:'14px', marginBottom: 16 }}>
+                <div className="m-info-row">
+                  <span className="m-info-label">Horário</span>
+                  <span className="m-info-value">{`${fmtDate(b.date)} às ${b.time || '—'}`}</span>
+                </div>
+                <div className="m-info-row">
+                  <span className="m-info-label">Duração</span>
+                  <span className="m-info-value">{b.duration || 60} minutos</span>
+                </div>
+                {b.notes && (
+                  <div className="m-info-row">
+                    <span className="m-info-label">Motivo</span>
+                    <span className="m-info-value">{b.notes}</span>
+                  </div>
+                )}
+              </div>
+              <div className="m-action-list">
+                <button className="m-action-btn" onClick={() => changeStatus(b.id, 'cancelado')}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Check size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Liberar Horário / Desbloquear</div>
+                    <div className="m-action-btn-sub">Permitir novos agendamentos neste horário</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="m-overlay" onClick={() => setShowBookingSheet(false)}>
         <div className="m-sheet" onClick={e => e.stopPropagation()}>
@@ -2114,6 +2164,14 @@ Grande abraço, Jon.`;
     );
   };
 
+  const getBlockEndTimeOptions = () => {
+    if (!selectedSlot) return [];
+    const allPossibleSlots = [...SLOTS, '19:30', '20:00', '20:30', '21:00'];
+    const idx = allPossibleSlots.indexOf(selectedSlot);
+    if (idx === -1) return [];
+    return allPossibleSlots.slice(idx + 1);
+  };
+
   // ── Slot Action Sheet ──────────────────────────────────────────
   const renderSlotSheet = () => {
     if (!showSlotSheet) return null;
@@ -2121,85 +2179,168 @@ Grande abraço, Jon.`;
     const isUnlocked = localStorage.getItem(`unlock_${currentDate}_${selectedSlot}`) === 'true';
     const isLocked = isDefaultLunchBlock && !isUnlocked;
 
+    const endOptions = getBlockEndTimeOptions();
+
     return (
-      <div className="m-overlay" onClick={() => setShowSlotSheet(false)}>
+      <div className="m-overlay" onClick={() => { setShowSlotSheet(false); setIsBlockingRange(false); }}>
         <div className="m-sheet" onClick={e => e.stopPropagation()}>
           <div className="m-sheet-handle"/>
           <div className="m-sheet-header">
-            <div className="m-sheet-title">Horário {selectedSlot}</div>
-            <button onClick={() => setShowSlotSheet(false)} className="m-icon-btn"><X size={18}/></button>
+            <div className="m-sheet-title">
+              {isBlockingRange ? 'Bloquear Horário(s)' : `Horário ${selectedSlot}`}
+            </div>
+            <button onClick={() => { setShowSlotSheet(false); setIsBlockingRange(false); }} className="m-icon-btn"><X size={18}/></button>
           </div>
           <div className="m-sheet-body">
-            <div style={{ fontSize:'0.8rem', color:'var(--m-muted)', marginBottom:8 }}>
-              {fmtDate(currentDate)} · {isLocked ? 'Horário Bloqueado (Almoço)' : 'Horário Disponível'}
-            </div>
-            <div className="m-action-list">
-              {isLocked ? (
-                <button className="m-action-btn" onClick={() => {
-                  localStorage.setItem(`unlock_${currentDate}_${selectedSlot}`, 'true');
-                  setShowSlotSheet(false);
-                  showToast(`Horário ${selectedSlot} liberado para este dia!`, 'success');
-                }}>
-                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Check size={16}/></div>
-                  <div className="m-action-btn-text">
-                    <div className="m-action-btn-label">Liberar Horário</div>
-                    <div className="m-action-btn-sub">Permitir agendamentos neste dia</div>
-                  </div>
-                </button>
-              ) : (
-                <>
-                  <button className="m-action-btn" onClick={() => { setShowSlotSheet(false); setNbForm(prev => ({ ...prev, date: currentDate, time: selectedSlot })); setShowNewBookingSheet(true); }}>
-                    <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Plus size={16}/></div>
-                    <div className="m-action-btn-text">
-                      <div className="m-action-btn-label">Novo Agendamento</div>
-                      <div className="m-action-btn-sub">Criar reserva para este horário</div>
-                    </div>
-                  </button>
-                  <button className="m-action-btn" onClick={async () => {
-                    const payload = {
-                      clientName: 'Horário Bloqueado',
-                      clientPhone: '00000000000',
-                      clientEmail: '',
-                      service: { name: 'Bloqueio Administrativo', price: 0 },
-                      date: currentDate,
-                      time: selectedSlot,
-                      profissional: 'jon',
-                      notes: 'Bloqueio administrativo',
-                      status: 'bloqueado',
-                      createdAt: new Date().toISOString()
-                    };
-                    if (db) {
-                      const ref = await addDoc(collection(db, 'bookings'), payload);
-                      setBookings(prev => [...prev, { id: ref.id, ...payload }]);
-                    } else {
-                      const fakeId = 'demo-block-' + Date.now();
-                      setBookings(prev => [...prev, { id: fakeId, ...payload }]);
-                    }
-                    setShowSlotSheet(false);
-                    showToast(`Horário ${selectedSlot} bloqueado!`, 'info');
-                  }}>
-                    <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><AlertCircle size={16}/></div>
-                    <div className="m-action-btn-text">
-                      <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Bloquear Horário</div>
-                      <div className="m-action-btn-sub">Impedir agendamentos neste horário</div>
-                    </div>
-                  </button>
-                  {isDefaultLunchBlock && isUnlocked && (
+            {!isBlockingRange ? (
+              <>
+                <div style={{ fontSize:'0.8rem', color:'var(--m-muted)', marginBottom:8 }}>
+                  {fmtDate(currentDate)} · {isLocked ? 'Horário Bloqueado (Almoço)' : 'Horário Disponível'}
+                </div>
+                <div className="m-action-list">
+                  {isLocked ? (
                     <button className="m-action-btn" onClick={() => {
-                      localStorage.removeItem(`unlock_${currentDate}_${selectedSlot}`);
+                      localStorage.setItem(`unlock_${currentDate}_${selectedSlot}`, 'true');
                       setShowSlotSheet(false);
-                      showToast(`Horário ${selectedSlot} bloqueado novamente!`, 'info');
+                      showToast(`Horário ${selectedSlot} liberado para este dia!`, 'success');
                     }}>
-                      <div className="m-action-btn-icon" style={{ background:'var(--m-red-bg)', color:'var(--m-red)' }}><X size={16}/></div>
+                      <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Check size={16}/></div>
                       <div className="m-action-btn-text">
-                        <div className="m-action-btn-label" style={{ color: 'var(--m-red)' }}>Bloquear Novamente</div>
-                        <div className="m-action-btn-sub">Restaurar bloqueio de almoço</div>
+                        <div className="m-action-btn-label">Liberar Horário</div>
+                        <div className="m-action-btn-sub">Permitir agendamentos neste dia</div>
                       </div>
                     </button>
+                  ) : (
+                    <>
+                      <button className="m-action-btn" onClick={() => { setShowSlotSheet(false); setNbForm(prev => ({ ...prev, date: currentDate, time: selectedSlot })); setShowNewBookingSheet(true); }}>
+                        <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Plus size={16}/></div>
+                        <div className="m-action-btn-text">
+                          <div className="m-action-btn-label">Novo Agendamento</div>
+                          <div className="m-action-btn-sub">Criar reserva para este horário</div>
+                        </div>
+                      </button>
+                      <button className="m-action-btn" onClick={() => {
+                        const defaultEndMin = timeToMin(selectedSlot) + 60;
+                        const defaultEndTime = minToTime(defaultEndMin);
+                        setBlockEndTime(endOptions.includes(defaultEndTime) ? defaultEndTime : (endOptions[0] || ''));
+                        setBlockMotive('');
+                        setIsBlockingRange(true);
+                      }}>
+                        <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><AlertCircle size={16}/></div>
+                        <div className="m-action-btn-text">
+                          <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Bloquear Horário(s)</div>
+                          <div className="m-action-btn-sub">Impedir agendamentos neste horário ou intervalo</div>
+                        </div>
+                      </button>
+                      {isDefaultLunchBlock && isUnlocked && (
+                        <button className="m-action-btn" onClick={() => {
+                          localStorage.removeItem(`unlock_${currentDate}_${selectedSlot}`);
+                          setShowSlotSheet(false);
+                          showToast(`Horário ${selectedSlot} bloqueado novamente!`, 'info');
+                        }}>
+                          <div className="m-action-btn-icon" style={{ background:'var(--m-red-bg)', color:'var(--m-red)' }}><X size={16}/></div>
+                          <div className="m-action-btn-text">
+                            <div className="m-action-btn-label" style={{ color: 'var(--m-red)' }}>Bloquear Novamente</div>
+                            <div className="m-action-btn-sub">Restaurar bloqueio de almoço</div>
+                          </div>
+                        </button>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </div>
+                </div>
+              </>
+            ) : (
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const startMin = timeToMin(selectedSlot);
+                const endMin = timeToMin(blockEndTime || selectedSlot);
+                const duration = endMin > startMin ? (endMin - startMin) : 60;
+
+                const payload = {
+                  clientName: 'Horário Bloqueado',
+                  clientPhone: '00000000000',
+                  clientEmail: '',
+                  service: { name: 'Bloqueio Administrativo', price: 0 },
+                  date: currentDate,
+                  time: selectedSlot,
+                  profissional: 'jon',
+                  notes: blockMotive || 'Bloqueio administrativo',
+                  status: 'bloqueado',
+                  duration: duration,
+                  createdAt: new Date().toISOString()
+                };
+
+                if (db) {
+                  const ref = await addDoc(collection(db, 'bookings'), payload);
+                  setBookings(prev => [...prev, { id: ref.id, ...payload }]);
+                } else {
+                  const fakeId = 'demo-block-' + Date.now();
+                  setBookings(prev => [...prev, { id: fakeId, ...payload }]);
+                }
+
+                setShowSlotSheet(false);
+                setIsBlockingRange(false);
+                showToast(`Horário(s) bloqueado(s) de ${selectedSlot} até ${blockEndTime || minToTime(startMin + 60)}!`, 'info');
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Início</label>
+                      <input 
+                        type="text" 
+                        value={selectedSlot} 
+                        readOnly 
+                        className="m-input" 
+                        style={{ background: 'var(--m-card-border)', color: 'var(--m-text)' }} 
+                      />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Término</label>
+                      <select 
+                        value={blockEndTime} 
+                        onChange={e => setBlockEndTime(e.target.value)} 
+                        className="m-input" 
+                        style={{ background: 'var(--m-card)', color: 'var(--m-text)', border: '1px solid var(--m-card-border)', height: '40px', borderRadius: '8px', padding: '0 8px' }}
+                      >
+                        {endOptions.map(t => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Motivo / Observações</label>
+                    <input 
+                      type="text" 
+                      placeholder="Ex: Almoço, Folga, Reunião, Curso..." 
+                      value={blockMotive} 
+                      onChange={e => setBlockMotive(e.target.value)} 
+                      className="m-input" 
+                      style={{ background: 'var(--m-card)', color: 'var(--m-text)', border: '1px solid var(--m-card-border)', height: '40px', borderRadius: '8px', padding: '0 12px', width: '100%', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => setIsBlockingRange(false)} 
+                      className="m-btn secondary" 
+                      style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid var(--m-card-border)', background: 'transparent', color: 'var(--m-text)', cursor: 'pointer' }}
+                    >
+                      Voltar
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="m-btn primary" 
+                      style={{ flex: 1, padding: '12px', borderRadius: '8px', background: 'var(--m-red)', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
+                    >
+                      Confirmar Bloqueio
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </div>
