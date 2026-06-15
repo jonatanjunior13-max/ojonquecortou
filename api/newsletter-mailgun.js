@@ -19,7 +19,7 @@ try {
 }
 
 // A chave do Mailgun está armazenada na variável RESEND_API_KEY na Vercel
-const MAILGUN_API_KEY = process.env.RESEND_API_KEY;
+const MAILGUN_API_KEY = (process.env.RESEND_API_KEY || '').trim();
 const MAILGUN_DOMAIN = 'mg.ojonquecortou.com.br';
 const FROM_EMAIL = '"O Jon Que Cortou" <contato@ojonquecortou.com.br>';
 const UNSUBSCRIBE_BASE = 'https://ojonquecortou.com.br/api/unsubscribe?email=';

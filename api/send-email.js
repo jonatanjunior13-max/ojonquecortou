@@ -677,7 +677,7 @@ export default async function handler(req, res) {
   
   // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
   const isLaunchCampaign = type === 'launch_campaign';
-  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendApiKey = (process.env.RESEND_API_KEY || '').trim();
   const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
   const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (hasSmtpConfig || (isLaunchCampaign && resendApiKey));
 
@@ -1113,7 +1113,7 @@ export default async function handler(req, res) {
 
     if (shouldSendClientEmail) {
       const isLaunchCampaign = type === 'launch_campaign';
-      const resendApiKey = process.env.RESEND_API_KEY;
+      const resendApiKey = (process.env.RESEND_API_KEY || '').trim();
 
       if (isLaunchCampaign && resendApiKey) {
         try {
