@@ -3440,6 +3440,38 @@ Grande abraço, Jon.`;
               >
                 Editar
               </button>
+              {activePopover.booking.status !== 'cancelado' && (
+                <button 
+                  className="btn" 
+                  style={{ 
+                    padding: '4px 8px', 
+                    fontSize: '0.75rem', 
+                    flexGrow: 1,
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    color: '#ef4444',
+                    borderColor: '#ef4444',
+                    borderStyle: 'solid',
+                    borderWidth: '1px'
+                  }}
+                  onClick={() => {
+                    if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                      handleUpdateStatus(activePopover.booking.id, 'cancelado');
+                      setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                    }
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#ef4444';
+                    e.currentTarget.style.color = '#fff';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                    e.currentTarget.style.color = '#ef4444';
+                    e.currentTarget.style.borderColor = '#ef4444';
+                  }}
+                >
+                  Cancelar
+                </button>
+              )}
               {activePopover.booking.status === 'confirmado' && (
                 <button
                   className="btn btn-accent"
