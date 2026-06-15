@@ -314,9 +314,34 @@ export default function AdminMobileApp() {
 
   // ── Firebase Listeners ─────────────────────────────────────────
   useEffect(() => {
-    if (!db) {
+    const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
+
+    const loadDemoData = () => {
+      try {
+        setBookings(JSON.parse(localStorage.getItem('demo_bookings')) || []);
+        setClients(JSON.parse(localStorage.getItem('demo_client_profiles')) || []);
+        setTransactions(JSON.parse(localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions')) || []);
+        setServices(JSON.parse(localStorage.getItem('demo_services')) || []);
+        setInventory(JSON.parse(localStorage.getItem('demo_products')) || []);
+        setPackages(JSON.parse(localStorage.getItem('demo_packages')) || []);
+        setSettings(JSON.parse(localStorage.getItem('demo_settings')) || {
+          name: 'Studio do Jon (Demo)',
+          professionals: [{ id: 'jon', name: 'Jon', active: true }]
+        });
+        setGalleryPhotos(JSON.parse(localStorage.getItem('demo_gallery')) || []);
+      } catch (e) {
+        console.error("Error loading demo data in mobile app:", e);
+      }
       setLoading(false);
+    };
+
+    if (!db) {
       setAuthReady(true);
+      if (isLocalLogged) {
+        loadDemoData();
+      } else {
+        navigate('/admin/login');
+      }
       return;
     }
 
@@ -325,8 +350,13 @@ export default function AdminMobileApp() {
 
     const unsubAuth = onAuthStateChanged(auth, (user) => {
       setAuthReady(true);
-      if (!user) {
+      if (!user && !isLocalLogged) {
         navigate('/admin/login');
+        return;
+      }
+
+      if (!user && isLocalLogged) {
+        loadDemoData();
         return;
       }
 
