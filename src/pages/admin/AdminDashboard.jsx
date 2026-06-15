@@ -274,11 +274,7 @@ const AdminDashboard = () => {
   const [showEditSuggestions, setShowEditSuggestions] = useState(false);
 
   // New States for Trinks layout
-  const [currentDate, setCurrentDate] = useState(() => {
-    const d = new Date();
-    if (d.getFullYear() === 2026) d.setFullYear(2025);
-    return d;
-  });
+  const [currentDate, setCurrentDate] = useState(() => new Date());
   const [viewMode, setViewMode] = useState('diario'); // 'diario' | 'semanal' | 'mensal'
   const [selectedWeeklyMonthlyProf, setSelectedWeeklyMonthlyProf] = useState('jon');
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
@@ -293,11 +289,7 @@ const AdminDashboard = () => {
   });
   const [waFilter, setWaFilter] = useState('todos');
   const [selectedProfs, setSelectedProfs] = useState(['jon']);
-  const [miniCalDate, setMiniCalDate] = useState(() => {
-    const d = new Date();
-    if (d.getFullYear() === 2026) d.setFullYear(2025);
-    return d;
-  });
+  const [miniCalDate, setMiniCalDate] = useState(() => new Date());
   const [clipboard, setClipboard] = useState(null); // { booking: obj, action: 'copy'|'cut' }
   const [showDetailedStats, setShowDetailedStats] = useState(false);
   const [statsScope, setStatsScope] = useState('dia'); // 'dia', 'semana', 'mes'
@@ -531,11 +523,7 @@ const AdminDashboard = () => {
     serviceName: '',
     servicePrice: 0,
     duration: 60,
-    date: (() => {
-      const d = new Date();
-      if (d.getFullYear() === 2026) d.setFullYear(2025);
-      return getLocalDateString(d);
-    })(),
+    date: getLocalDateString(new Date()),
     time: '09:00',
     notes: '',
     profissional: 'jon',

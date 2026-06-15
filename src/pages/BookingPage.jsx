@@ -20,11 +20,7 @@ import { SEED_SERVICES } from '../data/seedServices';
 // Helper: gera datas disponíveis para agendamento (próximos 60 dias, respeitando folgas e bloqueios)
 const getAvailableDates = (prof) => {
   const dates = [];
-  const today = (() => {
-    const d = new Date();
-    if (d.getFullYear() === 2026) d.setFullYear(2025);
-    return d;
-  })();
+  const today = new Date();
   
   const daysOff = prof && prof.daysOff !== undefined ? prof.daysOff : [0, 1];
   const blockedDates = prof && prof.blockedDates ? prof.blockedDates : [];
