@@ -808,8 +808,21 @@ function generateSitemap(pagesList) {
   return xml;
 }
 
+// Helper to generate the sitemap.txt dynamically (one URL per line)
+function generateSitemapTxt(pagesList) {
+  return pagesList.map(page => {
+    return `https://www.ojonquecortou.com.br${page.route === '/' ? '' : page.route}`;
+  }).join('\n');
+}
+
 console.log('Generating dynamic sitemap.xml...');
 const sitemapXml = generateSitemap(pages);
 fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemapXml);
 fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml);
 console.log('Sitemap.xml generated and updated successfully in public/ and dist/!');
+
+console.log('Generating dynamic sitemap.txt...');
+const sitemapTxt = generateSitemapTxt(pages);
+fs.writeFileSync(path.join(__dirname, '../public/sitemap.txt'), sitemapTxt);
+fs.writeFileSync(path.join(distDir, 'sitemap.txt'), sitemapTxt);
+console.log('Sitemap.txt generated and updated successfully in public/ and dist/!');
