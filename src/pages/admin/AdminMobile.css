@@ -910,11 +910,87 @@
   width: auto;
 }
 
-/* ── FAB ───────────────────────────────────────────────────────────── */
-.m-fab {
+/* ── FAB Speed-Dial ────────────────────────────────────────────────── */
+.m-fab-container {
   position: fixed;
   bottom: calc(var(--nav-h) + 16px);
   right: 16px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Backdrop escurece quando speed-dial está aberto */
+.m-fab-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 12, 11, 0.6);
+  z-index: 199;
+  animation: mOverlayIn 0.2s ease both;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Botões do speed-dial */
+.m-fab-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.m-fab-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  padding: 0;
+  animation: fabActionIn 0.25s var(--m-ease) both;
+}
+
+@keyframes fabActionIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.85); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.m-fab-action:nth-child(1) { animation-delay: 0.05s; }
+.m-fab-action:nth-child(2) { animation-delay: 0.10s; }
+.m-fab-action:nth-child(3) { animation-delay: 0.15s; }
+.m-fab-action:nth-child(4) { animation-delay: 0.20s; }
+
+.m-fab-action-label {
+  background: var(--m-surface);
+  border: 0.5px solid var(--m-rule-strong);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--m-text);
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+}
+
+.m-fab-action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.35);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+.m-fab-action:active .m-fab-action-icon { transform: scale(0.92); }
+
+/* Botão principal FAB */
+.m-fab {
   width: 52px;
   height: 52px;
   border-radius: 50%;
@@ -926,12 +1002,18 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(220,163,84,0.40);
-  z-index: 50;
-  transition: all 0.2s var(--m-ease);
+  transition: all 0.25s var(--m-ease);
   font-family: inherit;
+  flex-shrink: 0;
 }
 .m-fab:active { transform: scale(0.92); }
-.m-fab.open { transform: rotate(45deg); background: var(--m-red); box-shadow: 0 4px 20px rgba(226,75,74,0.30); }
+.m-fab.open {
+  transform: rotate(45deg);
+  background: var(--m-surface);
+  border: 1.5px solid var(--m-rule-strong);
+  color: var(--m-text);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
 
 /* ── Modal Overlay ─────────────────────────────────────────────────── */
 .m-overlay {

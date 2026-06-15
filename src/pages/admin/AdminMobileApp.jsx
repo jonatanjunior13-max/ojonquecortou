@@ -1573,25 +1573,50 @@ Grande abraço, Jon.`;
         await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
       }
 
+      // Saída de produto SEMPRE debita o custo (não o preço de venda)
+      // Venda avulsa = entrada de caixa pelo preço de venda; mas a saída de estoque
+      // gera uma despesa de custo (custo da mercadoria). Uso interno = só despesa de custo.
+      const costVal = (product.costPrice || 0) * qty;
       const isSale = prodExitType === 'venda';
-      const val = isSale ? (product.sellingPrice * qty) : (product.costPrice * qty);
-      const txData = {
-        type: isSale ? 'entrada' : 'saida',
+      const txDataList = [];
+
+      // Sempre lança saída de custo do estoque
+      txDataList.push({
+        type: 'saida',
         category: 'estoque',
-        value: val,
+        value: costVal,
         description: isSale
-          ? `Venda Avulsa de Produto: ${product.name} (x${qty})`
+          ? `CMV - Venda Avulsa: ${product.name} (x${qty})`
           : `Uso do Salão: ${product.name} (-${qty} un.)`,
         date: today(),
-        paymentMethod: 'Pix',
         createdAt: new Date().toISOString()
-      };
+      });
 
-      if (db) {
-        await addDoc(collection(db, 'financial_transactions'), txData);
+      // Se for venda, lança também a entrada pelo preço de venda
+      if (isSale && product.sellingPrice) {
+        txDataList.push({
+          type: 'entrada',
+          category: 'estoque',
+          value: (product.sellingPrice || 0) * qty,
+          description: `Venda Avulsa: ${product.name} (x${qty})`,
+          date: today(),
+          paymentMethod: 'Pix',
+          createdAt: new Date().toISOString()
+        });
       }
 
-      showToast(isSale ? 'Venda registrada com sucesso! 💰' : 'Saída por uso registrada! 💸', 'success');
+      if (db) {
+        for (const txData of txDataList) {
+          await addDoc(collection(db, 'financial_transactions'), txData);
+        }
+      }
+      setInventory(prev => prev.map(p => p.id === product.id ? { ...p, quantity: newQty } : p));
+      setTransactions(prev => [
+        ...txDataList.map(tx => ({ id: Date.now().toString() + Math.random(), ...tx })),
+        ...prev
+      ]);
+
+      showToast(isSale ? 'Venda registrada! 💰 Custo debitado do caixa.' : 'Saída por uso registrada! 💸', 'success');
       setShowProductExitSheet(false);
       setProdExitSelectedId('');
       setProdExitQuantity(1);
@@ -3906,55 +3931,8 @@ Grande abraço, Jon.`;
   };
 
   // ── FAB Menu Sheet ──────────────────────────────────────────────
-  const renderFabMenu = () => {
-    if (!showFabMenu) return null;
-    return (
-      <div className="m-overlay" onClick={() => setShowFabMenu(false)}>
-        <div className="m-sheet" onClick={e => e.stopPropagation()}>
-          <div className="m-sheet-handle"/>
-          <div className="m-sheet-header">
-            <div className="m-sheet-title">Ações Rápidas</div>
-            <button onClick={() => setShowFabMenu(false)} className="m-icon-btn"><X size={18}/></button>
-          </div>
-          <div className="m-sheet-body" style={{ paddingBottom: 24 }}>
-            <div className="m-action-list">
-              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Users size={16}/></div>
-                <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Cadastrar Cliente</div>
-                  <div className="m-action-btn-sub">Adicionar novo perfil de cliente</div>
-                </div>
-              </button>
-
-              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setQbDate(currentDate); setShowQuickBlockSheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><Lock size={16}/></div>
-                <div className="m-action-btn-text">
-                  <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Registrar Ausência</div>
-                  <div className="m-action-btn-sub">Bloquear agenda: folga, compromisso ou feriado</div>
-                </div>
-              </button>
-
-              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowProductEntrySheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Package size={16}/></div>
-                <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Entrada de Produto</div>
-                  <div className="m-action-btn-sub">Adicionar produto ou repor estoque</div>
-                </div>
-              </button>
-
-              <button className="m-action-btn" onClick={() => { setShowFabMenu(false); setShowProductExitSheet(true); }}>
-                <div className="m-action-btn-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Package size={16}/></div>
-                <div className="m-action-btn-text">
-                  <div className="m-action-btn-label">Saída de Produto</div>
-                  <div className="m-action-btn-sub">Registrar venda ou uso interno de produto</div>
-                </div>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // renderFabMenu: não é mais usado (speed-dial é inline no JSX)
+  const renderFabMenu = () => null;
 
   // ── Product Exit Sheet ──────────────────────────────────────────
   const renderProductExitSheet = () => {
@@ -4310,16 +4288,42 @@ Grande abraço, Jon.`;
         ))}
       </nav>
 
-      {/* FAB */}
+      {/* Speed-Dial FAB */}
       {(tab === 'hoje' || tab === 'agenda') && (
-        <button className="m-fab" onClick={() => setShowFabMenu(true)}>
-          <Plus size={22}/>
-        </button>
+        <>
+          {showFabMenu && <div className="m-fab-backdrop" onClick={() => setShowFabMenu(false)} />}
+          <div className="m-fab-container">
+            {showFabMenu && (
+              <div className="m-fab-actions">
+                {/* Saida de Produto */}
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowProductExitSheet(true); }}>
+                  <span className="m-fab-action-label">Saída de Produto</span>
+                  <span className="m-fab-action-icon" style={{ background:'rgba(101,146,255,0.15)', color:'var(--m-blue)' }}><Package size={18}/></span>
+                </button>
+                {/* Cadastrar Cliente */}
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
+                  <span className="m-fab-action-label">Cadastrar Cliente</span>
+                  <span className="m-fab-action-icon" style={{ background:'rgba(52,199,89,0.15)', color:'var(--m-green)' }}><Users size={18}/></span>
+                </button>
+                {/* Criar Agendamento */}
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowNewBookingSheet(true); }}>
+                  <span className="m-fab-action-label">Criar Agendamento</span>
+                  <span className="m-fab-action-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Calendar size={18}/></span>
+                </button>
+              </div>
+            )}
+            <button className={`m-fab ${showFabMenu ? 'open' : ''}`} onClick={() => setShowFabMenu(v => !v)}>
+              <Plus size={22}/>
+            </button>
+          </div>
+        </>
       )}
       {tab === 'galeria' && (
-        <button className="m-fab" onClick={() => galleryInputRef.current?.click()}>
-          <Camera size={22}/>
-        </button>
+        <div className="m-fab-container">
+          <button className="m-fab" onClick={() => galleryInputRef.current?.click()}>
+            <Camera size={22}/>
+          </button>
+        </div>
       )}
 
       {/* Toast */}
