@@ -2,7 +2,7 @@ export const posts = [
   {
     id: 39,
     slug: 'voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz',
-    title: 'Você Tem Cabelo Ondulado e Não Sabe? O Mistério do "Liso com Frizz" Desvendado | Studio do Jon',
+    title: 'Você Tem Cabelo Ondulado e Não Sabe? | Jon',
     excerpt: 'Acha que seu cabelo é liso, indisciplinado e cheio de frizz? Descubra se você na verdade tem cabelos ondulados e como cuidar deles para revelar ondas perfeitas.',
     metaDescription: 'Cabelo liso com frizz ou ondulado? Descubra como identificar cabelos ondulados (2A, 2B, 2C) e aprenda a cuidar deles com dicas de especialista em BH.',
     keywords: 'cabelo ondulado, liso com frizz, cabelo ondulado 2b 2c, como saber se meu cabelo e ondulado, studio do jon, belo horizonte',
@@ -90,7 +90,7 @@ export const posts = [
   {
     id: 38,
     slug: 'cabelo-cacheado-inverno-bh-frizz-ressecamento',
-    title: 'Cabelo Cacheado no Inverno de BH: O Guia de Sobrevivência contra o Frizz e Ressecamento | Studio do Jon',
+    title: 'Cabelo Cacheado no Inverno de BH | Jon',
     excerpt: 'O inverno em Belo Horizonte traz um clima extremamente seco que rouba a umidade dos cachos. Aprenda como adaptar sua rotina de cuidados para combater o frizz e o ressecamento.',
     metaDescription: 'Como cuidar de cabelos cacheados e crespos no inverno seco de Belo Horizonte. Dicas de especialista para combater o frizz e manter a hidratação.',
     keywords: 'cabelo cacheado inverno bh, frizz cabelo cacheado bh, ressecamento cachos, hidratar cachos inverno, studio do jon, belo horizonte',
@@ -166,7 +166,7 @@ export const posts = [
   {
     id: 37,
     slug: 'leitura-de-fio-metodo-exclusivo-studio-do-jon',
-    title: 'Leitura de Fio: O Método Exclusivo que Acontece Antes de Qualquer Tesoura | Studio do Jon',
+    title: 'Leitura de Fio: O Método Exclusivo | Jon',
     excerpt: 'Leitura de Fio é o método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes do corte. Entenda por que ler o cabelo é mais importante do que a tesoura em si.',
     metaDescription: 'Leitura de Fio é o método de diagnóstico do Studio do Jon em BH. Entenda por que analisar o cabelo é mais importante do que a tesoura em si.',
     keywords: 'leitura de fio, metodo leitura de fio, corte cabelo cacheado bh, visagismo cacheado belo horizonte, studio do jon',
@@ -303,7 +303,7 @@ export const posts = [
   {
     id: 36,
     slug: 'shaggy-cacheado-corte-seco',
-    title: 'Shaggy Cacheado e Corte a Seco: O Guia do Volume e Definição | Studio do Jon',
+    title: 'Shaggy Cacheado e Corte a Seco | Jon',
     excerpt: 'Quer volume com caimento perfeito? Entenda como o corte shaggy cacheado feito a seco com visagismo evita o efeito pirâmide.',
     metaDescription: 'Shaggy em cabelo cacheado exige corte a seco. Veja como o corte é feito, o resultado esperado e por que a ordem das camadas importa muito.',
     keywords: 'shaggy cacheado, corte a seco bh, visagismo cabelo cacheado bh, corte de cabelo cacheado belo horizonte, efeito piramide cabelo, corte seco cacheadas',
@@ -355,7 +355,7 @@ export const posts = [
   {
     id: 35,
     slug: 'cacho-vs-crespo-qual-diferenca',
-    title: 'Cacho vs Crespo: Qual é a Diferença e Como Cuidar de Cada Um | Studio do Jon',
+    title: 'Cacho vs Crespo: Qual é a Diferença | Jon',
     excerpt: 'Descubra a diferença real entre cabelo cacheado e crespo. Aprenda a identificar o seu tipo e qual rotina funciona. Especialista em BH.',
     metaDescription: 'Cacho e crespo não são iguais. Entenda a classificação do 3A ao 4C, e o que muda na hidratação, no corte e na finalização de cada fio.',
     keywords: 'cacho vs crespo, diferenca cacho e crespo, cabelo cacheado, cabelo crespo, transicao capilar, cuidar de cachos, cuidar de crespo',
@@ -455,7 +455,7 @@ export const posts = [
   {
     id: 34,
     slug: 'secagem-cachos-difusor-vs-natural',
-    title: 'Secagem de Cachos: Difusor ou Natural? Como Adaptar à Sua Rotina | Studio do Jon',
+    title: 'Secagem de Cachos: Difusor ou Natural? | Jon',
     excerpt: 'Saber secar o cabelo cacheado e o segredo para uma definicao que dura dias Aprenda quando usar o difusor e quando deixar secar natural',
     metaDescription: 'Difusor define mais, secagem natural preserva o fio. Especialista em cachos em BH compara os dois métodos e diz quando usar cada um.',
     keywords: 'secagem cabelo cacheado difusor ou natural como usar difusor finalizar cabelo cacheado definindo cachos',
@@ -519,7 +519,7 @@ export const posts = [
   {
     id: 33,
     slug: 'guia-completo-produtos-cabelo-cacheado-2026',
-    title: 'Guia Completo de Produtos para Cabelo Cacheado 2026: O Que Comprar e O Que Evitar | Studio do Jon',
+    title: 'Guia de Produtos para Cabelo Cacheado | Jon',
     excerpt: 'Descubra como escolher xampus, condicionadores, máscaras e finalizadores baseados no seu tipo de cacho, onde vale a pena investir e o mito da proteína.',
     metaDescription: 'Shampoo, condicionador, creme e finalizador: o que realmente importa e onde investir seu dinheiro. Guia prático de especialista em cachos em BH.',
     keywords: 'produtos cabelo cacheado, melhor gel cabelo cacheado, xampu low poo, máscara cabelo crespo, cronograma capilar produtos, produtos transição capilar',
@@ -667,7 +667,7 @@ export const posts = [
   {
     id: 32,
     slug: 'rotina-basica-cabelo-cacheado-cronograma',
-    title: 'Rotina Básica para Cabelo Cacheado: Cronograma que Funciona de Verdade | Studio do Jon',
+    title: 'Rotina Básica para Cabelo Cacheado | Jon',
     excerpt: 'Descubra a rotina ideal para cabelos cacheados em 2026. Cronograma capilar (H, N, R), frequência de lavagem e produtos essenciais que fazem diferença real...',
     metaDescription: 'Cronograma capilar simplificado: o que fazer em cada lavagem para manter cachos saudáveis e definidos. Rotina validada por especialista em BH.',
     keywords: 'rotina cabelo cacheado, cronograma capilar cacheado, hidratação nutrição reconstrução, como cuidar cabelo cacheado, produtos para cacho, rotina weekly curly hair',
@@ -769,7 +769,7 @@ export const posts = [
   {
     id: 31,
     slug: 'penteados-cabelo-cacheado',
-    title: 'Penteados para Cabelo Cacheado: 5 Opções Práticas e Chiques | Studio do Jon',
+    title: 'Penteados para Cabelo Cacheado | Jon',
     excerpt: 'Descubra os melhores penteados para cabelos cacheados em 2026. Da praia ao trabalho, técnicas que realçam e não danificam seus cachos...',
     metaDescription: '5 penteados práticos para cabelo cacheado que funcionam no dia a dia, sem estragar a definição. Opções indicadas por especialista em cachos em BH.',
     keywords: 'penteados cabelo cacheado, penteado preso cacho, coque cabelo cacheado, rabo de cavalo cacheado, tranças cabelo cacheado, penteado dia a dia, styles curly hair',
@@ -933,7 +933,7 @@ export const posts = [
   {
     id: 30,
     slug: 'frequencia-de-corte-cabelo-cacheado',
-    title: 'Frequência de Corte para Cabelo Cacheado: Saiba Exatamente Quando Cortar | Studio do Jon',
+    title: 'Frequência de Corte para Cabelo Cacheado | Jon',
     excerpt: 'Descubra com que frequência você deve cortar seu cabelo cacheado. Técnica profissional, diferenças por tipo de corte e como evitar pontinhas duplas...',
     metaDescription: 'Qual a frequência ideal de corte para cabelo cacheado? Especialista em cachos em BH explica o tempo certo para cada curvatura e tipo de fio.',
     keywords: 'frequência corte cabelo cacheado, de quanto em quanto cortar cacho, quando cortar cabelo cacheado, quantas semanas cortar cabelo, cacho saudável',
@@ -1039,7 +1039,7 @@ export const posts = [
   {
     id: 29,
     slug: 'cronograma-capilar-cabelo-cacheado',
-    title: 'Cronograma Capilar para Cabelo Cacheado: O Que Ninguém Te Conta Antes de Começar | Studio do Jon',
+    title: 'Cronograma Capilar para Cabelo Cacheado | Jon',
     excerpt: 'O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. Descubra como ler o fio antes de montar qualquer protocolo.',
     metaDescription: 'Cronograma capilar feito errado resseca o cabelo. Especialista em cachos em BH ensina a montar uma rotina para a porosidade real do seu fio.',
     keywords: 'cronograma capilar para cabelo cacheado, cronograma capilar crespo, como montar cronograma capilar, hidratação nutrição reconstrução cabelo cacheado, cronograma capilar porosidade',
@@ -1178,7 +1178,7 @@ export const posts = [
   {
     id: 28,
     slug: '3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos',
-    title: '3 Coisas que um Especialista em Cachos NUNCA Faria no Próprio Cabelo | Studio do Jon',
+    title: '3 Coisas que um Especialista em Cachos NUNCA Faria | Jon',
     excerpt: 'Muitas vezes, a maior dificuldade não é falta de produtos caros, mas hábitos que sabotam a curvatura. Listei 3 coisas que jamais faria no meu cabelo.',
     metaDescription: 'Conheça os 3 erros comuns que destroem a definição de cabelos cacheados e crespos, e saiba como evitá-los. Dicas de especialista em cachos em BH.',
     keywords: 'Especialista em cachos BH, leitura de fio, transição capilar, cuidados com cabelo natural.',
@@ -1210,7 +1210,7 @@ export const posts = [
   {
     id: 26,
     slug: 'ph-capilar-cachos-brilho-definicao',
-    title: 'pH Capilar: O Segredo Matemático para Fechar as Cutículas e Dar Brilho aos Cachos | Studio do Jon',
+    title: 'pH Capilar: Segredo para Fechar as Cutículas | Jon',
     excerpt: 'Você usa as melhores máscaras do mercado, mas o seu cabelo continua opaco e "farofado"? O problema não é falta de produto, é falta de estabilidade química. Entenda como o pH dita o brilho do seu cacho.',
     metaDescription: 'pH fora do equilíbrio causa frizz e opacidade. Especialista em cachos em BH explica o pH ideal e como usar isso na sua rotina de cuidados.',
     keywords: 'pH capilar cachos, acidificação capilar bh, como dar brilho no cabelo cacheado, cutícula aberta cachos, cabelo poroso solução, studio do jon, o jon que cortou, especialista em cachos bh',
@@ -1269,7 +1269,7 @@ export const posts = [
   {
     id: 25,
     slug: 'wolf-cut-cabelos-cacheados-tendencia',
-    title: 'Wolf Cut para Cabelos Cacheados: O Corte Lobo que Virou Tendência | Studio do Jon',
+    title: 'Wolf Cut para Cabelos Cacheados | Jon',
     excerpt: 'Combinação explosiva entre o Shag dos anos 70 e o Mullet dos 80. Descubra como o Wolf Cut valoriza cabelos cacheados com volume e atitude selvagem.',
     metaDescription: 'Wolf cut em cabelo cacheado exige técnica. Entenda como funciona o corte lobo em cachos e o que pode dar errado se o cabeleireiro errar a leitura.',
     keywords: 'wolf cut cacheado, corte lobo cabelo cacheado, wolf cut para cachos, wolf cut 2026, corte selvagem cacho, studio do jon, o jon que cortou',
@@ -1327,7 +1327,7 @@ export const posts = [
   {
     id: 24,
     slug: 'shag-cacheado-corte-tendencia-2026',
-    title: 'Shag Cacheado: O Corte que Vai Dominar 2026 (e Como Não Errar) | Studio do Jon',
+    title: 'Shag Cacheado: O Corte que Vai Dominar | Jon',
     excerpt: 'O corte setentista bagunçado voltou com tudo. Descubra por que o shag cacheado exige técnica especializada e como ele valoriza o seu padrão de fio natural.',
     metaDescription: 'O shag cacheado é tendência in 2026, mas feito errado vira bagunça. Especialista em cachos em BH explica como o corte funciona em cada curvatura.',
     keywords: 'shag cacheado, corte shag bh, tendências corte 2026, corte em camadas cachos, visagismo cacheado, cabeleireiro bh, studio do jon, o jon que cortou',
@@ -1428,7 +1428,7 @@ export const posts = [
   {
     id: 23,
     slug: 'melhores-cortes-cabelo-cacheado-masculino-2026',
-    title: 'Corte de Cabelo Cacheado Masculino: Estilos em Alta para 2026 | Studio do Jon',
+    title: 'Corte Cacheado Masculino: Estilos em Alta | Jon',
     excerpt: 'Em vez de lutar contra o volume, leia o padrão do cacho. Descubra os cortes masculinos (shaggy, fade texturizado) que valorizam a textura natural sem dar trabalho.',
     metaDescription: 'Corte masculino cacheado para 2026: saiba qual funciona para seu tipo de cacho e como o especialista em BH valoriza a sua textura natural.',
     keywords: 'corte cabelo cacheado masculino, cabelo ondulado homem, cortes masculinos 2026, shaggy masculino, fade cacheado, corte cabelo crespo homem, visagismo homem, cabeleireiro especialista cabelo cacheado, corte moderno cabelo ondulado, como cuidar cabelo cacheado masculino, cabelo cacheado em alta, corte especializado cabelo cacheado, tapered cut cabelo cacheado, cabelo cacheado BH, especialista cabelo cacheado Belo Horizonte',
@@ -1496,7 +1496,7 @@ export const posts = [
   {
     id: 22,
     slug: 'corte-cabelo-cacheado-visagismo-influenciadora',
-    title: 'Aquele Corte que Ficou Lindo na Influenciadora Não Vai Ficar em Você | Studio do Jon',
+    title: 'Corte de Influenciadora Pode Não Ficar em Você | Jon',
     excerpt: 'Descubra por que o visagismo em cabelos cacheados e crespos vai muito além do formato do rosto e como a análise dupla (rosto + fio) muda o resultado do seu corte.',
     metaDescription: 'Copiar corte de influenciadora pode dar muito errado. Especialista em visagismo de cachos em BH explica como o caimento muda tudo no seu fio.',
     keywords: 'visagismo cabelo cacheado, corte que não deu certo, corte rosto redondo cacheado, leitura de fio BH, corte visagista cachos, cabeleireiro bh, studio do jon',
@@ -1572,7 +1572,7 @@ export const posts = [
   {
     id: 21,
     slug: 'botox-capilar-cabelo-cacheado-perigos',
-    title: 'Botox Capilar em Cabelo Cacheado: Seu Cacho Vai Alisar? | Studio do Jon',
+    title: 'Botox Capilar em Cabelo Cacheado | Jon',
     excerpt: 'Resposta direta: Sim. O botox não é tratamento, é uma reorganização química que destrói sua curvatura. Entenda os perigos e o "ciclo do vício" químico.',
     metaDescription: 'Botox capilar pode relaxar os cachos sem avisar. Especialista em cachos em BH explica o risco real e quando o procedimento é realmente seguro.',
     keywords: 'botox capilar estraga cachos, botox alisa cabelo cacheado, perigos do botox capilar, transição capilar bh, Studio do Jon, corte a seco bh, leitura de fio',
@@ -1634,7 +1634,7 @@ export const posts = [
   {
     id: 20,
     slug: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco',
-    title: 'Corte a Seco para Cabelo Cacheado: A Mentira que o Mercado Vende | Studio do Jon',
+    title: 'Corte a Seco para Cabelo Cacheado | Jon',
     excerpt: 'Cortar a seco virou a isca da internet, mas sem projeto geométrico você vira vítima de um fio mal lido. Entenda por que o corte para cabelo cacheado de sucesso exige arquitetura.',
     metaDescription: 'Nem todo corte a seco é igual. Especialista em cachos em BH explica o marketing por trás do termo e o que define um corte a seco feito correto.',
     keywords: 'corte para cabelo cacheado bh, mentira do corte a seco, cabeleireiro especialista em cachos caiçara, studio do jon, corte a seco crespo bh, leitura de fio',
@@ -1660,7 +1660,7 @@ export const posts = [
   {
     id: 19,
     slug: 'especialista-em-cabelo-cacheado-bh-texturas',
-    title: 'Três Texturas na Mesma Cabeça: A Visão de um Especialista em Cabelo Cacheado em BH | Studio do Jon',
+    title: 'Três Texturas na Mesma Cabeça | Jon',
     excerpt: 'Você joga o cabelo para o lado e parece que falta um pedaço no volume? Ter três texturas na mesma cabeça é biologia. Sair do salão com degraus é falta de arquitetura capilar.',
     metaDescription: 'Ter 2C, 3A e 3C no mesmo cabelo é normal, mas buraco no volume não. Especialista em cachos em BH explica como ler o fio antes do corte.',
     keywords: 'especialista em cabelo cacheado bh, cabelo com duas texturas, nuca lisa topo crespo, corte a seco bh, studio do jon, transição capilar bh, leitura de fio',
@@ -1696,7 +1696,7 @@ export const posts = [
   {
     id: 18,
     slug: 'corte-a-seco-cabelo-cacheado-bh-volume',
-    title: 'Corte a Seco Cacheado Deixou Buracos no Volume? Entenda o Que Aconteceu | Studio do Jon',
+    title: 'Corte a Seco Deixou Buracos no Volume? | Jon',
     excerpt: 'Cortar a seco sem ler a densidade da nuca não serve de nada. Entenda por que cortes genéricos deixam buracos no seu volume e como a arquitetura do cacho evita traumas.',
     metaDescription: 'Ficou com buraco no volume após o corte a seco? Especialista em cachos em BH explica a causa técnica e como saber se o problem é a finalização.',
     keywords: 'corte a seco cabelo cacheado bh, buraco no volume cacho, cabeleireiro especialista em cachos caiçara, studio do jon, corte a seco crespo bh, leitura de fio',
@@ -1723,7 +1723,7 @@ export const posts = [
   {
     id: 17,
     slug: 'cabeleireiro-especialista-em-cachos-belo-horizonte-descolorido',
-    title: 'Descoloração em Cabelo Cacheado: O Que Todo Especialista Precisa Te Contar | Studio do Jon',
+    title: 'Descoloração em Cabelo Cacheado | Jon',
     excerpt: 'Aquele loiro perfeito do Instagram custou a estrutura do seu cacho. Entenda por que o pó descolorante mata sua curvatura e como um especialista pode salvar sua identidade.',
     metaDescription: 'Descolorir cabelo cacheado exige cuidados. Especialista em BH explica o processo e como preservar a definição dos cachos após a química.',
     keywords: 'cabeleireiro especialista em cachos bh, loiro cacheado estragado, como recuperar cachos de luzes, corte a seco bh, Studio do Jon, porosidade alta loiro',
@@ -1750,7 +1750,7 @@ export const posts = [
   {
     id: 16,
     slug: 'transicao-capilar-bh-danos-botox',
-    title: 'Progressiva Disfarçada Derreteu Seus Cachos? A Verdade Sobre Transição Capilar em BH | Studio do Jon',
+    title: 'Progressiva Derreteu Seus Cachos? | Jon',
     excerpt: 'Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro. Entenda o golpe do botox capilar e como a transição capilar BH pode ser técnica e sem trauma.',
     metaDescription: 'Passando pela transição capilar? Especialista em cachos em BH explica como identificar danos por químicas mascaradas e recuperar a textura natural.',
     keywords: 'transição capilar bh, botox capilar estraga cachos, como recuperar cachos com quimica, corte a seco bh, Studio do Jon, big chop bh, cabelo com duas texturas',
@@ -1777,7 +1777,7 @@ export const posts = [
   {
     id: 15,
     slug: 'cabelo-poroso-nao-absorve-creme-scab-hair',
-    title: 'Cabelo Poroso Não Absorve Creme? Pode Ser Scab Hair | Studio do Jon',
+    title: 'Cabelo Poroso Não Absorve Creme? | Jon',
     excerpt: 'Aquele creme caríssimo não funciona por um motivo estrutural profundo. Entenda por que seu cabelo engole produto e continua seco e o que é o Scab Hair.',
     metaDescription: 'Cabelo rejeitando produto após a transição? Pode ser scab hair. Especialista em cachos em BH explica o que é, como identificar e tratar.',
     keywords: 'cabelo poroso, scab hair o que é, reconstrução capilar bh, Studio do Jon, cabelo áspero, corte a seco bh, saúde capilar',
@@ -1807,7 +1807,7 @@ export const posts = [
   {
     id: 14,
     slug: 'corte-para-cabelo-cacheado-bh-volume',
-    title: 'Efeito Pirâmide no Cabelo Cacheado: Por Que Acontece e Como Evitar | Studio do Jon',
+    title: 'Efeito Pirâmide no Cabelo Cacheado | Jon',
     excerpt: 'O seu cabelo não tem vontade própria. Ele só está com o peso geométrico acumulado no lugar errado. Entenda por que o efeito pirâmide acontece e como a arquitetura do corte resolve isso.',
     metaDescription: 'Seu corte cacheado sempre termina em formato de pirâmide? Especialista em cachos em BH explica a causa técnica e como o corte correto resolve.',
     keywords: 'corte cabelo cacheado bh, efeito piramide cabelo, corte a seco bh, volume na raiz cachos, cabeleireiro especialista em cachos caiçara, studio do jon',
@@ -1840,7 +1840,7 @@ export const posts = [
   {
     id: 13,
     slug: 'cabelo-bonito-no-salao-diferente-em-casa',
-    title: 'Por Que Seu Cabelo Fica Lindo no Salão e Diferente em Casa? | Studio do Jon',
+    title: 'Cabelo Lindo no Salão, Diferente em Casa? | Jon',
     excerpt: 'Cansada de amar o cabelo no salão e não conseguir repetir em casa? Entenda por que o Corte com Leitura e a educação capilar mudam o seu desfecho com o espelho.',
     metaDescription: 'Por que o cabelo fica diferente em casa? Especialista em cachos em BH explica os fatores técnicos e como reproduzir a finalização perfeita.',
     keywords: 'cabelo no salão vs em casa, finalização de cachos, educação capilar, Studio do Jon, corte personalizado BH, autonomia capilar',
@@ -1873,7 +1873,7 @@ export const posts = [
   {
     id: 12,
     slug: 'cabelo-cacheado-embaraca-muito',
-    title: 'Cabelo Cacheado Embaraça Muito? O Que Isso Revela Sobre Seu Fio | Studio do Jon',
+    title: 'Cabelo Cacheado Embaraça Muito? | Jon',
     excerpt: 'Se o desembaraço virou uma luta corporal digna de novela das 9, calma: o problema não é o seu cabelo ser impossível. Entenda o que o fio está tentando te dizer.',
     metaDescription: 'Cabelo cacheado que embaraça demais? Pode ser porosidade ou corte errado. Especialista em cachos explica como diagnosticar e resolver.',
     keywords: 'cabelo cacheado embaraçado, nós no cabelo, como desembaraçar cachos, Studio do Jon, saúde capilar BH, cabelos crespos cuidados',
@@ -1932,7 +1932,7 @@ export const posts = [
   {
     id: 11,
     slug: 'fator-encolhimento-cabelo-cacheado',
-    title: 'Fator Encolhimento: Por Que Seu Cabelo Cacheado Parece Curto | Studio do Jon',
+    title: 'Fator Encolhimento do Cabelo Cacheado | Jon',
     excerpt: 'Cortei dois dedos e subiram dez? Calma, não é bruxaria, é estrutura capilar. Entenda como o fator encolhimento é sinal de saúde!',
     metaDescription: 'Cabelo cacheado encolhe até 50%. Entenda o fator de encolhimento por curvatura e como usar essa característica a favor do seu corte.',
     keywords: 'fator encolhimento, cabelo cacheado curto, corte a seco bh, Studio do Jon, transição capilar, saúde capilar',
@@ -1973,7 +1973,7 @@ export const posts = [
   {
     id: 10,
     slug: 'rotina-minimalista-cabelos-cacheados',
-    title: 'Rotina Minimalista para Cabelos Cacheados: 3 Produtos e o Guia Real | Studio do Jon',
+    title: 'Rotina Minimalista para Cabelos Cacheados | Jon',
     excerpt: 'Cabelo cacheado não precisa de 10 produtos. Aprenda a rotina minimalista com 3 itens que resolve 80% dos problemas de definição e saúde dos fios.',
     metaDescription: 'Cachos lindos com apenas 3 produtos. Especialista em cachos em BH ensina uma rotina capilar simples e prática que resolve 90% do dia a dia.',
     keywords: 'rotina minimalista cachos, Studio do Jon, finalização minimalista, cabelo cacheado, transição capilar',
@@ -2038,7 +2038,7 @@ export const posts = [
   {
     id: 9,
     slug: 'sulfato-no-shampoo-guia-completo',
-    title: 'O Que é Sulfato no Shampoo? Guia Completo para Cabelos Cacheados | Studio do Jon',
+    title: 'O Que é Sulfato no Shampoo? | Jon',
     excerpt: 'Entenda de vez o que é sulfato, quando evitar e quando usar. Guia técnico e descomplicado para cabelos ondulados, cacheados e crespos.',
     metaDescription: 'Sulfato em shampoo: vilão ou aliado? Especialista em cachos em BH explica quais evitar, quais são aceitáveis e como escolher sem erro.',
     keywords: 'sulfato no shampoo, shampoo sem sulfato cabelo cacheado, o que é sulfato, build up capilar, low poo no poo, surfactante forte fraco, limpeza profunda cabelo crespo',
@@ -2129,7 +2129,7 @@ export const posts = [
   {
     id: 8,
     slug: 'teste-de-porosidade-guia-definitivo',
-    title: 'Teste de Porosidade: O Segredo para Parar de Jogar Produto Fora | Studio do Jon',
+    title: 'Teste de Porosidade: Segredo para Absorver | Jon',
     excerpt: 'Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? O problema pode ser a porosidade.',
     metaDescription: 'Seu produto capilar não funciona? O problema pode ser a porosidade. Aprenda a fazer o teste correto e adapte a sua rotina em BH.',
     keywords: 'teste de porosidade, porosidade alta o que fazer, cabelo cacheado ressecado, cronograma capilar porosidade, Studio do Jon, especialista em cachos BH',
@@ -2198,7 +2198,7 @@ export const posts = [
   {
     id: 7,
     slug: 'finalizacao-por-curvatura-guia-tecnico',
-    title: 'Finalização por Curvatura: O Que Muda do 2C ao 4C? Guia Técnico | Studio do Jon',
+    title: 'Finalização por Curvatura: Do 2C ao 4C | Jon',
     excerpt: 'Descubra a técnica de finalização ideal para o seu tipo de cabelo, do ondulado 2C ao crespo 4C. Dicas técnicas e descomplicadas.',
     metaDescription: 'A finalização ideal para o 3A pode estragar o 4C. Veja o guia técnico de especialista em BH para finalizar cada curvatura do jeito certo.',
     keywords: 'finalização de cachos, curvatura 2c, cabelo crespo 4c, como finalizar cabelo cacheado, transição capilar, Jon Que Cortou, especialista em cachos BH',
@@ -2264,7 +2264,7 @@ export const posts = [
   {
     id: 6,
     slug: 'frizz-normal-ou-dano-capilar',
-    title: 'Frizz em Cabelo Cacheado: Quando é Normal e Quando é Sinal de Dano? | Studio do Jon',
+    title: 'Frizz em Cabelo Cacheado: Normal ou Dano? | Jon',
     excerpt: 'Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz.',
     metaDescription: 'Nem todo frizz é dano. Especialista em cachos em BH explica como diferenciar o frizz natural de textura daquele que avisa que o fio está fraco.',
     keywords: 'frizz cabelo cacheado, frizz ou dano, transição capilar, saúde capilar, especialista em cachos BH, corte a seco',
@@ -2339,7 +2339,7 @@ export const posts = [
   {
     id: 5,
     slug: 'fim-do-bad-hair-day-after',
-    title: 'Fim do Bad Hair Day: 5 Segredos para um Day After de Respeito | Studio do Jon',
+    title: 'Fim do Bad Hair Day: 5 Segredos | Jon',
     excerpt: 'Aprenda a manter a definição dos seus cachos sem sofrimento.',
     metaDescription: 'Day after incrível sem lavar o cabelo? Especialista em cachos em BH ensina 5 técnicas para refrescar e definir as curvaturas no dia seguinte.',
     keywords: 'Finalização de cachos, day after cacheadas, como definir cabelos crespos, especialista em cachos BH, corte a seco Belo Horizonte',
@@ -2374,7 +2374,7 @@ export const posts = [
   {
     id: 4,
     slug: 'alforria-do-cacho-liberdade-2026',
-    title: 'A Alforria do Cacho: Por Que 2026 é o Ano da Sua Liberdade Capilar | Studio do Jon',
+    title: 'A Alforria do Cacho: Ano da Liberdade | Jon',
     excerpt: 'Cansada de brigar com o espelho? Entenda por que assumir sua curvatura natural em 2026 é o maior ato de respeito com você mesma.',
     metaDescription: 'Quer parar de lutar contra a textura do seu cabelo? Especialista em cachos em BH fala sobre o movimento de transição e o poder do corte certo.',
     keywords: 'transição capilar, aceitação cabelo natural, como assumir os cachos, autoestima capilar, especialista em cachos BH, libertar a curvatura',
@@ -2424,7 +2424,7 @@ export const posts = [
   {
     id: 1,
     slug: 'guia-sobrevivencia-frizz-bh',
-    title: 'Guia de Sobrevivência ao Frizz em BH: Inimigo ou Parte da Textura? | Studio do Jon',
+    title: 'Guia de Sobrevivência ao Frizz em BH | Jon',
     excerpt: 'Se você mora em BH, sabe que o clima é uma montanha-russa. Entenda como o frizz funciona e como manter seus cachos impecáveis no Caiçara.',
     date: '30 de Março, 2026',
     author: 'Jon',
@@ -2460,7 +2460,7 @@ export const posts = [
   {
     id: 2,
     slug: 'transicao-capilar-bh-corte-seco',
-    title: 'Transição Capilar em BH: Por Que o Corte a Seco é Seu Melhor Aliado | Studio do Jon',
+    title: 'Transição Capilar: Corte a Seco é Aliado | Jon',
     excerpt: 'Decidir parar com a química e assumir a textura natural é um ato de coragem em BH. Entenda como o corte a seco facilita essa jornada no Caiçara.',
     date: '30 de Março, 2026',
     author: 'Jon',
@@ -2493,7 +2493,7 @@ export const posts = [
   {
     id: 3,
     slug: 'cabelo-cacheado-ressecado-porosidade',
-    title: 'Cabelo Cacheado Ressecado? Seu Fio Não Tá Absorvendo Água, Tá Desperdiçando | Studio do Jon',
+    title: 'Cabelo Ressecado: Não Absorve, Desperdiça | Jon',
     excerpt: 'Cabelo que não retém hidratação? Entenda o papel da porosidade capilar e como a técnica LOC pode salvar seus cachos.',
     metaDescription: 'Cabelo que resseca rápido tem problema de retenção. Especialista em cachos em BH explica como a porosidade afeta o fio e qual o tratamento ideal.',
     date: '30 de Março, 2026',
