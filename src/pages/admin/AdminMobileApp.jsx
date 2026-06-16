@@ -5317,43 +5317,43 @@ ${googleLink}
               )}
 
               {/* Botões de Ação da Comanda */}
-              <div style={{ display: 'flex', gap: 10, marginTop: 12, flexWrap: 'wrap' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 12 }}>
                 {selectedBooking.status === 'pendente' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)', flex: '1 1 40%' }} onClick={() => confirmBooking(selectedBooking.id)}>
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)' }} onClick={() => confirmBooking(selectedBooking.id)}>
                     Confirmar
                   </button>
                 )}
                 {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)', flex: '1 1 40%' }} onClick={() => openEditBooking(selectedBooking)}>
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)' }} onClick={() => openEditBooking(selectedBooking)}>
                     Editar
                   </button>
                 )}
                 {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)', flex: '1 1 40%' }} onClick={() => openCheckout(selectedBooking)}>
+                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)' }} onClick={() => openCheckout(selectedBooking)}>
                     Fechar Conta
                   </button>
                 )}
                 {selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', flex: '1 1 40%' }} onClick={() => cancelBooking(selectedBooking.id)}>
-                    Cancelar Horário
+                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }} onClick={() => cancelBooking(selectedBooking.id)}>
+                    Cancelar
                   </button>
                 )}
                 {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && selectedBooking.status !== 'faltou' && selectedBooking.status !== 'cancelado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: '#6b7280', color: '#6b7280', flex: '1 1 40%' }} onClick={() => markAsNoShow(selectedBooking.id)}>
+                  <button className="mobile-btn-outline" style={{ borderColor: '#6b7280', color: '#6b7280' }} onClick={() => markAsNoShow(selectedBooking.id)}>
                     Marcar Falta
                   </button>
                 )}
                 {selectedBooking.status === 'bloqueado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', flex: '1 1 40%' }} onClick={() => cancelBooking(selectedBooking.id)}>
-                    Remover Bloqueio
+                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', gridColumn: '1 / -1' }} onClick={() => cancelBooking(selectedBooking.id)}>
+                    Desbloquear
                   </button>
                 )}
-                <button 
-                  className="mobile-btn-outline" 
-                  style={{ borderColor: '#cbd5e0', color: '#4a5568', flex: '1 1 100%', marginTop: 8 }} 
+                <button
+                  className="mobile-btn-outline"
+                  style={{ borderColor: '#cbd5e0', color: '#4a5568', gridColumn: '1 / -1' }}
                   onClick={() => setSelectedBooking(null)}
                 >
-                  Fechar / Voltar para a Agenda
+                  Fechar / Voltar
                 </button>
               </div>
             </div>
