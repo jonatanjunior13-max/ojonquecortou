@@ -272,7 +272,7 @@ const AdminDashboard = () => {
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [viewMode, setViewMode] = useState('diario'); // 'diario' | 'semanal' | 'mensal'
   const [selectedWeeklyMonthlyProf, setSelectedWeeklyMonthlyProf] = useState('jon');
-  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon', isBlockedSlot: false });
   const [activePopover, setActivePopover] = useState({ visible: false, x: 0, y: 0, booking: null });
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedAccordions, setExpandedAccordions] = useState({
@@ -2079,12 +2079,12 @@ ${googleLink}
   };
 
   // Right-Click Handler (custom Context Menu)
-  const handleCellContextMenu = (e, dateStr, slot, profId, appt) => {
+  const handleCellContextMenu = (e, dateStr, slot, profId, appt, isBlockedSlot = false) => {
     e.preventDefault();
     e.stopPropagation();
 
     // Adjust position if it would overflow the viewport height
-    const menuHeight = appt ? 380 : 180;
+    const menuHeight = appt ? 380 : (isBlockedSlot ? 120 : 180);
     let y = e.clientY;
     if (e.clientY + menuHeight > window.innerHeight) {
       y = window.innerHeight - menuHeight - 10;
@@ -2105,9 +2105,37 @@ ${googleLink}
       booking: appt || null,
       date: dateStr,
       time: slot,
-      professional: profId
+      professional: profId,
+      isBlockedSlot: isBlockedSlot
     });
     setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+  };
+
+  const handleRemoveBlockedSlot = () => {
+    const prof = activeProfessionalsList.find(p => p.id === contextMenu.professional);
+    if (!prof) return;
+
+    const dateStr = contextMenu.date;
+    const slot = contextMenu.time;
+    const dateObj = new Date(dateStr);
+    const weekday = dateObj.getDay(); // 0=sunday, 4=thursday
+    const blockPattern = `${weekday}-${slot}`;
+
+    const newBlockedWeekdayHours = (prof.blockedWeekdayHours || []).filter(block => {
+      const [w, t] = block.split('-');
+      return !(w === String(weekday) && t === slot);
+    });
+
+    setGlobalData(prev => ({
+      ...prev,
+      professionals: prev.professionals.map(p =>
+        p.id === prof.id
+          ? { ...p, blockedWeekdayHours: newBlockedWeekdayHours }
+          : p
+      )
+    }));
+
+    setContextMenu({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon', isBlockedSlot: false });
   };
 
   // Toggle Accordion State
@@ -2785,19 +2813,23 @@ ${googleLink}
                             }
                           }}
                           onContextMenu={(e) => {
-                            if (blockedBySettings) return;
-                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt || ongoingAppt);
+                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt || ongoingAppt, blockedBySettings);
                           }}
                         >
                           {blockedBySettings && (
-                            <div 
+                            <div
                               className="appt-card bloqueado"
-                              style={{ 
-                                background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)', 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true);
+                              }}
+                              style={{
+                                background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
                                 color: '#475569',
                                 borderLeft: '4px solid #94a3b8',
-                                opacity: 0.85, 
-                                pointerEvents: 'none'
+                                opacity: 0.85,
+                                pointerEvents: 'auto',
+                                cursor: 'pointer'
                               }}
                             >
                               <span className="appt-time">{slot}</span>
@@ -2805,7 +2837,7 @@ ${googleLink}
                                 <Lock size={12} /> Bloqueado
                               </span>
                               <span className="appt-service">
-                                Configurações de Escala
+                                Clique para remover
                               </span>
                             </div>
                           )}
@@ -3404,28 +3436,38 @@ ${googleLink}
             </>
           ) : (
             <>
-              <li className="context-menu-item" onClick={() => {
-                handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon');
-                setContextMenu({ visible: false });
-              }}>
-                <Plus size={14} /> Agendar Cliente
-              </li>
-              <li className="context-menu-item" onClick={() => {
-                setSelectedSlot({
-                  date: contextMenu.date,
-                  time: contextMenu.time,
-                  profissional: contextMenu.professional,
-                  dateFormatted: contextMenu.date
-                });
-                setShowSlotActionModal(true);
-                setContextMenu({ visible: false });
-              }}>
-                <Lock size={14} /> Bloquear Horário
-              </li>
-              {clipboard && (
-                <li className="context-menu-item" onClick={handlePasteBooking}>
-                  <Clipboard size={14} /> Colar Agendamento
+              {contextMenu.isBlockedSlot ? (
+                <li className="context-menu-item danger" onClick={() => {
+                  handleRemoveBlockedSlot();
+                }}>
+                  <Unlock size={14} /> Remover Ausência
                 </li>
+              ) : (
+                <>
+                  <li className="context-menu-item" onClick={() => {
+                    handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon');
+                    setContextMenu({ visible: false });
+                  }}>
+                    <Plus size={14} /> Agendar Cliente
+                  </li>
+                  <li className="context-menu-item" onClick={() => {
+                    setSelectedSlot({
+                      date: contextMenu.date,
+                      time: contextMenu.time,
+                      profissional: contextMenu.professional,
+                      dateFormatted: contextMenu.date
+                    });
+                    setShowSlotActionModal(true);
+                    setContextMenu({ visible: false });
+                  }}>
+                    <Lock size={14} /> Bloquear Horário
+                  </li>
+                  {clipboard && (
+                    <li className="context-menu-item" onClick={handlePasteBooking}>
+                      <Clipboard size={14} /> Colar Agendamento
+                    </li>
+                  )}
+                </>
               )}
             </>
           )}
