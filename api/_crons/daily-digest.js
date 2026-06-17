@@ -269,9 +269,9 @@ function buildDigestEmail(bookings, tomorrow) {
 
 export default async function handler(req, res) {
   try {
-    const adminEmail = process.env.CRON_FIREBASE_EMAIL;
-    const adminPassword = process.env.CRON_FIREBASE_PASSWORD;
-    const recipientEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER;
+    const adminEmail = (process.env.CRON_FIREBASE_EMAIL || '').trim();
+    const adminPassword = (process.env.CRON_FIREBASE_PASSWORD || '').trim();
+    const recipientEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || '').trim();
 
     if (!adminEmail || !adminPassword) {
       return res.status(500).json({ error: 'Faltam credenciais CRON_FIREBASE_EMAIL / CRON_FIREBASE_PASSWORD.' });
@@ -300,12 +300,12 @@ export default async function handler(req, res) {
     const subject = `📅 Agenda de amanhã — ${tomorrow.weekday}, ${tomorrow.dayNumber} de ${tomorrow.monthName}`;
 
     // Configuração SMTP
-    const smtpHost = process.env.SMTP_HOST;
-    const smtpPort = process.env.SMTP_PORT || '587';
-    const smtpSecure = process.env.SMTP_SECURE === 'true' || smtpPort === '465';
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
-    const smtpFrom = process.env.SMTP_FROM || 'contato@ojonquecortou.com.br';
+    const smtpHost = (process.env.SMTP_HOST || '').trim();
+    const smtpPort = (process.env.SMTP_PORT || '587').trim();
+    const smtpSecure = (process.env.SMTP_SECURE || '').trim() === 'true' || smtpPort === '465';
+    const smtpUser = (process.env.SMTP_USER || '').trim();
+    const smtpPass = (process.env.SMTP_PASS || '').trim();
+    const smtpFrom = (process.env.SMTP_FROM || 'contato@ojonquecortou.com.br').trim();
 
     if (!smtpHost || !smtpUser || !smtpPass) {
       // Em ambiente de dev/preview, apenas loga
