@@ -1325,8 +1325,8 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
   };
 
   const filteredClients = clients.filter(c =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.phone.includes(searchTerm)
+    (c.name || 'Cliente').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
+    (c.phone || '').includes(searchTerm || '')
   );
 
   const marketingTargetsList = clients.filter(c => {
@@ -1342,11 +1342,11 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
   const getCampaignMessageLink = (client) => {
     const days = getDaysAbsent(client.lastVisit);
     let msg = campaignMessage
-      .replace(/{nome}/g, client.name.split(' ')[0])
+      .replace(/{nome}/g, (client.name || 'Cliente').split(' ')[0])
       .replace(/{ultimo_servico}/g, client.lastServiceName || 'Corte')
       .replace(/{dias_ausente}/g, days === Infinity ? 'muito tempo' : days);
     
-    return `https://wa.me/55${client.phone}?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/55${client.phone || ''}?text=${encodeURIComponent(msg)}`;
   };
 
   const handleSaveTemplate = async () => {
@@ -1457,7 +1457,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
         setEmailLogs(prev => [...prev, `[${logTime()}] ⚠️ Pulado: E-mail inválido ou não cadastrado.`]);
       } else {
         const days = getDaysAbsent(client.lastVisit);
-        const firstName = client.name.split(' ')[0];
+        const firstName = (client.name || 'Cliente').split(' ')[0];
         
         const subject = emailCampaignSubject
           .replace(/{nome}/g, firstName)
