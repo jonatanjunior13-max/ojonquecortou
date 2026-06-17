@@ -12,10 +12,15 @@ import {
 import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
-import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar } from 'lucide-react';
+import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar, Plus } from 'lucide-react';
 import { syncBookingToGoogle } from '../utils/gcalSync';
+import { getEffectiveAbsences, isSlotBlockedByAbsence } from '../utils/absences';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
+
+const getAdjustedDay = (date) => {
+  return date.getDay();
+};
 
 // Helper: gera datas disponíveis para agendamento (próximos 60 dias, respeitando folgas e bloqueios)
 const getAvailableDates = (prof) => {
@@ -29,7 +34,7 @@ const getAvailableDates = (prof) => {
     const nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
     
-    const dayOfWeek = nextDate.getDay();
+    const dayOfWeek = getAdjustedDay(nextDate);
     const year = nextDate.getFullYear();
     const month = String(nextDate.getMonth() + 1).padStart(2, '0');
     const day = String(nextDate.getDate()).padStart(2, '0');
@@ -40,7 +45,8 @@ const getAvailableDates = (prof) => {
     
     if (!isDayOff && !isBlocked) {
       const monday = new Date(nextDate);
-      const diff = nextDate.getDay() === 0 ? -6 : 1 - nextDate.getDay();
+      const nextDateAdj = getAdjustedDay(nextDate);
+      const diff = nextDateAdj === 0 ? -6 : 1 - nextDateAdj;
       monday.setDate(nextDate.getDate() + diff);
       
       const mYear = monday.getFullYear();
@@ -48,13 +54,20 @@ const getAvailableDates = (prof) => {
       const mDay = String(monday.getDate()).padStart(2, '0');
       const weekKey = `${mYear}-${mMonth}-${mDay}`;
       
+      // Since toLocaleDateString might display the real (non-adjusted) day name, let's build the formatting using adjusted day names for 2026.
+      const DAYS_SHORT = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+      const MONTHS_SHORT = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+      const adjDayName = DAYS_SHORT[dayOfWeek];
+      const monthName = MONTHS_SHORT[nextDate.getMonth()];
+      const formattedDate = `${adjDayName}, ${day} de ${monthName}`;
+
       let weekLabel = monday.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
       weekLabel = `Semana de ${weekLabel.replace('.', '')}`;
  
       dates.push({
         raw: dateStr,
-        formatted: nextDate.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }),
-        display: nextDate.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+        formatted: formattedDate,
+        display: `${day}/${month}/${year}`,
         weekKey,
         weekLabel
       });
@@ -108,7 +121,8 @@ const BookingPage = () => {
 
   const [step, setStep] = useState(1);
   const [services, setServices] = useState([]);
-  const [selectedService, setSelectedService] = useState(null);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [discountVal, setDiscountVal] = useState(0); // discount to be debited from total
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
@@ -123,19 +137,20 @@ const BookingPage = () => {
   const [usingClientPackageId, setUsingClientPackageId] = useState('');
   const [activePackageCredit, setActivePackageCredit] = useState(null);
 
-  const checkPackageCredits = (phone, email, service) => {
-    if (!service) return;
+  const checkPackageCredits = (phone, email, currentServices) => {
+    const svcs = Array.isArray(currentServices) ? currentServices : (currentServices ? [currentServices] : []);
+    if (svcs.length === 0) return;
     const cleanPhone = (phone || '').replace(/\D/g, '');
     const cleanEmail = (email || '').trim().toLowerCase();
     
-    // Find active purchased packages for this client with remaining credits for this service
+    // Find active purchased packages for this client with remaining credits for at least one selected service
     const matched = clientPackages.find(cp => {
       if (cp.status !== 'active') return false;
       const isOwner = 
         (cleanPhone && cp.clientPhone?.replace(/\D/g, '') === cleanPhone) ||
         (cleanEmail && cp.clientEmail?.toLowerCase() === cleanEmail);
       
-      return isOwner && cp.balance && cp.balance[service.id] > 0;
+      return isOwner && cp.balance && svcs.some(s => cp.balance[s.id] > 0);
     });
 
     setActivePackageCredit(matched || null);
@@ -296,9 +311,9 @@ const BookingPage = () => {
         const svcName = bookingData.serviceName || bookingData.service?.name;
         const matchedService = services.find(s => s.id === svcId || s.name === svcName);
         if (matchedService) {
-          setSelectedService(matchedService);
+          setSelectedServices([matchedService]);
         } else if (bookingData.service) {
-          setSelectedService(bookingData.service);
+          setSelectedServices([bookingData.service]);
         }
 
         // Set professional
@@ -875,15 +890,19 @@ const BookingPage = () => {
       let weekday = 0;
       if (parts.length === 3) {
         const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-        weekday = dateObj.getDay();
+        weekday = getAdjustedDay(dateObj);
       }
 
       const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
       const ALL_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
       const activeProfs = (settings?.professionals || []).filter(p => p.active !== false);
+      const effectiveAbsences = getEffectiveAbsences(settings);
 
       // Helper helper to check if a professional is available at a slot
       const checkProfAvailability = (prof, slot, bookedList) => {
+        // 0. Ausências / bloqueios permanentes (Psicóloga, folgas, viagens etc.)
+        if (isSlotBlockedByAbsence(effectiveAbsences, selectedDate, slot)) return false;
+
         // 1. Check daysOff
         const daysOff = prof.daysOff !== undefined ? prof.daysOff : [0, 1];
         if (daysOff.includes(weekday)) return false;
@@ -944,22 +963,18 @@ const BookingPage = () => {
           const [h, m] = t.split(':').map(Number);
           return h * 60 + m;
         };
-        const newServiceDuration = selectedService?.duration || 60;
+        const totalDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
+        const newServiceDuration = Math.max(60, totalDuration || 60);
         const slotEndMin = slotMin + newServiceDuration;
 
         const hasOverlap = bookedList.some(b => {
           const bTime = typeof b === 'string' ? b : b.time;
-          const bDuration = typeof b === 'string' ? 60 : (b.duration || b.service?.duration || 60);
+          const bDuration = typeof b === 'string' ? 60 : (b.duration || b.service?.duration || b.service?.duration || 60);
           const bStart = timeToMin(bTime);
           const bEnd = bStart + bDuration;
           
-          // Slot start time is inside an existing booking
-          const slotStartOccupied = (slotMin >= bStart && slotMin < bEnd);
-          
-          // New service starting here would overlap with a booking starting later
-          const newServiceOverlaps = (bStart >= slotMin && bStart < slotEndMin);
-          
-          return slotStartOccupied || newServiceOverlaps;
+          // Check if the two intervals [slotMin, slotEndMin) and [bStart, bEnd) overlap
+          return Math.max(slotMin, bStart) < Math.min(slotEndMin, bEnd);
         });
 
         if (hasOverlap) return false;
@@ -1116,10 +1131,12 @@ const BookingPage = () => {
     }
 
     // Validação de Manutenção de Corte nos últimos 90 dias
-    const svcNameNorm = selectedService?.name?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
-    const isManutencaoCorte = svcNameNorm.includes("manutencao") && svcNameNorm.includes("corte");
+    const hasManutencaoCorte = selectedServices.some(s => {
+      const normName = s?.name?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+      return normName.includes("manutencao") && normName.includes("corte");
+    });
 
-    if (isManutencaoCorte) {
+    if (hasManutencaoCorte) {
       setLoading(true);
       let clientBookings = [];
       
@@ -1241,8 +1258,16 @@ const BookingPage = () => {
       }
     }
 
+    const primaryService = selectedServices[0] || null;
+    const computedDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
+    const computedBaseTotal = selectedServices.reduce((sum, s) => sum + (s?.promoPrice ?? s?.price ?? 0), 0);
+    const computedFinalTotal = Math.max(0, computedBaseTotal - discountVal);
+
     const bookingPayload = {
-      service: selectedService,
+      service: primaryService,
+      services: selectedServices,
+      serviceName: selectedServices.map(s => s.name).join(' + '),
+      duration: Math.max(60, computedDuration),
       date: selectedDate,
       time: selectedTime,
       clientName: clientData.name,
@@ -1260,7 +1285,9 @@ const BookingPage = () => {
       packageId: selectedPackageTemplate ? selectedPackageTemplate.id : null,
       packageName: selectedPackageTemplate ? selectedPackageTemplate.name : null,
       usingPackageCredit: usingPackageCredit || false,
-      usingClientPackageId: usingPackageCredit ? usingClientPackageId : null
+      usingClientPackageId: usingPackageCredit ? usingClientPackageId : null,
+      discount: discountVal,
+      totalPrice: computedFinalTotal
     };
 
     try {
@@ -1624,9 +1651,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   ) : (
                     filteredServices.map(service => {
                       const isExpanded = !!expandedDescriptions[service.id];
-                      const hasPromo = !!service.promoPrice;
                       const isFeatured = !!(service.isPrimary || service.featured);
-                      const isSelected = selectedService?.id === service.id;
+                      const isSelected = selectedServices.some(s => s.id === service.id);
                       const isWaOnly = isWhatsappOnlyService(service);
                       const { emoji, tagline } = getServiceExtraDetails(service.name);
                       
@@ -1642,8 +1668,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                               window.open(`https://wa.me/553135866673?text=${text}`, '_blank');
                               return;
                             }
-                            setSelectedService(service);
-                            setStep(2);
+                            if (isSelected) {
+                              setSelectedServices(prev => prev.filter(s => s.id !== service.id));
+                            } else {
+                              setSelectedServices(prev => [...prev, service]);
+                            }
                           }}
                         >
                           {/* Linha superior */}
@@ -1656,11 +1685,6 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                               {isFeatured && (
                                 <span className="booking-service-badge highlight">
                                   <Sparkles size={10} /> Destaque
-                                </span>
-                              )}
-                              {hasPromo && (
-                                <span className="booking-service-badge promo">
-                                  Oferta
                                 </span>
                               )}
                             </div>
@@ -1706,25 +1730,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                           </div>
 
                           {/* Rodapé do card */}
-                          <div className="booking-service-card-footer">
-                            <div className="booking-service-pricing-area">
-                              <span className="booking-pricing-label">Valor</span>
-                              {hasPromo ? (
-                                <div className="booking-price-comparison">
-                                  <span className="booking-price-old-strike">R$ {service.price.toFixed(2)}</span>
-                                  <span className="booking-price-new-value">
-                                    <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                                    <strong>R$ {service.promoPrice.toFixed(2)}</strong>
-                                  </span>
-                                </div>
-                              ) : (
-                                <div className="booking-price-standard-value">
-                                  <span className="booking-p-type-prefix">{service.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                                  <strong>R$ {service.price.toFixed(2)}</strong>
-                                </div>
-                              )}
-                            </div>
-                            
+                          <div className="booking-service-card-footer" style={{ justifyContent: 'flex-end' }}>
                             <div className="booking-service-selection-indicator">
                               {isWaOnly ? (
                                 <span className="booking-select-action-label whatsapp-btn">
@@ -1732,9 +1738,13 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                                   Me chama no Whatsapp
                                 </span>
                               ) : isSelected ? (
-                                <span className="booking-selected-pill"><Check size={12} /> Selecionado</span>
+                                <span className="booking-selected-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                  <Check size={12} /> Adicionado
+                                </span>
                               ) : (
-                                <span className="booking-select-action-label">Agendar</span>
+                                <span className="booking-select-action-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                  <Plus size={12} /> Adicionar
+                                </span>
                               )}
                             </div>
                           </div>
@@ -1748,7 +1758,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               <div className="step-actions" style={{ marginTop: 24 }}>
                 <button 
                   className="btn btn-accent" 
-                  disabled={!selectedService}
+                  disabled={selectedServices.length === 0}
                   onClick={() => setStep(2)}
                   style={{ width: '100%', justifyContent: 'center' }}
                 >
@@ -2287,6 +2297,56 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 </div>
               )}
 
+              {/* Detalhamento dos Serviços Selecionados e Preços */}
+              <div style={{ margin: '20px 0', padding: '16px', background: 'var(--panel-bg)', border: '1px solid var(--rule)', borderRadius: '8px' }}>
+                <h3 style={{ fontSize: '0.95rem', marginBottom: '12px', borderBottom: '1px solid var(--rule)', paddingBottom: '6px', color: 'var(--accent)' }}>Resumo de Preços</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {selectedServices.map(s => {
+                    const price = s.promoPrice ?? s.price ?? 0;
+                    const oldPrice = s.promoPrice ? s.price : null;
+                    return (
+                      <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.88rem' }}>
+                        <span>{s.name}</span>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          {oldPrice && (
+                            <span style={{ textDecoration: 'line-through', color: 'var(--muted)', fontSize: '0.8rem' }}>
+                              R$ {oldPrice.toFixed(2)}
+                            </span>
+                          )}
+                          <strong>R$ {price.toFixed(2)}</strong>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.88rem', borderTop: '1px dashed var(--rule)', paddingTop: '8px', marginTop: '4px' }}>
+                    <span>Subtotal:</span>
+                    <strong>R$ {selectedServices.reduce((sum, s) => sum + (s.promoPrice ?? s.price ?? 0), 0).toFixed(2)}</strong>
+                  </div>
+
+                  {/* Campo de Desconto */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
+                    <label htmlFor="discountVal" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Desconto (R$):</label>
+                    <input 
+                      type="number"
+                      id="discountVal"
+                      min="0"
+                      step="0.01"
+                      placeholder="Ex: 10.00"
+                      value={discountVal || ''}
+                      onChange={(e) => setDiscountVal(Math.max(0, parseFloat(e.target.value) || 0))}
+                      style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--bg)', color: 'var(--text)', width: '100%', maxWidth: '150px' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '1rem', borderTop: '1px solid var(--rule)', paddingTop: '8px', marginTop: '8px', color: 'var(--accent)' }}>
+                    <strong>Valor Total:</strong>
+                    <strong>
+                      R$ {Math.max(0, selectedServices.reduce((sum, s) => sum + (s.promoPrice ?? s.price ?? 0), 0) - discountVal).toFixed(2)}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
               <div className="form-group">
                   <label htmlFor="notes">Algum comentário ou histórico químico importante?</label>
                   <textarea 
@@ -2348,7 +2408,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               <h3 style={{ fontSize: '0.85rem', marginBottom: '8px', paddingBottom: '4px' }}>Resumo do Agendamento</h3>
               <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
                 <strong>Serviço:</strong>
-                <span>{selectedService?.name}</span>
+                <span>{selectedServices.map(s => s.name).join(' + ')}</span>
               </div>
               <div className="summary-row" style={{ fontSize: '0.85rem', marginBottom: '4px' }}>
                 <strong>Orçamento:</strong>
@@ -2359,8 +2419,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     `R$ ${Number(selectedPackageTemplate.price).toFixed(2)} (Compra de Pacote)`
                   ) : (
                     <>
-                      {selectedService?.priceType === 'A partir de' ? 'A partir de ' : ''}
-                      R$ {(selectedService?.promoPrice ?? selectedService?.price)?.toFixed(2)}
+                      R$ {Math.max(0, selectedServices.reduce((sum, s) => sum + (s.promoPrice ?? s.price ?? 0), 0) - discountVal).toFixed(2)}
+                      {discountVal > 0 && <span style={{ fontSize: '0.8rem', color: 'var(--accent)', marginLeft: '6px' }}>(R$ {discountVal.toFixed(2)} desc.)</span>}
                     </>
                   )}
                 </span>
@@ -2398,15 +2458,15 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
       </div>
 
       {/* Floating Summary Bar (UX Upgrade: Hick's Law & Progressive Context) */}
-      {step > 1 && step < 4 && (selectedProfessional || selectedService) && (
+      {step > 1 && step < 4 && (selectedProfessional || selectedServices.length > 0) && (
         <div className="booking-summary-bar">
           <div className="summary-content">
             <span className="summary-item">
               <strong>Profissional:</strong> {selectedProfessional?.name || 'Jon'}
             </span>
-            {selectedService && (
+            {selectedServices.length > 0 && (
               <span className="summary-item">
-                <strong>Serviço:</strong> {selectedService.name} (R$ {typeof selectedService.price === 'number' ? selectedService.price.toFixed(2).replace('.', ',') : selectedService.price})
+                <strong>Serviços:</strong> {selectedServices.map(s => s.name).join(' + ')} (Total: R$ {selectedServices.reduce((sum, s) => sum + (s.promoPrice ?? s.price ?? 0), 0).toFixed(2).replace('.', ',')})
               </span>
             )}
             {selectedDate && (

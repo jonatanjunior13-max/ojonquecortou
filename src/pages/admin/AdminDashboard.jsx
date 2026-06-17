@@ -29,11 +29,14 @@ import {
   MoreVertical
 } from 'lucide-react';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
+import ComandaModal from '../../components/admin/ComandaModal';
+import { useToast } from '../../components/admin/ui/Toast';
 import './Admin.css';
 
 // Lista de horários padrão
 const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 import { SEED_SERVICES } from '../../data/seedServices';
+import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
 
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -44,6 +47,44 @@ const slotInRange = (slot, start, end) => {
   return slot >= start && slot < end;
 };
 
+const calculateOverlappingLayout = (items) => {
+  if (!items || items.length === 0) return [];
+  const sorted = [...items].sort((a, b) => {
+    if (a.startMin !== b.startMin) return a.startMin - b.startMin;
+    return (b.endMin - b.startMin) - (a.endMin - a.startMin);
+  });
+  const columns = [];
+  sorted.forEach(item => {
+    let placed = false;
+    for (let i = 0; i < columns.length; i++) {
+      const col = columns[i];
+      const last = col[col.length - 1];
+      if (item.startMin >= last.endMin) {
+        col.push(item);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      columns.push([item]);
+    }
+  });
+  const totalColumns = columns.length;
+  const result = [];
+  columns.forEach((col, colIdx) => {
+    col.forEach(item => {
+      const width = 100 / totalColumns;
+      const left = colIdx * width;
+      result.push({
+        ...item,
+        leftPercent: left,
+        widthPercent: width
+      });
+    });
+  });
+  return result;
+};
+
 const getLocalDateString = (dateObj) => {
   if (!dateObj) return '';
   const year = dateObj.getFullYear();
@@ -52,13 +93,56 @@ const getLocalDateString = (dateObj) => {
   return `${year}-${month}-${day}`;
 };
 
+const isFeriado = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return false;
+  const mmdd = `${parts[1]}-${parts[2]}`;
+  
+  const fixedHolidays = [
+    '01-01', // Ano Novo
+    '04-21', // Tiradentes
+    '05-01', // Dia do Trabalho
+    '08-15', // Assunção de Nossa Senhora (BH)
+    '09-07', // Independência
+    '10-12', // Nossa Senhora Aparecida
+    '11-02', // Finados
+    '11-15', // Proclamação da República
+    '11-20', // Dia da Consciência Negra
+    '12-08', // Imaculada Conceição (BH)
+    '12-25', // Natal
+  ];
+  if (fixedHolidays.includes(mmdd)) return true;
+
+  const mobileHolidays = [
+    '2025-03-03', '2025-03-04', '2025-04-18', '2025-06-19',
+    '2026-02-16', '2026-02-17', '2026-04-03', '2026-06-04',
+    '2027-02-08', '2027-02-09', '2027-03-26', '2027-05-27'
+  ];
+  if (mobileHolidays.includes(dateStr)) return true;
+
+  return false;
+};
+
+const getAdjustedDay = (date) => {
+  return date.getDay();
+};
+
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
+  const isUnlockedLocal = localStorage.getItem(`unlock_${dateStr}_${slot}`) === 'true';
+  if (isUnlockedLocal) return false;
   const parts = dateStr.split('-');
   if (parts.length === 3) {
     const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    const weekday = dateObj.getDay();
+    const weekday = getAdjustedDay(dateObj);
+    
+    // Force Sundays (0) and Mondays (1) to be blocked
+    if (weekday === 0 || weekday === 1) return true;
+
+    // Force Holidays to be blocked
+    if (isFeriado(dateStr)) return true;
     
     // 1. Check day off
     if ((prof.daysOff || []).includes(weekday)) return true;
@@ -155,10 +239,19 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(!db);
   
+  const toast = useToast();
+
   // Checkout / Comanda states
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [comandaBooking, setComandaBooking] = useState(null);
   const [addedServices, setAddedServices] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
+  const [isEditingComanda, setIsEditingComanda] = useState(false);
+  const [editComandaForm, setEditComandaForm] = useState({
+    value: 0,
+    paymentMethod: 'Pix',
+    productSales: []
+  });
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [installments, setInstallments] = useState('À vista');
   const [applyAnticipation, setApplyAnticipation] = useState(false);
@@ -229,6 +322,9 @@ const AdminDashboard = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [blockMotive, setBlockMotive] = useState('');
   const [blockEndTime, setBlockEndTime] = useState('');
+  const [blockIdToCancelOnSuccess, setBlockIdToCancelOnSuccess] = useState(null);
+  const [showScaleBlockModal, setShowScaleBlockModal] = useState(false);
+  const [selectedScaleBlock, setSelectedScaleBlock] = useState(null);
 
   useEffect(() => {
     if (selectedSlot && selectedSlot.time) {
@@ -593,7 +689,7 @@ const AdminDashboard = () => {
   };
 
   const getWeekDays = (dateObj) => {
-    const dayOfWeek = dateObj.getDay();
+    const dayOfWeek = getAdjustedDay(dateObj);
     const start = new Date(dateObj);
     start.setDate(dateObj.getDate() - dayOfWeek);
     const days = [];
@@ -611,7 +707,7 @@ const AdminDashboard = () => {
     const startOfMonth = new Date(year, month, 1);
     const endOfMonth = new Date(year, month + 1, 0);
     
-    const startDay = startOfMonth.getDay();
+    const startDay = getAdjustedDay(startOfMonth);
     const daysInMonth = endOfMonth.getDate();
     
     const grid = [];
@@ -662,7 +758,7 @@ const AdminDashboard = () => {
     if (!prof) return [];
     
     const dateStr = getLocalDateString(dateObj);
-    const weekday = dateObj.getDay();
+    const weekday = getAdjustedDay(dateObj);
     const blocks = [];
     
     // 1. Day off
@@ -703,6 +799,24 @@ const AdminDashboard = () => {
     return blocks;
   };
 
+  const handleRemoveAbsence = async (abs) => {
+    const updatedAbsences = (settings.absences || []).filter(a => a.id !== abs.id);
+    if (db && !isDemoMode) {
+      try {
+        await updateDoc(doc(db, 'settings', 'studio'), { absences: updatedAbsences });
+        toast('Ausência removida com sucesso!', 'success');
+      } catch (err) {
+        console.error(err);
+        toast('Erro ao remover ausência.', 'error');
+      }
+    } else {
+      const updatedSettings = { ...settings, absences: updatedAbsences };
+      setSettings(updatedSettings);
+      localStorage.setItem('demo_settings', JSON.stringify(updatedSettings));
+      toast('Ausência removida com sucesso!', 'success');
+    }
+  };
+
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
       const booking = bookings.find(b => b.id === bookingId);
@@ -735,7 +849,13 @@ const AdminDashboard = () => {
         }
       } else {
         const apptRef = doc(db, 'bookings', bookingId);
-        await updateDoc(apptRef, { status: newStatus });
+        const updatePayload = { status: newStatus };
+        if (newStatus === 'faltou') {
+          updatePayload.missedAt = new Date().toISOString();
+          updatePayload.missedEmailSent = false;
+        }
+        await updateDoc(apptRef, updatePayload);
+        setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, ...updatePayload } : b));
         syncBookingToGoogle(bookingId).catch(err => console.warn('Error syncing status:', err));
         setSelectedBooking(null);
 
@@ -776,22 +896,20 @@ const AdminDashboard = () => {
         }
       }
 
-      if (booking && booking.clientEmail) {
+      // Resolve email: prefer stored clientEmail, fallback to client_profiles lookup by phone
+      let emailForStatus = booking?.clientEmail || '';
+      if (!emailForStatus && booking?.clientPhone) {
+        const cleanPhone = booking.clientPhone.replace(/\D/g, '');
+        const matched = clients.find(c => (c.phone || '').replace(/\D/g, '') === cleanPhone);
+        emailForStatus = matched?.email || '';
+      }
+
+      if (booking && emailForStatus && emailForStatus.includes('@') && emailForStatus !== 'Não informado') {
+        const bookingWithEmail = { ...booking, clientEmail: emailForStatus };
         if (newStatus === 'confirmado') {
-          await triggerEmailNotification({
-            ...booking,
-            type: 'horario_confirmado'
-          }, 'horario_confirmado');
+          await triggerEmailNotification({ ...bookingWithEmail, type: 'horario_confirmado' }, 'horario_confirmado');
         } else if (newStatus === 'cancelado') {
-          await triggerEmailNotification({
-            ...booking,
-            type: 'agendamento_cancelado'
-          }, 'agendamento_cancelado');
-        } else if (newStatus === 'faltou') {
-          await triggerEmailNotification({
-            ...booking,
-            type: 'agendamento_falta'
-          }, 'agendamento_falta');
+          await triggerEmailNotification({ ...bookingWithEmail, type: 'agendamento_cancelado', cancelledBy: 'admin' }, 'agendamento_cancelado');
         }
       }
 
@@ -994,7 +1112,7 @@ const AdminDashboard = () => {
         if (parts.length === 3) {
           const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
           const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-          const weekday = weekdays[dateObj.getDay()];
+          const weekday = weekdays[getAdjustedDay(dateObj)];
           displayDate = `${weekday}, ${parts[2]}/${parts[1]}/${parts[0]}`;
         }
       } catch (dateErr) {
@@ -1072,6 +1190,7 @@ const AdminDashboard = () => {
         price: activeServPrice,
         duration: activeDuration
       },
+      servicePrice: activeServPrice,
       duration: activeDuration,
       date: newBooking.date,
       time: newBooking.time,
@@ -1082,21 +1201,44 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
+    // Check for overlap conflicts
+    const bStart = timeToMin(newBooking.time);
+    const bEnd = bStart + activeDuration;
+    const hasConflict = bookings.some(b => {
+      if (b.status === 'cancelado') return false;
+      if (b.date !== newBooking.date) return false;
+      if ((b.profissional || 'jon') !== (newBooking.profissional || 'jon')) return false;
+      
+      const existingStart = timeToMin(b.time);
+      const existingEnd = existingStart + (b.duration || 60);
+      
+      // Overlap check: Math.max(start1, start2) < Math.min(end1, end2)
+      return Math.max(bStart, existingStart) < Math.min(bEnd, existingEnd);
+    });
+
+    if (hasConflict) {
+      if (!confirm("Já existe outro agendamento neste horário para este profissional.\nDeseja continuar?")) {
+        return;
+      }
+    }
+
     try {
       const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
+      let finalId = '';
 
       if (isDemoMode) {
-        const generatedId = 'demo-' + Date.now();
-        setBookings(prev => [...prev, { id: generatedId, ...payload }]);
+        finalId = 'demo-' + Date.now();
+        setBookings(prev => [...prev, { id: finalId, ...payload }]);
         if (payload.prepayment > 0) {
-          await logPrepaymentTransaction(generatedId, payload, payload.prepayment);
+          await logPrepaymentTransaction(finalId, payload, payload.prepayment);
         }
       } else {
         const docRef = await addDoc(collection(db, 'bookings'), payload);
+        finalId = docRef.id;
         if (payload.prepayment > 0) {
-          await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
+          await logPrepaymentTransaction(finalId, payload, payload.prepayment);
         }
-        syncBookingToGoogle(docRef.id).catch(err => console.warn('Error syncing new booking:', err));
+        syncBookingToGoogle(finalId).catch(err => console.warn('Error syncing new booking:', err));
       }
 
       // Auto-cadastro de cliente
@@ -1138,7 +1280,18 @@ const AdminDashboard = () => {
       }
 
       if (payload.clientEmail) {
-        triggerEmailNotification(payload);
+        triggerEmailNotification({ ...payload, id: finalId });
+      }
+
+      if (blockIdToCancelOnSuccess) {
+        if (isDemoMode) {
+          setBookings(prev => prev.filter(b => b.id !== blockIdToCancelOnSuccess));
+        } else {
+          await updateDoc(doc(db, 'bookings', blockIdToCancelOnSuccess), { status: 'cancelado' });
+          setBookings(prev => prev.map(b => b.id === blockIdToCancelOnSuccess ? { ...b, status: 'cancelado' } : b));
+          syncBookingToGoogle(blockIdToCancelOnSuccess, true).catch(err => console.warn('Error syncing cancelation of block:', err));
+        }
+        setBlockIdToCancelOnSuccess(null);
       }
 
       setShowAddModal(false);
@@ -1164,7 +1317,7 @@ const AdminDashboard = () => {
   const handleCellClick = (dateStr, slot, profId, profName) => {
     const [year, month, day] = dateStr.split('-');
     const dateObj = new Date(year, month - 1, day);
-    const weekday = DAYS_TRANSLATION[dateObj.getDay()];
+    const weekday = DAYS_TRANSLATION[getAdjustedDay(dateObj)];
 
     setSelectedSlot({
       date: dateStr,
@@ -1326,6 +1479,125 @@ const AdminDashboard = () => {
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
     return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay);
+  };
+
+  const handleFinalizeFromComanda = async (booking, payload) => {
+    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], discount: disc = 0, overrideBasePrice: obp, requestReview } = payload;
+    const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
+    const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
+    const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
+    
+    const extraServicesTotal = (as || []).reduce((s, x) => s + x.price * x.qty, 0);
+    const productsTotal = (ap || []).reduce((s, p) => s + p.price * p.qty, 0);
+    const subtotal = servicePrice + extraServicesTotal + productsTotal + (tipValue || 0);
+    const totalValue = Math.max(0, subtotal - disc - prepay);
+
+    const itemsDescription = [
+      booking.service?.name || booking.serviceName || 'Serviço',
+      ...(as || []).map(s => `${s.qty}x ${s.name}`),
+      ...(ap || []).map(p => `${p.qty}x ${p.name}`)
+    ].filter(Boolean).join(', ');
+
+    const transactionPayload = {
+      bookingId: booking.id,
+      date: booking.date || getLocalDateString(new Date()),
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: booking.clientName,
+      clientPhone: booking.clientPhone || '',
+      type: 'entrada',
+      paymentMethod: pm,
+      value: totalValue,
+      discount: disc,
+      description: itemsDescription + 
+                   (tipValue > 0 ? ` (Gorjeta: R$ ${tipValue.toFixed(2)})` : '') + 
+                   (disc > 0 ? ` (Desconto: R$ ${disc.toFixed(2)})` : '') +
+                   (prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay.toFixed(2)})` : ''),
+      professionalId: booking.professionalId || booking.profissional || 'jon',
+      productSales: productsNorm.map(p => {
+        const match = products.find(prod => prod.id === p.productId);
+        return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
+      }),
+      createdAt: new Date().toISOString()
+    };
+
+    const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+    const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
+    const gateway = settings?.waReminderGateway;
+    const needsWaOpen = requestReview && hasValidPhone && (!gateway || gateway === 'none');
+    const waWindow = needsWaOpen ? window.open('', '_blank') : null;
+
+    try {
+      if (isDemoMode || !db) {
+        setBookings(prev => prev.map(b => b.id === booking.id ? { 
+          ...b, 
+          status: 'finalizado',
+          paymentMethod: pm,
+          finalValue: totalValue,
+          servicePrice: servicePrice
+        } : b));
+        if (productsNorm.length > 0) {
+          const localProds = localStorage.getItem('demo_products');
+          if (localProds) {
+            const prods = JSON.parse(localProds);
+            const updated = prods.map(p => {
+              const added = productsNorm.find(ap => ap.productId === p.id);
+              return added ? { ...p, quantity: Math.max(0, p.quantity - added.quantity) } : p;
+            });
+            localStorage.setItem('demo_products', JSON.stringify(updated));
+            setProducts(updated);
+          }
+        }
+        const localTx = localStorage.getItem('demo_financial') || '[]';
+        const currentTx = JSON.parse(localTx);
+        const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
+        const updatedTxList = [newTx, ...currentTx];
+        localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
+        localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
+        setTransactions(updatedTxList);
+      } else {
+        await updateDoc(doc(db, 'bookings', booking.id), { 
+          status: 'finalizado',
+          paymentMethod: pm,
+          finalValue: totalValue,
+          servicePrice: servicePrice
+        });
+        setBookings(prev => prev.map(b => b.id === booking.id ? { 
+          ...b, 
+          status: 'finalizado',
+          paymentMethod: pm,
+          finalValue: totalValue,
+          servicePrice: servicePrice
+        } : b));
+        syncBookingToGoogle(booking.id).catch(err => console.warn(err));
+        for (const p of productsNorm) {
+          const match = products.find(prod => prod.id === p.productId);
+          if (match) {
+            await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
+          }
+        }
+        await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+      }
+
+      if (waWindow) {
+        const firstName = (booking.clientName || '').split(' ')[0];
+        const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️\n\nSe você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.\n\nLeva apenas 1 minutinho clicando aqui:\nhttps://g.page/r/CRmlu0sO48XmEBM/review\n\nGrande abraço, Jon.`;
+        const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+        const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+        waWindow.location.href = waUrl;
+        toast('Abrindo WhatsApp diretamente... 🚀', 'success');
+      } else if (requestReview && gateway && gateway !== 'none') {
+        handleSendFeedbackWhatsApp(booking).catch(err => console.error(err));
+      }
+
+      toast('Comanda fechada com sucesso!', 'success');
+      setComandaBooking(null);
+    } catch (err) {
+      if (waWindow) {
+        waWindow.close();
+      }
+      console.error('Erro ao fechar comanda:', err);
+      toast('Falha ao fechar comanda.', 'error');
+    }
   };
 
   const handleCloseComanda = async (booking) => {
@@ -1619,7 +1891,7 @@ const AdminDashboard = () => {
         }
       }
 
-      alert('Comanda fechada com sucesso! Estoque deduzido e receita registrada.');
+      toast('Comanda fechada com sucesso!', 'success');
       setSelectedBooking(null);
       setIsCheckoutOpen(false);
       setOverrideBasePrice(null);
@@ -1629,7 +1901,7 @@ const AdminDashboard = () => {
       setApplyAnticipation(false);
     } catch (err) {
       console.error('Erro ao fechar comanda:', err);
-      alert('Falha ao concluir o fechamento da comanda.');
+      toast('Falha ao fechar comanda.', 'error');
     }
   };
 
@@ -1715,7 +1987,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const d = new Date(currentDate);
-    const day = d.getDay();
+    const day = getAdjustedDay(d);
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     const startOfWeek = new Date(d.setDate(diff));
     const startStr = getLocalDateString(startOfWeek);
@@ -1869,75 +2141,69 @@ const AdminDashboard = () => {
   }, [bookings, settings, db]);
 
   const handleSendFeedbackWhatsApp = async (booking) => {
-    if (!settings.waReminderGateway || settings.waReminderGateway === 'none') {
-      alert('Integração de WhatsApp Gateway não configurada ou desativada.');
-      return;
-    }
+    const firstName = (booking.clientName || '').split(' ')[0];
+    const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️
 
-    const msgText = `${booking.clientName}!
+Se você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.
 
-Cada avaliação no Google ajuda uma cacheada nova a encontrar o Studio antes de tomar uma decisão errada de corte.
-
-Se você gostou do atendimento, leva 1 minuto:
+Leva apenas 1 minutinho clicando aqui:
 https://g.page/r/CRmlu0sO48XmEBM/review
 
-Jon`;
+Grande abraço, Jon.`;
 
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
-      alert('Telefone da cliente inválido.');
+      toast('Telefone da cliente inválido.', 'error');
       return;
     }
 
     const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
 
-    let url = '';
-    let headers = { 'Content-Type': 'application/json' };
-    let body = {};
-
-    if (settings.waReminderGateway === 'zapi') {
-      const instance = settings.zApiInstanceId;
-      const token = settings.zApiToken;
-      if (!instance || !token) { alert('Z-API não configurada corretamente'); return; }
-      url = `https://api.z-api.io/instances/${instance}/token/${token}/send-text`;
-      body = { phone: phoneWithDDI, message: msgText };
-    } else if (settings.waReminderGateway === 'evolution') {
-      const apiUrl = settings.evolutionApiUrl;
-      const apiKey = settings.evolutionApiKey;
-      const instance = settings.evolutionInstanceName;
-      if (!apiUrl || !apiKey || !instance) { alert('Evolution API não configurada corretamente'); return; }
-      url = `${apiUrl.replace(/\/$/, '')}/message/sendText/${instance}`;
-      headers['apikey'] = apiKey;
-      body = { number: phoneWithDDI, text: msgText };
-    } else if (settings.waReminderGateway === 'custom') {
-      url = settings.customWebhookUrl;
-      if (!url) { alert('Webhook customizado não configurado'); return; }
-      body = {
-        phone: phoneWithDDI,
-        message: msgText,
-        bookingId: booking.id,
-        clientName: booking.clientName,
-        date: booking.date,
-        time: booking.time,
-        service: booking.serviceName || booking.service?.name
-      };
+    const gateway = settings.waReminderGateway;
+    if (!gateway || gateway === 'none') {
+      console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
+      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      toast('Abrindo WhatsApp diretamente... 🚀', 'success');
+      return;
     }
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch('/api/whatsapp', {
         method: 'POST',
-        headers,
-        body: JSON.stringify(body)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gateway,
+          phone: phoneWithDDI,
+          message: msgText,
+          config: {
+            zApiInstanceId: settings.zApiInstanceId,
+            zApiToken: settings.zApiToken,
+            evolutionApiUrl: settings.evolutionApiUrl,
+            evolutionApiKey: settings.evolutionApiKey,
+            evolutionInstanceName: settings.evolutionInstanceName,
+            customWebhookUrl: settings.customWebhookUrl
+          },
+          extraData: {
+            bookingId: booking.id,
+            clientName: booking.clientName,
+            date: booking.date,
+            time: booking.time,
+            service: booking.serviceName || booking.service?.name
+          }
+        })
       });
 
       if (response.ok) {
-        alert('Mensagem de feedback enviada com sucesso!');
+        toast('Mensagem de avaliação enviada com sucesso! 🚀', 'success');
       } else {
-        throw new Error('Erro na resposta do gateway');
+        throw new Error('Erro na resposta do gateway de WhatsApp');
       }
     } catch (err) {
-      console.error('Erro ao enviar feedback via WhatsApp:', err);
-      alert('Erro ao enviar mensagem. Verifique o console.');
+      console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
+      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      toast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }
   };
 
@@ -1983,11 +2249,14 @@ Jon`;
     const clientName = booking.clientName || '';
     const firstName = clientName.split(' ')[0];
     const googleLink = 'https://g.page/r/CRmlu0sO48XmEBM/review';
-    const message = `${firstName}, obrigado por ter escolhido o Studio hoje.
-A confiança que você depositou no processo significa muito pra mim.
-Se você sentiu a diferença — me conta no Google. Uma avaliação sua ajuda outras cacheadas que ainda não me conhecem a chegar até aqui.
+    const message = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️
+
+Se você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.
+
+Leva apenas 1 minutinho clicando aqui:
 ${googleLink}
-— Jon`;
+
+Grande abraço, Jon.`;
     return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 
@@ -2030,14 +2299,14 @@ ${googleLink}
 
     const [year, month, day] = dateStr.split('-');
     const dateObj = new Date(year, month - 1, day);
-    return DAYS_TRANSLATION[dateObj.getDay()];
+    return DAYS_TRANSLATION[getAdjustedDay(dateObj)];
   };
 
   // Mini Calendar list of days
   const getMiniCalDays = () => {
     const year = miniCalDate.getFullYear();
     const month = miniCalDate.getMonth();
-    const firstDay = new Date(year, month, 1).getDay();
+    const firstDay = getAdjustedDay(new Date(year, month, 1));
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     const days = [];
@@ -2084,7 +2353,7 @@ ${googleLink}
     e.stopPropagation();
 
     // Adjust position if it would overflow the viewport height
-    const menuHeight = appt ? 380 : (isBlockedSlot ? 120 : 180);
+    const menuHeight = appt ? 380 : (isBlockedSlot ? 130 : 180);
     let y = e.clientY;
     if (e.clientY + menuHeight > window.innerHeight) {
       y = window.innerHeight - menuHeight - 10;
@@ -2111,30 +2380,39 @@ ${googleLink}
     setActivePopover({ visible: false, x: 0, y: 0, booking: null });
   };
 
+  // Remove a recurring weekday block (escala) for the given professional/slot.
   const handleRemoveBlockedSlot = () => {
-    const prof = activeProfessionalsList.find(p => p.id === contextMenu.professional);
-    if (!prof) return;
-
-    const dateStr = contextMenu.date;
+    const profId = contextMenu.professional;
     const slot = contextMenu.time;
-    const dateObj = new Date(dateStr);
-    const weekday = dateObj.getDay(); // 0=sunday, 4=thursday
-    const blockPattern = `${weekday}-${slot}`;
+    const dParts = contextMenu.date.split('-');
+    const weekday = getAdjustedDay(new Date(Number(dParts[0]), Number(dParts[1]) - 1, Number(dParts[2])));
 
-    const newBlockedWeekdayHours = (prof.blockedWeekdayHours || []).filter(block => {
-      const [w, t] = block.split('-');
-      return !(w === String(weekday) && t === slot);
+    setSettings(prev => {
+      const profs = (prev.professionals || []).map(p => {
+        if (p.id !== profId) return p;
+        const newBlocks = (p.blockedWeekdayHours || []).filter(block => {
+          const segs = block.split('-');
+          const w = segs[0];
+          const start = segs[1];
+          const end = segs[2] || null;
+          if (Number(w) !== weekday) return true; // keep other weekdays
+          // remove blocks whose range covers this slot
+          return !slotInRange(slot, start, end);
+        });
+        return { ...p, blockedWeekdayHours: newBlocks };
+      });
+      const newSettings = { ...prev, professionals: profs };
+      if (db && !isDemoMode) {
+        updateDoc(doc(db, 'settings', 'studio'), { professionals: profs }).catch(() => {});
+      } else {
+        localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+        localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+        window.dispatchEvent(new Event('settingsUpdated'));
+      }
+      return newSettings;
     });
 
-    setGlobalData(prev => ({
-      ...prev,
-      professionals: prev.professionals.map(p =>
-        p.id === prof.id
-          ? { ...p, blockedWeekdayHours: newBlockedWeekdayHours }
-          : p
-      )
-    }));
-
+    toast('Bloqueio removido!', 'success');
     setContextMenu({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon', isBlockedSlot: false });
   };
 
@@ -2219,7 +2497,7 @@ ${googleLink}
       return bookings.filter(b => b.date === targetStr);
     } else if (statsScope === 'semana') {
       const d = new Date(currentDate);
-      const day = d.getDay();
+      const day = getAdjustedDay(d);
       const diff = d.getDate() - day + (day === 0 ? -6 : 1);
       const startOfWeek = new Date(d.setDate(diff));
       startOfWeek.setHours(0,0,0,0);
@@ -2312,7 +2590,7 @@ ${googleLink}
             <div className="stat-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h3>Agendamentos Ativos (Dia)</h3>
-                <Calendar size={18} style={{ color: 'var(--accent)', opacity: 0.8 }} />
+                <Calendar size={18} style={{ color: 'var(--adm-gold)', opacity: 0.8 }} />
               </div>
               <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
             </div>
@@ -2486,7 +2764,7 @@ ${googleLink}
                               width: '4px', 
                               height: '4px', 
                               borderRadius: '50%', 
-                              backgroundColor: isDayActive ? '#fff' : 'var(--accent)' 
+                              backgroundColor: isDayActive ? '#fff' : 'var(--adm-gold)' 
                             }} 
                           />
                         ))}
@@ -2495,7 +2773,7 @@ ${googleLink}
                             className="mini-calendar-dot-plus" 
                             style={{ 
                               fontSize: '0.6rem', 
-                              color: isDayActive ? '#fff' : 'var(--accent)', 
+                              color: isDayActive ? '#fff' : 'var(--adm-gold)', 
                               lineHeight: 1, 
                               fontWeight: 700 
                             }}
@@ -2566,7 +2844,7 @@ ${googleLink}
               <span>{expandedAccordions.status ? '▲' : '▼'}</span>
             </div>
             {expandedAccordions.status && (
-              <div className="accordion-content" style={{ color: 'var(--muted)', fontSize: '0.8rem' }}>
+              <div className="accordion-content" style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado" /> Confirmado</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot pendente" /> Pendente</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot finalizado" /> Finalizado</div>
@@ -2622,7 +2900,7 @@ ${googleLink}
               </div>
 
               {/* View Switcher Tabs */}
-              <div className="view-mode-tabs" style={{ display: 'flex', border: '1px solid var(--rule)', borderRadius: 8, padding: 2, background: 'var(--surface)' }}>
+              <div className="view-mode-tabs" style={{ display: 'flex', border: '1px solid var(--adm-rule)', borderRadius: 8, padding: 2, background: 'var(--adm-surface)' }}>
                 {['diario', 'semanal', 'mensal'].map(mode => (
                   <button
                     key={mode}
@@ -2728,108 +3006,314 @@ ${googleLink}
                     
                     {columnsToRender.map(prof => {
                       const currentDateStr = getLocalDateString(currentDate);
-                      const appt = filteredBookingsList.find(b => 
-                        b.date === currentDateStr && 
-                        b.time === slot && 
-                        (b.profissional || 'jon') === prof.id &&
-                        b.status !== 'cancelado'
-                      );
-
-                      const timeToMin = (t) => {
-                        if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
-                        const [h, m] = t.split(':').map(Number);
-                        return (h || 0) * 60 + (m || 0);
-                      };
                       const slotMin = timeToMin(slot);
-                      
-                      const ongoingAppt = !appt && filteredBookingsList.find(b => {
-                        if (b.date !== currentDateStr || (b.profissional || 'jon') !== prof.id || b.status === 'cancelado') return false;
+
+                      // Find all bookings active or overlapping with this 60-min hourly slot
+                      let cellBookings = filteredBookingsList.filter(b => {
+                        if (b.status === 'cancelado') return false;
+                        if ((b.profissional || 'jon') !== prof.id) return false;
+                        if (b.date !== currentDateStr) return false;
                         const bStart = timeToMin(b.time);
                         const bEnd = bStart + (b.duration || 60);
-                        return bStart < slotMin && slotMin < bEnd;
+                        return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
                       });
 
-                      // Calculate duration and heights
-                      let apptHeight = '100%';
-                      let apptTimeText = '';
-                      if (appt) {
-                        const startStr = appt.time || '00:00';
-                        const duration = appt.duration || 60;
-                        const parts = startStr.split(':');
-                        const h = parts[0] ? Number(parts[0]) : 0;
-                        const m = parts[1] ? Number(parts[1]) : 0;
-                        const endMin = h * 60 + m + duration;
-                        const endH = Math.floor(endMin / 60);
-                        const endM = endMin % 60;
-                        const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-                        apptTimeText = `${startStr} - ${endStr}`;
-                        
-                        if (duration <= 30) {
-                          apptHeight = '50%';
-                        }
-                      }
+                      // Unify duplicate bookings having the exact same fields
+                      const seen = new Set();
+                      cellBookings = cellBookings.filter(b => {
+                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
+                        if (seen.has(key)) return false;
+                        seen.add(key);
+                        return true;
+                      });
 
-                      let ongoingHeight = '100%';
-                      let ongoingTimeText = '';
-                      if (ongoingAppt) {
-                        const startStr = ongoingAppt.time || '00:00';
-                        const duration = ongoingAppt.duration || 60;
-                        const parts = startStr.split(':');
-                        const h = parts[0] ? Number(parts[0]) : 0;
-                        const m = parts[1] ? Number(parts[1]) : 0;
-                        const endMin = h * 60 + m + duration;
-                        const endH = Math.floor(endMin / 60);
-                        const endM = endMin % 60;
-                        const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-                        ongoingTimeText = `${startStr} - ${endStr}`;
-
-                        const ongoingStartMin = h * 60 + m;
-                        const remainingMins = (ongoingStartMin + duration) - slotMin;
-                        if (remainingMins <= 30) {
-                          ongoingHeight = '50%';
-                        }
-                      }
-
-                      const blockedBySettings = !appt && !ongoingAppt && isSlotBlocked(prof, currentDateStr, slot);
+                      const effectiveAbsences = getEffectiveAbsences(settings);
+                      const absence = cellBookings.length === 0 ? getAbsenceForSlot(effectiveAbsences, currentDateStr, slot) : null;
+                      const blockedBySettings = cellBookings.length === 0 && !absence && isSlotBlocked(prof, currentDateStr, slot);
 
                       return (
                         <div 
                           key={prof.id} 
                           className="day-cell"
-                          style={{ cursor: (blockedBySettings || !appt || appt.status === 'cancelado' || ongoingAppt) ? 'pointer' : 'default' }}
+                          style={{ 
+                            cursor: 'pointer',
+                            position: 'relative',
+                            minHeight: '60px'
+                          }}
                           onClick={(e) => {
-                            if (ongoingAppt) {
-                              handleBookingLeftClick(e, ongoingAppt);
-                              return;
-                            }
-                            if (blockedBySettings) {
-                              if (confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
-                                handleCellClick(currentDateStr, slot, prof.id, prof.name);
-                              }
-                              return;
-                            }
-                            if (!appt || appt.status === 'cancelado') {
-                              handleCellClick(currentDateStr, slot, prof.id, prof.name);
-                            }
-                          }}
-                          onContextMenu={(e) => {
-                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt || ongoingAppt, blockedBySettings);
-                          }}
+                             if (absence) return; // Absences handle their own clicks
+                             if (blockedBySettings) return; // Blocked card handles its own click (opens menu)
+                             handleCellClick(currentDateStr, slot, prof.id, prof.name);
+                           }}
                         >
-                          {blockedBySettings && (
+                          {cellBookings.length > 0 ? (
+                            <div style={{ display: 'flex', gap: 4, width: '100%', height: '100%', padding: '2px' }}>
+                              {cellBookings.map(bk => {
+                                const bStart = timeToMin(bk.time);
+                                const isSubsequent = bStart < slotMin;
+                                const duration = bk.duration || 60;
+                                
+                                let apptTimeText = '';
+                                const startStr = bk.time || '00:00';
+                                const parts = startStr.split(':');
+                                const h = parts[0] ? Number(parts[0]) : 0;
+                                const m = parts[1] ? Number(parts[1]) : 0;
+                                const endMin = h * 60 + m + duration;
+                                const endH = Math.floor(endMin / 60);
+                                const endM = endMin % 60;
+                                const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                                apptTimeText = `${startStr} - ${endStr}`;
+
+                                if (bk.status === 'bloqueado') {
+                                  return (
+                                    <div 
+                                      key={bk.id}
+                                      className="appt-card bloqueado"
+                                      onClick={(e) => handleBookingLeftClick(e, bk)}
+                                      onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
+                                      style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
+                                    >
+                                      <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
+                                      <span className="appt-time">{apptTimeText}</span>
+                                      <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                        <Lock size={12} /> Bloqueado
+                                      </span>
+                                      <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
+                                        {bk.notes}
+                                      </span>
+                                    </div>
+                                  );
+                                }
+
+                                return (
+                                  <div 
+                                    key={bk.id} 
+                                    className={`appt-card ${bk.status} ${isSubsequent ? 'continuation' : ''}`}
+                                    onClick={(e) => handleBookingLeftClick(e, bk)}
+                                    onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
+                                    style={{ 
+                                      flex: 1, 
+                                      height: '100%', 
+                                      display: 'flex', 
+                                      flexDirection: 'column', 
+                                      justifyContent: 'center', 
+                                      position: 'relative',
+                                      ...(isSubsequent ? {
+                                        opacity: 0.85, 
+                                        borderTop: 'none', 
+                                        borderTopLeftRadius: 0, 
+                                        borderTopRightRadius: 0,
+                                        background: 'rgba(110, 47, 24, 0.08)',
+                                        borderLeft: '3px dashed var(--adm-gold)',
+                                        color: 'var(--text-muted)'
+                                      } : {})
+                                    }}
+                                  >
+                                    <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
+                                    <span className="appt-time">{isSubsequent ? `↳ ${apptTimeText} (Ocupado)` : apptTimeText}</span>
+                                    <span className="appt-client" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.clientName}</span>
+                                    <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.service?.name || bk.serviceName}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : absence ? (
+                            <div 
+                              className="appt-card bloqueado"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                               if (absence.fixed) {
+                                  const opt = prompt(
+                                    "O que deseja fazer com esta ausência fixa 'Psicóloga'?\n\n" +
+                                    "Digite '1' para Mudar o horário (Acessar Configurações)\n" +
+                                    "Digite '2' para Cancelar e deixar o slot vago (Desativar)\n" +
+                                    "Digite '3' para Adicionar como Horário Recorrente Geral\n\n" +
+                                    "Digite a opção (1, 2 ou 3):"
+                                  );
+                                  if (opt === '1') {
+                                    window.location.href = "/admin/settings?tab=politicas";
+                                  } else if (opt === '2') {
+                                    const updateFn = async () => {
+                                      const newSettings = { ...settings, disablePsicologa: true };
+                                      if (db && !isDemoMode) {
+                                        await updateDoc(doc(db, 'settings', 'studio'), { disablePsicologa: true });
+                                      } else {
+                                        localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+                                        window.dispatchEvent(new Event('settingsUpdated'));
+                                      }
+                                      toast("Bloqueio de Psicóloga desativado!", "success");
+                                      window.location.reload();
+                                    };
+                                    updateFn();
+                                  } else if (opt === '3') {
+                                    alert("Você pode gerenciar as ausências recorrentes na aba de Configurações de Escala do profissional.");
+                                    window.location.href = "/admin/settings?tab=profissionais";
+                                  }
+                                } else {
+                                  const opt = prompt(
+                                    `O que deseja fazer com a ausência "${absence.title}"?\n\n` +
+                                    "Digite '1' para Mudar o horário / Editar\n" +
+                                    "Digite '2' para Cancelar e deixar o slot vago (Excluir)\n" +
+                                    "Digite '3' para Tornar recorrente na semana\n\n" +
+                                    "Digite a opção (1, 2 ou 3):"
+                                  );
+                                  if (opt === '1') {
+                                    // Trigger editing flow or prompt new values
+                                    const newTitle = prompt("Digite o novo título da ausência:", absence.title);
+                                    if (newTitle !== null) {
+                                      const start = prompt("Novo horário de início (HH:MM):", absence.startTime || "08:00");
+                                      const end = prompt("Novo horário de término (HH:MM):", absence.endTime || "09:00");
+                                      if (start && end) {
+                                        const updatedAbs = { ...absence, title: newTitle, startTime: start, endTime: end };
+                                        const updateList = (settings.absences || []).map(a => a.id === absence.id ? updatedAbs : a);
+                                        const saveFn = async () => {
+                                          if (db && !isDemoMode) {
+                                            await updateDoc(doc(db, 'settings', 'studio'), { absences: updateList });
+                                          } else {
+                                            const newSettings = { ...settings, absences: updateList };
+                                            localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+                                            localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                                            window.dispatchEvent(new Event('settingsUpdated'));
+                                          }
+                                          toast("Ausência atualizada!", "success");
+                                          window.location.reload();
+                                        };
+                                        saveFn();
+                                      }
+                                    }
+                                  } else if (opt === '2') {
+                                    handleRemoveAbsence(absence);
+                                  } else if (opt === '3') {
+                                    // Make recurring (weekly)
+                                    const updatedAbs = { ...absence, recurrence: 'weekly', weekday: new Date().getDay() };
+                                    const updateList = (settings.absences || []).map(a => a.id === absence.id ? updatedAbs : a);
+                                    const saveFn = async () => {
+                                      if (db && !isDemoMode) {
+                                        await updateDoc(doc(db, 'settings', 'studio'), { absences: updateList });
+                                      } else {
+                                        const newSettings = { ...settings, absences: updateList };
+                                        localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                                        window.dispatchEvent(new Event('settingsUpdated'));
+                                      }
+                                      toast("Ausência definida como recorrente!", "success");
+                                      window.location.reload();
+                                    };
+                                    saveFn();
+                                  }
+                                }
+                              }}
+                              style={(() => {
+                                const title = (absence.title || '').toLowerCase();
+                                let bg = 'rgba(139, 124, 200, 0.12)';
+                                let border = '4px solid #8b7cc8';
+                                let color = '#8b7cc8';
+                                
+                                if (title.includes('médico') || title.includes('medico')) {
+                                  bg = 'rgba(235, 94, 85, 0.12)';
+                                  border = '4px solid #eb5e55';
+                                  color = '#eb5e55';
+                                } else if (title.includes('almoço') || title.includes('almoco')) {
+                                  bg = 'rgba(220, 163, 84, 0.12)';
+                                  border = '4px solid #dca354';
+                                  color = '#dca354';
+                                } else if (title.includes('folga')) {
+                                  bg = 'rgba(114, 137, 218, 0.12)';
+                                  border = '4px solid #7289da';
+                                  color = '#7289da';
+                                } else if (title.includes('viagem')) {
+                                  bg = 'rgba(74, 163, 223, 0.12)';
+                                  border = '4px solid #4aa3df';
+                                  color = '#4aa3df';
+                                } else if (title.includes('pausa')) {
+                                  bg = 'rgba(26, 188, 156, 0.12)';
+                                  border = '4px solid #1abc9c';
+                                  color = '#1abc9c';
+                                } else if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) {
+                                  bg = 'rgba(155, 89, 182, 0.12)';
+                                  border = '4px solid #9b59b6';
+                                  color = '#9b59b6';
+                                }
+                                
+                                return {
+                                  background: bg, 
+                                  borderLeft: border, 
+                                  color: color, 
+                                  cursor: 'pointer',
+                                  height: '100%',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  padding: '6px 8px',
+                                  margin: '2px'
+                                };
+                              })()}
+                            >
+                              <span className="appt-time" style={{ 
+                                color: (() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
+                                  if (title.includes('almoço') || title.includes('almoco')) return '#dca354';
+                                  if (title.includes('folga')) return '#7289da';
+                                  if (title.includes('viagem')) return '#4aa3df';
+                                  if (title.includes('pausa')) return '#1abc9c';
+                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
+                                  return '#8b7cc8';
+                                })()
+                              }}>{slot}</span>
+                              <span className="appt-client" style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: 4, 
+                                color: (() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
+                                  if (title.includes('almoço') || title.includes('almoco')) return '#dca354';
+                                  if (title.includes('folga')) return '#7289da';
+                                  if (title.includes('viagem')) return '#4aa3df';
+                                  if (title.includes('pausa')) return '#1abc9c';
+                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
+                                  return '#8b7cc8';
+                                })()
+                              }}>
+                                <Lock size={12} /> {absence.title}
+                              </span>
+                              <span className="appt-service" style={{ 
+                                color: (() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return 'rgba(235, 94, 85, 0.7)';
+                                  if (title.includes('almoço') || title.includes('almoco')) return 'rgba(220, 163, 84, 0.7)';
+                                  if (title.includes('folga')) return 'rgba(114, 137, 218, 0.7)';
+                                  if (title.includes('viagem')) return 'rgba(74, 163, 223, 0.7)';
+                                  if (title.includes('pausa')) return 'rgba(26, 188, 156, 0.7)';
+                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return 'rgba(155, 89, 182, 0.7)';
+                                  return 'rgba(139, 124, 200, 0.7)';
+                                })()
+                              }}>
+                                Ausência
+                              </span>
+                            </div>
+                          ) : blockedBySettings ? (
                             <div
                               className="appt-card bloqueado"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true);
+                                setSelectedScaleBlock({
+                                  date: currentDateStr,
+                                  slot: slot,
+                                  profId: prof.id,
+                                  profName: prof.name
+                                });
+                                setShowScaleBlockModal(true);
                               }}
+                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
                               style={{
                                 background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
                                 color: '#475569',
                                 borderLeft: '4px solid #94a3b8',
                                 opacity: 0.85,
-                                pointerEvents: 'auto',
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                margin: '2px',
+                                height: 'calc(100% - 4px)'
                               }}
                             >
                               <span className="appt-time">{slot}</span>
@@ -2837,74 +3321,10 @@ ${googleLink}
                                 <Lock size={12} /> Bloqueado
                               </span>
                               <span className="appt-service">
-                                Clique para remover
+                                Clique para opções
                               </span>
                             </div>
-                          )}
-
-                          {appt && appt.status === 'bloqueado' && (
-                            <div 
-                              className="appt-card bloqueado"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedBooking(appt);
-                                setIsCheckoutOpen(false);
-                                setAddedServices([]);
-                                setAddedProducts([]);
-                              }}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
-                              style={{ height: apptHeight }}
-                            >
-                              <span className="appt-time">{apptTimeText}</span>
-                              <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <Lock size={12} /> Bloqueado
-                              </span>
-                              <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
-                                {appt.notes}
-                              </span>
-                            </div>
-                          )}
-                          
-                          {appt && appt.status !== 'bloqueado' && (
-                            <div 
-                              className={`appt-card ${appt.status}`}
-                              onClick={(e) => handleBookingLeftClick(e, appt)}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
-                              style={{ height: apptHeight, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
-                            >
-                              <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
-                              <span className="appt-time">{apptTimeText}</span>
-                              <span className="appt-client" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{appt.clientName}</span>
-                              <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{appt.service?.name || appt.serviceName}</span>
-                            </div>
-                          )}
-
-                          {ongoingAppt && (
-                            <div 
-                              className={`appt-card ${ongoingAppt.status} continuation`}
-                              onClick={(e) => handleBookingLeftClick(e, ongoingAppt)}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, ongoingAppt)}
-                              style={{ 
-                                opacity: 0.85, 
-                                borderTop: 'none', 
-                                borderTopLeftRadius: 0, 
-                                borderTopRightRadius: 0,
-                                background: ongoingAppt.status === 'bloqueado' ? undefined : 'rgba(110, 47, 24, 0.08)',
-                                borderLeft: ongoingAppt.status === 'bloqueado' ? '3px solid #a0aec0' : '3px dashed var(--accent)',
-                                color: 'var(--text-muted)',
-                                height: ongoingHeight,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                position: 'relative'
-                              }}
-                            >
-                              <MoreVertical size={12} style={{ position: 'absolute', top: '4px', right: '4px', opacity: 0.5 }} />
-                              <span className="appt-time" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>↳ {ongoingTimeText} (Ocupado)</span>
-                              <span className="appt-client" style={{ fontSize: '0.78rem', fontWeight: 600, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{ongoingAppt.clientName}</span>
-                              <span className="appt-service" style={{ fontSize: '0.7rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{ongoingAppt.service?.name || ongoingAppt.serviceName}</span>
-                            </div>
-                          )}
+                          ) : null}
                         </div>
                       );
                     })}
@@ -2930,9 +3350,9 @@ ${googleLink}
                   const isToday = dStr === getLocalDateString(new Date());
                   const weekdaysShort = ['dom.', 'seg.', 'ter.', 'qua.', 'qui.', 'sex.', 'sáb.'];
                   return (
-                    <div key={dStr} className={`pro-header-cell ${isToday ? 'active-day-header' : ''}`} style={{ borderBottom: isToday ? '3px solid var(--accent)' : 'none' }}>
-                      <span className="pro-name" style={{ fontSize: '0.9rem', color: isToday ? 'var(--accent)' : 'inherit', fontWeight: isToday ? 'bold' : 'normal' }}>
-                        {weekdaysShort[d.getDay()]} {d.getDate()}
+                    <div key={dStr} className={`pro-header-cell ${isToday ? 'active-day-header' : ''}`} style={{ borderBottom: isToday ? '3px solid var(--adm-gold)' : 'none' }}>
+                      <span className="pro-name" style={{ fontSize: '0.9rem', color: isToday ? 'var(--adm-gold)' : 'inherit', fontWeight: isToday ? 'bold' : 'normal' }}>
+                        {weekdaysShort[getAdjustedDay(d)]} {d.getDate()}
                       </span>
                     </div>
                   );
@@ -2942,9 +3362,9 @@ ${googleLink}
               {/* Body da grade semanal */}
               <div className="calendar-body" style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
                 {/* Horários no lado esquerdo */}
-                <div className="weekly-hours-column" style={{ width: 80, flexShrink: 0, borderRight: '1px solid var(--rule)', background: 'var(--bg-warm)' }}>
+                <div className="weekly-hours-column" style={{ width: 80, flexShrink: 0, borderRight: '1px solid var(--adm-rule)', background: 'var(--adm-card)' }}>
                   {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(h => (
-                    <div key={h} className="time-label-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.75rem', borderBottom: '1px solid var(--rule)' }}>
+                    <div key={h} className="time-label-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.75rem', borderBottom: '1px solid var(--adm-rule)' }}>
                       {h}
                     </div>
                   ))}
@@ -2955,7 +3375,7 @@ ${googleLink}
                   {/* Linhas de grade horizontais */}
                   <div className="weekly-grid-lines" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', pointerEvents: 'none', zIndex: 0 }}>
                     {Array.from({ length: 9 }).map((_, i) => (
-                      <div key={i} style={{ height: 60, borderBottom: '1px solid var(--rule)' }} />
+                      <div key={i} style={{ height: 60, borderBottom: '1px solid var(--adm-rule)' }} />
                     ))}
                   </div>
 
@@ -2965,19 +3385,68 @@ ${googleLink}
 
                     return wDays.map(d => {
                       const dStr = getLocalDateString(d);
-                      const dayBookings = bookings.filter(b => 
+                      let dayBookings = bookings.filter(b => 
                         b.date === dStr && 
                         (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
                         b.status !== 'cancelado'
                       );
+                      const seenBookings = new Set();
+                      dayBookings = dayBookings.filter(b => {
+                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
+                        if (seenBookings.has(key)) return false;
+                        seenBookings.add(key);
+                        return true;
+                      });
 
                       const dayBlocks = getDayBlocks(prof, d);
+
+                      const effectiveAbsences = getEffectiveAbsences(settings);
+                      const dayAbsences = effectiveAbsences.filter(a => absenceCoversDate(a, dStr));
+
+                      // Merge all items into a common layout list for overlap calculation
+                      const layoutItems = [];
+
+                      dayBookings.forEach(b => {
+                        layoutItems.push({
+                          id: b.id,
+                          type: 'booking',
+                          startMin: timeToMin(b.time),
+                          endMin: timeToMin(b.time) + (b.duration || 60),
+                          raw: b
+                        });
+                      });
+
+                      dayBlocks.forEach((block, idx) => {
+                        layoutItems.push({
+                          id: `block-${idx}`,
+                          type: 'scale_block',
+                          startMin: timeToMin(block.start),
+                          endMin: timeToMin(block.end),
+                          label: block.label,
+                          raw: block
+                        });
+                      });
+
+                      dayAbsences.forEach((abs, idx) => {
+                        const start = abs.allDay ? '10:00' : (abs.startTime || '10:00');
+                        const end = abs.allDay ? '19:00' : (abs.endTime || '19:00');
+                        layoutItems.push({
+                          id: `absence-${abs.id || idx}`,
+                          type: 'absence',
+                          startMin: timeToMin(start),
+                          endMin: timeToMin(end),
+                          label: abs.title,
+                          raw: abs
+                        });
+                      });
+
+                      const positionedItems = calculateOverlappingLayout(layoutItems);
 
                       return (
                         <div 
                           key={dStr} 
                           className="weekly-day-column" 
-                          style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--rule)', zIndex: 1 }}
+                          style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--adm-rule)', zIndex: 1 }}
                         >
                           {/* Criar agendamento ao clicar em espaço vazio */}
                           {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(slot => {
@@ -2991,8 +3460,13 @@ ${googleLink}
                               const end = timeToMin(b.end);
                               return slotMin >= start && slotMin < end;
                             });
+                            const hasAbsence = dayAbsences.some(a => {
+                              const start = timeToMin(a.allDay ? '10:00' : (a.startTime || '10:00'));
+                              const end = timeToMin(a.allDay ? '19:00' : (a.endTime || '19:00'));
+                              return slotMin >= start && slotMin < end;
+                            });
 
-                            if (hasAppt || hasBlock) return null;
+                            if (hasAppt || hasBlock || hasAbsence) return null;
 
                             return (
                               <div
@@ -3011,27 +3485,147 @@ ${googleLink}
                             );
                           })}
 
-                          {/* Desenhar bloqueios */}
-                          {dayBlocks.map((block, idx) => {
-                            const startMin = timeToMin(block.start);
-                            const endMin = timeToMin(block.end);
-                            const duration = Math.max(30, endMin - startMin);
-                            
+                          {/* Desenhar todos os itens posicionados */}
+                          {positionedItems.map(item => {
+                            const startMin = item.startMin;
+                            const duration = Math.max(30, item.endMin - startMin);
                             const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
                             const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
 
                             if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
 
+                            const left = item.leftPercent;
+                            const width = item.widthPercent;
+
+                            if (item.type === 'booking') {
+                              const b = item.raw;
+                              return (
+                                <div 
+                                  key={item.id} 
+                                  className={`appt-card ${b.status}`}
+                                  onClick={(e) => handleBookingLeftClick(e, b)}
+                                  style={{
+                                    top: `${topPercent}%`,
+                                    height: `${heightPercent}%`,
+                                    position: 'absolute',
+                                    left: `${left}%`,
+                                    width: `${width}%`,
+                                    padding: '4px',
+                                    zIndex: 3,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden'
+                                  }}
+                                >
+                                  <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
+                                  <span className="appt-client" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.clientName}</span>
+                                  <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
+                                </div>
+                              );
+                            }
+
+                            if (item.type === 'absence') {
+                              const abs = item.raw;
+                              return (
+                                <div 
+                                  key={item.id} 
+                                  className="appt-card bloqueado"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (abs.fixed) {
+                                      if (confirm("Esta é a ausência fixa 'Psicóloga'. Deseja desativá-la temporariamente nas configurações do sistema?")) {
+                                        const updateFn = async () => {
+                                          const newSettings = { ...settings, disablePsicologa: true };
+                                          if (db && !isDemoMode) {
+                                            await updateDoc(doc(db, 'settings', 'studio'), { disablePsicologa: true });
+                                          } else {
+                                            localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+                                            localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                                            window.dispatchEvent(new Event('settingsUpdated'));
+                                          }
+                                          toast("Bloqueio de Psicóloga desativado!", "success");
+                                          window.location.reload();
+                                        };
+                                        updateFn();
+                                      }
+                                    } else {
+                                      if (confirm(`Deseja excluir a ausência "${abs.title}"?`)) {
+                                        handleRemoveAbsence(abs);
+                                      }
+                                    }
+                                  }}
+                                  style={(() => {
+                                const title = (abs.title || '').toLowerCase();
+                                let bg = 'rgba(139, 124, 200, 0.12)';
+                                let border = '4px solid #8b7cc8';
+                                let color = '#8b7cc8';
+                                
+                                if (title.includes('médico') || title.includes('medico')) {
+                                  bg = 'rgba(235, 94, 85, 0.12)';
+                                  border = '4px solid #eb5e55';
+                                  color = '#eb5e55';
+                                } else if (title.includes('almoço') || title.includes('almoco')) {
+                                  bg = 'rgba(220, 163, 84, 0.12)';
+                                  border = '4px solid #dca354';
+                                  color = '#dca354';
+                                } else if (title.includes('folga')) {
+                                  bg = 'rgba(114, 137, 218, 0.12)';
+                                  border = '4px solid #7289da';
+                                  color = '#7289da';
+                                } else if (title.includes('viagem')) {
+                                  bg = 'rgba(74, 163, 223, 0.12)';
+                                  border = '4px solid #4aa3df';
+                                  color = '#4aa3df';
+                                } else if (title.includes('pausa')) {
+                                  bg = 'rgba(26, 188, 156, 0.12)';
+                                  border = '4px solid #1abc9c';
+                                  color = '#1abc9c';
+                                } else if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) {
+                                  bg = 'rgba(155, 89, 182, 0.12)';
+                                  border = '4px solid #9b59b6';
+                                  color = '#9b59b6';
+                                }
+                                
+                                return {
+                                  position: 'absolute',
+                                  top: `${topPercent}%`,
+                                  height: `${heightPercent}%`,
+                                  left: `${left}%`,
+                                  width: `${width}%`,
+                                  background: bg, 
+                                  borderLeft: border, 
+                                  color: color, 
+                                  cursor: 'pointer',
+                                  padding: '6px 8px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  overflow: 'hidden',
+                                  zIndex: 2
+                                };
+                              })()}
+                                >
+                                  <span className="appt-time" style={{ fontWeight: 'bold' }}>
+                                    {abs.allDay ? 'Dia Inteiro' : `${abs.startTime} - ${abs.endTime}`}
+                                  </span>
+                                  <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                    <Lock size={12} /> {abs.title}
+                                  </span>
+                                </div>
+                              );
+                            }
+
+                            // scale_block
                             return (
                               <div 
-                                key={`block-${idx}`} 
+                                key={item.id} 
                                 className="appt-card bloqueado"
                                 style={{
                                   top: `${topPercent}%`,
                                   height: `${heightPercent}%`,
                                   position: 'absolute',
-                                  left: 4,
-                                  right: 4,
+                                  left: `${left}%`,
+                                  width: `${width}%`,
                                   background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
                                   color: '#475569',
                                   borderLeft: '4px solid #94a3b8',
@@ -3040,48 +3634,14 @@ ${googleLink}
                                   display: 'flex',
                                   flexDirection: 'column',
                                   overflow: 'hidden',
-                                  zIndex: 2
+                                  zIndex: 2,
+                                  pointerEvents: 'none'
                                 }}
                               >
-                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{block.start} - {block.end}</span>
+                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{item.raw.start} - {item.raw.end}</span>
                                 <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                  <Lock size={12} /> {block.label}
+                                  <Lock size={12} /> {item.label}
                                 </span>
-                              </div>
-                            );
-                          })}
-
-                          {/* Desenhar agendamentos */}
-                          {dayBookings.map(b => {
-                            const startMin = timeToMin(b.time);
-                            const duration = b.duration || 60;
-                            
-                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
-                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
-
-                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
-
-                            return (
-                              <div 
-                                key={b.id} 
-                                className={`appt-card ${b.status}`}
-                                onClick={(e) => handleBookingLeftClick(e, b)}
-                                style={{
-                                  top: `${topPercent}%`,
-                                  height: `${heightPercent}%`,
-                                  position: 'absolute',
-                                  left: 4,
-                                  right: 4,
-                                  zIndex: 3,
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  justifyContent: 'center',
-                                  overflow: 'hidden'
-                                }}
-                              >
-                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
-                                <span className="appt-client" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.clientName}</span>
-                                <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
                               </div>
                             );
                           })}
@@ -3136,8 +3696,8 @@ ${googleLink}
                         flexDirection: 'column',
                         alignItems: 'stretch',
                         justifyContent: 'flex-start',
-                        background: !isCurrentMonth ? 'var(--bg-warm)' : 'var(--surface)',
-                        border: '1px solid var(--rule)',
+                        background: !isCurrentMonth ? 'var(--adm-card)' : 'var(--adm-surface)',
+                        border: '1px solid var(--adm-rule)',
                         cursor: 'pointer',
                         transition: 'all 0.2s',
                         opacity: !isCurrentMonth ? 0.6 : 1
@@ -3147,12 +3707,12 @@ ${googleLink}
                         <span style={{ 
                           fontSize: '0.95rem', 
                           fontWeight: isToday ? 'bold' : 'normal',
-                          color: isToday ? 'var(--accent)' : 'var(--ink)'
+                          color: isToday ? 'var(--adm-gold)' : 'var(--adm-text)'
                         }}>
                           {cell.dayNum}
                         </span>
                         {isToday && (
-                          <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: 'white', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>Hoje</span>
+                          <span style={{ fontSize: '0.65rem', background: 'var(--adm-gold)', color: 'white', padding: '2px 6px', borderRadius: 4, fontWeight: 'bold' }}>Hoje</span>
                         )}
                       </div>
                       
@@ -3161,7 +3721,7 @@ ${googleLink}
                         {dayBookings.slice(0, 3).map(b => {
                           let bg = 'rgba(176, 90, 46, 0.1)';
                           let border = '1px solid rgba(176, 90, 46, 0.2)';
-                          let color = 'var(--accent)';
+                          let color = 'var(--adm-gold)';
                           
                           if (b.status === 'finalizado') {
                             bg = 'rgba(74, 93, 78, 0.1)';
@@ -3198,7 +3758,7 @@ ${googleLink}
                           );
                         })}
                         {dayBookings.length > 3 && (
-                          <div style={{ fontSize: '0.68rem', color: 'var(--muted)', textAlign: 'center', fontWeight: 'bold' }}>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--adm-muted)', textAlign: 'center', fontWeight: 'bold' }}>
                             + {dayBookings.length - 3} mais
                           </div>
                         )}
@@ -3223,7 +3783,11 @@ ${googleLink}
           onClick={e => e.stopPropagation()}
         >
           <div className="booking-popover-header">
-            <span className="booking-popover-client">{activePopover.booking.clientName.toUpperCase()}</span>
+            <span className="booking-popover-client">
+              {activePopover.booking.status === 'bloqueado' 
+                ? (activePopover.booking.notes || 'HORÁRIO BLOQUEADO').toUpperCase() 
+                : activePopover.booking.clientName.toUpperCase()}
+            </span>
             <button 
               className="btn-icon" 
               style={{ padding: 2, border: 'none', background: 'none' }}
@@ -3244,73 +3808,181 @@ ${googleLink}
                 return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
               })()}</span>
             </div>
-            <div className="booking-popover-row">
-              <Phone size={12} className="text-muted" />
-              {activePopover.booking.status === 'finalizado' ? (
-                <a 
-                  href={getWhatsAppFeedbackUrl(activePopover.booking.clientPhone, activePopover.booking)}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{ color: '#25D366', fontWeight: '600' }}
-                >
-                  <Send size={11} style={{ marginRight: 4 }} /> Pedir Avaliação
-                </a>
-              ) : (
-                <a 
-                  href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
-                </a>
-              )}
-            </div>
+            {activePopover.booking.status !== 'bloqueado' && (
+              <div className="booking-popover-row">
+                <Phone size={12} className="text-muted" />
+                {activePopover.booking.status === 'finalizado' ? (
+                  <button 
+                    onClick={() => {
+                      handleSendFeedbackWhatsApp(activePopover.booking);
+                    }}
+                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#25D366', fontWeight: '600', fontFamily: 'inherit', fontSize: 'inherit' }}
+                  >
+                    <Send size={11} style={{ marginRight: 4 }} /> Pedir Avaliação
+                  </button>
+                ) : (
+                  <a 
+                    href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
+                  </a>
+                )}
+              </div>
+            )}
             <div className="booking-popover-row">
               <User size={12} className="text-muted" />
               <span>Profissional: {activeProfessionalsList.find(p => p.id === (activePopover.booking.profissional || 'jon'))?.name || 'Jon'}</span>
             </div>
             <div className="booking-popover-row">
               <FileText size={12} className="text-muted" />
-              <span>Serviço: {activePopover.booking.serviceName || activePopover.booking.service?.name}</span>
+              {activePopover.booking.status === 'bloqueado' ? (
+                <span>Motivo: {activePopover.booking.notes || 'Bloqueio administrativo'}</span>
+              ) : (
+                <span>Serviço: {activePopover.booking.serviceName || activePopover.booking.service?.name}</span>
+              )}
             </div>
             <div className="booking-popover-row">
               <span className={`appt-status-dot ${activePopover.booking.status}`} />
               <span style={{ textTransform: 'capitalize' }}>Status: {activePopover.booking.status}</span>
             </div>
             
-            {activePopover.booking.isPackageUse && (
-              <div className="booking-popover-row" style={{ color: 'var(--accent)', fontWeight: 'bold', gap: 6 }}>
+            {activePopover.booking.status !== 'bloqueado' && activePopover.booking.isPackageUse && (
+              <div className="booking-popover-row" style={{ color: 'var(--adm-gold)', fontWeight: 'bold', gap: 6 }}>
                 <Package size={12} />
                 <span>Uso de Pacote</span>
               </div>
             )}
             
-            {activePopover.booking.isPackageAcquisition && (
-              <div className="booking-popover-row" style={{ color: 'var(--accent)', fontWeight: 'bold', gap: 6 }}>
+            {activePopover.booking.status !== 'bloqueado' && activePopover.booking.isPackageAcquisition && (
+              <div className="booking-popover-row" style={{ color: 'var(--adm-gold)', fontWeight: 'bold', gap: 6 }}>
                 <Package size={12} />
                 <span>Aquisição de Pacote</span>
               </div>
             )}
             
-            <div className="booking-popover-actions">
-              <button 
-                className="btn btn-ghost" 
-                style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+            <div className="booking-popover-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+              {activePopover.booking.status === 'bloqueado' && (
+                <button
+                  className="btn btn-accent"
+                  style={{ padding: '6px 8px', fontSize: '0.75rem', width: '100%' }}
+                  onClick={() => {
+                    setBlockIdToCancelOnSuccess(activePopover.booking.id);
+                    setSelectedSlot({
+                      date: activePopover.booking.date,
+                      time: activePopover.booking.time,
+                      profissional: activePopover.booking.profissional || 'jon',
+                      dateFormatted: activePopover.booking.date
+                    });
+                    setNewBooking({
+                      clientName: '',
+                      clientPhone: '',
+                      clientEmail: '',
+                      serviceName: services[0]?.name || '',
+                      servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+                      duration: services[0]?.duration || 60,
+                      date: activePopover.booking.date,
+                      time: activePopover.booking.time,
+                      notes: '',
+                      profissional: activePopover.booking.profissional || 'jon'
+                    });
+                    setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                    setShowAddModal(true);
+                  }}
+                >
+                  Fazer Agendamento
+                </button>
+              )}
+              <button
+                className="btn"
+                style={{
+                  padding: '6px 8px',
+                  fontSize: '0.75rem',
+                  width: '100%',
+                  background: 'transparent',
+                  color: 'var(--adm-text)',
+                  borderColor: 'var(--adm-rule)',
+                  borderStyle: 'solid',
+                  borderWidth: '1px'
+                }}
                 onClick={() => {
                   setSelectedBooking(activePopover.booking);
                   handleStartEditBooking(activePopover.booking);
                 }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'var(--adm-text)';
+                  e.currentTarget.style.color = '#121110';
+                  e.currentTarget.style.borderColor = 'var(--adm-text)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--adm-text)';
+                  e.currentTarget.style.borderColor = 'var(--adm-rule)';
+                }}
               >
                 Editar
               </button>
-              {activePopover.booking.status === 'confirmado' && (
-                <button 
-                  className="btn btn-accent" 
-                  style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+              {activePopover.booking.status !== 'cancelado' && (
+                <button
+                  className="btn"
+                  style={{
+                    padding: '6px 8px',
+                    fontSize: '0.75rem',
+                    width: '100%',
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    color: '#ef4444',
+                    borderColor: '#ef4444',
+                    borderStyle: 'solid',
+                    borderWidth: '1px'
+                  }}
                   onClick={() => {
-                    setSelectedBooking(activePopover.booking);
-                    setOverrideBasePrice(activePopover.booking.servicePrice || activePopover.booking.service?.price || 150);
-                    setIsCheckoutOpen(true);
+                    const isFixedAbsence = activePopover.booking.id === 'fixed-psicologa' || activePopover.booking.fixed;
+                    const msg = isFixedAbsence
+                      ? "Esta é a ausência fixa 'Psicóloga'. Deseja desativá-la temporariamente nas configurações do sistema?"
+                      : activePopover.booking.status === 'bloqueado'
+                      ? 'Tem certeza que deseja desbloquear este horário?'
+                      : 'Tem certeza que deseja cancelar este agendamento?';
+                    if (confirm(msg)) {
+                      if (isFixedAbsence) {
+                        const updateFn = async () => {
+                          const newSettings = { ...settings, disablePsicologa: true };
+                          if (db && !isDemoMode) {
+                            await updateDoc(doc(db, 'settings', 'studio'), { disablePsicologa: true });
+                          } else {
+                            localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                            window.dispatchEvent(new Event('settingsUpdated'));
+                          }
+                          toast("Bloqueio de Psicóloga desativado!", "success");
+                          setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                          window.location.reload();
+                        };
+                        updateFn();
+                      } else {
+                        handleUpdateStatus(activePopover.booking.id, 'cancelado');
+                        setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                      }
+                    }
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#ef4444';
+                    e.currentTarget.style.color = '#fff';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                    e.currentTarget.style.color = '#ef4444';
+                    e.currentTarget.style.borderColor = '#ef4444';
+                  }}
+                >
+                  {activePopover.booking.status === 'bloqueado' ? 'Desbloquear' : 'Cancelar'}
+                </button>
+              )}
+              {activePopover.booking.status === 'confirmado' && (
+                <button
+                  className="btn btn-accent"
+                  style={{ padding: '6px 8px', fontSize: '0.75rem', width: '100%' }}
+                  onClick={() => {
+                    setComandaBooking(activePopover.booking);
                     setActivePopover({ visible: false, x: 0, y: 0, booking: null });
                   }}
                 >
@@ -3336,8 +4008,7 @@ ${googleLink}
               </li>
               {contextMenu.booking.status === 'finalizado' && (
                 <li className="context-menu-item" style={{ color: '#25D366', fontWeight: '600' }} onClick={() => {
-                  const url = getWhatsAppFeedbackUrl(contextMenu.booking.clientPhone, contextMenu.booking);
-                  if (url) window.open(url, '_blank');
+                  handleSendFeedbackWhatsApp(contextMenu.booking);
                   setContextMenu({ visible: false });
                 }}>
                   <Send size={14} /> Pedir Avaliação
@@ -3434,40 +4105,43 @@ ${googleLink}
                 <Trash2 size={14} /> Cancelar Agendamento
               </li>
             </>
+          ) : contextMenu.isBlockedSlot ? (
+            <>
+              <li className="context-menu-item" onClick={() => {
+                const profName = activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon';
+                handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, profName);
+                setContextMenu({ visible: false });
+              }}>
+                <Plus size={14} /> Agendar Cliente
+              </li>
+              <li className="context-menu-item danger" onClick={handleRemoveBlockedSlot}>
+                <Unlock size={14} /> Cancelar Bloqueio
+              </li>
+            </>
           ) : (
             <>
-              {contextMenu.isBlockedSlot ? (
-                <li className="context-menu-item danger" onClick={() => {
-                  handleRemoveBlockedSlot();
-                }}>
-                  <Unlock size={14} /> Remover Ausência
+              <li className="context-menu-item" onClick={() => {
+                handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon');
+                setContextMenu({ visible: false });
+              }}>
+                <Plus size={14} /> Agendar Cliente
+              </li>
+              <li className="context-menu-item" onClick={() => {
+                setSelectedSlot({
+                  date: contextMenu.date,
+                  time: contextMenu.time,
+                  profissional: contextMenu.professional,
+                  dateFormatted: contextMenu.date
+                });
+                setShowSlotActionModal(true);
+                setContextMenu({ visible: false });
+              }}>
+                <Lock size={14} /> Bloquear Horário
+              </li>
+              {clipboard && (
+                <li className="context-menu-item" onClick={handlePasteBooking}>
+                  <Clipboard size={14} /> Colar Agendamento
                 </li>
-              ) : (
-                <>
-                  <li className="context-menu-item" onClick={() => {
-                    handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon');
-                    setContextMenu({ visible: false });
-                  }}>
-                    <Plus size={14} /> Agendar Cliente
-                  </li>
-                  <li className="context-menu-item" onClick={() => {
-                    setSelectedSlot({
-                      date: contextMenu.date,
-                      time: contextMenu.time,
-                      profissional: contextMenu.professional,
-                      dateFormatted: contextMenu.date
-                    });
-                    setShowSlotActionModal(true);
-                    setContextMenu({ visible: false });
-                  }}>
-                    <Lock size={14} /> Bloquear Horário
-                  </li>
-                  {clipboard && (
-                    <li className="context-menu-item" onClick={handlePasteBooking}>
-                      <Clipboard size={14} /> Colar Agendamento
-                    </li>
-                  )}
-                </>
               )}
             </>
           )}
@@ -3481,7 +4155,11 @@ ${googleLink}
             
             <div className="trinks-modal-header">
               <h3 className="trinks-modal-title">
-                <Edit size={20} /> EDITAR AGENDAMENTO
+                {selectedBooking.status === 'bloqueado' ? (
+                  <><Lock size={20} /> EDITAR HORÁRIO BLOQUEADO</>
+                ) : (
+                  <><Edit size={20} /> EDITAR AGENDAMENTO</>
+                )}
               </h3>
               <button 
                 type="button" 
@@ -3628,10 +4306,10 @@ ${googleLink}
                     </div>
                   </div>
 
-                  <div style={{ fontSize: '0.8rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
                     <span>Ficha Completa: <strong>{(editBookingForm.cpf && editBookingForm.clientEmail) ? 'Sim' : 'Não'}</strong></span>
                     <span 
-                      style={{ color: 'var(--accent)', textDecoration: 'underline', cursor: 'pointer' }}
+                      style={{ color: 'var(--adm-gold)', textDecoration: 'underline', cursor: 'pointer' }}
                       onClick={() => {
                         alert('Navegue para o painel de Clientes para uma ficha detalhada.');
                       }}
@@ -3646,7 +4324,7 @@ ${googleLink}
                   <div className="trinks-avatar-placeholder">
                     {editBookingForm.clientName ? editBookingForm.clientName.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase() : '?'}
                   </div>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginTop: 8 }}>Foto de Perfil</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginTop: 8 }}>Foto de Perfil</span>
                 </div>
               </div>
 
@@ -3667,21 +4345,21 @@ ${googleLink}
                 <div className="form-group">
                   <label>Serviço Principal *</label>
                   <select 
-                    value={`${editBookingForm.serviceName}|${editBookingForm.servicePrice}`}
+                    value={editBookingForm.serviceName}
                     onChange={e => {
-                      const [name, priceStr] = e.target.value.split('|');
+                      const name = e.target.value;
                       const matched = services.find(s => s.name === name);
                       setEditBookingForm(prev => ({ 
                         ...prev, 
                         serviceName: name, 
-                        servicePrice: Number(priceStr),
+                        servicePrice: matched ? (matched.promoPrice || matched.price || 0) : 0,
                         duration: matched ? (matched.duration || 60) : 60
                       }));
                     }}
                   >
                     {services.map(s => (
-                      <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
-                        {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                      <option key={s.id} value={s.name}>
+                        {s.name}
                       </option>
                     ))}
                   </select>
@@ -3776,7 +4454,7 @@ ${googleLink}
               <div className="form-group">
                 <label style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Observações do Agendamento</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>
                     {editBookingForm.notes ? editBookingForm.notes.length : 0} de 400
                   </span>
                 </label>
@@ -3866,7 +4544,7 @@ ${googleLink}
                 <>
                   <div className="detail-row">
                     <label>Tipo:</label>
-                    <span style={{ fontWeight: 'bold', color: 'var(--muted)' }}>Horário Bloqueado (Indisponível)</span>
+                    <span style={{ fontWeight: 'bold', color: 'var(--adm-muted)' }}>Horário Bloqueado (Indisponível)</span>
                   </div>
                   <div className="detail-row">
                     <label>Data/Hora:</label>
@@ -3926,6 +4604,373 @@ ${googleLink}
                     <span className={`status-badge ${selectedBooking.status}`}>{selectedBooking.status}</span>
                   </div>
 
+                  {selectedBooking.status === 'finalizado' && (() => {
+                    const tx = transactions.find(t => t.bookingId === selectedBooking.id);
+                    return (
+                      <div className="comanda-details" style={{ marginTop: 16, padding: 12, border: '1px solid var(--adm-rule)', borderRadius: 8, background: 'rgba(255,255,255,0.02)' }}>
+                        <h4 style={{ margin: '0 0 10px 0', color: 'var(--adm-gold)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
+                          <span>💳 Comanda / Financeiro</span>
+                          {tx && (
+                            <button
+                              type="button"
+                              className="btn btn-ghost"
+                              style={{ padding: '2px 8px', fontSize: '0.75rem', borderColor: 'var(--adm-rule)' }}
+                              onClick={() => {
+                                if (isEditingComanda) {
+                                  setIsEditingComanda(false);
+                                } else {
+                                  setEditComandaForm({
+                                    value: tx.value || 0,
+                                    paymentMethod: tx.paymentMethod || 'Pix',
+                                    productSales: tx.productSales ? JSON.parse(JSON.stringify(tx.productSales)) : []
+                                  });
+                                  setIsEditingComanda(true);
+                                }
+                              }}
+                            >
+                              {isEditingComanda ? 'Cancelar' : 'Editar'}
+                            </button>
+                          )}
+                        </h4>
+                        {tx ? (
+                          isEditingComanda ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              <div className="form-group" style={{ marginBottom: 4 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Método de Pagamento:</label>
+                                <select
+                                  value={editComandaForm.paymentMethod}
+                                  onChange={e => setEditComandaForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                                  style={{ padding: '6px', width: '100%', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem' }}
+                                >
+                                  <option value="Pix">Pix</option>
+                                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                  <option value="Cartão de Débito">Cartão de Débito</option>
+                                  <option value="Dinheiro">Dinheiro</option>
+                                </select>
+                              </div>
+                              <div className="form-group" style={{ marginBottom: 4 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total (R$):</label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={editComandaForm.value}
+                                  onChange={e => setEditComandaForm(prev => ({ ...prev, value: Number(e.target.value) }))}
+                                  style={{ padding: '6px', width: '100%', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem' }}
+                                />
+                              </div>
+                              
+                              <div style={{ marginTop: 8 }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--adm-text)', display: 'block', marginBottom: 4 }}>
+                                  Editar Quantidades / Remover Produtos:
+                                </span>
+                                {editComandaForm.productSales && editComandaForm.productSales.length > 0 ? (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                    {editComandaForm.productSales.map((ps, idx) => (
+                                      <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
+                                        <span>{ps.name}</span>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                          <input
+                                            type="number"
+                                            min={1}
+                                            value={ps.quantity}
+                                            onChange={e => {
+                                              const newQty = parseInt(e.target.value) || 1;
+                                              const updated = [...editComandaForm.productSales];
+                                              updated[idx].quantity = newQty;
+                                              setEditComandaForm(prev => ({ ...prev, productSales: updated }));
+                                            }}
+                                            style={{ width: 45, padding: '2px', textAlign: 'center', background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', borderRadius: 4 }}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn-icon"
+                                            onClick={() => {
+                                              const updated = editComandaForm.productSales.filter((_, i) => i !== idx);
+                                              setEditComandaForm(prev => ({ ...prev, productSales: updated }));
+                                            }}
+                                            style={{ padding: 2, background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                          >
+                                            <Trash2 size={14} />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>Nenhum produto vendido.</span>
+                                )}
+                              </div>
+                              
+                              <button
+                                type="button"
+                                className="btn btn-accent"
+                                style={{ marginTop: 12, width: '100%', padding: '6px', fontSize: '0.8rem' }}
+                                onClick={async () => {
+                                  try {
+                                    const originalSales = tx.productSales || [];
+                                    const editedSales = editComandaForm.productSales;
+                                    
+                                    // Update products stock
+                                    for (const orig of originalSales) {
+                                      const prod = products.find(p => p.id === orig.productId);
+                                      if (prod) {
+                                        const editedMatch = editedSales.find(e => e.productId === orig.productId);
+                                        const currentQty = editedMatch ? editedMatch.quantity : 0;
+                                        const diff = orig.quantity - currentQty;
+                                        
+                                        if (diff !== 0) {
+                                          const newStock = Math.max(0, prod.quantity + diff);
+                                          if (isDemoMode || !db) {
+                                            setProducts(prev => prev.map(p => p.id === prod.id ? { ...p, quantity: newStock } : p));
+                                            const demoProds = JSON.parse(localStorage.getItem('demo_products') || '[]')
+                                              .map(p => p.id === prod.id ? { ...p, quantity: newStock } : p);
+                                            localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                          } else {
+                                            await updateDoc(doc(db, 'products', prod.id), { quantity: newStock });
+                                          }
+                                        }
+                                      }
+                                    }
+                                    
+                                    for (const editItem of editedSales) {
+                                      const origMatch = originalSales.find(o => o.productId === editItem.productId);
+                                      if (!origMatch) {
+                                        const prod = products.find(p => p.id === editItem.productId);
+                                        if (prod) {
+                                          const newStock = Math.max(0, prod.quantity - editItem.quantity);
+                                          if (isDemoMode || !db) {
+                                            setProducts(prev => prev.map(p => p.id === prod.id ? { ...p, quantity: newStock } : p));
+                                            const demoProds = JSON.parse(localStorage.getItem('demo_products') || '[]')
+                                              .map(p => p.id === prod.id ? { ...p, quantity: newStock } : p);
+                                            localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                          } else {
+                                            await updateDoc(doc(db, 'products', prod.id), { quantity: newStock });
+                                          }
+                                        }
+                                      }
+                                    }
+
+                                    const updatedFields = {
+                                      value: Number(editComandaForm.value),
+                                      paymentMethod: editComandaForm.paymentMethod,
+                                      productSales: editedSales
+                                    };
+
+                                    if (isDemoMode || !db) {
+                                      const demoTxStr = localStorage.getItem('demo_financial') || '[]';
+                                      const demoTx = JSON.parse(demoTxStr).map(t => t.id === tx.id ? { ...t, ...updatedFields } : t);
+                                      localStorage.setItem('demo_financial', JSON.stringify(demoTx));
+                                      localStorage.setItem('demo_transactions', JSON.stringify(demoTx));
+                                      setTransactions(demoTx);
+                                    } else {
+                                      await updateDoc(doc(db, 'financial_transactions', tx.id), updatedFields);
+                                    }
+
+                                    // Update booking document
+                                    const bookingUpdate = {
+                                      paymentMethod: editComandaForm.paymentMethod,
+                                      finalValue: Number(editComandaForm.value)
+                                    };
+
+                                    if (isDemoMode || !db) {
+                                      setBookings(prev => prev.map(b => b.id === selectedBooking.id ? { ...b, ...bookingUpdate } : b));
+                                      setSelectedBooking(prev => prev ? { ...prev, ...bookingUpdate } : null);
+                                    } else {
+                                      await updateDoc(doc(db, 'bookings', selectedBooking.id), bookingUpdate);
+                                      setSelectedBooking(prev => prev ? { ...prev, ...bookingUpdate } : null);
+                                    }
+
+                                    setIsEditingComanda(false);
+                                    toast('Comanda atualizada com sucesso!', 'success');
+                                  } catch (err) {
+                                    console.error(err);
+                                    toast('Erro ao atualizar comanda.', 'error');
+                                  }
+                                }}
+                              >
+                                Salvar Alterações
+                              </button>
+                            </div>
+                          ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              <div className="detail-row" style={{ margin: 0 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Método de Pagamento:</label>
+                                <span style={{ fontSize: '0.85rem' }}>{tx.paymentMethod}</span>
+                              </div>
+                              <div className="detail-row" style={{ margin: 0 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total:</label>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {tx.value?.toFixed(2).replace('.', ',')}</span>
+                              </div>
+                              
+                              <div style={{ marginTop: 8 }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--adm-text)', display: 'block', marginBottom: 4 }}>
+                                  Produtos Vendidos:
+                                </span>
+                                {tx.productSales && tx.productSales.length > 0 ? (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                    {tx.productSales.map((ps, idx) => (
+                                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
+                                        <span>{ps.name} (x{ps.quantity})</span>
+                                        <span style={{ fontWeight: 600 }}>R$ {(ps.sellingPrice * ps.quantity).toFixed(2).replace('.', ',')}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>Nenhum produto vendido registrado.</span>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        ) : (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
+                            Nenhum registro financeiro encontrado para este agendamento.
+                          </div>
+                        )}
+                        
+                        {/* Interface para Adicionar Produto */}
+                        <div style={{ marginTop: 12, borderTop: '0.5px solid var(--adm-rule)', paddingTop: 10 }}>
+                          <span style={{ fontSize: '0.78rem', fontWeight: 'bold', color: 'var(--adm-gold)', display: 'block', marginBottom: 6 }}>
+                            🛒 Adicionar Produto Vendido
+                          </span>
+                          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                            <select
+                              id="add-prod-select"
+                              style={{ flex: 1, padding: '6px', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem' }}
+                            >
+                              <option value="">-- Selecione o Produto --</option>
+                              {products.filter(p => p.quantity > 0).map(p => (
+                                <option key={p.id} value={p.id}>
+                                  {p.name} (R$ {p.sellingPrice} - Qtd: {p.quantity})
+                                </option>
+                              ))}
+                            </select>
+                            <input
+                              type="number"
+                              id="add-prod-qty"
+                              defaultValue={1}
+                              min={1}
+                              style={{ width: 50, padding: '6px', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem', textAlign: 'center' }}
+                            />
+                            <button
+                              type="button"
+                              className="btn btn-accent"
+                              style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                              onClick={async () => {
+                                const prodSelect = document.getElementById('add-prod-select');
+                                const qtyInput = document.getElementById('add-prod-qty');
+                                const productId = prodSelect.value;
+                                const qty = parseInt(qtyInput.value) || 1;
+                                if (!productId) {
+                                  alert('Por favor, selecione um produto.');
+                                  return;
+                                }
+                                
+                                const product = products.find(p => p.id === productId);
+                                if (!product) return;
+                                
+                                if (product.quantity < qty) {
+                                  alert(`Quantidade indisponível em estoque. Estoque atual: ${product.quantity}`);
+                                  return;
+                                }
+                                
+                                try {
+                                  if (tx) {
+                                    const updatedSales = [...(tx.productSales || [])];
+                                    const existingSaleIdx = updatedSales.findIndex(s => s.productId === productId);
+                                    if (existingSaleIdx >= 0) {
+                                      updatedSales[existingSaleIdx].quantity += qty;
+                                    } else {
+                                      updatedSales.push({
+                                        productId: product.id,
+                                        name: product.name,
+                                        quantity: qty,
+                                        sellingPrice: product.sellingPrice,
+                                        costPrice: product.costPrice || 0
+                                      });
+                                    }
+                                    
+                                    const addedValue = product.sellingPrice * qty;
+                                    const newValue = tx.value + addedValue;
+                                    
+                                    if (isDemoMode || !db) {
+                                      const updatedTx = { ...tx, productSales: updatedSales, value: newValue };
+                                      const demoTxStr = localStorage.getItem('demo_financial') || '[]';
+                                      const demoTx = JSON.parse(demoTxStr).map(t => t.id === tx.id ? updatedTx : t);
+                                      localStorage.setItem('demo_financial', JSON.stringify(demoTx));
+                                      localStorage.setItem('demo_transactions', JSON.stringify(demoTx));
+                                      setTransactions(demoTx);
+                                      
+                                      const demoProdsStr = localStorage.getItem('demo_products') || '[]';
+                                      const demoProds = JSON.parse(demoProdsStr).map(p => p.id === productId ? { ...p, quantity: Math.max(0, p.quantity - qty) } : p);
+                                      localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                      setProducts(demoProds);
+                                    } else {
+                                      await updateDoc(doc(db, 'financial_transactions', tx.id), {
+                                        productSales: updatedSales,
+                                        value: newValue
+                                      });
+                                      await updateDoc(doc(db, 'products', productId), {
+                                        quantity: Math.max(0, product.quantity - qty)
+                                      });
+                                    }
+                                  } else {
+                                    const transactionPayload = {
+                                      bookingId: selectedBooking.id,
+                                      clientName: selectedBooking.clientName,
+                                      clientPhone: selectedBooking.clientPhone || '',
+                                      type: 'entrada',
+                                      paymentMethod: 'Pix',
+                                      value: (selectedBooking.servicePrice || selectedBooking.service?.price || 130) + (product.sellingPrice * qty),
+                                      discount: 0,
+                                      description: `${selectedBooking.serviceName || selectedBooking.service?.name || 'Serviço'} + ${product.name}`,
+                                      professionalId: selectedBooking.professionalId || selectedBooking.profissional || 'jon',
+                                      productSales: [{
+                                        productId: product.id,
+                                        name: product.name,
+                                        quantity: qty,
+                                        sellingPrice: product.sellingPrice,
+                                        costPrice: product.costPrice || 0
+                                      }],
+                                      createdAt: new Date().toISOString(),
+                                      date: selectedBooking.date,
+                                      time: selectedBooking.time
+                                    };
+                                    
+                                    if (isDemoMode || !db) {
+                                      const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
+                                      const demoTxStr = localStorage.getItem('demo_financial') || '[]';
+                                      const demoTx = [newTx, ...JSON.parse(demoTxStr)];
+                                      localStorage.setItem('demo_financial', JSON.stringify(demoTx));
+                                      localStorage.setItem('demo_transactions', JSON.stringify(demoTx));
+                                      setTransactions(demoTx);
+                                      
+                                      const demoProdsStr = localStorage.getItem('demo_products') || '[]';
+                                      const demoProds = JSON.parse(demoProdsStr).map(p => p.id === productId ? { ...p, quantity: Math.max(0, p.quantity - qty) } : p);
+                                      localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                      setProducts(demoProds);
+                                    } else {
+                                      await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+                                      await updateDoc(doc(db, 'products', productId), {
+                                        quantity: Math.max(0, product.quantity - qty)
+                                      });
+                                    }
+                                  }
+                                  alert('Produto adicionado com sucesso e estoque atualizado!');
+                                  setSelectedBooking(null);
+                                } catch (e) {
+                                  console.error(e);
+                                  alert('Erro ao atualizar comanda: ' + e.message);
+                                }
+                              }}
+                            >
+                              Adicionar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
                   <div className="modal-actions" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                     <div style={{ display: 'flex', gap: 8 }}>
                       {selectedBooking.status === 'pendente' && (
@@ -3978,21 +5023,21 @@ ${googleLink}
               )
             ) : (
               <div className="checkout-section" style={{ fontSize: '0.82rem', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <p style={{ fontSize: '0.78rem', margin: '0 0 4px 0', color: 'var(--muted)' }}>
+                <p style={{ fontSize: '0.78rem', margin: '0 0 4px 0', color: 'var(--adm-muted)' }}>
                   Gere o faturamento da cliente <strong>{selectedBooking.clientName}</strong>.
                 </p>
                 
-                <div className="comanda-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: 'rgba(255,255,255,0.015)', padding: '6px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                <div className="comanda-items-list" style={{ display: 'flex', flexDirection: 'column', gap: '4px', background: 'rgba(255,255,255,0.015)', padding: '6px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}>
                   
                   {/* Trocar/Substituir o Serviço Agendado */}
-                  <div className="comanda-item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderBottom: '1px solid var(--rule)', paddingBottom: '6px' }}>
+                  <div className="comanda-item-row" style={{ display: 'flex', flexDirection: 'column', gap: '4px', borderBottom: '1px solid var(--adm-rule)', paddingBottom: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--ink)' }}>Serviço Agendado</span>
+                      <span style={{ fontWeight: 600, color: 'var(--adm-text)' }}>Serviço Agendado</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                           value={overrideBasePrice !== null ? overrideBasePrice : (selectedBooking.service?.promoPrice || selectedBooking.service?.price || selectedBooking.servicePrice || 150)}
                           onChange={e => setOverrideBasePrice(Number(e.target.value))}
                         />
@@ -4014,7 +5059,7 @@ ${googleLink}
                           setOverrideBasePrice(match.promoPrice || match.price);
                         }
                       }}
-                      style={{ width: '100%', padding: '3px 6px', fontSize: '0.78rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                      style={{ width: '100%', padding: '3px 6px', fontSize: '0.78rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                     >
                       {services.map(s => (
                         <option key={s.id} value={s.name}>
@@ -4026,12 +5071,12 @@ ${googleLink}
                   
                   {addedServices.map((s, idx) => (
                     <div key={'s-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-                      <span style={{ color: 'var(--accent)' }}>➕ {s.name}</span>
+                      <span style={{ color: 'var(--adm-gold)' }}>➕ {s.name}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                           value={s.price}
                           onChange={e => {
                             const newPrice = Number(e.target.value);
@@ -4049,10 +5094,10 @@ ${googleLink}
                     <div key={'p-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
                       <span style={{ color: '#4a5568' }}>📦 {p.quantity}x {p.name}</span>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>R$</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>R$</span>
                         <input 
                           type="number"
-                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                           value={p.price}
                           onChange={e => {
                             const newPrice = Number(e.target.value);
@@ -4067,14 +5112,14 @@ ${googleLink}
                     </div>
                   ))}
                   
-                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--rule)', paddingTop: 4, marginTop: 4 }}>
+                  <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--adm-rule)', paddingTop: 4, marginTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Desconto</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         value={discount}
                         onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
                       />
@@ -4084,11 +5129,11 @@ ${googleLink}
                   <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Valor Extra Cobrado</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         value={extraCharged}
                         onChange={e => setExtraCharged(Math.max(0, Number(e.target.value)))}
                       />
@@ -4098,11 +5143,11 @@ ${googleLink}
                   <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Custo Extra Interno (Insumos)</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>R$</span>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>R$</span>
                       <input 
                         type="number"
                         min="0"
-                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ width: '70px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         value={extraCost}
                         onChange={e => setExtraCost(Math.max(0, Number(e.target.value)))}
                       />
@@ -4116,9 +5161,9 @@ ${googleLink}
                     </div>
                   )}
  
-                  <div className="comanda-total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--rule)', paddingTop: 6, marginTop: 4, fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--ink)' }}>
+                  <div className="comanda-total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--adm-rule)', paddingTop: 6, marginTop: 4, fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--adm-text)' }}>
                     <span>Total a Receber</span>
-                    <span style={{ color: 'var(--accent)' }}>R$ {calculateTotal()}</span>
+                    <span style={{ color: 'var(--adm-gold)' }}>R$ {calculateTotal()}</span>
                   </div>
                 </div>
  
@@ -4129,7 +5174,7 @@ ${googleLink}
                       <select 
                         value={selectedExtraService} 
                         onChange={e => setSelectedExtraService(e.target.value)}
-                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="">Selecione</option>
                         {services.map(s => (
@@ -4148,7 +5193,7 @@ ${googleLink}
                       <select 
                         value={selectedExtraProduct} 
                         onChange={e => setSelectedExtraProduct(e.target.value)}
-                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="">Selecione</option>
                         {products.map(p => (
@@ -4163,7 +5208,7 @@ ${googleLink}
                 </div>
  
                 {/* Pacotes options */}
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)', padding: '4px 6px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)', padding: '4px 6px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}>
                   {availablePackagesForBooking.length > 0 && (
                     <div className="form-group" style={{ margin: 0, flex: 1 }}>
                       <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.75rem' }}>
@@ -4185,7 +5230,7 @@ ${googleLink}
                         <select
                           value={usingClientPackageId}
                           onChange={e => setUsingClientPackageId(e.target.value)}
-                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         >
                           {availablePackagesForBooking.map(cp => {
                             const bookingServiceName = selectedBooking?.service?.name || selectedBooking?.serviceName;
@@ -4222,7 +5267,7 @@ ${googleLink}
                         <select
                           value={sellingPackageId}
                           onChange={e => setSellingPackageId(e.target.value)}
-                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                          style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.72rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                         >
                           {packages.map(p => (
                             <option key={p.id} value={p.id}>
@@ -4239,7 +5284,7 @@ ${googleLink}
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Forma de Pagamento *</label>
                     {usingClientPackageId ? (
-                      <div style={{ padding: '3px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', border: '1px solid var(--rule)', fontSize: '0.78rem', color: 'var(--accent)', fontWeight: 600 }}>
+                      <div style={{ padding: '3px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', border: '1px solid var(--adm-rule)', fontSize: '0.78rem', color: 'var(--adm-gold)', fontWeight: 600 }}>
                         Débito do Pacote
                       </div>
                     ) : (
@@ -4254,7 +5299,7 @@ ${googleLink}
                             setApplyAnticipation(false);
                           }
                         }}
-                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="Pix">Pix</option>
                         <option value="Cartão de Crédito">Cartão de Crédito</option>
@@ -4270,7 +5315,7 @@ ${googleLink}
                       <select 
                         value={installments} 
                         onChange={e => setInstallments(e.target.value)}
-                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--rule)', borderRadius: '3px', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                        style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >
                         <option value="À vista">À vista</option>
                         <option value="2x">2x</option>
@@ -4293,7 +5338,7 @@ ${googleLink}
                   )}
                 </div>
  
-                <div className="modal-actions" style={{ justifyContent: 'space-between', borderTop: '1px solid var(--rule)', paddingTop: '8px', marginTop: '2px', display: 'flex', gap: '8px' }}>
+                <div className="modal-actions" style={{ justifyContent: 'space-between', borderTop: '1px solid var(--adm-rule)', paddingTop: '8px', marginTop: '2px', display: 'flex', gap: '8px' }}>
                   <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>
                   <button type="button" className="btn btn-accent" style={{ padding: '4px 12px', fontSize: '0.78rem' }} onClick={() => handleCloseComanda(selectedBooking)}>Finalizar Comanda</button>
                 </div>
@@ -4351,7 +5396,7 @@ ${googleLink}
               </div>
               {/* BOTÃO CADASTRAR NOVO CLIENTE */}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
-                <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
+                <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--adm-gold)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>
                   <Plus size={14} /> Cadastrar novo cliente (Ficha Completa)
                 </button>
               </div>
@@ -4395,21 +5440,22 @@ ${googleLink}
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>Serviço *</label>
                 <select 
-                  value={`${newBooking.serviceName}|${newBooking.servicePrice}`}
+                  value={newBooking.serviceName}
                   onChange={e => {
-                    const [name, priceStr] = e.target.value.split('|');
+                    const name = e.target.value;
                     const matched = services.find(s => s.name === name);
                     setNewBooking(prev => ({ 
                       ...prev, 
                       serviceName: name, 
-                      servicePrice: Number(priceStr),
+                      servicePrice: matched ? (matched.promoPrice || matched.price || 0) : 0,
                       duration: matched ? (matched.duration || 60) : 60
                     }));
                   }}
                 >
+                  <option value="">Selecione um serviço</option>
                   {services.map(s => (
-                    <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
-                      {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                    <option key={s.id} value={s.name}>
+                      {s.name}
                     </option>
                   ))}
                 </select>
@@ -4481,7 +5527,7 @@ ${googleLink}
               </div>
             </div>
 
-            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--adm-rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddModal(false)}>Cancelar</button>
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
                 {newBooking.clientPhone && (
@@ -4649,7 +5695,7 @@ ${googleLink}
               </div>
             </div>
 
-            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--rule)' }}>
+            <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', flexShrink: 0, marginTop: 16, paddingTop: 12, borderTop: '1px solid var(--adm-rule)' }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowAddClientModal(false)}>Cancelar</button>
               <button type="submit" className="btn btn-accent">Salvar e Selecionar</button>
             </div>
@@ -4715,7 +5761,7 @@ ${googleLink}
                   onClick={e => e.stopPropagation()}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontWeight: 600 }}>Até às:</span>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Até às:</span>
                     <select
                       value={blockEndTime}
                       onChange={e => setBlockEndTime(e.target.value)}
@@ -4745,6 +5791,87 @@ ${googleLink}
         </div>
       )}
 
+      {comandaBooking && (
+        <ComandaModal
+          booking={comandaBooking}
+          products={products}
+          services={services}
+          settings={settings}
+          onClose={() => setComandaBooking(null)}
+          onConfirm={(payload) => handleFinalizeFromComanda(comandaBooking, payload)}
+        />
+      )}
+
+      {showScaleBlockModal && selectedScaleBlock && (
+        <div className="modal-overlay slot-action-overlay" onClick={() => { setShowScaleBlockModal(false); setSelectedScaleBlock(null); }}>
+          <div className="slot-action-modal" onClick={e => e.stopPropagation()}>
+            <div className="slot-action-header">
+              <div className="slot-action-pill" style={{ background: 'rgba(235, 94, 85, 0.1)', color: 'var(--adm-red)' }}>
+                <span className="slot-action-pill-dot" style={{ background: 'var(--adm-red)' }} />
+                Horário Bloqueado (Escala)
+              </div>
+              <button
+                type="button"
+                className="btn-icon"
+                onClick={() => { setShowScaleBlockModal(false); setSelectedScaleBlock(null); }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="slot-action-datetime">
+              <span className="slot-action-date">{selectedScaleBlock.date.split('-').reverse().join('/')}</span>
+              <span className="slot-action-time">{selectedScaleBlock.slot}</span>
+            </div>
+
+            <p className="slot-action-label" style={{ marginBottom: '16px', fontSize: '0.9rem', color: 'var(--adm-muted)' }}>
+              Este horário está bloqueado pelas configurações de escala do profissional <strong>{selectedScaleBlock.profName}</strong>.
+            </p>
+
+            <div className="slot-action-cards" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                type="button"
+                className="slot-card slot-card-schedule"
+                onClick={() => {
+                  handleCellClick(selectedScaleBlock.date, selectedScaleBlock.slot, selectedScaleBlock.profId, selectedScaleBlock.profName);
+                  setShowScaleBlockModal(false);
+                  setSelectedScaleBlock(null);
+                }}
+                style={{ width: '100%', display: 'flex', gap: '12px', padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--adm-rule)', borderRadius: '8px', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <div className="slot-card-icon" style={{ background: 'rgba(200, 133, 42, 0.15)', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '6px', flexShrink: 0 }}>
+                  <Plus size={20} />
+                </div>
+                <div className="slot-card-text">
+                  <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--adm-text)' }}>Agendar mesmo assim</strong>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>Ignorar o bloqueio de escala e realizar o agendamento para este cliente</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="slot-card slot-card-block"
+                onClick={() => {
+                  localStorage.setItem(`unlock_${selectedScaleBlock.date}_${selectedScaleBlock.slot}`, 'true');
+                  toast("Horário liberado!", "success");
+                  setShowScaleBlockModal(false);
+                  setSelectedScaleBlock(null);
+                  window.location.reload();
+                }}
+                style={{ width: '100%', display: 'flex', gap: '12px', padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--adm-rule)', borderRadius: '8px', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <div className="slot-card-icon" style={{ background: 'rgba(46, 125, 50, 0.15)', color: '#4caf50', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '6px', flexShrink: 0 }}>
+                  <Unlock size={20} />
+                </div>
+                <div className="slot-card-text">
+                  <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--adm-text)' }}>Liberar o horário (Desbloquear)</strong>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>Desbloquear este horário específico da escala deste profissional</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

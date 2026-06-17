@@ -1,6023 +1,3383 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db, fetchCollectionRest, fetchDocRest } from '../../config/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { 
-  collection, onSnapshot, doc, addDoc, updateDoc, query, orderBy, limit, getDoc, setDoc, deleteDoc, where, getDocs 
+import { auth, db, storage } from '../../config/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import {
+  collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc
 } from 'firebase/firestore';
-import { 
-  Home as HomeIcon, Calendar as CalendarIcon, Plus, Menu, HelpCircle, 
-  Bell, ChevronLeft, ChevronRight, DollarSign, User, Scissors, 
-  ArrowRight, Shield, MessageSquare, Check, X, Phone, FileText, Info,
-  Clock, Settings, Sparkles, Search, Package, Users, Send, TrendingUp, TrendingDown
+import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { getEffectiveAbsences, getAbsenceForSlot } from '../../utils/absences';
+import {
+  Home, Calendar, Camera, Users, DollarSign, MoreHorizontal,
+  Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
+  Scissors, Package, TrendingUp, TrendingDown, Search, Settings, Trash2,
+  Edit3, ArrowRight, LogOut, BarChart2, Send, ShoppingBag, Clock,
+  Zap, Star, AlertCircle, CheckCircle, Upload, Image, RefreshCw, Eye, Lock
 } from 'lucide-react';
 import './AdminMobile.css';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
 
-const DEFAULT_SETTINGS = {
-  name: 'Studio do Jon',
-  phone: '3135866673',
-  address: 'Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG',
-  instagram: 'https://instagram.com/ojonquecortou',
-  feePix: 0,
-  feeDebit: 1.9,
-  feeCredit: 3.5,
-  minAdvance: '2',
-  autoApprove: false,
-  waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento...',
-  waReminderEnabled: true,
-  waReminderGateway: 'evolution',
-  zApiInstanceId: '',
-  zApiToken: '',
-  evolutionApiUrl: 'https://evolution-api-production-1e65.up.railway.app',
-  evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
-  evolutionInstanceName: 'JonStudio',
-  customWebhookUrl: '',
-  waReminderTemplate: 'Ol\u00e1, {cliente}! Passando para lembrar do seu hor\u00e1rio amanh\u00e3 ({data} \u00e0s {hora}) para o servi\u00e7o: {servico}. Podemos confirmar? \uD83D\uDC87\u200D\u2642\uFE0F\u2728'
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+const parseLocalDate = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return new Date();
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 0, 0, 0, 0);
+  }
+  return new Date(dateStr);
+};
+const fmt = (n) => `R$\u00a0${Number(n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const fmtDate = (d) => { try { const dt = parseLocalDate(d); return dt.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }); } catch { return d; } };
+const dateStr = (d) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+const today = () => dateStr(new Date());
+
+const SLOTS = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
+const HOURLY_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'];
+const timeToMin = (t) => {
+  if (!t) return 0;
+  const [h, m] = t.split(':').map(Number);
+  return h * 60 + (m || 0);
+};
+const minToTime = (min) => {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+};
+const PAY_METHODS = ['Pix','Dinheiro','Débito','Crédito','Cortesia'];
+const GALLERY_CATS = ['Todos','Antes/Depois','Cortes','Coloração','Tratamento','Geral'];
+const CURL_TYPES = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C'];
+
+const slotInRange = (slot, start, end) => {
+  if (!end || end === start) return slot === start;
+  return slot >= start && slot < end;
 };
 
-const AdminMobileApp = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('inicio');
-  const [currentDate, setCurrentDate] = useState(() => new Date().toISOString().split('T')[0]);
-  const [agendaView, setAgendaView] = useState('diario');
-  const [selectedWeeklyMonthlyProf, setSelectedWeeklyMonthlyProf] = useState('jon');
-  const [businessPeriod, setBusinessPeriod] = useState('mes');
+const isFeriado = (dateStr) => {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return false;
+  const mmdd = `${parts[1]}-${parts[2]}`;
+  
+  const fixedHolidays = [
+    '01-01', // Ano Novo
+    '04-21', // Tiradentes
+    '05-01', // Dia do Trabalho
+    '08-15', // Assunção de Nossa Senhora (BH)
+    '09-07', // Independência
+    '10-12', // Nossa Senhora Aparecida
+    '11-02', // Finados
+    '11-15', // Proclamação da República
+    '11-20', // Dia da Consciência Negra
+    '12-08', // Imaculada Conceição (BH)
+    '12-25', // Natal
+  ];
+  if (fixedHolidays.includes(mmdd)) return true;
 
-  // Firestore & local states
+  const mobileHolidays = [
+    '2025-03-03', '2025-03-04', '2025-04-18', '2025-06-19',
+    '2026-02-16', '2026-02-17', '2026-04-03', '2026-06-04',
+    '2027-02-08', '2027-02-09', '2027-03-26', '2027-05-27'
+  ];
+  if (mobileHolidays.includes(dateStr)) return true;
+
+  return false;
+};
+
+const getAdjustedDay = (date) => {
+  return date.getDay();
+};
+
+const isSlotBlocked = (prof, dateStr, slot) => {
+  if (!prof) return false;
+  
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    const weekday = getAdjustedDay(dateObj);
+    
+    // Force Sundays (0) and Mondays (1) to be blocked
+    if (weekday === 0 || weekday === 1) return true;
+
+    // Force Holidays to be blocked
+    if (isFeriado(dateStr)) return true;
+    
+    // 1. Check day off
+    if ((prof.daysOff || []).includes(weekday)) return true;
+    
+    // 2. Check blocked date
+    if ((prof.blockedDates || []).includes(dateStr)) return true;
+
+    // 3. Recurring weekday blocks
+    const weekdayBlocks = prof.blockedWeekdayHours || [];
+    const hasWeekdayBlock = weekdayBlocks.some(block => {
+      const segments = block.split('-');
+      const w = segments[0];
+      const start = segments[1];
+      const end = segments[2] || null;
+      if (Number(w) !== weekday) return false;
+      return slotInRange(slot, start, end);
+    });
+    if (hasWeekdayBlock) return true;
+
+    // 4. Specific date blocks
+    const specificBlocks = prof.blockedSpecificHours || [];
+    const hasSpecificBlock = specificBlocks.some(block => {
+      if (!block.startsWith(dateStr)) return false;
+      const rest = block.substring(dateStr.length + 1);
+      const restParts = rest.split('-');
+      const start = restParts[0];
+      const end = restParts[1] || null;
+      return slotInRange(slot, start, end);
+    });
+    if (hasSpecificBlock) return true;
+  }
+  
+  return false;
+};
+
+const initials = (name = '') => name.split(' ').filter(Boolean).slice(0,2).map(p => p[0].toUpperCase()).join('');
+
+// ═══════════════════════════════════════════════════════════════════
+// TOAST COMPONENT
+// ═══════════════════════════════════════════════════════════════════
+function Toast({ msg, type = 'info', onClose }) {
+  useEffect(() => { const t = setTimeout(onClose, 3000); return () => clearTimeout(t); }, [onClose]);
+  const icons = { success: <CheckCircle size={16}/>, error: <AlertCircle size={16}/>, info: <Zap size={16}/> };
+  return (
+    <div className={`m-toast ${type}`}>
+      {icons[type]}
+      <span style={{ flex: 1 }}>{msg}</span>
+      <button onClick={onClose} style={{ background:'none',border:'none',color:'inherit',cursor:'pointer',padding:0,display:'flex' }}><X size={14}/></button>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// STATUS PILL
+// ═══════════════════════════════════════════════════════════════════
+function StatusPill({ status }) {
+  const labels = { pendente:'Pendente', confirmado:'Confirmado', finalizado:'Finalizado', cancelado:'Cancelado', faltou:'Faltou', bloqueado:'Bloqueado' };
+  return <span className={`m-status-pill ${status}`}>{labels[status] || status}</span>;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MAIN COMPONENT
+// ═══════════════════════════════════════════════════════════════════
+export default function AdminMobileApp() {
+  const navigate = useNavigate();
+
+  // ── Navigation ─────────────────────────────────────────────────
+  const [tab, setTab] = useState('hoje');
+
+  // ── Data ───────────────────────────────────────────────────────
   const [bookings, setBookings] = useState([]);
   const [clients, setClients] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [services, setServices] = useState([]);
   const [inventory, setInventory] = useState([]);
-  const [settings, setSettings] = useState(null);
+  const [settings, setSettings] = useState({});
   const [packages, setPackages] = useState([]);
-  const [clientPackages, setClientPackages] = useState([]);
-  const [sellingPackageId, setSellingPackageId] = useState('');
-  const [usingClientPackageId, setUsingClientPackageId] = useState('');
-  const [packagesSubTab, setPackagesSubTab] = useState('modelos');
+  const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(!db);
-  const [syncing, setSyncing] = useState(false);
-  const [syncError, setSyncError] = useState(null);
-  const [connectionWarning, setConnectionWarning] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const [syncError, setSyncError] = useState('');
 
-  // Modais
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [showAddBookingModal, setShowAddBookingModal] = useState(false);
-  const [showSlotActionModal, setShowSlotActionModal] = useState(false);
-  const [showBlockModal, setShowBlockModal] = useState(false);
-  const [showAddClientModal, setShowAddClientModal] = useState(false);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
-  const [checkoutBooking, setCheckoutBooking] = useState(null);
-  const [selectedProducts, setSelectedProducts] = useState([]);
-  const [selectedExtraServices, setSelectedExtraServices] = useState([]);
-
-  const clientActivePackages = React.useMemo(() => {
-    if (!checkoutBooking) return [];
-    const phone = checkoutBooking.clientPhone;
-    const name = checkoutBooking.clientName;
-    return clientPackages.filter(cp => 
-      cp.status === 'active' && 
-      ((phone && cp.clientPhone === phone) || (!phone && cp.clientName === name))
-    );
-  }, [checkoutBooking, clientPackages]);
-
-  const availablePackagesForBooking = React.useMemo(() => {
-    if (!checkoutBooking || !services) return [];
-    const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
-    const servObj = services.find(s => s.name === bookingServiceName);
-    if (!servObj) return [];
-    
-    return clientActivePackages.filter(cp => cp.balance && cp.balance[servObj.id] > 0);
-  }, [checkoutBooking, clientActivePackages, services]);
-
-  const getCheckoutTotal = () => {
-    if (!checkoutBooking) return 0;
-    const base = usingClientPackageId 
-      ? 0 
-      : (sellingPackageId 
-          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
-          : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
-        );
-    const extras = selectedExtraServices.reduce((acc, s) => acc + s.price, 0);
-    const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
-    const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
-    return Math.max(0, base + extras + productsTotal - discount - prepay);
-  };
-  const [discount, setDiscount] = useState(0);
-  const [editingBookingId, setEditingBookingId] = useState(null);
-  const [activeAlert, setActiveAlert] = useState(null); // { id, title, message, booking }
-  const [isFabOpen, setIsFabOpen] = useState(false);
-  const swipeTouchRef = useRef({ startX: null, startY: null });
-
-  // Venda Avulsa de Produtos
-  const [showDirectSaleModal, setShowDirectSaleModal] = useState(false);
-  const [directSaleProducts, setDirectSaleProducts] = useState([]);
-  const [directSaleDiscount, setDirectSaleDiscount] = useState(0);
-  const [directSalePaymentMethod, setDirectSalePaymentMethod] = useState('Pix');
-  const [directSaleInstallments, setDirectSaleInstallments] = useState('À vista');
-  const [directSaleClient, setDirectSaleClient] = useState('');
-  const [showDirectSaleSuggestions, setShowDirectSaleSuggestions] = useState(false);
-  const [isDirectSaleSalonUse, setIsDirectSaleSalonUse] = useState(false);
-
-  useEffect(() => {
-    if (!showCheckoutModal) {
-      setInstallments('À vista');
-    }
-  }, [showCheckoutModal]);
-
-  useEffect(() => {
-    if (!showDirectSaleModal) {
-      setDirectSaleInstallments('À vista');
-    }
-  }, [showDirectSaleModal]);
-
-  // Form states
-  const [newBooking, setNewBooking] = useState({
-    clientName: '',
-    clientPhone: '',
-    clientEmail: '',
-    serviceName: '',
-    servicePrice: 0,
-    duration: 60,
-    date: '',
-    time: '09:00',
-    notes: ''
-  });
-
-  const [showMobileSuggestions, setShowMobileSuggestions] = useState(false);
-
-  // Autocomplete filtering helper
-  const getFilteredClients = (queryText) => {
-    if (!queryText || queryText.trim().length < 3) return [];
-    const normQuery = queryText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    return clients.filter(c => {
-      if (!c.name) return false;
-      const normName = c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const nameMatch = normName.includes(normQuery);
-      const initials = normName.split(/\s+/).filter(Boolean).map(p => p[0]).join('');
-      const initialsMatch = initials.startsWith(normQuery);
-      const cleanPhone = c.phone?.replace(/\D/g, '') || '';
-      const cleanQueryPhone = normQuery.replace(/\D/g, '');
-      const phoneMatch = cleanQueryPhone.length > 0 && cleanPhone.includes(cleanQueryPhone);
-      return nameMatch || initialsMatch || phoneMatch;
-    }).slice(0, 6);
-  };
-
-  const selectClientForMobileAdd = (c) => {
-    setNewBooking(prev => ({
-      ...prev,
-      clientName: c.name || '',
-      clientPhone: c.phone || c.id || '',
-      clientEmail: c.email || '',
-      notes: c.observacoes || c.notes || prev.notes || ''
-    }));
-    setShowMobileSuggestions(false);
-  };
-
-  const [newClient, setNewClient] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    curvatura: '3A',
-    observacoes: '',
-    birthdate: ''
-  });
-
-  const [notifications, setNotifications] = useState(() => {
-    const stored = localStorage.getItem('admin_notifications');
-    return stored ? JSON.parse(stored) : [];
-  });
-  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
-
-  const notifiedRef = useRef(new Set());
-  const unreadCount = notifications.filter(n => !n.read).length;
-  const pendingRequests = bookings.filter(b => b.status === 'pendente');
-  const pendingCount = pendingRequests.length;
-
-  const [blockMotive, setBlockMotive] = useState('Almoço');
-  const [blockEndTime, setBlockEndTime] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('Pix');
+  // ── New States for Rescheduling and Fees ────────────────────────
   const [installments, setInstallments] = useState('À vista');
-  const [sendingMsgStatus, setSendingMsgStatus] = useState('');
+  const [applyAnticipation, setApplyAnticipation] = useState(false);
+  const [showEditBookingSheet, setShowEditBookingSheet] = useState(false);
+  const [editBookingForm, setEditBookingForm] = useState(null);
 
-  // Novas states para sub-telas nativas
-  const [clientSearchTerm, setClientSearchTerm] = useState('');
-  const [selectedClientPhone, setSelectedClientPhone] = useState('');
-  const [hairProfile, setHairProfile] = useState({
-    curvatura: '3A',
-    porosidade: 'Média',
-    elasticidade: 'Normal',
-    quimicas: 'Nenhuma',
-    produtosRecomendados: '',
-    observacoes: '',
-    sexo: 'Feminino',
-    birthdate: ''
-  });
-  const [savingProfile, setSavingProfile] = useState(false);
+  // ── Toast ──────────────────────────────────────────────────────
+  const [toast, setToast] = useState(null);
+  const showToast = useCallback((msg, type = 'info') => {
+    setToast({ msg, type });
+  }, []);
 
-  const [serviceCategory, setServiceCategory] = useState('Todos');
-  const [editingService, setEditingService] = useState(null);
-  const [showServiceModal, setShowServiceModal] = useState(false);
-  const [serviceForm, setServiceForm] = useState({
-    name: '',
-    category: 'Cabelo',
-    description: '',
-    price: '',
-    priceType: 'Fixo',
-    promoPrice: '',
-    duration: '60',
-    cost: '',
-    isPrimary: true,
-    scheduledViaWhatsapp: false,
-    position: ''
-  });
+  // ── Agenda ─────────────────────────────────────────────────────
+  const [currentDate, setCurrentDate] = useState(today());
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [showSlotSheet, setShowSlotSheet] = useState(false);
+  const [showNewBookingSheet, setShowNewBookingSheet] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
+  const [showBookingSheet, setShowBookingSheet] = useState(false);
+  const [showCheckoutSheet, setShowCheckoutSheet] = useState(false);
+  const [checkoutBooking, setCheckoutBooking] = useState(null);
 
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [showProductModal, setShowProductModal] = useState(false);
-  const [productForm, setProductForm] = useState({
-    name: '',
-    category: 'Shampoo',
-    quantity: 0,
-    costPrice: 0,
-    sellingPrice: 0,
-    minStock: 3
-  });
+  // ── Checkout form ──────────────────────────────────────────────
+  const [paymentMethod, setPaymentMethod] = useState('Pix');
+  const [selectedProducts, setSelectedProducts] = useState([]);
+  const [discount, setDiscount] = useState(0);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const [productSearch, setProductSearch] = useState('');
+  const [serviceSearch, setServiceSearch] = useState('');
+  const [isFinalizingCheckout, setIsFinalizingCheckout] = useState(false);
 
-  const [financeSubTab, setFinanceSubTab] = useState('dashboard'); // 'dashboard', 'lancamentos'
-  const [dateWindow, setDateWindow] = useState('mes');
-  const [startDate, setStartDate] = useState(() => {
-    const today = new Date();
-    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    return firstDay.toISOString().split('T')[0];
-  });
-  const [endDate, setEndDate] = useState(() => {
-    const today = new Date();
-    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-    return lastDay.toISOString().split('T')[0];
-  });
-  const [showFinanceModal, setShowFinanceModal] = useState(false); // manual entry
-  const [financeForm, setFinanceForm] = useState({
-    type: 'saida',
-    description: '',
-    value: '',
-    paymentMethod: 'Pix',
-    date: new Date().toISOString().split('T')[0]
-  });
-  const [ledgerSearch, setLedgerSearch] = useState('');
-  const [ledgerTypeFilter, setLedgerTypeFilter] = useState('todos');
-  const [ledgerMethodFilter, setLedgerMethodFilter] = useState('todos');
+  const [overrideBasePrice, setOverrideBasePrice] = useState(null);
+  const [requestReview, setRequestReview] = useState(true);
+  const [touchStart, setTouchStart] = useState(null);
+  const [translateX, setTranslateX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [slideStyle, setSlideStyle] = useState({});
+  const [transitioning, setTransitioning] = useState(false);
 
-  const [configSubTab, setConfigSubTab] = useState('perfil'); // 'perfil', 'horarios', 'politicas', 'whatsapp', 'profissionais'
-  const [profForm, setProfForm] = useState({
-    name: '',
-    avatar: '',
-    commissionService: 50,
-    commissionProduct: 10,
-    phone: '',
-    email: '',
-    active: true,
-    workStart: '09:00',
-    workEnd: '19:00',
-    lunchStart: '12:00',
-    lunchEnd: '13:00',
-    daysOff: [0, 1]
-  });
-  const [editingProfId, setEditingProfId] = useState(null);
-  const [showProfFormModal, setShowProfFormModal] = useState(false);
+  // ── New Booking Form ───────────────────────────────────────────
+  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+  const [nbSuggestions, setNbSuggestions] = useState([]);
+  const [ebSuggestions, setEbSuggestions] = useState([]);
+  const [nbRegisterClient, setNbRegisterClient] = useState(false);
 
-  const [marketingSubTab, setMarketingSubTab] = useState('automacoes'); // 'automacoes', 'logs', 'campanha'
-  const [marketingCampaignTarget, setMarketingCampaignTarget] = useState('inativos_30');
-  const [marketingCampaignMessage, setMarketingCampaignMessage] = useState(
-    'Olá {nome}! Notamos que faz tempo que não corta seus cachos no Studio do Jon. Que tal marcar uma visita? Reserve seu horário: ojonquecortou.com.br'
-  );
-  const [marketingLogs, setMarketingLogs] = useState([]);
-  const [isSendingMarketingCampaign, setIsSendingMarketingCampaign] = useState(false);
-  const [marketingCampaignProgress, setMarketingCampaignProgress] = useState(0);
-  const [marketingCampaignTotal, setMarketingCampaignTotal] = useState(0);
+  // ── Block States ───────────────────────────────────────────────
+  const [blockEndTime, setBlockEndTime] = useState('');
+  const [blockMotive, setBlockMotive] = useState('');
+  const [isBlockingRange, setIsBlockingRange] = useState(false);
 
-  const swipeTabTouchRef = useRef({ startX: null, startY: null });
+  // -- Mobile Options Block states --
+  const [mBlockWeekday, setMBlockWeekday] = useState('1');
+  const [mBlockWeekdayStart, setMBlockWeekdayStart] = useState('08:00');
+  const [mBlockWeekdayEnd, setMBlockWeekdayEnd] = useState('19:00');
+  const [mBlockSpecificDate, setMBlockSpecificDate] = useState('');
+  const [mBlockSpecificStart, setMBlockSpecificStart] = useState('08:00');
+  const [mBlockSpecificEnd, setMBlockSpecificEnd] = useState('19:00');
 
-  // 1. Listeners em Tempo Real
+  // -- States for FAB menu and quick sheets --
+  const [showFabMenu, setShowFabMenu] = useState(false);
+  const [showProductExitSheet, setShowProductExitSheet] = useState(false);
+  const [showProductEntrySheet, setShowProductEntrySheet] = useState(false);
+  const [showQuickBlockSheet, setShowQuickBlockSheet] = useState(false);
 
+  // Product exit states
+  const [prodExitSelectedId, setProdExitSelectedId] = useState('');
+  const [prodExitQuantity, setProdExitQuantity] = useState(1);
+  const [prodExitType, setProdExitType] = useState('venda');
+
+  // Product entry states
+  const [prodEntryName, setProdEntryName] = useState('');
+  const [prodEntryQuantity, setProdEntryQuantity] = useState(1);
+  const [prodEntryCost, setProdEntryCost] = useState('');
+
+  // Quick block states
+  const [qbDate, setQbDate] = useState(today());
+  const [qbStart, setQbStart] = useState('08:00');
+  const [qbEnd, setQbEnd] = useState('09:00');
+  const [qbMotive, setQbMotive] = useState('');
+  const [qbType, setQbType] = useState('folga');
+
+  // Absences (Minhas Ausências) states
+  const [showAbsenceSheet, setShowAbsenceSheet] = useState(false);
+  const [editingAbsenceId, setEditingAbsenceId] = useState(null);
+  const [absTitle, setAbsTitle] = useState('');
+  const [absStartDate, setAbsStartDate] = useState(today());
+  const [absSingleDay, setAbsSingleDay] = useState(true);
+  const [absEndDate, setAbsEndDate] = useState(today());
+  const [absAllDay, setAbsAllDay] = useState(false);
+  const [absStartTime, setAbsStartTime] = useState('09:00');
+  const [absEndTime, setAbsEndTime] = useState('10:00');
+  const [absRecurrence, setAbsRecurrence] = useState('none');
+
+  // ── Gallery ────────────────────────────────────────────────────
+  const [galleryCategory, setGalleryCategory] = useState('Todos');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState(''); // 'storage', 'google', 'done', 'error'
+  const [previewPhoto, setPreviewPhoto] = useState(null);
+  const [showUploadSheet, setShowUploadSheet] = useState(false);
+  const [uploadForm, setUploadForm] = useState({ category: 'Geral', caption: '' });
+  const [pendingFile, setPendingFile] = useState(null);
+  const [pendingPreviewUrl, setPendingPreviewUrl] = useState('');
+  const galleryInputRef = useRef(null);
+  
+  // -- Cropper States --
+  const [cropperZoom, setCropperZoom] = useState(1);
+  const [cropperOffset, setCropperOffset] = useState({ x: 0, y: 0 });
+  const [isDraggingCropper, setIsDraggingCropper] = useState(false);
+  const [cropperDragStart, setCropperDragStart] = useState({ x: 0, y: 0 });
+  const [cropperDragStartOffset, setCropperDragStartOffset] = useState({ x: 0, y: 0 });
+  const [naturalDimensions, setNaturalDimensions] = useState({ w: 0, h: 0 });
+  const [containerSize, setContainerSize] = useState(0);
+  const previewContainerRef = useRef(null);
+  const previewImageRef = useRef(null);
+
+  // -- Destination Upload States --
+  const [postToGallery, setPostToGallery] = useState(true);
+  const [postToGoogle, setPostToGoogle] = useState(true);
+
+  // ── Clients ────────────────────────────────────────────────────
+  const [clientSearch, setClientSearch] = useState('');
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [showClientSheet, setShowClientSheet] = useState(false);
+  const [showNewClientSheet, setShowNewClientSheet] = useState(false);
+  const [newClientForm, setNewClientForm] = useState({ name:'', phone:'', email:'', curvatura:'3A', observacoes:'' });
+
+  // ── Finance ────────────────────────────────────────────────────
+  const [financeTab, setFinanceTab] = useState('dashboard');
+  const [showAddTxSheet, setShowAddTxSheet] = useState(false);
+  const [txForm, setTxForm] = useState({ type:'saida', description:'', value:'', paymentMethod:'Pix', date: today() });
+
+  // ── Mais sub-tabs ──────────────────────────────────────────────
+  const [maisSection, setMaisSection] = useState(null); // null | 'servicos' | 'estoque' | 'marketing' | 'config' | 'comissoes'
+
+  // ── Notifications ─────────────────────────────────────────────
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifSheet, setShowNotifSheet] = useState(false);
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  // ── Firebase Listeners ─────────────────────────────────────────
   useEffect(() => {
-    let unsubBookings;
-    let unsubClients;
-    let unsubTx;
-    let unsubServ;
-    let unsubInventory;
-    let unsubSettings;
-    let unsubPkgs;
-    let unsubClientPkgs;
-    let unsubAuth;
+    const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
 
-    // Carregar dados do cache imediatamente (offline-first)
-    const hasLocalData = loadLocalMockData();
-    if (hasLocalData) setLoading(false);
+    const loadDemoData = () => {
+      try {
+        setBookings(JSON.parse(localStorage.getItem('demo_bookings')) || []);
+        setClients(JSON.parse(localStorage.getItem('demo_client_profiles')) || []);
+        setTransactions(JSON.parse(localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions')) || []);
+        setServices(JSON.parse(localStorage.getItem('demo_services')) || []);
+        setInventory(JSON.parse(localStorage.getItem('demo_products')) || []);
+        setPackages(JSON.parse(localStorage.getItem('demo_packages')) || []);
+        setSettings(JSON.parse(localStorage.getItem('demo_settings')) || {
+          name: 'Studio do Jon',
+          professionals: [{ id: 'jon', name: 'Jon', active: true }]
+        });
+        setGalleryPhotos(JSON.parse(localStorage.getItem('demo_gallery')) || []);
+      } catch (e) {
+        console.error('Error loading demo data in mobile app:', e);
+        setSettings({ name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] });
+      }
+      setAuthReady(true);
+      setLoading(false);
+    };
 
     if (!db) {
-      setIsDemoMode(true);
-      setLoading(false);
+      if (isLocalLogged) {
+        loadDemoData();
+      } else {
+        navigate('/admin/login');
+      }
       return;
     }
 
-    // Timeout de segurança: se Firebase não responder em 7s, mostra dados locais
+    let unsubs = [];
+    let failSafeTimeout = null;
     let authFired = false;
-    const safetyTimer = setTimeout(() => {
+
+    // Auth timeout — if Firebase auth takes >5s on mobile, fall back
+    const authTimeout = setTimeout(() => {
       if (!authFired) {
-        console.warn('Firebase timeout — usando cache local.');
-        setConnectionWarning(true);
-        setLoading(false);
+        console.warn('Auth timeout reached on mobile — using fallback');
+        if (isLocalLogged) {
+          loadDemoData();
+        } else {
+          navigate('/admin/login');
+        }
       }
-    }, 7000);
+    }, 5000);
 
-    // Carrega dados via Firestore REST API (HTTP puro — não usa WebChannel/streaming)
-    // O REST API funciona corretamente em PWA com Service Worker ativo.
-    const setupListeners = async (idToken) => {
-      try {
-        const projectId = import.meta.env.VITE_FIREBASE_PROJECT_ID;
-        if (!projectId || projectId === 'undefined') {
-          setSyncError('Configuração Firebase ausente. Verifique as variáveis de ambiente.');
-          setLoading(false);
-          return;
-        }
-        setSyncError(null);
-        // ── FETCH IMEDIATO via REST API ─────────────────────────────────
-        const [
-          bookingsList,
-          clientsList,
-          txList,
-          servList,
-          inventoryList,
-          packagesList,
-          clientPkgsList,
-          settingsData
-        ] = await Promise.allSettled([
-          fetchCollectionRest('bookings', idToken),
-          fetchCollectionRest('client_profiles', idToken),
-          fetchCollectionRest('financial_transactions', idToken),
-          fetchCollectionRest('services', idToken),
-          fetchCollectionRest('products', idToken),
-          fetchCollectionRest('packages', idToken),
-          fetchCollectionRest('client_packages', idToken),
-          fetchDocRest('settings', 'studio', idToken)
-        ]);
-
-        let errors = [];
-
-        if (bookingsList.status === 'fulfilled') {
-          setBookings(bookingsList.value);
-          localStorage.setItem('demo_bookings', JSON.stringify(bookingsList.value));
-        } else {
-          console.error('Erro ao buscar bookings:', bookingsList.reason?.message);
-          errors.push(`Agendamentos: ${bookingsList.reason?.message}`);
-        }
-        if (clientsList.status === 'fulfilled') {
-          setClients(clientsList.value);
-          localStorage.setItem('demo_client_profiles', JSON.stringify(clientsList.value));
-        } else {
-          console.error('Erro ao buscar clients:', clientsList.reason?.message);
-          errors.push(`Clientes: ${clientsList.reason?.message}`);
-        }
-        if (txList.status === 'fulfilled') {
-          setTransactions(txList.value);
-          localStorage.setItem('demo_transactions', JSON.stringify(txList.value));
-          localStorage.setItem('demo_financial', JSON.stringify(txList.value));
-        } else {
-          console.error('Erro ao buscar transações:', txList.reason?.message);
-          errors.push(`Finanças: ${txList.reason?.message}`);
-        }
-        if (servList.status === 'fulfilled') {
-          const list = servList.value;
-          setServices(list);
-          if (list.length > 0) {
-            setNewBooking(prev => ({
-              ...prev,
-              serviceName: list[0].name,
-              servicePrice: list[0].promoPrice || list[0].price || 150,
-              duration: list[0].duration || 60
-            }));
-          }
-          localStorage.setItem('demo_services', JSON.stringify(list));
-        } else {
-          console.error('Erro ao buscar serviços:', servList.reason?.message);
-          errors.push(`Serviços: ${servList.reason?.message}`);
-        }
-        if (inventoryList.status === 'fulfilled') {
-          setInventory(inventoryList.value);
-          localStorage.setItem('demo_inventory', JSON.stringify(inventoryList.value));
-        } else {
-          console.error('Erro ao buscar estoque:', inventoryList.reason?.message);
-          errors.push(`Estoque: ${inventoryList.reason?.message}`);
-        }
-        if (packagesList.status === 'fulfilled') {
-          setPackages(packagesList.value);
-          localStorage.setItem('demo_packages', JSON.stringify(packagesList.value));
-        } else {
-          console.error('Erro ao buscar packages:', packagesList.reason?.message);
-          errors.push(`Pacotes: ${packagesList.reason?.message}`);
-        }
-        if (clientPkgsList.status === 'fulfilled') {
-          setClientPackages(clientPkgsList.value);
-          localStorage.setItem('demo_client_packages', JSON.stringify(clientPkgsList.value));
-        } else {
-          console.error('Erro ao buscar client packages:', clientPkgsList.reason?.message);
-          errors.push(`Pacotes adquiridos: ${clientPkgsList.reason?.message}`);
-        }
-        if (settingsData.status === 'fulfilled' && settingsData.value) {
-          setSettings(settingsData.value);
-          localStorage.setItem('demo_studio_settings', JSON.stringify(settingsData.value));
-        } else if (settingsData.status === 'rejected') {
-          console.error('Erro ao buscar settings:', settingsData.reason?.message);
-          errors.push(`Ajustes: ${settingsData.reason?.message}`);
-        }
-
-        if (errors.length > 0) {
-          setSyncError(errors.join(' | '));
-        }
-
-        setLoading(false);
-
-        // ── REAL-TIME (onSnapshot) ────────────────────────────────────────
-        // Filtra para evitar que snapshots vazios vindos do cache offline sobrescrevam os dados do REST
-        unsubBookings = onSnapshot(collection(db, 'bookings'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setBookings(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_bookings', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot bookings:', err.code || err.message));
-
-        unsubClients = onSnapshot(collection(db, 'client_profiles'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setClients(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_client_profiles', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot clients:', err.code || err.message));
-
-        unsubTx = onSnapshot(collection(db, 'financial_transactions'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setTransactions(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_transactions', JSON.stringify(list));
-              localStorage.setItem('demo_financial', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot transactions:', err.code || err.message));
-
-        unsubServ = onSnapshot(collection(db, 'services'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setServices(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_services', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot services:', err.code || err.message));
-
-        unsubInventory = onSnapshot(collection(db, 'products'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setInventory(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_inventory', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot products:', err.code || err.message));
-
-        unsubPkgs = onSnapshot(collection(db, 'packages'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setPackages(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_packages', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot packages:', err.code || err.message));
-
-        unsubClientPkgs = onSnapshot(collection(db, 'client_packages'), (snapshot) => {
-          const list = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-          setClientPackages(prev => {
-            if (!snapshot.metadata.fromCache || (list.length > 0 && prev.length === 0)) {
-              localStorage.setItem('demo_client_packages', JSON.stringify(list));
-              return list;
-            }
-            return prev;
-          });
-        }, (err) => console.warn('onSnapshot client_packages:', err.code || err.message));
-
-        unsubSettings = onSnapshot(doc(db, 'settings', 'studio'), (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data();
-            setSettings(prev => {
-              if (!snapshot.metadata.fromCache || prev === null) {
-                localStorage.setItem('demo_studio_settings', JSON.stringify(data));
-                return data;
-              }
-              return prev;
-            });
-          }
-        }, (err) => console.warn('onSnapshot settings:', err.code || err.message));
-
-      } catch (e) {
-        console.error('Erro ao buscar dados Firebase:', e);
-        setSyncError(e.message);
-        // Fallback para dados locais
-        setIsDemoMode(true);
-        setLoading(false);
-      }
-    };
-
-    unsubAuth = onAuthStateChanged(auth, (user) => {
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
       authFired = true;
-      clearTimeout(safetyTimer);
+      clearTimeout(authTimeout);
+      setAuthReady(true);
 
-      if (!user) {
-        console.warn('Sem sessão — redirecionando para login.');
-        setLoading(false);
+      if (!user && !isLocalLogged) {
         navigate('/admin/login');
         return;
       }
 
-      setIsDemoMode(false);
-      setConnectionWarning(false);
-      setLoading(false);
-      // Pega o ID token para autenticar as chamadas REST
-      user.getIdToken(true).then(idToken => setupListeners(idToken)).catch(err => {
-        console.error('Erro ao obter ID token:', err);
-        setIsDemoMode(true);
-      });
+      if (!user && isLocalLogged) {
+        loadDemoData();
+        return;
+      }
+
+      // Clear any previous listeners if auth changed
+      unsubs.forEach(unsub => unsub && unsub());
+      unsubs = [];
+
+      let bookingsLoaded = false;
+      let clientsLoaded = false;
+      let transactionsLoaded = false;
+      let servicesLoaded = false;
+      let inventoryLoaded = false;
+      let packagesLoaded = false;
+      let settingsLoaded = false;
+      let galleryLoaded = false;
+
+      let loadedCount = 0;
+      const checkLoaded = (key) => {
+        if (key === 'bookings' && !bookingsLoaded) { bookingsLoaded = true; loadedCount++; }
+        if (key === 'clients' && !clientsLoaded) { clientsLoaded = true; loadedCount++; }
+        if (key === 'transactions' && !transactionsLoaded) { transactionsLoaded = true; loadedCount++; }
+        if (key === 'services' && !servicesLoaded) { servicesLoaded = true; loadedCount++; }
+        if (key === 'inventory' && !inventoryLoaded) { inventoryLoaded = true; loadedCount++; }
+        if (key === 'packages' && !packagesLoaded) { packagesLoaded = true; loadedCount++; }
+        if (key === 'settings' && !settingsLoaded) { settingsLoaded = true; loadedCount++; }
+        if (key === 'gallery' && !galleryLoaded) { galleryLoaded = true; loadedCount++; }
+
+        if (loadedCount >= 8) {
+          setLoading(false);
+          if (failSafeTimeout) clearTimeout(failSafeTimeout);
+        }
+      };
+
+      const handleError = (key, err) => {
+        console.error(`Error loading ${key}:`, err);
+        checkLoaded(key);
+      };
+
+      // Failsafe: unlock UI after 1.5s even if some collections are slow
+      failSafeTimeout = setTimeout(() => {
+        setLoading(false);
+      }, 1500);
+
+      // Register the 8 listeners
+      try {
+        unsubs.push(onSnapshot(collection(db, 'bookings'), (snap) => {
+          setBookings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('bookings');
+        }, (err) => handleError('bookings', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => {
+          setClients(snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })));
+          checkLoaded('clients');
+        }, (err) => handleError('clients', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => {
+          setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('transactions');
+        }, (err) => handleError('transactions', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'services'), (snap) => {
+          setServices(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('services');
+        }, (err) => handleError('services', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'products'), (snap) => {
+          setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('inventory');
+        }, (err) => handleError('inventory', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => {
+          setPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          checkLoaded('packages');
+        }, (err) => handleError('packages', err)));
+
+        unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
+          setSettings(snap.exists() ? { id: snap.id, ...snap.data() } : { name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] });
+          checkLoaded('settings');
+        }, (err) => handleError('settings', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'gallery_photos'), (snap) => {
+          const sorted = snap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setGalleryPhotos(sorted);
+          checkLoaded('gallery');
+        }, (err) => handleError('gallery', err)));
+
+      } catch (err) {
+        console.error('Error subscribing to Firestore collections:', err);
+        setLoading(false);
+      }
     });
 
     return () => {
-      clearTimeout(safetyTimer);
-      if (unsubAuth) unsubAuth();
-      if (unsubBookings) unsubBookings();
-      if (unsubClients) unsubClients();
-      if (unsubTx) unsubTx();
-      if (unsubServ) unsubServ();
-      if (unsubInventory) unsubInventory();
-      if (unsubPkgs) unsubPkgs();
-      if (unsubClientPkgs) unsubClientPkgs();
-      if (unsubSettings) unsubSettings();
+      unsubAuth();
+      clearTimeout(authTimeout);
+      unsubs.forEach(unsub => unsub && unsub());
+      if (failSafeTimeout) clearTimeout(failSafeTimeout);
     };
-  }, []);
+  }, [navigate]);
 
+  // ── Derived: today's bookings ──────────────────────────────────
+  const todayBookings = bookings
+    .filter(b => b.date === currentDate && b.status !== 'cancelado')
+    .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
 
-  /**
-   * Aguarda o Firebase Auth resolver a sessão persistida (IndexedDB).
-   * Em mobile/PWA, auth.currentUser pode ser null enquanto o SDK ainda
-   * está restaurando a sessão — este helper espera até 8s antes de falhar.
-   */
-  const waitForCurrentUser = (timeoutMs = 8000) =>
-    new Promise((resolve, reject) => {
-      if (auth?.currentUser) {
-        resolve(auth.currentUser);
-        return;
-      }
-      const timer = setTimeout(() => {
-        unsubscribe();
-        reject(new Error('Sessão expirada. Faça login novamente.'));
-      }, timeoutMs);
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          clearTimeout(timer);
-          unsubscribe();
-          resolve(user);
-        }
-      });
+  const todayRevenue = transactions
+    .filter(t => t.date === today() && t.type === 'entrada')
+    .reduce((s, t) => s + Number(t.value || 0), 0);
+
+  const monthRevenue = (() => {
+    const m = new Date().toISOString().slice(0, 7);
+    return transactions
+      .filter(t => (t.date || '').startsWith(m) && t.type === 'entrada')
+      .reduce((s, t) => s + Number(t.value || 0), 0);
+  })();
+
+  const pendingCount = bookings.filter(b => b.status === 'pendente').length;
+
+  const getWeekDays = (centerDate) => {
+    const d = parseLocalDate(centerDate);
+    const day = getAdjustedDay(d);
+    const sunday = new Date(d);
+    sunday.setDate(d.getDate() - day);
+    return Array.from({ length: 7 }, (_, i) => {
+      const wd = new Date(sunday);
+      wd.setDate(sunday.getDate() + i);
+      return dateStr(wd);
     });
+  };
+  const weekDays = getWeekDays(currentDate);
+  const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
-  const handleManualSync = async () => {
-    if (syncing) return;
-    setSyncing(true);
-    setSyncError(null);
-    try {
-      // Usa waitForCurrentUser em vez de auth.currentUser direto para evitar
-      // a race condition no mobile/PWA onde o IndexedDB ainda está restaurando a sessão.
-      const user = await waitForCurrentUser();
-      if (!user) throw new Error('Sessão expirada. Faça login novamente.');
-
-      // Força renovação do ID token para evitar token expirado
-      const idToken = await user.getIdToken(true);
-      
-      const [
-        bookingsList,
-        clientsList,
-        txList,
-        servList,
-        inventoryList,
-        packagesList,
-        clientPkgsList,
-        settingsData
-      ] = await Promise.allSettled([
-        fetchCollectionRest('bookings', idToken),
-        fetchCollectionRest('client_profiles', idToken),
-        fetchCollectionRest('financial_transactions', idToken),
-        fetchCollectionRest('services', idToken),
-        fetchCollectionRest('products', idToken),
-        fetchCollectionRest('packages', idToken),
-        fetchCollectionRest('client_packages', idToken),
-        fetchDocRest('settings', 'studio', idToken)
-      ]);
-
-      let errors = [];
-
-      if (bookingsList.status === 'fulfilled') {
-        setBookings(bookingsList.value);
-        localStorage.setItem('demo_bookings', JSON.stringify(bookingsList.value));
-      } else {
-        errors.push(`Agendamentos: ${bookingsList.reason?.message}`);
-      }
-
-      if (clientsList.status === 'fulfilled') {
-        setClients(clientsList.value);
-        localStorage.setItem('demo_client_profiles', JSON.stringify(clientsList.value));
-      } else {
-        errors.push(`Clientes: ${clientsList.reason?.message}`);
-      }
-
-      if (txList.status === 'fulfilled') {
-        setTransactions(txList.value);
-        localStorage.setItem('demo_transactions', JSON.stringify(txList.value));
-        localStorage.setItem('demo_financial', JSON.stringify(txList.value));
-      } else {
-        errors.push(`Finanças: ${txList.reason?.message}`);
-      }
-
-      if (servList.status === 'fulfilled') {
-        setServices(servList.value);
-        localStorage.setItem('demo_services', JSON.stringify(servList.value));
-      } else {
-        errors.push(`Serviços: ${servList.reason?.message}`);
-      }
-
-      if (inventoryList.status === 'fulfilled') {
-        setInventory(inventoryList.value);
-        localStorage.setItem('demo_inventory', JSON.stringify(inventoryList.value));
-      } else {
-        errors.push(`Estoque: ${inventoryList.reason?.message}`);
-      }
-
-      if (packagesList.status === 'fulfilled') {
-        setPackages(packagesList.value);
-        localStorage.setItem('demo_packages', JSON.stringify(packagesList.value));
-      } else {
-        errors.push(`Pacotes: ${packagesList.reason?.message}`);
-      }
-
-      if (clientPkgsList.status === 'fulfilled') {
-        setClientPackages(clientPkgsList.value);
-        localStorage.setItem('demo_client_packages', JSON.stringify(clientPkgsList.value));
-      } else {
-        errors.push(`Pacotes adquiridos: ${clientPkgsList.reason?.message}`);
-      }
-
-      if (settingsData.status === 'fulfilled' && settingsData.value) {
-        setSettings(settingsData.value);
-        localStorage.setItem('demo_studio_settings', JSON.stringify(settingsData.value));
-      } else if (settingsData.status === 'rejected') {
-        errors.push(`Ajustes: ${settingsData.reason?.message}`);
-      }
-
-      if (errors.length > 0) {
-        const errorString = errors.join(' | ');
-        setSyncError(errorString);
-        alert(`Sincronização parcial com erros:\n${errors.join('\n')}`);
-      } else {
-        alert('Sincronização manual concluída com sucesso!');
-      }
-    } catch (e) {
-      console.error('Erro na sincronização manual:', e);
-      setSyncError(e.message);
-      if (e.message?.includes('Sessão expirada') || !auth.currentUser) {
-        navigate('/admin/login');
-      } else {
-        alert(`Erro na sincronização: ${e.message}`);
-      }
-    } finally {
-      setSyncing(false);
-    }
+  const navigateDate = (delta) => {
+    const d = parseLocalDate(currentDate);
+    d.setDate(d.getDate() + delta);
+    setCurrentDate(dateStr(d));
   };
 
-  const loadLocalMockData = () => {
-    const savedBookings = localStorage.getItem('demo_bookings');
-    const savedClients = localStorage.getItem('demo_client_profiles');
-    const savedTransactions = localStorage.getItem('demo_transactions');
-    const savedServices = localStorage.getItem('demo_services');
-    const savedInventory = localStorage.getItem('demo_inventory');
-    const savedPackages = localStorage.getItem('demo_packages');
-    const savedClientPackages = localStorage.getItem('demo_client_packages');
-    const savedSettings = localStorage.getItem('demo_studio_settings');
+  const animateDayChange = (direction) => {
+    if (transitioning) return;
+    setTransitioning(true);
+    const targetOffset = direction > 0 ? -window.innerWidth : window.innerWidth;
+    setSlideStyle({
+      transform: `translateX(${targetOffset}px)`,
+      transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      opacity: 0
+    });
 
-    if (savedBookings) setBookings(JSON.parse(savedBookings));
-    if (savedClients) setClients(JSON.parse(savedClients));
-    if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
-    if (savedServices) {
-      const parsedS = JSON.parse(savedServices);
-      setServices(parsedS);
-      if (parsedS.length > 0) {
-        setNewBooking(prev => ({
-          ...prev,
-          serviceName: parsedS[0].name,
-          servicePrice: parsedS[0].promoPrice || parsedS[0].price || 150,
-          duration: parsedS[0].duration || 60
-        }));
-      }
-    }
-    if (savedInventory) setInventory(JSON.parse(savedInventory));
-    if (savedPackages) setPackages(JSON.parse(savedPackages));
-    if (savedClientPackages) setClientPackages(JSON.parse(savedClientPackages));
-    if (savedSettings) {
-      try {
-        const parsed = JSON.parse(savedSettings);
-        const merged = { ...DEFAULT_SETTINGS };
-        Object.keys(parsed).forEach(key => {
-          if (parsed[key] !== undefined && parsed[key] !== null && parsed[key] !== '') {
-            merged[key] = parsed[key];
-          }
+    setTimeout(() => {
+      navigateDate(direction);
+      setSlideStyle({
+        transform: `translateX(${direction > 0 ? window.innerWidth : -window.innerWidth}px)`,
+        transition: 'none',
+        opacity: 0
+      });
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          setSlideStyle({
+            transform: 'translateX(0)',
+            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: 1
+          });
+          setTimeout(() => {
+            setTransitioning(false);
+            setTranslateX(0);
+            setSlideStyle({});
+          }, 300);
+        }, 30);
+      });
+    }, 250);
+  };
+
+  const handleTouchStart = (e) => {
+    if (transitioning) return;
+    setTouchStart(e.targetTouches[0].clientX);
+    setIsDragging(true);
+  };
+
+  const handleTouchMove = (e) => {
+    if (!isDragging || touchStart === null) return;
+    const currentTouch = e.targetTouches[0].clientX;
+    const diff = currentTouch - touchStart;
+    const cappedDiff = Math.max(-150, Math.min(150, diff));
+    setTranslateX(cappedDiff);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (translateX !== 0) {
+      const threshold = 60;
+      if (translateX > threshold) {
+        animateDayChange(-1);
+      } else if (translateX < -threshold) {
+        animateDayChange(1);
+      } else {
+        setSlideStyle({
+          transform: 'translateX(0)',
+          transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
         });
-        setSettings(merged);
-      } catch (e) {
-        setSettings(DEFAULT_SETTINGS);
-      }
-    } else {
-      setSettings(DEFAULT_SETTINGS);
-    }
-    // Retorna true se algum dado foi encontrado no cache
-    return !!(savedBookings || savedClients || savedTransactions || savedServices);
-  };
-
-  // 1b. Motor de Notificações
-  const playNotificationSound = () => {
-    try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const playTone = (freq, start, duration) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, start);
-        gain.gain.setValueAtTime(0, start);
-        gain.gain.linearRampToValueAtTime(0.15, start + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(start);
-        osc.stop(start + duration);
-      };
-      playTone(523.25, ctx.currentTime, 0.3);
-      playTone(659.25, ctx.currentTime + 0.15, 0.4);
-    } catch (e) {
-      console.warn('Sound play failed:', e);
-    }
-  };
-
-  const triggerNotification = (id, title, message, type) => {
-    if (notifiedRef.current.has(id)) return;
-    notifiedRef.current.add(id);
-    localStorage.setItem('notified_ids', JSON.stringify(Array.from(notifiedRef.current)));
-
-    const newNotif = {
-      id,
-      title,
-      message,
-      type,
-      timestamp: new Date().toISOString(),
-      read: false
-    };
-
-    setNotifications(prev => {
-      const updated = [newNotif, ...prev];
-      localStorage.setItem('admin_notifications', JSON.stringify(updated));
-      return updated;
-    });
-
-    playNotificationSound();
-
-    if (type === 'novo_agendamento') {
-      const bookingId = id.replace('new_booking_', '');
-      const actualBooking = bookings.find(b => b.id === bookingId) || {
-        id: bookingId,
-        clientName: message.split(' agendou')[0] || 'Cliente',
-        serviceName: 'Serviço',
-        status: 'pendente'
-      };
-      setActiveAlert({
-        id,
-        title,
-        message,
-        booking: actualBooking
-      });
-    }
-
-    if ('Notification' in window && Notification.permission === 'granted') {
-      try {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.ready.then(registration => {
-            registration.showNotification(title, {
-              body: message,
-              icon: '/jon-perfil.webp',
-              tag: id,
-              vibrate: [200, 100, 200, 100, 200]
-            });
-          });
-        } else {
-          new Notification(title, {
-            body: message,
-            icon: '/jon-perfil.webp',
-            tag: id
-          });
-        }
-      } catch (e) {
-        console.warn('Native notification failed:', e);
+        setTimeout(() => {
+          setTranslateX(0);
+          setSlideStyle({});
+        }, 200);
       }
     }
+    setTouchStart(null);
   };
 
-  const isBirthdayInCurrentWeek = (birthdateStr) => {
-    if (!birthdateStr) return false;
-    const parts = birthdateStr.split('-');
-    if (parts.length !== 3) return false;
-    const bMonth = parseInt(parts[1], 10) - 1;
-    const bDay = parseInt(parts[2], 10);
-
-    const now = new Date();
-    const currentDayOfWeek = now.getDay();
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - currentDayOfWeek);
-
-    for (let i = 0; i < 7; i++) {
-      const checkDay = new Date(startOfWeek);
-      checkDay.setDate(startOfWeek.getDate() + i);
-      if (checkDay.getMonth() === bMonth && checkDay.getDate() === bDay) {
-        return true;
-      }
-    }
-    return false;
+  const handleMouseDown = (e) => {
+    if (transitioning) return;
+    setTouchStart(e.clientX);
+    setIsDragging(true);
   };
 
-  const isSlotBlocked = (prof, dateStr, slot) => {
-    if (!prof) return false;
-    
-    // 1. Check daysOff
-    const parts = dateStr.split('-');
-    if (parts.length === 3) {
-      const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-      const weekday = dateObj.getDay();
-      const daysOff = prof.daysOff !== undefined ? prof.daysOff : [0, 1];
-      if (daysOff.includes(weekday)) return true;
-    }
-
-    // 2. Check blocked dates
-    const blockedDates = prof.blockedDates || [];
-    if (blockedDates.includes(dateStr)) return true;
-
-    // 3. Check work hours and lunch hours
-    const workStart = prof.workStart || '09:00';
-    const workEnd = prof.workEnd || '19:00';
-    const lunchStart = prof.lunchStart || '12:00';
-    const lunchEnd = prof.lunchEnd || '13:00';
-
-    const [slotH, slotM] = slot.split(':').map(Number);
-    const [startH, startM] = workStart.split(':').map(Number);
-    const [endH, endM] = workEnd.split(':').map(Number);
-    const [lunchStartH, lunchStartM] = lunchStart.split(':').map(Number);
-    const [lunchEndH, lunchEndM] = lunchEnd.split(':').map(Number);
-
-    const slotMin = slotH * 60 + slotM;
-    const startMin = startH * 60 + startM;
-    const endMin = endH * 60 + endM;
-    const lunchStartMin = lunchStartH * 60 + lunchStartM;
-    const lunchEndMin = lunchEndH * 60 + lunchEndM;
-
-    // Outside work hours
-    if (slotMin < startMin || slotMin >= endMin) return true;
-    // Inside lunch hours
-    if (slotMin >= lunchStartMin && slotMin < lunchEndMin) return true;
-
-    return false;
+  const handleMouseMove = (e) => {
+    if (!isDragging || touchStart === null) return;
+    const diff = e.clientX - touchStart;
+    const cappedDiff = Math.max(-150, Math.min(150, diff));
+    setTranslateX(cappedDiff);
   };
 
-  const runPollerChecks = () => {
-    if (!bookings || bookings.length === 0) return;
-
-    const now = new Date();
-    const nowTime = now.getTime();
-
-    // 1. Check for New Bookings (created in the last 60 seconds)
-    bookings.forEach(booking => {
-      if (booking.createdAt && booking.status === 'pendente') {
-        const createdTime = new Date(booking.createdAt).getTime();
-        const id = `new_booking_${booking.id || booking.createdAt}`;
-        if (nowTime - createdTime < 60000 && !notifiedRef.current.has(id)) {
-          triggerNotification(
-            id,
-            'Novo Agendamento! 📅',
-            `${booking.clientName} agendou ${booking.service?.name || 'Serviço'} para ${booking.date} às ${booking.time}`,
-            'novo_agendamento'
-          );
-        }
-      }
-    });
-
-    // 2. Check for 30-minute Pre-Appointment Alert
-    bookings.forEach(booking => {
-      if (booking.status !== 'cancelado' && booking.status !== 'bloqueado' && booking.date && booking.time) {
-        try {
-          const [yr, mo, dy] = booking.date.split('-').map(Number);
-          const [hr, mn] = booking.time.split(':').map(Number);
-          const bookingTime = new Date(yr, mo - 1, dy, hr, mn);
-          const diffMs = bookingTime.getTime() - nowTime;
-          const diffMinutes = Math.round(diffMs / 60000);
-
-          if (diffMinutes >= 0 && diffMinutes <= 30) {
-            const id = `reminder_30m_${booking.id}`;
-            if (!notifiedRef.current.has(id)) {
-              triggerNotification(
-                id,
-                'Compromisso em Breve! ⏰',
-                `Atendimento de ${booking.clientName} (${booking.service?.name || 'Serviço'}) começa em ${diffMinutes} min às ${booking.time}!`,
-                'lembrete_30m'
-              );
-            }
-          }
-        } catch (e) {
-          console.warn('Error parsing booking date/time:', e);
-        }
-      }
-    });
-
-    // 3. Check for Birthday of the Week with active booking this week
-    const currentDayOfWeek = now.getDay();
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - currentDayOfWeek);
-    startOfWeek.setHours(0, 0, 0, 0);
-
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-    endOfWeek.setHours(23, 59, 59, 999);
-
-    bookings.forEach(booking => {
-      if (booking.status !== 'cancelado' && booking.status !== 'bloqueado' && booking.date) {
-        try {
-          const [yr, mo, dy] = booking.date.split('-').map(Number);
-          const bookingTime = new Date(yr, mo - 1, dy);
-
-          if (bookingTime >= startOfWeek && bookingTime <= endOfWeek) {
-            let birthdate = booking.clientBirthdate || '';
-            if (!birthdate) {
-              const clientProf = clients.find(c => c.phone === booking.clientPhone);
-              if (clientProf) birthdate = clientProf.birthdate || '';
-            }
-
-            if (birthdate) {
-              if (isBirthdayInCurrentWeek(birthdate)) {
-                const id = `birthday_week_${booking.id}`;
-                if (!notifiedRef.current.has(id)) {
-                  const bParts = birthdate.split('-');
-                  const bDay = bParts[2];
-                  const bMonth = bParts[1];
-                  triggerNotification(
-                    id,
-                    'Aniversariante da Semana! 🎂',
-                    `${booking.clientName} faz aniversário essa semana (dia ${bDay}/${bMonth}) e tem agendamento para dia ${dy}/${mo} às ${booking.time}!`,
-                    'aniversario'
-                  );
-                }
-              }
-            }
-          }
-        } catch (e) {
-          console.warn('Error checking birthday for booking:', e);
-        }
-      }
-    });
-  };
-
-  useEffect(() => {
-    const storedNotified = localStorage.getItem('notified_ids');
-    if (storedNotified) {
-      try {
-        const parsed = JSON.parse(storedNotified);
-        notifiedRef.current = new Set(parsed);
-      } catch (e) {
-        console.warn('Failed to parse notified_ids:', e);
-      }
-    }
-
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-  }, []);
-
-  useEffect(() => {
-    runPollerChecks();
-    const intervalId = setInterval(() => {
-      runPollerChecks();
-    }, 60000);
-
-    return () => clearInterval(intervalId);
-  }, [bookings, clients]);
-
-  const markAllAsRead = () => {
-    setNotifications(prev => {
-      const updated = prev.map(n => ({ ...n, read: true }));
-      localStorage.setItem('admin_notifications', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  const requestNotificationPermission = () => {
-    if ('Notification' in window) {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          triggerNotification('welcome_notif', 'Notificações Ativadas! ✅', 'Você receberá avisos sonoros de novos agendamentos.', 'sistema');
-        } else {
-          alert('Permissão de notificação negada. Você não receberá alertas.');
-        }
-      });
-    }
-  };
-
-  const clearAllNotifications = () => {
-    setNotifications([]);
-    localStorage.removeItem('admin_notifications');
-  };
-
-  const markAsRead = (id) => {
-    setNotifications(prev => {
-      const updated = prev.map(n => n.id === id ? { ...n, read: true } : n);
-      localStorage.setItem('admin_notifications', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  const deleteNotification = (id) => {
-    setNotifications(prev => {
-      const updated = prev.filter(n => n.id !== id);
-      localStorage.setItem('admin_notifications', JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  // 2. Auxiliares Financeiros (Mês ou Semana)
-  const getFinancialStats = () => {
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-    const currentYear = now.getFullYear();
-    
-    let filteredTx = [];
-    
-    if (businessPeriod === 'semana') {
-      const wDays = getWeekDays(todayStr);
-      filteredTx = transactions.filter(t => t.date && wDays.includes(t.date));
-    } else {
-      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
-      const monthPrefix = `${currentYear}-${currentMonth}`;
-      filteredTx = transactions.filter(t => t.date && t.date.startsWith(monthPrefix));
-    }
-
-    const receitas = filteredTx.filter(t => t.type === 'entrada').reduce((sum, t) => sum + (t.value || 0), 0);
-    const despesas = filteredTx.filter(t => t.type === 'saida').reduce((sum, t) => sum + (t.value || 0), 0);
-
-    return { receitas, despesas };
-  };
-
-  // 3. Formatação de Datas
-  const formatLocalDate = (dateStr) => {
-    const parts = dateStr.split('-');
-    if (parts.length !== 3) return dateStr;
-    const d = new Date(parts[0], parts[1] - 1, parts[2]);
-    const months = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
-    const weekdays = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
-    
-    return {
-      dateString: `${parts[2]} ${months[d.getMonth()]} ${d.getFullYear()}`,
-      weekdayString: weekdays[d.getDay()]
-    };
-  };
-
-  const handleDateChange = (days) => {
-    const d = new Date(currentDate + 'T00:00:00');
-    d.setDate(d.getDate() + days);
-    setCurrentDate(d.toISOString().split('T')[0]);
-  };
-
-  const handleWeekChange = (weeks) => {
-    const d = new Date(currentDate + 'T00:00:00');
-    d.setDate(d.getDate() + weeks * 7);
-    setCurrentDate(d.toISOString().split('T')[0]);
-  };
-
-  const handleMonthChange = (months) => {
-    const d = new Date(currentDate + 'T00:00:00');
-    d.setMonth(d.getMonth() + months);
-    setCurrentDate(d.toISOString().split('T')[0]);
-  };
-
-  // ── Swipe para navegar na agenda ──────────────────────────────────
-  const handleSwipeStart = (e) => {
-    const touch = e.changedTouches[0];
-    swipeTouchRef.current = { startX: touch.clientX, startY: touch.clientY };
-  };
-
-  const handleSwipeEnd = (e) => {
-    const { startX, startY } = swipeTouchRef.current;
-    if (startX === null) return;
-    const touch = e.changedTouches[0];
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
-    // Ignora gestos mais verticais do que horizontais (scroll normal)
-    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-    const direction = dx < 0 ? 1 : -1; // esquerda = próximo (+1), direita = anterior (-1)
-    if (agendaView === 'diario') handleDateChange(direction);
-    else if (agendaView === 'semanal') handleWeekChange(direction);
-    else if (agendaView === 'mensal') handleMonthChange(direction);
-    swipeTouchRef.current = { startX: null, startY: null };
-  };
-  // ─────────────────────────────────────────────────────────────────
-
-  const getWeekDays = (dateStr) => {
-    const current = new Date(dateStr + 'T00:00:00');
-    const dayOfWeek = current.getDay();
-    const start = new Date(current);
-    start.setDate(current.getDate() - dayOfWeek);
-    
-    const days = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(start);
-      d.setDate(start.getDate() + i);
-      days.push(d.toISOString().split('T')[0]);
-    }
-    return days;
-  };
-
-  const timeToMin = (t) => {
-    if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
-    const [h, m] = t.split(':').map(Number);
-    return (h || 0) * 60 + (m || 0);
-  };
-
-  const getDaysInMonth = (dateStr) => {
-    const [year, month] = dateStr.split('-').map(Number);
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 0);
-    
-    const startDay = startOfMonth.getDay();
-    const daysInMonth = endOfMonth.getDate();
-    
-    const calendarCells = [];
-    for (let i = 0; i < startDay; i++) {
-      calendarCells.push(null);
-    }
-    for (let i = 1; i <= daysInMonth; i++) {
-      const dayStr = `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-      calendarCells.push(dayStr);
-    }
-    return calendarCells;
-  };
-
-  const getDaysInMonthGrid = (dateStr) => {
-    const [year, month] = dateStr.split('-').map(Number);
-    const startOfMonth = new Date(year, month - 1, 1);
-    const endOfMonth = new Date(year, month, 0);
-    
-    const startDay = startOfMonth.getDay();
-    const daysInMonth = endOfMonth.getDate();
-    
-    const grid = [];
-    
-    // Previous month padding
-    const prevMonthEnd = new Date(year, month - 1, 0);
-    const prevMonthDays = prevMonthEnd.getDate();
-    const prevYear = prevMonthEnd.getFullYear();
-    const prevMon = prevMonthEnd.getMonth() + 1;
-    
-    for (let i = startDay - 1; i >= 0; i--) {
-      const dNum = prevMonthDays - i;
-      grid.push({
-        dateStr: `${prevYear}-${String(prevMon).padStart(2, '0')}-${String(dNum).padStart(2, '0')}`,
-        dayNum: dNum,
-        isCurrentMonth: false
-      });
-    }
-    
-    // Current month days
-    for (let i = 1; i <= daysInMonth; i++) {
-      grid.push({
-        dateStr: `${year}-${String(month).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
-        dayNum: i,
-        isCurrentMonth: true
-      });
-    }
-    
-    // Next month padding to reach exactly 42 cells (6 rows)
-    const totalCells = 42;
-    const remaining = totalCells - grid.length;
-    const nextMonthStart = new Date(year, month, 1);
-    const nextYear = nextMonthStart.getFullYear();
-    const nextMon = nextMonthStart.getMonth() + 1;
-    
-    for (let i = 1; i <= remaining; i++) {
-      grid.push({
-        dateStr: `${nextYear}-${String(nextMon).padStart(2, '0')}-${String(i).padStart(2, '0')}`,
-        dayNum: i,
-        isCurrentMonth: false
-      });
-    }
-    
-    return grid;
-  };
-
-  const getDayBlocks = (prof, dStr) => {
-    if (!prof) return [];
-    
-    const parts = dStr.split('-');
-    if (parts.length !== 3) return [];
-    const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-    const weekday = dateObj.getDay();
-    const blocks = [];
-    
-    // 1. Day off
-    if ((prof.daysOff || []).includes(weekday)) {
-      blocks.push({ start: '10:00', end: '19:00', label: 'Folga' });
-      return blocks;
-    }
-    
-    // 2. Blocked date
-    if ((prof.blockedDates || []).includes(dStr)) {
-      blocks.push({ start: '10:00', end: '19:00', label: 'Bloqueado' });
-      return blocks;
-    }
-    
-    // 3. Recurring weekday blocks: "weekday-HH:MM-HH:MM"
-    const weekdayBlocks = prof.blockedWeekdayHours || [];
-    weekdayBlocks.forEach(block => {
-      const segments = block.split('-');
-      if (Number(segments[0]) === weekday) {
-        const start = segments[1];
-        const end = segments[2] || '19:00';
-        blocks.push({ start, end, label: 'Bloqueio' });
-      }
-    });
-    
-    // 4. Specific date blocks: "YYYY-MM-DD-HH:MM-HH:MM"
-    const specificBlocks = prof.blockedSpecificHours || [];
-    specificBlocks.forEach(block => {
-      if (block.startsWith(dStr)) {
-        const rest = block.substring(dStr.length + 1);
-        const restParts = rest.split('-');
-        const start = restParts[0];
-        const end = restParts[1] || '19:00';
-        blocks.push({ start, end, label: 'Bloqueado' });
-      }
-    });
-    
-    return blocks;
-  };
-
-  // 4. Fluxo de Criação de Agendamentos e Bloqueios
-  const handleSlotClick = (timeStr) => {
-    const match = bookings.find(b => b.date === currentDate && b.time === timeStr && b.status !== 'cancelado');
-    
-    const timeToMin = (t) => {
-      const [h, m] = t.split(':').map(Number);
-      return h * 60 + m;
-    };
-    const slotMin = timeToMin(timeStr);
-    
-    const ongoingMatch = !match && bookings.find(b => {
-      if (b.date !== currentDate || b.status === 'cancelado') return false;
-      const bStart = timeToMin(b.time);
-      const bEnd = bStart + (b.duration || 60);
-      return bStart < slotMin && slotMin < bEnd;
-    });
-
-    if (match || ongoingMatch) {
-      setSelectedBooking(match || ongoingMatch);
-    } else {
-      const jonProf = settings?.professionals?.find(p => p.id === 'jon');
-      const blockedBySettings = isSlotBlocked(jonProf, currentDate, timeStr);
-      
-      if (blockedBySettings) {
-        if (!confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
-          return;
-        }
-      }
-
-      setEditingBookingId(null);
-      setSelectedSlot({ date: currentDate, time: timeStr });
-      setShowSlotActionModal(true);
-    }
-  };
-
-  const openEditBooking = (booking) => {
-    setEditingBookingId(booking.id);
-    setNewBooking({
-      clientName: booking.clientName || '',
-      clientPhone: booking.clientPhone || '',
-      clientEmail: booking.clientEmail || '',
-      serviceName: booking.serviceName || booking.service?.name || '',
-      servicePrice: booking.servicePrice || booking.service?.price || 150,
-      duration: booking.duration || 60,
-      date: booking.date || '',
-      time: booking.time || '',
-      notes: booking.notes || ''
-    });
-    setSelectedBooking(null);
-    setShowAddBookingModal(true);
-  };
-
-  const logPrepaymentTransaction = async (bookingId, payload, amount) => {
-    if (amount <= 0) return;
-    const tx = {
-      bookingId: bookingId,
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      clientName: payload.clientName,
-      clientPhone: payload.clientPhone || '',
-      type: 'entrada',
-      paymentMethod: 'Pix',
-      value: amount,
-      description: `Adiantamento/Sinal: ${payload.service?.name || payload.serviceName || 'Serviço'} - ${payload.clientName}`,
-      professionalId: payload.profissional || 'jon',
-      createdAt: new Date().toISOString()
-    };
-
-    if (isDemoMode) {
-      const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
-      const currentTx = localTx ? JSON.parse(localTx) : [];
-      const newTx = { id: 'tx_' + Date.now(), ...tx };
-      const updatedTxList = [newTx, ...currentTx];
-      localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
-      localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
-      setTransactions(updatedTxList);
-    } else {
-      await addDoc(collection(db, 'financial_transactions'), tx);
-    }
-  };
-
-  const submitBooking = async (e) => {
-    if (e) e.preventDefault();
-    const activeDuration = newBooking.duration || (services[0]?.duration || 60);
-    const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
-    const payload = {
-      clientName: newBooking.clientName,
-      clientPhone: cleanPhone,
-      clientEmail: newBooking.clientEmail,
-      duration: activeDuration,
-      service: {
-        name: newBooking.serviceName || services[0]?.name || 'Corte com o Jon',
-        price: Number(newBooking.servicePrice) || (services[0]?.promoPrice || services[0]?.price || 150),
-        duration: activeDuration
-      },
-      servicePrice: Number(newBooking.servicePrice) || (services[0]?.promoPrice || services[0]?.price || 150),
-      prepayment: Number(newBooking.prepayment) || 0,
-      date: newBooking.date,
-      time: newBooking.time,
-      notes: newBooking.notes,
-      status: 'confirmado',
-      createdAt: new Date().toISOString()
-    };
-
-    const isEditing = !!editingBookingId;
-    try {
-      if (editingBookingId) {
-        const oldBooking = bookings.find(b => b.id === editingBookingId);
-        const oldPrepayment = oldBooking ? (Number(oldBooking.prepayment) || 0) : 0;
-        const newPrepayment = Number(newBooking.prepayment) || 0;
-
-        if (isDemoMode) {
-          const local = bookings.map(b => b.id === editingBookingId ? { ...b, ...payload } : b);
-          setBookings(local);
-          localStorage.setItem('demo_bookings', JSON.stringify(local));
-        } else {
-          const apptRef = doc(db, 'bookings', editingBookingId);
-          await updateDoc(apptRef, payload);
-          syncBookingToGoogle(editingBookingId).catch(err => console.warn(err));
-        }
-
-        if (newPrepayment > oldPrepayment) {
-          await logPrepaymentTransaction(editingBookingId, payload, newPrepayment - oldPrepayment);
-        }
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    if (translateX !== 0) {
+      const threshold = 60;
+      if (translateX > threshold) {
+        animateDayChange(-1);
+      } else if (translateX < -threshold) {
+        animateDayChange(1);
       } else {
-        if (isDemoMode) {
-          const generatedId = 'demo-' + Date.now();
-          const local = [...bookings, { id: generatedId, ...payload }];
-          setBookings(local);
-          localStorage.setItem('demo_bookings', JSON.stringify(local));
-          await logPrepaymentTransaction(generatedId, payload, payload.prepayment);
-        } else {
-          const docRef = await addDoc(collection(db, 'bookings'), payload);
-          await logPrepaymentTransaction(docRef.id, payload, payload.prepayment);
-          syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
-        }
+        setSlideStyle({
+          transform: 'translateX(0)',
+          transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+        setTimeout(() => {
+          setTranslateX(0);
+          setSlideStyle({});
+        }, 200);
       }
-
-      // Auto-cadastro de cliente mobile
-      if (cleanPhone) {
-        const exists = clients.some(c => c.phone === cleanPhone || c.id === cleanPhone);
-        if (!exists) {
-          const profilePayload = {
-            name: newBooking.clientName,
-            phone: cleanPhone,
-            email: newBooking.clientEmail || 'Não informado',
-            curvatura: '3A',
-            porosidade: 'Média',
-            elasticidade: 'Normal',
-            quimicas: 'Nenhuma',
-            produtosRecomendados: '',
-            observacoes: 'Cadastrado automaticamente via agendamento mobile',
-            sexo: 'Feminino',
-            birthdate: '',
-            createdAt: new Date().toISOString()
-          };
-
-          if (isDemoMode) {
-            const local = [...clients, { id: cleanPhone, ...profilePayload }];
-            setClients(local);
-            localStorage.setItem('demo_client_profiles', JSON.stringify(local));
-          } else {
-            try {
-              const clientRef = doc(db, 'client_profiles', cleanPhone);
-              const clientSnap = await getDoc(clientRef);
-              if (!clientSnap.exists()) {
-                await setDoc(clientRef, profilePayload);
-              }
-            } catch (profileErr) {
-              console.warn('Erro ao auto-cadastrar cliente no Firestore (Mobile):', profileErr);
-            }
-          }
-        }
-      }
-
-      // Enviar e-mail de confirmação ou atualização de agendamento manual
-      if (payload.clientEmail && payload.clientEmail.includes('@')) {
-        try {
-          const displayDate = payload.date.split('-').reverse().join('/');
-          await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: isEditing ? 'agendamento_editado' : 'horario_confirmado',
-              id: isEditing ? editingBookingId : undefined,
-              clientEmail: payload.clientEmail,
-              clientName: payload.clientName,
-              serviceName: payload.service?.name || 'Serviço',
-              date: displayDate,
-              time: payload.time,
-              duration: payload.duration || 60,
-              professionalName: 'Jon'
-            })
-          });
-        } catch (err) {
-          console.warn('Falha ao enviar email de confirmação/edição no cadastro manual', err);
-        }
-      }
-
-      setShowAddBookingModal(false);
-      resetBookingForm();
-      const isEdit = !!editingBookingId;
-      setEditingBookingId(null);
-      alert(isEdit ? 'Agendamento atualizado com sucesso!' : 'Agendamento confirmado!');
-    } catch (err) {
-      alert('Erro ao registrar agendamento.');
     }
+    setTouchStart(null);
   };
 
-  const submitBlock = async (e) => {
-    if (e) e.preventDefault();
-
-    // Gerar todos os slots de hora cheia entre início e fim
-    const ALL_HOUR_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
-    const startTime = newBooking.time || '08:00';
-    const endTime = blockEndTime || startTime;
-    const slotsToBlock = ALL_HOUR_SLOTS.filter(slot => slot >= startTime && slot <= endTime);
-    if (slotsToBlock.length === 0) slotsToBlock.push(startTime);
-
-    const basePayload = {
-      clientName: 'Horário Bloqueado',
-      clientPhone: '00000000000',
-      clientEmail: '',
-      service: { name: 'Bloqueio Administrativo', price: 0 },
-      date: newBooking.date,
-      notes: blockMotive,
-      status: 'bloqueado',
-      professionalId: 'jon',
-      createdAt: new Date().toISOString()
-    };
-
-    try {
-      if (isDemoMode) {
-        const newEntries = slotsToBlock.map((slot, i) => ({
-          id: 'demo-block-' + Date.now() + '-' + i,
-          ...basePayload,
-          time: slot
-        }));
-        const local = [...bookings, ...newEntries];
-        setBookings(local);
-        localStorage.setItem('demo_bookings', JSON.stringify(local));
-      } else {
-        await Promise.all(slotsToBlock.map(slot =>
-          addDoc(collection(db, 'bookings'), { ...basePayload, time: slot }).then(docRef => {
-            syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
-            return docRef;
-          })
-        ));
-      }
-      setShowBlockModal(false);
-      setShowAddBookingModal(false);
-      setBlockEndTime('');
-      resetBookingForm();
-    } catch (err) {
-      alert('Erro ao bloquear horário. Tente novamente.');
-      console.error(err);
-    }
-  };
-
-  const resetBookingForm = () => {
-    setNewBooking({
-      clientName: '',
-      clientPhone: '',
-      clientEmail: '',
-      serviceName: services[0]?.name || '',
-      servicePrice: services[0]?.promoPrice || services[0]?.price || 150,
-      duration: services[0]?.duration || 60,
-      date: currentDate,
-      time: '09:00',
-      notes: ''
-    });
-  };
-
-  const handleImportContact = async () => {
-    const isSupported = navigator.contacts && typeof navigator.contacts.select === 'function';
-    if (!isSupported) {
-      alert('Seu dispositivo ou navegador não suporta a importação automática de contatos.\n\nPara usar este recurso no Android, certifique-se de estar usando o Chrome ou um navegador baseado em Chromium e de que o site está rodando em ambiente seguro (HTTPS). No iOS (Safari/Chrome), este recurso nativo não está disponível na plataforma web.');
-      return;
-    }
-    try {
-      const props = ['name', 'tel'];
-      const opts = { multiple: false };
-      const contacts = await navigator.contacts.select(props, opts);
-      if (contacts && contacts.length > 0) {
-        const c = contacts[0];
-        const name = c.name && c.name.length > 0 ? c.name[0] : '';
-        const phone = c.tel && c.tel.length > 0 ? c.tel[0].replace(/\D/g, '') : '';
-        setNewClient(prev => ({ ...prev, name, phone }));
-      }
-    } catch (err) {
-      console.error('Erro ao importar contato:', err);
-    }
-  };
-
-  // 5. Cadastrar Novo Cliente
-  const submitClient = async (e) => {
-    e.preventDefault();
-    const cleanPhone = newClient.phone.replace(/\D/g, '');
-    const payload = {
-      name: newClient.name.trim(),
-      phone: cleanPhone,
-      email: newClient.email || 'Não informado',
-      curvatura: newClient.curvatura || '3A',
-      porosidade: 'Média',
-      elasticidade: 'Normal',
-      quimicas: 'Nenhuma',
-      produtosRecomendados: '',
-      observacoes: newClient.observacoes || '',
-      sexo: 'Feminino',
-      birthdate: newClient.birthdate || '',
-      createdAt: new Date().toISOString()
-    };
-
-    try {
-      if (isDemoMode) {
-        const local = [...clients, { id: cleanPhone, ...payload }];
-        setClients(local);
-        localStorage.setItem('demo_client_profiles', JSON.stringify(local));
-      } else {
-        await setDoc(doc(db, 'client_profiles', cleanPhone), payload);
-        // Atualiza a lista local de clientes para que o novo cliente apareça imediatamente
-        setClients(prev => [...prev.filter(c => c.phone !== cleanPhone), payload]);
-      }
-
-      // Auto-preenche o formulário de agendamento com os dados do cliente recém-criado
-      if (showAddBookingModal) {
-        setNewBooking(prev => ({
-          ...prev,
-          clientName: payload.name,
-          clientPhone: payload.phone,
-          clientEmail: payload.email === 'Não informado' ? '' : payload.email
-        }));
-      }
-
-      setShowAddClientModal(false);
-      setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '', birthdate: '' });
-      alert('Cliente cadastrado com sucesso!');
-    } catch (e) {
-      console.error('Erro ao cadastrar cliente:', e);
-      alert('Falha ao cadastrar cliente.');
-    }
-  };
-
-  // 6. Fechamento de Comanda (Checkout)
+  // ── Checkout helpers ───────────────────────────────────────────
   const openCheckout = (booking) => {
     setCheckoutBooking(booking);
-    setSelectedBooking(null);
-    setSelectedProducts([]);
-    setSelectedExtraServices([]);
-    setDiscount(0);
-    setSellingPackageId('');
-    setUsingClientPackageId('');
-    setShowCheckoutModal(true);
-  };
-
-  const submitCheckout = async () => {
-    if (!checkoutBooking) return;
-    const baseServicePrice = usingClientPackageId 
-      ? 0 
-      : (sellingPackageId 
-          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
-          : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150)
-        );
-    const extrasTotal = selectedExtraServices.reduce((acc, s) => acc + s.price, 0);
-    const productsTotal = selectedProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
-    const prepay = checkoutBooking.prepayment ? Number(checkoutBooking.prepayment) : 0;
-    const value = Math.max(0, baseServicePrice + extrasTotal + productsTotal - discount - prepay);
     
-    let description = sellingPackageId 
-      ? `Compra de Pacote: ${packages.find(p => p.id === sellingPackageId)?.name || 'Pacote'}`
-      : (checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço Base');
-    
-    if (selectedExtraServices.length > 0) {
-      description += ` + Extras: ${selectedExtraServices.map(s => s.name).join(', ')}`;
-    }
-    if (selectedProducts.length > 0) {
-      description += ` + ${selectedProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
-    }
-    if (discount > 0) {
-      description += ` (Desconto: R$ ${discount})`;
-    }
-    if (prepay > 0) {
-      description += ` (Sinal/Adiantamento: -R$ ${prepay})`;
-    }
- 
-    const baseMethodLabel = usingClientPackageId 
-      ? `Pacote (Débito)` 
-      : (paymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${installments})` : paymentMethod);
- 
-    const payloadTx = {
-      bookingId: checkoutBooking.id,
-      date: checkoutBooking.date || new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      clientName: checkoutBooking.clientName,
-      clientPhone: checkoutBooking.clientPhone || '',
-      type: 'entrada',
-      paymentMethod: baseMethodLabel,
-      discount: discount,
-      value: Number(value),
-      description,
-      professionalId: checkoutBooking.profissional || 'jon',
-      // Include products breakdown to track costs
-      productSales: selectedProducts.map(p => {
-        const match = inventory.find(prod => prod.id === p.id);
-        return {
-          productId: p.id,
+    if (booking.status === 'finalizado') {
+      const tx = transactions.find(t => t.bookingId === booking.id);
+      if (tx) {
+        setDiscount(tx.discount || 0);
+        
+        let method = 'Pix';
+        let inst = 'À vista';
+        let anticip = false;
+        if (tx.paymentMethod) {
+          let pm = tx.paymentMethod;
+          if (pm.includes('(Antecipado)')) {
+            anticip = true;
+            pm = pm.replace(' (Antecipado)', '').trim();
+          }
+          if (pm.startsWith('Cartão de Crédito')) {
+            method = 'Cartão de Crédito';
+            const match = pm.match(/\(([^)]+)\)/);
+            if (match) {
+              inst = match[1];
+            }
+          } else {
+            method = pm;
+          }
+        }
+        setPaymentMethod(method);
+        setInstallments(inst);
+        setApplyAnticipation(anticip);
+        
+        setSelectedProducts((tx.productSales || []).map(p => ({
+          id: p.productId,
           name: p.name,
-          quantity: p.qty,
           sellingPrice: p.sellingPrice,
-          costPrice: match ? (match.costPrice || 0) : 0
-        };
-      }),
-      createdAt: new Date().toISOString()
-    };
- 
-    // Calculate service cost
-    const mainService = services.find(s => s.name === (checkoutBooking.service?.name || checkoutBooking.serviceName));
-    const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
-    const extraServicesCost = selectedExtraServices.reduce((sum, item) => {
-      const match = services.find(s => s.name === item.name);
-      return sum + (match ? (Number(match.cost) || 0) : 0);
-    }, 0);
-    const totalServiceCost = mainServiceCost + extraServicesCost;
-    const serviceId = mainService ? mainService.id : '';
+          qty: p.quantity
+        })));
 
-    try {
-      // 1. Process Packages (Sale or Debit)
-      if (sellingPackageId) {
-        const pkgTemplate = packages.find(p => p.id === sellingPackageId);
-        const initialBalance = {};
-        if (pkgTemplate && pkgTemplate.services) {
-          pkgTemplate.services.forEach(s => {
-            initialBalance[s.serviceId] = s.sessions;
+        const loadedExtra = [];
+        if (tx.extraServices) {
+          loadedExtra.push(...tx.extraServices);
+        } else if (tx.description) {
+          const escapeRegExp = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          services.forEach(svc => {
+            if (svc.id === booking.serviceId || svc.name === booking.serviceName || svc.name === booking.service?.name) return;
+            const regex = new RegExp(`(\\d+)x\\s+${escapeRegExp(svc.name)}`);
+            const match = tx.description.match(regex);
+            if (match) {
+              loadedExtra.push({
+                id: svc.id,
+                name: svc.name,
+                price: svc.promoPrice || svc.price || 0,
+                qty: parseInt(match[1], 10)
+              });
+            } else if (tx.description.includes(svc.name)) {
+              loadedExtra.push({
+                id: svc.id,
+                name: svc.name,
+                price: svc.promoPrice || svc.price || 0,
+                qty: 1
+              });
+            }
           });
         }
-        if (serviceId && initialBalance[serviceId] !== undefined) {
-          initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
-        }
-
-        const clientPackagePayload = {
-          clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-          clientName: checkoutBooking.clientName,
-          clientPhone: checkoutBooking.clientPhone || '',
-          packageId: sellingPackageId,
-          packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
-          pricePaid: pkgTemplate ? pkgTemplate.price : 0,
-          paymentMethod: baseMethodLabel,
-          datePurchased: checkoutBooking.date || new Date().toISOString().split('T')[0],
-          status: 'active',
-          balance: initialBalance,
-          usage: [
-            {
-              bookingId: checkoutBooking.id,
-              dateUsed: checkoutBooking.date || new Date().toISOString().split('T')[0],
-              serviceId
-            }
-          ]
-        };
-
-        if (isDemoMode) {
-          const local = localStorage.getItem('demo_client_packages');
-          const current = local ? JSON.parse(local) : [];
-          const newCp = { id: 'cp_' + Date.now(), ...clientPackagePayload };
-          const updatedCp = [newCp, ...current];
-          localStorage.setItem('demo_client_packages', JSON.stringify(updatedCp));
-          setClientPackages(updatedCp);
-        } else {
-          await addDoc(collection(db, 'client_packages'), clientPackagePayload);
-        }
-      }
-
-      if (usingClientPackageId) {
-        if (isDemoMode) {
-          const local = localStorage.getItem('demo_client_packages');
-          if (local) {
-            const arr = JSON.parse(local);
-            const updated = arr.map(cp => {
-              if (cp.id === usingClientPackageId) {
-                const newBalance = { ...cp.balance };
-                if (newBalance[serviceId] !== undefined) {
-                  newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
-                }
-                const isFinished = Object.values(newBalance).every(val => val === 0);
-                return {
-                  ...cp,
-                  balance: newBalance,
-                  status: isFinished ? 'finished' : 'active',
-                  usage: [...(cp.usage || []), {
-                    bookingId: checkoutBooking.id,
-                    dateUsed: checkoutBooking.date || new Date().toISOString().split('T')[0],
-                    serviceId
-                  }]
-                };
-              }
-              return cp;
-            });
-            localStorage.setItem('demo_client_packages', JSON.stringify(updated));
-            setClientPackages(updated);
-          }
-        } else {
-          const cpRef = doc(db, 'client_packages', usingClientPackageId);
-          const cpSnap = await getDoc(cpRef);
-          if (cpSnap.exists()) {
-            const cpData = cpSnap.data();
-            const newBalance = { ...cpData.balance };
-            if (newBalance[serviceId] !== undefined) {
-              newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
-            }
-            const isFinished = Object.values(newBalance).every(val => val === 0);
-            const newUsage = [...(cpData.usage || []), {
-              bookingId: checkoutBooking.id,
-              dateUsed: checkoutBooking.date || new Date().toISOString().split('T')[0],
-              serviceId
-            }];
-            await updateDoc(cpRef, {
-              balance: newBalance,
-              status: isFinished ? 'finished' : 'active',
-              usage: newUsage
-            });
-          }
-        }
-      }
-
-      if (isDemoMode) {
-        // Atualiza booking
-        const updatedB = bookings.map(b => b.id === checkoutBooking.id ? { 
-          ...b, 
-          status: 'finalizado',
-          isPackageUse: !!usingClientPackageId,
-          isPackageAcquisition: !!sellingPackageId,
-          packageUsedId: usingClientPackageId || null,
-          packageSoldId: sellingPackageId || null
-        } : b);
-        setBookings(updatedB);
-        localStorage.setItem('demo_bookings', JSON.stringify(updatedB));
-        
-        // Adiciona tx
-        const newTx = { id: 'tx_' + Date.now(), ...payloadTx };
-        let updatedTx = [newTx, ...transactions];
-
-        if (totalServiceCost > 0) {
-          const serviceCostTx = {
-            id: 'tx_cost_' + Date.now(),
-            bookingId: checkoutBooking.id,
-            date: checkoutBooking.date || new Date().toISOString().split('T')[0],
-            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            clientName: checkoutBooking.clientName,
-            clientPhone: checkoutBooking.clientPhone || '',
-            type: 'saida',
-            paymentMethod: usingClientPackageId ? 'Pacote (Débito)' : paymentMethod,
-            value: totalServiceCost,
-            description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}`,
-            professionalId: checkoutBooking.profissional || 'jon',
-            createdAt: new Date().toISOString()
-          };
-          updatedTx = [serviceCostTx, ...updatedTx];
-        }
-
-        setTransactions(updatedTx);
-        localStorage.setItem('demo_financial', JSON.stringify(updatedTx));
-        localStorage.setItem('demo_transactions', JSON.stringify(updatedTx));
-        
-        // Atualiza estoque
-        const updatedInv = inventory.map(item => {
-          const sold = selectedProducts.find(p => p.id === item.id);
-          if (sold) return { ...item, quantity: Math.max(0, item.quantity - sold.qty) };
-          return item;
-        });
-        setInventory(updatedInv);
-        localStorage.setItem('demo_inventory', JSON.stringify(updatedInv));
+        setSelectedServices(loadedExtra);
       } else {
-        const apptRef = doc(db, 'bookings', checkoutBooking.id);
-        await updateDoc(apptRef, { 
-          status: 'finalizado',
-          isPackageUse: !!usingClientPackageId,
-          isPackageAcquisition: !!sellingPackageId,
-          packageUsedId: usingClientPackageId || null,
-          packageSoldId: sellingPackageId || null
-        });
-        syncBookingToGoogle(checkoutBooking.id).catch(err => console.warn(err));
-        await addDoc(collection(db, 'financial_transactions'), payloadTx);
+        setPaymentMethod('Pix');
+        setInstallments('À vista');
+        setApplyAnticipation(false);
+        setSelectedProducts([]);
+        setSelectedServices([]);
+        setDiscount(0);
+      }
+      setOverrideBasePrice(booking.servicePrice !== undefined ? booking.servicePrice : null);
+    } else {
+      setPaymentMethod('Pix');
+      setInstallments('À vista');
+      setApplyAnticipation(false);
+      setSelectedProducts([]);
+      setSelectedServices([]);
+      setDiscount(0);
+      setOverrideBasePrice(null);
+    }
+    
+    setProductSearch('');
+    setServiceSearch('');
+    setRequestReview(booking.status !== 'finalizado');
+    setShowBookingSheet(false);
+    setShowCheckoutSheet(true);
+  };
 
-        if (totalServiceCost > 0) {
-          const serviceCostTx = {
-            bookingId: checkoutBooking.id,
-            date: checkoutBooking.date || new Date().toISOString().split('T')[0],
-            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            clientName: checkoutBooking.clientName,
-            clientPhone: checkoutBooking.clientPhone || '',
-            type: 'saida',
-            paymentMethod: usingClientPackageId ? 'Pacote (Débito)' : paymentMethod,
-            value: totalServiceCost,
-            description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}`,
-            professionalId: checkoutBooking.profissional || 'jon',
-            createdAt: new Date().toISOString()
+  const getCheckoutTotal = () => {
+    if (!checkoutBooking) return 0;
+    const base = overrideBasePrice !== null
+      ? overrideBasePrice
+      : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
+    const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
+    const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
+    const prepay = Number(checkoutBooking.prepayment || 0);
+    return Math.max(0, base + extraServices + prods - discount - prepay);
+  };
+
+  const addProductToCheckout = (prod) => {
+    setSelectedProducts(prev => {
+      const existing = prev.find(p => p.id === prod.id);
+      if (existing) return prev.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p);
+      return [...prev, { ...prod, qty: 1 }];
+    });
+    setProductSearch('');
+  };
+
+  const changeProductQty = (prodId, delta) => {
+    setSelectedProducts(prev => prev.map(p => p.id === prodId ? { ...p, qty: Math.max(0, p.qty + delta) } : p).filter(p => p.qty > 0));
+  };
+
+  const addServiceToCheckout = (svc) => {
+    setSelectedServices(prev => {
+      const existing = prev.find(s => s.id === svc.id);
+      if (existing) return prev.map(s => s.id === svc.id ? { ...s, qty: s.qty + 1 } : s);
+      return [...prev, { id: svc.id, name: svc.name, price: svc.promoPrice || svc.price || 0, qty: 1 }];
+    });
+    setServiceSearch('');
+  };
+
+  const changeServiceQty = (svcId, delta) => {
+    setSelectedServices(prev => prev.map(s => s.id === svcId ? { ...s, qty: Math.max(0, s.qty + delta) } : s).filter(s => s.qty > 0));
+  };
+
+  const finalizeCheckout = async () => {
+    if (!checkoutBooking) return;
+    setIsFinalizingCheckout(true);
+    try {
+      const total = getCheckoutTotal();
+      const baseMethodLabel = paymentMethod === 'Cartão de Crédito' 
+        ? `Cartão de Crédito (${installments})` 
+        : paymentMethod;
+      const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+
+      const itemsDescription = [
+        checkoutBooking.service?.name || checkoutBooking.serviceName,
+        ...selectedServices.map(s => `${s.qty}x ${s.name}`),
+        ...selectedProducts.map(p => `${p.qty}x ${p.name}`)
+      ].filter(Boolean).join(', ');
+
+      const prepay = Number(checkoutBooking.prepayment || 0);
+      const finalBasePrice = overrideBasePrice !== null
+        ? overrideBasePrice
+        : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
+
+      // Save transaction
+      const txData = {
+        type: 'entrada',
+        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
+        value: total,
+        paymentMethod: methodLabel,
+        discount: discount,
+        date: checkoutBooking.date || today(),
+        bookingId: checkoutBooking.id,
+        productSales: selectedProducts.map(p => {
+          const match = inventory.find(prod => prod.id === p.id);
+          return {
+            productId: p.id,
+            name: p.name,
+            quantity: p.qty,
+            sellingPrice: p.sellingPrice,
+            costPrice: match ? (match.costPrice || 0) : 0
           };
-          await addDoc(collection(db, 'financial_transactions'), serviceCostTx);
+        }),
+        extraServices: selectedServices.map(s => ({
+          id: s.id,
+          name: s.name,
+          price: s.price,
+          qty: s.qty
+        })),
+        createdAt: new Date().toISOString()
+      };
+
+      if (db) {
+        const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id);
+        if (bookingTx) {
+          // Revert old product inventory adjustments
+          if (bookingTx.productSales) {
+            for (const oldP of bookingTx.productSales) {
+              const prodRef = doc(db, 'products', oldP.productId);
+              const snap = await getDoc(prodRef);
+              if (snap.exists()) {
+                const cur = snap.data().quantity || 0;
+                await updateDoc(prodRef, { quantity: cur + oldP.quantity });
+              }
+            }
+          }
+          await updateDoc(doc(db, 'financial_transactions', bookingTx.id), txData);
+        } else {
+          await addDoc(collection(db, 'financial_transactions'), txData);
         }
-        
-        // Baixa no estoque
-        for (const prod of selectedProducts) {
-          const invRef = doc(db, 'products', prod.id);
-          const currentItem = inventory.find(i => i.id === prod.id);
-          if (currentItem) {
-            await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
+
+        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { 
+          status: 'finalizado', 
+          paymentMethod: methodLabel, 
+          finalValue: total, 
+          servicePrice: finalBasePrice 
+        });
+
+        // Apply new product inventory adjustments
+        for (const p of selectedProducts) {
+          const prodRef = doc(db, 'products', p.id);
+          const snap = await getDoc(prodRef);
+          if (snap.exists()) {
+            const cur = snap.data().quantity || 0;
+            await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
           }
         }
       }
-      setShowCheckoutModal(false);
+      if (requestReview) {
+        sendFeedbackWhatsApp(checkoutBooking).catch(err => console.error(err));
+      }
+      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice } : b));
+      
+      const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id);
+      if (bookingTx) {
+        setTransactions(prev => prev.map(t => t.id === bookingTx.id ? { ...t, ...txData } : t));
+      } else {
+        setTransactions(prev => [{ id: Date.now().toString(), ...txData }, ...prev]);
+      }
+      
+      setShowCheckoutSheet(false);
       setCheckoutBooking(null);
-      setSelectedProducts([]);
-      setActiveTab('inicio');
-      alert('Comanda fechada com sucesso! Receita, despesa de custo de serviço e baixa no estoque registradas.');
-    } catch (e) {
-      alert('Erro ao fechar comanda.');
+      showToast(bookingTx ? 'Comanda atualizada com sucesso!' : 'Comanda fechada com sucesso!', 'success');
+    } catch (err) {
+      showToast('Erro ao fechar comanda: ' + err.message, 'error');
+    } finally {
+      setIsFinalizingCheckout(false);
     }
   };
 
-  // Venda Avulsa de Produtos
-  const submitDirectSale = async (e) => {
-    if (e) e.preventDefault();
-    if (directSaleProducts.length === 0) {
-      alert('Selecione pelo menos um produto para dar baixa.');
+  const triggerEmailNotification = async (payload, type = 'horario_confirmado') => {
+    if (!payload.clientEmail) return;
+    try {
+      let displayDate = payload.date;
+      if (displayDate && displayDate.includes('-')) {
+        displayDate = displayDate.split('-').reverse().join('/');
+      }
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: type,
+          id: payload.id,
+          clientEmail: payload.clientEmail,
+          clientName: payload.clientName,
+          serviceName: payload.serviceName || payload.service?.name || 'Serviço',
+          date: displayDate,
+          rawDate: payload.date,
+          time: payload.time,
+          duration: payload.duration || payload.service?.duration || 60,
+          notes: payload.notes || '',
+          professionalName: 'Jon',
+          price: payload.servicePrice ?? payload.price ?? null
+        }),
+      });
+      const data = await response.json();
+      console.log('Mobile Email API response:', data);
+    } catch (err) {
+      console.error(`Failed to send email notification (${type}):`, err);
+    }
+  };
+
+  // ── New Booking ────────────────────────────────────────────────
+  // Verifica se um intervalo [time, time+duration) colide com agendamento/bloqueio
+  // existente no mesmo dia (ignora cancelados). Evita horários duplicados.
+  const bookingOverlaps = (dateStr, time, duration, excludeId = null) => {
+    const slotStart = timeToMin(time);
+    const slotEnd = slotStart + (Number(duration) || 60);
+    return bookings.some(b => {
+      if (excludeId && b.id === excludeId) return false;
+      if (b.date !== dateStr) return false;
+      if (b.status === 'cancelado') return false;
+      const bStart = timeToMin(b.time);
+      const bEnd = bStart + (Number(b.duration) || 60);
+      return Math.max(bStart, slotStart) < Math.min(bEnd, slotEnd);
+    });
+  };
+
+  const addBooking = async () => {
+    if (!nbForm.clientName || !nbForm.serviceName) { showToast('Preencha cliente e serviço', 'error'); return; }
+    const svc = services.find(s => s.name === nbForm.serviceName);
+    const prepay = Number(nbForm.prepayment || 0);
+    const price = nbForm.servicePrice !== '' ? Number(nbForm.servicePrice) : (svc?.promoPrice || svc?.price || 0);
+
+    // Duração ocupa pelo menos 1h, conforme o tempo do serviço (ex: 4h = 240min)
+    const duration = Math.max(60, Number(svc?.duration) || 60);
+
+    // Evita horários duplicados: bloqueia se sobrepõe agendamento/bloqueio existente
+    if (bookingOverlaps(nbForm.date, nbForm.time, duration)) {
+      showToast('Conflito: já existe agendamento neste intervalo', 'error');
       return;
     }
 
-    const productsTotal = directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0);
-    const costTotal = directSaleProducts.reduce((acc, p) => {
-      const match = inventory.find(prod => prod.id === p.id);
-      const cost = match ? (match.costPrice || 0) : 0;
-      return acc + (cost * p.qty);
-    }, 0);
+    let clientEmail = '';
 
-    const value = isDirectSaleSalonUse ? costTotal : Math.max(0, productsTotal - directSaleDiscount);
-    const clientName = isDirectSaleSalonUse ? 'Uso do Salão' : (directSaleClient.trim() || 'Cliente Avulso');
-
-    let description = isDirectSaleSalonUse 
-      ? `Uso do Salão (Baixa de Produto): ${directSaleProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`
-      : `Venda Avulsa de Produto: ${directSaleProducts.map(p => `${p.qty}x ${p.name}`).join(', ')}`;
-    if (!isDirectSaleSalonUse && directSaleDiscount > 0) {
-      description += ` (Desconto: R$ ${directSaleDiscount})`;
+    if (nbRegisterClient) {
+      if (!nbForm.clientPhone) {
+        showToast('Telefone é obrigatório para cadastrar o cliente', 'error');
+        return;
+      }
+      const cleanPhone = nbForm.clientPhone.replace(/\D/g, '');
+      const newClientData = {
+        name: nbForm.clientName,
+        phone: cleanPhone,
+        email: nbForm.clientEmail || 'Não informado',
+        curvatura: nbForm.clientCurvatura || '3A',
+        observacoes: nbForm.clientNotes || '',
+        createdAt: new Date().toISOString()
+      };
+      try {
+        if (db) {
+          const docRef = doc(db, 'client_profiles', cleanPhone);
+          await setDoc(docRef, newClientData);
+          setClients(prev => {
+            const list = prev.filter(c => c.phone !== cleanPhone);
+            return [{ id: cleanPhone, ...newClientData }, ...list];
+          });
+        } else {
+          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+          localClients.push(newClientData);
+          localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+          setClients(prev => [{ id: cleanPhone, ...newClientData }, ...prev]);
+        }
+        clientEmail = newClientData.email;
+        showToast('Cliente cadastrado com sucesso!', 'success');
+      } catch (err) {
+        showToast('Erro ao cadastrar cliente: ' + err.message, 'error');
+        return;
+      }
+    } else {
+      const cleanPhone = (nbForm.clientPhone || '').replace(/\D/g, '');
+      const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+      clientEmail = matchedClient?.email || '';
     }
 
-    const payloadTx = {
-      bookingId: 'venda_avulsa_' + Date.now(),
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      clientName,
-      clientPhone: '',
-      type: isDirectSaleSalonUse ? 'saida' : 'entrada',
-      paymentMethod: isDirectSaleSalonUse ? 'Consumo' : (directSalePaymentMethod === 'Cartão de Crédito' ? `Cartão de Crédito (${directSaleInstallments})` : directSalePaymentMethod),
-      discount: isDirectSaleSalonUse ? 0 : directSaleDiscount,
-      value: Number(value),
-      description,
-      professionalId: 'jon',
-      isProductSale: true,
-      productSales: directSaleProducts.map(p => {
-        const match = inventory.find(prod => prod.id === p.id);
-        return {
-          productId: p.id,
-          name: p.name,
-          quantity: p.qty,
-          sellingPrice: isDirectSaleSalonUse ? (match ? (match.costPrice || 0) : 0) : p.sellingPrice,
-          costPrice: match ? (match.costPrice || 0) : 0
-        };
-      }),
+    const data = {
+      clientName: nbForm.clientName,
+      clientPhone: nbForm.clientPhone || '',
+      clientEmail: clientEmail,
+      service: svc || { name: nbForm.serviceName },
+      serviceName: nbForm.serviceName,
+      servicePrice: price,
+      date: nbForm.date,
+      time: nbForm.time,
+      duration: duration,
+      notes: nbForm.notes || '',
+      status: 'confirmado',
+      prepayment: prepay,
       createdAt: new Date().toISOString()
+    };
+    try {
+      if (db) {
+        const ref = await addDoc(collection(db, 'bookings'), data);
+        setBookings(prev => [...prev, { id: ref.id, ...data }]);
+        try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
+
+        if (clientEmail && clientEmail !== 'Não informado' && clientEmail.includes('@')) {
+          triggerEmailNotification({ ...data, id: ref.id });
+        }
+
+        // Log prepayment transaction if > 0
+        if (prepay > 0) {
+          const tx = {
+            bookingId: ref.id,
+            date: dateStr(new Date()),
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: nbForm.clientName,
+            clientPhone: nbForm.clientPhone || '',
+            type: 'entrada',
+            paymentMethod: 'Pix',
+            value: prepay,
+            description: `Adiantamento/Sinal: ${nbForm.serviceName} - ${nbForm.clientName}`,
+            professionalId: 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), tx);
+          setTransactions(prev => [{ id: Date.now().toString(), ...tx }, ...prev]);
+        }
+      } else {
+        const fakeId = 'demo-bk-' + Date.now();
+        setBookings(prev => [...prev, { id: fakeId, ...data }]);
+      }
+      setShowNewBookingSheet(false);
+      setNbRegisterClient(false);
+      setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+      setTab('hoje');
+      showToast('Agendamento criado!', 'success');
+    } catch (err) {
+      showToast('Erro: ' + err.message, 'error');
+    }
+  };
+
+  // ── Edit Booking / Reschedule ──────────────────────────────────
+  const updateBooking = async () => {
+    if (!editBookingForm.clientName || !editBookingForm.serviceName) {
+      showToast('Preencha cliente e serviço', 'error');
+      return;
+    }
+    const svc = services.find(s => s.name === editBookingForm.serviceName);
+    const oldB = bookings.find(b => b.id === editBookingForm.id);
+    const oldPrepayment = oldB ? (Number(oldB.prepayment) || 0) : 0;
+    const newPrepayment = Number(editBookingForm.prepayment || 0);
+
+    // Duração ocupa pelo menos 1h, conforme o tempo do serviço
+    const duration = Math.max(60, Number(svc?.duration) || Number(oldB?.duration) || 60);
+
+    // Evita horários duplicados ao reagendar (ignora o próprio agendamento)
+    if (bookingOverlaps(editBookingForm.date, editBookingForm.time, duration, editBookingForm.id)) {
+      showToast('Conflito: já existe agendamento neste intervalo', 'error');
+      return;
+    }
+
+    const data = {
+      clientName: editBookingForm.clientName,
+      clientPhone: editBookingForm.clientPhone || '',
+      service: svc || { name: editBookingForm.serviceName },
+      serviceName: editBookingForm.serviceName,
+      servicePrice: editBookingForm.servicePrice !== '' ? Number(editBookingForm.servicePrice) : (svc?.promoPrice || svc?.price || 0),
+      date: editBookingForm.date,
+      time: editBookingForm.time,
+      duration: duration,
+      notes: editBookingForm.notes || '',
+      status: editBookingForm.status,
+      prepayment: newPrepayment
     };
 
     try {
-      if (isDemoMode) {
-        // Adiciona tx
-        const updatedTx = [{ id: 'tx_' + Date.now(), ...payloadTx }, ...transactions];
-        setTransactions(updatedTx);
-        localStorage.setItem('demo_financial', JSON.stringify(updatedTx));
-        localStorage.setItem('demo_transactions', JSON.stringify(updatedTx));
+      if (db) {
+        await updateDoc(doc(db, 'bookings', editBookingForm.id), data);
         
-        // Atualiza estoque
-        const updatedInv = inventory.map(item => {
-          const sold = directSaleProducts.find(p => p.id === item.id);
-          if (sold) return { ...item, quantity: Math.max(0, item.quantity - sold.qty) };
-          return item;
-        });
-        setInventory(updatedInv);
-        localStorage.setItem('demo_inventory', JSON.stringify(updatedInv));
-      } else {
-        await addDoc(collection(db, 'financial_transactions'), payloadTx);
-        
-        // Baixa no estoque
-        for (const prod of directSaleProducts) {
-          const invRef = doc(db, 'products', prod.id);
-          const currentItem = inventory.find(i => i.id === prod.id);
-          if (currentItem) {
-            await updateDoc(invRef, { quantity: Math.max(0, currentItem.quantity - prod.qty) });
-          }
+        // Log prepayment if increased
+        if (newPrepayment > oldPrepayment) {
+          const diff = newPrepayment - oldPrepayment;
+          const tx = {
+            bookingId: editBookingForm.id,
+            date: dateStr(new Date()),
+            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            clientName: editBookingForm.clientName,
+            clientPhone: editBookingForm.clientPhone || '',
+            type: 'entrada',
+            paymentMethod: 'Pix',
+            value: diff,
+            description: `Adiantamento/Sinal: ${editBookingForm.serviceName} - ${editBookingForm.clientName}`,
+            professionalId: oldB?.professionalId || oldB?.profissional || 'jon',
+            createdAt: new Date().toISOString()
+          };
+          await addDoc(collection(db, 'financial_transactions'), tx);
+          setTransactions(prev => [{ id: Date.now().toString(), ...tx }, ...prev]);
         }
       }
-      setShowDirectSaleModal(false);
-      setDirectSaleProducts([]);
-      setDirectSaleDiscount(0);
-      setDirectSaleClient('');
-      setIsDirectSaleSalonUse(false);
-      setActiveTab('inicio');
-      alert(isDirectSaleSalonUse ? 'Baixa para uso do salão registrada com sucesso! Custo deduzido do faturamento.' : 'Venda avulsa registrada com sucesso! Faturamento e estoque atualizados.');
-    } catch (e) {
-      alert('Erro ao registrar venda.');
+      setBookings(prev => prev.map(b => b.id === editBookingForm.id ? { ...b, ...data } : b));
+      
+      let emailToUse = oldB?.clientEmail || '';
+      if (!emailToUse && editBookingForm.clientPhone) {
+        const cleanPhone = editBookingForm.clientPhone.replace(/\D/g, '');
+        const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+        emailToUse = matchedClient?.email || '';
+      }
+
+      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
+        triggerEmailNotification({
+          ...data,
+          id: editBookingForm.id,
+          clientEmail: emailToUse
+        }, 'agendamento_editado');
+      }
+
+      setShowEditBookingSheet(false);
+      showToast('Agendamento atualizado!', 'success');
+    } catch (err) {
+      showToast('Erro ao atualizar: ' + err.message, 'error');
     }
   };
 
-  // 7. Disparar Lembrete WhatsApp
-  const handleSendReminderWhatsappManual = (booking) => {
+  // ── Send Feedback / Review Request WhatsApp ─────────────────────
+  const sendFeedbackWhatsApp = async (booking) => {
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
-      alert('Telefone do cliente inválido ou não cadastrado.');
-      return;
-    }
-    const template = `Olá {nome}! Confirmado o seu horário no Studio do Jon no dia {data} às {horario}? Seu serviço será {servico}.`;
-    const dataBr = booking.date.split('-').reverse().join('/');
-    const msg = template
-      .replace(/{nome}/g, booking.clientName)
-      .replace(/{data}/g, dataBr)
-      .replace(/{horario}/g, booking.time)
-      .replace(/{servico}/g, booking.service?.name || booking.serviceName || 'serviço');
-
-    window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
-  };
-
-  const getWhatsAppFeedbackUrl = (phone, booking) => {
-    if (!phone) return '';
-    const cleanPhone = phone.replace(/\D/g, '');
-    const clientName = booking.clientName || '';
-    const firstName = clientName.split(' ')[0];
-    const googleLink = 'https://g.page/r/CRmlu0sO48XmEBM/review';
-    const message = `${firstName}, obrigado por ter escolhido o Studio hoje.
-A confiança que você depositou no processo significa muito pra mim.
-Se você sentiu a diferença — me conta no Google. Uma avaliação sua ajuda outras cacheadas que ainda não me conhecem a chegar até aqui.
-${googleLink}
-— Jon`;
-    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(message)}`;
-  };
-
-  const handleSendReminderWhatsappGateway = async (booking) => {
-    const gateway = settings?.waReminderGateway || 'zapi';
-    const isGatewayConfigured = 
-      (gateway === 'zapi' && settings?.zApiInstanceId && settings?.zApiToken) ||
-      (gateway === 'evolution' && settings?.evolutionApiUrl && settings?.evolutionApiKey && settings?.evolutionInstanceName) ||
-      (gateway === 'custom' && settings?.customWebhookUrl);
-
-    if (!settings?.waReminderEnabled || !isGatewayConfigured) {
-      alert('Integração de WhatsApp não configurada ou inativa no painel de Configurações.');
+      showToast('Telefone inválido para envio.', 'error');
       return;
     }
 
-    const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
-    if (!cleanPhone || cleanPhone.length < 10) {
-      alert('Telefone do cliente inválido.');
-      return;
-    }
+    const firstName = (booking.clientName || '').split(' ')[0];
+    const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️
 
-    setSendingMsgStatus('Disparando lembrete automático...');
+Se você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.
 
-    const template = `Olá {nome}! Confirmado o seu horário no Studio do Jon no dia {data} às {horario}? Seu serviço será {servico}.`;
-    const dataBr = booking.date.split('-').reverse().join('/');
-    const msg = template
-      .replace(/{nome}/g, booking.clientName)
-      .replace(/{data}/g, dataBr)
-      .replace(/{horario}/g, booking.time)
-      .replace(/{servico}/g, booking.service?.name || booking.serviceName || 'serviço');
+Leva apenas 1 minutinho clicando aqui:
+https://g.page/r/CRmlu0sO48XmEBM/review
+
+Grande abraço, Jon.`;
 
     const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-    let url = '';
-    let headers = { 'Content-Type': 'application/json' };
-    let body = {};
 
-    if (gateway === 'zapi') {
-      url = `https://api.z-api.io/instances/${settings.zApiInstanceId}/token/${settings.zApiToken}/send-text`;
-      body = { phone: phoneWithDDI, message: msg };
-    } else if (gateway === 'evolution') {
-      url = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
-      headers['apikey'] = settings.evolutionApiKey;
-      body = { number: phoneWithDDI, text: msg };
-    } else if (gateway === 'custom') {
-      url = settings.customWebhookUrl;
-      body = { phone: phoneWithDDI, message: msg, clientName: booking.clientName };
+    const gateway = settings?.waReminderGateway;
+    if (!gateway || gateway === 'none') {
+      console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
+      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
+      return;
     }
 
     try {
-      const response = await fetch(url, {
+      showToast('Disparando avaliação via API...', 'info');
+      const response = await fetch('/api/whatsapp', {
         method: 'POST',
-        headers,
-        body: JSON.stringify(body)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gateway,
+          phone: phoneWithDDI,
+          message: msgText,
+          config: {
+            zApiInstanceId: settings.zApiInstanceId,
+            zApiToken: settings.zApiToken,
+            evolutionApiUrl: settings.evolutionApiUrl,
+            evolutionApiKey: settings.evolutionApiKey,
+            evolutionInstanceName: settings.evolutionInstanceName,
+          date: booking.date,
+          time: booking.time,
+          service: booking.serviceName || booking.service?.name
+          }
+        })
       });
 
       if (response.ok) {
-        setSendingMsgStatus('Lembrete enviado com sucesso!');
-        setTimeout(() => setSendingMsgStatus(''), 2500);
+        showToast('Pedido de avaliação enviado! 🚀', 'success');
       } else {
-        throw new Error('Falha gateway');
+        throw new Error('Falha no gateway de WhatsApp');
       }
-    } catch (e) {
-      setSendingMsgStatus('Falha ao enviar. Tente o modo manual.');
-      setTimeout(() => setSendingMsgStatus(''), 3000);
+    } catch (err) {
+      console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
+      // Fallback: abrir wa.me link diretamente se o gateway falhar
+      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+      window.open(waUrl, '_blank');
+      showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }
   };
 
-  // 8. Cancelar agendamento
-  const cancelBooking = async (bookingId) => {
-    if (!confirm('Deseja realmente cancelar este agendamento?')) return;
+  useEffect(() => {
+    if (nbForm.clientName.length < 2) { setNbSuggestions([]); return; }
+    const q = nbForm.clientName.toLowerCase();
+    setNbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
+  }, [nbForm.clientName, clients]);
+
+  // ── Client name autocomplete for Edit ──────────────────────────
+  useEffect(() => {
+    if (!editBookingForm || !editBookingForm.clientName || editBookingForm.clientName.length < 2) { setEbSuggestions([]); return; }
+    const q = editBookingForm.clientName.toLowerCase();
+    setEbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
+  }, [editBookingForm?.clientName, clients]);
+
+  const changeStatus = async (bookingId, status) => {
     try {
       const booking = bookings.find(b => b.id === bookingId);
-      
-      if (isDemoMode) {
-        const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'cancelado' } : b);
-        setBookings(updated);
-        localStorage.setItem('demo_bookings', JSON.stringify(updated));
-
-        // Delete from local storage transactions
-        const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
-        if (localTx) {
-          const arr = JSON.parse(localTx);
-          const filtered = arr.filter(t => 
-            t.bookingId !== bookingId && 
-            !(t.clientPhone === booking?.clientPhone && t.date === booking?.date)
-          );
-          localStorage.setItem('demo_financial', JSON.stringify(filtered));
-          localStorage.setItem('demo_transactions', JSON.stringify(filtered));
-          setTransactions(filtered);
-        }
-      } else {
-        const docRef = doc(db, 'bookings', bookingId);
-        await updateDoc(docRef, { status: 'cancelado' });
-        syncBookingToGoogle(bookingId).catch(err => console.warn(err));
-
-        try {
-          // Delete by bookingId
-          const q = query(collection(db, 'financial_transactions'), where('bookingId', '==', bookingId));
-          const qSnap = await getDocs(q);
-          for (const docRef of qSnap.docs) {
-            await deleteDoc(docRef.ref);
-          }
-
-          // Delete by client phone and date (fallback)
-          if (booking?.clientPhone && booking?.date) {
-            const q2 = query(
-              collection(db, 'financial_transactions'),
-              where('clientPhone', '==', booking.clientPhone),
-              where('date', '==', booking.date)
-            );
-            const q2Snap = await getDocs(q2);
-            for (const docRef of q2Snap.docs) {
-              await deleteDoc(docRef.ref);
-            }
-          }
-        } catch (deleteErr) {
-          console.error('Erro ao deletar transações financeiras (Mobile):', deleteErr);
-        }
-      }
-      
-      // Enviar e-mail de cancelamento
-      if (booking && booking.clientEmail && booking.clientEmail.includes('@')) {
-        try {
-          const displayDate = booking.date.split('-').reverse().join('/');
-          await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: 'agendamento_cancelado',
-              clientEmail: booking.clientEmail,
-              clientName: booking.clientName,
-              serviceName: booking.service?.name || booking.serviceName || 'Serviço',
-              date: displayDate,
-              time: booking.time,
-              cancelledBy: 'admin'
-            })
-          });
-        } catch(err) {
-          console.warn('Falha ao enviar email de cancelamento', err);
-        }
+      let emailToUse = booking?.clientEmail || '';
+      if (!emailToUse && booking?.clientPhone) {
+        const cleanPhone = booking.clientPhone.replace(/\D/g, '');
+        const matchedClient = clients.find(c => c.phone?.replace(/\D/g, '') === cleanPhone);
+        emailToUse = matchedClient?.email || '';
       }
 
-      setSelectedBooking(null);
-      alert('Agendamento cancelado.');
-    } catch (e) {
-      alert('Erro ao cancelar agendamento.');
-    }
-  };
-
-  // Confirmar agendamento
-  const confirmBooking = async (bookingId) => {
-    try {
-      const bookingToConfirm = bookings.find(b => b.id === bookingId);
-      
-      if (isDemoMode) {
-        const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'confirmado' } : b);
-        setBookings(updated);
-        localStorage.setItem('demo_bookings', JSON.stringify(updated));
-      } else {
-        const docRef = doc(db, 'bookings', bookingId);
-        await updateDoc(docRef, { status: 'confirmado' });
-        syncBookingToGoogle(bookingId).catch(err => console.warn(err));
-      }
-      
-      setSelectedBooking(prev => prev ? { ...prev, status: 'confirmado' } : null);
-      
-      // Enviar e-mail de confirmação
-      if (bookingToConfirm && bookingToConfirm.clientEmail && bookingToConfirm.clientEmail.includes('@')) {
-        try {
-          const displayDate = bookingToConfirm.date.split('-').reverse().join('/');
-          await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              type: 'horario_confirmado',
-              clientEmail: bookingToConfirm.clientEmail,
-              clientName: bookingToConfirm.clientName,
-              serviceName: bookingToConfirm.service?.name || bookingToConfirm.serviceName || 'Serviço',
-              date: displayDate,
-              time: bookingToConfirm.time,
-              duration: bookingToConfirm.duration || 60,
-              professionalName: 'Jon'
-            })
-          });
-        } catch(err) {
-          console.warn('Falha ao enviar email de confirmação', err);
-        }
-      }
-
-      // Enviar WA ao cliente confirmando o agendamento
-      if (bookingToConfirm?.clientPhone) {
-        try {
-          const s = settings;
-          const gateway = s?.waReminderGateway || 'evolution';
-          if (s?.waReminderEnabled) {
-            const cleanPhone = (bookingToConfirm.clientPhone || '').replace(/\D/g, '');
-            const waNumber = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-            const firstName = (bookingToConfirm.clientName || 'Cliente').split(' ')[0];
-            const dataBr = bookingToConfirm.date.split('-').reverse().join('/');
-            const svcName = bookingToConfirm.service?.name || bookingToConfirm.serviceName || 'serviço';
-            const msg = `Olá, ${firstName}! ✅ Seu agendamento foi confirmado pelo Studio do Jon.\n\n📅 *${dataBr}* às *${bookingToConfirm.time}*\n✂️ *${svcName}*\n\nTe esperamos! Qualquer dúvida é só responder aqui. 💇‍♂️`;
-
-            let waUrl = '';
-            let waHeaders = { 'Content-Type': 'application/json' };
-            let waBody = {};
-
-            if (gateway === 'evolution' && s?.evolutionApiUrl && s?.evolutionApiKey && s?.evolutionInstanceName) {
-              waUrl = `${s.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${s.evolutionInstanceName}`;
-              waHeaders['apikey'] = s.evolutionApiKey;
-              waBody = { number: waNumber, text: msg };
-            } else if (gateway === 'zapi' && s?.zApiInstanceId && s?.zApiToken) {
-              waUrl = `https://api.z-api.io/instances/${s.zApiInstanceId}/token/${s.zApiToken}/send-text`;
-              waBody = { phone: waNumber, message: msg };
-            }
-
-            if (waUrl) {
-              fetch(waUrl, { method: 'POST', headers: waHeaders, body: JSON.stringify(waBody) })
-                .catch(err => console.warn('WA confirmação cliente (mobile):', err));
-            }
-          }
-        } catch (waErr) {
-          console.warn('Erro ao enviar WA de confirmação ao cliente (mobile):', waErr);
-        }
-      }
-      
-      alert('Agendamento confirmado!');
-    } catch (e) {
-      alert('Erro ao confirmar agendamento.');
-    }
-  };
-
-  // Marcar Falta (No-Show)
-  const markAsNoShow = async (bookingId) => {
-    try {
-      const booking = bookings.find(b => b.id === bookingId);
-      if (isDemoMode) {
-        const updated = bookings.map(b => b.id === bookingId ? { ...b, status: 'faltou' } : b);
-        setBookings(updated);
-        localStorage.setItem('demo_bookings', JSON.stringify(updated));
-
-        const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
-        if (cleanPhone) {
-          const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
-          const updatedClients = localClients.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c);
-          localStorage.setItem('demo_client_profiles', JSON.stringify(updatedClients));
-        }
-      } else {
-        const docRef = doc(db, 'bookings', bookingId);
-        await updateDoc(docRef, { status: 'faltou' });
-        syncBookingToGoogle(bookingId).catch(err => console.warn(err));
+      const dataToUpdate = { status };
+      if (status === 'faltou') {
+        dataToUpdate.missedAt = new Date().toISOString();
+        dataToUpdate.missedEmailSent = false;
 
         const cleanPhone = booking?.clientPhone?.replace(/\D/g, '');
         if (cleanPhone) {
           try {
-            const clientRef = doc(db, 'client_profiles', cleanPhone);
-            await updateDoc(clientRef, { blocked: true });
+            if (db) {
+              const clientRef = doc(db, 'client_profiles', cleanPhone);
+              await updateDoc(clientRef, { blocked: true });
+            } else {
+              const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+              const updatedClients = localClients.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c);
+              localStorage.setItem('demo_client_profiles', JSON.stringify(updatedClients));
+            }
+            setClients(prev => prev.map(c => c.phone === cleanPhone ? { ...c, blocked: true } : c));
           } catch (err) {
-            console.warn('Erro ao bloquear cliente no Firestore:', err);
+            console.warn('Erro ao bloquear cliente:', err);
           }
         }
       }
-      
-      setSelectedBooking(prev => prev ? { ...prev, status: 'faltou' } : null);
 
-      if (booking && booking.clientEmail) {
-        try {
-          await fetch('/api/send-email', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              type: 'agendamento_falta',
-              clientEmail: booking.clientEmail,
-              clientName: booking.clientName,
-              serviceName: booking.serviceName || booking.service?.name || booking.service || '',
-              date: booking.date?.includes('-') ? booking.date.split('-').reverse().join('/') : booking.date,
-              rawDate: booking.date,
-              time: booking.time,
-              duration: booking.duration || booking.service?.duration || 60,
-              notes: booking.notes || '',
-              professionalName: booking.professionalName || 'Jon'
-            })
-          });
-        } catch (mailErr) {
-          console.warn('Erro ao enviar e-mail de falta no mobile:', mailErr);
+      if (db) await updateDoc(doc(db, 'bookings', bookingId), dataToUpdate);
+      setBookings(prev => prev.map(b => b.id === bookingId ? { ...b, ...dataToUpdate } : b));
+      setShowBookingSheet(false);
+      if (status === 'cancelado') setTab('hoje');
+      showToast(`Status atualizado: ${status}`, 'success');
+
+      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
+        const updatedBooking = { ...booking, id: bookingId, clientEmail: emailToUse };
+        if (status === 'confirmado') {
+          triggerEmailNotification(updatedBooking, 'horario_confirmado');
+        } else if (status === 'cancelado') {
+          triggerEmailNotification({ ...updatedBooking, cancelledBy: 'admin' }, 'agendamento_cancelado');
         }
       }
-
-      alert('Agendamento marcado como falta.');
-    } catch (e) {
-      alert('Erro ao marcar falta.');
+    } catch (err) {
+      showToast('Erro: ' + err.message, 'error');
     }
   };
 
-  // 9. Comissões do Jon (60% padrão)
-  const getCommissionData = () => {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
-    const monthPrefix = `${currentYear}-${currentMonth}`;
-
-    const jonProf = settings?.professionals?.find(p => p.id === 'jon');
-    const commServ = jonProf ? (jonProf.commissionService !== undefined ? jonProf.commissionService : (jonProf.commission || 60)) : 60;
-    const commProd = jonProf ? (jonProf.commissionProduct !== undefined ? jonProf.commissionProduct : 10) : 10;
-
-    // Filter transactions for professional 'jon' in the current month
-    const monthlyTxs = transactions.filter(t => 
-      t.type === 'entrada' && 
-      t.date && 
-      t.date.startsWith(monthPrefix) && 
-      (t.professionalId === 'jon' || !t.professionalId)
-    );
-
-    const list = monthlyTxs.map(t => {
-      const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
-      const isProdSale = t.isProductSale || t.category === 'venda_produto';
-      
-      let rawProd = 0;
-      let rawServ = 0;
-
-      if (isProdSale) {
-        rawProd = t.value;
-      } else {
-        rawProd = productVal;
-        rawServ = Math.max(0, t.value - productVal);
-      }
-
-      const servComm = rawServ * (commServ / 100);
-      const prodComm = rawProd * (commProd / 100);
-      const commissionValue = servComm + prodComm;
-
-      let typeStr = '';
-      if (rawServ > 0 && rawProd > 0) {
-        typeStr = `Serviços (${commServ}%) + Produtos (${commProd}%)`;
-      } else if (rawServ > 0) {
-        typeStr = `Serviços (${commServ}%)`;
-      } else if (rawProd > 0) {
-        typeStr = `Produtos (${commProd}%)`;
-      }
-
-      return {
-        id: t.id,
-        clientName: t.clientName || 'Cliente',
-        serviceName: `${t.description || 'Venda'} - ${typeStr}`,
-        date: t.date,
-        price: t.value,
-        commissionValue
-      };
-    });
-
-    const total = list.reduce((sum, item) => sum + item.commissionValue, 0);
-    return { list, total, commServ, commProd };
+  // ── Gallery upload ─────────────────────────────────────────────
+  const handleGalleryFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { showToast('Selecione uma imagem', 'error'); return; }
+    const url = URL.createObjectURL(file);
+    setPendingFile(file);
+    setPendingPreviewUrl(url);
+    setUploadForm({ category: 'Geral', caption: '' });
+    setCropperZoom(1);
+    setCropperOffset({ x: 0, y: 0 });
+    setNaturalDimensions({ w: 0, h: 0 });
+    setPostToGallery(true);
+    setPostToGoogle(true);
+    setShowUploadSheet(true);
   };
 
-  // Datas e Timeline
-  const dateInfo = formatLocalDate(currentDate);
-  const activeProfessionalsList = settings?.professionals || [
-    { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
-  ];
-  const hourSlots = [];
-  for (let h = 8; h <= 20; h++) {
-    const hs = String(h).padStart(2, '0');
-    hourSlots.push(`${hs}:00`);
-  }
-
-  // Filtragem dos agendamentos de hoje para a tela Home
-  const todayStr = new Date().toISOString().split('T')[0];
-  const todayBookings = bookings
-    .filter(b => b && b.date === todayStr && b.status !== 'cancelado')
-    .sort((a, b) => {
-      try {
-        return (a.time || '00:00').localeCompare(b.time || '00:00');
-      } catch (_) {
-        return 0;
-      }
-    });
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // Novas funções auxiliares para sub-telas nativas e Gestos de Swipe
-  // ─────────────────────────────────────────────────────────────────────────
-  
-  // Gestos de Swipe entre abas principais
-  const MAIN_TABS = ['inicio', 'agenda', 'comissoes', 'opcoes'];
-
-  const handleTabSwipeStart = (e) => {
-    if (MAIN_TABS.indexOf(activeTab) === -1) return;
-    if (e.target.closest('.mobile-overlay') || e.target.closest('.mobile-bottom-sheet') || e.target.closest('.mobile-popup-modal')) {
-      return;
-    }
-    const touch = e.changedTouches[0];
-    swipeTabTouchRef.current = { startX: touch.clientX, startY: touch.clientY };
+  const handleCropperDragStart = (clientX, clientY) => {
+    if (!naturalDimensions.w || !containerSize) return;
+    setIsDraggingCropper(true);
+    setCropperDragStart({ x: clientX, y: clientY });
+    setCropperDragStartOffset({ ...cropperOffset });
   };
 
-  const handleTabSwipeEnd = (e) => {
-    const { startX, startY } = swipeTabTouchRef.current;
-    if (startX === null) return;
-    swipeTabTouchRef.current = { startX: null, startY: null };
-
-    if (activeTab === 'agenda') return;
-    if (e.target.closest('.mobile-shortcuts-scroll') || e.target.closest('.service-category-pills') || e.target.closest('.config-sub-tabs') || e.target.closest('.mobile-timeline-scroll')) {
-      return;
-    }
-
-    const touch = e.changedTouches[0];
-    const dx = touch.clientX - startX;
-    const dy = touch.clientY - startY;
-
-    if (Math.abs(dx) < 75 || Math.abs(dx) < Math.abs(dy) * 1.3) return;
-
-    const currentIndex = MAIN_TABS.indexOf(activeTab);
-    if (currentIndex === -1) return;
-
-    if (dx < 0) {
-      if (currentIndex < MAIN_TABS.length - 1) {
-        setActiveTab(MAIN_TABS[currentIndex + 1]);
-      }
-    } else {
-      if (currentIndex > 0) {
-        setActiveTab(MAIN_TABS[currentIndex - 1]);
-      }
-    }
-  };
-
-  // Clientes - Agrupamento derivado e mesclado
-  const getDerivedClients = () => {
-    const clientsMap = {};
-    // 1. Inserir perfis existentes
-    clients.forEach((prof) => {
-      if (!prof.phone) return;
-      clientsMap[prof.phone] = {
-        id: prof.phone,
-        name: prof.name || 'Sem nome',
-        phone: prof.phone,
-        email: prof.email || 'Não informado',
-        hairType: prof.curvatura || '3A',
-        porosidade: prof.porosidade || 'Média',
-        elasticidade: prof.elasticidade || 'Normal',
-        quimicas: prof.quimicas || 'Nenhuma',
-        produtosRecomendados: prof.produtosRecomendados || '',
-        observacoes: prof.observacoes || '',
-        sexo: prof.sexo || 'Feminino',
-        birthdate: prof.birthdate || '',
-        lastVisit: 'Nunca visitou',
-        lastServiceName: 'Nenhum'
-      };
-    });
-    // 2. Mesclar com os dados dos agendamentos
-    bookings.forEach((appt) => {
-      const phone = appt.clientPhone || appt.phone;
-      if (!phone) return;
-      const dateStr = appt.date;
-      const serviceName = appt.service?.name || appt.serviceName || 'Serviço';
-      if (!clientsMap[phone]) {
-        clientsMap[phone] = {
-          id: phone,
-          name: appt.clientName || 'Cliente sem nome',
-          phone: phone,
-          email: appt.clientEmail || appt.email || 'Não informado',
-          hairType: appt.hairType || '3A',
-          porosidade: 'Média',
-          elasticidade: 'Normal',
-          quimicas: 'Nenhuma',
-          produtosRecomendados: '',
-          observacoes: appt.notes || '',
-          sexo: appt.sexo || 'Feminino',
-          birthdate: appt.clientBirthdate || appt.birthdate || '',
-          lastVisit: dateStr || 'Nunca visitou',
-          lastServiceName: serviceName
-        };
-      } else {
-        if (dateStr && (clientsMap[phone].lastVisit === 'Nunca visitou' || new Date(dateStr) > new Date(clientsMap[phone].lastVisit))) {
-          clientsMap[phone].lastVisit = dateStr;
-          clientsMap[phone].lastServiceName = serviceName;
-        }
-        if (appt.hairType && clientsMap[phone].hairType === '3A') {
-          clientsMap[phone].hairType = appt.hairType;
-        }
-        if ((appt.clientBirthdate || appt.birthdate) && !clientsMap[phone].birthdate) {
-          clientsMap[phone].birthdate = appt.clientBirthdate || appt.birthdate;
-        }
-      }
-    });
-    return Object.values(clientsMap);
-  };
-
-  const derivedClientsList = getDerivedClients();
-
-  // Buscar ficha capilar técnica do Firestore/local ao selecionar cliente
-  useEffect(() => {
-    if (!selectedClientPhone) return;
-    const clientProf = clients.find(p => p.phone === selectedClientPhone);
-    const clientObj = derivedClientsList.find(c => c.phone === selectedClientPhone);
+  const handleCropperDragMove = (clientX, clientY) => {
+    if (!isDraggingCropper || !naturalDimensions.w || !containerSize) return;
+    const dx = clientX - cropperDragStart.x;
+    const dy = clientY - cropperDragStart.y;
     
-    if (clientProf) {
-      setHairProfile({
-        name: clientProf.name || clientObj?.name || '',
-        email: clientProf.email || clientObj?.email || '',
-        phone: clientProf.phone || selectedClientPhone,
-        curvatura: clientProf.curvatura || '3A',
-        porosidade: clientProf.porosidade || 'Média',
-        elasticidade: clientProf.elasticidade || 'Normal',
-        quimicas: clientProf.quimicas || 'Nenhuma',
-        produtosRecomendados: clientProf.produtosRecomendados || '',
-        observacoes: clientProf.observacoes || '',
-        sexo: clientProf.sexo || 'Feminino',
-        birthdate: clientProf.birthdate || ''
-      });
-    } else {
-      setHairProfile({
-        name: clientObj?.name || '',
-        email: clientObj?.email || '',
-        phone: selectedClientPhone,
-        curvatura: clientObj?.hairType || '3A',
-        porosidade: 'Média',
-        elasticidade: 'Normal',
-        quimicas: 'Nenhuma',
-        produtosRecomendados: '',
-        observacoes: '',
-        sexo: clientObj?.sexo || 'Feminino',
-        birthdate: ''
-      });
-    }
-  }, [selectedClientPhone, clients]);
+    const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+    const displayWidth = naturalDimensions.w * initialScale * cropperZoom;
+    const displayHeight = naturalDimensions.h * initialScale * cropperZoom;
+    const initialX = (containerSize - displayWidth) / 2;
+    const initialY = (containerSize - displayHeight) / 2;
+    
+    let newX = cropperDragStartOffset.x + dx;
+    let newY = cropperDragStartOffset.y + dy;
+    
+    const minX = containerSize - displayWidth - initialX;
+    const maxX = -initialX;
+    const minY = containerSize - displayHeight - initialY;
+    const maxY = -initialY;
+    
+    newX = Math.max(minX, Math.min(maxX, newX));
+    newY = Math.max(minY, Math.min(maxY, newY));
+    
+    setCropperOffset({ x: newX, y: newY });
+  };
 
-  // Salvar ficha técnica capilar
-  const handleSaveHairProfile = async (e) => {
-    if (e) e.preventDefault();
-    if (!selectedClientPhone) return;
-    setSavingProfile(true);
-    const payload = { ...hairProfile, phone: selectedClientPhone };
+  const handleCropperDragEnd = () => {
+    setIsDraggingCropper(false);
+  };
+
+  const uploadPhoto = async () => {
+    if (!pendingFile) return;
+    setIsUploading(true);
+    setUploadProgress(0);
+    setUploadStatus('storage');
+
     try {
-      if (isDemoMode) {
-        const local = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
-        const updated = [...local.filter(c => c.phone !== selectedClientPhone), payload];
-        localStorage.setItem('demo_client_profiles', JSON.stringify(updated));
-        setClients(updated);
-      } else {
-        await setDoc(doc(db, 'client_profiles', selectedClientPhone), payload, { merge: true });
-        setClients(prev => [...prev.filter(c => c.phone !== selectedClientPhone), payload]);
+      let fileToUpload = pendingFile;
+      
+      if (naturalDimensions.w && containerSize && previewImageRef.current) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1000;
+        canvas.height = 1000;
+        const ctx = canvas.getContext('2d');
+        
+        const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+        const displayWidth = naturalDimensions.w * initialScale;
+        const displayHeight = naturalDimensions.h * initialScale;
+        const initialX = (containerSize - displayWidth) / 2;
+        const initialY = (containerSize - displayHeight) / 2;
+        
+        const renderScale = initialScale * cropperZoom;
+        const left = initialX + cropperOffset.x;
+        const top = initialY + cropperOffset.y;
+        
+        const srcX = -left / renderScale;
+        const srcY = -top / renderScale;
+        const srcW = containerSize / renderScale;
+        const srcH = containerSize / renderScale;
+        
+        ctx.drawImage(previewImageRef.current, srcX, srcY, srcW, srcH, 0, 0, 1000, 1000);
+        
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+        fileToUpload = new File([blob], pendingFile.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' });
       }
-      alert('Ficha capilar técnica atualizada com sucesso!');
+
+      // Step 1: Upload to Firebase Storage
+      const filename = `${Date.now()}_${fileToUpload.name.replace(/\s+/g, '_')}`;
+      const sRef = storageRef(storage, `gallery/${filename}`);
+      const uploadTask = uploadBytesResumable(sRef, fileToUpload);
+
+      const downloadURL = await new Promise((resolve, reject) => {
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const pct = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 80);
+            setUploadProgress(pct);
+          },
+          reject,
+          async () => {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(url);
+          }
+        );
+      });
+
+      setUploadProgress(85);
+      setUploadStatus('google');
+
+      // Step 2: Post to Google Business Photos (via proxy or direct API)
+      let googlePosted = false;
+      if (postToGoogle) {
+        try {
+          const hasGbpConfig = !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
+          if (hasGbpConfig) {
+            const ctrl = new AbortController();
+            const gbpTimeout = setTimeout(() => ctrl.abort(), 8000);
+            try {
+              const resp = await fetch('/api/gbp?action=upload-media', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: downloadURL, category: 'ADDITIONAL' }),
+                signal: ctrl.signal
+              });
+              if (resp.ok) {
+                const resData = await resp.json();
+                googlePosted = !!resData.success;
+              }
+            } finally {
+              clearTimeout(gbpTimeout);
+            }
+          }
+        } catch (gErr) {
+          console.warn('Google Business post skipped:', gErr.message);
+        }
+      }
+
+      setUploadProgress(95);
+
+      // Step 3: Save to Firestore gallery_photos
+      if (postToGallery) {
+        const photoData = {
+          url: downloadURL,
+          filename,
+          category: uploadForm.category,
+          caption: uploadForm.caption || '',
+          googlePosted,
+          createdAt: new Date().toISOString(),
+          storagePath: `gallery/${filename}`
+        };
+
+        if (db) {
+          await addDoc(collection(db, 'gallery_photos'), photoData);
+        }
+      }
+
+      setUploadProgress(100);
+      setUploadStatus('done');
+      setShowUploadSheet(false);
+      setPendingFile(null);
+      setPendingPreviewUrl('');
+      showToast(
+        googlePosted && postToGallery
+          ? 'Foto publicada no Studio e no Google! 🎉'
+          : googlePosted
+            ? 'Foto publicada no Google! 🎉'
+            : 'Foto salva na galeria!',
+        'success'
+      );
     } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar ficha capilar: ' + err.message);
+      setUploadStatus('error');
+      showToast('Erro no upload: ' + err.message, 'error');
     } finally {
-      setSavingProfile(false);
+      setIsUploading(false);
     }
   };
 
-  // Cadastrar novo cliente a partir da sub-tela
-  const handleSaveClientFromPanel = async (e) => {
-    if (e) e.preventDefault();
-    if (!newClient.name || !newClient.phone) {
-      alert('Nome e Telefone são campos obrigatórios.');
+  const deletePhoto = async (photo) => {
+    if (!window.confirm('Remover esta foto?')) return;
+    try {
+      if (storage && photo.storagePath) {
+        const sRef = storageRef(storage, photo.storagePath);
+        await deleteObject(sRef).catch(() => {});
+      }
+      if (db) await deleteDoc(doc(db, 'gallery_photos', photo.id));
+      setGalleryPhotos(prev => prev.filter(p => p.id !== photo.id));
+      setPreviewPhoto(null);
+      showToast('Foto removida', 'info');
+    } catch (err) {
+      showToast('Erro ao remover: ' + err.message, 'error');
+    }
+  };
+
+  // ── Add Client ─────────────────────────────────────────────────
+  const addClient = async () => {
+    if (!newClientForm.name) { showToast('Nome é obrigatório', 'error'); return; }
+    const data = { ...newClientForm, createdAt: new Date().toISOString() };
+    try {
+      if (db) {
+        const ref = await addDoc(collection(db, 'client_profiles'), data);
+        setClients(prev => [{ id: ref.id, ...data }, ...prev]);
+      }
+      setShowNewClientSheet(false);
+      setNewClientForm({ name:'', phone:'', email:'', curvatura:'3A', observacoes:'' });
+      showToast('Cliente cadastrado!', 'success');
+    } catch (err) {
+      showToast('Erro: ' + err.message, 'error');
+    }
+  };
+
+  // ── Add Transaction ────────────────────────────────────────────
+  const addTransaction = async () => {
+    if (!txForm.description || !txForm.value) { showToast('Preencha descrição e valor', 'error'); return; }
+    const data = { ...txForm, value: Number(txForm.value), createdAt: new Date().toISOString() };
+    try {
+      if (db) {
+        const ref = await addDoc(collection(db, 'financial_transactions'), data);
+        setTransactions(prev => [{ id: ref.id, ...data }, ...prev]);
+      }
+      setShowAddTxSheet(false);
+      setTxForm({ type:'saida', description:'', value:'', paymentMethod:'Pix', date: today() });
+      showToast('Lançamento salvo!', 'success');
+    } catch (err) {
+      showToast('Erro: ' + err.message, 'error');
+    }
+  };
+
+  const addRecurringBlock = async () => {
+    if (mBlockWeekdayStart >= mBlockWeekdayEnd) {
+      showToast('Horário de fim deve ser após o início', 'error');
       return;
     }
-    const cleanPhone = newClient.phone.replace(/\D/g, '');
-    const payload = {
-      name: newClient.name,
-      phone: cleanPhone,
-      email: newClient.email || 'Não informado',
-      curvatura: newClient.curvatura || '3A',
-      porosidade: newClient.porosidade || 'Média',
-      elasticidade: newClient.elasticidade || 'Normal',
-      quimicas: newClient.quimicas || 'Nenhuma',
-      produtosRecomendados: newClient.produtosRecomendados || '',
-      observacoes: newClient.observacoes || '',
-      sexo: newClient.sexo || 'Feminino',
-      birthdate: newClient.birthdate || ''
-    };
-    try {
-      if (isDemoMode) {
-        const local = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
-        const updated = [...local.filter(c => c.phone !== cleanPhone), payload];
-        localStorage.setItem('demo_client_profiles', JSON.stringify(updated));
-        setClients(updated);
-      } else {
-        await setDoc(doc(db, 'client_profiles', cleanPhone), payload);
-        setClients(prev => [...prev.filter(c => c.phone !== cleanPhone), payload]);
+    const blockStr = `${mBlockWeekday}-${mBlockWeekdayStart}-${mBlockWeekdayEnd}`;
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const current = jonProf.blockedWeekdayHours || [];
+    if (current.includes(blockStr)) {
+      showToast('Este bloqueio já existe', 'error');
+      return;
+    }
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedWeekdayHours: [...current, blockStr]
+        };
       }
-      alert('Cliente cadastrado com sucesso!');
-      setSelectedClientPhone(cleanPhone);
-      setShowAddClientModal(false);
-      setNewClient({ name: '', phone: '', email: '', curvatura: '3A', observacoes: '', birthdate: '' });
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio recorrente adicionado!', 'success');
+      }
     } catch (err) {
-      console.error(err);
-      alert('Erro ao cadastrar cliente.');
+      showToast('Erro ao salvar: ' + err.message, 'error');
     }
   };
 
-  // Serviços - Salvar
-  const handleSaveService = async (e) => {
-    if (e) e.preventDefault();
-    const payload = {
-      name: serviceForm.name,
-      category: serviceForm.category || 'Cabelo',
-      description: serviceForm.description || '',
-      price: Number(serviceForm.price) || 0,
-      priceType: serviceForm.priceType || 'Fixo',
-      promoPrice: serviceForm.promoPrice ? Number(serviceForm.promoPrice) : null,
-      duration: Number(serviceForm.duration) || 60,
-      cost: serviceForm.cost ? Number(serviceForm.cost) : 0,
-      isPrimary: serviceForm.isPrimary ?? true,
-      scheduledViaWhatsapp: !!serviceForm.scheduledViaWhatsapp,
-      position: serviceForm.position !== '' ? Number(serviceForm.position) : services.length
-    };
-    try {
-      if (editingService) {
-        if (isDemoMode) {
-          const updated = services.map(s => s.id === editingService.id ? { ...s, ...payload } : s);
-          setServices(updated);
-          localStorage.setItem('demo_services', JSON.stringify(updated));
-        } else {
-          await setDoc(doc(db, 'services', editingService.id), payload, { merge: true });
-        }
-      } else {
-        const id = serviceForm.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-        if (isDemoMode) {
-          const updated = [...services, { id, ...payload }];
-          setServices(updated);
-          localStorage.setItem('demo_services', JSON.stringify(updated));
-        } else {
-          await setDoc(doc(db, 'services', id), payload);
-        }
+  const removeRecurringBlock = async (blockStr) => {
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedWeekdayHours: (p.blockedWeekdayHours || []).filter(x => x !== blockStr)
+        };
       }
-      setShowServiceModal(false);
-      setEditingService(null);
-      alert('Serviço salvo com sucesso!');
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio recorrente removido', 'success');
+      }
     } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar serviço.');
+      showToast('Erro ao remover: ' + err.message, 'error');
     }
   };
 
-  // Serviços - Excluir
-  const handleDeleteService = async (id) => {
-    if (!confirm('Deseja realmente remover este serviço da grade do salão?')) return;
-    try {
-      if (isDemoMode) {
-        const updated = services.filter(s => s.id !== id);
-        setServices(updated);
-        localStorage.setItem('demo_services', JSON.stringify(updated));
-      } else {
-        await deleteDoc(doc(db, 'services', id));
+  const addSpecificBlock = async () => {
+    if (!mBlockSpecificDate) {
+      showToast('Selecione uma data', 'error');
+      return;
+    }
+    if (mBlockSpecificStart >= mBlockSpecificEnd) {
+      showToast('Horário de fim deve ser após o início', 'error');
+      return;
+    }
+    const blockStr = `${mBlockSpecificDate}-${mBlockSpecificStart}-${mBlockSpecificEnd}`;
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const current = jonProf.blockedSpecificHours || [];
+    if (current.includes(blockStr)) {
+      showToast('Este bloqueio já existe', 'error');
+      return;
+    }
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedSpecificHours: [...current, blockStr]
+        };
       }
-      alert('Serviço removido com sucesso!');
+      return p;
+    });
+
+    try {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio pontual adicionado!', 'success');
+      }
     } catch (err) {
-      console.error(err);
-      alert('Erro ao excluir serviço.');
+      showToast('Erro ao salvar: ' + err.message, 'error');
     }
   };
 
-  // Estoque - Reabastecimento rápido / decremento
-  const handleQuickStockAdjust = async (product, amount) => {
-    const newQty = Math.max(0, product.quantity + amount);
+  const removeSpecificBlock = async (blockStr) => {
+    const profs = settings.professionals || [];
+    const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+    if (!jonProf) return;
+
+    const updatedProfs = profs.map(p => {
+      if (p.id === jonProf.id) {
+        return {
+          ...p,
+          blockedSpecificHours: (p.blockedSpecificHours || []).filter(x => x !== blockStr)
+        };
+      }
+      return p;
+    });
+
     try {
-      if (isDemoMode) {
-        const updated = inventory.map(p => p.id === product.id ? { ...p, quantity: newQty } : p);
-        setInventory(updated);
-        localStorage.setItem('demo_inventory', JSON.stringify(updated));
-      } else {
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { professionals: updatedProfs });
+        showToast('Bloqueio pontual removido', 'success');
+      }
+    } catch (err) {
+      showToast('Erro ao remover: ' + err.message, 'error');
+    }
+  };
+
+  const handleProductExit = async () => {
+    if (!prodExitSelectedId) {
+      showToast('Selecione um produto', 'error');
+      return;
+    }
+    const product = inventory.find(p => p.id === prodExitSelectedId);
+    if (!product) return;
+
+    const qty = Number(prodExitQuantity);
+    if (isNaN(qty) || qty <= 0) {
+      showToast('Quantidade inválida', 'error');
+      return;
+    }
+
+    if (qty > product.quantity) {
+      showToast('Estoque insuficiente', 'error');
+      return;
+    }
+
+    const newQty = product.quantity - qty;
+
+    try {
+      if (db) {
         await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
       }
-      
-      // Se for reabastecimento (+), registra despesa automática no financeiro
-      if (amount > 0) {
-        const cost = amount * (product.costPrice || 20);
-        const expensePayload = {
-          date: new Date().toISOString().split('T')[0],
-          time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-          clientName: 'Estoque/Almoxarifado',
-          type: 'saida',
-          paymentMethod: 'Outro',
-          value: cost,
-          description: `Compra de estoque: ${product.name} (+${amount} un.)`,
+
+      // Saída de produto SEMPRE debita o custo (não o preço de venda)
+      // Venda avulsa = entrada de caixa pelo preço de venda; mas a saída de estoque
+      // gera uma despesa de custo (custo da mercadoria). Uso interno = só despesa de custo.
+      const costVal = (product.costPrice || 0) * qty;
+      const isSale = prodExitType === 'venda';
+      const txDataList = [];
+
+      // Sempre lança saída de custo do estoque
+      txDataList.push({
+        type: 'saida',
+        category: 'estoque',
+        value: costVal,
+        description: isSale
+          ? `CMV - Venda Avulsa: ${product.name} (x${qty})`
+          : `Uso do Salão: ${product.name} (-${qty} un.)`,
+        date: today(),
+        createdAt: new Date().toISOString()
+      });
+
+      // Se for venda, lança também a entrada pelo preço de venda
+      if (isSale && product.sellingPrice) {
+        txDataList.push({
+          type: 'entrada',
+          category: 'estoque',
+          value: (product.sellingPrice || 0) * qty,
+          description: `Venda Avulsa: ${product.name} (x${qty})`,
+          date: today(),
+          paymentMethod: 'Pix',
+          createdAt: new Date().toISOString()
+        });
+      }
+
+      if (db) {
+        for (const txData of txDataList) {
+          await addDoc(collection(db, 'financial_transactions'), txData);
+        }
+      }
+      setInventory(prev => prev.map(p => p.id === product.id ? { ...p, quantity: newQty } : p));
+      setTransactions(prev => [
+        ...txDataList.map(tx => ({ id: Date.now().toString() + Math.random(), ...tx })),
+        ...prev
+      ]);
+
+      showToast(isSale ? 'Venda registrada! 💰 Custo debitado do caixa.' : 'Saída por uso registrada! 💸', 'success');
+      setShowProductExitSheet(false);
+      setProdExitSelectedId('');
+      setProdExitQuantity(1);
+    } catch (err) {
+      showToast('Erro ao registrar saída: ' + err.message, 'error');
+    }
+  };
+
+  const handleProductEntry = async () => {
+    const name = prodEntryName.trim();
+    if (!name) {
+      showToast('Informe o nome do produto', 'error');
+      return;
+    }
+    const qty = Number(prodEntryQuantity);
+    if (isNaN(qty) || qty <= 0) {
+      showToast('Quantidade inválida', 'error');
+      return;
+    }
+    const cost = Number(prodEntryCost);
+    if (isNaN(cost) || cost < 0) {
+      showToast('Preço de custo inválido', 'error');
+      return;
+    }
+
+    try {
+      // Se já existe produto com mesmo nome, soma ao estoque; senão cria novo.
+      const existing = inventory.find(p => (p.name || '').trim().toLowerCase() === name.toLowerCase());
+
+      if (existing) {
+        const newQty = (existing.quantity || 0) + qty;
+        if (db) {
+          await updateDoc(doc(db, 'products', existing.id), { quantity: newQty, costPrice: cost });
+        } else {
+          setInventory(prev => prev.map(p => p.id === existing.id ? { ...p, quantity: newQty, costPrice: cost } : p));
+        }
+      } else {
+        const payload = {
+          name,
+          category: 'Geral',
+          quantity: qty,
+          costPrice: cost,
+          sellingPrice: 0,
+          minStock: 3,
           createdAt: new Date().toISOString()
         };
-        if (isDemoMode) {
-          const updatedFinancial = [{ id: 'tx_' + Date.now(), ...expensePayload }, ...transactions];
-          setTransactions(updatedFinancial);
-          localStorage.setItem('demo_financial', JSON.stringify(updatedFinancial));
+        if (db) {
+          const ref = await addDoc(collection(db, 'products'), payload);
+          setInventory(prev => [...prev, { id: ref.id, ...payload }]);
         } else {
-          await addDoc(collection(db, 'financial_transactions'), expensePayload);
+          setInventory(prev => [...prev, { id: 'demo-prod-' + Date.now(), ...payload }]);
         }
       }
-      alert('Estoque atualizado!');
+
+      // Registra a compra como despesa (igual ao desktop)
+      const txData = {
+        type: 'saida',
+        category: 'estoque',
+        value: cost * qty,
+        description: `Compra de estoque: ${name} (+${qty} un.)`,
+        date: today(),
+        paymentMethod: 'Pix',
+        createdAt: new Date().toISOString()
+      };
+      if (db) await addDoc(collection(db, 'financial_transactions'), txData);
+
+      showToast('Entrada de produto registrada! 📦', 'success');
+      setShowProductEntrySheet(false);
+      setProdEntryName('');
+      setProdEntryQuantity(1);
+      setProdEntryCost('');
     } catch (err) {
-      console.error(err);
-      alert('Erro ao ajustar estoque.');
+      showToast('Erro ao registrar entrada: ' + err.message, 'error');
     }
   };
 
-  // Estoque - Salvar
-  const handleSaveProduct = async (e) => {
-    if (e) e.preventDefault();
+  const handleQuickBlock = async () => {
+    const startMin = timeToMin(qbStart);
+    const endMin = timeToMin(qbEnd);
+    if (startMin >= endMin) {
+      showToast('Horário de fim deve ser após o início', 'error');
+      return;
+    }
+    const duration = endMin - startMin;
+
+    const typeLabels = { folga: 'Folga', compromisso: 'Compromisso pessoal', feriado: 'Feriado' };
+    const reason = qbMotive.trim()
+      ? `${typeLabels[qbType]}: ${qbMotive.trim()}`
+      : typeLabels[qbType];
+
     const payload = {
-      name: productForm.name,
-      category: productForm.category || 'Shampoo',
-      quantity: Number(productForm.quantity) || 0,
-      costPrice: Number(productForm.costPrice) || 0,
-      sellingPrice: Number(productForm.sellingPrice) || 0,
-      minStock: Number(productForm.minStock) || 3
-    };
-    try {
-      if (editingProduct) {
-        if (isDemoMode) {
-          const updated = inventory.map(p => p.id === editingProduct.id ? { ...p, ...payload } : p);
-          setInventory(updated);
-          localStorage.setItem('demo_inventory', JSON.stringify(updated));
-        } else {
-          await updateDoc(doc(db, 'products', editingProduct.id), payload);
-        }
-      } else {
-        if (isDemoMode) {
-          const newId = 'p_' + Date.now();
-          const updated = [...inventory, { id: newId, ...payload }];
-          setInventory(updated);
-          localStorage.setItem('demo_inventory', JSON.stringify(updated));
-        } else {
-          await addDoc(collection(db, 'products'), payload);
-        }
-      }
-      setShowProductModal(false);
-      setEditingProduct(null);
-      alert('Produto salvo com sucesso!');
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar produto.');
-    }
-  };
-
-  // Estoque - Excluir
-  const handleDeleteProduct = async (id) => {
-    if (!confirm('Deseja realmente remover este produto do estoque?')) return;
-    try {
-      if (isDemoMode) {
-        const updated = inventory.filter(p => p.id !== id);
-        setInventory(updated);
-        localStorage.setItem('demo_inventory', JSON.stringify(updated));
-      } else {
-        await deleteDoc(doc(db, 'products', id));
-      }
-      alert('Produto removido com sucesso!');
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao remover produto.');
-    }
-  };
-
-  // Financeiro - Lançar despesa/receita manual
-  const handleAddExpense = async (e) => {
-    if (e) e.preventDefault();
-    const payload = {
-      date: financeForm.date,
-      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-      clientName: financeForm.type === 'entrada' ? 'Lançamento Manual' : 'Despesa Avulsa',
-      type: financeForm.type,
-      paymentMethod: financeForm.paymentMethod,
-      value: Number(financeForm.value) || 0,
-      description: financeForm.description,
+      clientName: 'Horário Bloqueado',
+      clientPhone: '00000000000',
+      clientEmail: '',
+      service: { name: 'Bloqueio Administrativo', price: 0 },
+      date: qbDate,
+      time: qbStart,
+      profissional: 'jon',
+      notes: reason,
+      absenceType: qbType,
+      status: 'bloqueado',
+      duration: duration,
       createdAt: new Date().toISOString()
     };
+
     try {
-      if (isDemoMode) {
-        const updated = [{ id: 'tx_' + Date.now(), ...payload }, ...transactions];
-        setTransactions(updated);
-        localStorage.setItem('demo_financial', JSON.stringify(updated));
+      if (db) {
+        const ref = await addDoc(collection(db, 'bookings'), payload);
+        setBookings(prev => [...prev, { id: ref.id, ...payload }]);
       } else {
-        await addDoc(collection(db, 'financial_transactions'), payload);
+        const fakeId = 'demo-block-' + Date.now();
+        setBookings(prev => [...prev, { id: fakeId, ...payload }]);
       }
-      setShowFinanceModal(false);
-      setFinanceForm({
-        type: 'saida',
-        description: '',
-        value: '',
-        paymentMethod: 'Pix',
-        date: new Date().toISOString().split('T')[0]
-      });
-      alert('Transação financeira registrada com sucesso!');
+
+      showToast(`Ausência registrada!`, 'info');
+      setShowQuickBlockSheet(false);
+      setQbMotive('');
     } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar lançamento financeiro.');
+      showToast('Erro ao bloquear horário: ' + err.message, 'error');
     }
   };
 
-  // Financeiro - Excluir lançamento
-  const handleDeleteTransaction = async (id) => {
-    if (!confirm('Deseja realmente excluir este lançamento financeiro?')) return;
-    try {
-      if (isDemoMode) {
-        const updated = transactions.filter(t => t.id !== id);
-        setTransactions(updated);
-        localStorage.setItem('demo_financial', JSON.stringify(updated));
-      } else {
-        await deleteDoc(doc(db, 'financial_transactions', id));
-      }
-      alert('Lançamento financeiro removido!');
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao excluir lançamento.');
-    }
+  // ── Minhas Ausências (CRUD) ─────────────────────────────────────
+  const openNewAbsence = () => {
+    setEditingAbsenceId(null);
+    setAbsTitle('');
+    setAbsStartDate(currentDate || today());
+    setAbsSingleDay(true);
+    setAbsEndDate(currentDate || today());
+    setAbsAllDay(false);
+    setAbsStartTime('09:00');
+    setAbsEndTime('10:00');
+    setAbsRecurrence('none');
+    setShowAbsenceSheet(true);
   };
 
-  // Configurações - Salvar Estúdio Gerais
-  const handleSaveSettings = async (e) => {
-    if (e) e.preventDefault();
-    try {
-      if (isDemoMode) {
-        localStorage.setItem('demo_studio_settings', JSON.stringify(settings));
-      } else {
-        await setDoc(doc(db, 'settings', 'studio'), settings);
-      }
-      alert('Configurações do Estúdio salvas com sucesso!');
-    } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar as configurações.');
-    }
+  const openEditAbsence = (a) => {
+    setEditingAbsenceId(a.id);
+    setAbsTitle(a.title || '');
+    setAbsStartDate(a.startDate || today());
+    setAbsSingleDay(!a.endDate);
+    setAbsEndDate(a.endDate || a.startDate || today());
+    setAbsAllDay(!!a.allDay);
+    setAbsStartTime(a.startTime || '09:00');
+    setAbsEndTime(a.endTime || '10:00');
+    setAbsRecurrence(a.recurrence || 'none');
+    setShowAbsenceSheet(true);
   };
 
-  // Configurações - Salvar Profissional
-  const handleSaveProf = async (e) => {
-    if (e) e.preventDefault();
-    if (!profForm.name.trim()) {
-      alert('Nome do profissional é obrigatório.');
+  const saveAbsence = async () => {
+    if (!absTitle.trim()) {
+      showToast('Informe um título', 'error');
       return;
     }
-    const profId = editingProfId || profForm.name.toLowerCase().trim().replace(/\s+/g, '-');
-    const newProfPayload = {
-      ...profForm,
-      id: profId,
-      commissionService: Number(profForm.commissionService) || 50,
-      commissionProduct: Number(profForm.commissionProduct) || 10
+    if (!absAllDay && absStartTime >= absEndTime) {
+      showToast('Horário de fim deve ser após o início', 'error');
+      return;
+    }
+    if (absRecurrence === 'none' && !absSingleDay && absEndDate < absStartDate) {
+      showToast('Data fim deve ser após a data início', 'error');
+      return;
+    }
+
+    const dt = parseLocalDate(absStartDate);
+    const absence = {
+      id: editingAbsenceId || ('abs-' + Date.now()),
+      title: absTitle.trim(),
+      startDate: absStartDate,
+      endDate: (absRecurrence === 'none' && !absSingleDay) ? absEndDate : null,
+      allDay: absAllDay,
+      startTime: absAllDay ? null : absStartTime,
+      endTime: absAllDay ? null : absEndTime,
+      recurrence: absRecurrence,
+      weekday: absRecurrence === 'weekly' ? getAdjustedDay(dt) : null
     };
-    const updatedProfs = editingProfId
-      ? (settings.professionals || []).map(p => p.id === editingProfId ? newProfPayload : p)
-      : [...(settings.professionals || []), newProfPayload];
 
-    const updatedSettings = { ...settings, professionals: updatedProfs };
+    const current = (settings?.absences || []).filter(a => a.id !== absence.id);
+    const updated = [...current, absence];
+
     try {
-      if (isDemoMode) {
-        localStorage.setItem('demo_studio_settings', JSON.stringify(updatedSettings));
-        setSettings(updatedSettings);
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { absences: updated });
       } else {
-        await setDoc(doc(db, 'settings', 'studio'), updatedSettings);
+        setSettings(prev => ({ ...prev, absences: updated }));
       }
-      setShowProfFormModal(false);
-      setEditingProfId(null);
-      setProfForm({
-        name: '',
-        avatar: '',
-        commissionService: 50,
-        commissionProduct: 10,
-        phone: '',
-        email: '',
-        active: true,
-        workStart: '09:00',
-        workEnd: '19:00',
-        lunchStart: '12:00',
-        lunchEnd: '13:00',
-        daysOff: [0, 1]
-      });
-      alert('Profissional salvo com sucesso!');
+      showToast(editingAbsenceId ? 'Ausência atualizada!' : 'Ausência cadastrada!', 'success');
+      setShowAbsenceSheet(false);
     } catch (err) {
-      console.error(err);
-      alert('Erro ao salvar profissional.');
+      showToast('Erro ao salvar ausência: ' + err.message, 'error');
     }
   };
 
-  // Configurações - Excluir Profissional
-  const handleDeleteProf = async (profId) => {
-    if (profId === 'jon') {
-      alert('O Jon não pode ser removido.');
-      return;
-    }
-    if (!confirm('Deseja realmente remover este profissional?')) return;
-    const updatedProfs = (settings.professionals || []).filter(p => p.id !== profId);
-    const updatedSettings = { ...settings, professionals: updatedProfs };
+  const deleteAbsence = async (id) => {
+    if (!window.confirm('Excluir esta ausência?')) return;
+    const updated = (settings?.absences || []).filter(a => a.id !== id);
     try {
-      if (isDemoMode) {
-        localStorage.setItem('demo_studio_settings', JSON.stringify(updatedSettings));
-        setSettings(updatedSettings);
+      if (db) {
+        await updateDoc(doc(db, 'settings', 'studio'), { absences: updated });
       } else {
-        await setDoc(doc(db, 'settings', 'studio'), updatedSettings);
+        setSettings(prev => ({ ...prev, absences: updated }));
       }
-      alert('Profissional removido!');
+      showToast('Ausência excluída', 'success');
     } catch (err) {
-      console.error(err);
-      alert('Erro ao remover profissional.');
+      showToast('Erro ao excluir: ' + err.message, 'error');
     }
   };
 
-  // Marketing - Disparo de Campanha em Lote com Console logs
-  const handleSendMarketingCampaign = async () => {
-    const now = new Date();
-    const targets = derivedClientsList.filter(c => {
-      const lastVisitDate = c.lastVisit;
-      if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) {
-        return marketingCampaignTarget === 'nunca_visitaram' || marketingCampaignTarget === 'todos';
-      }
-      const diffTime = Math.abs(now - new Date(lastVisitDate));
-      const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (marketingCampaignTarget === 'inativos_30') return days >= 30 && days <= 60;
-      if (marketingCampaignTarget === 'inativos_60') return days > 60;
-      return marketingCampaignTarget === 'todos';
-    });
-
-    if (targets.length === 0) {
-      alert('Nenhum cliente elegível neste segmento.');
-      return;
-    }
-
-    if (!confirm(`Deseja disparar mensagens automáticas de WhatsApp para ${targets.length} clientes?`)) {
-      return;
-    }
-
-    setIsSendingMarketingCampaign(true);
-    setMarketingCampaignTotal(targets.length);
-    setMarketingCampaignProgress(0);
-    setMarketingLogs(['[SISTEMA] Iniciando campanha de relacionamento...']);
-
-    for (let i = 0; i < targets.length; i++) {
-      const client = targets[i];
-      const firstName = (client.name || '').split(' ')[0];
-      const lastVisitDate = client.lastVisit;
-      let daysText = 'muitos';
-      if (lastVisitDate !== 'Nunca visitou' && lastVisitDate) {
-        const diffTime = Math.abs(now - new Date(lastVisitDate));
-        daysText = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      }
-      const compiledMsg = marketingCampaignMessage
-        .replace(/{nome}/g, firstName)
-        .replace(/{dias_ausente}/g, daysText)
-        .replace(/{ultimo_servico}/g, client.lastServiceName || 'Procedimento');
-
-      const cleanPhone = (client.phone || '').replace(/\D/g, '');
-      const formattedPhone = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-
-      setMarketingLogs(prev => [...prev, `[ENVIANDO] ${client.name} (${client.phone})...`]);
-
-      let sent = false;
-      const gateway = settings?.waReminderGateway || 'evolution';
-
-      if (gateway === 'evolution' && settings?.evolutionApiUrl && settings?.evolutionApiKey && settings?.evolutionInstanceName) {
-        try {
-          const url = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': settings.evolutionApiKey
-            },
-            body: JSON.stringify({
-              number: formattedPhone,
-              text: compiledMsg
-            })
-          });
-          sent = response.ok;
-        } catch (e) {
-          console.warn('Erro na chamada Evolution API:', e);
-        }
-      }
-
-      if (isDemoMode) {
-        sent = true;
-      }
-
-      if (sent) {
-        setMarketingLogs(prev => [...prev, `[OK] Mensagem enviada para ${client.name}`]);
-        const newLog = {
-          timestamp: new Date().toISOString(),
-          clientName: client.name,
-          clientPhone: client.phone,
-          stage: 'Campanha CRM Mobile',
-          channel: 'whatsapp',
-          status: 'success'
-        };
-        if (db) {
-          await addDoc(collection(db, 'automation_logs'), newLog);
-        } else {
-          const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs') || '[]');
-          localStorage.setItem('demo_automation_logs', JSON.stringify([newLog, ...localLogs]));
-        }
-      } else {
-        setMarketingLogs(prev => [...prev, `[FALHA] Erro de envio para ${client.name}. Verifique o gateway.`]);
-      }
-
-      setMarketingCampaignProgress(i + 1);
-      await new Promise(r => setTimeout(r, 1500));
-    }
-
-    setMarketingLogs(prev => [...prev, '[FIM] Campanha de marketing finalizada.']);
-    setIsSendingMarketingCampaign(false);
-  };
-
-  const stats = getFinancialStats();
-
-  const commissions = getCommissionData();
-
-  if (loading) {
+  // ── Loading screen ─────────────────────────────────────────────
+  if (loading || !authReady) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#F5EDDB' }}>
-        <div style={{ width: '40px', height: '40px', border: '3px solid var(--mobile-primary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <p style={{ marginTop: 12, fontSize: '0.9rem', color: '#6b7280', fontWeight: 600 }}>Carregando Studio do Jon...</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', height: '100dvh', background: '#0E0C0B',
+        color: '#F5EDDB', gap: '20px', fontFamily: '"Manrope", sans-serif'
+      }}>
+        <div style={{ fontSize: '2rem', fontFamily: '"DM Serif Display", serif', color: '#DCA354' }}>Studio do Jon</div>
+        <div className="m-spinner" />
+        <span style={{ fontSize: '0.85rem', color: '#7A6E63' }}>Carregando dados...</span>
       </div>
     );
   }
 
-  return (
-    <div className="mobile-app-wrapper" onTouchStart={handleTabSwipeStart} onTouchEnd={handleTabSwipeEnd}>
-      {/* Conditionally render header based on activeTab */}
-      {MAIN_TABS.includes(activeTab) ? (
-        <>
-          {/* Header Fixo do App */}
-          <header className="mobile-header">
-            <div className="mobile-logo-area">
-              <div className="mobile-logo-box">
-                <img src="/logo-app.png" alt="Logo O Jon Que Cortou" />
-              </div>
-              <h2 className="mobile-owner-name">Jonatan</h2>
-            </div>
-            <div className="mobile-header-actions">
-              <HelpCircle size={20} />
-              <div className="bell-badge-container" onClick={() => setShowNotificationsModal(true)} style={{ position: 'relative', cursor: 'pointer' }}>
-                <Bell size={20} />
-                {pendingCount > 0 && <span className="bell-badge">{pendingCount}</span>}
-              </div>
-            </div>
-          </header>
+  // ═══════════════════════════════════════════════════════════════
+  // RENDER TABS
+  // ═══════════════════════════════════════════════════════════════
 
-          {/* Sub-header Contexto */}
-          <div className="mobile-subheader">
-            <Info size={12} style={{ marginRight: 6, color: 'var(--mobile-primary)' }} />
-            Você está em: O Jon Que Cortou - Especialista em Cachos
+  // ── TAB: HOJE ─────────────────────────────────────────────────
+  const renderHoje = () => {
+    const hour = new Date().getHours();
+    const greet = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite';
+    const upcoming = bookings
+      .filter(b => b.date === today() && ['pendente','confirmado'].includes(b.status))
+      .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    const birthdays = clients.filter(c => {
+      if (!c.birthdate) return false;
+      const bd = c.birthdate.slice(5);
+      return bd === today().slice(5);
+    });
+
+    return (
+      <div className="m-tab m-page" key="hoje">
+        {/* Greeting */}
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
+          <div>
+            <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.6px' }}>{greet} 👋</div>
+            <div style={{ fontSize:'1.3rem', fontWeight:800, fontFamily:'"DM Serif Display", serif', color:'var(--m-text)', marginTop:2 }}>
+              {settings?.name || 'Studio do Jon'}
+            </div>
+            <div style={{ fontSize:'0.7rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(today())} · {new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' })}</div>
           </div>
-        </>
-      ) : (
-        /* Sub-view Header */
-        <header className="mobile-subview-header">
-          <button className="btn-back-options" onClick={() => setActiveTab('opcoes')}>
-            <ChevronLeft size={20} />
-          </button>
-          <h3>
-            {activeTab === 'clientes' && 'Clientes & Ficha Capilar'}
-            {activeTab === 'servicos' && 'Grade de Serviços'}
-            {activeTab === 'estoque' && 'Estoque & Almoxarifado'}
-            {activeTab === 'financeiro' && 'Fluxo de Caixa'}
-            {activeTab === 'configuracoes' && 'Configurações'}
-            {activeTab === 'marketing' && 'Marketing CRM'}
-          </h3>
-        </header>
-      )}
+          {syncError && <div style={{ display:'flex', alignItems:'center', gap:4, color:'var(--m-amber)', fontSize:'0.65rem', fontWeight:700 }}><AlertCircle size={12}/> Offline</div>}
+        </div>
 
-      {/* Banner de Aguardando Conexão */}
-      {!loading && connectionWarning && (
-        <div
-          style={{
-            background: '#fff3cd',
-            borderBottom: '1px solid #ffc107',
-            padding: '8px 16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: '0.78rem',
-            color: '#856404',
-            gap: '8px'
+        {/* KPIs */}
+        <div className="m-kpi-row">
+          <div className="m-kpi-card gold">
+            <div className="m-kpi-icon"><DollarSign size={14}/></div>
+            <div className="m-kpi-label">Hoje</div>
+            <div className="m-kpi-value" style={{ fontSize:'1.15rem' }}>{fmt(todayRevenue)}</div>
+            <div className="m-kpi-sub">{fmt(monthRevenue)} no mês</div>
+          </div>
+          <div className="m-kpi-card">
+            <div className="m-kpi-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Calendar size={14}/></div>
+            <div className="m-kpi-label">Hoje</div>
+            <div className="m-kpi-value">{todayBookings.length}</div>
+            <div className="m-kpi-sub">{pendingCount} pendente{pendingCount !== 1 ? 's':''}</div>
+          </div>
+        </div>
+
+        {/* Aniversariantes */}
+        {birthdays.length > 0 && (
+          <div style={{ background:'var(--m-gold-subtle)', border:'0.5px solid var(--m-gold)', borderRadius:'var(--m-radius)', padding:'12px 14px' }}>
+            <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>🎂 Aniversariante{birthdays.length > 1 ? 's':''} Hoje</div>
+            {birthdays.map(c => (
+              <button
+                key={c.id}
+                onClick={() => { setBirthdayClient(c); setShowBirthdaySheet(true); }}
+                style={{
+                  display:'flex', alignItems:'center', justifyContent:'space-between',
+                  width:'100%', background:'none', border:'none', padding:'6px 0',
+                  cursor:'pointer', fontFamily:'inherit', borderBottom: birthdays.indexOf(c) < birthdays.length - 1 ? '0.5px solid var(--m-rule)' : 'none'
+                }}
+              >
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontSize:'1.1rem' }}>🎉</span>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-text)', fontWeight:700 }}>{c.name}</span>
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                  {c.phone && <span style={{ fontSize:'0.68rem', color:'var(--m-muted)' }}>{c.phone}</span>}
+                  <span style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', background:'rgba(220,163,84,0.15)', borderRadius:8, padding:'3px 8px' }}>Parabenizar →</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Today's bookings */}
+        <div>
+          <div className="m-section-header">
+            <span className="m-section-title">Agenda de Hoje</span>
+            <button className="m-section-link" onClick={() => setTab('agenda')}>Ver tudo →</button>
+          </div>
+          {todayBookings.length === 0 ? (
+            <div className="m-empty">
+              <Calendar className="m-empty-icon" size={32}/>
+              <div className="m-empty-title">Nenhum agendamento</div>
+              <div className="m-empty-sub">Clique no + para criar um agendamento</div>
+            </div>
+          ) : (
+            <div className="m-booking-list">
+              {todayBookings.slice(0, 6).map(b => (
+                <div key={b.id} className="m-booking-card" onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
+                  <div className="m-booking-time">{b.time || '—'}</div>
+                  <div className="m-booking-info">
+                    <div className="m-booking-name">{b.clientName}</div>
+                    <div className="m-booking-service">{b.service?.name || b.serviceName}</div>
+                  </div>
+                  <StatusPill status={b.status}/>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        <div>
+          <div className="m-section-title" style={{ marginBottom:10 }}>Ações Rápidas</div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+            {[
+              { label:'Novo Agendamento', icon:<Plus size={16}/>, color:'var(--m-gold)', action: () => { setShowNewBookingSheet(true); } },
+              { label:'Lançar Despesa', icon:<TrendingDown size={16}/>, color:'var(--m-red)', action: () => { setTab('caixa'); setTimeout(() => setShowAddTxSheet(true), 100); } },
+              { label:'Novo Cliente', icon:<Users size={16}/>, color:'var(--m-blue)', action: () => { setTab('clientes'); setTimeout(() => setShowNewClientSheet(true), 100); } },
+              { label:'Adicionar Foto', icon:<Camera size={16}/>, color:'var(--m-green)', action: () => setTab('galeria') }
+            ].map((qa, i) => (
+              <button key={i} className="m-mais-card" onClick={qa.action} style={{ alignItems:'center', flexDirection:'row', gap:10 }}>
+                <div style={{ width:34, height:34, borderRadius:10, background:`${qa.color}18`, color:qa.color, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{qa.icon}</div>
+                <span style={{ fontSize:'0.78rem', fontWeight:700, color:'var(--m-text)', textAlign:'left' }}>{qa.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── TAB: AGENDA ────────────────────────────────────────────────
+  const renderAgenda = () => {
+    const dayBookings = bookings.filter(b => b.date === currentDate);
+
+    return (
+      <div className="m-tab m-page-flush" key="agenda">
+        {/* Week strip */}
+        <div className="m-week-strip">
+          {weekDays.map(d => {
+            const dt = parseLocalDate(d);
+            const dayIdx = getAdjustedDay(dt);
+            const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
+            return (
+              <button key={d} className={`m-week-day ${d === currentDate ? 'active' : ''} ${hasBk ? 'has-bookings' : ''}`} onClick={() => setCurrentDate(d)}>
+                <span className="m-week-day-name">{DAYS[dayIdx]}</span>
+                <span className="m-week-day-num">{dt.getDate()}</span>
+                <span className="m-week-day-dot"/>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Date navigation */}
+        <div className="m-agenda-date-bar">
+          <button className="m-date-nav" onClick={() => animateDayChange(-1)}><ChevronLeft size={18}/></button>
+          <div className="m-date-center">
+            <div className="m-date-day">{fmtDate(currentDate)}</div>
+          </div>
+          <button className="m-date-nav" onClick={() => animateDayChange(1)}><ChevronRight size={18}/></button>
+        </div>
+
+        {/* Swipeable container */}
+        <div 
+          style={{ 
+            flex:1, 
+            display:'flex', 
+            flexDirection:'column', 
+            overflow:'hidden',
+            position: 'relative',
+            cursor: isDragging ? 'grabbing' : 'grab',
           }}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
         >
-          <span>⚠️ Aguardando conexão com o Firebase (exibindo dados locais/cache).</span>
-          <button
-            onClick={handleManualSync}
-            disabled={syncing}
-            style={{
-              background: '#ffc107',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '4px 10px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              color: '#333',
-              cursor: syncing ? 'not-allowed' : 'pointer',
-              opacity: syncing ? 0.7 : 1,
-              whiteSpace: 'nowrap'
+          <div 
+            style={{ 
+              flex:1, 
+              display:'flex', 
+              flexDirection:'column', 
+              overflowY: isDragging ? 'hidden' : 'auto',
+              overflowX: 'hidden',
+              willChange: 'transform, opacity',
+              touchAction: 'pan-y',
+              ...(isDragging ? { transform: `translateX(${translateX}px)`, transition: 'none' } : slideStyle)
             }}
           >
-            {syncing ? '🔄 Conectando...' : '🔄 Sincronizar'}
-          </button>
-        </div>
-      )}
-
-      {/* Banner de Status de Sincronização */}
-      {!loading && !isDemoMode && bookings.length === 0 && (
-        <div
-          style={{
-            background: '#fff3cd',
-            borderBottom: '1px solid #ffc107',
-            padding: '8px 16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: '0.78rem',
-            color: '#856404',
-            gap: '8px'
-          }}
-        >
-          <span>
-            {syncError 
-              ? `⚠️ Erro: ${syncError}` 
-              : '⚠️ Sem dados carregados. Possível falha de sincronização.'}
-          </span>
-          <button
-            onClick={handleManualSync}
-            disabled={syncing}
-            style={{
-              background: '#ffc107',
-              border: 'none',
-              borderRadius: '6px',
-              padding: '4px 10px',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              color: '#333',
-              cursor: syncing ? 'not-allowed' : 'pointer',
-              opacity: syncing ? 0.7 : 1,
-              whiteSpace: 'nowrap'
-            }}
-          >
-            {syncing ? '🔄 Sincronizando...' : '🔄 Sincronizar'}
-          </button>
-        </div>
-      )}
-
-      {/* RENDERIZAÇÃO DAS ABAS */}
-      
-      {/* 1. ABA INÍCIO */}
-      {activeTab === 'inicio' && (
-        <div className="mobile-home-container mobile-tab-view">
-          {/* Welcome Banner com Logo Harmonizada */}
-          <div className="mobile-welcome-banner">
-            <div className="mobile-welcome-content">
-              <h3>Olá, Jonatan!</h3>
-              <p>Seja bem-vindo de volta ao seu painel.</p>
-            </div>
-            <img src="/logo-app.png" alt="Logo O Jon Que Cortou" className="mobile-welcome-logo" />
-          </div>
-
-          {/* Scroll de atalhos rápidos */}
-          <div className="mobile-shortcuts-scroll">
-            <div className="mobile-shortcut-card" onClick={() => { setEditingBookingId(null); resetBookingForm(); setNewBooking(prev => ({ ...prev, date: todayStr })); setShowAddBookingModal(true); }}>
-              <CalendarIcon size={18} className="icon-top" />
-              <span>Novo agendamento</span>
-            </div>
-            <div className="mobile-shortcut-card" onClick={() => setShowAddClientModal(true)}>
-              <User size={18} className="icon-top" />
-              <span>Registrar cliente</span>
-            </div>
-            <div className="mobile-shortcut-card" onClick={() => setActiveTab('comissoes')}>
-              <DollarSign size={18} className="icon-top" />
-              <span>Ver minhas comissões</span>
-            </div>
-          </div>
-
-          {/* Dados do Meu Negócio */}
-          <div className="mobile-business-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <h3 style={{ margin: 0 }}>Dados do meu negócio</h3>
-              <select 
-                className="stats-scope-select"
-                value={businessPeriod} 
-                onChange={(e) => setBusinessPeriod(e.target.value)}
-                style={{ fontSize: '0.75rem', padding: '4px 8px' }}
-              >
-                <option value="semana">Esta Semana</option>
-                <option value="mes">Este Mês</option>
-              </select>
-            </div>
-            <div className="period-text">
-              {businessPeriod === 'semana' ? 'Faturamento da semana atual' : 'Faturamento do mês corrente'}
-            </div>
-            
-            <div className="mobile-financial-row">
-              <div className="mobile-financial-item">
-                <span>Receitas</span>
-                <span className="value-green">R$ {stats.receitas.toFixed(2).replace('.', ',')}</span>
-              </div>
-              <div className="mobile-financial-item">
-                <span>Despesas</span>
-                <span className="value-red">R$ {stats.despesas.toFixed(2).replace('.', ',')}</span>
-              </div>
-            </div>
-
-            <div className="mobile-business-actions">
-              <button className="mobile-btn-outline" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('dashboard'); }}>Visão geral</button>
-              <button className="mobile-btn-solid" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('lancamentos'); }}>Entradas e saídas</button>
-            </div>
-          </div>
-
-          {/* Meus Próximos Compromissos */}
-          <h4 className="mobile-section-header">Meus próximos compromissos</h4>
-          <div className="mobile-appointments-card">
-            {todayBookings.length === 0 ? (
-              <div className="mobile-empty-state">
-                Sem compromissos para hoje! Use o atalho acima caso queira criar um novo agendamento.
-              </div>
-            ) : (
-              todayBookings.map(b => (
-                <div key={b.id || b.clientName} className="mobile-appt-list-row" onClick={() => setSelectedBooking(b)}>
-                  <div className="mobile-appt-left">
-                    <span className="appt-client">{b.clientName || '—'} {b.isPackageUse && '📦'} {b.isPackageAcquisition && '🛒📦'}</span>
-                    <span className="appt-service">{b.service?.name || b.serviceName || 'Serviço'}</span>
-                  </div>
-                  <div className="mobile-appt-right">
-                    <span className="appt-time">{b.time || '—'}</span>
-                    <span className={`appt-status ${b.status || 'pendente'}`}>{ (b.status || 'pendente').toUpperCase() }</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* 2. ABA AGENDA (TIMELINE DIÁRIA, WEEKLY TABLE, MONTHLY DOTS) */}
-      {activeTab === 'agenda' && (
-        <div
-          className="mobile-tab-view"
-          style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
-          onTouchStart={handleSwipeStart}
-          onTouchEnd={handleSwipeEnd}
-        >
-          <div className="mobile-agenda-header">
-            <div style={{ display: 'flex', gap: 8 }}>
-              <select 
-                className="mobile-agenda-select" 
-                value={agendaView} 
-                onChange={(e) => setAgendaView(e.target.value)}
-              >
-                <option value="diario">Diário</option>
-                <option value="semanal">Semanal</option>
-                <option value="mensal">Mensal</option>
-              </select>
-              
-              {(agendaView === 'semanal' || agendaView === 'mensal') && (
-                <select 
-                  className="mobile-agenda-select" 
-                  value={selectedWeeklyMonthlyProf} 
-                  onChange={(e) => setSelectedWeeklyMonthlyProf(e.target.value)}
-                >
-                  {activeProfessionalsList.map(p => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
-                  ))}
-                </select>
-              )}
-            </div>
-            <div className="mobile-agenda-actions">
-              <CalendarIcon size={18} />
-            </div>
-          </div>
-
-          <div className="mobile-day-switcher">
-            {agendaView === 'diario' ? (
-              <>
-                <button className="mobile-day-btn" onClick={() => handleDateChange(-1)}>
-                  <ChevronLeft size={20} />
-                </button>
-                <div className="mobile-current-day-label">
-                  <span className="date-string">{dateInfo.dateString}</span>
-                  <span className="weekday-string">{dateInfo.weekdayString}</span>
-                </div>
-                <button className="mobile-day-btn" onClick={() => handleDateChange(1)}>
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            ) : agendaView === 'semanal' ? (
-              <>
-                <button className="mobile-day-btn" onClick={() => handleWeekChange(-1)}>
-                  <ChevronLeft size={20} />
-                </button>
-                <div className="mobile-current-day-label">
-                  <span className="date-string">
-                    Semana de {formatLocalDate(getWeekDays(currentDate)[0]).dateString.split(' ')[0]} a {formatLocalDate(getWeekDays(currentDate)[6]).dateString}
-                  </span>
-                  <span className="weekday-string">Filtro Semanal</span>
-                </div>
-                <button className="mobile-day-btn" onClick={() => handleWeekChange(1)}>
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            ) : (
-              <>
-                <button className="mobile-day-btn" onClick={() => handleMonthChange(-1)}>
-                  <ChevronLeft size={20} />
-                </button>
-                <div className="mobile-current-day-label">
-                  <span className="date-string" style={{ textTransform: 'capitalize' }}>
-                    {new Date(currentDate + 'T00:00:00').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-                  </span>
-                  <span className="weekday-string">Filtro Mensal</span>
-                </div>
-                <button className="mobile-day-btn" onClick={() => handleMonthChange(1)}>
-                  <ChevronRight size={20} />
-                </button>
-              </>
-            )}
-          </div>
-
-          {/* VIEW: DIÁRIO */}
-          {agendaView === 'diario' && (
-            <div key={currentDate} className="mobile-timeline-scroll slide-day-animation">
-              {hourSlots.map(slot => {
-                const matchedAppt = bookings.find(b => b.date === currentDate && b.time === slot && b.status !== 'cancelado');
-                
-                const timeToMin = (t) => {
-                  if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
-                  const [h, m] = t.split(':').map(Number);
-                  return (h || 0) * 60 + (m || 0);
-                };
-                const slotMin = timeToMin(slot);
-                const ongoingAppt = !matchedAppt && bookings.find(b => {
-                  if (b.date !== currentDate || b.status === 'cancelado') return false;
+            <div className="m-slot-list" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
+              {HOURLY_SLOTS.map(slot => {
+                const bk = dayBookings.find(b => {
+                  if (b.status === 'cancelado') return false;
                   const bStart = timeToMin(b.time);
                   const bEnd = bStart + (b.duration || 60);
-                  return bStart < slotMin && slotMin < bEnd;
+                  const slotMin = timeToMin(slot);
+                  return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
                 });
 
-                const jonProf = settings?.professionals?.find(p => p.id === 'jon');
-                const blockedBySettings = !matchedAppt && !ongoingAppt && isSlotBlocked(jonProf, currentDate, slot);
-                
+                const bStart = bk ? timeToMin(bk.time) : 0;
+                const bEnd = bk ? bStart + (bk.duration || 60) : 0;
+                const slotMin = timeToMin(slot);
+                const isSubsequent = bk && bStart < slotMin;
+
+                const displayTimeRange = bk 
+                  ? `${bk.time} - ${minToTime(bEnd)}${isSubsequent ? ' (Ocupado)' : ''}`
+                  : slot;
+
+                const isDefaultLunchBlock = (slot === '12:00');
+                const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
+                const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
+
+                const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
+                const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
+                const absence = !bk ? getAbsenceForSlot(getEffectiveAbsences(settings), currentDate, slot) : null;
+
+                const dtForLabel = parseLocalDate(currentDate);
+                const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
+                const isHolidayDay = isFeriado(currentDate);
+                const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
+
                 return (
-                  <div key={slot} className="mobile-timeline-row" onClick={() => handleSlotClick(slot)}>
-                    <div className="mobile-timeline-time-col">{slot}</div>
-                    <div className="mobile-timeline-slot-col">
-                      {matchedAppt ? (
-                        <div className={`mobile-timeline-appt-block ${matchedAppt.status}`}>
-                          <div className="appt-block-client">{matchedAppt.clientName}</div>
-                          <div className="appt-block-service">{matchedAppt.service?.name || matchedAppt.serviceName}</div>
-                          <div className="appt-block-meta">
-                            <span>{matchedAppt.status.toUpperCase()}</span>
-                            {matchedAppt.status !== 'bloqueado' && (
-                              <span>R$ {(matchedAppt.service?.price || matchedAppt.servicePrice || 0).toFixed(0)}</span>
-                            )}
+                  <div key={slot} className="m-slot-row" onClick={() => {
+                    if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
+                    else if (absence) {
+                      if (window.confirm(`Este horário está bloqueado por uma ausência (${absence.title}). Deseja agendar mesmo assim?`)) {
+                        setSelectedSlot(slot); setShowSlotSheet(true);
+                      }
+                    }
+                    else if (isBlockedByScale) {
+                      if (window.confirm("Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?\n\n(Para liberar o horário sem agendar agora, clique em Cancelar)")) {
+                        setSelectedSlot(slot); setShowSlotSheet(true);
+                      } else if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
+                        localStorage.setItem(`unlock_${currentDate}_${slot}`, 'true');
+                        showToast("Horário liberado!", "success");
+                        window.location.reload();
+                      }
+                    }
+                    else { setSelectedSlot(slot); setShowSlotSheet(true); }
+                  }}>
+                    <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
+                    <div className="m-slot-content">
+                      {bk ? (
+                        <div className={`m-slot-booking ${bk.status}`}>
+                          <div>
+                            <div className="m-slot-client">{bk.clientName}</div>
+                            <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
                           </div>
+                          <StatusPill status={bk.status}/>
                         </div>
-                      ) : ongoingAppt ? (
-                        <div 
-                          className={`mobile-timeline-appt-block ${ongoingAppt.status}`}
-                          style={{ 
-                            opacity: 0.85, 
-                            borderLeftStyle: 'dashed',
-                            background: ongoingAppt.status === 'bloqueado' ? undefined : '#faf5ee'
-                          }}
-                        >
-                          <div className="appt-block-client" style={{ color: 'var(--mobile-text)' }}>↳ {ongoingAppt.clientName} (Ocupado)</div>
-                          <div className="appt-block-service">{ongoingAppt.service?.name || ongoingAppt.serviceName}</div>
-                          <div className="appt-block-meta">
-                            <span>{ongoingAppt.status.toUpperCase()}</span>
-                            {ongoingAppt.status !== 'bloqueado' && (
-                              <span>R$ {(ongoingAppt.service?.price || ongoingAppt.servicePrice || 0).toFixed(0)}</span>
-                            )}
+                      ) : isLocked ? (
+                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
+                          <div>
+                            <div className="m-slot-client" style={{ color: 'var(--m-red)' }}>Bloqueio de Almoço</div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
                           </div>
+                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
                         </div>
-                      ) : blockedBySettings ? (
-                        <div className="mobile-empty-slot-btn bloqueado-escala" style={{ background: '#f5ebe0', border: '1px dashed #d4bda8', color: '#8b694b', opacity: 0.85 }}>
-                          <span>🚫 Bloqueado (Escala) · Toque para agendar</span>
+                      ) : absence ? (
+                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(139, 124, 200, 0.12)', borderLeft: '4px solid #8b7cc8', color: '#8b7cc8' }}>
+                          <div>
+                            <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <Lock size={12} /> {absence.title}
+                            </div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)' }}>Ausência</div>
+                          </div>
+                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(139, 124, 200, 0.22)', color: '#8b7cc8' }}>Ausência</span>
+                        </div>
+                      ) : isBlockedByScale ? (
+                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(163, 150, 135, 0.1)', borderLeft: '4px solid #8A7866', color: '#8A7866' }}>
+                          <div>
+                            <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <Lock size={12} /> Bloqueado
+                            </div>
+                            <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)' }}>{blockLabel}</div>
+                          </div>
+                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
                         </div>
                       ) : (
-                        <div className="mobile-empty-slot-btn">
-                          <span>+ Toque para agendar/bloquear</span>
-                        </div>
+                        <span className="m-slot-empty">Disponível</span>
                       )}
                     </div>
                   </div>
                 );
               })}
             </div>
-          )}
-
-          {/* VIEW: SEMANAL (GRADE VISUAL) */}
-          {agendaView === 'semanal' && (
-            <div key={`semanal-${currentDate}-${selectedWeeklyMonthlyProf}`} className="mobile-weekly-grid-container slide-day-animation" style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'white', overflow: 'hidden', paddingBottom: 80 }}>
-              {/* Header com dias da semana */}
-              <div className="mobile-weekly-header" style={{ display: 'flex', borderBottom: '1px solid var(--mobile-rule)', background: '#fafafa', padding: '6px 0' }}>
-                <div className="mobile-weekly-hour-spacer" style={{ width: 50, flexShrink: 0 }} />
-                <div className="mobile-weekly-days-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', textAlign: 'center' }}>
-                  {(() => {
-                    const wDays = getWeekDays(currentDate);
-                    const weekdaysShort = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
-                    return wDays.map(dStr => {
-                      const d = new Date(dStr + 'T00:00:00');
-                      const isToday = dStr === todayStr;
-                      return (
-                        <div 
-                          key={dStr} 
-                          className={`mobile-weekly-day-header ${isToday ? 'active' : ''}`}
-                          style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            padding: '4px 0',
-                            color: isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)'
-                          }}
-                        >
-                          <span className="weekday-lbl" style={{ fontSize: '0.62rem', textTransform: 'lowercase', color: isToday ? 'var(--mobile-primary)' : 'var(--mobile-muted)', fontWeight: isToday ? 'bold' : 'normal' }}>
-                            {weekdaysShort[d.getDay()]}
-                          </span>
-                          <span className="day-num-lbl" style={{ fontSize: '0.85rem', fontWeight: 700 }}>
-                            {d.getDate()}
-                          </span>
-                        </div>
-                      );
-                    });
-                  })()}
-                </div>
-              </div>
-
-              {/* Corpo da grade semanal */}
-              <div className="mobile-weekly-body" style={{ display: 'flex', flex: 1, overflowY: 'auto', position: 'relative' }}>
-                {/* Horários no lado esquerdo */}
-                <div className="mobile-weekly-hours-column" style={{ width: 50, flexShrink: 0, borderRight: '1px solid var(--mobile-rule)', background: '#fcfcfc', display: 'flex', flexDirection: 'column' }}>
-                  {['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'].map(h => (
-                    <div key={h} className="mobile-weekly-hour-cell" style={{ height: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 700, color: 'var(--mobile-muted)', borderBottom: '1px solid var(--mobile-rule-soft, #f0f0f0)' }}>
-                      {h}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Colunas dos dias da semana */}
-                <div className="mobile-weekly-days-columns" style={{ flex: 1, position: 'relative', display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', height: 540 }}>
-                  {/* Linhas de grade horizontais */}
-                  <div className="mobile-weekly-grid-lines" style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', pointerEvents: 'none', zIndex: 0 }}>
-                    {Array.from({ length: 9 }).map((_, i) => (
-                      <div key={i} className="mobile-weekly-grid-line" style={{ height: 60, borderBottom: '1px solid var(--mobile-rule-soft, #f0f0f0)' }} />
-                    ))}
-                  </div>
-
-                  {(() => {
-                    const wDays = getWeekDays(currentDate);
-                    const prof = activeProfessionalsList.find(p => p.id === selectedWeeklyMonthlyProf);
-
-                    return wDays.map(dStr => {
-                      const dayBookings = bookings.filter(b => 
-                        b.date === dStr && 
-                        (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
-                        b.status !== 'cancelado'
-                      );
-
-                      const dayBlocks = getDayBlocks(prof, dStr);
-
-                      return (
-                        <div key={dStr} className="mobile-weekly-day-column" style={{ position: 'relative', height: '100%', borderRight: '1px solid var(--mobile-rule-soft, #f0f0f0)', zIndex: 1 }}>
-                          {/* Desenhar bloqueios */}
-                          {dayBlocks.map((block, idx) => {
-                            const startMin = timeToMin(block.start);
-                            const endMin = timeToMin(block.end);
-                            const duration = Math.max(30, endMin - startMin);
-                            
-                            // Posicionamento
-                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
-                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
-
-                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
-
-                            return (
-                              <div 
-                                key={`block-${idx}`} 
-                                className="mobile-weekly-appt-card bloqueado"
-                                style={{
-                                  top: `${topPercent}%`,
-                                  height: `${heightPercent}%`,
-                                  position: 'absolute',
-                                  left: 2,
-                                  right: 2,
-                                  background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
-                                  color: '#475569',
-                                  borderLeft: '3px solid #94a3b8',
-                                  opacity: 0.85,
-                                  fontSize: '0.62rem',
-                                  padding: '2px 4px',
-                                  borderRadius: 4,
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  overflow: 'hidden',
-                                  justifyContent: 'center',
-                                  alignItems: 'center',
-                                  textAlign: 'center',
-                                  zIndex: 2
-                                }}
-                              >
-                                <span style={{ fontWeight: 'bold', fontSize: '0.55rem' }}>{block.label}</span>
-                                <span style={{ fontSize: '0.5rem' }}>{block.start}</span>
-                              </div>
-                            );
-                          })}
-
-                          {/* Desenhar agendamentos */}
-                          {dayBookings.map(b => {
-                            const startMin = timeToMin(b.time);
-                            const duration = b.duration || 60;
-                            
-                            // Posicionamento
-                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
-                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
-
-                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
-
-                            let bgGradient = 'linear-gradient(135deg, #FDF8F4 0%, #FAF4EE 100%)';
-                            let borderLeftColor = 'var(--mobile-primary)';
-                            let textColor = 'var(--mobile-primary)';
-                            
-                            if (b.status === 'finalizado') {
-                              bgGradient = 'linear-gradient(135deg, #F2F7F3 0%, #EBF1EC 100%)';
-                              borderLeftColor = 'var(--mobile-green)';
-                              textColor = 'var(--mobile-green)';
-                            } else if (b.status === 'pendente') {
-                              bgGradient = 'linear-gradient(135deg, #FEF9E7 0%, #FAF0D4 100%)';
-                              borderLeftColor = 'var(--mobile-amber)';
-                              textColor = 'var(--mobile-amber)';
-                            } else if (b.status === 'bloqueado') {
-                              bgGradient = 'var(--mobile-grey-block)';
-                              borderLeftColor = '#a0aec0';
-                              textColor = 'var(--mobile-muted)';
-                            }
-
-                            return (
-                              <div 
-                                key={b.id} 
-                                className={`mobile-weekly-appt-card ${b.status}`}
-                                onClick={() => setSelectedBooking(b)}
-                                style={{
-                                  top: `${topPercent}%`,
-                                  height: `${heightPercent}%`,
-                                  position: 'absolute',
-                                  left: 2,
-                                  right: 2,
-                                  fontSize: '0.6rem',
-                                  padding: '4px 3px',
-                                  borderRadius: 4,
-                                  background: bgGradient,
-                                  borderLeft: `3px solid ${borderLeftColor}`,
-                                  color: textColor,
-                                  overflow: 'hidden',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  justifyContent: 'center',
-                                  boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
-                                  zIndex: 3,
-                                  cursor: 'pointer'
-                                }}
-                              >
-                                <span style={{ fontWeight: 'bold', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', color: '#1a1310' }}>{b.clientName} {b.isPackageUse && '📦'} {b.isPackageAcquisition && '🛒📦'}</span>
-                                <span style={{ opacity: 0.9, textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontSize: '0.52rem', color: '#4a3f35' }}>{b.service?.name || b.serviceName}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      );
-                    });
-                  })()}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* VIEW: MENSAL (CALENDÁRIO COM CÍRCULOS DE STATUS) */}
-          {agendaView === 'mensal' && (
-            <div key={`mensal-${currentDate}`} className="slide-day-animation" style={{ padding: 16, background: 'white', flex: 1, paddingBottom: 80, overflowY: 'auto' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 12, textAlign: 'center', fontWeight: 'bold', fontSize: '0.72rem', color: 'var(--mobile-muted)' }}>
-                <div>dom.</div>
-                <div>seg.</div>
-                <div>ter.</div>
-                <div>qua.</div>
-                <div>qui.</div>
-                <div>sex.</div>
-                <div>sáb.</div>
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
-                {getDaysInMonthGrid(currentDate).map((cell, idx) => {
-                  const dayBookings = bookings.filter(b => 
-                    b.date === cell.dateStr && 
-                    (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
-                    b.status !== 'cancelado'
-                  );
-                  
-                  const isToday = cell.dateStr === todayStr;
-                  const isCurrentMonth = cell.isCurrentMonth;
-                  
-                  return (
-                    <div 
-                      key={`${cell.dateStr}-${idx}`} 
-                      onClick={() => {
-                        setCurrentDate(cell.dateStr);
-                        setAgendaView('diario');
-                      }}
-                      style={{
-                        minHeight: 68,
-                        borderRadius: 12,
-                        padding: '6px 4px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        background: !isCurrentMonth ? '#F5F5F5' : 'transparent',
-                        color: !isCurrentMonth ? '#cbd5e1' : (isToday ? 'var(--mobile-primary)' : 'var(--mobile-text)'),
-                        cursor: 'pointer',
-                        transition: 'background 0.2s',
-                        position: 'relative'
-                      }}
-                    >
-                      <span style={{ 
-                        fontSize: '0.9rem', 
-                        fontWeight: isToday || !isCurrentMonth ? 'bold' : 'normal',
-                        color: !isCurrentMonth ? '#a0aec0' : (isToday ? 'var(--mobile-primary)' : '#1a1310')
-                      }}>
-                        {cell.dayNum}
-                      </span>
-                      
-                      {isCurrentMonth && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 4, alignItems: 'center' }}>
-                          {dayBookings.slice(0, 3).map((b, bIdx) => {
-                            let dotColor = '#cbd5e1'; // bloqueado / outro
-                            if (b.status === 'confirmado') dotColor = '#48bb78'; // verde para confirmado/finalizado
-                            if (b.status === 'finalizado') dotColor = '#48bb78';
-                            if (b.status === 'pendente') dotColor = '#ecc94b'; // laranja para pendente
-                            
-                            return (
-                              <span 
-                                key={b.id || bIdx} 
-                                style={{
-                                  width: 5,
-                                  height: 5,
-                                  borderRadius: '50%',
-                                  backgroundColor: dotColor,
-                                  display: 'block'
-                                }} 
-                              />
-                            );
-                          })}
-                          {dayBookings.length > 3 && (
-                            <span style={{ fontSize: '0.6rem', fontWeight: 'bold', color: 'var(--mobile-muted)', lineHeight: '4px', marginTop: -2 }}>...</span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* 3. ABA AÇÕES */}
-      {activeTab === 'acoes' && (
-        <div className="mobile-actions-container">
-          <h4 className="mobile-section-header">Ações principais</h4>
-          <div className="mobile-actions-grid">
-            <div className="mobile-action-btn-card" onClick={() => { setEditingBookingId(null); resetBookingForm(); setShowAddBookingModal(true); }}>
-              <div className="icon-wrapper">
-                <CalendarIcon size={20} />
-              </div>
-              <span>Novo agendamento</span>
-            </div>
-
-            <div className="mobile-action-btn-card" onClick={() => setShowAddClientModal(true)}>
-              <div className="icon-wrapper">
-                <User size={20} />
-              </div>
-              <span>Cadastrar cliente</span>
-            </div>
-
-            <div className="mobile-action-btn-card" onClick={() => {
-              // Filtra agendamentos pendentes ou confirmados do dia para fechar
-              const pendingCheckout = bookings.find(b => b.date === todayStr && b.status !== 'finalizado' && b.status !== 'cancelado' && b.status !== 'bloqueado');
-              if (pendingCheckout) {
-                openCheckout(pendingCheckout);
-              } else {
-                alert('Nenhum agendamento pendente para checkout no dia de hoje.');
-              }
-            }}>
-              <div className="icon-wrapper">
-                <DollarSign size={20} />
-              </div>
-              <span>Fechar conta</span>
-            </div>
-
-            <div className="mobile-action-btn-card" onClick={() => {
-              setNewBooking(prev => ({ ...prev, date: currentDate, time: '12:00' }));
-              setShowBlockModal(true);
-            }}>
-              <div className="icon-wrapper">
-                <Clock size={20} />
-              </div>
-              <span>Marcar ausência</span>
-            </div>
-
-            <div className="mobile-action-btn-card" onClick={() => {
-              setDirectSaleProducts([]);
-              setDirectSaleDiscount(0);
-              setDirectSaleClient('');
-              setShowDirectSaleModal(true);
-            }}>
-              <div className="icon-wrapper" style={{ background: 'var(--mobile-green-light)', color: 'var(--mobile-green)' }}>
-                <Plus size={20} />
-              </div>
-              <span>Venda avulsa (Produto)</span>
-            </div>
           </div>
         </div>
-      )}
+      </div>
+    );
+  };
 
-      {/* 4. ABA COMISSÕES */}
-      {activeTab === 'comissoes' && (
-        <div className="mobile-commissions-container mobile-tab-view">
-          <div className="mobile-comm-total-card">
-            <div className="comm-card-title">
-              <span>Total feito em comissão</span>
-              <HelpCircle size={14} />
-            </div>
-            <div className="comm-card-value">
-              R$ {commissions.total.toFixed(2).replace('.', ',')}
-            </div>
-            <div className="comm-card-period">
-              De 01/{new Date().getMonth() + 1}/{new Date().getFullYear()} até {new Date().getDate()}/{new Date().getMonth() + 1}/{new Date().getFullYear()} ({commissions.commServ}% Serv. / {commissions.commProd}% Prod.)
-            </div>
-            <button className="change-period-btn" onClick={() => alert('Filtro de período disponível na versão web desktop.')}>Trocar período</button>
-          </div>
+  // ── TAB: GALERIA ───────────────────────────────────────────────
+  const renderGaleria = () => {
+    const filtered = galleryCategory === 'Todos'
+      ? galleryPhotos
+      : galleryPhotos.filter(p => p.category === galleryCategory);
 
-          <h4 className="mobile-section-header">Histórico das comissões</h4>
-          <div className="mobile-appointments-card">
-            {commissions.list.length === 0 ? (
-              <div className="mobile-empty-state">
-                Nenhum serviço finalizado neste período para calcular comissão.
-              </div>
-            ) : (
-              commissions.list.map((item, idx) => (
-                <div key={item.id || idx} className="mobile-appt-list-row">
-                  <div className="mobile-appt-left">
-                    <span className="appt-client">{item.clientName}</span>
-                    <span className="appt-service">{item.serviceName} | Valor: R$ {item.price}</span>
-                  </div>
-                  <div className="mobile-appt-right">
-                    <span className="appt-time" style={{ color: 'var(--mobile-green)' }}>
-                      + R$ {item.commissionValue.toFixed(2).replace('.', ',')}
-                    </span>
-                    <span className="appt-status finalizado" style={{ display: 'block', marginTop: 2, fontSize: '0.65rem' }}>PAGO</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+    return (
+      <div className="m-tab m-page-flush" key="galeria">
+        {/* Category toolbar */}
+        <div className="m-gallery-toolbar">
+          {GALLERY_CATS.map(cat => (
+            <button key={cat} className={`m-cat-chip ${galleryCategory === cat ? 'active' : ''}`} onClick={() => setGalleryCategory(cat)}>{cat}</button>
+          ))}
         </div>
-      )}
 
-      {/* 5. ABA OPÇÕES */}
-      {activeTab === 'opcoes' && (
-        <div className="mobile-options-container mobile-tab-view">
-          {/* Perfil do Jon */}
-          <div className="mobile-profile-card">
-            <div className="mobile-profile-avatar">
-              <img src="/jon-perfil.webp" alt="Jonatan" onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"; }} />
+        {/* Upload progress */}
+        {isUploading && (
+          <div style={{ padding:'0 16px 8px' }}>
+            <div className={`m-upload-status ${uploadStatus}`}>
+              {uploadStatus === 'storage' && <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Enviando para Storage... {uploadProgress}%</>}
+              {uploadStatus === 'google' && <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Publicando no Google Business...</>}
+              {uploadStatus === 'done' && <><CheckCircle size={14}/> Upload concluído!</>}
+              {uploadStatus === 'error' && <><AlertCircle size={14}/> Erro no upload</>}
             </div>
-            <div className="mobile-profile-details">
-              <h4>Jonatan de Oliveira Sobrinho Junior</h4>
-              <div className="hearts-badge">
-                <span>❤️ 4 curtidas</span>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--mobile-muted)', paddingLeft: '8px', marginBottom: '8px' }}>
-            Opções do menu
-          </div>
-
-          {/* Lista de links de Menu */}
-          <div className="mobile-menu-list">
-            <div className="mobile-menu-item" onClick={() => setActiveTab('clientes')}>
-              <div className="mobile-menu-item-left">
-                <Users size={18} />
-                <span>Clientes & Ficha Capilar</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => setActiveTab('servicos')}>
-              <div className="mobile-menu-item-left">
-                <Scissors size={18} />
-                <span>Grade de Serviços</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => setActiveTab('pacotes')}>
-              <div className="mobile-menu-item-left">
-                <Package size={18} />
-                <span>Pacotes Promocionais</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => setActiveTab('estoque')}>
-              <div className="mobile-menu-item-left">
-                <Package size={18} />
-                <span>Estoque & Almoxarifado</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => { setActiveTab('configuracoes'); setConfigSubTab('profissionais'); }}>
-              <div className="mobile-menu-item-left">
-                <User size={18} />
-                <span>Profissionais</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('dashboard'); }}>
-              <div className="mobile-menu-item-left">
-                <DollarSign size={18} />
-                <span>Controle de entrada e saída</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => { setActiveTab('financeiro'); setFinanceSubTab('lancamentos'); }}>
-              <div className="mobile-menu-item-left">
-                <FileText size={18} />
-                <span>Contas fechadas / Extrato</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => setActiveTab('marketing')}>
-              <div className="mobile-menu-item-left">
-                <Send size={18} />
-                <span>Marketing & Automações CRM</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => setActiveTab('configuracoes')}>
-              <div className="mobile-menu-item-left">
-                <Settings size={18} />
-                <span>Configurações</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => setShowNotificationsModal(true)}>
-              <div className="mobile-menu-item-left">
-                <Bell size={18} />
-                <span>Ver Notificações Recentes</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => { requestNotificationPermission(); }}>
-              <div className="mobile-menu-item-left" style={{ color: '#8c5027' }}>
-                <Bell size={18} />
-                <span style={{ fontWeight: 'bold' }}>Ativar Alertas Sonoros e Sons</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => alert('Central de Ajuda: Entre em contato pelo suporte no WhatsApp.')}>
-              <div className="mobile-menu-item-left">
-                <HelpCircle size={18} />
-                <span>Central de Ajuda</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-          </div>
-
-          <div style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--mobile-muted)', paddingLeft: '8px', marginBottom: '8px', marginTop: '16px' }}>
-            Outras opções
-          </div>
-
-          <div className="mobile-menu-list">
-            <div className="mobile-menu-item" onClick={() => navigate('/admin')}>
-              <div className="mobile-menu-item-left" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Painel de Atendimento</span>
-                <span style={{ fontSize: '0.7rem', color: 'var(--mobile-muted)', fontWeight: 'normal' }}>Acesse o Painel de Atendimento na web</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={() => window.open('/', '_blank')}>
-              <div className="mobile-menu-item-left" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>Ver meu site</span>
-                <span style={{ fontSize: '0.7rem', color: 'var(--mobile-muted)', fontWeight: 'normal' }}>Acesse seu site e compartilhe com os clientes</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-
-            <div className="mobile-menu-item" onClick={async () => { try { await auth.signOut(); navigate('/admin/login'); } catch (e) { console.error(e); } }}>
-              <div className="mobile-menu-item-left">
-                <span style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--mobile-red)' }}>Sair</span>
-              </div>
-              <ChevronRight size={16} style={{ color: 'var(--mobile-muted)' }} />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SUB-TELAS NATIVAS ADMINISTRATIVE (BACKOFFICE) */}
-      {activeTab === 'pacotes' && (
-        <div className="mobile-backoffice-subview">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-            <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Pacotes Promocionais</h4>
-            <button 
-              type="button"
-              className="mobile-btn-outline" 
-              style={{ padding: '4px 10px', fontSize: '0.75rem', minHeight: '30px' }}
-              onClick={() => setActiveTab('opcoes')}
-            >
-              Voltar
-            </button>
-          </div>
-
-          <div className="mobile-config-sub-tabs" style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${packagesSubTab === 'modelos' ? 'active' : ''}`}
-              onClick={() => setPackagesSubTab('modelos')}
-              style={{ flex: 1, padding: '8px', fontSize: '0.8rem', fontWeight: 'bold', borderRadius: '6px', border: '1px solid var(--mobile-border)' }}
-            >
-              📋 Modelos (Templates)
-            </button>
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${packagesSubTab === 'ativos' ? 'active' : ''}`}
-              onClick={() => setPackagesSubTab('ativos')}
-              style={{ flex: 1, padding: '8px', fontSize: '0.8rem', fontWeight: 'bold', borderRadius: '6px', border: '1px solid var(--mobile-border)' }}
-            >
-              👥 Pacotes dos Clientes
-            </button>
-          </div>
-
-          {packagesSubTab === 'modelos' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {packages.length === 0 ? (
-                <div className="mobile-empty-state">Nenhum modelo de pacote cadastrado. Cadastre no painel web.</div>
-              ) : (
-                packages.map(p => {
-                  const pkgOriginalTotal = p.services ? p.services.reduce((sum, item) => {
-                    const sObj = services.find(s => s.id === item.serviceId);
-                    const price = sObj ? (Number(sObj.price) || 0) : 0;
-                    return sum + (price * item.sessions);
-                  }, 0) : 0;
-                  return (
-                    <div key={p.id} className="service-card-compact" style={{ padding: 12, background: '#fff', borderRadius: 8, border: '1px solid var(--mobile-border)' }}>
-                      <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-                        <strong style={{ fontSize: '0.95rem', color: '#1a202c', flex: 1, paddingRight: '8px' }}>{p.name}</strong>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                          {pkgOriginalTotal > p.price && (
-                            <span style={{ fontSize: '0.75rem', textDecoration: 'line-through', color: '#a0aec0', marginBottom: '1px' }}>
-                              R$ {pkgOriginalTotal.toFixed(2).replace('.', ',')}
-                            </span>
-                          )}
-                          <span style={{ fontWeight: 'bold', color: 'var(--mobile-green)', fontSize: '0.9rem' }}>
-                            R$ {p.price.toFixed(2).replace('.', ',')}
-                          </span>
-                          {pkgOriginalTotal > p.price && (
-                            <span style={{ fontSize: '0.7rem', color: 'var(--mobile-green)', fontWeight: '600', marginTop: '2px' }}>
-                              Salva R$ {(pkgOriginalTotal - p.price).toFixed(2).replace('.', ',')}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    {p.description && (
-                      <p style={{ margin: '0 0 8px 0', fontSize: '0.78rem', color: '#718096', lineHeight: 1.4 }}>{p.description}</p>
-                    )}
-                    <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: '#4a5568' }}>
-                      <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Serviços inclusos:</div>
-                      {p.services && p.services.map((ps, idx) => {
-                        const sObj = services.find(s => s.id === ps.serviceId);
-                        return (
-                          <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                            <span>• {sObj ? sObj.name : 'Serviço'}</span>
-                            <strong>{ps.sessions} sessões</strong>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })
-              )}
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {clientPackages.length === 0 ? (
-                <div className="mobile-empty-state">Nenhum pacote vendido/ativo no momento.</div>
-              ) : (
-                clientPackages.map(cp => {
-                  return (
-                    <div key={cp.id} className="service-card-compact" style={{ padding: 12, background: cp.status === 'active' ? '#fff' : 'rgba(0,0,0,0.01)', borderRadius: 8, border: cp.status === 'active' ? '1px solid var(--mobile-border)' : '1px solid transparent', opacity: cp.status === 'active' ? 1 : 0.6 }}>
-                      <div className="service-card-compact-header" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                        <div>
-                          <strong style={{ fontSize: '0.95rem', color: '#1a202c', display: 'block' }}>{cp.clientName}</strong>
-                          <span style={{ fontSize: '0.72rem', color: '#718096' }}>{cp.packageName}</span>
-                        </div>
-                        <span className={`appt-status ${cp.status}`} style={{ fontSize: '0.65rem', padding: '2px 6px', height: 'fit-content' }}>
-                          {cp.status === 'active' ? 'ATIVO' : cp.status === 'finished' ? 'CONCLUÍDO' : 'PENDENTE'}
-                        </span>
-                      </div>
-                      
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#a0aec0', marginBottom: 8 }}>
-                        <span>Adquirido em: {cp.datePurchased ? cp.datePurchased.split('-').reverse().join('/') : '—'}</span>
-                        <span style={{ fontWeight: 600, color: 'var(--mobile-green)' }}>Pago: R$ {Number(cp.pricePaid || 0).toFixed(2).replace('.', ',')}</span>
-                      </div>
-
-                      <div style={{ background: '#f7fafc', padding: 8, borderRadius: 6, fontSize: '0.75rem', color: '#4a5568' }}>
-                        <div style={{ fontWeight: 'bold', marginBottom: 4 }}>Saldos de Sessões:</div>
-                        {Object.entries(cp.balance || {}).map(([sId, remaining]) => {
-                          const sObj = services.find(s => s.id === sId);
-                          // find sessions in template if available to show ratio e.g. 1/4
-                          const template = packages.find(p => p.id === cp.packageId);
-                          const totalSessions = template?.services?.find(ts => ts.serviceId === sId)?.sessions || remaining;
-                          const pct = totalSessions > 0 ? (remaining / totalSessions) * 100 : 0;
-                          return (
-                            <div key={sId} style={{ marginBottom: 6 }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-                                <span>{sObj ? sObj.name : 'Serviço'}</span>
-                                <strong style={{ color: remaining > 0 ? 'var(--mobile-primary)' : '#718096' }}>{remaining} / {totalSessions} sessões</strong>
-                              </div>
-                              <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: '3px', overflow: 'hidden' }}>
-                                <div style={{ width: `${pct}%`, height: '100%', background: remaining > 0 ? 'var(--mobile-primary)' : '#cbd5e0', borderRadius: '3px' }}></div>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'clientes' && (
-        <div className="mobile-backoffice-subview">
-          {selectedClientPhone ? (
-            /* TECHNICAL HAIR PROFILE VIEW */
-            <div className="hair-profile-detail-panel">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                <h4 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 800 }}>Ficha Capilar Técnica</h4>
-                <button 
-                  type="button"
-                  className="mobile-btn-outline" 
-                  style={{ padding: '4px 10px', fontSize: '0.75rem', minHeight: '30px' }}
-                  onClick={() => setSelectedClientPhone('')}
-                >
-                  Voltar
-                </button>
-              </div>
-
-              <div style={{ background: '#fbf8f3', padding: 12, borderRadius: 12, border: '1px solid #ebdcb9', marginBottom: 8 }}>
-                <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>{hairProfile.name || 'Cliente Sem Nome'}</div>
-                <div style={{ fontSize: '0.8rem', color: 'var(--mobile-muted)', marginTop: 2 }}>📞 {hairProfile.phone}</div>
-                {hairProfile.email && <div style={{ fontSize: '0.8rem', color: 'var(--mobile-muted)' }}>✉️ {hairProfile.email}</div>}
-              </div>
-
-              <form onSubmit={handleSaveHairProfile} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <div className="mobile-form-group">
-                  <label>Sexo</label>
-                  <select 
-                    value={hairProfile.sexo || 'Feminino'} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, sexo: e.target.value }))}
-                  >
-                    <option value="Feminino">Feminino</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Outro">Outro</option>
-                  </select>
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Data de Nascimento</label>
-                  <input 
-                    type="date" 
-                    value={hairProfile.birthdate || ''} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, birthdate: e.target.value }))}
-                  />
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Curvatura Principal</label>
-                  <select 
-                    value={hairProfile.curvatura || '3A'} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, curvatura: e.target.value }))}
-                  >
-                    <option value="2A">Ondulado (2A)</option>
-                    <option value="2B">Ondulado (2B)</option>
-                    <option value="2C">Ondulado (2C)</option>
-                    <option value="3A">Cacheado Aberto (3A)</option>
-                    <option value="3B">Cacheado Médio (3B)</option>
-                    <option value="3C">Cacheado Fechado (3C)</option>
-                    <option value="4A">Crespo Suave (4A)</option>
-                    <option value="4B">Crespo Médio (4B)</option>
-                    <option value="4C">Crespo Intenso (4C)</option>
-                  </select>
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Porosidade Capilar</label>
-                  <select 
-                    value={hairProfile.porosidade || 'Média'} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, porosidade: e.target.value }))}
-                  >
-                    <option value="Baixa">Baixa (Dificuldade de absorver água/tratamento)</option>
-                    <option value="Média">Média (Saudável/Normal)</option>
-                    <option value="Alta">Alta (Ressecado/Fios quebradiços)</option>
-                  </select>
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Elasticidade</label>
-                  <select 
-                    value={hairProfile.elasticidade || 'Normal'} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, elasticidade: e.target.value }))}
-                  >
-                    <option value="Fraca">Fraca / Emborrachado</option>
-                    <option value="Normal">Normal / Resistente</option>
-                    <option value="Excelente">Excelente / Muito Saudável</option>
-                  </select>
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Histórico de Químicas</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: Luzes há 6 meses, tintura regular..."
-                    value={hairProfile.quimicas || ''} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, quimicas: e.target.value }))}
-                  />
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Produtos Recomendados</label>
-                  <textarea 
-                    placeholder="Indique produtos para home care..."
-                    rows={2}
-                    value={hairProfile.produtosRecomendados || ''} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, produtosRecomendados: e.target.value }))}
-                  />
-                </div>
-
-                <div className="mobile-form-group">
-                  <label>Observações Técnicas / Diagnóstico</label>
-                  <textarea 
-                    placeholder="Detalhes adicionais do fio do cliente..."
-                    rows={3}
-                    value={hairProfile.observacoes || ''} 
-                    onChange={e => setHairProfile(prev => ({ ...prev, observacoes: e.target.value }))}
-                  />
-                </div>
-
-                <button 
-                  type="submit" 
-                  className="mobile-btn-solid" 
-                  style={{ minHeight: '48px', marginTop: 8 }}
-                  disabled={savingProfile}
-                >
-                  {savingProfile ? 'Salvando...' : 'Salvar Ficha Técnica'}
-                </button>
-              </form>
-
-              {/* Histórico do Cliente */}
-              <div style={{ marginTop: 24 }}>
-                <h4 style={{ fontSize: '1rem', fontWeight: 800, marginBottom: 10, color: 'var(--mobile-text)' }}>Histórico de Agendamentos</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {bookings.filter(b => (b.clientPhone || b.phone) === selectedClientPhone).length === 0 ? (
-                    <div className="mobile-empty-state">Sem histórico de visitas recente.</div>
-                  ) : (
-                    bookings
-                      .filter(b => (b.clientPhone || b.phone) === selectedClientPhone)
-                      .sort((a,b) => b.date.localeCompare(a.date))
-                      .map(b => (
-                        <div key={b.id} className="transaction-ledger-row">
-                          <div className="tx-ledger-left">
-                            <span className="tx-title" style={{ fontSize: '0.85rem' }}>{b.serviceName || b.service?.name || 'Procedimento'}</span>
-                            <span className="tx-meta">{b.date.split('-').reverse().join('/')} às {b.time}</span>
-                          </div>
-                          <div className="tx-ledger-right">
-                            <span className={`appt-status ${b.status}`} style={{ fontSize: '0.7rem' }}>
-                              {b.status.toUpperCase()}
-                            </span>
-                          </div>
-                        </div>
-                      ))
-                  )}
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* CLIENTS LIST VIEW */
-            <>
-              <div className="client-search-bar" style={{ marginBottom: 12 }}>
-                <Search size={18} />
-                <input 
-                  type="text" 
-                  placeholder="Buscar cliente por nome ou celular..." 
-                  value={clientSearchTerm} 
-                  onChange={e => setClientSearchTerm(e.target.value)}
-                />
-              </div>
-
-              <button 
-                type="button"
-                className="mobile-btn-solid" 
-                style={{ minHeight: '48px', width: '100%' }}
-                onClick={() => setShowAddClientModal(true)}
-              >
-                <Plus size={18} /> Cadastrar Novo Cliente
-              </button>
-
-              <div className="client-list-scroll" style={{ marginTop: 12 }}>
-                {derivedClientsList
-                  .filter(c => {
-                    const search = clientSearchTerm.toLowerCase();
-                    return (c.name || '').toLowerCase().includes(search) || (c.phone || '').includes(search);
-                  })
-                  .slice(0, 50)
-                  .map(c => (
-                    <div 
-                      key={c.phone || c.id} 
-                      className="client-row-card"
-                      onClick={() => setSelectedClientPhone(c.phone)}
-                    >
-                      <div className="client-initials-avatar">
-                        {(c.name || 'S').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase()}
-                      </div>
-                      <div className="client-info-main">
-                        <span className="client-name">{c.name}</span>
-                        <span className="client-meta-line">📱 {c.phone}</span>
-                        <span className="client-meta-line">🕒 Último: {c.lastVisit === 'Nunca visitou' ? 'Nunca visitou' : c.lastVisit.split('-').reverse().join('/')} ({c.lastServiceName})</span>
-                      </div>
-                      <div className="hair-badge">{c.hairType || '3A'}</div>
-                    </div>
-                  ))}
-                {derivedClientsList.length === 0 && (
-                  <div className="mobile-empty-state">Nenhum cliente cadastrado no sistema.</div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'servicos' && (
-        <div className="mobile-backoffice-subview">
-          <button 
-            type="button"
-            className="mobile-btn-solid" 
-            style={{ minHeight: '48px', width: '100%', marginBottom: 12 }}
-            onClick={() => {
-              setEditingService(null);
-              setServiceForm({
-                name: '',
-                category: 'Cabelo',
-                description: '',
-                price: '',
-                priceType: 'Fixo',
-                promoPrice: '',
-                duration: '60',
-                cost: '',
-                isPrimary: true,
-                scheduledViaWhatsapp: false,
-                position: ''
-              });
-              setShowServiceModal(true);
-            }}
-          >
-            <Plus size={18} /> Novo Serviço
-          </button>
-
-          <div className="service-category-pills" style={{ marginBottom: 12 }}>
-            {['Todos', 'Cabelo', 'Barba', 'Combos', 'Tratamentos', 'Outro'].map(cat => (
-              <button 
-                type="button"
-                key={cat} 
-                className={`service-category-pill ${serviceCategory === cat ? 'active' : ''}`}
-                onClick={() => setServiceCategory(cat)}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {services
-              .filter(s => serviceCategory === 'Todos' || s.category === serviceCategory)
-              .sort((a, b) => (Number(a.position) || 0) - (Number(b.position) || 0))
-              .map(s => (
-                <div key={s.id} className="service-card-compact">
-                  <div className="service-card-compact-header">
-                    <div>
-                      <h4>{s.name}</h4>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--mobile-muted)', textTransform: 'uppercase' }}>{s.category}</span>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      {s.promoPrice ? (
-                        <>
-                          <span className="service-card-compact-price" style={{ color: 'var(--mobile-green)' }}>R$ {s.promoPrice}</span>
-                          <span style={{ display: 'block', fontSize: '0.7rem', textDecoration: 'line-through', color: 'var(--mobile-muted)' }}>R$ {s.price}</span>
-                        </>
-                      ) : (
-                        <span className="service-card-compact-price">R$ {s.price}</span>
-                      )}
-                    </div>
-                  </div>
-                  
-                  {s.description && (
-                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#4a3f35', lineHeight: 1.4 }}>{s.description}</p>
-                  )}
-
-                  <div className="service-card-compact-meta">
-                    <span>⏱️ {s.duration || 60} minutos</span>
-                    <span>💰 Custo: R$ {s.cost || 0}</span>
-                    {s.scheduledViaWhatsapp && <span style={{ color: 'var(--mobile-primary)', fontWeight: 'bold' }}>💬 Reserva via WhatsApp</span>}
-                  </div>
-
-                  <div className="service-card-compact-actions">
-                    <button 
-                      type="button"
-                      className="btn-service-action" 
-                      onClick={() => {
-                        setEditingService(s);
-                        setServiceForm({
-                          name: s.name || '',
-                          category: s.category || 'Cabelo',
-                          description: s.description || '',
-                          price: s.price || '',
-                          priceType: s.priceType || 'Fixo',
-                          promoPrice: s.promoPrice || '',
-                          duration: s.duration || '60',
-                          cost: s.cost || '',
-                          isPrimary: s.isPrimary ?? true,
-                          scheduledViaWhatsapp: !!s.scheduledViaWhatsapp,
-                          position: s.position ?? ''
-                        });
-                        setShowServiceModal(true);
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      type="button"
-                      className="btn-service-action" 
-                      style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }}
-                      onClick={() => handleDeleteService(s.id)}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-              ))}
-            {services.filter(s => serviceCategory === 'Todos' || s.category === serviceCategory).length === 0 && (
-              <div className="mobile-empty-state">Nenhum serviço cadastrado nesta categoria.</div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'estoque' && (
-        <div className="mobile-backoffice-subview">
-          <div className="inventory-metrics-grid">
-            <div className="inventory-metric-card">
-              <span>Total de Produtos</span>
-              <div className="metric-val">{inventory.reduce((sum, p) => sum + (p.quantity || 0), 0)} un.</div>
-            </div>
-            <div className="inventory-metric-card">
-              <span>Valor Total de Venda</span>
-              <div className="metric-val" style={{ color: 'var(--mobile-green)' }}>
-                R$ {inventory.reduce((sum, p) => sum + ((p.sellingPrice || 0) * (p.quantity || 0)), 0).toFixed(0)}
-              </div>
-            </div>
-          </div>
-
-          <button 
-            type="button"
-            className="mobile-btn-solid" 
-            style={{ minHeight: '48px', width: '100%' }}
-            onClick={() => {
-              setEditingProduct(null);
-              setProductForm({ name: '', category: 'Shampoo', quantity: 0, costPrice: 0, sellingPrice: 0, minStock: 3 });
-              setShowProductModal(true);
-            }}
-          >
-            <Plus size={18} /> Novo Produto
-          </button>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {inventory.map(p => {
-              const isLow = (p.quantity || 0) <= (p.minStock || 3);
-              return (
-                <div key={p.id} className="product-row-card">
-                  <div className="product-row-info">
-                    <div>
-                      <span className="product-name">{p.name}</span>
-                      <span className="product-category-tag" style={{ display: 'block', marginTop: 2 }}>{p.category}</span>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block' }}>Venda: R$ {p.sellingPrice}</span>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--mobile-muted)' }}>Custo: R$ {p.costPrice}</span>
-                    </div>
-                  </div>
-
-                  <div className="product-stock-control">
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="stock-current-display">
-                        Qtd Atual: <strong className={isLow ? 'low-stock' : ''}>{p.quantity} un.</strong>
-                      </span>
-                      {isLow && <span style={{ fontSize: '0.62rem', color: 'var(--mobile-red)', fontWeight: 'bold' }}>⚠️ ESTOQUE BAIXO (Mín: {p.minStock})</span>}
-                    </div>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button 
-                        type="button" 
-                        className="stock-adjust-btn"
-                        onClick={() => handleQuickStockAdjust(p, -1)}
-                      >
-                        -
-                      </button>
-                      <button 
-                        type="button" 
-                        className="stock-adjust-btn"
-                        style={{ color: 'var(--mobile-green)' }}
-                        onClick={() => handleQuickStockAdjust(p, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: 8, justifycontent: 'flex-end', borderTop: '1px solid var(--mobile-rule)', paddingTop: 10 }}>
-                    <button 
-                      type="button"
-                      className="btn-service-action" 
-                      onClick={() => {
-                        setEditingProduct(p);
-                        setProductForm({
-                          name: p.name || '',
-                          category: p.category || 'Shampoo',
-                          quantity: p.quantity || 0,
-                          costPrice: p.costPrice || 0,
-                          sellingPrice: p.sellingPrice || 0,
-                          minStock: p.minStock || 3
-                        });
-                        setShowProductModal(true);
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button 
-                      type="button"
-                      className="btn-service-action" 
-                      style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }}
-                      onClick={() => handleDeleteProduct(p.id)}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-            {inventory.length === 0 && (
-              <div className="mobile-empty-state">Nenhum produto cadastrado no almoxarifado.</div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'financeiro' && (
-        <div className="mobile-backoffice-subview">
-          {/* Subtelas Dashboard vs Lançamentos */}
-          <div className="config-sub-tabs">
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${financeSubTab === 'dashboard' ? 'active' : ''}`}
-              onClick={() => setFinanceSubTab('dashboard')}
-            >
-              Painel Geral
-            </button>
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${financeSubTab === 'lancamentos' ? 'active' : ''}`}
-              onClick={() => setFinanceSubTab('lancamentos')}
-            >
-              Extrato & Lançamentos
-            </button>
-          </div>
-
-          {/* Filtro de Período */}
-          <div className="mobile-form-group">
-            <label>Filtrar Período</label>
-            <select value={dateWindow} onChange={e => setDateWindow(e.target.value)}>
-              <option value="hoje">Hoje</option>
-              <option value="semana">Esta Semana</option>
-              <option value="mes">Este Mês</option>
-              <option value="personalizado">Personalizado</option>
-            </select>
-          </div>
-
-          {dateWindow === 'personalizado' && (
-            <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>De</label>
-                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Até</label>
-                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
-              </div>
-            </div>
-          )}
-
-          {(() => {
-            const getCustomPeriodStats = () => {
-              let filtered = transactions;
-              if (dateWindow === 'hoje') {
-                filtered = transactions.filter(t => t.date === todayStr);
-              } else if (dateWindow === 'semana') {
-                const wDays = getWeekDays(todayStr);
-                filtered = transactions.filter(t => t.date && wDays.includes(t.date));
-              } else if (dateWindow === 'mes') {
-                const prefix = todayStr.substring(0, 7); // YYYY-MM
-                filtered = transactions.filter(t => t.date && t.date.startsWith(prefix));
-              } else if (dateWindow === 'personalizado') {
-                filtered = transactions.filter(t => t.date && t.date >= startDate && t.date <= endDate);
-              }
-              const receitas = filtered.filter(t => t.type === 'entrada').reduce((sum, t) => sum + (t.value || 0), 0);
-              const despesas = filtered.filter(t => t.type === 'saida').reduce((sum, t) => sum + (t.value || 0), 0);
-              return { list: filtered, receitas, despesas, saldo: receitas - despesas };
-            };
-            const periodData = getCustomPeriodStats();
-            
-            if (financeSubTab === 'dashboard') {
-              return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  {/* KPIs */}
-                  <div className="finance-kpi-card">
-                    <div className="finance-kpi-row">
-                      <span>Faturamento Bruto</span>
-                      <span className="value" style={{ color: 'var(--mobile-green)', fontSize: '1.25rem' }}>
-                        R$ {periodData.receitas.toFixed(2).replace('.', ',')}
-                      </span>
-                    </div>
-                    <div className="finance-kpi-row">
-                      <span>Despesas Totais</span>
-                      <span className="value" style={{ color: 'var(--mobile-red)' }}>
-                        R$ {periodData.despesas.toFixed(2).replace('.', ',')}
-                      </span>
-                    </div>
-                    <div className="finance-kpi-row" style={{ borderTop: '1.5px solid var(--mobile-rule)', paddingTop: 10, marginTop: 4 }}>
-                      <span>Saldo Líquido</span>
-                      <span className="value" style={{ color: periodData.saldo >= 0 ? 'var(--mobile-green)' : 'var(--mobile-red)', fontSize: '1.15rem' }}>
-                        R$ {periodData.saldo.toFixed(2).replace('.', ',')}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Resumo por Forma de Pagamento */}
-                  <div className="technical-row-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-                    {['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro'].map(method => {
-                      const value = periodData.list
-                        .filter(t => t.type === 'entrada' && t.paymentMethod === method)
-                        .reduce((sum, t) => sum + (t.value || 0), 0);
-                      return (
-                        <div key={method} className="inventory-metric-card">
-                          <span>{method}</span>
-                          <div className="metric-val" style={{ fontSize: '0.95rem' }}>R$ {value.toFixed(0)}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            } else {
-              return (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <button 
-                    type="button"
-                    className="mobile-btn-solid" 
-                    style={{ minHeight: '48px', width: '100%' }}
-                    onClick={() => {
-                      setFinanceForm({
-                        type: 'saida',
-                        description: '',
-                        value: '',
-                        paymentMethod: 'Pix',
-                        date: new Date().toISOString().split('T')[0]
-                      });
-                      setShowFinanceModal(true);
-                    }}
-                  >
-                    <Plus size={18} /> Lançar Entrada/Saída Manual
-                  </button>
-
-                  <div className="client-search-bar">
-                    <Search size={18} />
-                    <input 
-                      type="text" 
-                      placeholder="Buscar por descrição ou cliente..."
-                      value={ledgerSearch}
-                      onChange={e => setLedgerSearch(e.target.value)}
-                    />
-                  </div>
-
-                  {/* Filtros rápidos extrato */}
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                    <select 
-                      style={{ flex: 1, padding: 8, fontSize: '0.8rem', borderRadius: 8, border: '1px solid var(--mobile-rule)' }}
-                      value={ledgerTypeFilter} 
-                      onChange={e => setLedgerTypeFilter(e.target.value)}
-                    >
-                      <option value="todos">Todos os Lançamentos</option>
-                      <option value="entrada">Entradas (+)</option>
-                      <option value="saida">Saídas (-)</option>
-                    </select>
-
-                    <select 
-                      style={{ flex: 1, padding: 8, fontSize: '0.8rem', borderRadius: 8, border: '1px solid var(--mobile-rule)' }}
-                      value={ledgerMethodFilter} 
-                      onChange={e => setLedgerMethodFilter(e.target.value)}
-                    >
-                      <option value="todos">Todas as Formas</option>
-                      <option value="Pix">PIX</option>
-                      <option value="Cartão de Crédito">Crédito</option>
-                      <option value="Cartão de Débito">Débito</option>
-                      <option value="Dinheiro">Dinheiro</option>
-                    </select>
-                  </div>
-
-                  {/* Histórico Extrato */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
-                    {periodData.list
-                      .filter(t => {
-                        const search = ledgerSearch.toLowerCase();
-                        const matchesSearch = (t.description || '').toLowerCase().includes(search) || (t.clientName || '').toLowerCase().includes(search);
-                        const matchesType = ledgerTypeFilter === 'todos' || t.type === ledgerTypeFilter;
-                        const matchesMethod = ledgerMethodFilter === 'todos' || t.paymentMethod === ledgerMethodFilter;
-                        return matchesSearch && matchesType && matchesMethod;
-                      })
-                      .map(t => (
-                        <div key={t.id} className="transaction-ledger-row">
-                          <div className="tx-ledger-left">
-                            <span className="tx-title">{t.clientName || 'Lançamento'} · <span style={{ fontWeight: 'normal', color: 'var(--mobile-muted)' }}>{t.description || 'Geral'}</span></span>
-                            <span className="tx-meta">{t.date.split('-').reverse().join('/')} · {t.paymentMethod}</span>
-                          </div>
-                          <div className="tx-ledger-right">
-                            <span className={`tx-value ${t.type}`}>
-                              {t.type === 'entrada' ? '+' : '-'} R$ {t.value.toFixed(2).replace('.', ',')}
-                            </span>
-                            <button 
-                              type="button" 
-                              onClick={() => handleDeleteTransaction(t.id)}
-                              style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 6, display: 'flex', alignItems: 'center' }}
-                            >
-                              <X size={16} />
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    {periodData.list.length === 0 && (
-                      <div className="mobile-empty-state">Nenhum lançamento no período filtrado.</div>
-                    )}
-                  </div>
-                </div>
-              );
-            }
-          })()}
-        </div>
-      )}
-
-      {activeTab === 'configuracoes' && (
-        <div className="mobile-backoffice-subview">
-          <div className="config-sub-tabs">
-            {['perfil', 'horarios', 'politicas', 'whatsapp', 'profissionais'].map(sub => (
-              <button 
-                type="button"
-                key={sub} 
-                className={`config-sub-tab-btn ${configSubTab === sub ? 'active' : ''}`}
-                onClick={() => setConfigSubTab(sub)}
-                style={{ textTransform: 'capitalize' }}
-              >
-                {sub === 'politicas' ? 'Taxas & Políticas' : sub === 'whatsapp' ? 'WhatsApp Gateway' : sub}
-              </button>
-            ))}
-          </div>
-
-          {settings ? (
-            <form onSubmit={handleSaveSettings} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {/* SUBTAB: PERFIL */}
-              {configSubTab === 'perfil' && (
-                <>
-                  <div className="mobile-form-group">
-                    <label>Nome do Estúdio</label>
-                    <input 
-                      type="text" 
-                      value={settings.name || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, name: e.target.value }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Telefone Comercial</label>
-                    <input 
-                      type="text" 
-                      value={settings.phone || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, phone: e.target.value }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Endereço Completo</label>
-                    <textarea 
-                      rows={2}
-                      value={settings.address || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, address: e.target.value }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Instagram URL</label>
-                    <input 
-                      type="text" 
-                      value={settings.instagram || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, instagram: e.target.value }))} 
-                    />
-                  </div>
-                </>
-              )}
-
-              {/* SUBTAB: HORARIOS */}
-              {configSubTab === 'horarios' && (
-                <div style={{ background: 'white', padding: 14, borderRadius: 12, border: '1px solid var(--mobile-rule)' }}>
-                  <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
-                    ℹ️ A grade horária padrão do estúdio é das <strong>09:00 às 19:00</strong>.<br/>
-                    Para gerenciar folgas semanais e bloqueios de escala personalizados de profissionais, acesse a aba <strong>Profissionais</strong>.
-                  </p>
-                </div>
-              )}
-
-              {/* SUBTAB: POLITICAS */}
-              {configSubTab === 'politicas' && (
-                <>
-                  <div className="mobile-form-group">
-                    <label>Taxa PIX (%)</label>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      value={settings.feePix ?? 0} 
-                      onChange={e => setSettings(prev => ({ ...prev, feePix: Number(e.target.value) }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Taxa Débito (%)</label>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      value={settings.feeDebit ?? 1.9} 
-                      onChange={e => setSettings(prev => ({ ...prev, feeDebit: Number(e.target.value) }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Taxa Crédito à Vista (%)</label>
-                    <input 
-                      type="number" 
-                      step="0.01"
-                      value={settings.feeCredit ?? 3.5} 
-                      onChange={e => setSettings(prev => ({ ...prev, feeCredit: Number(e.target.value) }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Antecedência Mínima para Reserva (Horas)</label>
-                    <input 
-                      type="number" 
-                      value={settings.minAdvance || 2} 
-                      onChange={e => setSettings(prev => ({ ...prev, minAdvance: Number(e.target.value) }))} 
-                    />
-                  </div>
-                </>
-              )}
-
-              {/* SUBTAB: WHATSAPP */}
-              {configSubTab === 'whatsapp' && (
-                <>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '6px 0' }}>
-                    <input 
-                      type="checkbox" 
-                      id="waReminderEnabled"
-                      style={{ width: 20, height: 20 }}
-                      checked={!!settings.waReminderEnabled} 
-                      onChange={e => setSettings(prev => ({ ...prev, waReminderEnabled: e.target.checked }))} 
-                    />
-                    <label htmlFor="waReminderEnabled" style={{ fontWeight: 'bold', fontSize: '0.85rem', margin: 0, cursor: 'pointer' }}>
-                      Enviar lembretes automáticos de WhatsApp
-                    </label>
-                  </div>
-
-                  <div className="mobile-form-group">
-                    <label>Evolution API URL</label>
-                    <input 
-                      type="text" 
-                      value={settings.evolutionApiUrl || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, evolutionApiUrl: e.target.value }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Evolution API Key</label>
-                    <input 
-                      type="password" 
-                      value={settings.evolutionApiKey || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, evolutionApiKey: e.target.value }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Evolution Instance Name</label>
-                    <input 
-                      type="text" 
-                      value={settings.evolutionInstanceName || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, evolutionInstanceName: e.target.value }))} 
-                    />
-                  </div>
-                  <div className="mobile-form-group">
-                    <label>Template do Lembrete automático</label>
-                    <textarea 
-                      rows={3}
-                      value={settings.waReminderTemplate || ''} 
-                      onChange={e => setSettings(prev => ({ ...prev, waReminderTemplate: e.target.value }))} 
-                    />
-                    <span style={{ fontSize: '0.65rem', color: 'var(--mobile-muted)' }}>Use tags: {"{cliente}"}, {"{data}"}, {"{hora}"}, {"{servico}"}</span>
-                  </div>
-                </>
-              )}
-
-              {/* SUBTAB: PROFISSIONAIS */}
-              {configSubTab === 'profissionais' && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  <button 
-                    type="button"
-                    className="mobile-btn-solid" 
-                    style={{ minHeight: '48px', width: '100%' }}
-                    onClick={() => {
-                      setEditingProfId(null);
-                      setProfForm({
-                        name: '',
-                        avatar: '',
-                        commissionService: 50,
-                        commissionProduct: 10,
-                        phone: '',
-                        email: '',
-                        active: true,
-                        workStart: '09:00',
-                        workEnd: '19:00',
-                        lunchStart: '12:00',
-                        lunchEnd: '13:00',
-                        daysOff: [0, 1]
-                      });
-                      setShowProfFormModal(true);
-                    }}
-                  >
-                    <Plus size={18} /> Adicionar Profissional
-                  </button>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {activeProfessionalsList.map(p => (
-                      <div key={p.id} className="transaction-ledger-row">
-                        <div className="tx-ledger-left">
-                          <span className="tx-title" style={{ fontSize: '0.9rem' }}>{p.name} {p.id === 'jon' && '👑'}</span>
-                          <span className="tx-meta">Comissões: {p.commissionService}% Serv. / {p.commissionProduct || 10}% Prod.</span>
-                          <span className="tx-meta">Horário: {p.workStart} - {p.workEnd} (Almoço: {p.lunchStart}-{p.lunchEnd})</span>
-                        </div>
-                        <div className="tx-ledger-right">
-                          <button 
-                            type="button" 
-                            className="btn-service-action"
-                            style={{ padding: '4px 8px', fontSize: '0.72rem' }}
-                            onClick={() => {
-                              setEditingProfId(p.id);
-                              setProfForm({
-                                name: p.name || '',
-                                avatar: p.avatar || '',
-                                commissionService: p.commissionService ?? 50,
-                                commissionProduct: p.commissionProduct ?? 10,
-                                phone: p.phone || '',
-                                email: p.email || '',
-                                active: p.active ?? true,
-                                workStart: p.workStart || '09:00',
-                                workEnd: p.workEnd || '19:00',
-                                lunchStart: p.lunchStart || '12:00',
-                                lunchEnd: p.lunchEnd || '13:00',
-                                daysOff: p.daysOff || [0, 1]
-                              });
-                              setShowProfFormModal(true);
-                            }}
-                          >
-                            Editar
-                          </button>
-                          {p.id !== 'jon' && (
-                            <button 
-                              type="button" 
-                              className="btn-service-action"
-                              style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', padding: '4px 8px', fontSize: '0.72rem' }}
-                              onClick={() => handleDeleteProf(p.id)}
-                            >
-                              Remover
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Botão de salvar geral (não exibido na sub-aba profissionais) */}
-              {configSubTab !== 'profissionais' && (
-                <button 
-                  type="submit" 
-                  className="mobile-btn-solid" 
-                  style={{ minHeight: '48px', marginTop: 12 }}
-                >
-                  Salvar Ajustes do Estúdio
-                </button>
-              )}
-            </form>
-          ) : (
-            <div className="mobile-empty-state">Carregando configurações...</div>
-          )}
-        </div>
-      )}
-
-      {activeTab === 'marketing' && (
-        <div className="mobile-backoffice-subview">
-          <div className="config-sub-tabs">
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${marketingSubTab === 'campanha' ? 'active' : ''}`}
-              onClick={() => setMarketingSubTab('campanha')}
-            >
-              Campanha Lote CRM
-            </button>
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${marketingSubTab === 'automacoes' ? 'active' : ''}`}
-              onClick={() => setMarketingSubTab('automacoes')}
-            >
-              Réguas de Reativação
-            </button>
-            <button 
-              type="button"
-              className={`config-sub-tab-btn ${marketingSubTab === 'logs' ? 'active' : ''}`}
-              onClick={() => setMarketingSubTab('logs')}
-            >
-              Histórico Disparos
-            </button>
-          </div>
-
-          {/* CRM CAMPANHA LOTE */}
-          {marketingSubTab === 'campanha' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div className="mobile-form-group">
-                <label>Segmento Alvo da Campanha</label>
-                <select 
-                  value={marketingCampaignTarget} 
-                  onChange={e => setMarketingCampaignTarget(e.target.value)}
-                >
-                  <option value="inativos_30">Inativos (Sem visitar de 30 a 60 dias)</option>
-                  <option value="inativos_60">Inativos Críticos (Mais de 60 dias sem visitar)</option>
-                  <option value="nunca_visitaram">Novos contatos (Nunca visitaram/Sem ficha)</option>
-                  <option value="todos">Todos os Clientes Cadastrados</option>
-                </select>
-              </div>
-
-              {/* Contagem imediata dos alvos */}
-              {(() => {
-                const now = new Date();
-                const count = derivedClientsList.filter(c => {
-                  const lastVisitDate = c.lastVisit;
-                  if (lastVisitDate === 'Nunca visitou' || !lastVisitDate) {
-                    return marketingCampaignTarget === 'nunca_visitaram' || marketingCampaignTarget === 'todos';
-                  }
-                  const diffTime = Math.abs(now - new Date(lastVisitDate));
-                  const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                  if (marketingCampaignTarget === 'inativos_30') return days >= 30 && days <= 60;
-                  if (marketingCampaignTarget === 'inativos_60') return days > 60;
-                  return marketingCampaignTarget === 'todos';
-                }).length;
-
-                return (
-                  <div style={{ background: '#f0f4f8', border: '1px solid #d2e3f3', borderRadius: 8, padding: '8px 12px', fontSize: '0.85rem', color: '#2b6cb0', fontWeight: 'bold' }}>
-                    🎯 Clientes elegíveis neste segmento: {count} contatos
-                  </div>
-                );
-              })()}
-
-              <div className="mobile-form-group">
-                <label>Mensagem de Disparo (WhatsApp)</label>
-                <textarea 
-                  rows={4}
-                  value={marketingCampaignMessage} 
-                  onChange={e => setMarketingCampaignMessage(e.target.value)}
-                  placeholder="Olá {nome}! Notamos que faz tempo..."
-                />
-                <span style={{ fontSize: '0.65rem', color: 'var(--mobile-muted)', lineHeight: 1.3, display: 'block', marginTop: 4 }}>
-                  Variáveis dinâmicas:<br/>
-                  • <strong>{"{nome}"}</strong>: primeiro nome do cliente<br/>
-                  • <strong>{"{dias_ausente}"}</strong>: número de dias sem agendamento<br/>
-                  • <strong>{"{ultimo_servico}"}</strong>: último serviço realizado
-                </span>
-              </div>
-
-              {/* Progress bar */}
-              {isSendingMarketingCampaign && (
-                <div style={{ background: 'white', border: '1px solid var(--mobile-rule)', borderRadius: 12, padding: 14, marginTop: 8 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', fontWeight: 'bold', marginBottom: 6 }}>
-                    <span>Enviando mensagens...</span>
-                    <span>{marketingCampaignProgress} / {marketingCampaignTotal}</span>
-                  </div>
-                  <div style={{ background: '#edf2f7', height: 8, borderRadius: 4, overflow: 'hidden' }}>
-                    <div 
-                      style={{ 
-                        background: 'var(--mobile-primary)', 
-                        height: '100%', 
-                        width: `${(marketingCampaignProgress / marketingCampaignTotal) * 100}%`,
-                        transition: 'width 0.3s ease'
-                      }} 
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Console Logs */}
-              {marketingLogs.length > 0 && (
-                <div className="marketing-console-logs">
-                  {marketingLogs.map((log, idx) => (
-                    <div key={idx}>{log}</div>
-                  ))}
-                </div>
-              )}
-
-              <button 
-                type="button"
-                className="mobile-btn-solid" 
-                style={{ minHeight: '48px', marginTop: 8, background: 'var(--mobile-primary)' }}
-                disabled={isSendingMarketingCampaign}
-                onClick={handleSendMarketingCampaign}
-              >
-                {isSendingMarketingCampaign ? '🚀 Disparando mensagens...' : '🚀 Disparar Campanha via WhatsApp'}
-              </button>
-            </div>
-          )}
-
-          {/* RÉGUAS DE REATIVAÇÃO */}
-          {marketingSubTab === 'automacoes' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div className="finance-kpi-card" style={{ padding: 14 }}>
-                <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>📅 Automação Pós-Atendimento (D1)</h5>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
-                  Dispara automaticamente 24h após um corte para colher avaliação ou tirar dúvidas.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-                  <span style={{ fontSize: '0.72rem', background: '#e6fffa', color: '#0987a0', fontWeight: 'bold', padding: '3px 8px', borderRadius: 8 }}>ATIVADO (Vercel Cron)</span>
-                </div>
-              </div>
-
-              <div className="finance-kpi-card" style={{ padding: 14 }}>
-                <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>📅 Reativação Crítica (D90)</h5>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
-                  Campanha para clientes ausentes há 90 dias com cupom personalizado de retorno.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-                  <span style={{ fontSize: '0.72rem', background: '#e6fffa', color: '#0987a0', fontWeight: 'bold', padding: '3px 8px', borderRadius: 8 }}>ATIVADO (Vercel Cron)</span>
-                </div>
-              </div>
-
-              <div className="finance-kpi-card" style={{ padding: 14 }}>
-                <h5 style={{ margin: '0 0 6px 0', fontWeight: 'bold' }}>🎂 Campanhas de Aniversariantes</h5>
-                <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--mobile-muted)', lineHeight: 1.4 }}>
-                  Dispara no início da semana parabenizando e oferecendo um brinde ou desconto.
-                </p>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-                  <span style={{ fontSize: '0.72rem', background: '#e6fffa', color: '#0987a0', fontWeight: 'bold', padding: '3px 8px', borderRadius: 8 }}>ATIVADO (Vercel Cron)</span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* HISTÓRICO DISPAROS */}
-          {marketingSubTab === 'logs' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {(() => {
-                const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs') || '[]');
-                if (localLogs.length === 0) {
-                  return <div className="mobile-empty-state">Nenhum log de disparo recente no cache local.</div>;
-                }
-                return localLogs.slice(0, 30).map((log, index) => (
-                  <div key={index} className="transaction-ledger-row" style={{ padding: 10 }}>
-                    <div className="tx-ledger-left">
-                      <span className="tx-title" style={{ fontSize: '0.8rem' }}>{log.clientName} ({log.clientPhone})</span>
-                      <span className="tx-meta">{log.stage} · Canal: {log.channel}</span>
-                    </div>
-                    <div className="tx-ledger-right">
-                      <span style={{ fontSize: '0.7rem', color: 'var(--mobile-green)', fontWeight: 'bold' }}>✓ SUCCESS</span>
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Floating Action Button (FAB) Menu */}
-      <div className="mobile-fab-container">
-        <button 
-          className={`mobile-fab-btn ${isFabOpen ? 'active' : ''}`} 
-          onClick={() => setIsFabOpen(!isFabOpen)}
-        >
-          <Plus size={24} />
-        </button>
-        {isFabOpen && (
-          <div className="mobile-fab-menu">
-            <div className="mobile-fab-item" onClick={() => { setIsFabOpen(false); setEditingBookingId(null); resetBookingForm(); setNewBooking(prev => ({ ...prev, date: new Date().toISOString().split('T')[0] })); setShowAddBookingModal(true); }}>
-              <CalendarIcon size={16} /> Novo agendamento
-            </div>
-            <div className="mobile-fab-item" onClick={() => { setIsFabOpen(false); setShowAddClientModal(true); }}>
-              <User size={16} /> Registrar cliente
-            </div>
-            <div className="mobile-fab-item" onClick={() => { setIsFabOpen(false); setShowDirectSaleModal(true); }}>
-              <DollarSign size={16} /> Venda avulsa de produtos
+            <div className="m-upload-progress-bar" style={{ marginTop:6 }}>
+              <div className="m-upload-progress-fill" style={{ width:`${uploadProgress}%` }}/>
             </div>
           </div>
         )}
-      </div>
 
-      {/* BARRA DE NAVEGAÇÃO INFERIOR FIXA */}
-      <nav className="mobile-bottom-nav">
-        <button className={`mobile-nav-item ${activeTab === 'inicio' ? 'active' : ''}`} onClick={() => setActiveTab('inicio')}>
-          <div className="icon-container">
-            <HomeIcon size={20} />
+        {/* Grid */}
+        <div className="m-gallery-grid" style={{ padding:'2px' }}>
+          {/* Upload button */}
+          <div className="m-gallery-upload-zone" onClick={() => galleryInputRef.current?.click()}>
+            <Camera size={22}/>
+            <span>Adicionar Foto</span>
           </div>
-          <span>Início</span>
-        </button>
+          <input ref={galleryInputRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handleGalleryFileSelect}/>
 
-        <button className={`mobile-nav-item ${activeTab === 'agenda' ? 'active' : ''}`} onClick={() => setActiveTab('agenda')}>
-          <div className="icon-container">
-            <CalendarIcon size={20} />
-          </div>
-          <span>Agenda</span>
-        </button>
-
-        <button className={`mobile-nav-item ${activeTab === 'comissoes' ? 'active' : ''}`} onClick={() => setActiveTab('comissoes')}>
-          <div className="icon-container">
-            <DollarSign size={20} />
-          </div>
-          <span>Comissões</span>
-        </button>
-
-        <button className={`mobile-nav-item ${activeTab === 'opcoes' ? 'active' : ''}`} onClick={() => setActiveTab('opcoes')}>
-          <div className="icon-container">
-            <Menu size={20} />
-          </div>
-          <span>Opções</span>
-        </button>
-      </nav>
-
-      {/* MODAL DE DETALHES DO AGENDAMENTO COM BOTÃO DE MENSAGEM */}
-      {selectedBooking && (
-        <div className="mobile-overlay" onClick={() => setSelectedBooking(null)}>
-          <div className="mobile-bottom-sheet" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4>{selectedBooking.status === 'bloqueado' ? 'Bloqueio de Horário' : 'Detalhes do Compromisso'}</h4>
-              <button onClick={() => setSelectedBooking(null)}><X size={20} /></button>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {selectedBooking.status === 'bloqueado' ? (
-                <>
-                  <div className="mobile-detail-row">
-                    <span className="label">MOTIVO DO BLOQUEIO</span>
-                    <span className="value">{selectedBooking.notes || 'Bloqueio administrativo'}</span>
-                  </div>
-                  <div className="mobile-detail-row">
-                    <span className="label">DATA E HORA</span>
-                    <span className="value">{selectedBooking.date.split('-').reverse().join('/')} às {selectedBooking.time}</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="mobile-detail-row">
-                    <span className="label">CLIENTE</span>
-                    <span className="value">{selectedBooking.clientName}</span>
-                  </div>
-                  {selectedBooking.clientPhone && (
-                    <div className="mobile-detail-row">
-                      <span className="label">TELEFONE</span>
-                      <span className="value" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Phone size={14} className="text-muted" /> {selectedBooking.clientPhone}
-                      </span>
-                    </div>
-                  )}
-                  <div className="mobile-detail-row">
-                    <span className="label">SERVIÇO</span>
-                    <span className="value">{selectedBooking.service?.name || selectedBooking.serviceName}</span>
-                  </div>
-                  {selectedBooking.isPackageUse && (
-                    <div className="mobile-detail-row">
-                      <span className="label" style={{ color: 'var(--mobile-primary)' }}>PACOTE UTILIZADO</span>
-                      <span className="value" style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Package size={14} /> Uso de Pacote (Crédito)
-                      </span>
-                    </div>
-                  )}
-                  {selectedBooking.isPackageAcquisition && (
-                    <div className="mobile-detail-row">
-                      <span className="label" style={{ color: 'var(--mobile-primary)' }}>PACOTE ADQUIRIDO</span>
-                      <span className="value" style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <Package size={14} /> Aquisição de Pacote
-                      </span>
-                    </div>
-                  )}
-                  <div className="mobile-detail-row">
-                    <span className="label">VALOR</span>
-                    <span className="value" style={{ color: 'var(--mobile-green)', fontWeight: 800 }}>
-                      {selectedBooking.isPackageUse 
-                        ? 'R$ 0,00 (Pacote)' 
-                        : `R$ ${(selectedBooking.service?.price || selectedBooking.servicePrice || 150).toFixed(2).replace('.', ',')}`}
-                    </span>
-                  </div>
-                  <div className="mobile-detail-row">
-                    <span className="label">HORÁRIO</span>
-                    <span className="value">{selectedBooking.date.split('-').reverse().join('/')} às {selectedBooking.time}</span>
-                  </div>
-                  <div className="mobile-detail-row">
-                    <span className="label">DURAÇÃO</span>
-                    <span className="value">{selectedBooking.duration || selectedBooking.service?.duration || 60} minutos</span>
-                  </div>
-                  {selectedBooking.notes && (
-                    <div className="mobile-detail-row">
-                      <span className="label">OBSERVAÇÕES</span>
-                      <span className="value" style={{ fontWeight: 400, fontSize: '0.8rem' }}>{selectedBooking.notes}</span>
-                    </div>
-                  )}
-
-                  {/* CRITICAL USER REQUEST: BOTÕES DE MENSAGEM */}
-                  <div className="mobile-message-section">
-                    {selectedBooking.status === 'finalizado' ? (
-                      <>
-                        <h5>💬 Solicitar Feedback do Cliente</h5>
-                        <div className="mobile-message-options">
-                          <button 
-                            className="mobile-msg-btn-whatsapp" 
-                            style={{ background: '#25D366', color: 'white', minHeight: '48px' }} 
-                            onClick={() => {
-                              const url = getWhatsAppFeedbackUrl(selectedBooking.clientPhone, selectedBooking);
-                              if (url) window.open(url, '_blank');
-                            }}
-                          >
-                            <MessageSquare size={16} /> Pedir Avaliação
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <h5>💬 Confirmar Agendamento por WhatsApp</h5>
-                        {sendingMsgStatus && (
-                          <div style={{ color: 'var(--mobile-primary)', fontSize: '0.75rem', fontWeight: 600, marginBottom: 8 }}>
-                            {sendingMsgStatus}
-                          </div>
-                        )}
-                        <div className="mobile-message-options">
-                          <button className="mobile-msg-btn-whatsapp" onClick={() => handleSendReminderWhatsappManual(selectedBooking)}>
-                            <MessageSquare size={16} /> Enviar WhatsApp (Manual)
-                          </button>
-                          
-                          {settings?.waReminderEnabled && (
-                            <button className="mobile-msg-btn-api" onClick={() => handleSendReminderWhatsappGateway(selectedBooking)}>
-                              <Check size={16} /> Disparar Lembrete (Automático)
-                            </button>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </>
+          {filtered.map(photo => (
+            <div key={photo.id} className="m-gallery-item" onClick={() => setPreviewPhoto(photo)}>
+              <img src={photo.url} alt={photo.caption || photo.category} loading="lazy"/>
+              <div className="m-gallery-cat-badge">{photo.category}</div>
+              {photo.googlePosted && (
+                <div style={{ position:'absolute', top:4, right:4, background:'rgba(14,12,11,0.8)', borderRadius:4, padding:'2px 4px', fontSize:'0.5rem', color:'#4285f4', fontWeight:800, backdropFilter:'blur(4px)' }}>G</div>
               )}
+            </div>
+          ))}
 
-              {/* Botões de Ação da Comanda */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 12 }}>
-                {selectedBooking.status === 'pendente' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)' }} onClick={() => confirmBooking(selectedBooking.id)}>
-                    Confirmar
-                  </button>
-                )}
-                {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-primary)' }} onClick={() => openEditBooking(selectedBooking)}>
-                    Editar
-                  </button>
-                )}
-                {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-solid" style={{ background: 'var(--mobile-green)' }} onClick={() => openCheckout(selectedBooking)}>
-                    Fechar Conta
-                  </button>
-                )}
-                {selectedBooking.status !== 'bloqueado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)' }} onClick={() => cancelBooking(selectedBooking.id)}>
-                    Cancelar
-                  </button>
-                )}
-                {selectedBooking.status !== 'finalizado' && selectedBooking.status !== 'bloqueado' && selectedBooking.status !== 'faltou' && selectedBooking.status !== 'cancelado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: '#6b7280', color: '#6b7280' }} onClick={() => markAsNoShow(selectedBooking.id)}>
-                    Marcar Falta
-                  </button>
-                )}
-                {selectedBooking.status === 'bloqueado' && (
-                  <button className="mobile-btn-outline" style={{ borderColor: 'var(--mobile-red)', color: 'var(--mobile-red)', gridColumn: '1 / -1' }} onClick={() => cancelBooking(selectedBooking.id)}>
-                    Desbloquear
-                  </button>
-                )}
-                <button
-                  className="mobile-btn-outline"
-                  style={{ borderColor: '#cbd5e0', color: '#4a5568', gridColumn: '1 / -1' }}
-                  onClick={() => setSelectedBooking(null)}
-                >
-                  Fechar / Voltar
-                </button>
+          {filtered.length === 0 && !isUploading && (
+            <div style={{ gridColumn:'1/-1', padding:'40px 24px', textAlign:'center', color:'var(--m-muted)', fontSize:'0.82rem' }}>
+              <Image size={32} style={{ opacity:0.3, marginBottom:10 }}/>
+              <div>Nenhuma foto nesta categoria</div>
+              <div style={{ fontSize:'0.72rem', marginTop:4 }}>Toque em "Adicionar Foto" para publicar</div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ── TAB: CLIENTES ──────────────────────────────────────────────
+  const renderClientes = () => {
+    const filtered = clients.filter(c =>
+      !clientSearch || c.name?.toLowerCase().includes(clientSearch.toLowerCase()) ||
+      c.phone?.includes(clientSearch)
+    ).sort((a, b) => (a.name || '').localeCompare(b.name || '', 'pt-BR'));
+
+    const getClientVisits = (c) => bookings.filter(b =>
+      (b.clientPhone && b.clientPhone === c.phone) || b.clientName === c.name
+    );
+
+    return (
+      <div className="m-tab m-page-flush" key="clientes">
+        <div className="m-search-bar">
+          <Search size={16} color="var(--m-muted)"/>
+          <input className="m-search-input" placeholder="Buscar clientes..." value={clientSearch} onChange={e => setClientSearch(e.target.value)}/>
+          {clientSearch && <button onClick={() => setClientSearch('')} style={{ background:'none', border:'none', color:'var(--m-muted)', cursor:'pointer', padding:0, display:'flex' }}><X size={14}/></button>}
+        </div>
+
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 16px 4px' }}>
+          <span style={{ fontSize:'0.72rem', color:'var(--m-muted)', fontWeight:700 }}>{filtered.length} clientes</span>
+          <button className="m-btn m-btn-gold" style={{ width:'auto', padding:'7px 14px', fontSize:'0.75rem' }} onClick={() => setShowNewClientSheet(true)}>
+            <Plus size={14}/> Novo
+          </button>
+        </div>
+
+        <div style={{ flex:1, overflowY:'auto' }}>
+          {filtered.map(c => {
+            const visits = getClientVisits(c);
+            const lastVisit = visits.filter(v => v.status === 'finalizado').sort((a,b) => (b.date || '').localeCompare(a.date || ''))[0];
+            return (
+              <div key={c.id} className="m-client-card" onClick={() => { setSelectedClient(c); setShowClientSheet(true); }}>
+                <div className="m-client-avatar">{initials(c.name)}</div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div className="m-client-name">{c.name}</div>
+                  <div className="m-client-meta">
+                    {c.curvatura && <span className="m-tag muted" style={{ marginRight:4 }}>{c.curvatura}</span>}
+                    {c.phone && c.phone}
+                  </div>
+                  {lastVisit && <div style={{ fontSize:'0.65rem', color:'var(--m-muted)', marginTop:2 }}>Última visita: {fmtDate(lastVisit.date)}</div>}
+                </div>
+                <ChevronRight size={14} color="var(--m-muted)"/>
+              </div>
+            );
+          })}
+          {filtered.length === 0 && (
+            <div className="m-empty">
+              <Users className="m-empty-icon" size={32}/>
+              <div className="m-empty-title">Nenhum cliente encontrado</div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ── TAB: CAIXA ─────────────────────────────────────────────────
+  const renderCaixa = () => {
+    const txMonth = (() => {
+      const m = new Date().toISOString().slice(0,7);
+      return transactions.filter(t => (t.date || '').startsWith(m));
+    })();
+    const monthIn = txMonth.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
+    const monthOut = txMonth.filter(t => t.type === 'saida').reduce((s,t) => s + Number(t.value||0), 0);
+    const profit = monthIn - monthOut;
+
+    // Last 6 days revenue for mini chart
+    const last6 = Array.from({ length:6 }, (_, i) => {
+      const d = new Date(); d.setDate(d.getDate() - (5 - i));
+      const ds = dateStr(d);
+      const val = transactions.filter(t => t.date === ds && t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
+      return { label: d.toLocaleDateString('pt-BR', { day:'numeric', month:'numeric' }).replace('/','\/'), val, isToday: ds === today() };
+    });
+    const maxVal = Math.max(...last6.map(d => d.val), 1);
+
+    const recentTx = transactions
+      .sort((a,b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''))
+      .slice(0, 15);
+
+    return (
+      <div className="m-tab m-page" key="caixa">
+        {/* Segmented */}
+        <div className="m-segmented">
+          <button className={`m-seg-btn ${financeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setFinanceTab('dashboard')}>Dashboard</button>
+          <button className={`m-seg-btn ${financeTab === 'lancamentos' ? 'active' : ''}`} onClick={() => setFinanceTab('lancamentos')}>Lançamentos</button>
+        </div>
+
+        {financeTab === 'dashboard' && <>
+          {/* Hero */}
+          <div className="m-finance-hero">
+            <div className="m-finance-hero-label">Receita do Mês</div>
+            <div className="m-finance-hero-value">{fmt(monthIn)}</div>
+            <div className="m-finance-hero-sub">Lucro líquido: <strong style={{ color: profit >= 0 ? 'var(--m-green)' : 'var(--m-red)' }}>{fmt(profit)}</strong></div>
+          </div>
+
+          {/* KPIs */}
+          <div className="m-kpi-row">
+            <div className="m-kpi-card green">
+              <div className="m-kpi-label">Receitas</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1.1rem' }}>{fmt(monthIn)}</div>
+            </div>
+            <div className="m-kpi-card red">
+              <div className="m-kpi-label">Despesas</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-red)', fontSize:'1.1rem' }}>{fmt(monthOut)}</div>
+            </div>
+          </div>
+
+          {/* Mini bar chart */}
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:16 }}>Últimos 6 dias</div>
+            <div className="m-bar-chart">
+              {last6.map((d, i) => (
+                <div key={i} className={`m-bar ${d.isToday ? 'current' : ''}`} style={{ height:`${(d.val/maxVal)*100}%` }}>
+                  <span className="m-bar-label">{d.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button className="m-btn m-btn-gold" onClick={() => setShowAddTxSheet(true)}>
+            <Plus size={16}/> Lançar Despesa
+          </button>
+        </>}
+
+        {financeTab === 'lancamentos' && <>
+          <div style={{ display:'flex', justifyContent:'flex-end' }}>
+            <button className="m-btn m-btn-gold" style={{ width:'auto', padding:'8px 14px', fontSize:'0.78rem' }} onClick={() => setShowAddTxSheet(true)}>
+              <Plus size={14}/> Lançar
+            </button>
+          </div>
+          {recentTx.map(t => (
+            <div key={t.id} className="m-tx-row">
+              <div className={`m-tx-dot ${t.type}`}>
+                {t.type === 'entrada' ? <TrendingUp size={16}/> : <TrendingDown size={16}/>}
+              </div>
+              <div className="m-tx-info">
+                <div className="m-tx-desc">{t.description}</div>
+                <div className="m-tx-meta">{fmtDate(t.date)} · {t.paymentMethod}</div>
+              </div>
+              <div className={`m-tx-amount ${t.type}`}>{t.type === 'entrada' ? '+' : '-'}{fmt(t.value)}</div>
+            </div>
+          ))}
+          {recentTx.length === 0 && (
+            <div className="m-empty">
+              <DollarSign className="m-empty-icon" size={32}/>
+              <div className="m-empty-title">Nenhum lançamento</div>
+            </div>
+          )}
+        </>}
+      </div>
+    );
+  };
+
+  // ── TAB: MAIS ──────────────────────────────────────────────────
+  const renderMais = () => {
+    if (maisSection) {
+      return renderMaisSection(maisSection);
+    }
+
+    const items = [
+      { key:'servicos', icon:<Scissors size={18}/>, label:'Serviços', sub:`${services.length} serviços`, color:'var(--m-gold)' },
+      { key:'estoque', icon:<Package size={18}/>, label:'Estoque', sub:`${inventory.length} produtos`, color:'var(--m-blue)' },
+      { key:'comissoes', icon:<BarChart2 size={18}/>, label:'Comissões', sub:'Relatório de equipe', color:'var(--m-green)' },
+      { key:'ausencias', icon:<Calendar size={18}/>, label:'Minhas Ausências', sub:'Folgas e bloqueios', color:'#8b7cc8' },
+      { key:'marketing', icon:<Send size={18}/>, label:'Marketing', sub:'Campanhas e CRM', color:'var(--m-amber)' },
+      { key:'config', icon:<Settings size={18}/>, label:'Configurações', sub:'Estúdio e integrações', color:'var(--m-muted)' },
+    ];
+
+    return (
+      <div className="m-tab m-page" key="mais">
+        <div style={{ fontSize:'1.2rem', fontWeight:800, fontFamily:'"DM Serif Display", serif', color:'var(--m-text)' }}>Mais opções</div>
+        <div className="m-mais-grid">
+          {items.map(item => (
+            <button key={item.key} className="m-mais-card" onClick={() => setMaisSection(item.key)}>
+              <div className="m-mais-icon" style={{ background:`${item.color}18`, color:item.color }}>
+                {item.icon}
+              </div>
+              <div>
+                <div className="m-mais-card-label">{item.label}</div>
+                <div className="m-mais-card-sub">{item.sub}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        {/* Profile card */}
+        <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px', display:'flex', alignItems:'center', gap:12, marginTop:4 }}>
+          <img src="/jon-perfil.webp" alt="Jon" style={{ width:44, height:44, borderRadius:'50%', border:'0.5px solid var(--m-rule-strong)', objectFit:'cover' }} onError={e => { e.target.src = 'https://ui-avatars.com/api/?name=Jon&background=DCA354&color=0E0C0B&bold=true'; }}/>
+          <div style={{ flex:1 }}>
+            <div style={{ fontWeight:800, color:'var(--m-text)', fontSize:'0.9rem' }}>Jonatan</div>
+            <div style={{ fontSize:'0.7rem', color:'var(--m-muted)' }}>Administrador</div>
+          </div>
+          <button className="m-btn m-btn-outline m-btn-sm" style={{ width:'auto', gap:6 }} onClick={async () => { await signOut(auth).catch(() => {}); navigate('/admin/login'); }}>
+            <LogOut size={14}/> Sair
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Mais sections ──────────────────────────────────────────────
+  const renderMaisSection = (section) => {
+    const MaisHeader = ({ title }) => (
+      <div style={{ display:'flex', alignItems:'center', gap:12, paddingBottom:4 }}>
+        <button onClick={() => setMaisSection(null)} className="m-header-back" style={{ background:'none', border:'none', color:'var(--m-gold)', cursor:'pointer', display:'flex', alignItems:'center', gap:6, fontWeight:700, fontSize:'0.85rem', fontFamily:'inherit' }}>
+          <ChevronLeft size={16}/> Voltar
+        </button>
+        <div style={{ fontSize:'1rem', fontWeight:800, fontFamily:'"DM Serif Display", serif', color:'var(--m-text)' }}>{title}</div>
+      </div>
+    );
+
+    if (section === 'ausencias') {
+      const DAYS_FULL = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+      const customAbsences = settings?.absences || [];
+      const fixedAbsences = getEffectiveAbsences(settings).filter(a => a.fixed);
+
+      const summary = (a) => {
+        const timePart = a.allDay ? 'Dia inteiro' : `${a.startTime} às ${a.endTime}`;
+        if (a.recurrence === 'weekly') {
+          const wd = (a.weekday !== undefined && a.weekday !== null) ? Number(a.weekday) : getAdjustedDay(parseLocalDate(a.startDate));
+          return `Toda ${DAYS_FULL[wd]} · ${timePart}`;
+        }
+        if (a.recurrence === 'monthly') {
+          return `Todo dia ${parseLocalDate(a.startDate).getDate()} do mês · ${timePart}`;
+        }
+        const datePart = a.endDate ? `${fmtDate(a.startDate)} até ${fmtDate(a.endDate)}` : fmtDate(a.startDate);
+        return `${datePart} · ${timePart}`;
+      };
+
+      return (
+        <div className="m-tab m-page" key="ausencias">
+          <MaisHeader title="Minhas Ausências"/>
+
+          <button className="m-btn m-btn-gold" onClick={openNewAbsence} style={{ gap:8 }}>
+            <Plus size={16}/> Nova Ausência
+          </button>
+
+          {fixedAbsences.map(a => (
+            <div key={a.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:'rgba(139,124,200,0.14)', color:'#8b7cc8', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Lock size={16}/></div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{a.title}</div>
+                <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{summary(a)}</div>
+              </div>
+              <span style={{ fontSize:'0.62rem', fontWeight:700, color:'#8b7cc8', background:'rgba(139,124,200,0.14)', padding:'3px 8px', borderRadius:20, textTransform:'uppercase', letterSpacing:'0.5px', flexShrink:0 }}>Fixo</span>
+            </div>
+          ))}
+
+          {customAbsences.map(a => (
+            <div key={a.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:'rgba(139,124,200,0.14)', color:'#8b7cc8', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Calendar size={16}/></div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{a.title}</div>
+                <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{summary(a)}</div>
+              </div>
+              <button onClick={() => openEditAbsence(a)} className="m-icon-btn" style={{ flexShrink:0 }}><Edit3 size={16}/></button>
+              <button onClick={() => deleteAbsence(a.id)} className="m-icon-btn" style={{ flexShrink:0, color:'var(--m-red)' }}><Trash2 size={16}/></button>
+            </div>
+          ))}
+
+          {customAbsences.length === 0 && (
+            <div className="m-empty"><Calendar className="m-empty-icon" size={32}/><div className="m-empty-title">Nenhuma ausência cadastrada</div></div>
+          )}
+        </div>
+      );
+    }
+
+    if (section === 'servicos') {
+      const cats = ['Todos', ...new Set(services.map(s => s.category).filter(Boolean))];
+      return (
+        <div className="m-tab m-page" key="servicos">
+          <MaisHeader title="Serviços"/>
+          {services.map(s => (
+            <div key={s.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:'var(--m-gold-subtle)', color:'var(--m-gold)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Scissors size={16}/></div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{s.name}</div>
+                <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{s.category} · {s.duration}min</div>
+              </div>
+              <div style={{ textAlign:'right', flexShrink:0 }}>
+                {s.promoPrice ? <>
+                  <div style={{ fontWeight:800, color:'var(--m-gold)', fontSize:'0.88rem', fontFamily:'"DM Serif Display", serif' }}>{fmt(s.promoPrice)}</div>
+                  <div style={{ fontSize:'0.65rem', color:'var(--m-muted)', textDecoration:'line-through' }}>{fmt(s.price)}</div>
+                </> : <div style={{ fontWeight:800, color:'var(--m-text)', fontSize:'0.88rem', fontFamily:'"DM Serif Display", serif' }}>{fmt(s.price)}</div>}
               </div>
             </div>
+          ))}
+          {services.length === 0 && <div className="m-empty"><Scissors className="m-empty-icon" size={32}/><div className="m-empty-title">Nenhum serviço cadastrado</div></div>}
+        </div>
+      );
+    }
+
+    if (section === 'estoque') {
+      const lowStock = inventory.filter(p => p.quantity <= (p.minStock || 3));
+      return (
+        <div className="m-tab m-page" key="estoque">
+          <MaisHeader title="Estoque"/>
+          {lowStock.length > 0 && (
+            <div style={{ background:'var(--m-amber-bg)', border:'0.5px solid var(--m-amber)', borderRadius:'var(--m-radius)', padding:'12px 14px' }}>
+              <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-amber)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:4 }}>⚠️ Estoque Baixo</div>
+              {lowStock.map(p => <div key={p.id} style={{ fontSize:'0.82rem', color:'var(--m-text)', fontWeight:600 }}>{p.name} — {p.quantity} un.</div>)}
+            </div>
+          )}
+          {inventory.map(p => (
+            <div key={p.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:'var(--m-blue-bg)', color:'var(--m-blue)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Package size={16}/></div>
+              <div style={{ flex:1 }}>
+                <div style={{ fontWeight:700, fontSize:'0.88rem', color:'var(--m-text)' }}>{p.name}</div>
+                <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{p.category} · Venda: {fmt(p.sellingPrice)}</div>
+              </div>
+              <div style={{ textAlign:'right' }}>
+                <div style={{ fontWeight:800, fontSize:'1.1rem', fontFamily:'"DM Serif Display", serif', color: p.quantity <= (p.minStock||3) ? 'var(--m-red)' : 'var(--m-green)' }}>{p.quantity}</div>
+                <div style={{ fontSize:'0.62rem', color:'var(--m-muted)' }}>un. estoque</div>
+              </div>
+            </div>
+          ))}
+          {inventory.length === 0 && <div className="m-empty"><Package className="m-empty-icon" size={32}/><div className="m-empty-title">Nenhum produto</div></div>}
+        </div>
+      );
+    }
+
+    if (section === 'comissoes') {
+      const profName = settings?.profissional || 'Jonatan';
+      const monthBk = bookings.filter(b => {
+        const m = new Date().toISOString().slice(0,7);
+        return (b.date || '').startsWith(m) && b.status === 'finalizado';
+      });
+      const monthRev = monthBk.reduce((s, b) => s + Number(b.finalValue || b.servicePrice || 0), 0);
+      const commission = monthRev * 0.5;
+
+      return (
+        <div className="m-tab m-page" key="comissoes">
+          <MaisHeader title="Comissões"/>
+          <div className="m-finance-hero">
+            <div className="m-finance-hero-label">Comissão do Mês — {profName}</div>
+            <div className="m-finance-hero-value">{fmt(commission)}</div>
+            <div className="m-finance-hero-sub">50% sobre {fmt(monthRev)} em serviços</div>
+          </div>
+          <div className="m-kpi-row">
+            <div className="m-kpi-card">
+              <div className="m-kpi-label">Atendimentos</div>
+              <div className="m-kpi-value">{monthBk.length}</div>
+            </div>
+            <div className="m-kpi-card green">
+              <div className="m-kpi-label">Receita Bruta</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1rem' }}>{fmt(monthRev)}</div>
+            </div>
+          </div>
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Atendimentos Finalizados</div>
+            {monthBk.slice(0,10).map(b => (
+              <div key={b.id} className="m-info-row">
+                <div style={{ flex:1 }}>
+                  <div className="m-info-value" style={{ fontSize:'0.82rem' }}>{b.clientName}</div>
+                  <div style={{ fontSize:'0.68rem', color:'var(--m-muted)' }}>{fmtDate(b.date)} · {b.service?.name || b.serviceName}</div>
+                </div>
+                <div style={{ fontWeight:800, color:'var(--m-green)', fontSize:'0.82rem', fontFamily:'"DM Serif Display", serif' }}>{fmt((b.finalValue || b.servicePrice || 0) * 0.5)}</div>
+              </div>
+            ))}
+            {monthBk.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.82rem', textAlign:'center', padding:'16px 0' }}>Nenhum atendimento finalizado este mês</div>}
           </div>
         </div>
-      )}
+      );
+    }
 
-      {/* SELEÇÃO DE AÇÃO PARA O SLOT CLICADO */}
-      {showSlotActionModal && selectedSlot && (
-        <div className="mobile-overlay" onClick={() => setShowSlotActionModal(false)}>
-          <div className="mobile-popup-modal slot-action-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4 style={{ fontSize: '1.1rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 6 }}>
-                ⚡ Nova Entrada
-              </h4>
-              <button onClick={() => setShowSlotActionModal(false)}><X size={20} /></button>
+    if (section === 'marketing') {
+      return (
+        <div className="m-tab m-page" key="marketing">
+          <MaisHeader title="Marketing CRM"/>
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Estatísticas de Clientes</div>
+            {[
+              { label:'Total de Clientes', val: clients.length },
+              { label:'Ativos (últ. 30 dias)', val: clients.filter(c => bookings.some(b => b.clientName === c.name && b.date >= dateStr(new Date(Date.now() - 30*864e5)))).length },
+              { label:'Inativos (+60 dias)', val: clients.filter(c => !bookings.some(b => b.clientName === c.name && b.date >= dateStr(new Date(Date.now() - 60*864e5)))).length },
+            ].map((stat, i) => (
+              <div key={i} className="m-info-row">
+                <span className="m-info-label">{stat.label}</span>
+                <span className="m-info-value">{stat.val}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Envio em Massa (WhatsApp)</div>
+            <div style={{ fontSize:'0.8rem', color:'var(--m-muted)', lineHeight:1.5 }}>
+              Para campanhas avançadas de WhatsApp, acesse o painel web completo em <strong style={{ color:'var(--m-gold)' }}>ojonquecortou.com.br/admin/marketing</strong>
+            </div>
+            <button className="m-btn m-btn-outline" style={{ marginTop:12 }} onClick={() => window.open('https://www.ojonquecortou.com.br/admin/marketing', '_blank')}>
+              <ArrowRight size={14}/> Abrir Painel Web
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (section === 'config') {
+      return (
+        <div className="m-tab m-page" key="config">
+          <MaisHeader title="Configurações"/>
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Dados do Estúdio</div>
+            {[
+              { label:'Nome', val: settings?.name || '—' },
+              { label:'Telefone', val: settings?.phone || '—' },
+              { label:'Endereço', val: settings?.address || '—' },
+              { label:'Instagram', val: settings?.instagram || '—' },
+            ].map((item, i) => (
+              <div key={i} className="m-info-row">
+                <span className="m-info-label">{item.label}</span>
+                <span className="m-info-value" style={{ fontSize:'0.78rem', maxWidth:'60%', textAlign:'right', wordBreak:'break-all' }}>{item.val}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Taxas de Pagamento</div>
+            {[
+              { label:'Pix', val: `${settings?.feePix || 0}%` },
+              { label:'Débito', val: `${settings?.feeDebit || 1.9}%` },
+              { label:'Crédito', val: `${settings?.feeCredit || 3.5}%` },
+            ].map((item, i) => (
+              <div key={i} className="m-info-row">
+                <span className="m-info-label">{item.label}</span>
+                <span className="m-info-value">{item.val}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Recurring Blocks */}
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Bloqueios Recorrentes (Semanais)</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:16 }}>
+              <div style={{ display:'flex', gap:8 }}>
+                <select 
+                  value={mBlockWeekday} 
+                  onChange={e => setMBlockWeekday(e.target.value)}
+                  style={{ flex:1.5, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                >
+                  <option value="0">Domingo</option>
+                  <option value="1">Segunda</option>
+                  <option value="2">Terça</option>
+                  <option value="3">Quarta</option>
+                  <option value="4">Quinta</option>
+                  <option value="5">Sexta</option>
+                  <option value="6">Sábado</option>
+                </select>
+                <select 
+                  value={mBlockWeekdayStart} 
+                  onChange={e => setMBlockWeekdayStart(e.target.value)}
+                  style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                >
+                  {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+                <span style={{ alignSelf:'center', fontSize:'0.75rem', color:'var(--m-muted)' }}>às</span>
+                <select 
+                  value={mBlockWeekdayEnd} 
+                  onChange={e => setMBlockWeekdayEnd(e.target.value)}
+                  style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                >
+                  {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <button 
+                className="m-btn" 
+                style={{ width:'100%', background:'var(--m-gold)', color:'#000', fontWeight:700, padding:'8px 0', fontSize:'0.8rem', borderRadius:8 }} 
+                onClick={addRecurringBlock}
+              >
+                Bloquear Horário
+              </button>
             </div>
             
-            <div style={{ textAlign: 'center', marginBottom: 16, fontSize: '0.88rem', color: 'var(--mobile-muted)' }}>
-              Horário selecionado: <strong style={{ color: 'var(--mobile-text)' }}>{selectedSlot.time}</strong> em {selectedSlot.date.split('-').reverse().join('/')}
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <button
-                className="mobile-btn-solid"
-                style={{ width: '100%', padding: '14px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '10px' }}
-                onClick={() => {
-                  setShowSlotActionModal(false);
-                  setNewBooking(prev => ({
-                    ...prev,
-                    clientName: '',
-                    clientPhone: '',
-                    clientEmail: '',
-                    serviceName: services[0]?.name || 'Corte com o Jon',
-                    servicePrice: services[0]?.promoPrice || services[0]?.price || 150,
-                    duration: services[0]?.duration || 60,
-                    date: selectedSlot.date,
-                    time: selectedSlot.time,
-                    notes: ''
-                  }));
-                  setShowAddBookingModal(true);
-                }}
-              >
-                <CalendarIcon size={18} /> Agendar Cliente
-              </button>
-              
-              <button
-                className="mobile-btn-outline"
-                style={{ width: '100%', padding: '14px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: '10px' }}
-                onClick={() => {
-                  setShowSlotActionModal(false);
-                  setBlockEndTime('');
-                  setBlockMotive('');
-                  setNewBooking(prev => ({
-                    ...prev,
-                    date: selectedSlot.date,
-                    time: selectedSlot.time
-                  }));
-                  setShowBlockModal(true);
-                }}
-              >
-                🔒 Cadastrar Ausência
-              </button>
+            {/* List */}
+            <div style={{ display:'flex', flexDirection:'column', gap:8, maxHeight:180, overflowY:'auto' }}>
+              {(() => {
+                const profs = settings.professionals || [];
+                const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+                const list = jonProf?.blockedWeekdayHours || [];
+                if (list.length === 0) {
+                  return <div style={{ fontSize:'0.75rem', color:'var(--m-muted)', textAlign:'center', padding:'10px 0' }}>Nenhum bloqueio recorrente configurado.</div>;
+                }
+                const DAYS_NAMES = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+                // Sort by day then by time
+                const sorted = [...list].sort((a, b) => a.localeCompare(b));
+                return sorted.map(item => {
+                  const parts = item.split('-');
+                  const weekday = DAYS_NAMES[Number(parts[0])];
+                  const start = parts[1];
+                  const end = parts[2] || parts[1];
+                  return (
+                    <div key={item} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', background:'var(--m-bg)', padding:'8px 12px', borderRadius:8, border:'0.5px solid var(--m-rule)' }}>
+                      <span style={{ fontSize:'0.8rem', fontWeight:600 }}>{weekday} · {start} às {end}</span>
+                      <button 
+                        onClick={() => removeRecurringBlock(item)} 
+                        style={{ background:'none', border:'none', color:'var(--m-red)', cursor:'pointer', fontWeight:700, fontSize:'0.8rem' }}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </div>
-        </div>
-      )}
 
-      {/* MODAL DE ADICIONAR/EDITAR AGENDAMENTO */}
-      {showAddBookingModal && (
-        <div className="mobile-overlay" onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }}>
-          <div className="mobile-bottom-sheet" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
-            <div className="mobile-sheet-header">
-              <h4>{editingBookingId ? 'Editar Agendamento' : 'Novo Agendamento'}</h4>
-              <button type="button" onClick={() => { setShowAddBookingModal(false); setEditingBookingId(null); }} style={{ background: 'none', border: 'none', color: 'var(--mobile-muted)', cursor: 'pointer' }}><X size={20} /></button>
+          {/* Specific Blocks */}
+          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
+            <div className="m-section-title" style={{ marginBottom:12 }}>Bloqueios Pontuais (Data/Hora)</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:10, marginBottom:16 }}>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <input 
+                  type="date" 
+                  value={mBlockSpecificDate}
+                  onChange={e => setMBlockSpecificDate(e.target.value)}
+                  style={{ width:'100%', background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem', boxSizing:'border-box' }}
+                />
+                <div style={{ display:'flex', gap:8 }}>
+                  <select 
+                    value={mBlockSpecificStart} 
+                    onChange={e => setMBlockSpecificStart(e.target.value)}
+                    style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                  >
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                  <span style={{ alignSelf:'center', fontSize:'0.75rem', color:'var(--m-muted)' }}>às</span>
+                  <select 
+                    value={mBlockSpecificEnd} 
+                    onChange={e => setMBlockSpecificEnd(e.target.value)}
+                    style={{ flex:1, background:'var(--m-bg)', color:'var(--m-text)', border:'0.5px solid var(--m-rule)', borderRadius:8, padding:8, fontSize:'0.8rem' }}
+                  >
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+              <button 
+                className="m-btn" 
+                style={{ width:'100%', background:'var(--m-gold)', color:'#000', fontWeight:700, padding:'8px 0', fontSize:'0.8rem', borderRadius:8 }} 
+                onClick={addSpecificBlock}
+              >
+                Bloquear Horário
+              </button>
             </div>
+            
+            {/* List */}
+            <div style={{ display:'flex', flexDirection:'column', gap:8, maxHeight:180, overflowY:'auto' }}>
+              {(() => {
+                const profs = settings.professionals || [];
+                const jonProf = profs.find(p => p.id === 'jon') || profs[0];
+                const list = jonProf?.blockedSpecificHours || [];
+                if (list.length === 0) {
+                  return <div style={{ fontSize:'0.75rem', color:'var(--m-muted)', textAlign:'center', padding:'10px 0' }}>Nenhum bloqueio pontual configurado.</div>;
+                }
+                const sorted = [...list].sort((a, b) => a.localeCompare(b));
+                return sorted.map(item => {
+                  // format: YYYY-MM-DD-HH:MM-HH:MM
+                  const datePart = item.substring(0, 10);
+                  const rest = item.substring(11);
+                  const restParts = rest.split('-');
+                  const start = restParts[0];
+                  const end = restParts[1] || restParts[0];
+                  const formattedD = datePart.split('-').reverse().join('/');
+                  return (
+                    <div key={item} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', background:'var(--m-bg)', padding:'8px 12px', borderRadius:8, border:'0.5px solid var(--m-rule)' }}>
+                      <span style={{ fontSize:'0.8rem', fontWeight:600 }}>{formattedD} · {start} às {end}</span>
+                      <button 
+                        onClick={() => removeSpecificBlock(item)} 
+                        style={{ background:'none', border:'none', color:'var(--m-red)', cursor:'pointer', fontWeight:700, fontSize:'0.8rem' }}
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
 
-            <form onSubmit={submitBooking}>
-              <div className="mobile-form-group">
-                <label>Nome do Cliente *</label>
-                <div className="mobile-autocomplete-container">
-                  <input 
-                    type="text" 
-                    placeholder="Nome do cliente" 
-                    required
-                    value={newBooking.clientName}
-                    onChange={e => {
-                      setNewBooking(prev => ({ ...prev, clientName: e.target.value }));
-                      setShowMobileSuggestions(true);
-                    }}
-                    onFocus={() => setShowMobileSuggestions(true)}
-                    onBlur={() => setShowMobileSuggestions(false)}
-                  />
-                  {showMobileSuggestions && getFilteredClients(newBooking.clientName).length > 0 && (
-                    <ul className="mobile-suggestions-list">
-                      {getFilteredClients(newBooking.clientName).map(c => (
-                        <li 
-                          key={c.id} 
-                          className="mobile-suggestion-item"
-                          onMouseDown={(e) => {
-                            e.preventDefault();
-                            selectClientForMobileAdd(c);
-                          }}
-                        >
-                          <span className="mobile-suggestion-name">{c.name}</span>
-                          {c.phone && <span className="mobile-suggestion-phone">{c.phone}</span>}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+          <button className="m-btn m-btn-outline" onClick={() => window.open('https://www.ojonquecortou.com.br/admin/configuracoes', '_blank')}>
+            <Settings size={14}/> Configurações Completas (Web)
+          </button>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  // ═══════════════════════════════════════════════════════════════
+  // MODALS / SHEETS
+  // ═══════════════════════════════════════════════════════════════
+
+  // ── Booking Detail Sheet ───────────────────────────────────────
+  const renderBookingSheet = () => {
+    if (!selectedBooking || !showBookingSheet) return null;
+    const b = selectedBooking;
+    const svcPrice = b.service?.promoPrice || b.service?.price || b.servicePrice || 0;
+
+    if (b.status === 'bloqueado') {
+      return (
+        <div className="m-overlay" onClick={() => setShowBookingSheet(false)}>
+          <div className="m-sheet" onClick={e => e.stopPropagation()}>
+            <div className="m-sheet-handle"/>
+            <div className="m-sheet-header">
+              <div className="m-sheet-title">Horário Bloqueado</div>
+              <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
+                <button onClick={() => setShowBookingSheet(false)} className="m-icon-btn"><X size={18}/></button>
+              </div>
+            </div>
+            <div className="m-sheet-body">
+              <div style={{ background:'var(--m-card)', borderRadius:'var(--m-radius)', padding:'14px', marginBottom: 16 }}>
+                <div className="m-info-row">
+                  <span className="m-info-label">Horário</span>
+                  <span className="m-info-value">{`${fmtDate(b.date)} às ${b.time || '—'}`}</span>
                 </div>
-                {/* BOTÃO CADASTRAR NOVO CLIENTE */}
-                <div style={{ marginTop: 8, textAlign: 'right' }}>
-                  <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--mobile-primary)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto' }}>
-                    <Plus size={14} /> Cadastrar novo cliente
-                  </button>
+                <div className="m-info-row">
+                  <span className="m-info-label">Duração</span>
+                  <span className="m-info-value">{b.duration || 60} minutos</span>
                 </div>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>WhatsApp (DDD + Número) *</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: 31988887777" 
-                  required
-                  value={newBooking.clientPhone}
-                  onChange={e => setNewBooking(prev => ({ ...prev, clientPhone: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>{"Servi\u00e7o *"}</label>
-                <select 
-                  value={newBooking.serviceName}
-                  onChange={e => {
-                    const match = services.find(s => s.name === e.target.value);
-                    setNewBooking(prev => ({
-                      ...prev,
-                      serviceName: e.target.value,
-                      servicePrice: match ? (match.promoPrice || match.price || 150) : 150,
-                      duration: match ? (match.duration || 60) : 60
-                    }));
-                  }}
-                >
-                  {services.map(s => (
-                    <option key={s.id} value={s.name}>{s.name} - R$ {s.promoPrice || s.price}</option>
-                  ))}
-                  {services.length === 0 && (
-                    <option value="Corte com o Jon">Corte com o Jon - R$ 190</option>
-                  )}
-                </select>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>{"Pre\u00e7o do Servi\u00e7o (R$)"}</label>
-                <input 
-                  type="number" 
-                  value={newBooking.servicePrice}
-                  onChange={e => setNewBooking(prev => ({ ...prev, servicePrice: Number(e.target.value) }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Sinal / Adiantamento Pago (R$)</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 50"
-                  value={newBooking.prepayment || ''}
-                  onChange={e => setNewBooking(prev => ({ ...prev, prepayment: Number(e.target.value) }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>{"Dura\u00e7\u00e3o (minutos)"}</label>
-                <input 
-                  type="number" 
-                  value={newBooking.duration || 60}
-                  onChange={e => setNewBooking(prev => ({ ...prev, duration: Number(e.target.value) }))}
-                />
-              </div>
-
-              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
-                <div style={{ flex: 1 }}>
-                  <label>Data</label>
-                  <input 
-                    type="date" 
-                    value={newBooking.date}
-                    onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label>Hora</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: 09:30"
-                    value={newBooking.time}
-                    onChange={e => setNewBooking(prev => ({ ...prev, time: e.target.value }))}
-                  />
-                </div>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>{"Observa\u00e7\u00f5es"}</label>
-                <textarea 
-                  placeholder="Ex: Quer volume e definição"
-                  rows={2}
-                  value={newBooking.notes}
-                  onChange={e => setNewBooking(prev => ({ ...prev, notes: e.target.value }))}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
-                {!editingBookingId && (
-                  <button type="button" className="mobile-btn-outline" style={{ flex: 1 }} onClick={() => {
-                    setShowAddBookingModal(false);
-                    setBlockEndTime('');
-                    setShowBlockModal(true);
-                  }}>
-                    {"Bloquear Hor\u00e1rio"}
-                  </button>
+                {b.notes && (
+                  <div className="m-info-row">
+                    <span className="m-info-label">Motivo</span>
+                    <span className="m-info-value">{b.notes}</span>
+                  </div>
                 )}
-                <button type="submit" className="mobile-btn-solid" style={{ flex: 1 }}>
-                  {editingBookingId ? 'Salvar Alterações' : 'Reservar'}
+              </div>
+              <div className="m-action-list">
+                <button className="m-action-btn" onClick={() => changeStatus(b.id, 'cancelado')}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Check size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Liberar Horário / Desbloquear</div>
+                    <div className="m-action-btn-sub">Permitir novos agendamentos neste horário</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
-      )}
+      );
+    }
 
-      {/* MODAL DE BLOQUEIO DE HORÁRIO */}
-      {showBlockModal && (
-        <div className="mobile-overlay" onClick={() => setShowBlockModal(false)}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4>🔒 Bloquear Janela de Horário</h4>
-              <button onClick={() => setShowBlockModal(false)}><X size={20} /></button>
+    return (
+      <div className="m-overlay" onClick={() => setShowBookingSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">{b.clientName}</div>
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <StatusPill status={b.status}/>
+              <button onClick={() => setShowBookingSheet(false)} className="m-icon-btn"><X size={18}/></button>
+            </div>
+          </div>
+          <div className="m-sheet-body">
+            <div style={{ background:'var(--m-card)', borderRadius:'var(--m-radius)', padding:'14px' }}>
+              {[
+                { label:'Serviço', val: b.service?.name || b.serviceName || '—' },
+                { label:'Horário', val: `${fmtDate(b.date)} às ${b.time || '—'}` },
+                { label:'Valor', val: fmt(svcPrice) },
+                { label:'Telefone', val: b.clientPhone || '—' },
+                b.notes ? { label:'Obs.', val: b.notes } : null
+              ].filter(Boolean).map((row, i) => (
+                <div key={i} className="m-info-row">
+                  <span className="m-info-label">{row.label}</span>
+                  <span className="m-info-value" style={{ maxWidth:'55%', textAlign:'right', wordBreak:'break-word' }}>{row.val}</span>
+                </div>
+              ))}
             </div>
 
-            <form onSubmit={submitBlock}>
-              {/* Data */}
-              <div className="mobile-form-group">
-                <label>📅 Data do Bloqueio *</label>
-                <input
-                  type="date"
-                  required
-                  value={newBooking.date}
-                  onChange={e => setNewBooking(prev => ({ ...prev, date: e.target.value }))}
-                />
-              </div>
-
-              {/* Horário início e fim */}
-              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
-                <div style={{ flex: 1 }}>
-                  <label>⏰ Início *</label>
-                  <select
-                    required
-                    value={newBooking.time}
-                    onChange={e => {
-                      setNewBooking(prev => ({ ...prev, time: e.target.value }));
-                      // Resetar fim se for antes do início
-                      if (blockEndTime && e.target.value > blockEndTime) setBlockEndTime(e.target.value);
-                    }}
-                  >
-                    {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'].map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label>⏰ Fim (inclusive) *</label>
-                  <select
-                    required
-                    value={blockEndTime || newBooking.time}
-                    onChange={e => setBlockEndTime(e.target.value)}
-                  >
-                    {['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00']
-                      .filter(t => t >= newBooking.time)
-                      .map(t => (
-                        <option key={t} value={t}>{t}</option>
-                      ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Resumo visual do intervalo */}
-              <div style={{ background: '#fff0f7', border: '1px solid #ffc0d9', borderRadius: 8, padding: '8px 12px', fontSize: '0.82rem', color: '#c2185b', marginBottom: 10 }}>
-                🚫 Slots que serão bloqueados: <strong>{newBooking.time}</strong> até <strong>{blockEndTime || newBooking.time}</strong> em <strong>{newBooking.date.split('-').reverse().join('/')}</strong>
-              </div>
-
-              {/* Motivo */}
-              <div className="mobile-form-group">
-                <label>Motivo do Bloqueio *</label>
-                <select value={blockMotive} onChange={e => setBlockMotive(e.target.value)}>
-                  <option value="Almoço">🍽️ Almoço</option>
-                  <option value="Curso/Treinamento">📚 Curso / Treinamento</option>
-                  <option value="Ausência Médica">🏥 Ausência Médica</option>
-                  <option value="Manutenção do Espaço">🔧 Manutenção do Espaço</option>
-                  <option value="Folga">☀️ Folga</option>
-                  <option value="Outro">✏️ Outro Motivo</option>
-                </select>
-              </div>
-
-              {blockMotive === 'Outro' && (
-                <div className="mobile-form-group">
-                  <label>Especifique o Motivo *</label>
-                  <input type="text" placeholder="Ex: Compromisso pessoal" required onChange={e => setBlockMotive(e.target.value)} />
-                </div>
+            <div className="m-action-list">
+              {b.status === 'pendente' && (
+                <button className="m-action-btn" onClick={() => changeStatus(b.id, 'confirmado')}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Check size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Confirmar Agendamento</div>
+                    <div className="m-action-btn-sub">Notifica o cliente</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
               )}
-
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowBlockModal(false)}>Voltar</button>
-                <button type="submit" className="btn-save">🔒 Confirmar Bloqueio</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL DE CADASTRAR CLIENTE */}
-      {showAddClientModal && (
-        <div className="mobile-overlay" onClick={() => setShowAddClientModal(false)}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4>Cadastrar Cliente</h4>
-              <button onClick={() => setShowAddClientModal(false)}><X size={20} /></button>
-            </div>
-
-            <form onSubmit={submitClient}>
-              <div style={{ marginBottom: 16 }}>
-                <button type="button" onClick={handleImportContact} className="mobile-btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 8, borderColor: 'var(--mobile-primary)', color: 'var(--mobile-primary)' }}>
-                  <User size={16} /> Importar contato da agenda
+              {['confirmado','pendente'].includes(b.status) && (
+                <button className="m-action-btn" onClick={() => openCheckout(b)}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><DollarSign size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Fechar Comanda</div>
+                    <div className="m-action-btn-sub">Registrar pagamento</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Nome Completo *</label>
-                <input 
-                  type="text" 
-                  placeholder="Nome do cliente" 
-                  required
-                  value={newClient.name}
-                  onChange={e => setNewClient(prev => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>WhatsApp (DDD + Número) *</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: 31988887777" 
-                  required
-                  value={newClient.phone}
-                  onChange={e => setNewClient(prev => ({ ...prev, phone: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>E-mail (Opcional)</label>
-                <input 
-                  type="email" 
-                  placeholder="cliente@email.com" 
-                  value={newClient.email}
-                  onChange={e => setNewClient(prev => ({ ...prev, email: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Curvatura Principal</label>
-                <select value={newClient.curvatura} onChange={e => setNewClient(prev => ({ ...prev, curvatura: e.target.value }))}>
-                  <option value="2A">Ondulado (2A-2C)</option>
-                  <option value="3A">Cacheado Aberto (3A)</option>
-                  <option value="3B">Cacheado Médio (3B)</option>
-                  <option value="3C">Cacheado Fechado (3C)</option>
-                  <option value="4A">Crespo Definido (4A-4C)</option>
-                </select>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Data de Nascimento (Opcional)</label>
-                <input 
-                  type="date"
-                  value={newClient.birthdate || ''}
-                  onChange={e => setNewClient(prev => ({ ...prev, birthdate: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Observações</label>
-                <textarea 
-                  placeholder="Observações iniciais sobre o cabelo"
-                  rows={2}
-                  value={newClient.observacoes}
-                  onChange={e => setNewClient(prev => ({ ...prev, observacoes: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowAddClientModal(false)}>Cancelar</button>
-                <button type="submit" className="btn-save">Salvar Ficha</button>
-              </div>
-            </form>
+              )}
+              {b.status === 'finalizado' && (
+                <button className="m-action-btn" onClick={() => openCheckout(b)}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><DollarSign size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Ver / Editar Comanda</div>
+                    <div className="m-action-btn-sub">Ver ou editar os detalhes financeiros</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.status !== 'cancelado' && b.status !== 'finalizado' && (
+                <button className="m-action-btn" onClick={() => {
+                  setEditBookingForm({
+                    id: b.id,
+                    clientName: b.clientName,
+                    clientPhone: b.clientPhone || '',
+                    serviceName: b.serviceName || b.service?.name || '',
+                    servicePrice: b.servicePrice !== undefined ? b.servicePrice : (b.service?.promoPrice || b.service?.price || ''),
+                    date: b.date,
+                    time: b.time || '09:00',
+                    prepayment: b.prepayment || '',
+                    notes: b.notes || '',
+                    status: b.status || 'confirmado'
+                  });
+                  setShowBookingSheet(false);
+                  setShowEditBookingSheet(true);
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Edit3 size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Remarcar / Editar</div>
+                    <div className="m-action-btn-sub">Alterar data, horário ou sinal</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.status === 'finalizado' && b.clientPhone && (
+                <button className="m-action-btn" onClick={() => sendFeedbackWhatsApp(b)}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Star size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Pedir Avaliação</div>
+                    <div className="m-action-btn-sub">Dispara link de review no WhatsApp</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.clientPhone && (
+                <button className="m-action-btn" onClick={() => window.open(`https://wa.me/55${b.clientPhone.replace(/\D/g,'')}`, '_blank')}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><MessageSquare size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Enviar Mensagem WhatsApp</div>
+                    <div className="m-action-btn-sub">{b.clientPhone}</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.status !== 'cancelado' && b.status !== 'finalizado' && b.status !== 'faltou' && (
+                <button className="m-action-btn" onClick={() => changeStatus(b.id, 'faltou')} style={{ marginBottom: 8 }}>
+                  <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><X size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Cliente Faltou</div>
+                    <div className="m-action-btn-sub">Marca como falta e bloqueia para agendamento online</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+              {b.status !== 'cancelado' && b.status !== 'finalizado' && (
+                <button className="m-action-btn" onClick={() => changeStatus(b.id, 'cancelado')}>
+                  <div className="m-action-btn-icon" style={{ background:'var(--m-red-bg)', color:'var(--m-red)' }}><X size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Cancelar Agendamento</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+            </div>
           </div>
         </div>
-      )}
+      </div>
+    );
+  };
 
-      {/* MODAL DE CHECKOUT (FECHAMENTO DE COMANDA) */}
-      {showCheckoutModal && checkoutBooking && (
-        <div className="mobile-overlay" onClick={() => setShowCheckoutModal(false)}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ padding: '14px', width: '92%', maxWidth: '380px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflowY: 'auto', gap: '8px' }}>
-            <div className="mobile-sheet-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-              <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 700 }}>Fechar Comanda</h4>
-              <button onClick={() => setShowCheckoutModal(false)} style={{ background: 'none', border: 'none', color: '#718096', cursor: 'pointer' }}><X size={18} /></button>
+  const getBlockEndTimeOptions = () => {
+    if (!selectedSlot) return [];
+    const allPossibleSlots = [...SLOTS, '19:30', '20:00', '20:30', '21:00'];
+    const idx = allPossibleSlots.indexOf(selectedSlot);
+    if (idx === -1) return [];
+    return allPossibleSlots.slice(idx + 1);
+  };
+
+  // ── Slot Action Sheet ──────────────────────────────────────────
+  const renderSlotSheet = () => {
+    if (!showSlotSheet) return null;
+    const isDefaultLunchBlock = (selectedSlot === '12:00' || selectedSlot === '12:30');
+    const isUnlocked = localStorage.getItem(`unlock_${currentDate}_${selectedSlot}`) === 'true';
+    const isLocked = isDefaultLunchBlock && !isUnlocked;
+
+    const endOptions = getBlockEndTimeOptions();
+
+    return (
+      <div className="m-overlay" onClick={() => { setShowSlotSheet(false); setIsBlockingRange(false); }}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">
+              {isBlockingRange ? 'Bloquear Horário(s)' : `Horário ${selectedSlot}`}
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              <div style={{ fontSize: '0.8rem' }}>
-                <span style={{ fontSize: '0.7rem', color: '#718096', display: 'block', textTransform: 'uppercase' }}>Cliente</span>
-                <strong>{checkoutBooking.clientName}</strong>
-              </div>
-              
-              <div style={{ background: '#f8f9fa', padding: '8px', borderRadius: 6, display: 'flex', flexDirection: 'column', gap: 4 }}>
-                <span style={{ fontSize: '0.7rem', color: '#718096', display: 'block', fontWeight: 700 }}>ITENS DA COMANDA</span>
-                
-                {/* Substituição do Serviço Agendado */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 3, borderBottom: '1px solid #edf2f7', paddingBottom: 4 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>Serviço Principal</span>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>R$ {(checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 150).toFixed(2).replace('.', ',')}</span>
-                  </div>
-                  <select
-                    value={checkoutBooking.service?.name || checkoutBooking.serviceName}
-                    onChange={e => {
-                      const newName = e.target.value;
-                      const match = services.find(s => s.name === newName);
-                      if (match) {
-                        setCheckoutBooking(prev => ({
-                          ...prev,
-                          serviceName: newName,
-                          servicePrice: match.promoPrice || match.price,
-                          service: match
-                        }));
-                      }
-                    }}
-                    style={{ width: '100%', padding: '3px 6px', fontSize: '0.75rem', borderRadius: 4, border: '1px solid #cbd5e0', background: '#fff' }}
-                  >
-                    {services.map(s => (
-                      <option key={s.id} value={s.name}>
-                        {s.name} (R$ {s.promoPrice || s.price})
-                      </option>
-                    ))}
-                  </select>
+            <button onClick={() => { setShowSlotSheet(false); setIsBlockingRange(false); }} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            {!isBlockingRange ? (
+              <>
+                <div style={{ fontSize:'0.8rem', color:'var(--m-muted)', marginBottom:8 }}>
+                  {fmtDate(currentDate)} · {isLocked ? 'Horário Bloqueado (Almoço)' : 'Horário Disponível'}
                 </div>
-
-                {/* Lista de Serviços Extras Adicionados */}
-                {selectedExtraServices.map((s, idx) => (
-                  <div key={'s-' + idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-                    <span style={{ color: 'var(--mobile-primary)' }}>➕ {s.name}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span style={{ fontWeight: 600 }}>R$ {s.price.toFixed(2).replace('.', ',')}</span>
-                      <button type="button" onClick={() => setSelectedExtraServices(prev => prev.filter((_, i) => i !== idx))} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 2, cursor: 'pointer' }}>
-                        <X size={12} />
+                <div className="m-action-list">
+                  {isLocked ? (
+                    <button className="m-action-btn" onClick={() => {
+                      localStorage.setItem(`unlock_${currentDate}_${selectedSlot}`, 'true');
+                      setShowSlotSheet(false);
+                      showToast(`Horário ${selectedSlot} liberado para este dia!`, 'success');
+                    }}>
+                      <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><Check size={16}/></div>
+                      <div className="m-action-btn-text">
+                        <div className="m-action-btn-label">Liberar Horário</div>
+                        <div className="m-action-btn-sub">Permitir agendamentos neste dia</div>
+                      </div>
+                    </button>
+                  ) : (
+                    <>
+                      <button className="m-action-btn" onClick={() => { setShowSlotSheet(false); setNbForm(prev => ({ ...prev, date: currentDate, time: selectedSlot })); setShowNewBookingSheet(true); }}>
+                        <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Plus size={16}/></div>
+                        <div className="m-action-btn-text">
+                          <div className="m-action-btn-label">Novo Agendamento</div>
+                          <div className="m-action-btn-sub">Criar reserva para este horário</div>
+                        </div>
                       </button>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Lista de Produtos Adicionados */}
-                {selectedProducts.map((prod, index) => (
-                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem' }}>
-                    <span style={{ color: '#4a5568' }}>📦 {prod.qty}x {prod.name}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <span style={{ fontWeight: 600 }}>R$ {(prod.sellingPrice * prod.qty).toFixed(2).replace('.', ',')}</span>
-                      <button type="button" onClick={() => {
-                        const newProds = [...selectedProducts];
-                        newProds.splice(index, 1);
-                        setSelectedProducts(newProds);
-                      }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 2, cursor: 'pointer' }}>
-                        <X size={12} />
+                      <button className="m-action-btn" onClick={() => {
+                        const defaultEndMin = timeToMin(selectedSlot) + 60;
+                        const defaultEndTime = minToTime(defaultEndMin);
+                        setBlockEndTime(endOptions.includes(defaultEndTime) ? defaultEndTime : (endOptions[0] || ''));
+                        setBlockMotive('');
+                        setIsBlockingRange(true);
+                      }}>
+                        <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><AlertCircle size={16}/></div>
+                        <div className="m-action-btn-text">
+                          <div className="m-action-btn-label" style={{ color:'var(--m-red)' }}>Bloquear Horário(s)</div>
+                          <div className="m-action-btn-sub">Impedir agendamentos neste horário ou intervalo</div>
+                        </div>
                       </button>
+                      {isDefaultLunchBlock && isUnlocked && (
+                        <button className="m-action-btn" onClick={() => {
+                          localStorage.removeItem(`unlock_${currentDate}_${selectedSlot}`);
+                          setShowSlotSheet(false);
+                          showToast(`Horário ${selectedSlot} bloqueado novamente!`, 'info');
+                        }}>
+                          <div className="m-action-btn-icon" style={{ background:'var(--m-red-bg)', color:'var(--m-red)' }}><X size={16}/></div>
+                          <div className="m-action-btn-text">
+                            <div className="m-action-btn-label" style={{ color: 'var(--m-red)' }}>Bloquear Novamente</div>
+                            <div className="m-action-btn-sub">Restaurar bloqueio de almoço</div>
+                          </div>
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </>
+            ) : (
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                const startMin = timeToMin(selectedSlot);
+                const endMin = timeToMin(blockEndTime || selectedSlot);
+                const duration = endMin > startMin ? (endMin - startMin) : 60;
+
+                const payload = {
+                  clientName: 'Horário Bloqueado',
+                  clientPhone: '00000000000',
+                  clientEmail: '',
+                  service: { name: 'Bloqueio Administrativo', price: 0 },
+                  date: currentDate,
+                  time: selectedSlot,
+                  profissional: 'jon',
+                  notes: blockMotive || 'Bloqueio administrativo',
+                  status: 'bloqueado',
+                  duration: duration,
+                  createdAt: new Date().toISOString()
+                };
+
+                if (db) {
+                  const ref = await addDoc(collection(db, 'bookings'), payload);
+                  setBookings(prev => [...prev, { id: ref.id, ...payload }]);
+                } else {
+                  const fakeId = 'demo-block-' + Date.now();
+                  setBookings(prev => [...prev, { id: fakeId, ...payload }]);
+                }
+
+                setShowSlotSheet(false);
+                setIsBlockingRange(false);
+                showToast(`Horário(s) bloqueado(s) de ${selectedSlot} até ${blockEndTime || minToTime(startMin + 60)}!`, 'info');
+              }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Início</label>
+                      <input 
+                        type="text" 
+                        value={selectedSlot} 
+                        readOnly 
+                        className="m-input" 
+                        style={{ background: 'var(--m-card-border)', color: 'var(--m-text)' }} 
+                      />
                     </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Lançamento de extras - Lado a Lado Compacto */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-                <div className="mobile-form-group" style={{ margin: 0 }}>
-                  <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Serviço Extra</label>
-                  <div style={{ display: 'flex', gap: 4 }}>
-                    <select 
-                      id="checkout-service-select"
-                      style={{ flex: 1, padding: '3px 6px', fontSize: '0.75rem', height: '28px', minHeight: 'auto' }}
-                      defaultValue=""
-                    >
-                      <option value="" disabled>Selecione</option>
-                      {services.map(s => (
-                        <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>{s.name}</option>
-                      ))}
-                    </select>
-                    <button type="button" className="mobile-btn-solid" style={{ padding: '0 8px', background: 'var(--mobile-primary)', height: '28px' }} onClick={() => {
-                      const selectEl = document.getElementById('checkout-service-select');
-                      if (!selectEl || !selectEl.value) return;
-                      const [name, priceStr] = selectEl.value.split('|');
-                      setSelectedExtraServices(prev => [...prev, { name, price: Number(priceStr) }]);
-                      selectEl.value = "";
-                    }}>+</button>
-                  </div>
-                </div>
-
-                <div className="mobile-form-group" style={{ margin: 0 }}>
-                  <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Adicionar Produto</label>
-                  <div style={{ display: 'flex', gap: 4 }}>
-                    <select 
-                      id="checkout-product-select"
-                      style={{ flex: 1, padding: '3px 6px', fontSize: '0.75rem', height: '28px', minHeight: 'auto' }}
-                      defaultValue=""
-                    >
-                      <option value="" disabled>Selecione</option>
-                      {inventory.filter(i => i.quantity > 0).map(i => (
-                        <option key={i.id} value={i.id}>{i.name}</option>
-                      ))}
-                    </select>
-                    <button type="button" className="mobile-btn-solid" style={{ padding: '0 8px', background: 'var(--mobile-primary)', height: '28px' }} onClick={() => {
-                      const selectEl = document.getElementById('checkout-product-select');
-                      if (!selectEl || !selectEl.value) return;
-                      const prod = inventory.find(i => i.id === selectEl.value);
-                      if (prod) {
-                        const existing = selectedProducts.find(p => p.id === prod.id);
-                        if (existing) {
-                          setSelectedProducts(selectedProducts.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
-                        } else {
-                          setSelectedProducts([...selectedProducts, { ...prod, qty: 1 }]);
-                        }
-                        selectEl.value = "";
-                      }
-                    }}>+</button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Pacotes / Vender Pacote - Compacto Lado a Lado */}
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center', justifyContent: 'space-between', background: 'rgba(0,0,0,0.01)', padding: '4px 6px', borderRadius: '6px', border: '1px solid #edf2f7' }}>
-                {availablePackagesForBooking.length > 0 && (
-                  <div className="mobile-form-group" style={{ margin: 0, flex: 1 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600 }}>
-                      <input 
-                        type="checkbox"
-                        style={{ width: '14px', height: '14px', minHeight: 'auto', margin: 0 }}
-                        checked={!!usingClientPackageId}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setUsingClientPackageId(availablePackagesForBooking[0].id);
-                            setSellingPackageId('');
-                          } else {
-                            setUsingClientPackageId('');
-                          }
-                        }}
-                      />
-                      Usar Pacote
-                    </label>
-                    {usingClientPackageId && (
-                      <select
-                        value={usingClientPackageId}
-                        onChange={e => setUsingClientPackageId(e.target.value)}
-                        style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.7rem', borderRadius: '3px' }}
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Término</label>
+                      <select 
+                        value={blockEndTime} 
+                        onChange={e => setBlockEndTime(e.target.value)} 
+                        className="m-input" 
+                        style={{ background: 'var(--m-card)', color: 'var(--m-text)', border: '1px solid var(--m-card-border)', height: '40px', borderRadius: '8px', padding: '0 8px' }}
                       >
-                        {availablePackagesForBooking.map(cp => {
-                          const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
-                          const servObj = services.find(s => s.name === bookingServiceName);
-                          const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
-                          return (
-                            <option key={cp.id} value={cp.id}>
-                              {cp.packageName} ({remaining} rest.)
-                            </option>
-                          );
-                        })}
-                      </select>
-                    )}
-                  </div>
-                )}
-
-                {!usingClientPackageId && packages.length > 0 && (
-                  <div className="mobile-form-group" style={{ margin: 0, flex: 1 }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.72rem', fontWeight: 600 }}>
-                      <input 
-                        type="checkbox"
-                        style={{ width: '14px', height: '14px', minHeight: 'auto', margin: 0 }}
-                        checked={!!sellingPackageId}
-                        onChange={e => {
-                          if (e.target.checked) {
-                            setSellingPackageId(packages[0].id);
-                          } else {
-                            setSellingPackageId('');
-                          }
-                        }}
-                      />
-                      Vender Pacote
-                    </label>
-                    {sellingPackageId && (
-                      <select
-                        value={sellingPackageId}
-                        onChange={e => setSellingPackageId(e.target.value)}
-                        style={{ padding: '2px 4px', width: '100%', marginTop: '2px', fontSize: '0.7rem', borderRadius: '3px' }}
-                      >
-                        {packages.map(p => (
-                          <option key={p.id} value={p.id}>
-                            {p.name} (R$ {p.price})
-                          </option>
+                        {endOptions.map(t => (
+                          <option key={t} value={t}>{t}</option>
                         ))}
                       </select>
-                    )}
+                    </div>
                   </div>
-                )}
-              </div>
 
-              {/* Desconto */}
-              <div className="mobile-form-group" style={{ margin: 0 }}>
-                <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Desconto (R$)</label>
-                <input 
-                  type="number"
-                  min="0"
-                  placeholder="0,00"
-                  style={{ height: '28px', minHeight: 'auto', padding: '3px 6px', fontSize: '0.78rem' }}
-                  value={discount || ''}
-                  onChange={e => setDiscount(Math.max(0, Number(e.target.value)))}
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Motivo / Observações</label>
+                    <input 
+                      type="text" 
+                      placeholder="Ex: Almoço, Folga, Reunião, Curso..." 
+                      value={blockMotive} 
+                      onChange={e => setBlockMotive(e.target.value)} 
+                      className="m-input" 
+                      style={{ background: 'var(--m-card)', color: 'var(--m-text)', border: '1px solid var(--m-card-border)', height: '40px', borderRadius: '8px', padding: '0 12px', width: '100%', boxSizing: 'border-box' }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => setIsBlockingRange(false)} 
+                      className="m-btn secondary" 
+                      style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid var(--m-card-border)', background: 'transparent', color: 'var(--m-text)', cursor: 'pointer' }}
+                    >
+                      Voltar
+                    </button>
+                    <button 
+                      type="submit" 
+                      className="m-btn primary" 
+                      style={{ flex: 1, padding: '12px', borderRadius: '8px', background: 'var(--m-red)', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
+                    >
+                      Confirmar Bloqueio
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Checkout Sheet ─────────────────────────────────────────────
+  const renderCheckoutSheet = () => {
+    if (!showCheckoutSheet || !checkoutBooking) return null;
+    const b = checkoutBooking;
+    const basePrice = b.service?.promoPrice || b.service?.price || b.servicePrice || 0;
+
+    const filteredServices = serviceSearch.trim().length >= 3
+      ? services.filter(s => (s.name || '').toLowerCase().includes(serviceSearch.toLowerCase())).slice(0, 5)
+      : [];
+
+    const filteredProducts = productSearch.trim().length >= 3
+      ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
+      : [];
+
+    const currentBasePrice = overrideBasePrice !== null ? overrideBasePrice : basePrice;
+    const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
+    const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
+    const subtotal = currentBasePrice + extraServicesVal + productsVal;
+    const valorTotal = Math.max(0, subtotal - discount);
+    const prepay = Number(b.prepayment || 0);
+    const remaining = Math.max(0, valorTotal - prepay);
+
+    return (
+      <div className="m-overlay" onClick={() => setShowCheckoutSheet(false)}>
+        <div className="m-sheet" style={{ maxHeight:'95dvh' }} onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div>
+              <div className="m-sheet-title">Fechar Comanda</div>
+              <div style={{ fontSize:'0.72rem', color:'var(--m-muted)', marginTop:2 }}>{b.clientName} · {b.service?.name || b.serviceName}</div>
+            </div>
+            <button onClick={() => setShowCheckoutSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body" style={{ gap:16 }}>
+            {/* Services */}
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>Serviços</div>
+              <div className="m-info-row" style={{ borderBottom:'none', padding:'0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{b.service?.name || b.serviceName}</span>
+                <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
+                  <input
+                    type="number"
+                    value={overrideBasePrice !== null ? overrideBasePrice : basePrice}
+                    onChange={e => setOverrideBasePrice(e.target.value === '' ? null : Number(e.target.value))}
+                    style={{
+                      width: 70,
+                      textAlign: 'right',
+                      background: 'var(--m-card)',
+                      border: '0.5px solid var(--m-rule)',
+                      borderRadius: 'var(--m-radius-sm)',
+                      padding: '4px 6px',
+                      fontSize: '0.85rem',
+                      fontWeight: 800,
+                      color: 'var(--m-gold)',
+                      outline: 'none',
+                      fontFamily: 'inherit'
+                    }}
+                  />
+                </div>
+              </div>
+              
+              {/* Extra Services List */}
+              {selectedServices.map(s => (
+                <div key={s.id} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0 0 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                  <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{s.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>{fmt(s.price * s.qty)}</span>
+                    <div className="m-qty-row" style={{ margin: 0 }}>
+                      <button className="m-qty-btn" onClick={() => changeServiceQty(s.id, -1)}>−</button>
+                      <span style={{ fontSize:'0.8rem', fontWeight:800, color:'var(--m-gold)', minWidth:12, textAlign:'center' }}>{s.qty}</span>
+                      <button className="m-qty-btn" onClick={() => changeServiceQty(s.id, 1)}>+</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add Service input */}
+            <div className="m-field">
+              <label className="m-label">Adicionar Serviços Extras</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
+                <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  placeholder="Buscar serviço (mín. 3 letras)..."
+                  value={serviceSearch}
+                  onChange={e => setServiceSearch(e.target.value)}
+                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
                 />
               </div>
-
-              {checkoutBooking.prepayment > 0 && (
-                <div style={{ fontSize: '0.75rem', color: '#e53e3e', fontWeight: 600 }}>
-                  <span>Sinal Pago: </span>
-                  <strong>- R$ {Number(checkoutBooking.prepayment).toFixed(2).replace('.', ',')}</strong>
+              {filteredServices.length > 0 && (
+                <div style={{ background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', overflow: 'hidden', marginTop: 4 }}>
+                  {filteredServices.map(svc => (
+                    <div key={svc.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
+                      onClick={() => addServiceToCheckout(svc)}>
+                      <span>{svc.name}</span>
+                      <span style={{ color: 'var(--m-gold)' }}>{fmt(svc.promoPrice || svc.price)}</span>
+                    </div>
+                  ))}
                 </div>
               )}
+            </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
-                <span style={{ fontSize: '0.72rem', color: '#718096', fontWeight: 700 }}>TOTAL A COBRAR</span>
-                <strong style={{ fontSize: '1.15rem', color: 'var(--mobile-green)' }}>
-                  R$ {getCheckoutTotal().toFixed(2).replace('.', ',')}
-                </strong>
+            {/* Products List */}
+            {selectedProducts.length > 0 && (
+              <div>
+                <div className="m-label" style={{ marginBottom:8 }}>Produtos Adicionados</div>
+                {selectedProducts.map(p => (
+                  <div key={p.id} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0 0 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                    <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{p.name}</span>
+                    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                      <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>{fmt(p.sellingPrice * p.qty)}</span>
+                      <div className="m-qty-row" style={{ margin: 0 }}>
+                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, -1)}>−</button>
+                        <span style={{ fontSize:'0.8rem', fontWeight:800, color:'var(--m-gold)', minWidth:12, textAlign:'center' }}>{p.qty}</span>
+                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, 1)}>+</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Add Product input */}
+            <div className="m-field">
+              <label className="m-label">Adicionar Produtos</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
+                <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  placeholder="Buscar produto (mín. 3 letras)..."
+                  value={productSearch}
+                  onChange={e => setProductSearch(e.target.value)}
+                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
+                />
+              </div>
+              {filteredProducts.length > 0 && (
+                <div style={{ background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', overflow: 'hidden', marginTop: 4 }}>
+                  {filteredProducts.map(prod => (
+                    <div key={prod.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
+                      onClick={() => addProductToCheckout(prod)}>
+                      <span>{prod.name}</span>
+                      <span style={{ color: 'var(--m-gold)' }}>{fmt(prod.sellingPrice)}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Discount */}
+            <div className="m-field">
+              <label className="m-label">Desconto (R$)</label>
+              <input className="m-input" type="number" min="0" value={discount || ''} onChange={e => setDiscount(Number(e.target.value) || 0)} placeholder="0,00"/>
+            </div>
+
+            {/* Payment method */}
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
+              <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
+                  <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
+                    setPaymentMethod(m);
+                    if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
+                      setApplyAnticipation(true);
+                    } else {
+                      setApplyAnticipation(false);
+                    }
+                  }}>{m}</button>
+                ))}
               </div>
             </div>
 
-            <div className="mobile-form-group" style={{ margin: 0 }}>
-              <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Forma de Pagamento *</label>
-              {usingClientPackageId ? (
-                <div style={{ padding: '4px 6px', width: '100%', background: 'rgba(0,0,0,0.03)', borderRadius: '4px', border: '1px solid #cbd5e0', fontSize: '0.78rem', color: 'var(--mobile-primary)', fontWeight: 600 }}>
-                  📦 Débito do Pacote
-                </div>
-              ) : (
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} style={{ height: '28px', minHeight: 'auto', padding: '2px 6px', fontSize: '0.78rem' }}>
-                  <option value="Pix">⚡ PIX</option>
-                  <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
-                  <option value="Cartão de Débito">💳 Cartão de Débito</option>
-                  <option value="Dinheiro">💵 Dinheiro</option>
-                </select>
-              )}
-            </div>
-
+            {/* Installments selection for Credit Card */}
             {paymentMethod === 'Cartão de Crédito' && (
-              <div className="mobile-form-group" style={{ margin: 0 }}>
-                <label style={{ fontSize: '0.7rem', marginBottom: 2 }}>Parcelas *</label>
-                <select value={installments} onChange={e => setInstallments(e.target.value)} style={{ height: '28px', minHeight: 'auto', padding: '2px 6px', fontSize: '0.78rem' }}>
+              <div className="m-field">
+                <label className="m-label">Parcelas</label>
+                <select className="m-select" value={installments} onChange={e => setInstallments(e.target.value)}>
                   <option value="À vista">À vista</option>
                   <option value="2x">2x</option>
                   <option value="3x">3x</option>
@@ -6025,793 +3385,1100 @@ ${googleLink}
               </div>
             )}
 
-            <div className="mobile-modal-actions" style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-              <button type="button" className="btn-cancel" onClick={() => setShowCheckoutModal(false)} style={{ flex: 1, padding: '6px', fontSize: '0.78rem', height: '32px' }}>Cancelar</button>
-              <button type="button" className="btn-save" style={{ flex: 1.2, background: 'var(--mobile-green)', padding: '6px', fontSize: '0.78rem', height: '32px' }} onClick={submitCheckout}>
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* MODAL DE VENDA AVULSA DE PRODUTOS */}
-      {showDirectSaleModal && (
-        <div className="mobile-overlay" onClick={() => setShowDirectSaleModal(false)}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4>Registrar Venda Avulsa</h4>
-              <button onClick={() => setShowDirectSaleModal(false)}><X size={20} /></button>
-            </div>
-
-            <form onSubmit={submitDirectSale}>
-              {/* CAIXA DE SELEÇÃO: USO DO SALÃO */}
-              <div className="mobile-form-group" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fcfcf9', padding: '10px 12px', borderRadius: 8, border: '1px solid var(--mobile-rule)', marginBottom: 12 }}>
+            {/* Anticipation toggle */}
+            {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                 <input 
                   type="checkbox" 
-                  id="directSaleSalonUse" 
-                  checked={isDirectSaleSalonUse} 
-                  onChange={e => setIsDirectSaleSalonUse(e.target.checked)} 
-                  style={{ width: '16px', height: '16px', cursor: 'pointer' }}
+                  id="m-anticipate"
+                  checked={applyAnticipation} 
+                  onChange={e => setApplyAnticipation(e.target.checked)}
+                  style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
                 />
-                <label htmlFor="directSaleSalonUse" style={{ margin: 0, fontWeight: 'bold', cursor: 'pointer', fontSize: '0.85rem', textTransform: 'none', color: 'var(--mobile-text)' }}>
-                  🧴 Uso do Salão (Uso Interno / Baixa de Custo)
+                <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
+                  Antecipar recebimento? (taxa maquininha)
                 </label>
               </div>
+            )}
 
-              {!isDirectSaleSalonUse && (
-                <div className="mobile-form-group">
-                  <label>Nome do Cliente (Opcional)</label>
-                  <div className="mobile-autocomplete-container">
-                    <input 
-                      type="text" 
-                      placeholder="Ex: Cliente Avulso ou nome" 
-                      value={directSaleClient}
-                      onChange={e => {
-                        setDirectSaleClient(e.target.value);
-                        setShowDirectSaleSuggestions(true);
-                      }}
-                      onFocus={() => setShowDirectSaleSuggestions(true)}
-                      onBlur={() => setShowDirectSaleSuggestions(false)}
-                    />
-                    {showDirectSaleSuggestions && getFilteredClients(directSaleClient).length > 0 && (
-                      <ul className="mobile-suggestions-list">
-                        {getFilteredClients(directSaleClient).map(c => (
-                          <li 
-                            key={c.id} 
-                            className="mobile-suggestion-item"
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              setDirectSaleClient(c.name || '');
-                              setShowDirectSaleSuggestions(false);
-                            }}
-                          >
-                            <span className="mobile-suggestion-name">{c.name}</span>
-                            {c.phone && <span className="mobile-suggestion-phone">{c.phone}</span>}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+            {/* Review request checkbox */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4, padding: '0 4px' }}>
+              <input 
+                type="checkbox" 
+                id="m-request-review"
+                checked={requestReview} 
+                onChange={e => setRequestReview(e.target.checked)}
+                style={{ width: 16, height: 16, accentColor: 'var(--m-gold)', cursor: 'pointer' }}
+              />
+              <label htmlFor="m-request-review" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+                Pedir avaliação no Google (enviar WhatsApp)
+              </label>
+            </div>
+
+            {/* Totals Summary */}
+            <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'12px 14px', display:'flex', flexDirection:'column', gap:6 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
+                <span>Subtotal Serviços</span>
+                <span>{fmt(currentBasePrice + extraServicesVal)}</span>
+              </div>
+              {productsVal > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
+                  <span>Subtotal Produtos</span>
+                  <span>{fmt(productsVal)}</span>
                 </div>
               )}
-
-              <div style={{ background: '#f8f9fa', padding: 12, borderRadius: 8, marginBottom: 14 }}>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block', marginBottom: 4, fontWeight: '700' }}>PRODUTOS SELECIONADOS</span>
-                
-                {directSaleProducts.length === 0 ? (
-                  <span style={{ fontSize: '0.8rem', color: '#a0aec0' }}>Nenhum produto adicionado ainda.</span>
-                ) : (
-                  directSaleProducts.map((prod, index) => {
-                    const match = inventory.find(i => i.id === prod.id);
-                    const costVal = match ? (match.costPrice || 0) : 0;
-                    return (
-                      <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.85rem' }}>{prod.qty}x {prod.name}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-                            R$ {(isDirectSaleSalonUse ? (costVal * prod.qty) : (prod.sellingPrice * prod.qty)).toFixed(2).replace('.', ',')}
-                          </span>
-                          <button type="button" onClick={() => {
-                            const newProds = [...directSaleProducts];
-                            newProds.splice(index, 1);
-                            setDirectSaleProducts(newProds);
-                          }} style={{ background: 'none', border: 'none', color: 'var(--mobile-red)', padding: 4 }}>
-                            <X size={14} />
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Selecionar Produto</label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <select 
-                    id="direct-sale-product-select"
-                    style={{ flex: 1 }}
-                    defaultValue=""
-                  >
-                    <option value="" disabled>Selecione um produto</option>
-                    {inventory.filter(i => i.quantity > 0).map(i => (
-                      <option key={i.id} value={i.id}>
-                        {i.name} - R$ {(isDirectSaleSalonUse ? (i.costPrice || 0) : i.sellingPrice).toFixed(2).replace('.', ',')}
-                      </option>
-                    ))}
-                  </select>
-                  <button type="button" className="mobile-btn-solid" style={{ padding: '0 16px', background: 'var(--mobile-primary)' }} onClick={() => {
-                    const selectEl = document.getElementById('direct-sale-product-select');
-                    if (!selectEl.value) return;
-                    const prod = inventory.find(i => i.id === selectEl.value);
-                    if (prod) {
-                      const existing = directSaleProducts.find(p => p.id === prod.id);
-                      if (existing) {
-                        setDirectSaleProducts(directSaleProducts.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p));
-                      } else {
-                        setDirectSaleProducts([...directSaleProducts, { ...prod, qty: 1 }]);
-                      }
-                      selectEl.value = "";
-                    }
-                  }}>
-                    <Plus size={16} />
-                  </button>
+              {discount > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
+                  <span>Desconto</span>
+                  <span>- {fmt(discount)}</span>
                 </div>
+              )}
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4 }}>
+                <span>Valor Total</span>
+                <span>{fmt(subtotal - discount)}</span>
               </div>
+              {prepay > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
+                  <span>Sinal Pago</span>
+                  <span>- {fmt(prepay)}</span>
+                </div>
+              )}
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.95rem', fontWeight:800, color:'var(--m-gold)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4, marginTop:2 }}>
+                <span>Valor Restante</span>
+                <span>{fmt(remaining)}</span>
+              </div>
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowCheckoutSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={finalizeCheckout} disabled={isFinalizingCheckout}>
+              {isFinalizingCheckout ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Processando...</> : <><Check size={14}/> Receber {fmt(remaining)}</>}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-              {!isDirectSaleSalonUse && (
-                <>
-                  <div className="mobile-form-group">
-                    <label>Desconto (R$)</label>
-                    <input 
-                      type="number"
-                      min="0"
-                      placeholder="0,00"
-                      value={directSaleDiscount || ''}
-                      onChange={e => setDirectSaleDiscount(Math.max(0, Number(e.target.value)))}
-                    />
-                  </div>
-
-                  <div className="mobile-form-group">
-                    <label>Forma de Pagamento *</label>
-                    <select value={directSalePaymentMethod} onChange={e => setDirectSalePaymentMethod(e.target.value)}>
-                      <option value="Pix">⚡ PIX</option>
-                      <option value="Cartão de Crédito">💳 Cartão de Crédito</option>
-                      <option value="Cartão de Débito">💳 Cartão de Débito</option>
-                      <option value="Dinheiro">💵 Dinheiro</option>
-                    </select>
-                  </div>
-
-                  {directSalePaymentMethod === 'Cartão de Crédito' && (
-                    <div className="mobile-form-group">
-                      <label>Número de Parcelas *</label>
-                      <select value={directSaleInstallments} onChange={e => setDirectSaleInstallments(e.target.value)}>
-                        <option value="À vista">À vista</option>
-                        <option value="2x">2x</option>
-                        <option value="3x">3x</option>
-                      </select>
+  // ── New Booking Sheet ──────────────────────────────────────────
+  const renderNewBookingSheet = () => {
+    if (!showNewBookingSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowNewBookingSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Novo Agendamento</div>
+            <button onClick={() => setShowNewBookingSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Cliente *</label>
+              <input className="m-input" placeholder="Nome do cliente" value={nbForm.clientName} onChange={e => setNbForm(p => ({ ...p, clientName: e.target.value }))}/>
+              {nbSuggestions.length > 0 && (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden' }}>
+                  {nbSuggestions.map(c => (
+                    <div key={c.id} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => { setNbForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setNbSuggestions([]); }}>
+                      {c.name} {c.phone ? <span style={{ color:'var(--m-muted)', fontWeight:400 }}>· {c.phone}</span> : ''}
                     </div>
-                  )}
-                </>
+                  ))}
+                </div>
               )}
-
-              <div style={{ margin: '14px 0' }}>
-                <span style={{ fontSize: '0.75rem', color: '#718096', display: 'block' }}>
-                  {isDirectSaleSalonUse ? 'DEDUÇÃO TOTAL (PREÇO DE CUSTO)' : 'TOTAL A RECEBER'}
-                </span>
-                <strong style={{ fontSize: '1.3rem', color: isDirectSaleSalonUse ? 'var(--mobile-red)' : 'var(--mobile-green)' }}>
-                  R$ {
-                    (isDirectSaleSalonUse 
-                      ? directSaleProducts.reduce((acc, p) => {
-                          const match = inventory.find(prod => prod.id === p.id);
-                          return acc + ((match ? (match.costPrice || 0) : 0) * p.qty);
-                        }, 0)
-                      : Math.max(0, directSaleProducts.reduce((acc, p) => acc + (p.sellingPrice * p.qty), 0) - directSaleDiscount)
-                    ).toFixed(2).replace('.', ',')
-                  }
-                </strong>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Telefone</label>
+              <input className="m-input" type="tel" placeholder="(31) 99999-9999" value={nbForm.clientPhone} onChange={e => setNbForm(p => ({ ...p, clientPhone: e.target.value }))}/>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '12px 0 16px 0' }}>
+              <input 
+                type="checkbox" 
+                id="nbRegisterClient"
+                checked={nbRegisterClient} 
+                onChange={e => setNbRegisterClient(e.target.checked)} 
+                style={{ width: '16px', height: '16px' }}
+              />
+              <label htmlFor="nbRegisterClient" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--m-text)' }}>
+                Cadastrar cliente no sistema
+              </label>
+            </div>
+            {nbRegisterClient && (
+              <div style={{ padding: '12px', background: 'var(--m-card-border)', borderRadius: 'var(--m-radius-sm)', marginBottom: '16px', border: '0.5px solid var(--m-rule)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div className="m-field" style={{ margin: 0 }}>
+                  <label className="m-label">E-mail</label>
+                  <input className="m-input" type="email" placeholder="email@exemplo.com" value={nbForm.clientEmail || ''} onChange={e => setNbForm(p => ({ ...p, clientEmail: e.target.value }))}/>
+                </div>
+                <div className="m-field" style={{ margin: 0 }}>
+                  <label className="m-label">Tipo de Cacho</label>
+                  <select className="m-select" value={nbForm.clientCurvatura || '3A'} onChange={e => setNbForm(p => ({ ...p, clientCurvatura: e.target.value }))}>
+                    {CURL_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div className="m-field" style={{ margin: 0 }}>
+                  <label className="m-label">Observações do Cliente</label>
+                  <textarea className="m-textarea" rows={2} placeholder="Informações adicionais do cliente..." value={nbForm.clientNotes || ''} onChange={e => setNbForm(p => ({ ...p, clientNotes: e.target.value }))}/>
+                </div>
               </div>
+            )}
+            <div className="m-field">
+              <label className="m-label">Serviço *</label>
+              <select className="m-select" value={nbForm.serviceName} onChange={e => {
+                const sName = e.target.value;
+                const matched = services.find(s => s.name === sName);
+                const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
+                setNbForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+              }}>
+                <option value="">Selecione um serviço</option>
+                {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
+              </select>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Valor do Serviço (R$)</label>
+              <input className="m-input" type="number" placeholder="0,00" value={nbForm.servicePrice} onChange={e => setNbForm(p => ({ ...p, servicePrice: e.target.value }))}/>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Data *</label>
+                <input className="m-input" type="date" value={nbForm.date} onChange={e => setNbForm(p => ({ ...p, date: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Horário *</label>
+                <select className="m-select" value={nbForm.time} onChange={e => setNbForm(p => ({ ...p, time: e.target.value }))}>
+                  {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Sinal / Adiantamento Pago (R$)</label>
+              <input className="m-input" type="number" placeholder="0,00" value={nbForm.prepayment} onChange={e => setNbForm(p => ({ ...p, prepayment: e.target.value }))}/>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Observações</label>
+              <textarea className="m-textarea" rows={2} placeholder="Informações adicionais..." value={nbForm.notes} onChange={e => setNbForm(p => ({ ...p, notes: e.target.value }))}/>
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowNewBookingSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={addBooking}><Plus size={14}/> Agendar</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowDirectSaleModal(false)}>Cancelar</button>
-                <button type="submit" className="btn-save" style={{ background: isDirectSaleSalonUse ? 'var(--mobile-red)' : 'var(--mobile-green)' }}>
-                  {isDirectSaleSalonUse ? 'Confirmar Baixa (Custo)' : 'Confirmar Venda'}
+  // ── Edit Booking Sheet ─────────────────────────────────────────
+  const renderEditBookingSheet = () => {
+    if (!showEditBookingSheet || !editBookingForm) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowEditBookingSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Remarcar / Editar</div>
+            <button onClick={() => setShowEditBookingSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Cliente *</label>
+              <input className="m-input" placeholder="Nome do cliente" value={editBookingForm.clientName} onChange={e => setEditBookingForm(p => ({ ...p, clientName: e.target.value }))}/>
+              {ebSuggestions.length > 0 && (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden' }}>
+                  {ebSuggestions.map(c => (
+                    <div key={c.id} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => { setEditBookingForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setEbSuggestions([]); }}>
+                      {c.name} {c.phone ? <span style={{ color:'var(--m-muted)', fontWeight:400 }}>· {c.phone}</span> : ''}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="m-field">
+              <label className="m-label">Telefone</label>
+              <input className="m-input" type="tel" placeholder="(31) 99999-9999" value={editBookingForm.clientPhone} onChange={e => setEditBookingForm(p => ({ ...p, clientPhone: e.target.value }))}/>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Serviço *</label>
+              <select className="m-select" value={editBookingForm.serviceName} onChange={e => {
+                const sName = e.target.value;
+                const matched = services.find(s => s.name === sName);
+                const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
+                setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+              }}>
+                <option value="">Selecione um serviço</option>
+                {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
+              </select>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Valor do Serviço (R$)</label>
+              <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.servicePrice} onChange={e => setEditBookingForm(p => ({ ...p, servicePrice: e.target.value }))}/>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Data *</label>
+                <input className="m-input" type="date" value={editBookingForm.date} onChange={e => setEditBookingForm(p => ({ ...p, date: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Horário *</label>
+                <select className="m-select" value={editBookingForm.time} onChange={e => setEditBookingForm(p => ({ ...p, time: e.target.value }))}>
+                  {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Sinal / Adiantamento (R$)</label>
+                <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.prepayment} onChange={e => setEditBookingForm(p => ({ ...p, prepayment: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Status</label>
+                <select className="m-select" value={editBookingForm.status} onChange={e => setEditBookingForm(p => ({ ...p, status: e.target.value }))}>
+                  <option value="confirmado">Confirmado</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="cancelado">Cancelado</option>
+                  <option value="finalizado">Finalizado</option>
+                  <option value="bloqueado">Bloqueado</option>
+                  <option value="faltou">Faltou</option>
+                </select>
+              </div>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Observações</label>
+              <textarea className="m-textarea" rows={2} placeholder="Informações adicionais..." value={editBookingForm.notes} onChange={e => setEditBookingForm(p => ({ ...p, notes: e.target.value }))}/>
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowEditBookingSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={updateBooking}>Salvar Alterações</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Client Detail Sheet ────────────────────────────────────────
+  const renderClientSheet = () => {
+    if (!showClientSheet || !selectedClient) return null;
+    const c = selectedClient;
+    const visits = bookings.filter(b => (b.clientPhone && b.clientPhone === c.phone) || b.clientName === c.name).sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+
+    return (
+      <div className="m-overlay" onClick={() => setShowClientSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+              <div className="m-client-avatar" style={{ width:44, height:44, fontSize:'1.1rem' }}>{initials(c.name)}</div>
+              <div>
+                <div className="m-sheet-title">{c.name}</div>
+                {c.curvatura && <div style={{ fontSize:'0.7rem', color:'var(--m-muted)', marginTop:2 }}>Cachos {c.curvatura}</div>}
+              </div>
+            </div>
+            <button onClick={() => setShowClientSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            {/* Info */}
+            <div style={{ background:'var(--m-card)', borderRadius:'var(--m-radius)', padding:'14px' }}>
+              {[
+                { label:'Telefone', val: c.phone || '—' },
+                { label:'E-mail', val: c.email || '—' },
+                { label:'Curvatura', val: c.curvatura || '—' },
+                { label:'Porosidade', val: c.porosidade || '—' },
+                c.observacoes ? { label:'Observações', val: c.observacoes } : null
+              ].filter(Boolean).map((row, i) => (
+                <div key={i} className="m-info-row">
+                  <span className="m-info-label">{row.label}</span>
+                  <span className="m-info-value" style={{ fontSize:'0.78rem', maxWidth:'55%', textAlign:'right', wordBreak:'break-word' }}>{row.val}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Actions */}
+            <div style={{ display:'flex', gap:8, marginBottom: 12 }}>
+              {c.phone && (
+                <button className="m-btn m-btn-ghost" style={{ flex:1 }} onClick={() => window.open(`https://wa.me/55${c.phone.replace(/\D/g,'')}`)}>
+                  <MessageSquare size={14}/> WhatsApp
                 </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL DE CENTRAL DE NOTIFICAÇÕES (Novas Solicitações) */}
-      {showNotificationsModal && (
-        <div className="mobile-overlay" onClick={() => setShowNotificationsModal(false)}>
-          <div className="mobile-popup-modal notifications-sheet" onClick={(e) => e.stopPropagation()} style={{ background: '#fbf7f0', border: '1px solid #e8dec9' }}>
-            <div className="mobile-sheet-header" style={{ borderBottom: '1px solid #e8dec9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <h4 style={{ margin: 0, color: '#2d3748', fontSize: '1.05rem', fontWeight: 'bold' }}>Novas Solicitações</h4>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span style={{ color: '#c05621', fontWeight: 'bold', fontSize: '0.85rem' }}>{pendingCount} pendentes</span>
-                <button onClick={() => setShowNotificationsModal(false)} style={{ border: 'none', background: 'none', color: '#718096', padding: 0 }}><X size={20} /></button>
-              </div>
-            </div>
-
-            <div className="notifications-list-container" style={{ maxHeight: '60vh', overflowY: 'auto', padding: '4px 0' }}>
-              {pendingRequests.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '40px 20px', color: '#a0aec0' }}>
-                  <Check size={36} style={{ opacity: 0.3, marginBottom: 8, margin: '0 auto', color: '#48bb78' }} />
-                  <p style={{ fontSize: '0.85rem' }}>Nenhuma nova solicitação pendente.</p>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                  {pendingRequests.map(req => {
-                    const formattedDate = req.date ? req.date.split('-').reverse().join('/') : '';
-                    return (
-                      <div 
-                        key={req.id} 
-                        style={{
-                          padding: '16px',
-                          borderRadius: '12px',
-                          background: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                          border: '1px solid #ede8db',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 8,
-                          position: 'relative'
-                        }}
-                      >
-                        <div style={{ fontWeight: 'bold', fontSize: '0.95rem', color: '#1a202c', wordBreak: 'break-word' }}>
-                          {req.clientName}
-                        </div>
-                        
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, fontSize: '0.825rem', color: '#4a5568' }}>
-                          <div>
-                            <span style={{ fontWeight: '600', color: '#718096' }}>Serviço:</span> {req.service?.name || req.serviceName}
-                          </div>
-                          <div>
-                            <span style={{ fontWeight: '600', color: '#718096' }}>Data/Hora:</span> {formattedDate} às {req.time}
-                          </div>
-                          {req.clientPhone && (
-                            <div>
-                              <span style={{ fontWeight: '600', color: '#718096' }}>WhatsApp:</span> {req.clientPhone}
-                            </div>
-                          )}
-                        </div>
-
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
-                          <button 
-                            onClick={async () => {
-                              await confirmBooking(req.id);
-                            }}
-                            style={{
-                              background: '#8c5027',
-                              color: '#ffffff',
-                              border: 'none',
-                              borderRadius: '6px',
-                              padding: '8px 16px',
-                              fontSize: '0.85rem',
-                              fontWeight: 'bold',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 6,
-                              cursor: 'pointer',
-                              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                              transition: 'background 0.2s'
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.background = '#733e1c'}
-                            onMouseOut={(e) => e.currentTarget.style.background = '#8c5027'}
-                          >
-                            <Check size={16} /> Aceitar
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
               )}
+              <button className="m-btn m-btn-gold" style={{ flex:1 }} onClick={() => { setShowClientSheet(false); setNbForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setShowNewBookingSheet(true); }}>
+                <Plus size={14}/> Agendar
+              </button>
+            </div>
+            {visits.some(v => v.status === 'confirmado' || v.status === 'pendente') && (
+              <button className="m-btn" style={{ width: '100%', background: 'rgba(235,94,85,0.12)', color: 'var(--m-red)', border: 'none', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }} onClick={async () => {
+                const latestActive = visits.find(v => v.status === 'confirmado' || v.status === 'pendente');
+                if (latestActive && window.confirm(`Deseja marcar o agendamento de ${fmtDate(latestActive.date)} às ${latestActive.time} como Falta?`)) {
+                  await changeStatus(latestActive.id, 'faltou');
+                  showToast('Falta registrada!', 'success');
+                }
+              }}>
+                <X size={14}/> Cliente Faltou
+              </button>
+            )}
+
+            {/* Visit history */}
+            <div>
+              <div className="m-section-title" style={{ marginBottom:10 }}>Histórico ({visits.length} visitas)</div>
+              {visits.slice(0, 5).map(b => (
+                <div key={b.id} className="m-info-row">
+                  <div>
+                    <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)' }}>{b.service?.name || b.serviceName}</div>
+                    <div style={{ fontSize:'0.68rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(b.date)}</div>
+                  </div>
+                  <StatusPill status={b.status}/>
+                </div>
+              ))}
+              {visits.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.8rem' }}>Nenhuma visita registrada</div>}
             </div>
           </div>
         </div>
-      )}
+      </div>
+    );
+  };
 
-      {/* POPUP DE NOVO AGENDAMENTO RECEBIDO EM TEMPO REAL */}
-      {activeAlert && activeAlert.booking && (
-        <div className="mobile-overlay" style={{ zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div className="mobile-popup-modal" style={{ maxWidth: '340px', width: '90%', animation: 'scaleUp 0.3s ease', border: '2px solid #8c5027', borderRadius: '16px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.2)' }}>
-            <div style={{ padding: '24px 20px', textAlign: 'center' }}>
-              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(140,80,39,0.1)', color: '#8c5027', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
-                <Sparkles size={28} />
+  // ── New Client Sheet ───────────────────────────────────────────
+  const renderNewClientSheet = () => {
+    if (!showNewClientSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowNewClientSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Novo Cliente</div>
+            <button onClick={() => setShowNewClientSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field"><label className="m-label">Nome *</label><input className="m-input" placeholder="Nome completo" value={newClientForm.name} onChange={e => setNewClientForm(p => ({ ...p, name: e.target.value }))}/></div>
+            <div className="m-field"><label className="m-label">Telefone</label><input className="m-input" type="tel" placeholder="(31) 99999-9999" value={newClientForm.phone} onChange={e => setNewClientForm(p => ({ ...p, phone: e.target.value }))}/></div>
+            <div className="m-field"><label className="m-label">E-mail</label><input className="m-input" type="email" placeholder="email@exemplo.com" value={newClientForm.email} onChange={e => setNewClientForm(p => ({ ...p, email: e.target.value }))}/></div>
+            <div className="m-field">
+              <label className="m-label">Tipo de Cacho</label>
+              <select className="m-select" value={newClientForm.curvatura} onChange={e => setNewClientForm(p => ({ ...p, curvatura: e.target.value }))}>
+                {CURL_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+            <div className="m-field"><label className="m-label">Observações</label><textarea className="m-textarea" rows={2} placeholder="Informações adicionais, alergias, preferências..." value={newClientForm.observacoes} onChange={e => setNewClientForm(p => ({ ...p, observacoes: e.target.value }))}/></div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowNewClientSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={addClient}><Plus size={14}/> Cadastrar</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Add Transaction Sheet ──────────────────────────────────────
+  const renderAddTxSheet = () => {
+    if (!showAddTxSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowAddTxSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Lançamento Financeiro</div>
+            <button onClick={() => setShowAddTxSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-segmented">
+              <button className={`m-seg-btn ${txForm.type === 'entrada' ? 'active' : ''}`} onClick={() => setTxForm(p => ({ ...p, type:'entrada' }))}>💰 Receita</button>
+              <button className={`m-seg-btn ${txForm.type === 'saida' ? 'active' : ''}`} onClick={() => setTxForm(p => ({ ...p, type:'saida' }))}>💸 Despesa</button>
+            </div>
+            <div className="m-field"><label className="m-label">Descrição *</label><input className="m-input" placeholder="Ex: Aluguel do salão" value={txForm.description} onChange={e => setTxForm(p => ({ ...p, description: e.target.value }))}/></div>
+            <div className="m-field"><label className="m-label">Valor (R$) *</label><input className="m-input" type="number" step="0.01" min="0" placeholder="0,00" value={txForm.value} onChange={e => setTxForm(p => ({ ...p, value: e.target.value }))}/></div>
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
+              <div className="m-payment-row">
+                {PAY_METHODS.map(m => <button key={m} className={`m-pay-pill ${txForm.paymentMethod === m ? 'active' : ''}`} onClick={() => setTxForm(p => ({ ...p, paymentMethod: m }))}>{m}</button>)}
               </div>
-              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.25rem', fontWeight: 'bold', color: '#1a202c' }}>
-                {activeAlert.title}
-              </h3>
-              <p style={{ margin: '0 0 20px 0', fontSize: '0.875rem', color: '#4a5568', lineHeight: 1.5 }}>
-                {activeAlert.message}
-              </p>
-              
-              <div style={{ background: '#fcfcf9', border: '1px solid #ede8db', borderRadius: '8px', padding: '12px', marginBottom: '24px', textAlign: 'left' }}>
-                <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '4px' }}>Cliente</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#1a202c', marginBottom: '8px' }}>{activeAlert.booking.clientName}</div>
+            </div>
+            <div className="m-field"><label className="m-label">Data</label><input className="m-input" type="date" value={txForm.date} onChange={e => setTxForm(p => ({ ...p, date: e.target.value }))}/></div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowAddTxSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={addTransaction}><Check size={14}/> Salvar</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Upload Sheet ───────────────────────────────────────────────
+  const renderUploadSheet = () => {
+    if (!showUploadSheet) return null;
+    
+    const getPreviewImageStyle = () => {
+      if (!naturalDimensions.w || !containerSize) {
+        return { width: '100%', height: '100%', objectFit: 'cover' };
+      }
+      
+      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+      const displayWidth = naturalDimensions.w * initialScale;
+      const displayHeight = naturalDimensions.h * initialScale;
+      const initialX = (containerSize - displayWidth) / 2;
+      const initialY = (containerSize - displayHeight) / 2;
+      
+      const w = displayWidth * cropperZoom;
+      const h = displayHeight * cropperZoom;
+      const l = initialX + cropperOffset.x;
+      const t = initialY + cropperOffset.y;
+      
+      return {
+        position: 'absolute',
+        width: `${w}px`,
+        height: `${h}px`,
+        left: `${l}px`,
+        top: `${t}px`,
+        pointerEvents: 'none',
+        maxWidth: 'none',
+        maxHeight: 'none'
+      };
+    };
+
+    return (
+      <div className="m-overlay" onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Publicar Foto</div>
+            <button onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            {/* Interactive Cropper */}
+            {pendingPreviewUrl && (
+              <div 
+                ref={previewContainerRef}
+                style={{ 
+                  borderRadius:'var(--m-radius)', 
+                  overflow:'hidden', 
+                  aspectRatio:'1/1', 
+                  background:'#000', 
+                  position:'relative',
+                  touchAction:'none',
+                  cursor: isDraggingCropper ? 'grabbing' : 'grab'
+                }}
+                onMouseDown={(e) => handleCropperDragStart(e.clientX, e.clientY)}
+                onMouseMove={(e) => handleCropperDragMove(e.clientX, e.clientY)}
+                onMouseUp={handleCropperDragEnd}
+                onMouseLeave={handleCropperDragEnd}
+                onTouchStart={(e) => handleCropperDragStart(e.touches[0].clientX, e.touches[0].clientY)}
+                onTouchMove={(e) => handleCropperDragMove(e.touches[0].clientX, e.touches[0].clientY)}
+                onTouchEnd={handleCropperDragEnd}
+              >
+                <img 
+                  ref={previewImageRef}
+                  src={pendingPreviewUrl} 
+                  alt="Preview" 
+                  onLoad={(e) => {
+                    const img = e.target;
+                    setNaturalDimensions({ w: img.naturalWidth, h: img.naturalHeight });
+                    if (previewContainerRef.current) {
+                      setContainerSize(previewContainerRef.current.offsetWidth);
+                    }
+                  }}
+                  style={getPreviewImageStyle()}
+                />
                 
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Data</div>
-                    <div style={{ fontSize: '0.85rem', color: '#2d3748' }}>{activeAlert.booking.date ? activeAlert.booking.date.split('-').reverse().join('/') : ''}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.8rem', color: '#718096', fontWeight: 600, textTransform: 'uppercase', marginBottom: '2px' }}>Horário</div>
-                    <div style={{ fontSize: '0.85rem', color: '#2d3748' }}>{activeAlert.booking.time}</div>
-                  </div>
-                </div>
+                {/* Visual crop guidelines/borders */}
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  border: '1.5px dashed rgba(220, 163, 84, 0.6)',
+                  borderRadius: 'var(--m-radius)',
+                  pointerEvents: 'none',
+                  boxShadow: 'inset 0 0 40px rgba(0,0,0,0.5)'
+                }}/>
               </div>
-              
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                <button 
-                  type="button" 
-                  style={{
-                    background: '#8c5027',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '12px 16px',
-                    fontSize: '0.9rem',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 4px rgba(140,80,39,0.2)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 8
+            )}
+
+            {/* Zoom Slider */}
+            {naturalDimensions.w > 0 && (
+              <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--m-text-2)' }}>
+                  <span style={{ fontWeight: 600 }}>Zoom da Imagem</span>
+                  <span>{Math.round(cropperZoom * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.01"
+                  value={cropperZoom}
+                  onChange={(e) => {
+                    const nextZoom = parseFloat(e.target.value);
+                    setCropperZoom(nextZoom);
+                    
+                    // Adjust offsets to keep it within constraints
+                    setCropperOffset(prev => {
+                      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+                      const displayWidth = naturalDimensions.w * initialScale * nextZoom;
+                      const displayHeight = naturalDimensions.h * initialScale * nextZoom;
+                      const initialX = (containerSize - displayWidth) / 2;
+                      const initialY = (containerSize - displayHeight) / 2;
+                      
+                      const minX = containerSize - displayWidth - initialX;
+                      const maxX = -initialX;
+                      const minY = containerSize - displayHeight - initialY;
+                      const maxY = -initialY;
+                      
+                      return {
+                        x: Math.max(minX, Math.min(maxX, prev.x)),
+                        y: Math.max(minY, Math.min(maxY, prev.y))
+                      };
+                    });
                   }}
-                  onClick={async () => {
-                    await confirmBooking(activeAlert.booking.id);
-                    setActiveAlert(null);
-                  }}
-                >
-                  <Check size={18} /> Aceitar Agendamento
-                </button>
-                <button 
-                  type="button" 
                   style={{
-                    background: 'transparent',
-                    color: '#4a5568',
-                    border: '1px solid #cbd5e0',
-                    borderRadius: '8px',
-                    padding: '12px 16px',
-                    fontSize: '0.9rem',
-                    fontWeight: '600',
+                    width: '100%',
+                    accentColor: 'var(--m-gold)',
+                    background: 'var(--m-border)',
+                    height: '6px',
+                    borderRadius: '3px',
+                    outline: 'none',
                     cursor: 'pointer'
                   }}
-                  onClick={() => {
-                    setSelectedBooking(activeAlert.booking);
-                    setActiveAlert(null);
-                  }}
+                />
+                <div style={{ fontSize: '0.7rem', color: 'var(--m-muted)', textAlign: 'center' }}>
+                  Arraste a foto acima para posicionar e use o controle deslizante para ajustar o zoom.
+                </div>
+              </div>
+            )}
+
+            {/* Category */}
+            <div className="m-field" style={{ marginTop: 16 }}>
+              <label className="m-label">Categoria</label>
+              <select className="m-select" value={uploadForm.category} onChange={e => setUploadForm(p => ({ ...p, category: e.target.value }))}>
+                {GALLERY_CATS.filter(c => c !== 'Todos').map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+
+            {/* Caption */}
+            <div className="m-field">
+              <label className="m-label">Legenda</label>
+              <input className="m-input" placeholder="Descreva o trabalho..." value={uploadForm.caption} onChange={e => setUploadForm(p => ({ ...p, caption: e.target.value }))}/>
+            </div>
+
+            {/* Destination Selection */}
+            <div style={{ background:'var(--m-gold-subtle)', border:'0.5px solid var(--m-gold)', borderRadius:'var(--m-radius-sm)', padding:'12px 14px', display:'flex', flexDirection:'column', gap:10 }}>
+              <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px' }}>📸 Escolha onde publicar</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <label style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer', userSelect:'none' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={postToGallery} 
+                    onChange={e => setPostToGallery(e.target.checked)}
+                    style={{ width:18, height:18, accentColor:'var(--m-gold)' }}
+                  />
+                  <span style={{ fontSize:'0.78rem', color:'var(--m-text-2)', fontWeight: 600 }}>
+                    Galeria do Site (Galeria Pública)
+                  </span>
+                </label>
+
+                <label style={{ display:'flex', alignItems:'center', gap:10, cursor: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'pointer' : 'not-allowed', userSelect:'none', opacity: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 1 : 0.6 }}>
+                  <input 
+                    type="checkbox" 
+                    checked={postToGoogle && !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)} 
+                    disabled={!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)}
+                    onChange={e => setPostToGoogle(e.target.checked)}
+                    style={{ width:18, height:18, accentColor:'var(--m-gold)' }}
+                  />
+                  <span style={{ fontSize:'0.78rem', color:'var(--m-text-2)', fontWeight: 600 }}>
+                    Google Business Photos {!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={uploadPhoto} disabled={isUploading || (!postToGallery && !postToGoogle)}>
+              {isUploading ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Publicando...</> : <><Upload size={14}/> Publicar</>}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Photo Preview ──────────────────────────────────────────────
+  const renderPhotoPreview = () => {
+    if (!previewPhoto) return null;
+    return (
+      <div className="m-photo-preview">
+        <div className="m-photo-preview-bar">
+          <button onClick={() => setPreviewPhoto(null)} style={{ background:'none', border:'none', color:'var(--m-text)', cursor:'pointer', display:'flex', gap:6, alignItems:'center', fontSize:'0.85rem', fontWeight:700, fontFamily:'inherit' }}>
+            <ChevronLeft size={18}/> Voltar
+          </button>
+          <div style={{ textAlign:'center' }}>
+            <div style={{ fontSize:'0.8rem', fontWeight:700, color:'var(--m-text)' }}>{previewPhoto.category}</div>
+            {previewPhoto.googlePosted && <div style={{ fontSize:'0.65rem', color:'#4285f4', fontWeight:800 }}>✓ Google Business</div>}
+          </div>
+          <button onClick={() => deletePhoto(previewPhoto)} style={{ background:'none', border:'none', color:'var(--m-red)', cursor:'pointer', display:'flex', alignItems:'center' }}>
+            <Trash2 size={18}/>
+          </button>
+        </div>
+        <img className="m-photo-preview-img" src={previewPhoto.url} alt={previewPhoto.caption}/>
+        {previewPhoto.caption && (
+          <div className="m-photo-preview-bar">
+            <div style={{ fontSize:'0.82rem', color:'var(--m-text-2)', flex:1, textAlign:'center' }}>{previewPhoto.caption}</div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ── Notifications Sheet ────────────────────────────────────────
+  const renderNotifSheet = () => {
+    if (!showNotifSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowNotifSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Notificações</div>
+            <button onClick={() => setShowNotifSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body" style={{ padding:0 }}>
+            {bookings.filter(b => b.status === 'pendente').length === 0 ? (
+              <div className="m-empty" style={{ padding:'40px 24px' }}>
+                <Bell className="m-empty-icon" size={32}/>
+                <div className="m-empty-title">Nenhuma notificação</div>
+                <div className="m-empty-sub">Você está em dia!</div>
+              </div>
+            ) : (
+              bookings.filter(b => b.status === 'pendente').map(b => (
+                <div key={b.id} className="m-notif-item unread" onClick={() => { setSelectedBooking(b); setShowNotifSheet(false); setShowBookingSheet(true); }}>
+                  <div className="m-notif-dot"/>
+                  <div>
+                    <div style={{ fontSize:'0.85rem', fontWeight:700, color:'var(--m-text)' }}>Agendamento Pendente</div>
+                    <div style={{ fontSize:'0.75rem', color:'var(--m-muted)', marginTop:2 }}>{b.clientName} · {fmtDate(b.date)} às {b.time}</div>
+                    <div style={{ fontSize:'0.72rem', color:'var(--m-text-2)', marginTop:2 }}>{b.service?.name || b.serviceName}</div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── FAB Menu Sheet ──────────────────────────────────────────────
+  // renderFabMenu: não é mais usado (speed-dial é inline no JSX)
+  const renderFabMenu = () => null;
+
+  // ── Product Exit Sheet ──────────────────────────────────────────
+  const renderProductExitSheet = () => {
+    if (!showProductExitSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowProductExitSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Saída Avulsa de Produto</div>
+            <button onClick={() => setShowProductExitSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Produto *</label>
+              <select 
+                className="m-select" 
+                value={prodExitSelectedId} 
+                onChange={e => setProdExitSelectedId(e.target.value)}
+              >
+                <option value="">Selecione um produto...</option>
+                {inventory.map(p => (
+                  <option key={p.id} value={p.id}>{p.name} (Dispo: {p.quantity})</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Quantidade *</label>
+              <input 
+                className="m-input" 
+                type="number" 
+                min="1" 
+                value={prodExitQuantity} 
+                onChange={e => setProdExitQuantity(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Motivo / Tipo de Saída</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${prodExitType === 'venda' ? 'active' : ''}`} onClick={() => setProdExitType('venda')}>💰 Venda Avulsa</button>
+                <button className={`m-seg-btn ${prodExitType === 'uso' ? 'active' : ''}`} onClick={() => setProdExitType('uso')}>💆 Uso no Salão</button>
+              </div>
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowProductExitSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleProductExit}><Check size={14}/> Confirmar Saída</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Quick Block Sheet ───────────────────────────────────────────
+  // ── Product Entry Sheet ─────────────────────────────────────────
+  const renderProductEntrySheet = () => {
+    if (!showProductEntrySheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowProductEntrySheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Entrada de Produto</div>
+            <button onClick={() => setShowProductEntrySheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Nome do Produto *</label>
+              <input
+                className="m-input"
+                placeholder="Ex: Shampoo Curly 250ml"
+                value={prodEntryName}
+                onChange={e => setProdEntryName(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Quantidade *</label>
+              <input
+                className="m-input"
+                type="number"
+                min="1"
+                value={prodEntryQuantity}
+                onChange={e => setProdEntryQuantity(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Preço de Custo (un.) *</label>
+              <input
+                className="m-input"
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder="0,00"
+                value={prodEntryCost}
+                onChange={e => setProdEntryCost(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowProductEntrySheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleProductEntry}><Check size={14}/> Confirmar Entrada</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderQuickBlockSheet = () => {
+    if (!showQuickBlockSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowQuickBlockSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Registrar Ausência</div>
+            <button onClick={() => setShowQuickBlockSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Tipo</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${qbType === 'folga' ? 'active' : ''}`} onClick={() => setQbType('folga')}>🛌 Folga</button>
+                <button className={`m-seg-btn ${qbType === 'compromisso' ? 'active' : ''}`} onClick={() => setQbType('compromisso')}>📌 Compromisso</button>
+                <button className={`m-seg-btn ${qbType === 'feriado' ? 'active' : ''}`} onClick={() => setQbType('feriado')}>🎉 Feriado</button>
+              </div>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Data</label>
+              <input
+                className="m-input"
+                type="date"
+                value={qbDate}
+                onChange={e => setQbDate(e.target.value)}
+              />
+            </div>
+            <div style={{ display:'flex', gap:12 }}>
+              <div className="m-field" style={{ flex:1 }}>
+                <label className="m-label">Início</label>
+                <select 
+                  className="m-select" 
+                  value={qbStart} 
+                  onChange={e => setQbStart(e.target.value)}
                 >
-                  Ver Detalhes completos
+                  {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="m-field" style={{ flex:1 }}>
+                <label className="m-label">Fim</label>
+                <select 
+                  className="m-select" 
+                  value={qbEnd} 
+                  onChange={e => setQbEnd(e.target.value)}
+                >
+                  {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="m-field">
+              <label className="m-label">Motivo (opcional)</label>
+              <input 
+                className="m-input" 
+                placeholder="Ex: Reunião externa, manutenção..." 
+                value={qbMotive} 
+                onChange={e => setQbMotive(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowQuickBlockSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleQuickBlock}><Check size={14}/> Registrar Ausência</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Absence Sheet (Nova / Editar Ausência) ──────────────────────
+  const renderAbsenceSheet = () => {
+    if (!showAbsenceSheet) return null;
+    return (
+      <div className="m-overlay" onClick={() => setShowAbsenceSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">{editingAbsenceId ? 'Editar Ausência' : 'Nova Ausência'}</div>
+            <button onClick={() => setShowAbsenceSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body">
+            <div className="m-field">
+              <label className="m-label">Título *</label>
+              <input
+                className="m-input"
+                placeholder="Ex: Consulta, Viagem, Folga"
+                value={absTitle}
+                onChange={e => setAbsTitle(e.target.value)}
+              />
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">Recorrência</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${absRecurrence === 'none' ? 'active' : ''}`} onClick={() => setAbsRecurrence('none')}>Não repete</button>
+                <button className={`m-seg-btn ${absRecurrence === 'weekly' ? 'active' : ''}`} onClick={() => setAbsRecurrence('weekly')}>Semanal</button>
+                <button className={`m-seg-btn ${absRecurrence === 'monthly' ? 'active' : ''}`} onClick={() => setAbsRecurrence('monthly')}>Mensal</button>
+              </div>
+            </div>
+
+            <div className="m-field">
+              <label className="m-label">
+                {absRecurrence === 'weekly' ? 'Data (define o dia da semana)' : absRecurrence === 'monthly' ? 'Data (define o dia do mês)' : 'Data início'}
+              </label>
+              <input
+                className="m-input"
+                type="date"
+                value={absStartDate}
+                onChange={e => { setAbsStartDate(e.target.value); if (absSingleDay) setAbsEndDate(e.target.value); }}
+              />
+            </div>
+
+            {absRecurrence === 'none' && (
+              <>
+                <div className="m-field">
+                  <label className="m-label">Período</label>
+                  <div className="m-segmented">
+                    <button className={`m-seg-btn ${absSingleDay ? 'active' : ''}`} onClick={() => { setAbsSingleDay(true); setAbsEndDate(absStartDate); }}>Apenas este dia</button>
+                    <button className={`m-seg-btn ${!absSingleDay ? 'active' : ''}`} onClick={() => setAbsSingleDay(false)}>Intervalo de dias</button>
+                  </div>
+                </div>
+                {!absSingleDay && (
+                  <div className="m-field">
+                    <label className="m-label">Data fim</label>
+                    <input
+                      className="m-input"
+                      type="date"
+                      value={absEndDate}
+                      min={absStartDate}
+                      onChange={e => setAbsEndDate(e.target.value)}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="m-field">
+              <label className="m-label">Horário</label>
+              <div className="m-segmented">
+                <button className={`m-seg-btn ${absAllDay ? 'active' : ''}`} onClick={() => setAbsAllDay(true)}>Dia inteiro</button>
+                <button className={`m-seg-btn ${!absAllDay ? 'active' : ''}`} onClick={() => setAbsAllDay(false)}>Horário específico</button>
+              </div>
+            </div>
+
+            {!absAllDay && (
+              <div style={{ display:'flex', gap:12 }}>
+                <div className="m-field" style={{ flex:1 }}>
+                  <label className="m-label">Início</label>
+                  <select className="m-select" value={absStartTime} onChange={e => setAbsStartTime(e.target.value)}>
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div className="m-field" style={{ flex:1 }}>
+                  <label className="m-label">Fim</label>
+                  <select className="m-select" value={absEndTime} onChange={e => setAbsEndTime(e.target.value)}>
+                    {SLOTS.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="m-sheet-footer">
+            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowAbsenceSheet(false)}>Cancelar</button>
+            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={saveAbsence}><Check size={14}/> Salvar Ausência</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // ═══════════════════════════════════════════════════════════════
+  // MAIN RENDER
+  // ═══════════════════════════════════════════════════════════════
+  const NAV_ITEMS = [
+    { id:'hoje',     icon:<Home size={20}/>,         label:'Hoje' },
+    { id:'agenda',   icon:<Calendar size={20}/>,     label:'Agenda' },
+    { id:'galeria',  icon:<Camera size={20}/>,       label:'Galeria' },
+    { id:'clientes', icon:<Users size={20}/>,        label:'Clientes' },
+    { id:'caixa',    icon:<DollarSign size={20}/>,   label:'Caixa' },
+    { id:'mais',     icon:<MoreHorizontal size={20}/>, label:'Mais' },
+  ];
+
+  const headerTitles = {
+    hoje: 'Studio do Jon',
+    agenda: 'Agenda',
+    galeria: 'Galeria & Fotos',
+    clientes: 'Clientes',
+    caixa: 'Caixa',
+    mais: maisSection ? '' : 'Mais'
+  };
+
+  return (
+    <div className="mobile-app">
+      {/* Header */}
+      <header className="m-header">
+        <div className="m-header-left">
+          {tab === 'mais' && maisSection ? (
+            <button className="m-header-back" onClick={() => setMaisSection(null)}>
+              <ChevronLeft size={18}/> Voltar
+            </button>
+          ) : (
+            <>
+              <img src="/favicon.ico" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
+              <div>
+                <div className="m-header-title">{headerTitles[tab]}</div>
+                {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin</div>}
+              </div>
+            </>
+          )}
+        </div>
+        <div className="m-header-right">
+          <button className={`m-icon-btn ${unreadCount > 0 ? 'active' : ''}`} onClick={() => setShowNotifSheet(true)}>
+            <Bell size={18}/>
+            {unreadCount > 0 && <div className="m-badge">{unreadCount > 9 ? '9+' : unreadCount}</div>}
+          </button>
+          {pendingCount > 0 && (
+            <button className="m-icon-btn active" onClick={() => setShowNotifSheet(true)}>
+              <AlertCircle size={18}/>
+              <div className="m-badge" style={{ background:'var(--m-amber)', color:'#0E0C0B' }}>{pendingCount}</div>
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Content */}
+      <main className="m-content">
+        {tab === 'hoje'     && renderHoje()}
+        {tab === 'agenda'   && renderAgenda()}
+        {tab === 'galeria'  && renderGaleria()}
+        {tab === 'clientes' && renderClientes()}
+        {tab === 'caixa'    && renderCaixa()}
+        {tab === 'mais'     && renderMais()}
+      </main>
+
+      {/* Bottom Navigation */}
+      <nav className="m-bottom-nav">
+        {NAV_ITEMS.map(item => (
+          <button key={item.id} className={`m-nav-item ${tab === item.id ? 'active' : ''}`} onClick={() => { setTab(item.id); if (item.id !== 'mais') setMaisSection(null); }}>
+            <div className="m-nav-icon-wrap">{item.icon}</div>
+            <span className="m-nav-label">{item.label}</span>
+          </button>
+        ))}
+      </nav>
+
+      {/* Speed-Dial FAB */}
+      {(tab === 'hoje' || tab === 'agenda') && (
+        <>
+          {showFabMenu && <div className="m-fab-backdrop" onClick={() => setShowFabMenu(false)} />}
+          <div className="m-fab-container">
+            {showFabMenu && (
+              <div className="m-fab-actions">
+                {/* Saida de Produto */}
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowProductExitSheet(true); }}>
+                  <span className="m-fab-action-label">Saída de Produto</span>
+                  <span className="m-fab-action-icon" style={{ background:'rgba(101,146,255,0.15)', color:'var(--m-blue)' }}><Package size={18}/></span>
                 </button>
-                <button 
-                  type="button" 
-                  style={{
-                    background: 'transparent',
-                    color: '#a0aec0',
-                    border: 'none',
-                    fontSize: '0.8rem',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    marginTop: 4
-                  }}
-                  onClick={() => setActiveAlert(null)}
-                >
-                  Fechar
+                {/* Cadastrar Cliente */}
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
+                  <span className="m-fab-action-label">Cadastrar Cliente</span>
+                  <span className="m-fab-action-icon" style={{ background:'rgba(52,199,89,0.15)', color:'var(--m-green)' }}><Users size={18}/></span>
+                </button>
+                {/* Criar Agendamento */}
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowNewBookingSheet(true); }}>
+                  <span className="m-fab-action-label">Criar Agendamento</span>
+                  <span className="m-fab-action-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Calendar size={18}/></span>
                 </button>
               </div>
-            </div>
+            )}
+            <button className={`m-fab ${showFabMenu ? 'open' : ''}`} onClick={() => setShowFabMenu(v => !v)}>
+              <Plus size={22}/>
+            </button>
           </div>
+        </>
+      )}
+      {tab === 'galeria' && (
+        <div className="m-fab-container">
+          <button className="m-fab" onClick={() => galleryInputRef.current?.click()}>
+            <Camera size={22}/>
+          </button>
         </div>
       )}
 
-      {/* MODAL DE CADASTRAR/EDITAR SERVICO */}
-      {showServiceModal && (
-        <div className="mobile-overlay" onClick={() => { setShowServiceModal(false); setEditingService(null); }}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
-            <div className="mobile-sheet-header">
-              <h4>{editingService ? 'Editar Serviço' : 'Novo Serviço'}</h4>
-              <button type="button" onClick={() => { setShowServiceModal(false); setEditingService(null); }}><X size={20} /></button>
-            </div>
+      {/* Toast */}
+      {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)}/>}
 
-            <form onSubmit={handleSaveService}>
-              <div className="mobile-form-group">
-                <label>Nome do Serviço *</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Corte de Cachos à Seco" 
-                  required
-                  value={serviceForm.name}
-                  onChange={e => setServiceForm(prev => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
+      {/* Sheets */}
+      {renderFabMenu()}
+      {renderProductExitSheet()}
+      {renderProductEntrySheet()}
+      {renderAbsenceSheet()}
+      {renderQuickBlockSheet()}
+      {renderBookingSheet()}
+      {renderSlotSheet()}
+      {renderCheckoutSheet()}
+      {renderNewBookingSheet()}
+      {renderEditBookingSheet()}
+      {renderClientSheet()}
+      {renderNewClientSheet()}
+      {renderAddTxSheet()}
+      {renderUploadSheet()}
+      {renderNotifSheet()}
 
-              <div className="mobile-form-group">
-                <label>Categoria *</label>
-                <select 
-                  value={serviceForm.category}
-                  onChange={e => setServiceForm(prev => ({ ...prev, category: e.target.value }))}
-                >
-                  <option value="Cabelo">Cabelo</option>
-                  <option value="Barba">Barba</option>
-                  <option value="Combos">Combos</option>
-                  <option value="Tratamentos">Tratamentos</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Preço Base (R$) *</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 190" 
-                  required
-                  value={serviceForm.price}
-                  onChange={e => setServiceForm(prev => ({ ...prev, price: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Preço Promocional (R$ - Opcional)</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 150" 
-                  value={serviceForm.promoPrice}
-                  onChange={e => setServiceForm(prev => ({ ...prev, promoPrice: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Duração (minutos) *</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 60" 
-                  required
-                  value={serviceForm.duration}
-                  onChange={e => setServiceForm(prev => ({ ...prev, duration: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Custo do Procedimento (R$ - Opcional)</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 15" 
-                  value={serviceForm.cost}
-                  onChange={e => setServiceForm(prev => ({ ...prev, cost: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Ordem de Posição na Grade</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 1" 
-                  value={serviceForm.position}
-                  onChange={e => setServiceForm(prev => ({ ...prev, position: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Descrição</label>
-                <textarea 
-                  placeholder="Descreva o serviço para o site de agendamentos..."
-                  rows={2}
-                  value={serviceForm.description}
-                  onChange={e => setServiceForm(prev => ({ ...prev, description: e.target.value }))}
-                />
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '10px 0' }}>
-                <input 
-                  type="checkbox" 
-                  id="scheduledViaWhatsapp"
-                  style={{ width: 18, height: 18 }}
-                  checked={!!serviceForm.scheduledViaWhatsapp}
-                  onChange={e => setServiceForm(prev => ({ ...prev, scheduledViaWhatsapp: e.target.checked }))}
-                />
-                <label htmlFor="scheduledViaWhatsapp" style={{ margin: 0, cursor: 'pointer', fontSize: '0.85rem' }}>Agendar somente via WhatsApp</label>
-              </div>
-
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => { setShowServiceModal(false); setEditingService(null); }}>Cancelar</button>
-                <button type="submit" className="btn-save">Salvar Serviço</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL DE CADASTRAR/EDITAR PRODUTO */}
-      {showProductModal && (
-        <div className="mobile-overlay" onClick={() => { setShowProductModal(false); setEditingProduct(null); }}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
-            <div className="mobile-sheet-header">
-              <h4>{editingProduct ? 'Editar Produto' : 'Novo Produto'}</h4>
-              <button type="button" onClick={() => { setShowProductModal(false); setEditingProduct(null); }}><X size={20} /></button>
-            </div>
-
-            <form onSubmit={handleSaveProduct}>
-              <div className="mobile-form-group">
-                <label>Nome do Produto *</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Creme de Pentear Caracóis" 
-                  required
-                  value={productForm.name}
-                  onChange={e => setProductForm(prev => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Categoria *</label>
-                <select 
-                  value={productForm.category}
-                  onChange={e => setProductForm(prev => ({ ...prev, category: e.target.value }))}
-                >
-                  <option value="Shampoo">Shampoo</option>
-                  <option value="Condicionador">Condicionador</option>
-                  <option value="Creme de Pentear">Creme de Pentear</option>
-                  <option value="Óleo / Gel">Óleo / Gel</option>
-                  <option value="Acessórios">Acessórios</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Quantidade em Estoque *</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 10" 
-                  required
-                  value={productForm.quantity}
-                  onChange={e => setProductForm(prev => ({ ...prev, quantity: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Preço de Custo (R$) *</label>
-                <input 
-                  type="number" 
-                  step="0.01"
-                  placeholder="Ex: 25.00" 
-                  required
-                  value={productForm.costPrice}
-                  onChange={e => setProductForm(prev => ({ ...prev, costPrice: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Preço de Venda (R$) *</label>
-                <input 
-                  type="number" 
-                  step="0.01"
-                  placeholder="Ex: 50.00" 
-                  required
-                  value={productForm.sellingPrice}
-                  onChange={e => setProductForm(prev => ({ ...prev, sellingPrice: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Estoque Mínimo Alerta *</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 3" 
-                  required
-                  value={productForm.minStock}
-                  onChange={e => setProductForm(prev => ({ ...prev, minStock: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => { setShowProductModal(false); setEditingProduct(null); }}>Cancelar</button>
-                <button type="submit" className="btn-save">Salvar Produto</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL DE LANÇAMENTO FINANCEIRO MANUAL */}
-      {showFinanceModal && (
-        <div className="mobile-overlay" onClick={() => setShowFinanceModal(false)}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="mobile-sheet-header">
-              <h4>Lançar Transação Manual</h4>
-              <button type="button" onClick={() => setShowFinanceModal(false)}><X size={20} /></button>
-            </div>
-
-            <form onSubmit={handleAddExpense}>
-              <div className="mobile-form-group">
-                <label>Tipo de Transação *</label>
-                <select 
-                  value={financeForm.type}
-                  onChange={e => setFinanceForm(prev => ({ ...prev, type: e.target.value }))}
-                >
-                  <option value="saida">🔴 Saída / Despesa</option>
-                  <option value="entrada">🟢 Entrada / Receita</option>
-                </select>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Descrição / Finalidade *</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Aluguel do espaço, Compra de café..." 
-                  required
-                  value={financeForm.description}
-                  onChange={e => setFinanceForm(prev => ({ ...prev, description: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Valor (R$) *</label>
-                <input 
-                  type="number" 
-                  step="0.01"
-                  placeholder="Ex: 150.00" 
-                  required
-                  value={financeForm.value}
-                  onChange={e => setFinanceForm(prev => ({ ...prev, value: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Forma de Pagamento *</label>
-                <select 
-                  value={financeForm.paymentMethod}
-                  onChange={e => setFinanceForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                >
-                  <option value="Pix">PIX</option>
-                  <option value="Cartão de Crédito">Cartão de Crédito</option>
-                  <option value="Cartão de Débito">Cartão de Débito</option>
-                  <option value="Dinheiro">Dinheiro</option>
-                  <option value="Outro">Outro</option>
-                </select>
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Data *</label>
-                <input 
-                  type="date" 
-                  required
-                  value={financeForm.date}
-                  onChange={e => setFinanceForm(prev => ({ ...prev, date: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowFinanceModal(false)}>Cancelar</button>
-                <button type="submit" className="btn-save">Registrar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL DE CADASTRAR/EDITAR PROFISSIONAL */}
-      {showProfFormModal && (
-        <div className="mobile-overlay" onClick={() => { setShowProfFormModal(false); setEditingProfId(null); }}>
-          <div className="mobile-popup-modal" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '92vh', overflowY: 'auto' }}>
-            <div className="mobile-sheet-header">
-              <h4>{editingProfId ? 'Editar Profissional' : 'Novo Profissional'}</h4>
-              <button type="button" onClick={() => { setShowProfFormModal(false); setEditingProfId(null); }}><X size={20} /></button>
-            </div>
-
-            <form onSubmit={handleSaveProf}>
-              <div className="mobile-form-group">
-                <label>Nome do Profissional *</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: Ana Cachos" 
-                  required
-                  value={profForm.name}
-                  onChange={e => setProfForm(prev => ({ ...prev, name: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Comissão sobre Serviços (%) *</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 50" 
-                  required
-                  value={profForm.commissionService}
-                  onChange={e => setProfForm(prev => ({ ...prev, commissionService: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Comissão sobre Produtos (%) *</label>
-                <input 
-                  type="number" 
-                  placeholder="Ex: 10" 
-                  required
-                  value={profForm.commissionProduct}
-                  onChange={e => setProfForm(prev => ({ ...prev, commissionProduct: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>Celular / WhatsApp</label>
-                <input 
-                  type="text" 
-                  placeholder="Ex: 31988887777" 
-                  value={profForm.phone}
-                  onChange={e => setProfForm(prev => ({ ...prev, phone: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group">
-                <label>E-mail</label>
-                <input 
-                  type="email" 
-                  placeholder="prof@email.com" 
-                  value={profForm.email}
-                  onChange={e => setProfForm(prev => ({ ...prev, email: e.target.value }))}
-                />
-              </div>
-
-              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
-                <div style={{ flex: 1 }}>
-                  <label>Início do Expediente</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: 09:00"
-                    value={profForm.workStart}
-                    onChange={e => setProfForm(prev => ({ ...prev, workStart: e.target.value }))}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label>Fim do Expediente</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: 19:00"
-                    value={profForm.workEnd}
-                    onChange={e => setProfForm(prev => ({ ...prev, workEnd: e.target.value }))}
-                  />
-                </div>
-              </div>
-
-              <div className="mobile-form-group" style={{ display: 'flex', gap: 10 }}>
-                <div style={{ flex: 1 }}>
-                  <label>Início do Almoço</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: 12:00"
-                    value={profForm.lunchStart}
-                    onChange={e => setProfForm(prev => ({ ...prev, lunchStart: e.target.value }))}
-                  />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <label>Fim do Almoço</label>
-                  <input 
-                    type="text" 
-                    placeholder="Ex: 13:00"
-                    value={profForm.lunchEnd}
-                    onChange={e => setProfForm(prev => ({ ...prev, lunchEnd: e.target.value }))}
-                  />
-                </div>
-              </div>
-
-              <div className="mobile-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => { setShowProfFormModal(false); setEditingProfId(null); }}>Cancelar</button>
-                <button type="submit" className="btn-save">Salvar Profissional</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {/* Photo preview (fullscreen) */}
+      {renderPhotoPreview()}
     </div>
   );
-};
-
-export default AdminMobileApp;
+}
