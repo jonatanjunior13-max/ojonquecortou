@@ -79,17 +79,34 @@ const BlogPostPage = () => {
     return <Navigate to="/blog" replace />;
   }
 
-  // Obter posts relacionados de forma consistente e determinística:
+  // Smart related posts: category + keyword match, up to 6 for better internal linking
+  const getKeywords = (text) => {
+    if (!text) return [];
+    return text.toLowerCase()
+      .split(/\W+/)
+      .filter(w => w.length > 3 && !['para', 'como', 'sobre', 'mais', 'artigo', 'postagem', 'você', 'suas', 'seus'].includes(w));
+  };
+
+  const postKeywords = new Set(getKeywords(post.title + ' ' + post.excerpt));
+
   const relatedPosts = allPosts
     .filter((p) => p.slug !== slug)
+    .map((p) => {
+      let score = 0;
+      if (p.category === post.category) score += 100;
+      const candidateKeywords = getKeywords(p.title + ' ' + p.excerpt);
+      const overlapCount = candidateKeywords.filter(kw => postKeywords.has(kw)).length;
+      score += overlapCount * 5;
+      return { post: p, score };
+    })
     .sort((a, b) => {
-      if (a.category === post.category && b.category !== post.category) return -1;
-      if (b.category === post.category && a.category !== post.category) return 1;
-      const idA = typeof a.id === 'number' ? a.id : 0;
-      const idB = typeof b.id === 'number' ? b.id : 0;
+      if (b.score !== a.score) return b.score - a.score;
+      const idA = typeof a.post.id === 'number' ? a.post.id : 0;
+      const idB = typeof b.post.id === 'number' ? b.post.id : 0;
       return idB - idA;
     })
-    .slice(0, 3);
+    .slice(0, 6)
+    .map(item => item.post);
 
   const generatePostDescription = (post) => {
     let desc = post.metaDescription;
