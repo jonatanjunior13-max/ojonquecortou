@@ -240,21 +240,22 @@ const localBusinessSchema = {
   "url": "https://www.ojonquecortou.com.br",
   "logo": "https://www.ojonquecortou.com.br/logo.png",
   "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
-  "telephone": "+553135866673",
+  "telephone": "+55 31 3586-6673",
   "email": "contato@ojonquecortou.com.br",
   "priceRange": "$$",
   "hasMap": "https://www.google.com/maps?cid=16629671607593282841",
   "sameAs": [
     "https://www.instagram.com/ojonquecortou/",
     "https://www.facebook.com/ojonquecortou/",
-    "https://linktr.ee/ojonquecortou"
+    "https://linktr.ee/ojonquecortou",
+    "https://www.google.com/maps?cid=16629671607593282841"
   ],
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Rua Francisco Ovídio, 184",
+    "streetAddress": "Rua Francisco Ovídio, 184, Caiçaras",
     "addressLocality": "Belo Horizonte",
     "addressRegion": "MG",
-    "postalCode": "30720-320",
+    "postalCode": "30770-040",
     "addressCountry": "BR"
   },
   "geo": {
@@ -287,7 +288,7 @@ const localBusinessSchema = {
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.9",
-    "reviewCount": "266",
+    "reviewCount": "272",
     "bestRating": "5",
     "worstRating": "1"
   },
