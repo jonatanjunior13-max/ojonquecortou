@@ -824,9 +824,10 @@ Use as seguintes tags no "bodyHtml":
 
   const handleGenerateGbpPost = async (specificTheme = null) => {
     setIsGeneratingGbpPost(true);
+    const cleanedTheme = (specificTheme && typeof specificTheme === 'object' && 'title' in specificTheme) ? specificTheme : null;
 
     const generateDynamicFallbackPost = (theme = null) => {
-      if (theme) {
+      if (theme && theme.title) {
         const hooks = [
           `Vamos falar sobre ${theme.title}? 💡`,
           `${theme.title}: por que isso importa para o seu cacho? ✂️`,
@@ -834,10 +835,10 @@ Use as seguintes tags no "bodyHtml":
           `O segredo por trás de: ${theme.title} ✨`
         ];
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-        const imagePrompt = `${theme.keywords}, gorgeous curly hair, professional salon, realistic`;
+        const imagePrompt = `${theme.keywords || ''}, gorgeous curly hair, professional salon, realistic`;
         const randomSeed = Math.floor(Math.random() * 1000000);
         const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
-        const text = `${pick(hooks)}\n\n${theme.description}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
+        const text = `${pick(hooks)}\n\n${theme.description || ''}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
         return { text, image };
       }
 
@@ -858,55 +859,29 @@ Use as seguintes tags no "bodyHtml":
 
       const bodies = [
         'No Studio do Jon, cada atendimento começa com a leitura de fio — uma análise da estrutura, porosidade e curvatura antes de qualquer tesoura. Isso garante que o corte potencialize o que o seu cabelo já tem de melhor.',
-        'O corte a seco é a técnica que revela o verdadeiro comportamento do fio. Sem água, vemos como cada mecha cai, onde há volume em excesso e onde falta definição. O resultado é um caimento natural e duradouro.',
-        'Cacheados e crespos têm necessidades completamente diferentes. Por isso, nosso método é personalizado: analisamos sua curvatura, porosidade e histórico de química antes de começar.',
-        'Frizz nem sempre é ressecamento — muitas vezes é a textura natural do fio pedindo liberdade. Aprenda a finalizá-lo corretamente no seu atendimento de visagismo no Studio do Jon.',
-        'Visagismo vai muito além do rosto. Levamos em conta volume, comprimento e a forma como seu cabelo cresce para criar um resultado que valorize você como um tempo.',
-        'A transição capilar é uma jornada. Com o corte certo, você acelera o processo, elimina pontas com química e começa a ver seus cachos naturais florescerem mais rápido.',
-        'Cronograma capilar, porosidade e pH: entender seu fio não é complicado quando você tem o parceiro certo. No Studio do Jon, cada cliente recebe uma orientação de rotina personalizada.',
-        'Embaraço, volume excessivo e perda de definição são sinais de que seu fio precisa de uma abordagem especializada. O corte a seco resolve na raiz — literalmente!',
-        'Cabelos crespos com volume, definição e elasticidade ao mesmo tempo: esse é o resultado de um corte técnico com leitura de fio no Studio do Jon, no coração do Caiçara, em BH.',
-      ];
-
-      const ctas = [
-        '\n\n📍 Rua Francisco Ovídio, Caiçara — BH\n🔗 Agende: www.ojonquecortou.com.br',
-        '\n\n📍 Studio do Jon — Especialista em Cachos e Crespos, BH\n🔗 Reserve agora: www.ojonquecortou.com.br',
-        '\n\n✂️ Studio do Jon | Caiçara, Belo Horizonte\n🔗 www.ojonquecortou.com.br',
-        '\n\n📲 Agende seu horário: www.ojonquecortou.com.br\n📍 Caiçara — BH | Studio do Jon',
-        '\n\n🌟 Studio do Jon — O especialista em cachos e crespos de BH\n🔗 www.ojonquecortou.com.br',
-      ];
-
-      const fallbackPrompts = [
-        'beautiful defined curly hair, realistic, high quality, professional salon setting',
-        'crespo hair with volume, natural texture, gorgeous smile, studio lighting',
-        'hairdresser cutting curly hair dry technique, professional salon, close up, detailed',
-        'woman with curly red hair, definition and volume, natural look, professional photography',
-        'curly hair transition journey, healthy curls, beautiful texture',
-        'visagism curly hair consult, smiling client, hair studio'
+        'Cortar o cabelo cacheado molhado é como desenhar em uma mola esticada. A seco, conseguimos ver o caimento real de cada cacho, respeitando o encolhimento e distribuindo o volume perfeitamente para o seu rosto.',
+        'Nosso método exclusivo combina visagismo e saúde capilar. Mais do que mudar a aparência, o objetivo é encontrar a proporção ideal que valorize a sua beleza natural e combine com a sua rotina diária.',
+        'Muitas vezes, o frizz é apenas o seu cacho pedindo a finalização ou hidratação corretas. A Leitura de Fio identifica se o seu cabelo precisa de água, óleos ou reconstrução para reter a definição e o brilho.',
       ];
 
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-      const randomPrompt = pick(fallbackPrompts);
       const randomSeed = Math.floor(Math.random() * 1000000);
-      const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(randomPrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
-      const text = `${pick(hooks)}\n\n${pick(bodies)}${pick(ctas)}`;
+      const image = `https://image.pollinations.ai/prompt/beautiful%20curly%20hair%20salon%20realistic?width=800&height=600&nologo=true&seed=${randomSeed}`;
+      const text = `${pick(hooks)}\n\n${pick(bodies)}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
       return { text, image };
     };
 
-    const apiKey = import.meta.env.VITE_GOOGLE_PLACES_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY || '';
-
-    if (apiKey) {
+    const isDemo = !db;
+    const apiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+    
+    if (!isDemo && apiKey && apiKey !== 'undefined' && apiKey !== 'null' && !apiKey.includes('placeholder')) {
       try {
         let promptText = '';
-        if (specificTheme) {
-          promptText = `Você é um Psicólogo de Consumo, Especialista em Persuasão e Redator Estratégico de Elite para "O Jon Que Cortou" (@ojonquecortou), salão especializado em curvaturas (cachos, crespos e ondulados) em Belo Horizonte.
-
-Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara) focado especificamente no seguinte tema:
-Título do Tema: "${specificTheme.title}"
-Descrição do Tema: "${specificTheme.description}"
-Palavras-chave do Tema: "${specificTheme.keywords}"
-
-Escreva sobre esse tema específico de forma lógica e técnica (use o tom de voz do Jon: direto, sem clichês de marketing genérico). Convide a agendar e inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.
+        if (cleanedTheme) {
+          promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco de cabelos cacheados e crespos em Belo Horizonte).
+          
+Tema específico para o post: "${cleanedTheme.title}" - Descrição do tema: "${cleanedTheme.description}".
+Foque em explicar esse tema de forma informativa, profissional and técnica, sem clichês de marketing genérico. Convide o cliente a agendar no link www.ojonquecortou.com.br. Não invente promoções ou descontos.
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 {
@@ -914,23 +889,12 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
   "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"
 }`;
         } else {
-          promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara).
-
-Para variar o tema, escolha aleatoriamente UM dos tópicos abaixo para focar o post (evite falar de frizz, a menos que o tema 7 seja sorteado):
-1. Método Leitura de Fio: O diagnóstico clínico-estético em 7 etapas antes de cortar.
-2. Corte Híbrido: O equilíbrio de cortar molhado para precisão e lapidar a seco para caimento natural.
-3. Visagismo para Cachos: Como planejar o corte baseado no formato de rosto e distribuição do volume.
-4. Transição Capilar: Como cortes progressivos ajudam a eliminar a química sem radicalismo imediato.
-5. Praticidade na finalização: Dicas para cuidar dos cachos no dia a dia em menos de 5 minutos.
-6. Cabelos Crespos e Crespíssimos (Tipos 4A-4C): Valorização do volume e caimento natural sem uso abusivo de máquina.
-7. Porosidade e Frizz: Entender as necessidades de água e óleos no clima de Belo Horizonte.
-
-Escreva sobre o tema escolhido de forma lógica e técnica (use o tom de voz do Jon: direto, sem clichês de marketing genérico). Convide a agendar e inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.
+          promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cachos em BH). Escolha aleatoriamente um tema técnico sobre cachos/crespos (diagnóstico, técnica, transição, visagismo ou cuidado) e escreva de forma lógica e profissional. Convide a agendar em www.ojonquecortou.com.br.
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 {
   "text": "o texto do post em português",
-  "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"
+  "image_prompt": "descrição em inglês para IA de imagem, profissional e realista"
 }`;
         }
 
@@ -941,13 +905,9 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               contents: [{
-                parts: [{
-                  text: promptText
-                }]
+                parts: [{ text: promptText }]
               }],
-              generationConfig: {
-                responseMimeType: 'application/json'
-              }
+              generationConfig: { responseMimeType: 'application/json' }
             })
           }
         );
@@ -967,20 +927,17 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
               setIsGeneratingGbpPost(false);
               return;
             } catch (jsonErr) {
-              console.warn('Erro ao parsear JSON do Gemini, usando fallback de extração:', jsonErr);
+              console.warn('Erro ao parsear JSON do Gemini, usando fallback:', jsonErr);
             }
           }
-        } else {
-          console.warn('Gemini API retornou erro:', response.status);
         }
       } catch (err) {
         console.warn('Erro ao gerar post com Gemini API, usando fallback:', err);
       }
     }
 
-    // Fallback dinâmico — sempre gera variação nova
     setTimeout(() => {
-      setGeneratedGbpPost(generateDynamicFallbackPost(specificTheme));
+      setGeneratedGbpPost(generateDynamicFallbackPost(cleanedTheme));
       setIsGeneratingGbpPost(false);
     }, 800);
   };
