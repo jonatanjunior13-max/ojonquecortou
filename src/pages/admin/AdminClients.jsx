@@ -578,9 +578,13 @@ const AdminClients = () => {
     
     // 1. Filtro de Janela de Ausência
     let matchesWindow = true;
-    if (absenceWindow === '30d') matchesWindow = days < 30;
-    else if (absenceWindow === '60d') matchesWindow = days >= 30 && days <= 60;
-    else if (absenceWindow === 'adormecidos') matchesWindow = days > 60 && days !== Infinity;
+    if (absenceWindow === '1w') matchesWindow = days >= 7 && days < 14;
+    else if (absenceWindow === '2w') matchesWindow = days >= 14 && days < 21;
+    else if (absenceWindow === '3w') matchesWindow = days >= 21 && days < 30;
+    else if (absenceWindow === '1m') matchesWindow = days >= 30 && days < 60;
+    else if (absenceWindow === '2m') matchesWindow = days >= 60 && days < 90;
+    else if (absenceWindow === '3m') matchesWindow = days >= 90 && days < 180;
+    else if (absenceWindow === '6m') matchesWindow = days >= 180 && days !== Infinity;
     else if (absenceWindow === 'nunca') matchesWindow = days === Infinity;
 
     // 2. Filtro de Gênero
@@ -1198,21 +1202,33 @@ const AdminClients = () => {
               </header>
 
               {/* Filtros da Janela */}
-              <div className="absence-window-selectors">
+              <div className="absence-window-selectors" style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                 <button className={`filter-badge-btn ${absenceWindow === 'todos' ? 'active' : ''}`} onClick={() => setAbsenceWindow('todos')}>
                   Todas ({clients.length})
                 </button>
-                <button className={`filter-badge-btn active-clients ${absenceWindow === '30d' ? 'active' : ''}`} onClick={() => setAbsenceWindow('30d')}>
-                  Ativas - Menos de 30 dias ({clients.filter(c => getDaysAbsent(c.lastVisit) < 30).length})
+                <button className={`filter-badge-btn active-clients ${absenceWindow === '1w' ? 'active' : ''}`} onClick={() => setAbsenceWindow('1w')}>
+                  1 Semana ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 7 && d < 14; }).length})
                 </button>
-                <button className={`filter-badge-btn warning-clients ${absenceWindow === '60d' ? 'active' : ''}`} onClick={() => setAbsenceWindow('60d')}>
-                  Ausentes - 30 a 60 dias ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 30 && d <= 60; }).length})
+                <button className={`filter-badge-btn active-clients ${absenceWindow === '2w' ? 'active' : ''}`} onClick={() => setAbsenceWindow('2w')}>
+                  2 Semanas ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 14 && d < 21; }).length})
                 </button>
-                <button className={`filter-badge-btn danger-clients ${absenceWindow === 'adormecidos' ? 'active' : ''}`} onClick={() => setAbsenceWindow('adormecidos')}>
-                  Adormecidas - Mais de 60 dias ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d > 60 && d !== Infinity; }).length})
+                <button className={`filter-badge-btn active-clients ${absenceWindow === '3w' ? 'active' : ''}`} onClick={() => setAbsenceWindow('3w')}>
+                  3 Semanas ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 21 && d < 30; }).length})
+                </button>
+                <button className={`filter-badge-btn warning-clients ${absenceWindow === '1m' ? 'active' : ''}`} onClick={() => setAbsenceWindow('1m')}>
+                  1 Mês ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 30 && d < 60; }).length})
+                </button>
+                <button className={`filter-badge-btn warning-clients ${absenceWindow === '2m' ? 'active' : ''}`} onClick={() => setAbsenceWindow('2m')}>
+                  2 Meses ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 60 && d < 90; }).length})
+                </button>
+                <button className={`filter-badge-btn danger-clients ${absenceWindow === '3m' ? 'active' : ''}`} onClick={() => setAbsenceWindow('3m')}>
+                  3-6 Meses ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 90 && d < 180; }).length})
+                </button>
+                <button className={`filter-badge-btn danger-clients ${absenceWindow === '6m' ? 'active' : ''}`} onClick={() => setAbsenceWindow('6m')}>
+                  6+ Meses ({clients.filter(c => { const d = getDaysAbsent(c.lastVisit); return d >= 180 && d !== Infinity; }).length})
                 </button>
                 <button className={`filter-badge-btn neutral-clients ${absenceWindow === 'nunca' ? 'active' : ''}`} onClick={() => setAbsenceWindow('nunca')}>
-                  Sem Agendamentos ({clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length})
+                  Sem Visitas ({clients.filter(c => getDaysAbsent(c.lastVisit) === Infinity).length})
                 </button>
               </div>
 
@@ -1340,7 +1356,26 @@ const AdminClients = () => {
                               {c.lastVisit === 'Nunca visitou' ? (
                                 <span style={{ color: 'var(--adm-muted)' }}>Sem visitas</span>
                               ) : (
-                                `${new Date(c.lastVisit).toLocaleDateString('pt-BR')} (${days}d atrás)`
+                                <span>
+                                  {new Date(c.lastVisit).toLocaleDateString('pt-BR')}
+                                  <span style={{ display: 'block', fontSize: '11px', color: 'var(--adm-gold)', marginTop: '2px' }}>
+                                    {(() => {
+                                      if (days < 7) return `${days}d atrás`;
+                                      if (days < 30) {
+                                        const w = Math.floor(days / 7);
+                                        const r = days % 7;
+                                        return `${w} ${w === 1 ? 'semana' : 'semanas'}${r > 0 ? ` e ${r}d` : ''} atrás`;
+                                      }
+                                      const m = Math.floor(days / 30);
+                                      const r = days % 30;
+                                      if (r >= 7) {
+                                        const w = Math.floor(r / 7);
+                                        return `${m} ${m === 1 ? 'mês' : 'meses'} e ${w} sem atrás`;
+                                      }
+                                      return `${m} ${m === 1 ? 'mês' : 'meses'} atrás`;
+                                    })()}
+                                  </span>
+                                </span>
                               )}
                             </td>
                             <td>{c.lastServiceName || '-'}</td>
@@ -1354,6 +1389,15 @@ const AdminClients = () => {
                                   style={{ padding: '4px 8px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: 4 }}
                                 >
                                   <Phone size={10} /> Conversar
+                                </a>
+                                <a 
+                                  href={getCampaignMessageLink(c)} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="btn btn-accent btn-small"
+                                  style={{ padding: '4px 8px', fontSize: '11px', display: 'inline-flex', alignItems: 'center', gap: 4, background: 'var(--adm-gold)', border: 'none', color: '#000', fontWeight: 'bold' }}
+                                >
+                                  🔥 Reaquecer
                                 </a>
                               </div>
                             </td>
