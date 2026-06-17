@@ -106,6 +106,29 @@ const MasculinoPage = () => {
         </div>
       </section>
 
+      <section className="section-padding">
+        <div className="container">
+          <div className="text-center reveal mb-4">
+            <h2 className="heading-md">Leia Mais Sobre Cortes Masculinos</h2>
+          </div>
+
+          <div className="technique-grid">
+            <Link to="/blog/melhores-cortes-cabelo-cacheado-masculino-2026" className="card reveal stagger-1" style={{ textDecoration: 'none' }}>
+              <h3>Estilos Masculinos em Alta</h3>
+              <p>Os cortes masculinos que valorizam a textura natural do cacho sem dar trabalho.</p>
+            </Link>
+            <Link to="/blog/wolf-cut-cabelos-cacheados-tendencia" className="card reveal stagger-2" style={{ textDecoration: 'none' }}>
+              <h3>Wolf Cut para Cachos</h3>
+              <p>O corte lobo adaptado para cabelos cacheados masculinos com volume estruturado.</p>
+            </Link>
+            <Link to="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" className="card reveal stagger-3" style={{ textDecoration: 'none' }}>
+              <h3>Leitura de Fio</h3>
+              <p>Entenda o diagnóstico que fazemos antes de qualquer corte no Studio.</p>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="about-cta-bottom section-padding">
         <div className="container text-center reveal">
           <h2 className="heading-lg mb-2">Seu cabelo com estilo e sem enrolação.</h2>

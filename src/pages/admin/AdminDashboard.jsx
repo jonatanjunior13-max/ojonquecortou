@@ -3854,11 +3854,11 @@ Grande abraço, Jon.`;
               </div>
             )}
             
-            <div className="booking-popover-actions">
+            <div className="booking-popover-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
               {activePopover.booking.status === 'bloqueado' && (
                 <button
                   className="btn btn-accent"
-                  style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+                  style={{ padding: '6px 8px', fontSize: '0.75rem', width: '100%' }}
                   onClick={() => {
                     setBlockIdToCancelOnSuccess(activePopover.booking.id);
                     setSelectedSlot({
@@ -3886,12 +3886,12 @@ Grande abraço, Jon.`;
                   Fazer Agendamento
                 </button>
               )}
-              <button 
-                className="btn" 
-                style={{ 
-                  padding: '4px 8px', 
-                  fontSize: '0.75rem', 
-                  flexGrow: 1,
+              <button
+                className="btn"
+                style={{
+                  padding: '6px 8px',
+                  fontSize: '0.75rem',
+                  width: '100%',
                   background: 'transparent',
                   color: 'var(--adm-text)',
                   borderColor: 'var(--adm-rule)',
@@ -3916,12 +3916,12 @@ Grande abraço, Jon.`;
                 Editar
               </button>
               {activePopover.booking.status !== 'cancelado' && (
-                <button 
-                  className="btn" 
-                  style={{ 
-                    padding: '4px 8px', 
-                    fontSize: '0.75rem', 
-                    flexGrow: 1,
+                <button
+                  className="btn"
+                  style={{
+                    padding: '6px 8px',
+                    fontSize: '0.75rem',
+                    width: '100%',
                     background: 'rgba(239, 68, 68, 0.1)',
                     color: '#ef4444',
                     borderColor: '#ef4444',
@@ -3972,7 +3972,7 @@ Grande abraço, Jon.`;
               {activePopover.booking.status === 'confirmado' && (
                 <button
                   className="btn btn-accent"
-                  style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+                  style={{ padding: '6px 8px', fontSize: '0.75rem', width: '100%' }}
                   onClick={() => {
                     setComandaBooking(activePopover.booking);
                     setActivePopover({ visible: false, x: 0, y: 0, booking: null });
