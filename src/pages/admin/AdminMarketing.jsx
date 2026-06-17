@@ -1205,6 +1205,8 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       }
     };
     fetchRealReviews();
+    const interval = setInterval(fetchRealReviews, 30000);
+    return () => clearInterval(interval);
   }, [gbpConnected, settings]);
 
   const getDaysAbsent = (lastVisitDate) => {
