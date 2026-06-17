@@ -9,7 +9,7 @@ export const posts = [
     date: '17 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-acidificacao-porosidade.png',
+    image: '/blog-porosidade.webp',
     schemaType: 'BlogPosting',
     content: `
       <h2>A Luta Invisível Contra o Ressecamento e o Frizz</h2>
