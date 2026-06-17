@@ -323,6 +323,8 @@ const AdminDashboard = () => {
   const [blockMotive, setBlockMotive] = useState('');
   const [blockEndTime, setBlockEndTime] = useState('');
   const [blockIdToCancelOnSuccess, setBlockIdToCancelOnSuccess] = useState(null);
+  const [showScaleBlockModal, setShowScaleBlockModal] = useState(false);
+  const [selectedScaleBlock, setSelectedScaleBlock] = useState(null);
 
   useEffect(() => {
     if (selectedSlot && selectedSlot.time) {
@@ -3295,7 +3297,13 @@ Grande abraço, Jon.`;
                               className="appt-card bloqueado"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true);
+                                setSelectedScaleBlock({
+                                  date: currentDateStr,
+                                  slot: slot,
+                                  profId: prof.id,
+                                  profName: prof.name
+                                });
+                                setShowScaleBlockModal(true);
                               }}
                               onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
                               style={{
@@ -5792,6 +5800,77 @@ Grande abraço, Jon.`;
           onClose={() => setComandaBooking(null)}
           onConfirm={(payload) => handleFinalizeFromComanda(comandaBooking, payload)}
         />
+      )}
+
+      {showScaleBlockModal && selectedScaleBlock && (
+        <div className="modal-overlay slot-action-overlay" onClick={() => { setShowScaleBlockModal(false); setSelectedScaleBlock(null); }}>
+          <div className="slot-action-modal" onClick={e => e.stopPropagation()}>
+            <div className="slot-action-header">
+              <div className="slot-action-pill" style={{ background: 'rgba(235, 94, 85, 0.1)', color: 'var(--adm-red)' }}>
+                <span className="slot-action-pill-dot" style={{ background: 'var(--adm-red)' }} />
+                Horário Bloqueado (Escala)
+              </div>
+              <button
+                type="button"
+                className="btn-icon"
+                onClick={() => { setShowScaleBlockModal(false); setSelectedScaleBlock(null); }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="slot-action-datetime">
+              <span className="slot-action-date">{selectedScaleBlock.date.split('-').reverse().join('/')}</span>
+              <span className="slot-action-time">{selectedScaleBlock.slot}</span>
+            </div>
+
+            <p className="slot-action-label" style={{ marginBottom: '16px', fontSize: '0.9rem', color: 'var(--adm-muted)' }}>
+              Este horário está bloqueado pelas configurações de escala do profissional <strong>{selectedScaleBlock.profName}</strong>.
+            </p>
+
+            <div className="slot-action-cards" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <button
+                type="button"
+                className="slot-card slot-card-schedule"
+                onClick={() => {
+                  handleCellClick(selectedScaleBlock.date, selectedScaleBlock.slot, selectedScaleBlock.profId, selectedScaleBlock.profName);
+                  setShowScaleBlockModal(false);
+                  setSelectedScaleBlock(null);
+                }}
+                style={{ width: '100%', display: 'flex', gap: '12px', padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--adm-rule)', borderRadius: '8px', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <div className="slot-card-icon" style={{ background: 'rgba(200, 133, 42, 0.15)', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '6px', flexShrink: 0 }}>
+                  <Plus size={20} />
+                </div>
+                <div className="slot-card-text">
+                  <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--adm-text)' }}>Agendar mesmo assim</strong>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>Ignorar o bloqueio de escala e realizar o agendamento para este cliente</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                className="slot-card slot-card-block"
+                onClick={() => {
+                  localStorage.setItem(`unlock_${selectedScaleBlock.date}_${selectedScaleBlock.slot}`, 'true');
+                  toast("Horário liberado!", "success");
+                  setShowScaleBlockModal(false);
+                  setSelectedScaleBlock(null);
+                  window.location.reload();
+                }}
+                style={{ width: '100%', display: 'flex', gap: '12px', padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--adm-rule)', borderRadius: '8px', cursor: 'pointer', textAlign: 'left' }}
+              >
+                <div className="slot-card-icon" style={{ background: 'rgba(46, 125, 50, 0.15)', color: '#4caf50', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '6px', flexShrink: 0 }}>
+                  <Unlock size={20} />
+                </div>
+                <div className="slot-card-text">
+                  <strong style={{ display: 'block', fontSize: '0.95rem', color: 'var(--adm-text)' }}>Liberar o horário (Desbloquear)</strong>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>Desbloquear este horário específico da escala deste profissional</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -2123,15 +2123,9 @@ Grande abraço, Jon.`;
                       }
                     }
                     else if (isBlockedByScale) {
-                      const opt = window.prompt(
-                        "Este horário está bloqueado pelas configurações de escala do profissional.\n\n" +
-                        "Digite '1' para Agendar mesmo assim\n" +
-                        "Digite '2' para Liberar o horário (Desbloquear)\n\n" +
-                        "Digite a opção (1 ou 2):"
-                      );
-                      if (opt === '1') {
+                      if (window.confirm("Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?\n\n(Para liberar o horário sem agendar agora, clique em Cancelar)")) {
                         setSelectedSlot(slot); setShowSlotSheet(true);
-                      } else if (opt === '2') {
+                      } else if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
                         localStorage.setItem(`unlock_${currentDate}_${slot}`, 'true');
                         showToast("Horário liberado!", "success");
                         window.location.reload();

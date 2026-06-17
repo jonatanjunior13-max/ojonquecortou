@@ -12,7 +12,7 @@ import {
 import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
-import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar } from 'lucide-react';
+import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar, Plus } from 'lucide-react';
 import { syncBookingToGoogle } from '../utils/gcalSync';
 import { getEffectiveAbsences, isSlotBlockedByAbsence } from '../utils/absences';
 import './Booking.css';
