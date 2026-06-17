@@ -25,27 +25,17 @@ const toMin = (t) => {
 
 // Bloqueios fixos permanentes (sempre ativos, não editáveis).
 // Psicóloga: toda quarta-feira (dia ajustado 3) das 09:00 às 10:00.
-export const FIXED_ABSENCES = [
-  {
-    id: 'fixed-psicologa',
-    title: 'Psicóloga',
-    recurrence: 'weekly',
-    weekday: 3,
-    allDay: false,
-    startTime: '09:00',
-    endTime: '10:00',
-    fixed: true
-  }
-];
+export const FIXED_ABSENCES = [];
 
 // Lista efetiva = fixos + os cadastrados em settings.absences.
 export const getEffectiveAbsences = (settings) => {
   const custom = settings && Array.isArray(settings.absences) ? settings.absences : [];
-  return [...FIXED_ABSENCES, ...custom];
+  const fixed = settings?.disablePsicologa ? [] : FIXED_ABSENCES;
+  return [...fixed, ...custom];
 };
 
 // A ausência cobre a data informada (YYYY-MM-DD)?
-const absenceCoversDate = (a, dateStr) => {
+export const absenceCoversDate = (a, dateStr) => {
   const target = parseLocalDate(dateStr);
   const rec = a.recurrence || 'none';
 
