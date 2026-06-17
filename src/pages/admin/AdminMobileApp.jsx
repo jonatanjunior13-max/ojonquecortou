@@ -510,16 +510,32 @@ export default function AdminMobileApp() {
 
   // ── Derived: today's bookings ──────────────────────────────────
   const todayBookings = bookings
-    .filter(b => b.date === currentDate && b.status !== 'cancelado')
+    .filter(b => b.date === currentDate && b.status !== 'cancelado' && b.status !== 'bloqueado')
     .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
 
-  const todayRevenue = transactions
-    .filter(t => t.date === today() && t.type === 'entrada')
-    .reduce((s, t) => s + Number(t.value || 0), 0);
+  const todayRevenue = (() => {
+    const seen = new Set();
+    return transactions
+      .filter(t => {
+        if (!t.id) return true;
+        if (seen.has(t.id)) return false;
+        seen.add(t.id);
+        return true;
+      })
+      .filter(t => t.date === today() && t.type === 'entrada')
+      .reduce((s, t) => s + Number(t.value || 0), 0);
+  })();
 
   const monthRevenue = (() => {
     const m = new Date().toISOString().slice(0, 7);
+    const seen = new Set();
     return transactions
+      .filter(t => {
+        if (!t.id) return true;
+        if (seen.has(t.id)) return false;
+        seen.add(t.id);
+        return true;
+      })
       .filter(t => (t.date || '').startsWith(m) && t.type === 'entrada')
       .reduce((s, t) => s + Number(t.value || 0), 0);
   })();

@@ -53,12 +53,19 @@ const AdminHoje = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   const todayBookings = useMemo(
-    () => bookings.filter(b => b.date === today && b.status !== 'bloqueado').sort((a, b) => (a.time || '').localeCompare(b.time || '')),
+    () => bookings.filter(b => b.date === today && b.status !== 'bloqueado' && b.status !== 'cancelado').sort((a, b) => (a.time || '').localeCompare(b.time || '')),
     [bookings, today]
   );
 
   const todayRevenue = useMemo(() => {
+    const seen = new Set();
     return transactions
+      .filter(t => {
+        if (!t.id) return true;
+        if (seen.has(t.id)) return false;
+        seen.add(t.id);
+        return true;
+      })
       .filter(t => {
         const d = t.date || t.createdAt || '';
         return (typeof d === 'string' ? d : d?.toDate?.()?.toISOString?.() || '').startsWith(today);
