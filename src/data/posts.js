@@ -1,5 +1,40 @@
 export const posts = [
   {
+    id: 42,
+    slug: 'acidificacao-capilar-cachos-porosidade',
+    title: 'pH do Cacho: Acidificação Capilar para Alta Porosidade | Jon',
+    excerpt: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade.',
+    metaDescription: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade. Por Jon, Studio do Jon BH.',
+    keywords: 'acidificação capilar, porosidade capilar bh, cabelo cacheado porosidade, pH do cacho, studio do jon, belo horizonte',
+    date: '17 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-acidificacao-porosidade.png',
+    schemaType: 'BlogPosting',
+    content: `
+      <h2>A Luta Invisível Contra o Ressecamento e o Frizz</h2>
+      <p>Se você tem cabelos ondulados, cacheados ou crespos, com certeza já passou pela frustração de aplicar a melhor máscara do mercado e, poucas horas depois, ver o cabelo áspero, sem definição e com uma nuvem de frizz. Isso acontece porque a fibra capilar com curvatura possui uma anatomia propensa à perda de água. A porosidade capilar determina a capacidade do fio de absorver e reter essa umidade. Quando o cabelo está com alta porosidade, suas cutículas (a camada externa protetora) ficam permanentemente abertas e danificadas. Esse estado facilita a perda de nutrientes e água, fazendo com que qualquer hidratação vá literalmente por água abaixo. O resultado é um cabelo opaco, quebradiço, áspero ao toque e que parece repelir qualquer tratamento. Entender como combater esse ciclo é fundamental para recuperar a definição e a saúde natural dos fios.</p>
+
+      <h2>O que é o pH Capilar e Como Ele Controla a Cutícula</h2>
+      <p>O pH (Potencial Hidrogeniônico) é a escala que mede o nível de acidez ou alcalinidade de uma substância. A fibra capilar humana tem um pH fisiológico levemente ácido, situando-se idealmente entre 4,5 e 5,5. Esse ambiente ácido é crucial para a saúde do cabelo, pois mantém as cutículas seladas, planas e alinhadas ao redor do córtex. No entanto, procedimentos químicos como descolorações, tinturas, alisamentos, e até mesmo shampoos com sulfatos fortes ou a água com alta concentração de cloro e metais, têm pH alcalino (acima de 7,0).</p>
+      <p>Quando exposto a produtos alcalinos, o fio sofre uma dilatação extrema em suas cutículas. Cutículas abertas significam que o córtex capilar fica exposto e vulnerável. Sem essa barreira protetora ácida, o cabelo cacheado perde sua lubrificação natural e água rapidamente. Visualmente, um cacho com pH alto e alcalino apresenta um toque extremamente rugoso, falta de brilho absoluto, frizz excessivo e quebra constante. Controlar o pH é, portanto, o primeiro passo indispensável para restabelecer a integridade estrutural do cabelo.</p>
+
+      <h2>O que é Acidificação Capilar e Por Que Ela é a Única Solução Física</h2>
+      <p>A acidificação capilar é um procedimento técnico projetado para devolver o pH do cabelo à sua faixa ácida fisiológica. Ao aplicar um acidificante equilibrado após a higienização, forçamos mecanicamente o fechamento e o selamento das cutículas abertas pela alcalinidade. Diferente de uma máscara de hidratação comum, que deposita agentes umectantes temporários que evaporam em fios porosos, a acidificação age na física da fibra: ela altera o estado das cutículas para que elas possam segurar os nutrientes.</p>
+      <p>Por essa razão, ela é considerada a única solução física real e duradoura para o problema da alta porosidade. Tentar tratar um cabelo poroso apenas com hidratações sucessivas é o equivalente a tentar encher um balde furado. A água entra, mas escorre pelos buracos das cutículas abertas. Quando realizamos a acidificação capilar, nós tapamos esses buracos. Cutículas fechadas e alinhadas refletem muito mais luz, resultando em um brilho espelhado, além de reterem toda a hidratação e lipídios aplicados na finalização.</p>
+
+      <h2>A Aplicação Prática no Studio do Jon: O Diagnóstico Preciso</h2>
+      <p>No meu salão em Belo Horizonte, eu não acredito em tratamentos genéricos baseados em palpites. Antes de aplicar qualquer produto ou realizar um corte, nós executamos o <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a>. Este diagnóstico científico exclusivo analisa a saúde do cabelo sob uma perspectiva física e química em 7 etapas detalhadas: triagem visual, teste de elasticidade em água, análise de porosidade real mecha a mecha, avaliação do couro cabeludo, histórico químico detalhado, teste de tração e análise de compatibilidade de resíduos.</p>
+      <p>Ao entender a resposta física do fio ao toque e à água, eu consigo descobrir se a alta porosidade é congênita ou causada por químicas antigas. Esse diagnóstico nos guia na elaboração de um <a href="/servicos">Tratamento personalizado</a> para cada cliente. Se a leitura indicar que o pH está desequilibrado e as cutículas estão danificadas, a acidificação entra como etapa fundamental e imediata do tratamento. Usamos acidificantes profissionais de alta tecnologia combinados com aminoácidos para reconstruir a estrutura molecular do cacho, devolvendo a maleabilidade e a definição que a cliente achava ter perdido para sempre.</p>
+
+      <h2>O Perigo de Ignorar a Porosidade dos Seus Cabelos</h2>
+      <p>Ignorar a porosidade do seu cacho é o caminho mais rápido para desperdiçar dinheiro com produtos importados e cosméticos caros. Quando a fibra está com as cutículas escancaradas e danificadas, o cabelo entra em um estado de saturação inútil: os cremes pesados acumulam na superfície do fio (efeito build-up), deixando-o pesado e opaco, mas o córtex continua desidratado e oco por dentro. A hidratação dura no máximo algumas horas e, após o primeiro day after, o cabelo acorda totalmente amassado e sem definição. O cronograma capilar tradicional falha miseravelmente porque o fio simplesmente não consegue reter nada do que é aplicado. O cabelo parece "não responder a nada", e muitas mulheres entram em desespero achando que a única solução é cortar curto ou voltar a alisar.</p>
+
+      <h2>Recupere a Saúde dos Seus Cachos Hoje</h2>
+      <p>Entender a física do seu cabelo é libertador. A porosidade não é um problema insolúvel, mas sim um desequilíbrio físico que pode ser corrigido com a técnica correta. O diagnóstico preciso da porosidade e do pH faz parte do nosso método inegociável de atendimento. Pare de gastar fortunas testando receitas caseiras e produtos aleatórios que não funcionam para a sua curvatura. Venha fazer uma avaliação científica e <a href="/agendar">agende sua Leitura de Fio</a> no Studio do Jon em Belo Horizonte. Você não precisa mais adivinhar o que o seu fio precisa.</p>
+    `
+  },
+  {
     id: 41,
     slug: 'oleo-de-coco-no-cabelo-cacheado-resseca',
     title: 'Óleo de Coco no Cabelo Cacheado Resseca? | Studio do Jon',

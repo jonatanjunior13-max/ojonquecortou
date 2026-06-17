@@ -150,7 +150,7 @@ const BlogPostPage = () => {
 
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": "Article",
+    "@type": post.schemaType || "Article",
     "headline": post.title,
     "description": postDesc,
     "image": post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`,
