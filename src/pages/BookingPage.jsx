@@ -119,7 +119,48 @@ const BookingPage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (step === 4 && success && createdBookingId && clientData.email) {
+      console.log('Passo de confirmação alcançado. Carregando Google Avaliações do Consumidor...');
+      if (!window.gapi) {
+        const script = document.createElement('script');
+        script.src = 'https://apis.google.com/js/platform.js';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+          renderGoogleOptIn();
+        };
+        document.body.appendChild(script);
+      } else {
+        renderGoogleOptIn();
+      }
+    }
+
+    function renderGoogleOptIn() {
+      if (window.gapi && window.gapi.load) {
+        window.gapi.load('surveyoptin', function() {
+          try {
+            // Formatar data estimada de entrega (estimated_delivery_date: YYYY-MM-DD)
+            const deliveryDate = selectedDate || new Date().toISOString().split('T')[0];
+
+            window.gapi.surveyoptin.render({
+              "merchant_id": 5809472410,
+              "order_id": createdBookingId,
+              "email": clientData.email,
+              "delivery_country": "BR",
+              "estimated_delivery_date": deliveryDate
+            });
+            console.log('Google Customer Reviews Opt-In renderizado com sucesso para o pedido:', createdBookingId);
+          } catch (err) {
+            console.error('Erro ao renderizar o Google Customer Reviews Opt-In:', err);
+          }
+        });
+      }
+    }
+  }, [step, success, createdBookingId, clientData.email, selectedDate]);
+
   const [step, setStep] = useState(1);
+  const [createdBookingId, setCreatedBookingId] = useState('');
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [discountVal, setDiscountVal] = useState(0); // discount to be debited from total
@@ -1341,9 +1382,11 @@ const BookingPage = () => {
             const docRef = doc(db, 'bookings', rescheduleId);
             await withTimeout(updateDoc(docRef, bookingPayload), 8000);
             syncBookingToGoogle(rescheduleId).catch(err => console.warn(err));
+            setCreatedBookingId(rescheduleId);
           } else {
             const docRef = await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
             syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
+            setCreatedBookingId(docRef.id);
           }
 
           // Auto-cadastro no Firestore
@@ -1385,9 +1428,12 @@ const BookingPage = () => {
               bookingPayload.id = rescheduleId;
               localBookings.push(bookingPayload);
             }
+            setCreatedBookingId(rescheduleId);
           } else {
-            bookingPayload.id = 'demo-' + Date.now();
+            const newId = 'demo-' + Date.now();
+            bookingPayload.id = newId;
             localBookings.push(bookingPayload);
+            setCreatedBookingId(newId);
           }
           localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
 
@@ -1437,9 +1483,12 @@ const BookingPage = () => {
           bookingPayload.id = rescheduleId;
           localBookings.push(bookingPayload);
         }
+        setCreatedBookingId(rescheduleId);
       } else {
-        bookingPayload.id = 'demo-' + Date.now();
+        const newId = 'demo-' + Date.now();
+        bookingPayload.id = newId;
         localBookings.push(bookingPayload);
+        setCreatedBookingId(newId);
       }
       localStorage.setItem('demo_bookings', JSON.stringify(localBookings));
       
