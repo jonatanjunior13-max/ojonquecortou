@@ -1,5 +1,84 @@
 export const posts = [
   {
+    id: 41,
+    slug: 'oleo-de-coco-no-cabelo-cacheado-resseca',
+    title: 'Óleo de Coco no Cabelo Cacheado Resseca? | Studio do Jon',
+    excerpt: 'Usar óleo de coco puro nos cachos parece a solução para o ressecamento, mas pode ser o motivo do seu cabelo estar opaco e impermeável. Entenda a física capilar por trás do build-up.',
+    metaDescription: 'Óleo de coco no cabelo cacheado pode causar ressecamento crônico por impermeabilizar a fibra. Entenda como tratar o acúmulo de produtos com o Studio do Jon.',
+    keywords: 'oleo de coco no cabelo, cabelo cacheado ressecado, porosidade capilar bh, umectacao capilar bh, studio do jon',
+    date: '17 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-oleo-coco-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que o óleo de coco pode ressecar os cabelos cacheados?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O óleo de coco é um lipídio altamente saturado e pesado. Quando aplicado puramente e em excesso, ele cria uma película impermeabilizante sobre as cutículas do fio. Isso impede que a água e tratamentos hidratantes penetrem no córtex capilar, levando ao ressecamento crônico."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que é o efeito build-up?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O efeito build-up é o acúmulo progressivo de resíduos de produtos insolúveis em água (como óleos pesados, manteigas e silicones) na superfície da fibra capilar, obstruindo a entrada de água e nutrientes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como remover o excesso de óleo e build-up do cabelo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Para remover o acúmulo, é necessário realizar um detox capilar usando um shampoo de limpeza profunda ou com tensoativos eficientes que consigam remover óleos pesados sem estilhaçar a cutícula do fio."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>A Falsa Salvação dos Cachos Secos</h2>
+      <p>Você nota que os seus cachos estão ressecados, sem brilho e armando com facilidade. A primeira recomendação que você lê na internet ou ouve de uma amiga é clássica: "faz uma umectação com óleo de coco puro, bonita, que resolve". Você compra o pote no supermercado aqui em BH, passa no cabelo, dorme com ele e lava no dia seguinte. Na hora, parece que deu uma assentada. Mas em dois dias o cabelo acorda mais áspero, rígido e com uma nuvem de frizz ainda maior na Pampulha ou no trânsito da Savassi. Uai, o que deu errado?</p>
+      <p>O que quase ninguém te conta é que o <strong>óleo de coco no cabelo cacheado</strong> pode ser um dos maiores agentes de ressecamento crônico. Não porque ele seja inerentemente ruim, mas por conta da física e química da fibra capilar. Cabelos com curvatura (tipo 3 e 4) possuem cutículas naturalmente mais abertas nas curvas dos fios, o que facilita a perda de água. Ao tacar um óleo pesado e saturado diretamente nesse fio desidratado, você não está hidratando; você está selando o ressecamento dentro da estrutura.</p>
+
+      <h2>O Efeito Barreira: Como o Óleo de Coco Impermeabiliza o Cacho</h2>
+      <p>Para entender por que o óleo de coco no cabelo cacheado pode se tornar um pesadelo, precisamos olhar para as cutículas. O óleo de coco é composto por ácidos graxos saturados pesados. Quando aplicado em grande quantidade, ele cria uma película hidrofóbica extremamente densa ao redor do fio.</p>
+      <p>Esse "filme impermeável" impede completamente a troca de umidade com o ambiente. A água não entra e a água que já estava fora continua sem conseguir penetrar. Se o seu cabelo já estava desidratado antes da aplicação, ele continuará seco por baixo dessa capa de gordura. Toda vez que você tentar aplicar uma máscara de hidratação ou um leave-in por cima, os nutrientes vão apenas escorregar pela película de óleo e ir direto para o ralo. Isso é o que chamamos tecnicamente de <strong>efeito build-up</strong> (acúmulo de produto).</p>
+
+      <h2>A Física do Ressecamento: Por que o Fio Fica Rígido</h2>
+      <p>Além da impermeabilização, o óleo de coco possui outra característica física perigosa para o clima de Belo Horizonte. Ele solidifica em temperaturas abaixo de 25°C. Quando o inverno chega nas montanhas de Minas e a temperatura cai, aquele óleo de coco que penetrou no córtex do seu cabelo solidifica microscopicamente entre as pontes de dissulfeto.</p>
+      <p>O resultado físico é imediato: a fibra perde elasticidade, os cachos ficam rígidos, difíceis de modelar e quebram ao menor atrito mecânico (como pentear ou deitar na fronha). A cliente acha que o cabelo precisa de "mais nutrição" e aplica mais óleo de coco, criando um ciclo vicioso destrutivo de rigidez e quebra que destrói a forma natural.</p>
+
+      <h2>Método Leitura de Fio: Como Detectar o Build-Up de Óleos</h2>
+      <p>No meu espaço, a tesoura só entra depois de uma etapa inegociável: o <strong>Método Leitura de Fio</strong>. Durante esse diagnóstico de 7 etapas, eu consigo identificar fisicamente se o cacho está sofrendo com acúmulo de óleos pesados.</p>
+      <p>Nós testamos a elasticidade da fibra em água e a velocidade de absorção. Um fio com alta porosidade que sofreu build-up de óleo de coco se comporta de forma estranha: ele repele a água inicialmente, mas continua com a elasticidade comprometida e toque áspero quando seco. A leitura capilar revela o histórico químico invisível do fio, permitindo traçar um plano de ação limpo, livre de máscaras oleosas pesadas que apenas disfarçam a verdadeira saúde do cacho.</p>
+
+      <h2>Como Recuperar Seus Cachos Sem Óleos Pesados</h2>
+      <p>Se você percebeu que seu cabelo está pesado, rígido e rejeitando qualquer hidratação por conta do uso de óleos pesados, o primeiro passo é resetar a fibra capilar:</p>
+      <ul>
+        <li><strong>Detox Capilar:</strong> Use um shampoo purificante com tensoativos equilibrados para remover a película acumulada de óleos e silicones insolúveis, abrindo caminho para a água entrar de verdade.</li>
+        <li><strong>Substitua por Óleos Fluidos:</strong> Se o seu cacho pede lubrificação nas pontas, prefira óleos vegetais leves e insaturados que não solidificam, como o óleo de jojoba, semente de uva ou argan, e sempre em pouca quantidade.</li>
+        <li><strong>Hidratação Real:</strong> Foque em produtos ricos em agentes umectantes (como glicerina, pantenol e aloe vera) que realmente depositam água no córtex do fio antes de pensar em selar com óleo.</li>
+      </ul>
+      <p>Seus cachos não precisam ser blindados com gordura pesada; eles precisam respirar, absorver água e ter balanço livre.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+          <h3>Seu cabelo está áspero, rígido ou opaco?</h3>
+          <p>Venha fazer um diagnóstico completo com o Método Leitura de Fio e descubra o que o seu cabelo realmente precisa.</p>
+          <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Leitura de Fio no Studio do Jon</a>
+      </div>
+      
+      <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+      <p style="font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; font-family: 'Manrope', sans-serif;">
+        <strong>Jon</strong> — Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+      </p>
+    `
+  },
+  {
     id: 40,
     slug: 'day-after-cabelo-cacheado-bh-como-reativar-sem-lavar',
     title: 'Day After Perfeito: Reativar Cachos Sem Lavar | Jon',
