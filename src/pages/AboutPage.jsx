@@ -36,7 +36,7 @@ const AboutPage = () => {
   return (
     <main className="about-page">
       <SEO 
-        title="Cabeleireiro Especialista em Cachos BH | O Jon que Cortou" 
+        title="Cabeleireiro Especialista em Cachos BH | Jon" 
         description="Conheça o Jon, cabeleireiro especialista em cabelos cacheados, crespos e ondulados em BH. Conheça o Método Leitura de Fio e o espaço no bairro Caiçara." 
         schema={personSchema}
       />
