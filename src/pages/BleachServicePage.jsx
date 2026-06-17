@@ -7,7 +7,7 @@ const BleachServicePage = () => {
     <main className="about-page">
       <SEO 
         title="Descoloração em Cabelo Cacheado em BH | Studio do Jon" 
-        description="Descoloração em cabelo cacheado feita com protocolo especializado em BH. O Studio do Jon avalia porosidade, histórico químico e textura antes de qualquer processo. Agende." 
+        description="Descoloração em cabelo cacheado com protocolo especializado em BH. Avaliamos porosidade, histórico químico e textura. Agende agora." 
       />
       <section className="about-hero section-padding">
         <div className="container text-center reveal active">

@@ -17,6 +17,12 @@ const buildVersion = `build_${new Date().toISOString().replace(/[-:T.]/g, '').su
 console.log(`Prerender: Replacing BUILD_TIMESTAMP with ${buildVersion}`);
 const template = fs.readFileSync(templatePath, 'utf-8').replace('BUILD_TIMESTAMP', buildVersion);
 
+function optimizeTitleForSEO(rawTitle) {
+  if (!rawTitle) return '';
+  if (rawTitle.includes('| Studio do Jon')) return rawTitle;
+  return `${rawTitle} | Studio do Jon`;
+}
+
 // Helper to replace or add a meta tag in the HTML head
 function replaceOrAddMeta(html, nameOrProperty, content, isProperty = false) {
   if (!content) return html;
@@ -482,7 +488,29 @@ const pages = [
     bodyInsert: aboutBody,
     schema: {
       "@context": "https://schema.org",
-      "@graph": [localBusinessSchema, founderPersonSchema]
+      "@type": "Person",
+      "name": "Jonatan Junior",
+      "alternateName": "Jon",
+      "jobTitle": "Especialista em cabelos ondulados, cacheados e crespos",
+      "description": "Cabeleireiro especialista em cabelos cacheados, crespos e ondulados em Belo Horizonte. Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas antes de qualquer corte.",
+      "worksFor": {
+        "@type": "HairSalon",
+        "name": "Studio do Jon",
+        "url": "https://www.ojonquecortou.com.br"
+      },
+      "url": "https://www.ojonquecortou.com.br/sobre",
+      "sameAs": [
+        "https://www.instagram.com/ojonquecortou"
+      ],
+      "knowsAbout": [
+        "Método Leitura de Fio",
+        "Corte a seco para cabelos cacheados",
+        "Visagismo capilar",
+        "Transição capilar",
+        "Descoloração em cabelos cacheados",
+        "Porosidade capilar",
+        "Curvatura capilar tipos 2A ao 4C"
+      ]
     }
   },
   {
@@ -697,9 +725,10 @@ console.log(`Starting Node SEO pre-rendering for ${pages.length} pages...`);
 
 pages.forEach(page => {
   let html = template;
+  const seoTitle = optimizeTitleForSEO(page.title);
   
   // 1. Replace title
-  html = replaceTitle(html, page.title);
+  html = replaceTitle(html, seoTitle);
   
   // 2. Replace description
   html = replaceOrAddMeta(html, 'description', page.description, false);
@@ -713,8 +742,8 @@ pages.forEach(page => {
   html = replaceOrAddCanonical(html, `https://www.ojonquecortou.com.br${page.route}`);
 
   // 4. Replace OG/Twitter titles
-  html = replaceOrAddMeta(html, 'og:title', page.title, true);
-  html = replaceOrAddMeta(html, 'twitter:title', page.title, false);
+  html = replaceOrAddMeta(html, 'og:title', seoTitle, true);
+  html = replaceOrAddMeta(html, 'twitter:title', seoTitle, false);
   
   // 5. Replace image tags
   if (page.image) {
@@ -786,8 +815,21 @@ function generateSitemap(pagesList) {
   return xml;
 }
 
+// Helper to generate the sitemap.txt dynamically (one URL per line)
+function generateSitemapTxt(pagesList) {
+  return pagesList.map(page => {
+    return `https://www.ojonquecortou.com.br${page.route === '/' ? '' : page.route}`;
+  }).join('\n');
+}
+
 console.log('Generating dynamic sitemap.xml...');
 const sitemapXml = generateSitemap(pages);
 fs.writeFileSync(path.join(__dirname, '../public/sitemap.xml'), sitemapXml);
 fs.writeFileSync(path.join(distDir, 'sitemap.xml'), sitemapXml);
 console.log('Sitemap.xml generated and updated successfully in public/ and dist/!');
+
+console.log('Generating dynamic sitemap.txt...');
+const sitemapTxt = generateSitemapTxt(pages);
+fs.writeFileSync(path.join(__dirname, '../public/sitemap.txt'), sitemapTxt);
+fs.writeFileSync(path.join(distDir, 'sitemap.txt'), sitemapTxt);
+console.log('Sitemap.txt generated and updated successfully in public/ and dist/!');

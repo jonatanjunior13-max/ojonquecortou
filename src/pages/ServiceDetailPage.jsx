@@ -65,10 +65,15 @@ const ServiceDetailPage = () => {
     }
   ];
 
+  // Truncate service name for title if too long (target ≤45 chars for SEO)
+  const truncatedName = service.name.length > 45
+    ? service.name.substring(0, 42).trim() + '...'
+    : service.name;
+
   return (
     <main className="service-detail-page">
-      <SEO 
-        title={`${service.name} em BH | Studio do Jon`} 
+      <SEO
+        title={`${truncatedName} em BH | Studio do Jon`} 
         description={`${service.tagline || service.description.substring(0, 100)}. Corte e tratamento especializado para cabelos cacheados e crespos em Belo Horizonte.`} 
       />
       

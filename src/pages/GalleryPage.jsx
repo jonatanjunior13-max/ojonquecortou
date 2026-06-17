@@ -293,7 +293,41 @@ const galleryImages = [
   }
 ];
 
+import { useEffect, useState } from 'react';
+import { db } from '../config/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+
 const GalleryPage = () => {
+  const [dynamicPhotos, setDynamicPhotos] = useState([]);
+
+  useEffect(() => {
+    if (!db) return;
+    const loadDynamicPhotos = async () => {
+      try {
+        const q = query(collection(db, 'gallery_photos'), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        const list = [];
+        snap.forEach(doc => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        setDynamicPhotos(list);
+      } catch (err) {
+        console.warn('Erro ao carregar fotos dinâmicas:', err);
+      }
+    };
+    loadDynamicPhotos();
+  }, []);
+
+  const allPhotosToShow = [
+    ...dynamicPhotos.map(p => ({
+      id: p.id,
+      url: p.url,
+      title: p.caption || 'Trabalho do Studio',
+      description: p.category || 'Galeria'
+    })),
+    ...galleryImages
+  ];
+
   return (
     <main className="gallery-page">
       <SEO 
@@ -313,7 +347,7 @@ const GalleryPage = () => {
       <section className="gallery-section section-padding">
         <div className="container">
           <div className="gallery-grid">
-            {galleryImages.map((item, index) => (
+            {allPhotosToShow.map((item, index) => (
               <div key={item.id} className={`gallery-item reveal active stagger-${(index % 4) + 1}`}>
                 <div className="gallery-img-wrap">
                   <img src={item.url} alt={`${item.title} — ${item.description} no Studio do Jon em Belo Horizonte`} className="gallery-img" />

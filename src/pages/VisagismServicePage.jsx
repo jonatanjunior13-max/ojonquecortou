@@ -7,7 +7,7 @@ const VisagismServicePage = () => {
     <main className="about-page">
       <SEO 
         title="Visagismo para Cabelos Cacheados em BH | Studio do Jon" 
-        description="Visagismo especializado em cabelos cacheados em Belo Horizonte. O Studio do Jon analisa formato do rosto, textura e estilo de vida antes de definir o corte ideal para você." 
+        description="Visagismo especializado em cabelos cacheados em BH. Análise de rosto, textura e estilo antes de definir o corte ideal para você." 
       />
       <section className="about-hero section-padding">
         <div className="container text-center reveal active">

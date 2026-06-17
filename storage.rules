@@ -1,0 +1,15 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Galeria de fotos do salão — pública para leitura e escrita
+    match /gallery/{filename} {
+      allow read, write: if true;
+    }
+
+    // Qualquer outro arquivo
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

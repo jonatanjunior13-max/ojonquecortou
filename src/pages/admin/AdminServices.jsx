@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X } from 'lucide-react';
@@ -415,15 +415,15 @@ const AdminServices = () => {
       </div>
 
       {/* Subtabs for List vs Order View */}
-      <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--rule)', marginBottom: '24px', paddingBottom: '8px' }}>
+      <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid var(--adm-rule)', marginBottom: '24px', paddingBottom: '8px' }}>
         <button 
           type="button"
           onClick={() => setActiveViewTab('list')}
           style={{
             background: 'none',
             border: 'none',
-            borderBottom: activeViewTab === 'list' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: activeViewTab === 'list' ? 'var(--text)' : 'var(--muted)',
+            borderBottom: activeViewTab === 'list' ? '2px solid var(--adm-gold)' : '2px solid transparent',
+            color: activeViewTab === 'list' ? 'var(--adm-text)' : 'var(--adm-muted)',
             fontWeight: 'bold',
             padding: '8px 16px',
             cursor: 'pointer',
@@ -438,8 +438,8 @@ const AdminServices = () => {
           style={{
             background: 'none',
             border: 'none',
-            borderBottom: activeViewTab === 'reorder' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: activeViewTab === 'reorder' ? 'var(--text)' : 'var(--muted)',
+            borderBottom: activeViewTab === 'reorder' ? '2px solid var(--adm-gold)' : '2px solid transparent',
+            color: activeViewTab === 'reorder' ? 'var(--adm-text)' : 'var(--adm-muted)',
             fontWeight: 'bold',
             padding: '8px 16px',
             cursor: 'pointer',
@@ -454,8 +454,8 @@ const AdminServices = () => {
           style={{
             background: 'none',
             border: 'none',
-            borderBottom: activeViewTab === 'packages' ? '2px solid var(--accent)' : '2px solid transparent',
-            color: activeViewTab === 'packages' ? 'var(--text)' : 'var(--muted)',
+            borderBottom: activeViewTab === 'packages' ? '2px solid var(--adm-gold)' : '2px solid transparent',
+            color: activeViewTab === 'packages' ? 'var(--adm-text)' : 'var(--adm-muted)',
             fontWeight: 'bold',
             padding: '8px 16px',
             cursor: 'pointer',
@@ -601,9 +601,9 @@ const AdminServices = () => {
       )}
 
       {activeViewTab === 'reorder' && (
-        <div className="reorder-catalog-container" style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--rule)' }}>
-          <h3 style={{ marginBottom: '8px', color: 'var(--text)' }}>Ordenar Grade de Exibição</h3>
-          <p style={{ color: 'var(--muted)', marginBottom: '24px', fontSize: '0.9rem' }}>
+        <div className="reorder-catalog-container" style={{ background: 'var(--panel-bg)', padding: '24px', borderRadius: '12px', border: '1px solid var(--adm-rule)' }}>
+          <h3 style={{ marginBottom: '8px', color: 'var(--adm-text)' }}>Ordenar Grade de Exibição</h3>
+          <p style={{ color: 'var(--adm-muted)', marginBottom: '24px', fontSize: '0.9rem' }}>
             Use os botões de subir e descer para organizar a ordem em que os serviços serão listados na página de agendamento do cliente. O serviço no topo será o primeiro exibido.
           </p>
 
@@ -617,7 +617,7 @@ const AdminServices = () => {
                   justifyContent: 'space-between', 
                   padding: '16px', 
                   background: 'rgba(255,255,255,0.03)', 
-                  border: '1px solid var(--rule)', 
+                  border: '1px solid var(--adm-rule)', 
                   borderRadius: '8px',
                   gap: '16px'
                 }}
@@ -627,8 +627,8 @@ const AdminServices = () => {
                     {index + 1}
                   </div>
                   <div>
-                    <h4 style={{ margin: 0, color: 'var(--text)', fontSize: '0.95rem' }}>{s.name}</h4>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.category}</span>
+                    <h4 style={{ margin: 0, color: 'var(--adm-text)', fontSize: '0.95rem' }}>{s.name}</h4>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{s.category}</span>
                   </div>
                 </div>
 
@@ -639,8 +639,8 @@ const AdminServices = () => {
                     disabled={index === 0}
                     style={{
                       background: 'none',
-                      border: '1px solid var(--rule)',
-                      color: index === 0 ? 'var(--muted)' : 'var(--text)',
+                      border: '1px solid var(--adm-rule)',
+                      color: index === 0 ? 'var(--adm-muted)' : 'var(--adm-text)',
                       borderRadius: '4px',
                       width: '36px',
                       height: '36px',
@@ -660,8 +660,8 @@ const AdminServices = () => {
                     disabled={index === services.length - 1}
                     style={{
                       background: 'none',
-                      border: '1px solid var(--rule)',
-                      color: index === services.length - 1 ? 'var(--muted)' : 'var(--text)',
+                      border: '1px solid var(--adm-rule)',
+                      color: index === services.length - 1 ? 'var(--adm-muted)' : 'var(--adm-text)',
                       borderRadius: '4px',
                       width: '36px',
                       height: '36px',
@@ -708,33 +708,33 @@ const AdminServices = () => {
                     </div>
                     <div className="service-card-body">
                       <h3 className="service-card-title">{pkg.name}</h3>
-                      <p style={{ fontSize: '0.85rem', color: 'var(--muted)', margin: '4px 0 12px' }}>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', margin: '4px 0 12px' }}>
                         {pkg.description || 'Sem descrição.'}
                       </p>
                       <div className="package-services-list" style={{ background: 'rgba(0,0,0,0.15)', padding: '10px', borderRadius: '6px', fontSize: '0.9rem' }}>
                         <strong style={{ display: 'block', marginBottom: '6px', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Itens inclusos:</strong>
                         <ul style={{ paddingLeft: '16px', margin: 0 }}>
                           {pkg.services.map((item, idx) => (
-                            <li key={idx} style={{ marginBottom: '4px', color: 'var(--text)' }}>
+                            <li key={idx} style={{ marginBottom: '4px', color: 'var(--adm-text)' }}>
                               {item.sessions}x {item.serviceName}
                             </li>
                           ))}
                         </ul>
                       </div>
                     </div>
-                    <div className="service-card-footer" style={{ borderTop: '1px solid var(--rule)', paddingTop: '12px', marginTop: '12px' }}>
+                    <div className="service-card-footer" style={{ borderTop: '1px solid var(--adm-rule)', paddingTop: '12px', marginTop: '12px' }}>
                       <div className="service-pricing-area" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2px' }}>
                         <span className="pricing-label">Valor do Combo</span>
                         {pkgOriginalTotal > pkg.price && (
-                          <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--muted)' }}>
+                          <span style={{ fontSize: '0.85rem', textDecoration: 'line-through', color: 'var(--adm-muted)' }}>
                             De R$ {pkgOriginalTotal.toFixed(2).replace('.', ',')}
                           </span>
                         )}
-                        <span className="price-standard-value" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>
+                        <span className="price-standard-value" style={{ color: 'var(--adm-gold)', fontWeight: 'bold' }}>
                           Por R$ {pkg.price.toFixed(2).replace('.', ',')}
                         </span>
                         {pkgOriginalTotal > pkg.price && (
-                          <span style={{ fontSize: '0.8rem', color: 'var(--accent)', fontWeight: 'bold' }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--adm-gold)', fontWeight: 'bold' }}>
                             Economia de R$ {(pkgOriginalTotal - pkg.price).toFixed(2).replace('.', ',')}!
                           </span>
                         )}
@@ -778,7 +778,7 @@ const AdminServices = () => {
                 className="btn-close" 
                 onClick={() => setIsPackageModalOpen(false)}
                 aria-label="Fechar"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', cursor: 'pointer', background: 'transparent', border: 'none', color: 'var(--muted)' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', cursor: 'pointer', background: 'transparent', border: 'none', color: 'var(--adm-muted)' }}
               >
                 <X size={18} />
               </button>
@@ -809,13 +809,13 @@ const AdminServices = () => {
                 />
               </div>
               
-              <div className="form-group-sleek" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid var(--rule)' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>Valor Original Somado:</span>
-                <span style={{ fontSize: '1.1rem', fontWeight: 'bold', textDecoration: packageFormOriginalTotal > 0 ? 'line-through' : 'none', color: 'var(--text)' }}>
+              <div className="form-group-sleek" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', padding: '12px', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>Valor Original Somado:</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: 'bold', textDecoration: packageFormOriginalTotal > 0 ? 'line-through' : 'none', color: 'var(--adm-text)' }}>
                   R$ {packageFormOriginalTotal.toFixed(2).replace('.', ',')}
                 </span>
                 {packageFormOriginalTotal > Number(packageForm.price || 0) && (
-                  <span style={{ fontSize: '0.85rem', color: 'var(--accent)', fontWeight: 'bold', marginTop: '4px' }}>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--adm-gold)', fontWeight: 'bold', marginTop: '4px' }}>
                     Economia de R$ {(packageFormOriginalTotal - Number(packageForm.price || 0)).toFixed(2).replace('.', ',')} ({(100 - (Number(packageForm.price || 0) * 100 / packageFormOriginalTotal)).toFixed(0)}% OFF)!
                   </span>
                 )}
@@ -833,7 +833,7 @@ const AdminServices = () => {
               />
             </div>
 
-            <div className="form-group-sleek" style={{ borderTop: '1px solid var(--rule)', paddingTop: '16px', marginTop: '16px' }}>
+            <div className="form-group-sleek" style={{ borderTop: '1px solid var(--adm-rule)', paddingTop: '16px', marginTop: '16px' }}>
               <label style={{ fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Adicionar Serviços ao Pacote</label>
               <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                 <select 
@@ -865,20 +865,20 @@ const AdminServices = () => {
               </div>
 
               {/* Selected services list */}
-              <div style={{ background: 'rgba(0,0,0,0.15)', padding: '12px', borderRadius: '8px', border: '1px solid var(--rule)' }}>
+              <div style={{ background: 'rgba(0,0,0,0.15)', padding: '12px', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                 {packageForm.services.length === 0 ? (
-                  <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>Nenhum serviço adicionado ainda. Adicione pelo menos um.</span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>Nenhum serviço adicionado ainda. Adicione pelo menos um.</span>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                     {packageForm.services.map((item, idx) => (
-                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '6px 12px', borderRadius: '4px', border: '1px solid var(--rule)' }}>
-                        <span style={{ fontSize: '0.9rem', color: 'var(--text)' }}>
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '6px 12px', borderRadius: '4px', border: '1px solid var(--adm-rule)' }}>
+                        <span style={{ fontSize: '0.9rem', color: 'var(--adm-text)' }}>
                           <strong>{item.sessions}x</strong> {item.serviceName}
                         </span>
                         <button 
                           type="button" 
                           onClick={() => handleRemoveServiceFromPackage(item.serviceId)}
-                          style={{ background: 'none', border: 'none', color: '#ff5c5c', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }}
+                          style={{ background: 'none', border: 'none', color: 'var(--adm-danger)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }}
                         >
                           <Trash2 size={14} />
                         </button>
@@ -889,7 +889,7 @@ const AdminServices = () => {
               </div>
             </div>
 
-            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24, borderTop: '1px solid var(--rule)', paddingTop: '16px' }}>
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24, borderTop: '1px solid var(--adm-rule)', paddingTop: '16px' }}>
               <button type="button" className="btn btn-outline" onClick={() => setIsPackageModalOpen(false)}>Cancelar</button>
               <button type="submit" className="btn btn-accent">Salvar Pacote</button>
             </div>
@@ -911,7 +911,7 @@ const AdminServices = () => {
                 className="btn-close" 
                 onClick={() => setIsModalOpen(false)}
                 aria-label="Fechar"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', cursor: 'pointer', background: 'transparent', border: 'none', color: 'var(--muted)' }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6px', cursor: 'pointer', background: 'transparent', border: 'none', color: 'var(--adm-muted)' }}
               >
                 <X size={18} />
               </button>
@@ -951,7 +951,7 @@ const AdminServices = () => {
                     onChange={e => setForm(prev => ({ ...prev, duration: e.target.value }))}
                     style={{ paddingRight: '48px' }}
                   />
-                  <span style={{ position: 'absolute', right: '12px', fontSize: '0.8rem', color: 'var(--muted)', pointerEvents: 'none' }}>
+                  <span style={{ position: 'absolute', right: '12px', fontSize: '0.8rem', color: 'var(--adm-muted)', pointerEvents: 'none' }}>
                     min
                   </span>
                 </div>

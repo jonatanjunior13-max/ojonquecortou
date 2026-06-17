@@ -1,0 +1,11 @@
+.adm-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 12px;
+}
+.adm-empty-icon { color: var(--adm-muted); opacity: 0.5; }
+.adm-empty-message { color: var(--adm-muted); font-size: 0.9rem; }

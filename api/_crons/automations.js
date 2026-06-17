@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc, updateDoc } from 'firebase/firestore';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { HTML_TEMPLATES } from '../../src/utils/emailTemplates.js';
 
@@ -174,8 +174,8 @@ const templates = {
 
 export default async function handler(req, res) {
   try {
-    const adminEmail = process.env.CRON_FIREBASE_EMAIL;
-    const adminPassword = process.env.CRON_FIREBASE_PASSWORD;
+    const adminEmail = (process.env.CRON_FIREBASE_EMAIL || '').trim();
+    const adminPassword = (process.env.CRON_FIREBASE_PASSWORD || '').trim();
 
     if (!adminEmail || !adminPassword) {
       return res.status(500).json({ error: 'Faltam credenciais CRON_FIREBASE_EMAIL e PASSWORD.' });
@@ -507,6 +507,58 @@ export default async function handler(req, res) {
         }
       }
     }
+    // ==========================================
+    // 4. CLIENTE FALTOU - EMAIL 12H DEPOIS
+    // ==========================================
+    try {
+      const missedQ = query(
+        collection(db, 'bookings'),
+        where('status', '==', 'faltou')
+      );
+      const missedSnap = await getDocs(missedQ);
+      for (const bDoc of missedSnap.docs) {
+        const booking = bDoc.data();
+        if (booking.missedEmailSent === true) continue;
+        
+        const missedAtStr = booking.missedAt;
+        if (!missedAtStr) continue;
+
+        const missedAt = new Date(missedAtStr);
+        const diffMs = new Date().getTime() - missedAt.getTime();
+        const diffHours = diffMs / (1000 * 60 * 60);
+
+        if (diffHours >= 12) {
+          if (booking.clientEmail && booking.clientEmail !== 'Não informado' && booking.clientEmail.includes('@')) {
+            const ok = await dispatchEmail({
+              type: 'agendamento_falta',
+              clientEmail: booking.clientEmail,
+              clientName: booking.clientName,
+              date: booking.date,
+              time: booking.time,
+              serviceName: booking.serviceName || booking.service?.name || 'Serviço',
+              id: bDoc.id,
+              servicePrice: booking.servicePrice ?? booking.service?.price ?? booking.price ?? null
+            }, hostUrl);
+
+            if (ok) {
+              await updateDoc(doc(db, 'bookings', bDoc.id), {
+                missedEmailSent: true
+              });
+              logs.push(`E-mail de falta enviado 12h+ depois para: ${booking.clientName} (${booking.clientEmail})`);
+            }
+            await sleep(5000);
+          } else {
+            // Se não tiver e-mail, apenas marca como enviado para evitar processamento inútil
+            await updateDoc(doc(db, 'bookings', bDoc.id), {
+              missedEmailSent: true
+            });
+          }
+        }
+      }
+    } catch (missedErr) {
+      console.warn('Erro ao processar automações de cliente faltou:', missedErr);
+    }
+
     return res.status(200).json({
       message: 'Automações diárias processadas com nova régua.',
       todayStr,

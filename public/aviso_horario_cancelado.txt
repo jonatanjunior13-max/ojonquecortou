@@ -1,0 +1,18 @@
+TEMPLATE WHATSAPP — UTILITY (transacional)
+Nome: aviso_horario_cancelado
+Categoria: UTILITY
+
+Texto do corpo:
+Olá, {{1}}.
+Seu horário no Studio do Jon em {{2}} foi cancelado por não comparecimento.
+Para remarcar, entre em contato diretamente pelo WhatsApp. Sua ficha permanece ativa por 48 horas.
+Studio do Jon — @ojonquecortou
+
+Variáveis de exemplo:
+{{1}} = Nome do cliente (ex: Maria)
+{{2}} = Data/Hora do agendamento (ex: 14/06/2026 às 16:00)
+
+Botão de Ação:
+Tipo: URL Dinâmica ou Estática
+Texto do Botão: Remarcar agora
+URL: https://wa.me/553135866673

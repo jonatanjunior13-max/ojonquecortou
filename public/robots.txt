@@ -1,111 +1,32 @@
-# Crawlers de IA — acesso explícito permitido
-User-agent: bingbot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: Amazonbot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: Applebot-Extended
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: Bytespider
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: FacebookExternalHit
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: GPTBot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: ChatGPT-User
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: OAI-SearchBot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: ClaudeBot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: anthropic-ai
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: claude-web
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: PerplexityBot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: Perplexity-User
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: GoogleOther
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: Google-Extended
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: CCBot
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-User-agent: cohere-ai
-Allow: /
-Disallow: /admin
-Disallow: /cliente
-Disallow: /agendar
-
-# Regra geral
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /cliente
 Disallow: /agendar
+
+# Crawlers de IA — explicitamente permitidos
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
 
 Sitemap: https://www.ojonquecortou.com.br/sitemap.xml

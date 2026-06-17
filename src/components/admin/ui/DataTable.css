@@ -1,0 +1,21 @@
+.adm-table-wrap { overflow-x: auto; border-radius: var(--adm-radius); border: 0.5px solid var(--adm-rule); }
+.adm-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.adm-th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--adm-muted);
+  font-weight: 700;
+  border-bottom: 0.5px solid var(--adm-rule);
+  background: var(--adm-card);
+}
+.adm-tr { transition: background 0.15s; }
+.adm-tr:hover { background: var(--adm-card-hover); }
+.adm-td {
+  padding: 11px 14px;
+  color: var(--adm-text-2);
+  border-bottom: 0.5px solid var(--adm-rule);
+}
+.adm-td--empty { text-align: center; color: var(--adm-muted); padding: 32px; }

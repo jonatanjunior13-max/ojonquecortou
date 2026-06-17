@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, doc, addDoc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -9,6 +9,7 @@ import {
   Search, Edit3
 } from 'lucide-react';
 import './Admin.css';
+import KpiCard from '../../components/admin/ui/KpiCard';
 
 // Seed data for historical comparison if database is empty/fresh (matches Figma layout screenshots)
 const SEED_HISTORICAL_TRANSACTIONS = [];
@@ -788,8 +789,8 @@ const AdminFinancial = () => {
   }, [filteredTransactions, ledgerSearch, ledgerTypeFilter, ledgerMethodFilter]);
 
   // CSS and Color Palettes (Harmonious Peach/Orange Coral palette matching screenshot)
-  const activeColor = 'rgb(249, 115, 22)'; // Coral orange
-  const redColor = '#f28b82'; // Soft red
+  const activeColor = '#DCA354'; // --adm-gold
+  const redColor = '#E24B4A'; // --adm-danger
   const greenColor = '#8cb870'; // Soft green
 
   return (
@@ -803,9 +804,9 @@ const AdminFinancial = () => {
           align-items: center;
         }
         .orange-pill {
-          background: #f97316;
-          color: white;
-          border: none;
+          background: var(--adm-card, #211D1A);
+          color: var(--adm-text, #F5EDDB);
+          border: 0.5px solid var(--adm-rule-gold, rgba(220,163,84,0.25));
           padding: 8px 16px;
           border-radius: 9999px;
           font-weight: 600;
@@ -814,22 +815,28 @@ const AdminFinancial = () => {
           align-items: center;
           gap: 8px;
           cursor: pointer;
-          transition: background 0.2s;
-          box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.2);
+          transition: border-color 0.2s, background 0.2s;
+          font-family: inherit;
         }
         .orange-pill:hover {
-          background: #ea580c;
+          background: var(--adm-card-hover, #282320);
+          border-color: var(--adm-gold, #DCA354);
+          color: var(--adm-gold, #DCA354);
         }
         .date-picker-dropdown {
           position: absolute;
-          background: var(--surface);
-          border: 1px solid var(--rule);
-          border-radius: 8px;
+          background: var(--adm-surface, #1A1715);
+          border: 0.5px solid var(--adm-rule-gold, rgba(220,163,84,0.25));
+          border-radius: 12px;
           padding: 16px;
           width: 320px;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.6);
           z-index: 100;
           margin-top: 8px;
+          color: var(--adm-text, #F5EDDB);
+        }
+        .date-picker-dropdown h5 {
+          color: var(--adm-text, #F5EDDB);
         }
         .picker-presets {
           display: grid;
@@ -840,15 +847,23 @@ const AdminFinancial = () => {
         .picker-presets button {
           padding: 6px;
           font-size: 0.8rem;
-          border-radius: 4px;
-          border: 1px solid var(--rule);
-          background: var(--bg-warm);
+          border-radius: 6px;
+          border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
+          background: var(--adm-card, #211D1A);
+          color: var(--adm-text-2, #C9BCA8);
           cursor: pointer;
+          font-family: inherit;
+          transition: all 0.2s;
+        }
+        .picker-presets button:hover {
+          border-color: var(--adm-gold, #DCA354);
+          color: var(--adm-gold, #DCA354);
         }
         .picker-presets button.active {
-          background: #f97316;
-          color: white;
-          border-color: #f97316;
+          background: rgba(220,163,84,0.15);
+          color: var(--adm-gold, #DCA354);
+          border-color: var(--adm-gold, #DCA354);
+          font-weight: 700;
         }
         .chart-grid {
           display: grid;
@@ -862,11 +877,11 @@ const AdminFinancial = () => {
           }
         }
         .chart-card {
-          background: var(--surface);
-          border: 1px solid var(--rule);
+          background: var(--adm-surface, #1A1715);
+          border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
           border-radius: 12px;
           padding: 20px;
-          box-shadow: var(--shadow-premium);
+          color: var(--adm-text, #F5EDDB);
         }
         .chart-header {
           display: flex;
@@ -878,12 +893,13 @@ const AdminFinancial = () => {
           margin: 0;
           font-size: 0.95rem;
           font-weight: 600;
-          color: var(--ink);
+          color: var(--adm-text, #F5EDDB);
         }
         .chart-legend {
           display: flex;
           gap: 12px;
           font-size: 0.75rem;
+          color: var(--adm-muted, #9A8D7E);
         }
         .legend-item {
           display: flex;
@@ -915,8 +931,14 @@ const AdminFinancial = () => {
           padding: 8px 12px;
           font-size: 0.85rem;
           border-radius: 6px;
-          border: 1px solid var(--rule);
+          border: 0.5px solid var(--adm-rule, rgba(245,237,219,0.08));
+          background: var(--adm-card, #211D1A);
+          color: var(--adm-text, #F5EDDB);
           outline: none;
+          font-family: inherit;
+        }
+        .ledger-filters input::placeholder {
+          color: var(--adm-muted, #9A8D7E);
         }
       `}</style>
 
@@ -972,7 +994,7 @@ const AdminFinancial = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <button 
                     className="btn btn-ghost" 
-                    style={{ textAlign: 'left', fontSize: '0.82rem', padding: '6px 12px', background: !selectedProfFilter ? 'var(--bg-warm)' : 'none' }}
+                    style={{ textAlign: 'left', fontSize: '0.82rem', padding: '6px 12px', background: !selectedProfFilter ? 'var(--adm-card)' : 'none' }}
                     onClick={() => { setSelectedProfFilter(''); setShowProfDropdown(false); }}
                   >
                     Todos os Profissionais
@@ -981,7 +1003,7 @@ const AdminFinancial = () => {
                     <button 
                       key={p.id}
                       className="btn btn-ghost" 
-                      style={{ textAlign: 'left', fontSize: '0.82rem', padding: '6px 12px', background: selectedProfFilter === p.id ? 'var(--bg-warm)' : 'none' }}
+                      style={{ textAlign: 'left', fontSize: '0.82rem', padding: '6px 12px', background: selectedProfFilter === p.id ? 'var(--adm-card)' : 'none' }}
                       onClick={() => { setSelectedProfFilter(p.id); setShowProfDropdown(false); }}
                     >
                       {p.name}
@@ -1004,126 +1026,74 @@ const AdminFinancial = () => {
         </div>
       </div>
 
-      <section className="admin-stats-grid">
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Bruta</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma de todas as entradas no período, antes de taxas" />
-          </div>
-          <div className="value" style={{ color: '#2f855a', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Taxas de Maquininha</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Total de taxas retidas por operadoras de cartão/Pix no período" />
-          </div>
-          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            - R$ {totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Despesas</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Saídas de caixa, custos de serviço e despesas avulsas" />
-          </div>
-          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            - R$ {totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)', borderLeft: `4px solid ${netResultado >= 0 ? '#48bb78' : '#e53e3e'}` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado Líquido</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Receita Bruta - Taxas de Maquininha - Despesas" />
-          </div>
-          <div className="value" style={{ color: netResultado >= 0 ? '#48bb78' : '#e53e3e', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Resultado</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: netResultado >= 0 ? activeColor : redColor, fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            {totalBookingsCount}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Agendamentos Online vs Admin</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Comparativo de agendamentos realizados pelos próprios clientes online vs agendamentos criados manualmente pelo painel admin" />
-          </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.4rem', marginTop: 8, fontWeight: 700 }}>
-            {onlineBookingsCount} <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 400 }}>online</span> <span style={{ color: 'var(--rule)', margin: '0 4px' }}>|</span> {adminBookingsCount} <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 400 }}>admin</span>
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Atendimentos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} />
-          </div>
-          <div className="value" style={{ color: 'var(--ink)', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            {completedBookingsCount}
-          </div>
-        </div>
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Custo de Produtos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma dos custos de aquisição dos produtos vendidos no período" />
-          </div>
-          <div className="value" style={{ color: '#c53030', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {productCost.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-
-        <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Lucro de Produtos</h3>
-            <HelpCircle size={14} style={{ color: 'var(--muted)' }} title="Soma do (valor de venda - preço de custo) dos produtos vendidos no período" />
-          </div>
-          <div className="value" style={{ color: '#2f855a', fontSize: '1.6rem', marginTop: 8, fontWeight: 700 }}>
-            R$ {productNetProfit.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-      </section>
+      {/* KPI Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16, marginBottom: 24 }}>
+        <KpiCard
+          label="Receita Bruta"
+          value={`R$ ${grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<TrendingUp size={16} />}
+          variant="success"
+        />
+        <KpiCard
+          label="Taxas Maquininha"
+          value={`- R$ ${totalTaxas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<CreditCard size={16} />}
+          variant="danger"
+        />
+        <KpiCard
+          label="Despesas"
+          value={`- R$ ${totalDespesa.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<TrendingDown size={16} />}
+          variant="danger"
+        />
+        <KpiCard
+          label="Resultado Líquido"
+          value={`R$ ${netResultado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={netResultado >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+          variant={netResultado >= 0 ? 'success' : 'danger'}
+        />
+        <KpiCard
+          label="Atendimentos"
+          value={`${completedBookingsCount}`}
+          sub={`${totalBookingsCount} no período`}
+          icon={<Calendar size={16} />}
+        />
+        <KpiCard
+          label="Lucro Produtos"
+          value={`R$ ${productNetProfit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          sub={`Custo: R$ ${productCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+          icon={<ShoppingBag size={16} />}
+          variant={productNetProfit >= 0 ? 'success' : 'danger'}
+        />
+      </div>
 
       {/* Sub tabs Menu */}
-      <div className="tab-menu" style={{ margin: '24px 0 16px 0' }}>
-        <button className={`tab-btn ${activeSubTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveSubTab('dashboard')}>
-          <TrendingUp size={16} /> Painel de Gráficos
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'fluxo' ? 'active' : ''}`} onClick={() => setActiveSubTab('fluxo')}>
-          <DollarSign size={16} /> Extrato de Caixa
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'comissao' ? 'active' : ''}`} onClick={() => setActiveSubTab('comissao')}>
-          <Users size={16} /> Comissões & Repasses
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'taxas' ? 'active' : ''}`} onClick={() => setActiveSubTab('taxas')}>
-          <Percent size={16} /> Configurar Taxas
-        </button>
-        <button className={`tab-btn ${activeSubTab === 'pacotes' ? 'active' : ''}`} onClick={() => setActiveSubTab('pacotes')}>
-          <Eye size={16} /> Controle de Pacotes
-        </button>
+      <div style={{ display: 'flex', gap: 4, margin: '0 0 20px 0', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 0, flexWrap: 'wrap' }}>
+        {[
+          { id: 'dashboard', label: 'Gráficos', icon: <TrendingUp size={14} /> },
+          { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
+          { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
+          { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
+          { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
+        ].map(tab => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveSubTab(tab.id)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              background: 'none', border: 'none', cursor: 'pointer',
+              padding: '10px 16px',
+              fontSize: '0.85rem', fontWeight: 600, fontFamily: 'inherit',
+              color: activeSubTab === tab.id ? 'var(--adm-gold)' : 'var(--adm-muted)',
+              borderBottom: activeSubTab === tab.id ? '2px solid var(--adm-gold)' : '2px solid transparent',
+              marginBottom: -1,
+              transition: 'color 0.2s',
+            }}
+          >
+            {tab.icon} {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* SUBTAB: DASHBOARD DE GRÁFICOS */}
@@ -1154,7 +1124,7 @@ const AdminFinancial = () => {
                     y1={30 + idx * 45} 
                     x2="950" 
                     y2={30 + idx * 45} 
-                    stroke="var(--rule)" 
+                    stroke="var(--adm-rule)" 
                     strokeDasharray="4 4" 
                   />
                 ))}
@@ -1204,7 +1174,7 @@ const AdminFinancial = () => {
                             y={p.y - 12} 
                             textAnchor="middle" 
                             fontSize="10" 
-                            fill="var(--ink)" 
+                            fill="var(--adm-text)" 
                             fontWeight="600"
                           >
                             R$ {p.val.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
@@ -1215,7 +1185,7 @@ const AdminFinancial = () => {
                             y="250" 
                             textAnchor="middle" 
                             fontSize="11" 
-                            fill="var(--muted)"
+                            fill="var(--adm-muted)"
                           >
                             {p.label}
                           </text>
@@ -1269,7 +1239,7 @@ const AdminFinancial = () => {
                           <rect x={xBar2} y={y2} width={barW} height={h2} rx="3" fill={redColor} />
                           
                           {/* X label */}
-                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{d.label}</text>
+                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{d.label}</text>
                         </g>
                       );
                     });
@@ -1282,7 +1252,7 @@ const AdminFinancial = () => {
             <div className="chart-card">
               <div className="chart-header">
                 <h4>Quantidade de Atendimentos</h4>
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Concluídos</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Concluídos</span>
               </div>
 
               {/* SVG Single Bar Chart */}
@@ -1305,8 +1275,8 @@ const AdminFinancial = () => {
                       return (
                         <g key={d.key}>
                           <rect x={xBar} y={y} width={barW} height={h} rx="4" fill="#f2a477" />
-                          <text x={xCenter} y={y - 6} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--ink)">{d.atendimentos}</text>
-                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{d.label}</text>
+                          <text x={xCenter} y={y - 6} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--adm-text)">{d.atendimentos}</text>
+                          <text x={xCenter} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{d.label}</text>
                         </g>
                       );
                     });
@@ -1319,7 +1289,7 @@ const AdminFinancial = () => {
             <div className="chart-card">
               <div className="chart-header">
                 <h4>Ticket Médio</h4>
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Faturamento / Atendimentos</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Faturamento / Atendimentos</span>
               </div>
 
               {/* SVG Line Chart */}
@@ -1347,10 +1317,10 @@ const AdminFinancial = () => {
                         {points.map((p, idx) => (
                           <g key={idx}>
                             <circle cx={p.x} cy={p.y} r="4.5" fill="#ffffff" stroke="#f2a477" strokeWidth="2" />
-                            <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--ink)">
+                            <text x={p.x} y={p.y - 10} textAnchor="middle" fontSize="9" fontWeight="600" fill="var(--adm-text)">
                               R$ {p.val.toFixed(0)}
                             </text>
-                            <text x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{p.label}</text>
+                            <text x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{p.label}</text>
                           </g>
                         ))}
                       </>
@@ -1409,7 +1379,7 @@ const AdminFinancial = () => {
                           ))}
                           {/* Render bottom labels only once */}
                           {catName === 'Corte' && points.map((p, idx) => (
-                            <text key={idx} x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--muted)">{p.label}</text>
+                            <text key={idx} x={p.x} y="215" textAnchor="middle" fontSize="10" fill="var(--adm-muted)">{p.label}</text>
                           ))}
                         </g>
                       );
@@ -1423,7 +1393,7 @@ const AdminFinancial = () => {
             <div className="chart-card">
               <div className="chart-header">
                 <h4>Representatividade por Categoria (Atendimentos)</h4>
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Volume total de serviços</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Volume total de serviços</span>
               </div>
               <div style={{ width: '100%', height: '180px' }}>
                 <svg width="100%" height="180" viewBox="0 0 500 180" preserveAspectRatio="none">
@@ -1434,9 +1404,9 @@ const AdminFinancial = () => {
                       const barW = (c.count / maxVal) * 320;
                       return (
                         <g key={c.name}>
-                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--ink)">{c.name}</text>
+                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--adm-text)">{c.name}</text>
                           <rect x="90" y={y + 3} width={Math.max(barW, 5)} height="14" rx="3" fill="#f2a477" />
-                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--muted)">{c.count}</text>
+                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--adm-muted)">{c.count}</text>
                         </g>
                       );
                     });
@@ -1449,7 +1419,7 @@ const AdminFinancial = () => {
             <div className="chart-card">
               <div className="chart-header">
                 <h4>Representatividade por Categoria em R$</h4>
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Faturamento por categoria</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Faturamento por categoria</span>
               </div>
               <div style={{ width: '100%', height: '180px' }}>
                 <svg width="100%" height="180" viewBox="0 0 500 180" preserveAspectRatio="none">
@@ -1460,9 +1430,9 @@ const AdminFinancial = () => {
                       const barW = (c.revenue / maxVal) * 300;
                       return (
                         <g key={c.name}>
-                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--ink)">{c.name}</text>
+                          <text x="10" y={y + 14} fontSize="11" fontWeight="600" fill="var(--adm-text)">{c.name}</text>
                           <rect x="90" y={y + 3} width={Math.max(barW, 5)} height="14" rx="3" fill="#f2a477" />
-                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--muted)">
+                          <text x={95 + Math.max(barW, 5)} y={y + 14} fontSize="10" fontWeight="700" fill="var(--adm-muted)">
                             R$ {c.revenue.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}
                           </text>
                         </g>
@@ -1477,11 +1447,11 @@ const AdminFinancial = () => {
             <div className="chart-card" style={{ gridColumn: '1 / -1', marginTop: 12 }}>
               <div className="chart-header">
                 <h4>Distribuição de Despesas por Categoria</h4>
-                <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Total acumulado por categoria no período</span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Total acumulado por categoria no período</span>
               </div>
               <div style={{ width: '100%' }}>
                 {expenseCategoryStats.length === 0 ? (
-                  <p style={{ color: 'var(--muted)', textAlign: 'center', padding: '24px 0', fontSize: '0.85rem' }}>
+                  <p style={{ color: 'var(--adm-muted)', textAlign: 'center', padding: '24px 0', fontSize: '0.85rem' }}>
                     Nenhuma despesa registrada no período selecionado.
                   </p>
                 ) : (
@@ -1492,12 +1462,12 @@ const AdminFinancial = () => {
                       return (
                         <div key={index} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600 }}>
-                            <span style={{ color: 'var(--ink)' }}>{c.name}</span>
-                            <span style={{ color: 'var(--accent)' }}>
+                            <span style={{ color: 'var(--adm-text)' }}>{c.name}</span>
+                            <span style={{ color: 'var(--adm-gold)' }}>
                               R$ {c.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({pct.toFixed(1)}%)
                             </span>
                           </div>
-                          <div style={{ width: '100%', height: 8, background: 'var(--bg-warm)', borderRadius: 4, overflow: 'hidden' }}>
+                          <div style={{ width: '100%', height: 8, background: 'var(--adm-card)', borderRadius: 4, overflow: 'hidden' }}>
                             <div style={{ width: `${pct}%`, height: '100%', background: '#e53e3e', borderRadius: 4 }}></div>
                           </div>
                         </div>
@@ -1594,7 +1564,7 @@ const AdminFinancial = () => {
                         <td style={{ fontWeight: 600 }}>
                           {t.description}
                           {t.category && (
-                            <span style={{ fontSize: '0.7rem', color: 'var(--accent)', background: 'rgba(200, 133, 42, 0.1)', padding: '2px 6px', borderRadius: 4, fontWeight: 'normal', marginLeft: 8, display: 'inline-block' }}>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--adm-gold)', background: 'rgba(200, 133, 42, 0.1)', padding: '2px 6px', borderRadius: 4, fontWeight: 'normal', marginLeft: 8, display: 'inline-block' }}>
                               {t.category}
                             </span>
                           )}
@@ -1609,13 +1579,13 @@ const AdminFinancial = () => {
                         <td style={{ color: isEntrada ? '#2f855a' : '#c53030', fontWeight: 'bold' }}>
                           {isEntrada ? '+' : '-'} R$ {t.value.toFixed(2)}
                         </td>
-                        <td style={{ color: fee > 0 ? 'var(--accent)' : 'var(--muted)' }}>
+                        <td style={{ color: fee > 0 ? 'var(--adm-gold)' : 'var(--adm-muted)' }}>
                           {fee > 0 ? `R$ ${fee.toFixed(2)}` : '-'}
                         </td>
-                        <td style={{ color: txCost > 0 ? '#c53030' : 'var(--muted)' }}>
+                        <td style={{ color: txCost > 0 ? '#c53030' : 'var(--adm-muted)' }}>
                           {txCost > 0 ? `R$ ${txCost.toFixed(2)}` : '-'}
                         </td>
-                        <td style={{ color: txProfit > 0 ? '#2f855a' : 'var(--muted)', fontWeight: txProfit > 0 ? '600' : 'normal' }}>
+                        <td style={{ color: txProfit > 0 ? '#2f855a' : 'var(--adm-muted)', fontWeight: txProfit > 0 ? '600' : 'normal' }}>
                           {txProfit > 0 ? `R$ ${txProfit.toFixed(2)}` : '-'}
                         </td>
                         <td style={{ fontWeight: 'bold', color: isEntrada ? '#2f855a' : '#c53030' }}>
@@ -1637,7 +1607,7 @@ const AdminFinancial = () => {
           {/* Card: Repasses dos Profissionais */}
           <div className="financial-card">
             <h3>Profissionais e Comissionamento</h3>
-            <p style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 16 }}>
               Abaixo são listados os repasses calculados com base na comissão (%) de cada profissional sobre o valor líquido dos atendimentos executados.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
@@ -1646,21 +1616,21 @@ const AdminFinancial = () => {
                 const commProd = p.commissionProduct !== undefined ? p.commissionProduct : 10;
                 const payout = calculateProfessionalCommission(p);
                 return (
-                  <div key={p.id} style={{ border: '1px solid var(--rule)', padding: 16, borderRadius: 8, background: 'var(--surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div key={p.id} style={{ border: '0.5px solid var(--adm-rule)', padding: 16, borderRadius: 8, background: 'var(--adm-surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem' }}>{p.name}</h4>
                       <span style={{ fontSize: '1.1rem', color: '#48bb78', fontWeight: 700 }}>
                         R$ {payout.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </span>
                     </div>
-                    <div style={{ borderTop: '1px solid var(--rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div style={{ borderTop: '1px solid var(--adm-rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Serviços ({commServ}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--ink)' }}>R$ {payout.services.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Serviços ({commServ}%)</span>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {payout.services.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
                       </div>
                       <div>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block' }}>Produtos ({commProd}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--ink)' }}>R$ {payout.products.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Produtos ({commProd}%)</span>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {payout.products.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
                       </div>
                     </div>
                   </div>
@@ -1727,17 +1697,17 @@ const AdminFinancial = () => {
                       <td>{t.date.split('-').reverse().join('/')}</td>
                       <td>
                         <div style={{ fontWeight: 600 }}>{t.clientName}</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{t.description}</div>
+                        <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>{t.description}</div>
                       </td>
                       <td>{t.paymentMethod}</td>
                       <td>R$ {t.value.toFixed(2)}</td>
                       <td>R$ {netVal.toFixed(2)}</td>
                       <td>{prof ? prof.name : 'Não Associado'}</td>
-                      <td style={{ color: repasseValue > 0 ? '#48bb78' : 'var(--muted)' }}>
+                      <td style={{ color: repasseValue > 0 ? '#48bb78' : 'var(--adm-muted)' }}>
                         {repasseValue > 0 ? (
                           <div>
                             <div style={{ fontWeight: 700 }}>R$ {repasseValue.toFixed(2)}</div>
-                            <div style={{ fontSize: '0.72rem', color: 'var(--muted)', marginTop: 2 }}>{detailsStr}</div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', marginTop: 2 }}>{detailsStr}</div>
                           </div>
                         ) : 'R$ 0.00'}
                       </td>
@@ -1758,7 +1728,7 @@ const AdminFinancial = () => {
               <CreditCard size={18} style={{ color: '#f97316' }} />
               <h3 style={{ margin: 0 }}>Taxas de Meios de Recebimento</h3>
             </div>
-            <p style={{ color: 'var(--muted)', fontSize: '0.82rem', marginBottom: 20 }}>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', marginBottom: 20 }}>
               Defina as taxas descontadas pelas adquirentes e bandeiras. O sistema deduzirá estas taxas automaticamente para exibir seu faturamento líquido e repasses a profissionais.
             </p>
 
@@ -1826,7 +1796,7 @@ const AdminFinancial = () => {
                 value={feesForm.feeAnticipation} 
                 onChange={e => setFeesForm({ ...feesForm, feeAnticipation: e.target.value })}
               />
-              <span style={{ fontSize: '0.75rem', color: 'var(--muted)', display: 'block', marginTop: 4 }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
                 Esta taxa será somada à taxa do cartão quando a opção de antecipação estiver ativada na venda/comanda.
               </span>
             </div>
@@ -1888,19 +1858,19 @@ const AdminFinancial = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             {/* Quick Metrics */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Pacotes Ativos</h3>
-                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--ink)' }}>{activeCount}</div>
+              <div className="stat-card" style={{ border: '0.5px solid var(--adm-rule)' }}>
+                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Pacotes Ativos</h3>
+                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--adm-text)' }}>{activeCount}</div>
               </div>
-              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Receita Total Gerada</h3>
+              <div className="stat-card" style={{ border: '0.5px solid var(--adm-rule)' }}>
+                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Receita Total Gerada</h3>
                 <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: '#2f855a' }}>
                   R$ {totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </div>
               </div>
-              <div className="stat-card" style={{ border: '1px solid var(--rule)' }}>
-                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--muted)', fontWeight: 600 }}>Sessões Restantes</h3>
-                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--accent)' }}>{remainingCredits} sessões</div>
+              <div className="stat-card" style={{ border: '0.5px solid var(--adm-rule)' }}>
+                <h3 style={{ margin: 0, fontSize: '0.85rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Sessões Restantes</h3>
+                <div style={{ fontSize: '1.6rem', marginTop: 8, fontWeight: 700, color: 'var(--adm-gold)' }}>{remainingCredits} sessões</div>
               </div>
             </div>
 
@@ -1913,7 +1883,7 @@ const AdminFinancial = () => {
               {/* Filters */}
               <div className="ledger-filters" style={{ marginBottom: 16 }}>
                 <div style={{ position: 'relative', flexGrow: 1, minWidth: '220px' }}>
-                  <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)' }} />
+                  <Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
                   <input 
                     type="text" 
                     placeholder="Buscar por cliente, telefone ou pacote..." 
@@ -1959,16 +1929,16 @@ const AdminFinancial = () => {
                           <tr key={cp.id}>
                             <td>
                               <div style={{ fontWeight: 600 }}>{cp.clientName}</div>
-                              <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>{cp.clientPhone || 'Sem telefone'}</div>
+                              <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>{cp.clientPhone || 'Sem telefone'}</div>
                             </td>
                             <td>
                               <div style={{ fontWeight: 600 }}>{cp.packageName}</div>
-                              <div style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Cód: {cp.packageId}</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Cód: {cp.packageId}</div>
                             </td>
                             <td>{cp.datePurchased ? cp.datePurchased.split('-').reverse().join('/') : 'N/A'}</td>
                             <td style={{ fontWeight: 'bold', color: '#2f855a' }}>
                               R$ {(Number(cp.pricePaid) || 0).toFixed(2)}
-                              <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--muted)', fontWeight: 'normal' }}>
+                              <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--adm-muted)', fontWeight: 'normal' }}>
                                 {cp.paymentMethod || 'N/A'}
                               </span>
                             </td>
@@ -1980,15 +1950,15 @@ const AdminFinancial = () => {
                                   const rem = cp.balance[srvId];
                                   return (
                                     <div key={srvId} style={{ fontSize: '0.8rem', display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                                      <span style={{ color: 'var(--ink)' }}>{srvName}</span>
-                                      <span style={{ fontWeight: 'bold', color: rem > 0 ? 'var(--accent)' : 'var(--muted)' }}>
+                                      <span style={{ color: 'var(--adm-text)' }}>{srvName}</span>
+                                      <span style={{ fontWeight: 'bold', color: rem > 0 ? 'var(--adm-gold)' : 'var(--adm-muted)' }}>
                                         {rem} sessões
                                       </span>
                                     </div>
                                   );
                                 })}
                                 {totalCredits === 0 && (
-                                  <span style={{ fontSize: '0.8rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+                                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
                                     Créditos esgotados
                                   </span>
                                 )}
@@ -2015,7 +1985,7 @@ const AdminFinancial = () => {
                                 </button>
                                 <button 
                                   className="btn btn-ghost" 
-                                  style={{ padding: 6, color: 'var(--accent)' }} 
+                                  style={{ padding: 6, color: 'var(--adm-gold)' }} 
                                   onClick={() => handleDeleteClientPackage(cp.id)}
                                   title="Remover pacote"
                                 >
@@ -2040,7 +2010,7 @@ const AdminFinancial = () => {
         <div className="modal-overlay">
           <form className="modal-content" onSubmit={handleAddProductSale}>
             <h3>Lançar Venda de Produto Avulsa</h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: 12 }}>
+            <p style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: 12 }}>
               Selecione o produto do estoque para registrar a entrada de receita e debitar a quantidade vendida.
             </p>
 
@@ -2205,7 +2175,7 @@ const AdminFinancial = () => {
                 <select
                   value={expenseForm.installments || 1}
                   onChange={e => setExpenseForm(prev => ({ ...prev, installments: Number(e.target.value) }))}
-                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--rule)', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                 >
                   {[...Array(12)].map((_, i) => (
                     <option key={i + 1} value={i + 1}>
@@ -2221,7 +2191,7 @@ const AdminFinancial = () => {
               <select 
                 value={expenseForm.category}
                 onChange={e => setExpenseForm(prev => ({ ...prev, category: e.target.value }))}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid var(--rule)', background: 'var(--bg-warm)', color: 'var(--ink)' }}
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
               >
                 <optgroup label="Custos Fixos">
                   <option value="Custos Fixos - Aluguel e Condomínio">Aluguel e Condomínio</option>
@@ -2303,7 +2273,7 @@ const AdminFinancial = () => {
           <div className="modal-overlay">
             <form className="modal-content" onSubmit={handleSaveClientPackageBalance}>
               <h3>Ajustar Saldo de Créditos</h3>
-              <p style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: 16 }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: 16 }}>
                 Ajuste manualmente a quantidade de sessões restantes para cada serviço do pacote de <strong>{editingClientPackage.clientName}</strong>.
               </p>
 
@@ -2323,7 +2293,7 @@ const AdminFinancial = () => {
                           ...editingBalanceForm,
                           [srvId]: Math.max(0, Number(e.target.value))
                         })}
-                        style={{ width: '100%', padding: '10px', borderRadius: 4, border: '1px solid var(--rule)' }}
+                        style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)' }}
                       />
                     </div>
                   );

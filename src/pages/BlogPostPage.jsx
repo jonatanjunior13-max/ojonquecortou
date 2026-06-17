@@ -9,16 +9,27 @@ import SEO from '../components/SEO';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const staticMatch = staticPosts.find((p) => p.slug === slug);
+  
+  const [prevSlug, setPrevSlug] = useState(slug);
+  const [post, setPost] = useState(staticMatch || null);
+  const [loading, setLoading] = useState(!staticMatch);
   const [allPosts, setAllPosts] = useState(staticPosts);
+
+  if (slug !== prevSlug) {
+    setPrevSlug(slug);
+    const newStaticMatch = staticPosts.find((p) => p.slug === slug);
+    setPost(newStaticMatch || null);
+    setLoading(!newStaticMatch);
+  }
 
   useEffect(() => {
     async function loadPostData() {
-      setLoading(true);
-      // Try finding static post first
-      const staticMatch = staticPosts.find((p) => p.slug === slug);
-      let foundPost = staticMatch || null;
+      const currentStaticMatch = staticPosts.find((p) => p.slug === slug);
+      if (!currentStaticMatch) {
+        setLoading(true);
+      }
+      let foundPost = currentStaticMatch || null;
 
       // Load all posts (including Firestore) to render related posts
       let merged = [...staticPosts];
@@ -68,25 +79,47 @@ const BlogPostPage = () => {
     return <Navigate to="/blog" replace />;
   }
 
-  // Obter posts relacionados de forma consistente e determinística:
+  // Smart related posts: category + keyword match, up to 6 for better internal linking
+  const getKeywords = (text) => {
+    if (!text) return [];
+    return text.toLowerCase()
+      .split(/\W+/)
+      .filter(w => w.length > 3 && !['para', 'como', 'sobre', 'mais', 'artigo', 'postagem', 'você', 'suas', 'seus'].includes(w));
+  };
+
+  const postKeywords = new Set(getKeywords(post.title + ' ' + post.excerpt));
+
   const relatedPosts = allPosts
     .filter((p) => p.slug !== slug)
+    .map((p) => {
+      let score = 0;
+      if (p.category === post.category) score += 100;
+      const candidateKeywords = getKeywords(p.title + ' ' + p.excerpt);
+      const overlapCount = candidateKeywords.filter(kw => postKeywords.has(kw)).length;
+      score += overlapCount * 5;
+      return { post: p, score };
+    })
     .sort((a, b) => {
-      if (a.category === post.category && b.category !== post.category) return -1;
-      if (b.category === post.category && a.category !== post.category) return 1;
-      const idA = typeof a.id === 'number' ? a.id : 0;
-      const idB = typeof b.id === 'number' ? b.id : 0;
+      if (b.score !== a.score) return b.score - a.score;
+      const idA = typeof a.post.id === 'number' ? a.post.id : 0;
+      const idB = typeof b.post.id === 'number' ? b.post.id : 0;
       return idB - idA;
     })
-    .slice(0, 3);
+    .slice(0, 6)
+    .map(item => item.post);
 
   const generatePostDescription = (post) => {
-    if (post.metaDescription) return post.metaDescription;
-    
-    // Fallback based on user-requested model:
-    // "[Assunto do post em 1 frase direta]. [Benefício ou resultado]. Especialista em cachos em Belo Horizonte explica."
-    const subject = post.excerpt || post.title;
-    return `${subject}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
+    let desc = post.metaDescription;
+    if (!desc) {
+      // Fallback based on user-requested model:
+      // "[Assunto do post em 1 frase direta]. [Benefício ou resultado]. Especialista em cachos em Belo Horizonte explica."
+      const subject = post.excerpt || post.title;
+      desc = `${subject}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
+    }
+    if (desc.length > 155) {
+      desc = desc.substring(0, 152) + '...';
+    }
+    return desc;
   };
 
   const parseDateToISO = (dateStr) => {

@@ -13,6 +13,21 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
+function formatGoogleImageUrl(image) {
+  if (!image) return '';
+  let imageUrl = image;
+  if (imageUrl.includes('firebasestorage.googleapis.com')) {
+    const match = imageUrl.match(/o\/gallery%2F([^?]+)/);
+    if (match && match[1]) {
+      const filename = decodeURIComponent(match[1]);
+      imageUrl = `https://www.ojonquecortou.com.br/api/media/${filename}`;
+    }
+  } else if (!imageUrl.startsWith('http')) {
+    imageUrl = `https://www.ojonquecortou.com.br${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+  }
+  return imageUrl;
+}
+
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -105,7 +120,7 @@ export default async function handler(req, res) {
               const matched = locationsData.locations.find(loc => loc.title.toLowerCase().includes('jon'));
               const location = matched || locationsData.locations[0];
               gbpLocation = location.name;
-              locationId = location.name.split('/')[3];
+              locationId = location.name.split('/').pop();
             } else {
               lastError = 'Nenhum local encontrado nesta conta do Google.';
             }
@@ -202,13 +217,9 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // Formatar imagem
       let mediaList = [];
       if (image) {
-        const imageUrl = image.startsWith('http') 
-          ? image 
-          : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
-        
+        const imageUrl = formatGoogleImageUrl(image);
         mediaList.push({
           mediaFormat: 'PHOTO',
           sourceUrl: imageUrl
@@ -310,10 +321,7 @@ export default async function handler(req, res) {
 
       const accessToken = tokenData.access_token;
 
-      // Formatar URL da imagem
-      const imageUrl = image.startsWith('http') 
-        ? image 
-        : `https://www.ojonquecortou.com.br${image.startsWith('/') ? '' : '/'}${image}`;
+      const imageUrl = formatGoogleImageUrl(image);
 
       const mediaData = {
         mediaFormat: 'PHOTO',
@@ -352,6 +360,160 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error('Erro no processamento do upload de foto:', error);
       return res.status(500).json({ error: 'Erro interno no processador de upload', details: error.message });
+    }
+  }
+
+  // 5. AÇÃO: GET-REVIEWS (Busca avaliações reais do Google Meu Negócio)
+  if (action === 'get-reviews') {
+    try {
+      const settingsSnap = await getDoc(doc(db, 'settings', 'studio'));
+      if (!settingsSnap.exists()) {
+        return res.status(500).json({ error: 'Configurações não encontradas.' });
+      }
+
+      const settings = settingsSnap.data();
+      const automations = settings?.automations || {};
+      const refreshToken = automations.googleGbpRefreshToken;
+      const accountId = automations.googleGbpAccountId;
+      const locationId = automations.googleGbpLocationId;
+
+      if (!refreshToken || !accountId || !locationId) {
+        return res.status(200).json({ reviews: [] });
+      }
+
+      // Renovar access token
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: process.env.GOOGLE_CLIENT_ID,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          refresh_token: refreshToken,
+          grant_type: 'refresh_token'
+        })
+      });
+
+      const tokenData = await tokenResponse.json();
+      if (!tokenResponse.ok) {
+        console.error('Erro ao renovar token no get-reviews:', tokenData);
+        return res.status(500).json({ error: 'Erro ao renovar token de acesso com o Google.' });
+      }
+
+      const accessToken = tokenData.access_token;
+
+      // Buscar avaliações
+      const reviewsUrl = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${locationId}/reviews`;
+      const googleResponse = await fetch(reviewsUrl, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const googleResult = await googleResponse.json();
+
+      if (!googleResponse.ok) {
+        console.error('Erro ao buscar avaliações no Google:', googleResult);
+        return res.status(googleResponse.status).json({ 
+          error: 'Erro retornado pela API de Avaliações do Google.', 
+          details: googleResult 
+        });
+      }
+
+      // Mapear avaliações para o formato do site
+      const mappedReviews = (googleResult.reviews || []).map(rev => {
+        const starMap = { 'ONE': 1, 'TWO': 2, 'THREE': 3, 'FOUR': 4, 'FIVE': 5 };
+        return {
+          id: rev.reviewId,
+          author: rev.reviewer?.displayName || 'Cliente do Google',
+          rating: starMap[rev.starRating] || 5,
+          comment: rev.comment || '',
+          date: rev.createTime ? new Date(rev.createTime).toLocaleDateString('pt-BR') : 'Recentemente',
+          reply: rev.reviewReply?.comment || ''
+        };
+      });
+
+      return res.status(200).json({ success: true, reviews: mappedReviews });
+
+    } catch (error) {
+      console.error('Erro ao buscar avaliações do GBP:', error);
+      return res.status(500).json({ error: 'Erro interno ao buscar avaliações', details: error.message });
+    }
+  }
+
+  // 6. AÇÃO: REPLY-REVIEW (Envia resposta para uma avaliação no Google Maps)
+  if (action === 'reply-review') {
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Método não permitido. Utilize POST.' });
+    }
+
+    const { reviewId, replyComment } = req.body;
+    if (!reviewId || !replyComment) {
+      return res.status(400).json({ error: 'reviewId e replyComment são obrigatórios.' });
+    }
+
+    try {
+      const settingsSnap = await getDoc(doc(db, 'settings', 'studio'));
+      if (!settingsSnap.exists()) {
+        return res.status(500).json({ error: 'Configurações não encontradas.' });
+      }
+
+      const settings = settingsSnap.data();
+      const automations = settings?.automations || {};
+      const refreshToken = automations.googleGbpRefreshToken;
+      const accountId = automations.googleGbpAccountId;
+      const locationId = automations.googleGbpLocationId;
+
+      if (!refreshToken || !accountId || !locationId) {
+        return res.status(400).json({ error: 'Google Business Profile não conectado ou configurado.' });
+      }
+
+      // Renovar access token
+      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          client_id: process.env.GOOGLE_CLIENT_ID,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          refresh_token: refreshToken,
+          grant_type: 'refresh_token'
+        })
+      });
+
+      const tokenData = await tokenResponse.json();
+      if (!tokenResponse.ok) {
+        return res.status(500).json({ error: 'Erro ao renovar token de acesso.' });
+      }
+
+      const accessToken = tokenData.access_token;
+
+      // Enviar resposta
+      const replyUrl = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${locationId}/reviews/${reviewId}/reply`;
+      const googleResponse = await fetch(replyUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          comment: replyComment
+        })
+      });
+
+      const googleResult = await googleResponse.json();
+      if (!googleResponse.ok) {
+        console.error('Erro ao responder avaliação no Google:', googleResult);
+        return res.status(googleResponse.status).json({ 
+          error: 'Erro retornado pela API do Google ao responder.', 
+          details: googleResult 
+        });
+      }
+
+      return res.status(200).json({ success: true, data: googleResult });
+
+    } catch (error) {
+      console.error('Erro ao responder avaliação:', error);
+      return res.status(500).json({ error: 'Erro interno ao responder avaliação', details: error.message });
     }
   }
 

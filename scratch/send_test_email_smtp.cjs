@@ -1,4 +1,5 @@
 const fs = require('fs');
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 async function run() {
   console.log('🧪 Calling production API with type: horario_confirmado...');
