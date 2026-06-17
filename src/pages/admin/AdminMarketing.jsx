@@ -1,9 +1,55 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db } from '../../config/firebase';
+import { db, storage } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
+import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
+
+// Imagens próprias on-brand (existem em /public) usadas como fallback confiável
+// quando a geração de imagem do Gemini falhar. Servem rápido do domínio e são
+// válidas como sourceUrl no Google Business Profile.
+const GBP_FALLBACK_IMAGES = [
+  '/blog-frizz.webp', '/blog-curvaturas.webp', '/blog-finalizacao-perfeita.webp',
+  '/blog-leitura-fio-capa.webp', '/blog-cronograma-capilar.webp', '/blog-encolhimento.webp',
+  '/blog-arquitetura-volume.webp', '/blog-3-erros-capa.webp', '/blog-inverno-cachos-bh.webp',
+  '/blog-day-after.webp', '/blog-embaraco.webp', '/blog-jon-analisando-mecha.webp',
+  '/blog-leitura-fio-seco.webp', '/blog-frizz-dano.webp',
+];
+const pickGbpFallbackImage = () => GBP_FALLBACK_IMAGES[Math.floor(Math.random() * GBP_FALLBACK_IMAGES.length)];
+
+// Gera imagem via Imagen (Gemini API). Retorna data URI base64 ou null em qualquer falha
+// (key sem acesso a imagem, quota, modelo indisponível) — chamador cai no fallback local.
+async function generateGeminiImage(imagePrompt, apiKey) {
+  if (!apiKey || apiKey === 'undefined' || apiKey === 'null' || apiKey.includes('placeholder')) return null;
+  try {
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          instances: [{ prompt: imagePrompt }],
+          parameters: { sampleCount: 1, aspectRatio: '4:3' }
+        })
+      }
+    );
+    if (!resp.ok) {
+      console.warn('Imagen falhou (HTTP ' + resp.status + '), usando fallback local.');
+      return null;
+    }
+    const data = await resp.json();
+    const b64 = data?.predictions?.[0]?.bytesBase64Encoded;
+    if (!b64) {
+      console.warn('Imagen não retornou imagem, usando fallback local.');
+      return null;
+    }
+    return `data:image/png;base64,${b64}`;
+  } catch (err) {
+    console.warn('Erro ao gerar imagem com Imagen, usando fallback local:', err);
+    return null;
+  }
+}
 
 const TRENDING_THEMES = [
   {
@@ -835,9 +881,7 @@ Use as seguintes tags no "bodyHtml":
           `O segredo por trás de: ${theme.title} ✨`
         ];
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-        const imagePrompt = `${theme.keywords || ''}, gorgeous curly hair, professional salon, realistic`;
-        const randomSeed = Math.floor(Math.random() * 1000000);
-        const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
+        const image = pickGbpFallbackImage();
         const text = `${pick(hooks)}\n\n${theme.description || ''}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
         return { text, image };
       }
@@ -865,8 +909,7 @@ Use as seguintes tags no "bodyHtml":
       ];
 
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-      const randomSeed = Math.floor(Math.random() * 1000000);
-      const image = `https://image.pollinations.ai/prompt/beautiful%20curly%20hair%20salon%20realistic?width=800&height=600&nologo=true&seed=${randomSeed}`;
+      const image = pickGbpFallbackImage();
       const text = `${pick(hooks)}\n\n${pick(bodies)}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
       return { text, image };
     };
@@ -919,10 +962,10 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             try {
               const parsed = JSON.parse(generatedJsonText.trim());
               const text = parsed.text || '';
-              const imagePrompt = parsed.image_prompt || 'gorgeous curly hair, professional salon, realistic';
-              const randomSeed = Math.floor(Math.random() * 1000000);
-              const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
-              
+              const imagePrompt = parsed.image_prompt || 'gorgeous defined curly hair, professional hair salon, realistic photo';
+              const geminiImage = await generateGeminiImage(imagePrompt, apiKey);
+              const image = geminiImage || pickGbpFallbackImage();
+
               setGeneratedGbpPost({ text: text.trim(), image });
               setIsGeneratingGbpPost(false);
               return;
@@ -947,15 +990,31 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
-  const handleScheduleGbpPost = () => {
+  const handleScheduleGbpPost = async () => {
     if (!generatedGbpPost) return;
     const daysLabels = selectedPostingDays.map(d => {
       return { 'domingo': 'Dom', 'segunda': 'Seg', 'terca': 'Ter', 'quarta': 'Qua', 'quinta': 'Qui', 'sexta': 'Sex', 'sabado': 'Sáb' }[d] || d;
     }).join(', ');
+
+    // Imagens do Gemini vêm como data URI (base64). O Google Business Profile exige
+    // sourceUrl público, então subimos pro Storage (gallery/) e usamos a URL hospedada
+    // — o api/gbp.js converte essa URL do firebasestorage em /api/media/<arquivo>.
+    let postImage = generatedGbpPost.image;
+    if (postImage && postImage.startsWith('data:') && storage) {
+      try {
+        const fileRef = storageRef(storage, `gallery/gbp-${Date.now()}.png`);
+        await uploadString(fileRef, postImage, 'data_url');
+        postImage = await getDownloadURL(fileRef);
+      } catch (err) {
+        console.warn('Erro ao subir imagem do post para o Storage, usando fallback local:', err);
+        postImage = pickGbpFallbackImage();
+      }
+    }
+
     const newPost = {
       id: 'post_' + Date.now(),
       text: generatedGbpPost.text,
-      image: generatedGbpPost.image,
+      image: postImage,
       scheduledDate: `Próximos dias: ${daysLabels} às ${postFreqTime}`,
       status: 'scheduled'
     };
