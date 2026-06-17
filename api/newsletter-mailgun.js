@@ -71,40 +71,67 @@ function wrapNewsletterHtml(subject, body) {
 </html>`;
 }
 
-// Send a single email via Mailgun REST API
+// Send a single email via Mailgun or Resend REST API
 async function sendMailgun(to, toName, subject, html) {
-  const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-  const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
+  if (MAILGUN_API_KEY.startsWith('re_')) {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${MAILGUN_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: [toName ? `"${toName}" <${to}>` : to],
+        subject,
+        html,
+        headers: {
+          'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`
+        }
+      })
+    });
 
-  const body = new URLSearchParams({
-    from: FROM_EMAIL,
-    to: toName ? `"${toName}" <${to}>` : to,
-    subject,
-    html,
-    'h:List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`,
-    'h:List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-    'o:tag': 'newsletter',
-    'o:tracking': 'yes',
-    'o:tracking-clicks': 'yes',
-    'o:tracking-opens': 'yes'
-  });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Resend ${res.status}: ${errText}`);
+    }
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${basicAuth}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body
-  });
+    const data = await res.json();
+    return data.id || 'resend-ok';
+  } else {
+    const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
+    const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
 
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Mailgun ${res.status}: ${errText}`);
+    const body = new URLSearchParams({
+      from: FROM_EMAIL,
+      to: toName ? `"${toName}" <${to}>` : to,
+      subject,
+      html,
+      'h:List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`,
+      'h:List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      'o:tag': 'newsletter',
+      'o:tracking': 'yes',
+      'o:tracking-clicks': 'yes',
+      'o:tracking-opens': 'yes'
+    });
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${basicAuth}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`Mailgun ${res.status}: ${errText}`);
+    }
+
+    const data = await res.json();
+    return data.id || 'mailgun-ok';
   }
-
-  const data = await res.json();
-  return data.id || 'mailgun-ok';
 }
 
 export default async function handler(req, res) {
@@ -217,63 +244,102 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, sent: 0, message: 'Nenhuma cliente com email cadastrado.' });
   }
 
-  // Enviar em lote (Batch Sending) via Mailgun para evitar timeouts na Vercel
+  // Enviar em lote (Batch Sending) via Mailgun ou Resend para evitar timeouts na Vercel
   try {
-    const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-    const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
-
-    // Substituir {nome} pelo placeholder de variáveis do Mailgun (%recipient.name%)
-    const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
-
-    const CHUNK_SIZE = 950; // Limite de lote do Mailgun é 1000, 950 é seguro
+    const isResend = MAILGUN_API_KEY.startsWith('re_');
+    const CHUNK_SIZE = isResend ? 100 : 950; // Limite do Resend é 100 por lote
     let sent = 0;
     let lastMessageId = '';
 
     for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
       const chunk = recipients.slice(i, i + CHUNK_SIZE);
 
-      const recipientVariables = {};
-      const toEmails = [];
+      if (isResend) {
+        // Enviar via Resend Batch API
+        const batchPayload = chunk.map(r => {
+          const personalizedHtml = fullHtml
+            .replace(/{nome}/g, r.name)
+            .replace(/%recipient\.email%/g, encodeURIComponent(r.email));
+          return {
+            from: FROM_EMAIL,
+            to: [r.email],
+            subject: subject,
+            html: personalizedHtml,
+            headers: {
+              'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+            }
+          };
+        });
 
-      chunk.forEach(r => {
-        toEmails.push(r.email);
-        recipientVariables[r.email] = { name: r.name };
-      });
+        const resResend = await fetch('https://api.resend.com/emails/batch', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${MAILGUN_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(batchPayload)
+        });
 
-      const bodyParams = new URLSearchParams();
-      bodyParams.append('from', FROM_EMAIL);
-      bodyParams.append('subject', subject);
-      bodyParams.append('html', batchHtml);
-      bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
-      bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
-      bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-      bodyParams.append('o:tag', 'newsletter');
-      bodyParams.append('o:tracking', 'yes');
-      bodyParams.append('o:tracking-clicks', 'yes');
-      bodyParams.append('o:tracking-opens', 'yes');
+        if (!resResend.ok) {
+          const errText = await resResend.text();
+          console.error('Erro no lote Resend:', errText);
+          throw new Error(`Resend Batch Error ${resResend.status} no lote ${Math.floor(i/CHUNK_SIZE) + 1}: ${errText}`);
+        }
 
-      // Adiciona cada destinatário deste lote
-      toEmails.forEach(email => {
-        bodyParams.append('to', email);
-      });
+        const resData = await resResend.json();
+        lastMessageId = (resData.data && resData.data[0] && resData.data[0].id) || 'resend-batch-ok';
+        sent += chunk.length;
+      } else {
+        // Enviar via Mailgun
+        const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
+        const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
 
-      const resMailgun = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${basicAuth}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: bodyParams
-      });
+        // Substituir {nome} pelo placeholder de variáveis do Mailgun (%recipient.name%)
+        const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
 
-      if (!resMailgun.ok) {
-        const errText = await resMailgun.text();
-        throw new Error(`Mailgun Batch Error ${resMailgun.status} no lote ${Math.floor(i/CHUNK_SIZE) + 1}: ${errText}`);
+        const recipientVariables = {};
+        const toEmails = [];
+
+        chunk.forEach(r => {
+          toEmails.push(r.email);
+          recipientVariables[r.email] = { name: r.name };
+        });
+
+        const bodyParams = new URLSearchParams();
+        bodyParams.append('from', FROM_EMAIL);
+        bodyParams.append('subject', subject);
+        bodyParams.append('html', batchHtml);
+        bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
+        bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
+        bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+        bodyParams.append('o:tag', 'newsletter');
+        bodyParams.append('o:tracking', 'yes');
+        bodyParams.append('o:tracking-clicks', 'yes');
+        bodyParams.append('o:tracking-opens', 'yes');
+
+        // Adiciona cada destinatário deste lote
+        toEmails.forEach(email => {
+          bodyParams.append('to', email);
+        });
+
+        const resMailgun = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${basicAuth}`,
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: bodyParams
+        });
+
+        if (!resMailgun.ok) {
+          const errText = await resMailgun.text();
+          throw new Error(`Mailgun Batch Error ${resMailgun.status} no lote ${Math.floor(i/CHUNK_SIZE) + 1}: ${errText}`);
+        }
+
+        const resData = await resMailgun.json();
+        lastMessageId = resData.id || 'mailgun-batch-ok';
+        sent += chunk.length;
       }
-
-      const resData = await resMailgun.json();
-      lastMessageId = resData.id || 'mailgun-batch-ok';
-      sent += chunk.length;
     }
 
     // Salvar no Firestore

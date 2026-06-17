@@ -1118,31 +1118,58 @@ export default async function handler(req, res) {
 
       if (isLaunchCampaign && mailgunApiKey) {
         try {
-          const basicAuth = Buffer.from(`api:${mailgunApiKey}`).toString('base64');
-          const fetchRes = await fetch('https://api.mailgun.net/v3/mg.ojonquecortou.com.br/messages', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Basic ${basicAuth}`,
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-              from: '"O Jon Que Cortou" <contato@ojonquecortou.com.br>',
-              to: clientEmail,
-              subject: emailSubject,
-              html: finalHtml
-            })
-          });
-          if (fetchRes.ok) {
-            const resData = await fetchRes.json();
-            messageId = resData.id || 'mailgun-ok';
-            console.log(`E-mail de campanha de lançamento enviado via Mailgun para ${clientEmail}.`);
+          if (mailgunApiKey.startsWith('re_')) {
+            // Enviar via Resend API
+            const fetchRes = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${mailgunApiKey}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                from: '"O Jon Que Cortou" <contato@ojonquecortou.com.br>',
+                to: [clientEmail],
+                subject: emailSubject,
+                html: finalHtml
+              })
+            });
+            if (fetchRes.ok) {
+              const resData = await fetchRes.json();
+              messageId = resData.id || 'resend-ok';
+              console.log(`E-mail de campanha de lançamento enviado via Resend para ${clientEmail}.`);
+            } else {
+              const errMsg = await fetchRes.text();
+              console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}.`);
+              return res.status(500).json({ success: false, error: `Resend error: ${errMsg}` });
+            }
           } else {
-            const errMsg = await fetchRes.text();
-            console.error(`Falha ao enviar via Mailgun para ${clientEmail}: ${errMsg}.`);
-            return res.status(500).json({ success: false, error: `Mailgun error: ${errMsg}` });
+            // Enviar via Mailgun
+            const basicAuth = Buffer.from(`api:${mailgunApiKey}`).toString('base64');
+            const fetchRes = await fetch('https://api.mailgun.net/v3/mg.ojonquecortou.com.br/messages', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Basic ${basicAuth}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: new URLSearchParams({
+                from: '"O Jon Que Cortou" <contato@ojonquecortou.com.br>',
+                to: clientEmail,
+                subject: emailSubject,
+                html: finalHtml
+              })
+            });
+            if (fetchRes.ok) {
+              const resData = await fetchRes.json();
+              messageId = resData.id || 'mailgun-ok';
+              console.log(`E-mail de campanha de lançamento enviado via Mailgun para ${clientEmail}.`);
+            } else {
+              const errMsg = await fetchRes.text();
+              console.error(`Falha ao enviar via Mailgun para ${clientEmail}: ${errMsg}.`);
+              return res.status(500).json({ success: false, error: `Mailgun error: ${errMsg}` });
+            }
           }
         } catch (mailgunErr) {
-          console.error(`Erro ao disparar via Mailgun para ${clientEmail}: ${mailgunErr.message}.`);
+          console.error(`Erro ao disparar via API externa para ${clientEmail}: ${mailgunErr.message}.`);
           return res.status(500).json({ success: false, error: mailgunErr.message });
         }
       } else {
