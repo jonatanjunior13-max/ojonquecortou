@@ -1,10 +1,124 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
-import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight } from 'lucide-react';
+import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
 
+const TRENDING_THEMES = [
+  {
+    id: 'theme_corte_hibrido',
+    title: 'Corte Híbrido',
+    category: 'Corte & Visagismo',
+    description: 'Explica a técnica de cortar molhado para precisão geométrica e lapidar a seco para harmonizar caimento.',
+    keywords: 'corte híbrido, corte de cachos, visagismo, corte a seco'
+  },
+  {
+    id: 'theme_visagismo_cachos',
+    title: 'Visagismo de Cachos',
+    category: 'Corte & Visagismo',
+    description: 'Como planejar o volume do cabelo baseado nas linhas faciais e no estilo de vida da cliente.',
+    keywords: 'visagismo capilar, formato do rosto, volume de cachos, identidade visual'
+  },
+  {
+    id: 'theme_efeito_piramide',
+    title: 'Efeito Pirâmide',
+    category: 'Corte & Visagismo',
+    description: 'Por que o corte reto deixa a raiz sem volume e as pontas largas, e como graduações corrigem isso.',
+    keywords: 'efeito pirâmide, volume nos cachos, corte de cabelo cacheado'
+  },
+  {
+    id: 'theme_fator_encolhimento',
+    title: 'Fator de Encolhimento',
+    category: 'Corte & Visagismo',
+    description: 'Por que o cabelo cacheado parece muito mais curto seco do que molhado, e como o corte prevê isso.',
+    keywords: 'fator de encolhimento, elasticidade capilar, comprimento dos cachos'
+  },
+  {
+    id: 'theme_scab_hair',
+    title: 'Scab Hair na Transição',
+    category: 'Saúde & Tratamento',
+    description: 'O que é a textura áspera e sem definição que nasce logo após parar com químicas de alisamento.',
+    keywords: 'scab hair, transição capilar, saúde do couro cabelo, folículo piloso'
+  },
+  {
+    id: 'theme_porosidade_capilar',
+    title: 'Mapeamento de Porosidade',
+    category: 'Saúde & Tratamento',
+    description: 'Como identificar se o fio tem porosidade alta (perde água fácil) ou baixa (repele hidratação).',
+    keywords: 'porosidade capilar, teste de porosidade, cutículas capilares, hidratação'
+  },
+  {
+    id: 'theme_acidificacao_capilar',
+    title: 'Acidificação para Brilho',
+    category: 'Saúde & Tratamento',
+    description: 'Como reequilibrar o pH do cabelo para selar cutículas e reter água em fios ressecados ou descoloridos.',
+    keywords: 'acidificação capilar, pH do cabelo, selamento de cutículas, porosidade alta'
+  },
+  {
+    id: 'theme_cronograma_real',
+    title: 'Cronograma Capilar Técnico',
+    category: 'Saúde & Tratamento',
+    description: 'Por que cachos precisam mais de nutrição com óleos do que de hidratação com cremes puros de água.',
+    keywords: 'cronograma capilar, nutrição capilar, óleos vegetais, umectação'
+  },
+  {
+    id: 'theme_big_chop_progressivo',
+    title: 'Big Chop Progressivo',
+    category: 'Transição Capilar',
+    description: 'Como cortar partes alisadas aos poucos de forma confortável, sem recorrer ao corte radical de uma vez.',
+    keywords: 'big chop, transição capilar, corte de transição, corte para cachos'
+  },
+  {
+    id: 'theme_diferenca_texturas',
+    title: 'Duas Texturas na Transição',
+    category: 'Transição Capilar',
+    description: 'Como gerenciar a raiz natural volumosa e o comprimento alisado sem danificar o fio novo.',
+    keywords: 'transição capilar, duas texturas, crescimento capilar, recuperação de cachos'
+  },
+  {
+    id: 'theme_texturizacao_mecanica',
+    title: 'Texturização Mecânica',
+    category: 'Transição Capilar',
+    description: 'Técnicas de estilização sem calor (como dedoliss, fitagem e coquinhos) para disfarçar o alisamento.',
+    keywords: 'texturização capilar, fitagem, dedoliss, transição capilar sem chapinha'
+  },
+  {
+    id: 'theme_touca_cetim',
+    title: 'Benefícios do Cetim',
+    category: 'Finalização & Cuidados',
+    description: 'Por que usar touca ou fronha de cetim evita o atrito noturno, reduzindo frizz e preservando o corte.',
+    keywords: 'touca de cetim, day after, frizz noturno, cuidados com cachos'
+  },
+  {
+    id: 'theme_day_after_duradouro',
+    title: 'Segredo do Day After',
+    category: 'Finalização & Cuidados',
+    description: 'Como fazer a definição dos cachos durar 2 ou mais dias sem precisar lavar ou finalizar de novo.',
+    keywords: 'day after, finalização de cachos, definição duradoura, cuidados diários'
+  },
+  {
+    id: 'theme_finalizacao_express',
+    title: 'Finalização Express de 5min',
+    category: 'Finalização & Cuidados',
+    description: 'Um guia prático de finalização simples sob o chuveiro para quem não tem tempo a perder.',
+    keywords: 'finalização rápida, cuidados diários, praticidade capilar, finalizar cachos'
+  },
+  {
+    id: 'theme_mitos_oleo_coco',
+    title: 'Mitos do Óleo de Coco',
+    category: 'Mitos & Verdades',
+    description: 'O risco de usar óleos puros em excesso que criam uma película impermeável e ressecam o fio por dentro.',
+    keywords: 'óleo de coco, umectação capilar, mitos de cabelo, saúde do fio'
+  },
+  {
+    id: 'theme_gelatina_vs_gel',
+    title: 'Gelatina vs Gel',
+    category: 'Mitos & Verdades',
+    description: 'A diferença entre a fixação suave e maleável das gelatinas e a estrutura firme do gel para finalização.',
+    keywords: 'gelatina capilar, gel finalizador, fixação de cachos, definição de ondas'
+  }
+];
 
 const EMAIL_PREVIEWS = {
   seqD1: { subject: '{nome}, como tá o fio hoje?', body: HTML_TEMPLATES['d1'] },
@@ -598,6 +712,8 @@ Use as seguintes tags no "bodyHtml":
   ]);
   const [isGeneratingGbpPost, setIsGeneratingGbpPost] = useState(false);
   const [generatedGbpPost, setGeneratedGbpPost] = useState(null);
+  const [themeSearchQuery, setThemeSearchQuery] = useState('');
+  const [selectedThemeCategory, setSelectedThemeCategory] = useState('Todos');
   
   // Frequency scheduler (multiple days)
   const selectedPostingDays = settings?.automations?.google_posting_days || ['segunda'];
@@ -706,14 +822,29 @@ Use as seguintes tags no "bodyHtml":
     }
   };
 
-  const handleGenerateGbpPost = async () => {
+  const handleGenerateGbpPost = async (specificTheme = null) => {
     setIsGeneratingGbpPost(true);
 
-    const generateDynamicFallbackPost = () => {
+    const generateDynamicFallbackPost = (theme = null) => {
+      if (theme) {
+        const hooks = [
+          `Vamos falar sobre ${theme.title}? 💡`,
+          `${theme.title}: por que isso importa para o seu cacho? ✂️`,
+          `Entenda o impacto de: ${theme.title} 🌀`,
+          `O segredo por trás de: ${theme.title} ✨`
+        ];
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const imagePrompt = `${theme.keywords}, gorgeous curly hair, professional salon, realistic`;
+        const randomSeed = Math.floor(Math.random() * 1000000);
+        const image = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=800&height=600&nologo=true&seed=${randomSeed}`;
+        const text = `${pick(hooks)}\n\n${theme.description}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
+        return { text, image };
+      }
+
       const hooks = [
         'Seu fio tem memória — você sabia? 💡',
         'Corte a seco: por que faz toda a diferença? ✂️',
-        'Cachos e crespos não são iguais. Sabia disso? 🤷♀️',
+        'Cachos e crespos não são iguais. Sabia disso? 🤷‍♀️',
         'Frizz: textura natural ou sinal de dano? 🔍',
         'Qual é o segredo de um cacho bem definido? 🌀',
         'A curvatura do seu fio diz muito sobre o corte ideal! ✨',
@@ -727,10 +858,10 @@ Use as seguintes tags no "bodyHtml":
 
       const bodies = [
         'No Studio do Jon, cada atendimento começa com a leitura de fio — uma análise da estrutura, porosidade e curvatura antes de qualquer tesoura. Isso garante que o corte potencialize o que o seu cabelo já tem de melhor.',
-        'O corte a seco é a técnica que reveals o verdadeiro comportamento do fio. Sem água, vemos como cada mecha cai, onde há volume em excesso e onde falta definição. O resultado é um caimento natural e duradouro.',
+        'O corte a seco é a técnica que revela o verdadeiro comportamento do fio. Sem água, vemos como cada mecha cai, onde há volume em excesso e onde falta definição. O resultado é um caimento natural e duradouro.',
         'Cacheados e crespos têm necessidades completamente diferentes. Por isso, nosso método é personalizado: analisamos sua curvatura, porosidade e histórico de química antes de começar.',
         'Frizz nem sempre é ressecamento — muitas vezes é a textura natural do fio pedindo liberdade. Aprenda a finalizá-lo corretamente no seu atendimento de visagismo no Studio do Jon.',
-        'Visagismo vai muito além do rosto. Levamos em conta volume, comprimento e a forma como seu cabelo cresce para criar um resultado que valorize você como um todo.',
+        'Visagismo vai muito além do rosto. Levamos em conta volume, comprimento e a forma como seu cabelo cresce para criar um resultado que valorize você como um tempo.',
         'A transição capilar é uma jornada. Com o corte certo, você acelera o processo, elimina pontas com química e começa a ver seus cachos naturais florescerem mais rápido.',
         'Cronograma capilar, porosidade e pH: entender seu fio não é complicado quando você tem o parceiro certo. No Studio do Jon, cada cliente recebe uma orientação de rotina personalizada.',
         'Embaraço, volume excessivo e perda de definição são sinais de que seu fio precisa de uma abordagem especializada. O corte a seco resolve na raiz — literalmente!',
@@ -766,6 +897,43 @@ Use as seguintes tags no "bodyHtml":
 
     if (apiKey) {
       try {
+        let promptText = '';
+        if (specificTheme) {
+          promptText = `Você é um Psicólogo de Consumo, Especialista em Persuasão e Redator Estratégico de Elite para "O Jon Que Cortou" (@ojonquecortou), salão especializado em curvaturas (cachos, crespos e ondulados) em Belo Horizonte.
+
+Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara) focado especificamente no seguinte tema:
+Título do Tema: "${specificTheme.title}"
+Descrição do Tema: "${specificTheme.description}"
+Palavras-chave do Tema: "${specificTheme.keywords}"
+
+Escreva sobre esse tema específico de forma lógica e técnica (use o tom de voz do Jon: direto, sem clichês de marketing genérico). Convide a agendar e inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.
+
+Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
+{
+  "text": "o texto do post em português",
+  "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"
+}`;
+        } else {
+          promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara).
+
+Para variar o tema, escolha aleatoriamente UM dos tópicos abaixo para focar o post (evite falar de frizz, a menos que o tema 7 seja sorteado):
+1. Método Leitura de Fio: O diagnóstico clínico-estético em 7 etapas antes de cortar.
+2. Corte Híbrido: O equilíbrio de cortar molhado para precisão e lapidar a seco para caimento natural.
+3. Visagismo para Cachos: Como planejar o corte baseado no formato de rosto e distribuição do volume.
+4. Transição Capilar: Como cortes progressivos ajudam a eliminar a química sem radicalismo imediato.
+5. Praticidade na finalização: Dicas para cuidar dos cachos no dia a dia em menos de 5 minutos.
+6. Cabelos Crespos e Crespíssimos (Tipos 4A-4C): Valorização do volume e caimento natural sem uso abusivo de máquina.
+7. Porosidade e Frizz: Entender as necessidades de água e óleos no clima de Belo Horizonte.
+
+Escreva sobre o tema escolhido de forma lógica e técnica (use o tom de voz do Jon: direto, sem clichês de marketing genérico). Convide a agendar e inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.
+
+Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
+{
+  "text": "o texto do post em português",
+  "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"
+}`;
+        }
+
         const response = await fetch(
           `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
           {
@@ -774,7 +942,7 @@ Use as seguintes tags no "bodyHtml":
             body: JSON.stringify({
               contents: [{
                 parts: [{
-                  text: 'Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cabelos cacheados e crespos em Belo Horizonte, no bairro Caiçara).\n\nPara variar o tema, escolha aleatoriamente UM dos tópicos abaixo para focar o post (evite falar de frizz, a menos que o tema 7 seja sorteado):\n1. Método Leitura de Fio: O diagnóstico clínico-estético em 7 etapas antes de cortar.\n2. Corte Híbrido: O equilíbrio de cortar molhado para precisão e lapidar a seco para caimento natural.\n3. Visagismo para Cachos: Como planejar o corte baseado no formato de rosto e distribuição do volume.\n4. Transição Capilar: Como cortes progressivos ajudam a eliminar a química sem radicalismo imediato.\n5. Praticidade na finalização: Dicas para cuidar dos cachos no dia a dia em menos de 5 minutos.\n6. Cabelos Crespos e Crespíssimos (Tipos 4A-4C): Valorização do volume e caimento natural sem uso abusivo de máquina.\n7. Porosidade e Frizz: Entender as necessidades de água e óleos no clima de Belo Horizonte.\n\nEscreva sobre o tema escolhido de forma lógica e técnica (use o tom de voz do Jon: direto, sem clichês de marketing genérico). Convide a agendar e inclua o link www.ojonquecortou.com.br. Não invente promoções ou descontos.\n\nVocê deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:\n{\n  "text": "o texto do post em português",\n  "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"\n}'
+                  text: promptText
                 }]
               }],
               generationConfig: {
@@ -812,9 +980,14 @@ Use as seguintes tags no "bodyHtml":
 
     // Fallback dinâmico — sempre gera variação nova
     setTimeout(() => {
-      setGeneratedGbpPost(generateDynamicFallbackPost());
+      setGeneratedGbpPost(generateDynamicFallbackPost(specificTheme));
       setIsGeneratingGbpPost(false);
     }, 800);
+  };
+
+  const handleGenerateGbpPostForTheme = (theme) => {
+    handleGenerateGbpPost(theme);
+    window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
   const handleScheduleGbpPost = () => {
@@ -2452,6 +2625,109 @@ Use as seguintes tags no "bodyHtml":
                     </div>
                   </div>
 
+                </div>
+              </div>
+
+              {/* 📚 Biblioteca de Temas em Alta (Cabelo Natural) */}
+              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)', marginTop: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <BookOpen size={20} style={{ color: 'var(--adm-gold)' }} />
+                    <h4 style={{ margin: 0 }}>📚 Biblioteca de Temas em Alta (Cabelo Natural)</h4>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                    <div style={{ position: 'relative', minWidth: '220px' }}>
+                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
+                      <input
+                        type="text"
+                        placeholder="Buscar tema..."
+                        value={themeSearchQuery}
+                        onChange={(e) => setThemeSearchQuery(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '6px 12px 6px 30px',
+                          borderRadius: '4px',
+                          border: '1px solid var(--adm-rule)',
+                          background: 'var(--sidebar-bg)',
+                          color: 'var(--adm-text)',
+                          fontSize: '0.82rem'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: '16px' }}>
+                  Selecione um tema em alta de curvatura abaixo e gere um post direcionado para o Google Business Profile (GBP). O Gemini escreverá um post focado no assunto usando o tom técnico e autêntico do Jon.
+                </p>
+
+                {/* Category Tabs */}
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px', borderBottom: '1px solid var(--adm-rule)', paddingBottom: '12px' }}>
+                  {['Todos', 'Corte & Visagismo', 'Saúde & Tratamento', 'Transição Capilar', 'Finalização & Cuidados', 'Mitos & Verdades'].map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedThemeCategory(cat)}
+                      className={`btn ${selectedThemeCategory === cat ? 'btn-accent' : 'btn-outline'} btn-small`}
+                      style={{ fontSize: '0.75rem', padding: '4px 12px' }}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Filter and display Themes */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px', maxHeight: '450px', overflowY: 'auto', paddingRight: '4px' }}>
+                  {(() => {
+                    const filtered = TRENDING_THEMES.filter(theme => {
+                      const matchesCategory = selectedThemeCategory === 'Todos' || theme.category === selectedThemeCategory;
+                      const matchesSearch = theme.title.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
+                        theme.description.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
+                        theme.keywords.toLowerCase().includes(themeSearchQuery.toLowerCase());
+                      return matchesCategory && matchesSearch;
+                    });
+
+                    if (filtered.length === 0) {
+                      return <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--adm-muted)', fontSize: '0.85rem', padding: '24px' }}>Nenhum tema encontrado.</p>;
+                    }
+
+                    return filtered.map(theme => (
+                      <div
+                        key={theme.id}
+                        style={{
+                          padding: '14px',
+                          background: 'var(--sidebar-bg)',
+                          borderRadius: '6px',
+                          border: '1px solid var(--adm-rule)',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'space-between',
+                          gap: '12px',
+                          transition: 'transform 0.2s ease, border-color 0.2s ease'
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                            <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px', background: 'rgba(176,90,46,0.15)', color: 'var(--adm-gold)', fontWeight: 600 }}>
+                              {theme.category}
+                            </span>
+                          </div>
+                          <h5 style={{ margin: '0 0 6px 0', fontSize: '0.9rem', fontWeight: 700, color: 'var(--adm-text)' }}>{theme.title}</h5>
+                          <p style={{ margin: '0 0 8px 0', fontSize: '0.8rem', color: 'var(--adm-muted)', lineHeight: '1.4' }}>{theme.description}</p>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
+                            <strong>Tags:</strong> {theme.keywords}
+                          </div>
+                        </div>
+                        <button
+                          className="btn btn-accent btn-small"
+                          style={{ width: '100%', fontSize: '0.75rem', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+                          onClick={() => handleGenerateGbpPostForTheme(theme)}
+                          disabled={isGeneratingGbpPost}
+                        >
+                          <Sparkles size={12} /> {isGeneratingGbpPost ? 'Gerando...' : 'Gerar Post c/ IA'}
+                        </button>
+                      </div>
+                    ));
+                  })()}
                 </div>
               </div>
 
