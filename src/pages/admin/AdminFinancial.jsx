@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, doc, addDoc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -24,6 +24,14 @@ const AdminFinancial = () => {
   const { globalData, setGlobalData } = useOutletContext();
 
   const [activeSubTab, setActiveSubTab] = useState('dashboard'); // 'dashboard', 'fluxo', 'comissao', 'taxas'
+  const [fixedCosts, setFixedCosts] = useState(3500);
+  const [proLabore, setProLabore] = useState(5000);
+  const [workDays, setWorkDays] = useState(22);
+  const [workHours, setWorkHours] = useState(8);
+  const [serviceDuration, setServiceDuration] = useState(60);
+  const [productCostInput, setProductCostInput] = useState(15);
+  const [markup, setMarkup] = useState(40);
+  const [feesTaxPercentage, setFeesTaxPercentage] = useState(10);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showProductSaleModal, setShowProductSaleModal] = useState(false);
   const [showDatePickerDropdown, setShowDatePickerDropdown] = useState(false);
@@ -1075,6 +1083,7 @@ const AdminFinancial = () => {
           { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
           { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
           { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
+          { id: 'precificacao', label: 'Precificação', icon: <DollarSign size={14} /> },
         ].map(tab => (
           <button
             key={tab.id}
@@ -2004,6 +2013,221 @@ const AdminFinancial = () => {
           </div>
         );
       })()}
+
+      {activeSubTab === 'precificacao' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* Calculadoras */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20 }}>
+            {/* Calculadora 1: Custo por Hora */}
+            <Card>
+              <h3 style={{ margin: '0 0 16px 0', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                💰 Simulador de Custo-Hora (A Hora-Salão)
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Custo Fixo Mensal (R$)</label>
+                  <input
+                    type="number"
+                    value={fixedCosts}
+                    onChange={(e) => setFixedCosts(Number(e.target.value))}
+                    style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                  />
+                  <span style={{ fontSize: '0.65rem', color: 'var(--adm-muted)' }}>Soma de aluguel, luz, sistemas, água, etc.</span>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Pró-labore Desejado (R$)</label>
+                  <input
+                    type="number"
+                    value={proLabore}
+                    onChange={(e) => setProLabore(Number(e.target.value))}
+                    style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                  />
+                  <span style={{ fontSize: '0.65rem', color: 'var(--adm-muted)' }}>Seu salário fixo de gestor/profissional.</span>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Dias Úteis/Mês</label>
+                    <input
+                      type="number"
+                      value={workDays}
+                      onChange={(e) => setWorkDays(Number(e.target.value))}
+                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Horas Abertas/Dia</label>
+                    <input
+                      type="number"
+                      value={workHours}
+                      onChange={(e) => setWorkHours(Number(e.target.value))}
+                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                  </div>
+                </div>
+                
+                <div style={{ marginTop: 16, padding: 12, background: 'rgba(220,163,84,0.06)', borderRadius: 8, border: '0.5px solid var(--adm-rule-gold)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)' }}>Custo por Hora da Cadeira:</span>
+                    <strong style={{ color: 'var(--adm-gold)' }}>R$ {((fixedCosts + proLabore) / (workDays * workHours || 1)).toFixed(2).replace('.', ',')}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)' }}>Custo por Minuto de Cadeira:</span>
+                    <strong style={{ color: 'var(--adm-gold)' }}>R$ {(((fixedCosts + proLabore) / (workDays * workHours || 1)) / 60).toFixed(4).replace('.', ',')}</strong>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Calculadora 2: Precificação de Serviço */}
+            <Card>
+              <h3 style={{ margin: '0 0 16px 0', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                ✂️ Simulador de Preço de Venda
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Tempo do Serviço (min)</label>
+                    <input
+                      type="number"
+                      value={serviceDuration}
+                      onChange={(e) => setServiceDuration(Number(e.target.value))}
+                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Custo Insumos (R$)</label>
+                    <input
+                      type="number"
+                      value={productCostInput}
+                      onChange={(e) => setProductCostInput(Number(e.target.value))}
+                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Margem de Lucro (%)</label>
+                    <input
+                      type="number"
+                      value={markup}
+                      onChange={(e) => setMarkup(Number(e.target.value))}
+                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)' }}>Impostos & Taxas (%)</label>
+                    <input
+                      type="number"
+                      value={feesTaxPercentage}
+                      onChange={(e) => setFeesTaxPercentage(Number(e.target.value))}
+                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                  </div>
+                </div>
+
+                {(() => {
+                  const hourCost = (fixedCosts + proLabore) / (workDays * workHours || 1);
+                  const minCost = hourCost / 60;
+                  const serviceTimeCost = serviceDuration * minCost;
+                  const totalPercent = 1 - (markup / 100) - (feesTaxPercentage / 100);
+                  const finalPrice = totalPercent > 0.05 ? (serviceTimeCost + productCostInput) / totalPercent : 0;
+                  const taxValue = finalPrice * (feesTaxPercentage / 100);
+                  const netProfit = finalPrice * (markup / 100);
+                  
+                  return (
+                    <div style={{ marginTop: 12, padding: 12, background: 'rgba(56,161,105,0.06)', borderRadius: 8, border: '0.5px solid var(--adm-rule-success)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)' }}>Custo de Cadeira do Serviço:</span>
+                        <span>R$ {serviceTimeCost.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)' }}>Custo de Insumo + Perdas:</span>
+                        <span>R$ {productCostInput.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)' }}>Impostos e Taxas (DAS/Cartão):</span>
+                        <span>R$ {taxValue.toFixed(2).replace('.', ',')}</span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '0.5px solid var(--adm-rule)', paddingTop: 8, marginTop: 8 }}>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>Preço Mínimo Sugerido:</span>
+                        <strong style={{ color: 'var(--adm-success)', fontSize: '1.1rem' }}>
+                          {finalPrice > 0 ? `R$ ${finalPrice.toFixed(2).replace('.', ',')}` : 'Erro na margem'}
+                        </strong>
+                      </div>
+                      {finalPrice > 0 && (
+                        <div style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', textAlign: 'right', marginTop: 4 }}>
+                          Garante R$ {netProfit.toFixed(2).replace('.', ',')} de Lucro Líquido Real ({markup}%)
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </Card>
+          </div>
+
+          {/* Guia Prático */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <h3 style={{ margin: '12px 0 0 0', color: '#fff', fontSize: '1.1rem', fontWeight: 700 }}>
+              📘 O que Não Pode Faltar de Dados (Por Categoria)
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+              <Card>
+                <h4 style={{ color: 'var(--adm-gold)', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 700 }}>
+                  📋 Sobre os Serviços
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: 16, fontSize: '0.8rem', color: 'var(--adm-text-2)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <li><strong>Tempo de Execução Real:</strong> Quantos minutos ou horas o serviço realmente leva (do diagnóstico à finalização). Tempo é dinheiro.</li>
+                  <li><strong>Mão de Obra Qualificada:</strong> Serviços complexos (como Leitura de Fio, cortes técnicos ou colorimetria avançada) embutem o valor do conhecimento, não apenas o tempo.</li>
+                  <li><strong>Capacidade de Atendimento:</strong> Quantos desses services você consegue realizar por dia mantendo o padrão de qualidade do estúdio.</li>
+                </ul>
+              </Card>
+
+              <Card>
+                <h4 style={{ color: 'var(--adm-gold)', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 700 }}>
+                  🧪 Sobre os Produtos (Uso Técnico)
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: 16, fontSize: '0.8rem', color: 'var(--adm-text-2)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <li><strong>Custo por Grama/Mililitro (g/ml):</strong> Saiba o custo exato da dose utilizada. Ex: Se 1L de shampoo custa R$ 100 e usa 10ml, o custo é R$ 1,00.</li>
+                  <li><strong>Desperdício Estimado:</strong> Margem de segurança de 5% a 10% para cobrir o produto residual nos pincéis, cumbucas ou lavagem de acessórios.</li>
+                </ul>
+              </Card>
+
+              <Card>
+                <h4 style={{ color: 'var(--adm-gold)', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 700 }}>
+                  💆‍♀️ Sobre os Tratamentos (Terapia / Cronograma)
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: 16, fontSize: '0.8rem', color: 'var(--adm-text-2)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <li><strong>Custo dos Ativos e Tecnologia:</strong> Acidificantes, reconstrutores biotecnológicos e óleos vegetais puros têm custo de insumo diferenciado.</li>
+                  <li><strong>Frequência e Rentabilidade do Kit:</strong> Rendimento do kit profissional e intervalo ideal que o cliente precisa retornar (ajuda a prever receita recorrente).</li>
+                  <li><strong>Equipamentos Associados:</strong> Depreciação e energia de vapor de ozônio, laser ou climazon devem ser diluídos na conta do serviço.</li>
+                </ul>
+              </Card>
+
+              <Card>
+                <h4 style={{ color: 'var(--adm-gold)', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: 700 }}>
+                  👤 Sobre os Clientes (Ficha Anamnese)
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: 16, fontSize: '0.8rem', color: 'var(--adm-text-2)', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <li><strong>Histórico e Características do Fio:</strong> Textura/curvatura, densidade, porosidade e espessura. Alta densidade e porosidade consome o triplo de produto e tempo.</li>
+                  <li><strong>Histórico Químico e Transição:</strong> Procedimentos anteriores ditam o risco, cuidado extra e complexidade técnica da aplicação.</li>
+                  <li><strong>Frequência de Retorno (LTV):</strong> Recorrência reduz custo de marketing. Clientes fiéis gastam mais e custam menos para reter.</li>
+                </ul>
+              </Card>
+            </div>
+
+            <div style={{ background: 'rgba(220,163,84,0.08)', border: '1px solid rgba(220,163,84,0.2)', padding: '16px 20px', borderRadius: 8, marginTop: 8 }}>
+              <h4 style={{ color: 'var(--adm-gold)', margin: '0 0 6px 0', fontSize: '0.95rem', fontWeight: 800 }}>
+                💡 Dica de Ouro
+              </h4>
+              <p style={{ margin: 0, fontSize: '0.82rem', color: 'var(--adm-text)', lineHeight: 1.5 }}>
+                O erro mais comum é calcular o preço pensando apenas no produto gasto. O que mais pesa na precificação de um salão de beleza é o <strong>tempo de cadeira ocupada</strong> e o seu <strong>grau de especialização</strong>. Se o seu serviço entrega um diagnóstico personalizado (como a Leitura de Fio) que resolve a dor do cliente, o valor percebido vai muito além do custo do produto físico!
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* MODAL: REGISTRAR VENDA DE PRODUTO */}
       {showProductSaleModal && (
