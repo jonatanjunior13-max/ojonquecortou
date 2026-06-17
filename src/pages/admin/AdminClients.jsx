@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db, auth, withTimeout } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload, ChevronLeft } from 'lucide-react';
@@ -304,24 +304,48 @@ const AdminClients = () => {
     e.preventDefault();
     setSaving(true);
 
-    const clientObj = clients.find(c => c.phone === selectedClientPhone);
+    const cleanNewPhone = (hairProfile.phone || '').replace(/\D/g, '');
+    if (!cleanNewPhone) {
+      alert('Telefone inválido.');
+      setSaving(false);
+      return;
+    }
+
     const updatedProfile = {
       ...hairProfile,
-      phone: selectedClientPhone
+      phone: cleanNewPhone
     };
 
     try {
       if (isDemoMode || !db) {
         // Modo local
-        const updatedList = profiles.filter(p => p.phone !== selectedClientPhone);
+        let updatedList = [...profiles];
+        if (cleanNewPhone !== selectedClientPhone) {
+          updatedList = updatedList.filter(p => p.phone !== selectedClientPhone);
+        }
+        updatedList = updatedList.filter(p => p.phone !== cleanNewPhone);
         updatedList.push(updatedProfile);
         setProfiles(updatedList);
         localStorage.setItem('demo_client_profiles', JSON.stringify(updatedList));
+        setSelectedClientPhone(cleanNewPhone);
         alert('Ficha capilar atualizada localmente.');
       } else {
-        const docRef = doc(db, 'client_profiles', selectedClientPhone);
-        await setDoc(docRef, updatedProfile);
-        alert('Ficha capilar salva com sucesso no Firestore!');
+        if (cleanNewPhone !== selectedClientPhone) {
+          const batch = writeBatch(db);
+          const newDocRef = doc(db, 'client_profiles', cleanNewPhone);
+          const oldDocRef = doc(db, 'client_profiles', selectedClientPhone);
+          
+          batch.set(newDocRef, updatedProfile);
+          batch.delete(oldDocRef);
+          await batch.commit();
+          
+          setSelectedClientPhone(cleanNewPhone);
+          alert('Ficha capilar salva e telefone atualizado com sucesso no Firestore!');
+        } else {
+          const docRef = doc(db, 'client_profiles', selectedClientPhone);
+          await setDoc(docRef, updatedProfile);
+          alert('Ficha capilar salva com sucesso no Firestore!');
+        }
       }
     } catch (err) {
       console.error('Erro ao salvar ficha:', err);
@@ -821,9 +845,12 @@ const AdminClients = () => {
 
   const selectedClient = clients.find(c => c.phone === selectedClientPhone);
 
+  const todayStr = new Date().toISOString().split('T')[0];
   const clientVisits = bookings
     .filter(b => b.clientPhone === selectedClientPhone)
     .sort((a, b) => new Date(b.date) - new Date(a.date));
+  const futureBookings = clientVisits.filter(b => b.date >= todayStr && b.status !== 'cancelado' && b.status !== 'finalizado');
+  const pastVisits = clientVisits.filter(b => b.date < todayStr || b.status === 'finalizado');
 
   const uniqueServices = Array.from(
     new Set(bookings.map(b => b.service?.name || b.serviceName).filter(Boolean))
@@ -982,12 +1009,12 @@ const AdminClients = () => {
                           />
                         </div>
                         <div className="form-group-sleek">
-                          <label>WhatsApp (Não Editável)</label>
+                          <label>WhatsApp / Telefone</label>
                           <input 
                             type="text"
-                            value={hairProfile.phone || selectedClientPhone}
-                            disabled
-                            style={{ opacity: 0.6, cursor: 'not-allowed' }}
+                            required
+                            value={hairProfile.phone || ''}
+                            onChange={e => setHairProfile(prev => ({ ...prev, phone: e.target.value }))}
                           />
                         </div>
                       </div>
@@ -1097,14 +1124,43 @@ const AdminClients = () => {
                       </div>
                     </form>
 
-                    {/* Histórico do Cliente */}
-                    <div className="detail-visits-history">
-                      <h3>Visitas Anteriores ({clientVisits.length})</h3>
-                      {clientVisits.length === 0 ? (
-                        <p className="no-visits-txt">Sem visitas cadastradas no salão para esta cliente.</p>
+                    {/* Agendamentos Futuros */}
+                    <div className="detail-visits-history" style={{ marginBottom: '24px' }}>
+                      <h3>Agendamentos Futuros ({futureBookings.length})</h3>
+                      {futureBookings.length === 0 ? (
+                        <p className="no-visits-txt">Nenhum agendamento futuro marcado.</p>
                       ) : (
                         <div className="visits-mini-timeline">
-                          {clientVisits.map(v => (
+                          {futureBookings.map(v => (
+                            <div key={v.id} className="visit-mini-card">
+                              <div className="card-top-row">
+                                <span className="visit-date">
+                                  <Calendar size={12} style={{ marginRight: 4 }} />{' '}
+                                  {new Date(v.date).toLocaleDateString('pt-BR')} às {v.time}
+                                </span>
+                                <span className={`status-pill ${v.status}`}>{v.status}</span>
+                              </div>
+                              <div className="visit-detail-service">
+                                {v.service?.name || v.serviceName}{' '}
+                                <span className="price-tag">
+                                  (R$ {Number(v.service?.price || v.servicePrice || 0).toFixed(2)})
+                                </span>
+                              </div>
+                              {v.notes && <p className="visit-note-snippet">Nota: "{v.notes}"</p>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Histórico do Cliente */}
+                    <div className="detail-visits-history">
+                      <h3>Visitas Anteriores ({pastVisits.length})</h3>
+                      {pastVisits.length === 0 ? (
+                        <p className="no-visits-txt">Sem visitas anteriores cadastradas no salão para esta cliente.</p>
+                      ) : (
+                        <div className="visits-mini-timeline">
+                          {pastVisits.map(v => (
                             <div key={v.id} className="visit-mini-card">
                               <div className="card-top-row">
                                 <span className="visit-date">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import {
-  collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc
+  collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc, writeBatch
 } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import { getEffectiveAbsences, getAbsenceForSlot } from '../../utils/absences';
@@ -315,6 +315,21 @@ export default function AdminMobileApp() {
   const [showClientSheet, setShowClientSheet] = useState(false);
   const [showNewClientSheet, setShowNewClientSheet] = useState(false);
   const [newClientForm, setNewClientForm] = useState({ name:'', phone:'', email:'', curvatura:'3A', observacoes:'' });
+  const [isEditingClient, setIsEditingClient] = useState(false);
+  const [editingClientData, setEditingClientData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    curvatura: '3A',
+    porosidade: 'Média',
+    elasticidade: 'Normal',
+    quimicas: 'Nenhuma',
+    produtosRecomendados: '',
+    observacoes: '',
+    sexo: 'Feminino',
+    birthdate: ''
+  });
+  const [savingClientMobile, setSavingClientMobile] = useState(false);
 
   // ── Finance ────────────────────────────────────────────────────
   const [financeTab, setFinanceTab] = useState('dashboard');
@@ -1443,6 +1458,61 @@ Grande abraço, Jon.`;
       showToast('Foto removida', 'info');
     } catch (err) {
       showToast('Erro ao remover: ' + err.message, 'error');
+    }
+  };
+
+  // ── Save Client Mobile ─────────────────────────────────────────
+  const handleSaveClientMobile = async () => {
+    if (!editingClientData.name) { showToast('Nome é obrigatório', 'error'); return; }
+    const cleanNewPhone = (editingClientData.phone || '').replace(/\D/g, '');
+    if (!cleanNewPhone) { showToast('Telefone é obrigatório', 'error'); return; }
+
+    setSavingClientMobile(true);
+    const updatedProfile = {
+      ...editingClientData,
+      phone: cleanNewPhone
+    };
+
+    try {
+      if (!db) {
+        // Modo local
+        let localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        if (cleanNewPhone !== selectedClient.phone) {
+          localClients = localClients.filter(p => p.phone !== selectedClient.phone);
+        }
+        localClients = localClients.filter(p => p.phone !== cleanNewPhone);
+        localClients.push(updatedProfile);
+        localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+        setClients(localClients.map(d => ({ id: d.phone, phone: d.phone, ...d })));
+        setSelectedClient({ id: cleanNewPhone, phone: cleanNewPhone, ...updatedProfile });
+        setIsEditingClient(false);
+        showToast('Ficha atualizada localmente', 'success');
+      } else {
+        if (cleanNewPhone !== selectedClient.phone) {
+          const batch = writeBatch(db);
+          const newDocRef = doc(db, 'client_profiles', cleanNewPhone);
+          const oldDocRef = doc(db, 'client_profiles', selectedClient.phone);
+          
+          batch.set(newDocRef, updatedProfile);
+          batch.delete(oldDocRef);
+          await batch.commit();
+          
+          setSelectedClient({ id: cleanNewPhone, phone: cleanNewPhone, ...updatedProfile });
+          setIsEditingClient(false);
+          showToast('Cliente atualizado com sucesso!', 'success');
+        } else {
+          const docRef = doc(db, 'client_profiles', selectedClient.phone);
+          await setDoc(docRef, updatedProfile);
+          setSelectedClient({ id: selectedClient.phone, phone: selectedClient.phone, ...updatedProfile });
+          setIsEditingClient(false);
+          showToast('Cliente atualizado com sucesso!', 'success');
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao salvar cliente no mobile:', err);
+      showToast('Erro ao salvar: ' + err.message, 'error');
+    } finally {
+      setSavingClientMobile(false);
     }
   };
 
@@ -3660,9 +3730,12 @@ Grande abraço, Jon.`;
     if (!showClientSheet || !selectedClient) return null;
     const c = selectedClient;
     const visits = bookings.filter(b => (b.clientPhone && b.clientPhone === c.phone) || b.clientName === c.name).sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+    const todayStr = new Date().toISOString().split('T')[0];
+    const futureBookings = visits.filter(b => b.date >= todayStr && b.status !== 'cancelado' && b.status !== 'finalizado');
+    const pastVisits = visits.filter(b => b.date < todayStr || b.status === 'finalizado');
 
     return (
-      <div className="m-overlay" onClick={() => setShowClientSheet(false)}>
+      <div className="m-overlay" onClick={() => { setShowClientSheet(false); setIsEditingClient(false); }}>
         <div className="m-sheet" onClick={e => e.stopPropagation()}>
           <div className="m-sheet-handle"/>
           <div className="m-sheet-header">
@@ -3673,63 +3746,171 @@ Grande abraço, Jon.`;
                 {c.curvatura && <div style={{ fontSize:'0.7rem', color:'var(--m-muted)', marginTop:2 }}>Cachos {c.curvatura}</div>}
               </div>
             </div>
-            <button onClick={() => setShowClientSheet(false)} className="m-icon-btn"><X size={18}/></button>
+            <button onClick={() => { setShowClientSheet(false); setIsEditingClient(false); }} className="m-icon-btn"><X size={18}/></button>
           </div>
-          <div className="m-sheet-body">
-            {/* Info */}
-            <div style={{ background:'var(--m-card)', borderRadius:'var(--m-radius)', padding:'14px' }}>
-              {[
-                { label:'Telefone', val: c.phone || '—' },
-                { label:'E-mail', val: c.email || '—' },
-                { label:'Curvatura', val: c.curvatura || '—' },
-                { label:'Porosidade', val: c.porosidade || '—' },
-                c.observacoes ? { label:'Observações', val: c.observacoes } : null
-              ].filter(Boolean).map((row, i) => (
-                <div key={i} className="m-info-row">
-                  <span className="m-info-label">{row.label}</span>
-                  <span className="m-info-value" style={{ fontSize:'0.78rem', maxWidth:'55%', textAlign:'right', wordBreak:'break-word' }}>{row.val}</span>
-                </div>
-              ))}
+          {isEditingClient ? (
+            <div className="m-sheet-body" style={{ display:'flex', flexDirection:'column', gap:12, maxHeight:'70vh', overflowY:'auto' }}>
+              <div className="m-field">
+                <label className="m-label">Nome Completo *</label>
+                <input className="m-input" type="text" value={editingClientData.name} onChange={e => setEditingClientData(p => ({ ...p, name: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Telefone *</label>
+                <input className="m-input" type="text" value={editingClientData.phone} onChange={e => setEditingClientData(p => ({ ...p, phone: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">E-mail</label>
+                <input className="m-input" type="email" value={editingClientData.email} onChange={e => setEditingClientData(p => ({ ...p, email: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Curvatura de Cacho</label>
+                <select className="m-select" value={editingClientData.curvatura} onChange={e => setEditingClientData(p => ({ ...p, curvatura: e.target.value }))}>
+                  {CURL_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Porosidade Capilar</label>
+                <select className="m-select" value={editingClientData.porosidade} onChange={e => setEditingClientData(p => ({ ...p, porosidade: e.target.value }))}>
+                  <option value="Baixa">Baixa (Cutículas seladas)</option>
+                  <option value="Média">Média (Fios saudáveis)</option>
+                  <option value="Alta">Alta (Ressecado/Pós-química)</option>
+                </select>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Elasticidade</label>
+                <select className="m-select" value={editingClientData.elasticidade} onChange={e => setEditingClientData(p => ({ ...p, elasticidade: e.target.value }))}>
+                  <option value="Normal">Normal (Fibra com força)</option>
+                  <option value="Fraca">Fraca/Elástica (Fio frágil)</option>
+                  <option value="Rígida">Rígida (Excesso queratina)</option>
+                </select>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Gênero</label>
+                <select className="m-select" value={editingClientData.sexo} onChange={e => setEditingClientData(p => ({ ...p, sexo: e.target.value }))}>
+                  <option value="Feminino">Feminino</option>
+                  <option value="Masculino">Masculino</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Data de Nascimento</label>
+                <input className="m-input" type="date" value={editingClientData.birthdate} onChange={e => setEditingClientData(p => ({ ...p, birthdate: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Histórico Químico</label>
+                <input className="m-input" type="text" value={editingClientData.quimicas} onChange={e => setEditingClientData(p => ({ ...p, quimicas: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Produtos Recomendados</label>
+                <input className="m-input" type="text" value={editingClientData.produtosRecomendados} onChange={e => setEditingClientData(p => ({ ...p, produtosRecomendados: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Observações</label>
+                <textarea className="m-textarea" rows={2} value={editingClientData.observacoes} onChange={e => setEditingClientData(p => ({ ...p, observacoes: e.target.value }))}/>
+              </div>
+              <div style={{ display:'flex', gap:8, marginTop:12, marginBottom:16 }}>
+                <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setIsEditingClient(false)}>Cancelar</button>
+                <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleSaveClientMobile} disabled={savingClientMobile}>
+                  {savingClientMobile ? 'Salvando...' : 'Salvar Alterações'}
+                </button>
+              </div>
             </div>
+          ) : (
+            <div className="m-sheet-body" style={{ maxHeight:'70vh', overflowY:'auto' }}>
+              {/* Info */}
+              <div style={{ background:'var(--m-card)', borderRadius:'var(--m-radius)', padding:'14px', marginBottom:12 }}>
+                {[
+                  { label:'Telefone', val: c.phone || '—' },
+                  { label:'E-mail', val: c.email || '—' },
+                  { label:'Curvatura', val: c.curvatura || '—' },
+                  { label:'Porosidade', val: c.porosidade || '—' },
+                  { label:'Elasticidade', val: c.elasticidade || '—' },
+                  { label:'Gênero', val: c.sexo || '—' },
+                  { label:'Nascimento', val: c.birthdate || '—' },
+                  c.quimicas ? { label:'Química', val: c.quimicas } : null,
+                  c.produtosRecomendados ? { label:'Produtos Rec.', val: c.produtosRecomendados } : null,
+                  c.observacoes ? { label:'Observações', val: c.observacoes } : null
+                ].filter(Boolean).map((row, i) => (
+                  <div key={i} className="m-info-row">
+                    <span className="m-info-label">{row.label}</span>
+                    <span className="m-info-value" style={{ fontSize:'0.78rem', maxWidth:'55%', textAlign:'right', wordBreak:'break-word' }}>{row.val}</span>
+                  </div>
+                ))}
+              </div>
 
-            {/* Actions */}
-            <div style={{ display:'flex', gap:8, marginBottom: 12 }}>
-              {c.phone && (
-                <button className="m-btn m-btn-ghost" style={{ flex:1 }} onClick={() => window.open(`https://wa.me/55${c.phone.replace(/\D/g,'')}`)}>
-                  <MessageSquare size={14}/> WhatsApp
+              {/* Actions */}
+              <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom: 12 }}>
+                {c.phone && (
+                  <button className="m-btn m-btn-ghost" style={{ flex:1, minWidth:'100px' }} onClick={() => window.open(`https://wa.me/55${c.phone.replace(/\D/g,'')}`)}>
+                    <MessageSquare size={14}/> WhatsApp
+                  </button>
+                )}
+                <button className="m-btn m-btn-gold" style={{ flex:1, minWidth:'100px' }} onClick={() => { setShowClientSheet(false); setNbForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setShowNewBookingSheet(true); }}>
+                  <Plus size={14}/> Agendar
+                </button>
+                <button className="m-btn m-btn-outline" style={{ flex:1, minWidth:'100px' }} onClick={() => {
+                  setEditingClientData({
+                    name: c.name || '',
+                    phone: c.phone || '',
+                    email: c.email || '',
+                    curvatura: c.curvatura || '3A',
+                    porosidade: c.porosidade || 'Média',
+                    elasticidade: c.elasticidade || 'Normal',
+                    quimicas: c.quimicas || 'Nenhuma',
+                    produtosRecomendados: c.produtosRecomendados || '',
+                    observacoes: c.observacoes || '',
+                    sexo: c.sexo || 'Feminino',
+                    birthdate: c.birthdate || ''
+                  });
+                  setIsEditingClient(true);
+                }}>
+                  Editar Ficha
+                </button>
+              </div>
+
+              {visits.some(v => v.status === 'confirmado' || v.status === 'pendente') && (
+                <button className="m-btn" style={{ width: '100%', background: 'rgba(235,94,85,0.12)', color: 'var(--m-red)', border: 'none', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }} onClick={async () => {
+                  const latestActive = visits.find(v => v.status === 'confirmado' || v.status === 'pendente');
+                  if (latestActive && window.confirm(`Deseja marcar o agendamento de ${fmtDate(latestActive.date)} às ${latestActive.time} como Falta?`)) {
+                    await changeStatus(latestActive.id, 'faltou');
+                    showToast('Falta registrada!', 'success');
+                  }
+                }}>
+                  <X size={14}/> Cliente Faltou
                 </button>
               )}
-              <button className="m-btn m-btn-gold" style={{ flex:1 }} onClick={() => { setShowClientSheet(false); setNbForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setShowNewBookingSheet(true); }}>
-                <Plus size={14}/> Agendar
-              </button>
-            </div>
-            {visits.some(v => v.status === 'confirmado' || v.status === 'pendente') && (
-              <button className="m-btn" style={{ width: '100%', background: 'rgba(235,94,85,0.12)', color: 'var(--m-red)', border: 'none', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }} onClick={async () => {
-                const latestActive = visits.find(v => v.status === 'confirmado' || v.status === 'pendente');
-                if (latestActive && window.confirm(`Deseja marcar o agendamento de ${fmtDate(latestActive.date)} às ${latestActive.time} como Falta?`)) {
-                  await changeStatus(latestActive.id, 'faltou');
-                  showToast('Falta registrada!', 'success');
-                }
-              }}>
-                <X size={14}/> Cliente Faltou
-              </button>
-            )}
 
-            {/* Visit history */}
-            <div>
-              <div className="m-section-title" style={{ marginBottom:10 }}>Histórico ({visits.length} visitas)</div>
-              {visits.slice(0, 5).map(b => (
-                <div key={b.id} className="m-info-row">
-                  <div>
-                    <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)' }}>{b.service?.name || b.serviceName}</div>
-                    <div style={{ fontSize:'0.68rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(b.date)}</div>
+              {/* Agendamentos Futuros */}
+              <div style={{ marginBottom: 16 }}>
+                <div className="m-section-title" style={{ marginBottom:10 }}>Agendamentos Futuros ({futureBookings.length})</div>
+                {futureBookings.map(b => (
+                  <div key={b.id} className="m-info-row">
+                    <div>
+                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)' }}>{b.service?.name || b.serviceName}</div>
+                      <div style={{ fontSize:'0.68rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(b.date)} às {b.time}</div>
+                    </div>
+                    <StatusPill status={b.status}/>
                   </div>
-                  <StatusPill status={b.status}/>
-                </div>
-              ))}
-              {visits.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.8rem' }}>Nenhuma visita registrada</div>}
+                ))}
+                {futureBookings.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.8rem' }}>Nenhum agendamento futuro</div>}
+              </div>
+
+              {/* Visit history */}
+              <div>
+                <div className="m-section-title" style={{ marginBottom:10 }}>Histórico ({pastVisits.length} visitas)</div>
+                {pastVisits.slice(0, 5).map(b => (
+                  <div key={b.id} className="m-info-row">
+                    <div>
+                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)' }}>{b.service?.name || b.serviceName}</div>
+                      <div style={{ fontSize:'0.68rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(b.date)}</div>
+                    </div>
+                    <StatusPill status={b.status}/>
+                  </div>
+                ))}
+                {pastVisits.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.8rem' }}>Nenhuma visita registrada</div>}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     );
