@@ -1114,36 +1114,13 @@ export default async function handler(req, res) {
 
     if (shouldSendClientEmail) {
       const isLaunchCampaign = type === 'launch_campaign';
-      const mailgunApiKey = (process.env.MAILGUN_API_KEY || process.env.RESEND_API_KEY || '').trim();
+      const mailgunApiKey = (process.env.MAILGUN_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
+      const resendApiKey = (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '').trim();
 
-      if (isLaunchCampaign && mailgunApiKey) {
-        try {
-          if (mailgunApiKey.startsWith('re_')) {
-            // Enviar via Resend API
-            const fetchRes = await fetch('https://api.resend.com/emails', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${mailgunApiKey}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                from: '"O Jon Que Cortou" <contato@ojonquecortou.com.br>',
-                to: [clientEmail],
-                subject: emailSubject,
-                html: finalHtml
-              })
-            });
-            if (fetchRes.ok) {
-              const resData = await fetchRes.json();
-              messageId = resData.id || 'resend-ok';
-              console.log(`E-mail de campanha de lançamento enviado via Resend para ${clientEmail}.`);
-            } else {
-              const errMsg = await fetchRes.text();
-              console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}.`);
-              return res.status(500).json({ success: false, error: `Resend error: ${errMsg}` });
-            }
-          } else {
-            // Enviar via Mailgun
+      if (isLaunchCampaign) {
+        if (mailgunApiKey) {
+          try {
+            // Enviar campanha de lançamento via Mailgun
             const basicAuth = Buffer.from(`api:${mailgunApiKey}`).toString('base64');
             const fetchRes = await fetch('https://api.mailgun.net/v3/mg.ojonquecortou.com.br/messages', {
               method: 'POST',
@@ -1167,15 +1144,51 @@ export default async function handler(req, res) {
               console.error(`Falha ao enviar via Mailgun para ${clientEmail}: ${errMsg}.`);
               return res.status(500).json({ success: false, error: `Mailgun error: ${errMsg}` });
             }
+          } catch (mailgunErr) {
+            console.error(`Erro ao disparar via Mailgun para ${clientEmail}: ${mailgunErr.message}.`);
+            return res.status(500).json({ success: false, error: mailgunErr.message });
           }
-        } catch (mailgunErr) {
-          console.error(`Erro ao disparar via API externa para ${clientEmail}: ${mailgunErr.message}.`);
-          return res.status(500).json({ success: false, error: mailgunErr.message });
+        } else {
+          console.error('API Key do Mailgun não configurada para campanha de lançamento.');
+          return res.status(500).json({ success: false, error: 'Mailgun API Key not configured' });
         }
       } else {
-        const info = await transporter.sendMail(mailOptions);
-        messageId = info.messageId;
-        console.log(`E-mail de cliente enviado via SMTP para ${clientEmail}. Tipo: ${type}`);
+        // Para transacionais e outros e-mails de relacionamento
+        if (resendApiKey) {
+          try {
+            // Enviar via Resend API
+            const fetchRes = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${resendApiKey}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                from: '"O Jon Que Cortou" <contato@ojonquecortou.com.br>',
+                to: [clientEmail],
+                subject: emailSubject,
+                html: finalHtml
+              })
+            });
+            if (fetchRes.ok) {
+              const resData = await fetchRes.json();
+              messageId = resData.id || 'resend-ok';
+              console.log(`E-mail transacional/relacionamento enviado via Resend para ${clientEmail}. Tipo: ${type}`);
+            } else {
+              const errMsg = await fetchRes.text();
+              console.error(`Falha ao enviar via Resend para ${clientEmail}: ${errMsg}.`);
+              return res.status(500).json({ success: false, error: `Resend error: ${errMsg}` });
+            }
+          } catch (resendErr) {
+            console.error(`Erro ao disparar via Resend para ${clientEmail}: ${resendErr.message}.`);
+            return res.status(500).json({ success: false, error: resendErr.message });
+          }
+        } else {
+          // Fallback para SMTP
+          const info = await transporter.sendMail(mailOptions);
+          messageId = info.messageId;
+          console.log(`E-mail de cliente enviado via SMTP para ${clientEmail}. Tipo: ${type}`);
+        }
       }
     } else {
       console.log(`E-mail de cliente do tipo ${type} está desativado nas configurações para ${clientEmail}. Pulando envio.`);
