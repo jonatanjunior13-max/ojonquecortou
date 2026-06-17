@@ -1364,27 +1364,111 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
   };
 
   const handleSendWhatsappCampaign = async () => {
-    if (marketingTargetsList.length === 0) return;
+    if (marketingTargetsList.length === 0) {
+      alert('Nenhum cliente no segmento escolhido para disparar.');
+      return;
+    }
+
+    const gateway = settings?.waReminderGateway || 'zapi';
+    const isGatewayConfigured = 
+      (gateway === 'zapi' && settings?.zApiInstanceId && settings?.zApiToken) ||
+      (gateway === 'evolution' && settings?.evolutionApiUrl && settings?.evolutionApiKey && settings?.evolutionInstanceName) ||
+      (gateway === 'custom' && settings?.customWebhookUrl);
+
+    if (!settings?.waReminderEnabled || !isGatewayConfigured) {
+      alert('Por favor, ative e configure suas credenciais de integração do WhatsApp na aba "Configurações" antes de realizar disparos em lote.');
+      return;
+    }
+
+    if (!confirm(`Deseja iniciar o envio automático de mensagens para ${marketingTargetsList.length} clientes via ${gateway.toUpperCase()}?`)) {
+      return;
+    }
+
     setIsSendingWhatsapp(true);
     cancelSendingRef.current = false;
-    setWhatsappLogs(['[SYSTEM] Iniciando disparo em lote (WhatsApp)...']);
+    const logTime = () => new Date().toLocaleTimeString('pt-BR');
+    setWhatsappLogs([`[${logTime()}] 🚀 Iniciando campanha em lote via ${gateway.toUpperCase()}...`]);
 
     for (const client of marketingTargetsList) {
       if (cancelSendingRef.current) {
-        setWhatsappLogs(prev => [...prev, '[SYSTEM] Disparo cancelado pelo usuário.']);
+        setWhatsappLogs(prev => [...prev, `[${logTime()}] 🛑 Disparo cancelado pelo usuário.`]);
         break;
       }
-      await new Promise(r => setTimeout(r, 1200));
-      if (cancelSendingRef.current) {
-        setWhatsappLogs(prev => [...prev, '[SYSTEM] Disparo cancelado pelo usuário.']);
-        break;
+
+      const days = getDaysAbsent(client.lastVisit);
+      const daysText = days === Infinity ? 'algum' : days;
+      const msgText = campaignMessage
+        .replace(/{nome}/g, client.name)
+        .replace(/{ultimo_servico}/g, client.lastServiceName || 'serviço')
+        .replace(/{dias_ausente}/g, daysText);
+
+      const cleanPhone = (client.phone || '').replace(/\D/g, '');
+      if (!cleanPhone || cleanPhone.length < 10) {
+        setWhatsappLogs(prev => [...prev, `[${logTime()}] ⚠️ Pulado: ${client.name} (Telefone inválido)`]);
+        continue;
       }
-      await saveLog(client.name, client.phone, 'Campanha Manual (WhatsApp)', 'whatsapp');
-      setWhatsappLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+
+      const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+      setWhatsappLogs(prev => [...prev, `[${logTime()}] 🔄 Enviando para ${client.name}...`]);
+
+      let url = '';
+      let headers = { 'Content-Type': 'application/json' };
+      let body = {};
+
+      if (gateway === 'zapi') {
+        url = `https://api.z-api.io/instances/${settings.zApiInstanceId}/token/${settings.zApiToken}/send-text`;
+        body = {
+          phone: phoneWithDDI,
+          message: msgText
+        };
+      } else if (gateway === 'evolution') {
+        url = `${settings.evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${settings.evolutionInstanceName}`;
+        headers['apikey'] = settings.evolutionApiKey;
+        body = {
+          number: phoneWithDDI,
+          text: msgText
+        };
+      } else if (gateway === 'custom') {
+        url = settings.customWebhookUrl;
+        body = {
+          phone: phoneWithDDI,
+          message: msgText,
+          clientName: client.name,
+          daysAbsent: daysText,
+          lastService: client.lastServiceName
+        };
+      }
+
+      let responseOk = false;
+      try {
+        if (!db) {
+          responseOk = true;
+          setWhatsappLogs(prev => [...prev, `[${logTime()}] [DEMO] Simulando sucesso de envio WhatsApp para ${client.name}`]);
+        } else {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body)
+          });
+          responseOk = response.ok;
+        }
+      } catch (err) {
+        setWhatsappLogs(prev => [...prev, `[${logTime()}] ❌ Falha no envio para ${client.name}: ${err.message}`]);
+      }
+
+      if (responseOk) {
+        await saveLog(client.name, client.phone, 'Campanha Manual (WhatsApp)', 'whatsapp');
+        setWhatsappLogs(prev => [...prev, `[${logTime()}] ✅ Sucesso: enviado para ${client.name}`]);
+      } else {
+        setWhatsappLogs(prev => [...prev, `[${logTime()}] ❌ Falha no gateway para ${client.name}`]);
+      }
+
+      // Intervalo regulamentar
+      await new Promise(r => setTimeout(r, 1500));
     }
 
     if (!cancelSendingRef.current) {
-      setWhatsappLogs(prev => [...prev, '[SYSTEM] Lote finalizado!']);
+      setWhatsappLogs(prev => [...prev, `[${logTime()}] 🎉 Campanha finalizada com sucesso! Todos os disparos concluídos.`]);
     }
     setIsSendingWhatsapp(false);
   };
