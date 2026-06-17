@@ -129,6 +129,43 @@ const MasculinoPage = () => {
         </div>
       </section>
 
+      <section className="section-padding" style={{ paddingTop: 0 }}>
+        <div className="container">
+          <div className="text-center reveal mb-4">
+            <h2 className="heading-md">Recursos Úteis para Cabelos Cacheados</h2>
+          </div>
+
+          <div className="resources-grid">
+            <div className="card reveal stagger-1">
+              <h3>Guias de Cuidado</h3>
+              <p>Aprenda técnicas de cuidado diário e produtos recomendados:</p>
+              <ul style={{textAlign: 'left', marginTop: '10px'}}>
+                <li><a href="https://www.curlsbot.com/curl-guide/" target="_blank" rel="noopener noreferrer">The Curl Girl Method Guide</a></li>
+                <li><a href="https://www.reddit.com/r/curlyhair/" target="_blank" rel="noopener noreferrer">r/CurlyHair Community</a></li>
+              </ul>
+            </div>
+
+            <div className="card reveal stagger-2">
+              <h3>Educação Capilar</h3>
+              <p>Entenda a estrutura e comportamento dos fios cacheados:</p>
+              <ul style={{textAlign: 'left', marginTop: '10px'}}>
+                <li><a href="https://www.science-of-hair.com/" target="_blank" rel="noopener noreferrer">Science of Hair</a></li>
+                <li><a href="https://www.naturalhaircommunity.com/" target="_blank" rel="noopener noreferrer">Natural Hair Community</a></li>
+              </ul>
+            </div>
+
+            <div className="card reveal stagger-3">
+              <h3>Técnicas Profissionais</h3>
+              <p>Informações sobre cortes e técnicas para cabelos cacheados:</p>
+              <ul style={{textAlign: 'left', marginTop: '10px'}}>
+                <li><a href="https://curlsmith.com/" target="_blank" rel="noopener noreferrer">Curl Smith - Educação em Cuidado de Cachos</a></li>
+                <li><a href="https://www.behindthechair.com/curly-hair" target="_blank" rel="noopener noreferrer">Behind the Chair - Curly Hair</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="about-cta-bottom section-padding">
         <div className="container text-center reveal">
           <h2 className="heading-lg mb-2">Seu cabelo com estilo e sem enrolação.</h2>
