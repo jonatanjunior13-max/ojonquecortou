@@ -61,13 +61,18 @@ const Reviews = ({ isPage = false }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch('/api/reviews');
+        const response = await fetch('/api/gbp?action=get-reviews');
         if (!response.ok) {
           throw new Error('Falha na requisição da API');
         }
         const data = await response.json();
         if (data.reviews && data.reviews.length > 0) {
-          setReviews(data.reviews);
+          const fiveStar = data.reviews.filter(r => r.rating === 5);
+          if (fiveStar.length > 0) {
+            setReviews(fiveStar);
+          } else {
+            setReviews(fallbackReviews);
+          }
         } else {
           setReviews(fallbackReviews);
         }
@@ -105,12 +110,12 @@ const Reviews = ({ isPage = false }) => {
                     <Star key={i} size={16} fill="var(--color-accent)" color="var(--color-accent)" />
                   ))}
                 </div>
-                <p className="review-text">"{review.text}"</p>
+                <p className="review-text">"{review.text || review.comment}"</p>
                 <div className="review-author">
                   <div className="author-info">
-                    <h4>{review.author_name}</h4>
+                    <h4>{review.author_name || review.author}</h4>
                     <span style={{ display: 'block', fontSize: '0.85rem', color: 'var(--muted)', marginTop: '2px' }}>
-                      {review.curl_type || 'Cabelo Natural'} · {review.relative_time_description || "Avaliação no Google"}
+                      {review.curl_type || 'Cabelo Natural'} · {review.relative_time_description || review.date || "Avaliação no Google"}
                     </span>
                   </div>
                 </div>
