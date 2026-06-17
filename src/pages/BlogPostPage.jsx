@@ -9,16 +9,27 @@ import SEO from '../components/SEO';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const staticMatch = staticPosts.find((p) => p.slug === slug);
+  
+  const [prevSlug, setPrevSlug] = useState(slug);
+  const [post, setPost] = useState(staticMatch || null);
+  const [loading, setLoading] = useState(!staticMatch);
   const [allPosts, setAllPosts] = useState(staticPosts);
+
+  if (slug !== prevSlug) {
+    setPrevSlug(slug);
+    const newStaticMatch = staticPosts.find((p) => p.slug === slug);
+    setPost(newStaticMatch || null);
+    setLoading(!newStaticMatch);
+  }
 
   useEffect(() => {
     async function loadPostData() {
-      setLoading(true);
-      // Try finding static post first
-      const staticMatch = staticPosts.find((p) => p.slug === slug);
-      let foundPost = staticMatch || null;
+      const currentStaticMatch = staticPosts.find((p) => p.slug === slug);
+      if (!currentStaticMatch) {
+        setLoading(true);
+      }
+      let foundPost = currentStaticMatch || null;
 
       // Load all posts (including Firestore) to render related posts
       let merged = [...staticPosts];
@@ -81,12 +92,17 @@ const BlogPostPage = () => {
     .slice(0, 3);
 
   const generatePostDescription = (post) => {
-    if (post.metaDescription) return post.metaDescription;
-    
-    // Fallback based on user-requested model:
-    // "[Assunto do post em 1 frase direta]. [Benefício ou resultado]. Especialista em cachos em Belo Horizonte explica."
-    const subject = post.excerpt || post.title;
-    return `${subject}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
+    let desc = post.metaDescription;
+    if (!desc) {
+      // Fallback based on user-requested model:
+      // "[Assunto do post em 1 frase direta]. [Benefício ou resultado]. Especialista em cachos em Belo Horizonte explica."
+      const subject = post.excerpt || post.title;
+      desc = `${subject}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
+    }
+    if (desc.length > 155) {
+      desc = desc.substring(0, 152) + '...';
+    }
+    return desc;
   };
 
   const parseDateToISO = (dateStr) => {

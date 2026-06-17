@@ -159,7 +159,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
       <div style={{
         background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule-gold)',
         borderRadius: 'var(--adm-radius-lg)', width: '100%', maxWidth: 560,
-        maxHeight: '90vh', overflowY: 'auto', display: 'flex', flexDirection: 'column',
+        maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column',
       }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px 16px', borderBottom: '0.5px solid var(--adm-rule)' }}>
@@ -172,7 +172,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
           </button>
         </div>
 
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto', flex: 1 }}>
           {/* Service */}
           <section>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Serviço</div>

@@ -532,44 +532,46 @@ Observações: ${booking.notes || ''}`;
           }
         } else {
           // Evento foi criado diretamente no Google Agenda
-          // Importa como Horário Bloqueado
-          const eventStartStr = event.start.dateTime || event.start.date;
-          let localGcal;
+          // Importa como Horário Bloqueado se useSingleAgenda for true
+          if (settings.useSingleAgenda !== false) {
+            const eventStartStr = event.start.dateTime || event.start.date;
+            let localGcal;
 
-          if (eventStartStr.includes('T')) {
-            localGcal = parseGcalDateTime(eventStartStr);
-          } else {
-            // All-day event
-            localGcal = { date: eventStartStr, time: '09:00' };
+            if (eventStartStr.includes('T')) {
+              localGcal = parseGcalDateTime(eventStartStr);
+            } else {
+              // All-day event
+              localGcal = { date: eventStartStr, time: '09:00' };
+            }
+
+            // Calcular duração do bloqueio
+            let duration = 60;
+            if (event.start.dateTime && event.end.dateTime) {
+              const diffMs = new Date(event.end.dateTime) - new Date(event.start.dateTime);
+              duration = Math.max(30, Math.round(diffMs / 60000));
+            } else {
+              duration = 1440; // All-day = 24h
+            }
+
+            const newBookingPayload = {
+              clientName: event.summary || 'Bloqueado (Google Calendar)',
+              clientPhone: '',
+              clientEmail: '',
+              date: localGcal.date,
+              time: localGcal.time,
+              duration: duration,
+              serviceName: 'Bloqueio Manual',
+              professionalId: 'jon',
+              professionalName: 'Jon',
+              status: 'bloqueado',
+              notes: event.description || 'Importado do Google Agenda',
+              googleCalendarEventId: event.id
+            };
+
+            await addDoc(collection(db, 'bookings'), newBookingPayload);
+            stats.imported++;
+            logs.push(`Importado bloqueio do Google Agenda: ${newBookingPayload.clientName} em ${localGcal.date}`);
           }
-
-          // Calcular duração do bloqueio
-          let duration = 60;
-          if (event.start.dateTime && event.end.dateTime) {
-            const diffMs = new Date(event.end.dateTime) - new Date(event.start.dateTime);
-            duration = Math.max(30, Math.round(diffMs / 60000));
-          } else {
-            duration = 1440; // All-day = 24h
-          }
-
-          const newBookingPayload = {
-            clientName: event.summary || 'Bloqueado (Google Calendar)',
-            clientPhone: '',
-            clientEmail: '',
-            date: localGcal.date,
-            time: localGcal.time,
-            duration: duration,
-            serviceName: 'Bloqueio Manual',
-            professionalId: 'jon',
-            professionalName: 'Jon',
-            status: 'bloqueado',
-            notes: event.description || 'Importado do Google Agenda',
-            googleCalendarEventId: event.id
-          };
-
-          await addDoc(collection(db, 'bookings'), newBookingPayload);
-          stats.imported++;
-          logs.push(`Importado bloqueio do Google Agenda: ${newBookingPayload.clientName} em ${localGcal.date}`);
         }
       }
 

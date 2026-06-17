@@ -30,6 +30,7 @@ const DEFAULT_SETTINGS = {
   // Políticas
   minAdvance: '2', // horas
   autoApprove: false,
+  useSingleAgenda: true,
   waTemplate: 'Olá Jon, gostaria de confirmar meu agendamento de {servico} para o dia {data} às {hora}.',
 
   // Integração WhatsApp 24h
@@ -479,6 +480,34 @@ const AdminSettings = () => {
               <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', marginLeft: 22, marginTop: 4 }}>
                 Se marcado, os agendamentos feitos por clientes são criados automaticamente como "Confirmado". 
                 Caso contrário, entram no status "Pendente" aguardando ação do administrador.
+              </p>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 20 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+                <input 
+                  type="checkbox" 
+                  checked={settings.useSingleAgenda ?? true}
+                  onChange={e => setSettings({ ...settings, useSingleAgenda: e.target.checked })}
+                />
+                Usar agenda única (Jon = Studio)
+              </label>
+              <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', marginLeft: 22, marginTop: 4 }}>
+                Se ativado, a agenda pessoal do profissional Jon e a agenda do Studio serão unificadas, evitando conflitos de horários.
+              </p>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 20 }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600 }}>
+                <input 
+                  type="checkbox" 
+                  checked={settings.disablePsicologa || false}
+                  onChange={e => setSettings({ ...settings, disablePsicologa: e.target.checked })}
+                />
+                Desativar bloqueio fixo da Psicóloga (Quartas, 09:00 - 10:00)
+              </label>
+              <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', marginLeft: 22, marginTop: 4 }}>
+                Se ativado, o bloqueio automático de quarta-feira da Psicóloga será removido da agenda.
               </p>
             </div>
 

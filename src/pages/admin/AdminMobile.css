@@ -1038,7 +1038,7 @@
   max-height: 90dvh;
   background: var(--m-surface);
   border-radius: var(--m-radius-xl) var(--m-radius-xl) 0 0;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   animation: mSheetIn 0.3s var(--m-ease) both;

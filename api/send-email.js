@@ -414,28 +414,29 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
     html: finalHtml
   };
 
+  if (db) {
+    try {
+      await addDoc(collection(db, 'admin_notifications'), {
+        timestamp: new Date().toISOString(),
+        type: type,
+        subject: subject,
+        clientName: clientName,
+        clientEmail: clientEmail,
+        clientPhone: clientPhone,
+        serviceName: serviceName,
+        date: formattedDate,
+        time: time,
+        htmlBody: finalHtml
+      });
+      console.log('Notificação do admin registrada no Firestore');
+    } catch (dbErr) {
+      console.error('Falha ao salvar log de notificação no banco:', dbErr);
+    }
+  }
+
   try {
     await transporter.sendMail(mailOptions);
     console.log(`Email de notificação enviado para o administrador: ${adminEmail}`);
-    if (db) {
-      try {
-        await addDoc(collection(db, 'admin_notifications'), {
-          timestamp: new Date().toISOString(),
-          type: type,
-          subject: subject,
-          clientName: clientName,
-          clientEmail: clientEmail,
-          clientPhone: clientPhone,
-          serviceName: serviceName,
-          date: formattedDate,
-          time: time,
-          htmlBody: finalHtml
-        });
-        console.log('Notificação do admin registrada no Firestore');
-      } catch (dbErr) {
-        console.error('Falha ao salvar log de notificação no banco:', dbErr);
-      }
-    }
   } catch (err) {
     console.error('Falha ao enviar e-mail de notificação para o admin:', err);
   }
@@ -677,9 +678,9 @@ export default async function handler(req, res) {
   
   // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
   const isLaunchCampaign = type === 'launch_campaign';
-  const resendApiKey = (process.env.RESEND_API_KEY || '').trim();
+  const mailgunKey = (process.env.MAILGUN_API_KEY || process.env.RESEND_API_KEY || '').trim();
   const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
-  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (hasSmtpConfig || (isLaunchCampaign && resendApiKey));
+  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (hasSmtpConfig || (isLaunchCampaign && mailgunKey));
 
   if (!sendReal) {
     console.log('Simulação de envio ativa (SMTP não configurado ou desativado). Para:', clientEmail);
@@ -1113,13 +1114,11 @@ export default async function handler(req, res) {
 
     if (shouldSendClientEmail) {
       const isLaunchCampaign = type === 'launch_campaign';
-      const resendApiKey = (process.env.RESEND_API_KEY || '').trim();
+      const mailgunApiKey = (process.env.MAILGUN_API_KEY || process.env.RESEND_API_KEY || '').trim();
 
-      if (isLaunchCampaign && resendApiKey) {
+      if (isLaunchCampaign && mailgunApiKey) {
         try {
-          const mailgunSender = 'contato@ojonquecortou.com.br';
-          // Using Mailgun HTTP Basic Auth (api:YOUR_KEY) in Base64 — Buffer is required for Node.js
-          const basicAuth = Buffer.from(`api:${resendApiKey}`).toString('base64');
+          const basicAuth = Buffer.from(`api:${mailgunApiKey}`).toString('base64');
           const fetchRes = await fetch('https://api.mailgun.net/v3/mg.ojonquecortou.com.br/messages', {
             method: 'POST',
             headers: {
@@ -1127,7 +1126,7 @@ export default async function handler(req, res) {
               'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
-              from: `"O Jon Que Cortou" <${mailgunSender}>`,
+              from: '"O Jon Que Cortou" <contato@ojonquecortou.com.br>',
               to: clientEmail,
               subject: emailSubject,
               html: finalHtml
@@ -1136,14 +1135,14 @@ export default async function handler(req, res) {
           if (fetchRes.ok) {
             const resData = await fetchRes.json();
             messageId = resData.id || 'mailgun-ok';
-            console.log(`E-mail de campanha de lançamento enviado via MAILGUN para ${clientEmail}.`);
+            console.log(`E-mail de campanha de lançamento enviado via Mailgun para ${clientEmail}.`);
           } else {
             const errMsg = await fetchRes.text();
-            console.error(`Falha ao enviar via Mailgun para ${clientEmail}: ${errMsg}. Sem fallback para SMTP.`);
+            console.error(`Falha ao enviar via Mailgun para ${clientEmail}: ${errMsg}.`);
             return res.status(500).json({ success: false, error: `Mailgun error: ${errMsg}` });
           }
         } catch (mailgunErr) {
-          console.error(`Erro ao disparar via Mailgun para ${clientEmail}: ${mailgunErr.message}. Sem fallback para SMTP.`);
+          console.error(`Erro ao disparar via Mailgun para ${clientEmail}: ${mailgunErr.message}.`);
           return res.status(500).json({ success: false, error: mailgunErr.message });
         }
       } else {

@@ -1,5 +1,11 @@
 import { useEffect } from 'react';
 
+const optimizeTitleForSEO = (rawTitle) => {
+  if (!rawTitle) return '';
+  if (rawTitle.includes('| Studio do Jon')) return rawTitle;
+  return `${rawTitle} | Studio do Jon`;
+};
+
 const SEO = ({ title, description, image, url, schema }) => {
   useEffect(() => {
     // Helper para atualizar ou criar meta tags
@@ -19,9 +25,10 @@ const SEO = ({ title, description, image, url, schema }) => {
     };
 
     if (title) {
-      document.title = title;
-      updateMeta('og:title', title, true);
-      updateMeta('twitter:title', title, false);
+      const seoTitle = optimizeTitleForSEO(title);
+      document.title = seoTitle;
+      updateMeta('og:title', seoTitle, true);
+      updateMeta('twitter:title', seoTitle, false);
     }
     
     if (description) {
@@ -40,6 +47,17 @@ const SEO = ({ title, description, image, url, schema }) => {
     if (url || typeof window !== 'undefined') {
       const currentUrl = url ? `https://www.ojonquecortou.com.br${url}` : window.location.href;
       updateMeta('og:url', currentUrl, true);
+      
+      // Update or create canonical link tag
+      let canonicalTag = document.querySelector('link[rel="canonical"]');
+      if (canonicalTag) {
+        canonicalTag.setAttribute('href', currentUrl);
+      } else {
+        canonicalTag = document.createElement('link');
+        canonicalTag.setAttribute('rel', 'canonical');
+        canonicalTag.setAttribute('href', currentUrl);
+        document.head.appendChild(canonicalTag);
+      }
     }
 
     // Dynamic schema insertion

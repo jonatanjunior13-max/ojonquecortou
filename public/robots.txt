@@ -30,4 +30,3 @@ User-agent: cohere-ai
 Allow: /
 
 Sitemap: https://www.ojonquecortou.com.br/sitemap.xml
-Sitemap: https://www.ojonquecortou.com.br/sitemap.txt

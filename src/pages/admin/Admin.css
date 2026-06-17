@@ -1667,7 +1667,7 @@
   border: 1px solid var(--adm-rule);
   border-radius: 6px;
   background: var(--bg-warm, var(--adm-bg));
-  color: var(--adm-text);
+  color: #000000;
   outline: none;
   transition: border-color 0.16s;
 }
@@ -2791,7 +2791,7 @@
   padding: 14px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   z-index: 120;
-  width: 240px;
+  width: 280px;
   color: var(--adm-text);
   pointer-events: auto;
 }
@@ -2837,6 +2837,7 @@
 
 .booking-popover-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
   border-top: 1px solid var(--adm-rule);

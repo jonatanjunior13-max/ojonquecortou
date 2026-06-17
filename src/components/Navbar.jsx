@@ -2,6 +2,51 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Arrow } from './NewDesignComponents';
 
+const bindDrawerDrag = (onClose) => {
+  let startX = 0;
+  let startY = 0;
+  let activeElement = null;
+
+  return {
+    onTouchStart: (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      activeElement = e.currentTarget;
+    },
+    onTouchMove: (e) => {
+      if (!activeElement) return;
+      const clientX = e.touches[0].clientX;
+      const clientY = e.touches[0].clientY;
+      const deltaX = clientX - startX;
+      const deltaY = clientY - startY;
+
+      if (deltaY > 0 && deltaY > deltaX) {
+        activeElement.style.transform = `translateY(${deltaY}px)`;
+        activeElement.style.transition = 'none';
+      } else if (deltaX > 0 && deltaX > deltaY) {
+        activeElement.style.transform = `translateX(${deltaX}px)`;
+        activeElement.style.transition = 'none';
+      }
+    },
+    onTouchEnd: (e) => {
+      if (!activeElement) return;
+      const clientX = e.changedTouches[0].clientX;
+      const clientY = e.changedTouches[0].clientY;
+      const deltaX = clientX - startX;
+      const deltaY = clientY - startY;
+
+      if (deltaY > 80 && deltaY > deltaX) {
+        onClose();
+      } else if (deltaX > 80 && deltaX > deltaY) {
+        onClose();
+      }
+      activeElement.style.transform = '';
+      activeElement.style.transition = '';
+      activeElement = null;
+    }
+  };
+};
+
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -71,7 +116,7 @@ function Navbar() {
       </nav>
       {open && (
         <div className="mobile-menu" onClick={() => setOpen(false)}>
-          <div className="mobile-menu-inner" onClick={(e) => e.stopPropagation()}>
+          <div className="mobile-menu-inner" {...bindDrawerDrag(() => setOpen(false))} onClick={(e) => e.stopPropagation()}>
             <div className="mobile-menu-head">
               <span className="brand">
                 <span className="mark">J</span>

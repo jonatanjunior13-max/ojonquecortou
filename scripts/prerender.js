@@ -17,6 +17,12 @@ const buildVersion = `build_${new Date().toISOString().replace(/[-:T.]/g, '').su
 console.log(`Prerender: Replacing BUILD_TIMESTAMP with ${buildVersion}`);
 const template = fs.readFileSync(templatePath, 'utf-8').replace('BUILD_TIMESTAMP', buildVersion);
 
+function optimizeTitleForSEO(rawTitle) {
+  if (!rawTitle) return '';
+  if (rawTitle.includes('| Studio do Jon')) return rawTitle;
+  return `${rawTitle} | Studio do Jon`;
+}
+
 // Helper to replace or add a meta tag in the HTML head
 function replaceOrAddMeta(html, nameOrProperty, content, isProperty = false) {
   if (!content) return html;
@@ -719,9 +725,10 @@ console.log(`Starting Node SEO pre-rendering for ${pages.length} pages...`);
 
 pages.forEach(page => {
   let html = template;
+  const seoTitle = optimizeTitleForSEO(page.title);
   
   // 1. Replace title
-  html = replaceTitle(html, page.title);
+  html = replaceTitle(html, seoTitle);
   
   // 2. Replace description
   html = replaceOrAddMeta(html, 'description', page.description, false);
@@ -735,8 +742,8 @@ pages.forEach(page => {
   html = replaceOrAddCanonical(html, `https://www.ojonquecortou.com.br${page.route}`);
 
   // 4. Replace OG/Twitter titles
-  html = replaceOrAddMeta(html, 'og:title', page.title, true);
-  html = replaceOrAddMeta(html, 'twitter:title', page.title, false);
+  html = replaceOrAddMeta(html, 'og:title', seoTitle, true);
+  html = replaceOrAddMeta(html, 'twitter:title', seoTitle, false);
   
   // 5. Replace image tags
   if (page.image) {
