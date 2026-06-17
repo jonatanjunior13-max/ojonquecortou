@@ -36,6 +36,7 @@ import './Admin.css';
 // Lista de horários padrão
 const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 import { SEED_SERVICES } from '../../data/seedServices';
+import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
 
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -44,6 +45,44 @@ const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-fe
 const slotInRange = (slot, start, end) => {
   if (!end || end === start) return slot === start;
   return slot >= start && slot < end;
+};
+
+const calculateOverlappingLayout = (items) => {
+  if (!items || items.length === 0) return [];
+  const sorted = [...items].sort((a, b) => {
+    if (a.startMin !== b.startMin) return a.startMin - b.startMin;
+    return (b.endMin - b.startMin) - (a.endMin - a.startMin);
+  });
+  const columns = [];
+  sorted.forEach(item => {
+    let placed = false;
+    for (let i = 0; i < columns.length; i++) {
+      const col = columns[i];
+      const last = col[col.length - 1];
+      if (item.startMin >= last.endMin) {
+        col.push(item);
+        placed = true;
+        break;
+      }
+    }
+    if (!placed) {
+      columns.push([item]);
+    }
+  });
+  const totalColumns = columns.length;
+  const result = [];
+  columns.forEach((col, colIdx) => {
+    col.forEach(item => {
+      const width = 100 / totalColumns;
+      const left = colIdx * width;
+      result.push({
+        ...item,
+        leftPercent: left,
+        widthPercent: width
+      });
+    });
+  });
+  return result;
 };
 
 const getLocalDateString = (dateObj) => {
@@ -92,6 +131,8 @@ const getAdjustedDay = (date) => {
 const isSlotBlocked = (prof, dateStr, slot) => {
   if (!prof) return false;
   
+  const isUnlockedLocal = localStorage.getItem(`unlock_${dateStr}_${slot}`) === 'true';
+  if (isUnlockedLocal) return false;
   const parts = dateStr.split('-');
   if (parts.length === 3) {
     const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
@@ -205,6 +246,12 @@ const AdminDashboard = () => {
   const [comandaBooking, setComandaBooking] = useState(null);
   const [addedServices, setAddedServices] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
+  const [isEditingComanda, setIsEditingComanda] = useState(false);
+  const [editComandaForm, setEditComandaForm] = useState({
+    value: 0,
+    paymentMethod: 'Pix',
+    productSales: []
+  });
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [installments, setInstallments] = useState('À vista');
   const [applyAnticipation, setApplyAnticipation] = useState(false);
@@ -275,6 +322,7 @@ const AdminDashboard = () => {
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [blockMotive, setBlockMotive] = useState('');
   const [blockEndTime, setBlockEndTime] = useState('');
+  const [blockIdToCancelOnSuccess, setBlockIdToCancelOnSuccess] = useState(null);
 
   useEffect(() => {
     if (selectedSlot && selectedSlot.time) {
@@ -318,7 +366,7 @@ const AdminDashboard = () => {
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [viewMode, setViewMode] = useState('diario'); // 'diario' | 'semanal' | 'mensal'
   const [selectedWeeklyMonthlyProf, setSelectedWeeklyMonthlyProf] = useState('jon');
-  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon', isBlockedSlot: false });
   const [activePopover, setActivePopover] = useState({ visible: false, x: 0, y: 0, booking: null });
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedAccordions, setExpandedAccordions] = useState({
@@ -749,6 +797,24 @@ const AdminDashboard = () => {
     return blocks;
   };
 
+  const handleRemoveAbsence = async (abs) => {
+    const updatedAbsences = (settings.absences || []).filter(a => a.id !== abs.id);
+    if (db && !isDemoMode) {
+      try {
+        await updateDoc(doc(db, 'settings', 'studio'), { absences: updatedAbsences });
+        toast('Ausência removida com sucesso!', 'success');
+      } catch (err) {
+        console.error(err);
+        toast('Erro ao remover ausência.', 'error');
+      }
+    } else {
+      const updatedSettings = { ...settings, absences: updatedAbsences };
+      setSettings(updatedSettings);
+      localStorage.setItem('demo_settings', JSON.stringify(updatedSettings));
+      toast('Ausência removida com sucesso!', 'success');
+    }
+  };
+
   const handleUpdateStatus = async (bookingId, newStatus) => {
     try {
       const booking = bookings.find(b => b.id === bookingId);
@@ -1133,6 +1199,27 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
+    // Check for overlap conflicts
+    const bStart = timeToMin(newBooking.time);
+    const bEnd = bStart + activeDuration;
+    const hasConflict = bookings.some(b => {
+      if (b.status === 'cancelado') return false;
+      if (b.date !== newBooking.date) return false;
+      if ((b.profissional || 'jon') !== (newBooking.profissional || 'jon')) return false;
+      
+      const existingStart = timeToMin(b.time);
+      const existingEnd = existingStart + (b.duration || 60);
+      
+      // Overlap check: Math.max(start1, start2) < Math.min(end1, end2)
+      return Math.max(bStart, existingStart) < Math.min(bEnd, existingEnd);
+    });
+
+    if (hasConflict) {
+      if (!confirm("Já existe outro agendamento neste horário para este profissional.\nDeseja continuar?")) {
+        return;
+      }
+    }
+
     try {
       const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
       let finalId = '';
@@ -1192,6 +1279,17 @@ const AdminDashboard = () => {
 
       if (payload.clientEmail) {
         triggerEmailNotification({ ...payload, id: finalId });
+      }
+
+      if (blockIdToCancelOnSuccess) {
+        if (isDemoMode) {
+          setBookings(prev => prev.filter(b => b.id !== blockIdToCancelOnSuccess));
+        } else {
+          await updateDoc(doc(db, 'bookings', blockIdToCancelOnSuccess), { status: 'cancelado' });
+          setBookings(prev => prev.map(b => b.id === blockIdToCancelOnSuccess ? { ...b, status: 'cancelado' } : b));
+          syncBookingToGoogle(blockIdToCancelOnSuccess, true).catch(err => console.warn('Error syncing cancelation of block:', err));
+        }
+        setBlockIdToCancelOnSuccess(null);
       }
 
       setShowAddModal(false);
@@ -1419,6 +1517,13 @@ const AdminDashboard = () => {
       }),
       createdAt: new Date().toISOString()
     };
+
+    const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+    const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
+    const gateway = settings?.waReminderGateway;
+    const needsWaOpen = requestReview && hasValidPhone && (!gateway || gateway === 'none');
+    const waWindow = needsWaOpen ? window.open('', '_blank') : null;
+
     try {
       if (isDemoMode || !db) {
         setBookings(prev => prev.map(b => b.id === booking.id ? { 
@@ -1470,12 +1575,24 @@ const AdminDashboard = () => {
         }
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
       }
-      if (requestReview) {
+
+      if (waWindow) {
+        const firstName = (booking.clientName || '').split(' ')[0];
+        const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️\n\nSe você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.\n\nLeva apenas 1 minutinho clicando aqui:\nhttps://g.page/r/CRmlu0sO48XmEBM/review\n\nGrande abraço, Jon.`;
+        const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+        const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+        waWindow.location.href = waUrl;
+        toast('Abrindo WhatsApp diretamente... 🚀', 'success');
+      } else if (requestReview && gateway && gateway !== 'none') {
         handleSendFeedbackWhatsApp(booking).catch(err => console.error(err));
       }
+
       toast('Comanda fechada com sucesso!', 'success');
       setComandaBooking(null);
     } catch (err) {
+      if (waWindow) {
+        waWindow.close();
+      }
       console.error('Erro ao fechar comanda:', err);
       toast('Falha ao fechar comanda.', 'error');
     }
@@ -2229,12 +2346,12 @@ Grande abraço, Jon.`;
   };
 
   // Right-Click Handler (custom Context Menu)
-  const handleCellContextMenu = (e, dateStr, slot, profId, appt) => {
+  const handleCellContextMenu = (e, dateStr, slot, profId, appt, isBlockedSlot = false) => {
     e.preventDefault();
     e.stopPropagation();
 
     // Adjust position if it would overflow the viewport height
-    const menuHeight = appt ? 380 : 180;
+    const menuHeight = appt ? 380 : (isBlockedSlot ? 130 : 180);
     let y = e.clientY;
     if (e.clientY + menuHeight > window.innerHeight) {
       y = window.innerHeight - menuHeight - 10;
@@ -2255,9 +2372,46 @@ Grande abraço, Jon.`;
       booking: appt || null,
       date: dateStr,
       time: slot,
-      professional: profId
+      professional: profId,
+      isBlockedSlot: isBlockedSlot
     });
     setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+  };
+
+  // Remove a recurring weekday block (escala) for the given professional/slot.
+  const handleRemoveBlockedSlot = () => {
+    const profId = contextMenu.professional;
+    const slot = contextMenu.time;
+    const dParts = contextMenu.date.split('-');
+    const weekday = getAdjustedDay(new Date(Number(dParts[0]), Number(dParts[1]) - 1, Number(dParts[2])));
+
+    setSettings(prev => {
+      const profs = (prev.professionals || []).map(p => {
+        if (p.id !== profId) return p;
+        const newBlocks = (p.blockedWeekdayHours || []).filter(block => {
+          const segs = block.split('-');
+          const w = segs[0];
+          const start = segs[1];
+          const end = segs[2] || null;
+          if (Number(w) !== weekday) return true; // keep other weekdays
+          // remove blocks whose range covers this slot
+          return !slotInRange(slot, start, end);
+        });
+        return { ...p, blockedWeekdayHours: newBlocks };
+      });
+      const newSettings = { ...prev, professionals: profs };
+      if (db && !isDemoMode) {
+        updateDoc(doc(db, 'settings', 'studio'), { professionals: profs }).catch(() => {});
+      } else {
+        localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+        localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+        window.dispatchEvent(new Event('settingsUpdated'));
+      }
+      return newSettings;
+    });
+
+    toast('Bloqueio removido!', 'success');
+    setContextMenu({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon', isBlockedSlot: false });
   };
 
   // Toggle Accordion State
@@ -2850,104 +3004,308 @@ Grande abraço, Jon.`;
                     
                     {columnsToRender.map(prof => {
                       const currentDateStr = getLocalDateString(currentDate);
-                      const appt = filteredBookingsList.find(b => 
-                        b.date === currentDateStr && 
-                        b.time === slot && 
-                        (b.profissional || 'jon') === prof.id &&
-                        b.status !== 'cancelado'
-                      );
-
-                      const timeToMin = (t) => {
-                        if (!t || typeof t !== 'string' || !t.includes(':')) return 0;
-                        const [h, m] = t.split(':').map(Number);
-                        return (h || 0) * 60 + (m || 0);
-                      };
                       const slotMin = timeToMin(slot);
-                      
-                      const ongoingAppt = !appt && filteredBookingsList.find(b => {
-                        if (b.date !== currentDateStr || (b.profissional || 'jon') !== prof.id || b.status === 'cancelado') return false;
+
+                      // Find all bookings active or overlapping with this 60-min hourly slot
+                      let cellBookings = filteredBookingsList.filter(b => {
+                        if (b.status === 'cancelado') return false;
+                        if ((b.profissional || 'jon') !== prof.id) return false;
+                        if (b.date !== currentDateStr) return false;
                         const bStart = timeToMin(b.time);
                         const bEnd = bStart + (b.duration || 60);
-                        return bStart < slotMin && slotMin < bEnd;
+                        return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
                       });
 
-                      // Calculate duration and heights
-                      let apptHeight = '100%';
-                      let apptTimeText = '';
-                      if (appt) {
-                        const startStr = appt.time || '00:00';
-                        const duration = appt.duration || 60;
-                        const parts = startStr.split(':');
-                        const h = parts[0] ? Number(parts[0]) : 0;
-                        const m = parts[1] ? Number(parts[1]) : 0;
-                        const endMin = h * 60 + m + duration;
-                        const endH = Math.floor(endMin / 60);
-                        const endM = endMin % 60;
-                        const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-                        apptTimeText = `${startStr} - ${endStr}`;
-                        
-                        if (duration <= 30) {
-                          apptHeight = '50%';
-                        }
-                      }
+                      // Unify duplicate bookings having the exact same fields
+                      const seen = new Set();
+                      cellBookings = cellBookings.filter(b => {
+                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
+                        if (seen.has(key)) return false;
+                        seen.add(key);
+                        return true;
+                      });
 
-                      let ongoingHeight = '100%';
-                      let ongoingTimeText = '';
-                      if (ongoingAppt) {
-                        const startStr = ongoingAppt.time || '00:00';
-                        const duration = ongoingAppt.duration || 60;
-                        const parts = startStr.split(':');
-                        const h = parts[0] ? Number(parts[0]) : 0;
-                        const m = parts[1] ? Number(parts[1]) : 0;
-                        const endMin = h * 60 + m + duration;
-                        const endH = Math.floor(endMin / 60);
-                        const endM = endMin % 60;
-                        const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
-                        ongoingTimeText = `${startStr} - ${endStr}`;
-
-                        const ongoingStartMin = h * 60 + m;
-                        const remainingMins = (ongoingStartMin + duration) - slotMin;
-                        if (remainingMins <= 30) {
-                          ongoingHeight = '50%';
-                        }
-                      }
-
-                      const blockedBySettings = !appt && !ongoingAppt && isSlotBlocked(prof, currentDateStr, slot);
+                      const effectiveAbsences = getEffectiveAbsences(settings);
+                      const absence = cellBookings.length === 0 ? getAbsenceForSlot(effectiveAbsences, currentDateStr, slot) : null;
+                      const blockedBySettings = cellBookings.length === 0 && !absence && isSlotBlocked(prof, currentDateStr, slot);
 
                       return (
                         <div 
                           key={prof.id} 
                           className="day-cell"
-                          style={{ cursor: (blockedBySettings || !appt || appt.status === 'cancelado' || ongoingAppt) ? 'pointer' : 'default' }}
+                          style={{ 
+                            cursor: 'pointer',
+                            position: 'relative',
+                            minHeight: '60px'
+                          }}
                           onClick={(e) => {
-                            if (ongoingAppt) {
-                              handleBookingLeftClick(e, ongoingAppt);
-                              return;
-                            }
-                            if (blockedBySettings) {
-                              if (confirm('Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?')) {
-                                handleCellClick(currentDateStr, slot, prof.id, prof.name);
-                              }
-                              return;
-                            }
-                            if (!appt || appt.status === 'cancelado') {
-                              handleCellClick(currentDateStr, slot, prof.id, prof.name);
-                            }
-                          }}
-                          onContextMenu={(e) => {
-                            if (blockedBySettings) return;
-                            handleCellContextMenu(e, currentDateStr, slot, prof.id, appt || ongoingAppt);
-                          }}
+                             if (absence) return; // Absences handle their own clicks
+                             if (blockedBySettings) return; // Blocked card handles its own click (opens menu)
+                             handleCellClick(currentDateStr, slot, prof.id, prof.name);
+                           }}
                         >
-                          {blockedBySettings && (
+                          {cellBookings.length > 0 ? (
+                            <div style={{ display: 'flex', gap: 4, width: '100%', height: '100%', padding: '2px' }}>
+                              {cellBookings.map(bk => {
+                                const bStart = timeToMin(bk.time);
+                                const isSubsequent = bStart < slotMin;
+                                const duration = bk.duration || 60;
+                                
+                                let apptTimeText = '';
+                                const startStr = bk.time || '00:00';
+                                const parts = startStr.split(':');
+                                const h = parts[0] ? Number(parts[0]) : 0;
+                                const m = parts[1] ? Number(parts[1]) : 0;
+                                const endMin = h * 60 + m + duration;
+                                const endH = Math.floor(endMin / 60);
+                                const endM = endMin % 60;
+                                const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                                apptTimeText = `${startStr} - ${endStr}`;
+
+                                if (bk.status === 'bloqueado') {
+                                  return (
+                                    <div 
+                                      key={bk.id}
+                                      className="appt-card bloqueado"
+                                      onClick={(e) => handleBookingLeftClick(e, bk)}
+                                      onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
+                                      style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
+                                    >
+                                      <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
+                                      <span className="appt-time">{apptTimeText}</span>
+                                      <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                        <Lock size={12} /> Bloqueado
+                                      </span>
+                                      <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
+                                        {bk.notes}
+                                      </span>
+                                    </div>
+                                  );
+                                }
+
+                                return (
+                                  <div 
+                                    key={bk.id} 
+                                    className={`appt-card ${bk.status} ${isSubsequent ? 'continuation' : ''}`}
+                                    onClick={(e) => handleBookingLeftClick(e, bk)}
+                                    onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
+                                    style={{ 
+                                      flex: 1, 
+                                      height: '100%', 
+                                      display: 'flex', 
+                                      flexDirection: 'column', 
+                                      justifyContent: 'center', 
+                                      position: 'relative',
+                                      ...(isSubsequent ? {
+                                        opacity: 0.85, 
+                                        borderTop: 'none', 
+                                        borderTopLeftRadius: 0, 
+                                        borderTopRightRadius: 0,
+                                        background: 'rgba(110, 47, 24, 0.08)',
+                                        borderLeft: '3px dashed var(--adm-gold)',
+                                        color: 'var(--text-muted)'
+                                      } : {})
+                                    }}
+                                  >
+                                    <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
+                                    <span className="appt-time">{isSubsequent ? `↳ ${apptTimeText} (Ocupado)` : apptTimeText}</span>
+                                    <span className="appt-client" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.clientName}</span>
+                                    <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.service?.name || bk.serviceName}</span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : absence ? (
                             <div 
                               className="appt-card bloqueado"
-                              style={{ 
-                                background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)', 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                               if (absence.fixed) {
+                                  const opt = prompt(
+                                    "O que deseja fazer com esta ausência fixa 'Psicóloga'?\n\n" +
+                                    "Digite '1' para Mudar o horário (Acessar Configurações)\n" +
+                                    "Digite '2' para Cancelar e deixar o slot vago (Desativar)\n" +
+                                    "Digite '3' para Adicionar como Horário Recorrente Geral\n\n" +
+                                    "Digite a opção (1, 2 ou 3):"
+                                  );
+                                  if (opt === '1') {
+                                    window.location.href = "/admin/settings?tab=politicas";
+                                  } else if (opt === '2') {
+                                    const updateFn = async () => {
+                                      const newSettings = { ...settings, disablePsicologa: true };
+                                      if (db && !isDemoMode) {
+                                        await updateDoc(doc(db, 'settings', 'studio'), { disablePsicologa: true });
+                                      } else {
+                                        localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+                                        window.dispatchEvent(new Event('settingsUpdated'));
+                                      }
+                                      toast("Bloqueio de Psicóloga desativado!", "success");
+                                      window.location.reload();
+                                    };
+                                    updateFn();
+                                  } else if (opt === '3') {
+                                    alert("Você pode gerenciar as ausências recorrentes na aba de Configurações de Escala do profissional.");
+                                    window.location.href = "/admin/settings?tab=profissionais";
+                                  }
+                                } else {
+                                  const opt = prompt(
+                                    `O que deseja fazer com a ausência "${absence.title}"?\n\n` +
+                                    "Digite '1' para Mudar o horário / Editar\n" +
+                                    "Digite '2' para Cancelar e deixar o slot vago (Excluir)\n" +
+                                    "Digite '3' para Tornar recorrente na semana\n\n" +
+                                    "Digite a opção (1, 2 ou 3):"
+                                  );
+                                  if (opt === '1') {
+                                    // Trigger editing flow or prompt new values
+                                    const newTitle = prompt("Digite o novo título da ausência:", absence.title);
+                                    if (newTitle !== null) {
+                                      const start = prompt("Novo horário de início (HH:MM):", absence.startTime || "08:00");
+                                      const end = prompt("Novo horário de término (HH:MM):", absence.endTime || "09:00");
+                                      if (start && end) {
+                                        const updatedAbs = { ...absence, title: newTitle, startTime: start, endTime: end };
+                                        const updateList = (settings.absences || []).map(a => a.id === absence.id ? updatedAbs : a);
+                                        const saveFn = async () => {
+                                          if (db && !isDemoMode) {
+                                            await updateDoc(doc(db, 'settings', 'studio'), { absences: updateList });
+                                          } else {
+                                            const newSettings = { ...settings, absences: updateList };
+                                            localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+                                            localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                                            window.dispatchEvent(new Event('settingsUpdated'));
+                                          }
+                                          toast("Ausência atualizada!", "success");
+                                          window.location.reload();
+                                        };
+                                        saveFn();
+                                      }
+                                    }
+                                  } else if (opt === '2') {
+                                    handleRemoveAbsence(absence);
+                                  } else if (opt === '3') {
+                                    // Make recurring (weekly)
+                                    const updatedAbs = { ...absence, recurrence: 'weekly', weekday: new Date().getDay() };
+                                    const updateList = (settings.absences || []).map(a => a.id === absence.id ? updatedAbs : a);
+                                    const saveFn = async () => {
+                                      if (db && !isDemoMode) {
+                                        await updateDoc(doc(db, 'settings', 'studio'), { absences: updateList });
+                                      } else {
+                                        const newSettings = { ...settings, absences: updateList };
+                                        localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                                        window.dispatchEvent(new Event('settingsUpdated'));
+                                      }
+                                      toast("Ausência definida como recorrente!", "success");
+                                      window.location.reload();
+                                    };
+                                    saveFn();
+                                  }
+                                }
+                              }}
+                              style={(() => {
+                                const title = (absence.title || '').toLowerCase();
+                                let bg = 'rgba(139, 124, 200, 0.12)';
+                                let border = '4px solid #8b7cc8';
+                                let color = '#8b7cc8';
+                                
+                                if (title.includes('médico') || title.includes('medico')) {
+                                  bg = 'rgba(235, 94, 85, 0.12)';
+                                  border = '4px solid #eb5e55';
+                                  color = '#eb5e55';
+                                } else if (title.includes('almoço') || title.includes('almoco')) {
+                                  bg = 'rgba(220, 163, 84, 0.12)';
+                                  border = '4px solid #dca354';
+                                  color = '#dca354';
+                                } else if (title.includes('folga')) {
+                                  bg = 'rgba(114, 137, 218, 0.12)';
+                                  border = '4px solid #7289da';
+                                  color = '#7289da';
+                                } else if (title.includes('viagem')) {
+                                  bg = 'rgba(74, 163, 223, 0.12)';
+                                  border = '4px solid #4aa3df';
+                                  color = '#4aa3df';
+                                } else if (title.includes('pausa')) {
+                                  bg = 'rgba(26, 188, 156, 0.12)';
+                                  border = '4px solid #1abc9c';
+                                  color = '#1abc9c';
+                                } else if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) {
+                                  bg = 'rgba(155, 89, 182, 0.12)';
+                                  border = '4px solid #9b59b6';
+                                  color = '#9b59b6';
+                                }
+                                
+                                return {
+                                  background: bg, 
+                                  borderLeft: border, 
+                                  color: color, 
+                                  cursor: 'pointer',
+                                  height: '100%',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  padding: '6px 8px',
+                                  margin: '2px'
+                                };
+                              })()}
+                            >
+                              <span className="appt-time" style={{ 
+                                color: (() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
+                                  if (title.includes('almoço') || title.includes('almoco')) return '#dca354';
+                                  if (title.includes('folga')) return '#7289da';
+                                  if (title.includes('viagem')) return '#4aa3df';
+                                  if (title.includes('pausa')) return '#1abc9c';
+                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
+                                  return '#8b7cc8';
+                                })()
+                              }}>{slot}</span>
+                              <span className="appt-client" style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: 4, 
+                                color: (() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
+                                  if (title.includes('almoço') || title.includes('almoco')) return '#dca354';
+                                  if (title.includes('folga')) return '#7289da';
+                                  if (title.includes('viagem')) return '#4aa3df';
+                                  if (title.includes('pausa')) return '#1abc9c';
+                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
+                                  return '#8b7cc8';
+                                })()
+                              }}>
+                                <Lock size={12} /> {absence.title}
+                              </span>
+                              <span className="appt-service" style={{ 
+                                color: (() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return 'rgba(235, 94, 85, 0.7)';
+                                  if (title.includes('almoço') || title.includes('almoco')) return 'rgba(220, 163, 84, 0.7)';
+                                  if (title.includes('folga')) return 'rgba(114, 137, 218, 0.7)';
+                                  if (title.includes('viagem')) return 'rgba(74, 163, 223, 0.7)';
+                                  if (title.includes('pausa')) return 'rgba(26, 188, 156, 0.7)';
+                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return 'rgba(155, 89, 182, 0.7)';
+                                  return 'rgba(139, 124, 200, 0.7)';
+                                })()
+                              }}>
+                                Ausência
+                              </span>
+                            </div>
+                          ) : blockedBySettings ? (
+                            <div
+                              className="appt-card bloqueado"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true);
+                              }}
+                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
+                              style={{
+                                background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
                                 color: '#475569',
                                 borderLeft: '4px solid #94a3b8',
-                                opacity: 0.85, 
-                                pointerEvents: 'none'
+                                opacity: 0.85,
+                                cursor: 'pointer',
+                                margin: '2px',
+                                height: 'calc(100% - 4px)'
                               }}
                             >
                               <span className="appt-time">{slot}</span>
@@ -2955,74 +3313,10 @@ Grande abraço, Jon.`;
                                 <Lock size={12} /> Bloqueado
                               </span>
                               <span className="appt-service">
-                                Configurações de Escala
+                                Clique para opções
                               </span>
                             </div>
-                          )}
-
-                          {appt && appt.status === 'bloqueado' && (
-                            <div 
-                              className="appt-card bloqueado"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedBooking(appt);
-                                setIsCheckoutOpen(false);
-                                setAddedServices([]);
-                                setAddedProducts([]);
-                              }}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
-                              style={{ height: apptHeight }}
-                            >
-                              <span className="appt-time">{apptTimeText}</span>
-                              <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <Lock size={12} /> Bloqueado
-                              </span>
-                              <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
-                                {appt.notes}
-                              </span>
-                            </div>
-                          )}
-                          
-                          {appt && appt.status !== 'bloqueado' && (
-                            <div 
-                              className={`appt-card ${appt.status}`}
-                              onClick={(e) => handleBookingLeftClick(e, appt)}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, appt)}
-                              style={{ height: apptHeight, display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
-                            >
-                              <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
-                              <span className="appt-time">{apptTimeText}</span>
-                              <span className="appt-client" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{appt.clientName}</span>
-                              <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{appt.service?.name || appt.serviceName}</span>
-                            </div>
-                          )}
-
-                          {ongoingAppt && (
-                            <div 
-                              className={`appt-card ${ongoingAppt.status} continuation`}
-                              onClick={(e) => handleBookingLeftClick(e, ongoingAppt)}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, ongoingAppt)}
-                              style={{ 
-                                opacity: 0.85, 
-                                borderTop: 'none', 
-                                borderTopLeftRadius: 0, 
-                                borderTopRightRadius: 0,
-                                background: ongoingAppt.status === 'bloqueado' ? undefined : 'rgba(110, 47, 24, 0.08)',
-                                borderLeft: ongoingAppt.status === 'bloqueado' ? '3px solid #a0aec0' : '3px dashed var(--adm-gold)',
-                                color: 'var(--text-muted)',
-                                height: ongoingHeight,
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                position: 'relative'
-                              }}
-                            >
-                              <MoreVertical size={12} style={{ position: 'absolute', top: '4px', right: '4px', opacity: 0.5 }} />
-                              <span className="appt-time" style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>↳ {ongoingTimeText} (Ocupado)</span>
-                              <span className="appt-client" style={{ fontSize: '0.78rem', fontWeight: 600, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{ongoingAppt.clientName}</span>
-                              <span className="appt-service" style={{ fontSize: '0.7rem', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{ongoingAppt.service?.name || ongoingAppt.serviceName}</span>
-                            </div>
-                          )}
+                          ) : null}
                         </div>
                       );
                     })}
@@ -3083,13 +3377,62 @@ Grande abraço, Jon.`;
 
                     return wDays.map(d => {
                       const dStr = getLocalDateString(d);
-                      const dayBookings = bookings.filter(b => 
+                      let dayBookings = bookings.filter(b => 
                         b.date === dStr && 
                         (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
                         b.status !== 'cancelado'
                       );
+                      const seenBookings = new Set();
+                      dayBookings = dayBookings.filter(b => {
+                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
+                        if (seenBookings.has(key)) return false;
+                        seenBookings.add(key);
+                        return true;
+                      });
 
                       const dayBlocks = getDayBlocks(prof, d);
+
+                      const effectiveAbsences = getEffectiveAbsences(settings);
+                      const dayAbsences = effectiveAbsences.filter(a => absenceCoversDate(a, dStr));
+
+                      // Merge all items into a common layout list for overlap calculation
+                      const layoutItems = [];
+
+                      dayBookings.forEach(b => {
+                        layoutItems.push({
+                          id: b.id,
+                          type: 'booking',
+                          startMin: timeToMin(b.time),
+                          endMin: timeToMin(b.time) + (b.duration || 60),
+                          raw: b
+                        });
+                      });
+
+                      dayBlocks.forEach((block, idx) => {
+                        layoutItems.push({
+                          id: `block-${idx}`,
+                          type: 'scale_block',
+                          startMin: timeToMin(block.start),
+                          endMin: timeToMin(block.end),
+                          label: block.label,
+                          raw: block
+                        });
+                      });
+
+                      dayAbsences.forEach((abs, idx) => {
+                        const start = abs.allDay ? '10:00' : (abs.startTime || '10:00');
+                        const end = abs.allDay ? '19:00' : (abs.endTime || '19:00');
+                        layoutItems.push({
+                          id: `absence-${abs.id || idx}`,
+                          type: 'absence',
+                          startMin: timeToMin(start),
+                          endMin: timeToMin(end),
+                          label: abs.title,
+                          raw: abs
+                        });
+                      });
+
+                      const positionedItems = calculateOverlappingLayout(layoutItems);
 
                       return (
                         <div 
@@ -3109,8 +3452,13 @@ Grande abraço, Jon.`;
                               const end = timeToMin(b.end);
                               return slotMin >= start && slotMin < end;
                             });
+                            const hasAbsence = dayAbsences.some(a => {
+                              const start = timeToMin(a.allDay ? '10:00' : (a.startTime || '10:00'));
+                              const end = timeToMin(a.allDay ? '19:00' : (a.endTime || '19:00'));
+                              return slotMin >= start && slotMin < end;
+                            });
 
-                            if (hasAppt || hasBlock) return null;
+                            if (hasAppt || hasBlock || hasAbsence) return null;
 
                             return (
                               <div
@@ -3129,27 +3477,147 @@ Grande abraço, Jon.`;
                             );
                           })}
 
-                          {/* Desenhar bloqueios */}
-                          {dayBlocks.map((block, idx) => {
-                            const startMin = timeToMin(block.start);
-                            const endMin = timeToMin(block.end);
-                            const duration = Math.max(30, endMin - startMin);
-                            
+                          {/* Desenhar todos os itens posicionados */}
+                          {positionedItems.map(item => {
+                            const startMin = item.startMin;
+                            const duration = Math.max(30, item.endMin - startMin);
                             const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
                             const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
 
                             if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
 
+                            const left = item.leftPercent;
+                            const width = item.widthPercent;
+
+                            if (item.type === 'booking') {
+                              const b = item.raw;
+                              return (
+                                <div 
+                                  key={item.id} 
+                                  className={`appt-card ${b.status}`}
+                                  onClick={(e) => handleBookingLeftClick(e, b)}
+                                  style={{
+                                    top: `${topPercent}%`,
+                                    height: `${heightPercent}%`,
+                                    position: 'absolute',
+                                    left: `${left}%`,
+                                    width: `${width}%`,
+                                    padding: '4px',
+                                    zIndex: 3,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    overflow: 'hidden'
+                                  }}
+                                >
+                                  <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
+                                  <span className="appt-client" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.clientName}</span>
+                                  <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
+                                </div>
+                              );
+                            }
+
+                            if (item.type === 'absence') {
+                              const abs = item.raw;
+                              return (
+                                <div 
+                                  key={item.id} 
+                                  className="appt-card bloqueado"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (abs.fixed) {
+                                      if (confirm("Esta é a ausência fixa 'Psicóloga'. Deseja desativá-la temporariamente nas configurações do sistema?")) {
+                                        const updateFn = async () => {
+                                          const newSettings = { ...settings, disablePsicologa: true };
+                                          if (db && !isDemoMode) {
+                                            await updateDoc(doc(db, 'settings', 'studio'), { disablePsicologa: true });
+                                          } else {
+                                            localStorage.setItem('demo_settings', JSON.stringify(newSettings));
+                                            localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                                            window.dispatchEvent(new Event('settingsUpdated'));
+                                          }
+                                          toast("Bloqueio de Psicóloga desativado!", "success");
+                                          window.location.reload();
+                                        };
+                                        updateFn();
+                                      }
+                                    } else {
+                                      if (confirm(`Deseja excluir a ausência "${abs.title}"?`)) {
+                                        handleRemoveAbsence(abs);
+                                      }
+                                    }
+                                  }}
+                                  style={(() => {
+                                const title = (abs.title || '').toLowerCase();
+                                let bg = 'rgba(139, 124, 200, 0.12)';
+                                let border = '4px solid #8b7cc8';
+                                let color = '#8b7cc8';
+                                
+                                if (title.includes('médico') || title.includes('medico')) {
+                                  bg = 'rgba(235, 94, 85, 0.12)';
+                                  border = '4px solid #eb5e55';
+                                  color = '#eb5e55';
+                                } else if (title.includes('almoço') || title.includes('almoco')) {
+                                  bg = 'rgba(220, 163, 84, 0.12)';
+                                  border = '4px solid #dca354';
+                                  color = '#dca354';
+                                } else if (title.includes('folga')) {
+                                  bg = 'rgba(114, 137, 218, 0.12)';
+                                  border = '4px solid #7289da';
+                                  color = '#7289da';
+                                } else if (title.includes('viagem')) {
+                                  bg = 'rgba(74, 163, 223, 0.12)';
+                                  border = '4px solid #4aa3df';
+                                  color = '#4aa3df';
+                                } else if (title.includes('pausa')) {
+                                  bg = 'rgba(26, 188, 156, 0.12)';
+                                  border = '4px solid #1abc9c';
+                                  color = '#1abc9c';
+                                } else if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) {
+                                  bg = 'rgba(155, 89, 182, 0.12)';
+                                  border = '4px solid #9b59b6';
+                                  color = '#9b59b6';
+                                }
+                                
+                                return {
+                                  position: 'absolute',
+                                  top: `${topPercent}%`,
+                                  height: `${heightPercent}%`,
+                                  left: `${left}%`,
+                                  width: `${width}%`,
+                                  background: bg, 
+                                  borderLeft: border, 
+                                  color: color, 
+                                  cursor: 'pointer',
+                                  padding: '6px 8px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  overflow: 'hidden',
+                                  zIndex: 2
+                                };
+                              })()}
+                                >
+                                  <span className="appt-time" style={{ fontWeight: 'bold' }}>
+                                    {abs.allDay ? 'Dia Inteiro' : `${abs.startTime} - ${abs.endTime}`}
+                                  </span>
+                                  <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                    <Lock size={12} /> {abs.title}
+                                  </span>
+                                </div>
+                              );
+                            }
+
+                            // scale_block
                             return (
                               <div 
-                                key={`block-${idx}`} 
+                                key={item.id} 
                                 className="appt-card bloqueado"
                                 style={{
                                   top: `${topPercent}%`,
                                   height: `${heightPercent}%`,
                                   position: 'absolute',
-                                  left: 4,
-                                  right: 4,
+                                  left: `${left}%`,
+                                  width: `${width}%`,
                                   background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
                                   color: '#475569',
                                   borderLeft: '4px solid #94a3b8',
@@ -3158,48 +3626,14 @@ Grande abraço, Jon.`;
                                   display: 'flex',
                                   flexDirection: 'column',
                                   overflow: 'hidden',
-                                  zIndex: 2
+                                  zIndex: 2,
+                                  pointerEvents: 'none'
                                 }}
                               >
-                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{block.start} - {block.end}</span>
+                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{item.raw.start} - {item.raw.end}</span>
                                 <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                  <Lock size={12} /> {block.label}
+                                  <Lock size={12} /> {item.label}
                                 </span>
-                              </div>
-                            );
-                          })}
-
-                          {/* Desenhar agendamentos */}
-                          {dayBookings.map(b => {
-                            const startMin = timeToMin(b.time);
-                            const duration = b.duration || 60;
-                            
-                            const topPercent = Math.max(0, ((startMin - 600) / 540) * 100);
-                            const heightPercent = Math.min(100 - topPercent, (duration / 540) * 100);
-
-                            if (topPercent >= 100 || topPercent + heightPercent <= 0) return null;
-
-                            return (
-                              <div 
-                                key={b.id} 
-                                className={`appt-card ${b.status}`}
-                                onClick={(e) => handleBookingLeftClick(e, b)}
-                                style={{
-                                  top: `${topPercent}%`,
-                                  height: `${heightPercent}%`,
-                                  position: 'absolute',
-                                  left: 4,
-                                  right: 4,
-                                  zIndex: 3,
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  justifyContent: 'center',
-                                  overflow: 'hidden'
-                                }}
-                              >
-                                <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
-                                <span className="appt-client" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.clientName}</span>
-                                <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
                               </div>
                             );
                           })}
@@ -3341,7 +3775,11 @@ Grande abraço, Jon.`;
           onClick={e => e.stopPropagation()}
         >
           <div className="booking-popover-header">
-            <span className="booking-popover-client">{activePopover.booking.clientName.toUpperCase()}</span>
+            <span className="booking-popover-client">
+              {activePopover.booking.status === 'bloqueado' 
+                ? (activePopover.booking.notes || 'HORÁRIO BLOQUEADO').toUpperCase() 
+                : activePopover.booking.clientName.toUpperCase()}
+            </span>
             <button 
               className="btn-icon" 
               style={{ padding: 2, border: 'none', background: 'none' }}
@@ -3362,48 +3800,54 @@ Grande abraço, Jon.`;
                 return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
               })()}</span>
             </div>
-            <div className="booking-popover-row">
-              <Phone size={12} className="text-muted" />
-              {activePopover.booking.status === 'finalizado' ? (
-                <button 
-                  onClick={() => {
-                    handleSendFeedbackWhatsApp(activePopover.booking);
-                  }}
-                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#25D366', fontWeight: '600', fontFamily: 'inherit', fontSize: 'inherit' }}
-                >
-                  <Send size={11} style={{ marginRight: 4 }} /> Pedir Avaliação
-                </button>
-              ) : (
-                <a 
-                  href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
-                </a>
-              )}
-            </div>
+            {activePopover.booking.status !== 'bloqueado' && (
+              <div className="booking-popover-row">
+                <Phone size={12} className="text-muted" />
+                {activePopover.booking.status === 'finalizado' ? (
+                  <button 
+                    onClick={() => {
+                      handleSendFeedbackWhatsApp(activePopover.booking);
+                    }}
+                    style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: '#25D366', fontWeight: '600', fontFamily: 'inherit', fontSize: 'inherit' }}
+                  >
+                    <Send size={11} style={{ marginRight: 4 }} /> Pedir Avaliação
+                  </button>
+                ) : (
+                  <a 
+                    href={getWhatsAppConfirmationUrl(activePopover.booking.clientPhone, activePopover.booking)}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <Send size={11} style={{ marginRight: 4 }} /> WhatsApp
+                  </a>
+                )}
+              </div>
+            )}
             <div className="booking-popover-row">
               <User size={12} className="text-muted" />
               <span>Profissional: {activeProfessionalsList.find(p => p.id === (activePopover.booking.profissional || 'jon'))?.name || 'Jon'}</span>
             </div>
             <div className="booking-popover-row">
               <FileText size={12} className="text-muted" />
-              <span>Serviço: {activePopover.booking.serviceName || activePopover.booking.service?.name}</span>
+              {activePopover.booking.status === 'bloqueado' ? (
+                <span>Motivo: {activePopover.booking.notes || 'Bloqueio administrativo'}</span>
+              ) : (
+                <span>Serviço: {activePopover.booking.serviceName || activePopover.booking.service?.name}</span>
+              )}
             </div>
             <div className="booking-popover-row">
               <span className={`appt-status-dot ${activePopover.booking.status}`} />
               <span style={{ textTransform: 'capitalize' }}>Status: {activePopover.booking.status}</span>
             </div>
             
-            {activePopover.booking.isPackageUse && (
+            {activePopover.booking.status !== 'bloqueado' && activePopover.booking.isPackageUse && (
               <div className="booking-popover-row" style={{ color: 'var(--adm-gold)', fontWeight: 'bold', gap: 6 }}>
                 <Package size={12} />
                 <span>Uso de Pacote</span>
               </div>
             )}
             
-            {activePopover.booking.isPackageAcquisition && (
+            {activePopover.booking.status !== 'bloqueado' && activePopover.booking.isPackageAcquisition && (
               <div className="booking-popover-row" style={{ color: 'var(--adm-gold)', fontWeight: 'bold', gap: 6 }}>
                 <Package size={12} />
                 <span>Aquisição de Pacote</span>
@@ -3411,6 +3855,37 @@ Grande abraço, Jon.`;
             )}
             
             <div className="booking-popover-actions">
+              {activePopover.booking.status === 'bloqueado' && (
+                <button
+                  className="btn btn-accent"
+                  style={{ padding: '4px 8px', fontSize: '0.75rem', flexGrow: 1 }}
+                  onClick={() => {
+                    setBlockIdToCancelOnSuccess(activePopover.booking.id);
+                    setSelectedSlot({
+                      date: activePopover.booking.date,
+                      time: activePopover.booking.time,
+                      profissional: activePopover.booking.profissional || 'jon',
+                      dateFormatted: activePopover.booking.date
+                    });
+                    setNewBooking({
+                      clientName: '',
+                      clientPhone: '',
+                      clientEmail: '',
+                      serviceName: services[0]?.name || '',
+                      servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+                      duration: services[0]?.duration || 60,
+                      date: activePopover.booking.date,
+                      time: activePopover.booking.time,
+                      notes: '',
+                      profissional: activePopover.booking.profissional || 'jon'
+                    });
+                    setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                    setShowAddModal(true);
+                  }}
+                >
+                  Fazer Agendamento
+                </button>
+              )}
               <button 
                 className="btn" 
                 style={{ 
@@ -3454,9 +3929,31 @@ Grande abraço, Jon.`;
                     borderWidth: '1px'
                   }}
                   onClick={() => {
-                    if (confirm('Tem certeza que deseja cancelar este agendamento?')) {
-                      handleUpdateStatus(activePopover.booking.id, 'cancelado');
-                      setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                    const isFixedAbsence = activePopover.booking.id === 'fixed-psicologa' || activePopover.booking.fixed;
+                    const msg = isFixedAbsence
+                      ? "Esta é a ausência fixa 'Psicóloga'. Deseja desativá-la temporariamente nas configurações do sistema?"
+                      : activePopover.booking.status === 'bloqueado'
+                      ? 'Tem certeza que deseja desbloquear este horário?'
+                      : 'Tem certeza que deseja cancelar este agendamento?';
+                    if (confirm(msg)) {
+                      if (isFixedAbsence) {
+                        const updateFn = async () => {
+                          const newSettings = { ...settings, disablePsicologa: true };
+                          if (db && !isDemoMode) {
+                            await updateDoc(doc(db, 'settings', 'studio'), { disablePsicologa: true });
+                          } else {
+                            localStorage.setItem('demo_studio_settings', JSON.stringify(newSettings));
+                            window.dispatchEvent(new Event('settingsUpdated'));
+                          }
+                          toast("Bloqueio de Psicóloga desativado!", "success");
+                          setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                          window.location.reload();
+                        };
+                        updateFn();
+                      } else {
+                        handleUpdateStatus(activePopover.booking.id, 'cancelado');
+                        setActivePopover({ visible: false, x: 0, y: 0, booking: null });
+                      }
                     }
                   }}
                   onMouseEnter={e => {
@@ -3469,7 +3966,7 @@ Grande abraço, Jon.`;
                     e.currentTarget.style.borderColor = '#ef4444';
                   }}
                 >
-                  Cancelar
+                  {activePopover.booking.status === 'bloqueado' ? 'Desbloquear' : 'Cancelar'}
                 </button>
               )}
               {activePopover.booking.status === 'confirmado' && (
@@ -3600,6 +4097,19 @@ Grande abraço, Jon.`;
                 <Trash2 size={14} /> Cancelar Agendamento
               </li>
             </>
+          ) : contextMenu.isBlockedSlot ? (
+            <>
+              <li className="context-menu-item" onClick={() => {
+                const profName = activeProfessionalsList.find(p => p.id === contextMenu.professional)?.name || 'Jon';
+                handleCellClick(contextMenu.date, contextMenu.time, contextMenu.professional, profName);
+                setContextMenu({ visible: false });
+              }}>
+                <Plus size={14} /> Agendar Cliente
+              </li>
+              <li className="context-menu-item danger" onClick={handleRemoveBlockedSlot}>
+                <Unlock size={14} /> Cancelar Bloqueio
+              </li>
+            </>
           ) : (
             <>
               <li className="context-menu-item" onClick={() => {
@@ -3637,7 +4147,11 @@ Grande abraço, Jon.`;
             
             <div className="trinks-modal-header">
               <h3 className="trinks-modal-title">
-                <Edit size={20} /> EDITAR AGENDAMENTO
+                {selectedBooking.status === 'bloqueado' ? (
+                  <><Lock size={20} /> EDITAR HORÁRIO BLOQUEADO</>
+                ) : (
+                  <><Edit size={20} /> EDITAR AGENDAMENTO</>
+                )}
               </h3>
               <button 
                 type="button" 
@@ -3835,10 +4349,9 @@ Grande abraço, Jon.`;
                       }));
                     }}
                   >
-                    <option value="">Selecione um serviço</option>
                     {services.map(s => (
                       <option key={s.id} value={s.name}>
-                        {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                        {s.name}
                       </option>
                     ))}
                   </select>
@@ -4087,38 +4600,219 @@ Grande abraço, Jon.`;
                     const tx = transactions.find(t => t.bookingId === selectedBooking.id);
                     return (
                       <div className="comanda-details" style={{ marginTop: 16, padding: 12, border: '1px solid var(--adm-rule)', borderRadius: 8, background: 'rgba(255,255,255,0.02)' }}>
-                        <h4 style={{ margin: '0 0 10px 0', color: 'var(--adm-gold)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6 }}>
-                          💳 Comanda / Financeiro
+                        <h4 style={{ margin: '0 0 10px 0', color: 'var(--adm-gold)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between' }}>
+                          <span>💳 Comanda / Financeiro</span>
+                          {tx && (
+                            <button
+                              type="button"
+                              className="btn btn-ghost"
+                              style={{ padding: '2px 8px', fontSize: '0.75rem', borderColor: 'var(--adm-rule)' }}
+                              onClick={() => {
+                                if (isEditingComanda) {
+                                  setIsEditingComanda(false);
+                                } else {
+                                  setEditComandaForm({
+                                    value: tx.value || 0,
+                                    paymentMethod: tx.paymentMethod || 'Pix',
+                                    productSales: tx.productSales ? JSON.parse(JSON.stringify(tx.productSales)) : []
+                                  });
+                                  setIsEditingComanda(true);
+                                }
+                              }}
+                            >
+                              {isEditingComanda ? 'Cancelar' : 'Editar'}
+                            </button>
+                          )}
                         </h4>
                         {tx ? (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                            <div className="detail-row" style={{ margin: 0 }}>
-                              <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Método de Pagamento:</label>
-                              <span style={{ fontSize: '0.85rem' }}>{tx.paymentMethod}</span>
+                          isEditingComanda ? (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              <div className="form-group" style={{ marginBottom: 4 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Método de Pagamento:</label>
+                                <select
+                                  value={editComandaForm.paymentMethod}
+                                  onChange={e => setEditComandaForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                                  style={{ padding: '6px', width: '100%', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem' }}
+                                >
+                                  <option value="Pix">Pix</option>
+                                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                  <option value="Cartão de Débito">Cartão de Débito</option>
+                                  <option value="Dinheiro">Dinheiro</option>
+                                </select>
+                              </div>
+                              <div className="form-group" style={{ marginBottom: 4 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total (R$):</label>
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={editComandaForm.value}
+                                  onChange={e => setEditComandaForm(prev => ({ ...prev, value: Number(e.target.value) }))}
+                                  style={{ padding: '6px', width: '100%', borderRadius: 4, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.8rem' }}
+                                />
+                              </div>
+                              
+                              <div style={{ marginTop: 8 }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--adm-text)', display: 'block', marginBottom: 4 }}>
+                                  Editar Quantidades / Remover Produtos:
+                                </span>
+                                {editComandaForm.productSales && editComandaForm.productSales.length > 0 ? (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                                    {editComandaForm.productSales.map((ps, idx) => (
+                                      <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
+                                        <span>{ps.name}</span>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                          <input
+                                            type="number"
+                                            min={1}
+                                            value={ps.quantity}
+                                            onChange={e => {
+                                              const newQty = parseInt(e.target.value) || 1;
+                                              const updated = [...editComandaForm.productSales];
+                                              updated[idx].quantity = newQty;
+                                              setEditComandaForm(prev => ({ ...prev, productSales: updated }));
+                                            }}
+                                            style={{ width: 45, padding: '2px', textAlign: 'center', background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', borderRadius: 4 }}
+                                          />
+                                          <button
+                                            type="button"
+                                            className="btn-icon"
+                                            onClick={() => {
+                                              const updated = editComandaForm.productSales.filter((_, i) => i !== idx);
+                                              setEditComandaForm(prev => ({ ...prev, productSales: updated }));
+                                            }}
+                                            style={{ padding: 2, background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}
+                                          >
+                                            <Trash2 size={14} />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>Nenhum produto vendido.</span>
+                                )}
+                              </div>
+                              
+                              <button
+                                type="button"
+                                className="btn btn-accent"
+                                style={{ marginTop: 12, width: '100%', padding: '6px', fontSize: '0.8rem' }}
+                                onClick={async () => {
+                                  try {
+                                    const originalSales = tx.productSales || [];
+                                    const editedSales = editComandaForm.productSales;
+                                    
+                                    // Update products stock
+                                    for (const orig of originalSales) {
+                                      const prod = products.find(p => p.id === orig.productId);
+                                      if (prod) {
+                                        const editedMatch = editedSales.find(e => e.productId === orig.productId);
+                                        const currentQty = editedMatch ? editedMatch.quantity : 0;
+                                        const diff = orig.quantity - currentQty;
+                                        
+                                        if (diff !== 0) {
+                                          const newStock = Math.max(0, prod.quantity + diff);
+                                          if (isDemoMode || !db) {
+                                            setProducts(prev => prev.map(p => p.id === prod.id ? { ...p, quantity: newStock } : p));
+                                            const demoProds = JSON.parse(localStorage.getItem('demo_products') || '[]')
+                                              .map(p => p.id === prod.id ? { ...p, quantity: newStock } : p);
+                                            localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                          } else {
+                                            await updateDoc(doc(db, 'products', prod.id), { quantity: newStock });
+                                          }
+                                        }
+                                      }
+                                    }
+                                    
+                                    for (const editItem of editedSales) {
+                                      const origMatch = originalSales.find(o => o.productId === editItem.productId);
+                                      if (!origMatch) {
+                                        const prod = products.find(p => p.id === editItem.productId);
+                                        if (prod) {
+                                          const newStock = Math.max(0, prod.quantity - editItem.quantity);
+                                          if (isDemoMode || !db) {
+                                            setProducts(prev => prev.map(p => p.id === prod.id ? { ...p, quantity: newStock } : p));
+                                            const demoProds = JSON.parse(localStorage.getItem('demo_products') || '[]')
+                                              .map(p => p.id === prod.id ? { ...p, quantity: newStock } : p);
+                                            localStorage.setItem('demo_products', JSON.stringify(demoProds));
+                                          } else {
+                                            await updateDoc(doc(db, 'products', prod.id), { quantity: newStock });
+                                          }
+                                        }
+                                      }
+                                    }
+
+                                    const updatedFields = {
+                                      value: Number(editComandaForm.value),
+                                      paymentMethod: editComandaForm.paymentMethod,
+                                      productSales: editedSales
+                                    };
+
+                                    if (isDemoMode || !db) {
+                                      const demoTxStr = localStorage.getItem('demo_financial') || '[]';
+                                      const demoTx = JSON.parse(demoTxStr).map(t => t.id === tx.id ? { ...t, ...updatedFields } : t);
+                                      localStorage.setItem('demo_financial', JSON.stringify(demoTx));
+                                      localStorage.setItem('demo_transactions', JSON.stringify(demoTx));
+                                      setTransactions(demoTx);
+                                    } else {
+                                      await updateDoc(doc(db, 'financial_transactions', tx.id), updatedFields);
+                                    }
+
+                                    // Update booking document
+                                    const bookingUpdate = {
+                                      paymentMethod: editComandaForm.paymentMethod,
+                                      finalValue: Number(editComandaForm.value)
+                                    };
+
+                                    if (isDemoMode || !db) {
+                                      setBookings(prev => prev.map(b => b.id === selectedBooking.id ? { ...b, ...bookingUpdate } : b));
+                                      setSelectedBooking(prev => prev ? { ...prev, ...bookingUpdate } : null);
+                                    } else {
+                                      await updateDoc(doc(db, 'bookings', selectedBooking.id), bookingUpdate);
+                                      setSelectedBooking(prev => prev ? { ...prev, ...bookingUpdate } : null);
+                                    }
+
+                                    setIsEditingComanda(false);
+                                    toast('Comanda atualizada com sucesso!', 'success');
+                                  } catch (err) {
+                                    console.error(err);
+                                    toast('Erro ao atualizar comanda.', 'error');
+                                  }
+                                }}
+                              >
+                                Salvar Alterações
+                              </button>
                             </div>
-                            <div className="detail-row" style={{ margin: 0 }}>
-                              <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total:</label>
-                              <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {tx.value?.toFixed(2).replace('.', ',')}</span>
+                          ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                              <div className="detail-row" style={{ margin: 0 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Método de Pagamento:</label>
+                                <span style={{ fontSize: '0.85rem' }}>{tx.paymentMethod}</span>
+                              </div>
+                              <div className="detail-row" style={{ margin: 0 }}>
+                                <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total:</label>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {tx.value?.toFixed(2).replace('.', ',')}</span>
+                              </div>
+                              
+                              <div style={{ marginTop: 8 }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--adm-text)', display: 'block', marginBottom: 4 }}>
+                                  Produtos Vendidos:
+                                </span>
+                                {tx.productSales && tx.productSales.length > 0 ? (
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                    {tx.productSales.map((ps, idx) => (
+                                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
+                                        <span>{ps.name} (x{ps.quantity})</span>
+                                        <span style={{ fontWeight: 600 }}>R$ {(ps.sellingPrice * ps.quantity).toFixed(2).replace('.', ',')}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>Nenhum produto vendido registrado.</span>
+                                )}
+                              </div>
                             </div>
-                            
-                            <div style={{ marginTop: 8 }}>
-                              <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--adm-text)', display: 'block', marginBottom: 4 }}>
-                                Produtos Vendidos:
-                              </span>
-                              {tx.productSales && tx.productSales.length > 0 ? (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                                  {tx.productSales.map((ps, idx) => (
-                                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
-                                      <span>{ps.name} (x{ps.quantity})</span>
-                                      <span style={{ fontWeight: 600 }}>R$ {(ps.sellingPrice * ps.quantity).toFixed(2).replace('.', ',')}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>Nenhum produto vendido registrado.</span>
-                              )}
-                            </div>
-                          </div>
+                          )
                         ) : (
                           <div style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
                             Nenhum registro financeiro encontrado para este agendamento.
@@ -4753,7 +5447,7 @@ Grande abraço, Jon.`;
                   <option value="">Selecione um serviço</option>
                   {services.map(s => (
                     <option key={s.id} value={s.name}>
-                      {s.name} ({s.promoPrice ? `Promo: R$ ${s.promoPrice}` : `R$ ${s.price}`})
+                      {s.name}
                     </option>
                   ))}
                 </select>
