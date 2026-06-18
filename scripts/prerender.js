@@ -441,12 +441,36 @@ const reviewsSchema = {
 };
 
 
+const homeBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Especialista em Cabelo Cacheado, Crespo e Ondulado em Belo Horizonte</h1>
+      <p>Jonatan Junior, o Jon, é cabeleireiro especialista em cabelos ondulados, cacheados e crespos no bairro Caiçara, Belo Horizonte (MG). Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas realizado antes de qualquer corte. Atende todas as curvaturas, do tipo 2A ao 4C. Não realiza alisamento, relaxamento ou qualquer procedimento de modificação da curvatura.</p>
+      <h2>Serviços Principais</h2>
+      <ul>
+        <li><strong>Corte com o Jon</strong> — R$ 190. Inclui Leitura de Fio completa, corte e finalização educativa.</li>
+        <li><strong>Leitura de Fio</strong> — R$ 80 (revertido em crédito se fechar serviço). Diagnóstico exclusivo de 7 etapas.</li>
+        <li><strong>Combo Corte + Tratamento</strong> — R$ 320. Corte especializado com tratamento de alta performance.</li>
+        <li><strong>Descoloração em Cabelo Cacheado</strong> — A partir de R$ 699. Com diagnóstico de porosidade e histórico químico.</li>
+        <li><strong>Tratamento Personalizado</strong> — R$ 130. Hidratação, nutrição ou reconstrução conforme diagnóstico.</li>
+      </ul>
+      <h2>O Método Leitura de Fio</h2>
+      <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra.</p>
+      <h2>Localização e Agendamento</h2>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
+      <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
+    </article>
+  </noscript>
+`;
+
+
 // Definition of static pages with their specific metadata
 const pages = [
   {
     route: '/',
     title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
     description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçara). Corte a seco, visagismo e transição capilar.',
+    bodyInsert: homeBody,
     schema: {
       "@context": "https://schema.org",
       "@graph": [localBusinessSchema, founderPersonSchema]
