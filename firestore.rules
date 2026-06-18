@@ -39,10 +39,12 @@ service cloud.firestore {
 
     // ============================
     // PRODUTOS / ESTOQUE (products)
-    // Só admin autenticado pode ler e escrever
+    // Qualquer um pode ler (exibição pública no catálogo)
+    // Só admin autenticado pode escrever
     // ============================
     match /products/{productId} {
-      allow read, write: if request.auth != null;
+      allow read: if true;
+      allow write: if request.auth != null;
     }
 
     // ============================

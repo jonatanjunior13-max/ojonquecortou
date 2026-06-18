@@ -2533,6 +2533,20 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                   </div>
                 )}
 
+                {gbpConnected && settings?.automations?.googleGbpLastError === 'needs_reconnect' && (
+                  <div style={{ padding: '16px', background: 'rgba(213,100,20,0.08)', border: '1px solid rgba(213,100,20,0.3)', borderRadius: 8, marginBottom: 20, fontSize: '0.82rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                      <span style={{ fontSize: '1.2rem', marginTop: '2px' }}>⚠️</span>
+                      <div>
+                        <strong style={{ color: '#d56414', fontSize: '0.85rem' }}>Reconexão Necessária com o Google</strong>
+                        <p style={{ margin: '8px 0', color: 'var(--adm-text)', lineHeight: 1.5 }}>
+                          Atualizamos as permissões necessárias para incluir a sincronização de produtos com o Google Merchant Center. Para ativar esta função, clique em <strong>"Desconectar"</strong> e depois em <strong>"Conectar Google"</strong> novamente para autorizar as novas permissões.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
                   
                   {/* Coluna 1: Comentários e Avaliações */}

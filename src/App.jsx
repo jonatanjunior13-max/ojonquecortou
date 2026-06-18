@@ -22,6 +22,8 @@ import InvestimentoPage from './pages/InvestimentoPage';
 import BookingPage from './pages/BookingPage';
 import CancelBookingPage from './pages/CancelBookingPage';
 import ClientAreaPage from './pages/ClientAreaPage';
+import ProductsPage from './pages/ProductsPage';
+import ProductDetailPage from './pages/ProductDetailPage';
 
 import CorteHibridoPage from './pages/CorteHibridoPage';
 import TransicaoCapilarPage from './pages/TransicaoCapilarPage';
@@ -89,6 +91,8 @@ function App() {
           <Route path="/agendar" element={<BookingPage />} />
           <Route path="/cancelar" element={<CancelBookingPage />} />
           <Route path="/cliente" element={<ClientAreaPage />} />
+          <Route path="/produtos" element={<ProductsPage />} />
+          <Route path="/produtos/:productId" element={<ProductDetailPage />} />
         </Route>
 
         {/* Rotas Administrativas */}

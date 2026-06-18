@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { google } from 'googleapis';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -64,7 +65,7 @@ export default async function handler(req, res) {
     const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
     const protocol = isLocal ? 'http' : 'https';
     const redirect_uri = `${protocol}://${req.headers.host}/api/gbp?action=callback`;
-    const scope = 'https://www.googleapis.com/auth/business.manage';
+    const scope = 'https://www.googleapis.com/auth/business.manage https://www.googleapis.com/auth/content';
     
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
     
@@ -536,7 +537,7 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: 'Método não permitido. Utilize POST.' });
     }
 
-    const { id, name, sellingPrice, category } = req.body;
+    const { id, name, sellingPrice, category, image } = req.body;
     if (!name || !sellingPrice) {
       return res.status(400).json({ error: 'Nome e Preço de Venda do produto são obrigatórios.' });
     }
@@ -550,58 +551,86 @@ export default async function handler(req, res) {
       const settings = settingsSnap.data();
       const automations = settings?.automations || {};
       const refreshToken = automations.googleGbpRefreshToken || process.env.GOOGLE_REFRESH_TOKEN;
-      const accountId = automations.googleGbpAccountId || 'personal';
+      const merchantId = automations.googleMerchantId || '5809472410';
       const locationId = automations.googleGbpLocationId || process.env.GOOGLE_LOCATION_ID;
 
-      if (!refreshToken || !locationId) {
+      if (!refreshToken) {
         return res.status(200).json({
           success: true,
-          message: 'Sincronização com o Google simulada com sucesso!'
+          message: 'Sincronização com o Google simulada com sucesso! (Nenhum Token Conectado)'
         });
       }
 
-      // Renovar access token
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          refresh_token: refreshToken,
-          grant_type: 'refresh_token'
-        })
+      const oauth2Client = new google.auth.OAuth2(
+        process.env.GOOGLE_CLIENT_ID,
+        process.env.GOOGLE_CLIENT_SECRET
+      );
+
+      oauth2Client.setCredentials({
+        refresh_token: refreshToken
       });
 
-      const tokenData = await tokenResponse.json();
-      if (!tokenResponse.ok) {
-        console.error('Erro ao renovar token no sync-product:', tokenData);
-        return res.status(500).json({ error: 'Erro ao renovar token de acesso com o Google.' });
+      const content = google.content({
+        version: 'v2.1',
+        auth: oauth2Client
+      });
+
+      const imageUrl = formatGoogleImageUrl(image);
+
+      try {
+        console.log('Enviando produto para o Google Merchant Center...', name);
+        const googleResponse = await content.products.insert({
+          merchantId: merchantId,
+          requestBody: {
+            offerId: id || `p_${Date.now()}`,
+            title: name,
+            description: `Adquira ${name} no Studio do Jon. Especialista em cabelos cacheados em Belo Horizonte.`,
+            link: `https://www.ojonquecortou.com.br/produtos/${id || 'p1'}`,
+            imageLink: imageUrl || 'https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png',
+            contentLanguage: 'pt',
+            targetCountry: 'BR',
+            feedLabel: 'BR',
+            channel: 'online',
+            price: {
+              value: String(sellingPrice),
+              currency: 'BRL'
+            },
+            availability: 'in stock',
+            condition: 'new',
+            brand: 'Studio do Jon'
+          }
+        });
+
+        // Limpar qualquer erro anterior se a sincronização foi bem sucedida
+        if (automations.googleGbpLastError === 'needs_reconnect') {
+          await updateDoc(doc(db, 'settings', 'studio'), {
+            'automations.googleGbpLastError': null
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: 'Produto sincronizado com sucesso no Google!',
+          data: googleResponse.data
+        });
+
+      } catch (apiError) {
+        console.error('Erro na API do Merchant Center:', apiError);
+        const errMsg = apiError.message || '';
+        
+        // Se for erro de permissão (ex: escopo ausente porque o usuário não reconectou ainda)
+        if (errMsg.includes('insufficient') || errMsg.includes('permission') || apiError.code === 403) {
+          await updateDoc(doc(db, 'settings', 'studio'), {
+            'automations.googleGbpLastError': 'needs_reconnect'
+          });
+          return res.status(403).json({
+            error: 'Permissões insuficientes no Google. Necessário reconectar a conta.',
+            details: errMsg
+          });
+        }
+
+        throw apiError;
       }
-
-      const accessToken = tokenData.access_token;
-
-      // Google GBP Local Product payload
-      const productPayload = {
-        title: name,
-        price: {
-          currencyCode: 'BRL',
-          units: String(Math.floor(sellingPrice)),
-          nanos: Math.round((sellingPrice % 1) * 1e9)
-        },
-        offerUri: `https://www.ojonquecortou.com.br/produtos/${id || 'p1'}`,
-        category: category || 'Outros'
-      };
-
-      // Call localProducts API: https://developers.google.com/my-business/reference/rest/v1/accounts.locations.localProducts
-      // For standard setup, we can batch update or use the merchant upload path.
-      // We will perform a POST request to simulated success or correct endpoint.
-      console.log('Sincronizando com Google Perfil da Empresa...', productPayload);
-
-      return res.status(200).json({
-        success: true,
-        message: 'Produto sincronizado com sucesso no Google Meu Negócio!',
-        data: productPayload
-      });
 
     } catch (error) {
       console.error('Erro na sincronização do produto com GBP:', error);
