@@ -1865,14 +1865,16 @@ const AdminDashboard = () => {
         });
         syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
+        const updatePromises = [];
         for (const added of addedProducts) {
           const prodRef = doc(db, 'products', added.productId);
           const match = products.find(p => p.id === added.productId);
           if (match) {
             const newQty = Math.max(0, match.quantity - added.quantity);
-            await updateDoc(prodRef, { quantity: newQty });
+            updatePromises.push(updateDoc(prodRef, { quantity: newQty }));
           }
         }
+        await Promise.all(updatePromises);
 
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
 
