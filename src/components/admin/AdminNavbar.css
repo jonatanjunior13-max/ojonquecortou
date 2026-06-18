@@ -20,6 +20,13 @@
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
   position: relative;
+  transition: padding-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+@media (min-width: 768px) {
+  .admin-app-container:has(.admin-sidebar:hover) {
+    padding-left: 200px;
+  }
 }
 
 /* Sidebar */
@@ -549,5 +556,66 @@
 
   .topbar-user {
     display: none !important;
+  }
+}
+
+/* Desktop layout and topbar styling */
+@media (min-width: 768px) {
+  .admin-main-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    padding: 0 32px;
+    background: var(--adm-surface);
+    border-bottom: 0.5px solid var(--adm-rule);
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-sizing: border-box;
+  }
+
+  .admin-page-body {
+    padding: 32px;
+    flex-grow: 1;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .topbar-title {
+    font-family: var(--font-display, var(--serif));
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--adm-text);
+  }
+
+  .topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--adm-text);
+    padding: 6px 12px;
+    background: rgba(115, 92, 78, 0.05);
+    border-radius: 999px;
+    border: 0.5px solid var(--adm-rule);
+  }
+
+  .topbar-user .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--adm-success, #48bb78);
   }
 }
