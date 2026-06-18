@@ -511,7 +511,7 @@ export default function AdminMobileApp() {
 
   // ── Derived: today's bookings ──────────────────────────────────
   const todayBookings = bookings
-    .filter(b => b.date === currentDate && b.status !== 'cancelado' && b.status !== 'bloqueado')
+    .filter(b => b.date === today() && b.status !== 'cancelado' && b.status !== 'bloqueado')
     .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
 
   const todayRevenue = (() => {
