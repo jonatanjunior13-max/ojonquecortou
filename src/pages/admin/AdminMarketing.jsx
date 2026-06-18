@@ -370,7 +370,7 @@ const AdminMarketing = () => {
   const handleFetchBounces = async () => {
     setIsLoadingBounces(true);
     try {
-      const res = await fetch('/api/check-bounces?token=studio-jon-admin');
+      const res = await fetch('/api/mailgun-webhook?token=studio-jon-admin');
       const data = await res.json();
       if (data.success) {
         setBouncesData(data.items || []);

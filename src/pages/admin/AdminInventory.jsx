@@ -178,7 +178,7 @@ const AdminInventory = () => {
     ];
 
     try {
-      const response = await fetch(`/api/search-images?query=${encodeURIComponent(productName)}`);
+      const response = await fetch(`/api/products?action=search-images&query=${encodeURIComponent(productName)}`);
       if (!response.ok) throw new Error('Falha na requisição');
       const data = await response.json();
       if (data.urls && data.urls.length > 0) {

@@ -96,7 +96,7 @@
     },
     {
       "src": "/products-feed.xml",
-      "dest": "/api/products-feed.js"
+      "dest": "/api/products.js?action=feed"
     },
     {
       "handle": "filesystem"
