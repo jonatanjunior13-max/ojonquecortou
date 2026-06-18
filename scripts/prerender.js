@@ -643,8 +643,7 @@ const pages = [
 // Add services dynamically
 SEED_SERVICES.forEach(service => {
   const serviceDesc = service.description || `${service.name} no Studio do Jon em Belo Horizonte. Agende o seu atendimento online.`;
-  const schema = {
-    "@context": "https://schema.org",
+  const serviceSchema = {
     "@type": "Service",
     "name": service.name,
     "description": service.description,
@@ -655,6 +654,21 @@ SEED_SERVICES.forEach(service => {
       "priceCurrency": "BRL",
       "valueAddedTaxIncluded": "true"
     }
+  };
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      serviceSchema,
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+          { "@type": "ListItem", "position": 2, "name": "Serviços", "item": "https://www.ojonquecortou.com.br/servicos" },
+          { "@type": "ListItem", "position": 3, "name": service.name, "item": `https://www.ojonquecortou.com.br/servicos/${service.id}` }
+        ]
+      }
+    ]
   };
 
   const serviceBody = `
@@ -685,7 +699,6 @@ posts.forEach(post => {
   const currentDate = new Date().toISOString().split('T')[0];
   
   const articleSchema = {
-    "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,
     "description": postDesc,
@@ -718,23 +731,36 @@ posts.forEach(post => {
     </noscript>
   `;
 
-  let pageSchema = articleSchema;
+  let pageSchema;
+  const breadcrumb = {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.ojonquecortou.com.br/blog" },
+      { "@type": "ListItem", "position": 3, "name": post.title, "item": `https://www.ojonquecortou.com.br/blog/${post.slug}` }
+    ]
+  };
+
   if (post.faqSchema) {
     pageSchema = {
       "@context": "https://schema.org",
       "@graph": [
-        {
-          ...articleSchema,
-          "@context": undefined // remove context for sub-items in @graph
-        },
+        articleSchema,
         {
           "@type": "FAQPage",
           "mainEntity": post.faqSchema.mainEntity
-        }
+        },
+        breadcrumb
       ]
     };
-    // Clean up the undefined context property
-    delete pageSchema["@graph"][0]["@context"];
+  } else {
+    pageSchema = {
+      "@context": "https://schema.org",
+      "@graph": [
+        articleSchema,
+        breadcrumb
+      ]
+    };
   }
 
   pages.push({
