@@ -543,6 +543,21 @@ export default function AdminMobileApp() {
 
   const pendingCount = bookings.filter(b => b.status === 'pendente').length;
 
+  const isClientRecurrent = (clientName, clientPhone) => {
+    if (!clientName) return false;
+    const cleanName = clientName.trim().toLowerCase();
+    const cleanPhone = (clientPhone || '').replace(/\D/g, '');
+
+    const count = bookings.filter(b => {
+      if (b.status === 'cancelado' || b.status === 'bloqueado') return false;
+      const bName = (b.clientName || '').trim().toLowerCase();
+      const bPhone = (b.clientPhone || b.phone || '').replace(/\D/g, '');
+      return (cleanPhone && bPhone === cleanPhone) || (bName === cleanName);
+    }).length;
+
+    return count > 1;
+  };
+
   const getWeekDays = (centerDate) => {
     const d = parseLocalDate(centerDate);
     const day = getAdjustedDay(d);
