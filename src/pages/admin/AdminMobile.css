@@ -10,9 +10,9 @@
   --m-card:         #FFFFFF; /* Cards brancos puros */
   --m-card-2:       #FAF7F5;
   --m-hover:        #FAF7F5;
-  --m-text:         #3C3028; /* Marrom escuro muito elegante */
-  --m-text-2:       #6E5E53; /* Marrom médio suave */
-  --m-muted:        #A39387;
+  --m-text:         #221A15; /* Marrom escuro quase preto */
+  --m-text-2:       #483A31; /* Marrom escuro médio */
+  --m-muted:        #7A695E;
   --m-rule:         rgba(110, 94, 83, 0.09);
   --m-rule-strong:  rgba(110, 94, 83, 0.16);
   --m-gold:         #735C4E; /* Bronze / Marrom Terroso das fontes e botões */

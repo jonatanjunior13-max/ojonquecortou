@@ -5,11 +5,11 @@
   --adm-card: #FFFFFF; /* Cards brancos puros elegantes */
   --adm-card-hover: #FAF7F5;
 
-  /* Text - Editorial Castanho Escuro e Foco */
-  --adm-text: #3C3028; /* Marrom escuro muito elegante para leitura */
-  --adm-text-2: #6E5E53; /* Marrom médio suave para subtítulos */
-  --adm-text-3: #8C7C72;
-  --adm-muted: #A39387;
+  /* Text - Editorial Castanho Escuro de Alto Contraste */
+  --adm-text: #221A15; /* Marrom escuro quase preto para excelente leitura */
+  --adm-text-2: #483A31; /* Marrom escuro médio para subtítulos */
+  --adm-text-3: #6E5B4F;
+  --adm-muted: #7A695E; /* Marrom suave de alto contraste para textos secundários e mudos */
 
   /* Brand - Bronze quente / Editorial */
   --adm-gold: #735C4E; /* Bronze terroso sofisticado do botão e destaque */
