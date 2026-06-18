@@ -764,6 +764,25 @@ pages.forEach(page => {
   // 3. Replace OG URL
   html = replaceOrAddMeta(html, 'og:url', `https://www.ojonquecortou.com.br${page.route}`, true);
   
+  // Fix og:type and add article meta for blog posts
+  if (page.route.startsWith('/blog/')) {
+    html = html.replace(
+      '<meta property="og:type" content="website" />',
+      '<meta property="og:type" content="article" />'
+    );
+    html = replaceOrAddMeta(html, 'article:author', 'Jonatan Junior', true);
+    if (page.schema) {
+      const datePublished = page.schema.datePublished || 
+                            (page.schema['@graph'] && page.schema['@graph'][0] && page.schema['@graph'][0].datePublished) ||
+                            '';
+      if (datePublished) {
+        html = replaceOrAddMeta(html, 'article:published_time', datePublished, true);
+        html = replaceOrAddMeta(html, 'article:modified_time', new Date().toISOString().split('T')[0], true);
+      }
+    }
+    html = replaceOrAddMeta(html, 'article:section', 'Cuidados Capilares', true);
+  }
+  
   // 3b. Replace/Add Canonical Link
   html = replaceOrAddCanonical(html, `https://www.ojonquecortou.com.br${page.route}`);
 
