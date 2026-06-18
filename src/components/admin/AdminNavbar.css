@@ -10,13 +10,15 @@
   font-family: var(--font-sans, var(--sans));
 }
 
+/* Sidebar layout and size */
 .admin-app-container {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 85px 1fr; /* Largura estreita padrão para focar nos ícones */
   min-height: 100vh;
   background: var(--adm-bg);
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
+  transition: grid-template-columns 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 /* Sidebar */
@@ -25,211 +27,169 @@
   border-right: 0.5px solid var(--adm-rule);
   display: flex;
   flex-direction: column;
+  align-items: center;
   height: 100vh;
   position: sticky;
   top: 0;
+  width: 85px; /* Tamanho fixo da barra estreita compacta */
+  padding: 24px 0;
+  box-sizing: border-box;
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .sidebar-brand {
-  padding: 20px 16px;
-  border-bottom: 0.5px solid var(--adm-rule);
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-.sidebar-brand h2 {
-  font-size: 1.1rem;
+.sidebar-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--adm-gold);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-display, var(--serif));
-  margin-bottom: 4px;
-  color: var(--adm-text);
+  font-size: 1.5rem;
   font-weight: 700;
-}
-
-.sidebar-brand .badge {
-  font-size: 0.65rem;
-  background: rgba(220, 163, 84, 0.15);
-  color: var(--adm-gold);
-  padding: 2px 7px;
-  border-radius: 4px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(115, 92, 78, 0.15);
 }
 
 .sidebar-nav {
-  padding: 16px 10px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
   flex-grow: 1;
-  overflow-y: auto;
 }
 
 .nav-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px; /* Cantos bem arredondados e orgânicos como no print */
   color: var(--adm-muted);
   text-decoration: none;
-  border-radius: var(--adm-radius-sm);
-  font-weight: 600;
-  font-size: 0.88rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  gap: 4px;
+}
+
+.nav-item span {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  letter-spacing: 0.2px;
+  display: none; /* Oculta o texto por padrão */
 }
 
 .nav-item:hover {
-  background: var(--adm-card-hover);
-  color: var(--adm-text-2);
+  color: var(--adm-text);
+  background: rgba(115, 92, 78, 0.05);
 }
 
 .nav-item.active {
-  background: rgba(220, 163, 84, 0.12);
-  color: var(--adm-gold);
-  font-weight: 700;
+  background: var(--adm-gold); /* Fundo bronze/castanho no active como o botão "Hoje" */
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 20px rgba(115, 92, 78, 0.25);
+}
+
+.nav-item.active span {
+  display: block; /* Mostra o texto apenas quando ativo, igual no print "Hoje" */
+  color: #FFFFFF;
 }
 
 .sidebar-footer {
-  padding: 16px 10px;
-  border-top: 0.5px solid var(--adm-rule);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: auto;
 }
 
 .logout-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  width: 100%;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
-  color: var(--adm-danger);
+  color: var(--adm-muted);
   cursor: pointer;
-  border-radius: var(--adm-radius-sm);
-  font-weight: 600;
-  font-size: 0.88rem;
-  text-align: left;
-  font-family: inherit;
-  transition: background 0.2s ease;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
-  background: rgba(226, 75, 74, 0.08);
+  background: rgba(194, 107, 102, 0.08);
+  color: var(--adm-danger);
 }
 
-/* Main Content Area */
-.admin-main-content {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow-y: auto;
-  background: var(--adm-bg);
-}
-
-.admin-topbar {
-  background: var(--adm-surface);
-  height: 64px;
-  border-bottom: 0.5px solid var(--adm-rule);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 28px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  color: var(--adm-text);
-}
-
-.topbar-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  font-family: var(--font-display, var(--serif));
-  color: var(--adm-text);
-}
-
-.topbar-user {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-  color: var(--adm-muted);
-  font-weight: 600;
-}
-
-.status-indicator {
-  width: 7px;
-  height: 7px;
-  background: var(--adm-success);
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.admin-page-body {
-  padding: 28px 32px;
-  flex-grow: 1;
-  background: var(--adm-bg);
-}
-
-/* Sidebar Collapsed */
+/* Sidebar Collapsed / Hover Retrátil */
 .admin-app-container.collapsed {
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 85px 1fr;
 }
 
 .admin-sidebar.collapsed {
-  width: 64px;
+  width: 85px;
 }
 
-.admin-sidebar.collapsed .sidebar-brand {
-  padding: 16px 8px;
-  display: flex;
-  justify-content: center;
-}
-
-.admin-sidebar.collapsed .sidebar-nav {
-  padding: 16px 6px;
-}
-
-.admin-sidebar.collapsed .sidebar-nav .nav-item {
-  justify-content: center;
-  padding: 11px 0;
-  gap: 0;
-}
-
-.admin-sidebar.collapsed .sidebar-nav .nav-item span {
-  display: none;
-}
-
-.admin-sidebar.collapsed .logout-btn {
-  justify-content: center;
-  padding: 11px 0;
-  gap: 0;
-}
-
-.admin-sidebar.collapsed .logout-btn span {
-  display: none;
+/* Efeito de expansão ao passar o mouse (Barra Retrátil Interativa) */
+@media (min-width: 768px) {
+  .admin-sidebar {
+    width: 85px;
+  }
+  .admin-sidebar:hover {
+    width: 180px; /* Expande para mostrar labels no hover */
+    box-shadow: 10px 0 30px rgba(60, 48, 40, 0.06);
+    align-items: flex-start;
+    padding: 24px 16px;
+  }
+  .admin-sidebar:hover .sidebar-brand {
+    align-items: flex-start;
+    padding-left: 8px;
+  }
+  .admin-sidebar:hover .nav-item {
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-left: 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+  .admin-sidebar:hover .nav-item span {
+    display: block; /* Mostra todos os nomes ao expandir com o mouse */
+    font-size: 0.83rem;
+  }
+  .admin-sidebar:hover .nav-item.active span {
+    font-weight: 700;
+  }
+  .admin-sidebar:hover .logout-btn {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 16px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+  .admin-sidebar:hover .logout-btn::after {
+    content: 'Sair';
+    font-size: 0.83rem;
+    font-weight: 600;
+  }
 }
 
 .sidebar-toggle-btn {
-  position: absolute;
-  right: -10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: var(--adm-surface);
-  border: 0.5px solid var(--adm-rule);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  color: var(--adm-muted);
-  z-index: 5;
-  transition: all 0.2s ease;
-  outline: none;
-}
-
-.sidebar-toggle-btn:hover {
-  color: var(--adm-gold);
-  border-color: var(--adm-gold);
-  background: var(--adm-card);
+  display: none; /* Remove botão de toggle manual já que a barra agora é retrátil automaticamente no mouse hover */
 }
 
 /* Topbar Search / Command Palette */

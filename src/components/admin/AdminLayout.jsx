@@ -337,29 +337,11 @@ const AdminLayoutInner = () => {
   }
 
   return (
-    <div className={`admin-app admin-app-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
+    <div className="admin-app admin-app-container">
       {/* Sidebar de Navegação */}
-      <aside className={`admin-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
-        <div className="sidebar-brand" style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative' }}>
-          {!sidebarCollapsed ? (
-            <>
-              <img src="/logo-app.png" alt="Logo" className="sidebar-logo" />
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <h2 style={{ fontSize: '1.05rem', margin: 0, lineHeight: 1.2 }}>Studio do Jon</h2>
-                <span className="badge" style={{ alignSelf: 'flex-start', marginTop: 4 }}>BackOffice</span>
-              </div>
-            </>
-          ) : (
-            <img src="/logo-app.png" alt="Logo" className="sidebar-logo-collapsed" />
-          )}
-          <button 
-            type="button" 
-            className="sidebar-toggle-btn" 
-            onClick={handleToggleSidebar}
-            title={sidebarCollapsed ? "Expandir Menu" : "Recolher Menu"}
-          >
-            {sidebarCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-          </button>
+      <aside className="admin-sidebar">
+        <div className="sidebar-brand">
+          <div className="sidebar-logo">C</div>
         </div>
         
         <nav className="sidebar-nav">
