@@ -3681,7 +3681,7 @@ Grande abraço, Jon.`;
                 setNbForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
               }}>
                 <option value="">Selecione um serviço</option>
-                {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
+                {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
               </select>
             </div>
             <div className="m-field">
@@ -3762,7 +3762,7 @@ Grande abraço, Jon.`;
                 setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
               }}>
                 <option value="">Selecione um serviço</option>
-                {services.map(s => <option key={s.id} value={s.name}>{s.name} — {fmt(s.promoPrice || s.price)}</option>)}
+                {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
               </select>
             </div>
             <div className="m-field">

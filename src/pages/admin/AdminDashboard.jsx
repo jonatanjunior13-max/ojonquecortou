@@ -5135,7 +5135,7 @@ Grande abraço, Jon.`;
                     >
                       {services.map(s => (
                         <option key={s.id} value={s.name}>
-                          {s.name} (R$ {s.promoPrice || s.price})
+                          {s.name}
                         </option>
                       ))}
                     </select>
@@ -5251,7 +5251,7 @@ Grande abraço, Jon.`;
                         <option value="">Selecione</option>
                         {services.map(s => (
                           <option key={s.id} value={`${s.name}|${s.promoPrice || s.price}`}>
-                            {s.name} (R$ {s.promoPrice || s.price})
+                            {s.name}
                           </option>
                         ))}
                       </select>

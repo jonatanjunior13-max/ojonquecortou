@@ -106,6 +106,7 @@ const AdminFinancial = () => {
   const dbTransactions = useMemo(() => globalData.financial_transactions || [], [globalData.financial_transactions]);
   const dbBookings = useMemo(() => globalData.bookings || [], [globalData.bookings]);
   const products = useMemo(() => globalData.products || [], [globalData.products]);
+  const salonProducts = useMemo(() => globalData.salon_products || [], [globalData.salon_products]);
   const services = useMemo(() => globalData.services || [], [globalData.services]);
   const settings = useMemo(() => globalData.settings || {}, [globalData.settings]);
   const clientPackages = useMemo(() => globalData.client_packages || [], [globalData.client_packages]);
@@ -2414,7 +2415,7 @@ const AdminFinancial = () => {
                     type="number"
                     value={fixedCosts}
                     onChange={(e) => setFixedCosts(Number(e.target.value))}
-                    style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                   />
                   <span style={{ fontSize: '0.65rem', color: 'var(--adm-muted)' }}>Soma de aluguel, luz, sistemas, água, etc.</span>
                 </div>
@@ -2424,7 +2425,7 @@ const AdminFinancial = () => {
                     type="number"
                     value={proLabore}
                     onChange={(e) => setProLabore(Number(e.target.value))}
-                    style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                   />
                   <span style={{ fontSize: '0.65rem', color: 'var(--adm-muted)' }}>Seu salário fixo de gestor/profissional.</span>
                 </div>
@@ -2435,7 +2436,7 @@ const AdminFinancial = () => {
                       type="number"
                       value={workDays}
                       onChange={(e) => setWorkDays(Number(e.target.value))}
-                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -2444,7 +2445,7 @@ const AdminFinancial = () => {
                       type="number"
                       value={workHours}
                       onChange={(e) => setWorkHours(Number(e.target.value))}
-                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                     />
                   </div>
                 </div>
@@ -2475,7 +2476,7 @@ const AdminFinancial = () => {
                       type="number"
                       value={serviceDuration}
                       onChange={(e) => setServiceDuration(Number(e.target.value))}
-                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -2484,7 +2485,7 @@ const AdminFinancial = () => {
                       type="number"
                       value={productCostInput}
                       onChange={(e) => setProductCostInput(Number(e.target.value))}
-                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                     />
                   </div>
                 </div>
@@ -2495,7 +2496,7 @@ const AdminFinancial = () => {
                       type="number"
                       value={markup}
                       onChange={(e) => setMarkup(Number(e.target.value))}
-                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -2504,7 +2505,7 @@ const AdminFinancial = () => {
                       type="number"
                       value={feesTaxPercentage}
                       onChange={(e) => setFeesTaxPercentage(Number(e.target.value))}
-                      style={{ padding: 8, background: 'var(--panel-bg)', color: '#fff', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ padding: 8, background: '#fff', color: '#111', fontWeight: 'bold', border: '1px solid var(--adm-gold)', borderRadius: 6 }}
                     />
                   </div>
                 </div>
@@ -2546,6 +2547,115 @@ const AdminFinancial = () => {
                     </div>
                   );
                 })()}
+              </div>
+            </Card>
+          </div>
+
+          {/* Custos e Vendas de Produtos / Uso do Salão */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: 20 }}>
+            {/* Tabela de Produtos de Venda (Estoque Comercial) */}
+            <Card>
+              <h3 style={{ margin: '0 0 12px 0', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                📦 Custos e Vendas de Produtos (Estoque de Venda)
+              </h3>
+              <p style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: 16 }}>
+                Simulação e controle de margem de lucro de revenda de produtos comerciais para clientes.
+              </p>
+              <div className="table-responsive" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Produto</th>
+                      <th style={{ textAlign: 'right' }}>Custo</th>
+                      <th style={{ textAlign: 'right' }}>Venda</th>
+                      <th style={{ textAlign: 'right' }}>Margem Lucro</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.length === 0 ? (
+                      <tr>
+                        <td colSpan="4" style={{ textAlign: 'center', color: 'var(--adm-muted)', padding: 12 }}>
+                          Nenhum produto cadastrado para revenda.
+                        </td>
+                      </tr>
+                    ) : (
+                      products.map(p => {
+                        const cost = Number(p.costPrice) || 0;
+                        const sell = Number(p.sellingPrice) || 0;
+                        const profit = sell - cost;
+                        const marginPercent = sell > 0 ? (profit / sell) * 100 : 0;
+                        return (
+                          <tr key={p.id}>
+                            <td>
+                              <strong>{p.name}</strong>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Qtd: {p.quantity} un.</div>
+                            </td>
+                            <td style={{ textAlign: 'right', color: 'var(--adm-danger)' }}>
+                              R$ {cost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style={{ textAlign: 'right', color: 'var(--adm-success)' }}>
+                              R$ {sell.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)' }}>
+                              R$ {profit.toFixed(2).replace('.', ',')} ({marginPercent.toFixed(0)}%)
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            {/* Tabela de Produtos de Uso Interno (Salão) */}
+            <Card>
+              <h3 style={{ margin: '0 0 12px 0', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                🧪 Insumos e Produtos de Uso do Salão
+              </h3>
+              <p style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: 16 }}>
+                Preço por g/ml de insumos químicos e técnicos de lavatório e bancada, usados para calcular o custo do serviço.
+              </p>
+              <div className="table-responsive" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Produto do Salão</th>
+                      <th>Tipo</th>
+                      <th style={{ textAlign: 'right' }}>Volumetria</th>
+                      <th style={{ textAlign: 'right' }}>Custo Total</th>
+                      <th style={{ textAlign: 'right' }}>Custo por Unidade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {salonProducts.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', color: 'var(--adm-muted)', padding: 12 }}>
+                          Nenhum produto de uso interno cadastrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      salonProducts.map(sp => {
+                        const vol = Number(sp.volumetry) || 1;
+                        const cost = Number(sp.costPrice) || 0;
+                        const pricePerUnit = cost / vol;
+                        return (
+                          <tr key={sp.id}>
+                            <td><strong>{sp.name}</strong></td>
+                            <td><span style={{ fontSize: '0.75rem', padding: '2px 6px', background: '#333', borderRadius: 4 }}>{sp.type}</span></td>
+                            <td style={{ textAlign: 'right' }}>{vol} {sp.unit}</td>
+                            <td style={{ textAlign: 'right', color: 'var(--adm-danger)' }}>
+                              R$ {cost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)' }}>
+                              R$ {pricePerUnit.toLocaleString('pt-BR', { minimumFractionDigits: 4 })} / {sp.unit}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
               </div>
             </Card>
           </div>

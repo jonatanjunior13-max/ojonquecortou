@@ -194,7 +194,7 @@ const BlogPostPage = () => {
         <article className="post-container text-content">
           <header className="post-header reveal active">
             <div className="post-meta">
-              {post.category} · {post.date}
+              {post.category} · Atualizado em {post.date} por Jonatan Junior
             </div>
             <h1 className="heading-xl">{post.title}</h1>
           </header>

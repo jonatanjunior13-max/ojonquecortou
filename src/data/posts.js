@@ -12,8 +12,7 @@ export const posts = [
     image: '/blog-porosidade.webp',
     schemaType: 'BlogPosting',
     content: `
-      <h2>A Luta Invisível Contra o Ressecamento e o Frizz</h2>
-      <p>Se você tem cabelos ondulados, cacheados ou crespos, com certeza já passou pela frustração de aplicar a melhor máscara do mercado e, poucas horas depois, ver o cabelo áspero, sem definição e com uma nuvem de frizz. Isso acontece porque a fibra capilar com curvatura possui uma anatomia propensa à perda de água. A porosidade capilar determina a capacidade do fio de absorver e reter essa umidade. Quando o cabelo está com alta porosidade, suas cutículas (a camada externa protetora) ficam permanentemente abertas e danificadas. Esse estado facilita a perda de nutrientes e água, fazendo com que qualquer hidratação vá literalmente por água abaixo. O resultado é um cabelo opaco, quebradiço, áspero ao toque e que parece repelir qualquer tratamento. Entender como combater esse ciclo é fundamental para recuperar a definição e a saúde natural dos fios.</p>
+      <p>A acidificação capilar é um procedimento que equilibra o pH ácido do fio para selar as cutículas do cabelo cacheado, sendo a única solução física eficiente para alta porosidade. Se você tem cabelos ondulados, cacheados ou crespos, com certeza já passou pela frustração de aplicar a melhor máscara do mercado e, poucas horas depois, ver o cabelo áspero, sem definição e com uma nuvem de frizz. Isso acontece porque a fibra capilar com curvatura possui uma anatomia propensa à perda de água. A porosidade capilar determina a capacidade do fio de absorver e reter essa umidade. Quando o cabelo está com alta porosidade, suas cutículas (a camada externa protetora) ficam permanentemente abertas e danificadas. Esse estado facilita a perda de nutrientes e água, fazendo com que qualquer hidratação vá literalmente por água abaixo. O resultado é um cabelo opaco, quebradiço, áspero ao toque e que parece repelir qualquer tratamento. Entender como combater esse ciclo é fundamental para recuperar a definição e a saúde natural dos fios.</p>
 
       <h2>O que é o pH Capilar e Como Ele Controla a Cutícula</h2>
       <p>O pH (Potencial Hidrogeniônico) é a escala que mede o nível de acidez ou alcalinidade de uma substância. A fibra capilar humana tem um pH fisiológico levemente ácido, situando-se idealmente entre 4,5 e 5,5. Esse ambiente ácido é crucial para a saúde do cabelo, pois mantém as cutículas seladas, planas e alinhadas ao redor do córtex. No entanto, procedimentos químicos como descolorações, tinturas, alisamentos, e até mesmo shampoos com sulfatos fortes ou a água com alta concentração de cloro e metais, têm pH alcalino (acima de 7,0).</p>
@@ -76,8 +75,7 @@ export const posts = [
       ]
     },
     content: `
-      <h2>A Falsa Salvação dos Cachos Secos</h2>
-      <p>Você nota que os seus cachos estão ressecados, sem brilho e armando com facilidade. A primeira recomendação que você lê na internet ou ouve de uma amiga é clássica: "faz uma umectação com óleo de coco puro, bonita, que resolve". Você compra o pote no supermercado aqui em BH, passa no cabelo, dorme com ele e lava no dia seguinte. Na hora, parece que deu uma assentada. Mas em dois dias o cabelo acorda mais áspero, rígido e com uma nuvem de frizz ainda maior na Pampulha ou no trânsito da Savassi. Uai, o que deu errado?</p>
+      <p>O óleo de coco no cabelo cacheado pode ressecar os fios porque cria uma película impermeabilizante que impede a entrada de água e nutrientes, levando ao ressecamento crônico e rigidez. Embora pareça a solução imediata para o ressecamento, seu uso puro gera o efeito build-up (acúmulo de produto) na fibra capilar. Se você nota que os seus cachos estão ressecados, sem brilho e armando com facilidade, a primeira recomendação que você lê na internet ou ouve de uma amiga é clássica: "faz uma umectação com óleo de coco puro, bonita, que resolve". Você compra o pote no supermercado aqui em BH, passa no cabelo, dorme com ele e lava no dia seguinte. Na hora, parece que deu uma assentada. Mas em dois dias o cabelo acorda mais áspero, rígido e com uma nuvem de frizz ainda maior na Pampulha ou no trânsito da Savassi. Uai, o que deu errado?</p>
       <p>O que quase ninguém te conta é que o <strong>óleo de coco no cabelo cacheado</strong> pode ser um dos maiores agentes de ressecamento crônico. Não porque ele seja inerentemente ruim, mas por conta da física e química da fibra capilar. Cabelos com curvatura (tipo 3 e 4) possuem cutículas naturalmente mais abertas nas curvas dos fios, o que facilita a perda de água. Ao tacar um óleo pesado e saturado diretamente nesse fio desidratado, você não está hidratando; você está selando o ressecamento dentro da estrutura.</p>
 
       <h2>O Efeito Barreira: Como o Óleo de Coco Impermeabiliza o Cacho</h2>
@@ -155,8 +153,7 @@ export const posts = [
       ]
     },
     content: `
-      <h2>O Grande Desafio da Cacheada: A Manhã Seguinte</h2>
-      <p>Você passa horas lavando, tratando, fazendo fitagem mecha por mecha, seca com o difusor e vai dormir se sentindo a própria rainha dos cachos. Mas aí você acorda, olha no espelho e... o pesadelo se instalou. Um lado está amassado, o outro perdeu a definição e o topo está com aquela nuvem de frizz que parece uma tempestade na Pampulha.</p>
+      <p>O day after perfeito em cabelos cacheados consiste em reativar a definição e combater o frizz sem lavar os fios diariamente, preservando a oleosidade natural do couro cabeludo. Acordar com os cachos amassados e sem definição é um desafio comum, especialmente no clima seco de Belo Horizonte. Se você passa horas lavando, tratando, fazendo fitagem mecha por mecha, seca com o difusor e vai dormir se sentindo a própria rainha dos cachos, mas acorda com um lado amassado e o topo com frizz, aprenda a rotina certa de proteção noturna e borrifação para manter seus cachos impecáveis.</p>
       <p>Quem tem cabelo cacheado, crespo ou ondulado sabe que o <strong>day after</strong> (o dia seguinte à lavagem) é um dos maiores desafios da rotina capilar. No clima de Belo Horizonte, que no inverno e outono é incrivelmente seco, esse desafio dobra de tamanho. O ar seco suga a pouca umidade que resta no fio, fazendo com que os cachos percam a forma e armem com muita facilidade.</p>
       <p>Mas acalme-se! Você não precisa lavar o seu cabelo todo santo dia para tê-lo bonito. Lavar em excesso retira a oleosidade natural protetora e resseca ainda mais a fibra. Como especialista, vou te mostrar o método técnico e simples para reativar seus cachos, combater o frizz e acordar pronta sem precisar entrar no chuveiro.</p>
       
@@ -606,29 +603,38 @@ export const posts = [
       <p>Pronto. Agora você sabe. Sem app. Sem ansiedade.</p>
 
       <h2>Por Que Isso Muda Tudo na Rotina</h2>
-      <p><strong>Se você é cacho puro:</strong></p>
-      <ul>
-        <li>Hidratação toda semana (não é sugestão, é lei universal)</li>
-        <li>Produto leve, leave-in ou óleo (nada pesado, que sufoca)</li>
-        <li>Secagem com difusor ou plopping (o seu fio é delicado demais pra secador agressivo)</li>
-        <li>Corte a cada 6-8 semanas pra manter definição (deixa muito tempo, o padrão fica fraco)</li>
-      </ul>
-
-      <p><strong>Se você é crespo puro:</strong></p>
-      <ul>
-        <li>Nutrição 2x por semana com máscara pesada (tipo aquele colega que bebe 3 cafés por dia, você precisa alimentar demais)</li>
-        <li>Selante capilar com óleo grosso ou manteiga (trancar a hidratação dentro, tipo trancar porta de casa)</li>
-        <li>Secagem delicada, sem agredir o fio (o seu já tem volume, não precisa de salão de vento)</li>
-        <li>Corte a cada 8-10 semanas, com foco em peso e movimento</li>
-      </ul>
-
-      <p><strong>Se você é misto (cacho + crespo):</strong></p>
-      <ul>
-        <li>Hidratação + nutrição alternada (semana sim, semana não — tipo namoro aberto do cabelo)</li>
-        <li>Dois produtos na rotina — leve pro cacho, pesado pro crespo (é tipo ter dois namorados, mas é pra cabelo então tá liberado)</li>
-        <li>Técnica de secagem híbrida (respeita o cacho em algumas partes, trabalha volume em outras)</li>
-        <li>Corte técnico pra criar movimento sem perder volume (isso é arte, amigo)</li>
-      </ul>
+      <div style="overflow-x: auto; margin: 1.5rem 0;">
+        <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+          <thead>
+            <tr style="background-color: rgba(200, 133, 42, 0.15); border-bottom: 2px solid var(--color-yellow, #c8852a);">
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Tipo de Fio</th>
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Rotina e Produtos</th>
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Método de Secagem</th>
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Frequência de Corte</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <td style="padding: 12px; font-weight: 700; color: #fff;">Cacho Puro</td>
+              <td style="padding: 12px;">Hidratação semanal; produtos fluidos e leves (leave-in ou óleo leve).</td>
+              <td style="padding: 12px;">Difusor em temperatura média ou plopping.</td>
+              <td style="padding: 12px;">6 a 8 semanas (mantém a definição da espiral).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <td style="padding: 12px; font-weight: 700; color: #fff;">Crespo Puro</td>
+              <td style="padding: 12px;">Nutrição pesada 2x por semana; selagem com óleos grossos ou manteigas.</td>
+              <td style="padding: 12px;">Secagem ultra delicada para preservar volume natural.</td>
+              <td style="padding: 12px;">8 a 10 semanas (foco em peso e movimento).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <td style="padding: 12px; font-weight: 700; color: #fff;">Misto (Cacho + Crespo)</td>
+              <td style="padding: 12px;">Cronograma alternado; produtos leves para os cachos e densos para a área crespa.</td>
+              <td style="padding: 12px;">Secagem híbrida (define pontas e trabalha o volume da raiz).</td>
+              <td style="padding: 12px;">Corte técnico personalizado para equilibrar as texturas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <p>Entender isso é o que diferencia cacho que fica impecável vs cacho que fica seco e morto (tipo relacionamento sem conversa). É a diferença entre crespo que brilha vs crespo que ficou como palha de colchão antigo.</p>
 
       <h2>E o Corte Muda?</h2>
@@ -2342,24 +2348,41 @@ export const posts = [
 
       <h2>O que é Porosidade Capilar?</h2>
       <p>Imagine que o seu fio de cabelo é coberto por pequenas escamas, como as de um peixe ou as telhas de um telhado. Essas são as cutículas. A porosidade é a capacidade que o seu cabelo tem de absorver e, principalmente, reter a água e os nutrientes dentro do fio.</p>
-      <ul>
-        <li><strong>Porosidade Baixa:</strong> As cutículas são tão fechadas que nem a água consegue entrar direito.</li>
-        <li><strong>Porosidade Média:</strong> O "estado do paraíso". As cutículas estão na medida certa para absorver e manter o tratamento.</li>
-        <li><strong>Porosidade Alta:</strong> As cutículas estão arreganhadas ou danificadas. A água entra fácil, mas sai na mesma velocidade.</li>
-      </ul>
+      <div style="overflow-x: auto; margin: 1.5rem 0;">
+        <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+          <thead>
+            <tr style="background-color: rgba(200, 133, 42, 0.15); border-bottom: 2px solid var(--color-yellow, #c8852a);">
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Nível de Porosidade</th>
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Estado das Cutículas</th>
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Resultado no Teste do Copo</th>
+              <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Foco do Tratamento</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <td style="padding: 12px; font-weight: 700; color: #fff;">Porosidade Baixa</td>
+              <td style="padding: 12px;">Muito fechadas (impermeável). Dificuldade para absorver água/cremes.</td>
+              <td style="padding: 12px;">O fio boia na superfície da água.</td>
+              <td style="padding: 12px;">Calor para abrir cutículas + hidratações ultra leves.</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <td style="padding: 12px; font-weight: 700; color: #fff;">Porosidade Média</td>
+              <td style="padding: 12px;">Equilibradas. Absorvem e retêm os nutrientes perfeitamente.</td>
+              <td style="padding: 12px;">O fio fica suspenso no meio do copo.</td>
+              <td style="padding: 12px;">Manutenção (cronograma capilar equilibrado básico).</td>
+            </tr>
+            <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+              <td style="padding: 12px; font-weight: 700; color: #fff;">Porosidade Alta</td>
+              <td style="padding: 12px;">Totalmente abertas ou danificadas. Absorvem fácil, mas perdem tudo rápido.</td>
+              <td style="padding: 12px;">O fio afunda completamente até o fundo.</td>
+              <td style="padding: 12px;">Nutrição reconstrutora + selamento com acidificação capilar.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <h2>Como descobrir a sua? (O Teste do Copo)</h2>
       <p>Esqueça testes mirabolantes. Você só precisa de um copo com água filtrada e um fio do seu cabelo limpo (lavado apenas com shampoo, sem condicionador ou creme).</p>
-      <ol>
-        <li>Coloque o fio no copo com água.</li>
-        <li>Espere 10 minutos.</li>
-        <li>Observe onde o fio parou:</li>
-      </ol>
-      <ul>
-        <li><strong>Boio na superfície:</strong> Porosidade Baixa.</li>
-        <li><strong>Ficou no meio do copo:</strong> Porosidade Média.</li>
-        <li><strong>Afundou no fundo:</strong> Porosidade Alta.</li>
-      </ul>
 
       <h2>O Plano de Ação para cada caso</h2>
       <p>Agora que você já sabe o diagnóstico, aqui no Studio do Jon a gente parte para o tratamento estratégico:</p>

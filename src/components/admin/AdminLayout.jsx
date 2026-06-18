@@ -18,7 +18,7 @@ const AdminLayoutInner = () => {
   const [globalData, setGlobalData] = useState({
     bookings: [], clients: [], services: [], products: [],
     financial_transactions: [], settings: null, coupons: [], giftcards: [],
-    packages: [], client_packages: []
+    packages: [], client_packages: [], salon_products: []
   });
   const navigate = useNavigate();
   const location = useLocation();
@@ -226,6 +226,7 @@ const AdminLayoutInner = () => {
       unsubs.push(onSnapshot(collection(db, 'giftcards'), (snap) => setGlobalData(prev => ({ ...prev, giftcards: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => setGlobalData(prev => ({ ...prev, packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => setGlobalData(prev => ({ ...prev, client_packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => setGlobalData(prev => ({ ...prev, salon_products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }))));
     } else {
       // Demo Mode fallback
@@ -264,7 +265,8 @@ const AdminLayoutInner = () => {
           products: JSON.parse(localStorage.getItem('demo_inventory')) || [],
           financial_transactions: JSON.parse(localStorage.getItem('demo_financial')) || [],
           packages: JSON.parse(localStorage.getItem('demo_packages')) || [],
-          client_packages: JSON.parse(localStorage.getItem('demo_client_packages')) || []
+          client_packages: JSON.parse(localStorage.getItem('demo_client_packages')) || [],
+          salon_products: JSON.parse(localStorage.getItem('demo_salon_products')) || []
         }));
       } catch(e) {}
     }

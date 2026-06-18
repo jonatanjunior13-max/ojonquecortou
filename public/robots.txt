@@ -30,3 +30,5 @@ User-agent: cohere-ai
 Allow: /
 
 Sitemap: https://www.ojonquecortou.com.br/sitemap.xml
+License: https://www.ojonquecortou.com.br/license.xml
+
