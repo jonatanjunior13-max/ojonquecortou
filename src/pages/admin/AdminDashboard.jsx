@@ -1589,12 +1589,14 @@ const AdminDashboard = () => {
           servicePrice: servicePrice
         } : b));
         syncBookingToGoogle(booking.id).catch(err => console.warn(err));
+        const productUpdates = [];
         for (const p of productsNorm) {
           const match = products.find(prod => prod.id === p.productId);
           if (match) {
-            await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
+            productUpdates.push(updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) }));
           }
         }
+        await Promise.all(productUpdates);
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
       }
 
