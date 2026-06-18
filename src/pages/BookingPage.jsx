@@ -1550,7 +1550,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         <div className={`line ${step >= 2 ? 'active' : ''}`}></div>
         <div className={`step-dot ${step >= 2 ? 'active' : ''}`} onClick={() => step > 2 && setStep(2)}>2. Horário</div>
         <div className={`line ${step >= 3 ? 'active' : ''}`}></div>
-        <div className={`step-dot ${step >= 3 ? 'active' : ''}`} onClick={() => { if (step > 3) { checkPackageCredits(clientData.phone, clientData.email, selectedService); setStep(3); } }}>3. Seus Dados</div>
+        <div className={`step-dot ${step >= 3 ? 'active' : ''}`} onClick={() => { if (step > 3) { checkPackageCredits(clientData.phone, clientData.email, selectedServices); setStep(3); } }}>3. Seus Dados</div>
       </div>
 
       <div className="booking-card-wrap">
@@ -1641,7 +1641,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             const firstSrvId = pkg.services?.[0]?.serviceId;
                             const matchedSrv = services.find(s => s.id === firstSrvId);
                             if (matchedSrv) {
-                              setSelectedService(matchedSrv);
+                              setSelectedServices([matchedSrv]);
                               setSelectedPackageTemplate(pkg);
                               setStep(2);
                             } else {
@@ -1964,7 +1964,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                 className="btn btn-accent" 
                 disabled={!selectedDate || !selectedTime}
                 onClick={() => {
-                  checkPackageCredits(clientData.phone, clientData.email, selectedService);
+                  checkPackageCredits(clientData.phone, clientData.email, selectedServices);
                   setStep(3);
                 }}
               >
@@ -2268,7 +2268,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       placeholder="Ex: 31988887777" 
                       value={clientData.phone} 
                       onChange={handleInputChange} 
-                      onBlur={(e) => { handleFieldBlur(e); checkPackageCredits(e.target.value, clientData.email, selectedService); }}
+                      onBlur={(e) => { handleFieldBlur(e); checkPackageCredits(e.target.value, clientData.email, selectedServices); }}
                     />
                     <span className="hint">Usaremos para enviar a confirmação de horário</span>
                   </div>
@@ -2283,7 +2283,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       placeholder="Ex: maria@exemplo.com" 
                       value={clientData.email} 
                       onChange={handleInputChange} 
-                      onBlur={(e) => { handleFieldBlur(e); checkPackageCredits(clientData.phone, e.target.value, selectedService); }}
+                      onBlur={(e) => { handleFieldBlur(e); checkPackageCredits(clientData.phone, e.target.value, selectedServices); }}
                     />
                   </div>
                 </div>
@@ -2329,7 +2329,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     <span>Usar crédito do pacote: <strong>{activePackageCredit.packageName}</strong></span>
                   </label>
                   <span style={{ fontSize: '0.8rem', color: 'var(--muted)', marginLeft: 28 }}>
-                    Você possui {activePackageCredit.balance[selectedService.id]} sessão(ões) restante(s) deste serviço. O valor cobrado na comanda deste agendamento será R$ 0.
+                    Você possui {activePackageCredit.balance[selectedServices[0]?.id]} sessão(ões) restante(s) deste serviço. O valor cobrado na comanda deste agendamento será R$ 0.
                   </span>
                 </div>
               )}
