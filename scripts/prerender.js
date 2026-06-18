@@ -321,6 +321,7 @@ const founderPersonSchema = {
   "@type": "Person",
   "@id": "https://www.ojonquecortou.com.br/#person",
   "name": "Jonatan Junior",
+  "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
   "jobTitle": "Cabeleireiro Especialista em Cachos",
   "description": "Jonatan Junior (O Jon) é especialista em curvaturas e visagismo no bairro Caiçara, Belo Horizonte. Criador do Método Leitura de Fio.",
   "worksFor": {
@@ -421,7 +422,7 @@ const reviewsSchema = {
           "streetAddress": "Rua Francisco Ovídio, 184",
           "addressLocality": "Belo Horizonte",
           "addressRegion": "MG",
-          "postalCode": "30720-320",
+          "postalCode": "30770-040",
           "addressCountry": "BR"
         }
       },
