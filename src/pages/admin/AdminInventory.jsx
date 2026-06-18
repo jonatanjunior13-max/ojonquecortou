@@ -177,10 +177,21 @@ const AdminInventory = () => {
       `https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=500&q=80&sig=${Math.random()}&term=${encodeURIComponent(productName)}`
     ];
 
-    setTimeout(() => {
+    try {
+      const response = await fetch(`/api/search-images?query=${encodeURIComponent(productName)}`);
+      if (!response.ok) throw new Error('Falha na requisição');
+      const data = await response.json();
+      if (data.urls && data.urls.length > 0) {
+        setSearchResults(data.urls);
+      } else {
+        setSearchResults(uniqueResults);
+      }
+    } catch (err) {
+      console.warn('Erro ao carregar fotos dinâmicas, usando fallback:', err);
       setSearchResults(uniqueResults);
+    } finally {
       setPhotoSearchLoading(false);
-    }, 600);
+    }
   };
 
   const handleOpenAdd = () => {
