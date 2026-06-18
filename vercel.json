@@ -45,6 +45,11 @@
       "headers": { "Location": "/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" }
     },
     {
+      "src": "/blog/cortes-cacheados-2026",
+      "status": 301,
+      "headers": { "Location": "/servicos" }
+    },
+    {
       "src": "/metodologia",
       "status": 301,
       "headers": { "Location": "/metodo" }
