@@ -119,45 +119,6 @@ const BookingPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (step === 4 && success && createdBookingId && clientData.email) {
-      console.log('Passo de confirmação alcançado. Carregando Google Avaliações do Consumidor...');
-      if (!window.gapi) {
-        const script = document.createElement('script');
-        script.src = 'https://apis.google.com/js/platform.js';
-        script.async = true;
-        script.defer = true;
-        script.onload = () => {
-          renderGoogleOptIn();
-        };
-        document.body.appendChild(script);
-      } else {
-        renderGoogleOptIn();
-      }
-    }
-
-    function renderGoogleOptIn() {
-      if (window.gapi && window.gapi.load) {
-        window.gapi.load('surveyoptin', function() {
-          try {
-            // Formatar data estimada de entrega (estimated_delivery_date: YYYY-MM-DD)
-            const deliveryDate = selectedDate || new Date().toISOString().split('T')[0];
-
-            window.gapi.surveyoptin.render({
-              "merchant_id": 5809472410,
-              "order_id": createdBookingId,
-              "email": clientData.email,
-              "delivery_country": "BR",
-              "estimated_delivery_date": deliveryDate
-            });
-            console.log('Google Customer Reviews Opt-In renderizado com sucesso para o pedido:', createdBookingId);
-          } catch (err) {
-            console.error('Erro ao renderizar o Google Customer Reviews Opt-In:', err);
-          }
-        });
-      }
-    }
-  }, [step, success, createdBookingId, clientData.email, selectedDate]);
 
   const [step, setStep] = useState(1);
   const [createdBookingId, setCreatedBookingId] = useState('');
@@ -310,6 +271,46 @@ const BookingPage = () => {
   const [loginEmail, setLoginEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [clientBookings, setClientBookings] = useState([]);
+
+  useEffect(() => {
+    if (step === 4 && success && createdBookingId && clientData.email) {
+      console.log('Passo de confirmação alcançado. Carregando Google Avaliações do Consumidor...');
+      if (!window.gapi) {
+        const script = document.createElement('script');
+        script.src = 'https://apis.google.com/js/platform.js';
+        script.async = true;
+        script.defer = true;
+        script.onload = () => {
+          renderGoogleOptIn();
+        };
+        document.body.appendChild(script);
+      } else {
+        renderGoogleOptIn();
+      }
+    }
+
+    function renderGoogleOptIn() {
+      if (window.gapi && window.gapi.load) {
+        window.gapi.load('surveyoptin', function() {
+          try {
+            // Formatar data estimada de entrega (estimated_delivery_date: YYYY-MM-DD)
+            const deliveryDate = selectedDate || new Date().toISOString().split('T')[0];
+
+            window.gapi.surveyoptin.render({
+              "merchant_id": 5809472410,
+              "order_id": createdBookingId,
+              "email": clientData.email,
+              "delivery_country": "BR",
+              "estimated_delivery_date": deliveryDate
+            });
+            console.log('Google Customer Reviews Opt-In renderizado com sucesso para o pedido:', createdBookingId);
+          } catch (err) {
+            console.error('Erro ao renderizar o Google Customer Reviews Opt-In:', err);
+          }
+        });
+      }
+    }
+  }, [step, success, createdBookingId, clientData.email, selectedDate]);
 
 
   // Load booking to reschedule if rescheduleId is provided
