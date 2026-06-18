@@ -80,14 +80,16 @@ const AdminInventory = () => {
   const [quickRestockId, setQuickRestockId] = useState(null);
   const [quickRestockAmount, setQuickRestockAmount] = useState(5);
 
-  // Form states
   const [form, setForm] = useState({
     name: '',
     category: 'Shampoo',
     quantity: 0,
     costPrice: 0,
-    sellingPrice: 0
+    sellingPrice: 0,
+    image: ''
   });
+  const [photoSearchLoading, setPhotoSearchLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     let unsubscribe;
@@ -138,6 +140,26 @@ const AdminInventory = () => {
     localStorage.setItem('demo_products', JSON.stringify(updated));
   };
 
+  // Buscador de imagens de produto comercial
+  const searchProductImage = async (productName) => {
+    if (!productName) return;
+    setPhotoSearchLoading(true);
+    try {
+      // Usamos a API pública do Unsplash para buscar imagens livres baseadas no termo
+      const query = encodeURIComponent(productName);
+      const res = await fetch(`https://images.unsplash.com/search/photos?query=${query}&per_page=6`);
+      if (res.ok) {
+        const data = await res.json();
+        const urls = (data.results || []).map(img => img.urls.regular);
+        setSearchResults(urls);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar fotos:', err);
+    } finally {
+      setPhotoSearchLoading(false);
+    }
+  };
+
   const handleOpenAdd = () => {
     setEditingProduct(null);
     setForm({
@@ -145,8 +167,10 @@ const AdminInventory = () => {
       category: 'Shampoo',
       quantity: 10,
       costPrice: 20,
-      sellingPrice: 45
+      sellingPrice: 45,
+      image: ''
     });
+    setSearchResults([]);
     setShowModal(true);
   };
 
@@ -157,8 +181,10 @@ const AdminInventory = () => {
       category: product.category,
       quantity: product.quantity,
       costPrice: product.costPrice,
-      sellingPrice: product.sellingPrice
+      sellingPrice: product.sellingPrice,
+      image: product.image || ''
     });
+    setSearchResults([]);
     setShowModal(true);
   };
 
@@ -169,7 +195,8 @@ const AdminInventory = () => {
       category: form.category,
       quantity: Number(form.quantity),
       costPrice: Number(form.costPrice),
-      sellingPrice: Number(form.sellingPrice)
+      sellingPrice: Number(form.sellingPrice),
+      image: form.image
     };
 
     try {
@@ -482,7 +509,20 @@ const AdminInventory = () => {
                     products.map((p) => {
                       return (
                         <tr key={p.id}>
-                          <td style={{ fontWeight: 600 }}>{p.name}</td>
+                          <td style={{ fontWeight: 600 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                              {p.image ? (
+                                <div style={{ width: 32, height: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid var(--adm-rule)', flexShrink: 0 }}>
+                                  <img src={p.image} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                </div>
+                              ) : (
+                                <div style={{ width: 32, height: 32, borderRadius: 4, background: '#222', border: '1px solid #444', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666', fontSize: '0.75rem', flexShrink: 0 }}>
+                                  N/A
+                                </div>
+                              )}
+                              <span>{p.name}</span>
+                            </div>
+                          </td>
                           <td>{p.category}</td>
                           <td>
                             {quickRestockId === p.id ? (
@@ -695,6 +735,63 @@ const AdminInventory = () => {
                 />
               </div>
             </div>
+
+            <div className="form-group" style={{ marginTop: 12 }}>
+              <label>Link da Foto do Produto</label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input 
+                  type="text" 
+                  placeholder="Cole a URL da imagem ou busque ao lado"
+                  value={form.image}
+                  onChange={e => setForm(prev => ({ ...prev, image: e.target.value }))}
+                  style={{ flexGrow: 1 }}
+                />
+                <button 
+                  type="button" 
+                  className="btn" 
+                  style={{ background: 'var(--adm-gold)', color: '#000', fontWeight: 'bold', padding: '10px 14px' }}
+                  onClick={() => searchProductImage(form.name)}
+                  disabled={photoSearchLoading}
+                >
+                  {photoSearchLoading ? 'Buscando...' : 'Buscar Foto'}
+                </button>
+              </div>
+            </div>
+
+            {/* Grid de Resultados do Unsplash */}
+            {searchResults.length > 0 && (
+              <div style={{ marginTop: 12 }}>
+                <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-gold)' }}>Fotos encontradas (clique para escolher):</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, marginTop: 6 }}>
+                  {searchResults.map((url, i) => (
+                    <div 
+                      key={i} 
+                      onClick={() => setForm(prev => ({ ...prev, image: url }))}
+                      style={{ 
+                        aspectRatio: '1', 
+                        cursor: 'pointer', 
+                        borderRadius: 6, 
+                        overflow: 'hidden', 
+                        border: form.image === url ? '3px solid var(--adm-gold)' : '1px solid #444',
+                        background: '#111'
+                      }}
+                    >
+                      <img src={url} alt={`Option ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Preview do Produto Selecionado */}
+            {form.image && (
+              <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 50, height: 50, borderRadius: 6, overflow: 'hidden', border: '1px solid var(--adm-rule)' }}>
+                  <img src={form.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                </div>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-success)' }}>Imagem selecionada com sucesso e pronta para enviar ao Google!</span>
+              </div>
+            )}
 
             <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancelar</button>
