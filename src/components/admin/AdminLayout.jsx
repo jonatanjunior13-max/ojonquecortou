@@ -341,7 +341,7 @@ const AdminLayoutInner = () => {
       {/* Sidebar de Navegação */}
       <aside className="admin-sidebar">
         <div className="sidebar-brand">
-          <div className="sidebar-logo">C</div>
+          <div className="sidebar-logo">J</div>
         </div>
         
         <nav className="sidebar-nav">
