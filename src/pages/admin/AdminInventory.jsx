@@ -194,9 +194,21 @@ const AdminInventory = () => {
           if (qtyDiff > 0) {
             await logProductExpense(payload.name, qtyDiff, payload.costPrice, 'Reabastecimento');
           }
+          // Sincronizar com o Google Meu Negócio
+          fetch('/api/gbp?action=sync-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: editingProduct.id, ...payload })
+          }).catch(err => console.error('Erro de sincronização automática:', err));
         } else {
-          await addDoc(collection(db, 'products'), payload);
+          const docRef = await addDoc(collection(db, 'products'), payload);
           await logProductExpense(payload.name, payload.quantity, payload.costPrice, 'Compra');
+          // Sincronizar com o Google Meu Negócio
+          fetch('/api/gbp?action=sync-product', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: docRef.id, ...payload })
+          }).catch(err => console.error('Erro de sincronização automática:', err));
         }
       }
       setShowModal(false);
