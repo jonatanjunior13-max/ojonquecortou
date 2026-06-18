@@ -13,12 +13,13 @@
 /* Sidebar layout and size */
 .admin-app-container {
   display: grid;
-  grid-template-columns: 85px 1fr; /* Largura estreita padrão para focar nos ícones */
+  grid-template-columns: 1fr; /* Grid de 1 coluna principal */
+  padding-left: 85px; /* Espaço reservado para a sidebar fixed */
   min-height: 100vh;
   background: var(--adm-bg);
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
-  transition: grid-template-columns 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
 }
 
 /* Sidebar */
@@ -29,12 +30,14 @@
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  position: sticky;
+  position: fixed; /* Fixado para flutuar livremente sem empurrar a grid */
+  left: 0;
   top: 0;
-  width: 85px; /* Tamanho fixo da barra estreita compacta */
+  z-index: 100; /* Acima de todo o resto */
+  width: 85px; /* Largura estreita padrão */
   padding: 24px 0;
   box-sizing: border-box;
-  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
 }
 
 .sidebar-brand {
@@ -148,10 +151,11 @@
 @media (min-width: 768px) {
   .admin-sidebar {
     width: 85px;
+    position: fixed; /* Fixado na viewport para flutuar acima do conteúdo da página sem empurrar nada */
   }
   .admin-sidebar:hover {
-    width: 180px; /* Expande para mostrar labels no hover */
-    box-shadow: 10px 0 30px rgba(60, 48, 40, 0.06);
+    width: 200px; /* Expande para mostrar labels no hover */
+    box-shadow: 10px 0 40px rgba(60, 48, 40, 0.12);
     align-items: flex-start;
     padding: 24px 16px;
   }
@@ -449,10 +453,11 @@
 @media (max-width: 768px) {
   .admin-app-container {
     grid-template-columns: 1fr;
+    padding-left: 0 !important; /* Reseta o padding da sidebar fixed no mobile */
   }
 
   .admin-sidebar {
-    display: none;
+    display: none !important;
   }
 
   .topbar-search-container {
