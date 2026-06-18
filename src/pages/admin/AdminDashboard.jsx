@@ -1049,11 +1049,15 @@ const AdminDashboard = () => {
       }
 
       if (updatedPayload.clientEmail && updatedPayload.clientEmail.includes('@')) {
-        await triggerEmailNotification({
-          ...updatedPayload,
-          id: bId,
-          type: 'agendamento_editado'
-        }, 'agendamento_editado').catch(err => console.warn('Erro ao enviar e-mail de edição:', err));
+        const dateChanged = oldBooking?.date !== updatedPayload.date;
+        const timeChanged = oldBooking?.time !== updatedPayload.time;
+        if (dateChanged || timeChanged) {
+          await triggerEmailNotification({
+            ...updatedPayload,
+            id: bId,
+            type: 'agendamento_editado'
+          }, 'agendamento_editado').catch(err => console.warn('Erro ao enviar e-mail de edição:', err));
+        }
       }
 
       setIsEditingBooking(false);
@@ -1937,8 +1941,9 @@ const AdminDashboard = () => {
     );
 
     if (occupied) {
-      alert('Este horário já está ocupado por outro agendamento!');
-      return;
+      if (!window.confirm('Este horário já está ocupado por outro agendamento. Deseja continuar?')) {
+        return;
+      }
     }
 
     const updatedPayload = {

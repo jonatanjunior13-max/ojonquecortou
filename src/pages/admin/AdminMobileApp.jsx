@@ -983,8 +983,9 @@ export default function AdminMobileApp() {
 
     // Evita horários duplicados: bloqueia se sobrepõe agendamento/bloqueio existente
     if (bookingOverlaps(nbForm.date, nbForm.time, duration)) {
-      showToast('Conflito: já existe agendamento neste intervalo', 'error');
-      return;
+      if (!window.confirm('Já existe outro agendamento neste horário. Deseja continuar?')) {
+        return;
+      }
     }
 
     let clientEmail = '';
@@ -1102,8 +1103,9 @@ export default function AdminMobileApp() {
 
     // Evita horários duplicados ao reagendar (ignora o próprio agendamento)
     if (bookingOverlaps(editBookingForm.date, editBookingForm.time, duration, editBookingForm.id)) {
-      showToast('Conflito: já existe agendamento neste intervalo', 'error');
-      return;
+      if (!window.confirm('Já existe outro agendamento neste horário. Deseja continuar?')) {
+        return;
+      }
     }
 
     const data = {
@@ -1153,7 +1155,9 @@ export default function AdminMobileApp() {
         emailToUse = matchedClient?.email || '';
       }
 
-      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
+      const dateChanged = oldB?.date !== editBookingForm.date;
+      const timeChanged = oldB?.time !== editBookingForm.time;
+      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@') && (dateChanged || timeChanged)) {
         triggerEmailNotification({
           ...data,
           id: editBookingForm.id,
