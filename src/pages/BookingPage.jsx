@@ -463,7 +463,7 @@ const BookingPage = () => {
           notes: profile.observacoes || prev.notes || '',
         }));
         setExistingProfile(profile);
-        checkPackageCredits(profile.phone, profile.email, selectedService);
+        checkPackageCredits(profile.phone, profile.email, selectedServices);
 
         // Fetch this client's bookings
         try {
@@ -579,7 +579,7 @@ const BookingPage = () => {
         } else {
           setAuthMode('register');
         }
-        checkPackageCredits(matchedProfile.phone, matchedProfile.email, selectedService);
+        checkPackageCredits(matchedProfile.phone, matchedProfile.email, selectedServices);
       } else {
         setExistingProfile(null);
         setAuthMode(null);
