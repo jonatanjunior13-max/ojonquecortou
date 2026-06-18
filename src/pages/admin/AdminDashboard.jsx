@@ -240,6 +240,7 @@ const AdminDashboard = () => {
   const [isDemoMode, setIsDemoMode] = useState(!db);
   
   const toast = useToast();
+  const [selectedFichaClient, setSelectedFichaClient] = useState(null);
 
   // Checkout / Comanda states
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -447,6 +448,21 @@ const AdminDashboard = () => {
     }
 
     return Array.from(unique.values());
+  };
+
+  const isClientRecurrent = (clientName, clientPhone) => {
+    if (!clientName) return false;
+    const cleanName = clientName.trim().toLowerCase();
+    const cleanPhone = (clientPhone || '').replace(/\D/g, '');
+
+    const count = bookings.filter(b => {
+      if (b.status === 'cancelado' || b.status === 'bloqueado') return false;
+      const bName = (b.clientName || '').trim().toLowerCase();
+      const bPhone = (b.clientPhone || b.phone || '').replace(/\D/g, '');
+      return (cleanPhone && bPhone === cleanPhone) || (bName === cleanName);
+    }).length;
+
+    return count > 1;
   };
 
   // Autocomplete filtering helper
@@ -3111,7 +3127,30 @@ Grande abraço, Jon.`;
                                   >
                                     <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
                                     <span className="appt-time">{isSubsequent ? `↳ ${apptTimeText} (Ocupado)` : apptTimeText}</span>
-                                    <span className="appt-client" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.clientName}</span>
+                                    <span 
+                                      className="appt-client" 
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
+                                      }}
+                                      style={{ 
+                                        textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)',
+                                        cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
+                                      }}
+                                    >
+                                      {bk.clientName}
+                                      {isClientRecurrent(bk.clientName, bk.clientPhone) && (
+                                        <span style={{
+                                          position: 'absolute',
+                                          top: '-2px',
+                                          right: '-6px',
+                                          width: '5px',
+                                          height: '5px',
+                                          borderRadius: '50%',
+                                          backgroundColor: 'var(--adm-gold, #dca354)'
+                                        }} title="Cliente Recorrente" />
+                                      )}
+                                    </span>
                                     <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.service?.name || bk.serviceName}</span>
                                   </div>
                                 );
@@ -3519,7 +3558,30 @@ Grande abraço, Jon.`;
                                   }}
                                 >
                                   <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
-                                  <span className="appt-client" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.clientName}</span>
+                                  <span 
+                                     className="appt-client" 
+                                     onClick={(e) => {
+                                       e.stopPropagation();
+                                       setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
+                                     }}
+                                     style={{ 
+                                       whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',
+                                       cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
+                                     }}
+                                   >
+                                     {b.clientName}
+                                     {isClientRecurrent(b.clientName, b.clientPhone) && (
+                                       <span style={{
+                                         position: 'absolute',
+                                         top: '-2px',
+                                         right: '-6px',
+                                         width: '5px',
+                                         height: '5px',
+                                         borderRadius: '50%',
+                                         backgroundColor: 'var(--adm-gold, #dca354)'
+                                       }} title="Cliente Recorrente" />
+                                     )}
+                                   </span>
                                   <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
                                 </div>
                               );
@@ -5394,6 +5456,22 @@ Grande abraço, Jon.`;
                   </ul>
                 )}
               </div>
+              {(() => {
+                const match = clients.find(c => 
+                  (newBooking.clientPhone && c.phone.replace(/\D/g, '') === newBooking.clientPhone.replace(/\D/g, '')) || 
+                  (newBooking.clientName && c.name.toLowerCase().trim() === newBooking.clientName.toLowerCase().trim())
+                );
+                if (match) {
+                  return (
+                    <div style={{ background: 'rgba(56,161,105,0.08)', border: '1px solid rgba(56,161,105,0.2)', padding: '8px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
+                      <span style={{ color: '#48bb78', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                        ✓ Cliente já cadastrada! Ficha técnica vinculada. (Curvatura: {match.curvatura})
+                      </span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
               {/* BOTÃO CADASTRAR NOVO CLIENTE */}
               <div style={{ marginTop: 8, textAlign: 'right' }}>
                 <button type="button" onClick={() => setShowAddClientModal(true)} style={{ background: 'none', border: 'none', color: 'var(--adm-gold)', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 4, marginLeft: 'auto', cursor: 'pointer' }}>

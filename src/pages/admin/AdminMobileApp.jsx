@@ -188,6 +188,7 @@ export default function AdminMobileApp() {
   const [loading, setLoading] = useState(true);
   const [authReady, setAuthReady] = useState(false);
   const [syncError, setSyncError] = useState('');
+  const [selectedFichaClient, setSelectedFichaClient] = useState(null);
 
   // ── New States for Rescheduling and Fees ────────────────────────
   const [installments, setInstallments] = useState('À vista');
@@ -2076,7 +2077,27 @@ Grande abraço, Jon.`;
                 <div key={b.id} className="m-booking-card" onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                   <div className="m-booking-time">{b.time || '—'}</div>
                   <div className="m-booking-info">
-                    <div className="m-booking-name">{b.clientName}</div>
+                    <div 
+                      className="m-booking-name" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
+                      }}
+                      style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
+                    >
+                      {b.clientName}
+                      {isClientRecurrent(b.clientName, b.clientPhone) && (
+                        <span style={{
+                          position: 'absolute',
+                          top: '-2px',
+                          right: '-8px',
+                          width: '5px',
+                          height: '5px',
+                          borderRadius: '50%',
+                          backgroundColor: 'var(--m-gold, #dca354)'
+                        }} />
+                      )}
+                    </div>
                     <div className="m-booking-service">{b.service?.name || b.serviceName}</div>
                   </div>
                   <StatusPill status={b.status}/>
@@ -2224,7 +2245,27 @@ Grande abraço, Jon.`;
                       {bk ? (
                         <div className={`m-slot-booking ${bk.status}`}>
                           <div>
-                            <div className="m-slot-client">{bk.clientName}</div>
+                            <div 
+                              className="m-slot-client"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
+                              }}
+                              style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
+                            >
+                              {bk.clientName}
+                              {isClientRecurrent(bk.clientName, bk.clientPhone) && (
+                                <span style={{
+                                  position: 'absolute',
+                                  top: '-2px',
+                                  right: '-8px',
+                                  width: '5px',
+                                  height: '5px',
+                                  borderRadius: '50%',
+                                  backgroundColor: 'var(--m-gold, #dca354)'
+                                }} />
+                              )}
+                            </div>
                             <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
                           </div>
                           <StatusPill status={bk.status}/>
