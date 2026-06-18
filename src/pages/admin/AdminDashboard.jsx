@@ -4516,6 +4516,11 @@ Grande abraço, Jon.`;
                   value={editBookingForm.prepayment || ''}
                   onChange={e => setEditBookingForm(prev => ({ ...prev, prepayment: Number(e.target.value) }))}
                 />
+                {Number(editBookingForm.prepayment || 0) > 0 && (
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-gold)', display: 'block', marginTop: 4 }}>
+                    Valor líquido a cobrar no estúdio: R$ {(Number(editBookingForm.servicePrice || 0) - Number(editBookingForm.prepayment || 0)).toFixed(2)}
+                  </span>
+                )}
               </div>
 
               <div className="form-group">
@@ -5597,6 +5602,11 @@ Grande abraço, Jon.`;
                   value={newBooking.prepayment || ''}
                   onChange={e => setNewBooking(prev => ({ ...prev, prepayment: Number(e.target.value) }))}
                 />
+                {Number(newBooking.prepayment || 0) > 0 && (
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-gold)', display: 'block', marginTop: 4 }}>
+                    Valor líquido a cobrar no estúdio: R$ {(Number(newBooking.servicePrice || 0) - Number(newBooking.prepayment || 0)).toFixed(2)}
+                  </span>
+                )}
               </div>
 
               <div className="form-group" style={{ gridColumn: 'span 2', marginBottom: 0 }}>

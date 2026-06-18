@@ -382,16 +382,8 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                 <span>Desconto</span><span>- {fmtBRL(discount)}</span>
               </div>
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)' }}>
-              <span>Valor Total</span><span>{fmtBRL(subtotal - discount)}</span>
-            </div>
-            {prepay > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
-                <span>Sinal / Adiantamento Pago</span><span>- {fmtBRL(prepay)}</span>
-              </div>
-            )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: 'var(--adm-text)', borderTop: '0.5px dashed var(--adm-rule)', paddingTop: 4 }}>
-              <span>Valor Restante (A Cobrar)</span><span>{fmtBRL(totalToPay)}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: 'var(--adm-text)' }}>
+              <span>Valor Total</span><span>{fmtBRL(totalToPay)}</span>
             </div>
             {feeAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>

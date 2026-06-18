@@ -3595,18 +3595,8 @@ Grande abraço, Jon.`;
                   <span>- {fmt(discount)}</span>
                 </div>
               )}
-              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.95rem', fontWeight:800, color:'var(--m-gold)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4 }}>
                 <span>Valor Total</span>
-                <span>{fmt(subtotal - discount)}</span>
-              </div>
-              {prepay > 0 && (
-                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
-                  <span>Sinal Pago</span>
-                  <span>- {fmt(prepay)}</span>
-                </div>
-              )}
-              <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.95rem', fontWeight:800, color:'var(--m-gold)', borderTop:'0.5px solid var(--m-rule)', paddingTop:4, marginTop:2 }}>
-                <span>Valor Restante</span>
                 <span>{fmt(remaining)}</span>
               </div>
             </div>
@@ -3713,6 +3703,11 @@ Grande abraço, Jon.`;
             <div className="m-field">
               <label className="m-label">Sinal / Adiantamento Pago (R$)</label>
               <input className="m-input" type="number" placeholder="0,00" value={nbForm.prepayment} onChange={e => setNbForm(p => ({ ...p, prepayment: e.target.value }))}/>
+              {Number(nbForm.prepayment || 0) > 0 && (
+                <span style={{ fontSize: '0.75rem', color: 'var(--m-gold)', display: 'block', marginTop: 4 }}>
+                  Valor líquido a cobrar: R$ {(Number(nbForm.servicePrice || (services.find(s => s.name === nbForm.serviceName)?.promoPrice || services.find(s => s.name === nbForm.serviceName)?.price || 0)) - Number(nbForm.prepayment || 0)).toFixed(2)}
+                </span>
+              )}
             </div>
             <div className="m-field">
               <label className="m-label">Observações</label>
@@ -3790,6 +3785,11 @@ Grande abraço, Jon.`;
               <div className="m-field">
                 <label className="m-label">Sinal / Adiantamento (R$)</label>
                 <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.prepayment} onChange={e => setEditBookingForm(p => ({ ...p, prepayment: e.target.value }))}/>
+                {Number(editBookingForm.prepayment || 0) > 0 && (
+                  <span style={{ fontSize: '0.75rem', color: 'var(--m-gold)', display: 'block', marginTop: 4 }}>
+                    Valor líquido a cobrar: R$ {(Number(editBookingForm.servicePrice || 0) - Number(editBookingForm.prepayment || 0)).toFixed(2)}
+                  </span>
+                )}
               </div>
               <div className="m-field">
                 <label className="m-label">Status</label>
