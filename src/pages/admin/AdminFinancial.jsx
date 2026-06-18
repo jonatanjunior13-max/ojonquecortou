@@ -20,10 +20,17 @@ const DEFAULT_PROFESSIONALS = [
   { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
 ];
 
+const Card = ({ children }) => (
+  <div className="financial-card">
+    {children}
+  </div>
+);
+
 const AdminFinancial = () => {
   const { globalData, setGlobalData } = useOutletContext();
 
   const [activeSubTab, setActiveSubTab] = useState('dashboard'); // 'dashboard', 'fluxo', 'comissao', 'taxas'
+  const [attendanceViewMode, setAttendanceViewMode] = useState('detalhado'); // 'detalhado', 'dia', 'semana', 'mes'
   const [fixedCosts, setFixedCosts] = useState(3500);
   const [proLabore, setProLabore] = useState(5000);
   const [workDays, setWorkDays] = useState(22);
@@ -392,6 +399,113 @@ const AdminFinancial = () => {
     });
     return stats;
   }, [filteredTransactions]);
+
+  // Grupa e consolida atendimentos de clientes por período (combinando serviços e vendas de produtos)
+  const detailedAttendanceList = useMemo(() => {
+    const list = [];
+    const completed = filteredBookings.filter(b => b.status === 'finalizado');
+    const productSales = filteredTransactions.filter(t => t.type === 'entrada' && (t.isProductSale || t.category === 'venda_produto'));
+
+    // Agrupamento chave: clientName_date
+    const clientVisitMap = {};
+
+    completed.forEach(b => {
+      const key = `${(b.clientName || '').trim().toLowerCase()}_${b.date}`;
+      clientVisitMap[key] = {
+        date: b.date,
+        time: b.time || '00:00',
+        clientName: b.clientName || 'Cliente sem Nome',
+        clientPhone: b.clientPhone || b.phone || '',
+        services: [{ name: b.serviceName || 'Serviço', price: b.servicePrice || 150 }],
+        products: [],
+        totalValue: b.servicePrice || 150,
+        type: 'servico'
+      };
+    });
+
+    // Mescla vendas de produtos ocorridas na mesma data para a mesma cliente
+    productSales.forEach(t => {
+      const key = `${(t.clientName || '').trim().toLowerCase()}_${t.date}`;
+      const productsList = (t.productSales || []).map(p => ({
+        name: p.name || 'Produto',
+        quantity: p.quantity || 1,
+        price: (p.sellingPrice || 0) * (p.quantity || 1)
+      }));
+
+      if (productsList.length === 0) {
+        productsList.push({
+          name: t.description || 'Produto',
+          quantity: 1,
+          price: t.value || 0
+        });
+      }
+
+      if (clientVisitMap[key]) {
+        clientVisitMap[key].products.push(...productsList);
+        clientVisitMap[key].totalValue += t.value;
+      } else {
+        clientVisitMap[key] = {
+          date: t.date,
+          time: t.time || '00:00',
+          clientName: t.clientName || 'Venda Avulsa',
+          clientPhone: '',
+          services: [],
+          products: productsList,
+          totalValue: t.value,
+          type: 'produto'
+        };
+      }
+    });
+
+    return Object.values(clientVisitMap).sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
+  }, [filteredBookings, filteredTransactions]);
+
+  // Agrega totais de clientes atendidos, receitas de serviços e produtos por Dia, Semana e Mês
+  const attendanceAggregatedStats = useMemo(() => {
+    const byDay = {};
+    const byWeek = {};
+    const byMonth = {};
+
+    detailedAttendanceList.forEach(item => {
+      const dateVal = item.date;
+      if (!dateVal) return;
+
+      const dateObj = new Date(dateVal + 'T00:00:00');
+
+      // 1. Agrupamento por Dia
+      byDay[dateVal] = byDay[dateVal] || { date: dateVal, count: 0, serviceRevenue: 0, productRevenue: 0, totalRevenue: 0 };
+      byDay[dateVal].count += (item.services.length > 0 ? 1 : 0);
+      byDay[dateVal].serviceRevenue += item.services.reduce((sum, s) => sum + s.price, 0);
+      byDay[dateVal].productRevenue += item.products.reduce((sum, p) => sum + p.price, 0);
+      byDay[dateVal].totalRevenue += item.totalValue;
+
+      // 2. Agrupamento por Mês
+      const monthKey = dateVal.substring(0, 7);
+      byMonth[monthKey] = byMonth[monthKey] || { month: monthKey, count: 0, serviceRevenue: 0, productRevenue: 0, totalRevenue: 0 };
+      byMonth[monthKey].count += (item.services.length > 0 ? 1 : 0);
+      byMonth[monthKey].serviceRevenue += item.services.reduce((sum, s) => sum + s.price, 0);
+      byMonth[monthKey].productRevenue += item.products.reduce((sum, p) => sum + p.price, 0);
+      byMonth[monthKey].totalRevenue += item.totalValue;
+
+      // 3. Agrupamento por Semana (iniciando na segunda-feira)
+      const dayOfWeek = dateObj.getDay();
+      const diff = dateObj.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+      const startOfWeek = new Date(dateObj.setDate(diff));
+      const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
+
+      byWeek[startOfWeekStr] = byWeek[startOfWeekStr] || { weekStart: startOfWeekStr, count: 0, serviceRevenue: 0, productRevenue: 0, totalRevenue: 0 };
+      byWeek[startOfWeekStr].count += (item.services.length > 0 ? 1 : 0);
+      byWeek[startOfWeekStr].serviceRevenue += item.services.reduce((sum, s) => sum + s.price, 0);
+      byWeek[startOfWeekStr].productRevenue += item.products.reduce((sum, p) => sum + p.price, 0);
+      byWeek[startOfWeekStr].totalRevenue += item.totalValue;
+    });
+
+    return {
+      days: Object.values(byDay).sort((a, b) => b.date.localeCompare(a.date)),
+      weeks: Object.values(byWeek).sort((a, b) => b.weekStart.localeCompare(a.weekStart)),
+      months: Object.values(byMonth).sort((a, b) => b.month.localeCompare(a.month))
+    };
+  }, [detailedAttendanceList]);
 
   // Monthly grouping for charts
   const monthlyData = useMemo(() => {
@@ -1080,6 +1194,7 @@ const AdminFinancial = () => {
         {[
           { id: 'dashboard', label: 'Gráficos', icon: <TrendingUp size={14} /> },
           { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
+          { id: 'atendimentos', label: 'Atendimentos', icon: <Users size={14} /> },
           { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
           { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
           { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
@@ -1725,6 +1840,275 @@ const AdminFinancial = () => {
                 })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB: ATENDIMENTOS (POR DIA, SEMANA, MÊS, PERÍODO) */}
+      {activeSubTab === 'atendimentos' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <div className="financial-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Relatório de Atendimentos</h3>
+                <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', margin: '4px 0 0 0' }}>
+                  Acompanhe a quantidade de clientes atendidas, bem como a lista de serviços e produtos consumidos por período.
+                </p>
+              </div>
+              
+              <div style={{ display: 'flex', gap: 8, background: 'var(--adm-surface)', padding: 4, borderRadius: 6, border: '0.5px solid var(--adm-rule)' }}>
+                {[
+                  { id: 'detalhado', label: 'Lista Detalhada' },
+                  { id: 'dia', label: 'Por Dia' },
+                  { id: 'semana', label: 'Por Semana' },
+                  { id: 'mes', label: 'Por Mês' }
+                ].map(mode => (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => setAttendanceViewMode(mode.id)}
+                    style={{
+                      padding: '6px 12px', fontSize: '0.78rem', fontWeight: 600, border: 'none', borderRadius: 4, cursor: 'pointer',
+                      background: attendanceViewMode === mode.id ? 'var(--adm-gold)' : 'transparent',
+                      color: attendanceViewMode === mode.id ? '#000' : 'var(--adm-muted)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* RESUMO RÁPIDO DO MODO */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 20 }}>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Total Clientes Atendidos</span>
+                <strong style={{ fontSize: '1.4rem', color: 'var(--adm-gold)' }}>
+                  {detailedAttendanceList.filter(item => item.services.length > 0).length}
+                </strong>
+              </div>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Receita Est. de Serviços</span>
+                <strong style={{ fontSize: '1.4rem', color: 'var(--adm-success)' }}>
+                  R$ {detailedAttendanceList.reduce((sum, item) => sum + item.services.reduce((sSum, s) => sSum + s.price, 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </strong>
+              </div>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Receita Est. de Produtos</span>
+                <strong style={{ fontSize: '1.4rem', color: '#4299e1' }}>
+                  R$ {detailedAttendanceList.reduce((sum, item) => sum + item.products.reduce((pSum, p) => pSum + p.price, 0), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </strong>
+              </div>
+            </div>
+
+            {/* TABELA: DETALHADO */}
+            {attendanceViewMode === 'detalhado' && (
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Data / Hora</th>
+                      <th>Cliente</th>
+                      <th>Serviços Consumidos</th>
+                      <th>Produtos Consumidos</th>
+                      <th style={{ textAlign: 'right' }}>Total Consumido</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {detailedAttendanceList.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum atendimento finalizado ou venda de produto registrada no período.
+                        </td>
+                      </tr>
+                    ) : (
+                      detailedAttendanceList.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <strong>{new Date(item.date + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>
+                            <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-muted)', marginTop: 2 }}>
+                              {item.time}
+                            </span>
+                          </td>
+                          <td>
+                            <strong style={{ color: '#fff' }}>{item.clientName}</strong>
+                            {item.clientPhone && (
+                              <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-muted)', marginTop: 2 }}>
+                                {item.clientPhone}
+                              </span>
+                            )}
+                          </td>
+                          <td>
+                            {item.services.length === 0 ? (
+                              <span style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>Sem serviços</span>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                {item.services.map((s, sIdx) => (
+                                  <span key={sIdx} style={{ fontSize: '0.82rem', color: 'var(--adm-text)' }}>
+                                    ✅ {s.name} <span style={{ color: 'var(--adm-gold)', fontSize: '0.78rem' }}>(R$ {s.price.toFixed(2)})</span>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            {item.products.length === 0 ? (
+                              <span style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>Sem produtos</span>
+                            ) : (
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                {item.products.map((p, pIdx) => (
+                                  <span key={pIdx} style={{ fontSize: '0.82rem', color: 'var(--adm-text)' }}>
+                                    🛍️ {p.quantity}x {p.name} <span style={{ color: '#4299e1', fontSize: '0.78rem' }}>(R$ {p.price.toFixed(2)})</span>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-success)' }}>
+                            R$ {item.totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: DIÁRIO */}
+            {attendanceViewMode === 'dia' && (
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th style={{ textAlign: 'center' }}>Clientes Atendidas (Serviço)</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Geral</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {attendanceAggregatedStats.days.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum dado diário consolidado para o período.
+                        </td>
+                      </tr>
+                    ) : (
+                      attendanceAggregatedStats.days.map((item, idx) => (
+                        <tr key={idx}>
+                          <td><strong>{new Date(item.date + 'T00:00:00').toLocaleDateString('pt-BR')}</strong></td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-success)' }}>
+                            R$ {item.serviceRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ textAlign: 'right', color: '#4299e1' }}>
+                            R$ {item.productRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)' }}>
+                            R$ {item.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: SEMANAL */}
+            {attendanceViewMode === 'semana' && (
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Semana (Segunda-Feira)</th>
+                      <th style={{ textAlign: 'center' }}>Clientes Atendidas (Serviço)</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Geral</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {attendanceAggregatedStats.weeks.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum dado semanal consolidado para o período.
+                        </td>
+                      </tr>
+                    ) : (
+                      attendanceAggregatedStats.weeks.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <strong>{new Date(item.weekStart + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-success)' }}>
+                            R$ {item.serviceRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ textAlign: 'right', color: '#4299e1' }}>
+                            R$ {item.productRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)' }}>
+                            R$ {item.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MENSAL */}
+            {attendanceViewMode === 'mes' && (
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Mês / Ano</th>
+                      <th style={{ textAlign: 'center' }}>Clientes Atendidas (Serviço)</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Geral</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {attendanceAggregatedStats.months.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum dado mensal consolidado para o período.
+                        </td>
+                      </tr>
+                    ) : (
+                      attendanceAggregatedStats.months.map((item, idx) => {
+                        const [year, month] = item.month.split('-');
+                        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+                        const monthLabel = `${monthNames[Number(month) - 1]} / ${year}`;
+                        return (
+                          <tr key={idx}>
+                            <td><strong>{monthLabel}</strong></td>
+                            <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                            <td style={{ textAlign: 'right', color: 'var(--adm-success)' }}>
+                              R$ {item.serviceRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style={{ textAlign: 'right', color: '#4299e1' }}>
+                              R$ {item.productRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)' }}>
+                              R$ {item.totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
           </div>
         </div>
       )}
