@@ -323,9 +323,10 @@ const GalleryPage = () => {
       id: p.id,
       url: p.url,
       title: p.caption || 'Trabalho do Studio',
-      description: p.category || 'Galeria'
+      description: p.category || 'Galeria',
+      type: p.type || 'image'
     })),
-    ...galleryImages
+    ...galleryImages.map(img => ({ ...img, type: 'image' }))
   ];
 
   return (
@@ -350,7 +351,11 @@ const GalleryPage = () => {
             {allPhotosToShow.map((item, index) => (
               <div key={item.id} className={`gallery-item reveal active stagger-${(index % 4) + 1}`}>
                 <div className="gallery-img-wrap">
-                  <img src={item.url} alt={`${item.title} — ${item.description} no Studio do Jon em Belo Horizonte`} className="gallery-img" />
+                  {item.type === 'video' ? (
+                    <video src={item.url} controls className="gallery-img" style={{ objectFit: 'cover', width: '100%', height: '100%', display: 'block' }} />
+                  ) : (
+                    <img src={item.url} alt={`${item.title} — ${item.description} no Studio do Jon em Belo Horizonte`} className="gallery-img" />
+                  )}
                   <div className="gallery-overlay">
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>

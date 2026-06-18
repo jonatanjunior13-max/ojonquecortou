@@ -1287,7 +1287,10 @@ Grande abraço, Jon.`;
   const handleGalleryFileSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.type.startsWith('image/')) { showToast('Selecione uma imagem', 'error'); return; }
+    if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
+      showToast('Selecione uma imagem ou vídeo', 'error');
+      return;
+    }
     const url = URL.createObjectURL(file);
     setPendingFile(file);
     setPendingPreviewUrl(url);
@@ -1344,8 +1347,9 @@ Grande abraço, Jon.`;
 
     try {
       let fileToUpload = pendingFile;
+      const isVideo = pendingFile.type.startsWith('video/');
       
-      if (naturalDimensions.w && containerSize && previewImageRef.current) {
+      if (!isVideo && naturalDimensions.w && containerSize && previewImageRef.current) {
         const canvas = document.createElement('canvas');
         canvas.width = 1000;
         canvas.height = 1000;
@@ -1396,7 +1400,7 @@ Grande abraço, Jon.`;
 
       // Step 2: Post to Google Business Photos (via proxy or direct API)
       let googlePosted = false;
-      if (postToGoogle) {
+      if (postToGoogle && !isVideo) {
         try {
           const hasGbpConfig = !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId);
           if (hasGbpConfig) {
@@ -1433,7 +1437,8 @@ Grande abraço, Jon.`;
           caption: uploadForm.caption || '',
           googlePosted,
           createdAt: new Date().toISOString(),
-          storagePath: `gallery/${filename}`
+          storagePath: `gallery/${filename}`,
+          type: isVideo ? 'video' : 'image'
         };
 
         if (db) {
@@ -1447,11 +1452,13 @@ Grande abraço, Jon.`;
       setPendingFile(null);
       setPendingPreviewUrl('');
       showToast(
-        googlePosted && postToGallery
-          ? 'Foto publicada no Studio e no Google! 🎉'
-          : googlePosted
-            ? 'Foto publicada no Google! 🎉'
-            : 'Foto salva na galeria!',
+        isVideo
+          ? 'Vídeo publicado na galeria!'
+          : googlePosted && postToGallery
+            ? 'Foto publicada no Studio e no Google! 🎉'
+            : googlePosted
+              ? 'Foto publicada no Google! 🎉'
+              : 'Foto salva na galeria!',
         'success'
       );
     } catch (err) {
@@ -2347,13 +2354,22 @@ Grande abraço, Jon.`;
           {/* Upload button */}
           <div className="m-gallery-upload-zone" onClick={() => galleryInputRef.current?.click()}>
             <Camera size={22}/>
-            <span>Adicionar Foto</span>
+            <span>Adicionar Foto/Vídeo</span>
           </div>
-          <input ref={galleryInputRef} type="file" accept="image/*" style={{ display:'none' }} onChange={handleGalleryFileSelect}/>
+          <input ref={galleryInputRef} type="file" accept="image/*,video/*" style={{ display:'none' }} onChange={handleGalleryFileSelect}/>
 
           {filtered.map(photo => (
             <div key={photo.id} className="m-gallery-item" onClick={() => setPreviewPhoto(photo)}>
-              <img src={photo.url} alt={photo.caption || photo.category} loading="lazy"/>
+              {photo.type === 'video' ? (
+                <div style={{ width:'100%', height:'100%', position:'relative', background:'#000', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <video src={photo.url} style={{ width:'100%', height:'100%', objectFit:'cover' }} muted playsInline />
+                  <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent:'center', background:'rgba(0,0,0,0.3)' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#fff' }}><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  </div>
+                </div>
+              ) : (
+                <img src={photo.url} alt={photo.caption || photo.category} loading="lazy"/>
+              )}
               <div className="m-gallery-cat-badge">{photo.category}</div>
               {photo.googlePosted && (
                 <div style={{ position:'absolute', top:4, right:4, background:'rgba(14,12,11,0.8)', borderRadius:4, padding:'2px 4px', fontSize:'0.5rem', color:'#4285f4', fontWeight:800, backdropFilter:'blur(4px)' }}>G</div>
@@ -4044,6 +4060,8 @@ Grande abraço, Jon.`;
   const renderUploadSheet = () => {
     if (!showUploadSheet) return null;
     
+    const isVideo = pendingFile?.type?.startsWith('video/');
+    
     const getPreviewImageStyle = () => {
       if (!naturalDimensions.w || !containerSize) {
         return { width: '100%', height: '100%', objectFit: 'cover' };
@@ -4073,63 +4091,68 @@ Grande abraço, Jon.`;
     };
 
     return (
-      <div className="m-overlay" onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>
-        <div className="m-sheet" onClick={e => e.stopPropagation()}>
-          <div className="m-sheet-handle"/>
-          <div className="m-sheet-header">
-            <div className="m-sheet-title">Publicar Foto</div>
+      <div className="m-overlay-center" onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>
+        <div className="m-modal" style={{ maxWidth: '600px', width: '90%', maxHeight: '90dvh' }} onClick={e => e.stopPropagation()}>
+          <div className="m-modal-header" style={{ padding: '16px 20px', borderBottom: '0.5px solid var(--m-rule)', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <div className="m-sheet-title">{isVideo ? 'Publicar Vídeo' : 'Publicar Foto'}</div>
             <button onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }} className="m-icon-btn"><X size={18}/></button>
           </div>
-          <div className="m-sheet-body">
-            {/* Interactive Cropper */}
+          <div className="m-sheet-body" style={{ padding: '16px 20px', display:'flex', flexDirection:'column', gap:'14px', overflowY:'auto' }}>
+            {/* Interactive Cropper or Video Preview */}
             {pendingPreviewUrl && (
-              <div 
-                ref={previewContainerRef}
-                style={{ 
-                  borderRadius:'var(--m-radius)', 
-                  overflow:'hidden', 
-                  aspectRatio:'1/1', 
-                  background:'#000', 
-                  position:'relative',
-                  touchAction:'none',
-                  cursor: isDraggingCropper ? 'grabbing' : 'grab'
-                }}
-                onMouseDown={(e) => handleCropperDragStart(e.clientX, e.clientY)}
-                onMouseMove={(e) => handleCropperDragMove(e.clientX, e.clientY)}
-                onMouseUp={handleCropperDragEnd}
-                onMouseLeave={handleCropperDragEnd}
-                onTouchStart={(e) => handleCropperDragStart(e.touches[0].clientX, e.touches[0].clientY)}
-                onTouchMove={(e) => handleCropperDragMove(e.touches[0].clientX, e.touches[0].clientY)}
-                onTouchEnd={handleCropperDragEnd}
-              >
-                <img 
-                  ref={previewImageRef}
-                  src={pendingPreviewUrl} 
-                  alt="Preview" 
-                  onLoad={(e) => {
-                    const img = e.target;
-                    setNaturalDimensions({ w: img.naturalWidth, h: img.naturalHeight });
-                    if (previewContainerRef.current) {
-                      setContainerSize(previewContainerRef.current.offsetWidth);
-                    }
+              isVideo ? (
+                <div style={{ borderRadius:'var(--m-radius)', overflow:'hidden', aspectRatio:'1/1', background:'#000', position:'relative', display:'flex', alignItems:'center', justifyContent:'center' }}>
+                  <video src={pendingPreviewUrl} controls style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                </div>
+              ) : (
+                <div 
+                  ref={previewContainerRef}
+                  style={{ 
+                    borderRadius:'var(--m-radius)', 
+                    overflow:'hidden', 
+                    aspectRatio:'1/1', 
+                    background:'#000', 
+                    position:'relative',
+                    touchAction:'none',
+                    cursor: isDraggingCropper ? 'grabbing' : 'grab'
                   }}
-                  style={getPreviewImageStyle()}
-                />
-                
-                {/* Visual crop guidelines/borders */}
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  border: '1.5px dashed rgba(220, 163, 84, 0.6)',
-                  borderRadius: 'var(--m-radius)',
-                  pointerEvents: 'none',
-                  boxShadow: 'inset 0 0 40px rgba(0,0,0,0.5)'
-                }}/>
-              </div>
+                  onMouseDown={(e) => handleCropperDragStart(e.clientX, e.clientY)}
+                  onMouseMove={(e) => handleCropperDragMove(e.clientX, e.clientY)}
+                  onMouseUp={handleCropperDragEnd}
+                  onMouseLeave={handleCropperDragEnd}
+                  onTouchStart={(e) => handleCropperDragStart(e.touches[0].clientX, e.touches[0].clientY)}
+                  onTouchMove={(e) => handleCropperDragMove(e.touches[0].clientX, e.touches[0].clientY)}
+                  onTouchEnd={handleCropperDragEnd}
+                >
+                  <img 
+                    ref={previewImageRef}
+                    src={pendingPreviewUrl} 
+                    alt="Preview" 
+                    onLoad={(e) => {
+                      const img = e.target;
+                      setNaturalDimensions({ w: img.naturalWidth, h: img.naturalHeight });
+                      if (previewContainerRef.current) {
+                        setContainerSize(previewContainerRef.current.offsetWidth);
+                      }
+                    }}
+                    style={getPreviewImageStyle()}
+                  />
+                  
+                  {/* Visual crop guidelines/borders */}
+                  <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    border: '1.5px dashed rgba(220, 163, 84, 0.6)',
+                    borderRadius: 'var(--m-radius)',
+                    pointerEvents: 'none',
+                    boxShadow: 'inset 0 0 40px rgba(0,0,0,0.5)'
+                  }}/>
+                </div>
+              )
             )}
 
-            {/* Zoom Slider */}
-            {naturalDimensions.w > 0 && (
+            {/* Zoom Slider (skip for video) */}
+            {!isVideo && naturalDimensions.w > 0 && (
               <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--m-text-2)' }}>
                   <span style={{ fontWeight: 600 }}>Zoom da Imagem</span>
@@ -4181,7 +4204,7 @@ Grande abraço, Jon.`;
             )}
 
             {/* Category */}
-            <div className="m-field" style={{ marginTop: 16 }}>
+            <div className="m-field" style={{ marginTop: isVideo ? 16 : 0 }}>
               <label className="m-label">Categoria</label>
               <select className="m-select" value={uploadForm.category} onChange={e => setUploadForm(p => ({ ...p, category: e.target.value }))}>
                 {GALLERY_CATS.filter(c => c !== 'Todos').map(c => <option key={c} value={c}>{c}</option>)}
@@ -4210,22 +4233,22 @@ Grande abraço, Jon.`;
                   </span>
                 </label>
 
-                <label style={{ display:'flex', alignItems:'center', gap:10, cursor: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 'pointer' : 'not-allowed', userSelect:'none', opacity: (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) ? 1 : 0.6 }}>
+                <label style={{ display:'flex', alignItems:'center', gap:10, cursor: (!isVideo && (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)) ? 'pointer' : 'not-allowed', userSelect:'none', opacity: (!isVideo && (settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)) ? 1 : 0.6 }}>
                   <input 
                     type="checkbox" 
-                    checked={postToGoogle && !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)} 
-                    disabled={!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)}
+                    checked={postToGoogle && !isVideo && !!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)} 
+                    disabled={isVideo || !(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId)}
                     onChange={e => setPostToGoogle(e.target.checked)}
                     style={{ width:18, height:18, accentColor:'var(--m-gold)' }}
                   />
                   <span style={{ fontSize:'0.78rem', color:'var(--m-text-2)', fontWeight: 600 }}>
-                    Google Business Photos {!(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
+                    Google Business Photos {isVideo ? '(vídeo não suportado)' : !(settings?.automations?.googleGbpConnected || settings?.automations?.googleGbpLocationId || settings?.googleLocationId) && '(não configurado)'}
                   </span>
                 </label>
               </div>
             </div>
           </div>
-          <div className="m-sheet-footer">
+          <div className="m-sheet-footer" style={{ padding: '12px 20px', borderTop: '0.5px solid var(--m-rule)' }}>
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => { setShowUploadSheet(false); setPendingFile(null); setPendingPreviewUrl(''); }}>Cancelar</button>
             <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={uploadPhoto} disabled={isUploading || (!postToGallery && !postToGoogle)}>
               {isUploading ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Publicando...</> : <><Upload size={14}/> Publicar</>}
@@ -4253,7 +4276,11 @@ Grande abraço, Jon.`;
             <Trash2 size={18}/>
           </button>
         </div>
-        <img className="m-photo-preview-img" src={previewPhoto.url} alt={previewPhoto.caption}/>
+        {previewPhoto.type === 'video' ? (
+          <video className="m-photo-preview-img" src={previewPhoto.url} controls autoPlay style={{ objectFit: 'contain' }} />
+        ) : (
+          <img className="m-photo-preview-img" src={previewPhoto.url} alt={previewPhoto.caption}/>
+        )}
         {previewPhoto.caption && (
           <div className="m-photo-preview-bar">
             <div style={{ fontSize:'0.82rem', color:'var(--m-text-2)', flex:1, textAlign:'center' }}>{previewPhoto.caption}</div>
