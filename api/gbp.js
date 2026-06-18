@@ -20,10 +20,23 @@ function formatGoogleImageUrl(image) {
     const match = imageUrl.match(/o\/gallery%2F([^?]+)/);
     if (match && match[1]) {
       const filename = decodeURIComponent(match[1]);
-      imageUrl = `https://www.ojonquecortou.com.br/api/media/${filename}`;
+      let cleanFilename = filename;
+      if (filename.toLowerCase().endsWith('.webp')) {
+        cleanFilename = filename + '.jpg';
+      }
+      imageUrl = `https://www.ojonquecortou.com.br/api/media/${cleanFilename}`;
     }
   } else if (!imageUrl.startsWith('http')) {
-    imageUrl = `https://www.ojonquecortou.com.br${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+    const filename = imageUrl.startsWith('/') ? imageUrl.slice(1) : imageUrl;
+    let cleanFilename = filename;
+    if (filename.toLowerCase().endsWith('.webp')) {
+      cleanFilename = filename + '.jpg';
+    }
+    imageUrl = `https://www.ojonquecortou.com.br/api/media/${cleanFilename}`;
+  } else {
+    if (imageUrl.toLowerCase().endsWith('.webp')) {
+      imageUrl = `https://www.ojonquecortou.com.br/api/media/external_${Buffer.from(imageUrl).toString('base64')}.jpg`;
+    }
   }
   return imageUrl;
 }
