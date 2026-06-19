@@ -2217,30 +2217,25 @@ Grande abraço, Jon.`;
           >
             <div className="m-slot-list" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
               {HOURLY_SLOTS.map(slot => {
-                const bk = dayBookings.find(b => {
+                const slotMin = timeToMin(slot);
+                const bks = dayBookings.filter(b => {
                   if (b.status === 'cancelado') return false;
                   const bStart = timeToMin(b.time);
                   const bEnd = bStart + (b.duration || 60);
-                  const slotMin = timeToMin(slot);
                   return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
                 });
 
-                const bStart = bk ? timeToMin(bk.time) : 0;
-                const bEnd = bk ? bStart + (bk.duration || 60) : 0;
-                const slotMin = timeToMin(slot);
-                const isSubsequent = bk && bStart < slotMin;
-
-                const displayTimeRange = bk 
-                  ? `${bk.time} - ${minToTime(bEnd)}${isSubsequent ? ' (Ocupado)' : ''}`
+                const displayTimeRange = bks.length === 1 
+                  ? `${bks[0].time} - ${minToTime(timeToMin(bks[0].time) + (bks[0].duration || 60))}${timeToMin(bks[0].time) < slotMin ? ' (Ocupado)' : ''}`
                   : slot;
 
                 const isDefaultLunchBlock = (slot === '12:00');
                 const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
-                const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
+                const isLocked = isDefaultLunchBlock && !isUnlockedLocal && bks.length === 0;
 
                 const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
-                const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
-                const absence = !bk ? getAbsenceForSlot(getEffectiveAbsences(settings), currentDate, slot) : null;
+                const isBlockedByScale = bks.length === 0 && isSlotBlocked(prof, currentDate, slot);
+                const absence = bks.length === 0 ? getAbsenceForSlot(getEffectiveAbsences(settings), currentDate, slot) : null;
 
                 const dtForLabel = parseLocalDate(currentDate);
                 const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
@@ -2249,52 +2244,79 @@ Grande abraço, Jon.`;
 
                 return (
                   <div key={slot} className="m-slot-row" onClick={() => {
-                    if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
-                    else if (absence) {
-                      if (window.confirm(`Este horário está bloqueado por uma ausência (${absence.title}). Deseja agendar mesmo assim?`)) {
-                        setSelectedSlot(slot); setShowSlotSheet(true);
+                    if (bks.length === 0) {
+                      if (absence) {
+                        if (window.confirm(`Este horário está bloqueado por uma ausência (${absence.title}). Deseja agendar mesmo assim?`)) {
+                          setSelectedSlot(slot); setShowSlotSheet(true);
+                        }
                       }
-                    }
-                    else if (isBlockedByScale) {
-                      if (window.confirm("Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?\n\n(Para liberar o horário sem agendar agora, clique em Cancelar)")) {
-                        setSelectedSlot(slot); setShowSlotSheet(true);
-                      } else if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
-                        localStorage.setItem(`unlock_${currentDate}_${slot}`, 'true');
-                        showToast("Horário liberado!", "success");
-                        window.location.reload();
+                      else if (isBlockedByScale) {
+                        if (window.confirm("Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?\n\n(Para liberar o horário sem agendar agora, clique em Cancelar)")) {
+                          setSelectedSlot(slot); setShowSlotSheet(true);
+                        } else if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
+                          localStorage.setItem(`unlock_${currentDate}_${slot}`, 'true');
+                          showToast("Horário liberado!", "success");
+                          window.location.reload();
+                        }
                       }
+                      else { setSelectedSlot(slot); setShowSlotSheet(true); }
+                    } else {
+                      setSelectedSlot(slot); setShowSlotSheet(true);
                     }
-                    else { setSelectedSlot(slot); setShowSlotSheet(true); }
                   }}>
                     <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
                     <div className="m-slot-content">
-                      {bk ? (
-                        <div className={`m-slot-booking ${bk.status}`}>
-                          <div>
-                            <div 
-                              className="m-slot-client"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
-                              }}
-                              style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
-                            >
-                              {bk.clientName}
-                              {isClientRecurrent(bk.clientName, bk.clientPhone) && (
-                                <span style={{
-                                  position: 'absolute',
-                                  top: '-2px',
-                                  right: '-8px',
-                                  width: '5px',
-                                  height: '5px',
-                                  borderRadius: '50%',
-                                  backgroundColor: 'var(--m-gold, #dca354)'
-                                }} />
-                              )}
-                            </div>
-                            <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
-                          </div>
-                          <StatusPill status={bk.status}/>
+                      {bks.length > 0 ? (
+                        <div style={{ display: 'flex', gap: '8px', flex: 1, flexDirection: 'row', width: '100%', overflowX: 'auto' }}>
+                          {bks.map(bk => {
+                            const bStart = timeToMin(bk.time);
+                            const bEnd = bStart + (bk.duration || 60);
+                            const isSubsequent = bStart < slotMin;
+                            
+                            return (
+                              <div 
+                                key={bk.id} 
+                                className={`m-slot-booking ${bk.status}`} 
+                                style={{ flex: 1, minWidth: '120px', cursor: 'pointer', padding: '10px 12px' }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedBooking(bk);
+                                  setShowBookingSheet(true);
+                                }}
+                              >
+                                <div>
+                                  <div 
+                                    className="m-slot-client"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
+                                    }}
+                                    style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
+                                  >
+                                    {bk.clientName}
+                                    {isClientRecurrent(bk.clientName, bk.clientPhone) && (
+                                      <span style={{
+                                        position: 'absolute',
+                                        top: '-2px',
+                                        right: '-8px',
+                                        width: '5px',
+                                        height: '5px',
+                                        borderRadius: '50%',
+                                        backgroundColor: 'var(--m-gold, #dca354)'
+                                      }} />
+                                    )}
+                                  </div>
+                                  {bks.length > 1 && (
+                                    <div className="m-slot-svc" style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                                      {bk.time} - {minToTime(bEnd)} {isSubsequent ? '(Ocupado)' : ''}
+                                    </div>
+                                  )}
+                                  <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
+                                </div>
+                                <StatusPill status={bk.status}/>
+                              </div>
+                            );
+                          })}
                         </div>
                       ) : isLocked ? (
                         <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
@@ -3976,12 +3998,47 @@ Grande abraço, Jon.`;
               <div style={{ marginBottom: 16 }}>
                 <div className="m-section-title" style={{ marginBottom:10 }}>Agendamentos Futuros ({futureBookings.length})</div>
                 {futureBookings.map(b => (
-                  <div key={b.id} className="m-info-row">
+                  <div 
+                    key={b.id} 
+                    className="m-info-row" 
+                    style={{ cursor: 'pointer', padding: '8px 10px' }}
+                    onClick={() => {
+                      setEditBookingForm({
+                        id: b.id,
+                        clientName: b.clientName,
+                        clientPhone: b.clientPhone || '',
+                        serviceName: b.serviceName || b.service?.name || '',
+                        servicePrice: b.servicePrice !== undefined ? b.servicePrice : (b.service?.promoPrice || b.service?.price || ''),
+                        date: b.date,
+                        time: b.time || '09:00',
+                        prepayment: b.prepayment || '',
+                        notes: b.notes || '',
+                        status: b.status || 'confirmado'
+                      });
+                      setShowClientSheet(false);
+                      setShowEditBookingSheet(true);
+                    }}
+                  >
                     <div>
-                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)' }}>{b.service?.name || b.serviceName}</div>
+                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)', textDecoration: 'underline', textDecorationStyle: 'dotted' }}>{b.service?.name || b.serviceName}</div>
                       <div style={{ fontSize:'0.68rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(b.date)} às {b.time}</div>
                     </div>
-                    <StatusPill status={b.status}/>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <StatusPill status={b.status}/>
+                      <button 
+                        className="m-icon-btn" 
+                        style={{ color: 'var(--m-red)', padding: 4 }} 
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                            await changeStatus(b.id, 'cancelado');
+                            showToast('Agendamento cancelado!', 'success');
+                          }
+                        }}
+                      >
+                        <Trash2 size={14}/>
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {futureBookings.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.8rem' }}>Nenhum agendamento futuro</div>}

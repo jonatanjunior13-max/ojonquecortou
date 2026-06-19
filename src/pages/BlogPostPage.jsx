@@ -203,6 +203,48 @@ const BlogPostPage = () => {
             <img src={post.image} alt={post.title} className="post-hero-image" />
           </div>
 
+          {post.scientificData && (
+            <div className="scientific-container reveal active stagger-2">
+              <div className="aeo-summary-box">
+                <div className="aeo-summary-header">
+                  <span className="aeo-badge">Resumo Científico</span>
+                  {post.scientificData.sourceLabel && post.scientificData.sourceUrl && (
+                    <a 
+                      href={post.scientificData.sourceUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="scientific-source"
+                    >
+                      Fonte: {post.scientificData.sourceLabel}
+                    </a>
+                  )}
+                </div>
+                <p className="aeo-summary-text">{post.scientificData.summary}</p>
+              </div>
+
+              {post.scientificData.factSheet && post.scientificData.factSheet.length > 0 && (
+                <div className="scientific-table-wrap">
+                  <table className="scientific-table">
+                    <thead>
+                      <tr>
+                        <th>Parâmetro Técnico</th>
+                        <th>Valor / Evidência</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {post.scientificData.factSheet.map((fact, index) => (
+                        <tr key={index}>
+                          <td><strong>{fact.label}</strong></td>
+                          <td>{fact.value}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          )}
+
           <div 
             className="post-content reveal active stagger-2" 
             dangerouslySetInnerHTML={{ __html: post.content }} 

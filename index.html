@@ -26,29 +26,6 @@
     <meta name="apple-mobile-web-app-title" content="Jon Cortou" />
     <link rel="apple-touch-icon" href="/logo-app.png" />
     
-    <!-- Force unregister old service worker and clear old cache if build version changed -->
-    <script>
-      const BUILD_VERSION = 'BUILD_TIMESTAMP';
-      if (localStorage.getItem('site_version') !== BUILD_VERSION) {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for (let registration of registrations) {
-              registration.unregister();
-            }
-          });
-        }
-        if ('caches' in window) {
-          caches.keys().then(function(names) {
-            for (let name of names) {
-              caches.delete(name);
-            }
-          });
-        }
-        localStorage.setItem('site_version', BUILD_VERSION);
-        console.log('Cache cleared for version:', BUILD_VERSION);
-      }
-    </script>
-    
     <!-- SEO Básico -->
     <title>Especialista em Cabelo Cacheado BH | Studio do Jon</title>
     <meta name="description" content="Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçara). Corte a seco, visagismo e transição capilar." />

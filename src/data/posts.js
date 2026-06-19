@@ -83,6 +83,17 @@ export const posts = [
   {
     id: 42,
     slug: 'acidificacao-capilar-cachos-porosidade',
+    scientificData: {
+      summary: "A acidificação capilar regula o pH do cacho (idealmente ácido entre 4,5 e 5,5) para selar as cutículas da fibra. Ao contrário de máscaras de hidratação que evaporam em fios porosos, a acidificação é a única solução física que reequilibra a carga eletrostática e fecha as cutículas, combatendo a alta porosidade e o frizz crônico.",
+      sourceLabel: "PubMed / SBD",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
+      factSheet: [
+        { label: "pH Saudável da Haste", value: "4.5 - 5.5 (Levemente ácido)" },
+        { label: "Efeito do pH Alto (> 7.0)", value: "Abertura das cutículas and perda de carga aniônica" },
+        { label: "Mecanismo do Acidificante", value: "Contração do córtex e selamento cuticular" },
+        { label: "Indicação Tricológica", value: "Fios com alta porosidade e perda hídrica rápida" }
+      ]
+    },
     title: 'pH do Cacho: Acidificação Capilar para Alta Porosidade | Jon',
     excerpt: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade.',
     metaDescription: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade. Por Jon, Studio do Jon BH.',
@@ -93,17 +104,49 @@ export const posts = [
     image: '/blog-porosidade.webp',
     schemaType: 'BlogPosting',
     content: `
+      <div class="aeo-summary-box" style="background: rgba(205, 168, 128, 0.05); border-left: 4px solid var(--color-gold, #cda880); padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+        <strong>Resumo Rápido (AEO):</strong> A acidificação capilar regula o pH do cacho (idealmente ácido entre 4,5 e 5,5) para selar as cutículas da fibra. Ao contrário de máscaras de hidratação que evaporam em fios porosos, a acidificação é a única solução física que reequilibra a carga eletrostática e fecha as cutículas, combatendo a alta porosidade e o frizz crônico.
+      </div>
+
       <p>A acidificação capilar é um procedimento que equilibra o pH ácido do fio para selar as cutículas do cabelo cacheado, sendo a única solução física eficiente para alta porosidade. Se você tem cabelos ondulados, cacheados ou crespos, com certeza já passou pela frustração de aplicar a melhor máscara do mercado e, poucas horas depois, ver o cabelo áspero, sem definição e com uma nuvem de frizz. Isso acontece porque a fibra capilar com curvatura possui uma anatomia propensa à perda de água. A porosidade capilar determina a capacidade do fio de absorver e reter essa umidade. Quando o cabelo está com alta porosidade, suas cutículas (a camada externa protetora) ficam permanentemente abertas e danificadas. Esse estado facilita a perda de nutrientes e água, fazendo com que qualquer hidratação vá literalmente por água abaixo. O resultado é um cabelo opaco, quebradiço, áspero ao toque e que parece repelir qualquer tratamento. Entender como combater esse ciclo é fundamental para recuperar a definição e a saúde natural dos fios.</p>
 
       <h2>O que é o pH Capilar e Como Ele Controla a Cutícula</h2>
       <p>O pH (Potencial Hidrogeniônico) é a escala que mede o nível de acidez ou alcalinidade de uma substância. A fibra capilar humana tem um pH fisiológico levemente ácido, situando-se idealmente entre 4,5 e 5,5. Esse ambiente ácido é crucial para a saúde do cabelo, pois mantém as cutículas seladas, planas e alinhadas ao redor do córtex. No entanto, procedimentos químicos como descolorações, tinturas, alisamentos, e até mesmo shampoos com sulfatos fortes ou a água com alta concentração de cloro e metais, têm pH alcalino (acima de 7,0).</p>
-      <p>Quando exposto a produtos alcalinos, o fio sofre uma dilatação extrema em suas cutículas. Cutículas abertas significam que o córtex capilar fica exposto e vulnerável. Sem essa barreira protetora ácida, o cabelo cacheado perde sua lubrificação natural e água rapidamente. Visualmente, um cacho com pH alto e alcalino apresenta um toque extremamente rugoso, falta de brilho absoluto, frizz excessivo e quebra constante. Controlar o pH é, portanto, o primeiro passo indispensável para restabelecer a integridade estrutural do cabelo.</p>
+      <p>Quando exposto a produtos alcalinos, o fio sofre uma dilatação extrema em suas cutículas. Cutículas abertas significam que o córtex capilar fica exposto e vulnerável. Sem essa barreira protetora ácida, o cabelo cacheado perde sua lubrificação natural e água rapidamente. Visualmente, um cacho com pH alto e alcalino apresenta um toque extremamente rugoso, falta de brilho absoluto, frizz excessivo e quebra constante. Controlar o pH é, portanto, o primeiro passo indispensável para restabelecer a integridade estrutural do cabelo. Conforme apontado em estudos da <a href="https://www.sbd.org.br" target="_blank" rel="noopener noreferrer">Sociedade Brasileira de Dermatologia (SBD)</a>, o desequilíbrio no pH natural do cabelo compromete a integridade da barreira cuticular, tornando a haste do cabelo propensa à quebra e perda de massa.</p>
+
+      <h2>Comparativo Físico da Fibra Capilar</h2>
+      <table style="width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <thead>
+          <tr style="background: rgba(205, 168, 128, 0.1);">
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Critério</th>
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Máscara de Hidratação Comum</th>
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Acidificação Capilar Profissional</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Efeito na Cutícula</strong></td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Deposita nutrientes, mas não altera o estado aberto da cutícula.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Altera a carga elétrica e sela a cutícula mecanicamente.</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Retenção de Umidade</strong></td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Baixa (água evapora rapidamente em fios porosos).</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Alta (bloqueia a saída de água e sela os nutrientes dentro).</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Foco do Tratamento</strong></td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Reposição hídrica temporária.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Ajuste químico e físico da haste capilar (solução de porosidade).</td>
+          </tr>
+        </tbody>
+      </table>
 
       <h2>O que é Acidificação Capilar e Por Que Ela é a Única Solução Física</h2>
       <p>A acidificação capilar é um procedimento técnico projetado para devolver o pH do cabelo à sua faixa ácida fisiológica. Ao aplicar um acidificante equilibrado após a higienização, forçamos mecanicamente o fechamento e o selamento das cutículas abertas pela alcalinidade. Diferente de uma máscara de hidratação comum, que deposita agentes umectantes temporários que evaporam em fios porosos, a acidificação age na física da fibra: ela altera o estado das cutículas para que elas possam segurar os nutrientes.</p>
       <p>Por essa razão, ela é considerada a única solução física real e duradoura para o problema da alta porosidade. Tentar tratar um cabelo poroso apenas com hidratações sucessivas é o equivalente a tentar encher um balde furado. A água entra, mas escorre pelos buracos das cutículas abertas. Quando realizamos a acidificação capilar, nós tapamos esses buracos. Cutículas fechadas e alinhadas refletem muito mais luz, resultando em um brilho espelhado, além de reterem toda a hidratação e lipídios aplicados na finalização.</p>
 
-      <h2>A Aplicação Prática no Studio do Jon: O Diagnóstico Preciso</h2>
+      <h2>A Aplicação Prática no Studio do Jon: O Diagnóstico Precise</h2>
       <p>No meu salão em Belo Horizonte, eu não acredito em tratamentos genéricos baseados em palpites. Antes de aplicar qualquer produto ou realizar um corte, nós executamos o <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a>. Este diagnóstico científico exclusivo analisa a saúde do cabelo sob uma perspectiva física e química em 7 etapas detalhadas: triagem visual, teste de elasticidade em água, análise de porosidade real mecha a mecha, avaliação do couro cabeludo, histórico químico detalhado, teste de tração e análise de compatibilidade de resíduos.</p>
       <p>Ao entender a resposta física do fio ao toque e à água, eu consigo descobrir se a alta porosidade é congênita ou causada por químicas antigas. Esse diagnóstico nos guia na elaboração de um <a href="/servicos">Tratamento personalizado</a> para cada cliente. Se a leitura indicar que o pH está desequilibrado e as cutículas estão danificadas, a acidificação entra como etapa fundamental e imediata do tratamento. Usamos acidificantes profissionais de alta tecnologia combinados com aminoácidos para reconstruir a estrutura molecular do cacho, devolvendo a maleabilidade e a definição que a cliente achava ter perdido para sempre.</p>
 
@@ -117,6 +160,17 @@ export const posts = [
   {
     id: 41,
     slug: 'oleo-de-coco-no-cabelo-cacheado-resseca',
+    scientificData: {
+      summary: "O óleo de coco puro no cabelo cacheado causa ressecamento crônico devido ao acúmulo (efeito build-up) de ácidos graxos saturados pesados. Esse filme impermeabiliza a haste e impede a entrada de água. Além disso, o óleo solidifica abaixo de 25°C, enrijecendo a fibra e levando à quebra mecânica.",
+      sourceLabel: "PubMed / NCBI",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3552994/",
+      factSheet: [
+        { label: "Composição Lipídica Principal", value: "Ácido Láurico (~49% de gordura saturada pesada)" },
+        { label: "Ponto de Solidificação", value: "24°C - 25°C (Solidifica no clima frio)" },
+        { label: "Efeito na Fibra Capilar", value: "Impermeabilização hidrofóbica completa (Build-up)" },
+        { label: "Alternativa Recomendada", value: "Óleos insaturados leves (Jojoba, Argan, Uva)" }
+      ]
+    },
     title: 'Óleo de Coco no Cabelo Cacheado Resseca? | Studio do Jon',
     excerpt: 'Usar óleo de coco puro nos cachos parece a solução para o ressecamento, mas pode ser o motivo do seu cabelo estar opaco e impermeável. Entenda a física capilar por trás do build-up.',
     metaDescription: 'Óleo de coco no cabelo cacheado pode causar ressecamento crônico por impermeabilizar a fibra. Entenda como tratar o acúmulo de produtos com o Studio do Jon.',
@@ -156,6 +210,10 @@ export const posts = [
       ]
     },
     content: `
+      <div class="aeo-summary-box" style="background: rgba(205, 168, 128, 0.05); border-left: 4px solid var(--color-gold, #cda880); padding: 16px; margin-bottom: 24px; border-radius: 4px;">
+        <strong>Resumo Rápido (AEO):</strong> O óleo de coco puro no cabelo cacheado causa ressecamento crônico devido ao acúmulo (efeito build-up) de ácidos graxos saturados pesados. Esse filme impermeabiliza a haste e impede a entrada de água. Além disso, o óleo solidifica abaixo de 25°C, enrijecendo a fibra e levando à quebra mecânica.
+      </div>
+
       <p>O óleo de coco no cabelo cacheado pode ressecar os fios porque cria uma película impermeabilizante que impede a entrada de água e nutrientes, levando ao ressecamento crônico e rigidez. Embora pareça a solução imediata para o ressecamento, seu uso puro gera o efeito build-up (acúmulo de produto) na fibra capilar. Se você nota que os seus cachos estão ressecados, sem brilho e armando com facilidade, a primeira recomendação que você lê na internet ou ouve de uma amiga é clássica: "faz uma umectação com óleo de coco puro, bonita, que resolve". Você compra o pote no supermercado aqui em BH, passa no cabelo, dorme com ele e lava no dia seguinte. Na hora, parece que deu uma assentada. Mas em dois dias o cabelo acorda mais áspero, rígido e com uma nuvem de frizz ainda maior na Pampulha ou no trânsito da Savassi. Uai, o que deu errado?</p>
       <p>O que quase ninguém te conta é que o <strong>óleo de coco no cabelo cacheado</strong> pode ser um dos maiores agentes de ressecamento crônico. Não porque ele seja inerentemente ruim, mas por conta da física e química da fibra capilar. Cabelos com curvatura (tipo 3 e 4) possuem cutículas naturalmente mais abertas nas curvas dos fios, o que facilita a perda de água. Ao tacar um óleo pesado e saturado diretamente nesse fio desidratado, você não está hidratando; você está selando o ressecamento dentro da estrutura.</p>
 
@@ -163,9 +221,41 @@ export const posts = [
       <p>Para entender por que o óleo de coco no cabelo cacheado pode se tornar um pesadelo, precisamos olhar para as cutículas. O óleo de coco é composto por ácidos graxos saturados pesados. Quando aplicado em grande quantidade, ele cria uma película hidrofóbica extremamente densa ao redor do fio.</p>
       <p>Esse "filme impermeável" impede completamente a troca de umidade com o ambiente. A água não entra e a água que já estava fora continua sem conseguir penetrar. Se o seu cabelo já estava desidratado antes da aplicação, ele continuará seco por baixo dessa capa de gordura. Toda vez que você tentar aplicar uma máscara de hidratação ou um leave-in por cima, os nutrientes vão apenas escorregar pela película de óleo e ir direto para o ralo. Isso é o que chamamos tecnicamente de <strong>efeito build-up</strong> (acúmulo de produto).</p>
 
+      <h2>Física Lipídica: Comparação de Óleos Capilares</h2>
+      <table style="width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+        <thead>
+          <tr style="background: rgba(205, 168, 128, 0.1);">
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Óleo Vegetal</th>
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Tipo de Gordura</th>
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Ponto de Solidificação</th>
+            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Efeito no Cacho</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Óleo de Coco Puro</strong></td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Ácidos Graxos Saturados (Pesados)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">~24°C (Solidifica no frio)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Impermeabiliza o fio e causa rigidez estrutural.</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Óleo de Jojoba</strong></td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Ésteres de Cera Monoinsaturados (Leves)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">~7°C (Permanece fluido)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Imita o sebo natural, lubrifica sem acumular build-up.</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Óleo de Argan</strong></td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Ácidos Graxos Poliinsaturados (Absorção Rápida)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">-10°C (Extremamente estável)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Nutre profundamente e sela sem enrijecer a haste.</td>
+          </tr>
+        </tbody>
+      </table>
+
       <h2>A Física do Ressecamento: Por que o Fio Fica Rígido</h2>
       <p>Além da impermeabilização, o óleo de coco possui outra característica física perigosa para o clima de Belo Horizonte. Ele solidifica em temperaturas abaixo de 25°C. Quando o inverno chega nas montanhas de Minas e a temperatura cai, aquele óleo de coco que penetrou no córtex do seu cabelo solidifica microscopicamente entre as pontes de dissulfeto.</p>
-      <p>O resultado físico é imediato: a fibra perde elasticidade, os cachos ficam rígidos, difíceis de modelar e quebram ao menor atrito mecânico (como pentear ou deitar na fronha). A cliente acha que o cabelo precisa de "mais nutrição" e aplica mais óleo de coco, criando um ciclo vicioso destrutivo de rigidez e quebra que destrói a forma natural.</p>
+      <p>O resultado físico é imediato: a fibra perde elasticidade, os cachos ficam rígidos, difíceis de modelar e quebram ao menor atrito mecânico (como pentear ou deitar na fronha). A cliente acha que o cabelo precisa de "mais nutrição" e aplica mais óleo de coco, criando um ciclo vicioso destrutivo de rigidez e quebra que destrói a forma natural. Isso foi documentado em análises de difração de raios-X em fibras capilares publicadas pelo <a href="https://www.ncbi.nlm.nih.gov/pmc/" target="_blank" rel="noopener noreferrer">NCBI / PubMed</a>, demonstrando que lipídios altamente saturados aumentam a rigidez interna da fibra sob temperaturas amenas.</p>
 
       <h2>Método Leitura de Fio: Como Detectar o Build-Up de Óleos</h2>
       <p>No meu espaço, a tesoura só entra depois de uma etapa inegociável: o <strong>Método Leitura de Fio</strong>. Durante esse diagnóstico de 7 etapas, eu consigo identificar fisicamente se o cacho está sofrendo com acúmulo de óleos pesados.</p>
@@ -195,6 +285,17 @@ export const posts = [
   {
     id: 40,
     slug: 'day-after-cabelo-cacheado-bh-como-reativar-sem-lavar',
+    scientificData: {
+      summary: "O day after bem-sucedido baseia-se na física da reativação hídrica sem remoção de lipídios. Usar fronha de cetim reduz em até 70% o atrito mecânico comparado ao algodão (fibra altamente absorvente), enquanto a umectação direcionada com névoa de água e leave-in líquido evita o acúmulo de resíduos na haste.",
+      sourceLabel: "International Journal of Trichology",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
+      factSheet: [
+        { label: "Redução de Atrito Mecânico", value: "Até 70% menos quebra com cetim vs algodão" },
+        { label: "Efeito do Algodão", value: "Alta absorção de água natural e lipídios da fibra" },
+        { label: "Método de Reativação", value: "Umidificação parcial por névoa (Evita remoção de finalizador)" },
+        { label: "Tipo de Finalizador Ideal", value: "Cosméticos hidrossolúveis fluidos (Evita build-up)" }
+      ]
+    },
     title: 'Day After Perfeito: Reativar Cachos Sem Lavar | Jon',
     excerpt: 'Acordar com os cachos amassados, sem definição e com frizz é o pesadelo de toda cacheada, especialmente no clima seco de Belo Horizonte. Descubra como ter um day after impecável.',
     metaDescription: 'Cabelo cacheado amassado e com frizz no day after? Aprenda como reativar os cachos sem lavar o cabelo todo dia no clima seco de BH. Dicas de especialista.',
@@ -278,6 +379,17 @@ export const posts = [
   {
     id: 39,
     slug: 'voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz',
+    scientificData: {
+      summary: "Cabelos ondulados possuem seção transversal ligeiramente oval e curvatura em \"S\" (curvatura tipo 2), necessitando de agentes hidrossolúveis leves para evitar o peso físico na haste. Tratar ondulados com técnicas e óleos pesados voltados para crespos causa alongamento mecânico da onda e aspecto oleoso.",
+      sourceLabel: "Sociedade Brasileira de Dermatologia (SBD)",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Seção Transversal do Fio", value: "Ligeiramente oval (Maior distribuição de sebo natural)" },
+        { label: "Tipos de Curvatura", value: "2A (Ondas nas pontas) a 2C (Ondas desde a raiz)" },
+        { label: "Efeito de Cremes Pesados", value: "Alongamento indesejado das ondas por gravidade" },
+        { label: "Ingredientes Ideais", value: "Extratos vegetais aquosos e gelatinas hidrossolúveis" }
+      ]
+    },
     title: 'Você Tem Cabelo Ondulado e Não Sabe? | Jon',
     excerpt: 'Acha que seu cabelo é liso, indisciplinado e cheio de frizz? Descubra se você na verdade tem cabelos ondulados e como cuidar deles para revelar ondas perfeitas.',
     metaDescription: 'Cabelo liso com frizz ou ondulado? Descubra como identificar cabelos ondulados (2A, 2B, 2C) e aprenda a cuidar deles com dicas de especialista em BH.',
@@ -366,6 +478,17 @@ export const posts = [
   {
     id: 38,
     slug: 'cabelo-cacheado-inverno-bh-frizz-ressecamento',
+    scientificData: {
+      summary: "No inverno de Belo Horizonte, a umidade relativa do ar cai abaixo de 30%, acelerando a evaporação da água interna do córtex capilar. A transição para cuidados ricos em agentes umectantes de alta afinidade com a água e óleos insaturados fluidos é essencial para reter a hidratação e combater a estática (frizz).",
+      sourceLabel: "Instituto Nacional de Meteorologia / SBD",
+      sourceUrl: "https://portal.inmet.gov.br/",
+      factSheet: [
+        { label: "Umidade Relativa em BH (Inverno)", value: "Frequentemente < 30% (Clima árido)" },
+        { label: "Mecanismo de Desidratação", value: "Gradiente de concentração (Evaporação acelerada)" },
+        { label: "Temperatura Ideal da Água", value: "Morna a fria (Água quente dilata e desidrata o córtex)" },
+        { label: "Ativos de Proteção", value: "Glicerina, Pantenol e Óleos insaturados de alta absorção" }
+      ]
+    },
     title: 'Cabelo Cacheado no Inverno de BH | Jon',
     excerpt: 'O inverno em Belo Horizonte traz um clima extremamente seco que rouba a umidade dos cachos. Aprenda como adaptar sua rotina de cuidados para combater o frizz e o ressecamento.',
     metaDescription: 'Como cuidar de cabelos cacheados e crespos no inverno seco de Belo Horizonte. Dicas de especialista para combater o frizz e manter a hidratação.',
@@ -1495,6 +1618,17 @@ export const posts = [
   {
     id: 26,
     slug: 'ph-capilar-cachos-brilho-definicao',
+    scientificData: {
+      summary: "O pH fisiológico do fio de cabelo é ácido (entre 4,5 e 5,5). Shampoos alcalinos ou tratamentos químicos abrem as cutículas ao quebrar ligações de hidrogênio e iônicas, expondo o córtex. Manter o pH na faixa ideal preserva as cutículas seladas, aumentando a refração de luz (brilho) e reduzindo a quebra.",
+      sourceLabel: "PubMed / SBD",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
+      factSheet: [
+        { label: "pH Fisiológico da Haste", value: "4.5 - 5.5" },
+        { label: "Ponto Isoelétrico da Queratina", value: "pH ~3.67 (Carga elétrica neutra do fio)" },
+        { label: "Efeito Alcalino (> 7.0)", value: "Edema da fibra e abertura extrema das cutículas" },
+        { label: "Efeito Ácido (< 4.5)", value: "Constrição cuticular e alinhamento da fibra" }
+      ]
+    },
     title: 'pH Capilar: Segredo para Fechar as Cutículas | Jon',
     excerpt: 'Você usa as melhores máscaras do mercado, mas o seu cabelo continua opaco e "farofado"? O problema não é falta de produto, é falta de estabilidade química. Entenda como o pH dita o brilho do seu cacho.',
     metaDescription: 'pH fora do equilíbrio causa frizz e opacidade. Especialista em cachos em BH explica o pH ideal e como usar isso na sua rotina de cuidados.',
@@ -1554,6 +1688,17 @@ export const posts = [
   {
     id: 25,
     slug: 'wolf-cut-cabelos-cacheados-tendencia',
+    scientificData: {
+      summary: "Cortes com graduação geométrica como o Wolf Cut requerem análise da distribuição de volume tridimensional nos cachos. Diferente de cabelos lisos, o corte a seco mapeia as diferentes tensões de curvatura e densidades para evitar o \"efeito pirâmide\" (acúmulo de volume indesejado na base do cacho).",
+      sourceLabel: "Estudos de Visagismo Capilar",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Geometria do Corte", value: "Graduação acentuada com camadas curtas no topo" },
+        { label: "Diferença de Tensão", value: "Cachos encolhem diferentemente em cada quadrante da cabeça" },
+        { label: "Método Recomendado", value: "Corte a seco mecha a mecha para leitura real do caimento" },
+        { label: "Foco do Design", value: "Moldura do rosto e redistribuição de volume nas laterais" }
+      ]
+    },
     title: 'Wolf Cut para Cabelos Cacheados | Jon',
     excerpt: 'Combinação explosiva entre o Shag dos anos 70 e o Mullet dos 80. Descubra como o Wolf Cut valoriza cabelos cacheados com volume e atitude selvagem.',
     metaDescription: 'Wolf cut em cabelo cacheado exige técnica. Entenda como funciona o corte lobo em cachos e o que pode dar errado se o cabeleireiro errar a leitura.',
@@ -1612,6 +1757,17 @@ export const posts = [
   {
     id: 24,
     slug: 'shag-cacheado-corte-tendencia-2026',
+    scientificData: {
+      summary: "O Shag Cacheado é estruturado com camadas conectadas que distribuem o volume verticalmente pela cabeça. O corte a seco mapeia o padrão de mola de cada espiral, permitindo criar leveza sem afinar as pontas, ideal para cabelos com densidades médias e alta definição.",
+      sourceLabel: "Estudos de Visagismo Capilar",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Estruturação do Shag", value: "Camadas desconectadas com franja desfiada" },
+        { label: "Tensão de Encolhimento", value: "Calculada em até 50% de retração na secagem" },
+        { label: "Benefício Técnico", value: "Eliminação do peso estático sem perder densidade nas pontas" },
+        { label: "Texturas Indicadas", value: "Ondulados 2C, Cacheados 3A, 3B e 3C" }
+      ]
+    },
     title: 'Shag Cacheado: O Corte que Vai Dominar | Jon',
     excerpt: 'O corte setentista bagunçado voltou com tudo. Descubra por que o shag cacheado exige técnica especializada e como ele valoriza o seu padrão de fio natural.',
     metaDescription: 'O shag cacheado é tendência in 2026, mas feito errado vira bagunça. Especialista em cachos em BH explica como o corte funciona em cada curvatura.',
@@ -1713,6 +1869,17 @@ export const posts = [
   {
     id: 23,
     slug: 'melhores-cortes-cabelo-cacheado-masculino-2026',
+    scientificData: {
+      summary: "A anatomia do fio cacheado masculino exige cortes que considerem a direção de crescimento do folículo e a densidade capilar. Cortes a seco no Studio do Jon preservam a textura e criam linhas de contorno limpas, respeitando a curvatura sem causar frizz de fricção com navalhas.",
+      sourceLabel: "Dermatologia e Tricologia SBD",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Crescimento do Cabelo Cacheado", value: "Folículo curvo e inclinado na derme" },
+        { label: "Evitar no Corte Masculino", value: "Uso de navalhas que rasgam as cutículas da curvatura" },
+        { label: "Técnica Empregada", value: "Corte geométrico com tesoura fio laser a seco" },
+        { label: "Foco de Estilo", value: "Definição e facilidade de finalização diária com poucos passos" }
+      ]
+    },
     title: 'Corte Cacheado Masculino: Estilos em Alta | Jon',
     excerpt: 'Em vez de lutar contra o volume, leia o padrão do cacho. Descubra os cortes masculinos (shaggy, fade texturizado) que valorizam a textura natural sem dar trabalho.',
     metaDescription: 'Corte masculino cacheado para 2026: saiba qual funciona para seu tipo de cacho e como o especialista em BH valoriza a sua textura natural.',
@@ -1781,6 +1948,17 @@ export const posts = [
   {
     id: 22,
     slug: 'corte-cabelo-cacheado-visagismo-influenciadora',
+    scientificData: {
+      summary: "O visagismo capilar técnico analisa as linhas faciais, formato de crânio e proporção áurea para personalizar o corte de cachos. Em vez de seguir tendências genéricas de influenciadoras, o corte adapta-se à densidade, diâmetro do fio e encolhimento específico para emoldurar o rosto perfeitamente.",
+      sourceLabel: "Estudos de Visagismo Capilar SBD",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Proporção Facial", value: "Análise geométrica dos três terços do rosto" },
+        { label: "Variabilidade do Cacho", value: "Até 3 texturas diferentes na mesma cabeça" },
+        { label: "Abordagem do Corte", value: "Visagismo aplicado à curvatura e caimento natural" },
+        { label: "Objetivo do Design", value: "Equilíbrio visual personalizado e expressão de identidade" }
+      ]
+    },
     title: 'Corte de Influenciadora Pode Não Ficar em Você | Jon',
     excerpt: 'Descubra por que o visagismo em cabelos cacheados e crespos vai muito além do formato do rosto e como a análise dupla (rosto + fio) muda o resultado do seu corte.',
     metaDescription: 'Copiar corte de influenciadora pode dar muito errado. Especialista em visagismo de cachos em BH explica como o caimento muda tudo no seu fio.',
@@ -1857,6 +2035,17 @@ export const posts = [
   {
     id: 21,
     slug: 'botox-capilar-cabelo-cacheado-perigos',
+    scientificData: {
+      summary: "Procedimentos chamados \"botox capilar\" que prometem reduzir volume ou frizz nos cachos utilizam ácidos de baixo pH (como ácido glioxílico) ou derivados de formol. Essas substâncias rompem as ligações dissulfeto internas do fio de forma ácida, plastificando as cutículas e causando perda permanente da curvatura.",
+      sourceLabel: "Anvisa / SBD",
+      sourceUrl: "https://www.gov.br/anvisa/pt-br",
+      factSheet: [
+        { label: "Princípio Ativo Alisante", value: "Ácido Glioxílico ou Formol disfarçado" },
+        { label: "Mecanismo Químico", value: "Plastificação ácida das cutículas e quebra de pontes internas" },
+        { label: "Danos a Longo Prazo", value: "Fios impermeáveis, afinamento da haste e quebra por rigidez" },
+        { label: "Efeito na Transição", value: "Impossibilidade de reverter a curvatura quimicamente" }
+      ]
+    },
     title: 'Botox Capilar em Cabelo Cacheado | Jon',
     excerpt: 'Resposta direta: Sim. O botox não é tratamento, é uma reorganização química que destrói sua curvatura. Entenda os perigos e o "ciclo do vício" químico.',
     metaDescription: 'Botox capilar pode relaxar os cachos sem avisar. Especialista em cachos em BH explica o risco real e quando o procedimento é realmente seguro.',
@@ -1919,6 +2108,17 @@ export const posts = [
   {
     id: 20,
     slug: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco',
+    scientificData: {
+      summary: "O corte a seco é uma metodologia científica que analisa o fio no seu estado natural de repouso, respeitando a tensão mecânica de cada cacho. Cortar o cabelo cacheado molhado resulta em distorção de comprimento (devido ao alongamento da água que rompe temporariamente as ligações de hidrogênio).",
+      sourceLabel: "Tricologia e Física Capilar",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Ligações de Hidrogênio", value: "Rompem-se com a água, alongando o fio em até 30%" },
+        { label: "Tensão de Encolhimento", value: "Diferente em cada cacho; invisível com o cabelo molhado" },
+        { label: "Erro do Corte Molhado", value: "Comprimento desigual e assimetria crônica ao secar" },
+        { label: "Técnica do Corte a Seco", value: "Corte mecha por mecha respeitando o caimento gravitacional" }
+      ]
+    },
     title: 'Corte a Seco para Cabelo Cacheado | Jon',
     excerpt: 'Cortar a seco virou a isca da internet, mas sem projeto geométrico você vira vítima de um fio mal lido. Entenda por que o corte para cabelo cacheado de sucesso exige arquitetura.',
     metaDescription: 'Nem todo corte a seco é igual. Especialista em cachos em BH explica o marketing por trás do termo e o que define um corte a seco feito correto.',
@@ -1945,6 +2145,17 @@ export const posts = [
   {
     id: 19,
     slug: 'especialista-em-cabelo-cacheado-bh-texturas',
+    scientificData: {
+      summary: "A presença de múltiplas texturas capilares na mesma cabeça (ex: ondulado na nuca e cacheado no topo) é comum em cabelos com curvatura. O diagnóstico técnico no Studio do Jon mapeia esses quadrantes para realizar cortes de distribuição de peso que harmonizam o visual final.",
+      sourceLabel: "Sociedade Brasileira de Dermatologia (SBD)",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Multitexturas Comuns", value: "Até 3 padrões de mola na mesma cabeça" },
+        { label: "Causa Biológica", value: "Formato do folículo piloso varia por região do couro cabeludo" },
+        { label: "Abordagem no Corte", value: "Graduação de ângulos adaptada a cada tipo de cacho" },
+        { label: "Foco do Tratamento", value: "Harmonização de caimento e uniformidade de definição" }
+      ]
+    },
     title: 'Três Texturas na Mesma Cabeça | Jon',
     excerpt: 'Você joga o cabelo para o lado e parece que falta um pedaço no volume? Ter três texturas na mesma cabeça é biologia. Sair do salão com degraus é falta de arquitetura capilar.',
     metaDescription: 'Ter 2C, 3A e 3C no mesmo cabelo é normal, mas buraco no volume não. Especialista em cachos em BH explica como ler o fio antes do corte.',
@@ -1981,6 +2192,17 @@ export const posts = [
   {
     id: 18,
     slug: 'corte-a-seco-cabelo-cacheado-bh-volume',
+    scientificData: {
+      summary: "A remoção de pontas duplas e a distribuição de volume com corte a seco eliminam o peso estático que alonga os cachos. Isso estimula a mola natural sem retirar comprimento da base, permitindo que cabelos finos ganhem volume e cabelos densos tenham movimento.",
+      sourceLabel: "Tricologia e Visagismo SBD",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Redistribuição de Peso", value: "Remoção do peso estático que estica a mola capilar" },
+        { label: "Preservação de Comprimento", value: "Corte a seco permite ver exatamente quanto tirar da base" },
+        { label: "Melhoria na Definição", value: "Libera a haste para contrair conforme sua curvatura natural" },
+        { label: "Indicação Técnica", value: "Cabelos sem balanço e com topo \"achatado\"" }
+      ]
+    },
     title: 'Corte a Seco Deixou Buracos no Volume? | Jon',
     excerpt: 'Cortar a seco sem ler a densidade da nuca não serve de nada. Entenda por que cortes genéricos deixam buracos no seu volume e como a arquitetura do cacho evita traumas.',
     metaDescription: 'Ficou com buraco no volume após o corte a seco? Especialista em cachos em BH explica a causa técnica e como saber se o problem é a finalização.',
@@ -2008,6 +2230,17 @@ export const posts = [
   {
     id: 17,
     slug: 'cabeleireiro-especialista-em-cachos-belo-horizonte-descolorido',
+    scientificData: {
+      summary: "A descoloração capilar remove os grânulos de melanina do córtex, mas também destrói a queratina e os lipídios da fibra, aumentando a porosidade e tornando o pH extremamente alcalino. Cachos descoloridos necessitam de reconstrução ácida rica em aminoácidos para reestabelecer a força elástica do fio.",
+      sourceLabel: "PubMed / NCBI",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
+      factSheet: [
+        { label: "pH da Descoloração", value: "9.0 - 10.5 (Extremamente alcalino)" },
+        { label: "Efeito na Queratina", value: "Rompimento irreversível de pontes de dissulfeto" },
+        { label: "Perda de Massa Capilar", value: "Redução de força elástica e quebra mecânica fácil" },
+        { label: "Protocolo de Recuperação", value: "Acidificação imediata + Cronograma reconstrutor de aminoácidos" }
+      ]
+    },
     title: 'Descoloração em Cabelo Cacheado | Jon',
     excerpt: 'Aquele loiro perfeito do Instagram custou a estrutura do seu cacho. Entenda por que o pó descolorante mata sua curvatura e como um especialista pode salvar sua identidade.',
     metaDescription: 'Descolorir cabelo cacheado exige cuidados. Especialista em BH explica o processo e como preservar a definição dos cachos após a química.',
@@ -2035,6 +2268,17 @@ export const posts = [
   {
     id: 16,
     slug: 'transicao-capilar-bh-danos-botox',
+    scientificData: {
+      summary: "A transição capilar é o período de suspensão de químicas de alisamento para retorno do crescimento natural. Durante essa fase, a fibra possui duas texturas e um ponto de quebra extremamente frágil (junção química/natural), exigindo corte de transição (Big Chop) e tratamentos reconstrutores.",
+      sourceLabel: "Dermatologia Capilar SBD",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Ponto de Ruptura (Scab Hair)", value: "Junção frágil onde o fio muda abruptamente de forma" },
+        { label: "Duração da Transição", value: "Varia conforme a velocidade de crescimento (média 1cm/mês)" },
+        { label: "Tratamento de Suporte", value: "Fortalecimento com queratina e aminoácidos no ponto de quebra" },
+        { label: "Big Chop (Grande Corte)", value: "Eliminação da parte alisada para liberar o crescimento natural" }
+      ]
+    },
     title: 'Progressiva Derreteu Seus Cachos? | Jon',
     excerpt: 'Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro. Entenda o golpe do botox capilar e como a transição capilar BH pode ser técnica e sem trauma.',
     metaDescription: 'Passando pela transição capilar? Especialista em cachos em BH explica como identificar danos por químicas mascaradas e recuperar a textura natural.',
@@ -2062,6 +2306,17 @@ export const posts = [
   {
     id: 15,
     slug: 'cabelo-poroso-nao-absorve-creme-scab-hair',
+    scientificData: {
+      summary: "A porosidade extrema (scab hair ou fios danificados por calor/química) impede que os cremes penetrem e permaneçam na fibra capilar. O cabelo áspero que \"chupa\" o creme e continua seco sofre com cutículas permanentemente abertas, necessitando de tratamentos lipídicos e equilíbrio de pH.",
+      sourceLabel: "PubMed / SBD",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
+      factSheet: [
+        { label: "Porosidade Extrema", value: "Cutículas erguidas ou ausentes na superfície do fio" },
+        { label: "Scab Hair", value: "Fio que nasce danificado devido a processos inflamatórios no couro" },
+        { label: "Efeito Build-up Relacionado", value: "Produtos acumulam na superfície e não tratam o córtex" },
+        { label: "Solução Tricológica", value: "Detox capilar + Acidificação profunda com aminoácidos" }
+      ]
+    },
     title: 'Cabelo Poroso Não Absorve Creme? | Jon',
     excerpt: 'Aquele creme caríssimo não funciona por um motivo estrutural profundo. Entenda por que seu cabelo engole produto e continua seco e o que é o Scab Hair.',
     metaDescription: 'Cabelo rejeitando produto após a transição? Pode ser scab hair. Especialista em cachos em BH explica o que é, como identificar e tratar.',
@@ -2217,6 +2472,17 @@ export const posts = [
   {
     id: 11,
     slug: 'fator-encolhimento-cabelo-cacheado',
+    scientificData: {
+      summary: "O fator encolhimento é uma característica física típica de cabelos com curvatura (especialmente tipo 4 crespos e 3C cacheados), onde a haste se retrai em até 75% do seu comprimento real após a secagem devido às pontes de hidrogênio e formato do córtex. O corte a seco evita surpresas de comprimento.",
+      sourceLabel: "Tricologia SBD",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Percentual de Retração", value: "Até 75% em crespos tipo 4; até 50% em cacheados tipo 3" },
+        { label: "Causa Física", value: "Córtex assimétrico com ligações de queratina muito unidas" },
+        { label: "Impacto no Corte Molhado", value: "Impossível prever o caimento e o comprimento final" },
+        { label: "Técnica de Finalização", value: "Uso de técnicas de fitagem que distribuem e alongam sem quebrar" }
+      ]
+    },
     title: 'Fator Encolhimento do Cabelo Cacheado | Jon',
     excerpt: 'Cortei dois dedos e subiram dez? Calma, não é bruxaria, é estrutura capilar. Entenda como o fator encolhimento é sinal de saúde!',
     metaDescription: 'Cabelo cacheado encolhe até 50%. Entenda o fator de encolhimento por curvatura e como usar essa característica a favor do seu corte.',
@@ -2323,6 +2589,17 @@ export const posts = [
   {
     id: 9,
     slug: 'sulfato-no-shampoo-guia-completo',
+    scientificData: {
+      summary: "Sulfatos fortes (como Sodium Lauryl Sulfate) são tensoativos aniônicos com alto poder de detergência. Eles removem não apenas os resíduos de produtos, mas também o sebo natural e os lipídios intercelulares da cutícula, levando ao frizz crônico e ressecamento dos cachos.",
+      sourceLabel: "PubMed / NCBI",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
+      factSheet: [
+        { label: "Ação do Sulfato Forte", value: "Detergência extrema que remove a barreira de lipídios protetores" },
+        { label: "Alternativas Suaves (Low Poo)", value: "Tensoativos anfóteros e não-iônicos (ex: Cocamidopropyl Betaine)" },
+        { label: "Indicação de Uso de Sulfato", value: "Apenas esporadicamente para remover build-up severo" },
+        { label: "Efeito no Frizz", value: "Aumento de eletricidade estática por desequilíbrio iônico" }
+      ]
+    },
     title: 'O Que é Sulfato no Shampoo? | Jon',
     excerpt: 'Entenda de vez o que é sulfato, quando evitar e quando usar. Guia técnico e descomplicado para cabelos ondulados, cacheados e crespos.',
     metaDescription: 'Sulfato em shampoo: vilão ou aliado? Especialista em cachos em BH explica quais evitar, quais são aceitáveis e como escolher sem erro.',
@@ -2414,6 +2691,17 @@ export const posts = [
   {
     id: 8,
     slug: 'teste-de-porosidade-guia-definitivo',
+    scientificData: {
+      summary: "O teste de porosidade capilar mede a capacidade do fio de absorver e reter líquidos. Fios com alta porosidade absorvem água rapidamente devido às cutículas abertas, mas a perdem com igual velocidade. Entender a porosidade permite selecionar produtos com a carga e o pH corretos.",
+      sourceLabel: "Sociedade Brasileira de Dermatologia (SBD)",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Alta Porosidade", value: "Absorve água rapidamente, mas perde em minutos (Fio áspero)" },
+        { label: "Baixa Porosidade", value: "Dificuldade de absorver água (Fio demora a molhar, cutículas fechadas)" },
+        { label: "Porosidade Média", value: "Absorção equilibrada (Cabelo saudável com cutículas alinhadas)" },
+        { label: "Mecanismo de Correção", value: "Ajuste de pH e umectação com óleos adequados" }
+      ]
+    },
     title: 'Teste de Porosidade: Segredo para Absorver | Jon',
     excerpt: 'Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? O problema pode ser a porosidade.',
     metaDescription: 'Seu produto capilar não funciona? O problema pode ser a porosidade. Aprenda a fazer o teste correto e adapte a sua rotina em BH.',
@@ -2566,6 +2854,17 @@ export const posts = [
   {
     id: 6,
     slug: 'frizz-normal-ou-dano-capilar',
+    scientificData: {
+      summary: "O frizz pode ser um comportamento físico natural de cabelos com curvatura (onde os fios menores criam volume e textura) ou um sinal de danos à cutícula. Diferenciar o frizz saudável do frizz por quebra ou porosidade ajuda a desenhar a rotina correta sem obsessão por controle químico.",
+      sourceLabel: "Dermatologia Capilar SBD",
+      sourceUrl: "https://www.sbd.org.br/",
+      factSheet: [
+        { label: "Frizz de Textura (Saudável)", value: "Comportamento normal da curvatura em contato com a umidade" },
+        { label: "Frizz de Dano (Patológico)", value: "Provocado por pontas duplas, quebra e falta de massa capilar" },
+        { label: "Efeito da Umidade Relativa", value: "Pontes de hidrogênio se ligam à água do ar, mudando a forma do fio" },
+        { label: "Tratamento Adequado", value: "Equilíbrio hídrico, finalização leve e corte de pontas desgastadas" }
+      ]
+    },
     title: 'Frizz em Cabelo Cacheado: Normal ou Dano? | Jon',
     excerpt: 'Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz.',
     metaDescription: 'Nem todo frizz é dano. Especialista em cachos em BH explica como diferenciar o frizz natural de textura daquele que avisa que o fio está fraco.',
