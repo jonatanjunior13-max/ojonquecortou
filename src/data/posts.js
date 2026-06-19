@@ -1,5 +1,86 @@
 export const posts = [
   {
+    id: 43,
+    slug: 'transicao-capilar-sem-sofrimento-guia-cachos',
+    title: 'Transição Capilar Sem Sofrimento: O Guia Definitivo para Voltar aos Cachos | Studio do Jon',
+    excerpt: 'Voltar ao cabelo natural não precisa ser um processo traumático. Descubra como passar pela transição capilar de forma confortável, saudável e sem pressa.',
+    metaDescription: 'Quer voltar aos cachos sem sofrer na transição capilar? Confira nosso guia definitivo com dicas sobre texturização, cronograma capilar e cortes progressivos. Por Jon.',
+    keywords: 'transição capilar, voltar aos cachos, como passar pela transição, cabelo cacheado transição, big chop bh, studio do jon',
+    date: '19 de Junho, 2026',
+    author: 'Jon',
+    category: 'Transição Capilar',
+    image: '/blog-transicao-capilar.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é a transição capilar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "É o período em que você deixa de usar químicas de alisamento e permite que o seu cabelo natural (ondulado, cacheado ou crespo) cresça novamente."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Preciso fazer o Big Chop (grande corte) imediatamente?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. Você pode optar por fazer cortes progressivos ao longo dos meses para retirar a química aos poucos, mantendo o comprimento que te deixa confortável."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como lidar com as duas texturas no cabelo durante a transição?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use técnicas de texturização (como dedoliss, fitagem estruturada ou twists) na parte com química para tentar aproximar a textura da raiz natural, e evite chapinha que pode danificar o cabelo novo."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>A Decisão de Voltar ao Cabelo Natural</h2>
+      <p>Decidir parar com a progressiva, o relaxamento ou o botox e iniciar a <strong>transição capilar</strong> é um passo de coragem. É um reencontro com a sua identidade natural, mas também é um processo que traz muitas dúvidas, insecurities e, se não for bem orientado, muito sofrimento físico e emocional.</p>
+      <p>A transição capilar é o período em que você interrompe as químicas de alisamento e deixa o cabelo natural crescer. O maior desafio desse processo é lidar com a convivência de duas texturas completamente diferentes na mesma cabeça: a raiz ondulada, cacheada ou crespa que começa a nascer forte e volumosa, e as pontas lisas, finas e sem vida herdadas da química antiga.</p>
+      <p>Muitas mulheres desistem no meio do caminho porque acham que a única solução é passar a tesoura em tudo de uma vez (o famoso Big Chop) ou porque não aguentam mais a briga com o espelho. Mas eu estou aqui para te dizer que <strong>é possível passar pela transição sem sofrimento</strong>. Vou te mostrar o caminho técnico e acolhedor para recuperar seus cachos com segurança e no seu próprio ritmo.</p>
+
+      <h2>1. O Mito do Big Chop Imediato: Você Decide o Seu Tempo</h2>
+      <p>Na internet, parece que a regra é clara: para passar pela transição, você precisa cortar todo o cabelo alisado de uma vez e ficar com os fios bem curtinhos. Esse grande corte é chamado de <strong>Big Chop</strong>.</p>
+      <p>Para algumas mulheres, o Big Chop imediato é libertador. Elas querem se livrar da química logo e não se importam com o comprimento curto. Mas para outras, isso é extremamente traumático e afeta diretamente a autoestima. E aqui vai o meu conselho profissional: <strong>você não é obrigada a fazer o Big Chop se não quiser</strong>.</p>
+      <p>Uma alternativa excelente e muito mais confortável são os <strong>cortes progressivos</strong>. Nós removemos a química aos poucos, a cada dois ou três meses, cortando apenas as pontas alisadas e mantendo um comprimento com o qual você se sinta segura e bonita. A transição capilar é sua, e quem dita o ritmo é você.</p>
+
+      <h2>2. Como Disfarçar as Duas Texturas sem Usar Chapinha</h2>
+      <p>O período em que a raiz cresce e o comprimento continua liso é o mais delicado. A tentação de usar chapinha para igualar o cabelo é enorme, mas esse é um grande perigo. O calor excessivo da chapinha pode queimar a queratina da raiz natural que está nascendo saudável, causando o que chamamos de "scab hair" (fios que nascem danificados e ásperos mesmo sem química) ou alisamento térmico permanente.</p>
+      <p>Para harmonizar as duas texturas, o segredo é a <strong>texturização</strong>. Em vez de alisar a raiz, nós cacheamos as pontas lisas:</p>
+      <ul>
+        <li><strong>Dedoliss:</strong> Enrole as mechas lisas com os dedos, usando um creme consistente ou gelatina capilar, para imitar a curvatura natural da sua raiz.</li>
+        <li><strong>Coquinhos (Bantu Knots):</strong> Faça pequenos coques por toda a cabeça com o cabelo úmido e solte depois de seco. Isso cria ondas volumosas e naturais em toda a extensão do fio.</li>
+        <li><strong>Tranças ou Twists:</strong> Trance o cabelo úmido e deixe secar. Ao soltar, o cabelo ganha um padrão frisado e volumoso super bonito que disfarça a transição.</li>
+      </ul>
+
+      <h2>3. Cronograma Capilar Focado na Transição</h2>
+      <p>O cabelo em transição precisa de cuidados redobrados. A raiz natural está nascendo com força total e precisa de nutrientes, enquanto a junção entre a parte natural e a parte com química é o ponto de maior fragilidade do fio, onde a quebra acontece com facilidade.</p>
+      <p>Seu cronograma deve focar em três pilares:</p>
+      <ol>
+        <li><strong>Hidratação:</strong> Para manter a maleabilidade do fio e evitar a quebra. Procure máscaras com aloe vera, pantenol e glicerina.</li>
+        <li><strong>Nutrição:</strong> Fundamental para combater o ressecamento natural da curvatura. Use óleos vegetais leves para fazer umectação na raiz e comprimento.</li>
+        <li><strong>Reconstrução:</strong> Essencial para fortalecer o ponto de junção entre as duas texturas, evitando que o cabelo quebre no meio do caminho. Use queratina vegetal ou máscaras reconstrutoras a cada 15 dias.</li>
+      </ol>
+
+      <h2>O Papel da Leitura de Fio na Transição Capilar</h2>
+      <p>Cada cabelo reage de uma forma durante a transição. Em algumas pessoas, a curvatura natural se revela facilmente; em outras, a raiz nasce indefinida devido ao estresse mecânico e químico acumulado. Para passar por isso sem errar no tratamento e nos produtos, o ideal é ter um diagnóstico preciso.</p>
+      <p>No Studio do Jon, antes de qualquer corte ou indicação de cronograma na transição, nós realizamos a <a href="/metodo">Leitura de Fio</a>. São 7 etapas de análise técnica onde avaliamos a elasticidade da sua fibra, identificamos a verdadeira curvatura que está nascendo e definimos o corte de transição progressiva ideal que valorize a sua imagem pessoal sem radicalismos. Assim, você passa pela transição sabendo exatamente o que esperar e como cuidar do seu cabelo em casa.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Pensando em voltar ao seu cabelo natural?</h3>
+        <p>Não passe pela transição capilar sozinha e sem rumo. Agende seu diagnóstico e corte progressivo com segurança.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 42,
     slug: 'acidificacao-capilar-cachos-porosidade',
     title: 'pH do Cacho: Acidificação Capilar para Alta Porosidade | Jon',
