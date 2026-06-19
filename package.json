@@ -9,7 +9,8 @@
     "postbuild": "node scripts/prerender.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "index": "node scripts/submit-indexnow.js"
+    "index": "node scripts/submit-indexnow.js",
+    "test": "vitest run"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.4",
@@ -43,6 +44,7 @@
     "globals": "^17.0.0",
     "puppeteer": "^25.0.4",
     "vite": "^8.0.1",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite-plugin-pwa": "^1.3.0",
+    "vitest": "^4.1.8"
   }
 }

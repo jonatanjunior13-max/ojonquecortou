@@ -93,6 +93,22 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  // Handle Webhook verification (GET requests)
+  if (req.method === 'GET') {
+    const mode = req.query?.['hub.mode'];
+    const token = req.query?.['hub.verify_token'];
+    const challenge = req.query?.['hub.challenge'];
+
+    if (mode && token) {
+      if (mode === 'subscribe' && token === process.env.WHATSAPP_VERIFY_TOKEN) {
+        return res.status(200).send(challenge);
+      } else {
+        return res.status(403).json({ error: 'Forbidden' });
+      }
+    }
+    return res.status(400).json({ error: 'Bad Request' });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
