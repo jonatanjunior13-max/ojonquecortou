@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Edit2, Trash2, ArrowUp, Scissors } from 'lucide-react';
 import './Admin.css';
+import { useInventoryData } from '../../hooks/useInventoryData';
 
 const SEED_PRODUCTS = [
   { id: 'p1', name: 'Shampoo Curly Special 250ml', category: 'Shampoo', quantity: 15, costPrice: 25, sellingPrice: 55 },
@@ -17,9 +18,7 @@ const CATEGORIES = ['Shampoo', 'Condicionador', 'Máscara', 'Finalizador', 'Óle
 
 const AdminInventory = () => {
   const { setGlobalData } = useOutletContext() || {};
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const { products, setProducts, loading, isDemoMode } = useInventoryData(SEED_PRODUCTS);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -44,7 +43,8 @@ const AdminInventory = () => {
     try {
       if (isDemoMode) {
         const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
-        const updated = [{ id: 'tx_' + Date.now(), ...payload }, ...local];
+        const randomId = crypto.randomUUID().substring(0, 8);
+        const updated = [{ id: 'tx_' + randomId, ...payload }, ...local];
         localStorage.setItem('demo_financial', JSON.stringify(updated));
         if (setGlobalData) {
           setGlobalData(prev => ({
@@ -73,49 +73,6 @@ const AdminInventory = () => {
     costPrice: 0,
     sellingPrice: 0
   });
-
-  useEffect(() => {
-    let unsubscribe;
-
-    const getMockProducts = () => {
-      const localData = localStorage.getItem('demo_products');
-      if (localData) return JSON.parse(localData);
-      localStorage.setItem('demo_products', JSON.stringify(SEED_PRODUCTS));
-      return SEED_PRODUCTS;
-    };
-
-    if (!db) {
-      setIsDemoMode(true);
-      setProducts(getMockProducts());
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
-        const prodList = [];
-        snapshot.forEach((doc) => {
-          prodList.push({ id: doc.id, ...doc.data() });
-        });
-        setProducts(prodList);
-        setLoading(false);
-        setIsDemoMode(false);
-      }, (error) => {
-        console.warn('Erro ao carregar Firestore:', error);
-        alert('Erro ao carregar o estoque. Tente recarregar a página.');
-        setLoading(false);
-      });
-
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      console.warn('Falha na conexão com Firestore para produtos:', err);
-      setLoading(false);
-    }
-  }, []);
 
   // Salva no localStorage no modo Demo
   const saveLocalProducts = (updated) => {
@@ -167,7 +124,8 @@ const AdminInventory = () => {
             await logProductExpense(payload.name, qtyDiff, payload.costPrice, 'Reabastecimento');
           }
         } else {
-          const newProd = { id: 'p_' + Date.now(), ...payload };
+          const randomId = crypto.randomUUID().substring(0, 8);
+          const newProd = { id: 'p_' + randomId, ...payload };
           saveLocalProducts([...products, newProd]);
           await logProductExpense(payload.name, payload.quantity, payload.costPrice, 'Compra');
         }

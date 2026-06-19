@@ -1,15 +1,14 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X } from 'lucide-react';
 import './Admin.css';
 
 import { SEED_SERVICES } from '../../data/seedServices';
+import { useServicesData } from '../../hooks/useServicesData';
 
 const AdminServices = () => {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const { services, setServices, packages, setPackages, loading, isDemoMode } = useServicesData(SEED_SERVICES);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
   
@@ -35,7 +34,6 @@ const AdminServices = () => {
   });
 
   // Package states
-  const [packages, setPackages] = useState([]);
   const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
   const [editingPackage, setEditingPackage] = useState(null);
   const [selectedServiceForPackage, setSelectedServiceForPackage] = useState('');
@@ -52,85 +50,6 @@ const AdminServices = () => {
     const price = sObj ? (Number(sObj.price) || 0) : 0;
     return sum + (price * item.sessions);
   }, 0) : 0;
-
-  useEffect(() => {
-    let unsubscribe;
-    let timedOut = false;
-
-    const getMockServices = () => {
-      const localData = localStorage.getItem('demo_services');
-      const dataList = localData ? JSON.parse(localData) : SEED_SERVICES;
-      dataList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
-      return dataList;
-    };
-
-    if (!db) {
-      setIsDemoMode(true);
-      setServices(getMockServices());
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      unsubscribe = onSnapshot(collection(db, 'services'), (snapshot) => {
-        const list = [];
-        snapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        
-        if (list.length === 0 && !localStorage.getItem('services_seeded')) {
-          // Se o banco estiver vazio, semeia os dados iniciais uma única vez
-          SEED_SERVICES.forEach(async (serv) => {
-            await setDoc(doc(db, 'services', serv.id), serv);
-          });
-          localStorage.setItem('services_seeded', 'true');
-        }
-        list.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
-        setServices(list);
-        setLoading(false);
-        setIsDemoMode(false);
-      }, (error) => {
-        console.warn('Erro ao conectar Firestore para serviços:', error);
-        alert('Erro ao carregar serviços. Tente recarregar a página.');
-        setLoading(false);
-      });
-
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      console.warn('Erro na conexão do banco para serviços:', err);
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let unsubscribe;
-    if (isDemoMode) {
-      const local = localStorage.getItem('demo_packages');
-      setPackages(local ? JSON.parse(local) : []);
-      return;
-    }
-    if (!db) return;
-    try {
-      unsubscribe = onSnapshot(collection(db, 'packages'), (snapshot) => {
-        const list = [];
-        snapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setPackages(list);
-      }, (error) => {
-        console.warn('Erro ao carregar pacotes:', error);
-      });
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      console.warn('Erro ao conectar pacotes:', err);
-    }
-  }, [isDemoMode]);
 
   const saveLocalPackages = (updated) => {
     setPackages(updated);
