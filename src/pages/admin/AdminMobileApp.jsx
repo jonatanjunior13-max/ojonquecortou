@@ -223,6 +223,11 @@ export default function AdminMobileApp() {
 
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
   const [requestReview, setRequestReview] = useState(true);
+  const [usedProducts, setUsedProducts] = useState([]);
+  const [nonRegisteredProducts, setNonRegisteredProducts] = useState([]);
+  const [selectedUsedProduct, setSelectedUsedProduct] = useState('');
+  const [newNonRegName, setNewNonRegName] = useState('');
+  const [newNonRegVal, setNewNonRegVal] = useState(0);
   const [touchStart, setTouchStart] = useState(null);
   const [translateX, setTranslateX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -752,12 +757,16 @@ export default function AdminMobileApp() {
           });
         }
         setSelectedServices(loadedExtra);
+        setUsedProducts(tx.usedProducts || []);
+        setNonRegisteredProducts(tx.nonRegisteredProducts || []);
       } else {
         setPaymentMethod('Pix');
         setInstallments('À vista');
         setApplyAnticipation(false);
         setSelectedProducts([]);
         setSelectedServices([]);
+        setUsedProducts([]);
+        setNonRegisteredProducts([]);
         setDiscount(0);
       }
       setOverrideBasePrice(booking.servicePrice !== undefined ? booking.servicePrice : null);
@@ -767,6 +776,8 @@ export default function AdminMobileApp() {
       setApplyAnticipation(false);
       setSelectedProducts([]);
       setSelectedServices([]);
+      setUsedProducts([]);
+      setNonRegisteredProducts([]);
       setDiscount(0);
       setOverrideBasePrice(null);
     }
@@ -778,6 +789,33 @@ export default function AdminMobileApp() {
     setShowCheckoutSheet(true);
   };
 
+  const addUsedProduct = (productId, name, priceStr) => {
+    const price = Number(priceStr) || 0;
+    setUsedProducts(prev => {
+      const existing = prev.find(ap => ap.productId === productId);
+      if (existing) {
+        return prev.map(ap => ap.productId === productId ? { ...ap, quantity: ap.quantity + 1 } : ap);
+      }
+      return [...prev, { productId, name, price, quantity: 1 }];
+    });
+    setSelectedUsedProduct('');
+  };
+
+  const removeUsedProduct = (index) => {
+    setUsedProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const addNonRegisteredProduct = (name, val) => {
+    if (!name || val <= 0) return;
+    setNonRegisteredProducts(prev => [...prev, { name, value: Number(val) }]);
+    setNewNonRegName('');
+    setNewNonRegVal(0);
+  };
+
+  const removeNonRegisteredProduct = (index) => {
+    setNonRegisteredProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
   const getCheckoutTotal = () => {
     if (!checkoutBooking) return 0;
     const base = overrideBasePrice !== null
@@ -785,8 +823,10 @@ export default function AdminMobileApp() {
       : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
     const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
     const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
+    const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const nonRegProdsVal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = Number(checkoutBooking.prepayment || 0);
-    return Math.max(0, base + extraServices + prods - discount - prepay);
+    return Math.max(0, base + extraServices + prods - discount - prepay - usedProdsVal - nonRegProdsVal);
   };
 
   const addProductToCheckout = (prod) => {
@@ -837,9 +877,12 @@ export default function AdminMobileApp() {
         : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
 
       // Save transaction
+      const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const nonRegProductsTotal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
+
       const txData = {
         type: 'entrada',
-        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
+        description: `${itemsDescription}${usedProducts.length > 0 ? ` (Insumos: -R$ ${usedProductsTotal})` : ''}${nonRegisteredProducts.length > 0 ? ` (Uso Único: -R$ ${nonRegProductsTotal})` : ''}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
         paymentMethod: methodLabel,
         discount: discount,
@@ -861,6 +904,16 @@ export default function AdminMobileApp() {
           price: s.price,
           qty: s.qty
         })),
+        usedProducts: usedProducts.map(p => ({
+          productId: p.productId,
+          name: p.name,
+          quantity: p.quantity,
+          price: p.price
+        })),
+        nonRegisteredProducts: nonRegisteredProducts.map(p => ({
+          name: p.name,
+          value: p.value
+        })),
         createdAt: new Date().toISOString()
       };
 
@@ -875,6 +928,17 @@ export default function AdminMobileApp() {
               if (snap.exists()) {
                 const cur = snap.data().quantity || 0;
                 await updateDoc(prodRef, { quantity: cur + oldP.quantity });
+              }
+            }
+          }
+          // Revert old used products inventory adjustments
+          if (bookingTx.usedProducts) {
+            for (const oldU of bookingTx.usedProducts) {
+              const prodRef = doc(db, 'products', oldU.productId);
+              const snap = await getDoc(prodRef);
+              if (snap.exists()) {
+                const cur = snap.data().quantity || 0;
+                await updateDoc(prodRef, { quantity: cur + oldU.quantity });
               }
             }
           }
@@ -897,6 +961,16 @@ export default function AdminMobileApp() {
           if (snap.exists()) {
             const cur = snap.data().quantity || 0;
             await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
+          }
+        }
+
+        // Apply new used products inventory adjustments
+        for (const u of usedProducts) {
+          const prodRef = doc(db, 'products', u.productId);
+          const snap = await getDoc(prodRef);
+          if (snap.exists()) {
+            const cur = snap.data().quantity || 0;
+            await updateDoc(prodRef, { quantity: Math.max(0, cur - u.quantity) });
           }
         }
       }
@@ -3534,6 +3608,86 @@ Grande abraço, Jon.`;
               )}
             </div>
 
+            {/* Used Products Section */}
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>🧪 Insumos Usados (Dedução)</div>
+              {usedProducts.map((p, idx) => (
+                <div key={'used-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#48bb78' }}>
+                  <span style={{ fontSize:'0.82rem' }}>{p.quantity}x {p.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:'0.82rem', fontWeight: 600 }}>- {fmt(p.price * p.quantity)}</span>
+                    <button onClick={() => removeUsedProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444' }}><Trash2 size={12}/></button>
+                  </div>
+                </div>
+              ))}
+              
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                <select
+                  value={selectedUsedProduct}
+                  onChange={e => setSelectedUsedProduct(e.target.value)}
+                  style={{ flex: 1, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
+                >
+                  <option value="">-- Selecionar Insumo --</option>
+                  {inventory.filter(p => p.quantity > 0).map(p => (
+                    <option key={p.id} value={`${p.id}|${p.name}|${p.costPrice || p.sellingPrice}`}>
+                      {p.name} (Custo: R$ {p.costPrice || p.sellingPrice})
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="m-btn m-btn-outline"
+                  style={{ padding: '0 12px', fontSize: '0.8rem' }}
+                  onClick={() => {
+                    if (!selectedUsedProduct) return;
+                    const [pid, name, price] = selectedUsedProduct.split('|');
+                    addUsedProduct(pid, name, price);
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Non Registered Products Section */}
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>🏷️ Produtos Não Cadastrados (Uso Único)</div>
+              {nonRegisteredProducts.map((p, idx) => (
+                <div key={'nonreg-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#38b2ac' }}>
+                  <span style={{ fontSize:'0.82rem' }}>{p.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:'0.82rem', fontWeight: 600 }}>- {fmt(p.value)}</span>
+                    <button onClick={() => removeNonRegisteredProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444' }}><Trash2 size={12}/></button>
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                <input
+                  type="text"
+                  placeholder="Nome do produto"
+                  value={newNonRegName}
+                  onChange={e => setNewNonRegName(e.target.value)}
+                  style={{ flex: 2, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
+                />
+                <input
+                  type="number"
+                  placeholder="Valor"
+                  value={newNonRegVal || ''}
+                  onChange={e => setNewNonRegVal(Number(e.target.value))}
+                  style={{ flex: 1, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit' }}
+                />
+                <button
+                  type="button"
+                  className="m-btn m-btn-outline"
+                  style={{ padding: '0 12px', fontSize: '0.8rem' }}
+                  onClick={() => addNonRegisteredProduct(newNonRegName, newNonRegVal)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             {/* Discount */}
             <div className="m-field">
               <label className="m-label">Desconto (R$)</label>
@@ -3609,6 +3763,18 @@ Grande abraço, Jon.`;
                 <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-muted)' }}>
                   <span>Subtotal Produtos</span>
                   <span>{fmt(productsVal)}</span>
+                </div>
+              )}
+              {usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#48bb78' }}>
+                  <span>Insumos Dedução</span>
+                  <span>- {fmt(usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</span>
+                </div>
+              )}
+              {nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0) > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#38b2ac' }}>
+                  <span>Produtos não Cadastrados</span>
+                  <span>- {fmt(nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0))}</span>
                 </div>
               )}
               {discount > 0 && (

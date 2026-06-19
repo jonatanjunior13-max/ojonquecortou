@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { auth, db, withTimeout } from '../config/firebase';
 import { 
@@ -255,6 +255,7 @@ const BookingPage = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
   const [success, setSuccess] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [bookingDemoMode, setBookingDemoMode] = useState(false);
@@ -1157,18 +1158,22 @@ const BookingPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading || isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
 
     // Validação estrita do campo de Telefone (WhatsApp)
     const cleanPhone = clientData.phone.replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
       setAuthError('Por favor, informe um número de WhatsApp válido com DDD.');
       setLoading(false);
+      isSubmittingRef.current = false;
       return;
     }
 
     if (existingProfile && existingProfile.blocked) {
       setAuthError('Seu perfil está temporariamente bloqueado para agendamentos online pelo sistema. Por favor, solicite seu agendamento via WhatsApp.');
       setLoading(false);
+      isSubmittingRef.current = false;
       return;
     }
 
@@ -1221,6 +1226,7 @@ const BookingPage = () => {
       
       if (!hasRecentCorte) {
         setLoading(false);
+        isSubmittingRef.current = false;
         setAuthError(
           <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px', padding: '16px', background: 'rgba(200, 133, 42, 0.05)', border: '1px solid var(--accent)', borderRadius: '8px' }}>
             <p style={{ margin: 0, fontWeight: 700, color: 'var(--ink)' }}>Atenção: Serviço Exclusivo</p>
@@ -1260,6 +1266,7 @@ const BookingPage = () => {
           authCard.scrollIntoView({ behavior: 'smooth' });
         }
       }, 100);
+      isSubmittingRef.current = false;
       return;
     }
 
@@ -1296,6 +1303,7 @@ const BookingPage = () => {
         console.warn('Erro ao criar credenciais durante cadastro:', authErr);
         setAuthError(getFriendlyAuthMessage(authErr.code));
         setLoading(false);
+        isSubmittingRef.current = false;
         return;
       }
     }
@@ -1501,6 +1509,7 @@ const BookingPage = () => {
       setStep(4);
     } finally {
       setLoading(false);
+      isSubmittingRef.current = false;
     }
   };
 

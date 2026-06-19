@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
@@ -237,6 +237,7 @@ const AdminDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
   const [isDemoMode, setIsDemoMode] = useState(!db);
   
   const toast = useToast();
@@ -247,6 +248,12 @@ const AdminDashboard = () => {
   const [comandaBooking, setComandaBooking] = useState(null);
   const [addedServices, setAddedServices] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
+  const [usedProducts, setUsedProducts] = useState([]);
+  const [nonRegisteredProducts, setNonRegisteredProducts] = useState([]);
+  const [selectedUsedProduct, setSelectedUsedProduct] = useState('');
+  const [usedProductQty, setUsedProductQty] = useState(1);
+  const [newNonRegName, setNewNonRegName] = useState('');
+  const [newNonRegVal, setNewNonRegVal] = useState(0);
   const [isEditingComanda, setIsEditingComanda] = useState(false);
   const [editComandaForm, setEditComandaForm] = useState({
     value: 0,
@@ -1197,6 +1204,9 @@ const AdminDashboard = () => {
 
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
     const activeServPrice = newBooking.servicePrice || (services[0]?.promoPrice || services[0]?.price || 150);
     const activeDuration = newBooking.duration || (services[0]?.duration || 60);
@@ -1238,6 +1248,7 @@ const AdminDashboard = () => {
 
     if (hasConflict) {
       if (!confirm("Já existe outro agendamento neste horário para este profissional.\nDeseja continuar?")) {
+        isSubmittingRef.current = false;
         return;
       }
     }
@@ -1331,6 +1342,8 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Erro ao criar agendamento manual:', err);
       alert('Falha ao registrar agendamento manual.');
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 
@@ -1488,6 +1501,33 @@ const AdminDashboard = () => {
     setAddedProducts(prev => prev.filter((_, idx) => idx !== index));
   };
 
+  const addUsedProduct = (productId, name, priceStr) => {
+    const existing = usedProducts.find(ap => ap.productId === productId);
+    if (existing) {
+      setUsedProducts(prev => prev.map(ap => 
+        ap.productId === productId ? { ...ap, quantity: ap.quantity + 1 } : ap
+      ));
+    } else {
+      setUsedProducts(prev => [...prev, { productId, name, price: Number(priceStr), quantity: 1 }]);
+    }
+    setSelectedUsedProduct('');
+  };
+
+  const removeUsedProduct = (index) => {
+    setUsedProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const addNonRegisteredProduct = (name, val) => {
+    if (!name || val <= 0) return;
+    setNonRegisteredProducts(prev => [...prev, { name, value: Number(val) }]);
+    setNewNonRegName('');
+    setNewNonRegVal(0);
+  };
+
+  const removeNonRegisteredProduct = (index) => {
+    setNonRegisteredProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
   const calculateTotal = () => {
     const base = usingClientPackageId 
       ? 0 
@@ -1497,8 +1537,10 @@ const AdminDashboard = () => {
         );
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const nonRegProdsVal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
-    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay);
+    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay - usedProdsVal - nonRegProdsVal);
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
@@ -1629,8 +1671,10 @@ const AdminDashboard = () => {
         );
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const nonRegProductsTotal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
-    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay);
+    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay - usedProductsTotal - nonRegProductsTotal);
 
     const itemsDescription = [
       sellingPackageId 
@@ -1638,6 +1682,8 @@ const AdminDashboard = () => {
         : (booking.service?.name || booking.serviceName || 'Serviço Base'),
       ...addedServices.map(s => s.name),
       ...addedProducts.map(p => `${p.quantity}x ${p.name}`),
+      usedProducts.length > 0 ? `Insumos Usados (-R$ ${usedProductsTotal})` : '',
+      nonRegisteredProducts.length > 0 ? `Itens não cadastrados (-R$ ${nonRegProductsTotal})` : '',
       Number(extraCharged) > 0 ? `Taxa Extra Cobrada (R$ ${extraCharged})` : ''
     ].filter(Boolean).join(', ');
 
@@ -1670,6 +1716,16 @@ const AdminDashboard = () => {
           costPrice: match ? (match.costPrice || 0) : 0
         };
       }),
+      usedProducts: usedProducts.map(p => ({
+        productId: p.productId,
+        name: p.name,
+        quantity: p.quantity,
+        price: p.price
+      })),
+      nonRegisteredProducts: nonRegisteredProducts.map(p => ({
+        name: p.name,
+        value: p.value
+      })),
       createdAt: new Date().toISOString()
     };
 
@@ -1801,8 +1857,12 @@ const AdminDashboard = () => {
           const prods = JSON.parse(localProducts);
           updatedProdsList = prods.map(p => {
             const added = addedProducts.find(ap => ap.productId === p.id);
-            if (added) {
-              return { ...p, quantity: Math.max(0, p.quantity - added.quantity) };
+            const used = usedProducts.find(up => up.productId === p.id);
+            let qtyToSubtract = 0;
+            if (added) qtyToSubtract += added.quantity;
+            if (used) qtyToSubtract += used.quantity;
+            if (qtyToSubtract > 0) {
+              return { ...p, quantity: Math.max(0, p.quantity - qtyToSubtract) };
             }
             return p;
           });
@@ -1865,11 +1925,22 @@ const AdminDashboard = () => {
         });
         syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
+        // Deduct sold products stock
         for (const added of addedProducts) {
           const prodRef = doc(db, 'products', added.productId);
           const match = products.find(p => p.id === added.productId);
           if (match) {
             const newQty = Math.max(0, match.quantity - added.quantity);
+            await updateDoc(prodRef, { quantity: newQty });
+          }
+        }
+
+        // Deduct used products stock
+        for (const used of usedProducts) {
+          const prodRef = doc(db, 'products', used.productId);
+          const match = products.find(p => p.id === used.productId);
+          if (match) {
+            const newQty = Math.max(0, match.quantity - used.quantity);
             await updateDoc(prodRef, { quantity: newQty });
           }
         }
@@ -3039,12 +3110,12 @@ Grande abraço, Jon.`;
                         return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
                       });
 
-                      // Unify duplicate bookings having the exact same fields
+                      // Unify duplicate bookings only if they have the exact same database ID to avoid react key issues
                       const seen = new Set();
                       cellBookings = cellBookings.filter(b => {
-                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
-                        if (seen.has(key)) return false;
-                        seen.add(key);
+                        if (!b.id) return true;
+                        if (seen.has(b.id)) return false;
+                        seen.add(b.id);
                         return true;
                       });
 
@@ -3436,9 +3507,9 @@ Grande abraço, Jon.`;
                       );
                       const seenBookings = new Set();
                       dayBookings = dayBookings.filter(b => {
-                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
-                        if (seenBookings.has(key)) return false;
-                        seenBookings.add(key);
+                        if (!b.id) return true;
+                        if (seenBookings.has(b.id)) return false;
+                        seenBookings.add(b.id);
                         return true;
                       });
 
@@ -5183,6 +5254,52 @@ Grande abraço, Jon.`;
                       </div>
                     </div>
                   ))}
+
+                  {/* PRODUTOS USADOS DEDUZIDOS */}
+                  {usedProducts.map((p, idx) => (
+                    <div key={'up-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: '#48bb78' }}>
+                      <span>🧪 Insumo Usado: {p.quantity}x {p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>Custo: R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                          value={p.price}
+                          onChange={e => {
+                            const newPrice = Number(e.target.value);
+                            setUsedProducts(prev => prev.map((item, i) => i === idx ? { ...item, price: newPrice } : item));
+                          }}
+                        />
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, minWidth: '45px', textAlign: 'right' }}>- R$ {p.price * p.quantity}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeUsedProduct(idx)} style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: '2px' }}>
+                          <Trash2 size={11} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* PRODUTOS NÃO CADASTRADOS DEDUZIDOS */}
+                  {nonRegisteredProducts.map((p, idx) => (
+                    <div key={'nrp-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: '#38b2ac' }}>
+                      <span>🏷️ Produto Não Cadastrado: {p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>Valor: R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                          value={p.value}
+                          onChange={e => {
+                            const newValue = Number(e.target.value);
+                            setNonRegisteredProducts(prev => prev.map((item, i) => i === idx ? { ...item, value: newValue } : item));
+                          }}
+                        />
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, minWidth: '45px', textAlign: 'right' }}>- R$ {p.value}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeNonRegisteredProduct(idx)} style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: '2px' }}>
+                          <Trash2 size={11} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                   
                   <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--adm-rule)', paddingTop: 4, marginTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Desconto</span>
@@ -5260,7 +5377,7 @@ Grande abraço, Jon.`;
                   </div>
  
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Lançar Produto</label>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Vender Produto</label>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <select 
                         value={selectedExtraProduct} 
@@ -5275,6 +5392,66 @@ Grande abraço, Jon.`;
                         ))}
                       </select>
                       <button type="button" className="btn btn-ghost" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={addExtraProduct}>+</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 2 }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>🧪 Insumo Usado (Estoque)</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <select 
+                        value={selectedUsedProduct} 
+                        onChange={e => setSelectedUsedProduct(e.target.value)}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                      >
+                        <option value="">Selecione</option>
+                        {products.map(p => (
+                          <option key={p.id} value={`${p.id}|${p.name}|${p.costPrice || p.sellingPrice}`} disabled={p.quantity <= 0}>
+                            {p.name} (Custo: R$ {p.costPrice || p.sellingPrice})
+                          </option>
+                        ))}
+                      </select>
+                      <button 
+                        type="button" 
+                        className="btn btn-ghost" 
+                        style={{ padding: '2px 8px', fontSize: '0.75rem' }} 
+                        onClick={() => {
+                          if (!selectedUsedProduct) return;
+                          const [pid, name, price] = selectedUsedProduct.split('|');
+                          addUsedProduct(pid, name, price);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>🏷️ Usar Não Cadastrado</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <input 
+                        type="text"
+                        placeholder="Nome"
+                        value={newNonRegName}
+                        onChange={e => setNewNonRegName(e.target.value)}
+                        style={{ width: '50%', padding: '3px 6px', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                      />
+                      <input 
+                        type="number"
+                        placeholder="Valor"
+                        value={newNonRegVal || ''}
+                        onChange={e => setNewNonRegVal(Number(e.target.value))}
+                        style={{ width: '35%', padding: '3px 6px', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)', textAlign: 'right' }}
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-ghost" 
+                        style={{ padding: '2px 8px', fontSize: '0.75rem' }} 
+                        onClick={() => addNonRegisteredProduct(newNonRegName, newNonRegVal)}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 </div>
