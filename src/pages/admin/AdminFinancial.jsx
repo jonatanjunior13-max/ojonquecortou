@@ -2642,7 +2642,7 @@ const AdminFinancial = () => {
                         return (
                           <tr key={sp.id}>
                             <td><strong>{sp.name}</strong></td>
-                            <td><span style={{ fontSize: '0.75rem', padding: '2px 6px', background: '#333', borderRadius: 4 }}>{sp.type}</span></td>
+                            <td><span style={{ fontSize: '0.75rem', padding: '2px 6px', background: '#6b5a4b', color: '#fbf8f3', borderRadius: 4, fontWeight: 500 }}>{sp.type}</span></td>
                             <td style={{ textAlign: 'right' }}>{vol} {sp.unit}</td>
                             <td style={{ textAlign: 'right', color: 'var(--adm-danger)' }}>
                               R$ {cost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
