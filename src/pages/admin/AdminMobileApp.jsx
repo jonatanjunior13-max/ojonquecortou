@@ -1172,8 +1172,8 @@ export default function AdminMobileApp() {
     const oldPrepayment = oldB ? (Number(oldB.prepayment) || 0) : 0;
     const newPrepayment = Number(editBookingForm.prepayment || 0);
 
-    // Duração ocupa pelo menos 1h, conforme o tempo do serviço
-    const duration = Math.max(60, Number(svc?.duration) || Number(oldB?.duration) || 60);
+    // Duração selecionada pelo usuário ou baseada no serviço
+    const duration = Math.max(15, Number(editBookingForm.duration) || Number(svc?.duration) || Number(oldB?.duration) || 60);
 
     // Evita horários duplicados ao reagendar (ignora o próprio agendamento)
     if (bookingOverlaps(editBookingForm.date, editBookingForm.time, duration, editBookingForm.id)) {
@@ -2341,7 +2341,7 @@ Grande abraço, Jon.`;
                     <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
                     <div className="m-slot-content">
                       {bks.length > 0 ? (
-                        <div style={{ display: 'flex', gap: '8px', flex: 1, flexDirection: 'row', width: '100%', overflowX: 'auto' }}>
+                        <div style={{ display: 'flex', gap: '6px', flex: 1, flexDirection: 'row', width: '100%', minWidth: 0, overflow: 'hidden' }}>
                           {bks.map(bk => {
                             const bStart = timeToMin(bk.time);
                             const bEnd = bStart + (bk.duration || 60);
@@ -2351,21 +2351,33 @@ Grande abraço, Jon.`;
                               <div 
                                 key={bk.id} 
                                 className={`m-slot-booking ${bk.status}`} 
-                                style={{ flex: 1, minWidth: '120px', cursor: 'pointer', padding: '10px 12px' }}
+                                style={{ flex: 1, minWidth: '0', height: '54px', cursor: 'pointer', padding: '6px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', overflow: 'hidden' }}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setSelectedBooking(bk);
                                   setShowBookingSheet(true);
                                 }}
                               >
-                                <div>
+                                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, overflow: 'hidden' }}>
                                   <div 
                                     className="m-slot-client"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
                                     }}
-                                    style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
+                                    style={{ 
+                                      cursor: 'pointer', 
+                                      textDecoration: 'underline', 
+                                      textDecorationStyle: 'dotted', 
+                                      position: 'relative', 
+                                      display: 'inline-block',
+                                      whiteSpace: 'nowrap',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      maxWidth: '100%',
+                                      fontSize: '0.8rem',
+                                      fontWeight: 700
+                                    }}
                                   >
                                     {bk.clientName}
                                     {isClientRecurrent(bk.clientName, bk.clientPhone) && (
@@ -2380,12 +2392,9 @@ Grande abraço, Jon.`;
                                       }} />
                                     )}
                                   </div>
-                                  {bks.length > 1 && (
-                                    <div className="m-slot-svc" style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                                      {bk.time} - {minToTime(bEnd)} {isSubsequent ? '(Ocupado)' : ''}
-                                    </div>
-                                  )}
-                                  <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
+                                  <div className="m-slot-svc" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%', fontSize: '0.65rem', color: 'var(--m-muted)' }}>
+                                    {bk.service?.name || bk.serviceName}
+                                  </div>
                                 </div>
                                 <StatusPill status={bk.status}/>
                               </div>
@@ -3216,7 +3225,8 @@ Grande abraço, Jon.`;
                     time: b.time || '09:00',
                     prepayment: b.prepayment || '',
                     notes: b.notes || '',
-                    status: b.status || 'confirmado'
+                    status: b.status || 'confirmado',
+                    duration: b.duration || 60
                   });
                   setShowBookingSheet(false);
                   setShowEditBookingSheet(true);
@@ -3947,15 +3957,34 @@ Grande abraço, Jon.`;
                 const sName = e.target.value;
                 const matched = services.find(s => s.name === sName);
                 const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
-                setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+                const matchedDuration = matched ? (matched.duration || 60) : 60;
+                setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice, duration: matchedDuration }));
               }}>
                 <option value="">Selecione um serviço</option>
                 {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
               </select>
             </div>
-            <div className="m-field">
-              <label className="m-label">Valor do Serviço (R$)</label>
-              <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.servicePrice} onChange={e => setEditBookingForm(p => ({ ...p, servicePrice: e.target.value }))}/>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Valor do Serviço (R$)</label>
+                <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.servicePrice} onChange={e => setEditBookingForm(p => ({ ...p, servicePrice: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Duração *</label>
+                <select className="m-select" value={editBookingForm.duration || 60} onChange={e => setEditBookingForm(p => ({ ...p, duration: Number(e.target.value) }))}>
+                  <option value={15}>15 min</option>
+                  <option value={30}>30 min</option>
+                  <option value={45}>45 min</option>
+                  <option value={60}>1h (60 min)</option>
+                  <option value={75}>1h 15m</option>
+                  <option value={90}>1h 30m</option>
+                  <option value={105}>1h 45m</option>
+                  <option value={120}>2h (120 min)</option>
+                  <option value={150}>2h 30m</option>
+                  <option value={180}>3h (180 min)</option>
+                  <option value={240}>4h (240 min)</option>
+                </select>
+              </div>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <div className="m-field">
@@ -4179,7 +4208,8 @@ Grande abraço, Jon.`;
                         time: b.time || '09:00',
                         prepayment: b.prepayment || '',
                         notes: b.notes || '',
-                        status: b.status || 'confirmado'
+                        status: b.status || 'confirmado',
+                        duration: b.duration || 60
                       });
                       setShowClientSheet(false);
                       setShowEditBookingSheet(true);

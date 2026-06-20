@@ -20,7 +20,7 @@
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
   position: relative;
-  transition: padding-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: padding-left 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (min-width: 768px) {
@@ -44,7 +44,7 @@
   width: 85px; /* Largura estreita padrão */
   padding: 24px 0;
   box-sizing: border-box;
-  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  transition: width 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s ease;
 }
 
 .sidebar-brand {
@@ -90,9 +90,11 @@
   border-radius: var(--adm-radius-sm); /* Cantos bem arredondados e orgânicos */
   color: #a4968d;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   position: relative;
   gap: 4px;
+  box-sizing: border-box;
+  border: 1px solid transparent;
 }
 
 .nav-item span {
@@ -106,12 +108,14 @@
 .nav-item:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .nav-item.active {
   background: var(--adm-gold); /* Fundo bronze/castanho no active */
   color: #FFFFFF !important;
   box-shadow: 0 8px 20px rgba(115, 92, 78, 0.25);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
 .nav-item.active span {
@@ -133,15 +137,17 @@
   width: 44px;
   height: 44px;
   background: none;
-  border: none;
+  border: 1px solid transparent;
   color: #a4968d;
   cursor: pointer;
   border-radius: var(--adm-radius-sm);
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .logout-btn:hover {
   background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
   color: #ff8a80;
 }
 
