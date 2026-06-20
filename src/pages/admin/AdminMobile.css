@@ -5,17 +5,17 @@
 
 /* ── Design Tokens ─────────────────────────────────────────────────── */
 .mobile-app {
-  --m-bg:           #F5EFEB; /* Creme quente muito claro de fundo */
-  --m-surface:      #EFE8E3; /* Creme ligeiramente mais escuro */
+  --m-bg:           #fbf8f3; /* Creme quente muito claro de fundo do modelo v2 */
+  --m-surface:      #f3ede8; /* Creme ligeiramente mais escuro */
   --m-card:         #FFFFFF; /* Cards brancos puros */
-  --m-card-2:       #FAF7F5;
-  --m-hover:        #FAF7F5;
+  --m-card-2:       #fbf8f3;
+  --m-hover:        #fbf8f3;
   --m-text:         #221A15; /* Marrom escuro quase preto */
   --m-text-2:       #483A31; /* Marrom escuro médio */
   --m-muted:        #7A695E;
   --m-rule:         rgba(110, 94, 83, 0.09);
   --m-rule-strong:  rgba(110, 94, 83, 0.16);
-  --m-gold:         #735C4E; /* Bronze / Marrom Terroso das fontes e botões */
+  --m-gold:         #735C4E; /* Bronze / Marrom Terroso */
   --m-gold-deep:    #5A473C;
   --m-gold-glow:    rgba(115, 92, 78, 0.12);
   --m-gold-subtle:  rgba(115, 92, 78, 0.06);
@@ -29,14 +29,14 @@
   --m-blue-bg:      rgba(120, 144, 156, 0.10);
   --m-shadow:       0 8px 32px rgba(60, 48, 40, 0.08);
   --m-shadow-sm:    0 2px 8px rgba(60, 48, 40, 0.04);
-  --m-radius-sm:    10px;
-  --m-radius:       16px;
+  --m-radius-sm:    12px;
+  --m-radius:       18px;
   --m-radius-lg:    24px;
   --m-radius-xl:    28px;
   --m-ease:         cubic-bezier(0.34, 1.56, 0.64, 1);
   --m-ease-fast:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --nav-h:          68px;
-  --header-h:       58px;
+  --header-h:       78px; /* 58px header + 20px margins */
   --content-h:      calc(100dvh - var(--header-h) - var(--nav-h));
 }
 
@@ -59,17 +59,19 @@
 
 /* ── Header ────────────────────────────────────────────────────────── */
 .m-header {
-  height: var(--header-h);
-  min-height: var(--header-h);
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  background: var(--m-surface);
-  border-bottom: 0.5px solid var(--m-rule);
+  background: #1e1610; /* Header obsidiana escuro */
+  border: none;
+  border-radius: var(--m-radius-sm);
+  margin: 12px 16px 8px 16px;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(30, 22, 16, 0.12);
 }
 
 .m-header-left {
@@ -82,20 +84,20 @@
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  border: 0.5px solid var(--m-rule-strong);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
   object-fit: cover;
 }
 
 .m-header-title {
   font-size: 1.05rem;
   font-weight: 700;
-  color: var(--m-text);
+  color: #ffffff; /* Texto branco */
   font-family: "DM Serif Display", serif;
 }
 
 .m-header-subtitle {
   font-size: 0.65rem;
-  color: var(--m-gold);
+  color: #c5b3a6; /* Subtítulo claro */
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.8px;
@@ -114,7 +116,7 @@
   border-radius: 50%;
   border: none;
   background: transparent;
-  color: var(--m-muted);
+  color: #a4968d; /* Ícones claros */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -122,8 +124,8 @@
   position: relative;
   transition: all 0.15s ease;
 }
-.m-icon-btn:active { transform: scale(0.9); background: var(--m-card); }
-.m-icon-btn.active { color: var(--m-gold); }
+.m-icon-btn:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.08); }
+.m-icon-btn.active { color: #ffffff; }
 
 .m-badge {
   position: absolute;
@@ -133,20 +135,20 @@
   height: 16px;
   border-radius: 50%;
   background: var(--m-gold);
-  color: #0E0C0B;
+  color: #ffffff;
   font-size: 0.6rem;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid var(--m-surface);
+  border: 1.5px solid #1e1610;
 }
 
 .m-header-back {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--m-gold);
+  color: #ffffff;
   font-size: 0.85rem;
   font-weight: 700;
   background: none;
@@ -175,7 +177,7 @@
   min-height: var(--nav-h);
   display: flex;
   align-items: stretch;
-  background: var(--m-surface);
+  background: #ffffff; /* Fundo branco puro */
   border-top: 0.5px solid var(--m-rule);
   padding: 0 4px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -202,19 +204,7 @@
 }
 
 .m-nav-item.active {
-  color: var(--m-gold);
-}
-
-.m-nav-item.active::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 28px;
-  height: 2px;
-  background: var(--m-gold);
-  border-radius: 0 0 2px 2px;
+  color: #6b5a4b;
 }
 
 .m-nav-label {
@@ -225,17 +215,20 @@
 }
 
 .m-nav-icon-wrap {
-  width: 40px;
+  width: 44px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 14px;
-  transition: background 0.2s ease;
+  background: #e6dfd7; /* Círculo padrão */
+  color: var(--m-muted);
+  transition: all 0.2s ease;
 }
 
 .m-nav-item.active .m-nav-icon-wrap {
-  background: var(--m-gold-subtle);
+  background: #6b5a4b; /* Círculo ativo */
+  color: #ffffff !important;
 }
 
 /* ── Tab Transitions ───────────────────────────────────────────────── */
@@ -509,9 +502,9 @@
 .m-slot-booking {
   flex: 1;
   background: var(--m-card);
-  border-radius: 8px;
+  border-radius: var(--m-radius-sm);
   padding: 8px 12px;
-  border-left: 3px solid var(--m-gold);
+  border-left: 4px solid var(--m-gold);
   display: flex;
   align-items: center;
   justify-content: space-between;

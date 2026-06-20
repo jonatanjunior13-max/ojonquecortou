@@ -1,9 +1,10 @@
 :root, .admin-app {
   /* Surfaces - Editorial Warm Cream & Respiro */
-  --adm-bg: #F5EFEB; /* Creme quente muito claro de fundo */
-  --adm-surface: #EFE8E3; /* Creme ligeiramente mais escuro para menus e sidebars */
+  --adm-bg: #fbf8f3; /* Creme quente muito claro de fundo do modelo v2 */
+  --adm-sidebar-bg: #1e1610; /* Sidebar obsidiana escura do modelo v2 */
+  --adm-surface: #f3ede8; /* Creme ligeiramente mais escuro para menus e abas */
   --adm-card: #FFFFFF; /* Cards brancos puros elegantes */
-  --adm-card-hover: #FAF7F5;
+  --adm-card-hover: #fbf8f3;
 
   /* Text - Editorial Castanho Escuro de Alto Contraste */
   --adm-text: #221A15; /* Marrom escuro quase preto para excelente leitura */
@@ -25,9 +26,9 @@
   /* Structure */
   --adm-rule: rgba(110, 94, 83, 0.09);
   --adm-rule-gold: rgba(115, 92, 78, 0.20);
-  --adm-radius-sm: 8px;
-  --adm-radius: 16px; /* Cards com cantos bem arredondados como no print */
-  --adm-radius-lg: 24px;
+  --adm-radius-sm: 12px;
+  --adm-radius: 20px; /* Cards com cantos bem arredondados e elegantes */
+  --adm-radius-lg: 28px;
 
   /* Spacing scale (8pt grid) */
   --adm-space-1: 4px;

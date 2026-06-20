@@ -1053,11 +1053,7 @@ const BookingPage = () => {
 
           const isTargetAvailable = checkProfAvailability(targetProf, slot, bookingsByProf[targetProf.id] || []);
           if (!isTargetAvailable) {
-            // Se o profissional alvo estiver bloqueado, verifique se há OUTROS profissionais disponíveis
-            const othersAvailable = activeProfs.filter(p => p.id !== targetProf.id && checkProfAvailability(p, slot, bookingsByProf[p.id] || []));
-            if (othersAvailable.length === 0) {
-              booked.push(slot);
-            }
+            booked.push(slot);
           }
         });
 
@@ -1098,11 +1094,7 @@ const BookingPage = () => {
 
           const isTargetAvailable = checkProfAvailability(targetProf, slot, bookingsByProf[targetProf.id] || []);
           if (!isTargetAvailable) {
-            // Se o profissional selecionado estiver indisponível/bloqueado, verifique se há outros ativos livres
-            const othersAvailable = activeProfs.filter(p => p.id !== targetProf.id && checkProfAvailability(p, slot, bookingsByProf[p.id] || []));
-            if (othersAvailable.length === 0) {
-              booked.push(slot);
-            }
+            booked.push(slot);
           }
         });
 
@@ -1136,10 +1128,7 @@ const BookingPage = () => {
 
           const isTargetAvailable = checkProfAvailability(targetProf, slot, bookingsByProf[targetProf.id] || []);
           if (!isTargetAvailable) {
-            const othersAvailable = activeProfs.filter(p => p.id !== targetProf.id && checkProfAvailability(p, slot, bookingsByProf[p.id] || []));
-            if (othersAvailable.length === 0) {
-              booked.push(slot);
-            }
+            booked.push(slot);
           }
         });
         setBookedTimes(booked);
@@ -1727,11 +1716,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                               window.open(`https://wa.me/553135866673?text=${text}`, '_blank');
                               return;
                             }
-                            if (isSelected) {
-                              setSelectedServices(prev => prev.filter(s => s.id !== service.id));
-                            } else {
-                              setSelectedServices(prev => [...prev, service]);
-                            }
+                            setSelectedServices([service]);
+                            setStep(2);
                           }}
                         >
                           {/* Linha superior */}

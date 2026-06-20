@@ -41,16 +41,6 @@ if (typeof window !== 'undefined') {
   setInterval(setupObserver, 1000); 
 }
 
-// FORCE CACHE CLEAR - Mata qualquer Service Worker preso para forçar atualização
-if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for(let registration of registrations) {
-      registration.unregister();
-      console.log('ServiceWorker cache limpo.');
-    }
-  });
-}
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />

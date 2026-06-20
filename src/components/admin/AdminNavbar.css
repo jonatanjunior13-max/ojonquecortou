@@ -31,8 +31,8 @@
 
 /* Sidebar */
 .admin-sidebar {
-  background: var(--adm-surface);
-  border-right: 0.5px solid var(--adm-rule);
+  background: var(--adm-sidebar-bg);
+  border-right: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,8 +87,8 @@
   justify-content: center;
   width: 54px;
   height: 54px;
-  border-radius: 18px; /* Cantos bem arredondados e orgânicos como no print */
-  color: var(--adm-muted);
+  border-radius: var(--adm-radius-sm); /* Cantos bem arredondados e orgânicos */
+  color: #a4968d;
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
@@ -104,18 +104,18 @@
 }
 
 .nav-item:hover {
-  color: var(--adm-text);
-  background: rgba(115, 92, 78, 0.05);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .nav-item.active {
-  background: var(--adm-gold); /* Fundo bronze/castanho no active como o botão "Hoje" */
+  background: var(--adm-gold); /* Fundo bronze/castanho no active */
   color: #FFFFFF !important;
   box-shadow: 0 8px 20px rgba(115, 92, 78, 0.25);
 }
 
 .nav-item.active span {
-  display: block; /* Mostra o texto apenas quando ativo, igual no print "Hoje" */
+  display: block; /* Mostra o texto apenas quando ativo */
   color: #FFFFFF;
 }
 
@@ -134,15 +134,15 @@
   height: 44px;
   background: none;
   border: none;
-  color: var(--adm-muted);
+  color: #a4968d;
   cursor: pointer;
-  border-radius: 50%;
+  border-radius: var(--adm-radius-sm);
   transition: all 0.2s ease;
 }
 
 .logout-btn:hover {
-  background: rgba(194, 107, 102, 0.08);
-  color: var(--adm-danger);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ff8a80;
 }
 
 /* Sidebar Collapsed / Hover Retrátil */
@@ -176,7 +176,7 @@
     justify-content: flex-start;
     padding-left: 16px;
     gap: 12px;
-    border-radius: 12px;
+    border-radius: var(--adm-radius-sm);
   }
   .admin-sidebar:hover .nav-item span {
     display: block; /* Mostra todos os nomes ao expandir com o mouse */
@@ -190,7 +190,7 @@
     justify-content: flex-start;
     padding-left: 16px;
     gap: 12px;
-    border-radius: 12px;
+    border-radius: var(--adm-radius-sm);
   }
   .admin-sidebar:hover .logout-btn::after {
     content: 'Sair';
@@ -248,7 +248,7 @@
   top: calc(100% + 8px);
   left: 0;
   width: 360px;
-  background: var(--adm-surface);
+  background: var(--adm-card);
   border: 0.5px solid var(--adm-rule-gold);
   border-radius: var(--adm-radius);
   z-index: 100;
@@ -352,7 +352,7 @@
   top: 0;
   right: 0;
   background: var(--adm-gold);
-  color: #121110;
+  color: #FFFFFF;
   font-size: 0.65rem;
   font-weight: 700;
   border-radius: 50%;
@@ -362,7 +362,7 @@
   align-items: center;
   justify-content: center;
   padding: 2px;
-  border: 1.5px solid var(--adm-surface);
+  border: 1.5px solid var(--adm-sidebar-bg);
 }
 
 .notifications-dropdown {
@@ -370,7 +370,7 @@
   top: calc(100% + 8px);
   right: 0;
   width: 320px;
-  background: var(--adm-surface);
+  background: var(--adm-card);
   border: 0.5px solid var(--adm-rule-gold);
   border-radius: var(--adm-radius);
   z-index: 1000;
@@ -481,7 +481,7 @@
     left: 0;
     right: 0;
     height: 64px;
-    background: var(--adm-surface);
+    background: var(--adm-card);
     border-top: 0.5px solid var(--adm-rule);
     display: flex !important;
     justify-content: space-around;
@@ -575,7 +575,7 @@
     align-items: center;
     height: 70px;
     padding: 0 32px;
-    background: var(--adm-surface);
+    background: var(--adm-card);
     border-bottom: 0.5px solid var(--adm-rule);
     position: sticky;
     top: 0;

@@ -151,7 +151,75 @@ export default async function handler(req, res) {
       }
     }
 
-    // Disparar e-mails de lembrete 24h para amanhã
+    // 3. ENVIAR LEMBRETES DE WHATSAPP 2 HORAS ANTES (Para o dia de hoje)
+    const qToday = query(collection(db, 'bookings'), where('date', '==', todayStr));
+    const snapshotToday = await getDocs(qToday);
+    const todayBookings = [];
+    
+    snapshotToday.forEach(doc => {
+      const data = doc.data();
+      if ((data.status === 'pendente' || data.status === 'confirmado') && !data.reminder2hSent) {
+        todayBookings.push({ id: doc.id, ...data });
+      }
+    });
+
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+    const template2h = settings?.waReminder2hTemplate || 'Olá, {cliente}! Passando para lembrar do seu atendimento daqui a pouco, às {hora} ({servico}). Tudo certo?';
+    
+    let wa2hSuccessCount = 0;
+    let wa2hFailCount = 0;
+
+    for (const b of todayBookings) {
+      if (!b.clientPhone) continue;
+      
+      const bookingMin = timeToMin(b.time);
+      const diffMin = bookingMin - currentMin;
+      
+      // Janela de disparo: de 110 a 145 minutos (aprox. 2h de antecedência)
+      if (diffMin >= 110 && diffMin <= 145) {
+        const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
+        let msg = template2h
+          .replace('{cliente}', b.clientName.split(' ')[0])
+          .replace('{data}', b.date.split('-').reverse().join('/'))
+          .replace('{hora}', b.time)
+          .replace('{servico}', b.service?.name || b.serviceName);
+
+        if (msg.includes('{link_cancelamento}')) {
+          msg = msg.replace('{link_cancelamento}', cancelLink);
+        } else {
+          msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
+        }
+
+        const phoneNum = b.clientPhone.replace(/\D/g, '');
+        const waNumber = phoneNum.startsWith('55') ? phoneNum : `55${phoneNum}`;
+
+        if (waUrl) {
+          try {
+            const response = await fetch(waUrl, {
+              method: 'POST',
+              headers: waHeaders,
+              body: JSON.stringify({ number: waNumber, text: msg })
+            });
+            if (response.ok) {
+              wa2hSuccessCount++;
+              try {
+                await updateDoc(doc(db, 'bookings', b.id), { reminder2hSent: true });
+              } catch (dbErr) {
+                console.error(`Erro ao marcar reminder2hSent no Firestore para ${b.id}:`, dbErr);
+              }
+            } else {
+              console.error(`Erro WA 2h para ${waNumber}:`, await response.text());
+              wa2hFailCount++;
+            }
+          } catch (err) {
+            console.error(`Erro de rede ao enviar WA 2h para ${waNumber}:`, err);
+            wa2hFailCount++;
+          }
+        }
+      }
+    }
+
+    // 4. DISPARAR E-MAILS DE LEMBRETE 24H (Para amanhã)
     let emailSuccessCount = 0;
     let emailFailCount = 0;
     const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
@@ -205,6 +273,11 @@ export default async function handler(req, res) {
         totalBookings: bookings.length,
         successCount,
         failCount
+      },
+      whatsapp2h: {
+        totalBookings: todayBookings.length,
+        successCount: wa2hSuccessCount,
+        failCount: wa2hFailCount
       },
       emailReminders24h: {
         totalBookings: tomorrowBookings.length,
