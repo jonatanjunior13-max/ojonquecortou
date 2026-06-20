@@ -2571,22 +2571,30 @@ Grande abraço, Jon.`;
 
   // ── TAB: CAIXA ─────────────────────────────────────────────────
   const renderCaixa = () => {
-    const txMonth = (() => {
-      const m = new Date().toISOString().slice(0,7);
-      return transactions.filter(t => (t.date || '').startsWith(m));
-    })();
-    const monthIn = txMonth.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
-    const monthOut = txMonth.filter(t => t.type === 'saida').reduce((s,t) => s + Number(t.value||0), 0);
-    const profit = monthIn - monthOut;
+    // Períodos de Caixa: 'dia' | 'semana' | 'mes'
+    const [period, setPeriod] = useState('dia'); // local period state (initialized in main component or local render)
 
-    // Last 6 days revenue for mini chart
-    const last6 = Array.from({ length:6 }, (_, i) => {
-      const d = new Date(); d.setDate(d.getDate() - (5 - i));
-      const ds = dateStr(d);
-      const val = transactions.filter(t => t.date === ds && t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
-      return { label: d.toLocaleDateString('pt-BR', { day:'numeric', month:'numeric' }).replace('/','\/'), val, isToday: ds === today() };
-    });
-    const maxVal = Math.max(...last6.map(d => d.val), 1);
+    const filteredTxByPeriod = (() => {
+      const now = new Date();
+      const currentToday = today();
+      
+      if (period === 'dia') {
+        return transactions.filter(t => t.date === currentToday);
+      } else if (period === 'semana') {
+        const startOfWeek = new Date(now);
+        const day = startOfWeek.getDay();
+        startOfWeek.setDate(now.getDate() - day); // Domingo
+        const dsStart = dateStr(startOfWeek);
+        return transactions.filter(t => t.date >= dsStart && t.date <= currentToday);
+      } else { // 'mes'
+        const m = now.toISOString().slice(0,7);
+        return transactions.filter(t => (t.date || '').startsWith(m));
+      }
+    })();
+
+    const periodIn = filteredTxByPeriod.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
+    const periodOut = filteredTxByPeriod.filter(t => t.type === 'saida').reduce((s,t) => s + Number(t.value||0), 0);
+    const periodProfit = periodIn - periodOut;
 
     const recentTx = transactions
       .sort((a,b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''))
@@ -2595,42 +2603,60 @@ Grande abraço, Jon.`;
     return (
       <div className="m-tab m-page" key="caixa">
         {/* Segmented */}
-        <div className="m-segmented">
+        <div className="m-segmented" style={{ marginBottom: 12 }}>
           <button className={`m-seg-btn ${financeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setFinanceTab('dashboard')}>Dashboard</button>
           <button className={`m-seg-btn ${financeTab === 'lancamentos' ? 'active' : ''}`} onClick={() => setFinanceTab('lancamentos')}>Lançamentos</button>
         </div>
 
         {financeTab === 'dashboard' && <>
+          {/* Caixa Period selector */}
+          <div className="m-segmented" style={{ background: 'rgba(255,255,255,0.03)', padding: 2, marginBottom: 16 }}>
+            <button className={`m-seg-btn ${period === 'dia' ? 'active' : ''}`} onClick={() => setPeriod('dia')} style={{ fontSize: '0.78rem', padding: '6px 0' }}>Dia</button>
+            <button className={`m-seg-btn ${period === 'semana' ? 'active' : ''}`} onClick={() => setPeriod('semana')} style={{ fontSize: '0.78rem', padding: '6px 0' }}>Semana</button>
+            <button className={`m-seg-btn ${period === 'mes' ? 'active' : ''}`} onClick={() => setPeriod('mes')} style={{ fontSize: '0.78rem', padding: '6px 0' }}>Mês</button>
+          </div>
+
           {/* Hero */}
-          <div className="m-finance-hero">
-            <div className="m-finance-hero-label">Receita do Mês</div>
-            <div className="m-finance-hero-value">{fmt(monthIn)}</div>
-            <div className="m-finance-hero-sub">Lucro líquido: <strong style={{ color: profit >= 0 ? 'var(--m-green)' : 'var(--m-red)' }}>{fmt(profit)}</strong></div>
+          <div className="m-finance-hero" style={{ padding: '20px 16px' }}>
+            <div className="m-finance-hero-label" style={{ textTransform: 'capitalize' }}>Caixa da {period === 'dia' ? 'Hoje' : period}</div>
+            <div className="m-finance-hero-value" style={{ fontSize: '2rem' }}>{fmt(periodIn)}</div>
+            <div className="m-finance-hero-sub">Saldo líquido: <strong style={{ color: periodProfit >= 0 ? 'var(--m-green)' : 'var(--m-red)' }}>{fmt(periodProfit)}</strong></div>
           </div>
 
           {/* KPIs */}
-          <div className="m-kpi-row">
-            <div className="m-kpi-card green">
-              <div className="m-kpi-label">Receitas</div>
-              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1.1rem' }}>{fmt(monthIn)}</div>
+          <div className="m-kpi-row" style={{ gap: 12, marginBottom: 16 }}>
+            <div className="m-kpi-card green" style={{ padding: 12 }}>
+              <div className="m-kpi-label">Entradas</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1.1rem' }}>{fmt(periodIn)}</div>
             </div>
-            <div className="m-kpi-card red">
-              <div className="m-kpi-label">Despesas</div>
-              <div className="m-kpi-value" style={{ color:'var(--m-red)', fontSize:'1.1rem' }}>{fmt(monthOut)}</div>
+            <div className="m-kpi-card red" style={{ padding: 12 }}>
+              <div className="m-kpi-label">Saídas</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-red)', fontSize:'1.1rem' }}>{fmt(periodOut)}</div>
             </div>
           </div>
 
-          {/* Mini bar chart */}
-          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
-            <div className="m-section-title" style={{ marginBottom:16 }}>Últimos 6 dias</div>
-            <div className="m-bar-chart">
-              {last6.map((d, i) => (
-                <div key={i} className={`m-bar ${d.isToday ? 'current' : ''}`} style={{ height:`${(d.val/maxVal)*100}%` }}>
-                  <span className="m-bar-label">{d.label}</span>
+          {/* Último lançamento hoje */}
+          {(() => {
+            const todayTxs = transactions.filter(t => t.date === today()).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+            if (todayTxs.length > 0) {
+              const last = todayTxs[0];
+              return (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px', marginBottom: 16 }}>
+                  <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>Último Lançamento Hoje</div>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                    <div>
+                      <div style={{ fontWeight:700, fontSize:'0.85rem', color:'var(--m-text)' }}>{last.description}</div>
+                      <div style={{ fontSize:'0.7rem', color:'var(--m-muted)' }}>{last.paymentMethod || 'Dinheiro'} · {last.type === 'entrada' ? 'Receita' : 'Despesa'}</div>
+                    </div>
+                    <div style={{ fontWeight:800, fontSize:'0.95rem', color: last.type === 'entrada' ? 'var(--m-green)' : 'var(--m-red)' }}>
+                      {last.type === 'entrada' ? '+' : '-'}{fmt(last.value)}
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              );
+            }
+            return null;
+          })()}
 
           <button className="m-btn m-btn-gold" onClick={() => setShowAddTxSheet(true)}>
             <Plus size={16}/> Lançar Despesa
@@ -2638,7 +2664,7 @@ Grande abraço, Jon.`;
         </>}
 
         {financeTab === 'lancamentos' && <>
-          <div style={{ display:'flex', justifyContent:'flex-end' }}>
+          <div style={{ display:'flex', justifyContent:'flex-end', marginBottom: 12 }}>
             <button className="m-btn m-btn-gold" style={{ width:'auto', padding:'8px 14px', fontSize:'0.78rem' }} onClick={() => setShowAddTxSheet(true)}>
               <Plus size={14}/> Lançar
             </button>
@@ -4957,7 +4983,7 @@ Grande abraço, Jon.`;
       </nav>
 
       {/* Speed-Dial FAB */}
-      {(tab === 'hoje' || tab === 'agenda') && (
+      {(tab === 'hoje' || tab === 'agenda' || tab === 'caixa') && (
         <>
           {showFabMenu && <div className="m-fab-backdrop" onClick={() => setShowFabMenu(false)} />}
           <div className="m-fab-container">
@@ -4971,6 +4997,7 @@ Grande abraço, Jon.`;
                 {/* Cadastrar Cliente */}
                 <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
                   <span className="m-fab-action-label">Cadastrar Cliente</span>
+                  <span className="m-nav-icon-wrap" style={{ display: 'none' }}/>
                   <span className="m-fab-action-icon" style={{ background:'rgba(52,199,89,0.15)', color:'var(--m-green)' }}><Users size={18}/></span>
                 </button>
                 {/* Criar Agendamento */}
