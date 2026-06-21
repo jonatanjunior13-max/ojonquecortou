@@ -20,7 +20,8 @@
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
   position: relative;
-  transition: padding-left 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: padding-left 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: padding-left;
 }
 
 @media (min-width: 768px) {
@@ -44,7 +45,8 @@
   width: 85px; /* Largura estreita padrão */
   padding: 24px 0;
   box-sizing: border-box;
-  transition: width 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s ease;
+  transition: width 0.28s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.28s ease-in-out;
+  will-change: width;
 }
 
 .sidebar-brand {
@@ -90,7 +92,8 @@
   border-radius: var(--adm-radius-sm); /* Cantos bem arredondados e orgânicos */
   color: #a4968d;
   text-decoration: none;
-  transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: width, padding-left;
   position: relative;
   gap: 4px;
   box-sizing: border-box;
