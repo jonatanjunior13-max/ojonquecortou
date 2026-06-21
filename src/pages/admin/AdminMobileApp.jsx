@@ -879,6 +879,13 @@ export default function AdminMobileApp() {
   const finalizeCheckout = async () => {
     if (!checkoutBooking) return;
     setIsFinalizingCheckout(true);
+
+    const cleanPhone = (checkoutBooking.clientPhone || '').replace(/\D/g, '');
+    const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
+    const gateway = settings?.waReminderGateway;
+    const needsWaOpen = requestReview && hasValidPhone && (!gateway || gateway === 'none');
+    const waWindow = needsWaOpen ? window.open('', '_blank') : null;
+
     try {
       const total = getCheckoutTotal();
       let methodLabel = '';
@@ -1020,7 +1027,7 @@ export default function AdminMobileApp() {
         }
       }
       if (requestReview) {
-        sendFeedbackWhatsApp(checkoutBooking).catch(err => console.error(err));
+        sendFeedbackWhatsApp(checkoutBooking, waWindow).catch(err => console.error(err));
       }
       setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice } : b));
       
@@ -1035,6 +1042,7 @@ export default function AdminMobileApp() {
       setCheckoutBooking(null);
       showToast(bookingTx ? 'Comanda atualizada com sucesso!' : 'Comanda fechada com sucesso!', 'success');
     } catch (err) {
+      if (waWindow) waWindow.close();
       showToast('Erro ao fechar comanda: ' + err.message, 'error');
     } finally {
       setIsFinalizingCheckout(false);
@@ -1292,9 +1300,10 @@ export default function AdminMobileApp() {
   };
 
   // ── Send Feedback / Review Request WhatsApp ─────────────────────
-  const sendFeedbackWhatsApp = async (booking) => {
+  const sendFeedbackWhatsApp = async (booking, waWindow = null) => {
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
+      if (waWindow) waWindow.close();
       showToast('Telefone inválido para envio.', 'error');
       return;
     }
@@ -1312,10 +1321,18 @@ Grande abraço, Jon.`;
     const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
 
     const gateway = settings?.waReminderGateway;
+    if (waWindow && gateway && gateway !== 'none') {
+      waWindow.close(); // Close synchronous window since we will send via API gateway
+    }
+
     if (!gateway || gateway === 'none') {
       console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
       const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
-      window.open(waUrl, '_blank');
+      if (waWindow) {
+        waWindow.location.href = waUrl;
+      } else {
+        window.open(waUrl, '_blank');
+      }
       showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
       return;
     }
