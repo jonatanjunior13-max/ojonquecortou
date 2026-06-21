@@ -2424,14 +2424,7 @@ Grande abraço, Jon.`;
                                 <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, overflow: 'hidden' }}>
                                   <div 
                                     className="m-slot-client"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
-                                    }}
                                     style={{ 
-                                      cursor: 'pointer', 
-                                      textDecoration: 'underline', 
-                                      textDecorationStyle: 'dotted', 
                                       position: 'relative', 
                                       display: 'inline-block',
                                       whiteSpace: 'nowrap',
