@@ -5139,7 +5139,6 @@ Grande abraço, Jon.`;
     { id:'hoje',     icon:<Home size={20}/>,         label:'Hoje' },
     { id:'agenda',   icon:<Calendar size={20}/>,     label:'Agenda' },
     { id:'galeria',  icon:<Camera size={20}/>,       label:'Galeria' },
-    { id:'clientes', icon:<Users size={20}/>,        label:'Clientes' },
     { id:'caixa',    icon:<DollarSign size={20}/>,   label:'Caixa' },
     { id:'mais',     icon:<MoreHorizontal size={20}/>, label:'Mais' },
   ];
