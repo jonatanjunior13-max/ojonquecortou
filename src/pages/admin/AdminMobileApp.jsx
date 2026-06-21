@@ -2397,7 +2397,8 @@ Grande abraço, Jon.`;
                       }
                       else { setSelectedSlot(slot); setShowSlotSheet(true); }
                     } else {
-                      setSelectedSlot(slot); setShowSlotSheet(true);
+                      setSelectedBooking(bks[0]);
+                      setShowBookingSheet(true);
                     }
                   }}>
                     <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
@@ -2677,7 +2678,7 @@ Grande abraço, Jon.`;
 
           {/* Hero */}
           <div className="m-finance-hero" style={{ padding: '20px 16px' }}>
-            <div className="m-finance-hero-label" style={{ textTransform: 'capitalize' }}>Caixa da {period === 'dia' ? 'Hoje' : period}</div>
+            <div className="m-finance-hero-label">Caixa de {period === 'dia' ? 'Hoje' : period === 'semana' ? 'Semana' : 'Mês'}</div>
             <div className="m-finance-hero-value" style={{ fontSize: '2rem' }}>{fmt(periodIn)}</div>
             <div className="m-finance-hero-sub">Saldo líquido: <strong style={{ color: periodProfit >= 0 ? 'var(--m-green)' : 'var(--m-red)' }}>{fmt(periodProfit)}</strong></div>
           </div>
@@ -2762,7 +2763,6 @@ Grande abraço, Jon.`;
       { key:'estoque', icon:<Package size={18}/>, label:'Estoque', sub:`${inventory.length} produtos`, color:'var(--m-blue)' },
       { key:'comissoes', icon:<BarChart2 size={18}/>, label:'Comissões', sub:'Relatório de equipe', color:'var(--m-green)' },
       { key:'ausencias', icon:<Calendar size={18}/>, label:'Minhas Ausências', sub:'Folgas e bloqueios', color:'#8b7cc8' },
-      { key:'marketing', icon:<Send size={18}/>, label:'Marketing', sub:'Campanhas e CRM', color:'var(--m-amber)' },
       { key:'config', icon:<Settings size={18}/>, label:'Configurações', sub:'Estúdio e integrações', color:'var(--m-muted)' },
     ];
 
@@ -3335,11 +3335,48 @@ Grande abraço, Jon.`;
                 </button>
               )}
               {b.clientPhone && (
-                <button className="m-action-btn" onClick={() => window.open(`https://wa.me/55${b.clientPhone.replace(/\D/g,'')}`, '_blank')}>
-                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><MessageSquare size={16}/></div>
+                <button className="m-action-btn" onClick={() => {
+                  const cleanPhone = b.clientPhone.replace(/\D/g, '');
+                  const matched = clients.find(c => (c.phone && c.phone.replace(/\D/g, '') === cleanPhone) || c.name === b.clientName);
+                  if (matched) {
+                    setSelectedClient(matched);
+                    setShowBookingSheet(false);
+                    setShowClientSheet(true);
+                  } else {
+                    setSelectedClient({ name: b.clientName, phone: b.clientPhone });
+                    setShowBookingSheet(false);
+                    setShowClientSheet(true);
+                  }
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'rgba(220, 163, 84, 0.12)', color:'var(--m-gold)' }}><Users size={16}/></div>
                   <div className="m-action-btn-text">
-                    <div className="m-action-btn-label">Enviar Mensagem WhatsApp</div>
-                    <div className="m-action-btn-sub">{b.clientPhone}</div>
+                    <div className="m-action-btn-label">Ver Ficha / Histórico</div>
+                    <div className="m-action-btn-sub">Histórico capilar, curvatura e anamnese</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+
+              {b.clientPhone && ['confirmado','pendente'].includes(b.status) && (
+                <button className="m-action-btn" onClick={() => {
+                  const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
+                  const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+                  let msg = template
+                    .replace('{cliente}', b.clientName.split(' ')[0])
+                    .replace('{data}', b.date.split('-').reverse().join('/'))
+                    .replace('{hora}', b.time)
+                    .replace('{servico}', b.service?.name || b.serviceName);
+                  if (msg.includes('{link_cancelamento}')) {
+                    msg = msg.replace('{link_cancelamento}', cancelLink);
+                  } else {
+                    msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
+                  }
+                  window.open(`https://wa.me/55${b.clientPhone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'rgba(37,211,102,0.12)', color:'#25D366' }}><Send size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Enviar Lembrete Manual</div>
+                    <div className="m-action-btn-sub">Mandar template de confirmação no WhatsApp</div>
                   </div>
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
@@ -3900,6 +3937,13 @@ Grande abraço, Jon.`;
                     return <div style={{ fontSize: '0.78rem', color: 'var(--m-red)', fontWeight: 600, textAlign: 'center' }}>Excesso distribuído: {fmt(Math.abs(diff))}</div>;
                   }
                 })()}
+
+                {splitValues['Pix'] > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 10, padding: '10px 8px', background: 'rgba(220, 163, 84, 0.04)', borderRadius: 'var(--m-radius-sm)', border: '0.5px dashed var(--m-rule-strong)' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--m-gold)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PIX QR Code (R$ {splitValues['Pix'].toFixed(2).replace('.', ',')})</div>
+                    <img src="/qrcode-pix.png" alt="Pix QR Code" style={{ width: 110, height: 110, borderRadius: 'var(--m-radius-sm)', background: '#fff', padding: 4 }} />
+                  </div>
+                )}
               </div>
             ) : (
               <>
@@ -3919,6 +3963,13 @@ Grande abraço, Jon.`;
                     ))}
                   </div>
                 </div>
+
+                {paymentMethod === 'Pix' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 10, padding: '10px 8px', background: 'rgba(220, 163, 84, 0.04)', borderRadius: 'var(--m-radius-sm)', border: '0.5px dashed var(--m-rule-strong)' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--m-gold)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PIX QR Code (R$ {remaining.toFixed(2).replace('.', ',')})</div>
+                    <img src="/qrcode-pix.png" alt="Pix QR Code" style={{ width: 110, height: 110, borderRadius: 'var(--m-radius-sm)', background: '#fff', padding: 4 }} />
+                  </div>
+                )}
 
                 {/* Installments selection for Credit Card */}
                 {paymentMethod === 'Cartão de Crédito' && (
@@ -5120,7 +5171,7 @@ Grande abraço, Jon.`;
             </button>
           ) : (
             <>
-              <img src="/favicon.ico" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
+              <img src="/favicon.png" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
               <div>
                 <div className="m-header-title">{headerTitles[tab]}</div>
                 {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin</div>}
