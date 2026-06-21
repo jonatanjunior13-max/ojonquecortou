@@ -48,6 +48,17 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const [overridePrice, setOverridePrice] = useState('');
   const [requestReview, setRequestReview] = useState(true);
 
+  // Split payment states
+  const [isSplitPayment, setIsSplitPayment] = useState(false);
+  const [splitValues, setSplitValues] = useState({
+    'Pix': 0,
+    'Dinheiro': 0,
+    'Débito': 0,
+    'Crédito': 0,
+    'Crédito 2x': 0,
+    'Crédito 3x': 0,
+  });
+
   const servicePrice = overridePrice !== '' ? Number(overridePrice) || 0 : basePrice;
 
   const tipValue = useMemo(() => {
@@ -69,8 +80,18 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const subtotal = servicePrice + extraServicesTotal + productTotal + tipValue;
   const valorTotal = Math.max(0, subtotal - discount);
   const totalToPay = Math.max(0, valorTotal - prepay);
-  const feeRate = getFee(settings, paymentMethod);
-  const feeAmount = totalToPay * (feeRate / 100);
+
+  const feeAmount = useMemo(() => {
+    if (isSplitPayment) {
+      return Object.entries(splitValues).reduce((sum, [method, val]) => {
+        const rate = getFee(settings, method);
+        return sum + (val * (rate / 100));
+      }, 0);
+    }
+    const feeRate = getFee(settings, paymentMethod);
+    return totalToPay * (feeRate / 100);
+  }, [isSplitPayment, splitValues, paymentMethod, totalToPay, settings]);
+
   const netTotal = totalToPay - feeAmount;
 
   const professionalCommissionRate = useMemo(() => {
@@ -133,8 +154,23 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   }, []);
 
   const handleConfirm = () => {
+    let finalMethodLabel = '';
+    let splitPaymentsList = [];
+
+    if (isSplitPayment) {
+      const activeSplits = Object.entries(splitValues).filter(([_, val]) => val > 0);
+      finalMethodLabel = activeSplits.map(([method, val]) => `${method}: ${fmtBRL(val)}`).join(' + ');
+      splitPaymentsList = activeSplits.map(([method, val]) => ({
+        method,
+        value: val
+      }));
+    } else {
+      finalMethodLabel = paymentMethod;
+    }
+
     onConfirm({
-      paymentMethod,
+      paymentMethod: finalMethodLabel,
+      splitPayments: splitPaymentsList,
       tipValue,
       addedProducts,
       addedServices,
@@ -327,31 +363,106 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             )}
           </section>
 
+          {/* Split Payment Toggle */}
+          <section>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <input 
+                type="checkbox" 
+                id="comanda-split-payment"
+                checked={isSplitPayment} 
+                onChange={e => {
+                  const checked = e.target.checked;
+                  setIsSplitPayment(checked);
+                  if (checked) {
+                    setSplitValues({
+                      'Pix': paymentMethod === 'Pix' ? totalToPay : 0,
+                      'Dinheiro': paymentMethod === 'Dinheiro' ? totalToPay : 0,
+                      'Débito': paymentMethod === 'Débito' ? totalToPay : 0,
+                      'Crédito': paymentMethod === 'Crédito' ? totalToPay : 0,
+                      'Crédito 2x': paymentMethod === 'Crédito 2x' ? totalToPay : 0,
+                      'Crédito 3x': paymentMethod === 'Crédito 3x' ? totalToPay : 0,
+                    });
+                  }
+                }}
+                style={{ width: 16, height: 16, accentColor: 'var(--adm-gold)', cursor: 'pointer' }}
+              />
+              <label htmlFor="comanda-split-payment" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)', cursor: 'pointer' }}>
+                Dividir pagamento entre múltiplas formas?
+              </label>
+            </div>
+          </section>
+
           {/* Payment Method */}
           <section>
             <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Forma de Pagamento</div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {PAYMENT_METHODS.map(m => (
-                <button
-                  key={m.id}
-                  type="button"
-                  onClick={() => setPaymentMethod(m.id)}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '8px 14px', borderRadius: 8, fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                    background: paymentMethod === m.id ? 'rgba(220,163,84,0.15)' : 'var(--adm-card)',
-                    color: paymentMethod === m.id ? 'var(--adm-gold)' : 'var(--adm-muted)',
-                    border: paymentMethod === m.id ? '0.5px solid var(--adm-gold)' : '0.5px solid var(--adm-rule)',
-                    transition: 'all 0.2s',
-                  }}
-                >
-                  {m.icon} {m.label}
-                  {paymentMethod === m.id && feeRate > 0 && (
-                    <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>({feeRate}%)</span>
-                  )}
-                </button>
-              ))}
-            </div>
+            
+            {isSplitPayment ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, background: 'var(--adm-card)', padding: 16, borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
+                {PAYMENT_METHODS.map(m => {
+                  const val = splitValues[m.id] || 0;
+                  const rate = getFee(settings, m.id);
+                  return (
+                    <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 8, borderBottom: '0.5px solid var(--adm-rule)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {m.icon}
+                        <span style={{ fontSize: '0.85rem', color: 'var(--adm-text)', fontWeight: 600 }}>{m.label}</span>
+                        {rate > 0 && <span style={{ fontSize: '0.68rem', color: 'var(--adm-muted)' }}>({rate}%)</span>}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>R$</span>
+                        <input 
+                          type="number" 
+                          min="0"
+                          placeholder="0,00"
+                          value={val || ''} 
+                          onChange={e => {
+                            const num = Number(e.target.value) || 0;
+                            setSplitValues(prev => ({ ...prev, [m.id]: num }));
+                          }}
+                          style={{ width: 100, padding: '6px 8px', background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', fontSize: '0.88rem', color: 'var(--adm-text)', textAlign: 'right', outline: 'none', fontFamily: 'inherit' }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                {/* Balance validation */}
+                {(() => {
+                  const distributedTotal = Object.values(splitValues).reduce((a, b) => a + b, 0);
+                  const diff = totalToPay - distributedTotal;
+                  if (Math.abs(diff) < 0.01) {
+                    return <div style={{ fontSize: '0.8rem', color: '#48bb78', fontWeight: 600, textAlign: 'center' }}>✓ Tudo certo! Total distribuído corretamente.</div>;
+                  } else if (diff > 0) {
+                    return <div style={{ fontSize: '0.8rem', color: 'var(--adm-gold)', fontWeight: 600, textAlign: 'center' }}>Falta distribuir: {fmtBRL(diff)}</div>;
+                  } else {
+                    return <div style={{ fontSize: '0.8rem', color: 'var(--adm-danger)', fontWeight: 600, textAlign: 'center' }}>Excesso distribuído: {fmtBRL(Math.abs(diff))}</div>;
+                  }
+                })()}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {PAYMENT_METHODS.map(m => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setPaymentMethod(m.id)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 6,
+                      padding: '8px 14px', borderRadius: 8, fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                      background: paymentMethod === m.id ? 'rgba(220,163,84,0.15)' : 'var(--adm-card)',
+                      color: paymentMethod === m.id ? 'var(--adm-gold)' : 'var(--adm-muted)',
+                      border: paymentMethod === m.id ? '0.5px solid var(--adm-gold)' : '0.5px solid var(--adm-rule)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {m.icon} {m.label}
+                    {paymentMethod === m.id && feeRate > 0 && (
+                      <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>({feeRate}%)</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
           </section>
         </div>
 
@@ -387,7 +498,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             </div>
             {feeAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
-                <span>Taxa da Maquininha ({feeRate}%)</span><span>- {fmtBRL(feeAmount)}</span>
+                <span>Taxa da Maquininha {isSplitPayment ? '' : `(${feeRate}%)`}</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.1rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
@@ -417,14 +528,17 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
           <button
             type="button"
             onClick={handleConfirm}
+            disabled={isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01}
             style={{
               width: '100%', background: 'var(--adm-gold)', color: '#121110',
               border: 'none', borderRadius: 'var(--adm-radius-sm)', padding: '14px 0',
               fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
               transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              opacity: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 0.5 : 1,
+              cursor: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 'not-allowed' : 'pointer'
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'var(--adm-gold-deep)'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'var(--adm-gold)'; }}
+            onMouseEnter={e => { if (!(isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01)) e.currentTarget.style.background = 'var(--adm-gold-deep)'; }}
+            onMouseLeave={e => { if (!(isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01)) e.currentTarget.style.background = 'var(--adm-gold)'; }}
           >
             <DollarSign size={18} /> Receber {fmtBRL(totalToPay)} e Fechar Comanda
           </button>

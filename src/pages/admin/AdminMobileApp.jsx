@@ -228,6 +228,20 @@ export default function AdminMobileApp() {
   const [selectedUsedProduct, setSelectedUsedProduct] = useState('');
   const [newNonRegName, setNewNonRegName] = useState('');
   const [newNonRegVal, setNewNonRegVal] = useState(0);
+
+  // Split payment states
+  const [isSplitPayment, setIsSplitPayment] = useState(false);
+  const [splitValues, setSplitValues] = useState({
+    'Pix': 0,
+    'Cartão de Crédito': 0,
+    'Cartão de Débito': 0,
+    'Dinheiro': 0,
+    'Cortesia': 0
+  });
+  const [splitInstallments, setSplitInstallments] = useState('À vista');
+  const [splitCreditAnticipation, setSplitCreditAnticipation] = useState(false);
+  const [splitDebitAnticipation, setSplitDebitAnticipation] = useState(false);
+
   const [touchStart, setTouchStart] = useState(null);
   const [translateX, setTranslateX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -860,10 +874,33 @@ export default function AdminMobileApp() {
     setIsFinalizingCheckout(true);
     try {
       const total = getCheckoutTotal();
-      const baseMethodLabel = paymentMethod === 'Cartão de Crédito' 
-        ? `Cartão de Crédito (${installments})` 
-        : paymentMethod;
-      const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+      let methodLabel = '';
+      let splitPaymentsList = [];
+
+      if (isSplitPayment) {
+        const activeSplits = Object.entries(splitValues).filter(([_, val]) => val > 0);
+        methodLabel = activeSplits.map(([method, val]) => {
+          if (method === 'Cartão de Crédito') {
+            return `Cartão de Crédito (${splitInstallments})${splitCreditAnticipation ? ' (Antecipado)' : ''}: R$ ${val.toFixed(2)}`;
+          }
+          if (method === 'Cartão de Débito') {
+            return `Cartão de Débito${splitDebitAnticipation ? ' (Antecipado)' : ''}: R$ ${val.toFixed(2)}`;
+          }
+          return `${method}: R$ ${val.toFixed(2)}`;
+        }).join(' + ');
+
+        splitPaymentsList = activeSplits.map(([method, val]) => ({
+          method,
+          value: val,
+          installments: method === 'Cartão de Crédito' ? splitInstallments : null,
+          anticipation: method === 'Cartão de Crédito' ? splitCreditAnticipation : (method === 'Cartão de Débito' ? splitDebitAnticipation : null)
+        }));
+      } else {
+        const baseMethodLabel = paymentMethod === 'Cartão de Crédito' 
+          ? `Cartão de Crédito (${installments})` 
+          : paymentMethod;
+        methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+      }
 
       const itemsDescription = [
         checkoutBooking.service?.name || checkoutBooking.serviceName,
@@ -885,6 +922,7 @@ export default function AdminMobileApp() {
         description: `${itemsDescription}${usedProducts.length > 0 ? ` (Insumos: -R$ ${usedProductsTotal})` : ''}${nonRegisteredProducts.length > 0 ? ` (Uso Único: -R$ ${nonRegProductsTotal})` : ''}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
         paymentMethod: methodLabel,
+        splitPayments: splitPaymentsList,
         discount: discount,
         date: checkoutBooking.date || today(),
         bookingId: checkoutBooking.id,
@@ -3730,49 +3768,165 @@ Grande abraço, Jon.`;
               <input className="m-input" type="number" min="0" value={discount || ''} onChange={e => setDiscount(Number(e.target.value) || 0)} placeholder="0,00"/>
             </div>
 
-            {/* Payment method */}
-            <div>
-              <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
-              <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
-                  <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
-                    setPaymentMethod(m);
-                    if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
-                      setApplyAnticipation(true);
-                    } else {
-                      setApplyAnticipation(false);
-                    }
-                  }}>{m}</button>
-                ))}
-              </div>
+            {/* Split Payment Toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
+              <input 
+                type="checkbox" 
+                id="m-split-payment"
+                checked={isSplitPayment} 
+                onChange={e => {
+                  const checked = e.target.checked;
+                  setIsSplitPayment(checked);
+                  if (checked) {
+                    setSplitValues({
+                      'Pix': paymentMethod === 'Pix' ? remaining : 0,
+                      'Cartão de Crédito': paymentMethod === 'Cartão de Crédito' ? remaining : 0,
+                      'Cartão de Débito': paymentMethod === 'Cartão de Débito' ? remaining : 0,
+                      'Dinheiro': paymentMethod === 'Dinheiro' ? remaining : 0,
+                      'Cortesia': paymentMethod === 'Cortesia' ? remaining : 0
+                    });
+                    setSplitCreditAnticipation(applyAnticipation);
+                    setSplitDebitAnticipation(applyAnticipation);
+                  }
+                }}
+                style={{ width: 16, height: 16, accentColor: 'var(--m-gold)', cursor: 'pointer' }}
+              />
+              <label htmlFor="m-split-payment" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--m-text)', cursor: 'pointer' }}>
+                Dividir pagamento (mais de uma forma)?
+              </label>
             </div>
 
-            {/* Installments selection for Credit Card */}
-            {paymentMethod === 'Cartão de Crédito' && (
-              <div className="m-field">
-                <label className="m-label">Parcelas</label>
-                <select className="m-select" value={installments} onChange={e => setInstallments(e.target.value)}>
-                  <option value="À vista">À vista</option>
-                  <option value="2x">2x</option>
-                  <option value="3x">3x</option>
-                </select>
-              </div>
-            )}
+            {isSplitPayment ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, background: 'rgba(255,255,255,0.02)', padding: 12, borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)' }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--m-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Distribuição do Pagamento</div>
+                {['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro', 'Cortesia'].map(m => {
+                  const val = splitValues[m] || 0;
+                  return (
+                    <div key={m} style={{ display: 'flex', flexDirection: 'column', gap: 4, paddingBottom: 8, borderBottom: '0.5px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--m-text-2)', fontWeight: 600 }}>{m}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--m-muted)' }}>R$</span>
+                          <input 
+                            type="number" 
+                            min="0"
+                            placeholder="0,00"
+                            value={val || ''} 
+                            onChange={e => {
+                              const num = Number(e.target.value) || 0;
+                              setSplitValues(prev => ({ ...prev, [m]: num }));
+                            }}
+                            style={{ width: 90, padding: '4px 6px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.85rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit' }}
+                          />
+                        </div>
+                      </div>
+                      
+                      {m === 'Cartão de Crédito' && val > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4, paddingLeft: 8 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--m-muted)' }}>Parcs:</span>
+                            <select 
+                              className="m-select" 
+                              value={splitInstallments} 
+                              onChange={e => setSplitInstallments(e.target.value)}
+                              style={{ padding: '2px 4px', fontSize: '0.75rem', width: 70 }}
+                            >
+                              <option value="À vista">1x</option>
+                              <option value="2x">2x</option>
+                              <option value="3x">3x</option>
+                            </select>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <input 
+                              type="checkbox" 
+                              id="m-split-credit-anticipate"
+                              checked={splitCreditAnticipation} 
+                              onChange={e => setSplitCreditAnticipation(e.target.checked)}
+                              style={{ width: 12, height: 12 }}
+                            />
+                            <label htmlFor="m-split-credit-anticipate" style={{ fontSize: '0.72rem', color: 'var(--m-text-2)' }}>Antecipar</label>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {m === 'Cartão de Débito' && val > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: 4, paddingLeft: 8 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <input 
+                              type="checkbox" 
+                              id="m-split-debit-anticipate"
+                              checked={splitDebitAnticipation} 
+                              onChange={e => setSplitDebitAnticipation(e.target.checked)}
+                              style={{ width: 12, height: 12 }}
+                            />
+                            <label htmlFor="m-split-debit-anticipate" style={{ fontSize: '0.72rem', color: 'var(--m-text-2)' }}>Antecipar (taxa)</label>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
-            {/* Anticipation toggle */}
-            {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                <input 
-                  type="checkbox" 
-                  id="m-anticipate"
-                  checked={applyAnticipation} 
-                  onChange={e => setApplyAnticipation(e.target.checked)}
-                  style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
-                />
-                <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
-                  Antecipar recebimento? (taxa maquininha)
-                </label>
+                {/* Split Verification Status */}
+                {(() => {
+                  const distributedTotal = Object.values(splitValues).reduce((a, b) => a + b, 0);
+                  const diff = remaining - distributedTotal;
+                  if (Math.abs(diff) < 0.01) {
+                    return <div style={{ fontSize: '0.78rem', color: '#48bb78', fontWeight: 600, textAlign: 'center' }}>✓ Tudo certo! Total distribuído corretamente.</div>;
+                  } else if (diff > 0) {
+                    return <div style={{ fontSize: '0.78rem', color: 'var(--m-gold)', fontWeight: 600, textAlign: 'center' }}>Falta distribuir: {fmt(diff)}</div>;
+                  } else {
+                    return <div style={{ fontSize: '0.78rem', color: 'var(--m-red)', fontWeight: 600, textAlign: 'center' }}>Excesso distribuído: {fmt(Math.abs(diff))}</div>;
+                  }
+                })()}
               </div>
+            ) : (
+              <>
+                {/* Payment method */}
+                <div>
+                  <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
+                  <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                    {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
+                      <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
+                        setPaymentMethod(m);
+                        if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
+                          setApplyAnticipation(true);
+                        } else {
+                          setApplyAnticipation(false);
+                        }
+                      }}>{m}</button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Installments selection for Credit Card */}
+                {paymentMethod === 'Cartão de Crédito' && (
+                  <div className="m-field">
+                    <label className="m-label">Parcelas</label>
+                    <select className="m-select" value={installments} onChange={e => setInstallments(e.target.value)}>
+                      <option value="À vista">À vista</option>
+                      <option value="2x">2x</option>
+                      <option value="3x">3x</option>
+                    </select>
+                  </div>
+                )}
+
+                {/* Anticipation toggle */}
+                {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                    <input 
+                      type="checkbox" 
+                      id="m-anticipate"
+                      checked={applyAnticipation} 
+                      onChange={e => setApplyAnticipation(e.target.checked)}
+                      style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
+                    />
+                    <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
+                      Antecipar recebimento? (taxa maquininha)
+                    </label>
+                  </div>
+                )}
+              </>
             )}
 
             {/* Review request checkbox */}
@@ -3827,7 +3981,12 @@ Grande abraço, Jon.`;
           </div>
           <div className="m-sheet-footer">
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowCheckoutSheet(false)}>Cancelar</button>
-            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={finalizeCheckout} disabled={isFinalizingCheckout}>
+            <button 
+              className="m-btn m-btn-gold" 
+              style={{ flex:2 }} 
+              onClick={finalizeCheckout} 
+              disabled={isFinalizingCheckout || (isSplitPayment && Math.abs(remaining - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01)}
+            >
               {isFinalizingCheckout ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Processando...</> : <><Check size={14}/> Receber {fmt(remaining)}</>}
             </button>
           </div>
