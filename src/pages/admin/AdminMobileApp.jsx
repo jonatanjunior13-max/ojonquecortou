@@ -783,7 +783,10 @@ export default function AdminMobileApp() {
         setNonRegisteredProducts([]);
         setDiscount(0);
       }
-      setOverrideBasePrice(booking.servicePrice !== undefined ? booking.servicePrice : null);
+      const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
+        ? booking.servicePrice
+        : (booking.service?.promoPrice || booking.service?.price || 0);
+      setOverrideBasePrice(bp);
     } else {
       setPaymentMethod('Pix');
       setInstallments('À vista');
@@ -793,7 +796,10 @@ export default function AdminMobileApp() {
       setUsedProducts([]);
       setNonRegisteredProducts([]);
       setDiscount(0);
-      setOverrideBasePrice(null);
+      const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
+        ? booking.servicePrice
+        : (booking.service?.promoPrice || booking.service?.price || 0);
+      setOverrideBasePrice(bp);
     }
     
     setProductSearch('');
@@ -832,9 +838,9 @@ export default function AdminMobileApp() {
 
   const getCheckoutTotal = () => {
     if (!checkoutBooking) return 0;
-    const base = overrideBasePrice !== null
-      ? overrideBasePrice
-      : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
+    const base = overrideBasePrice !== null && overrideBasePrice !== ''
+      ? Number(overrideBasePrice)
+      : 0;
     const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
     const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
     const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -909,9 +915,9 @@ export default function AdminMobileApp() {
       ].filter(Boolean).join(', ');
 
       const prepay = Number(checkoutBooking.prepayment || 0);
-      const finalBasePrice = overrideBasePrice !== null
-        ? overrideBasePrice
-        : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
+      const finalBasePrice = overrideBasePrice !== null && overrideBasePrice !== ''
+        ? Number(overrideBasePrice)
+        : 0;
 
       // Save transaction
       const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -3546,7 +3552,7 @@ Grande abraço, Jon.`;
       ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
       : [];
 
-    const currentBasePrice = overrideBasePrice !== null ? overrideBasePrice : basePrice;
+    const currentBasePrice = overrideBasePrice !== null && overrideBasePrice !== '' ? Number(overrideBasePrice) : 0;
     const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
     const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
     const subtotal = currentBasePrice + extraServicesVal + productsVal;
@@ -3575,8 +3581,8 @@ Grande abraço, Jon.`;
                   <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
                   <input
                     type="number"
-                    value={overrideBasePrice !== null ? overrideBasePrice : basePrice}
-                    onChange={e => setOverrideBasePrice(e.target.value === '' ? null : Number(e.target.value))}
+                    value={overrideBasePrice !== null && overrideBasePrice !== undefined ? overrideBasePrice : ''}
+                    onChange={e => setOverrideBasePrice(e.target.value)}
                     style={{
                       width: 70,
                       textAlign: 'right',

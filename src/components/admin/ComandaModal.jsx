@@ -45,7 +45,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const [addedProducts, setAddedProducts] = useState([]);
   const [addedServices, setAddedServices] = useState([]);
   const [discount, setDiscount] = useState(0);
-  const [overridePrice, setOverridePrice] = useState('');
+  const [overridePrice, setOverridePrice] = useState(booking?.servicePrice || booking?.service?.price || 0);
   const [requestReview, setRequestReview] = useState(true);
 
   // Split payment states
@@ -59,7 +59,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
     'Crédito 3x': 0,
   });
 
-  const servicePrice = overridePrice !== '' ? Number(overridePrice) || 0 : basePrice;
+  const servicePrice = overridePrice !== '' && overridePrice !== null && overridePrice !== undefined ? Number(overridePrice) || 0 : 0;
 
   const tipValue = useMemo(() => {
     if (tipMode === 0) return 0;
@@ -216,7 +216,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--adm-text)' }}>{serviceName}</span>
               <input
                 type="number"
-                value={overridePrice !== '' ? overridePrice : basePrice}
+                value={overridePrice !== null && overridePrice !== undefined ? overridePrice : ''}
                 onChange={e => setOverridePrice(e.target.value)}
                 style={{ width: 90, textAlign: 'right', background: 'none', border: 'none', fontSize: '1rem', fontWeight: 700, color: 'var(--adm-gold)', outline: 'none', fontFamily: 'Georgia, serif' }}
               />
