@@ -23,12 +23,11 @@
   transition: padding-left 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Prevent layout shift of main content when sidebar expands on hover */
-/* @media (min-width: 768px) {
+@media (min-width: 768px) {
   .admin-app-container:has(.admin-sidebar:hover) {
     padding-left: 200px;
   }
-} */
+}
 
 /* Sidebar */
 .admin-sidebar {
