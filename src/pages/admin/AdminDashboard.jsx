@@ -3197,7 +3197,7 @@ Grande abraço, Jon.`;
                                         borderTopRightRadius: 0,
                                         background: 'rgba(110, 47, 24, 0.08)',
                                         borderLeft: '3px dashed var(--adm-gold)',
-                                        color: 'var(--text-muted)'
+                                        color: 'var(--adm-text, #221A15)'
                                       } : {})
                                     }}
                                   >

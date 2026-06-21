@@ -353,6 +353,7 @@ export default function AdminMobileApp() {
 
   // ── Finance ────────────────────────────────────────────────────
   const [financeTab, setFinanceTab] = useState('dashboard');
+  const [period, setPeriod] = useState('dia');
   const [showAddTxSheet, setShowAddTxSheet] = useState(false);
   const [txForm, setTxForm] = useState({ type:'saida', description:'', value:'', paymentMethod:'Pix', date: today() });
 
@@ -2615,9 +2616,6 @@ Grande abraço, Jon.`;
 
   // ── TAB: CAIXA ─────────────────────────────────────────────────
   const renderCaixa = () => {
-    // Períodos de Caixa: 'dia' | 'semana' | 'mes'
-    const [period, setPeriod] = useState('dia'); // local period state (initialized in main component or local render)
-
     const filteredTxByPeriod = (() => {
       const now = new Date();
       const currentToday = today();
