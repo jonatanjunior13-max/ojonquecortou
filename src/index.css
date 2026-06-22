@@ -143,11 +143,11 @@ hr.technical-rule {
   border-bottom: 1px solid transparent;
 }
 .nav.scrolled {
-  background: rgba(239, 229, 210, 0.86);
+  background: rgba(255, 45, 139, 0.86);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   padding: 10px 0;
-  border-bottom-color: var(--rule-soft);
+  border-bottom-color: rgba(255, 255, 255, 0.15);
 }
 .nav-inner {
   display: flex;
