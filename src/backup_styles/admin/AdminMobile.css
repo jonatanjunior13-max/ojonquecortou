@@ -5,28 +5,28 @@
 
 /* ── Design Tokens ─────────────────────────────────────────────────── */
 .mobile-app {
-  --m-bg:           #0A0A0A; /* Creme quente muito claro de fundo do modelo v2 */
-  --m-surface:      #1A1A1A; /* Creme ligeiramente mais escuro */
-  --m-card:         #121212; /* Cards brancos puros */
-  --m-card-2:       #121212;
-  --m-hover:        #1C1C1E;
-  --m-text:         #FFFFFF; /* Marrom escuro quase preto */
-  --m-text-2:       #F4EFE7; /* Marrom escuro médio */
-  --m-muted:        #A0A0A0;
-  --m-rule:         rgba(255, 255, 255, 0.10);
-  --m-rule-strong:  rgba(255, 255, 255, 0.16);
-  --m-gold:         #FF2D8B; /* Bronze / Marrom Terroso */
-  --m-gold-deep:    #D01C6A;
-  --m-gold-glow:    rgba(255, 45, 139, 0.12);
-  --m-gold-subtle:  rgba(255, 45, 139, 0.06);
-  --m-green:        #2EA043; /* Verde calmo */
-  --m-green-bg:     rgba(46, 160, 67, 0.10);
-  --m-red:          #F85149; /* Rosa queimado terroso */
-  --m-red-bg:       rgba(248, 81, 73, 0.10);
-  --m-amber:        #E3B341; /* Mostarda */
-  --m-amber-bg:     rgba(227, 179, 65, 0.10);
-  --m-blue:         #58A6FF;
-  --m-blue-bg:      rgba(88, 166, 255, 0.10);
+  --m-bg:           #fbf8f3; /* Creme quente muito claro de fundo do modelo v2 */
+  --m-surface:      #f3ede8; /* Creme ligeiramente mais escuro */
+  --m-card:         #FFFFFF; /* Cards brancos puros */
+  --m-card-2:       #fbf8f3;
+  --m-hover:        #fbf8f3;
+  --m-text:         #221A15; /* Marrom escuro quase preto */
+  --m-text-2:       #483A31; /* Marrom escuro médio */
+  --m-muted:        #7A695E;
+  --m-rule:         rgba(110, 94, 83, 0.09);
+  --m-rule-strong:  rgba(110, 94, 83, 0.16);
+  --m-gold:         #735C4E; /* Bronze / Marrom Terroso */
+  --m-gold-deep:    #5A473C;
+  --m-gold-glow:    rgba(115, 92, 78, 0.12);
+  --m-gold-subtle:  rgba(115, 92, 78, 0.06);
+  --m-green:        #6E8E68; /* Verde calmo */
+  --m-green-bg:     rgba(110, 142, 104, 0.10);
+  --m-red:          #C26B66; /* Rosa queimado terroso */
+  --m-red-bg:       rgba(194, 107, 102, 0.10);
+  --m-amber:        #CCA361; /* Mostarda */
+  --m-amber-bg:     rgba(204, 163, 97, 0.10);
+  --m-blue:         #78909C;
+  --m-blue-bg:      rgba(120, 144, 156, 0.10);
   --m-shadow:       0 8px 32px rgba(60, 48, 40, 0.08);
   --m-shadow-sm:    0 2px 8px rgba(60, 48, 40, 0.04);
   --m-radius-sm:    12px;
@@ -50,7 +50,7 @@
   overflow: hidden;
   background: var(--m-bg);
   color: var(--m-text);
-  font-family: "Inter", sans-serif;
+  font-family: "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   position: relative;
   user-select: none;
@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  background: #121212; /* Header obsidiana escuro */
+  background: #1e1610; /* Header obsidiana escuro */
   border: none;
   border-radius: var(--m-radius-sm);
   margin: 12px 16px 8px 16px;
@@ -92,7 +92,7 @@
   font-size: 1.05rem;
   font-weight: 700;
   color: #ffffff; /* Texto branco */
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 .m-header-subtitle {
@@ -291,7 +291,7 @@
   font-size: 1.35rem;
   font-weight: 800;
   color: var(--m-text);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
   line-height: 1;
 }
 
@@ -361,7 +361,7 @@
 .m-booking-card:active { background: var(--m-hover); transform: scale(0.98); }
 
 .m-booking-time {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--m-gold);
@@ -443,7 +443,7 @@
   font-size: 1.1rem;
   font-weight: 800;
   color: var(--m-text);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 .m-date-month {
@@ -482,7 +482,7 @@
   font-weight: 700;
   color: var(--m-muted);
   border-right: 0.5px solid var(--m-rule);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 .m-slot-content {
@@ -685,7 +685,7 @@
   font-size: 0.9rem;
   font-weight: 800;
   color: var(--m-gold);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
   flex-shrink: 0;
 }
 
@@ -722,7 +722,7 @@
 .m-finance-hero-value {
   font-size: 2.2rem;
   font-weight: 800;
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
   color: var(--m-gold);
   line-height: 1;
 }
@@ -808,7 +808,7 @@
 .m-tx-amount {
   font-size: 0.9rem;
   font-weight: 800;
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
   flex-shrink: 0;
 }
 
@@ -1067,7 +1067,7 @@
   font-size: 1rem;
   font-weight: 800;
   color: var(--m-text);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 .m-sheet-body {
@@ -1132,7 +1132,7 @@
   font-size: 0.95rem;
   font-weight: 800;
   color: var(--m-gold);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 .m-modal-body {
@@ -1367,7 +1367,7 @@
   color: var(--m-text);
 }
 
-.m-info-value.gold { color: var(--m-gold); font-family: "Bricolage Grotesque", sans-serif; font-size: 1rem; }
+.m-info-value.gold { color: var(--m-gold); font-family: "DM Serif Display", serif; font-size: 1rem; }
 .m-info-value.green { color: var(--m-green); }
 
 /* ── Empty State ───────────────────────────────────────────────────── */
@@ -1553,7 +1553,7 @@
   font-size: 1rem;
   font-weight: 800;
   color: var(--m-text);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 .m-week-day.active .m-week-day-num { color: var(--m-gold); }
@@ -1634,7 +1634,7 @@
   font-size: 1.6rem;
   font-weight: 800;
   color: var(--m-gold);
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DM Serif Display", serif;
 }
 
 /* ── Segmented Control ─────────────────────────────────────────────── */

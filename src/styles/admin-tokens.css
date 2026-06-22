@@ -1,33 +1,33 @@
 :root, .admin-app {
-  /* Surfaces - Editorial Warm Cream & Respiro */
-  --adm-bg: #fbf8f3; /* Creme quente muito claro de fundo do modelo v2 */
-  --adm-sidebar-bg: #1e1610; /* Sidebar obsidiana escura do modelo v2 */
-  --adm-surface: #f3ede8; /* Creme ligeiramente mais escuro para menus e abas */
-  --adm-card: #FFFFFF; /* Cards brancos puros elegantes */
-  --adm-card-hover: #fbf8f3;
+  /* Surfaces - Obsidian Dark Redesign */
+  --adm-bg: #0A0A0A;
+  --adm-sidebar-bg: #121212;
+  --adm-surface: #1A1A1A;
+  --adm-card: #121212;
+  --adm-card-hover: #1C1C1E;
 
-  /* Text - Editorial Castanho Escuro de Alto Contraste */
-  --adm-text: #221A15; /* Marrom escuro quase preto para excelente leitura */
-  --adm-text-2: #483A31; /* Marrom escuro médio para subtítulos */
-  --adm-text-3: #6E5B4F;
-  --adm-muted: #7A695E; /* Marrom suave de alto contraste para textos secundários e mudos */
+  /* Text - High Contrast White & Cream */
+  --adm-text: #FFFFFF;
+  --adm-text-2: #F4EFE7;
+  --adm-text-3: #D4CFC9;
+  --adm-muted: #A0A0A0;
 
-  /* Brand - Bronze quente / Editorial */
-  --adm-gold: #735C4E; /* Bronze terroso sofisticado do botão e destaque */
-  --adm-gold-deep: #5A473C; /* Bronze profundo ativo */
-  --adm-bronze: #8D7465;
+  /* Brand - Hot Pink Ação/Destaque */
+  --adm-gold: #FF2D8B;
+  --adm-gold-deep: #D01C6A;
+  --adm-bronze: #FF5EAD;
 
-  /* Semantic - Suaves e de Alto Contraste */
-  --adm-success: #6E8E68; /* Verde editorial calmo para Confirmado */
-  --adm-danger: #C26B66; /* Rosa terroso queimado para Cancelado/Falta */
-  --adm-warning: #CCA361; /* Mostarda quente para Pendente */
-  --adm-info: #78909C;
+  /* Semantic - Clean & Vibrant */
+  --adm-success: #2EA043;
+  --adm-danger: #F85149;
+  --adm-warning: #E3B341;
+  --adm-info: #58A6FF;
 
   /* Structure */
-  --adm-rule: rgba(110, 94, 83, 0.09);
-  --adm-rule-gold: rgba(115, 92, 78, 0.20);
+  --adm-rule: rgba(255, 255, 255, 0.10);
+  --adm-rule-gold: rgba(255, 45, 139, 0.20);
   --adm-radius-sm: 12px;
-  --adm-radius: 20px; /* Cards com cantos bem arredondados e elegantes */
+  --adm-radius: 20px;
   --adm-radius-lg: 28px;
 
   /* Spacing scale (8pt grid) */
@@ -38,8 +38,8 @@
   --adm-space-5: 32px;
   --adm-space-6: 48px;
 
-  /* Legacy / alias compatibility - Editorial Serif */
-  --glass-border: rgba(110, 94, 83, 0.08);
-  --font-display: "Playfair Display", "Georgia", "Times New Roman", serif; /* Serifa elegante para títulos */
-  --font-sans: "Inter", "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Legacy / alias compatibility */
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-sans: "Inter", sans-serif;
 }
