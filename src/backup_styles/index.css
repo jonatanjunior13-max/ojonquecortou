@@ -1,31 +1,24 @@
 :root {
-  --bg: #0A0A0A;
-  --bg-warm: #141414;
-  --surface: #1E1E1E;
-  --ink: #FFFFFF;
-  --ink-2: #F4EFE7;
+  --bg: #EFE5D2;
+  --bg-warm: #F5EDDB;
+  --surface: #FAF5E8;
+  --ink: #1A1310;
+  --ink-2: #2E241E;
   --text: var(--ink);
-  --muted: #A0A0A0;
-  --muted-2: #808080;
-  --rule: rgba(255, 255, 255, 0.12);
-  --rule-soft: rgba(255, 255, 255, 0.06);
-  --accent: #FF2D8B;
-  --accent-deep: #D01C6A;
-  --accent-warm: #FF5EAD;
-  --dark-bg: #0A0A0A;
-  --dark-surface: #141414;
+  --muted: #6B5A4B;
+  --muted-2: #8A7866;
+  --rule: rgba(26, 19, 16, 0.14);
+  --rule-soft: rgba(26, 19, 16, 0.08);
+  --accent: #c8852a;
+  --accent-deep: #965f1c;
+  --accent-warm: #dca354;
+  --dark-bg: #1A1310;
+  --dark-surface: #221915;
 
-  --serif: "Bricolage Grotesque", sans-serif;
-  --serif-italic: "Bricolage Grotesque", sans-serif;
-  --sans: "Inter", sans-serif;
-  --mono: "JetBrains Mono", monospace;
-
-  /* Support colors for gallery */
-  --support-1: #E2703A;
-  --support-2: #E5322D;
-  --support-3: #7A3CFF;
-  --support-4: #F2B705;
-  --support-5: #1F6FEB;
+  --serif: "DM Serif Display", "Times New Roman", serif;
+  --serif-italic: "Instrument Serif", "Times New Roman", serif;
+  --sans: "Manrope", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --mono: "JetBrains Mono", "SF Mono", monospace;
 
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
 }

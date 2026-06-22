@@ -102,7 +102,7 @@ const InvestimentoPage = () => {
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
                   fontWeight: 600,
-                  color: 'var(--accent, #c8852a)',
+                  color: 'var(--accent, #FF2D8B)',
                 }}>
                   R$ 190 a R$ 230
                 </span>
@@ -148,7 +148,7 @@ const InvestimentoPage = () => {
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
                   fontWeight: 600,
-                  color: 'var(--accent, #c8852a)',
+                  color: 'var(--accent, #FF2D8B)',
                 }}>
                   consultar
                 </span>
@@ -201,7 +201,7 @@ const InvestimentoPage = () => {
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
                   fontWeight: 600,
-                  color: 'var(--accent, #c8852a)',
+                  color: 'var(--accent, #FF2D8B)',
                 }}>
                   consultar
                 </span>
@@ -271,7 +271,7 @@ const InvestimentoPage = () => {
             <Link
               to="/agendar"
               style={{
-                color: 'var(--accent, #c8852a)',
+                color: 'var(--accent, #FF2D8B)',
                 fontWeight: 600,
                 textDecoration: 'underline',
               }}

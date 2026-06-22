@@ -1470,18 +1470,19 @@ Grande abraço, Jon.`;
     const dx = clientX - cropperDragStart.x;
     const dy = clientY - cropperDragStart.y;
     
-    const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+    const containerHeight = containerSize * 1.25;
+    const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
     const displayWidth = naturalDimensions.w * initialScale * cropperZoom;
     const displayHeight = naturalDimensions.h * initialScale * cropperZoom;
     const initialX = (containerSize - displayWidth) / 2;
-    const initialY = (containerSize - displayHeight) / 2;
+    const initialY = (containerHeight - displayHeight) / 2;
     
     let newX = cropperDragStartOffset.x + dx;
     let newY = cropperDragStartOffset.y + dy;
     
     const minX = containerSize - displayWidth - initialX;
     const maxX = -initialX;
-    const minY = containerSize - displayHeight - initialY;
+    const minY = containerHeight - displayHeight - initialY;
     const maxY = -initialY;
     
     newX = Math.max(minX, Math.min(maxX, newX));
@@ -1506,15 +1507,18 @@ Grande abraço, Jon.`;
       
       if (!isVideo && naturalDimensions.w && containerSize && previewImageRef.current) {
         const canvas = document.createElement('canvas');
-        canvas.width = 1000;
+        canvas.width = 800;
         canvas.height = 1000;
         const ctx = canvas.getContext('2d');
         
-        const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+        // Container height is containerSize * (5/4) = containerSize * 1.25
+        const containerHeight = containerSize * 1.25;
+        
+        const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
         const displayWidth = naturalDimensions.w * initialScale;
         const displayHeight = naturalDimensions.h * initialScale;
         const initialX = (containerSize - displayWidth) / 2;
-        const initialY = (containerSize - displayHeight) / 2;
+        const initialY = (containerHeight - displayHeight) / 2;
         
         const renderScale = initialScale * cropperZoom;
         const left = initialX + cropperOffset.x;
@@ -1523,9 +1527,9 @@ Grande abraço, Jon.`;
         const srcX = -left / renderScale;
         const srcY = -top / renderScale;
         const srcW = containerSize / renderScale;
-        const srcH = containerSize / renderScale;
+        const srcH = containerHeight / renderScale;
         
-        ctx.drawImage(previewImageRef.current, srcX, srcY, srcW, srcH, 0, 0, 1000, 1000);
+        ctx.drawImage(previewImageRef.current, srcX, srcY, srcW, srcH, 0, 0, 800, 1000);
         
         const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
         fileToUpload = new File([blob], pendingFile.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' });
@@ -4589,11 +4593,12 @@ Grande abraço, Jon.`;
         return { width: '100%', height: '100%', objectFit: 'cover' };
       }
       
-      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+      const containerHeight = containerSize * 1.25;
+      const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
       const displayWidth = naturalDimensions.w * initialScale;
       const displayHeight = naturalDimensions.h * initialScale;
       const initialX = (containerSize - displayWidth) / 2;
-      const initialY = (containerSize - displayHeight) / 2;
+      const initialY = (containerHeight - displayHeight) / 2;
       
       const w = displayWidth * cropperZoom;
       const h = displayHeight * cropperZoom;
@@ -4632,7 +4637,7 @@ Grande abraço, Jon.`;
                   style={{ 
                     borderRadius:'var(--m-radius)', 
                     overflow:'hidden', 
-                    aspectRatio:'1/1', 
+                    aspectRatio:'4/5', 
                     background:'#000', 
                     position:'relative',
                     touchAction:'none',
@@ -4692,15 +4697,16 @@ Grande abraço, Jon.`;
                     
                     // Adjust offsets to keep it within constraints
                     setCropperOffset(prev => {
-                      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+                      const containerHeight = containerSize * 1.25;
+                      const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
                       const displayWidth = naturalDimensions.w * initialScale * nextZoom;
                       const displayHeight = naturalDimensions.h * initialScale * nextZoom;
                       const initialX = (containerSize - displayWidth) / 2;
-                      const initialY = (containerSize - displayHeight) / 2;
+                      const initialY = (containerHeight - displayHeight) / 2;
                       
                       const minX = containerSize - displayWidth - initialX;
                       const maxX = -initialX;
-                      const minY = containerSize - displayHeight - initialY;
+                      const minY = containerHeight - displayHeight - initialY;
                       const maxY = -initialY;
                       
                       return {
