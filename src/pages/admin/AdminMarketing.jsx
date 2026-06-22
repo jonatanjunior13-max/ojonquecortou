@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db, storage } from '../../config/firebase';
-import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
 import './Admin.css';
@@ -764,12 +764,7 @@ Use as seguintes tags no "bodyHtml":
   // Frequency scheduler (multiple days)
   const selectedPostingDays = settings?.automations?.google_posting_days || ['segunda'];
   const [postFreqTime, setPostFreqTime] = useState(settings?.automations?.google_posting_time || '09:00');
-  const [scheduledGbpPosts, setScheduledGbpPosts] = useState([
-    { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled' },
-    { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published' },
-    { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published' },
-    { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published' }
-  ]);
+  const [scheduledGbpPosts, setScheduledGbpPosts] = useState([]);
 
   const handleTogglePostingDay = async (day) => {
     let updatedDays = [...selectedPostingDays];
@@ -1016,9 +1011,24 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       text: generatedGbpPost.text,
       image: postImage,
       scheduledDate: `Próximos dias: ${daysLabels} às ${postFreqTime}`,
-      status: 'scheduled'
+      status: 'scheduled',
+      timestamp: new Date().toISOString()
     };
-    setScheduledGbpPosts(prev => [newPost, ...prev]);
+
+    if (db) {
+      try {
+        await setDoc(doc(db, 'gbp_posts', newPost.id), newPost);
+      } catch (err) {
+        console.error("Erro ao salvar post no Firestore:", err);
+      }
+    } else {
+      setScheduledGbpPosts(prev => [newPost, ...prev]);
+      try {
+        const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+        localStorage.setItem('demo_gbp_posts', JSON.stringify([newPost, ...local]));
+      } catch(e){}
+    }
+
     setGeneratedGbpPost(null);
     alert(`Postagem programada nos dias (${daysLabels}) às ${postFreqTime}!`);
   };
@@ -1028,9 +1038,25 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     
     // Check if Google Business Profile API is connected. If not, run simulation.
     if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
-      setTimeout(() => {
+      setTimeout(async () => {
         alert('Publicado com sucesso no Google Meu Negócio! 🚀 (Simulado)');
-        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+        if (db) {
+          try {
+            await updateDoc(doc(db, 'gbp_posts', post.id), {
+              status: 'published',
+              scheduledDate: 'Agora'
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        } else {
+          setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+          try {
+            const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+            const updated = local.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p);
+            localStorage.setItem('demo_gbp_posts', JSON.stringify(updated));
+          } catch(e){}
+        }
         setIsPublishingGbpId(null);
       }, 1000);
       return;
@@ -1048,7 +1074,19 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       const data = await res.json();
       if (res.ok) {
         alert('Publicado com sucesso no Google Meu Negócio! 🚀');
-        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+        if (db) {
+          await updateDoc(doc(db, 'gbp_posts', post.id), {
+            status: 'published',
+            scheduledDate: 'Agora'
+          });
+        } else {
+          setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+          try {
+            const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+            const updated = local.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p);
+            localStorage.setItem('demo_gbp_posts', JSON.stringify(updated));
+          } catch(e){}
+        }
       } else {
         alert(`Erro ao publicar no Google: ${data.error || 'Erro desconhecido'}`);
       }
@@ -1060,8 +1098,20 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     }
   };
 
-  const handleDeleteGbpPost = (postId) => {
-    setScheduledGbpPosts(prev => prev.filter(p => p.id !== postId));
+  const handleDeleteGbpPost = async (postId) => {
+    if (db) {
+      try {
+        await deleteDoc(doc(db, 'gbp_posts', postId));
+      } catch (err) {
+        console.error("Erro ao excluir post do Firestore:", err);
+      }
+    } else {
+      setScheduledGbpPosts(prev => prev.filter(p => p.id !== postId));
+      try {
+        const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+        localStorage.setItem('demo_gbp_posts', JSON.stringify(local.filter(p => p.id !== postId)));
+      } catch(e){}
+    }
   };
 
   const saveLog = async (clientName, clientPhone, stage, channel) => {
@@ -1149,6 +1199,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     let unsubscribeLogs;
     let unsubscribeSettings;
     let unsubscribeAdminNotifs;
+    let unsubscribeGbpPosts;
 
     const loadData = async () => {
       try {
@@ -1175,6 +1226,31 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             setAdminNotifications(list);
           }
         );
+
+        unsubscribeGbpPosts = onSnapshot(collection(db, 'gbp_posts'), (postsSnap) => {
+          const pst = [];
+          postsSnap.forEach(d => pst.push({ id: d.id, ...d.data() }));
+          if (pst.length === 0) {
+            // Se estiver vazio, popula com os 4 posts de exemplo iniciais no Firestore
+            const defaults = [
+              { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled', timestamp: new Date(Date.now() - 5000).toISOString() },
+              { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published', timestamp: new Date(Date.now() - 10000).toISOString() },
+              { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published', timestamp: new Date(Date.now() - 15000).toISOString() },
+              { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published', timestamp: new Date(Date.now() - 20000).toISOString() }
+            ];
+            defaults.forEach(async (p) => {
+              try {
+                await setDoc(doc(db, 'gbp_posts', p.id), p);
+              } catch (e) {
+                console.error("Error setting default posts", e);
+              }
+            });
+            setScheduledGbpPosts(defaults);
+          } else {
+            pst.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+            setScheduledGbpPosts(pst);
+          }
+        });
 
         const profiles = [];
         unsubscribeProfiles = onSnapshot(collection(db, 'client_profiles'), (profSnap) => {
@@ -1235,6 +1311,8 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       try {
         const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs')) || [];
         setAutomationLogs(localLogs);
+        const localPosts = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+        setScheduledGbpPosts(localPosts);
       } catch (e) {}
       setLoading(false);
     }
@@ -1245,6 +1323,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       if (unsubscribeLogs) unsubscribeLogs();
       if (unsubscribeSettings) unsubscribeSettings();
       if (unsubscribeAdminNotifs) unsubscribeAdminNotifs();
+      if (unsubscribeGbpPosts) unsubscribeGbpPosts();
     };
   }, []);
 
