@@ -3187,9 +3187,12 @@ Grande abraço, Jon.`;
                                       flex: 1, 
                                       height: '100%', 
                                       display: 'flex', 
-                                      flexDirection: 'column', 
-                                      justifyContent: 'center', 
+                                      flexDirection: 'row', 
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
                                       position: 'relative',
+                                      padding: '0 16px',
+                                      gap: '12px',
                                       ...(isSubsequent ? {
                                         opacity: 0.85, 
                                         borderTop: 'none', 
@@ -3201,33 +3204,40 @@ Grande abraço, Jon.`;
                                       } : {})
                                     }}
                                   >
-                                    <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
-                                    <span className="appt-time">{isSubsequent ? `↳ ${apptTimeText} (Ocupado)` : apptTimeText}</span>
-                                    <span 
-                                      className="appt-client" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
-                                      }}
-                                      style={{ 
-                                        textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)',
-                                        cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
-                                      }}
-                                    >
-                                      {bk.clientName}
-                                      {isClientRecurrent(bk.clientName, bk.clientPhone) && (
-                                        <span style={{
-                                          position: 'absolute',
-                                          top: '-2px',
-                                          right: '-6px',
-                                          width: '5px',
-                                          height: '5px',
-                                          borderRadius: '50%',
-                                          backgroundColor: 'var(--adm-gold, #dca354)'
-                                        }} title="Cliente Recorrente" />
-                                      )}
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                      <span 
+                                        className="appt-client" 
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
+                                        }}
+                                        style={{ 
+                                          fontWeight: 'bold', color: '#fff', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
+                                        }}
+                                      >
+                                        {bk.clientName}
+                                        {isClientRecurrent(bk.clientName, bk.clientPhone) && (
+                                          <span style={{
+                                            position: 'absolute',
+                                            top: '-2px',
+                                            right: '-6px',
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: 'var(--adm-gold, #dca354)'
+                                          }} title="Cliente Recorrente" />
+                                        )}
+                                      </span>
+                                      <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.73rem' }}>
+                                        {bk.service?.name || bk.serviceName} · {apptTimeText}
+                                      </span>
+                                    </div>
+                                    <span className="appt-badge">
+                                      {((bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") && (bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR")) ? "CORTE+COR" :
+                                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") ? "CORTE" :
+                                       ((bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR") || (bk.service?.name || bk.serviceName || "").toUpperCase().includes("MECHAS")) ? "COR" :
+                                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("TRAT") ? "TRAT." : "SVC"}
                                     </span>
-                                    <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.service?.name || bk.serviceName}</span>
                                   </div>
                                 );
                               })}
@@ -3614,6 +3624,17 @@ Grande abraço, Jon.`;
 
                             if (item.type === 'booking') {
                               const b = item.raw;
+                               
+                              const startStr = b.time || '00:00';
+                              const parts = startStr.split(':');
+                              const h = parts[0] ? Number(parts[0]) : 0;
+                              const m = parts[1] ? Number(parts[1]) : 0;
+                              const endMinVal = h * 60 + m + (b.duration || 60);
+                              const endH = Math.floor(endMinVal / 60);
+                              const endM = endMinVal % 60;
+                              const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                              const apptTimeText = `${startStr} - ${endStr}`;
+
                               return (
                                 <div 
                                   key={item.id} 
@@ -3625,40 +3646,49 @@ Grande abraço, Jon.`;
                                     position: 'absolute',
                                     left: `${left}%`,
                                     width: `${width}%`,
-                                    padding: '4px',
+                                    padding: '0 16px',
                                     zIndex: 3,
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
                                     overflow: 'hidden'
                                   }}
                                 >
-                                  <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
-                                  <span 
-                                     className="appt-client" 
-                                     onClick={(e) => {
-                                       e.stopPropagation();
-                                       setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
-                                     }}
-                                     style={{ 
-                                       whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',
-                                       cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
-                                     }}
-                                   >
-                                     {b.clientName}
-                                     {isClientRecurrent(b.clientName, b.clientPhone) && (
-                                       <span style={{
-                                         position: 'absolute',
-                                         top: '-2px',
-                                         right: '-6px',
-                                         width: '5px',
-                                         height: '5px',
-                                         borderRadius: '50%',
-                                         backgroundColor: 'var(--adm-gold, #dca354)'
-                                       }} title="Cliente Recorrente" />
-                                     )}
+                                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                    <span 
+                                       className="appt-client" 
+                                       onClick={(e) => {
+                                         e.stopPropagation();
+                                         setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
+                                       }}
+                                       style={{ 
+                                         fontWeight: 'bold', color: '#fff', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
+                                       }}
+                                     >
+                                       {b.clientName}
+                                       {isClientRecurrent(b.clientName, b.clientPhone) && (
+                                         <span style={{
+                                           position: 'absolute',
+                                           top: '-2px',
+                                           right: '-6px',
+                                           width: '5px',
+                                           height: '5px',
+                                           borderRadius: '50%',
+                                           backgroundColor: 'var(--adm-gold, #dca354)'
+                                         }} title="Cliente Recorrente" />
+                                       )}
+                                     </span>
+                                     <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.73rem' }}>
+                                       {b.service?.name || b.serviceName} · {apptTimeText}
+                                     </span>
+                                   </div>
+                                   <span className="appt-badge">
+                                     {((b.service?.name || b.serviceName || "").toUpperCase().includes("CORTE") && (b.service?.name || b.serviceName || "").toUpperCase().includes("COR")) ? "CORTE+COR" :
+                                      (b.service?.name || b.serviceName || "").toUpperCase().includes("CORTE") ? "CORTE" :
+                                      ((b.service?.name || b.serviceName || "").toUpperCase().includes("COR") || (b.service?.name || b.serviceName || "").toUpperCase().includes("MECHAS")) ? "COR" :
+                                      (b.service?.name || b.serviceName || "").toUpperCase().includes("TRAT") ? "TRAT." : "SVC"}
                                    </span>
-                                  <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
                                 </div>
                               );
                             }

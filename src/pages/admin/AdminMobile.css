@@ -594,9 +594,9 @@
 .m-slot-booking {
   flex: 1;
   background: var(--m-card);
-  border-radius: var(--m-radius-sm);
-  padding: 8px 12px;
-  border-left: 4px solid var(--m-gold);
+  border-radius: 0px;
+  padding: 0 12px;
+  border-left: 3px solid var(--m-gold);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -606,12 +606,12 @@
 .m-slot-booking.pendente {
   background: #121212;
   border: 1px solid rgba(196, 115, 138, 0.25);
-  border-left: 4px solid var(--m-gold, #C4738A);
+  border-left: 3px solid var(--m-gold, #C4738A);
 }
 
 .m-slot-booking.confirmado {
   border: 1px solid rgba(196, 115, 138, 0.4);
-  border-left: 4px solid #ffffff;
+  border-left: 3px solid #ffffff;
   color: #ffffff !important;
 }
 
@@ -623,14 +623,14 @@
 .m-slot-booking.finalizado {
   background: #181818;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-left: 4px solid var(--m-green, #2EA043);
+  border-left: 3px solid var(--m-green, #2EA043);
   opacity: 0.85;
 }
 
 .m-slot-booking.cancelado {
   background: #121212;
   border: 1px solid rgba(248, 81, 73, 0.2);
-  border-left: 4px solid var(--m-red, #F85149);
+  border-left: 3px solid var(--m-red, #F85149);
   text-decoration: line-through;
   opacity: 0.5;
 }
@@ -638,36 +638,79 @@
 .m-slot-booking.faltou {
   background: #121212;
   border: 1px solid rgba(160, 160, 160, 0.3);
-  border-left: 4px solid var(--m-muted, #A0A0A0);
+  border-left: 3px solid var(--m-muted, #A0A0A0);
   opacity: 0.55;
 }
 .m-slot-booking.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.16) 0%, rgba(226, 112, 58, 0.04) 50%, var(--m-card) 100%) !important;
-  border: 1px solid rgba(226, 112, 58, 0.2) !important;
-  border-left: 4px solid #E2703A !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(226, 112, 58, 0.15) !important;
+  border-left: 3px solid #E2703A !important;
   color: #ffffff !important;
 }
 .m-slot-booking.svc-cor, .m-slot-booking.svc-coloracao, .m-slot-booking.svc-mechas {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.16) 0%, rgba(122, 60, 255, 0.04) 50%, var(--m-card) 100%) !important;
-  border: 1px solid rgba(122, 60, 255, 0.2) !important;
-  border-left: 4px solid #7A3CFF !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(122, 60, 255, 0.15) !important;
+  border-left: 3px solid #7A3CFF !important;
   color: #ffffff !important;
 }
 .m-slot-booking.svc-tratamento, .m-slot-booking.svc-terapia-capilar {
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.16) 0%, rgba(31, 111, 235, 0.04) 50%, var(--m-card) 100%) !important;
-  border: 1px solid rgba(31, 111, 235, 0.2) !important;
-  border-left: 4px solid #1F6FEB !important;
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(31, 111, 235, 0.15) !important;
+  border-left: 3px solid #1F6FEB !important;
   color: #ffffff !important;
 }
-.m-slot-booking[class*="svc-corte-cor"], .m-slot-booking[class*="svc-corte-coloracao"], .m-slot-booking[class*="svc-corte-mechas"] {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.14) 0%, rgba(122, 60, 255, 0.14) 50%, var(--m-card) 100%) !important;
-  border: 1px solid rgba(122, 60, 255, 0.2) !important;
-  border-left: 4px solid #E2703A !important;
+.m-slot-booking.svc-corte-cor, .m-slot-booking[class*="svc-corte-coloracao"], .m-slot-booking[class*="svc-corte-mechas"] {
+  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.08) 40%, rgba(229, 50, 45, 0.02) 100%) !important;
+  border: 1px solid rgba(229, 50, 45, 0.15) !important;
+  border-left: 3px solid #E5322D !important;
   color: #ffffff !important;
 }
 
+/* Agenda Badges on Mobile */
+.m-slot-booking .appt-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 6px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 0px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.m-slot-booking.svc-corte .appt-badge {
+  color: #E2703A;
+  background: rgba(226,112,58,0.12);
+  border-color: rgba(226,112,58,0.25);
+}
+
+.m-slot-booking.svc-cor .appt-badge, 
+.m-slot-booking.svc-coloracao .appt-badge, 
+.m-slot-booking.svc-mechas .appt-badge {
+  color: #7A3CFF;
+  background: rgba(122,60,255,0.12);
+  border-color: rgba(122,60,255,0.25);
+}
+
+.m-slot-booking.svc-tratamento .appt-badge, 
+.m-slot-booking.svc-terapia-capilar .appt-badge {
+  color: #1F6FEB;
+  background: rgba(31,111,235,0.12);
+  border-color: rgba(31,111,235,0.25);
+}
+
+.m-slot-booking.svc-corte-cor .appt-badge, 
+.m-slot-booking[class*="svc-corte-coloracao"] .appt-badge, 
+.m-slot-booking[class*="svc-corte-mechas"] .appt-badge {
+  color: #E5322D;
+  background: rgba(229,50,45,0.12);
+  border-color: rgba(229,50,45,0.25);
+}
 
 .m-slot-booking.bloqueado  { border-color: var(--m-muted); background: rgba(122,110,99,0.06); }
+
 
 .m-slot-client {
   font-size: 0.82rem;

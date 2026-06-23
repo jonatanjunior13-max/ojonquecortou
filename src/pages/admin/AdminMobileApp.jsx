@@ -2648,13 +2648,14 @@ Grande abraço, Jon.`;
                       left: `${left}%`,
                       width: `calc(${width}% - 4px)`,
                       marginLeft: '2px',
-                      padding: '6px 10px',
+                      padding: '0 12px',
                       zIndex: 3,
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
                       overflow: 'hidden',
-                      borderRadius: '8px',
+                      borderRadius: '0px',
                       boxShadow: '0 2px 5px rgba(0,0,0,0.12)',
                       cursor: 'pointer'
                     }}
@@ -2664,43 +2665,27 @@ Grande abraço, Jon.`;
                       setShowBookingSheet(true);
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                       <span
                         className="m-slot-client"
                         style={{
                           fontWeight: 700,
                           fontSize: '0.82rem',
-                          color: '#ffffff',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          flex: 1
+                          color: '#ffffff'
                         }}
                       >
                         {bk.clientName}
                       </span>
-                      <StatusPill status={bk.status} />
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                      <span className="m-slot-time" style={{ fontSize: '0.65rem', color: '#ffffff', opacity: 0.9, fontWeight: 700 }}>
-                        {bk.time} - {minToTime(timeToMin(bk.time) + (bk.duration || 60))}
+                      <span className="m-slot-svc-info" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
+                        {bk.service?.name || bk.serviceName} · {bk.time} - {minToTime(timeToMin(bk.time) + (bk.duration || 60))}
                       </span>
                     </div>
-                    <div
-                      className="m-slot-svc"
-                      style={{
-                        fontSize: '0.68rem',
-                        color: '#ffffff',
-                        opacity: 0.85,
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        marginTop: 1,
-                        fontWeight: 500
-                      }}
-                    >
-                      {bk.service?.name || bk.serviceName}
-                    </div>
+                    <span className="appt-badge" style={{ fontSize: '0.62rem', padding: '2px 6px', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>
+                      {((bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") && (bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR")) ? "CORTE+COR" :
+                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") ? "CORTE" :
+                       ((bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR") || (bk.service?.name || bk.serviceName || "").toUpperCase().includes("MECHAS")) ? "COR" :
+                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("TRAT") ? "TRAT." : "SVC"}
+                    </span>
                   </div>
                 );
               }
