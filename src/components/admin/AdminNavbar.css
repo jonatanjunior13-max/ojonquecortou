@@ -58,19 +58,29 @@
   width: 100%;
 }
 
-.sidebar-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--adm-gold);
-  color: #FFFFFF;
+.sidebar-logo-container {
+  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.5rem;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(115, 92, 78, 0.15);
+  transition: all 0.2s ease;
+}
+
+.brand-dot {
+  color: var(--adm-gold); /* #FF2D8B */
+}
+
+.brand-on {
+  display: none;
+}
+
+.admin-sidebar:hover .brand-on {
+  display: inline;
 }
 
 .sidebar-nav {
@@ -89,15 +99,16 @@
   justify-content: center;
   width: 54px;
   height: 54px;
-  border-radius: var(--adm-radius-sm); /* Cantos bem arredondados e orgânicos */
-  color: #a4968d;
+  border-radius: 0px;
+  color: rgba(255, 255, 255, 0.35);
   text-decoration: none;
   transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: width, padding-left;
   position: relative;
   gap: 4px;
   box-sizing: border-box;
-  border: 1px solid transparent;
+  border: none;
+  border-left: 2px solid transparent;
 }
 
 .nav-item span {
@@ -110,15 +121,15 @@
 
 .nav-item:hover {
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: rgba(255, 45, 139, 0.2);
 }
 
 .nav-item.active {
-  background: var(--adm-gold); /* Fundo bronze/castanho no active */
+  background: rgba(255, 45, 139, 0.08); /* Fundo rosa translúcido */
   color: #FFFFFF !important;
-  box-shadow: 0 8px 20px rgba(115, 92, 78, 0.25);
-  border-color: rgba(255, 255, 255, 0.25);
+  border-left: 2px solid var(--adm-gold); /* Barra lateral ativa rosa vibrante */
+  border-radius: 0px;
 }
 
 .nav-item.active span {

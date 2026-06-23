@@ -375,8 +375,37 @@
   transition: border-color 0.15s, background 0.15s, transform 0.15s var(--m-ease);
   -webkit-tap-highlight-color: transparent;
   box-shadow: 0 1px 8px rgba(0,0,0,0.15);
+  position: relative;
+  overflow: hidden;
 }
 .m-booking-card:active { background: var(--m-hover); transform: scale(0.975); box-shadow: none; }
+
+.m-booking-card.svc-corte {
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.10) 0%, rgba(226, 112, 58, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(226, 112, 58, 0.2) !important;
+  border-left: 4px solid #E2703A !important;
+}
+.m-booking-card.svc-corte .m-booking-time {
+  color: #E2703A !important;
+}
+
+.m-booking-card.svc-cor, .m-booking-card.svc-coloracao, .m-booking-card.svc-mechas {
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.10) 0%, rgba(122, 60, 255, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(122, 60, 255, 0.2) !important;
+  border-left: 4px solid #7A3CFF !important;
+}
+.m-booking-card.svc-cor .m-booking-time, .m-booking-card.svc-coloracao .m-booking-time, .m-booking-card.svc-mechas .m-booking-time {
+  color: #7A3CFF !important;
+}
+
+.m-booking-card.svc-tratamento, .m-booking-card.svc-terapia-capilar {
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.10) 0%, rgba(31, 111, 235, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(31, 111, 235, 0.2) !important;
+  border-left: 4px solid #1F6FEB !important;
+}
+.m-booking-card.svc-tratamento .m-booking-time, .m-booking-card.svc-terapia-capilar .m-booking-time {
+  color: #1F6FEB !important;
+}
 
 .m-booking-time {
   font-family: "Bricolage Grotesque", sans-serif;
@@ -609,20 +638,20 @@
   opacity: 0.55;
 }
 .m-slot-booking.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(226, 112, 58, 0.15) !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.16) 0%, rgba(226, 112, 58, 0.04) 50%, var(--m-card) 100%) !important;
+  border: 1px solid rgba(226, 112, 58, 0.2) !important;
   border-left: 4px solid #E2703A !important;
   color: #ffffff !important;
 }
-.m-slot-booking.svc-cor, .m-slot-booking.svc-coloracao {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(122, 60, 255, 0.15) !important;
+.m-slot-booking.svc-cor, .m-slot-booking.svc-coloracao, .m-slot-booking.svc-mechas {
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.16) 0%, rgba(122, 60, 255, 0.04) 50%, var(--m-card) 100%) !important;
+  border: 1px solid rgba(122, 60, 255, 0.2) !important;
   border-left: 4px solid #7A3CFF !important;
   color: #ffffff !important;
 }
-.m-slot-booking.svc-tratamento {
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(31, 111, 235, 0.15) !important;
+.m-slot-booking.svc-tratamento, .m-slot-booking.svc-terapia-capilar {
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.16) 0%, rgba(31, 111, 235, 0.04) 50%, var(--m-card) 100%) !important;
+  border: 1px solid rgba(31, 111, 235, 0.2) !important;
   border-left: 4px solid #1F6FEB !important;
   color: #ffffff !important;
 }

@@ -12,10 +12,10 @@
   --adm-text-3: #D4CFC9;
   --adm-muted: rgba(255, 255, 255, 0.35);
 
-  /* Brand - Dusty Rose */
-  --adm-gold: #C4738A;
-  --adm-gold-deep: #9E4E62;
-  --adm-bronze: #D9A0B2;
+  /* Brand - Vibrant Pink (Exact Match to Studio Espectro Mockup) */
+  --adm-gold: #FF2D8B;
+  --adm-gold-deep: #ff4d9f;
+  --adm-bronze: #ff4d9f;
 
   /* Paleta de Serviços (agenda cards) */
   --adm-copper: #E2703A;           /* Corte */
@@ -34,12 +34,12 @@
   --adm-warning: #E3B341;
   --adm-info: #58A6FF;
 
-  /* Structure */
+  /* Structure - Cantos retos/quadrados conforme o mockup */
   --adm-rule: rgba(255, 255, 255, 0.06);
   --adm-rule-gold: rgba(255, 45, 139, 0.20);
   --adm-radius-sm: 0px;
   --adm-radius: 0px;
-  --adm-radius-lg: 4px;
+  --adm-radius-lg: 0px;
 
   /* Spacing scale (8pt grid) */
   --adm-space-1: 4px;
