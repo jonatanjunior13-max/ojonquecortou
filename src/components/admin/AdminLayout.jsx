@@ -199,14 +199,14 @@ const AdminLayoutInner = () => {
               if (booking.status === 'pendente') {
                 new Notification("Novo Pedido de Agendamento 📅", {
                   body: `Cliente: ${booking.clientName}\nServiço: ${booking.serviceName || booking.service?.name || 'Serviço'}\nData: ${booking.date ? booking.date.split('-').reverse().join('/') : ''} às ${booking.time}`,
-                  icon: '/logo-app.png'
+                  icon: '/logo-jon-cortou.png'
                 });
               }
             } else {
               if (booking.status === 'cancelado' && oldVersion.status !== 'cancelado') {
                 new Notification("Agendamento Cancelado 🚫", {
                   body: `Cliente: ${booking.clientName} cancelou o horário de ${booking.date ? booking.date.split('-').reverse().join('/') : ''} às ${booking.time}`,
-                  icon: '/logo-app.png'
+                  icon: '/logo-jon-cortou.png'
                 });
               }
             }
@@ -240,14 +240,14 @@ const AdminLayoutInner = () => {
               if (booking.status === 'pendente') {
                 new Notification("Novo Pedido de Agendamento 📅", {
                   body: `Cliente: ${booking.clientName}\nServiço: ${booking.serviceName || 'Serviço'}\nData: ${booking.date} às ${booking.time}`,
-                  icon: '/logo-app.png'
+                  icon: '/logo-jon-cortou.png'
                 });
               }
             } else {
               if (booking.status === 'cancelado' && oldVersion.status !== 'cancelado') {
                 new Notification("Agendamento Cancelado 🚫", {
                   body: `Cliente: ${booking.clientName} cancelou o horário de ${booking.date} às ${booking.time}`,
-                  icon: '/logo-app.png'
+                  icon: '/logo-jon-cortou.png'
                 });
               }
             }
@@ -302,7 +302,7 @@ const AdminLayoutInner = () => {
             notified30Min.current.add(booking.id);
             new Notification("Aviso de Agendamento Próximo ⏰", {
               body: `O cliente ${booking.clientName} está agendado em 30 minutos (${booking.time}) para o serviço: ${booking.serviceName || booking.service?.name || 'Serviço'}`,
-              icon: '/logo-app.png'
+              icon: '/logo-jon-cortou.png'
             });
           }
         }
@@ -331,7 +331,7 @@ const AdminLayoutInner = () => {
     return (
       <div className="admin-loading">
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-          <img src="/logo-app.png" alt="Logo" style={{ width: 48, height: 48, borderRadius: 8, opacity: 0.6, animation: 'pulse 1.5s ease-in-out infinite' }} />
+          <img src="/logo-jon-cortou.png" alt="Logo" style={{ width: 48, height: 48, borderRadius: 8, opacity: 0.6, animation: 'pulse 1.5s ease-in-out infinite' }} />
           <span style={{ fontSize: '0.83rem', letterSpacing: 1 }}>Verificando acesso...</span>
         </div>
       </div>
