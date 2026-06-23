@@ -308,7 +308,10 @@ const localBusinessSchema = {
       "Método Leitura de Fio"
     ],
     "sameAs": [
-      "https://www.instagram.com/ojonquecortou/"
+      "https://www.instagram.com/ojonquecortou/",
+      "https://www.facebook.com/ojonquecortou/",
+      "https://linktr.ee/ojonquecortou",
+      "https://www.google.com/maps?cid=16629671607593282841"
     ]
   },
   "areaServed": {
@@ -328,7 +331,10 @@ const founderPersonSchema = {
     "@id": "https://www.ojonquecortou.com.br/#localbusiness"
   },
   "sameAs": [
-    "https://www.instagram.com/ojonquecortou/"
+    "https://www.instagram.com/ojonquecortou/",
+    "https://www.facebook.com/ojonquecortou/",
+    "https://linktr.ee/ojonquecortou",
+    "https://www.google.com/maps?cid=16629671607593282841"
   ]
 };
 
@@ -516,6 +522,7 @@ const pages = [
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Jonatan Junior",
+      "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
       "alternateName": "Jon",
       "jobTitle": "Especialista em cabelos ondulados, cacheados e crespos",
       "description": "Cabeleireiro especialista em cabelos cacheados, crespos e ondulados em Belo Horizonte. Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas antes de qualquer corte.",
@@ -526,7 +533,10 @@ const pages = [
       },
       "url": "https://www.ojonquecortou.com.br/sobre",
       "sameAs": [
-        "https://www.instagram.com/ojonquecortou"
+        "https://www.instagram.com/ojonquecortou/",
+        "https://www.facebook.com/ojonquecortou/",
+        "https://linktr.ee/ojonquecortou",
+        "https://www.google.com/maps?cid=16629671607593282841"
       ],
       "knowsAbout": [
         "Método Leitura de Fio",
@@ -558,15 +568,28 @@ const pages = [
     bodyInsert: faqBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": fullFaqList.map(faq => ({
-        "@type": "Question",
-        "name": faq.q,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.a
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Perguntas Frequentes — Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br/faq",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "dt", "dd"]
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": fullFaqList.map(faq => ({
+            "@type": "Question",
+            "name": faq.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.a
+            }
+          }))
         }
-      }))
+      ]
     }
   },
   {
@@ -576,11 +599,24 @@ const pages = [
     bodyInsert: metodoBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "Service",
-      "name": "Método Leitura de Fio",
-      "provider": localBusinessSchema,
-      "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
-      "url": "https://www.ojonquecortou.com.br/metodo"
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Método Leitura de Fio — Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br/metodo",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "h2", "p"]
+          }
+        },
+        {
+          "@type": "Service",
+          "name": "Método Leitura de Fio",
+          "provider": localBusinessSchema,
+          "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
+          "url": "https://www.ojonquecortou.com.br/metodo"
+        }
+      ]
     }
   },
   {
@@ -698,6 +734,8 @@ posts.forEach(post => {
   const isoDate = parseDateToISO(post.date);
   const currentDate = new Date().toISOString().split('T')[0];
   
+  const wordCount = post.content ? post.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length : 0;
+  
   const articleSchema = {
     "@type": "Article",
     "headline": post.title,
@@ -714,6 +752,7 @@ posts.forEach(post => {
     },
     "datePublished": post.datePublished || isoDate,
     "dateModified": currentDate,
+    "wordCount": wordCount,
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`

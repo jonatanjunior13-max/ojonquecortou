@@ -1012,7 +1012,7 @@ const BookingPage = () => {
 
         const hasOverlap = bookedList.some(b => {
           const bTime = typeof b === 'string' ? b : b.time;
-          const bDuration = typeof b === 'string' ? 60 : (b.duration || b.service?.duration || b.service?.duration || 60);
+          const bDuration = typeof b === 'string' ? 60 : (Number(b.duration) || Number(b.service?.duration) || 60);
           const bStart = timeToMin(bTime);
           const bEnd = bStart + bDuration;
           
@@ -1158,6 +1158,75 @@ const BookingPage = () => {
       isSubmittingRef.current = false;
       return;
     }
+
+    // 1. Verificar se o horário ainda está livre para evitar duplicados/conflitos
+    setLoading(true);
+    const isStillAvailable = await (async () => {
+      if (!db || isDemoMode) {
+        const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
+        const bookingsToday = localBookings.filter(b => b.date === selectedDate && b.status !== 'cancelado' && (b.professionalId || 'jon') === (selectedProfessional?.id || 'jon'));
+        const timeToMin = (t) => {
+          const [h, m] = t.split(':').map(Number);
+          return h * 60 + m;
+        };
+        const slotStart = timeToMin(selectedTime);
+        const totalDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
+        const slotEnd = slotStart + Math.max(60, totalDuration || 60);
+
+        return !bookingsToday.some(b => {
+          const bStart = timeToMin(b.time);
+          const bEnd = bStart + (Number(b.duration) || 60);
+          return Math.max(bStart, slotStart) < Math.min(bEnd, slotEnd);
+        });
+      }
+
+      try {
+        const q = query(
+          collection(db, 'bookings'),
+          where('date', '==', selectedDate),
+          where('profissional', '==', selectedProfessional?.id || 'jon')
+        );
+        const querySnapshot = await getDocs(q);
+        const activeBookings = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          if (data.status !== 'cancelado') {
+            activeBookings.push(data);
+          }
+        });
+
+        const effectiveAbsences = getEffectiveAbsences(settings);
+        if (isSlotBlockedByAbsence(effectiveAbsences, selectedDate, selectedTime)) {
+          return false;
+        }
+
+        const timeToMin = (t) => {
+          const [h, m] = t.split(':').map(Number);
+          return h * 60 + m;
+        };
+        const slotStart = timeToMin(selectedTime);
+        const totalDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
+        const slotEnd = slotStart + Math.max(60, totalDuration || 60);
+
+        return !activeBookings.some(b => {
+          const bStart = timeToMin(b.time);
+          const bEnd = bStart + (Number(b.duration) || 60);
+          return Math.max(bStart, slotStart) < Math.min(bEnd, slotEnd);
+        });
+      } catch (err) {
+        console.warn('Erro ao validar conflito no banco:', err);
+        return true;
+      }
+    })();
+
+    if (!isStillAvailable) {
+      setAuthError('Ops! Este horário acabou de ser preenchido por outro agendamento. Por favor, volte ao passo anterior e escolha outro horário.');
+      setLoading(false);
+      isSubmittingRef.current = false;
+      return;
+    }
+
+    setLoading(false);
 
     if (existingProfile && existingProfile.blocked) {
       setAuthError('Seu perfil está temporariamente bloqueado para agendamentos online pelo sistema. Por favor, solicite seu agendamento via WhatsApp.');
@@ -1891,8 +1960,28 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                   >
-                    <span className="weekday">{d.formatted.split(',')[0]}</span>
-                    <span className="day">{d.formatted.split(',')[1]}</span>
+                    {(() => {
+                      const weekday = d.formatted.split(',')[0];
+                      const rest = (d.formatted.split(',')[1] || '').trim();
+                      const parts = rest.split(' ');
+                      if (parts.length >= 3) {
+                        const dayVal = `${parts[0]} ${parts[1]}`;
+                        const monthVal = parts.slice(2).join(' ');
+                        return (
+                          <>
+                            <span className="weekday">{weekday}</span>
+                            <span className="day-num-de" style={{ fontSize: '0.92rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>{dayVal}</span>
+                            <span className="day-month" style={{ fontSize: '0.92rem', fontWeight: 700, display: 'block', lineHeight: 1.1 }}>{monthVal}</span>
+                          </>
+                        );
+                      }
+                      return (
+                        <>
+                          <span className="weekday">{weekday}</span>
+                          <span className="day">{rest}</span>
+                        </>
+                      );
+                    })()}
                   </button>
                 ))}
             </div>

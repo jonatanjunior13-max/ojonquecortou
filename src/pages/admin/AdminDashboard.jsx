@@ -3180,7 +3180,7 @@ Grande abraço, Jon.`;
                                 return (
                                   <div 
                                     key={bk.id} 
-                                    className={`appt-card ${bk.status} ${isSubsequent ? 'continuation' : ''}`}
+                                    className={`appt-card ${bk.status} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")} ${isSubsequent ? 'continuation' : ''}`}
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
@@ -3617,7 +3617,7 @@ Grande abraço, Jon.`;
                               return (
                                 <div 
                                   key={item.id} 
-                                  className={`appt-card ${b.status}`}
+                                  className={`appt-card ${b.status} svc-${(b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`}
                                   onClick={(e) => handleBookingLeftClick(e, b)}
                                   style={{
                                     top: `${topPercent}%`,

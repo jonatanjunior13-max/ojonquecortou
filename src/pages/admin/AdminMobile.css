@@ -463,14 +463,57 @@
 
 .m-slot-row {
   display: flex;
+  flex-direction: column;
   align-items: stretch;
   background: var(--m-bg);
   min-height: 54px;
+  height: 54px;
   cursor: pointer;
   transition: background 0.1s;
   position: relative;
 }
 .m-slot-row:active { background: var(--m-surface); }
+
+.m-slot-half {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 27px;
+  border-bottom: 0.5px dashed var(--m-rule);
+}
+.m-slot-half:last-child {
+  border-bottom: none;
+}
+
+
+.m-slot-half-time {
+  width: 90px;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.54rem;
+  font-weight: 700;
+  color: var(--m-muted);
+  border-right: 0.5px solid var(--m-rule);
+  font-family: "Bricolage Grotesque", sans-serif;
+  height: 100%;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m-slot-half-content {
+  flex: 1;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+  height: 100%;
+}
 
 .m-slot-time {
   width: 70px;
@@ -513,9 +556,60 @@
   gap: 8px;
 }
 
-.m-slot-booking.finalizado { border-color: var(--m-green); }
-.m-slot-booking.cancelado  { border-color: var(--m-red); opacity: 0.6; }
-.m-slot-booking.faltou     { border-color: var(--m-muted); opacity: 0.6; }
+.m-slot-booking.pendente {
+  background: #121212;
+  border: 1px solid rgba(255, 45, 139, 0.25);
+  border-left: 4px solid var(--m-gold, #FF2D8B);
+}
+
+.m-slot-booking.confirmado {
+  background: linear-gradient(135deg, var(--m-gold, #FF2D8B) 0%, var(--m-gold-deep, #D01C6A) 100%) !important;
+  border: 1px solid rgba(255, 45, 139, 0.4);
+  border-left: 4px solid #ffffff;
+  color: #ffffff !important;
+}
+
+.m-slot-booking.finalizado {
+  background: #181818;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--m-green, #2EA043);
+  opacity: 0.85;
+}
+
+.m-slot-booking.cancelado {
+  background: #121212;
+  border: 1px solid rgba(248, 81, 73, 0.2);
+  border-left: 4px solid var(--m-red, #F85149);
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.m-slot-booking.faltou {
+  background: #121212;
+  border: 1px solid rgba(160, 160, 160, 0.3);
+  border-left: 4px solid var(--m-muted, #A0A0A0);
+  opacity: 0.55;
+}
+.m-slot-booking.svc-corte {
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(226, 112, 58, 0.15) !important;
+  border-left: 4px solid #E2703A !important;
+  color: #ffffff !important;
+}
+.m-slot-booking.svc-cor, .m-slot-booking.svc-coloracao {
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(122, 60, 255, 0.15) !important;
+  border-left: 4px solid #7A3CFF !important;
+  color: #ffffff !important;
+}
+.m-slot-booking.svc-tratamento {
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(31, 111, 235, 0.15) !important;
+  border-left: 4px solid #1F6FEB !important;
+  color: #ffffff !important;
+}
+
+
 .m-slot-booking.bloqueado  { border-color: var(--m-muted); background: rgba(122,110,99,0.06); }
 
 .m-slot-client {

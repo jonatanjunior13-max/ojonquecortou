@@ -1915,38 +1915,106 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 </div>
 
                 <div style={{ marginTop: '30px' }}>
-                  <h5 style={{ margin: '0 0 10px 0' }}>Histórico de Disparos da Régua (Hoje)</h5>
+                  <h5 style={{ margin: '0 0 12px 0' }}>📋 Disparos de Hoje — Todos os Canais</h5>
                   {(() => {
-                    const todayLogs = Array.isArray(automationLogs) ? automationLogs.filter(log => {
-                      if (!log || !log.timestamp) return false;
-                      const logDate = new Date(log.timestamp);
-                      return logDate.toDateString() === new Date().toDateString();
-                    }) : [];
+                    const TRANSACTIONAL_STAGES = [
+                      'solicitacao_recebida', 'horario_confirmado', 'lembrete_24h',
+                      'booking_confirmed', 'booking_pending', 'reminder_24h',
+                      'admin_solicitacao_recebida', 'admin_horario_confirmado',
+                      'reativacao_5_meses', 'cancel_booking'
+                    ];
+
+                    const getLogChannel = (log) => {
+                      if (log.channel) return log.channel;
+                      const stage = (log.stage || '').toLowerCase();
+                      if (stage.includes('whatsapp') || stage.includes('wa_') || stage.includes('birthday') || stage.includes('aniversar')) return 'whatsapp';
+                      return 'email';
+                    };
+
+                    const isTransactional = (log) => {
+                      const stage = (log.stage || '').toLowerCase();
+                      return TRANSACTIONAL_STAGES.some(s => stage.includes(s)) ||
+                        stage.includes('solicitac') || stage.includes('confirm') ||
+                        stage.includes('lembrete') || stage.includes('cancel') ||
+                        stage.includes('reminder') || stage.includes('pending');
+                    };
+
+                    const todayLogs = Array.isArray(automationLogs) ? [...automationLogs]
+                      .filter(log => {
+                        if (!log || !log.timestamp) return false;
+                        return new Date(log.timestamp).toDateString() === new Date().toDateString();
+                      })
+                      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                      : [];
+
+                    const CHANNEL_ICON = { email: '📧', whatsapp: '📱', transacional: '⚙️' };
+                    const CHANNEL_COLOR = { email: '#58A6FF', whatsapp: '#25D366', transacional: 'var(--adm-gold)' };
 
                     if (todayLogs.length === 0) {
-                      return <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado hoje.</p>;
+                      return <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Nenhum disparo registrado hoje.</p>;
                     }
 
                     return (
-                      <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
+                      <div style={{ border: '1px solid var(--adm-rule)', borderRadius: 6, overflow: 'hidden' }}>
                         <table className="admin-table" style={{ margin: 0 }}>
                           <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
                             <tr>
-                              <th>Hora</th>
+                              <th style={{ width: 60 }}>Hora</th>
                               <th>Cliente</th>
-                              <th>Etapa (Trigger)</th>
-                              <th>Status</th>
+                              <th style={{ width: 100 }}>Canal</th>
+                              <th>Etapa / Trigger</th>
+                              <th>Contato</th>
+                              <th style={{ width: 80 }}>Status</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {todayLogs.map(log => (
-                              <tr key={log.id}>
-                                <td>{new Date(log.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</td>
-                                <td>{log.clientName}</td>
-                                <td><span className="status-badge concluded">{log.stage}</span></td>
-                                <td>✅ Enviado</td>
-                              </tr>
-                            ))}
+                            {todayLogs.map((log, i) => {
+                              const ch = isTransactional(log) ? 'transacional' : getLogChannel(log);
+                              return (
+                                <tr key={log.id || i}>
+                                  <td style={{ fontFamily: 'monospace', fontSize: '0.78rem' }}>
+                                    {new Date(log.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                  </td>
+                                  <td style={{ fontWeight: 500 }}>{log.clientName || '—'}</td>
+                                  <td>
+                                    <span style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: 4,
+                                      padding: '2px 8px',
+                                      borderRadius: 12,
+                                      fontSize: '0.7rem',
+                                      fontWeight: 600,
+                                      background: ch === 'whatsapp' ? 'rgba(37,211,102,0.12)' : ch === 'transacional' ? 'rgba(255,45,139,0.1)' : 'rgba(88,166,255,0.1)',
+                                      color: CHANNEL_COLOR[ch]
+                                    }}>
+                                      {CHANNEL_ICON[ch]} {ch === 'transacional' ? 'Transacional' : ch === 'whatsapp' ? 'WhatsApp' : 'E-mail'}
+                                    </span>
+                                  </td>
+                                  <td style={{ fontSize: '0.78rem' }}>
+                                    <span style={{ background: 'var(--sidebar-bg)', padding: '2px 6px', borderRadius: 4, fontFamily: 'monospace', fontSize: '0.7rem' }}>
+                                      {log.stage || '—'}
+                                    </span>
+                                  </td>
+                                  <td style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>
+                                    {ch === 'whatsapp' ? (log.clientPhone || '—') : (log.email || log.clientPhone || '—')}
+                                  </td>
+                                  <td>
+                                    <span style={{
+                                      display: 'inline-block',
+                                      padding: '2px 8px',
+                                      borderRadius: 12,
+                                      fontSize: '0.7rem',
+                                      fontWeight: 600,
+                                      background: log.status === 'error' ? 'rgba(248,81,73,0.12)' : 'rgba(46,160,67,0.12)',
+                                      color: log.status === 'error' ? '#F85149' : '#2EA043'
+                                    }}>
+                                      {log.status === 'error' ? '❌ Erro' : '✅ Enviado'}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                           </tbody>
                         </table>
                       </div>

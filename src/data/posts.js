@@ -103,6 +103,36 @@ export const posts = [
     category: 'Cuidado Capilar',
     image: '/blog-porosidade.webp',
     schemaType: 'BlogPosting',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é acidificação capilar e por que ela é necessária para cabelos cacheados?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A acidificação capilar é um tratamento que equilibra o pH dos fios (que idealmente deve ser ácido, entre 4,5 e 5,5) para selar as cutículas do cabelo. Para cabelos cacheados e crespos, que possuem cutículas naturalmente mais abertas e propensas à perda de água, a acidificação fecha essas cutículas, retendo a hidratação e reduzindo o frizz e a aspereza."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quais os sinais de que meu cacho precisa de acidificação?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Os principais sinais de que os cabelos cacheados precisam de acidificação são frizz crônico (que não cede com finalizadores), aspereza ao toque, falta extrema de brilho, embaraço excessivo na hora de lavar e o fato de o cabelo secar muito rápido logo após ser hidratado, indicando alta porosidade."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Com que frequência devo fazer a acidificação capilar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Para cabelos muito porosos ou danificados por químicas (como descoloração), a acidificação pode ser feita uma vez por semana ou a cada 15 dias. Conforme a saúde do cacho se restabelece e a porosidade diminui, a frequência pode ser reduzida para uma vez por mês, servindo como manutenção preventiva."
+          }
+        }
+      ]
+    },
     content: `
       <div class="aeo-summary-box" style="background: rgba(205, 168, 128, 0.05); border-left: 4px solid var(--color-gold, #cda880); padding: 16px; margin-bottom: 24px; border-radius: 4px;">
         <strong>Resumo Rápido (AEO):</strong> A acidificação capilar regula o pH do cacho (idealmente ácido entre 4,5 e 5,5) para selar as cutículas da fibra. Ao contrário de máscaras de hidratação que evaporam em fios porosos, a acidificação é a única solução física que reequilibra a carga eletrostática e fecha as cutículas, combatendo a alta porosidade e o frizz crônico.
@@ -710,6 +740,36 @@ export const posts = [
     author: 'Jon',
     category: 'Tendências & Estilo',
     image: '/shaggy-cacheado-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é o corte shaggy cacheado e quais as suas vantagens?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O shaggy cacheado é um corte de tempo dos anos 70 construído com camadas desconectadas e repicadas que começam desde o topo da cabeça. Ele é excelente para quem deseja distribuir o volume dos cachos de forma equilibrada, eliminar o \"efeito pirâmide\" (raiz achatada com base larga) e ganhar muito movimento e praticidade no dia a dia."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que o shaggy em cabelo cacheado ou crespo precisa ser cortado a seco?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cabelos com curvatura têm diferentes fatores de encolhimento em cada região da cabeça. Cortar o shaggy molhado mascara essas assimetrias, o que pode fazer com que as camadas fiquem desproporcionais ou curtas demais após a secagem. O corte a seco permite esculpir o shaggy vendo o caimento real e a altura exata de cada camada."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O shaggy cacheado combina com qualquer tipo de rosto?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, porque ele é extremamente adaptável através do visagismo. Para rostos redondos, podemos alongar as camadas laterais e criar uma franja mais desfiada para alongar o visual. Para rostos mais angulares ou longos, o shaggy pode ter camadas mais curtas no topo para gerar volume horizontal e suavizar o maxilar."
+          }
+        }
+      ]
+    },
     content: `
       <h2>O Fim do Cabelo Sem Graça: Por Que Você Precisa de um Shaggy Cacheado</h2>
       <p>Sabe aquela sensação de olhar no espelho e sentir que seu cabelo está pesado? Aquele formato de pirâmide clássico, onde a raiz fica murcha e as pontas formam uma base larga e sem movimento?</p>
@@ -1455,6 +1515,36 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-cronograma-capilar.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é e para que serve o cronograma capilar para cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O cronograma capilar é uma rotina de cuidados dividida em três etapas: hidratação (repõe água), nutrição (repõe lipídeos/óleos) e reconstrução (repõe proteínas e massa). Ele serve para recuperar a saúde do cabelo cacheado e crespo de forma equilibrada, tratando desde o ressecamento até danos estruturais graves causados por químicas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber qual a etapa do cronograma meu cacho mais precisa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A resposta depende da porosidade e do estado do fio. Um cabelo que embaraça muito, seca rápido e está sem brilho (alta porosidade) precisa de mais nutrição e reconstrução. Um cabelo áspero que parece não absorver cremes (baixa porosidade) necessita de hidratações leves e calor térmico. Fazer o teste de porosidade ajuda a mapear essa necessidade."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O excesso de reconstrução capilar pode estragar o cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. O excesso de reconstrução capilar acumula queratina e proteínas em excesso na fibra capilar, causando um efeito rebote conhecido como rigidez capilar. Isso torna o cacho extremamente rígido, opaco e quebradiço. A reconstrução deve ser feita apenas quando o fio estiver fraco ou elástico devido a químicas."
+          }
+        }
+      ]
+    },
     content: `
       <h2>Introdução</h2>
       <p>Você pesquisou, escolheu os produtos, montou a sequência — hidratação, nutrição, reconstrução — e seguiu à risca por semanas.</p>
@@ -1637,6 +1727,36 @@ export const posts = [
     author: 'Jon',
     category: 'Ciência Capilar',
     image: '/blog-ph-capilar-v2.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é o pH capilar e por que ele é importante para o cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O pH capilar mede o nível de acidez ou alcalinidade del fio. O pH saudável do cabelo cacheado fica entre 4,5 e 5,5 (levemente ácido). Manter essa acidez é essencial para manter as cutículas bem seladas e alinhadas, impedindo que a umidade e os nutrientes escapem e garantindo que o cacho fique definido e macio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como o pH influencia no brilho dos cabelos cacheados?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O brilho é física pura: a luz precisa bater e refletir em uma superfície plana. Quando o pH do cabelo está desregulado (geralmente alcalino, acima de 7,0), as cutículas se abrem e se eriçam, fazendo com que a luz se disperse e o cacho pareça opaco e áspero. Ao acidificar o fio, as cutículas se fecham, criando uma barreira plana que reflete a luz de forma intensa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que faz o pH do cabelo cacheado subir e ficar alcalino?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Processos químicos como descolorações, colorações e alisamentos (progressivas e botox) têm o pH muito alcalino. Shampoos comuns de limpeza profunda ou com sulfato agressivo, a água quente do chuveiro e o excesso de cloro e minerais na água também elevam o pH, forçando a abertura permanente das cutículas e causando o ressecamento do cacho."
+          }
+        }
+      ]
+    },
     content: `
       <h2>Introdução: O Brilho é uma Questão de Física</h2>
       <p>Muitas clientes chegam ao Studio reclamando que o cabelo "não tem vida". Elas investem centenas de reais em máscaras importadas, mas o fio continua com aquele aspecto opaco, áspero ao toque e que parece "beber" o creme sem reter nada. Sabe o que está acontecendo? O pH do seu cabelo está em guerra com você.</p>
@@ -1967,6 +2087,36 @@ export const posts = [
     author: 'Jon',
     category: 'Corte & Técnica',
     image: '/blog-visagismo-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é visagismo aplicado ao cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O visagismo para cabelos cacheados é a personalização do corte com base nas linhas e formato do rosto da cliente, associada a uma análise física do fio (curvatura, encolhimento, densidade e caimento). Diferente do cabelo liso, o visagismo em cachos não segue regras rígidas, pois o volume e a mola do cabelo ditam como a moldura do rosto será criada."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que copiar o corte de uma influenciadora cacheada pode dar errado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Copiar o corte de outra cacheada pode dar errado porque a mola do cacho é única de cada pessoa. Mesmo que o formato do rosto seja parecido, a influenciadora pode ter um fator de encolhimento de 20% e você de 50%, ou uma densidade capilar completamente diferente. O corte que cria um volume bonito nela pode criar um efeito pirâmide ou degraus no seu cabelo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como funciona a análise dupla de visagismo com cachos no salão?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No Studio do Jon, fazemos uma análise dupla: primeiro, avaliamos o formato e as linhas do rosto (olhos, maxilar, proporção facial). Depois, avaliamos as características físicas do fio seco (onde o volume se acumula, a força de contração dos cachos e se há múltiplas texturas na cabeça). A fusão dessas duas análises gera um corte único e equilibrado."
+          }
+        }
+      ]
+    },
     content: `
       <h2>Visagismo + cabelo cacheado: como funciona de verdade</h2>
       <p>Você vê um corte numa cacheada que tem o rosto parecido com o seu, ama, tira print, leva pro cabeleireiro. Chega em casa, se vê no espelho e... não é a mesma coisa. Fica ali pensando: "Por que nela fica perfeito e em mim fica errado?"</p>
@@ -2054,6 +2204,36 @@ export const posts = [
     author: 'Jon',
     category: 'Química & Danos',
     image: '/blog-botox-capilar.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O botox capilar alisa o cabelo cacheado permanentemente?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, o botox capilar altera a estrutura interna do fio. Embora seja vendido como um tratamento reconstrutor ou de redução de volume, ele geralmente contém ácidos alisantes (como ácido glioxílico) que, ativados pelo calor da chapinha, quebram as ligações de hidrogênio e iônicas do cabelo, alisando a curvatura de forma irreversível na região aplicada."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre botox capilar e uma hidratação profunda?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A hidratação profunda repõe água e nutrientes na fibra capilar sem alterar sua estrutura química ou forma. O botox capilar, por outro lado, é um procedimento químico de alisamento ou relaxamento ácido. Ele usa substâncias que plastificam a cutícula do fio e relaxam os cachos, agindo mais como uma escova progressiva suave do que como um tratamento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O botox capilar estraga os cabelos cacheados a longo prazo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. O botox capilar cria uma película impermeabilizante ao redor do fio que impede a absorção de tratamentos simples (como hidratações). Com o tempo e o uso repetido, o córtex capilar fica desidratado e enfraquecido por baixo dessa película, resultando em afinamento da haste, perda definitiva da definição dos cachos e quebra por rigidez."
+          }
+        }
+      ]
+    },
     content: `
       <h2>Resposta direta: Sim. E aqui está por quê eu sou contra.</h2>
       <p>Você faz essa pergunta porque já viu o resultado em outra pessoa. O cabelo fica liso, comportado, brilhando... Parece solução. Mas aqui dentro tem um problema que ninguém fala no comecinho. E é por isso que eu não recomendo.</p>
@@ -2211,6 +2391,36 @@ export const posts = [
     author: 'Jon',
     category: 'Técnica & Corte',
     image: '/blog-risco-corte-seco.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que o corte a seco pode deixar \"buracos\" no volume do cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Isso acontece quando o profissional faz o corte a seco sem analisar a densidade e a elasticidade de cada quadrante da cabeça. Puxar as mechas com muita tensão ou cortar sem mapear a nuca faz com que o cabelo encolha de forma desigual ao ser solto, gerando degraus e buracos no formato final."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a importância do mapeamento de densidades no corte de cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Um cabelo cacheado ou crespo raramente tem a mesma textura ou densidade em toda a cabeça. O topo da cabeça pode encolher 50% enquanto as laterais ou a nuca encolhem apenas 20%. Mapear essas diferenças permite que o especialista ajuste a angulação do corte em cada mecha para que o volume fique equilibrado e harmônico."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O corte a seco serve para qualquer tipo de cabelo cacheado ou crespo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, mas ele exige um projeto geométrico personalizado para cada cliente. O corte a seco é especialmente benéfico para fios com múltiplas texturas ou para quem está em transição capilar, pois permite visualizar o caimento e o volume real do cabelo enquanto ele está sendo esculpido pelo profissional."
+          }
+        }
+      ]
+    },
     content: `
       <h2>Cortar o seu cabelo sem molhar não serve absolutamente de nada se quem está com a tesoura não souber ler a densidade da sua nuca.</h2>
       <p>A internet banalizou a técnica. Hoje, qualquer salão oferece o corte a seco apenas para surfar na tendência, mas entrega resultados esburacados, sem forma e com pontas mastigadas. A técnica não é sobre ter preguiça de lavar; é sobre dominar a arquitetura da curvatura.</p>
@@ -2710,6 +2920,36 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-porosidade.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é a porosidade capilar e por que ela é importante?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A porosidade capilar indica a capacidade do seu cabelo de absorver e manter a umidade e os nutrientes. Se o seu cabelo tem baixa porosidade, as cutículas são muito fechadas, dificultando a entrada de água. Se a porosidade for alta, as cutículas estão muito abertas, fazendo com que a hidratação entre fácil, mas saia rapidamente, deixando o cabelo ressecado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como fazer o teste do copo de água para saber a porosidade do cabelo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Encha um copo com água em temperatura ambiente e coloque um fio de cabelo limpo e seco (sem finalizadores) na água. Aguarde cerca de 10 minutos. Se o fio boiar na superfície, a porosidade é baixa. Se ele ficar no meio do copo, a porosidade é média (saudável). Se o fio afundar até o fundo, a porosidade é alta e o cabelo precisa de tratamentos reconstrutores e acidificação."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que fazer se o meu cabelo estiver com porosidade alta?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cabelos com alta porosidade precisam de tratamentos reconstrutores ricos em queratina e aminoácidos para reparar a fibra danificada, além de acidificação capilar para fechar as cutículas. Use também óleos vegetais na etapa de nutrição/umectação para criar uma película protetora que impede a evaporação da água e dos tratamentos aplicados no fio."
+          }
+        }
+      ]
+    },
     content: `
       <p>Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? Ou que ele seca em 5 minutos e já está com aspecto de palha de novo? O problema pode não ser o produto, mas sim a porosidade do seu fio.</p>
 
@@ -2873,6 +3113,36 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-frizz-dano.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre o frizz natural e o frizz de dano no cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O frizz natural (ou de textura) é o comportamento normal de fios com curvatura em dias úmidos, sendo macio ao toque e mantendo a elasticidade do cacho. O frizz de dano é causado por quebra, pontas duplas ou porosidade excessiva. Ele deixa o cabelo com toque áspero, opaco e quebradiço, indicando falta de tratamento ou corte."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que causa o frizz no cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O frizz acontece quando a cutícula do fio se levanta, geralmente porque o cabelo está seco e tenta absorver a umidade do ar. Outras causas comuns incluem atrito mecânico (como fronhas e toalhas de algodão comuns), eletricidade estática e o uso de produtos com sulfatos fortes que ressecam a fibra capilar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como reduzir o frizz de dano sem perder o volume natural do cacho?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Foque em tratamentos de nutrição e reconstrução para preencher os danos da fibra capilar, além de usar um acidificante para manter as cutículas seladas. Na hora de finalizar, use toalhas de microfibra ou camisetas de algodão para secar o cabelo e evite passar as mãos nos cachos enquanto eles estiverem secando."
+          }
+        }
+      ]
+    },
     content: `
       <p>Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz. Muita gente entra em pânico ao ver o primeiro fiozinho "arrepiado", mas a verdade nua e crua é esta: frizz não é, automaticamente, sinal de cabelo destruído.</p>
 
@@ -3068,6 +3338,36 @@ export const posts = [
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-transicao-bh.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que o corte a seco é recomendado para quem está em transição capilar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O corte a seco permite que o especialista veja exatamente onde a nova curvatura natural começa e como o cabelo se comporta sem o peso da água. Cortar o cabelo seco evita surpresas com o fator de encolhimento e ajuda a criar camadas que disfarçam a transição entre a raiz cacheada e as pontas alisadas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual o perigo de fazer um corte molhado tradicional durante a transição?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Quando o cabelo está molhado, a água estica a raiz cacheada, fazendo com que ela pareça mais longa do que realmente é. Cortar nessa condição pode resultar em um corte desigual ou com \"degraus\" marcados entre a parte com química e a parte natural assim que o cabelo secar e encolher."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Sou obrigada a fazer o Big Chop (grande corte) de uma vez só?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. No Studio do Jon, nós respeitamos o seu tempo e o seu estilo de vida. Se você não se sente confortável com o cabelo curto, podemos traçar um plano de cortes progressivos trimestrais para remover as pontas lisas aos poucos, mantendo o comprimento com o qual você se sinta segura."
+          }
+        }
+      ]
+    },
     content: `
       <p>Decidir parar com a química e assumir a textura natural é um ato de coragem, mas a gente sabe: a fase das "duas texturas" não é fácil. Se você está em transição capilar em Belo Horizonte, provavelmente já se pegou no espelho sem saber o que fazer com a raiz cacheada e as pontas lisas.</p>
 

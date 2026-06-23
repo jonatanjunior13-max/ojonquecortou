@@ -50,6 +50,71 @@ const minToTime = (min) => {
   const m = min % 60;
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 };
+
+const calculateOverlappingLayout = (items) => {
+  if (!items || items.length === 0) return [];
+  const sorted = [...items].sort((a, b) => {
+    if (a.startMin !== b.startMin) return a.startMin - b.startMin;
+    return (b.endMin - b.startMin) - (a.endMin - a.startMin);
+  });
+
+  const clusters = [];
+  let currentCluster = [];
+  let clusterEnd = 0;
+
+  sorted.forEach(item => {
+    if (currentCluster.length === 0) {
+      currentCluster.push(item);
+      clusterEnd = item.endMin;
+    } else if (item.startMin < clusterEnd) {
+      currentCluster.push(item);
+      clusterEnd = Math.max(clusterEnd, item.endMin);
+    } else {
+      clusters.push(currentCluster);
+      currentCluster = [item];
+      clusterEnd = item.endMin;
+    }
+  });
+  if (currentCluster.length > 0) {
+    clusters.push(currentCluster);
+  }
+
+  const result = [];
+
+  clusters.forEach(cluster => {
+    const columns = [];
+    cluster.forEach(item => {
+      let placed = false;
+      for (let i = 0; i < columns.length; i++) {
+        const col = columns[i];
+        const last = col[col.length - 1];
+        if (item.startMin >= last.endMin) {
+          col.push(item);
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        columns.push([item]);
+      }
+    });
+
+    const totalColumns = columns.length;
+    columns.forEach((col, colIdx) => {
+      col.forEach(item => {
+        const width = 100 / totalColumns;
+        const left = colIdx * width;
+        result.push({
+          ...item,
+          leftPercent: left,
+          widthPercent: width
+        });
+      });
+    });
+  });
+
+  return result;
+};
 const PAY_METHODS = ['Pix','Dinheiro','Débito','Crédito','Cortesia'];
 const GALLERY_CATS = ['Todos','Antes/Depois','Cortes','Coloração','Tratamento','Geral'];
 const CURL_TYPES = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C'];
@@ -243,6 +308,8 @@ export default function AdminMobileApp() {
   const [splitDebitAnticipation, setSplitDebitAnticipation] = useState(false);
 
   const [touchStart, setTouchStart] = useState(null);
+  const [touchStartY, setTouchStartY] = useState(null);
+  const [activeSwipeDirection, setActiveSwipeDirection] = useState(null);
   const [translateX, setTranslateX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [slideStyle, setSlideStyle] = useState({});
@@ -636,20 +703,47 @@ export default function AdminMobileApp() {
   const handleTouchStart = (e) => {
     if (transitioning) return;
     setTouchStart(e.targetTouches[0].clientX);
-    setIsDragging(true);
+    setTouchStartY(e.targetTouches[0].clientY);
+    setActiveSwipeDirection(null);
+    setIsDragging(false);
   };
 
   const handleTouchMove = (e) => {
-    if (!isDragging || touchStart === null) return;
-    const currentTouch = e.targetTouches[0].clientX;
-    const diff = currentTouch - touchStart;
-    const cappedDiff = Math.max(-150, Math.min(150, diff));
-    setTranslateX(cappedDiff);
+    if (touchStart === null) return;
+    const currentTouchX = e.targetTouches[0].clientX;
+    const currentTouchY = e.targetTouches[0].clientY;
+    const diffX = currentTouchX - touchStart;
+    const diffY = currentTouchY - (touchStartY !== null ? touchStartY : currentTouchY);
+
+    let direction = activeSwipeDirection;
+    if (direction === null) {
+      const absX = Math.abs(diffX);
+      const absY = Math.abs(diffY);
+      if (absX > 10 || absY > 10) {
+        if (absX > absY) {
+          direction = 'horizontal';
+          setActiveSwipeDirection('horizontal');
+          setIsDragging(true);
+        } else {
+          direction = 'vertical';
+          setActiveSwipeDirection('vertical');
+        }
+      }
+    }
+
+    if (direction === 'horizontal') {
+      const cappedDiff = Math.max(-150, Math.min(150, diffX));
+      setTranslateX(cappedDiff);
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    }
   };
 
   const handleTouchEnd = () => {
-    if (!isDragging) return;
     setIsDragging(false);
+    setActiveSwipeDirection(null);
+    setTouchStartY(null);
     if (translateX !== 0) {
       const threshold = 60;
       if (translateX > threshold) {
@@ -673,19 +767,42 @@ export default function AdminMobileApp() {
   const handleMouseDown = (e) => {
     if (transitioning) return;
     setTouchStart(e.clientX);
-    setIsDragging(true);
+    setTouchStartY(e.clientY);
+    setActiveSwipeDirection(null);
+    setIsDragging(false);
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging || touchStart === null) return;
-    const diff = e.clientX - touchStart;
-    const cappedDiff = Math.max(-150, Math.min(150, diff));
-    setTranslateX(cappedDiff);
+    if (touchStart === null) return;
+    const diffX = e.clientX - touchStart;
+    const diffY = e.clientY - (touchStartY !== null ? touchStartY : e.clientY);
+
+    let direction = activeSwipeDirection;
+    if (direction === null) {
+      const absX = Math.abs(diffX);
+      const absY = Math.abs(diffY);
+      if (absX > 10 || absY > 10) {
+        if (absX > absY) {
+          direction = 'horizontal';
+          setActiveSwipeDirection('horizontal');
+          setIsDragging(true);
+        } else {
+          direction = 'vertical';
+          setActiveSwipeDirection('vertical');
+        }
+      }
+    }
+
+    if (direction === 'horizontal') {
+      const cappedDiff = Math.max(-150, Math.min(150, diffX));
+      setTranslateX(cappedDiff);
+    }
   };
 
   const handleMouseUp = () => {
-    if (!isDragging) return;
     setIsDragging(false);
+    setActiveSwipeDirection(null);
+    setTouchStartY(null);
     if (translateX !== 0) {
       const threshold = 60;
       if (translateX > threshold) {
@@ -2240,7 +2357,7 @@ Grande abraço, Jon.`;
           ) : (
             <div className="m-booking-list">
               {todayBookings.slice(0, 6).map(b => (
-                <div key={b.id} className="m-booking-card" onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
+                <div key={b.id} className={`m-booking-card svc-${(b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                   <div className="m-booking-time">{b.time || '—'}</div>
                   <div className="m-booking-info">
                     <div 
@@ -2296,28 +2413,138 @@ Grande abraço, Jon.`;
 
   // ── TAB: AGENDA ────────────────────────────────────────────────
   const renderAgenda = () => {
-    const dayBookings = bookings.filter(b => b.date === currentDate);
+    const dayBookings = bookings.filter(b => b.date === currentDate && b.status !== 'cancelado');
+    const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
+    
+    // Collect absences
+    const effectiveAbsences = getEffectiveAbsences(settings);
+    const dayAbsences = effectiveAbsences.filter(a => absenceCoversDate(a, currentDate));
+
+    // Lunch lock
+    const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_12:00`) === 'true';
+    const hasLunchBooking = dayBookings.some(b => {
+      const bStart = timeToMin(b.time);
+      const bEnd = bStart + (b.duration || 60);
+      return Math.max(bStart, 720) < Math.min(bEnd, 780);
+    });
+    const isLunchLocked = !isUnlockedLocal && !hasLunchBooking;
+
+    const layoutItems = [];
+
+    // Add bookings
+    dayBookings.forEach(b => {
+      layoutItems.push({
+        id: b.id,
+        type: 'booking',
+        startMin: timeToMin(b.time),
+        endMin: timeToMin(b.time) + (b.duration || 60),
+        raw: b
+      });
+    });
+
+    // Add scale blocks (folga, feriado, etc.)
+    const dtForLabel = parseLocalDate(currentDate);
+    const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
+    const isHolidayDay = isFeriado(currentDate);
+    const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
+
+    if (isHolidayDay || isSunMon) {
+      layoutItems.push({
+        id: 'full-day-block',
+        type: 'scale_block',
+        startMin: 480, // 08:00
+        endMin: 1260,  // 21:00
+        label: isHolidayDay ? 'Feriado' : 'Folga',
+        raw: { label: isHolidayDay ? 'Feriado' : 'Folga' }
+      });
+    } else {
+      // Check scale blocks from professional config
+      HOURLY_SLOTS.forEach(slot => {
+        if (isSlotBlocked(prof, currentDate, slot)) {
+          layoutItems.push({
+            id: `scale-block-${slot}`,
+            type: 'scale_block',
+            startMin: timeToMin(slot),
+            endMin: timeToMin(slot) + 60,
+            label: 'Escala Bloqueada',
+            raw: { label: 'Escala Bloqueada' }
+          });
+        }
+      });
+
+      // Add default lunch block
+      if (isLunchLocked) {
+        layoutItems.push({
+          id: 'lunch-block',
+          type: 'lunch_block',
+          startMin: 720, // 12:00
+          endMin: 780,  // 13:00
+          label: 'Almoço',
+          raw: { label: 'Almoço' }
+        });
+      }
+    }
+
+    // Add absences
+    dayAbsences.forEach((abs, idx) => {
+      const start = abs.allDay ? '08:00' : (abs.startTime || '08:00');
+      const end = abs.allDay ? '21:00' : (abs.endTime || '21:00');
+      layoutItems.push({
+        id: `absence-${abs.id || idx}`,
+        type: 'absence',
+        startMin: timeToMin(start),
+        endMin: timeToMin(end),
+        label: abs.title,
+        raw: abs
+      });
+    });
+
+    const positionedItems = calculateOverlappingLayout(layoutItems);
 
     return (
-      <div className="m-tab m-page-flush" key="agenda">
+      <div className="m-tab m-page-flush" key="agenda" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Week strip */}
-        <div className="m-week-strip">
-          {weekDays.map(d => {
-            const dt = parseLocalDate(d);
-            const dayIdx = getAdjustedDay(dt);
-            const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
-            return (
-              <button key={d} className={`m-week-day ${d === currentDate ? 'active' : ''} ${hasBk ? 'has-bookings' : ''}`} onClick={() => setCurrentDate(d)}>
-                <span className="m-week-day-name">{DAYS[dayIdx]}</span>
-                <span className="m-week-day-num">{dt.getDate()}</span>
-                <span className="m-week-day-dot"/>
-              </button>
-            );
-          })}
+        <div style={{ display: 'flex', alignItems: 'center', background: 'var(--m-surface)', borderBottom: '0.5px solid var(--m-rule)', flexShrink: 0 }}>
+          <button 
+            style={{ background: 'none', border: 'none', color: 'var(--m-muted)', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+            onClick={() => {
+              const d = parseLocalDate(currentDate);
+              d.setDate(d.getDate() - 7);
+              setCurrentDate(dateStr(d));
+            }}
+          >
+            <ChevronLeft size={16} />
+          </button>
+          
+          <div className="m-week-strip" style={{ flex: 1, borderBottom: 'none', padding: '10px 0' }}>
+            {weekDays.map(d => {
+              const dt = parseLocalDate(d);
+              const dayIdx = getAdjustedDay(dt);
+              const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
+              return (
+                <button key={d} className={`m-week-day ${d === currentDate ? 'active' : ''} ${hasBk ? 'has-bookings' : ''}`} onClick={() => setCurrentDate(d)}>
+                  <span className="m-week-day-name">{DAYS[dayIdx]}</span>
+                  <span className="m-week-day-num">{dt.getDate()}</span>
+                  <span className="m-week-day-dot"/>
+                </button>
+              );
+            })}
+          </div>
+
+          <button 
+            style={{ background: 'none', border: 'none', color: 'var(--m-muted)', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+            onClick={() => {
+              const d = parseLocalDate(currentDate);
+              d.setDate(d.getDate() + 7);
+              setCurrentDate(dateStr(d));
+            }}
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Date navigation */}
-        <div className="m-agenda-date-bar">
+        <div className="m-agenda-date-bar" style={{ flexShrink: 0 }}>
           <button className="m-date-nav" onClick={() => animateDayChange(-1)}><ChevronLeft size={18}/></button>
           <div className="m-date-center">
             <div className="m-date-day">{fmtDate(currentDate)}</div>
@@ -2325,15 +2552,18 @@ Grande abraço, Jon.`;
           <button className="m-date-nav" onClick={() => animateDayChange(1)}><ChevronRight size={18}/></button>
         </div>
 
-        {/* Swipeable container */}
+        {/* Timeline Grid Container */}
         <div 
           style={{ 
-            flex:1, 
-            display:'flex', 
-            flexDirection:'column', 
-            overflow:'hidden',
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'row',
+            overflowY: isDragging ? 'hidden' : 'auto',
+            overflowX: 'hidden',
             position: 'relative',
             cursor: isDragging ? 'grabbing' : 'grab',
+            userSelect: 'none',
+            WebkitUserSelect: 'none'
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -2343,160 +2573,238 @@ Grande abraço, Jon.`;
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          <div 
-            style={{ 
-              flex:1, 
-              display:'flex', 
-              flexDirection:'column', 
-              overflowY: isDragging ? 'hidden' : 'auto',
-              overflowX: 'hidden',
-              willChange: 'transform, opacity',
-              touchAction: 'pan-y',
-              ...(isDragging ? { transform: `translateX(${translateX}px)`, transition: 'none' } : slideStyle)
-            }}
-          >
-            <div className="m-slot-list" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
-              {HOURLY_SLOTS.map(slot => {
+          {/* Hours column on the left */}
+          <div style={{ width: 60, display: 'flex', flexDirection: 'column', borderRight: '0.5px solid var(--m-rule)', background: 'var(--m-bg)', position: 'relative', height: HOURLY_SLOTS.length * 60 }}>
+            {HOURLY_SLOTS.map(hour => {
+              const hourMin = timeToMin(hour);
+              const topPx = hourMin - 480;
+              return (
+                <div key={hour} style={{ position: 'absolute', top: topPx, left: 0, right: 0, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'var(--m-muted)', fontFamily: '"Bricolage Grotesque", sans-serif', fontWeight: 600, zIndex: 2 }}>
+                  <span style={{ background: 'var(--m-bg)', padding: '0 4px' }}>
+                    {hour}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Grid lines and absolute cards column on the right */}
+          <div style={{ flex: 1, position: 'relative', height: HOURLY_SLOTS.length * 60, background: 'var(--m-bg)' }}>
+            {/* Horizontal lines */}
+            {HOURLY_SLOTS.map((_, i) => (
+              <div key={i} style={{ height: 60, borderBottom: '0.5px solid var(--m-rule)', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 30, left: 0, right: 0, borderBottom: '0.5px dashed var(--m-rule)' }} />
+              </div>
+            ))}
+
+            {/* Clickable background cells (for scheduling in empty slots) */}
+            {HOURLY_SLOTS.flatMap(hour => {
+              const hourPrefix = hour.substring(0, 3);
+              return [`${hourPrefix}00`, `${hourPrefix}30`].map(slot => {
                 const slotMin = timeToMin(slot);
-                const bks = dayBookings.filter(b => {
-                  if (b.status === 'cancelado') return false;
-                  const bStart = timeToMin(b.time);
-                  const bEnd = bStart + (b.duration || 60);
-                  return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
-                });
-
-                const displayTimeRange = bks.length === 1 
-                  ? `${bks[0].time} - ${minToTime(timeToMin(bks[0].time) + (bks[0].duration || 60))}${timeToMin(bks[0].time) < slotMin ? ' (Ocupado)' : ''}`
-                  : slot;
-
-                const isDefaultLunchBlock = (slot === '12:00');
-                const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
-                const isLocked = isDefaultLunchBlock && !isUnlockedLocal && bks.length === 0;
-
-                const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
-                const isBlockedByScale = bks.length === 0 && isSlotBlocked(prof, currentDate, slot);
-                const absence = bks.length === 0 ? getAbsenceForSlot(getEffectiveAbsences(settings), currentDate, slot) : null;
-
-                const dtForLabel = parseLocalDate(currentDate);
-                const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
-                const isHolidayDay = isFeriado(currentDate);
-                const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
-
+                const hasItem = layoutItems.some(item => slotMin >= item.startMin && slotMin < item.endMin);
+                if (hasItem) return null;
                 return (
-                  <div key={slot} className="m-slot-row" onClick={() => {
-                    if (bks.length === 0) {
-                      if (absence) {
-                        if (window.confirm(`Este horário está bloqueado por uma ausência (${absence.title}). Deseja agendar mesmo assim?`)) {
-                          setSelectedSlot(slot); setShowSlotSheet(true);
-                        }
-                      }
-                      else if (isBlockedByScale) {
-                        if (window.confirm("Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?\n\n(Para liberar o horário sem agendar agora, clique em Cancelar)")) {
-                          setSelectedSlot(slot); setShowSlotSheet(true);
-                        } else if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
-                          localStorage.setItem(`unlock_${currentDate}_${slot}`, 'true');
-                          showToast("Horário liberado!", "success");
-                          window.location.reload();
-                        }
-                      }
-                      else { setSelectedSlot(slot); setShowSlotSheet(true); }
-                    } else {
-                      setSelectedBooking(bks[0]);
+                  <div
+                    key={slot}
+                    style={{
+                      position: 'absolute',
+                      top: slotMin - 480,
+                      height: 30,
+                      left: 0,
+                      right: 0,
+                      cursor: 'pointer',
+                      zIndex: 1
+                    }}
+                    onClick={() => {
+                      setSelectedSlot(slot);
+                      setShowSlotSheet(true);
+                    }}
+                  />
+                );
+              });
+            })}
+
+            {/* Render positioned items absolutely */}
+            {positionedItems.map(item => {
+              const startMin = item.startMin;
+              const duration = Math.max(30, item.endMin - startMin);
+              const topPx = startMin - 480;
+              const heightPx = duration - 2;
+
+              const left = item.leftPercent;
+              const width = item.widthPercent;
+
+              if (item.type === 'booking') {
+                const bk = item.raw;
+                return (
+                  <div
+                    key={item.id}
+                    className={`m-slot-booking ${bk.status} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`}
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      overflow: 'hidden',
+                      borderRadius: '8px',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.12)',
+                      cursor: 'pointer'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedBooking(bk);
                       setShowBookingSheet(true);
-                    }
-                  }}>
-                    <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
-                    <div className="m-slot-content">
-                      {bks.length > 0 ? (
-                        <div style={{ display: 'flex', gap: '6px', flex: 1, flexDirection: 'row', width: '100%', minWidth: 0, overflow: 'hidden' }}>
-                          {bks.map(bk => {
-                            const bStart = timeToMin(bk.time);
-                            const bEnd = bStart + (bk.duration || 60);
-                            const isSubsequent = bStart < slotMin;
-                            
-                            return (
-                              <div 
-                                key={bk.id} 
-                                className={`m-slot-booking ${bk.status}`} 
-                                style={{ flex: 1, minWidth: '0', height: '54px', cursor: 'pointer', padding: '6px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '6px', overflow: 'hidden' }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedBooking(bk);
-                                  setShowBookingSheet(true);
-                                }}
-                              >
-                                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, overflow: 'hidden' }}>
-                                  <div 
-                                    className="m-slot-client"
-                                    style={{ 
-                                      position: 'relative', 
-                                      display: 'inline-block',
-                                      whiteSpace: 'nowrap',
-                                      overflow: 'hidden',
-                                      textOverflow: 'ellipsis',
-                                      maxWidth: '100%',
-                                      fontSize: '0.8rem',
-                                      fontWeight: 700
-                                    }}
-                                  >
-                                    {bk.clientName}
-                                    {isClientRecurrent(bk.clientName, bk.clientPhone) && (
-                                      <span style={{
-                                        position: 'absolute',
-                                        top: '-2px',
-                                        right: '-8px',
-                                        width: '5px',
-                                        height: '5px',
-                                        borderRadius: '50%',
-                                        backgroundColor: 'var(--m-gold, #dca354)'
-                                      }} />
-                                    )}
-                                  </div>
-                                  <div className="m-slot-svc" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block', maxWidth: '100%', fontSize: '0.65rem', color: 'var(--m-muted)' }}>
-                                    {bk.service?.name || bk.serviceName}
-                                  </div>
-                                </div>
-                                <StatusPill status={bk.status}/>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : isLocked ? (
-                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
-                          <div>
-                            <div className="m-slot-client" style={{ color: 'var(--m-red)' }}>Bloqueio de Almoço</div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
-                          </div>
-                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
-                        </div>
-                      ) : absence ? (
-                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(139, 124, 200, 0.12)', borderLeft: '4px solid #8b7cc8', color: '#8b7cc8' }}>
-                          <div>
-                            <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <Lock size={12} /> {absence.title}
-                            </div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)' }}>Ausência</div>
-                          </div>
-                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(139, 124, 200, 0.22)', color: '#8b7cc8' }}>Ausência</span>
-                        </div>
-                      ) : isBlockedByScale ? (
-                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(163, 150, 135, 0.1)', borderLeft: '4px solid #8A7866', color: '#8A7866' }}>
-                          <div>
-                            <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <Lock size={12} /> Bloqueado
-                            </div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)' }}>{blockLabel}</div>
-                          </div>
-                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
-                        </div>
-                      ) : (
-                        <span className="m-slot-empty">Disponível</span>
-                      )}
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                      <span
+                        className="m-slot-client"
+                        style={{
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          color: '#ffffff',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          flex: 1
+                        }}
+                      >
+                        {bk.clientName}
+                      </span>
+                      <StatusPill status={bk.status} />
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
+                      <span className="m-slot-time" style={{ fontSize: '0.65rem', color: '#ffffff', opacity: 0.9, fontWeight: 700 }}>
+                        {bk.time} - {minToTime(timeToMin(bk.time) + (bk.duration || 60))}
+                      </span>
+                    </div>
+                    <div
+                      className="m-slot-svc"
+                      style={{
+                        fontSize: '0.68rem',
+                        color: '#ffffff',
+                        opacity: 0.85,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        marginTop: 1,
+                        fontWeight: 500
+                      }}
+                    >
+                      {bk.service?.name || bk.serviceName}
                     </div>
                   </div>
                 );
-              })}
-            </div>
+              }
+
+              if (item.type === 'lunch_block') {
+                return (
+                  <div
+                    key={item.id}
+                    className="m-slot-booking bloqueado"
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: 'rgba(235, 94, 85, 0.1)',
+                      borderLeft: '4px solid var(--m-red)',
+                      color: 'var(--m-red)'
+                    }}
+                    onClick={() => {
+                      if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
+                        localStorage.setItem(`unlock_${currentDate}_12:00`, 'true');
+                        showToast("Horário liberado!", "success");
+                        window.location.reload();
+                      }
+                    }}
+                  >
+                    <div>
+                      <div className="m-slot-client" style={{ color: 'var(--m-red)', fontSize: '0.75rem' }}>Bloqueio de Almoço</div>
+                      <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)', fontSize: '0.62rem' }}>Toque para liberar</div>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (item.type === 'absence') {
+                const abs = item.raw;
+                return (
+                  <div
+                    key={item.id}
+                    className="m-slot-booking bloqueado"
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      background: 'rgba(139, 124, 200, 0.12)',
+                      borderLeft: '4px solid #8b7cc8',
+                      color: '#8b7cc8'
+                    }}
+                  >
+                    <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                      <Lock size={10} /> {abs.title}
+                    </div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)', fontSize: '0.62rem' }}>Ausência</div>
+                  </div>
+                );
+              }
+
+              if (item.type === 'scale_block') {
+                return (
+                  <div
+                    key={item.id}
+                    className="m-slot-booking bloqueado"
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      background: 'rgba(163, 150, 135, 0.1)',
+                      borderLeft: '4px solid #8A7866',
+                      color: '#8A7866'
+                    }}
+                  >
+                    <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                      <Lock size={10} /> Bloqueado
+                    </div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)', fontSize: '0.62rem' }}>{item.label}</div>
+                  </div>
+                );
+              }
+
+              return null;
+            })}
           </div>
         </div>
       </div>
