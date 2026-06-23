@@ -58,29 +58,20 @@
   width: 100%;
 }
 
-.sidebar-logo-container {
-  font-family: var(--font-display, "Bricolage Grotesque", sans-serif);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: #ffffff;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
+.sidebar-logo-img {
+  width: 54px;
+  height: auto;
+  max-height: 48px;
+  object-fit: contain;
+  filter: invert(1) contrast(1.1) brightness(1.2);
+  mix-blend-mode: screen;
+  transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: width, max-height;
 }
 
-.brand-dot {
-  color: var(--adm-gold); /* #FF2D8B */
-}
-
-.brand-on {
-  display: none;
-}
-
-.admin-sidebar:hover .brand-on {
-  display: inline;
+.admin-sidebar:hover .sidebar-logo-img {
+  width: 140px;
+  max-height: 72px;
 }
 
 .sidebar-nav {
