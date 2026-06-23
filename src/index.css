@@ -9,9 +9,9 @@
   --muted-2: #808080;
   --rule: rgba(255, 255, 255, 0.12);
   --rule-soft: rgba(255, 255, 255, 0.06);
-  --accent: #FF2D8B;
-  --accent-deep: #D01C6A;
-  --accent-warm: #FF5EAD;
+  --accent: #C4738A;
+  --accent-deep: #9E4E62;
+  --accent-warm: #D9A0B2;
   --dark-bg: #0A0A0A;
   --dark-surface: #141414;
 
@@ -21,9 +21,9 @@
   --mono: "JetBrains Mono", monospace;
 
   /* Support colors for gallery */
-  --support-1: #FF2D8B;
-  --support-2: #D01C6A;
-  --support-3: #FF5EAD;
+  --support-1: #C4738A;
+  --support-2: #9E4E62;
+  --support-3: #D9A0B2;
   --support-4: #F2B705;
   --support-5: #1F6FEB;
 
@@ -31,7 +31,7 @@
   --espectro-corte:      #E2703A;
   --espectro-cor:        #7A3CFF;
   --espectro-trat:       #1F6FEB;
-  --espectro-pink:       #FF2D8B;
+  --espectro-pink:       #C4738A;
 
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
 }

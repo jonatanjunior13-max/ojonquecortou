@@ -135,7 +135,7 @@ function FAQItem({ question, answer }) {
           fontSize: 'clamp(1rem, 2vw, 1.15rem)',
           fontWeight: 400,
           lineHeight: 1.35,
-          color: open ? 'var(--accent, #FF2D8B)' : 'var(--ink, #1A1310)',
+          color: open ? 'var(--accent, #C4738A)' : 'var(--ink, #1A1310)',
           transition: 'color 0.2s ease',
         }}>
           {question}
@@ -150,7 +150,7 @@ function FAQItem({ question, answer }) {
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: '1rem',
-          color: open ? 'var(--accent, #FF2D8B)' : 'var(--muted, #a39687)',
+          color: open ? 'var(--accent, #C4738A)' : 'var(--muted, #a39687)',
           transform: open ? 'rotate(45deg)' : 'rotate(0deg)',
           transition: 'transform 0.25s ease, color 0.2s ease',
           lineHeight: 1,
@@ -224,7 +224,7 @@ const MetodoPage = () => {
             <span style={{
               fontFamily: "'Instrument Serif', Georgia, serif",
               fontStyle: 'italic',
-              color: 'var(--accent, #FF2D8B)',
+              color: 'var(--accent, #C4738A)',
               display: 'block',
             }}>
               de Fio
@@ -278,7 +278,7 @@ const MetodoPage = () => {
                 <div style={{
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: 'clamp(1.25rem, 3vw, 1.75rem)',
-                  color: 'var(--accent, #FF2D8B)',
+                  color: 'var(--accent, #C4738A)',
                   fontWeight: 600,
                   opacity: 0.8,
                   lineHeight: 1,

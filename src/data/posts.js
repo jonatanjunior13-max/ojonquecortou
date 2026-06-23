@@ -870,7 +870,7 @@ export const posts = [
       <div style="overflow-x: auto; margin: 1.5rem 0;">
         <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
           <thead>
-            <tr style="background-color: rgba(200, 133, 42, 0.15); border-bottom: 2px solid var(--color-yellow, #FF2D8B);">
+            <tr style="background-color: rgba(200, 133, 42, 0.15); border-bottom: 2px solid var(--color-yellow, #F2B705);">
               <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Tipo de Fio</th>
               <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Rotina e Produtos</th>
               <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Método de Secagem</th>
@@ -2960,7 +2960,7 @@ export const posts = [
       <div style="overflow-x: auto; margin: 1.5rem 0;">
         <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
           <thead>
-            <tr style="background-color: rgba(200, 133, 42, 0.15); border-bottom: 2px solid var(--color-yellow, #FF2D8B);">
+            <tr style="background-color: rgba(200, 133, 42, 0.15); border-bottom: 2px solid var(--color-yellow, #F2B705);">
               <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Nível de Porosidade</th>
               <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Estado das Cutículas</th>
               <th style="padding: 12px; text-align: left; font-weight: 700; color: #fff;">Resultado no Teste do Copo</th>
