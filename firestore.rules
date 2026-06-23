@@ -10,7 +10,9 @@ service cloud.firestore {
     // ============================
     match /bookings/{bookingId} {
       allow create: if true; // público pode agendar
-      allow read, update, delete: if request.auth != null; // admin autenticado
+      allow read: if true; // público ou webhook pode ler para cruzar dados
+      allow update: if true; // permite webhook atualizar status
+      allow delete: if request.auth != null; // admin autenticado
     }
 
     // ============================
