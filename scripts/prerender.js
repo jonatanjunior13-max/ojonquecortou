@@ -328,7 +328,10 @@ const founderPersonSchema = {
     "@id": "https://www.ojonquecortou.com.br/#localbusiness"
   },
   "sameAs": [
-    "https://www.instagram.com/ojonquecortou/"
+    "https://www.instagram.com/ojonquecortou/",
+    "https://www.facebook.com/ojonquecortou/",
+    "https://linktr.ee/ojonquecortou",
+    "https://www.google.com/maps?cid=16629671607593282841"
   ]
 };
 
@@ -473,7 +476,24 @@ const pages = [
     bodyInsert: homeBody,
     schema: {
       "@context": "https://schema.org",
-      "@graph": [localBusinessSchema, founderPersonSchema]
+      "@graph": [
+        localBusinessSchema,
+        founderPersonSchema,
+        {
+          "@type": "WebSite",
+          "@id": "https://www.ojonquecortou.com.br/#website",
+          "name": "Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://www.ojonquecortou.com.br/blog?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
     }
   },
   {
@@ -525,8 +545,12 @@ const pages = [
         "url": "https://www.ojonquecortou.com.br"
       },
       "url": "https://www.ojonquecortou.com.br/sobre",
+      "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
       "sameAs": [
-        "https://www.instagram.com/ojonquecortou"
+        "https://www.instagram.com/ojonquecortou/",
+        "https://www.facebook.com/ojonquecortou/",
+        "https://linktr.ee/ojonquecortou",
+        "https://www.google.com/maps?cid=16629671607593282841"
       ],
       "knowsAbout": [
         "Método Leitura de Fio",
@@ -542,7 +566,15 @@ const pages = [
   {
     route: '/blog',
     title: 'Blog do Jon | Dicas e Cuidados para Cabelo Cacheado e Crespo',
-    description: 'Dicas práticas, guias de produtos, técnicas de finalização e tudo o que você precisa saber sobre cabelos cacheados, crespos e ondulados.'
+    description: 'Dicas práticas, guias de produtos, técnicas de finalização e tudo o que você precisa saber sobre cabelos cacheados, crespos e ondulados.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Blog — Studio do Jon",
+      "description": "Dicas e guias sobre cabelos ondulados, cacheados e crespos por Jonatan Junior, especialista em curvaturas em Belo Horizonte.",
+      "url": "https://www.ojonquecortou.com.br/blog",
+      "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" }
+    }
   },
   {
     route: '/depoimentos',
@@ -559,6 +591,10 @@ const pages = [
     schema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": ["h1", "h2", "dt"]
+      },
       "mainEntity": fullFaqList.map(faq => ({
         "@type": "Question",
         "name": faq.q,
@@ -576,11 +612,34 @@ const pages = [
     bodyInsert: metodoBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "Service",
-      "name": "Método Leitura de Fio",
-      "provider": localBusinessSchema,
-      "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
-      "url": "https://www.ojonquecortou.com.br/metodo"
+      "@graph": [
+        {
+          "@type": "Article",
+          "headline": "Método Leitura de Fio — Studio do Jon",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "h2"]
+          },
+          "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" },
+          "publisher": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.ojonquecortou.com.br/metodo" }
+        },
+        {
+          "@type": "HowTo",
+          "name": "Método Leitura de Fio — 7 Etapas de Diagnóstico Capilar",
+          "description": "Protocolo clínico-estético de análise capilar realizado antes de qualquer corte no Studio do Jon.",
+          "totalTime": "PT30M",
+          "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Escuta", "text": "Ouvimos a história do cabelo, rotina de cuidados, histórico de procedimentos e objetivo do cliente." },
+            { "@type": "HowToStep", "position": 2, "name": "Análise a seco", "text": "Mapeamos volume, caimento e distribuição real da curvatura com o cabelo seco e finalizado do cliente." },
+            { "@type": "HowToStep", "position": 3, "name": "Diagnóstico do couro cabeludo", "text": "Avaliamos oleosidade, sensibilidade e saúde do couro para definir protocolos de limpeza adequados." },
+            { "@type": "HowToStep", "position": 4, "name": "Histórico químico", "text": "Levantamos todo processo químico anterior: colorações, descolorações, relaxamentos e alisamentos." },
+            { "@type": "HowToStep", "position": 5, "name": "Análise molhada", "text": "Testamos porosidade e elasticidade do fio úmido para identificar o estado real da fibra capilar." },
+            { "@type": "HowToStep", "position": 6, "name": "Definição de técnica", "text": "Com base nas 5 etapas anteriores, definimos a técnica exata de corte: molhado, seco ou híbrido." },
+            { "@type": "HowToStep", "position": 7, "name": "Finalização como validação", "text": "Finalizamos o cabelo para validar o corte na textura real do cliente e ensinar a rotina de casa." }
+          ]
+        }
+      ]
     }
   },
   {
@@ -606,7 +665,23 @@ const pages = [
   {
     route: '/galeria',
     title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
-    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.'
+    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.',
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Galeria de Resultados — Studio do Jon</h1>
+      <p>Fotos reais de antes e depois de clientes com cabelos cacheados, crespos e ondulados atendidos pelo Jon no bairro Caiçara, Belo Horizonte. Os resultados incluem cortes especializados com Método Leitura de Fio, descolorações em cabelo texturizado, tratamentos personalizados e transformações de transição capilar.</p>
+      <p>Para agendar seu atendimento e ter seu resultado registrado: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
+    </article>
+  </noscript>`,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      "name": "Galeria de Resultados — Studio do Jon",
+      "description": "Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados e crespos atendidos pelo Jon em Belo Horizonte.",
+      "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" },
+      "url": "https://www.ojonquecortou.com.br/galeria"
+    }
   },
   {
     route: '/servicos/descoloracao-cabelo-cacheado',
@@ -698,6 +773,10 @@ posts.forEach(post => {
   const isoDate = parseDateToISO(post.date);
   const currentDate = new Date().toISOString().split('T')[0];
   
+  const wordCount = post.content
+    ? post.content.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length
+    : 0;
+
   const articleSchema = {
     "@type": "Article",
     "headline": post.title,
@@ -714,6 +793,7 @@ posts.forEach(post => {
     },
     "datePublished": post.datePublished || isoDate,
     "dateModified": currentDate,
+    "wordCount": wordCount,
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`

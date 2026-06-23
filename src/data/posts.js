@@ -92,6 +92,15 @@ export const posts = [
     category: 'Cuidado Capilar',
     image: '/blog-porosidade.webp',
     schemaType: 'BlogPosting',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é acidificação capilar?", "acceptedAnswer": { "@type": "Answer", "text": "É um procedimento que devolve o pH ácido (4,5–5,5) ao fio, forçando o fechamento das cutículas abertas por processos químicos ou alcalinos. É a única solução física real para alta porosidade." } },
+        { "@type": "Question", "name": "Qual é o pH ideal do cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "O pH fisiológico do cabelo fica entre 4,5 e 5,5 — levemente ácido. Nesse range, as cutículas ficam seladas, retendo umidade e brilho. Produtos alcalinos (acima de 7,0) abrem as cutículas e causam frizz e ressecamento." } },
+        { "@type": "Question", "name": "Por que minha hidratação não funciona mesmo com produtos caros?", "acceptedAnswer": { "@type": "Answer", "text": "Se o fio está com alta porosidade e pH desequilibrado, as cutículas abertas não retêm os nutrientes. É como encher um balde furado. A acidificação precede qualquer tratamento para que a hidratação realmente entre e fique no fio." } }
+      ]
+    },
     content: `
       <p>A acidificação capilar é um procedimento que equilibra o pH ácido do fio para selar as cutículas do cabelo cacheado, sendo a única solução física eficiente para alta porosidade. Se você tem cabelos ondulados, cacheados ou crespos, com certeza já passou pela frustração de aplicar a melhor máscara do mercado e, poucas horas depois, ver o cabelo áspero, sem definição e com uma nuvem de frizz. Isso acontece porque a fibra capilar com curvatura possui uma anatomia propensa à perda de água. A porosidade capilar determina a capacidade do fio de absorver e reter essa umidade. Quando o cabelo está com alta porosidade, suas cutículas (a camada externa protetora) ficam permanentemente abertas e danificadas. Esse estado facilita a perda de nutrientes e água, fazendo com que qualquer hidratação vá literalmente por água abaixo. O resultado é um cabelo opaco, quebradiço, áspero ao toque e que parece repelir qualquer tratamento. Entender como combater esse ciclo é fundamental para recuperar a definição e a saúde natural dos fios.</p>
 
@@ -587,6 +596,15 @@ export const posts = [
     author: 'Jon',
     category: 'Tendências & Estilo',
     image: '/shaggy-cacheado-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é o corte shaggy para cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Shaggy cacheado é um corte em camadas curtas e irregulares que cria movimento e volume distribuído, eliminando o efeito piramidal. É feito a seco para respeitar o padrão natural de cada cacho e calibrar o peso das camadas com precisão." } },
+        { "@type": "Question", "name": "Corte shaggy funciona em todos os tipos de cacho?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, do ondulado (2A) ao crespo (4C), o shaggy se adapta. A diferença está na forma de execução: cachos mais fechados precisam de camadas mais longas para evitar excesso de volume, enquanto ondulados se beneficiam de franjas e camadas curtas para definição." } },
+        { "@type": "Question", "name": "Shaggy cacheado precisa de manutenção frequente?", "acceptedAnswer": { "@type": "Answer", "text": "O ideal é retornar a cada 3 a 4 meses para calibrar as camadas. Como o corte é irregular por natureza, ele mantém o visual por mais tempo que cortes retos tradicionais. Mas sem calibração o volume pode ficar desbalanceado." } }
+      ]
+    },
     content: `
       <h2>O Fim do Cabelo Sem Graça: Por Que Você Precisa de um Shaggy Cacheado</h2>
       <p>Sabe aquela sensação de olhar no espelho e sentir que seu cabelo está pesado? Aquele formato de pirâmide clássico, onde a raiz fica murcha e as pontas formam uma base larga e sem movimento?</p>
@@ -639,6 +657,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/cacho-vs-crespo-hero.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Qual a diferença entre cabelo cacheado e crespo?", "acceptedAnswer": { "@type": "Answer", "text": "A diferença é estrutural. Cabelos cacheados (tipos 2A a 3C) têm curvatura em espiral ou onda com espaço entre as curvas. Crespos (tipos 4A a 4C) têm curvatura muito fechada, quase em zigue-zague, com alta contração. A textura é determinada pela forma do folículo piloso e não pode ser mudada permanentemente sem química." } },
+        { "@type": "Question", "name": "Como saber se meu cabelo é cacho ou crespo?", "acceptedAnswer": { "@type": "Answer", "text": "Lave o cabelo sem produto e observe o padrão natural após a secagem. Se formar espirais abertas ou ondas, é cacheado. Se contrair muito e formar cachos bem fechados ou zigue-zague, é crespo. O diagnóstico profissional (Leitura de Fio) é mais preciso pois muitas pessoas têm múltiplas texturas na mesma cabeça." } },
+        { "@type": "Question", "name": "O mesmo produto serve para cabelo cacheado e crespo?", "acceptedAnswer": { "@type": "Answer", "text": "Não necessariamente. Crespos precisam de produtos com maior teor de umectantes e emolientes (manteiga de karité, óleos densos) pela alta porosidade e dificuldade de hidratação. Cacheados mais finos podem necessitar de produtos mais leves para não pesar o fio. A formulação deve ser adaptada à textura específica." } }
+      ]
+    },
     content: `
       <h2>Cacho ou Crespo? A Diferença que Muda seu Cuidado Capilar</h2>
       <p>Sabe aquela dúvida que você tem: "meu cabelo é cacho ou é crespo?"</p>
@@ -748,6 +775,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-secagem-hero.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Difusor ou secagem natural: qual é melhor para cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Depende do seu tipo de cacho. Difusor concentra o calor e seca mais rápido, reduzindo frizz e potencializando a definição — ideal para ondulados e cacheados médios. Secagem natural é mais gentil mas pode abrir as cutículas por exposição prolongada à umidade, causando frizz em crespos. O difusor na posição correta (baixo e sem esfregar) é o método mais recomendado por especialistas." } },
+        { "@type": "Question", "name": "Como usar o difusor corretamente em cabelos cacheados?", "acceptedAnswer": { "@type": "Answer", "text": "Inicie com o difusor em temperatura baixa e potência média. Coloque os cachos no difusor de baixo para cima sem pressionar. Mova em círculos suaves. Quando o cabelo estiver 80% seco, finalize com ar frio para selar as cutículas. Nunca esfregue ou movimente o difusor com o fio — isso gera frizz." } },
+        { "@type": "Question", "name": "Por que meus cachos ficam com frizz após secar?", "acceptedAnswer": { "@type": "Answer", "text": "Frizz após secagem geralmente indica: cutículas abertas por pH desequilibrado, umectantes em excesso na finalização, ou técnica incorreta de secagem (esfregar, movimentar demais o fio). Verifique se está usando protetor térmico antes do difusor e se os produtos têm pH adequado (4,5 a 5,5)." } }
+      ]
+    },
     content: `
       <h2>O Segredo da Definição Está na Secagem</h2>
       <p>Um dos maiores erros que eu vejo aqui no Studio é a cliente caprichar na lavagem, usar os melhores produtos na finalização, e na hora de secar... colocar tudo a perder.</p>
@@ -812,6 +848,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-produtos-hero.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Quais produtos são essenciais para cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "A tríade básica: shampoo de baixo poo (sem sulfatos agressivos), condicionador hidratante e leave-in. Para finalização, gelatina ou creme de pentear para definir e um óleo ou gloss para selar. O número de produtos importa menos que escolher os corretos para sua porosidade e curvatura específica." } },
+        { "@type": "Question", "name": "Como escolher produtos para cabelo cacheado em 2026?", "acceptedAnswer": { "@type": "Answer", "text": "Avalie três fatores: curvatura (2A ao 4C), porosidade (baixa, média ou alta) e histórico químico (processos anteriores). Cabeleireiros com formação em trichologia aplicam o diagnóstico de fio antes de indicar produtos — evitando o erro comum de usar produtos para o tipo errado e não ter resultado." } },
+        { "@type": "Question", "name": "Preciso usar muitos produtos para definir os cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Não. Excesso de produto pode pesar o fio e gerar acúmulo. O ideal é uma rotina minimalista com 3 a 5 produtos de alta qualidade, aplicados na quantidade certa. Mais produto não significa mais definição — significa mais trabalho de remoção na próxima lavagem." } }
+      ]
+    },
     content: `
       <h2>Introdução</h2>
       <p>Você entra na farmácia ou na loja de cosméticos e dá de cara com uma parede inteira de produtos "para cachos". Promessas de definição milagrosa, redução de volume, controle de frizz, brilho 3D. A vontade é levar tudo.</p>
@@ -960,6 +1005,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/rotina-cachos-hero.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Qual a rotina básica para cabelo cacheado iniciante?", "acceptedAnswer": { "@type": "Answer", "text": "A base é o trio HNR: Hidratação (reposição de água e umectantes), Nutrição (reposição de lipídios e óleos) e Reconstrução (reposição de proteínas). Inicie com hidratação semanal, nutrição quinzenal e reconstrução mensal. Ajuste conforme a resposta do fio — cabelos ressecados precisam de mais hidratação; quebradiços, mais reconstrução." } },
+        { "@type": "Question", "name": "Com que frequência devo lavar o cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Não existe frequência universal. Depende da porosidade, oleosidade do couro cabeludo e estilo de vida. Em geral, cacheados lavam a cada 3 a 7 dias. Lavar com mais frequência não é errado — o problema é usar produtos agressivos que removem lipídios essenciais a cada lavagem. Shampoo de baixo poo permite lavagens mais frequentes." } },
+        { "@type": "Question", "name": "O que é cronograma capilar e preciso fazer?", "acceptedAnswer": { "@type": "Answer", "text": "Cronograma capilar é a organização das etapas HNR em um calendário mensal. Serve para não esquecer nenhuma etapa e evitar o excesso de uma (especialmente reconstrução em excesso que endurece o fio). Para iniciantes, o ideal é primeiro fazer o diagnóstico de porosidade antes de montar o cronograma." } }
+      ]
+    },
     content: `
       <h2>ROTINA DE CUIDADOS BÁSICOS PARA CABELO CACHEADO: PORQUE NÃO É "LAVA E PRONTO"</h2>
       <p>Seu cabelo cacheado não é igual ao do seu primo liso. A estrutura do fio é diferente. O caminho que a oleosidade natural faz é diferente. O que funciona pra hidratação é diferente.</p>
@@ -1062,6 +1116,15 @@ export const posts = [
     author: 'Jon',
     category: 'Tendências & Estilo',
     image: '/blog-penteados-cacheado-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Quais penteados funcionam melhor para cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Depende da curvatura. Para ondulados: meia presa com topo volumoso funciona bem. Para cacheados médios: tranças soltas, coque bagunçado e rabo lateral com volume. Para crespos: twist out, braid out e penteados protetores como box braids que reduzem a manipulação diária e preservam a umidade." } },
+        { "@type": "Question", "name": "Como fazer coque bonito em cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Não use pente — use os dedos para reunir o cabelo sem desfazer os cachos. Aplique um pouco de produto finalizador nas pontas para segurar. Prenda com elástico sem metal (scrunchie) e use grampos se necessário. O coque em cachos deliberadamente 'bagunçado' tem mais charme que o coque perfeito — aqueça as pontas soltas com os dedos para moldar." } },
+        { "@type": "Question", "name": "Prender cabelo cacheado todo dia é prejudicial?", "acceptedAnswer": { "@type": "Answer", "text": "Prender no mesmo ponto repetidamente pode causar quebra por tensão nessa região. Alterne os pontos de tensão. Evite elásticos com metal e prefira scrunchies de cetim ou seda. Penteados protetores que ficam dias presos (box braids, twist) são benéficos se feitos com tensão moderada." } }
+      ]
+    },
     content: `
       <h2>Penteados para Cabelo Cacheado: Porque nem sempre solto é a melhor opção</h2>
       <p>Sério mesmo: nem todo dia seu cabelo tá em ponto de estar solto.</p>
@@ -1226,6 +1289,15 @@ export const posts = [
     author: 'Jon',
     category: 'Corte & Técnica',
     image: '/blog-frequencia-corte-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "De quanto em quanto tempo devo cortar o cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Para manutenção de saúde e forma, o ideal é entre 3 e 4 meses. Cabelos em transição química ou com pontas muito danificadas podem precisar de corte a cada 2 meses. Quem está crescendo o cabelo pode espaçar mais — mas sem corte, as pontas se bifurcam e a quebra sobe pelo fio." } },
+        { "@type": "Question", "name": "Como saber se meu cabelo cacheado precisa de corte?", "acceptedAnswer": { "@type": "Answer", "text": "Sinais claros: pontas com bifurcação visível, textura diferente nas pontas vs raiz, cabelo que não define mais na ponta, frizz concentrado nas extremidades, e perda de volume. Se você tiver dois ou mais desses sinais, é hora de aparar." } },
+        { "@type": "Question", "name": "Posso cortar cabelo cacheado em casa?", "acceptedAnswer": { "@type": "Answer", "text": "Aparar minimamente em casa é possível, mas cortar com técnica (especialmente a seco com visagismo) exige profissional especializado. Corte amador pode remover volume errado, criar assimetrias e arruinar a forma que levou meses para crescer. Para manutenção de forma, busque especialista em curvaturas." } }
+      ]
+    },
     content: `
       <h2>FREQUÊNCIA DE CORTE PARA CABELO CACHEADO: QUANDO (E COMO) CORTAR</h2>
       <p>Você sabe com que frequência deveria estar cortando seu cabelo cacheado?</p>
@@ -1332,6 +1404,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-cronograma-capilar.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é cronograma capilar e para que serve?", "acceptedAnswer": { "@type": "Answer", "text": "Cronograma capilar é um plano mensal de tratamentos que alterna hidratação, nutrição e reconstrução (HNR) de forma sequencial. Serve para garantir que o fio receba os três nutrientes fundamentais sem excesso de nenhum — excesso de proteína (reconstrução) endurece e quebra o fio; excesso de umectante (hidratação) amolece demais." } },
+        { "@type": "Question", "name": "Qual a ordem correta do cronograma capilar?", "acceptedAnswer": { "@type": "Answer", "text": "A sequência clássica é H → N → R (Hidratação → Nutrição → Reconstrução) em semanas consecutivas, com a 4ª semana livre ou repetindo a etapa que o fio precisar. Mas a ordem pode variar conforme o diagnóstico: fios muito danificados podem precisar de reconstrução primeiro." } },
+        { "@type": "Question", "name": "Cronograma capilar funciona para todo tipo de cabelo?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, mas a frequência e os produtos mudam. Crespos (4A-4C) geralmente precisam de mais hidratação e nutrição e menos reconstrução. Cabelos com histórico químico intenso podem precisar de mais ciclos de reconstrução antes de equilibrar. O diagnóstico de porosidade é essencial para montar o cronograma certo." } }
+      ]
+    },
     content: `
       <h2>Introdução</h2>
       <p>Você pesquisou, escolheu os produtos, montou a sequência — hidratação, nutrição, reconstrução — e seguiu à risca por semanas.</p>
@@ -1471,6 +1552,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-3-erros-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Quais os erros mais comuns que destroem o cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Os três fatores que mais destroem cachos: corte genérico feito sem diagnóstico de curvatura, uso de produtos com pH errado (muito alcalinos) que abrem as cutículas cronicamente, e manipulação excessiva com pente ou escovas que quebram a espiral do fio. Cada um desses sozinho pode comprometer meses de cuidado." } },
+        { "@type": "Question", "name": "Pente destrói cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Pente de dente fino em cabelo seco quebra o fio e desfaz a espiral do cacho. O correto é desembaraçar com os dedos ou pente de dente largo APENAS com o cabelo molhado e com condicionador. Em seco, use apenas os dedos para separar e modelar." } },
+        { "@type": "Question", "name": "Por que meu cabelo cacheado está quebrando?", "acceptedAnswer": { "@type": "Answer", "text": "Quebra em cabelo cacheado tem 4 causas principais: excesso de proteína no cronograma (fio duro e quebradiço), alta porosidade não tratada (fio frágil), tensão mecânica (elásticos, pentes, atrito com travesseiro de algodão) e deficiência nutricional sistêmica. Identifique a causa antes de tratar — usar mais reconstrução em quebra por excesso de proteína piora o quadro." } }
+      ]
+    },
     content: `
       <h2>Introdução</h2>
       <p>Se você me acompanha por aqui ou lá no Instagram, sabe que eu prezo pela saúde real do fio. Não acredito em milagres de prateleira, acredito em ciência e técnica.</p>
@@ -1503,6 +1593,15 @@ export const posts = [
     author: 'Jon',
     category: 'Ciência Capilar',
     image: '/blog-ph-capilar-v2.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é pH capilar e por que importa?", "acceptedAnswer": { "@type": "Answer", "text": "pH capilar é a medida de acidez/alcalinidade do fio e do couro cabeludo. O pH ideal do cabelo é 4,5 a 5,5 — ligeiramente ácido. Nesse range, as cutículas ficam fechadas, o fio retém umidade e brilha. Produtos alcalinos (acima de 7) abrem as cutículas cronicamente, causando frizz, porosidade e opacidade." } },
+        { "@type": "Question", "name": "Como o pH afeta o brilho e a definição dos cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Cutículas abertas (pH alto) refletem a luz de forma irregular — daí o cabelo parecer sem brilho e com frizz. Cutículas fechadas (pH ácido) refletem a luz de forma uniforme, gerando brilho vítreo. Além disso, com as cutículas seladas, os produtos penetram e ficam mais tempo no fio, melhorando a definição." } },
+        { "@type": "Question", "name": "Como equilibrar o pH do cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Use produtos com pH declarado entre 4,5 e 5,5. Finalize com acidificante capilar (vinagre de maçã diluído, produtos com ácido cítrico ou lático) após condicionamento. Evite xampus com sulfatos fortes e condicionadores alcalinos. Um bom cabeleireiro de cachos sempre pergunta sobre os produtos que você usa antes de diagnosticar o fio." } }
+      ]
+    },
     content: `
       <h2>Introdução: O Brilho é uma Questão de Física</h2>
       <p>Muitas clientes chegam ao Studio reclamando que o cabelo "não tem vida". Elas investem centenas de reais em máscaras importadas, mas o fio continua com aquele aspecto opaco, áspero ao toque e que parece "beber" o creme sem reter nada. Sabe o que está acontecendo? O pH do seu cabelo está em guerra com você.</p>
@@ -1562,6 +1661,15 @@ export const posts = [
     author: 'Jon',
     category: 'Corte & Técnica',
     image: '/blog-wolf-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é wolf cut para cabelos cacheados?", "acceptedAnswer": { "@type": "Answer", "text": "Wolf cut é um corte com camadas pesadas na parte superior (criando volume e movimento no topo) e camadas leves na base, com franja cortina opcional. Em cachos, o efeito é ainda mais dramático porque o volume natural amplifica as camadas. É ideal para quem quer um visual moderno com muito movimento sem perder comprimento." } },
+        { "@type": "Question", "name": "Wolf cut funciona para cacheado e crespo?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, mas a adaptação é necessária. Para crespos e cachos fechados, o profissional precisa calibrar a profundidade das camadas — camadas muito curtas podem criar volume excessivo e difícil de controlar. Para ondulados e cacheados médios (2A a 3B), o wolf cut funciona com mínima adaptação e o resultado é muito parecido com o look original." } },
+        { "@type": "Question", "name": "Wolf cut pede muita manutenção?", "acceptedAnswer": { "@type": "Answer", "text": "O wolf cut pede retorno a cada 2 a 3 meses para manter a forma das camadas superiores, que crescem rápido e perdem a textura. Sem manutenção, o visual pode ficar triangular ou com volume descontrolado. A franja cortina, se houver, precisa de aparagem mais frequente." } }
+      ]
+    },
     content: `
       <h2>Introdução</h2>
       <p>Você viu esse corte viral no TikTok? Aquele que parece selvagem, descontrolado, mas de um jeito que funciona? Pois é. Wolf cut. A gente chama de "corte lobo" porque combina volume agressivo no topo com comprimento mais longo na parte de trás — tipo a melena de um lobo. Selvagem, chique, atrevido.</p>
@@ -1620,6 +1728,15 @@ export const posts = [
     author: 'Jon',
     category: 'Tendências & Estilo',
     image: '/blog-shag-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que diferencia o shag do shaggy em cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Shag e shaggy são variações do mesmo conceito de camadas irregulares, mas o shag tende a ter mais estrutura e franja definida, enquanto o shaggy é mais descontraído e orgânico. Em cachos, o shag cria um visual anos 70 com muito movimento; o shaggy é mais moderno e volumoso. Ambos são feitos a seco para respeitar a curvatura." } },
+        { "@type": "Question", "name": "Shag cacheado combina com qual tipo de rosto?", "acceptedAnswer": { "@type": "Answer", "text": "O shag cacheado é versátil. Para rostos redondos, camadas mais longas e volume no topo alongam o visual. Para ovais, qualquer variação funciona. Para rostos quadrados, a franja cortina suaviza a mandíbula. O visagismo aplicado ao corte decide a posição das camadas e da franja para valorizar a estrutura óssea." } },
+        { "@type": "Question", "name": "Quanto tempo dura o shag em cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "O shag mantém a forma por 2 a 3 meses. Após esse período, as camadas crescem de forma desigual e o volume se desloca. Cacheados de crescimento rápido podem precisar de manutenção em 6 a 8 semanas apenas para a franja, deixando o resto crescer até a calibração completa." } }
+      ]
+    },
     content: `
       <h2>Introdução</h2>
       <p>Aquele corte setentista bagunçadinho que voltou com tudo nas ruas? Sim. Aquele corte que você vê no TikTok e pensa "nossa, que legal"? Provavelmente é shag. Só que tem um detalhe que ninguém fala: shag em cabelo cacheado é completamente diferente de shag em cabelo liso.</p>
@@ -1721,6 +1838,15 @@ export const posts = [
     author: 'Jon',
     category: 'Homens & Estilo',
     image: '/blog-masculino-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Quais os melhores cortes para cabelo cacheado masculino em 2026?", "acceptedAnswer": { "@type": "Answer", "text": "Os cortes mais pedidos em 2026 para homens cacheados: undercut com topo cacheado solto, fade degradê com cachos na parte superior, corte médio com camadas para volume controlado e o wolf cut masculino. A tendência é valorizar a textura natural em vez de tentar domá-la — curlicue vibes dominam o Instagram de barbearias especializadas." } },
+        { "@type": "Question", "name": "Cabeleireiro de cachos masculino em Belo Horizonte: onde encontrar?", "acceptedAnswer": { "@type": "Answer", "text": "Procure por cabeleireiros com formação específica em texturas — não apenas barbearias tradicionais. O Studio do Jon, no Caiçara, atende exclusivamente curvaturas masculinas e femininas com o Método Leitura de Fio, que diagnostica o padrão específico antes de qualquer corte." } },
+        { "@type": "Question", "name": "Como cuidar do cabelo cacheado masculino no dia a dia?", "acceptedAnswer": { "@type": "Answer", "text": "Rotina masculina básica: shampoo de baixo poo 1 a 2x por semana, condicionador sempre, leave-in leve na saída do banho. Para finalização: creme ou gelatina distribuído nos cachos molhados, sem tocar até secar. Difusor encurta o tempo e potencializa a definição. Travesseiro de cetim reduz o frizz noturno." } }
+      ]
+    },
     content: `
       <h2>A Revolução Cacheada: Lendo a Textura</h2>
       <p>Em vez de lutar contra o volume do cabelo cacheado, a nova abordagem é ler o padrão dele, cortar de forma inteligente e deixar o cacho aparecer. Isso abriu espaço pra cortes que antes eram impensáveis num homem com cabelo cacheado. Conheça nossos <a href="/servicos">serviços de corte visagista</a>.</p>
@@ -1789,6 +1915,15 @@ export const posts = [
     author: 'Jon',
     category: 'Corte & Técnica',
     image: '/blog-visagismo-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é visagismo aplicado ao cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Visagismo é a técnica de adaptar o corte à estrutura facial, personalidade e estilo de vida da pessoa. Em cacheados, isso inclui calibrar onde o volume se concentra, o comprimento das camadas e a posição da franja para valorizar a geometria do rosto. Sem visagismo, mesmo um corte tecnicamente bom pode não combinar com a pessoa." } },
+        { "@type": "Question", "name": "Visagismo para cacheado é diferente do visagismo tradicional?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. No visagismo tradicional (para lisos), o volume é criado pela técnica. Em cacheados, o volume já existe — o desafio é direcionar e distribuir. Um especialista em curvaturas precisa entender como cada curvatura específica vai se comportar após secar, o que exige experiência com texturas que salões genéricos não têm." } },
+        { "@type": "Question", "name": "Como escolher o corte certo para meu rosto cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "A análise de visagismo avalia: formato do rosto (oval, redondo, quadrado, coração, losango), proporcionalidade entre rosto e pescoço, posição das maçãs do rosto e linha da mandíbula. Com esses dados, o cabeleireiro decide: onde as camadas vão criar volume (rosto redondo → topo), onde cortar para afinar (mandíbula quadrada → franja e camadas laterais leves)." } }
+      ]
+    },
     content: `
       <h2>Visagismo + cabelo cacheado: como funciona de verdade</h2>
       <p>Você vê um corte numa cacheada que tem o rosto parecido com o seu, ama, tira print, leva pro cabeleireiro. Chega em casa, se vê no espelho e... não é a mesma coisa. Fica ali pensando: "Por que nela fica perfeito e em mim fica errado?"</p>
@@ -1865,6 +2000,15 @@ export const posts = [
     author: 'Jon',
     category: 'Química & Danos',
     image: '/blog-botox-capilar.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Botox capilar estraga o cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Depende da formulação e da frequência. Botox capilar com formol (ou derivados como glutaraldeído e glyoxal) age como alisante e elimina a textura natural progressivamente. Formulações sem formol com apenas proteínas e óleos podem ser mais neutras, mas repetidas aplicações acumulam proteína excessiva, deixando o fio rígido e quebradiço." } },
+        { "@type": "Question", "name": "Posso fazer botox capilar sem perder os cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Botox com formol inevitavelmente reduz a curvatura — é o objetivo da reação química. Sem formol, o resultado é menos previsível: pode suavizar sem alisar, mas depende da formulação. Se o objetivo é manter os cachos com mais brilho e controle, existem alternativas melhores: acidificação capilar, cronograma de nutrição e reconstrução, sem necessidade de processo químico." } },
+        { "@type": "Question", "name": "Quais os perigos do botox capilar para quem tem cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Riscos principais: alteração permanente ou semipermanente da curvatura, acúmulo de proteína causando quebra, possível exposição a formol (cancerígeno) em produtos rotulados como 'sem formol', e dificuldade de transição de volta para os cachos naturais. Cabeleireiros especializados em curvaturas raramente recomendam botox para quem quer manter a textura natural." } }
+      ]
+    },
     content: `
       <h2>Resposta direta: Sim. E aqui está por quê eu sou contra.</h2>
       <p>Você faz essa pergunta porque já viu o resultado em outra pessoa. O cabelo fica liso, comportado, brilhando... Parece solução. Mas aqui dentro tem um problema que ninguém fala no comecinho. E é por isso que eu não recomendo.</p>
@@ -1927,6 +2071,15 @@ export const posts = [
     author: 'Jon',
     category: 'Corte & Técnica',
     image: '/blog-epidemia-corte-generico.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Por que o corte a seco é tão defendido para cabelos cacheados?", "acceptedAnswer": { "@type": "Answer", "text": "Porque o cacho molhado está esticado — às vezes 30 a 50% maior que o seco. Cortar molhado sem saber exatamente o quanto vai encolher é trabalhar no escuro. O corte a seco permite ver exatamente como o volume se distribui, onde há peso excessivo e qual camada precisa de calibração — em tempo real, sem surpresas na secagem." } },
+        { "@type": "Question", "name": "Corte a seco é o único método válido para cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Não — é um mito que o corte a seco seja o único método. Existem técnicas híbridas (molhado + seco) e profissionais que corrigem molhado com altíssima precisão. O problema não é o método: é o profissional que corta cabelo liso e cacheado da mesma forma, sem entender como a curvatura se comporta após secar." } },
+        { "@type": "Question", "name": "Como saber se meu cabeleireiro realmente entende de cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Peça para ele explicar o que vai fazer antes de cortar. Um especialista faz diagnóstico antes da tesoura: avalia curvatura, volume, histórico químico e o que você quer alcançar. Se ele só pegar a tesoura sem conversar sobre a textura e o comportamento do seu cacho, é sinal de alerta." } }
+      ]
+    },
     content: `
       <h2>Cortar o seu cabelo sem molhar virou a grande isca da internet.</h2>
       <p>Todo salão agora diz que faz. Mas se quem está segurando a tesoura não sabe mapear a sua densidade, afastar a água não serve para nada. Você vai sair da cadeira com pontas esburacadas e um volume completamente sem sentido.</p>
@@ -1953,6 +2106,15 @@ export const posts = [
     author: 'Jon',
     category: 'Biologia Capilar',
     image: '/blog-multiplas-texturas.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Por que meu cabelo tem texturas diferentes na mesma cabeça?", "acceptedAnswer": { "@type": "Answer", "text": "É completamente normal. A maioria das pessoas tem 2 a 4 texturas diferentes distribuídas pelo couro cabeludo — frente mais fina, nuca mais fechada, laterais com padrão diferente. Isso é determinado geneticamente pela forma de cada folículo piloso. Profissionais que não sabem trabalhar com múltiplas texturas tendem a cortar tudo para um único padrão, perdendo a singularidade de cada região." } },
+        { "@type": "Question", "name": "Como cuidar de cabelo com múltiplas texturas?", "acceptedAnswer": { "@type": "Answer", "text": "A chave é entender o comportamento de cada região. Áreas mais finas (frente, entorno do rosto) podem precisar de produtos mais leves; a nuca e as áreas com mais volume podem precisar de mais umectantes. Na finalização, aplique gelatina ou creme em quantidade diferente por região se necessário." } },
+        { "@type": "Question", "name": "Especialista em múltiplas texturas em BH: o que ele faz diferente?", "acceptedAnswer": { "@type": "Answer", "text": "Um especialista em texturas diagnóstica cada região separadamente antes de cortar. Ele entende que uma nuca 4A e uma frente 3A precisam de abordagens diferentes na mesma sessão. O Método Leitura de Fio, desenvolvido pelo Jon, mapeia todas as regiões antes de definir a técnica de corte, evitando o erro de tratar tudo igual." } }
+      ]
+    },
     content: `
       <h2>Você joga o cabelo para o lado e parece que falta um pedaço bem no meio do pescoço.</h2>
       <p>O topo encolhe como uma mola perfeita, mas a nuca escorre e despenca. Ter duas ou três texturas diferentes na mesma cabeça é a regra biológica. Mas sair com degraus visíveis é um erro de arquitetura capilar. Você precisa de um especialista que entenda profundamente de geometria estrutural.</p>
@@ -1989,6 +2151,15 @@ export const posts = [
     author: 'Jon',
     category: 'Técnica & Corte',
     image: '/blog-risco-corte-seco.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Corte a seco para cabelo cacheado vale a pena em BH?", "acceptedAnswer": { "@type": "Answer", "text": "Sim — especialmente no clima de BH, onde a umidade varia muito e o comportamento do cacho no seco é diferente do molhado. O corte a seco permite que o profissional veja exatamente onde o volume se concentra, calibre o peso das camadas e antecipe como o cacho vai se comportar no dia a dia na cidade." } },
+        { "@type": "Question", "name": "Qual o risco do corte a seco mal feito em cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "O corte a seco exige habilidade específica. Feito por profissional sem experiência em curvaturas, pode: criar assimetria invisível no seco (que só aparece depois), remover volume no lugar errado, ou criar camadas que geram triângulo em vez de arredondar. O método é a ferramenta certa — mas na mão certa." } },
+        { "@type": "Question", "name": "Como o corte a seco ajuda no volume do cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Ao cortar seco, o profissional vê onde há excesso de massa e onde falta. Ele pode retirar peso de regiões específicas sem comprometer o comprimento, criando volume nos lugares certos. É como esculpir — você só vê a forma final enquanto trabalha, não depois que a pedra caiu no chão." } }
+      ]
+    },
     content: `
       <h2>Cortar o seu cabelo sem molhar não serve absolutamente de nada se quem está com a tesoura não souber ler a densidade da sua nuca.</h2>
       <p>A internet banalizou a técnica. Hoje, qualquer salão oferece o corte a seco apenas para surfar na tendência, mas entrega resultados esburacados, sem forma e com pontas mastigadas. A técnica não é sobre ter preguiça de lavar; é sobre dominar a arquitetura da curvatura.</p>
@@ -2016,6 +2187,15 @@ export const posts = [
     author: 'Jon',
     category: 'Química & Danos',
     image: '/blog-cacho-descolorido.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "É possível descolorir cabelo cacheado sem perder os cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, mas com cuidado. A descoloração abre as cutículas e aumenta a porosidade — o maior inimigo do cacho definido. Com reconstrução proteica pós-processo, acidificação para fechar as cutículas e cronograma capilar ajustado, é possível manter textura e definição. O risco aumenta com descolorações muito agressivas (acima de 7 tons)." } },
+        { "@type": "Question", "name": "Qual o cuidado especial para cachos descoloridos?", "acceptedAnswer": { "@type": "Answer", "text": "Cachos descoloridos têm alta porosidade permanente — as cutículas não fecham completamente como antes. O protocolo: reconstrução proteica semanal nas 4 primeiras semanas, acidificação após cada lavagem, protetor solar capilar UV e evitar calor excessivo. O cronograma precisa ter mais nutrição (para repor lipídios) e mais reconstrução que um cacho virgem." } },
+        { "@type": "Question", "name": "Especialista em cachos descoloridos em BH: o que considerar?", "acceptedAnswer": { "@type": "Answer", "text": "Procure um profissional que faça diagnóstico de porosidade antes da descoloração e que tenha protocolo de recuperação pós-química. O Studio do Jon atende cachos descoloridos com Leitura de Fio adaptada, avaliando o histórico químico antes de qualquer corte ou tratamento para não agravar a porosidade já existente." } }
+      ]
+    },
     content: `
       <h2>Aquele loiro perfeito que você salvou na pasta do Instagram custou a estrutura interna do cacho daquela modelo.</h2>
       <p>Você pediu um "morena iluminada" sutil e saiu com as pontas ralas, o cacho esticado e uma porosidade que nenhum creme resolve. O pó descolorante não perdoa. Quando a mola morre, você não precisa de mais hidratação. Você precisa de um cabeleireiro especialista em cachos para te salvar.</p>
@@ -2043,6 +2223,15 @@ export const posts = [
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-transicao-quimica.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é transição capilar e como funciona?", "acceptedAnswer": { "@type": "Answer", "text": "Transição capilar é o processo de deixar o cabelo natural crescer após processos químicos (relaxamento, progressiva, botox). Enquanto o cacho natural cresce pela raiz, a parte química permanece na ponta. O desafio é cuidar das duas texturas ao mesmo tempo até que seja possível cortar a parte química sem perder muito comprimento." } },
+        { "@type": "Question", "name": "Transição capilar com danos de botox: como fazer?", "acceptedAnswer": { "@type": "Answer", "text": "O botox deixa resíduos que podem persistir por 6 a 12 meses no fio. Durante a transição, priorize reconstrução proteica para restaurar a estrutura e hidratação intensa para repor umidade perdida. Evite calor e use proteção UV. O corte gradual (big chop em etapas) remove a parte química sem sacrificar todo o comprimento de uma vez." } },
+        { "@type": "Question", "name": "Quanto tempo leva a transição capilar?", "acceptedAnswer": { "@type": "Answer", "text": "Depende do comprimento da parte química e da velocidade de crescimento. Em média, o cabelo cresce 1 a 1,5 cm por mês. Uma pessoa com 20 cm de química e crescimento médio levaria 13 a 20 meses para crescer o suficiente para o big chop definitivo. Com cortes graduais, o processo pode ser mais rápido e menos traumático." } }
+      ]
+    },
     content: `
       <h2>Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro.</h2>
       <p>Você pediu um "botox para reduzir o frizz" e saiu com um alisamento térmico mascarado. Agora, vive o pesadelo de uma transição capilar forçada, tentando tratar com creme uma haste capilar que já não tem salvação.</p>
@@ -2070,6 +2259,15 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde da Fibra',
     image: '/blog-porosidade-scab.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é scab hair em cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Scab hair (literalmente 'cabelo crosta') é uma fase da transição capilar onde o fio novo que cresce ainda está produzindo sebo em excesso, deixando a raiz com textura áspera e sem definição. Pode durar de 1 a 6 meses após parar processos químicos. É temporário — não significa que os cachos não vão voltar." } },
+        { "@type": "Question", "name": "Por que meu cabelo poroso não absorve o creme?", "acceptedAnswer": { "@type": "Answer", "text": "Paradoxalmente, cabelo com alta porosidade (cutículas muito abertas) pode rejeitar produtos em excesso porque a estrutura danificada não consegue reter o que entra. A solução não é mais produto — é acidificação para fechar as cutículas e reconstrução proteica para restaurar a estrutura. Sem isso, o creme escorrega pelo fio sem penetrar." } },
+        { "@type": "Question", "name": "Como tratar cabelo poroso que não define?", "acceptedAnswer": { "@type": "Answer", "text": "Protocolo para alta porosidade: 1) Reconstrução proteica para restaurar a estrutura do córtex; 2) Acidificação após cada lavagem para fechar as cutículas; 3) Selantes (óleos e manteigas) após a hidratação para travar a umidade dentro do fio; 4) Evitar processos alcalinos (coloração, relaxamento) durante o tratamento." } }
+      ]
+    },
     content: `
       <h2>Aquele creme de reconstrução caríssimo não está funcionando por um motivo estrutural profundo.</h2>
       <p>Você faz umectação, testa acidificantes famosos, mas o seu cabelo poroso não absorve creme. Ele engole o produto no banho e, algumas horas depois, seca completamente áspero e sem definição. Sabe por quê? Porque tentar hidratar uma haste que perdeu a capacidade física de reter líquido é lutar contra as leis da química.</p>
@@ -2100,6 +2298,15 @@ export const posts = [
     author: 'Jon',
     category: 'Corte & Volume',
     image: '/blog-arquitetura-volume.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Como o corte certo gera volume no cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Volume em cacheado é resultado da distribuição de massa no fio. Um corte que retira peso das pontas e das laterais concentra o volume no topo e no centro — criando a forma desejada. Já um corte reto no comprimento, sem camadas, cria o efeito triângulo: base larga e topo achatado. A 'arquitetura de volume' é pensar no cacho como uma escultura, não uma cortina." } },
+        { "@type": "Question", "name": "Existe corte específico para aumentar volume em cachos finos?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. Para cachos finos com pouco volume, o ideal é: camadas médias para criar movimento, manutenção do comprimento para dar peso e ajudar a caída natural, e evitar cortes muito curtos que fazem o cacho fino expandir para os lados. Wolf cut e shaggy adaptados criam a ilusão de mais volume sem sobrecarregar o fio." } },
+        { "@type": "Question", "name": "Corte para volume em cabelo cacheado em BH: onde fazer?", "acceptedAnswer": { "@type": "Answer", "text": "Busque profissional que faça diagnóstico de curvatura e volume antes do corte. O Studio do Jon, no Caiçara (BH), usa o Método Leitura de Fio para mapear o volume em cada região da cabeça e definir exatamente onde retirar peso e onde preservar, criando um resultado personalizado para cada textura." } }
+      ]
+    },
     content: `
       <h2>O seu cabelo não tem vontade própria. Ele só está com o peso geométrico acumulado no lugar errado.</h2>
       <p>Você senta na cadeira, pede movimento e sai com a raiz escorrida e as pontas armadas. O clássico formato de abajur ou "pirâmide". O erro não está na sua textura. O erro está na tesoura que cortou seu cabelo como se ele fosse liso.</p>
@@ -2133,6 +2340,15 @@ export const posts = [
     author: 'Jon',
     category: 'Educação Capilar',
     image: '/blog-salao-casa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Por que meu cabelo cacheado fica diferente no salão e em casa?", "acceptedAnswer": { "@type": "Answer", "text": "Três razões principais: 1) O profissional aplica o produto com técnica diferente (quantidade, distribuição, plop); 2) O difusor do salão pode ser mais potente e com bicos específicos; 3) O cabelo acaba de ser cortado, então está no melhor momento de definição. Em casa, a replicação exige aprender a técnica, não necessariamente comprar os mesmos produtos." } },
+        { "@type": "Question", "name": "Como replicar em casa o resultado do salão em cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Peça ao seu cabeleireiro para mostrar o passo a passo da finalização enquanto ele faz. Observe: quanto produto usa (geralmente mais do que você imagina), em que ordem aplica, como distribui com as mãos. O erro mais comum em casa é usar pouco produto e mexer demais no cabelo enquanto seca — o cacho precisa de plopping ou scrunching, não de mexida constante." } },
+        { "@type": "Question", "name": "Qual a diferença entre a finalização do salão e a de casa?", "acceptedAnswer": { "@type": "Answer", "text": "No salão: produtos profissionais de maior concentração, técnica refinada e equipamentos mais potentes. Em casa: você precisa de uma rotina mais simples mas consistente. A chave é entender que o resultado em casa não precisa ser idêntico ao do salão — precisa ser BOM para você, feito com a rotina que você consegue manter." } }
+      ]
+    },
     content: `
       <h2>Por que seu cabelo fica bonito no salão e diferente em casa?</h2>
       <p>Você já passou por isso: sai do studio se sentindo a própria protagonista de comercial de shampoo. Mas aí, dois dias depois, você tenta lavar, tenta finalizar e... o resultado parece outra pessoa. O cacho não "arma" igual e a frustração bate forte.</p>
@@ -2166,6 +2382,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-embaraco.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Por que cabelo cacheado embaraça muito?", "acceptedAnswer": { "@type": "Answer", "text": "Cabelos cacheados têm escamas (cutículas) naturalmente mais abertas que os lisos — as curvas do fio fazem as escamas se entrelaçarem umas nas outras. Isso é agravado por: alta porosidade (cutículas ainda mais abertas), falta de hidratação (fio seco cria mais atrito), e manipulação sem condicionador. Não é defeito — é característica da textura." } },
+        { "@type": "Question", "name": "Como desembaraçar cabelo cacheado sem quebrar?", "acceptedAnswer": { "@type": "Answer", "text": "Sempre desembaraçar com cabelo molhado e com condicionador ou leave-in. Começar pelas pontas e subir gradualmente para a raiz. Usar dedos ou pente de dente largo — nunca pente fino em seco. Dividir o cabelo em seções para facilitar. A paciência aqui vale mais que qualquer produto." } },
+        { "@type": "Question", "name": "Produto específico para cabelo cacheado que embaraça: existe?", "acceptedAnswer": { "@type": "Answer", "text": "Condicionadores com alta concentração de silicones e umectantes ajudam a reduzir o atrito. Mas a solução definitiva é estrutural: tratar a porosidade com acidificação e reconstrução, o que fecha as cutículas e reduz o entrelaçamento. O corte também ajuda — pontas bifurcadas embaraçam mais que pontas saudáveis." } }
+      ]
+    },
     content: `
       <h2>Cabelo cacheado embaraça muito? O que isso revela sobre rotina, corte e saúde do fio</h2>
       <p>Se o desembaraço virou uma luta corporal digna de novela das 9, calma: o problema não é “o seu cabelo ser impossível”. Na maioria das vezes, cabelo cacheado que embaraça demais está dando sinais claros de ressecamento, atrito, excesso de quebra, corte vencido ou rotina errada.</p>
@@ -2225,6 +2450,15 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-encolhimento.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é fator de encolhimento no cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Fator de encolhimento é a porcentagem que o cacho retrai do comprimento molhado para o seco. Cachos tipo 3A podem encolher 20 a 30%; crespos 4C podem encolher 70 a 80% ou mais. Isso significa que um cabelo que parece 15 cm seco pode ter 25 a 40 cm molhado. É essencial que o cabeleireiro conheça o fator antes de definir o corte." } },
+        { "@type": "Question", "name": "Como saber o fator de encolhimento do meu cabelo?", "acceptedAnswer": { "@type": "Answer", "text": "Meça um cacho molhado (esticado levemente) e depois o mesmo cacho seco. A diferença percentual é o fator. Cabeleireiros experientes estimam o fator visualmente durante o diagnóstico. Para cortes de precisão, a medição real é feita durante a Leitura de Fio antes de qualquer tesoura tocar o cabelo." } },
+        { "@type": "Question", "name": "Por que meu cabelo ficou muito curto após o corte?", "acceptedAnswer": { "@type": "Answer", "text": "Provavelmente o cabeleireiro não considerou o fator de encolhimento. Cortar cabelo cacheado sem saber o quanto vai encolher é como cortar às cegas — o resultado pode surpreender negativamente. Profissionais especializados sempre trabalham com a margem de encolhimento e pedem aprovação do comprimento seco antes do corte definitivo." } }
+      ]
+    },
     content: `
       <h2>"Cortei dois dedos e subiram dez?" Calma, não é bruxaria, é estrutura capilar.</h2>
       <p>Se você é cacheada ou crespa, com certeza já viveu esse filme de terror: você pede para o cabeleireiro tirar "só as pontinhas", ele corta com o cabelo molhado e, quando seca… puf! O cabelo encolhe tanto que você sai do salão querendo chorar no banho.</p>
@@ -2266,6 +2500,15 @@ export const posts = [
     author: 'Jon',
     category: 'Rotina',
     image: '/blog-rotina-minimalista.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é rotina minimalista para cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Rotina minimalista é uma abordagem que usa o menor número possível de produtos sem comprometer a saúde e definição do cacho. O conceito baseia-se em: qualidade sobre quantidade, eliminar produtos redundantes e entender o que o fio realmente precisa. Muitas pessoas descobrem que com 3 produtos certos obtêm resultado melhor que com 10 mediocres." } },
+        { "@type": "Question", "name": "Quais produtos não podem faltar em uma rotina minimalista de cachos?", "acceptedAnswer": { "@type": "Answer", "text": "O trio essencial: 1) Shampoo de baixo poo ou co-wash (limpeza suave); 2) Condicionador hidratante (umectação); 3) Leave-in ou finalizador (definição e proteção). Com esses três bem escolhidos para sua porosidade e curvatura, você já tem uma base completa. Tudo além disso é refinamento, não necessidade." } },
+        { "@type": "Question", "name": "Menos produtos significa piores resultados para cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Não. Excesso de produtos pode sobrecarregar o fio, gerar acúmulo e necessitar de limpeza mais intensa (que por sua vez ressecar mais). O minimalismo capilar não é sobre economizar — é sobre entender o que o seu fio específico precisa e usar exatamente isso, sem o que não serve." } }
+      ]
+    },
     content: `
       <h2>Cabelo de 400 reais, estratégia de 2: por que o excesso de produto está matando seus cachos</h2>
       <p>Se você precisa de um ritual de 2 horas, 5 cremes diferentes e uma reza forte pra ter um day after decente, eu tenho uma notícia (e talvez você não goste): seu cabelo não é difícil, sua estratégia é que é confusa.</p>
@@ -2331,6 +2574,15 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-sulfato.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Shampoo com sulfato faz mal para cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Sulfatos fortes (como Sodium Lauryl Sulfate - SLS) removem os lipídios naturais do fio junto com a sujeira, causando ressecamento. Para cacheados que já têm cutículas mais abertas e precisam de umidade, isso agrava a porosidade. Sulfatos suaves (como Sodium Laureth Sulfate - SLES ou Sodium Cocoyl Isethionate) limpam sem ressecar tanto e são geralmente tolerados." } },
+        { "@type": "Question", "name": "Devo evitar todo sulfato no shampoo para cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Não necessariamente. Sulfatos suaves são diferentes de sulfatos agressivos. O maior problema é o SLS em uso frequente. Além disso, silicones insolúveis em água (como Dimethicone) presentes em muitos condicionadores acumulam no fio e precisam de sulfato para sair — se você usa silicones, precisa de sulfato ocasionalmente para limpar o acúmulo." } },
+        { "@type": "Question", "name": "Como ler rótulo de shampoo para cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Ingredientes aparecem em ordem decrescente de concentração. Fuja de: Sodium Lauryl Sulfate (SLS), Ammonium Lauryl Sulfate, Sodium Laureth Sulfate (SLES em produtos diários). Busque: Sodium Cocoyl Isethionate, Disodium Lauryl Sulfosuccinate, Cocamidopropyl Betaine — surfactantes mais suaves que limpam sem ressecar." } }
+      ]
+    },
     content: `
       <p>Primeiro, um esclarecimento técnico importante: "sulfato" não é um ingrediente único. É um apelido popular para um grupo de substâncias chamadas surfactantes (ou tensoativos), que são os agentes de limpeza dos shampoos.</p>
 
@@ -2422,6 +2674,15 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-porosidade.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Como fazer o teste de porosidade do cabelo em casa?", "acceptedAnswer": { "@type": "Answer", "text": "O teste do copo d'água: pegue um fio limpo (sem produto) e coloque na água. Fio que afunda rapidamente = alta porosidade (cutículas abertas). Fio que flutua por mais de 5 minutos = baixa porosidade (cutículas fechadas). Fio que fica no meio = porosidade média. Importante: o fio deve estar sem produto para o resultado ser preciso." } },
+        { "@type": "Question", "name": "O que fazer com resultado de alta porosidade no teste?", "acceptedAnswer": { "@type": "Answer", "text": "Alta porosidade indica cutículas abertas — o fio absorve produto rápido mas não retém. Protocolo: reconstrução proteica para restaurar a estrutura, acidificação para fechar as cutículas e selantes (óleos pesados como rícino e coco) após a hidratação para travar a umidade. Evite processos químicos durante o tratamento." } },
+        { "@type": "Question", "name": "Baixa porosidade em cabelo cacheado: como tratar?", "acceptedAnswer": { "@type": "Answer", "text": "Baixa porosidade significa cutículas muito fechadas — o fio resiste a absorver produto. Solução: usar calor moderado (touca térmica, vapor) para abrir levemente as cutículas durante a hidratação. Prefira produtos com ingredientes menores (aloe vera, proteínas hidrolisadas de baixo peso molecular) que penetram com mais facilidade." } }
+      ]
+    },
     content: `
       <p>Você já sentiu que, por mais que use o melhor creme do mundo, o seu cabelo parece que não "responde"? Ou que ele seca em 5 minutos e já está com aspecto de palha de novo? O problema pode não ser o produto, mas sim a porosidade do seu fio.</p>
 
@@ -2508,6 +2769,15 @@ export const posts = [
     author: 'Jon',
     category: 'Finalização',
     image: '/blog-curvaturas.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que é finalização por curvatura em cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "Finalização por curvatura é a técnica de adaptar os produtos e a quantidade aplicada de acordo com o tipo específico de cacho (2A ao 4C). Ondulados (2A-2C) precisam de finalizadores mais leves para não pesar; cacheados médios (3A-3C) suportam gelatinas e cremes; crespos (4A-4C) precisam de cremes densos e manteigas para manter a umidade. Um único produto universal raramente funciona para todas as curvaturas." } },
+        { "@type": "Question", "name": "Qual o melhor finalizador para cada tipo de cacho?", "acceptedAnswer": { "@type": "Answer", "text": "Ondulados: géis e mousses leves, leave-in aquoso. Cacheados tipo 3: cremes de pentear, gelatinas e géis de hold médio. Crespos tipo 4: manteigas densas, óleos pesados como coco e karité, cremes de pentear com slip. O truque é combinar um definidor (gel/creme) com um selante (óleo) em qualquer curvatura para prolongar a durabilidade." } },
+        { "@type": "Question", "name": "Por que o produto bom para uma amiga não funciona no meu cabelo?", "acceptedAnswer": { "@type": "Answer", "text": "Porque curvatura, porosidade e espessura do fio determinam quais ingredientes e texturas de produto funcionam. O que define bem um cacho 3A fino de baixa porosidade pode pesar e empapar um 4B grosso de alta porosidade. Indicação de produto precisa vir de diagnóstico individual — não de resenha genérica ou indicação de amiga com cabelo diferente." } }
+      ]
+    },
     content: `
       <p>Se você já tentou copiar a finalização daquela influenciadora e o resultado no seu cabelo foi um desastre, calma. Não é culpa do seu fio e, muitas vezes, nem do produto. O segredo está na física: a estrutura de um ondulado 2C é completamente diferente de um crespo 4C, e a técnica precisa acompanhar essas mudanças de forma e densidade.</p>
 
@@ -2574,6 +2844,15 @@ export const posts = [
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-frizz-dano.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Como saber se o frizz do meu cabelo é normal ou sinal de dano?", "acceptedAnswer": { "@type": "Answer", "text": "Frizz normal aparece em dias úmidos, some com produtos e está distribuído uniformemente. Frizz por dano capilar é persistente mesmo com produto, concentrado nas pontas, acompanhado de quebra e textura diferente nas extremidades do fio. Se o frizz não responde a nenhum produto e surgiu após processo químico, é sinal de dano — não de clima." } },
+        { "@type": "Question", "name": "O que causa frizz permanente em cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Frizz permanente tem 4 causas principais: alta porosidade (cutículas permanentemente abertas por dano químico ou mecânico), desidratação crônica do fio, desequilíbrio de pH (produtos muito alcalinos) e histórico de processos químicos que alteraram a estrutura do fio. O tratamento varia conforme a causa — aplicar mais produto sem tratar a causa raiz não resolve." } },
+        { "@type": "Question", "name": "Devo cortar os cachos para resolver o frizz de dano?", "acceptedAnswer": { "@type": "Answer", "text": "O corte remove a parte danificada, mas não impede que o fio novo fique danificado pelo mesmo cuidado inadequado. O correto é: corrigir a rotina (pH, reconstrução, umectação) e cortar a parte mais danificada gradualmente. Big chop imediato resolve mais rápido; corte gradual preserva comprimento mas demora mais." } }
+      ]
+    },
     content: `
       <p>Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz. Muita gente entra em pânico ao ver o primeiro fiozinho "arrepiado", mas a verdade nua e crua é esta: frizz não é, automaticamente, sinal de cabelo destruído.</p>
 
@@ -2649,6 +2928,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-day-after.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Como acabar com o bad hair day no cabelo cacheado?", "acceptedAnswer": { "@type": "Answer", "text": "O bad hair day no cacheado geralmente é falta de umidade ou acúmulo de produto. Solução rápida: umedeça levemente com água (spray ou umidade da toalha), reaqueça os cachos com as mãos envoltas em água morna, aplique um pouco de leave-in e evite mexer até secar. Para o day after, o truque é não lavar — só reumedecer e reaquecer a forma do cacho." } },
+        { "@type": "Question", "name": "Como fazer o day after de cachos durar mais?", "acceptedAnswer": { "@type": "Answer", "text": "O day after começa no dia da lavagem: aplique produto suficiente (a maioria usa pouco), finalize com plopping para potencializar a definição, durma em travesseiro de cetim ou com touca. No day after, reumedeça só as áreas amassadas, não reaplique produto em excesso — apenas água e um pouco de finalizador leve nas partes secas." } },
+        { "@type": "Question", "name": "Quantos dias dá para durar o cabelo cacheado lavado?", "acceptedAnswer": { "@type": "Answer", "text": "Com a técnica certa, cacheados mantêm definição por 3 a 5 dias. Crespos com técnicas protetoras (twist out, pineapple) podem durar até 7 dias. O fator limitante é menos o cabelo e mais o couro cabeludo — quando fica oleoso ou com coceira, é hora de lavar. Travesseiro de cetim e pineapple à noite são os maiores aliados da durabilidade." } }
+      ]
+    },
     content: `
       <p>Sabe aquele desespero de acordar, olhar no espelho e ver que os cachos que você demorou uma era para finalizar ontem resolveram tirar férias hoje? Pois é, a gente sabe que o day after pode ser um verdadeiro campo de batalha. Mas ó: ter definição duradoura não é sorte nem milagre, é ciência aplicada com os movimentos certos.</p>
 
@@ -2684,6 +2972,15 @@ export const posts = [
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-liberdade-2026.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O que significa a tendência de liberdade capilar em 2026?", "acceptedAnswer": { "@type": "Answer", "text": "Liberdade capilar em 2026 é o movimento de valorizar a textura natural sem tentar transformá-la para se adequar a padrões externos. Inclui parar processos químicos de alisamento, aprender a cuidar dos cachos naturais e encontrar profissionais que trabalhem A FAVOR da textura — não contra ela. É menos uma tendência estética e mais uma postura de identidade e autoconhecimento." } },
+        { "@type": "Question", "name": "Como começar a jornada de libertar os cachos em 2026?", "acceptedAnswer": { "@type": "Answer", "text": "Três passos iniciais: 1) Parar gradualmente os processos químicos de alisamento; 2) Fazer diagnóstico de porosidade e curvatura para entender seu cabelo real; 3) Encontrar um especialista em texturas para o primeiro corte que respeite seu padrão natural. A jornada pede paciência — o cabelo verdadeiro às vezes leva 6 a 18 meses para aparecer completamente após anos de química." } },
+        { "@type": "Question", "name": "Por que cada vez mais pessoas estão assumindo os cachos naturais?", "acceptedAnswer": { "@type": "Answer", "text": "Porque a indústria capilar evoluiu. Em 2026, há mais especialistas em texturas, mais produtos formulados especificamente para cachos e crespos, e mais visibilidade de pessoas com cabelos naturais como referência estética. A jornada ficou menos solitária — há comunidades, conteúdo e profissionais que entendem de verdade o que o cabelo cacheado precisa." } }
+      ]
+    },
     content: `
       <p>O papo hoje é sobre identidade e respeito.</p>
       
@@ -2732,6 +3029,15 @@ export const posts = [
     date: '30 de Março, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Por que o cabelo cacheado fica com mais frizz em Belo Horizonte?", "acceptedAnswer": { "@type": "Answer", "text": "BH tem clima de montanha com umidade relativa do ar muito variável — manhãs secas e tardes úmidas nos meses de transição. Essa variação faz o fio absorver e liberar umidade várias vezes ao dia, abrindo e fechando as cutículas e criando frizz mecânico. A altitude também resseca mais o ar em épocas de seca (maio a setembro). Cachos em BH precisam de finalização com selante específico para o clima." } },
+        { "@type": "Question", "name": "Como controlar o frizz no clima de BH com cachos?", "acceptedAnswer": { "@type": "Answer", "text": "Estratégia para o clima de BH: acidifique o fio antes da finalização para selar as cutículas, use produtos com ingredientes que criam uma barreira contra a umidade ambiental (poliméricos, óleos leves como argan e jojoba), e aplique um gloss ou creme leve por cima do finalizador para selar. Nos dias de alta umidade (chuva), prefira finalizar com gel de hold forte que resiste à umidade atmosférica." } },
+        { "@type": "Question", "name": "Existe cabeleireiro especialista em cachos para o clima de BH?", "acceptedAnswer": { "@type": "Answer", "text": "Sim. O Studio do Jon, no Caiçara em BH, atende exclusivamente cabelos cacheados e crespos. O Método Leitura de Fio, desenvolvido pelo Jon, inclui diagnóstico de comportamento do fio no clima local — informando que produtos e técnicas funcionam melhor para manter a definição nas condições climáticas específicas de Belo Horizonte." } }
+      ]
+    },
     content: `
       <p>Se você mora em BH, já sabe: o clima aqui é uma montanha-russa. Um dia o sol castiga no hipercentro, no outro a umidade do Caiçara decide que seu cabelo vai dobrar de tamanho em cinco minutos. E aí vem ele, o temido, o polêmico, o onipresente: o Frizz.</p>
       
@@ -2769,6 +3075,15 @@ export const posts = [
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-transicao-bh.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "O corte a seco ajuda na transição capilar?", "acceptedAnswer": { "@type": "Answer", "text": "Sim — é o método mais indicado. Na transição, você tem dois tipos de cabelo no mesmo fio: o natural (raiz) e o químico (pontas). O corte a seco permite ver exatamente onde está a linha de demarcação, calibrar quanto retirar sem perder muito comprimento e equalizar o volume entre as duas texturas diferentes durante o processo de transição." } },
+        { "@type": "Question", "name": "Onde fazer transição capilar com corte a seco em Belo Horizonte?", "acceptedAnswer": { "@type": "Answer", "text": "O Studio do Jon, no bairro Caiçara, é especializado em transição capilar com corte a seco. O Método Leitura de Fio identifica o histórico químico, mapeia a linha de demarcação e define a estratégia de corte — seja big chop gradual ou imediato — de acordo com o que a pessoa está disposta a perder de comprimento." } },
+        { "@type": "Question", "name": "Quanto tempo dura a transição capilar com corte a seco?", "acceptedAnswer": { "@type": "Answer", "text": "Depende da estratégia. Big chop imediato: corte de uma vez e transição termina em uma sessão. Big chop gradual: retornos a cada 2 a 3 meses para retirar a parte química conforme o natural cresce — pode levar de 6 a 18 meses dependendo do comprimento original. A vantagem do gradual é preservar mais comprimento durante o processo." } }
+      ]
+    },
     content: `
       <p>Decidir parar com a química e assumir a textura natural é um ato de coragem, mas a gente sabe: a fase das "duas texturas" não é fácil. Se você está em transição capilar em Belo Horizonte, provavelmente já se pegou no espelho sem saber o que fazer com a raiz cacheada e as pontas lisas.</p>
 
@@ -2803,6 +3118,15 @@ export const posts = [
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-ressecamento.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Por que meu cabelo cacheado resseca tanto?", "acceptedAnswer": { "@type": "Answer", "text": "Cabelos cacheados ressecam mais porque a curvatura do fio dificulta que o sebo natural produzido pelo couro cabeludo desça até as pontas (como acontece nos lisos). Somado a isso, cutículas naturalmente mais abertas deixam a umidade escapar mais rápido. Alta porosidade por dano químico ou mecânico agrava esse quadro significativamente." } },
+        { "@type": "Question", "name": "Como hidratar cabelo cacheado ressecado de forma duradoura?", "acceptedAnswer": { "@type": "Answer", "text": "A hidratação duradoura segue a técnica LOC ou LCO: Líquido (água ou leave-in aquoso) → Óleo (para abrir as cutículas levemente ou selar) → Creme (para selar a umidade). A ordem importa: o creme sobre o óleo sela melhor. Além disso, trate a causa — se for porosidade alta, a reconstrução proteica e a acidificação são mais eficazes que qualquer hidratante isolado." } },
+        { "@type": "Question", "name": "Cabelo cacheado ressecado tem solução sem cortar?", "acceptedAnswer": { "@type": "Answer", "text": "Sim, quando a causa é tratável — como desequilíbrio de pH, rotina errada ou falta de cronograma. Mas se o ressecamento vem de dano estrutural severo (química agressiva, calor excessivo repetido), as pontas danificadas não recuperam a estrutura original. O corte gradual das pontas mais danificadas, combinado com tratamento do restante, é o caminho mais eficaz." } }
+      ]
+    },
     content: `
       <p>Vamos falar de ciência capilar de verdade. Você já passou creme, máscara, óleo, leave-in, gelatina, oração e promessa no cabelo... e duas horas depois ele tá mais seco que o Saara em agosto?</p>
 
