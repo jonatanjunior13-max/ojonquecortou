@@ -2329,7 +2329,7 @@ Grande abraço, Jon.`;
     if (finalMsg.includes('{link_cancelamento}')) {
       finalMsg = finalMsg.replace(/{link_cancelamento}/gi, cancelLink);
     } else {
-      finalMsg += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+      finalMsg += `\n\nCaso precise cancelar ou reagendar seu horário, acesse: ${cancelLink}`;
     }
 
     return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(finalMsg)}`;
@@ -2562,7 +2562,7 @@ Grande abraço, Jon.`;
 
       // Filter by whatsapp status if selected
       if (waFilter !== 'todos') {
-        if (waFilter === 'confirmados' && b.status !== 'confirmado') return false;
+        if (waFilter === 'confirmados' && b.status !== 'confirmado' && b.status !== 'confirmado pela cliente') return false;
         if (waFilter === 'pendentes' && b.status !== 'pendente') return false;
         if (waFilter === 'cancelados' && b.status !== 'cancelado') return false;
         if (waFilter === 'sem-mensagem' && b.reminderSent === true) return false;
@@ -2614,7 +2614,7 @@ Grande abraço, Jon.`;
   const bookingsInScope = getBookingsInScope();
   const statsCounts = {
     pendente: bookingsInScope.filter(b => b.status === 'pendente').length,
-    confirmado: bookingsInScope.filter(b => b.status === 'confirmado').length,
+    confirmado: bookingsInScope.filter(b => b.status === 'confirmado' || b.status === 'confirmado pela cliente').length,
     finalizado: bookingsInScope.filter(b => b.status === 'finalizado').length,
     cancelado: bookingsInScope.filter(b => b.status === 'cancelado').length,
     faltou: bookingsInScope.filter(b => b.status === 'faltou').length,
@@ -2938,6 +2938,7 @@ Grande abraço, Jon.`;
             {expandedAccordions.status && (
               <div className="accordion-content" style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado" /> Confirmado</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado-pela-cliente" /> Confirmado pela Cliente</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot pendente" /> Pendente</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot finalizado" /> Finalizado</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot bloqueado" /> Bloqueado</div>
@@ -3180,7 +3181,7 @@ Grande abraço, Jon.`;
                                 return (
                                   <div 
                                     key={bk.id} 
-                                    className={`appt-card ${bk.status} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")} ${isSubsequent ? 'continuation' : ''}`}
+                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")} ${isSubsequent ? 'continuation' : ''}`}
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
@@ -4145,7 +4146,7 @@ Grande abraço, Jon.`;
                   {activePopover.booking.status === 'bloqueado' ? 'Desbloquear' : 'Cancelar'}
                 </button>
               )}
-              {activePopover.booking.status === 'confirmado' && (
+              {(activePopover.booking.status === 'confirmado' || activePopover.booking.status === 'confirmado pela cliente') && (
                 <button
                   className="btn btn-accent"
                   style={{ padding: '6px 8px', fontSize: '0.75rem', width: '100%' }}
@@ -4239,12 +4240,13 @@ Grande abraço, Jon.`;
                 <ul className="context-menu-submenu">
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'pendente')}>Pendente</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'confirmado')}>Confirmado</li>
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'confirmado pela cliente')}>Confirmado pela Cliente</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'finalizado')}>Finalizado</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'cancelado')}>Cancelado</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'faltou')}>Cliente faltou</li>
                 </ul>
               </li>
-              {contextMenu.booking.status === 'confirmado' && (
+              {(contextMenu.booking.status === 'confirmado' || contextMenu.booking.status === 'confirmado pela cliente') && (
                 <li className="context-menu-item" onClick={() => {
                   setSelectedBooking(contextMenu.booking);
                   setOverrideBasePrice(contextMenu.booking.servicePrice || contextMenu.booking.service?.price || 150);
@@ -4600,6 +4602,7 @@ Grande abraço, Jon.`;
                   >
                     <option value="pendente">Aguardando Confirmação</option>
                     <option value="confirmado">Confirmado</option>
+                    <option value="confirmado pela cliente">Confirmado pela Cliente</option>
                     <option value="cancelado">Cancelado</option>
                     <option value="finalizado">Finalizado</option>
                     <option value="faltou">Cliente faltou</option>
@@ -5151,7 +5154,7 @@ Grande abraço, Jon.`;
                           Confirmar Horário
                         </button>
                       )}
-                      {selectedBooking.status === 'confirmado' && (
+                      {(selectedBooking.status === 'confirmado' || selectedBooking.status === 'confirmado pela cliente') && (
                         <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => {
                           setOverrideBasePrice(selectedBooking.servicePrice || selectedBooking.service?.price || 150);
                           setIsCheckoutOpen(true);
