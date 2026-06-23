@@ -610,10 +610,14 @@
 }
 
 .m-slot-booking.confirmado {
-  background: linear-gradient(135deg, var(--m-gold, #C4738A) 0%, var(--m-gold-deep, #9E4E62) 100%) !important;
   border: 1px solid rgba(196, 115, 138, 0.4);
   border-left: 4px solid #ffffff;
   color: #ffffff !important;
+}
+
+/* Default confirmed color when not overridden by specific service */
+.m-slot-booking.confirmado:not([class*="svc-"]) {
+  background: linear-gradient(135deg, var(--m-gold, #C4738A) 0%, var(--m-gold-deep, #9E4E62) 100%) !important;
 }
 
 .m-slot-booking.finalizado {
@@ -653,6 +657,12 @@
   background: linear-gradient(90deg, rgba(31, 111, 235, 0.16) 0%, rgba(31, 111, 235, 0.04) 50%, var(--m-card) 100%) !important;
   border: 1px solid rgba(31, 111, 235, 0.2) !important;
   border-left: 4px solid #1F6FEB !important;
+  color: #ffffff !important;
+}
+.m-slot-booking[class*="svc-corte-cor"], .m-slot-booking[class*="svc-corte-coloracao"], .m-slot-booking[class*="svc-corte-mechas"] {
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.14) 0%, rgba(122, 60, 255, 0.14) 50%, var(--m-card) 100%) !important;
+  border: 1px solid rgba(122, 60, 255, 0.2) !important;
+  border-left: 4px solid #E2703A !important;
   color: #ffffff !important;
 }
 
