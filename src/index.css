@@ -106,7 +106,7 @@ h3.display { font-size: clamp(20px, 2.8vw, 34px); font-weight: 500; }
   max-width: 60ch;
 }
 
-.body-sm { font-size: 13px; line-height: 1.5; color: var(--muted); }
+.body-sm { font-size: 14px; line-height: 1.5; color: var(--muted); }
 
 /* ---------- layout ---------- */
 .container {
@@ -199,22 +199,26 @@ hr.technical-rule {
   color: var(--ink-2);
   position: relative;
   padding: 6px 0;
+  transition: color 0.2s ease;
 }
 .nav-links a::after {
   content: "";
   position: absolute; left: 0; right: 100%; bottom: 0;
-  height: 1px; background: var(--ink);
-  transition: right 0.4s var(--ease);
+  height: 1px; background: var(--accent);
+  transition: right 0.3s var(--ease);
 }
+.nav-links a:hover { color: var(--accent); }
 .nav-links a:hover::after { right: 0; }
-.nav-links a.active { color: var(--ink); }
-.nav-links a.active::after { right: 0; background: var(--accent-deep); }
+.nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { right: 0; }
 
 .nav-cta { display: flex; align-items: center; gap: 12px; }
 .nav-toggle {
   background: transparent; border: 0; padding: 10px;
   display: inline-flex; flex-direction: column; gap: 4px;
   cursor: pointer;
+  min-height: 44px; min-width: 44px;
+  justify-content: center; align-items: center;
 }
 .nav-toggle span {
   display: block; width: 22px; height: 1.5px; background: var(--ink);
@@ -272,6 +276,8 @@ hr.technical-rule {
   align-items: center;
   gap: 12px;
   padding: 14px 22px;
+  min-height: 44px;
+  min-width: 44px;
   border-radius: 999px;
   font-size: 13px;
   font-weight: 600;
@@ -336,10 +342,15 @@ hr.technical-rule {
 
 /* ---------- hero ---------- */
 .hero {
-  padding-top: clamp(100px, 16vw, 180px);
+  padding-top: clamp(80px, 16vw, 180px);
   padding-bottom: clamp(60px, 10vw, 120px);
   position: relative;
   overflow: hidden;
+}
+@media (max-width: 768px) {
+  .hero { padding-top: 72px; padding-bottom: 40px; }
+  .hero-actions { margin-top: 24px; }
+  .hero-meta { margin-top: 24px; }
 }
 .hero-grid {
   display: grid;
@@ -465,19 +476,22 @@ hr.technical-rule {
   padding-right: 56px;
 }
 .marquee-item {
-  font-family: var(--serif-italic);
-  font-style: italic;
-  font-size: clamp(20px, 2.4vw, 30px);
+  font-family: var(--sans);
+  font-style: normal;
+  font-weight: 500;
+  font-size: clamp(11px, 1.1vw, 13px);
   color: var(--ink-2);
-  display: inline-flex; align-items: center; gap: 56px;
-  letter-spacing: -0.01em;
+  display: inline-flex; align-items: center; gap: 40px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
 }
 .marquee-item::after {
-  content: "✦";
-  font-family: var(--serif);
+  content: "·";
+  font-family: var(--sans);
   font-style: normal;
-  color: var(--accent);
-  font-size: 0.6em;
+  color: rgba(255,255,255,0.2);
+  font-size: 1.4em;
+  line-height: 1;
 }
 @keyframes scroll {
   from { transform: translateX(0); }

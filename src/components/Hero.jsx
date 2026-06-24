@@ -27,9 +27,6 @@ const Hero = () => {
                 Agende seu Horário <ArrowRight size={20} style={{ marginLeft: '10px' }} />
               </a>
               <div className="hero-secondary-btns">
-                <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline">
-                  WhatsApp
-                </a>
                 <a href="http://instagram.com/ojonquecortou" target="_blank" rel="noreferrer" className="btn btn-outline">
                   Meu Instagram
                 </a>

@@ -159,19 +159,14 @@ function HomeHero() {
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
           {Array.from({ length: 2 }).flatMap((_, k) => [
-            { text: "Leitura de fio", color: "#E2703A" },
-            { text: "Corte híbrido", color: "var(--ink-2)" },
-            { text: "Porosidade", color: "var(--ink-2)" },
-            { text: "Curvatura", color: "var(--ink-2)" },
-            { text: "Visagismo", color: "var(--ink-2)" },
-            { text: "Morena iluminada", color: "var(--ink-2)" },
-            { text: "Transição capilar", color: "var(--ink-2)" },
-            { text: "Cachos verdadeiros", color: "var(--ink-2)" },
-            { text: "Corte", color: "#FF2D8B" },
-            { text: "Cor", color: "rgba(255,255,255,0.4)" },
-            { text: "Tratamento", color: "rgba(255,255,255,0.4)" },
-            { text: "Cacheados", color: "rgba(255,255,255,0.4)" },
-            { text: "Belo Horizonte", color: "#7A3CFF" }
+            { text: "Cacheados",      color: "rgba(255,255,255,0.38)" },
+            { text: "Crespos",        color: "rgba(255,255,255,0.38)" },
+            { text: "Ondulados",      color: "rgba(255,255,255,0.38)" },
+            { text: "Belo Horizonte", color: "#7A3CFF" },
+            { text: "Corte",          color: "#E2703A" },
+            { text: "Cor",            color: "rgba(255,255,255,0.38)" },
+            { text: "Tratamento",     color: "rgba(255,255,255,0.38)" },
+            { text: "Leitura de Fio", color: "#E2703A" },
           ].map((item, i) => (
             <span className="marquee-item" key={`${k}-${i}`} style={{ color: item.color }}>{item.text}</span>
           )))}

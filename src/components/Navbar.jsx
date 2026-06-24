@@ -150,9 +150,9 @@ function Navbar() {
                 );
               })}
             </div>
-            <a href="https://wa.me/553135866673" target="_blank" rel="noopener noreferrer" className="btn btn-accent" style={{ marginTop: 28 }}>
-              Agendar pelo WhatsApp <Arrow />
-            </a>
+            <Link to="/agendar" className="btn btn-accent" style={{ marginTop: 28 }} onClick={() => setOpen(false)}>
+              Agendar <Arrow />
+            </Link>
           </div>
         </div>
       )}
