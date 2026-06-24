@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, query, addDoc, updateDoc, doc, getDoc, setDoc, deleteDoc, where, getDocs } from 'firebase/firestore';
 import { useOutletContext } from 'react-router-dom';
@@ -237,6 +237,7 @@ const AdminDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isSubmittingRef = useRef(false);
   const [isDemoMode, setIsDemoMode] = useState(!db);
   
   const toast = useToast();
@@ -247,6 +248,12 @@ const AdminDashboard = () => {
   const [comandaBooking, setComandaBooking] = useState(null);
   const [addedServices, setAddedServices] = useState([]);
   const [addedProducts, setAddedProducts] = useState([]);
+  const [usedProducts, setUsedProducts] = useState([]);
+  const [nonRegisteredProducts, setNonRegisteredProducts] = useState([]);
+  const [selectedUsedProduct, setSelectedUsedProduct] = useState('');
+  const [usedProductQty, setUsedProductQty] = useState(1);
+  const [newNonRegName, setNewNonRegName] = useState('');
+  const [newNonRegVal, setNewNonRegVal] = useState(0);
   const [isEditingComanda, setIsEditingComanda] = useState(false);
   const [editComandaForm, setEditComandaForm] = useState({
     value: 0,
@@ -1197,6 +1204,9 @@ const AdminDashboard = () => {
 
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
     const activeServPrice = newBooking.servicePrice || (services[0]?.promoPrice || services[0]?.price || 150);
     const activeDuration = newBooking.duration || (services[0]?.duration || 60);
@@ -1238,6 +1248,7 @@ const AdminDashboard = () => {
 
     if (hasConflict) {
       if (!confirm("Já existe outro agendamento neste horário para este profissional.\nDeseja continuar?")) {
+        isSubmittingRef.current = false;
         return;
       }
     }
@@ -1331,6 +1342,8 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Erro ao criar agendamento manual:', err);
       alert('Falha ao registrar agendamento manual.');
+    } finally {
+      isSubmittingRef.current = false;
     }
   };
 
@@ -1488,6 +1501,33 @@ const AdminDashboard = () => {
     setAddedProducts(prev => prev.filter((_, idx) => idx !== index));
   };
 
+  const addUsedProduct = (productId, name, priceStr) => {
+    const existing = usedProducts.find(ap => ap.productId === productId);
+    if (existing) {
+      setUsedProducts(prev => prev.map(ap => 
+        ap.productId === productId ? { ...ap, quantity: ap.quantity + 1 } : ap
+      ));
+    } else {
+      setUsedProducts(prev => [...prev, { productId, name, price: Number(priceStr), quantity: 1 }]);
+    }
+    setSelectedUsedProduct('');
+  };
+
+  const removeUsedProduct = (index) => {
+    setUsedProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const addNonRegisteredProduct = (name, val) => {
+    if (!name || val <= 0) return;
+    setNonRegisteredProducts(prev => [...prev, { name, value: Number(val) }]);
+    setNewNonRegName('');
+    setNewNonRegVal(0);
+  };
+
+  const removeNonRegisteredProduct = (index) => {
+    setNonRegisteredProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
   const calculateTotal = () => {
     const base = usingClientPackageId 
       ? 0 
@@ -1497,8 +1537,10 @@ const AdminDashboard = () => {
         );
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const nonRegProdsVal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
-    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay);
+    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay - usedProdsVal - nonRegProdsVal);
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
@@ -1629,8 +1671,10 @@ const AdminDashboard = () => {
         );
     const extraServicesTotal = addedServices.reduce((sum, item) => sum + item.price, 0);
     const productsTotal = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const nonRegProductsTotal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
-    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay);
+    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay - usedProductsTotal - nonRegProductsTotal);
 
     const itemsDescription = [
       sellingPackageId 
@@ -1638,6 +1682,8 @@ const AdminDashboard = () => {
         : (booking.service?.name || booking.serviceName || 'Serviço Base'),
       ...addedServices.map(s => s.name),
       ...addedProducts.map(p => `${p.quantity}x ${p.name}`),
+      usedProducts.length > 0 ? `Insumos Usados (-R$ ${usedProductsTotal})` : '',
+      nonRegisteredProducts.length > 0 ? `Itens não cadastrados (-R$ ${nonRegProductsTotal})` : '',
       Number(extraCharged) > 0 ? `Taxa Extra Cobrada (R$ ${extraCharged})` : ''
     ].filter(Boolean).join(', ');
 
@@ -1670,6 +1716,16 @@ const AdminDashboard = () => {
           costPrice: match ? (match.costPrice || 0) : 0
         };
       }),
+      usedProducts: usedProducts.map(p => ({
+        productId: p.productId,
+        name: p.name,
+        quantity: p.quantity,
+        price: p.price
+      })),
+      nonRegisteredProducts: nonRegisteredProducts.map(p => ({
+        name: p.name,
+        value: p.value
+      })),
       createdAt: new Date().toISOString()
     };
 
@@ -1801,8 +1857,12 @@ const AdminDashboard = () => {
           const prods = JSON.parse(localProducts);
           updatedProdsList = prods.map(p => {
             const added = addedProducts.find(ap => ap.productId === p.id);
-            if (added) {
-              return { ...p, quantity: Math.max(0, p.quantity - added.quantity) };
+            const used = usedProducts.find(up => up.productId === p.id);
+            let qtyToSubtract = 0;
+            if (added) qtyToSubtract += added.quantity;
+            if (used) qtyToSubtract += used.quantity;
+            if (qtyToSubtract > 0) {
+              return { ...p, quantity: Math.max(0, p.quantity - qtyToSubtract) };
             }
             return p;
           });
@@ -1865,11 +1925,22 @@ const AdminDashboard = () => {
         });
         syncBookingToGoogle(booking.id).catch(err => console.warn('Error syncing completed checkout:', err));
 
+        // Deduct sold products stock
         for (const added of addedProducts) {
           const prodRef = doc(db, 'products', added.productId);
           const match = products.find(p => p.id === added.productId);
           if (match) {
             const newQty = Math.max(0, match.quantity - added.quantity);
+            await updateDoc(prodRef, { quantity: newQty });
+          }
+        }
+
+        // Deduct used products stock
+        for (const used of usedProducts) {
+          const prodRef = doc(db, 'products', used.productId);
+          const match = products.find(p => p.id === used.productId);
+          if (match) {
+            const newQty = Math.max(0, match.quantity - used.quantity);
             await updateDoc(prodRef, { quantity: newQty });
           }
         }
@@ -2258,7 +2329,7 @@ Grande abraço, Jon.`;
     if (finalMsg.includes('{link_cancelamento}')) {
       finalMsg = finalMsg.replace(/{link_cancelamento}/gi, cancelLink);
     } else {
-      finalMsg += `\n\nCaso precise cancelar seu horário, acesse: ${cancelLink}`;
+      finalMsg += `\n\nCaso precise cancelar ou reagendar seu horário, acesse: ${cancelLink}`;
     }
 
     return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(finalMsg)}`;
@@ -2491,7 +2562,7 @@ Grande abraço, Jon.`;
 
       // Filter by whatsapp status if selected
       if (waFilter !== 'todos') {
-        if (waFilter === 'confirmados' && b.status !== 'confirmado') return false;
+        if (waFilter === 'confirmados' && b.status !== 'confirmado' && b.status !== 'confirmado pela cliente') return false;
         if (waFilter === 'pendentes' && b.status !== 'pendente') return false;
         if (waFilter === 'cancelados' && b.status !== 'cancelado') return false;
         if (waFilter === 'sem-mensagem' && b.reminderSent === true) return false;
@@ -2543,7 +2614,7 @@ Grande abraço, Jon.`;
   const bookingsInScope = getBookingsInScope();
   const statsCounts = {
     pendente: bookingsInScope.filter(b => b.status === 'pendente').length,
-    confirmado: bookingsInScope.filter(b => b.status === 'confirmado').length,
+    confirmado: bookingsInScope.filter(b => b.status === 'confirmado' || b.status === 'confirmado pela cliente').length,
     finalizado: bookingsInScope.filter(b => b.status === 'finalizado').length,
     cancelado: bookingsInScope.filter(b => b.status === 'cancelado').length,
     faltou: bookingsInScope.filter(b => b.status === 'faltou').length,
@@ -2867,6 +2938,7 @@ Grande abraço, Jon.`;
             {expandedAccordions.status && (
               <div className="accordion-content" style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado" /> Confirmado</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot confirmado-pela-cliente" /> Confirmado pela Cliente</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot pendente" /> Pendente</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot finalizado" /> Finalizado</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><span className="appt-status-dot bloqueado" /> Bloqueado</div>
@@ -3039,12 +3111,12 @@ Grande abraço, Jon.`;
                         return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
                       });
 
-                      // Unify duplicate bookings having the exact same fields
+                      // Unify duplicate bookings only if they have the exact same database ID to avoid react key issues
                       const seen = new Set();
                       cellBookings = cellBookings.filter(b => {
-                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
-                        if (seen.has(key)) return false;
-                        seen.add(key);
+                        if (!b.id) return true;
+                        if (seen.has(b.id)) return false;
+                        seen.add(b.id);
                         return true;
                       });
 
@@ -3109,56 +3181,83 @@ Grande abraço, Jon.`;
                                 return (
                                   <div 
                                     key={bk.id} 
-                                    className={`appt-card ${bk.status} ${isSubsequent ? 'continuation' : ''}`}
+                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${(() => {
+                                      const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-corte-cor';
+                                      if (name.includes('corte')) return 'svc-corte';
+                                      if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
+                                      if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
+                                      return 'svc-outro';
+                                    })()}`}
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
                                       flex: 1, 
                                       height: '100%', 
                                       display: 'flex', 
-                                      flexDirection: 'column', 
-                                      justifyContent: 'center', 
+                                      flexDirection: 'row', 
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
                                       position: 'relative',
+                                      padding: '8px 16px',
+                                      overflow: 'hidden',
+                                      borderRadius: '0px',
                                       ...(isSubsequent ? {
                                         opacity: 0.85, 
                                         borderTop: 'none', 
-                                        borderTopLeftRadius: 0, 
-                                        borderTopRightRadius: 0,
                                         background: 'rgba(110, 47, 24, 0.08)',
                                         borderLeft: '3px dashed var(--adm-gold)',
-                                        color: 'var(--text-muted)'
+                                        color: 'var(--adm-text, #221A15)'
                                       } : {})
                                     }}
                                   >
-                                    <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
-                                    <span className="appt-time">{isSubsequent ? `↳ ${apptTimeText} (Ocupado)` : apptTimeText}</span>
-                                    <span 
-                                      className="appt-client" 
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
-                                      }}
-                                      style={{ 
-                                        textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)',
-                                        cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
-                                      }}
-                                    >
-                                      {bk.clientName}
-                                      {isClientRecurrent(bk.clientName, bk.clientPhone) && (
-                                        <span style={{
-                                          position: 'absolute',
-                                          top: '-2px',
-                                          right: '-6px',
-                                          width: '5px',
-                                          height: '5px',
-                                          borderRadius: '50%',
-                                          backgroundColor: 'var(--adm-gold, #dca354)'
-                                        }} title="Cliente Recorrente" />
-                                      )}
-                                    </span>
-                                    <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', width: 'calc(100% - 12px)' }}>{bk.service?.name || bk.serviceName}</span>
+                                    <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', gap: '2px' }}>
+                                      <span 
+                                        className="appt-client" 
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
+                                        }}
+                                        style={{ 
+                                          fontWeight: 'bold', color: '#fff', fontSize: '0.92rem', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                                        }}
+                                      >
+                                        {bk.clientName}
+                                        {isClientRecurrent(bk.clientName, bk.clientPhone) && (
+                                          <span style={{
+                                            position: 'absolute',
+                                            marginLeft: '4px',
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: 'var(--adm-gold, #dca354)',
+                                            display: 'inline-block'
+                                          }} title="Cliente Recorrente" />
+                                        )}
+                                      </span>
+                                      <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.78rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {bk.service?.name || bk.serviceName} · {(() => {
+                                          const m = bk.duration || 60;
+                                          const h = Math.floor(m / 60);
+                                          const r = m % 60;
+                                          if (h > 0 && r > 0) return `${h}h${r}`;
+                                          if (h > 0) return `${h}h`;
+                                          return `${r}min`;
+                                        })()}
+                                      </span>
+                                    </div>
+                                    <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
+                                      {(() => {
+                                        const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'CORTE + COR';
+                                        if (name.includes('corte')) return 'CORTE';
+                                        if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
+                                        if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
+                                        return 'OUTRO';
+                                      })()}
+                                    </div>
                                   </div>
-                                );
+                              );
                               })}
                             </div>
                           ) : absence ? (
@@ -3436,9 +3535,9 @@ Grande abraço, Jon.`;
                       );
                       const seenBookings = new Set();
                       dayBookings = dayBookings.filter(b => {
-                        const key = `${b.clientName}_${b.date}_${b.time}_${b.duration || 60}_${b.serviceName || b.service?.name || ''}`;
-                        if (seenBookings.has(key)) return false;
-                        seenBookings.add(key);
+                        if (!b.id) return true;
+                        if (seenBookings.has(b.id)) return false;
+                        seenBookings.add(b.id);
                         return true;
                       });
 
@@ -3543,52 +3642,91 @@ Grande abraço, Jon.`;
 
                             if (item.type === 'booking') {
                               const b = item.raw;
+                               
+                              const startStr = b.time || '00:00';
+                              const parts = startStr.split(':');
+                              const h = parts[0] ? Number(parts[0]) : 0;
+                              const m = parts[1] ? Number(parts[1]) : 0;
+                              const endMinVal = h * 60 + m + (b.duration || 60);
+                              const endH = Math.floor(endMinVal / 60);
+                              const endM = endMinVal % 60;
+                              const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+                              const apptTimeText = `${startStr} - ${endStr}`;
+
                               return (
-                                <div 
-                                  key={item.id} 
-                                  className={`appt-card ${b.status}`}
-                                  onClick={(e) => handleBookingLeftClick(e, b)}
-                                  style={{
-                                    top: `${topPercent}%`,
-                                    height: `${heightPercent}%`,
-                                    position: 'absolute',
-                                    left: `${left}%`,
-                                    width: `${width}%`,
-                                    padding: '4px',
-                                    zIndex: 3,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    overflow: 'hidden'
-                                  }}
-                                >
-                                  <span className="appt-time" style={{ fontWeight: 'bold' }}>{b.time}</span>
-                                  <span 
-                                     className="appt-client" 
-                                     onClick={(e) => {
-                                       e.stopPropagation();
-                                       setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
-                                     }}
-                                     style={{ 
-                                       whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden',
-                                       cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
-                                     }}
-                                   >
-                                     {b.clientName}
-                                     {isClientRecurrent(b.clientName, b.clientPhone) && (
-                                       <span style={{
-                                         position: 'absolute',
-                                         top: '-2px',
-                                         right: '-6px',
-                                         width: '5px',
-                                         height: '5px',
-                                         borderRadius: '50%',
-                                         backgroundColor: 'var(--adm-gold, #dca354)'
-                                       }} title="Cliente Recorrente" />
-                                     )}
-                                   </span>
-                                  <span className="appt-service" style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{b.service?.name || b.serviceName}</span>
-                                </div>
+                                  <div 
+                                    key={item.id} 
+                                    className={`appt-card ${b.status} ${(() => {
+                                      const name = (b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-corte-cor';
+                                      if (name.includes('corte')) return 'svc-corte';
+                                      if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
+                                      if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
+                                      return 'svc-outro';
+                                    })()}`}
+                                    onClick={(e) => handleBookingLeftClick(e, b)}
+                                    style={{
+                                      top: `${topPercent}%`,
+                                      height: `${heightPercent}%`,
+                                      position: 'absolute',
+                                      left: `${left}%`,
+                                      width: `${width}%`,
+                                      padding: '8px 16px',
+                                      zIndex: 3,
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
+                                      overflow: 'hidden',
+                                      borderRadius: '0px'
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', gap: '2px' }}>
+                                      <span 
+                                        className="appt-client" 
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
+                                        }}
+                                        style={{ 
+                                          fontWeight: 'bold', color: '#fff', fontSize: '0.92rem', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                                        }}
+                                      >
+                                        {b.clientName}
+                                        {isClientRecurrent(b.clientName, b.clientPhone) && (
+                                          <span style={{
+                                            position: 'absolute',
+                                            marginLeft: '4px',
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: 'var(--adm-gold, #dca354)',
+                                            display: 'inline-block'
+                                          }} title="Cliente Recorrente" />
+                                        )}
+                                      </span>
+                                      <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.78rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {b.service?.name || b.serviceName} · {(() => {
+                                          const m = b.duration || 60;
+                                          const h = Math.floor(m / 60);
+                                          const r = m % 60;
+                                          if (h > 0 && r > 0) return `${h}h${r}`;
+                                          if (h > 0) return `${h}h`;
+                                          return `${r}min`;
+                                        })()}
+                                      </span>
+                                    </div>
+                                    <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
+                                      {(() => {
+                                        const name = (b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'CORTE + COR';
+                                        if (name.includes('corte')) return 'CORTE';
+                                        if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
+                                        if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
+                                        return 'OUTRO';
+                                      })()}
+                                    </div>
+                                  </div>
                               );
                             }
 
@@ -4044,7 +4182,7 @@ Grande abraço, Jon.`;
                   {activePopover.booking.status === 'bloqueado' ? 'Desbloquear' : 'Cancelar'}
                 </button>
               )}
-              {activePopover.booking.status === 'confirmado' && (
+              {(activePopover.booking.status === 'confirmado' || activePopover.booking.status === 'confirmado pela cliente') && (
                 <button
                   className="btn btn-accent"
                   style={{ padding: '6px 8px', fontSize: '0.75rem', width: '100%' }}
@@ -4138,12 +4276,13 @@ Grande abraço, Jon.`;
                 <ul className="context-menu-submenu">
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'pendente')}>Pendente</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'confirmado')}>Confirmado</li>
+                  <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'confirmado pela cliente')}>Confirmado pela Cliente</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'finalizado')}>Finalizado</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'cancelado')}>Cancelado</li>
                   <li className="context-menu-item" onClick={() => handleUpdateStatus(contextMenu.booking.id, 'faltou')}>Cliente faltou</li>
                 </ul>
               </li>
-              {contextMenu.booking.status === 'confirmado' && (
+              {(contextMenu.booking.status === 'confirmado' || contextMenu.booking.status === 'confirmado pela cliente') && (
                 <li className="context-menu-item" onClick={() => {
                   setSelectedBooking(contextMenu.booking);
                   setOverrideBasePrice(contextMenu.booking.servicePrice || contextMenu.booking.service?.price || 150);
@@ -4499,6 +4638,7 @@ Grande abraço, Jon.`;
                   >
                     <option value="pendente">Aguardando Confirmação</option>
                     <option value="confirmado">Confirmado</option>
+                    <option value="confirmado pela cliente">Confirmado pela Cliente</option>
                     <option value="cancelado">Cancelado</option>
                     <option value="finalizado">Finalizado</option>
                     <option value="faltou">Cliente faltou</option>
@@ -5050,7 +5190,7 @@ Grande abraço, Jon.`;
                           Confirmar Horário
                         </button>
                       )}
-                      {selectedBooking.status === 'confirmado' && (
+                      {(selectedBooking.status === 'confirmado' || selectedBooking.status === 'confirmado pela cliente') && (
                         <button className="btn btn-accent" style={{ padding: '6px 12px', fontSize: '0.85rem' }} onClick={() => {
                           setOverrideBasePrice(selectedBooking.servicePrice || selectedBooking.service?.price || 150);
                           setIsCheckoutOpen(true);
@@ -5183,6 +5323,52 @@ Grande abraço, Jon.`;
                       </div>
                     </div>
                   ))}
+
+                  {/* PRODUTOS USADOS DEDUZIDOS */}
+                  {usedProducts.map((p, idx) => (
+                    <div key={'up-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: '#48bb78' }}>
+                      <span>🧪 Insumo Usado: {p.quantity}x {p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>Custo: R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                          value={p.price}
+                          onChange={e => {
+                            const newPrice = Number(e.target.value);
+                            setUsedProducts(prev => prev.map((item, i) => i === idx ? { ...item, price: newPrice } : item));
+                          }}
+                        />
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, minWidth: '45px', textAlign: 'right' }}>- R$ {p.price * p.quantity}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeUsedProduct(idx)} style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: '2px' }}>
+                          <Trash2 size={11} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* PRODUTOS NÃO CADASTRADOS DEDUZIDOS */}
+                  {nonRegisteredProducts.map((p, idx) => (
+                    <div key={'nrp-' + idx} className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.78rem', color: '#38b2ac' }}>
+                      <span>🏷️ Produto Não Cadastrado: {p.name}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>Valor: R$</span>
+                        <input 
+                          type="number"
+                          style={{ width: '60px', padding: '2px 4px', fontSize: '0.8rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', textAlign: 'right', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                          value={p.value}
+                          onChange={e => {
+                            const newValue = Number(e.target.value);
+                            setNonRegisteredProducts(prev => prev.map((item, i) => i === idx ? { ...item, value: newValue } : item));
+                          }}
+                        />
+                        <span style={{ fontSize: '0.78rem', fontWeight: 600, minWidth: '45px', textAlign: 'right' }}>- R$ {p.value}</span>
+                        <button type="button" className="btn-remove" onClick={() => removeNonRegisteredProduct(idx)} style={{ background: 'none', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: '2px' }}>
+                          <Trash2 size={11} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                   
                   <div className="comanda-item-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px dashed var(--adm-rule)', paddingTop: 4, marginTop: 4 }}>
                     <span style={{ fontSize: '0.78rem' }}>Desconto</span>
@@ -5260,7 +5446,7 @@ Grande abraço, Jon.`;
                   </div>
  
                   <div className="form-group" style={{ marginBottom: 0 }}>
-                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Lançar Produto</label>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>Vender Produto</label>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <select 
                         value={selectedExtraProduct} 
@@ -5275,6 +5461,66 @@ Grande abraço, Jon.`;
                         ))}
                       </select>
                       <button type="button" className="btn btn-ghost" style={{ padding: '2px 8px', fontSize: '0.75rem' }} onClick={addExtraProduct}>+</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 2 }}>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>🧪 Insumo Usado (Estoque)</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <select 
+                        value={selectedUsedProduct} 
+                        onChange={e => setSelectedUsedProduct(e.target.value)}
+                        style={{ padding: '3px 6px', fontSize: '0.75rem', flexGrow: 1, border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                      >
+                        <option value="">Selecione</option>
+                        {products.map(p => (
+                          <option key={p.id} value={`${p.id}|${p.name}|${p.costPrice || p.sellingPrice}`} disabled={p.quantity <= 0}>
+                            {p.name} (Custo: R$ {p.costPrice || p.sellingPrice})
+                          </option>
+                        ))}
+                      </select>
+                      <button 
+                        type="button" 
+                        className="btn btn-ghost" 
+                        style={{ padding: '2px 8px', fontSize: '0.75rem' }} 
+                        onClick={() => {
+                          if (!selectedUsedProduct) return;
+                          const [pid, name, price] = selectedUsedProduct.split('|');
+                          addUsedProduct(pid, name, price);
+                        }}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label style={{ fontSize: '0.72rem', display: 'block', marginBottom: '2px' }}>🏷️ Usar Não Cadastrado</label>
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      <input 
+                        type="text"
+                        placeholder="Nome"
+                        value={newNonRegName}
+                        onChange={e => setNewNonRegName(e.target.value)}
+                        style={{ width: '50%', padding: '3px 6px', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                      />
+                      <input 
+                        type="number"
+                        placeholder="Valor"
+                        value={newNonRegVal || ''}
+                        onChange={e => setNewNonRegVal(Number(e.target.value))}
+                        style={{ width: '35%', padding: '3px 6px', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)', textAlign: 'right' }}
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-ghost" 
+                        style={{ padding: '2px 8px', fontSize: '0.75rem' }} 
+                        onClick={() => addNonRegisteredProduct(newNonRegName, newNonRegVal)}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { db, storage } from '../../config/firebase';
-import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
 import './Admin.css';
@@ -280,58 +280,58 @@ const AdminMarketing = () => {
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
 
   // Newsletter states
-  const JUNE_2026_NEWSLETTER_HTML = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  const JUNE_2026_NEWSLETTER_HTML = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
-        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
-        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
       </td>
     </tr>
   </table>
 
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
-    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
     Leitura de Fio · Edição de Junho
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">O frizz que nenhum creme <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">vai resolver.</span></h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 16ch;">O frizz que nenhum creme <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #DCA354;">vai resolver.</span></h1>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Você trocou o leave-in. Trocou o gel. Trocou o shampoo. Talvez até a marca de água do banho. E o frizz voltou. Exatamente do mesmo jeito.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Você trocou o leave-in. Trocou o gel. Trocou o shampoo. Talvez até a marca de água do banho. E o frizz voltou. Exatamente do mesmo jeito.</p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Isso acontece porque o frizz que persiste raramente é problema de produto. É problema de <strong style="color: #1A1310;">ângulo de corte.</strong></p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Isso acontece porque o frizz que persiste raramente é problema de produto. É problema de <strong style="color: #FFFFFF;">ângulo de corte.</strong></p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Quando o fio é cortado no ângulo errado, a cutícula fica exposta de um jeito que nenhuma finalização consegue fechar. O creme sela por um dia. Depois a umidade entra, a cutícula levanta, e o frizz aparece. De novo.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Quando o fio é cortado no angle correto, a cutícula fica exposta de um jeito que nenhuma finalização consegue fechar. O creme sela por um dia. Depois a umidade entra, a cutícula levanta, e o frizz aparece. De novo.</p>
 
-  <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"O Método Leitura de Fio lê a curvatura antes da tesoura. Não para ter uma técnica bonita. Para cortar no ângulo que o <span style='font-style: italic; color: #6E2F18;'>seu</span> fio pede."</p>
-    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+  <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"O Método Leitura de Fio lê a curvatura antes da tesoura. Não para ter uma técnica bonita. Para cortar no ângulo que o <span style='font-style: italic; color: #DCA354;'>seu</span> fio pede."</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
   </div>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">O diagnóstico que faz antes do corte — o que chamamos de Leitura de Fio — identifica a porosidade, a curvatura e o padrão de crescimento do seu cabelo. Só então a tesoura entra.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">O diagnóstico que faz antes do corte — o que chamamos de Leitura de Fio — identifica a porosidade, a curvatura e o padrão de crescimento do seu cabelo. Só então a tesoura entra.</p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 28px; max-width: 56ch;">O resultado é um corte que define sem depender de produto. Que dura mais. Que seca com forma, não com frizz.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 28px; max-width: 56ch;">O resultado é um corte que define sem depender de produto. Que dura mais. Que seca com forma, não com frizz.</p>
 
   <div style="margin-top: 8px; margin-bottom: 32px;">
-    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
   </div>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <div style="margin-top: 28px;">
-    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
-  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; max-width: 52ch;">
-    <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #A0A0A0; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
     Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
   </p>
-  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B; margin: 10px 0 0;">
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0; margin: 10px 0 0;">
     @ojonquecortou · ojonquecortou.com.br/agendar
   </p>
   <div style="height: 48px;"></div>
@@ -392,16 +392,9 @@ const AdminMarketing = () => {
       apiKey = '';
     }
 
-    const topics = [
-      "Como a porosidade afeta a absorção de água e finalizadores em cabelos com curvatura, e por que a Leitura de Fio resolve isso diagnosticando antes de cortar.",
-      "A verdade sobre o corte a seco: por que cortar cabelo molhado estica os cachos e causa surpresas desagradáveis depois de seco.",
-      "Por que o acúmulo de cremes pesados (build-up) sabota o volume natural dos cabelos crespos e ondulados.",
-      "O método Leitura de Fio e o visagismo: como harmonizar a estrutura natural do fio com a personalidade de cada cliente.",
-      "O clima de Belo Horizonte e como lidar com a definição vs volume nos dias mais secos ou úmidos.",
-      "Autismo e atendimento acolhedor no salão: como a metodologia estruturada do Método Leitura de Fio cria um ambiente calmo e previsível para pessoas neurodivergentes."
-    ];
+    const randomTheme = TRENDING_THEMES[Math.floor(Math.random() * TRENDING_THEMES.length)];
+    const randomTopic = `${randomTheme.title}: ${randomTheme.description}`;
 
-    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
     const runFallback = () => {
       const fallbacks = [
@@ -481,45 +474,46 @@ const AdminMarketing = () => {
       const fb = candidates[Math.floor(Math.random() * candidates.length)] || fallbacks[0];
 
       const fallbackSubject = fb.subject;
-      const fallbackBody = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+      const fallbackBody = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
-        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
-        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
       </td>
     </tr>
   </table>
 
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
-    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
     ${fb.subtitle}
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">${fb.title}</h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 16ch;">${fb.title}</h1>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
-  ${fb.paragraphs.map(p => `<p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">${p}</p>`).join('\n')}
+  ${fb.paragraphs.map(p => `<p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">${p}</p>`).join('\n')}
 
-  <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"${fb.quote}"</p>
-    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+  <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"${fb.quote}"</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
   </div>
 
   <div style="margin-top: 8px; margin-bottom: 32px;">
-    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
   </div>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <div style="margin-top: 28px;">
-    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
 </div>`;
+
 
       setNewsletters(prev => prev.map(n => n.id === id ? {
         ...n,
@@ -560,15 +554,15 @@ Você deve retornar APENAS um JSON válido contendo exatamente dois campos: "sub
 O campo "subject" deve ser um assunto provocativo e curto (máximo 60 caracteres) sobre o tema.
 O campo "bodyHtml" deve conter o corpo do e-mail em HTML (apenas o conteúdo interno, os parágrafos e citações, pois o cabeçalho/rodapé e o contêiner externo já estão definidos).
 Use as seguintes tags no "bodyHtml":
-- Parágrafos simples: <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Seu texto aqui...</p>
+- Parágrafos simples: <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Seu texto aqui...</p>
 - Uma citação destacada (blockquote) exatamente neste formato:
-<div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"Citação marcante do Jon aqui..."</p>
-  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+<div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"Citação marcante do Jon aqui..."</p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
 </div>
 - Um CTA com botão exatamente neste formato (com gatilho de urgência suave de agendamento):
 <div style="margin-top: 8px; margin-bottom: 32px;">
-  <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+  <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
 </div>`;
 
       const response = await fetch(
@@ -593,40 +587,40 @@ Use as seguintes tags no "bodyHtml":
         if (text) {
           const parsed = JSON.parse(text);
           if (parsed.subject && parsed.bodyHtml) {
-            const fullHtml = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+            const fullHtml = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
-        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
-        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
       </td>
     </tr>
   </table>
 
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
-    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
     Leitura de Fio · Edição Mensal
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">${parsed.subject}</h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 16ch;">${parsed.subject}</h1>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   ${parsed.bodyHtml}
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <div style="margin-top: 28px;">
-    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
-  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; max-width: 52ch;">
-    <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #A0A0A0; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
     Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
   </p>
-  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B; margin: 10px 0 0;">
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0; margin: 10px 0 0;">
     @ojonquecortou · ojonquecortou.com.br/agendar
   </p>
   <div style="height: 48px;"></div>
@@ -764,12 +758,7 @@ Use as seguintes tags no "bodyHtml":
   // Frequency scheduler (multiple days)
   const selectedPostingDays = settings?.automations?.google_posting_days || ['segunda'];
   const [postFreqTime, setPostFreqTime] = useState(settings?.automations?.google_posting_time || '09:00');
-  const [scheduledGbpPosts, setScheduledGbpPosts] = useState([
-    { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled' },
-    { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published' },
-    { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published' },
-    { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published' }
-  ]);
+  const [scheduledGbpPosts, setScheduledGbpPosts] = useState([]);
 
   const handleTogglePostingDay = async (day) => {
     let updatedDays = [...selectedPostingDays];
@@ -870,7 +859,9 @@ Use as seguintes tags no "bodyHtml":
 
   const handleGenerateGbpPost = async (specificTheme = null) => {
     setIsGeneratingGbpPost(true);
-    const cleanedTheme = (specificTheme && typeof specificTheme === 'object' && 'title' in specificTheme) ? specificTheme : null;
+    const cleanedTheme = (specificTheme && typeof specificTheme === 'object' && 'title' in specificTheme) 
+      ? specificTheme 
+      : TRENDING_THEMES[Math.floor(Math.random() * TRENDING_THEMES.length)];
 
     const generateDynamicFallbackPost = (theme = null) => {
       if (theme && theme.title) {
@@ -1016,9 +1007,24 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       text: generatedGbpPost.text,
       image: postImage,
       scheduledDate: `Próximos dias: ${daysLabels} às ${postFreqTime}`,
-      status: 'scheduled'
+      status: 'scheduled',
+      timestamp: new Date().toISOString()
     };
-    setScheduledGbpPosts(prev => [newPost, ...prev]);
+
+    if (db) {
+      try {
+        await setDoc(doc(db, 'gbp_posts', newPost.id), newPost);
+      } catch (err) {
+        console.error("Erro ao salvar post no Firestore:", err);
+      }
+    } else {
+      setScheduledGbpPosts(prev => [newPost, ...prev]);
+      try {
+        const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+        localStorage.setItem('demo_gbp_posts', JSON.stringify([newPost, ...local]));
+      } catch(e){}
+    }
+
     setGeneratedGbpPost(null);
     alert(`Postagem programada nos dias (${daysLabels}) às ${postFreqTime}!`);
   };
@@ -1028,9 +1034,25 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     
     // Check if Google Business Profile API is connected. If not, run simulation.
     if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
-      setTimeout(() => {
+      setTimeout(async () => {
         alert('Publicado com sucesso no Google Meu Negócio! 🚀 (Simulado)');
-        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+        if (db) {
+          try {
+            await updateDoc(doc(db, 'gbp_posts', post.id), {
+              status: 'published',
+              scheduledDate: 'Agora'
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        } else {
+          setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+          try {
+            const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+            const updated = local.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p);
+            localStorage.setItem('demo_gbp_posts', JSON.stringify(updated));
+          } catch(e){}
+        }
         setIsPublishingGbpId(null);
       }, 1000);
       return;
@@ -1048,7 +1070,19 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       const data = await res.json();
       if (res.ok) {
         alert('Publicado com sucesso no Google Meu Negócio! 🚀');
-        setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+        if (db) {
+          await updateDoc(doc(db, 'gbp_posts', post.id), {
+            status: 'published',
+            scheduledDate: 'Agora'
+          });
+        } else {
+          setScheduledGbpPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p));
+          try {
+            const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+            const updated = local.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p);
+            localStorage.setItem('demo_gbp_posts', JSON.stringify(updated));
+          } catch(e){}
+        }
       } else {
         alert(`Erro ao publicar no Google: ${data.error || 'Erro desconhecido'}`);
       }
@@ -1060,8 +1094,20 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     }
   };
 
-  const handleDeleteGbpPost = (postId) => {
-    setScheduledGbpPosts(prev => prev.filter(p => p.id !== postId));
+  const handleDeleteGbpPost = async (postId) => {
+    if (db) {
+      try {
+        await deleteDoc(doc(db, 'gbp_posts', postId));
+      } catch (err) {
+        console.error("Erro ao excluir post do Firestore:", err);
+      }
+    } else {
+      setScheduledGbpPosts(prev => prev.filter(p => p.id !== postId));
+      try {
+        const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+        localStorage.setItem('demo_gbp_posts', JSON.stringify(local.filter(p => p.id !== postId)));
+      } catch(e){}
+    }
   };
 
   const saveLog = async (clientName, clientPhone, stage, channel) => {
@@ -1149,6 +1195,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     let unsubscribeLogs;
     let unsubscribeSettings;
     let unsubscribeAdminNotifs;
+    let unsubscribeGbpPosts;
 
     const loadData = async () => {
       try {
@@ -1175,6 +1222,31 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             setAdminNotifications(list);
           }
         );
+
+        unsubscribeGbpPosts = onSnapshot(collection(db, 'gbp_posts'), (postsSnap) => {
+          const pst = [];
+          postsSnap.forEach(d => pst.push({ id: d.id, ...d.data() }));
+          if (pst.length === 0) {
+            // Se estiver vazio, popula com os 4 posts de exemplo iniciais no Firestore
+            const defaults = [
+              { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled', timestamp: new Date(Date.now() - 5000).toISOString() },
+              { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published', timestamp: new Date(Date.now() - 10000).toISOString() },
+              { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published', timestamp: new Date(Date.now() - 15000).toISOString() },
+              { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published', timestamp: new Date(Date.now() - 20000).toISOString() }
+            ];
+            defaults.forEach(async (p) => {
+              try {
+                await setDoc(doc(db, 'gbp_posts', p.id), p);
+              } catch (e) {
+                console.error("Error setting default posts", e);
+              }
+            });
+            setScheduledGbpPosts(defaults);
+          } else {
+            pst.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+            setScheduledGbpPosts(pst);
+          }
+        });
 
         const profiles = [];
         unsubscribeProfiles = onSnapshot(collection(db, 'client_profiles'), (profSnap) => {
@@ -1235,6 +1307,8 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       try {
         const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs')) || [];
         setAutomationLogs(localLogs);
+        const localPosts = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+        setScheduledGbpPosts(localPosts);
       } catch (e) {}
       setLoading(false);
     }
@@ -1245,6 +1319,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       if (unsubscribeLogs) unsubscribeLogs();
       if (unsubscribeSettings) unsubscribeSettings();
       if (unsubscribeAdminNotifs) unsubscribeAdminNotifs();
+      if (unsubscribeGbpPosts) unsubscribeGbpPosts();
     };
   }, []);
 
@@ -1836,38 +1911,106 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 </div>
 
                 <div style={{ marginTop: '30px' }}>
-                  <h5 style={{ margin: '0 0 10px 0' }}>Histórico de Disparos da Régua (Hoje)</h5>
+                  <h5 style={{ margin: '0 0 12px 0' }}>📋 Disparos de Hoje — Todos os Canais</h5>
                   {(() => {
-                    const todayLogs = Array.isArray(automationLogs) ? automationLogs.filter(log => {
-                      if (!log || !log.timestamp) return false;
-                      const logDate = new Date(log.timestamp);
-                      return logDate.toDateString() === new Date().toDateString();
-                    }) : [];
+                    const TRANSACTIONAL_STAGES = [
+                      'solicitacao_recebida', 'horario_confirmado', 'lembrete_24h',
+                      'booking_confirmed', 'booking_pending', 'reminder_24h',
+                      'admin_solicitacao_recebida', 'admin_horario_confirmado',
+                      'reativacao_5_meses', 'cancel_booking'
+                    ];
+
+                    const getLogChannel = (log) => {
+                      if (log.channel) return log.channel;
+                      const stage = (log.stage || '').toLowerCase();
+                      if (stage.includes('whatsapp') || stage.includes('wa_') || stage.includes('birthday') || stage.includes('aniversar')) return 'whatsapp';
+                      return 'email';
+                    };
+
+                    const isTransactional = (log) => {
+                      const stage = (log.stage || '').toLowerCase();
+                      return TRANSACTIONAL_STAGES.some(s => stage.includes(s)) ||
+                        stage.includes('solicitac') || stage.includes('confirm') ||
+                        stage.includes('lembrete') || stage.includes('cancel') ||
+                        stage.includes('reminder') || stage.includes('pending');
+                    };
+
+                    const todayLogs = Array.isArray(automationLogs) ? [...automationLogs]
+                      .filter(log => {
+                        if (!log || !log.timestamp) return false;
+                        return new Date(log.timestamp).toDateString() === new Date().toDateString();
+                      })
+                      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                      : [];
+
+                    const CHANNEL_ICON = { email: '📧', whatsapp: '📱', transacional: '⚙️' };
+                    const CHANNEL_COLOR = { email: '#58A6FF', whatsapp: '#25D366', transacional: 'var(--adm-gold)' };
 
                     if (todayLogs.length === 0) {
-                      return <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Nenhum e-mail automático disparado hoje.</p>;
+                      return <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem' }}>Nenhum disparo registrado hoje.</p>;
                     }
 
                     return (
-                      <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--adm-rule)', borderRadius: '6px' }}>
+                      <div style={{ border: '1px solid var(--adm-rule)', borderRadius: 6, overflow: 'hidden' }}>
                         <table className="admin-table" style={{ margin: 0 }}>
                           <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
                             <tr>
-                              <th>Hora</th>
+                              <th style={{ width: 60 }}>Hora</th>
                               <th>Cliente</th>
-                              <th>Etapa (Trigger)</th>
-                              <th>Status</th>
+                              <th style={{ width: 100 }}>Canal</th>
+                              <th>Etapa / Trigger</th>
+                              <th>Contato</th>
+                              <th style={{ width: 80 }}>Status</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {todayLogs.map(log => (
-                              <tr key={log.id}>
-                                <td>{new Date(log.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</td>
-                                <td>{log.clientName}</td>
-                                <td><span className="status-badge concluded">{log.stage}</span></td>
-                                <td>✅ Enviado</td>
-                              </tr>
-                            ))}
+                            {todayLogs.map((log, i) => {
+                              const ch = isTransactional(log) ? 'transacional' : getLogChannel(log);
+                              return (
+                                <tr key={log.id || i}>
+                                  <td style={{ fontFamily: 'monospace', fontSize: '0.78rem' }}>
+                                    {new Date(log.timestamp).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                  </td>
+                                  <td style={{ fontWeight: 500 }}>{log.clientName || '—'}</td>
+                                  <td>
+                                    <span style={{
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: 4,
+                                      padding: '2px 8px',
+                                      borderRadius: 12,
+                                      fontSize: '0.7rem',
+                                      fontWeight: 600,
+                                      background: ch === 'whatsapp' ? 'rgba(37,211,102,0.12)' : ch === 'transacional' ? 'rgba(255,45,139,0.1)' : 'rgba(88,166,255,0.1)',
+                                      color: CHANNEL_COLOR[ch]
+                                    }}>
+                                      {CHANNEL_ICON[ch]} {ch === 'transacional' ? 'Transacional' : ch === 'whatsapp' ? 'WhatsApp' : 'E-mail'}
+                                    </span>
+                                  </td>
+                                  <td style={{ fontSize: '0.78rem' }}>
+                                    <span style={{ background: 'var(--sidebar-bg)', padding: '2px 6px', borderRadius: 4, fontFamily: 'monospace', fontSize: '0.7rem' }}>
+                                      {log.stage || '—'}
+                                    </span>
+                                  </td>
+                                  <td style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>
+                                    {ch === 'whatsapp' ? (log.clientPhone || '—') : (log.email || log.clientPhone || '—')}
+                                  </td>
+                                  <td>
+                                    <span style={{
+                                      display: 'inline-block',
+                                      padding: '2px 8px',
+                                      borderRadius: 12,
+                                      fontSize: '0.7rem',
+                                      fontWeight: 600,
+                                      background: log.status === 'error' ? 'rgba(248,81,73,0.12)' : 'rgba(46,160,67,0.12)',
+                                      color: log.status === 'error' ? '#F85149' : '#2EA043'
+                                    }}>
+                                      {log.status === 'error' ? '❌ Erro' : '✅ Enviado'}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
                           </tbody>
                         </table>
                       </div>
@@ -2744,108 +2887,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 </div>
               </div>
 
-              {/* 📚 Biblioteca de Temas em Alta (Cabelo Natural) */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)', marginTop: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <BookOpen size={20} style={{ color: 'var(--adm-gold)' }} />
-                    <h4 style={{ margin: 0 }}>📚 Biblioteca de Temas em Alta (Cabelo Natural)</h4>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                    <div style={{ position: 'relative', minWidth: '220px' }}>
-                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
-                      <input
-                        type="text"
-                        placeholder="Buscar tema..."
-                        value={themeSearchQuery}
-                        onChange={(e) => setThemeSearchQuery(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '6px 12px 6px 30px',
-                          borderRadius: '4px',
-                          border: '1px solid var(--adm-rule)',
-                          background: 'var(--sidebar-bg)',
-                          color: 'var(--adm-text)',
-                          fontSize: '0.82rem'
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: '16px' }}>
-                  Selecione um tema em alta de curvatura abaixo e gere um post direcionado para o Google Business Profile (GBP). O Gemini escreverá um post focado no assunto usando o tom técnico e autêntico do Jon.
-                </p>
-
-                {/* Category Tabs */}
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px', borderBottom: '1px solid var(--adm-rule)', paddingBottom: '12px' }}>
-                  {['Todos', 'Corte & Visagismo', 'Saúde & Tratamento', 'Transição Capilar', 'Finalização & Cuidados', 'Mitos & Verdades'].map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedThemeCategory(cat)}
-                      className={`btn ${selectedThemeCategory === cat ? 'btn-accent' : 'btn-outline'} btn-small`}
-                      style={{ fontSize: '0.75rem', padding: '4px 12px' }}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Filter and display Themes */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px', maxHeight: '450px', overflowY: 'auto', paddingRight: '4px' }}>
-                  {(() => {
-                    const filtered = TRENDING_THEMES.filter(theme => {
-                      const matchesCategory = selectedThemeCategory === 'Todos' || theme.category === selectedThemeCategory;
-                      const matchesSearch = theme.title.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
-                        theme.description.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
-                        theme.keywords.toLowerCase().includes(themeSearchQuery.toLowerCase());
-                      return matchesCategory && matchesSearch;
-                    });
-
-                    if (filtered.length === 0) {
-                      return <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--adm-muted)', fontSize: '0.85rem', padding: '24px' }}>Nenhum tema encontrado.</p>;
-                    }
-
-                    return filtered.map(theme => (
-                      <div
-                        key={theme.id}
-                        style={{
-                          padding: '14px',
-                          background: 'var(--sidebar-bg)',
-                          borderRadius: '6px',
-                          border: '1px solid var(--adm-rule)',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          gap: '12px',
-                          transition: 'transform 0.2s ease, border-color 0.2s ease'
-                        }}
-                      >
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                            <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px', background: 'rgba(176,90,46,0.15)', color: 'var(--adm-gold)', fontWeight: 600 }}>
-                              {theme.category}
-                            </span>
-                          </div>
-                          <h5 style={{ margin: '0 0 6px 0', fontSize: '0.9rem', fontWeight: 700, color: 'var(--adm-text)' }}>{theme.title}</h5>
-                          <p style={{ margin: '0 0 8px 0', fontSize: '0.8rem', color: 'var(--adm-muted)', lineHeight: '1.4' }}>{theme.description}</p>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
-                            <strong>Tags:</strong> {theme.keywords}
-                          </div>
-                        </div>
-                        <button
-                          className="btn btn-accent btn-small"
-                          style={{ width: '100%', fontSize: '0.75rem', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
-                          onClick={() => handleGenerateGbpPostForTheme(theme)}
-                          disabled={isGeneratingGbpPost}
-                        >
-                          <Sparkles size={12} /> {isGeneratingGbpPost ? 'Gerando...' : 'Gerar Post c/ IA'}
-                        </button>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              </div>
 
               {/* ───────── NEWSLETTER LEITURA DE FIO ───────── */}
               <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>

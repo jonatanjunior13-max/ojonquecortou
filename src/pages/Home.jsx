@@ -159,10 +159,21 @@ function HomeHero() {
       <div className="marquee" aria-hidden="true">
         <div className="marquee-track">
           {Array.from({ length: 2 }).flatMap((_, k) => [
-            "Leitura de fio", "Corte híbrido", "Porosidade", "Curvatura",
-            "Visagismo", "Morena iluminada", "Transição capilar", "Cachos verdadeiros",
-          ].map((t, i) => (
-            <span className="marquee-item" key={`${k}-${i}`}>{t}</span>
+            { text: "Leitura de fio", color: "#E2703A" },
+            { text: "Corte híbrido", color: "var(--ink-2)" },
+            { text: "Porosidade", color: "var(--ink-2)" },
+            { text: "Curvatura", color: "var(--ink-2)" },
+            { text: "Visagismo", color: "var(--ink-2)" },
+            { text: "Morena iluminada", color: "var(--ink-2)" },
+            { text: "Transição capilar", color: "var(--ink-2)" },
+            { text: "Cachos verdadeiros", color: "var(--ink-2)" },
+            { text: "Corte", color: "#FF2D8B" },
+            { text: "Cor", color: "rgba(255,255,255,0.4)" },
+            { text: "Tratamento", color: "rgba(255,255,255,0.4)" },
+            { text: "Cacheados", color: "rgba(255,255,255,0.4)" },
+            { text: "Belo Horizonte", color: "#7A3CFF" }
+          ].map((item, i) => (
+            <span className="marquee-item" key={`${k}-${i}`} style={{ color: item.color }}>{item.text}</span>
           )))}
         </div>
       </div>

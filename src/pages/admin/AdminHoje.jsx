@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
-import { Check, Phone, Clock, TrendingUp, TrendingDown, Users, Calendar, AlertCircle, Gift, X } from 'lucide-react';
+import { Check, Phone, Clock, TrendingUp, TrendingDown, Users, Calendar, AlertCircle, Gift, X, Edit2, Trash2 } from 'lucide-react';
 import { db } from '../../config/firebase';
 import { doc, updateDoc, addDoc, collection } from 'firebase/firestore';
+import { syncBookingToGoogle } from '../../utils/gcalSync';
 import KpiCard from '../../components/admin/ui/KpiCard';
 import Card from '../../components/admin/ui/Card';
 import EmptyState from '../../components/admin/ui/EmptyState';
@@ -27,11 +28,12 @@ const fmtBRL = (v) =>
 
 const fmtTime = (t) => t || '--:--';
 
-const statusLabel = { pendente: 'Pendente', confirmado: 'Confirmado', finalizado: 'Finalizado', cancelado: 'Cancelado', faltou: 'Faltou', bloqueado: 'Bloqueado' };
+const statusLabel = { pendente: 'Pendente', confirmado: 'Confirmado', 'confirmado pela cliente': 'Confirmado pela Cliente', finalizado: 'Finalizado', cancelado: 'Cancelado', faltou: 'Faltou', bloqueado: 'Bloqueado' };
 
 const statusColor = {
   pendente: 'var(--adm-warning)',
   confirmado: 'var(--adm-info)',
+  'confirmado pela cliente': 'var(--adm-info)',
   finalizado: 'var(--adm-success)',
   cancelado: 'var(--adm-danger)',
   faltou: 'var(--adm-danger)',
@@ -51,6 +53,114 @@ const AdminHoje = () => {
   const products = globalData.products || [];
 
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    clientName: '',
+    clientPhone: '',
+    serviceName: '',
+    servicePrice: 0,
+    date: '',
+    time: ''
+  });
+
+  const handleStartEdit = (b) => {
+    setEditForm({
+      clientName: b.clientName || '',
+      clientPhone: b.clientPhone || '',
+      serviceName: b.serviceName || b.service?.name || '',
+      servicePrice: b.servicePrice || b.service?.price || 150,
+      date: b.date || '',
+      time: b.time || ''
+    });
+    setIsEditing(true);
+  };
+
+  const handleSaveEdit = async () => {
+    if (!selectedBooking) return;
+    const bId = selectedBooking.id;
+    const updatedPayload = {
+      clientName: editForm.clientName,
+      clientPhone: editForm.clientPhone,
+      serviceName: editForm.serviceName,
+      servicePrice: Number(editForm.servicePrice),
+      service: {
+        name: editForm.serviceName,
+        price: Number(editForm.servicePrice),
+        duration: selectedBooking.duration || selectedBooking.service?.duration || 60
+      },
+      date: editForm.date,
+      time: editForm.time
+    };
+
+    try {
+      if (isDemoMode || !db) {
+        if (setGlobalData) {
+          setGlobalData(prev => ({
+            ...prev,
+            bookings: prev.bookings.map(b => b.id === bId ? { ...b, ...updatedPayload } : b)
+          }));
+        }
+        const local = localStorage.getItem('demo_bookings');
+        if (local) {
+          const arr = JSON.parse(local);
+          const newArr = arr.map(b => b.id === bId ? { ...b, ...updatedPayload } : b);
+          localStorage.setItem('demo_bookings', JSON.stringify(newArr));
+        }
+      } else {
+        const docRef = doc(db, 'bookings', bId);
+        await updateDoc(docRef, updatedPayload);
+        try {
+          await syncBookingToGoogle(bId);
+        } catch (gcalErr) {
+          console.warn('Google Calendar sync error:', gcalErr);
+        }
+      }
+      setSelectedBooking(prev => prev ? { ...prev, ...updatedPayload } : null);
+      setIsEditing(false);
+      alert('Agendamento atualizado com sucesso!');
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao atualizar agendamento.');
+    }
+  };
+
+  const handleCancelBooking = async () => {
+    if (!selectedBooking) return;
+    if (!window.confirm('Tem certeza de que deseja cancelar este agendamento?')) return;
+    const bId = selectedBooking.id;
+    const updatedPayload = { status: 'cancelado' };
+
+    try {
+      if (isDemoMode || !db) {
+        if (setGlobalData) {
+          setGlobalData(prev => ({
+            ...prev,
+            bookings: prev.bookings.map(b => b.id === bId ? { ...b, ...updatedPayload } : b)
+          }));
+        }
+        const local = localStorage.getItem('demo_bookings');
+        if (local) {
+          const arr = JSON.parse(local);
+          const newArr = arr.map(b => b.id === bId ? { ...b, ...updatedPayload } : b);
+          localStorage.setItem('demo_bookings', JSON.stringify(newArr));
+        }
+      } else {
+        const docRef = doc(db, 'bookings', bId);
+        await updateDoc(docRef, updatedPayload);
+        try {
+          await syncBookingToGoogle(bId);
+        } catch (gcalErr) {
+          console.warn('Google Calendar sync error:', gcalErr);
+        }
+      }
+      alert('Agendamento cancelado com sucesso!');
+      setSelectedBooking(null);
+      setIsEditing(false);
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao cancelar agendamento.');
+    }
+  };
 
   const todayBookings = useMemo(
     () => bookings.filter(b => b.date === today && b.status !== 'bloqueado' && b.status !== 'cancelado').sort((a, b) => (a.time || '').localeCompare(b.time || '')),
@@ -75,7 +185,7 @@ const AdminHoje = () => {
   }, [transactions, today]);
 
   const pendingBookings = useMemo(() => bookings.filter(b => b.status === 'pendente'), [bookings]);
-  const confirmedToday = useMemo(() => todayBookings.filter(b => b.status === 'confirmado').length, [todayBookings]);
+  const confirmedToday = useMemo(() => todayBookings.filter(b => b.status === 'confirmado' || b.status === 'confirmado pela cliente').length, [todayBookings]);
   const finishedToday = useMemo(() => todayBookings.filter(b => b.status === 'finalizado').length, [todayBookings]);
 
   const birthdays = useMemo(() => clients.filter(c => isBirthdayToday(c.birthDate || c.birthdate)), [clients]);
@@ -84,7 +194,7 @@ const AdminHoje = () => {
   const nowMin = now.getHours() * 60 + now.getMinutes();
   const nextClients = useMemo(() => {
     return todayBookings
-      .filter(b => b.status === 'confirmado' || b.status === 'pendente')
+      .filter(b => b.status === 'confirmado' || b.status === 'confirmado pela cliente' || b.status === 'pendente')
       .filter(b => {
         if (!b.time) return false;
         const [h, m] = b.time.split(':').map(Number);
@@ -144,6 +254,7 @@ const AdminHoje = () => {
               {nextClients.map(b => (
                 <div
                   key={b.id}
+                  onClick={() => setSelectedBooking(b)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -152,6 +263,7 @@ const AdminHoje = () => {
                     background: 'var(--adm-card)',
                     borderRadius: 'var(--adm-radius-sm)',
                     border: '0.5px solid var(--adm-rule)',
+                    cursor: 'pointer'
                   }}
                 >
                   <span style={{ fontSize: '1.05rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)', minWidth: 48 }}>
@@ -326,7 +438,7 @@ const AdminHoje = () => {
           alignItems: 'center',
           zIndex: 9999,
           backdropFilter: 'blur(4px)'
-        }} onClick={() => setSelectedBooking(null)}>
+        }} onClick={() => { setSelectedBooking(null); setIsEditing(false); }}>
           <div className="modal-content trinks-modal" style={{
             background: 'var(--adm-card)',
             color: 'var(--adm-text)',
@@ -340,43 +452,139 @@ const AdminHoje = () => {
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
           }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <h3 style={{ margin: 0, color: 'var(--adm-gold)', fontFamily: 'Georgia, serif', fontSize: '1.25rem' }}>Ficha do Agendamento</h3>
+              <h3 style={{ margin: 0, color: 'var(--adm-gold)', fontFamily: 'Georgia, serif', fontSize: '1.25rem' }}>{isEditing ? 'Editar Agendamento' : 'Ficha do Agendamento'}</h3>
               <button 
                 className="btn-icon" 
                 style={{ background: 'none', border: 'none', color: 'var(--adm-muted)', cursor: 'pointer', padding: 4 }}
-                onClick={() => setSelectedBooking(null)}
+                onClick={() => { setSelectedBooking(null); setIsEditing(false); }}
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
-                <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Cliente:</span>
-                <span style={{ fontWeight: 700 }}>{selectedBooking.clientName}</span>
+            {isEditing ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Nome do Cliente:</label>
+                  <input
+                    type="text"
+                    value={editForm.clientName}
+                    onChange={e => setEditForm(prev => ({ ...prev, clientName: e.target.value }))}
+                    style={{ padding: '8px', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.85rem' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', fontWeight: 600 }}>WhatsApp:</label>
+                  <input
+                    type="text"
+                    value={editForm.clientPhone}
+                    onChange={e => setEditForm(prev => ({ ...prev, clientPhone: e.target.value }))}
+                    style={{ padding: '8px', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.85rem' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Serviço:</label>
+                  <input
+                    type="text"
+                    value={editForm.serviceName}
+                    onChange={e => setEditForm(prev => ({ ...prev, serviceName: e.target.value }))}
+                    style={{ padding: '8px', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.85rem' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Preço do Serviço:</label>
+                  <input
+                    type="number"
+                    value={editForm.servicePrice}
+                    onChange={e => setEditForm(prev => ({ ...prev, servicePrice: e.target.value }))}
+                    style={{ padding: '8px', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.85rem' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Data:</label>
+                    <input
+                      type="date"
+                      value={editForm.date}
+                      onChange={e => setEditForm(prev => ({ ...prev, date: e.target.value }))}
+                      style={{ padding: '8px', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.85rem' }}
+                    />
+                  </div>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Hora:</label>
+                    <input
+                      type="time"
+                      value={editForm.time}
+                      onChange={e => setEditForm(prev => ({ ...prev, time: e.target.value }))}
+                      style={{ padding: '8px', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', border: '0.5px solid var(--adm-rule)', fontSize: '0.85rem' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                  <button
+                    type="button"
+                    onClick={handleSaveEdit}
+                    style={{ flex: 1, padding: '10px 0', background: 'var(--adm-gold)', color: '#121110', border: 'none', borderRadius: 6, fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}
+                  >
+                    Salvar Alterações
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    style={{ flex: 1, padding: '10px 0', border: '1px solid var(--adm-rule)', borderRadius: 6, cursor: 'pointer', background: 'transparent', color: 'var(--adm-text)', fontSize: '0.85rem' }}
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
-                <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>WhatsApp:</span>
-                <span>{selectedBooking.clientPhone || 'Não informado'}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
-                <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Serviço:</span>
-                <span>{selectedBooking.service?.name || selectedBooking.serviceName}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
-                <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Preço do Serviço:</span>
-                <span>R$ {selectedBooking.servicePrice || selectedBooking.service?.price || 150}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
-                <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Data/Hora:</span>
-                <span>{selectedBooking.date ? selectedBooking.date.split('-').reverse().join('/') : ''} às {selectedBooking.time}</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
-                <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Status Atual:</span>
-                <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: `${statusColor[selectedBooking.status]}22`, color: statusColor[selectedBooking.status], textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  {statusLabel[selectedBooking.status]}
-                </span>
-              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
+                  <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Cliente:</span>
+                  <span style={{ fontWeight: 700 }}>{selectedBooking.clientName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
+                  <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>WhatsApp:</span>
+                  <span>{selectedBooking.clientPhone || 'Não informado'}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
+                  <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Serviço:</span>
+                  <span>{selectedBooking.service?.name || selectedBooking.serviceName}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
+                  <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Preço do Serviço:</span>
+                  <span>R$ {selectedBooking.servicePrice || selectedBooking.service?.price || 150}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
+                  <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Data/Hora:</span>
+                  <span>{selectedBooking.date ? selectedBooking.date.split('-').reverse().join('/') : ''} às {selectedBooking.time}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--adm-rule)', paddingBottom: 8 }}>
+                  <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Status Atual:</span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: `${statusColor[selectedBooking.status]}22`, color: statusColor[selectedBooking.status], textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                    {statusLabel[selectedBooking.status]}
+                  </span>
+                </div>
+
+                {selectedBooking.status !== 'cancelado' && selectedBooking.status !== 'finalizado' && (
+                  <div style={{ display: 'flex', gap: 8, marginTop: 16, borderTop: '0.5px solid var(--adm-rule)', paddingTop: 16 }}>
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(selectedBooking)}
+                      style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 0', border: '1px solid var(--adm-rule)', borderRadius: 6, cursor: 'pointer', background: 'rgba(255,255,255,0.03)', color: 'var(--adm-text)', fontWeight: 700, fontSize: '0.85rem' }}
+                    >
+                      <Edit2 size={14} /> Editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelBooking}
+                      style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '10px 0', border: 'none', borderRadius: 6, cursor: 'pointer', background: 'rgba(224, 86, 86, 0.15)', color: 'rgb(240, 100, 100)', fontWeight: 700, fontSize: '0.85rem' }}
+                    >
+                      <Trash2 size={14} /> Cancelar Agendamento
+                    </button>
+                  </div>
+                )}
 
               {selectedBooking.status === 'finalizado' && (() => {
                 const tx = transactions.find(t => t.bookingId === selectedBooking.id);
@@ -572,6 +780,7 @@ const AdminHoje = () => {
                 );
               })()}
             </div>
+          )}
           </div>
         </div>
       )}

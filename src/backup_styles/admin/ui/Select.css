@@ -1,0 +1,19 @@
+.adm-select-wrap { display: flex; flex-direction: column; gap: 6px; }
+.adm-select {
+  background: var(--adm-card);
+  border: 0.5px solid var(--adm-rule);
+  border-radius: var(--adm-radius-sm);
+  color: var(--adm-text);
+  padding: 9px 12px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239A8D7E' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.adm-select:focus { border-color: var(--adm-gold); }
+.adm-select option { background: var(--adm-surface); }

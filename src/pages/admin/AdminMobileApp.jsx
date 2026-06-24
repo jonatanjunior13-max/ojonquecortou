@@ -50,6 +50,71 @@ const minToTime = (min) => {
   const m = min % 60;
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 };
+
+const calculateOverlappingLayout = (items) => {
+  if (!items || items.length === 0) return [];
+  const sorted = [...items].sort((a, b) => {
+    if (a.startMin !== b.startMin) return a.startMin - b.startMin;
+    return (b.endMin - b.startMin) - (a.endMin - a.startMin);
+  });
+
+  const clusters = [];
+  let currentCluster = [];
+  let clusterEnd = 0;
+
+  sorted.forEach(item => {
+    if (currentCluster.length === 0) {
+      currentCluster.push(item);
+      clusterEnd = item.endMin;
+    } else if (item.startMin < clusterEnd) {
+      currentCluster.push(item);
+      clusterEnd = Math.max(clusterEnd, item.endMin);
+    } else {
+      clusters.push(currentCluster);
+      currentCluster = [item];
+      clusterEnd = item.endMin;
+    }
+  });
+  if (currentCluster.length > 0) {
+    clusters.push(currentCluster);
+  }
+
+  const result = [];
+
+  clusters.forEach(cluster => {
+    const columns = [];
+    cluster.forEach(item => {
+      let placed = false;
+      for (let i = 0; i < columns.length; i++) {
+        const col = columns[i];
+        const last = col[col.length - 1];
+        if (item.startMin >= last.endMin) {
+          col.push(item);
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        columns.push([item]);
+      }
+    });
+
+    const totalColumns = columns.length;
+    columns.forEach((col, colIdx) => {
+      col.forEach(item => {
+        const width = 100 / totalColumns;
+        const left = colIdx * width;
+        result.push({
+          ...item,
+          leftPercent: left,
+          widthPercent: width
+        });
+      });
+    });
+  });
+
+  return result;
+};
 const PAY_METHODS = ['Pix','Dinheiro','Débito','Crédito','Cortesia'];
 const GALLERY_CATS = ['Todos','Antes/Depois','Cortes','Coloração','Tratamento','Geral'];
 const CURL_TYPES = ['1A','1B','1C','2A','2B','2C','3A','3B','3C','4A','4B','4C'];
@@ -223,7 +288,28 @@ export default function AdminMobileApp() {
 
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
   const [requestReview, setRequestReview] = useState(true);
+  const [usedProducts, setUsedProducts] = useState([]);
+  const [nonRegisteredProducts, setNonRegisteredProducts] = useState([]);
+  const [selectedUsedProduct, setSelectedUsedProduct] = useState('');
+  const [newNonRegName, setNewNonRegName] = useState('');
+  const [newNonRegVal, setNewNonRegVal] = useState(0);
+
+  // Split payment states
+  const [isSplitPayment, setIsSplitPayment] = useState(false);
+  const [splitValues, setSplitValues] = useState({
+    'Pix': 0,
+    'Cartão de Crédito': 0,
+    'Cartão de Débito': 0,
+    'Dinheiro': 0,
+    'Cortesia': 0
+  });
+  const [splitInstallments, setSplitInstallments] = useState('À vista');
+  const [splitCreditAnticipation, setSplitCreditAnticipation] = useState(false);
+  const [splitDebitAnticipation, setSplitDebitAnticipation] = useState(false);
+
   const [touchStart, setTouchStart] = useState(null);
+  const [touchStartY, setTouchStartY] = useState(null);
+  const [activeSwipeDirection, setActiveSwipeDirection] = useState(null);
   const [translateX, setTranslateX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [slideStyle, setSlideStyle] = useState({});
@@ -334,6 +420,7 @@ export default function AdminMobileApp() {
 
   // ── Finance ────────────────────────────────────────────────────
   const [financeTab, setFinanceTab] = useState('dashboard');
+  const [period, setPeriod] = useState('dia');
   const [showAddTxSheet, setShowAddTxSheet] = useState(false);
   const [txForm, setTxForm] = useState({ type:'saida', description:'', value:'', paymentMethod:'Pix', date: today() });
 
@@ -616,20 +703,47 @@ export default function AdminMobileApp() {
   const handleTouchStart = (e) => {
     if (transitioning) return;
     setTouchStart(e.targetTouches[0].clientX);
-    setIsDragging(true);
+    setTouchStartY(e.targetTouches[0].clientY);
+    setActiveSwipeDirection(null);
+    setIsDragging(false);
   };
 
   const handleTouchMove = (e) => {
-    if (!isDragging || touchStart === null) return;
-    const currentTouch = e.targetTouches[0].clientX;
-    const diff = currentTouch - touchStart;
-    const cappedDiff = Math.max(-150, Math.min(150, diff));
-    setTranslateX(cappedDiff);
+    if (touchStart === null) return;
+    const currentTouchX = e.targetTouches[0].clientX;
+    const currentTouchY = e.targetTouches[0].clientY;
+    const diffX = currentTouchX - touchStart;
+    const diffY = currentTouchY - (touchStartY !== null ? touchStartY : currentTouchY);
+
+    let direction = activeSwipeDirection;
+    if (direction === null) {
+      const absX = Math.abs(diffX);
+      const absY = Math.abs(diffY);
+      if (absX > 10 || absY > 10) {
+        if (absX > absY) {
+          direction = 'horizontal';
+          setActiveSwipeDirection('horizontal');
+          setIsDragging(true);
+        } else {
+          direction = 'vertical';
+          setActiveSwipeDirection('vertical');
+        }
+      }
+    }
+
+    if (direction === 'horizontal') {
+      const cappedDiff = Math.max(-150, Math.min(150, diffX));
+      setTranslateX(cappedDiff);
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    }
   };
 
   const handleTouchEnd = () => {
-    if (!isDragging) return;
     setIsDragging(false);
+    setActiveSwipeDirection(null);
+    setTouchStartY(null);
     if (translateX !== 0) {
       const threshold = 60;
       if (translateX > threshold) {
@@ -653,19 +767,42 @@ export default function AdminMobileApp() {
   const handleMouseDown = (e) => {
     if (transitioning) return;
     setTouchStart(e.clientX);
-    setIsDragging(true);
+    setTouchStartY(e.clientY);
+    setActiveSwipeDirection(null);
+    setIsDragging(false);
   };
 
   const handleMouseMove = (e) => {
-    if (!isDragging || touchStart === null) return;
-    const diff = e.clientX - touchStart;
-    const cappedDiff = Math.max(-150, Math.min(150, diff));
-    setTranslateX(cappedDiff);
+    if (touchStart === null) return;
+    const diffX = e.clientX - touchStart;
+    const diffY = e.clientY - (touchStartY !== null ? touchStartY : e.clientY);
+
+    let direction = activeSwipeDirection;
+    if (direction === null) {
+      const absX = Math.abs(diffX);
+      const absY = Math.abs(diffY);
+      if (absX > 10 || absY > 10) {
+        if (absX > absY) {
+          direction = 'horizontal';
+          setActiveSwipeDirection('horizontal');
+          setIsDragging(true);
+        } else {
+          direction = 'vertical';
+          setActiveSwipeDirection('vertical');
+        }
+      }
+    }
+
+    if (direction === 'horizontal') {
+      const cappedDiff = Math.max(-150, Math.min(150, diffX));
+      setTranslateX(cappedDiff);
+    }
   };
 
   const handleMouseUp = () => {
-    if (!isDragging) return;
     setIsDragging(false);
+    setActiveSwipeDirection(null);
+    setTouchStartY(null);
     if (translateX !== 0) {
       const threshold = 60;
       if (translateX > threshold) {
@@ -752,23 +889,35 @@ export default function AdminMobileApp() {
           });
         }
         setSelectedServices(loadedExtra);
+        setUsedProducts(tx.usedProducts || []);
+        setNonRegisteredProducts(tx.nonRegisteredProducts || []);
       } else {
         setPaymentMethod('Pix');
         setInstallments('À vista');
         setApplyAnticipation(false);
         setSelectedProducts([]);
         setSelectedServices([]);
+        setUsedProducts([]);
+        setNonRegisteredProducts([]);
         setDiscount(0);
       }
-      setOverrideBasePrice(booking.servicePrice !== undefined ? booking.servicePrice : null);
+      const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
+        ? booking.servicePrice
+        : (booking.service?.promoPrice || booking.service?.price || 0);
+      setOverrideBasePrice(bp);
     } else {
       setPaymentMethod('Pix');
       setInstallments('À vista');
       setApplyAnticipation(false);
       setSelectedProducts([]);
       setSelectedServices([]);
+      setUsedProducts([]);
+      setNonRegisteredProducts([]);
       setDiscount(0);
-      setOverrideBasePrice(null);
+      const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
+        ? booking.servicePrice
+        : (booking.service?.promoPrice || booking.service?.price || 0);
+      setOverrideBasePrice(bp);
     }
     
     setProductSearch('');
@@ -778,15 +927,44 @@ export default function AdminMobileApp() {
     setShowCheckoutSheet(true);
   };
 
+  const addUsedProduct = (productId, name, priceStr) => {
+    const price = Number(priceStr) || 0;
+    setUsedProducts(prev => {
+      const existing = prev.find(ap => ap.productId === productId);
+      if (existing) {
+        return prev.map(ap => ap.productId === productId ? { ...ap, quantity: ap.quantity + 1 } : ap);
+      }
+      return [...prev, { productId, name, price, quantity: 1 }];
+    });
+    setSelectedUsedProduct('');
+  };
+
+  const removeUsedProduct = (index) => {
+    setUsedProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
+  const addNonRegisteredProduct = (name, val) => {
+    if (!name || val <= 0) return;
+    setNonRegisteredProducts(prev => [...prev, { name, value: Number(val) }]);
+    setNewNonRegName('');
+    setNewNonRegVal(0);
+  };
+
+  const removeNonRegisteredProduct = (index) => {
+    setNonRegisteredProducts(prev => prev.filter((_, idx) => idx !== index));
+  };
+
   const getCheckoutTotal = () => {
     if (!checkoutBooking) return 0;
-    const base = overrideBasePrice !== null
-      ? overrideBasePrice
-      : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
+    const base = overrideBasePrice !== null && overrideBasePrice !== ''
+      ? Number(overrideBasePrice)
+      : 0;
     const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
     const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
+    const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const nonRegProdsVal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = Number(checkoutBooking.prepayment || 0);
-    return Math.max(0, base + extraServices + prods - discount - prepay);
+    return Math.max(0, base + extraServices + prods - discount - prepay - usedProdsVal - nonRegProdsVal);
   };
 
   const addProductToCheckout = (prod) => {
@@ -818,12 +996,42 @@ export default function AdminMobileApp() {
   const finalizeCheckout = async () => {
     if (!checkoutBooking) return;
     setIsFinalizingCheckout(true);
+
+    const cleanPhone = (checkoutBooking.clientPhone || '').replace(/\D/g, '');
+    const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
+    const gateway = settings?.waReminderGateway;
+    const needsWaOpen = requestReview && hasValidPhone && (!gateway || gateway === 'none');
+    const waWindow = needsWaOpen ? window.open('', '_blank') : null;
+
     try {
       const total = getCheckoutTotal();
-      const baseMethodLabel = paymentMethod === 'Cartão de Crédito' 
-        ? `Cartão de Crédito (${installments})` 
-        : paymentMethod;
-      const methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+      let methodLabel = '';
+      let splitPaymentsList = [];
+
+      if (isSplitPayment) {
+        const activeSplits = Object.entries(splitValues).filter(([_, val]) => val > 0);
+        methodLabel = activeSplits.map(([method, val]) => {
+          if (method === 'Cartão de Crédito') {
+            return `Cartão de Crédito (${splitInstallments})${splitCreditAnticipation ? ' (Antecipado)' : ''}: R$ ${val.toFixed(2)}`;
+          }
+          if (method === 'Cartão de Débito') {
+            return `Cartão de Débito${splitDebitAnticipation ? ' (Antecipado)' : ''}: R$ ${val.toFixed(2)}`;
+          }
+          return `${method}: R$ ${val.toFixed(2)}`;
+        }).join(' + ');
+
+        splitPaymentsList = activeSplits.map(([method, val]) => ({
+          method,
+          value: val,
+          installments: method === 'Cartão de Crédito' ? splitInstallments : null,
+          anticipation: method === 'Cartão de Crédito' ? splitCreditAnticipation : (method === 'Cartão de Débito' ? splitDebitAnticipation : null)
+        }));
+      } else {
+        const baseMethodLabel = paymentMethod === 'Cartão de Crédito' 
+          ? `Cartão de Crédito (${installments})` 
+          : paymentMethod;
+        methodLabel = applyAnticipation ? `${baseMethodLabel} (Antecipado)` : baseMethodLabel;
+      }
 
       const itemsDescription = [
         checkoutBooking.service?.name || checkoutBooking.serviceName,
@@ -832,16 +1040,20 @@ export default function AdminMobileApp() {
       ].filter(Boolean).join(', ');
 
       const prepay = Number(checkoutBooking.prepayment || 0);
-      const finalBasePrice = overrideBasePrice !== null
-        ? overrideBasePrice
-        : (checkoutBooking.service?.promoPrice || checkoutBooking.service?.price || checkoutBooking.servicePrice || 0);
+      const finalBasePrice = overrideBasePrice !== null && overrideBasePrice !== ''
+        ? Number(overrideBasePrice)
+        : 0;
 
       // Save transaction
+      const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const nonRegProductsTotal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
+
       const txData = {
         type: 'entrada',
-        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
+        description: `${itemsDescription}${usedProducts.length > 0 ? ` (Insumos: -R$ ${usedProductsTotal})` : ''}${nonRegisteredProducts.length > 0 ? ` (Uso Único: -R$ ${nonRegProductsTotal})` : ''}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
         paymentMethod: methodLabel,
+        splitPayments: splitPaymentsList,
         discount: discount,
         date: checkoutBooking.date || today(),
         bookingId: checkoutBooking.id,
@@ -861,6 +1073,16 @@ export default function AdminMobileApp() {
           price: s.price,
           qty: s.qty
         })),
+        usedProducts: usedProducts.map(p => ({
+          productId: p.productId,
+          name: p.name,
+          quantity: p.quantity,
+          price: p.price
+        })),
+        nonRegisteredProducts: nonRegisteredProducts.map(p => ({
+          name: p.name,
+          value: p.value
+        })),
         createdAt: new Date().toISOString()
       };
 
@@ -875,6 +1097,17 @@ export default function AdminMobileApp() {
               if (snap.exists()) {
                 const cur = snap.data().quantity || 0;
                 await updateDoc(prodRef, { quantity: cur + oldP.quantity });
+              }
+            }
+          }
+          // Revert old used products inventory adjustments
+          if (bookingTx.usedProducts) {
+            for (const oldU of bookingTx.usedProducts) {
+              const prodRef = doc(db, 'products', oldU.productId);
+              const snap = await getDoc(prodRef);
+              if (snap.exists()) {
+                const cur = snap.data().quantity || 0;
+                await updateDoc(prodRef, { quantity: cur + oldU.quantity });
               }
             }
           }
@@ -899,9 +1132,19 @@ export default function AdminMobileApp() {
             await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
           }
         }
+
+        // Apply new used products inventory adjustments
+        for (const u of usedProducts) {
+          const prodRef = doc(db, 'products', u.productId);
+          const snap = await getDoc(prodRef);
+          if (snap.exists()) {
+            const cur = snap.data().quantity || 0;
+            await updateDoc(prodRef, { quantity: Math.max(0, cur - u.quantity) });
+          }
+        }
       }
       if (requestReview) {
-        sendFeedbackWhatsApp(checkoutBooking).catch(err => console.error(err));
+        sendFeedbackWhatsApp(checkoutBooking, waWindow).catch(err => console.error(err));
       }
       setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice } : b));
       
@@ -916,6 +1159,7 @@ export default function AdminMobileApp() {
       setCheckoutBooking(null);
       showToast(bookingTx ? 'Comanda atualizada com sucesso!' : 'Comanda fechada com sucesso!', 'success');
     } catch (err) {
+      if (waWindow) waWindow.close();
       showToast('Erro ao fechar comanda: ' + err.message, 'error');
     } finally {
       setIsFinalizingCheckout(false);
@@ -1098,8 +1342,8 @@ export default function AdminMobileApp() {
     const oldPrepayment = oldB ? (Number(oldB.prepayment) || 0) : 0;
     const newPrepayment = Number(editBookingForm.prepayment || 0);
 
-    // Duração ocupa pelo menos 1h, conforme o tempo do serviço
-    const duration = Math.max(60, Number(svc?.duration) || Number(oldB?.duration) || 60);
+    // Duração selecionada pelo usuário ou baseada no serviço
+    const duration = Math.max(15, Number(editBookingForm.duration) || Number(svc?.duration) || Number(oldB?.duration) || 60);
 
     // Evita horários duplicados ao reagendar (ignora o próprio agendamento)
     if (bookingOverlaps(editBookingForm.date, editBookingForm.time, duration, editBookingForm.id)) {
@@ -1173,9 +1417,10 @@ export default function AdminMobileApp() {
   };
 
   // ── Send Feedback / Review Request WhatsApp ─────────────────────
-  const sendFeedbackWhatsApp = async (booking) => {
+  const sendFeedbackWhatsApp = async (booking, waWindow = null) => {
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) {
+      if (waWindow) waWindow.close();
       showToast('Telefone inválido para envio.', 'error');
       return;
     }
@@ -1193,10 +1438,18 @@ Grande abraço, Jon.`;
     const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
 
     const gateway = settings?.waReminderGateway;
+    if (waWindow && gateway && gateway !== 'none') {
+      waWindow.close(); // Close synchronous window since we will send via API gateway
+    }
+
     if (!gateway || gateway === 'none') {
       console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
       const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
-      window.open(waUrl, '_blank');
+      if (waWindow) {
+        waWindow.location.href = waUrl;
+      } else {
+        window.open(waUrl, '_blank');
+      }
       showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
       return;
     }
@@ -1334,18 +1587,19 @@ Grande abraço, Jon.`;
     const dx = clientX - cropperDragStart.x;
     const dy = clientY - cropperDragStart.y;
     
-    const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+    const containerHeight = containerSize * 1.25;
+    const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
     const displayWidth = naturalDimensions.w * initialScale * cropperZoom;
     const displayHeight = naturalDimensions.h * initialScale * cropperZoom;
     const initialX = (containerSize - displayWidth) / 2;
-    const initialY = (containerSize - displayHeight) / 2;
+    const initialY = (containerHeight - displayHeight) / 2;
     
     let newX = cropperDragStartOffset.x + dx;
     let newY = cropperDragStartOffset.y + dy;
     
     const minX = containerSize - displayWidth - initialX;
     const maxX = -initialX;
-    const minY = containerSize - displayHeight - initialY;
+    const minY = containerHeight - displayHeight - initialY;
     const maxY = -initialY;
     
     newX = Math.max(minX, Math.min(maxX, newX));
@@ -1370,15 +1624,18 @@ Grande abraço, Jon.`;
       
       if (!isVideo && naturalDimensions.w && containerSize && previewImageRef.current) {
         const canvas = document.createElement('canvas');
-        canvas.width = 1000;
+        canvas.width = 800;
         canvas.height = 1000;
         const ctx = canvas.getContext('2d');
         
-        const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+        // Container height is containerSize * (5/4) = containerSize * 1.25
+        const containerHeight = containerSize * 1.25;
+        
+        const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
         const displayWidth = naturalDimensions.w * initialScale;
         const displayHeight = naturalDimensions.h * initialScale;
         const initialX = (containerSize - displayWidth) / 2;
-        const initialY = (containerSize - displayHeight) / 2;
+        const initialY = (containerHeight - displayHeight) / 2;
         
         const renderScale = initialScale * cropperZoom;
         const left = initialX + cropperOffset.x;
@@ -1387,9 +1644,9 @@ Grande abraço, Jon.`;
         const srcX = -left / renderScale;
         const srcY = -top / renderScale;
         const srcW = containerSize / renderScale;
-        const srcH = containerSize / renderScale;
+        const srcH = containerHeight / renderScale;
         
-        ctx.drawImage(previewImageRef.current, srcX, srcY, srcW, srcH, 0, 0, 1000, 1000);
+        ctx.drawImage(previewImageRef.current, srcX, srcY, srcW, srcH, 0, 0, 800, 1000);
         
         const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
         fileToUpload = new File([blob], pendingFile.name.replace(/\.[^/.]+$/, "") + ".jpg", { type: 'image/jpeg' });
@@ -2100,7 +2357,7 @@ Grande abraço, Jon.`;
           ) : (
             <div className="m-booking-list">
               {todayBookings.slice(0, 6).map(b => (
-                <div key={b.id} className="m-booking-card" onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
+                <div key={b.id} className={`m-booking-card svc-${(b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                   <div className="m-booking-time">{b.time || '—'}</div>
                   <div className="m-booking-info">
                     <div 
@@ -2156,28 +2413,138 @@ Grande abraço, Jon.`;
 
   // ── TAB: AGENDA ────────────────────────────────────────────────
   const renderAgenda = () => {
-    const dayBookings = bookings.filter(b => b.date === currentDate);
+    const dayBookings = bookings.filter(b => b.date === currentDate && b.status !== 'cancelado');
+    const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
+    
+    // Collect absences
+    const effectiveAbsences = getEffectiveAbsences(settings);
+    const dayAbsences = effectiveAbsences.filter(a => absenceCoversDate(a, currentDate));
+
+    // Lunch lock
+    const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_12:00`) === 'true';
+    const hasLunchBooking = dayBookings.some(b => {
+      const bStart = timeToMin(b.time);
+      const bEnd = bStart + (b.duration || 60);
+      return Math.max(bStart, 720) < Math.min(bEnd, 780);
+    });
+    const isLunchLocked = !isUnlockedLocal && !hasLunchBooking;
+
+    const layoutItems = [];
+
+    // Add bookings
+    dayBookings.forEach(b => {
+      layoutItems.push({
+        id: b.id,
+        type: 'booking',
+        startMin: timeToMin(b.time),
+        endMin: timeToMin(b.time) + (b.duration || 60),
+        raw: b
+      });
+    });
+
+    // Add scale blocks (folga, feriado, etc.)
+    const dtForLabel = parseLocalDate(currentDate);
+    const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
+    const isHolidayDay = isFeriado(currentDate);
+    const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
+
+    if (isHolidayDay || isSunMon) {
+      layoutItems.push({
+        id: 'full-day-block',
+        type: 'scale_block',
+        startMin: 480, // 08:00
+        endMin: 1260,  // 21:00
+        label: isHolidayDay ? 'Feriado' : 'Folga',
+        raw: { label: isHolidayDay ? 'Feriado' : 'Folga' }
+      });
+    } else {
+      // Check scale blocks from professional config
+      HOURLY_SLOTS.forEach(slot => {
+        if (isSlotBlocked(prof, currentDate, slot)) {
+          layoutItems.push({
+            id: `scale-block-${slot}`,
+            type: 'scale_block',
+            startMin: timeToMin(slot),
+            endMin: timeToMin(slot) + 60,
+            label: 'Escala Bloqueada',
+            raw: { label: 'Escala Bloqueada' }
+          });
+        }
+      });
+
+      // Add default lunch block
+      if (isLunchLocked) {
+        layoutItems.push({
+          id: 'lunch-block',
+          type: 'lunch_block',
+          startMin: 720, // 12:00
+          endMin: 780,  // 13:00
+          label: 'Almoço',
+          raw: { label: 'Almoço' }
+        });
+      }
+    }
+
+    // Add absences
+    dayAbsences.forEach((abs, idx) => {
+      const start = abs.allDay ? '08:00' : (abs.startTime || '08:00');
+      const end = abs.allDay ? '21:00' : (abs.endTime || '21:00');
+      layoutItems.push({
+        id: `absence-${abs.id || idx}`,
+        type: 'absence',
+        startMin: timeToMin(start),
+        endMin: timeToMin(end),
+        label: abs.title,
+        raw: abs
+      });
+    });
+
+    const positionedItems = calculateOverlappingLayout(layoutItems);
 
     return (
-      <div className="m-tab m-page-flush" key="agenda">
+      <div className="m-tab m-page-flush" key="agenda" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Week strip */}
-        <div className="m-week-strip">
-          {weekDays.map(d => {
-            const dt = parseLocalDate(d);
-            const dayIdx = getAdjustedDay(dt);
-            const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
-            return (
-              <button key={d} className={`m-week-day ${d === currentDate ? 'active' : ''} ${hasBk ? 'has-bookings' : ''}`} onClick={() => setCurrentDate(d)}>
-                <span className="m-week-day-name">{DAYS[dayIdx]}</span>
-                <span className="m-week-day-num">{dt.getDate()}</span>
-                <span className="m-week-day-dot"/>
-              </button>
-            );
-          })}
+        <div style={{ display: 'flex', alignItems: 'center', background: 'var(--m-surface)', borderBottom: '0.5px solid var(--m-rule)', flexShrink: 0 }}>
+          <button 
+            style={{ background: 'none', border: 'none', color: 'var(--m-muted)', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+            onClick={() => {
+              const d = parseLocalDate(currentDate);
+              d.setDate(d.getDate() - 7);
+              setCurrentDate(dateStr(d));
+            }}
+          >
+            <ChevronLeft size={16} />
+          </button>
+          
+          <div className="m-week-strip" style={{ flex: 1, borderBottom: 'none', padding: '10px 0' }}>
+            {weekDays.map(d => {
+              const dt = parseLocalDate(d);
+              const dayIdx = getAdjustedDay(dt);
+              const hasBk = bookings.some(b => b.date === d && b.status !== 'cancelado');
+              return (
+                <button key={d} className={`m-week-day ${d === currentDate ? 'active' : ''} ${hasBk ? 'has-bookings' : ''}`} onClick={() => setCurrentDate(d)}>
+                  <span className="m-week-day-name">{DAYS[dayIdx]}</span>
+                  <span className="m-week-day-num">{dt.getDate()}</span>
+                  <span className="m-week-day-dot"/>
+                </button>
+              );
+            })}
+          </div>
+
+          <button 
+            style={{ background: 'none', border: 'none', color: 'var(--m-muted)', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+            onClick={() => {
+              const d = parseLocalDate(currentDate);
+              d.setDate(d.getDate() + 7);
+              setCurrentDate(dateStr(d));
+            }}
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
 
         {/* Date navigation */}
-        <div className="m-agenda-date-bar">
+        <div className="m-agenda-date-bar" style={{ flexShrink: 0 }}>
           <button className="m-date-nav" onClick={() => animateDayChange(-1)}><ChevronLeft size={18}/></button>
           <div className="m-date-center">
             <div className="m-date-day">{fmtDate(currentDate)}</div>
@@ -2185,15 +2552,18 @@ Grande abraço, Jon.`;
           <button className="m-date-nav" onClick={() => animateDayChange(1)}><ChevronRight size={18}/></button>
         </div>
 
-        {/* Swipeable container */}
+        {/* Timeline Grid Container */}
         <div 
           style={{ 
-            flex:1, 
-            display:'flex', 
-            flexDirection:'column', 
-            overflow:'hidden',
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'row',
+            overflowY: isDragging ? 'hidden' : 'auto',
+            overflowX: 'hidden',
             position: 'relative',
             cursor: isDragging ? 'grabbing' : 'grab',
+            userSelect: 'none',
+            WebkitUserSelect: 'none'
           }}
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
@@ -2203,135 +2573,227 @@ Grande abraço, Jon.`;
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          <div 
-            style={{ 
-              flex:1, 
-              display:'flex', 
-              flexDirection:'column', 
-              overflowY: isDragging ? 'hidden' : 'auto',
-              overflowX: 'hidden',
-              willChange: 'transform, opacity',
-              touchAction: 'pan-y',
-              ...(isDragging ? { transform: `translateX(${translateX}px)`, transition: 'none' } : slideStyle)
-            }}
-          >
-            <div className="m-slot-list" style={{ userSelect: 'none', WebkitUserSelect: 'none' }}>
-              {HOURLY_SLOTS.map(slot => {
-                const bk = dayBookings.find(b => {
-                  if (b.status === 'cancelado') return false;
-                  const bStart = timeToMin(b.time);
-                  const bEnd = bStart + (b.duration || 60);
-                  const slotMin = timeToMin(slot);
-                  return Math.max(bStart, slotMin) < Math.min(bEnd, slotMin + 60);
-                });
+          {/* Hours column on the left */}
+          <div style={{ width: 60, display: 'flex', flexDirection: 'column', borderRight: '0.5px solid var(--m-rule)', background: 'var(--m-bg)', position: 'relative', height: HOURLY_SLOTS.length * 60 }}>
+            {HOURLY_SLOTS.map(hour => {
+              const hourMin = timeToMin(hour);
+              const topPx = hourMin - 480;
+              return (
+                <div key={hour} style={{ position: 'absolute', top: topPx, left: 0, right: 0, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', color: 'var(--m-muted)', fontFamily: '"Bricolage Grotesque", sans-serif', fontWeight: 600, zIndex: 2 }}>
+                  <span style={{ background: 'var(--m-bg)', padding: '0 4px' }}>
+                    {hour}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
 
-                const bStart = bk ? timeToMin(bk.time) : 0;
-                const bEnd = bk ? bStart + (bk.duration || 60) : 0;
+          {/* Grid lines and absolute cards column on the right */}
+          <div style={{ flex: 1, position: 'relative', height: HOURLY_SLOTS.length * 60, background: 'var(--m-bg)' }}>
+            {/* Horizontal lines */}
+            {HOURLY_SLOTS.map((_, i) => (
+              <div key={i} style={{ height: 60, borderBottom: '0.5px solid var(--m-rule)', position: 'relative' }}>
+                <div style={{ position: 'absolute', top: 30, left: 0, right: 0, borderBottom: '0.5px dashed var(--m-rule)' }} />
+              </div>
+            ))}
+
+            {/* Clickable background cells (for scheduling in empty slots) */}
+            {HOURLY_SLOTS.flatMap(hour => {
+              const hourPrefix = hour.substring(0, 3);
+              return [`${hourPrefix}00`, `${hourPrefix}30`].map(slot => {
                 const slotMin = timeToMin(slot);
-                const isSubsequent = bk && bStart < slotMin;
-
-                const displayTimeRange = bk 
-                  ? `${bk.time} - ${minToTime(bEnd)}${isSubsequent ? ' (Ocupado)' : ''}`
-                  : slot;
-
-                const isDefaultLunchBlock = (slot === '12:00');
-                const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_${slot}`) === 'true';
-                const isLocked = isDefaultLunchBlock && !isUnlockedLocal && !bk;
-
-                const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
-                const isBlockedByScale = !bk && isSlotBlocked(prof, currentDate, slot);
-                const absence = !bk ? getAbsenceForSlot(getEffectiveAbsences(settings), currentDate, slot) : null;
-
-                const dtForLabel = parseLocalDate(currentDate);
-                const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
-                const isHolidayDay = isFeriado(currentDate);
-                const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
-
+                const hasItem = layoutItems.some(item => slotMin >= item.startMin && slotMin < item.endMin);
+                if (hasItem) return null;
                 return (
-                  <div key={slot} className="m-slot-row" onClick={() => {
-                    if (bk) { setSelectedBooking(bk); setShowBookingSheet(true); }
-                    else if (absence) {
-                      if (window.confirm(`Este horário está bloqueado por uma ausência (${absence.title}). Deseja agendar mesmo assim?`)) {
-                        setSelectedSlot(slot); setShowSlotSheet(true);
-                      }
-                    }
-                    else if (isBlockedByScale) {
-                      if (window.confirm("Este horário está bloqueado pelas configurações de escala do profissional. Deseja agendar mesmo assim?\n\n(Para liberar o horário sem agendar agora, clique em Cancelar)")) {
-                        setSelectedSlot(slot); setShowSlotSheet(true);
-                      } else if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
-                        localStorage.setItem(`unlock_${currentDate}_${slot}`, 'true');
-                        showToast("Horário liberado!", "success");
-                        window.location.reload();
-                      }
-                    }
-                    else { setSelectedSlot(slot); setShowSlotSheet(true); }
-                  }}>
-                    <div className="m-slot-time" style={{ fontSize: '0.75rem', whiteSpace: 'nowrap' }}>{displayTimeRange}</div>
-                    <div className="m-slot-content">
-                      {bk ? (
-                        <div className={`m-slot-booking ${bk.status}`}>
-                          <div>
-                            <div 
-                              className="m-slot-client"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
-                              }}
-                              style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
-                            >
-                              {bk.clientName}
-                              {isClientRecurrent(bk.clientName, bk.clientPhone) && (
-                                <span style={{
-                                  position: 'absolute',
-                                  top: '-2px',
-                                  right: '-8px',
-                                  width: '5px',
-                                  height: '5px',
-                                  borderRadius: '50%',
-                                  backgroundColor: 'var(--m-gold, #dca354)'
-                                }} />
-                              )}
-                            </div>
-                            <div className="m-slot-svc">{bk.service?.name || bk.serviceName}</div>
-                          </div>
-                          <StatusPill status={bk.status}/>
-                        </div>
-                      ) : isLocked ? (
-                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(235, 94, 85, 0.1)', borderLeft: '4px solid var(--m-red)', color: 'var(--m-red)' }}>
-                          <div>
-                            <div className="m-slot-client" style={{ color: 'var(--m-red)' }}>Bloqueio de Almoço</div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)' }}>Toque para liberar horário</div>
-                          </div>
-                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(235, 94, 85, 0.2)', color: 'var(--m-red)' }}>Bloqueado</span>
-                        </div>
-                      ) : absence ? (
-                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(139, 124, 200, 0.12)', borderLeft: '4px solid #8b7cc8', color: '#8b7cc8' }}>
-                          <div>
-                            <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <Lock size={12} /> {absence.title}
-                            </div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)' }}>Ausência</div>
-                          </div>
-                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(139, 124, 200, 0.22)', color: '#8b7cc8' }}>Ausência</span>
-                        </div>
-                      ) : isBlockedByScale ? (
-                        <div className="m-slot-booking bloqueado" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(163, 150, 135, 0.1)', borderLeft: '4px solid #8A7866', color: '#8A7866' }}>
-                          <div>
-                            <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4 }}>
-                              <Lock size={12} /> Bloqueado
-                            </div>
-                            <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)' }}>{blockLabel}</div>
-                          </div>
-                          <span className="m-status-pill bloqueado" style={{ background: 'rgba(138, 120, 102, 0.2)', color: '#8A7866' }}>Bloqueado</span>
-                        </div>
-                      ) : (
-                        <span className="m-slot-empty">Disponível</span>
-                      )}
+                  <div
+                    key={slot}
+                    style={{
+                      position: 'absolute',
+                      top: slotMin - 480,
+                      height: 30,
+                      left: 0,
+                      right: 0,
+                      cursor: 'pointer',
+                      zIndex: 1
+                    }}
+                    onClick={() => {
+                      setSelectedSlot(slot);
+                      setShowSlotSheet(true);
+                    }}
+                  />
+                );
+              });
+            })}
+
+            {/* Render positioned items absolutely */}
+            {positionedItems.map(item => {
+              const startMin = item.startMin;
+              const duration = Math.max(30, item.endMin - startMin);
+              const topPx = startMin - 480;
+              const heightPx = duration - 2;
+
+              const left = item.leftPercent;
+              const width = item.widthPercent;
+
+              if (item.type === 'booking') {
+                const bk = item.raw;
+                return (
+                  <div
+                    key={item.id}
+                    className={`m-slot-booking ${bk.status} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`}
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '0 12px',
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      overflow: 'hidden',
+                      borderRadius: '0px',
+                      boxShadow: '0 2px 5px rgba(0,0,0,0.12)',
+                      cursor: 'pointer'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedBooking(bk);
+                      setShowBookingSheet(true);
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%', justifyContent: 'center' }}>
+                      <span
+                        className="m-slot-client"
+                        style={{
+                          fontWeight: 700,
+                          fontSize: '0.82rem',
+                          color: '#ffffff',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {bk.clientName}
+                      </span>
+                      <span className="m-slot-svc-info" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {bk.service?.name || bk.serviceName} · {(() => {
+                          const m = bk.duration || 60;
+                          const h = Math.floor(m / 60);
+                          const r = m % 60;
+                          if (h > 0 && r > 0) return `${h}h${r}`;
+                          if (h > 0) return `${h}h`;
+                          return `${r}min`;
+                        })()}
+                      </span>
                     </div>
                   </div>
                 );
-              })}
-            </div>
+              }
+
+              if (item.type === 'lunch_block') {
+                return (
+                  <div
+                    key={item.id}
+                    className="m-slot-booking bloqueado"
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: 'rgba(235, 94, 85, 0.1)',
+                      borderLeft: '4px solid var(--m-red)',
+                      color: 'var(--m-red)'
+                    }}
+                    onClick={() => {
+                      if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
+                        localStorage.setItem(`unlock_${currentDate}_12:00`, 'true');
+                        showToast("Horário liberado!", "success");
+                        window.location.reload();
+                      }
+                    }}
+                  >
+                    <div>
+                      <div className="m-slot-client" style={{ color: 'var(--m-red)', fontSize: '0.75rem' }}>Bloqueio de Almoço</div>
+                      <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)', fontSize: '0.62rem' }}>Toque para liberar</div>
+                    </div>
+                  </div>
+                );
+              }
+
+              if (item.type === 'absence') {
+                const abs = item.raw;
+                return (
+                  <div
+                    key={item.id}
+                    className="m-slot-booking bloqueado"
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      background: 'rgba(139, 124, 200, 0.12)',
+                      borderLeft: '4px solid #8b7cc8',
+                      color: '#8b7cc8'
+                    }}
+                  >
+                    <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                      <Lock size={10} /> {abs.title}
+                    </div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)', fontSize: '0.62rem' }}>Ausência</div>
+                  </div>
+                );
+              }
+
+              if (item.type === 'scale_block') {
+                return (
+                  <div
+                    key={item.id}
+                    className="m-slot-booking bloqueado"
+                    style={{
+                      position: 'absolute',
+                      top: topPx,
+                      height: heightPx,
+                      left: `${left}%`,
+                      width: `calc(${width}% - 4px)`,
+                      marginLeft: '2px',
+                      padding: '6px 10px',
+                      zIndex: 3,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      background: 'rgba(163, 150, 135, 0.1)',
+                      borderLeft: '4px solid #8A7866',
+                      color: '#8A7866'
+                    }}
+                  >
+                    <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                      <Lock size={10} /> Bloqueado
+                    </div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)', fontSize: '0.62rem' }}>{item.label}</div>
+                  </div>
+                );
+              }
+
+              return null;
+            })}
           </div>
         </div>
       </div>
@@ -2466,22 +2928,27 @@ Grande abraço, Jon.`;
 
   // ── TAB: CAIXA ─────────────────────────────────────────────────
   const renderCaixa = () => {
-    const txMonth = (() => {
-      const m = new Date().toISOString().slice(0,7);
-      return transactions.filter(t => (t.date || '').startsWith(m));
+    const filteredTxByPeriod = (() => {
+      const now = new Date();
+      const currentToday = today();
+      
+      if (period === 'dia') {
+        return transactions.filter(t => t.date === currentToday);
+      } else if (period === 'semana') {
+        const startOfWeek = new Date(now);
+        const day = startOfWeek.getDay();
+        startOfWeek.setDate(now.getDate() - day); // Domingo
+        const dsStart = dateStr(startOfWeek);
+        return transactions.filter(t => t.date >= dsStart && t.date <= currentToday);
+      } else { // 'mes'
+        const m = now.toISOString().slice(0,7);
+        return transactions.filter(t => (t.date || '').startsWith(m));
+      }
     })();
-    const monthIn = txMonth.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
-    const monthOut = txMonth.filter(t => t.type === 'saida').reduce((s,t) => s + Number(t.value||0), 0);
-    const profit = monthIn - monthOut;
 
-    // Last 6 days revenue for mini chart
-    const last6 = Array.from({ length:6 }, (_, i) => {
-      const d = new Date(); d.setDate(d.getDate() - (5 - i));
-      const ds = dateStr(d);
-      const val = transactions.filter(t => t.date === ds && t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
-      return { label: d.toLocaleDateString('pt-BR', { day:'numeric', month:'numeric' }).replace('/','\/'), val, isToday: ds === today() };
-    });
-    const maxVal = Math.max(...last6.map(d => d.val), 1);
+    const periodIn = filteredTxByPeriod.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
+    const periodOut = filteredTxByPeriod.filter(t => t.type === 'saida').reduce((s,t) => s + Number(t.value||0), 0);
+    const periodProfit = periodIn - periodOut;
 
     const recentTx = transactions
       .sort((a,b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''))
@@ -2490,42 +2957,60 @@ Grande abraço, Jon.`;
     return (
       <div className="m-tab m-page" key="caixa">
         {/* Segmented */}
-        <div className="m-segmented">
+        <div className="m-segmented" style={{ marginBottom: 12 }}>
           <button className={`m-seg-btn ${financeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setFinanceTab('dashboard')}>Dashboard</button>
           <button className={`m-seg-btn ${financeTab === 'lancamentos' ? 'active' : ''}`} onClick={() => setFinanceTab('lancamentos')}>Lançamentos</button>
         </div>
 
         {financeTab === 'dashboard' && <>
+          {/* Caixa Period selector */}
+          <div className="m-segmented" style={{ background: 'rgba(255,255,255,0.03)', padding: 2, marginBottom: 16 }}>
+            <button className={`m-seg-btn ${period === 'dia' ? 'active' : ''}`} onClick={() => setPeriod('dia')} style={{ fontSize: '0.78rem', padding: '6px 0' }}>Dia</button>
+            <button className={`m-seg-btn ${period === 'semana' ? 'active' : ''}`} onClick={() => setPeriod('semana')} style={{ fontSize: '0.78rem', padding: '6px 0' }}>Semana</button>
+            <button className={`m-seg-btn ${period === 'mes' ? 'active' : ''}`} onClick={() => setPeriod('mes')} style={{ fontSize: '0.78rem', padding: '6px 0' }}>Mês</button>
+          </div>
+
           {/* Hero */}
-          <div className="m-finance-hero">
-            <div className="m-finance-hero-label">Receita do Mês</div>
-            <div className="m-finance-hero-value">{fmt(monthIn)}</div>
-            <div className="m-finance-hero-sub">Lucro líquido: <strong style={{ color: profit >= 0 ? 'var(--m-green)' : 'var(--m-red)' }}>{fmt(profit)}</strong></div>
+          <div className="m-finance-hero" style={{ padding: '20px 16px' }}>
+            <div className="m-finance-hero-label">Caixa de {period === 'dia' ? 'Hoje' : period === 'semana' ? 'Semana' : 'Mês'}</div>
+            <div className="m-finance-hero-value" style={{ fontSize: '2rem' }}>{fmt(periodIn)}</div>
+            <div className="m-finance-hero-sub">Saldo líquido: <strong style={{ color: periodProfit >= 0 ? 'var(--m-green)' : 'var(--m-red)' }}>{fmt(periodProfit)}</strong></div>
           </div>
 
           {/* KPIs */}
-          <div className="m-kpi-row">
-            <div className="m-kpi-card green">
-              <div className="m-kpi-label">Receitas</div>
-              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1.1rem' }}>{fmt(monthIn)}</div>
+          <div className="m-kpi-row" style={{ gap: 12, marginBottom: 16 }}>
+            <div className="m-kpi-card green" style={{ padding: 12 }}>
+              <div className="m-kpi-label">Entradas</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1.1rem' }}>{fmt(periodIn)}</div>
             </div>
-            <div className="m-kpi-card red">
-              <div className="m-kpi-label">Despesas</div>
-              <div className="m-kpi-value" style={{ color:'var(--m-red)', fontSize:'1.1rem' }}>{fmt(monthOut)}</div>
+            <div className="m-kpi-card red" style={{ padding: 12 }}>
+              <div className="m-kpi-label">Saídas</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-red)', fontSize:'1.1rem' }}>{fmt(periodOut)}</div>
             </div>
           </div>
 
-          {/* Mini bar chart */}
-          <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'16px' }}>
-            <div className="m-section-title" style={{ marginBottom:16 }}>Últimos 6 dias</div>
-            <div className="m-bar-chart">
-              {last6.map((d, i) => (
-                <div key={i} className={`m-bar ${d.isToday ? 'current' : ''}`} style={{ height:`${(d.val/maxVal)*100}%` }}>
-                  <span className="m-bar-label">{d.label}</span>
+          {/* Último lançamento hoje */}
+          {(() => {
+            const todayTxs = transactions.filter(t => t.date === today()).sort((a,b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+            if (todayTxs.length > 0) {
+              const last = todayTxs[0];
+              return (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px', marginBottom: 16 }}>
+                  <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>Último Lançamento Hoje</div>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                    <div>
+                      <div style={{ fontWeight:700, fontSize:'0.85rem', color:'var(--m-text)' }}>{last.description}</div>
+                      <div style={{ fontSize:'0.7rem', color:'var(--m-muted)' }}>{last.paymentMethod || 'Dinheiro'} · {last.type === 'entrada' ? 'Receita' : 'Despesa'}</div>
+                    </div>
+                    <div style={{ fontWeight:800, fontSize:'0.95rem', color: last.type === 'entrada' ? 'var(--m-green)' : 'var(--m-red)' }}>
+                      {last.type === 'entrada' ? '+' : '-'}{fmt(last.value)}
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              );
+            }
+            return null;
+          })()}
 
           <button className="m-btn m-btn-gold" onClick={() => setShowAddTxSheet(true)}>
             <Plus size={16}/> Lançar Despesa
@@ -2533,7 +3018,7 @@ Grande abraço, Jon.`;
         </>}
 
         {financeTab === 'lancamentos' && <>
-          <div style={{ display:'flex', justifyContent:'flex-end' }}>
+          <div style={{ display:'flex', justifyContent:'flex-end', marginBottom: 12 }}>
             <button className="m-btn m-btn-gold" style={{ width:'auto', padding:'8px 14px', fontSize:'0.78rem' }} onClick={() => setShowAddTxSheet(true)}>
               <Plus size={14}/> Lançar
             </button>
@@ -2572,7 +3057,6 @@ Grande abraço, Jon.`;
       { key:'estoque', icon:<Package size={18}/>, label:'Estoque', sub:`${inventory.length} produtos`, color:'var(--m-blue)' },
       { key:'comissoes', icon:<BarChart2 size={18}/>, label:'Comissões', sub:'Relatório de equipe', color:'var(--m-green)' },
       { key:'ausencias', icon:<Calendar size={18}/>, label:'Minhas Ausências', sub:'Folgas e bloqueios', color:'#8b7cc8' },
-      { key:'marketing', icon:<Send size={18}/>, label:'Marketing', sub:'Campanhas e CRM', color:'var(--m-amber)' },
       { key:'config', icon:<Settings size={18}/>, label:'Configurações', sub:'Estúdio e integrações', color:'var(--m-muted)' },
     ];
 
@@ -3120,7 +3604,8 @@ Grande abraço, Jon.`;
                     time: b.time || '09:00',
                     prepayment: b.prepayment || '',
                     notes: b.notes || '',
-                    status: b.status || 'confirmado'
+                    status: b.status || 'confirmado',
+                    duration: b.duration || 60
                   });
                   setShowBookingSheet(false);
                   setShowEditBookingSheet(true);
@@ -3144,11 +3629,48 @@ Grande abraço, Jon.`;
                 </button>
               )}
               {b.clientPhone && (
-                <button className="m-action-btn" onClick={() => window.open(`https://wa.me/55${b.clientPhone.replace(/\D/g,'')}`, '_blank')}>
-                  <div className="m-action-btn-icon" style={{ background:'var(--m-green-bg)', color:'var(--m-green)' }}><MessageSquare size={16}/></div>
+                <button className="m-action-btn" onClick={() => {
+                  const cleanPhone = b.clientPhone.replace(/\D/g, '');
+                  const matched = clients.find(c => (c.phone && c.phone.replace(/\D/g, '') === cleanPhone) || c.name === b.clientName);
+                  if (matched) {
+                    setSelectedClient(matched);
+                    setShowBookingSheet(false);
+                    setShowClientSheet(true);
+                  } else {
+                    setSelectedClient({ name: b.clientName, phone: b.clientPhone });
+                    setShowBookingSheet(false);
+                    setShowClientSheet(true);
+                  }
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'rgba(220, 163, 84, 0.12)', color:'var(--m-gold)' }}><Users size={16}/></div>
                   <div className="m-action-btn-text">
-                    <div className="m-action-btn-label">Enviar Mensagem WhatsApp</div>
-                    <div className="m-action-btn-sub">{b.clientPhone}</div>
+                    <div className="m-action-btn-label">Ver Ficha / Histórico</div>
+                    <div className="m-action-btn-sub">Histórico capilar, curvatura e anamnese</div>
+                  </div>
+                  <ChevronRight size={14} color="var(--m-muted)"/>
+                </button>
+              )}
+
+              {b.clientPhone && ['confirmado','pendente'].includes(b.status) && (
+                <button className="m-action-btn" onClick={() => {
+                  const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
+                  const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+                  let msg = template
+                    .replace('{cliente}', b.clientName.split(' ')[0])
+                    .replace('{data}', b.date.split('-').reverse().join('/'))
+                    .replace('{hora}', b.time)
+                    .replace('{servico}', b.service?.name || b.serviceName);
+                  if (msg.includes('{link_cancelamento}')) {
+                    msg = msg.replace('{link_cancelamento}', cancelLink);
+                  } else {
+                    msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
+                  }
+                  window.open(`https://wa.me/55${b.clientPhone.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`, '_blank');
+                }}>
+                  <div className="m-action-btn-icon" style={{ background:'rgba(37,211,102,0.12)', color:'#25D366' }}><Send size={16}/></div>
+                  <div className="m-action-btn-text">
+                    <div className="m-action-btn-label">Enviar Lembrete Manual</div>
+                    <div className="m-action-btn-sub">Mandar template de confirmação no WhatsApp</div>
                   </div>
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
@@ -3376,7 +3898,7 @@ Grande abraço, Jon.`;
       ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
       : [];
 
-    const currentBasePrice = overrideBasePrice !== null ? overrideBasePrice : basePrice;
+    const currentBasePrice = overrideBasePrice !== null && overrideBasePrice !== '' ? Number(overrideBasePrice) : 0;
     const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
     const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
     const subtotal = currentBasePrice + extraServicesVal + productsVal;
@@ -3405,8 +3927,8 @@ Grande abraço, Jon.`;
                   <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
                   <input
                     type="number"
-                    value={overrideBasePrice !== null ? overrideBasePrice : basePrice}
-                    onChange={e => setOverrideBasePrice(e.target.value === '' ? null : Number(e.target.value))}
+                    value={overrideBasePrice !== null && overrideBasePrice !== undefined ? overrideBasePrice : ''}
+                    onChange={e => setOverrideBasePrice(e.target.value)}
                     style={{
                       width: 70,
                       textAlign: 'right',
@@ -3512,55 +4034,265 @@ Grande abraço, Jon.`;
               )}
             </div>
 
+            {/* Used Products Section */}
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>🧪 Insumos Usados (Dedução)</div>
+              {usedProducts.map((p, idx) => (
+                <div key={'used-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#48bb78' }}>
+                  <span style={{ fontSize:'0.82rem' }}>{p.quantity}x {p.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:'0.82rem', fontWeight: 600 }}>- {fmt(p.price * p.quantity)}</span>
+                    <button onClick={() => removeUsedProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444' }}><Trash2 size={12}/></button>
+                  </div>
+                </div>
+              ))}
+              
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                <select
+                  value={selectedUsedProduct}
+                  onChange={e => setSelectedUsedProduct(e.target.value)}
+                  style={{ flex: 1, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
+                >
+                  <option value="">-- Selecionar Insumo --</option>
+                  {inventory.filter(p => p.quantity > 0).map(p => (
+                    <option key={p.id} value={`${p.id}|${p.name}|${p.costPrice || p.sellingPrice}`}>
+                      {p.name} (Custo: R$ {p.costPrice || p.sellingPrice})
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="m-btn m-btn-outline"
+                  style={{ padding: '0 12px', fontSize: '0.8rem' }}
+                  onClick={() => {
+                    if (!selectedUsedProduct) return;
+                    const [pid, name, price] = selectedUsedProduct.split('|');
+                    addUsedProduct(pid, name, price);
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Non Registered Products Section */}
+            <div>
+              <div className="m-label" style={{ marginBottom:8 }}>🏷️ Produtos Não Cadastrados (Uso Único)</div>
+              {nonRegisteredProducts.map((p, idx) => (
+                <div key={'nonreg-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#38b2ac' }}>
+                  <span style={{ fontSize:'0.82rem' }}>{p.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                    <span style={{ fontSize:'0.82rem', fontWeight: 600 }}>- {fmt(p.value)}</span>
+                    <button onClick={() => removeNonRegisteredProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444' }}><Trash2 size={12}/></button>
+                  </div>
+                </div>
+              ))}
+
+              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                <input
+                  type="text"
+                  placeholder="Nome do produto"
+                  value={newNonRegName}
+                  onChange={e => setNewNonRegName(e.target.value)}
+                  style={{ flex: 2, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
+                />
+                <input
+                  type="number"
+                  placeholder="Valor"
+                  value={newNonRegVal || ''}
+                  onChange={e => setNewNonRegVal(Number(e.target.value))}
+                  style={{ flex: 1, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit' }}
+                />
+                <button
+                  type="button"
+                  className="m-btn m-btn-outline"
+                  style={{ padding: '0 12px', fontSize: '0.8rem' }}
+                  onClick={() => addNonRegisteredProduct(newNonRegName, newNonRegVal)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
             {/* Discount */}
             <div className="m-field">
               <label className="m-label">Desconto (R$)</label>
               <input className="m-input" type="number" min="0" value={discount || ''} onChange={e => setDiscount(Number(e.target.value) || 0)} placeholder="0,00"/>
             </div>
 
-            {/* Payment method */}
-            <div>
-              <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
-              <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
-                  <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
-                    setPaymentMethod(m);
-                    if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
-                      setApplyAnticipation(true);
-                    } else {
-                      setApplyAnticipation(false);
-                    }
-                  }}>{m}</button>
-                ))}
-              </div>
+            {/* Split Payment Toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '8px 0' }}>
+              <input 
+                type="checkbox" 
+                id="m-split-payment"
+                checked={isSplitPayment} 
+                onChange={e => {
+                  const checked = e.target.checked;
+                  setIsSplitPayment(checked);
+                  if (checked) {
+                    setSplitValues({
+                      'Pix': paymentMethod === 'Pix' ? remaining : 0,
+                      'Cartão de Crédito': paymentMethod === 'Cartão de Crédito' ? remaining : 0,
+                      'Cartão de Débito': paymentMethod === 'Cartão de Débito' ? remaining : 0,
+                      'Dinheiro': paymentMethod === 'Dinheiro' ? remaining : 0,
+                      'Cortesia': paymentMethod === 'Cortesia' ? remaining : 0
+                    });
+                    setSplitCreditAnticipation(applyAnticipation);
+                    setSplitDebitAnticipation(applyAnticipation);
+                  }
+                }}
+                style={{ width: 16, height: 16, accentColor: 'var(--m-gold)', cursor: 'pointer' }}
+              />
+              <label htmlFor="m-split-payment" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--m-text)', cursor: 'pointer' }}>
+                Dividir pagamento (mais de uma forma)?
+              </label>
             </div>
 
-            {/* Installments selection for Credit Card */}
-            {paymentMethod === 'Cartão de Crédito' && (
-              <div className="m-field">
-                <label className="m-label">Parcelas</label>
-                <select className="m-select" value={installments} onChange={e => setInstallments(e.target.value)}>
-                  <option value="À vista">À vista</option>
-                  <option value="2x">2x</option>
-                  <option value="3x">3x</option>
-                </select>
-              </div>
-            )}
+            {isSplitPayment ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, background: 'rgba(255,255,255,0.02)', padding: 12, borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)' }}>
+                <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--m-muted)', textTransform: 'uppercase', marginBottom: 4 }}>Distribuição do Pagamento</div>
+                {['Pix', 'Cartão de Crédito', 'Cartão de Débito', 'Dinheiro', 'Cortesia'].map(m => {
+                  const val = splitValues[m] || 0;
+                  return (
+                    <div key={m} style={{ display: 'flex', flexDirection: 'column', gap: 4, paddingBottom: 8, borderBottom: '0.5px solid rgba(255,255,255,0.05)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '0.82rem', color: 'var(--m-text-2)', fontWeight: 600 }}>{m}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--m-muted)' }}>R$</span>
+                          <input 
+                            type="number" 
+                            min="0"
+                            placeholder="0,00"
+                            value={val || ''} 
+                            onChange={e => {
+                              const num = Number(e.target.value) || 0;
+                              setSplitValues(prev => ({ ...prev, [m]: num }));
+                            }}
+                            style={{ width: 90, padding: '4px 6px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.85rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit' }}
+                          />
+                        </div>
+                      </div>
+                      
+                      {m === 'Cartão de Crédito' && val > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 4, paddingLeft: 8 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--m-muted)' }}>Parcs:</span>
+                            <select 
+                              className="m-select" 
+                              value={splitInstallments} 
+                              onChange={e => setSplitInstallments(e.target.value)}
+                              style={{ padding: '2px 4px', fontSize: '0.75rem', width: 70 }}
+                            >
+                              <option value="À vista">1x</option>
+                              <option value="2x">2x</option>
+                              <option value="3x">3x</option>
+                            </select>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <input 
+                              type="checkbox" 
+                              id="m-split-credit-anticipate"
+                              checked={splitCreditAnticipation} 
+                              onChange={e => setSplitCreditAnticipation(e.target.checked)}
+                              style={{ width: 12, height: 12 }}
+                            />
+                            <label htmlFor="m-split-credit-anticipate" style={{ fontSize: '0.72rem', color: 'var(--m-text-2)' }}>Antecipar</label>
+                          </div>
+                        </div>
+                      )}
+                      
+                      {m === 'Cartão de Débito' && val > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginTop: 4, paddingLeft: 8 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <input 
+                              type="checkbox" 
+                              id="m-split-debit-anticipate"
+                              checked={splitDebitAnticipation} 
+                              onChange={e => setSplitDebitAnticipation(e.target.checked)}
+                              style={{ width: 12, height: 12 }}
+                            />
+                            <label htmlFor="m-split-debit-anticipate" style={{ fontSize: '0.72rem', color: 'var(--m-text-2)' }}>Antecipar (taxa)</label>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
 
-            {/* Anticipation toggle */}
-            {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                <input 
-                  type="checkbox" 
-                  id="m-anticipate"
-                  checked={applyAnticipation} 
-                  onChange={e => setApplyAnticipation(e.target.checked)}
-                  style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
-                />
-                <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
-                  Antecipar recebimento? (taxa maquininha)
-                </label>
+                {/* Split Verification Status */}
+                {(() => {
+                  const distributedTotal = Object.values(splitValues).reduce((a, b) => a + b, 0);
+                  const diff = remaining - distributedTotal;
+                  if (Math.abs(diff) < 0.01) {
+                    return <div style={{ fontSize: '0.78rem', color: '#48bb78', fontWeight: 600, textAlign: 'center' }}>✓ Tudo certo! Total distribuído corretamente.</div>;
+                  } else if (diff > 0) {
+                    return <div style={{ fontSize: '0.78rem', color: 'var(--m-gold)', fontWeight: 600, textAlign: 'center' }}>Falta distribuir: {fmt(diff)}</div>;
+                  } else {
+                    return <div style={{ fontSize: '0.78rem', color: 'var(--m-red)', fontWeight: 600, textAlign: 'center' }}>Excesso distribuído: {fmt(Math.abs(diff))}</div>;
+                  }
+                })()}
+
+                {splitValues['Pix'] > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 10, padding: '10px 8px', background: 'rgba(220, 163, 84, 0.04)', borderRadius: 'var(--m-radius-sm)', border: '0.5px dashed var(--m-rule-strong)' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--m-gold)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PIX QR Code (R$ {splitValues['Pix'].toFixed(2).replace('.', ',')})</div>
+                    <img src="/qrcode-pix.png" alt="Pix QR Code" style={{ width: 110, height: 110, borderRadius: 'var(--m-radius-sm)', background: '#fff', padding: 4 }} />
+                  </div>
+                )}
               </div>
+            ) : (
+              <>
+                {/* Payment method */}
+                <div>
+                  <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
+                  <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                    {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
+                      <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
+                        setPaymentMethod(m);
+                        if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
+                          setApplyAnticipation(true);
+                        } else {
+                          setApplyAnticipation(false);
+                        }
+                      }}>{m}</button>
+                    ))}
+                  </div>
+                </div>
+
+                {paymentMethod === 'Pix' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 10, padding: '10px 8px', background: 'rgba(220, 163, 84, 0.04)', borderRadius: 'var(--m-radius-sm)', border: '0.5px dashed var(--m-rule-strong)' }}>
+                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--m-gold)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PIX QR Code (R$ {remaining.toFixed(2).replace('.', ',')})</div>
+                    <img src="/qrcode-pix.png" alt="Pix QR Code" style={{ width: 110, height: 110, borderRadius: 'var(--m-radius-sm)', background: '#fff', padding: 4 }} />
+                  </div>
+                )}
+
+                {/* Installments selection for Credit Card */}
+                {paymentMethod === 'Cartão de Crédito' && (
+                  <div className="m-field">
+                    <label className="m-label">Parcelas</label>
+                    <select className="m-select" value={installments} onChange={e => setInstallments(e.target.value)}>
+                      <option value="À vista">À vista</option>
+                      <option value="2x">2x</option>
+                      <option value="3x">3x</option>
+                    </select>
+                  </div>
+                )}
+
+                {/* Anticipation toggle */}
+                {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
+                    <input 
+                      type="checkbox" 
+                      id="m-anticipate"
+                      checked={applyAnticipation} 
+                      onChange={e => setApplyAnticipation(e.target.checked)}
+                      style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
+                    />
+                    <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
+                      Antecipar recebimento? (taxa maquininha)
+                    </label>
+                  </div>
+                )}
+              </>
             )}
 
             {/* Review request checkbox */}
@@ -3589,6 +4321,18 @@ Grande abraço, Jon.`;
                   <span>{fmt(productsVal)}</span>
                 </div>
               )}
+              {usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#48bb78' }}>
+                  <span>Insumos Dedução</span>
+                  <span>- {fmt(usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</span>
+                </div>
+              )}
+              {nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0) > 0 && (
+                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#38b2ac' }}>
+                  <span>Produtos não Cadastrados</span>
+                  <span>- {fmt(nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0))}</span>
+                </div>
+              )}
               {discount > 0 && (
                 <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
                   <span>Desconto</span>
@@ -3603,7 +4347,12 @@ Grande abraço, Jon.`;
           </div>
           <div className="m-sheet-footer">
             <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowCheckoutSheet(false)}>Cancelar</button>
-            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={finalizeCheckout} disabled={isFinalizingCheckout}>
+            <button 
+              className="m-btn m-btn-gold" 
+              style={{ flex:2 }} 
+              onClick={finalizeCheckout} 
+              disabled={isFinalizingCheckout || (isSplitPayment && Math.abs(remaining - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01)}
+            >
               {isFinalizingCheckout ? <><RefreshCw size={14} style={{ animation:'mSpin 0.8s linear infinite' }}/> Processando...</> : <><Check size={14}/> Receber {fmt(remaining)}</>}
             </button>
           </div>
@@ -3759,15 +4508,34 @@ Grande abraço, Jon.`;
                 const sName = e.target.value;
                 const matched = services.find(s => s.name === sName);
                 const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
-                setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+                const matchedDuration = matched ? (matched.duration || 60) : 60;
+                setEditBookingForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice, duration: matchedDuration }));
               }}>
                 <option value="">Selecione um serviço</option>
                 {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
               </select>
             </div>
-            <div className="m-field">
-              <label className="m-label">Valor do Serviço (R$)</label>
-              <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.servicePrice} onChange={e => setEditBookingForm(p => ({ ...p, servicePrice: e.target.value }))}/>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+              <div className="m-field">
+                <label className="m-label">Valor do Serviço (R$)</label>
+                <input className="m-input" type="number" placeholder="0,00" value={editBookingForm.servicePrice} onChange={e => setEditBookingForm(p => ({ ...p, servicePrice: e.target.value }))}/>
+              </div>
+              <div className="m-field">
+                <label className="m-label">Duração *</label>
+                <select className="m-select" value={editBookingForm.duration || 60} onChange={e => setEditBookingForm(p => ({ ...p, duration: Number(e.target.value) }))}>
+                  <option value={15}>15 min</option>
+                  <option value={30}>30 min</option>
+                  <option value={45}>45 min</option>
+                  <option value={60}>1h (60 min)</option>
+                  <option value={75}>1h 15m</option>
+                  <option value={90}>1h 30m</option>
+                  <option value={105}>1h 45m</option>
+                  <option value={120}>2h (120 min)</option>
+                  <option value={150}>2h 30m</option>
+                  <option value={180}>3h (180 min)</option>
+                  <option value={240}>4h (240 min)</option>
+                </select>
+              </div>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
               <div className="m-field">
@@ -3976,12 +4744,48 @@ Grande abraço, Jon.`;
               <div style={{ marginBottom: 16 }}>
                 <div className="m-section-title" style={{ marginBottom:10 }}>Agendamentos Futuros ({futureBookings.length})</div>
                 {futureBookings.map(b => (
-                  <div key={b.id} className="m-info-row">
+                  <div 
+                    key={b.id} 
+                    className="m-info-row" 
+                    style={{ cursor: 'pointer', padding: '8px 10px' }}
+                    onClick={() => {
+                      setEditBookingForm({
+                        id: b.id,
+                        clientName: b.clientName,
+                        clientPhone: b.clientPhone || '',
+                        serviceName: b.serviceName || b.service?.name || '',
+                        servicePrice: b.servicePrice !== undefined ? b.servicePrice : (b.service?.promoPrice || b.service?.price || ''),
+                        date: b.date,
+                        time: b.time || '09:00',
+                        prepayment: b.prepayment || '',
+                        notes: b.notes || '',
+                        status: b.status || 'confirmado',
+                        duration: b.duration || 60
+                      });
+                      setShowClientSheet(false);
+                      setShowEditBookingSheet(true);
+                    }}
+                  >
                     <div>
-                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)' }}>{b.service?.name || b.serviceName}</div>
+                      <div style={{ fontSize:'0.82rem', fontWeight:700, color:'var(--m-text)', textDecoration: 'underline', textDecorationStyle: 'dotted' }}>{b.service?.name || b.serviceName}</div>
                       <div style={{ fontSize:'0.68rem', color:'var(--m-muted)', marginTop:2 }}>{fmtDate(b.date)} às {b.time}</div>
                     </div>
-                    <StatusPill status={b.status}/>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <StatusPill status={b.status}/>
+                      <button 
+                        className="m-icon-btn" 
+                        style={{ color: 'var(--m-red)', padding: 4 }} 
+                        onClick={async (e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Tem certeza que deseja cancelar este agendamento?')) {
+                            await changeStatus(b.id, 'cancelado');
+                            showToast('Agendamento cancelado!', 'success');
+                          }
+                        }}
+                      >
+                        <Trash2 size={14}/>
+                      </button>
+                    </div>
                   </div>
                 ))}
                 {futureBookings.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.8rem' }}>Nenhum agendamento futuro</div>}
@@ -4086,11 +4890,12 @@ Grande abraço, Jon.`;
         return { width: '100%', height: '100%', objectFit: 'cover' };
       }
       
-      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+      const containerHeight = containerSize * 1.25;
+      const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
       const displayWidth = naturalDimensions.w * initialScale;
       const displayHeight = naturalDimensions.h * initialScale;
       const initialX = (containerSize - displayWidth) / 2;
-      const initialY = (containerSize - displayHeight) / 2;
+      const initialY = (containerHeight - displayHeight) / 2;
       
       const w = displayWidth * cropperZoom;
       const h = displayHeight * cropperZoom;
@@ -4129,7 +4934,7 @@ Grande abraço, Jon.`;
                   style={{ 
                     borderRadius:'var(--m-radius)', 
                     overflow:'hidden', 
-                    aspectRatio:'1/1', 
+                    aspectRatio:'4/5', 
                     background:'#000', 
                     position:'relative',
                     touchAction:'none',
@@ -4189,15 +4994,16 @@ Grande abraço, Jon.`;
                     
                     // Adjust offsets to keep it within constraints
                     setCropperOffset(prev => {
-                      const initialScale = Math.max(containerSize / naturalDimensions.w, containerSize / naturalDimensions.h);
+                      const containerHeight = containerSize * 1.25;
+                      const initialScale = Math.max(containerSize / naturalDimensions.w, containerHeight / naturalDimensions.h);
                       const displayWidth = naturalDimensions.w * initialScale * nextZoom;
                       const displayHeight = naturalDimensions.h * initialScale * nextZoom;
                       const initialX = (containerSize - displayWidth) / 2;
-                      const initialY = (containerSize - displayHeight) / 2;
+                      const initialY = (containerHeight - displayHeight) / 2;
                       
                       const minX = containerSize - displayWidth - initialX;
                       const maxX = -initialX;
-                      const minY = containerSize - displayHeight - initialY;
+                      const minY = containerHeight - displayHeight - initialY;
                       const maxY = -initialY;
                       
                       return {
@@ -4636,7 +5442,6 @@ Grande abraço, Jon.`;
     { id:'hoje',     icon:<Home size={20}/>,         label:'Hoje' },
     { id:'agenda',   icon:<Calendar size={20}/>,     label:'Agenda' },
     { id:'galeria',  icon:<Camera size={20}/>,       label:'Galeria' },
-    { id:'clientes', icon:<Users size={20}/>,        label:'Clientes' },
     { id:'caixa',    icon:<DollarSign size={20}/>,   label:'Caixa' },
     { id:'mais',     icon:<MoreHorizontal size={20}/>, label:'Mais' },
   ];
@@ -4661,7 +5466,7 @@ Grande abraço, Jon.`;
             </button>
           ) : (
             <>
-              <img src="/favicon.ico" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
+              <img src="/logo-jon-cortou.png" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
               <div>
                 <div className="m-header-title">{headerTitles[tab]}</div>
                 {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin</div>}
@@ -4704,7 +5509,7 @@ Grande abraço, Jon.`;
       </nav>
 
       {/* Speed-Dial FAB */}
-      {(tab === 'hoje' || tab === 'agenda') && (
+      {(tab === 'hoje' || tab === 'agenda' || tab === 'caixa') && (
         <>
           {showFabMenu && <div className="m-fab-backdrop" onClick={() => setShowFabMenu(false)} />}
           <div className="m-fab-container">
@@ -4718,6 +5523,7 @@ Grande abraço, Jon.`;
                 {/* Cadastrar Cliente */}
                 <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowNewClientSheet(true); }}>
                   <span className="m-fab-action-label">Cadastrar Cliente</span>
+                  <span className="m-nav-icon-wrap" style={{ display: 'none' }}/>
                   <span className="m-fab-action-icon" style={{ background:'rgba(52,199,89,0.15)', color:'var(--m-green)' }}><Users size={18}/></span>
                 </button>
                 {/* Criar Agendamento */}

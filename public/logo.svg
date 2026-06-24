@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bimiPinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6BB5" />
+      <stop offset="100%" stop-color="#D8228C" />
+    </linearGradient>
+  </defs>
+  <!-- Solid Background -->
+  <rect width="512" height="512" fill="url(#bimiPinkGrad)" />
+  
+  <!-- Stylized Curly Hair and Scissors Icon -->
+  <g fill="none" stroke="#FFFFFF" stroke-dasharray="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Scissors handles -->
+    <circle cx="200" cy="340" r="45" stroke-width="26" />
+    <circle cx="312" cy="340" r="45" stroke-width="26" />
+    
+    <!-- Connector and blades -->
+    <path d="M 200 295 L 280 140" stroke-width="26" />
+    <path d="M 312 295 L 232 140" stroke-width="26" />
+    
+    <!-- Pivot joint -->
+    <circle cx="256" cy="245" r="10" fill="#FFFFFF" stroke="none" />
+    
+    <!-- Decorative Curls representing Cachos -->
+    <path d="M 256 120 C 220 80, 200 120, 240 160 C 280 200, 312 180, 276 130" stroke="#FFDF00" stroke-width="18" />
+    <path d="M 220 180 C 180 150, 160 200, 200 230" stroke="#FFDF00" stroke-width="14" />
+    <path d="M 292 180 C 332 150, 352 200, 312 230" stroke="#FFDF00" stroke-width="14" />
+  </g>
+</svg>

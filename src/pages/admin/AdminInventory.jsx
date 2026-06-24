@@ -28,6 +28,7 @@ const AdminInventory = () => {
 
   // Salon products state
   const salonProducts = globalData?.salon_products || [];
+  const services = globalData?.services || [];
   const [showSalonModal, setShowSalonModal] = useState(false);
   const [editingSalonProduct, setEditingSalonProduct] = useState(null);
   const [salonForm, setSalonForm] = useState({
@@ -35,8 +36,11 @@ const AdminInventory = () => {
     type: 'Creme',
     volumetry: 0,
     unit: 'g',
-    costPrice: 0
+    costPrice: 0,
+    usedIn: []
   });
+  const [tempAssoc, setTempAssoc] = useState({ serviceId: '', serviceName: '', amount: '' });
+
 
   const logProductExpense = async (productName, quantity, costPrice, actionType = 'Compra') => {
     const cost = Number(quantity) * Number(costPrice);
@@ -353,10 +357,18 @@ const AdminInventory = () => {
       setGlobalData(prev => ({ ...prev, salon_products: updated }));
     }
   };
-
   const handleOpenAddSalon = () => {
     setEditingSalonProduct(null);
-    setSalonForm({ name: '', type: 'Creme', volumetry: 500, unit: 'g', costPrice: 50 });
+    setSalonForm({ 
+      name: '', 
+      type: 'Creme', 
+      volumetry: 500, 
+      unit: 'g', 
+      costPrice: 50, 
+      usedIn: [],
+      deductFromInventory: false
+    });
+    setTempAssoc({ serviceId: '', serviceName: '', amount: '' });
     setShowSalonModal(true);
   };
 
@@ -367,8 +379,11 @@ const AdminInventory = () => {
       type: product.type || 'Creme',
       volumetry: product.volumetry || 0,
       unit: product.unit || 'g',
-      costPrice: product.costPrice || 0
+      costPrice: product.costPrice || 0,
+      usedIn: product.usedIn || [],
+      deductFromInventory: false
     });
+    setTempAssoc({ serviceId: '', serviceName: '', amount: '' });
     setShowSalonModal(true);
   };
 
@@ -385,10 +400,35 @@ const AdminInventory = () => {
       unit: salonForm.unit,
       costPrice: cost,
       pricePerUnit: Number(pricePerUnit.toFixed(4)),
+      usedIn: salonForm.usedIn || [],
       updatedAt: new Date().toISOString()
     };
 
     try {
+      // Check if we need to deduct from sales inventory
+      if (salonForm.deductFromInventory) {
+        const matchedProduct = products.find(p => p.name.toLowerCase().trim() === salonForm.name.toLowerCase().trim());
+        if (matchedProduct) {
+          if (matchedProduct.quantity <= 0) {
+            alert(`Aviso: O produto "${matchedProduct.name}" está sem estoque para dar baixa.`);
+          } else {
+            const newQty = matchedProduct.quantity - 1;
+            // Write back to products collection/state
+            if (isDemoMode || !db) {
+              const updatedProducts = products.map(p => p.id === matchedProduct.id ? { ...p, quantity: newQty } : p);
+              saveLocalProducts(updatedProducts);
+            } else {
+              const docRef = doc(db, 'products', matchedProduct.id);
+              await updateDoc(docRef, { quantity: newQty });
+            }
+            // Log the expense using the costPrice of the matched sales product
+            await logProductExpense(matchedProduct.name, 1, matchedProduct.costPrice || 0, 'Uso do Salão');
+          }
+        } else {
+          alert(`Aviso: Produto de venda "${salonForm.name}" não encontrado no estoque para dar baixa.`);
+        }
+      }
+
       if (isDemoMode || !db) {
         const current = [...salonProducts];
         if (editingSalonProduct) {
@@ -663,13 +703,14 @@ const AdminInventory = () => {
                   <th>Unidade</th>
                   <th>Preço do Produto (R$)</th>
                   <th>Preço por g/ml (R$)</th>
+                  <th>Serviços Relacionados</th>
                   <th style={{ textAlign: 'right' }}>Ações</th>
                 </tr>
               </thead>
               <tbody>
                 {salonProducts.length === 0 ? (
                   <tr>
-                    <td colSpan="7" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
+                    <td colSpan="8" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
                       Nenhum produto de uso interno cadastrado. Clique em "Novo Insumo" para começar.
                     </td>
                   </tr>
@@ -686,6 +727,23 @@ const AdminInventory = () => {
                         <td>{p.unit === 'ml' ? 'ml' : 'g'}</td>
                         <td>R$ {cost.toFixed(2)}</td>
                         <td style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {ppu.toFixed(4)}</td>
+                        <td>
+                          {p.usedIn && p.usedIn.length > 0 ? (
+                            <span style={{ 
+                              fontSize: '0.85rem', 
+                              fontWeight: 'bold',
+                              background: 'rgba(218, 165, 32, 0.1)', 
+                              color: 'var(--adm-gold)', 
+                              padding: '4px 10px', 
+                              borderRadius: 4,
+                              border: '0.5px solid rgba(218, 165, 32, 0.3)'
+                            }}>
+                              {p.usedIn.length} {p.usedIn.length === 1 ? 'serviço' : 'serviços'}
+                            </span>
+                          ) : (
+                            <span style={{ color: 'var(--adm-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>Nenhum</span>
+                          )}
+                        </td>
                         <td style={{ textAlign: 'right' }}>
                           <div style={{ display: 'inline-flex', gap: 6 }}>
                             <button className="btn-icon" onClick={() => handleOpenEditSalon(p)} title="Editar"><Edit2 size={14} /></button>
@@ -848,8 +906,35 @@ const AdminInventory = () => {
                 required 
                 placeholder="Ex: Creme Hidratante Profissional"
                 value={salonForm.name}
-                onChange={e => setSalonForm(prev => ({ ...prev, name: e.target.value }))}
+                list="sales-products-list"
+                onChange={e => {
+                  const val = e.target.value;
+                  const matched = products.find(p => p.name.toLowerCase().trim() === val.toLowerCase().trim());
+                  setSalonForm(prev => ({
+                    ...prev,
+                    name: val,
+                    costPrice: matched ? matched.costPrice : prev.costPrice
+                  }));
+                }}
               />
+              <datalist id="sales-products-list">
+                {products.map(p => (
+                  <option key={p.id} value={p.name} />
+                ))}
+              </datalist>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '12px 0' }}>
+              <input 
+                type="checkbox" 
+                id="deductFromInventory"
+                checked={salonForm.deductFromInventory || false}
+                onChange={e => setSalonForm(prev => ({ ...prev, deductFromInventory: e.target.checked }))}
+                style={{ width: 'auto', margin: 0, cursor: 'pointer' }}
+              />
+              <label htmlFor="deductFromInventory" style={{ fontSize: '0.88rem', cursor: 'pointer', margin: 0 }}>
+                Dar baixa no estoque de vendas (-1 unidade)
+              </label>
             </div>
 
             <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -892,7 +977,7 @@ const AdminInventory = () => {
               </div>
 
               <div className="form-group">
-                <label>Preço do Produto (R$) *</label>
+                <label>Preço de Custo (R$) *</label>
                 <input 
                   type="number" 
                   required 
@@ -919,6 +1004,141 @@ const AdminInventory = () => {
                 R$ {(Number(salonForm.costPrice) / Number(salonForm.volumetry)).toFixed(4)}/{salonForm.unit}
               </div>
             )}
+
+            {/* Serviços associados */}
+            <div style={{ marginTop: 20, borderTop: '1px solid var(--adm-rule)', paddingTop: 16 }}>
+              <h4 style={{ margin: '0 0 12px 0', fontSize: '0.92rem', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Scissors size={14} /> Serviços que Utilizam este Insumo
+              </h4>
+
+              {(!salonForm.usedIn || salonForm.usedIn.length === 0) ? (
+                <p style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontStyle: 'italic', margin: '0 0 12px 0' }}>
+                  Nenhum serviço associado a este insumo.
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12, maxH: '120px', overflowY: 'auto' }}>
+                  {salonForm.usedIn.map((item, idx) => (
+                    <div key={idx} style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center', 
+                      background: 'rgba(255,255,255,0.02)', 
+                      padding: '4px 10px', 
+                      borderRadius: 6, 
+                      border: '1px solid var(--adm-rule)',
+                      fontSize: '0.82rem'
+                    }}>
+                      <span>{item.serviceName}</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontWeight: 600 }}>{item.amount} {salonForm.unit}</span>
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            setSalonForm(prev => ({
+                              ...prev,
+                              usedIn: prev.usedIn.filter((_, i) => i !== idx)
+                            }));
+                          }}
+                          style={{ background: 'none', border: 'none', color: 'var(--adm-danger, #ff4d4f)', cursor: 'pointer', display: 'flex', padding: 2 }}
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr auto', gap: 8, alignItems: 'end', background: 'rgba(255,255,255,0.01)', padding: 10, borderRadius: 6, border: '1px dashed var(--adm-rule)' }}>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label style={{ fontSize: '0.75rem', marginBottom: 4, display: 'block' }}>Selecionar Serviço</label>
+                  <select 
+                    value={tempAssoc.serviceId || ''}
+                    onChange={e => {
+                      const val = e.target.value;
+                      if (val === 'all') {
+                        setTempAssoc(prev => ({ ...prev, serviceId: 'all', serviceName: 'Todos' }));
+                      } else {
+                        const svc = services.find(s => s.id === val);
+                        setTempAssoc(prev => ({ ...prev, serviceId: val, serviceName: svc ? svc.name : '' }));
+                      }
+                    }}
+                    style={{ padding: '6px 8px', fontSize: '0.85rem', width: '100%', background: 'var(--adm-bg)', border: '1px solid var(--adm-rule)', color: 'var(--adm-text)', borderRadius: 4 }}
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="all">Todos</option>
+                    {services
+                      .filter(s => !(salonForm.usedIn || []).some(ui => ui.serviceId === s.id))
+                      .map(s => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
+                <div className="form-group" style={{ margin: 0 }}>
+                  <label style={{ fontSize: '0.75rem', marginBottom: 4, display: 'block' }}>Qtd ({salonForm.unit})</label>
+                  <input 
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Qtd"
+                    value={tempAssoc.amount || ''}
+                    onChange={e => setTempAssoc(prev => ({ ...prev, amount: e.target.value }))}
+                    style={{ padding: '6px 8px', fontSize: '0.85rem', width: '100%', background: 'var(--adm-bg)', border: '1px solid var(--adm-rule)', color: 'var(--adm-text)', borderRadius: 4 }}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!tempAssoc.serviceId || !tempAssoc.amount) {
+                      alert('Selecione um serviço e informe a quantidade.');
+                      return;
+                    }
+                    
+                    const amt = Number(tempAssoc.amount);
+                    if (tempAssoc.serviceId === 'all') {
+                      const newAssociations = [];
+                      services.forEach(s => {
+                        const alreadyLinked = (salonForm.usedIn || []).some(ui => ui.serviceId === s.id);
+                        if (!alreadyLinked) {
+                          newAssociations.push({
+                            serviceId: s.id,
+                            serviceName: s.name,
+                            amount: amt
+                          });
+                        }
+                      });
+                      
+                      if (newAssociations.length === 0) {
+                        alert('Todos os serviços já estão associados a este insumo.');
+                        return;
+                      }
+
+                      setSalonForm(prev => ({
+                        ...prev,
+                        usedIn: [...(prev.usedIn || []), ...newAssociations]
+                      }));
+                    } else {
+                      const newAssoc = {
+                        serviceId: tempAssoc.serviceId,
+                        serviceName: tempAssoc.serviceName,
+                        amount: amt
+                      };
+                      setSalonForm(prev => ({
+                        ...prev,
+                        usedIn: [...(prev.usedIn || []), newAssoc]
+                      }));
+                    }
+                    
+                    setTempAssoc({ serviceId: '', serviceName: '', amount: '' });
+                  }}
+                  className="btn btn-accent"
+                  style={{ padding: '8px 12px', fontSize: '0.85rem', height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <Plus size={14} />
+                </button>
+              </div>
+            </div>
 
             <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowSalonModal(false)}>Cancelar</button>

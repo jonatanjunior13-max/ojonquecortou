@@ -1,5 +1,7 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, query, where, updateDoc, doc } from 'firebase/firestore';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -18,15 +20,24 @@ try {
   console.error('Firebase init error:', e);
 }
 
-// A chave do Mailgun está armazenada na variável MAILGUN_API_KEY ou RESEND_API_KEY (se não for do Resend) na Vercel
+// Check which mail API keys and configs are configured
 const MAILGUN_API_KEY = (process.env.MAILGUN_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
+const RESEND_API_KEY = (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '').trim();
+
+const smtpHost = (process.env.SMTP_HOST || '').trim();
+const smtpPort = (process.env.SMTP_PORT || '587').trim();
+const smtpUser = (process.env.SMTP_USER || '').trim();
+const smtpPass = (process.env.SMTP_PASS || '').trim();
+const smtpSecure = process.env.SMTP_SECURE === 'true';
+const smtpFrom = (process.env.SMTP_FROM || 'contato@ojonquecortou.com.br').trim();
+const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
+
 const MAILGUN_DOMAIN = 'mg.ojonquecortou.com.br';
-const FROM_EMAIL = '"O Jon Que Cortou" <contato@ojonquecortou.com.br>';
+const FROM_EMAIL = smtpFrom || '"O Jon Que Cortou" <contato@ojonquecortou.com.br>';
 const UNSUBSCRIBE_BASE = 'https://ojonquecortou.com.br/api/unsubscribe?email=';
 
 // Wrap newsletter HTML in a full email document
 function wrapNewsletterHtml(subject, body) {
-  // Remove the initial header table so previewText doesn't contain the logo "J Studio do Jon"
   const bodyWithoutHeader = body.replace(/<table[^>]*>[\s\S]*?<\/table>/i, '');
   const previewText = bodyWithoutHeader
     .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
@@ -107,202 +118,367 @@ async function sendMailgun(to, toName, subject, html) {
   return data.id || 'mailgun-ok';
 }
 
-export default async function handler(req, res) {
-  if (req.method === 'GET') {
-    const { email } = req.query;
+function verifyMailgunSignature(signingKey, timestamp, token, signature) {
+  if (!signingKey || !timestamp || !token || !signature) return false;
+  const encodedToken = crypto
+    .createHmac('sha256', signingKey)
+    .update(timestamp.toString() + token)
+    .digest('hex');
+  return encodedToken === signature;
+}
 
-    if (!email) {
-      return res.status(400).send('Email ausente.');
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+
+  // 1. GET Action: Check Bounces list
+  if (req.method === 'GET') {
+    const adminToken = req.headers['x-admin-token'] || req.query.token;
+    if (!adminToken || adminToken !== 'studio-jon-admin') {
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
     try {
-      if (!db) {
-        return res.status(500).send('Firebase não inicializado');
-      }
-      const q = query(collection(db, 'client_profiles'), where('email', '==', email));
-      const snapshot = await getDocs(q);
+      let bounces = [];
 
-      if (snapshot.empty) {
-        return res.status(200).send(`
-          <html>
-          <head><meta charset="utf-8"><title>Descadastrado</title></head>
-          <body style="font-family: sans-serif; text-align: center; padding: 50px; background-color: #0a0a0a; color: #fff;">
-            <h2>Tudo certo!</h2>
-            <p>O email ${email} não receberá mais comunicações de marketing.</p>
-          </body>
-          </html>
-        `);
+      if (MAILGUN_API_KEY) {
+        // Fetch from Mailgun
+        const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
+        const mailgunUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/bounces`;
+        
+        const resMailgun = await fetch(mailgunUrl, {
+          method: 'GET',
+          headers: { 'Authorization': `Basic ${basicAuth}` }
+        });
+
+        if (resMailgun.ok) {
+          const mailgunData = await resMailgun.json();
+          (mailgunData.items || []).forEach(b => {
+            bounces.push({
+              address: b.address,
+              error: b.error,
+              created_at: b.created_at
+            });
+          });
+        }
+      } else if (RESEND_API_KEY) {
+        // Fetch from Resend Suppressions list
+        const resResend = await fetch('https://api.resend.com/suppressions', {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${RESEND_API_KEY}` }
+        });
+        if (resResend.ok) {
+          const resendData = await resResend.json();
+          (resendData.data || []).forEach(s => {
+            bounces.push({
+              address: s.email,
+              error: s.reason || 'Blocked/Bounced',
+              created_at: s.created_at
+            });
+          });
+        }
       }
 
-      const updates = [];
-      snapshot.forEach((document) => {
-        updates.push(updateDoc(doc(db, 'client_profiles', document.id), { unsubscribed: true }));
+      const snapshot = await getDocs(collection(db, 'client_profiles'));
+      const clients = [];
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.email) {
+          clients.push({
+            id: docSnap.id,
+            name: data.name,
+            email: data.email.trim().toLowerCase(),
+            newsletter: data.newsletter
+          });
+        }
       });
 
-      await Promise.all(updates);
+      const matchedBounces = [];
+      bounces.forEach(bounce => {
+        const bounceEmail = bounce.address.trim().toLowerCase();
+        const matchedClients = clients.filter(c => c.email === bounceEmail);
+        
+        if (matchedClients.length > 0) {
+          matchedClients.forEach(c => {
+            matchedBounces.push({
+              name: c.name,
+              email: c.email,
+              phone: c.id,
+              newsletterStatus: c.newsletter === false ? 'Desativado' : 'Ativo',
+              error: bounce.error,
+              createdAt: bounce.created_at
+            });
+          });
+        } else {
+          matchedBounces.push({
+            name: 'Sem cliente ativa vinculada',
+            email: bounceEmail,
+            phone: null,
+            newsletterStatus: 'N/A',
+            error: bounce.error,
+            createdAt: bounce.created_at
+          });
+        }
+      });
 
-      return res.status(200).send(`
-        <html>
-        <head><meta charset="utf-8"><title>Descadastrado</title></head>
-        <body style="font-family: sans-serif; text-align: center; padding: 50px; background-color: #0a0a0a; color: #fff;">
-          <h2>Inscrição Cancelada</h2>
-          <p>O email <strong>${email}</strong> foi removido da nossa lista com sucesso.</p>
-          <p>Você não receberá mais lembretes ou campanhas do Studio do Jon.</p>
-        </body>
-        </html>
-      `);
+      return res.status(200).json({
+        success: true,
+        totalBounces: bounces.length,
+        matchedBouncesCount: matchedBounces.length,
+        items: matchedBounces
+      });
 
-    } catch (error) {
-      console.error('Erro no unsubscribe:', error);
-      return res.status(500).send('Erro interno do servidor.');
-    }
-  }
-
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // Simple auth — same x-admin-token pattern
-  const adminToken = req.headers['x-admin-token'];
-  if (!adminToken) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const { subject, htmlBody, newsletterId, testEmail } = req.body;
-
-  if (!subject || !htmlBody) {
-    return res.status(400).json({ error: 'subject e htmlBody são obrigatórios' });
-  }
-
-  if (!MAILGUN_API_KEY) {
-    return res.status(500).json({ error: 'Chave Mailgun não configurada. Verifique RESEND_API_KEY nas variáveis de ambiente da Vercel.' });
-  }
-
-  const fullHtml = wrapNewsletterHtml(subject, htmlBody);
-
-  // ── TEST MODE ─────────────────────────────────────────────────────────────
-  if (testEmail) {
-    try {
-      const msgId = await sendMailgun(testEmail, 'Teste', subject, fullHtml);
-      return res.status(200).json({ success: true, mode: 'test', messageId: msgId, sent: 1 });
     } catch (err) {
-      console.error('Mailgun test error:', err.message);
-      return res.status(500).json({ error: 'Falha no envio de teste', details: err.message });
+      return res.status(500).json({ error: 'Falha no processamento de bounces', details: err.message });
     }
   }
 
-  // ── PRODUCTION MODE: buscar todas as clientes com email no Firestore ──────
-  if (!db) {
-    return res.status(500).json({ error: 'Firebase não inicializado' });
-  }
+  // 2. POST Action: Send Newsletter to all or Test
+  if (req.method === 'POST') {
+    const adminToken = req.headers['x-admin-token'];
+    if (!adminToken || adminToken !== 'studio-jon-admin') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
 
-  let recipients = [];
-  try {
-    const snapshot = await getDocs(collection(db, 'client_profiles'));
-    snapshot.forEach(docSnap => {
-      const d = docSnap.data();
-      if (d.email && d.email.includes('@') && d.newsletter !== false) {
-        recipients.push({
-          email: d.email.trim().toLowerCase(),
-          name: (d.name || 'Cliente').split(' ')[0]
-        });
+    const { subject, htmlBody, newsletterId, testEmail } = req.body;
+
+    if (!subject || !htmlBody) {
+      return res.status(400).json({ error: 'subject e htmlBody são obrigatórios' });
+    }
+
+    const hasAnySender = Boolean(MAILGUN_API_KEY || RESEND_API_KEY || hasSmtpConfig);
+    if (!hasAnySender) {
+      return res.status(500).json({ 
+        error: 'Nenhum serviço de e-mail configurado. Configure RESEND_API_KEY, MAILGUN_API_KEY ou os parâmetros de SMTP (Titan) nas variáveis da Vercel.' 
+      });
+    }
+
+    const fullHtml = wrapNewsletterHtml(subject, htmlBody);
+
+    // ── TEST MODE ─────────────────────────────────────────────────────────────
+    if (testEmail) {
+      try {
+        let messageId = 'test-send-ok';
+
+        if (MAILGUN_API_KEY) {
+          messageId = await sendMailgun(testEmail, 'Teste', subject, fullHtml);
+        } else if (RESEND_API_KEY) {
+          const resResend = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${RESEND_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: FROM_EMAIL,
+              to: [testEmail],
+              subject,
+              html: fullHtml
+            })
+          });
+          if (!resResend.ok) {
+            const errText = await resResend.text();
+            throw new Error(`Resend Error ${resResend.status}: ${errText}`);
+          }
+          const resendData = await resResend.json();
+          messageId = resendData.id || 'resend-ok';
+        } else if (hasSmtpConfig) {
+          const transporter = nodemailer.createTransport({
+            host: smtpHost,
+            port: parseInt(smtpPort, 10),
+            secure: smtpSecure,
+            auth: { user: smtpUser, pass: smtpPass },
+            tls: { rejectUnauthorized: false }
+          });
+          const info = await transporter.sendMail({
+            from: FROM_EMAIL,
+            to: testEmail,
+            subject,
+            html: fullHtml
+          });
+          messageId = info.messageId || 'smtp-ok';
+        }
+
+        return res.status(200).json({ success: true, mode: 'test', messageId, sent: 1 });
+      } catch (err) {
+        console.error('Test email send error:', err.message);
+        return res.status(500).json({ error: 'Falha no envio de teste', details: err.message });
       }
-    });
-  } catch (err) {
-    console.error('Firestore error:', err);
-    return res.status(500).json({ error: 'Erro ao buscar clientes no Firestore', details: err.message });
-  }
+    }
 
-  if (recipients.length === 0) {
-    return res.status(200).json({ success: true, sent: 0, message: 'Nenhuma cliente com email cadastrado.' });
-  }
+    // ── PRODUCTION MODE ───────────────────────────────────────────────────────
+    if (!db) {
+      return res.status(500).json({ error: 'Firebase não inicializado' });
+    }
 
-  // Enviar em lote (Batch Sending) via Mailgun para evitar timeouts na Vercel
-  try {
-    const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-    const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
+    let recipients = [];
+    try {
+      const snapshot = await getDocs(collection(db, 'client_profiles'));
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        if (d.email && d.email.includes('@') && d.newsletter !== false && !d.emailInvalid && !d.unsubscribed) {
+          recipients.push({
+            email: d.email.trim().toLowerCase(),
+            name: (d.name || 'Cliente').split(' ')[0]
+          });
+        }
+      });
+    } catch (err) {
+      console.error('Firestore query error:', err);
+      return res.status(500).json({ error: 'Erro ao buscar clientes no Firestore', details: err.message });
+    }
 
-    // Substituir {nome} pelo placeholder de variáveis do Mailgun (%recipient.name%)
-    const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
+    if (recipients.length === 0) {
+      return res.status(200).json({ success: true, sent: 0, message: 'Nenhuma cliente elegível com email ativo.' });
+    }
 
-    const CHUNK_SIZE = 950; // Limite de lote do Mailgun é 1000, 950 é seguro
     let sent = 0;
+    let errors = 0;
     let lastMessageId = '';
 
-    for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-      const chunk = recipients.slice(i, i + CHUNK_SIZE);
+    try {
+      if (MAILGUN_API_KEY) {
+        // Mailgun Batch Sending
+        const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
+        const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
+        const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
+        const CHUNK_SIZE = 950;
 
-      const recipientVariables = {};
-      const toEmails = [];
+        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+          const chunk = recipients.slice(i, i + CHUNK_SIZE);
+          const recipientVariables = {};
+          const toEmails = [];
 
-      chunk.forEach(r => {
-        toEmails.push(r.email);
-        recipientVariables[r.email] = { name: r.name };
-      });
+          chunk.forEach(r => {
+            toEmails.push(r.email);
+            recipientVariables[r.email] = { name: r.name };
+          });
 
-      const bodyParams = new URLSearchParams();
-      bodyParams.append('from', FROM_EMAIL);
-      bodyParams.append('subject', subject);
-      bodyParams.append('html', batchHtml);
-      bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
-      bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
-      bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-      bodyParams.append('o:tag', 'newsletter');
-      bodyParams.append('o:tracking', 'yes');
-      bodyParams.append('o:tracking-clicks', 'yes');
-      bodyParams.append('o:tracking-opens', 'yes');
+          const bodyParams = new URLSearchParams();
+          bodyParams.append('from', FROM_EMAIL);
+          bodyParams.append('subject', subject);
+          bodyParams.append('html', batchHtml);
+          bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
+          bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
+          bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
+          bodyParams.append('o:tag', 'newsletter');
 
-      // Adiciona cada destinatário deste lote
-      toEmails.forEach(email => {
-        bodyParams.append('to', email);
-      });
+          toEmails.forEach(email => bodyParams.append('to', email));
 
-      const resMailgun = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${basicAuth}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: bodyParams
-      });
+          const resMailgun = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Basic ${basicAuth}`,
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: bodyParams
+          });
 
-      if (!resMailgun.ok) {
-        const errText = await resMailgun.text();
-        throw new Error(`Mailgun Batch Error ${resMailgun.status} no lote ${Math.floor(i/CHUNK_SIZE) + 1}: ${errText}`);
-      }
+          if (!resMailgun.ok) {
+            const errText = await resMailgun.text();
+            throw new Error(`Mailgun batch error ${resMailgun.status}: ${errText}`);
+          }
+          const resData = await resMailgun.json();
+          lastMessageId = resData.id || 'mailgun-batch-ok';
+          sent += chunk.length;
+        }
+      } 
+      else if (RESEND_API_KEY) {
+        // Resend Batch Sending
+        const CHUNK_SIZE = 100; // Resend limit is 100 emails per batch call
+        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+          const chunk = recipients.slice(i, i + CHUNK_SIZE);
+          const batchEmails = chunk.map(r => ({
+            from: FROM_EMAIL,
+            to: [r.email],
+            subject: subject,
+            html: fullHtml.replace(/{nome}/g, r.name),
+            headers: {
+              'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+            }
+          }));
 
-      const resData = await resMailgun.json();
-      lastMessageId = resData.id || 'mailgun-batch-ok';
-      sent += chunk.length;
-    }
+          const resResend = await fetch('https://api.resend.com/emails/batch', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${RESEND_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(batchEmails)
+          });
 
-    // Salvar no Firestore
-    if (db) {
-      try {
-        await addDoc(collection(db, 'newsletter_sends'), {
-          newsletterId: newsletterId || 'newsletter',
-          subject,
-          sentAt: new Date().toISOString(),
-          sentCount: sent,
-          errors: 0,
-          messageId: lastMessageId
+          if (!resResend.ok) {
+            const errText = await resResend.text();
+            throw new Error(`Resend batch error ${resResend.status}: ${errText}`);
+          }
+          const resData = await resResend.json();
+          lastMessageId = (resData.data && resData.data[0]?.id) || 'resend-batch-ok';
+          sent += chunk.length;
+        }
+      } 
+      else if (hasSmtpConfig) {
+        // SMTP Sequential/Parallel sending (e.g. Titan Email)
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: parseInt(smtpPort, 10),
+          secure: smtpSecure,
+          auth: { user: smtpUser, pass: smtpPass },
+          tls: { rejectUnauthorized: false }
         });
-      } catch (e) {
-        console.warn('Firestore save failed:', e.message);
+
+        // Use sequential sending with a tiny delay to prevent SMTP server overload
+        for (const r of recipients) {
+          try {
+            const info = await transporter.sendMail({
+              from: FROM_EMAIL,
+              to: r.email,
+              subject: subject,
+              html: fullHtml.replace(/{nome}/g, r.name),
+              headers: {
+                'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+              }
+            });
+            lastMessageId = info.messageId || 'smtp-ok';
+            sent++;
+            // Tiny sleep (100ms) to play nice with Titan SMTP limits
+            await new Promise(resolve => setTimeout(resolve, 100));
+          } catch (smtpErr) {
+            console.error(`Error sending email to ${r.email} via SMTP:`, smtpErr.message);
+            errors++;
+          }
+        }
       }
+
+      // Save to Firestore
+      if (db) {
+        try {
+          await addDoc(collection(db, 'newsletter_sends'), {
+            newsletterId: newsletterId || 'newsletter',
+            subject,
+            sentAt: new Date().toISOString(),
+            sentCount: sent,
+            errors: errors,
+            messageId: lastMessageId
+          });
+        } catch (e) {
+          console.warn('Firestore save log failed:', e.message);
+        }
+      }
+
+      return res.status(200).json({
+        success: true,
+        mode: 'production',
+        sent,
+        total: recipients.length,
+        errors,
+        messageId: lastMessageId
+      });
+
+    } catch (err) {
+      console.error('Batch send campaign error:', err.message);
+      return res.status(500).json({ error: 'Falha no envio da campanha', details: err.message });
     }
-
-    return res.status(200).json({
-      success: true,
-      mode: 'production',
-      sent,
-      total: recipients.length,
-      errors: 0,
-      messageId: lastMessageId
-    });
-
-  } catch (err) {
-    console.error('Mailgun batch send error:', err.message);
-    return res.status(500).json({ error: 'Falha no envio da newsletter em lote', details: err.message });
   }
+
+  return res.status(405).json({ message: 'Method Not Allowed' });
 }

@@ -305,3 +305,99 @@
   max-width: 900px;
   margin: 0 auto;
 }
+
+/* Scientific Grounding Styles (AEO) */
+.scientific-container {
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.aeo-summary-box {
+  background: rgba(205, 168, 128, 0.04);
+  border: 1px solid rgba(205, 168, 128, 0.15);
+  border-left: 4px solid var(--color-accent, #cda880);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.aeo-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.aeo-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: var(--color-accent, #cda880);
+  color: var(--color-dark, #0a0a0a);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.scientific-source {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  transition: color 0.2s ease;
+}
+
+.scientific-source:hover {
+  color: var(--color-accent, #cda880);
+}
+
+.aeo-summary-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.scientific-table-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.scientific-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.scientific-table th {
+  background: rgba(205, 168, 128, 0.08);
+  color: var(--color-accent, #cda880);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(205, 168, 128, 0.15);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scientific-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--color-text-secondary);
+}
+
+.scientific-table tr:last-child td {
+  border-bottom: none;
+}
+
+.scientific-table td strong {
+  color: var(--color-text-main);
+}
+

@@ -1,0 +1,16 @@
+.adm-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+.adm-badge--default { background: rgba(245,237,219,0.08); color: var(--adm-text-2); }
+.adm-badge--gold { background: rgba(220,163,84,0.18); color: var(--adm-gold); }
+.adm-badge--success { background: rgba(151,196,89,0.15); color: var(--adm-success); }
+.adm-badge--danger { background: rgba(226,75,74,0.15); color: var(--adm-danger); }
+.adm-badge--warning { background: rgba(239,159,39,0.15); color: var(--adm-warning); }
+.adm-badge--info { background: rgba(133,183,235,0.15); color: var(--adm-info); }

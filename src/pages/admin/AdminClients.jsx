@@ -68,6 +68,15 @@ const AdminClients = () => {
   const [saving, setSaving] = useState(false);
   const [savingNew, setSavingNew] = useState(false);
 
+  // States para Edição de Agendamento
+  const [editingBooking, setEditingBooking] = useState(null);
+  const [editDate, setEditDate] = useState('');
+  const [editTime, setEditTime] = useState('');
+  const [editNotes, setEditNotes] = useState('');
+  const [editStatus, setEditStatus] = useState('confirmado');
+  const [isUpdatingBooking, setIsUpdatingBooking] = useState(false);
+
+
   // States do Relatório de Frequência
   const [absenceWindow, setAbsenceWindow] = useState('todos'); // 'todos', '30d', '60d', 'adormecidos', 'nunca'
   const [genderFilter, setGenderFilter] = useState('todos'); // 'todos', 'Feminino', 'Masculino', 'Outro'
@@ -352,6 +361,81 @@ const AdminClients = () => {
       alert('Erro de conexão ao salvar ficha técnica.');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleEditBookingClick = (booking) => {
+    setEditingBooking(booking);
+    setEditDate(booking.date || '');
+    setEditTime(booking.time || '');
+    setEditNotes(booking.notes || '');
+    setEditStatus(booking.status || 'confirmado');
+  };
+
+  const handleSaveBookingEdit = async (e) => {
+    if (e) e.preventDefault();
+    if (!editingBooking) return;
+    setIsUpdatingBooking(true);
+    try {
+      if (isDemoMode || !db) {
+        // Modo local
+        const updated = bookings.map(b => 
+          b.id === editingBooking.id 
+            ? { ...b, date: editDate, time: editTime, notes: editNotes, status: editStatus } 
+            : b
+        );
+        setGlobalData(prev => ({ ...prev, bookings: updated }));
+        localStorage.setItem('demo_bookings', JSON.stringify(updated));
+        alert('Agendamento atualizado localmente!');
+      } else {
+        // Firestore Mode
+        const docRef = doc(db, 'bookings', editingBooking.id);
+        await updateDoc(docRef, {
+          date: editDate,
+          time: editTime,
+          notes: editNotes,
+          status: editStatus
+        });
+        alert('Agendamento atualizado com sucesso no Firestore!');
+      }
+      setEditingBooking(null);
+    } catch (err) {
+      console.error('Erro ao atualizar agendamento:', err);
+      alert('Erro ao atualizar o agendamento.');
+    } finally {
+      setIsUpdatingBooking(false);
+    }
+  };
+
+  const handleCancelBooking = async () => {
+    if (!editingBooking) return;
+    if (!window.confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+    setIsUpdatingBooking(true);
+    try {
+      if (isDemoMode || !db) {
+        // Modo local
+        const updated = bookings.map(b => 
+          b.id === editingBooking.id 
+            ? { ...b, status: 'cancelado' } 
+            : b
+        );
+        setGlobalData(prev => ({ ...prev, bookings: updated }));
+        localStorage.setItem('demo_bookings', JSON.stringify(updated));
+        alert('Agendamento cancelado localmente!');
+      } else {
+        // Firestore Mode
+        const docRef = doc(db, 'bookings', editingBooking.id);
+        await updateDoc(docRef, {
+          status: 'cancelado'
+        });
+        alert('Agendamento cancelado com sucesso no Firestore!');
+      }
+      setEditingBooking(null);
+    } catch (err) {
+      console.error('Erro ao cancelar agendamento:', err);
+      alert('Erro ao cancelar o agendamento.');
+    } finally {
+      setIsUpdatingBooking(false);
     }
   };
 
@@ -1135,8 +1219,19 @@ const AdminClients = () => {
                         <p className="no-visits-txt">Nenhum agendamento futuro marcado.</p>
                       ) : (
                         <div className="visits-mini-timeline">
-                          {futureBookings.map(v => (
-                            <div key={v.id} className="visit-mini-card">
+                           {futureBookings.map(v => (
+                            <div 
+                              key={v.id} 
+                              className="visit-mini-card clickable-booking-card" 
+                              style={{ 
+                                cursor: 'pointer', 
+                                transition: 'all 0.2s ease',
+                                border: '1px solid var(--adm-rule)'
+                              }}
+                              onClick={() => handleEditBookingClick(v)}
+                              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--adm-accent)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--adm-rule)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                            >
                               <div className="card-top-row">
                                 <span className="visit-date">
                                   <Calendar size={12} style={{ marginRight: 4 }} />{' '}
@@ -1633,6 +1728,97 @@ const AdminClients = () => {
                 <button type="submit" className="btn btn-accent" disabled={savingNew}>
                   {savingNew ? 'Salvando...' : 'Salvar Cadastro'}
                 </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {editingBooking && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal" style={{ maxWidth: '450px' }}>
+            <div className="modal-header">
+              <h2>Editar Agendamento</h2>
+              <button className="btn-close" onClick={() => setEditingBooking(null)}>×</button>
+            </div>
+            
+            <form onSubmit={handleSaveBookingEdit} className="modal-form-scroll" style={{ padding: '0 20px 20px' }}>
+              <div style={{ marginBottom: '16px', fontSize: '0.9rem', background: 'rgba(205, 168, 128, 0.05)', padding: '10px 14px', borderRadius: '4px', borderLeft: '3px solid var(--adm-accent, #cda880)' }}>
+                <strong>Cliente:</strong> {editingBooking.clientName || editingBooking.phone}<br/>
+                <strong>Serviço:</strong> {editingBooking.service?.name || editingBooking.serviceName || 'Serviço'}
+              </div>
+
+              <div className="form-group-sleek" style={{ marginBottom: '14px' }}>
+                <label>Data</label>
+                <input 
+                  type="date"
+                  required
+                  value={editDate}
+                  onChange={e => setEditDate(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group-sleek" style={{ marginBottom: '14px' }}>
+                <label>Horário</label>
+                <input 
+                  type="time"
+                  required
+                  value={editTime}
+                  onChange={e => setEditTime(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group-sleek" style={{ marginBottom: '14px' }}>
+                <label>Status</label>
+                <select 
+                  value={editStatus}
+                  onChange={e => setEditStatus(e.target.value)}
+                >
+                  <option value="confirmado">Confirmado</option>
+                  <option value="confirmado pela cliente">Confirmado pela Cliente</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="finalizado">Finalizado</option>
+                  <option value="cancelado">Cancelado</option>
+                </select>
+              </div>
+
+              <div className="form-group-sleek" style={{ marginBottom: '14px' }}>
+                <label>Observações / Notas</label>
+                <textarea 
+                  rows="3"
+                  placeholder="Instruções especiais ou detalhes sobre o serviço..."
+                  value={editNotes}
+                  onChange={e => setEditNotes(e.target.value)}
+                ></textarea>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px', marginTop: '24px' }}>
+                <button 
+                  type="button" 
+                  className="btn btn-outline" 
+                  style={{ color: '#ff4d4d', borderColor: '#ff4d4d' }}
+                  onClick={handleCancelBooking}
+                  disabled={isUpdatingBooking}
+                >
+                  Cancelar Agendamento
+                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button 
+                    type="button" 
+                    className="btn btn-outline" 
+                    onClick={() => setEditingBooking(null)}
+                    disabled={isUpdatingBooking}
+                  >
+                    Fechar
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="btn btn-accent" 
+                    disabled={isUpdatingBooking}
+                  >
+                    {isUpdatingBooking ? 'Salvando...' : 'Salvar'}
+                  </button>
+                </div>
               </div>
             </form>
           </div>

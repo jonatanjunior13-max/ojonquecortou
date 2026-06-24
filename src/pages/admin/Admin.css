@@ -44,7 +44,7 @@
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--adm-rule);
   padding: 44px;
-  border-radius: 20px;
+  border-radius: var(--adm-radius-lg);
   max-width: 420px;
   width: 100%;
   transition: transform 0.3s ease;
@@ -83,7 +83,7 @@
   border: 1px solid rgba(229, 62, 62, 0.2);
   color: var(--adm-danger);
   padding: 12px;
-  border-radius: 6px;
+  border-radius: var(--adm-radius-sm);
   font-size: 0.85rem;
   margin-bottom: 24px;
 }
@@ -135,7 +135,7 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--adm-rule);
   padding: 16px 20px;
-  border-radius: 12px;
+  border-radius: var(--adm-radius);
   color: var(--adm-text);
   box-shadow: 0 4px 12px rgba(26, 19, 16, 0.02), 0 16px 36px rgba(26, 19, 16, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -196,7 +196,7 @@
   padding: 10px 20px;
   background: var(--adm-surface);
   border: 1px solid var(--adm-rule);
-  border-radius: 8px;
+  border-radius: var(--adm-radius);
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(26, 19, 16, 0.03);
 }
@@ -450,6 +450,25 @@
   border-left: 4px solid #A94442;
   opacity: 0.65;
 }
+.appt-card.svc-corte {
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(226, 112, 58, 0.15) !important;
+  border-left: 3px solid #E2703A !important;
+  color: #ffffff !important;
+}
+.appt-card.svc-cor, .appt-card.svc-coloracao {
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(122, 60, 255, 0.15) !important;
+  border-left: 3px solid #7A3CFF !important;
+  color: #ffffff !important;
+}
+.appt-card.svc-tratamento {
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(31, 111, 235, 0.15) !important;
+  border-left: 3px solid #1F6FEB !important;
+  color: #ffffff !important;
+}
+
 
 .appt-card .appt-time {
   font-weight: 700;
@@ -498,7 +517,7 @@
 .modal-content {
   background: var(--adm-surface);
   border: 1px solid var(--adm-rule);
-  border-radius: 16px;
+  border-radius: var(--adm-radius);
   max-width: 500px;
   width: 100%;
   padding: 36px;
@@ -515,317 +534,122 @@
   to { transform: scale(1); opacity: 1; }
 }
 
-.modal-content h3 {
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  border-bottom: 1px solid var(--adm-rule);
-  padding-bottom: 12px;
-  color: var(--adm-text);
-}
-
-.detail-row {
-  display: flex;
-  margin-bottom: 12px;
-  font-size: 0.95rem;
-}
-
-.detail-row label {
-  width: 120px;
-  font-weight: 700;
-  color: var(--adm-muted);
-}
-
-.detail-row span {
-  flex-grow: 1;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 32px;
-  border-top: 1px solid var(--adm-rule);
-  padding-top: 20px;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
+.modal-content .appt-card {
+  padding: 5px 14px;
+  border-radius: 0px; /* Cantos retos conforme o mockup */
+  font-size: 0.72rem;
   color: #fff;
-}
-
-.status-badge.pendente { background: #C97B49; }
-.status-badge.confirmado { background: var(--adm-bronze); }
-.status-badge.finalizado { background: #4A5D4E; }
-.status-badge.cancelado { background: #A94442; }
-
-/* Client Database Page */
-.clients-layout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 24px;
-  color: var(--adm-text);
-}
-
-.clients-list-pane {
-  background: var(--adm-surface);
-  border: 1px solid var(--adm-rule);
-  border-radius: 12px;
-  overflow: hidden;
-  height: calc(100vh - 170px);
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 2px 8px rgba(26,19,16,0.04);
-}
-
-.pane-search {
-  padding: 16px;
-  border-bottom: 1px solid var(--adm-rule);
-}
-
-.pane-search input {
-  width: 100%;
-  padding: 10px;
-  background: var(--adm-card);
-  border: 1px solid var(--adm-rule);
-  border-radius: 4px;
-  color: var(--adm-text);
-}
-
-.clients-scroll-list {
-  overflow-y: auto;
-  flex-grow: 1;
-}
-
-.client-list-item {
-  padding: 16px;
-  border-bottom: 1px solid var(--adm-rule);
   cursor: pointer;
-  transition: background 0.3s var(--ease);
+  box-shadow: 0 2px 6px rgba(26, 19, 16, 0.12), 0 4px 12px rgba(26, 19, 16, 0.08);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, filter 0.2s ease;
+  line-height: 1.25;
 }
 
-.client-list-item:hover {
-  background: var(--adm-card);
+.appt-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 16px rgba(26, 19, 16, 0.16), 0 16px 32px rgba(26, 19, 16, 0.12);
+  filter: brightness(1.05);
 }
 
-.client-list-item.selected {
-  background: rgba(176, 90, 46, 0.08);
-  border-left: 3px solid var(--adm-gold);
+.appt-card.pendente {
+  background: linear-gradient(135deg, #C97B49 0%, #A65A2E 100%);
+  border-left: 4px solid var(--adm-card);
 }
 
-.client-list-item h4 {
-  font-size: 0.95rem;
-  margin-bottom: 4px;
-  font-weight: 700;
+.appt-card.confirmado {
+  background: linear-gradient(135deg, var(--adm-bronze) 0%, #8A411C 100%);
+  border-left: 4px solid var(--adm-card);
 }
 
-.client-list-item .client-sub {
-  font-size: 0.8rem;
-  color: var(--adm-muted);
-  display: block;
+.appt-card.finalizado {
+  background: linear-gradient(135deg, #4A5D4E 0%, #364439 100%);
+  border-left: 4px solid rgba(151,196,89,0.06);
 }
 
-/* Client Details Pane */
-.client-detail-pane {
-  background: var(--adm-surface);
-  border: 1px solid var(--adm-rule);
-  padding: 32px;
-  border-radius: 12px;
-  height: calc(100vh - 170px);
-  overflow-y: auto;
-  box-shadow: 0 2px 8px rgba(26,19,16,0.04);
+.appt-card.cancelado {
+  background: linear-gradient(135deg, #A94442 0%, #8B302F 100%);
+  border-left: 4px solid rgba(226,75,74,0.08);
+  text-decoration: line-through;
+  opacity: 0.65;
 }
 
-.no-client-selected {
+.appt-card.bloqueado {
+  background: var(--adm-rule) !important;
+  color: var(--adm-text-2) !important;
+  border-left: 4px solid var(--adm-muted) !important;
+  opacity: 0.9;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  height: 100%;
-  color: var(--adm-muted);
+  align-items: flex-start;
 }
 
-.detail-header {
-  border-bottom: 1px solid var(--adm-rule);
-  padding-bottom: 24px;
-  margin-bottom: 24px;
+.appt-card.faltou {
+  background: repeating-linear-gradient(45deg, var(--adm-muted), var(--adm-muted) 10px, var(--adm-muted) 10px, var(--adm-muted) 20px);
+  border-left: 4px solid #A94442;
+  opacity: 0.65;
+}
+.appt-card.svc-corte {
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(226, 112, 58, 0.15) !important;
+  border-left: 3px solid #E2703A !important;
+  color: #ffffff !important;
+}
+.appt-card.svc-cor, .appt-card.svc-coloracao, .appt-card.svc-mechas {
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(122, 60, 255, 0.15) !important;
+  border-left: 3px solid #7A3CFF !important;
+  color: #ffffff !important;
+}
+.appt-card.svc-tratamento, .appt-card.svc-terapia-capilar {
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(31, 111, 235, 0.15) !important;
+  border-left: 3px solid #1F6FEB !important;
+  color: #ffffff !important;
+}
+/* Corte + Cor (reddish brown) */
+.appt-card.svc-corte-cor, .appt-card[class*="svc-corte-coloracao"], .appt-card[class*="svc-corte-mechas"] {
+  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.08) 40%, rgba(229, 50, 45, 0.02) 100%) !important;
+  border: 1px solid rgba(229, 50, 45, 0.15) !important;
+  border-left: 3px solid #E5322D !important;
+  color: #ffffff !important;
 }
 
-.detail-header h2 {
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.7rem;
-  margin-bottom: 8px;
-  color: var(--adm-text);
+/* Agenda Badges */
+.appt-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 3px 9px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 0px;
+  flex-shrink: 0;
 }
 
-.detail-header p {
-  color: var(--adm-muted);
+.appt-card.svc-corte .appt-badge {
+  color: #E2703A;
+  background: rgba(226,112,58,0.12);
+  border-color: rgba(226,112,58,0.25);
 }
 
-.hair-profile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  margin-bottom: 32px;
+.appt-card.svc-cor .appt-badge, .appt-card.svc-coloracao .appt-badge, .appt-card.svc-mechas .appt-badge {
+  color: #7A3CFF;
+  background: rgba(122,60,255,0.12);
+  border-color: rgba(122,60,255,0.25);
 }
 
-.profile-stat-box {
-  background: var(--adm-card);
-  border: 1px solid var(--adm-rule);
-  padding: 16px;
-  border-radius: 6px;
+.appt-card.svc-tratamento .appt-badge, .appt-card.svc-terapia-capilar .appt-badge {
+  color: #1F6FEB;
+  background: rgba(31,111,235,0.12);
+  border-color: rgba(31,111,235,0.25);
 }
 
-.profile-stat-box label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  color: var(--adm-muted);
-  letter-spacing: 1px;
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 700;
-}
-
-.profile-stat-box span {
-  font-weight: 700;
-  font-size: 1.15rem;
-  color: var(--adm-gold);
-}
-
-.diagnose-section h3 {
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.3rem;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--adm-rule);
-  padding-bottom: 8px;
-  color: var(--adm-text);
-}
-
-.diagnosis-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.diagnosis-form label {
-  font-weight: 700;
-  color: var(--ink-2);
-  font-size: 0.9rem;
-}
-
-.diagnosis-form input,
-.diagnosis-form select,
-.diagnosis-form textarea {
-  width: 100%;
-  padding: 12px;
-  background: var(--adm-card);
-  border: 1px solid var(--adm-rule);
-  border-radius: 4px;
-  color: var(--adm-text);
-}
-
-.client-visits-history {
-  margin-top: 32px;
-}
-
-.client-visits-history h3 {
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.3rem;
-  margin-bottom: 16px;
-  border-bottom: 1px solid var(--adm-rule);
-  padding-bottom: 8px;
-  color: var(--adm-text);
-}
-
-.visit-card {
-  background: var(--adm-card);
-  border: 1px solid var(--adm-rule);
-  padding: 16px;
-  border-radius: 6px;
-  margin-bottom: 16px;
-}
-
-.visit-card-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--adm-rule);
-  padding-bottom: 8px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--adm-muted);
-}
-
-/* ========================================== */
-/* FASE 2: ESTOQUE E FINANCEIRO STYLES */
-/* ========================================== */
-
-/* Tabelas Administrativas */
-.admin-table-container {
-  background: var(--adm-surface);
-  border: 1px solid var(--adm-rule);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(26, 19, 16, 0.02);
-  margin-top: 16px;
-  width: 100%;
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.9rem;
-  color: var(--adm-text);
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--adm-rule);
-}
-
-.admin-table th {
-  background: var(--adm-card);
-  font-weight: 700;
-  color: var(--adm-muted);
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
-}
-
-.admin-table tr:last-child td {
-  border-bottom: none;
-}
-
-.admin-table tr:hover td {
-  background: var(--adm-card, #211D1A);
-}
-
-/* Alertas de Estoque Baixo */
-.stock-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-.stock-badge.normal {
-  background: rgba(72, 187, 120, 0.1);
-  color: var(--adm-success);
-}
-
-.stock-badge.low {
-  background: rgba(229, 62, 62, 0.1);
-  color: var(--adm-danger);
-  border: 1px solid rgba(229, 62, 62, 0.2);
-  animation: pulse-border 2s infinite;
+.appt-card.svc-corte-cor .appt-badge, .appt-card[class*="svc-corte-coloracao"] .appt-badge, .appt-card[class*="svc-corte-mechas"] .appt-badge {
+  color: #E5322D;
+  background: rgba(229,50,45,0.12);
+  border-color: rgba(229,50,45,0.25);
 }
 
 @keyframes pulse-border {
@@ -1216,6 +1040,7 @@
 }
 
 .status-pill.confirmado { background: rgba(133,183,235,0.08); color: var(--adm-info); }
+.status-pill.confirmado-pela-cliente { background: rgba(133,183,235,0.15); color: var(--adm-info); border: 1px dashed rgba(133,183,235,0.4); }
 .status-pill.finalizado { background: rgba(151,196,89,0.08); color: var(--adm-success); }
 .status-pill.pendente { background: rgba(220,163,84,0.06); color: #dd6b20; }
 .status-pill.cancelado { background: rgba(226,75,74,0.06); color: var(--adm-danger); }
@@ -2778,6 +2603,7 @@
 }
 .appt-status-dot.pendente { background-color: var(--adm-warning); }
 .appt-status-dot.confirmado { background-color: var(--adm-success); }
+.appt-status-dot.confirmado-pela-cliente { background-color: var(--adm-info); }
 .appt-status-dot.finalizado { background-color: var(--adm-muted); }
 .appt-status-dot.bloqueado { background-color: var(--adm-muted); }
 .appt-status-dot.faltou { background-color: var(--adm-danger); }
@@ -2906,6 +2732,55 @@
 .context-menu-item:hover > .context-menu-submenu {
   display: flex;
 }
+
+/* Tabelas Administrativas Premium (Desktop) */
+.admin-table-container {
+  background: var(--adm-surface);
+  border: 1.5px solid var(--adm-rule);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  margin-top: 16px;
+  width: 100%;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--adm-text);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 20px;
+  border-bottom: 1.5px solid var(--adm-rule);
+  vertical-align: middle;
+}
+
+.admin-table th {
+  background: var(--adm-card);
+  font-weight: 700;
+  color: var(--adm-muted);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  border-bottom: 2px solid var(--adm-rule-gold);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.admin-table tbody tr:hover td {
+  background: rgba(255, 45, 139, 0.02);
+}
+
 
 /* Detailed EDIT MODAL - Trinks Redesign (Image 1) */
 .trinks-modal {

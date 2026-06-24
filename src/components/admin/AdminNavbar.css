@@ -20,19 +20,12 @@
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
   position: relative;
-  transition: padding-left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-@media (min-width: 768px) {
-  .admin-app-container:has(.admin-sidebar:hover) {
-    padding-left: 200px;
-  }
 }
 
 /* Sidebar */
 .admin-sidebar {
-  background: var(--adm-surface);
-  border-right: 0.5px solid var(--adm-rule);
+  background: var(--adm-sidebar-bg);
+  border-right: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,7 +37,10 @@
   width: 85px; /* Largura estreita padrão */
   padding: 24px 0;
   box-sizing: border-box;
-  transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+  transition: width 0.28s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.28s ease-in-out;
+  will-change: width;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .sidebar-brand {
@@ -56,19 +52,20 @@
   width: 100%;
 }
 
-.sidebar-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--adm-gold);
-  color: #FFFFFF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display, var(--serif));
-  font-size: 1.5rem;
-  font-weight: 700;
-  box-shadow: 0 4px 12px rgba(115, 92, 78, 0.15);
+.sidebar-logo-img {
+  width: 54px;
+  height: auto;
+  max-height: 48px;
+  object-fit: contain;
+  filter: invert(1) contrast(1.1) brightness(1.2);
+  mix-blend-mode: screen;
+  transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: width, max-height;
+}
+
+.admin-sidebar:hover .sidebar-logo-img {
+  width: 140px;
+  max-height: 72px;
 }
 
 .sidebar-nav {
@@ -87,12 +84,16 @@
   justify-content: center;
   width: 54px;
   height: 54px;
-  border-radius: 18px; /* Cantos bem arredondados e orgânicos como no print */
-  color: var(--adm-muted);
+  border-radius: 0px;
+  color: rgba(255, 255, 255, 0.35);
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.28s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: width, padding-left;
   position: relative;
   gap: 4px;
+  box-sizing: border-box;
+  border: none;
+  border-left: 2px solid transparent;
 }
 
 .nav-item span {
@@ -104,18 +105,20 @@
 }
 
 .nav-item:hover {
-  color: var(--adm-text);
-  background: rgba(115, 92, 78, 0.05);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: rgba(255, 45, 139, 0.2);
 }
 
 .nav-item.active {
-  background: var(--adm-gold); /* Fundo bronze/castanho no active como o botão "Hoje" */
+  background: rgba(255, 45, 139, 0.08); /* Fundo rosa translúcido */
   color: #FFFFFF !important;
-  box-shadow: 0 8px 20px rgba(115, 92, 78, 0.25);
+  border-left: 2px solid var(--adm-gold); /* Barra lateral ativa rosa vibrante */
+  border-radius: 0px;
 }
 
 .nav-item.active span {
-  display: block; /* Mostra o texto apenas quando ativo, igual no print "Hoje" */
+  display: block; /* Mostra o texto apenas quando ativo */
   color: #FFFFFF;
 }
 
@@ -133,16 +136,18 @@
   width: 44px;
   height: 44px;
   background: none;
-  border: none;
-  color: var(--adm-muted);
+  border: 1px solid transparent;
+  color: #a4968d;
   cursor: pointer;
-  border-radius: 50%;
-  transition: all 0.2s ease;
+  border-radius: var(--adm-radius-sm);
+  transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .logout-btn:hover {
-  background: rgba(194, 107, 102, 0.08);
-  color: var(--adm-danger);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #ff8a80;
 }
 
 /* Sidebar Collapsed / Hover Retrátil */
@@ -176,7 +181,7 @@
     justify-content: flex-start;
     padding-left: 16px;
     gap: 12px;
-    border-radius: 12px;
+    border-radius: var(--adm-radius-sm);
   }
   .admin-sidebar:hover .nav-item span {
     display: block; /* Mostra todos os nomes ao expandir com o mouse */
@@ -190,7 +195,7 @@
     justify-content: flex-start;
     padding-left: 16px;
     gap: 12px;
-    border-radius: 12px;
+    border-radius: var(--adm-radius-sm);
   }
   .admin-sidebar:hover .logout-btn::after {
     content: 'Sair';
@@ -248,7 +253,7 @@
   top: calc(100% + 8px);
   left: 0;
   width: 360px;
-  background: var(--adm-surface);
+  background: var(--adm-card);
   border: 0.5px solid var(--adm-rule-gold);
   border-radius: var(--adm-radius);
   z-index: 100;
@@ -352,7 +357,7 @@
   top: 0;
   right: 0;
   background: var(--adm-gold);
-  color: #121110;
+  color: #FFFFFF;
   font-size: 0.65rem;
   font-weight: 700;
   border-radius: 50%;
@@ -362,7 +367,7 @@
   align-items: center;
   justify-content: center;
   padding: 2px;
-  border: 1.5px solid var(--adm-surface);
+  border: 1.5px solid var(--adm-sidebar-bg);
 }
 
 .notifications-dropdown {
@@ -370,7 +375,7 @@
   top: calc(100% + 8px);
   right: 0;
   width: 320px;
-  background: var(--adm-surface);
+  background: var(--adm-card);
   border: 0.5px solid var(--adm-rule-gold);
   border-radius: var(--adm-radius);
   z-index: 1000;
@@ -481,7 +486,7 @@
     left: 0;
     right: 0;
     height: 64px;
-    background: var(--adm-surface);
+    background: var(--adm-card);
     border-top: 0.5px solid var(--adm-rule);
     display: flex !important;
     justify-content: space-around;
@@ -575,7 +580,7 @@
     align-items: center;
     height: 70px;
     padding: 0 32px;
-    background: var(--adm-surface);
+    background: var(--adm-card);
     border-bottom: 0.5px solid var(--adm-rule);
     position: sticky;
     top: 0;

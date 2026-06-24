@@ -252,7 +252,7 @@ const localBusinessSchema = {
   ],
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Rua Francisco Ovídio, 184, Caiçaras",
+    "streetAddress": "Rua Francisco Ovídio, 184, Caiçara",
     "addressLocality": "Belo Horizonte",
     "addressRegion": "MG",
     "postalCode": "30770-040",
@@ -308,7 +308,10 @@ const localBusinessSchema = {
       "Método Leitura de Fio"
     ],
     "sameAs": [
-      "https://www.instagram.com/ojonquecortou/"
+      "https://www.instagram.com/ojonquecortou/",
+      "https://www.facebook.com/ojonquecortou/",
+      "https://linktr.ee/ojonquecortou",
+      "https://www.google.com/maps?cid=16629671607593282841"
     ]
   },
   "areaServed": {
@@ -536,6 +539,7 @@ const pages = [
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Jonatan Junior",
+      "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
       "alternateName": "Jon",
       "jobTitle": "Especialista em cabelos ondulados, cacheados e crespos",
       "description": "Cabeleireiro especialista em cabelos cacheados, crespos e ondulados em Belo Horizonte. Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas antes de qualquer corte.",
@@ -590,19 +594,32 @@ const pages = [
     bodyInsert: faqBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "speakable": {
-        "@type": "SpeakableSpecification",
-        "cssSelector": ["h1", "h2", "dt"]
-      },
-      "mainEntity": fullFaqList.map(faq => ({
-        "@type": "Question",
-        "name": faq.q,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": faq.a
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Perguntas Frequentes — Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br/faq",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "dt", "dd"]
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "h2", "dt"]
+          },
+          "mainEntity": fullFaqList.map(faq => ({
+            "@type": "Question",
+            "name": faq.q,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": faq.a
+            }
+          }))
         }
-      }))
+      ]
     }
   },
   {
@@ -616,13 +633,13 @@ const pages = [
         {
           "@type": "Article",
           "headline": "Método Leitura de Fio — Studio do Jon",
-          "speakable": {
-            "@type": "SpeakableSpecification",
-            "cssSelector": ["h1", "h2"]
-          },
           "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" },
           "publisher": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
-          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.ojonquecortou.com.br/metodo" }
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.ojonquecortou.com.br/metodo" },
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "h2", ".howto-step-name"]
+          }
         },
         {
           "@type": "HowTo",
@@ -670,10 +687,10 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Galeria de Resultados — Studio do Jon</h1>
-      <p>Fotos reais de antes e depois de clientes com cabelos cacheados, crespos e ondulados atendidos pelo Jon no bairro Caiçara, Belo Horizonte. Os resultados incluem cortes especializados com Método Leitura de Fio, descolorações em cabelo texturizado, tratamentos personalizados e transformações de transição capilar.</p>
-      <p>Para agendar seu atendimento e ter seu resultado registrado: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
+      <p>Veja fotos reais de antes e depois de cortes, mechas e tratamentos personalizados realizados em cabelos ondulados, cacheados e crespos. Todos os resultados apresentados são de clientes reais atendidos no Studio do Jon no bairro Caiçara, Belo Horizonte. Para agendar: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
     </article>
-  </noscript>`,
+  </noscript>
+`,
     schema: {
       "@context": "https://schema.org",
       "@type": "ImageGallery",
@@ -776,6 +793,7 @@ posts.forEach(post => {
   const wordCount = post.content
     ? post.content.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length
     : 0;
+
 
   const articleSchema = {
     "@type": "Article",

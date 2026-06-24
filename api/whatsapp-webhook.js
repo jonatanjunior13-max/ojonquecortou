@@ -197,7 +197,7 @@ export default async function handler(req, res) {
     const bookingsRef = collection(db, 'bookings');
     const q = query(
       bookingsRef,
-      where('status', '==', 'pendente'),
+      where('status', 'in', ['pendente', 'confirmado']),
       where('date', 'in', [yesterdayStr, todayStr, tomorrowStr])
     );
 
@@ -214,12 +214,12 @@ export default async function handler(req, res) {
     });
 
     if (!matchedBooking) {
-      return res.status(200).json({ status: 'not_found', reason: 'no_pending_booking_for_phone', last8: last8Digits });
+      return res.status(200).json({ status: 'not_found', reason: 'no_pending_or_confirmed_booking_for_phone', last8: last8Digits });
     }
 
-    // 4. Atualiza o status do agendamento para confirmado
+    // 4. Atualiza o status do agendamento para confirmado pela cliente
     await updateDoc(matchedBooking.ref, {
-      status: 'confirmado',
+      status: 'confirmado pela cliente',
       confirmedVia: 'whatsapp_webhook',
       confirmedAt: new Date().toISOString()
     });
@@ -228,7 +228,7 @@ export default async function handler(req, res) {
       success: true,
       bookingId: matchedBooking.id,
       clientName: matchedBooking.clientName,
-      status: 'updated_to_confirmed'
+      status: 'updated_to_confirmed_pela_cliente'
     });
 
   } catch (error) {

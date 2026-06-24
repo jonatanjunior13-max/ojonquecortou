@@ -1,33 +1,45 @@
 :root, .admin-app {
-  /* Surfaces - Editorial Warm Cream & Respiro */
-  --adm-bg: #F5EFEB; /* Creme quente muito claro de fundo */
-  --adm-surface: #EFE8E3; /* Creme ligeiramente mais escuro para menus e sidebars */
-  --adm-card: #FFFFFF; /* Cards brancos puros elegantes */
-  --adm-card-hover: #FAF7F5;
+  /* Surfaces - Obsidian Dark (Design Reference) */
+  --adm-bg: #0A0A0A;
+  --adm-sidebar-bg: #080808;       /* sidebar ligeiramente mais escura */
+  --adm-surface: #111111;
+  --adm-card: #111111;
+  --adm-card-hover: #161618;
 
-  /* Text - Editorial Castanho Escuro de Alto Contraste */
-  --adm-text: #221A15; /* Marrom escuro quase preto para excelente leitura */
-  --adm-text-2: #483A31; /* Marrom escuro médio para subtítulos */
-  --adm-text-3: #6E5B4F;
-  --adm-muted: #7A695E; /* Marrom suave de alto contraste para textos secundários e mudos */
+  /* Text - High Contrast White */
+  --adm-text: #FFFFFF;
+  --adm-text-2: #F4EFE7;
+  --adm-text-3: #D4CFC9;
+  --adm-muted: rgba(255, 255, 255, 0.35);
 
-  /* Brand - Bronze quente / Editorial */
-  --adm-gold: #735C4E; /* Bronze terroso sofisticado do botão e destaque */
-  --adm-gold-deep: #5A473C; /* Bronze profundo ativo */
-  --adm-bronze: #8D7465;
+  /* Brand - Vibrant Pink (Exact Match to Studio Espectro Mockup) */
+  --adm-gold: #FF2D8B;
+  --adm-gold-deep: #ff4d9f;
+  --adm-bronze: #ff4d9f;
 
-  /* Semantic - Suaves e de Alto Contraste */
-  --adm-success: #6E8E68; /* Verde editorial calmo para Confirmado */
-  --adm-danger: #C26B66; /* Rosa terroso queimado para Cancelado/Falta */
-  --adm-warning: #CCA361; /* Mostarda quente para Pendente */
-  --adm-info: #78909C;
+  /* Paleta de Serviços (agenda cards) */
+  --adm-copper: #E2703A;           /* Corte */
+  --adm-copper-bg: rgba(226, 112, 58, 0.18);
+  --adm-copper-mid: rgba(226, 112, 58, 0.06);
+  --adm-violet: #7A3CFF;           /* Coloração / Cor */
+  --adm-violet-bg: rgba(122, 60, 255, 0.18);
+  --adm-violet-mid: rgba(122, 60, 255, 0.06);
+  --adm-blue: #1F6FEB;             /* Tratamento */
+  --adm-blue-bg: rgba(31, 111, 235, 0.18);
+  --adm-blue-mid: rgba(31, 111, 235, 0.06);
 
-  /* Structure */
-  --adm-rule: rgba(110, 94, 83, 0.09);
-  --adm-rule-gold: rgba(115, 92, 78, 0.20);
-  --adm-radius-sm: 8px;
-  --adm-radius: 16px; /* Cards com cantos bem arredondados como no print */
-  --adm-radius-lg: 24px;
+  /* Semantic */
+  --adm-success: #2EA043;
+  --adm-danger: #F85149;
+  --adm-warning: #E3B341;
+  --adm-info: #58A6FF;
+
+  /* Structure - Cantos retos/quadrados conforme o mockup */
+  --adm-rule: rgba(255, 255, 255, 0.06);
+  --adm-rule-gold: rgba(255, 45, 139, 0.20);
+  --adm-radius-sm: 0px;
+  --adm-radius: 0px;
+  --adm-radius-lg: 0px;
 
   /* Spacing scale (8pt grid) */
   --adm-space-1: 4px;
@@ -37,8 +49,12 @@
   --adm-space-5: 32px;
   --adm-space-6: 48px;
 
-  /* Legacy / alias compatibility - Editorial Serif */
-  --glass-border: rgba(110, 94, 83, 0.08);
-  --font-display: "Playfair Display", "Georgia", "Times New Roman", serif; /* Serifa elegante para títulos */
-  --font-sans: "Inter", "Manrope", -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Aliases / Legacy */
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --font-display: "Bricolage Grotesque", sans-serif;
+  --font-sans: "Inter", sans-serif;
+
+  /* Aliases para compatibilidade com JSX inline styles */
+  --sidebar-bg: #080808;
+  --panel-bg: #111111;
 }

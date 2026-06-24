@@ -1,0 +1,36 @@
+.adm-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  border-radius: var(--adm-radius-sm);
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+.adm-btn:active { transform: scale(0.97) translateY(1px); }
+.adm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.adm-btn--sm { padding: 6px 12px; font-size: 0.8rem; }
+.adm-btn--md { padding: 10px 18px; font-size: 0.9rem; }
+.adm-btn--lg { padding: 13px 24px; font-size: 1rem; }
+.adm-btn--primary {
+  background: var(--adm-gold);
+  color: #121110;
+}
+.adm-btn--primary:hover { background: var(--adm-gold-deep); }
+.adm-btn--ghost {
+  background: transparent;
+  color: var(--adm-text-2);
+  border: 0.5px solid var(--adm-rule);
+}
+.adm-btn--ghost:hover {
+  background: var(--adm-card-hover);
+  color: var(--adm-text);
+}
+.adm-btn--danger {
+  background: transparent;
+  color: var(--adm-danger);
+  border: 0.5px solid rgba(226,75,74,0.3);
+}
+.adm-btn--danger:hover { background: rgba(226,75,74,0.08); }
