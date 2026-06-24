@@ -28,6 +28,7 @@ const AdminInventory = () => {
 
   // Salon products state
   const salonProducts = globalData?.salon_products || [];
+  const services = globalData?.services || [];
   const [showSalonModal, setShowSalonModal] = useState(false);
   const [editingSalonProduct, setEditingSalonProduct] = useState(null);
   const [salonForm, setSalonForm] = useState({
@@ -358,7 +359,15 @@ const AdminInventory = () => {
   };
   const handleOpenAddSalon = () => {
     setEditingSalonProduct(null);
-    setSalonForm({ name: '', type: 'Creme', volumetry: 500, unit: 'g', costPrice: 50, usedIn: [] });
+    setSalonForm({ 
+      name: '', 
+      type: 'Creme', 
+      volumetry: 500, 
+      unit: 'g', 
+      costPrice: 50, 
+      usedIn: [],
+      deductFromInventory: false
+    });
     setTempAssoc({ serviceId: '', serviceName: '', amount: '' });
     setShowSalonModal(true);
   };
@@ -371,7 +380,8 @@ const AdminInventory = () => {
       volumetry: product.volumetry || 0,
       unit: product.unit || 'g',
       costPrice: product.costPrice || 0,
-      usedIn: product.usedIn || []
+      usedIn: product.usedIn || [],
+      deductFromInventory: false
     });
     setTempAssoc({ serviceId: '', serviceName: '', amount: '' });
     setShowSalonModal(true);
@@ -395,6 +405,30 @@ const AdminInventory = () => {
     };
 
     try {
+      // Check if we need to deduct from sales inventory
+      if (salonForm.deductFromInventory) {
+        const matchedProduct = products.find(p => p.name.toLowerCase().trim() === salonForm.name.toLowerCase().trim());
+        if (matchedProduct) {
+          if (matchedProduct.quantity <= 0) {
+            alert(`Aviso: O produto "${matchedProduct.name}" está sem estoque para dar baixa.`);
+          } else {
+            const newQty = matchedProduct.quantity - 1;
+            // Write back to products collection/state
+            if (isDemoMode || !db) {
+              const updatedProducts = products.map(p => p.id === matchedProduct.id ? { ...p, quantity: newQty } : p);
+              saveLocalProducts(updatedProducts);
+            } else {
+              const docRef = doc(db, 'products', matchedProduct.id);
+              await updateDoc(docRef, { quantity: newQty });
+            }
+            // Log the expense using the costPrice of the matched sales product
+            await logProductExpense(matchedProduct.name, 1, matchedProduct.costPrice || 0, 'Uso do Salão');
+          }
+        } else {
+          alert(`Aviso: Produto de venda "${salonForm.name}" não encontrado no estoque para dar baixa.`);
+        }
+      }
+
       if (isDemoMode || !db) {
         const current = [...salonProducts];
         if (editingSalonProduct) {
@@ -695,20 +729,17 @@ const AdminInventory = () => {
                         <td style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {ppu.toFixed(4)}</td>
                         <td>
                           {p.usedIn && p.usedIn.length > 0 ? (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                              {p.usedIn.map((ui, idx) => (
-                                <span key={idx} style={{ 
-                                  fontSize: '0.72rem', 
-                                  background: 'rgba(218, 165, 32, 0.1)', 
-                                  color: 'var(--adm-gold)', 
-                                  padding: '2px 6px', 
-                                  borderRadius: 4,
-                                  border: '0.5px solid rgba(218, 165, 32, 0.3)'
-                                }}>
-                                  {ui.serviceName} ({ui.amount}{p.unit || 'g'})
-                                </span>
-                              ))}
-                            </div>
+                            <span style={{ 
+                              fontSize: '0.85rem', 
+                              fontWeight: 'bold',
+                              background: 'rgba(218, 165, 32, 0.1)', 
+                              color: 'var(--adm-gold)', 
+                              padding: '4px 10px', 
+                              borderRadius: 4,
+                              border: '0.5px solid rgba(218, 165, 32, 0.3)'
+                            }}>
+                              {p.usedIn.length} {p.usedIn.length === 1 ? 'serviço' : 'serviços'}
+                            </span>
                           ) : (
                             <span style={{ color: 'var(--adm-muted)', fontSize: '0.75rem', fontStyle: 'italic' }}>Nenhum</span>
                           )}
@@ -875,8 +906,35 @@ const AdminInventory = () => {
                 required 
                 placeholder="Ex: Creme Hidratante Profissional"
                 value={salonForm.name}
-                onChange={e => setSalonForm(prev => ({ ...prev, name: e.target.value }))}
+                list="sales-products-list"
+                onChange={e => {
+                  const val = e.target.value;
+                  const matched = products.find(p => p.name.toLowerCase().trim() === val.toLowerCase().trim());
+                  setSalonForm(prev => ({
+                    ...prev,
+                    name: val,
+                    costPrice: matched ? matched.costPrice : prev.costPrice
+                  }));
+                }}
               />
+              <datalist id="sales-products-list">
+                {products.map(p => (
+                  <option key={p.id} value={p.name} />
+                ))}
+              </datalist>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '12px 0' }}>
+              <input 
+                type="checkbox" 
+                id="deductFromInventory"
+                checked={salonForm.deductFromInventory || false}
+                onChange={e => setSalonForm(prev => ({ ...prev, deductFromInventory: e.target.checked }))}
+                style={{ width: 'auto', margin: 0, cursor: 'pointer' }}
+              />
+              <label htmlFor="deductFromInventory" style={{ fontSize: '0.88rem', cursor: 'pointer', margin: 0 }}>
+                Dar baixa no estoque de vendas (-1 unidade)
+              </label>
             </div>
 
             <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -919,7 +977,7 @@ const AdminInventory = () => {
               </div>
 
               <div className="form-group">
-                <label>Preço do Produto (R$) *</label>
+                <label>Preço de Custo (R$) *</label>
                 <input 
                   type="number" 
                   required 
@@ -997,12 +1055,18 @@ const AdminInventory = () => {
                   <select 
                     value={tempAssoc.serviceId || ''}
                     onChange={e => {
-                      const svc = services.find(s => s.id === e.target.value);
-                      setTempAssoc(prev => ({ ...prev, serviceId: e.target.value, serviceName: svc ? svc.name : '' }));
+                      const val = e.target.value;
+                      if (val === 'all') {
+                        setTempAssoc(prev => ({ ...prev, serviceId: 'all', serviceName: 'Todos' }));
+                      } else {
+                        const svc = services.find(s => s.id === val);
+                        setTempAssoc(prev => ({ ...prev, serviceId: val, serviceName: svc ? svc.name : '' }));
+                      }
                     }}
                     style={{ padding: '6px 8px', fontSize: '0.85rem', width: '100%', background: 'var(--adm-bg)', border: '1px solid var(--adm-rule)', color: 'var(--adm-text)', borderRadius: 4 }}
                   >
                     <option value="">Selecione...</option>
+                    <option value="all">Todos</option>
                     {services
                       .filter(s => !(salonForm.usedIn || []).some(ui => ui.serviceId === s.id))
                       .map(s => (
@@ -1030,15 +1094,42 @@ const AdminInventory = () => {
                       alert('Selecione um serviço e informe a quantidade.');
                       return;
                     }
-                    const newAssoc = {
-                      serviceId: tempAssoc.serviceId,
-                      serviceName: tempAssoc.serviceName,
-                      amount: Number(tempAssoc.amount)
-                    };
-                    setSalonForm(prev => ({
-                      ...prev,
-                      usedIn: [...(prev.usedIn || []), newAssoc]
-                    }));
+                    
+                    const amt = Number(tempAssoc.amount);
+                    if (tempAssoc.serviceId === 'all') {
+                      const newAssociations = [];
+                      services.forEach(s => {
+                        const alreadyLinked = (salonForm.usedIn || []).some(ui => ui.serviceId === s.id);
+                        if (!alreadyLinked) {
+                          newAssociations.push({
+                            serviceId: s.id,
+                            serviceName: s.name,
+                            amount: amt
+                          });
+                        }
+                      });
+                      
+                      if (newAssociations.length === 0) {
+                        alert('Todos os serviços já estão associados a este insumo.');
+                        return;
+                      }
+
+                      setSalonForm(prev => ({
+                        ...prev,
+                        usedIn: [...(prev.usedIn || []), ...newAssociations]
+                      }));
+                    } else {
+                      const newAssoc = {
+                        serviceId: tempAssoc.serviceId,
+                        serviceName: tempAssoc.serviceName,
+                        amount: amt
+                      };
+                      setSalonForm(prev => ({
+                        ...prev,
+                        usedIn: [...(prev.usedIn || []), newAssoc]
+                      }));
+                    }
+                    
                     setTempAssoc({ serviceId: '', serviceName: '', amount: '' });
                   }}
                   className="btn btn-accent"

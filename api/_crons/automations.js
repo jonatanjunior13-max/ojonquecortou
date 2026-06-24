@@ -48,39 +48,42 @@ const baseLayout = (content, linkUrl, linkText) => `
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Studio do Jon</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #EFE5D2; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1310; -webkit-font-smoothing: antialiased;">
-  <div style="background-color: #EFE5D2; padding: 40px 20px; min-height: 100vh;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #FAF5E8; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(26, 19, 16, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04);">
+<body style="margin: 0; padding: 0; background-color: #0A0A0A; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #FFFFFF; -webkit-font-smoothing: antialiased;">
+  <div style="background-color: #0A0A0A; padding: 40px 20px; min-height: 100vh;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; background-color: #141414; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);">
       <tr>
         <td style="padding: 56px 48px 48px;">
           
           <!-- HEADER -->
-          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
             <tr>
               <td align="left" valign="middle">
-                <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 32px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
-                <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #1A1310; vertical-align: middle;">Studio do Jon</span>
+                <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #C4738A; color: #FFFFFF; text-align: center; line-height: 32px; font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+                <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #FFFFFF; vertical-align: middle;">Studio do Jon</span>
               </td>
             </tr>
           </table>
 
           <!-- CONTENT -->
-          <div style="margin-top: 32px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #2E241E;">
+          <div style="margin-top: 32px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15.5px; line-height: 1.65; color: #F4EFE7;">
             ${content}
           </div>
           
           <div style="margin-top: 32px; margin-bottom: 16px;">
-            <a href="${linkUrl}" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 28px; border-radius: 999px; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(26,19,16,0.15);">${linkText}</a>
+            <a href="${linkUrl}" style="display: inline-block; background-color: #C4738A; color: #FFFFFF; padding: 14px 28px; border-radius: 999px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: bold; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; box-shadow: 0 4px 12px rgba(196,115,138,0.25);">${linkText}</a>
           </div>
 
           <!-- SIGNATURE -->
-          <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.08); margin: 48px 0 32px;" />
+          <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 48px 0 32px;" />
           <div>
-            <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #B05A2E;">Jon</div>
+            <div style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #C4738A;">Jon</div>
           </div>
-          <p style="font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #6B5A4B; margin: 12px 0 0; max-width: 52ch;">
-            <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+          <p style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; line-height: 1.65; color: #A0A0A0; margin: 12px 0 0; max-width: 52ch;">
+            <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
             Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
           </p>
           
@@ -88,14 +91,14 @@ const baseLayout = (content, linkUrl, linkText) => `
       </tr>
       <!-- FOOTER -->
       <tr>
-        <td style="background-color: #1A1310; padding: 40px 48px; border-top: 1px solid rgba(250, 245, 232, 0.1);">
-          <div style="font-family: 'DM Serif Display', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FAF5E8; margin: 0 0 12px;">
-            Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #B05A2E; display: block; margin-top: 6px;">— corte com leitura.</span>
+        <td style="background-color: #141414; padding: 40px 48px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+          <div style="font-family: 'Bricolage Grotesque', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FFFFFF; margin: 0 0 12px;">
+            Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #C4738A; display: block; margin-top: 6px;">— corte com leitura.</span>
           </div>
-          <p style="font-family: 'Manrope', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
+          <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: #A0A0A0; line-height: 1.6; margin: 0 0 24px 0;">
             Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
           </p>
-          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.4); border-top: 1px solid rgba(250, 245, 232, 0.1); padding-top: 20px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #808080; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
             &copy; ${new Date().getFullYear()} Studio do Jon &middot; @ojonquecortou
           </div>
         </td>

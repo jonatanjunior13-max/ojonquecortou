@@ -28,11 +28,12 @@ const fmtBRL = (v) =>
 
 const fmtTime = (t) => t || '--:--';
 
-const statusLabel = { pendente: 'Pendente', confirmado: 'Confirmado', finalizado: 'Finalizado', cancelado: 'Cancelado', faltou: 'Faltou', bloqueado: 'Bloqueado' };
+const statusLabel = { pendente: 'Pendente', confirmado: 'Confirmado', 'confirmado pela cliente': 'Confirmado pela Cliente', finalizado: 'Finalizado', cancelado: 'Cancelado', faltou: 'Faltou', bloqueado: 'Bloqueado' };
 
 const statusColor = {
   pendente: 'var(--adm-warning)',
   confirmado: 'var(--adm-info)',
+  'confirmado pela cliente': 'var(--adm-info)',
   finalizado: 'var(--adm-success)',
   cancelado: 'var(--adm-danger)',
   faltou: 'var(--adm-danger)',
@@ -184,7 +185,7 @@ const AdminHoje = () => {
   }, [transactions, today]);
 
   const pendingBookings = useMemo(() => bookings.filter(b => b.status === 'pendente'), [bookings]);
-  const confirmedToday = useMemo(() => todayBookings.filter(b => b.status === 'confirmado').length, [todayBookings]);
+  const confirmedToday = useMemo(() => todayBookings.filter(b => b.status === 'confirmado' || b.status === 'confirmado pela cliente').length, [todayBookings]);
   const finishedToday = useMemo(() => todayBookings.filter(b => b.status === 'finalizado').length, [todayBookings]);
 
   const birthdays = useMemo(() => clients.filter(c => isBirthdayToday(c.birthDate || c.birthdate)), [clients]);
@@ -193,7 +194,7 @@ const AdminHoje = () => {
   const nowMin = now.getHours() * 60 + now.getMinutes();
   const nextClients = useMemo(() => {
     return todayBookings
-      .filter(b => b.status === 'confirmado' || b.status === 'pendente')
+      .filter(b => b.status === 'confirmado' || b.status === 'confirmado pela cliente' || b.status === 'pendente')
       .filter(b => {
         if (!b.time) return false;
         const [h, m] = b.time.split(':').map(Number);

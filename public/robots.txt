@@ -29,6 +29,15 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
 Sitemap: https://www.ojonquecortou.com.br/sitemap.xml
 License: https://www.ojonquecortou.com.br/license.xml
 

@@ -451,6 +451,7 @@
 
 .m-status-pill.pendente   { background: var(--m-amber-bg); color: var(--m-amber); }
 .m-status-pill.confirmado { background: var(--m-blue-bg);  color: var(--m-blue); }
+.m-status-pill.confirmado-pela-cliente { background: var(--m-blue-bg);  color: var(--m-blue); border: 1px dashed var(--m-blue); }
 .m-status-pill.finalizado { background: var(--m-green-bg); color: var(--m-green); }
 .m-status-pill.cancelado  { background: var(--m-red-bg);   color: var(--m-red); }
 .m-status-pill.faltou     { background: rgba(122,110,99,0.12); color: var(--m-muted); }
@@ -613,6 +614,15 @@
   border: 1px solid rgba(196, 115, 138, 0.4);
   border-left: 3px solid #ffffff;
   color: #ffffff !important;
+}
+
+.m-slot-booking.confirmado-pela-cliente {
+  border: 1px solid rgba(196, 115, 138, 0.4);
+  border-left: 3px dashed var(--m-blue, #00d2ff);
+  color: #ffffff !important;
+}
+.m-slot-booking.confirmado-pela-cliente:not([class*="svc-"]) {
+  background: linear-gradient(135deg, var(--m-gold, #C4738A) 0%, var(--m-gold-deep, #9E4E62) 100%) !important;
 }
 
 /* Default confirmed color when not overridden by specific service */

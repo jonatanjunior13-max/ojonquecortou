@@ -3181,7 +3181,14 @@ Grande abraço, Jon.`;
                                 return (
                                   <div 
                                     key={bk.id} 
-                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")} ${isSubsequent ? 'continuation' : ''}`}
+                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${(() => {
+                                      const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-corte-cor';
+                                      if (name.includes('corte')) return 'svc-corte';
+                                      if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
+                                      if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
+                                      return 'svc-outro';
+                                    })()}`}
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
@@ -3192,20 +3199,19 @@ Grande abraço, Jon.`;
                                       alignItems: 'center',
                                       justifyContent: 'space-between',
                                       position: 'relative',
-                                      padding: '0 16px',
-                                      gap: '12px',
+                                      padding: '8px 16px',
+                                      overflow: 'hidden',
+                                      borderRadius: '0px',
                                       ...(isSubsequent ? {
                                         opacity: 0.85, 
                                         borderTop: 'none', 
-                                        borderTopLeftRadius: 0, 
-                                        borderTopRightRadius: 0,
                                         background: 'rgba(110, 47, 24, 0.08)',
                                         borderLeft: '3px dashed var(--adm-gold)',
                                         color: 'var(--adm-text, #221A15)'
                                       } : {})
                                     }}
                                   >
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', gap: '2px' }}>
                                       <span 
                                         className="appt-client" 
                                         onClick={(e) => {
@@ -3213,34 +3219,45 @@ Grande abraço, Jon.`;
                                           setSelectedFichaClient({ name: bk.clientName, phone: bk.clientPhone });
                                         }}
                                         style={{ 
-                                          fontWeight: 'bold', color: '#fff', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
+                                          fontWeight: 'bold', color: '#fff', fontSize: '0.92rem', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
                                         }}
                                       >
                                         {bk.clientName}
                                         {isClientRecurrent(bk.clientName, bk.clientPhone) && (
                                           <span style={{
                                             position: 'absolute',
-                                            top: '-2px',
-                                            right: '-6px',
+                                            marginLeft: '4px',
                                             width: '5px',
                                             height: '5px',
                                             borderRadius: '50%',
-                                            backgroundColor: 'var(--adm-gold, #dca354)'
+                                            backgroundColor: 'var(--adm-gold, #dca354)',
+                                            display: 'inline-block'
                                           }} title="Cliente Recorrente" />
                                         )}
                                       </span>
-                                      <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.73rem' }}>
-                                        {bk.service?.name || bk.serviceName} · {apptTimeText}
+                                      <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.78rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {bk.service?.name || bk.serviceName} · {(() => {
+                                          const m = bk.duration || 60;
+                                          const h = Math.floor(m / 60);
+                                          const r = m % 60;
+                                          if (h > 0 && r > 0) return `${h}h${r}`;
+                                          if (h > 0) return `${h}h`;
+                                          return `${r}min`;
+                                        })()}
                                       </span>
                                     </div>
-                                    <span className="appt-badge">
-                                      {((bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") && (bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR")) ? "CORTE+COR" :
-                                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") ? "CORTE" :
-                                       ((bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR") || (bk.service?.name || bk.serviceName || "").toUpperCase().includes("MECHAS")) ? "COR" :
-                                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("TRAT") ? "TRAT." : "SVC"}
-                                    </span>
+                                    <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
+                                      {(() => {
+                                        const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'CORTE + COR';
+                                        if (name.includes('corte')) return 'CORTE';
+                                        if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
+                                        if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
+                                        return 'OUTRO';
+                                      })()}
+                                    </div>
                                   </div>
-                                );
+                              );
                               })}
                             </div>
                           ) : absence ? (
@@ -3637,60 +3654,79 @@ Grande abraço, Jon.`;
                               const apptTimeText = `${startStr} - ${endStr}`;
 
                               return (
-                                <div 
-                                  key={item.id} 
-                                  className={`appt-card ${b.status} svc-${(b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`}
-                                  onClick={(e) => handleBookingLeftClick(e, b)}
-                                  style={{
-                                    top: `${topPercent}%`,
-                                    height: `${heightPercent}%`,
-                                    position: 'absolute',
-                                    left: `${left}%`,
-                                    width: `${width}%`,
-                                    padding: '0 16px',
-                                    zIndex: 3,
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    justifyContent: 'space-between',
-                                    overflow: 'hidden'
-                                  }}
-                                >
-                                  <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
-                                    <span 
-                                       className="appt-client" 
-                                       onClick={(e) => {
-                                         e.stopPropagation();
-                                         setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
-                                       }}
-                                       style={{ 
-                                         fontWeight: 'bold', color: '#fff', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative'
-                                       }}
-                                     >
-                                       {b.clientName}
-                                       {isClientRecurrent(b.clientName, b.clientPhone) && (
-                                         <span style={{
-                                           position: 'absolute',
-                                           top: '-2px',
-                                           right: '-6px',
-                                           width: '5px',
-                                           height: '5px',
-                                           borderRadius: '50%',
-                                           backgroundColor: 'var(--adm-gold, #dca354)'
-                                         }} title="Cliente Recorrente" />
-                                       )}
-                                     </span>
-                                     <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.73rem' }}>
-                                       {b.service?.name || b.serviceName} · {apptTimeText}
-                                     </span>
-                                   </div>
-                                   <span className="appt-badge">
-                                     {((b.service?.name || b.serviceName || "").toUpperCase().includes("CORTE") && (b.service?.name || b.serviceName || "").toUpperCase().includes("COR")) ? "CORTE+COR" :
-                                      (b.service?.name || b.serviceName || "").toUpperCase().includes("CORTE") ? "CORTE" :
-                                      ((b.service?.name || b.serviceName || "").toUpperCase().includes("COR") || (b.service?.name || b.serviceName || "").toUpperCase().includes("MECHAS")) ? "COR" :
-                                      (b.service?.name || b.serviceName || "").toUpperCase().includes("TRAT") ? "TRAT." : "SVC"}
-                                   </span>
-                                </div>
+                                  <div 
+                                    key={item.id} 
+                                    className={`appt-card ${b.status} ${(() => {
+                                      const name = (b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-corte-cor';
+                                      if (name.includes('corte')) return 'svc-corte';
+                                      if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
+                                      if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
+                                      return 'svc-outro';
+                                    })()}`}
+                                    onClick={(e) => handleBookingLeftClick(e, b)}
+                                    style={{
+                                      top: `${topPercent}%`,
+                                      height: `${heightPercent}%`,
+                                      position: 'absolute',
+                                      left: `${left}%`,
+                                      width: `${width}%`,
+                                      padding: '8px 16px',
+                                      zIndex: 3,
+                                      display: 'flex',
+                                      flexDirection: 'row',
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
+                                      overflow: 'hidden',
+                                      borderRadius: '0px'
+                                    }}
+                                  >
+                                    <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', gap: '2px' }}>
+                                      <span 
+                                        className="appt-client" 
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
+                                        }}
+                                        style={{ 
+                                          fontWeight: 'bold', color: '#fff', fontSize: '0.92rem', cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                                        }}
+                                      >
+                                        {b.clientName}
+                                        {isClientRecurrent(b.clientName, b.clientPhone) && (
+                                          <span style={{
+                                            position: 'absolute',
+                                            marginLeft: '4px',
+                                            width: '5px',
+                                            height: '5px',
+                                            borderRadius: '50%',
+                                            backgroundColor: 'var(--adm-gold, #dca354)',
+                                            display: 'inline-block'
+                                          }} title="Cliente Recorrente" />
+                                        )}
+                                      </span>
+                                      <span className="appt-service-info" style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.78rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {b.service?.name || b.serviceName} · {(() => {
+                                          const m = b.duration || 60;
+                                          const h = Math.floor(m / 60);
+                                          const r = m % 60;
+                                          if (h > 0 && r > 0) return `${h}h${r}`;
+                                          if (h > 0) return `${h}h`;
+                                          return `${r}min`;
+                                        })()}
+                                      </span>
+                                    </div>
+                                    <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
+                                      {(() => {
+                                        const name = (b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'CORTE + COR';
+                                        if (name.includes('corte')) return 'CORTE';
+                                        if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
+                                        if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
+                                        return 'OUTRO';
+                                      })()}
+                                    </div>
+                                  </div>
                               );
                             }
 

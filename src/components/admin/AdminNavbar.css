@@ -20,14 +20,6 @@
   color: var(--adm-text);
   font-family: var(--font-sans, var(--sans));
   position: relative;
-  transition: padding-left 0.28s cubic-bezier(0.25, 1, 0.5, 1);
-  will-change: padding-left;
-}
-
-@media (min-width: 768px) {
-  .admin-app-container:has(.admin-sidebar:hover) {
-    padding-left: 200px;
-  }
 }
 
 /* Sidebar */
@@ -47,6 +39,8 @@
   box-sizing: border-box;
   transition: width 0.28s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.28s ease-in-out;
   will-change: width;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .sidebar-brand {

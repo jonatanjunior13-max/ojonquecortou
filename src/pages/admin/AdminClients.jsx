@@ -1775,6 +1775,7 @@ const AdminClients = () => {
                   onChange={e => setEditStatus(e.target.value)}
                 >
                   <option value="confirmado">Confirmado</option>
+                  <option value="confirmado pela cliente">Confirmado pela Cliente</option>
                   <option value="pendente">Pendente</option>
                   <option value="finalizado">Finalizado</option>
                   <option value="cancelado">Cancelado</option>

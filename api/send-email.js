@@ -37,16 +37,19 @@ function getStandaloneWrapper(title, content) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  </style>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f0eee9; -webkit-font-smoothing: antialiased; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1A1310;">
+<body style="margin: 0; padding: 0; background-color: #0A0A0A; -webkit-font-smoothing: antialiased; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #FFFFFF;">
   <!-- Preheader preview text for inbox -->
-  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #f0eee9; opacity: 0;">
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #0A0A0A; opacity: 0;">
     ${previewText}
   </div>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f0eee9" style="background-color: #f0eee9;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0A0A0A" style="background-color: #0A0A0A;">
     <tr>
       <td align="center" style="padding: 40px 10px;">
-        <table width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width: 640px; max-width: 640px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(26, 19, 16, 0.1); box-shadow: 0 4px 20px rgba(26, 19, 16, 0.08);">
+        <table width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#141414" style="width: 640px; max-width: 640px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);">
           <tr>
             <td align="left">
               ${content}
@@ -69,18 +72,18 @@ function getEmailWrapper(title, content, isDark = false) {
     .trim()
     .slice(0, 150);
 
-  const bgOuter = isDark ? '#050505' : '#EFE5D2';
-  const bgInner = isDark ? '#0A0A0A' : '#FAF5E8';
-  const textColor = isDark ? '#FAF5E8' : '#1A1310';
-  const textColorLead = isDark ? '#A39687' : '#2E241E';
-  const accentColor = isDark ? '#D48C6A' : '#C97B49';
-  const apptCardBg = isDark ? '#121212' : '#F5EDDB';
-  const apptCardBorder = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(26, 19, 16, 0.12)';
-  const borderInner = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(26, 19, 16, 0.08)';
-  const tableBorder = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(26, 19, 16, 0.1)';
-  const logoBg = isDark ? '#FAF5E8' : '#1A1310';
-  const logoText = isDark ? '#050505' : '#FAF5E8';
-  const textMuted = isDark ? '#8A7866' : '#6B5A4B';
+  const bgOuter = isDark ? '#0A0A0A' : '#FAF6F0';
+  const bgInner = isDark ? '#141414' : '#FFFFFF';
+  const textColor = isDark ? '#FFFFFF' : '#111111';
+  const textColorLead = isDark ? '#F4EFE7' : '#4A4A4A';
+  const accentColor = '#C4738A';
+  const apptCardBg = isDark ? '#1E1E1E' : '#FAF6F0';
+  const apptCardBorder = isDark ? 'rgba(196, 115, 138, 0.25)' : 'rgba(196, 115, 138, 0.15)';
+  const borderInner = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)';
+  const tableBorder = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
+  const logoBg = '#C4738A';
+  const logoText = '#FFFFFF';
+  const textMuted = isDark ? '#A0A0A0' : '#777777';
 
   return `
   <!DOCTYPE html>
@@ -90,32 +93,33 @@ function getEmailWrapper(title, content, isDark = false) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${title}</title>
     <style>
-      body { margin: 0; padding: 0; background-color: ${bgOuter}; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: ${textColor}; -webkit-font-smoothing: antialiased; }
+      @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+      body { margin: 0; padding: 0; background-color: ${bgOuter}; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: ${textColor}; -webkit-font-smoothing: antialiased; }
       a { color: ${accentColor} !important; text-decoration: none; }
-      .eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: ${accentColor}; font-weight: 600; margin-bottom: 10px; }
-      .display-title { font-size: 32px; font-weight: 400; color: ${textColor}; margin-top: 0; margin-bottom: 20px; font-family: Georgia, serif; }
+      .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; color: ${accentColor}; font-weight: 500; margin-bottom: 10px; }
+      .display-title { font-size: 32px; font-weight: 400; color: ${textColor}; margin-top: 0; margin-bottom: 20px; font-family: 'Bricolage Grotesque', Georgia, serif; }
       .display-title span { font-style: italic; color: ${accentColor}; }
       .lead { font-size: 16px; line-height: 1.6; color: ${textColorLead}; margin-bottom: 30px; }
       .appt-card { background-color: ${apptCardBg}; border: 1px solid ${apptCardBorder}; border-radius: 6px; padding: 20px; margin-bottom: 30px; }
-      .appt-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #8A7866; margin-bottom: 12px; font-weight: 600; }
+      .appt-card .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: ${textMuted}; margin-bottom: 12px; font-weight: 500; }
       .appt-card .when { font-size: 18px; font-weight: 600; color: ${textColor}; margin: 0 0 6px 0; }
-      .appt-card .when span { color: ${accentColor}; font-style: italic; font-weight: 400; font-family: Georgia, serif; }
-      .appt-card .where { font-size: 13px; color: #8A7866; margin: 0 0 16px 0; }
+      .appt-card .when span { color: ${accentColor}; font-style: italic; font-weight: 400; font-family: 'Bricolage Grotesque', Georgia, serif; }
+      .appt-card .where { font-size: 13px; color: ${textMuted}; margin: 0 0 16px 0; }
       .meta-row { display: table; width: 100%; border-top: 1px solid ${borderInner}; padding-top: 14px; margin-top: 14px; }
       .cell { display: table-cell; width: 50%; }
-      .lbl { font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; color: #8A7866; margin-bottom: 4px; font-weight: 600; }
+      .lbl { font-family: 'JetBrains Mono', monospace; font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: ${textMuted}; margin-bottom: 4px; font-weight: 500; }
       .val { font-size: 14px; color: ${textColor}; font-weight: 600; }
       .rule { border: 0; border-top: 1px solid ${borderInner}; margin: 30px 0; }
-      .btn { display: inline-block; text-align: center; border: 2px solid ${accentColor}; color: ${accentColor} !important; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-size: 13px; font-weight: bold; margin: 30px 0; }
-      .instructions-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: ${accentColor}; font-weight: 600; margin-bottom: 8px; }
+      .btn { display: inline-block; text-align: center; border: 2px solid ${accentColor}; color: ${accentColor} !important; text-decoration: none; padding: 10px 20px; border-radius: 999px; font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.04em; margin: 30px 0; }
+      .instructions-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: ${accentColor}; font-weight: 500; margin-bottom: 8px; }
       .instructions-body { font-size: 15px; line-height: 1.6; color: ${textColorLead}; }
       .instructions-body strong { color: ${textColor}; }
       .signoff { margin-top: 35px; border-top: 1px solid ${borderInner}; padding-top: 20px; }
-      .signoff .sig-name { font-size: 20px; font-family: Georgia, serif; font-style: italic; color: ${textColor}; margin-bottom: 4px; }
-      .signoff .sig-meta { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #8A7866; line-height: 1.5; }
+      .signoff .sig-name { font-size: 24px; font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: ${textColor}; margin-bottom: 4px; }
+      .signoff .sig-meta { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.12em; color: ${textMuted}; line-height: 1.5; }
     </style>
   </head>
-  <body style="margin: 0; padding: 0; background-color: ${bgOuter}; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: ${textColor}; -webkit-font-smoothing: antialiased;">
+  <body style="margin: 0; padding: 0; background-color: ${bgOuter}; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: ${textColor}; -webkit-font-smoothing: antialiased;">
     <!-- Preheader preview text for inbox -->
     <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: ${bgOuter}; opacity: 0;">
       ${previewText}
@@ -130,8 +134,8 @@ function getEmailWrapper(title, content, isDark = false) {
                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
                     <td align="left">
-                      <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: ${logoBg}; color: ${logoText}; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: Georgia, serif; vertical-align: middle;">J</span>
-                      <span style="display: inline-block; font-size: 15px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: ${isDark ? '#FAF5E8' : '#1A1310'}; margin-left: 10px; vertical-align: middle; font-family: 'Manrope', sans-serif;">O Jon Que Cortou</span>
+                      <span style="display: inline-block; width: 36px; height: 36px; border-radius: 50%; background-color: ${logoBg}; color: ${logoText}; text-align: center; line-height: 36px; font-size: 20px; font-weight: bold; font-style: italic; font-family: 'Bricolage Grotesque', Georgia, serif; vertical-align: middle;">J</span>
+                      <span style="display: inline-block; font-size: 14px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: ${textColor}; margin-left: 10px; vertical-align: middle; font-family: 'JetBrains Mono', monospace;">O Jon Que Cortou</span>
                     </td>
                   </tr>
                 </table>
@@ -139,24 +143,24 @@ function getEmailWrapper(title, content, isDark = false) {
             </tr>
             <!-- Content -->
             <tr>
-              <td style="padding: 40px; font-family: 'Manrope', sans-serif; color: ${textColor};">
+              <td style="padding: 40px; font-family: 'Inter', sans-serif; color: ${textColor};">
                 ${content}
               </td>
             </tr>
             <!-- Footer -->
             <tr>
-              <td style="padding: 25px 40px; background-color: ${bgInner}; border-top: 1px solid ${borderInner}; text-align: center; font-family: 'Manrope', sans-serif;">
-                <div style="font-size: 14px; font-weight: 600; color: ${textColor}; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px;">
-                  Studio do Jon <span style="font-style: italic; font-weight: 400; color: ${accentColor}; font-family: Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
+              <td style="padding: 25px 40px; background-color: ${bgInner}; border-top: 1px solid ${borderInner}; text-align: center; font-family: 'Inter', sans-serif;">
+                <div style="font-size: 14px; font-weight: 500; color: ${textColor}; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 15px; font-family: 'JetBrains Mono', monospace;">
+                  Studio do Jon <span style="font-style: italic; font-weight: 400; color: ${accentColor}; font-family: 'Bricolage Grotesque', Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
                 </div>
                 <div style="font-size: 12px; color: ${textMuted}; line-height: 1.6; margin-bottom: 15px;">
                   Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
                 </div>
-                <div style="margin-bottom: 20px; font-size: 11px; line-height: 1.6; color: ${textMuted}; background: ${isDark ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.012)'}; padding: 12px 14px; border-radius: 6px; border: 1px solid ${borderInner}; display: inline-block; max-width: 460px; text-align: left; font-family: 'Manrope', sans-serif;">
-                  <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: ${accentColor}; font-weight: 600; display: block; margin-bottom: 4px;">Preferências de Conteúdo</span>
+                <div style="margin-bottom: 20px; font-size: 11px; line-height: 1.6; color: ${textMuted}; background: ${isDark ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.012)'}; padding: 12px 14px; border-radius: 6px; border: 1px solid ${borderInner}; display: inline-block; max-width: 460px; text-align: left; font-family: 'Inter', sans-serif;">
+                  <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: ${accentColor}; font-weight: 600; display: block; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace;">Preferências de Conteúdo</span>
                   O Google costuma filtrar o que você lê. Se você deseja que a leitura de fios e os ensaios do Studio apareçam de forma contínua em suas buscas e no feed do Chrome, você pode indicar sua preferência <a href="https://google.com/preferences/source?q=https://www.ojonquecortou.com.br" target="_blank" style="color: ${accentColor} !important; text-decoration: underline; font-weight: 600;">selecionando nosso canal aqui</a>. Leva dois segundos e mantém nossa conexão direta, livre de intermediários.
                 </div>
-                <div style="font-size: 11px; color: #8A7866; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
+                <div style="font-size: 11px; color: ${textMuted}; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.08em; text-transform: uppercase;">
                   © ${new Date().getFullYear()} Studio do Jon
                 </div>
               </td>

@@ -2665,27 +2665,31 @@ Grande abraço, Jon.`;
                       setShowBookingSheet(true);
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%', justifyContent: 'center' }}>
                       <span
                         className="m-slot-client"
                         style={{
                           fontWeight: 700,
                           fontSize: '0.82rem',
-                          color: '#ffffff'
+                          color: '#ffffff',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
                         }}
                       >
                         {bk.clientName}
                       </span>
-                      <span className="m-slot-svc-info" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
-                        {bk.service?.name || bk.serviceName} · {bk.time} - {minToTime(timeToMin(bk.time) + (bk.duration || 60))}
+                      <span className="m-slot-svc-info" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {bk.service?.name || bk.serviceName} · {(() => {
+                          const m = bk.duration || 60;
+                          const h = Math.floor(m / 60);
+                          const r = m % 60;
+                          if (h > 0 && r > 0) return `${h}h${r}`;
+                          if (h > 0) return `${h}h`;
+                          return `${r}min`;
+                        })()}
                       </span>
                     </div>
-                    <span className="appt-badge" style={{ fontSize: '0.62rem', padding: '2px 6px', textTransform: 'uppercase', fontWeight: 700, flexShrink: 0 }}>
-                      {((bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") && (bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR")) ? "CORTE+COR" :
-                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("CORTE") ? "CORTE" :
-                       ((bk.service?.name || bk.serviceName || "").toUpperCase().includes("COR") || (bk.service?.name || bk.serviceName || "").toUpperCase().includes("MECHAS")) ? "COR" :
-                       (bk.service?.name || bk.serviceName || "").toUpperCase().includes("TRAT") ? "TRAT." : "SVC"}
-                    </span>
                   </div>
                 );
               }

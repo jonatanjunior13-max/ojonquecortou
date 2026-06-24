@@ -280,58 +280,58 @@ const AdminMarketing = () => {
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
 
   // Newsletter states
-  const JUNE_2026_NEWSLETTER_HTML = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  const JUNE_2026_NEWSLETTER_HTML = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
-        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
-        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
       </td>
     </tr>
   </table>
 
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
-    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
     Leitura de Fio · Edição de Junho
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">O frizz que nenhum creme <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18;">vai resolver.</span></h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 16ch;">O frizz que nenhum creme <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #DCA354;">vai resolver.</span></h1>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Você trocou o leave-in. Trocou o gel. Trocou o shampoo. Talvez até a marca de água do banho. E o frizz voltou. Exatamente do mesmo jeito.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Você trocou o leave-in. Trocou o gel. Trocou o shampoo. Talvez até a marca de água do banho. E o frizz voltou. Exatamente do mesmo jeito.</p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Isso acontece porque o frizz que persiste raramente é problema de produto. É problema de <strong style="color: #1A1310;">ângulo de corte.</strong></p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Isso acontece porque o frizz que persiste raramente é problema de produto. É problema de <strong style="color: #FFFFFF;">ângulo de corte.</strong></p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Quando o fio é cortado no ângulo errado, a cutícula fica exposta de um jeito que nenhuma finalização consegue fechar. O creme sela por um dia. Depois a umidade entra, a cutícula levanta, e o frizz aparece. De novo.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Quando o fio é cortado no angle correto, a cutícula fica exposta de um jeito que nenhuma finalização consegue fechar. O creme sela por um dia. Depois a umidade entra, a cutícula levanta, e o frizz aparece. De novo.</p>
 
-  <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"O Método Leitura de Fio lê a curvatura antes da tesoura. Não para ter uma técnica bonita. Para cortar no ângulo que o <span style='font-style: italic; color: #6E2F18;'>seu</span> fio pede."</p>
-    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+  <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"O Método Leitura de Fio lê a curvatura antes da tesoura. Não para ter uma técnica bonita. Para cortar no ângulo que o <span style='font-style: italic; color: #DCA354;'>seu</span> fio pede."</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
   </div>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">O diagnóstico que faz antes do corte — o que chamamos de Leitura de Fio — identifica a porosidade, a curvatura e o padrão de crescimento do seu cabelo. Só então a tesoura entra.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">O diagnóstico que faz antes do corte — o que chamamos de Leitura de Fio — identifica a porosidade, a curvatura e o padrão de crescimento do seu cabelo. Só então a tesoura entra.</p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 28px; max-width: 56ch;">O resultado é um corte que define sem depender de produto. Que dura mais. Que seca com forma, não com frizz.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 28px; max-width: 56ch;">O resultado é um corte que define sem depender de produto. Que dura mais. Que seca com forma, não com frizz.</p>
 
   <div style="margin-top: 8px; margin-bottom: 32px;">
-    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
   </div>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <div style="margin-top: 28px;">
-    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
-  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; max-width: 52ch;">
-    <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #A0A0A0; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
     Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
   </p>
-  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B; margin: 10px 0 0;">
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0; margin: 10px 0 0;">
     @ojonquecortou · ojonquecortou.com.br/agendar
   </p>
   <div style="height: 48px;"></div>
@@ -392,16 +392,9 @@ const AdminMarketing = () => {
       apiKey = '';
     }
 
-    const topics = [
-      "Como a porosidade afeta a absorção de água e finalizadores em cabelos com curvatura, e por que a Leitura de Fio resolve isso diagnosticando antes de cortar.",
-      "A verdade sobre o corte a seco: por que cortar cabelo molhado estica os cachos e causa surpresas desagradáveis depois de seco.",
-      "Por que o acúmulo de cremes pesados (build-up) sabota o volume natural dos cabelos crespos e ondulados.",
-      "O método Leitura de Fio e o visagismo: como harmonizar a estrutura natural do fio com a personalidade de cada cliente.",
-      "O clima de Belo Horizonte e como lidar com a definição vs volume nos dias mais secos ou úmidos.",
-      "Autismo e atendimento acolhedor no salão: como a metodologia estruturada do Método Leitura de Fio cria um ambiente calmo e previsível para pessoas neurodivergentes."
-    ];
+    const randomTheme = TRENDING_THEMES[Math.floor(Math.random() * TRENDING_THEMES.length)];
+    const randomTopic = `${randomTheme.title}: ${randomTheme.description}`;
 
-    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
     const runFallback = () => {
       const fallbacks = [
@@ -481,45 +474,46 @@ const AdminMarketing = () => {
       const fb = candidates[Math.floor(Math.random() * candidates.length)] || fallbacks[0];
 
       const fallbackSubject = fb.subject;
-      const fallbackBody = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+      const fallbackBody = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
-        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
-        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
       </td>
     </tr>
   </table>
 
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
-    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
     ${fb.subtitle}
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">${fb.title}</h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 16ch;">${fb.title}</h1>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
-  ${fb.paragraphs.map(p => `<p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">${p}</p>`).join('\n')}
+  ${fb.paragraphs.map(p => `<p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">${p}</p>`).join('\n')}
 
-  <div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"${fb.quote}"</p>
-    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+  <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"${fb.quote}"</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
   </div>
 
   <div style="margin-top: 8px; margin-bottom: 32px;">
-    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
   </div>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <div style="margin-top: 28px;">
-    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
 </div>`;
+
 
       setNewsletters(prev => prev.map(n => n.id === id ? {
         ...n,
@@ -560,15 +554,15 @@ Você deve retornar APENAS um JSON válido contendo exatamente dois campos: "sub
 O campo "subject" deve ser um assunto provocativo e curto (máximo 60 caracteres) sobre o tema.
 O campo "bodyHtml" deve conter o corpo do e-mail em HTML (apenas o conteúdo interno, os parágrafos e citações, pois o cabeçalho/rodapé e o contêiner externo já estão definidos).
 Use as seguintes tags no "bodyHtml":
-- Parágrafos simples: <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #2E241E; margin: 0 0 18px; max-width: 56ch;">Seu texto aqui...</p>
+- Parágrafos simples: <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Seu texto aqui...</p>
 - Uma citação destacada (blockquote) exatamente neste formato:
-<div style="background: #F0E8D8; border-left: 3px solid #6E2F18; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #1A1310; margin: 0; font-weight: 400;">"Citação marcante do Jon aqui..."</p>
-  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B5A4B; margin: 12px 0 0;">— Jon</p>
+<div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+  <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"Citação marcante do Jon aqui..."</p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
 </div>
 - Um CTA com botão exatamente neste formato (com gatilho de urgência suave de agendamento):
 <div style="margin-top: 8px; margin-bottom: 32px;">
-  <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #1A1310; color: #FAF5E8; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+  <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
 </div>`;
 
       const response = await fetch(
@@ -593,40 +587,40 @@ Use as seguintes tags no "bodyHtml":
         if (text) {
           const parsed = JSON.parse(text);
           if (parsed.subject && parsed.bodyHtml) {
-            const fullHtml = `<div style="background-color: #FAF5E8; padding: 56px 56px 48px; color: #1A1310; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(26, 19, 16, 0.14); padding-bottom: 22px; margin-bottom: 36px;">
+            const fullHtml = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
       <td align="left" valign="middle">
-        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #1A1310; color: #FAF5E8; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px;">J</span>
-        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #1A1310;">Studio do Jon</span>
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
       </td>
     </tr>
   </table>
 
-  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #6B5A4B;">
-    <span style="display: inline-block; width: 18px; height: 1px; background-color: #6B5A4B; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
     Leitura de Fio · Edição Mensal
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #1A1310; margin: 18px 0 0; max-width: 16ch;">${parsed.subject}</h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 16ch;">${parsed.subject}</h1>
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   ${parsed.bodyHtml}
 
-  <hr style="border: 0; border-top: 1px solid rgba(26, 19, 16, 0.12); margin: 32px 0;" />
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <div style="margin-top: 28px;">
-    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #6E2F18;">Jon</div>
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
-  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #6B5A4B; margin: 10px 0 0; max-width: 52ch;">
-    <strong style="color: #1A1310; font-weight: 600;">Studio do Jon</strong><br />
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #A0A0A0; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
     Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
   </p>
-  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #6B5A4B; margin: 10px 0 0;">
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0; margin: 10px 0 0;">
     @ojonquecortou · ojonquecortou.com.br/agendar
   </p>
   <div style="height: 48px;"></div>
@@ -865,7 +859,9 @@ Use as seguintes tags no "bodyHtml":
 
   const handleGenerateGbpPost = async (specificTheme = null) => {
     setIsGeneratingGbpPost(true);
-    const cleanedTheme = (specificTheme && typeof specificTheme === 'object' && 'title' in specificTheme) ? specificTheme : null;
+    const cleanedTheme = (specificTheme && typeof specificTheme === 'object' && 'title' in specificTheme) 
+      ? specificTheme 
+      : TRENDING_THEMES[Math.floor(Math.random() * TRENDING_THEMES.length)];
 
     const generateDynamicFallbackPost = (theme = null) => {
       if (theme && theme.title) {
@@ -2891,108 +2887,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 </div>
               </div>
 
-              {/* 📚 Biblioteca de Temas em Alta (Cabelo Natural) */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)', marginTop: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <BookOpen size={20} style={{ color: 'var(--adm-gold)' }} />
-                    <h4 style={{ margin: 0 }}>📚 Biblioteca de Temas em Alta (Cabelo Natural)</h4>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-                    <div style={{ position: 'relative', minWidth: '220px' }}>
-                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
-                      <input
-                        type="text"
-                        placeholder="Buscar tema..."
-                        value={themeSearchQuery}
-                        onChange={(e) => setThemeSearchQuery(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '6px 12px 6px 30px',
-                          borderRadius: '4px',
-                          border: '1px solid var(--adm-rule)',
-                          background: 'var(--sidebar-bg)',
-                          color: 'var(--adm-text)',
-                          fontSize: '0.82rem'
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
 
-                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: '16px' }}>
-                  Selecione um tema em alta de curvatura abaixo e gere um post direcionado para o Google Business Profile (GBP). O Gemini escreverá um post focado no assunto usando o tom técnico e autêntico do Jon.
-                </p>
-
-                {/* Category Tabs */}
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '20px', borderBottom: '1px solid var(--adm-rule)', paddingBottom: '12px' }}>
-                  {['Todos', 'Corte & Visagismo', 'Saúde & Tratamento', 'Transição Capilar', 'Finalização & Cuidados', 'Mitos & Verdades'].map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedThemeCategory(cat)}
-                      className={`btn ${selectedThemeCategory === cat ? 'btn-accent' : 'btn-outline'} btn-small`}
-                      style={{ fontSize: '0.75rem', padding: '4px 12px' }}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Filter and display Themes */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px', maxHeight: '450px', overflowY: 'auto', paddingRight: '4px' }}>
-                  {(() => {
-                    const filtered = TRENDING_THEMES.filter(theme => {
-                      const matchesCategory = selectedThemeCategory === 'Todos' || theme.category === selectedThemeCategory;
-                      const matchesSearch = theme.title.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
-                        theme.description.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
-                        theme.keywords.toLowerCase().includes(themeSearchQuery.toLowerCase());
-                      return matchesCategory && matchesSearch;
-                    });
-
-                    if (filtered.length === 0) {
-                      return <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: 'var(--adm-muted)', fontSize: '0.85rem', padding: '24px' }}>Nenhum tema encontrado.</p>;
-                    }
-
-                    return filtered.map(theme => (
-                      <div
-                        key={theme.id}
-                        style={{
-                          padding: '14px',
-                          background: 'var(--sidebar-bg)',
-                          borderRadius: '6px',
-                          border: '1px solid var(--adm-rule)',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          gap: '12px',
-                          transition: 'transform 0.2s ease, border-color 0.2s ease'
-                        }}
-                      >
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                            <span style={{ fontSize: '0.65rem', padding: '2px 8px', borderRadius: '10px', background: 'rgba(176,90,46,0.15)', color: 'var(--adm-gold)', fontWeight: 600 }}>
-                              {theme.category}
-                            </span>
-                          </div>
-                          <h5 style={{ margin: '0 0 6px 0', fontSize: '0.9rem', fontWeight: 700, color: 'var(--adm-text)' }}>{theme.title}</h5>
-                          <p style={{ margin: '0 0 8px 0', fontSize: '0.8rem', color: 'var(--adm-muted)', lineHeight: '1.4' }}>{theme.description}</p>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', fontStyle: 'italic' }}>
-                            <strong>Tags:</strong> {theme.keywords}
-                          </div>
-                        </div>
-                        <button
-                          className="btn btn-accent btn-small"
-                          style={{ width: '100%', fontSize: '0.75rem', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
-                          onClick={() => handleGenerateGbpPostForTheme(theme)}
-                          disabled={isGeneratingGbpPost}
-                        >
-                          <Sparkles size={12} /> {isGeneratingGbpPost ? 'Gerando...' : 'Gerar Post c/ IA'}
-                        </button>
-                      </div>
-                    ));
-                  })()}
-                </div>
-              </div>
 
               {/* ───────── NEWSLETTER LEITURA DE FIO ───────── */}
               <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '24px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>

@@ -252,7 +252,7 @@ const localBusinessSchema = {
   ],
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Rua Francisco Ovídio, 184, Caiçaras",
+    "streetAddress": "Rua Francisco Ovídio, 184, Caiçara",
     "addressLocality": "Belo Horizonte",
     "addressRegion": "MG",
     "postalCode": "30770-040",
@@ -479,7 +479,24 @@ const pages = [
     bodyInsert: homeBody,
     schema: {
       "@context": "https://schema.org",
-      "@graph": [localBusinessSchema, founderPersonSchema]
+      "@graph": [
+        localBusinessSchema,
+        founderPersonSchema,
+        {
+          "@type": "WebSite",
+          "@id": "https://www.ojonquecortou.com.br/#website",
+          "name": "Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://www.ojonquecortou.com.br/blog?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
     }
   },
   {
@@ -552,7 +569,15 @@ const pages = [
   {
     route: '/blog',
     title: 'Blog do Jon | Dicas e Cuidados para Cabelo Cacheado e Crespo',
-    description: 'Dicas práticas, guias de produtos, técnicas de finalização e tudo o que você precisa saber sobre cabelos cacheados, crespos e ondulados.'
+    description: 'Dicas práticas, guias de produtos, técnicas de finalização e tudo o que você precisa saber sobre cabelos cacheados, crespos e ondulados.',
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Blog — Studio do Jon",
+      "description": "Dicas e guias sobre cabelos ondulados, cacheados e crespos por Jonatan Junior.",
+      "url": "https://www.ojonquecortou.com.br/blog",
+      "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" }
+    }
   },
   {
     route: '/depoimentos',
@@ -580,6 +605,10 @@ const pages = [
         },
         {
           "@type": "FAQPage",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", "h2", "dt"]
+          },
           "mainEntity": fullFaqList.map(faq => ({
             "@type": "Question",
             "name": faq.q,
@@ -601,20 +630,30 @@ const pages = [
       "@context": "https://schema.org",
       "@graph": [
         {
-          "@type": "WebPage",
-          "name": "Método Leitura de Fio — Studio do Jon",
-          "url": "https://www.ojonquecortou.com.br/metodo",
+          "@type": "Article",
+          "headline": "Método Leitura de Fio — Studio do Jon",
+          "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" },
+          "publisher": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
+          "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.ojonquecortou.com.br/metodo" },
           "speakable": {
             "@type": "SpeakableSpecification",
-            "cssSelector": ["h1", "h2", "p"]
+            "cssSelector": ["h1", "h2", ".howto-step-name"]
           }
         },
         {
-          "@type": "Service",
-          "name": "Método Leitura de Fio",
-          "provider": localBusinessSchema,
-          "description": "O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra.",
-          "url": "https://www.ojonquecortou.com.br/metodo"
+          "@type": "HowTo",
+          "name": "Método Leitura de Fio — 7 Etapas de Diagnóstico Capilar",
+          "description": "Protocolo clínico-estético de análise capilar realizado antes de qualquer corte no Studio do Jon.",
+          "totalTime": "PT30M",
+          "step": [
+            { "@type": "HowToStep", "position": 1, "name": "Escuta", "text": "Ouvimos a história do cabelo, rotina de cuidados, histórico de procedimentos e objetivo do cliente." },
+            { "@type": "HowToStep", "position": 2, "name": "Análise a seco", "text": "Mapeamos volume, caimento e distribuição real da curvatura com o cabelo seco e finalizado do cliente." },
+            { "@type": "HowToStep", "position": 3, "name": "Diagnóstico do couro cabeludo", "text": "Avaliamos oleosidade, sensibilidade e saúde do couro para definir protocolos de limpeza adequados." },
+            { "@type": "HowToStep", "position": 4, "name": "Histórico químico", "text": "Levantamos todo processo químico anterior: colorações, descolorações, relaxamentos e alisamentos." },
+            { "@type": "HowToStep", "position": 5, "name": "Análise molhada", "text": "Testamos porosidade e elasticidade do fio úmido para identificar o estado real da fibra capilar." },
+            { "@type": "HowToStep", "position": 6, "name": "Definição de técnica", "text": "Com base nas 5 etapas anteriores, definimos a técnica exata de corte: molhado, seco ou híbrido." },
+            { "@type": "HowToStep", "position": 7, "name": "Finalização como validação", "text": "Finalizamos o cabelo para validar o corte na textura real do cliente e ensinar a rotina de casa." }
+          ]
         }
       ]
     }
@@ -642,7 +681,23 @@ const pages = [
   {
     route: '/galeria',
     title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
-    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.'
+    description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.',
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Galeria de Resultados — Studio do Jon</h1>
+      <p>Veja fotos reais de antes e depois de cortes, mechas e tratamentos personalizados realizados em cabelos ondulados, cacheados e crespos. Todos os resultados apresentados são de clientes reais atendidos no Studio do Jon em Belo Horizonte.</p>
+    </article>
+  </noscript>
+`,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "ImageGallery",
+      "name": "Galeria de Resultados — Studio do Jon",
+      "description": "Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados e crespos.",
+      "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" },
+      "url": "https://www.ojonquecortou.com.br/galeria"
+    }
   },
   {
     route: '/servicos/descoloracao-cabelo-cacheado',

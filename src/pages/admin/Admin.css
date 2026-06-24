@@ -1040,6 +1040,7 @@
 }
 
 .status-pill.confirmado { background: rgba(133,183,235,0.08); color: var(--adm-info); }
+.status-pill.confirmado-pela-cliente { background: rgba(133,183,235,0.15); color: var(--adm-info); border: 1px dashed rgba(133,183,235,0.4); }
 .status-pill.finalizado { background: rgba(151,196,89,0.08); color: var(--adm-success); }
 .status-pill.pendente { background: rgba(220,163,84,0.06); color: #dd6b20; }
 .status-pill.cancelado { background: rgba(226,75,74,0.06); color: var(--adm-danger); }
@@ -2602,6 +2603,7 @@
 }
 .appt-status-dot.pendente { background-color: var(--adm-warning); }
 .appt-status-dot.confirmado { background-color: var(--adm-success); }
+.appt-status-dot.confirmado-pela-cliente { background-color: var(--adm-info); }
 .appt-status-dot.finalizado { background-color: var(--adm-muted); }
 .appt-status-dot.bloqueado { background-color: var(--adm-muted); }
 .appt-status-dot.faltou { background-color: var(--adm-danger); }
@@ -2730,6 +2732,55 @@
 .context-menu-item:hover > .context-menu-submenu {
   display: flex;
 }
+
+/* Tabelas Administrativas Premium (Desktop) */
+.admin-table-container {
+  background: var(--adm-surface);
+  border: 1.5px solid var(--adm-rule);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  margin-top: 16px;
+  width: 100%;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+  color: var(--adm-text);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 14px 20px;
+  border-bottom: 1.5px solid var(--adm-rule);
+  vertical-align: middle;
+}
+
+.admin-table th {
+  background: var(--adm-card);
+  font-weight: 700;
+  color: var(--adm-muted);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  border-bottom: 2px solid var(--adm-rule-gold);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.admin-table tbody tr:hover td {
+  background: rgba(255, 45, 139, 0.02);
+}
+
 
 /* Detailed EDIT MODAL - Trinks Redesign (Image 1) */
 .trinks-modal {
