@@ -40,6 +40,13 @@ const statusColor = {
   bloqueado: 'var(--adm-muted)',
 };
 
+const serviceBarColor = (name = '') => {
+  const n = name.toLowerCase();
+  if (n.includes('corte') || n.includes('leitura')) return '#E2703A';
+  if (n.includes('cor') || n.includes('color') || n.includes('luzes') || n.includes('colora')) return '#7A3CFF';
+  return '#1F6FEB';
+};
+
 const AdminHoje = () => {
   const context = useOutletContext() || {};
   const { globalData = {}, handleAcceptBooking, setGlobalData } = context;
@@ -387,40 +394,49 @@ const AdminHoje = () => {
       {/* Todos agendamentos do dia */}
       {todayBookings.length > 0 && (
         <Card>
-          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--adm-text)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 16 }}>
+          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--adm-text)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 14 }}>
             Todos os Agendamentos de Hoje — {todayBookings.length} no total
           </div>
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-              <thead>
-                <tr style={{ borderBottom: '0.5px solid var(--adm-rule)' }}>
-                  {['Hora', 'Cliente', 'Serviço', 'Status'].map(h => (
-                    <th key={h} style={{ textAlign: 'left', padding: '8px 12px', color: 'var(--adm-muted)', fontWeight: 700, fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.8px' }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-               <tbody>
-                {todayBookings.map(b => (
-                  <tr 
-                    key={b.id} 
-                    onClick={() => setSelectedBooking(b)} 
-                    style={{ borderBottom: '0.5px solid var(--adm-rule)', cursor: 'pointer', transition: 'background 0.2s' }}
-                    className="hover-row"
-                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                  >
-                    <td style={{ padding: '10px 12px', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>{b.time}</td>
-                    <td style={{ padding: '10px 12px', color: 'var(--adm-text)', fontWeight: 600 }}>{b.clientName}</td>
-                    <td style={{ padding: '10px 12px', color: 'var(--adm-text-2)' }}>{b.serviceName || b.service?.name}</td>
-                    <td style={{ padding: '10px 12px' }}>
-                      <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '3px 8px', borderRadius: 4, background: `${statusColor[b.status]}22`, color: statusColor[b.status], textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        {statusLabel[b.status]}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            {todayBookings.map(b => {
+              const svc = b.serviceName || b.service?.name || '';
+              const barColor = serviceBarColor(svc);
+              return (
+                <div
+                  key={b.id}
+                  onClick={() => setSelectedBooking(b)}
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 14,
+                    padding: '10px 14px 10px 18px',
+                    background: `linear-gradient(90deg, ${barColor}12 0%, transparent 70%)`,
+                    cursor: 'pointer',
+                    overflow: 'hidden',
+                    transition: 'background 0.15s ease',
+                  }}
+                  onMouseEnter={e => e.currentTarget.style.background = `linear-gradient(90deg, ${barColor}20 0%, transparent 70%)`}
+                  onMouseLeave={e => e.currentTarget.style.background = `linear-gradient(90deg, ${barColor}12 0%, transparent 70%)`}
+                >
+                  <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: barColor }} />
+                  <span style={{ fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)', fontWeight: 700, fontSize: '0.88rem', color: 'var(--adm-gold)', minWidth: 46, flexShrink: 0 }}>
+                    {b.time}
+                  </span>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--adm-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {b.clientName}
+                    </div>
+                    <div style={{ fontSize: '0.73rem', color: 'var(--adm-muted)', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {svc}
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', background: `${statusColor[b.status]}22`, color: statusColor[b.status], textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>
+                    {statusLabel[b.status]}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </Card>
       )}
