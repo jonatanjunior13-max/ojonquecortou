@@ -25,7 +25,7 @@
 /* Sidebar */
 .admin-sidebar {
   background: var(--adm-sidebar-bg);
-  border-right: none;
+  border-right: 1px solid rgba(255,255,255,0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -111,9 +111,9 @@
 }
 
 .nav-item.active {
-  background: rgba(255, 45, 139, 0.08); /* Fundo rosa translúcido */
-  color: #FFFFFF !important;
-  border-left: 2px solid var(--adm-gold); /* Barra lateral ativa rosa vibrante */
+  background: rgba(255, 45, 139, 0.10);
+  color: var(--adm-gold) !important;
+  border-left: 3px solid var(--adm-gold);
   border-radius: 0px;
 }
 
