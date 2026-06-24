@@ -1969,7 +1969,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                     }
 
                     return (
-                      <div style={{ border: '1px solid var(--adm-rule)', borderRadius: 6, overflow: 'hidden', maxHeight: '235px', overflowY: 'auto' }}>
+                      <div style={{ border: '1px solid var(--adm-rule)', borderRadius: 6, overflow: 'hidden', maxHeight: '165px', overflowY: 'auto' }}>
                         <table className="admin-table" style={{ margin: 0 }}>
                           <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
                             <tr>
