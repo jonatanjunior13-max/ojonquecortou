@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc, query, where, updateDoc, doc } from 'firebase/firestore';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 
@@ -12,10 +13,11 @@ const firebaseConfig = {
   appId: process.env.VITE_FIREBASE_APP_ID
 };
 
-let app, db;
+let app, db, auth;
 try {
   app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   db = getFirestore(app);
+  auth = getAuth(app);
 } catch (e) {
   console.error('Firebase init error:', e);
 }
@@ -130,6 +132,20 @@ function verifyMailgunSignature(signingKey, timestamp, token, signature) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+
+  // Authenticate to Firebase if admin credentials are provided in env and not signed in
+  if (auth && !auth.currentUser) {
+    const adminEmail = (process.env.CRON_FIREBASE_EMAIL || '').trim();
+    const adminPassword = (process.env.CRON_FIREBASE_PASSWORD || '').trim();
+    if (adminEmail && adminPassword) {
+      try {
+        await signInWithEmailAndPassword(auth, adminEmail, adminPassword);
+        console.log('Autenticado com sucesso no Firebase para o endpoint de Newsletter.');
+      } catch (authErr) {
+        console.error('Falha na autenticação do Firebase para o endpoint de Newsletter:', authErr.message);
+      }
+    }
+  }
 
   // 1. GET Action: Check Bounces list
   if (req.method === 'GET') {

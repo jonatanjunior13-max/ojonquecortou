@@ -788,7 +788,7 @@ Use as seguintes tags no "bodyHtml":
   };
 
   const handleSimulateNewReview = () => {
-    const names = ['Amanda Costa', 'Patrília Oliveira', 'Beatriz Souza', 'Luana Mendes'];
+    const names = ['Amanda Costa', 'Patrícia Oliveira', 'Beatriz Souza', 'Luana Mendes'];
     const comments = [
       'Meu cabelo ondulado nunca teve tanta definição! O visagismo do Jon é impecável.',
       'O Studio do Jon é o melhor lugar de BH para cabelos crespos. Amei a experiência.',
@@ -806,7 +806,15 @@ Use as seguintes tags no "bodyHtml":
     };
 
     if (settings?.automations?.google_reviews_enabled !== false) {
-      newRev.reply = `Olá ${names[idx].split(' ')[0]}! Agradecemos demais pelo seu carinho e avaliação de 5 estrelas. Nosso foco é oferecer um atendimento de excelência com leitura de fios e visagismo personalizado. Até logo! — Jon`;
+      const firstName = names[idx].split(' ')[0];
+      const templates = [
+        `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
+        `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
+        `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
+        `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
+        `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
+      ];
+      newRev.reply = templates[Math.floor(Math.random() * templates.length)];
     }
 
     setGoogleReviews(prev => [newRev, ...prev]);
@@ -817,7 +825,17 @@ Use as seguintes tags no "bodyHtml":
     const review = googleReviews.find(r => r.id === id);
     if (!review) return;
 
-    const replyText = `Olá ${review.author.split(' ')[0]}! Muito obrigado por nos avaliar. Nosso compromisso é sempre realçar a beleza natural de cada textura com muito profissionalismo e técnica. — Jon`;
+    const firstName = review.author.split(' ')[0];
+    const templates = [
+      `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
+      `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
+      `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
+      `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
+      `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
+    ];
+
+    // Pick a random template
+    const replyText = templates[Math.floor(Math.random() * templates.length)];
 
     if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
       setGoogleReviews(prev => prev.map(rev => {
@@ -1951,7 +1969,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                     }
 
                     return (
-                      <div style={{ border: '1px solid var(--adm-rule)', borderRadius: 6, overflow: 'hidden' }}>
+                      <div style={{ border: '1px solid var(--adm-rule)', borderRadius: 6, overflow: 'hidden', maxHeight: '165px', overflowY: 'auto' }}>
                         <table className="admin-table" style={{ margin: 0 }}>
                           <thead style={{ position: 'sticky', top: 0, background: 'var(--panel-bg)', zIndex: 1 }}>
                             <tr>
