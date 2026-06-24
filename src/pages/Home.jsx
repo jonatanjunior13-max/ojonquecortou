@@ -143,7 +143,7 @@ function HomeHero() {
               <div ref={captionRef} className="caption" style={{ willChange: 'transform' }}>"Antes da tesoura, a leitura."</div>
               <img
                 ref={portraitRef}
-                src="/jon-perfil.webp"
+                src="/jon-perfil.jpg"
                 alt="Jon, especialista em cabelo cacheado em Belo Horizonte"
                 width="480"
                 height="600"
