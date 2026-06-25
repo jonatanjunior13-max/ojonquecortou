@@ -9,6 +9,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const srcImages = [
+  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\901c1f26-8e9d-496f-8ef7-c6a2f6ce04fd\\media__1782324414995.jpg",
   "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\bab3f6e7-df37-4501-91cc-4a7445936312\\media__1779742637978.jpg",
   "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204349484.jpg",
   "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204307347.jpg",

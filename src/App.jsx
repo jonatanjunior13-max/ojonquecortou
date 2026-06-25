@@ -93,6 +93,7 @@ function App() {
           <Route path="/cliente" element={<ClientAreaPage />} />
           <Route path="/produtos" element={<ProductsPage />} />
           <Route path="/produtos/:productId" element={<ProductDetailPage />} />
+          <Route path="/blog/corte-hibrido-cachos-seco-molhado" element={<Navigate to="/servicos/corte-hibrido" replace />} />
         </Route>
 
         {/* Rotas Administrativas */}
