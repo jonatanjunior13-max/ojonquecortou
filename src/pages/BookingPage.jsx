@@ -2024,6 +2024,22 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       );
                     }
 
+                    const getCategoryColor = (category) => {
+                      const colors = {
+                        'Corte': '#E2703A',
+                        'Coloração': '#7A3CFF',
+                        'Tratamento': '#1F6FEB',
+                        'Combo': '#E5322D',
+                        'Análise': '#FF2D8B',
+                        'Finalização': '#1F6FEB'
+                      };
+                      return colors[category] || '#FF2D8B';
+                    };
+
+                    const primaryService = selectedServices[0];
+                    const barColor = primaryService ? getCategoryColor(primaryService.category) : '#FF2D8B';
+                    const categoryLabel = primaryService ? primaryService.category.toUpperCase() : 'SERVIÇO';
+
                     return (
                       <div className="time-picker-grid">
                         {availableSlots.map(slot => (
@@ -2032,8 +2048,23 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             type="button"
                             className={`time-btn ${selectedTime === slot ? 'selected' : ''}`}
                             onClick={() => setSelectedTime(slot)}
+                            style={{
+                              '--bar-color': barColor,
+                              background: `linear-gradient(90deg, rgba(${
+                                barColor === '#E2703A' ? '226,112,58' :
+                                barColor === '#7A3CFF' ? '122,60,255' :
+                                barColor === '#1F6FEB' ? '31,111,235' :
+                                barColor === '#E5322D' ? '229,50,45' :
+                                '255,45,139'
+                              }, 0.12) 0%, transparent 70%)`
+                            }}
                           >
-                            {slot}
+                            <span className="time-btn-time">{slot}</span>
+                            <div className="time-btn-info">
+                              <div className="time-btn-name">Disponível</div>
+                              <div className="time-btn-service">{primaryService?.name || 'Selecione um serviço'}</div>
+                            </div>
+                            <span className="time-btn-badge">{categoryLabel}</span>
                           </button>
                         ))}
                       </div>
