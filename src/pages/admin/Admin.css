@@ -3405,7 +3405,7 @@
   --sidebar-bg: var(--adm-card);
 }
 
-/* Ensure Marketing CRM page has high-contrast text and inputs */
+/* Ensure Marketing CRM and Settings page have high-contrast text and inputs */
 .admin-clients-page h3,
 .admin-clients-page h4,
 .admin-clients-page h5,
@@ -3415,18 +3415,34 @@
 .admin-clients-page strong,
 .admin-clients-page td,
 .admin-clients-page th,
-.admin-clients-page div {
+.admin-clients-page div,
+.admin-settings-page h3,
+.admin-settings-page h4,
+.admin-settings-page h5,
+.admin-settings-page p,
+.admin-settings-page span,
+.admin-settings-page label,
+.admin-settings-page strong,
+.admin-settings-page td,
+.admin-settings-page th,
+.admin-settings-page div {
   color: var(--adm-text);
 }
 .admin-clients-page p,
 .admin-clients-page span.text-muted,
 .admin-clients-page .report-header p,
-.admin-clients-page .marketing-automations-card p {
+.admin-clients-page .marketing-automations-card p,
+.admin-settings-page p,
+.admin-settings-page span.text-muted,
+.admin-settings-page .hours-settings-list span {
   color: var(--adm-text-2) !important;
 }
 .admin-clients-page input,
 .admin-clients-page select,
-.admin-clients-page textarea {
+.admin-clients-page textarea,
+.admin-settings-page input,
+.admin-settings-page select,
+.admin-settings-page textarea {
   color: var(--adm-text) !important;
   background-color: var(--adm-card) !important;
   border-color: var(--adm-rule-gold) !important;
