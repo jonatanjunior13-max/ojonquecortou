@@ -81,6 +81,10 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const valorTotal = Math.max(0, subtotal - discount);
   const totalToPay = Math.max(0, valorTotal - prepay);
 
+  const feeRate = useMemo(() => {
+    return getFee(settings, paymentMethod);
+  }, [settings, paymentMethod]);
+
   const feeAmount = useMemo(() => {
     if (isSplitPayment) {
       return Object.entries(splitValues).reduce((sum, [method, val]) => {
@@ -88,9 +92,8 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
         return sum + (val * (rate / 100));
       }, 0);
     }
-    const feeRate = getFee(settings, paymentMethod);
     return totalToPay * (feeRate / 100);
-  }, [isSplitPayment, splitValues, paymentMethod, totalToPay, settings]);
+  }, [isSplitPayment, splitValues, feeRate, totalToPay]);
 
   const netTotal = totalToPay - feeAmount;
 
