@@ -111,8 +111,8 @@ const BookingPage = () => {
   const rescheduleId = searchParams.get('rescheduleId');
 
   useEffect(() => {
-    if (typeof fbq !== 'undefined') {
-      fbq('track', 'ViewContent', {
+    if (typeof window !== 'undefined' && typeof window.fbq !== 'undefined') {
+      window.fbq('track', 'ViewContent', {
         content_name: 'Página de Agendamento',
         content_category: 'Agendamento',
       });

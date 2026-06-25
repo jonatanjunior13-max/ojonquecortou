@@ -163,8 +163,10 @@ const AdminLayoutInner = () => {
     if (!auth) {
       const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
       if (isLocalLogged) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setAuthorized(true);
       } else {
+
         setAuthorized(false);
         navigate('/admin/login');
       }
@@ -257,6 +259,7 @@ const AdminLayoutInner = () => {
         previousBookings.current = demoBookings;
         initialLoadDone.current = true;
 
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setGlobalData(prev => ({
           ...prev,
           bookings: demoBookings,
@@ -268,7 +271,9 @@ const AdminLayoutInner = () => {
           client_packages: JSON.parse(localStorage.getItem('demo_client_packages')) || [],
           salon_products: JSON.parse(localStorage.getItem('demo_salon_products')) || []
         }));
-      } catch(e) {}
+      } catch(e) {
+        // Ignored
+      }
     }
 
     return () => unsubs.forEach(u => u && u());

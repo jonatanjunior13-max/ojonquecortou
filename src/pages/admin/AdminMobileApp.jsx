@@ -6,7 +6,7 @@ import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc, writeBatch
 } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getEffectiveAbsences, getAbsenceForSlot } from '../../utils/absences';
+import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
 import {
   Home, Calendar, Camera, Users, DollarSign, MoreHorizontal,
   Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
@@ -271,6 +271,10 @@ export default function AdminMobileApp() {
   const [currentDate, setCurrentDate] = useState(today());
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [showSlotSheet, setShowSlotSheet] = useState(false);
+
+  // Birthday state fixes
+  const [birthdayClient, setBirthdayClient] = useState(null);
+  const [showBirthdaySheet, setShowBirthdaySheet] = useState(false);
   const [showNewBookingSheet, setShowNewBookingSheet] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showBookingSheet, setShowBookingSheet] = useState(false);
@@ -1293,7 +1297,9 @@ export default function AdminMobileApp() {
       if (db) {
         const ref = await addDoc(collection(db, 'bookings'), data);
         setBookings(prev => [...prev, { id: ref.id, ...data }]);
-        try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
+        try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {
+          // Ignored
+        }
 
         if (clientEmail && clientEmail !== 'Não informado' && clientEmail.includes('@')) {
           triggerEmailNotification({ ...data, id: ref.id });

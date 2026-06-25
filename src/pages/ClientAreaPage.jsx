@@ -304,7 +304,9 @@ export default function ClientAreaPage() {
               link: 'https://ojonquecortou.com.br/cliente?action=reset'
             })
           });
-        } catch (simErr) {}
+        } catch (simErr) {
+          // Ignored
+        }
       } else {
         await sendPasswordResetEmail(auth, email);
         setResetSuccess(true);

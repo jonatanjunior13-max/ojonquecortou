@@ -456,8 +456,8 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                     }}
                   >
                     {m.icon} {m.label}
-                    {paymentMethod === m.id && feeRate > 0 && (
-                      <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>({feeRate}%)</span>
+                    {paymentMethod === m.id && getFee(settings, m.id) > 0 && (
+                      <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>({getFee(settings, m.id)}%)</span>
                     )}
                   </button>
                 ))}
@@ -498,7 +498,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             </div>
             {feeAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
-                <span>Taxa da Maquininha {isSplitPayment ? '' : `(${feeRate}%)`}</span><span>- {fmtBRL(feeAmount)}</span>
+                <span>Taxa da Maquininha {isSplitPayment ? '' : `(${getFee(settings, paymentMethod)}%)`}</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.1rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
@@ -532,7 +532,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             style={{
               width: '100%', background: 'var(--adm-gold)', color: '#121110',
               border: 'none', borderRadius: 'var(--adm-radius-sm)', padding: '14px 0',
-              fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: '0.95rem', fontWeight: 700, fontFamily: 'inherit',
               transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               opacity: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 0.5 : 1,
               cursor: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 'not-allowed' : 'pointer'

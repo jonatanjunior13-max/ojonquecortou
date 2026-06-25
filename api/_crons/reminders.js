@@ -17,6 +17,12 @@ const auth = getAuth(app);
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+const timeToMin = (timeStr) => {
+  if (!timeStr) return 0;
+  const [h, m] = timeStr.split(':').map(Number);
+  return (h * 60) + m;
+};
+
 // Helper to dispatch email
 async function dispatchEmail(payload, hostUrl) {
   try {
@@ -256,7 +262,9 @@ export default async function handler(req, res) {
         emailSuccessCount++;
         try {
           await updateDoc(doc(db, 'bookings', b.id), { reminderSent: true });
-        } catch (dbErr) {}
+        } catch (dbErr) {
+          // Ignored
+        }
       } else {
         emailFailCount++;
       }

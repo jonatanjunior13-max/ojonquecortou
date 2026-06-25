@@ -65,11 +65,15 @@ const AdminServices = () => {
     };
 
     if (!db) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsDemoMode(true);
+
       setServices(getMockServices());
+
       setLoading(false);
       return;
     }
+
 
     setLoading(true);
 
@@ -102,6 +106,7 @@ const AdminServices = () => {
       };
     } catch (err) {
       console.warn('Erro na conexão do banco para serviços:', err);
+
       setLoading(false);
     }
   }, []);
@@ -110,6 +115,7 @@ const AdminServices = () => {
     let unsubscribe;
     if (isDemoMode) {
       const local = localStorage.getItem('demo_packages');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPackages(local ? JSON.parse(local) : []);
       return;
     }

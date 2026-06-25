@@ -31,7 +31,11 @@ function CountUp({ target, suffix = '', duration = 1400 }) {
     if (!el) return;
     // Respect reduced motion
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) { setValue(target); return; }
+    if (prefersReduced) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setValue(target);
+      return;
+    }
     const io = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting && !started.current) {
         started.current = true;

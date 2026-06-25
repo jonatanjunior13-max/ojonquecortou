@@ -16,7 +16,9 @@ let app, db;
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
-} catch (e) {}
+} catch (e) {
+  // Ignore firebase initialization errors in this context
+}
 
 
 
@@ -652,7 +654,9 @@ export default async function handler(req, res) {
             try {
               const { updateDoc } = await import('firebase/firestore');
               await updateDoc(doc(db, 'bookings', data.id), { reminderSent: true });
-            } catch (upErr) {}
+            } catch (upErr) {
+              // Ignored
+            }
           }
         }
       } catch (err) {

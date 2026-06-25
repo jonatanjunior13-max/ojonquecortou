@@ -1022,7 +1022,9 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       try {
         const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
         localStorage.setItem('demo_gbp_posts', JSON.stringify([newPost, ...local]));
-      } catch(e){}
+      } catch(e) {
+        // Ignored
+      }
     }
 
     setGeneratedGbpPost(null);
@@ -1051,7 +1053,9 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
             const updated = local.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p);
             localStorage.setItem('demo_gbp_posts', JSON.stringify(updated));
-          } catch(e){}
+          } catch(e) {
+            // Ignored
+          }
         }
         setIsPublishingGbpId(null);
       }, 1000);
@@ -1081,7 +1085,9 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
             const updated = local.map(p => p.id === post.id ? { ...p, status: 'published', scheduledDate: 'Agora' } : p);
             localStorage.setItem('demo_gbp_posts', JSON.stringify(updated));
-          } catch(e){}
+          } catch(e) {
+            // Ignored
+          }
         }
       } else {
         alert(`Erro ao publicar no Google: ${data.error || 'Erro desconhecido'}`);
@@ -1106,7 +1112,9 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       try {
         const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
         localStorage.setItem('demo_gbp_posts', JSON.stringify(local.filter(p => p.id !== postId)));
-      } catch(e){}
+      } catch(e) {
+        // Ignored
+      }
     }
   };
 
@@ -1309,7 +1317,9 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
         setAutomationLogs(localLogs);
         const localPosts = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
         setScheduledGbpPosts(localPosts);
-      } catch (e) {}
+      } catch (e) {
+        // Ignored
+      }
       setLoading(false);
     }
 
