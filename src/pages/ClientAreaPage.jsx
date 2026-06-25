@@ -15,6 +15,38 @@ import { Calendar, Clock, Lock, Unlock, LogOut, Scissors, AlertCircle, ChevronRi
 import SEO from '../components/SEO';
 import './ClientAreaPage.css';
 
+const getServiceColor = (serviceName = '') => {
+  const s = serviceName.toLowerCase().trim();
+
+  // Combo: Corte + Tratamento
+  if ((s.includes('corte') && s.includes('tratamento')) || s.includes('combo')) {
+    return { color: '#FF2D8B', label: 'CORTE + TRATAMENTO' };
+  }
+
+  // Corte único
+  if (s.includes('corte') && !s.includes('tratamento') && !s.includes('manutenção')) {
+    return { color: '#8B5CF6', label: 'CORTE' };
+  }
+
+  // Coloração/Cor
+  if (s.includes('cor') || s.includes('color') || s.includes('luzes') || s.includes('colora')) {
+    return { color: '#FBBF24', label: 'COR' };
+  }
+
+  // Tratamento Personalizado
+  if (s.includes('tratamento personalizado')) {
+    return { color: '#87CEEB', label: 'TRATAMENTO' };
+  }
+
+  // Outros tratamentos
+  if (s.includes('tratamento')) {
+    return { color: '#87CEEB', label: 'TRATAMENTO' };
+  }
+
+  // Default
+  return { color: '#FF2D8B', label: 'SERVIÇO' };
+};
+
 export default function ClientAreaPage() {
   const navigate = useNavigate();
 
@@ -608,10 +640,13 @@ export default function ClientAreaPage() {
                       </Link>
                     </div>
                   ) : (
-                    activeBookings.map((b) => (
-                      <div key={b.id} className="client-booking-item">
+                    activeBookings.map((b) => {
+                      const svc = b.serviceName || b.service?.name || '';
+                      const colorInfo = getServiceColor(svc);
+                      return (
+                      <div key={b.id} className="client-booking-item" style={{ borderLeftColor: colorInfo.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}>
                         <div className="client-booking-info">
-                          <h3 className="client-booking-service">{b.serviceName || b.service?.name}</h3>
+                          <h3 className="client-booking-service">{svc}</h3>
                           <div className="client-booking-meta">
                             <span>📅 {formatDate(b.date)}</span>
                             <span>⏰ {b.time}</span>
@@ -645,7 +680,8 @@ export default function ClientAreaPage() {
                           </Link>
                         </div>
                       </div>
-                    ))
+                    );
+                    })
                   )}
                 </div>
 
@@ -661,17 +697,21 @@ export default function ClientAreaPage() {
                     </p>
                   ) : (
                     <div className="client-history-list">
-                      {pastBookings.map((b) => (
-                        <div key={b.id} className="client-history-item">
+                      {pastBookings.map((b) => {
+                        const svc = b.serviceName || b.service?.name || '';
+                        const colorInfo = getServiceColor(svc);
+                        return (
+                        <div key={b.id} className="client-history-item" style={{ borderLeftColor: colorInfo.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}>
                           <div className="client-history-left">
-                            <span className="client-history-service">{b.serviceName || b.service?.name}</span>
+                            <span className="client-history-service">{svc}</span>
                             <span className="client-history-date">📅 {formatDate(b.date)} às {b.time}</span>
                           </div>
                           <span className={`client-status-badge ${b.status?.toLowerCase() || 'finalizado'}`}>
                             {b.status || 'Finalizado'}
                           </span>
                         </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
