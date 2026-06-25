@@ -2,6 +2,8 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
     {
       "source": "/:path*",
@@ -43,6 +45,11 @@
       "src": "/blog/metodo-leitura-de-fio-antes-da-tesoura",
       "status": 301,
       "headers": { "Location": "/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" }
+    },
+    {
+      "src": "/blog/corte-hibrido-cachos-seco-molhado",
+      "status": 301,
+      "headers": { "Location": "/servicos/corte-hibrido" }
     },
     {
       "src": "/blog/cortes-cacheados-2026",

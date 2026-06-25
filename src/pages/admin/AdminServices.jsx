@@ -1,10 +1,22 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X } from 'lucide-react';
 import './Admin.css';
 
 import { SEED_SERVICES } from '../../data/seedServices';
+
+const normalizeCategory = (cat) => {
+  const c = (cat || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  if (c.includes('misto') || c.includes('combo') || (c.includes('corte') && (c.includes('tratamento') || c.includes('cor') || c.includes('coloracao')))) {
+    return 'Combo';
+  }
+  if (c.includes('corte')) return 'Corte';
+  if (c.includes('cor') || c.includes('coloracao') || c.includes('colora')) return 'Cor';
+  if (c.includes('analise') || c.includes('avaliacao') || c.includes('teste')) return 'Análise';
+  if (c.includes('tratamento') || c.includes('terapia') || c.includes('cronograma') || c.includes('hidrat') || c.includes('finaliza')) return 'Tratamento';
+  return 'Corte'; // default fallback
+};
 
 const AdminServices = () => {
   const [services, setServices] = useState([]);
@@ -22,7 +34,7 @@ const AdminServices = () => {
   // Form states
   const [form, setForm] = useState({
     name: '',
-    category: 'Cabelo',
+    category: 'Corte',
     description: '',
     price: '',
     priceType: 'Fixo',
@@ -60,8 +72,9 @@ const AdminServices = () => {
     const getMockServices = () => {
       const localData = localStorage.getItem('demo_services');
       const dataList = localData ? JSON.parse(localData) : SEED_SERVICES;
-      dataList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
-      return dataList;
+      const normalizedList = dataList.map(s => ({ ...s, category: normalizeCategory(s.category) }));
+      normalizedList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
+      return normalizedList;
     };
 
     if (!db) {
@@ -83,12 +96,13 @@ const AdminServices = () => {
         if (list.length === 0 && !localStorage.getItem('services_seeded')) {
           // Se o banco estiver vazio, semeia os dados iniciais uma única vez
           SEED_SERVICES.forEach(async (serv) => {
-            await setDoc(doc(db, 'services', serv.id), serv);
+            await setDoc(doc(db, 'services', serv.id), { ...serv, category: normalizeCategory(serv.category) });
           });
           localStorage.setItem('services_seeded', 'true');
         }
-        list.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
-        setServices(list);
+        const normalizedList = list.map(s => ({ ...s, category: normalizeCategory(s.category) }));
+        normalizedList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
+        setServices(normalizedList);
         setLoading(false);
         setIsDemoMode(false);
       }, (error) => {
@@ -938,12 +952,10 @@ const AdminServices = () => {
                 >
                   <option value="">Selecione uma categoria</option>
                   <option value="Corte">Corte</option>
-                  <option value="Corte + Tratamento">Corte + Tratamento</option>
-                  <option value="Coloração">Coloração</option>
-                  <option value="Tratamento">Tratamento</option>
-                  <option value="Análise">Análise</option>
                   <option value="Combo">Combo</option>
-                  <option value="Finalização">Finalização</option>
+                  <option value="Tratamento">Tratamento</option>
+                  <option value="Cor">Cor</option>
+                  <option value="Análise">Análise</option>
                 </select>
               </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { X, Plus, Minus, Search, CreditCard, Banknote, Smartphone as SmartIcon, DollarSign, Trash2 } from 'lucide-react';
 
 const fmtBRL = (v) =>
@@ -32,9 +32,14 @@ const getFee = (settings, method) => {
   return 0;
 };
 
-const ComandaModal = ({ booking, products = [], services = [], settings = {}, onClose, onConfirm }) => {
-  const basePrice = booking?.servicePrice || booking?.service?.price || 0;
+const ComandaModal = ({ booking, products = [], salonProducts = [], services = [], settings = {}, onClose, onConfirm }) => {
   const serviceName = booking?.serviceName || booking?.service?.name || 'Serviço';
+  const matchedService = services.find(s => 
+    s.id === booking?.serviceId || 
+    s.id === booking?.service?.id || 
+    s.name?.toLowerCase() === serviceName?.toLowerCase()
+  );
+  const basePrice = matchedService?.promoPrice || booking?.servicePrice || booking?.service?.price || matchedService?.price || 0;
   const prepay = booking?.prepayment ? Number(booking.prepayment) : 0;
 
   const [paymentMethod, setPaymentMethod] = useState('Pix');
@@ -46,9 +51,41 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const [addedProducts, setAddedProducts] = useState([]);
   const [addedServices, setAddedServices] = useState([]);
   const [usedProducts, setUsedProducts] = useState([]);
+  const [extraCost, setExtraCost] = useState('');
   const [discount, setDiscount] = useState(0);
-  const [overridePrice, setOverridePrice] = useState(booking?.servicePrice || booking?.service?.price || 0);
+  const [overridePrice, setOverridePrice] = useState(basePrice);
   const [requestReview, setRequestReview] = useState(true);
+
+  // Auto-populate usedProducts (insumos) default for this service
+  useEffect(() => {
+    if (matchedService && salonProducts && salonProducts.length > 0) {
+      const defaultUsed = [];
+      salonProducts.forEach(p => {
+        if (p.usedIn && p.usedIn.length > 0) {
+          const match = p.usedIn.find(ui => 
+            (matchedService.id && ui.serviceId === matchedService.id) || 
+            (ui.serviceName && ui.serviceName.toLowerCase() === matchedService.name?.toLowerCase())
+          );
+          if (match) {
+            const portionAmount = Number(match.amount) || 0;
+            const pricePerUnit = p.pricePerUnit || (p.volumetry > 0 ? p.costPrice / p.volumetry : 0);
+            const calculatedCost = Number((pricePerUnit * portionAmount).toFixed(2)) || p.costPrice || 0;
+            
+            defaultUsed.push({
+              productId: p.id,
+              name: p.name,
+              price: calculatedCost,
+              qty: 1,
+              amount: portionAmount,
+              unit: p.unit || '',
+              isDefault: true
+            });
+          }
+        }
+      });
+      setUsedProducts(defaultUsed);
+    }
+  }, [matchedService, salonProducts]);
 
   // Split payment states
   const [isSplitPayment, setIsSplitPayment] = useState(false);
@@ -122,11 +159,10 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
 
   const filteredUsedProducts = useMemo(() => {
     if (usedProductSearch.trim().length < 3) return [];
-    return products.filter(p =>
-      p.quantity > 0 &&
+    return salonProducts.filter(p =>
       (p.name || '').toLowerCase().includes(usedProductSearch.toLowerCase())
     ).slice(0, 5);
-  }, [products, usedProductSearch]);
+  }, [salonProducts, usedProductSearch]);
 
   const filteredServices = useMemo(() => {
     if (serviceSearch.trim().length < 3) return [];
@@ -211,10 +247,11 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
       addedProducts,
       addedServices,
       usedProducts,
+      extraCost: Number(extraCost) || 0,
       discount,
       overrideBasePrice: overridePrice !== '' ? Number(overridePrice) : null,
       total: totalToPay,
-      netTotal,
+      netTotal: netTotal - usedProductsTotal - (Number(extraCost) || 0),
       feeAmount,
       requestReview,
     });
@@ -479,10 +516,17 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               </div>
             )}
             {usedProducts.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
                 {usedProducts.map(p => (
                   <div key={p.productId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
-                    <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{p.name}</span>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.83rem', color: 'var(--adm-text)', fontWeight: 600 }}>
+                        {p.name} {p.amount ? `(${p.amount}${p.unit || ''})` : ''}
+                      </span>
+                      <span style={{ fontSize: '0.7rem', color: p.isDefault ? 'var(--adm-success, #48bb78)' : 'var(--adm-gold)' }}>
+                        {p.isDefault ? '✓ Insumo Padrão do Serviço' : '➕ Extra Manual'}
+                      </span>
+                    </div>
                     <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>Custo: {fmtBRL(p.price * p.qty)}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                       <button type="button" onClick={() => handleUsedQtyChange(p.productId, -1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
@@ -493,6 +537,21 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                 ))}
               </div>
             )}
+            
+            {/* Manual Extra Interno cost */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Custo Extra Interno Manual (Insumo não listado)</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px' }}>
+                <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>R$</span>
+                <input
+                  type="number"
+                  placeholder="0,00"
+                  value={extraCost}
+                  onChange={e => setExtraCost(e.target.value)}
+                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.9rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
+                />
+              </div>
+            </div>
           </section>
 
           {/* Discount */}
@@ -563,9 +622,9 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
                 <span>Produtos</span><span>{fmtBRL(productTotal)}</span>
               </div>
             )}
-            {usedProductsTotal > 0 && (
+            {(usedProductsTotal > 0 || Number(extraCost) > 0) && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                <span>Custo Insumos (Despesa)</span><span>- {fmtBRL(usedProductsTotal)}</span>
+                <span>Custo Interno (Insumos)</span><span>{fmtBRL(usedProductsTotal + (Number(extraCost) || 0))}</span>
               </div>
             )}
             {tipValue > 0 && (
@@ -579,15 +638,20 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               </div>
             )}
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, color: 'var(--adm-text)' }}>
-              <span>Valor Total</span><span>{fmtBRL(totalToPay)}</span>
+              <span>Valor Total (Cliente)</span><span>{fmtBRL(totalToPay)}</span>
             </div>
             {feeAmount > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-danger)' }}>
                 <span>Taxa da Maquininha {isSplitPayment ? '' : `(${feeRate}%)`}</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
+            {(usedProductsTotal > 0 || Number(extraCost) > 0) && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-danger)' }}>
+                <span>Dedução de Insumos/Custo Interno</span><span>- {fmtBRL(usedProductsTotal + (Number(extraCost) || 0))}</span>
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.05rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
-              <span>Valor Líquido Recebido</span><span>{fmtBRL(netTotal)}</span>
+              <span>Valor Líquido do Fechamento</span><span>{fmtBRL(netTotal - usedProductsTotal - (Number(extraCost) || 0))}</span>
             </div>
           </div>
 

@@ -47,6 +47,46 @@ const slotInRange = (slot, start, end) => {
   return slot >= start && slot < end;
 };
 
+const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
+  const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
+  let category = matched?.category;
+
+  if (!category) {
+    const hasCombo = name.includes('combo') || name.includes('misto');
+    const hasCorte = /\b(corte|cortes)\b/.test(name);
+    const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
+    const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
+
+    if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
+      category = 'Combo';
+    } else if (hasCorte) {
+      category = 'Corte';
+    } else if (hasCor) {
+      category = 'Cor';
+    } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
+      category = 'Análise';
+    } else {
+      category = 'Tratamento'; // fallback
+    }
+  }
+
+  const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  if (catLower.includes('combo') || catLower.includes('misto')) {
+    return { class: 'svc-combo', badge: 'COMBO' };
+  }
+  if (catLower.includes('corte')) {
+    return { class: 'svc-corte', badge: 'CORTE' };
+  }
+  if (catLower.includes('cor') || catLower.includes('colora')) {
+    return { class: 'svc-cor', badge: 'COR' };
+  }
+  if (catLower.includes('analise') || catLower.includes('avaliacao')) {
+    return { class: 'svc-analise', badge: 'ANÁLISE' };
+  }
+  return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
+};
+
 const calculateOverlappingLayout = (items) => {
   if (!items || items.length === 0) return [];
   const sorted = [...items].sort((a, b) => {
@@ -1544,7 +1584,7 @@ const AdminDashboard = () => {
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
-    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], usedProducts: up = [], discount: disc = 0, overrideBasePrice: obp, requestReview } = payload;
+    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], usedProducts: up = [], extraCost = 0, discount: disc = 0, overrideBasePrice: obp, requestReview } = payload;
     const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
     const usedProductsNorm = (up || []).map(p => ({ ...p, quantity: p.qty }));
     const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
@@ -1580,10 +1620,26 @@ const AdminDashboard = () => {
         const match = products.find(prod => prod.id === p.productId);
         return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
       }),
+      usedProducts: usedProductsNorm.map(p => ({
+        productId: p.productId,
+        name: p.name,
+        quantity: p.quantity,
+        price: p.price
+      })),
+      extraCost: Number(extraCost) || 0,
       createdAt: new Date().toISOString()
     };
 
+    // Calculate service cost
+    const mainService = services.find(s => s.name === (booking.service?.name || booking.serviceName));
+    const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+    const extraServicesCost = (as || []).reduce((sum, item) => {
+      const match = services.find(s => s.name === item.name);
+      return sum + (match ? (Number(match.cost) || 0) : 0);
+    }, 0);
     const usedProductsTotal = usedProductsNorm.reduce((s, p) => s + p.price * p.quantity, 0);
+    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + extraCost;
+
     const saidaPayload = {
       bookingId: booking.id,
       date: booking.date || getLocalDateString(new Date()),
@@ -1591,11 +1647,18 @@ const AdminDashboard = () => {
       clientName: booking.clientName,
       clientPhone: booking.clientPhone || '',
       type: 'saida',
-      paymentMethod: 'Pix',
-      value: usedProductsTotal,
+      paymentMethod: pm || 'Pix',
+      value: totalServiceCost,
       discount: 0,
-      description: `Uso de Insumos - Comanda ${booking.clientName}: ` + usedProductsNorm.map(p => `${p.quantity}x ${p.name}`).join(', '),
+      description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${(as || []).length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${extraCost > 0 ? ` (Extra Manual: R$ ${extraCost})` : ''}`,
       professionalId: booking.professionalId || booking.profissional || 'jon',
+      usedProducts: usedProductsNorm.map(p => ({
+        productId: p.productId,
+        name: p.name,
+        quantity: p.quantity,
+        price: p.price
+      })),
+      extraCost: Number(extraCost) || 0,
       createdAt: new Date().toISOString()
     };
 
@@ -1628,12 +1691,12 @@ const AdminDashboard = () => {
           setProducts(updated);
         }
 
-        const localTx = localStorage.getItem('demo_financial') || '[]';
-        const currentTx = JSON.parse(localTx);
+        const localTx = localStorage.getItem('demo_financial') || localStorage.getItem('demo_transactions');
+        const currentTx = localTx ? JSON.parse(localTx) : [];
         const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
         let updatedTxList = [newTx, ...currentTx];
 
-        if (usedProductsNorm.length > 0) {
+        if (totalServiceCost > 0) {
           const newSaidaTx = { id: 'tx_saida_' + Date.now(), ...saidaPayload };
           updatedTxList = [newSaidaTx, ...updatedTxList];
         }
@@ -1673,7 +1736,7 @@ const AdminDashboard = () => {
 
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
         
-        if (usedProductsNorm.length > 0) {
+        if (totalServiceCost > 0) {
           await addDoc(collection(db, 'financial_transactions'), saidaPayload);
         }
       }
@@ -3184,15 +3247,7 @@ Grande abraço, Jon.`;
                                 return (
                                   <div 
                                     key={bk.id} 
-                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${(() => {
-                                      const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                      if (name.includes('corte') && (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat'))) return 'svc-misto';
-                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-misto';
-                                      if (name.includes('corte')) return 'svc-corte';
-                                      if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
-                                      if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
-                                      return 'svc-outro';
-                                    })()}`}
+                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).class}`}
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
@@ -3251,15 +3306,7 @@ Grande abraço, Jon.`;
                                       </span>
                                     </div>
                                     <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
-                                      {(() => {
-                                        const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                        if (name.includes('corte') && (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat'))) return 'MISTO';
-                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'MISTO';
-                                        if (name.includes('corte')) return 'CORTE';
-                                        if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
-                                        if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
-                                        return 'OUTRO';
-                                      })()}
+                                      {getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).badge}
                                     </div>
                                   </div>
                               );
@@ -3661,14 +3708,7 @@ Grande abraço, Jon.`;
                               return (
                                   <div 
                                     key={item.id} 
-                                    className={`appt-card ${b.status} ${(() => {
-                                      const name = (b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-corte-cor';
-                                      if (name.includes('corte')) return 'svc-corte';
-                                      if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
-                                      if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
-                                      return 'svc-outro';
-                                    })()}`}
+                                    className={`appt-card ${b.status} ${getServiceCategoryInfo(b.service?.name || b.serviceName, services).class}`}
                                     onClick={(e) => handleBookingLeftClick(e, b)}
                                     style={{
                                       top: `${topPercent}%`,
@@ -3722,14 +3762,7 @@ Grande abraço, Jon.`;
                                       </span>
                                     </div>
                                     <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
-                                      {(() => {
-                                        const name = (b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'CORTE + COR';
-                                        if (name.includes('corte')) return 'CORTE';
-                                        if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
-                                        if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
-                                        return 'OUTRO';
-                                      })()}
+                                      {getServiceCategoryInfo(b.service?.name || b.serviceName, services).badge}
                                     </div>
                                   </div>
                               );
@@ -6139,6 +6172,7 @@ Grande abraço, Jon.`;
         <ComandaModal
           booking={comandaBooking}
           products={products}
+          salonProducts={globalData.salon_products || []}
           services={services}
           settings={settings}
           onClose={() => setComandaBooking(null)}

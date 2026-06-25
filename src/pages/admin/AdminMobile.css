@@ -184,17 +184,20 @@
   height: var(--nav-h);
   min-height: var(--nav-h);
   display: flex;
-  align-items: stretch;
-  background: rgba(196, 115, 138, 0.92);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-top: 0.5px solid rgba(255, 255, 255, 0.15);
-  padding: 0 4px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(20, 16, 13, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(220, 163, 84, 0.15);
+  padding: 0 8px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   flex-shrink: 0;
   position: relative;
   z-index: 10;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.30);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.40);
+  box-sizing: border-box;
 }
 
 .m-nav-item {
@@ -203,44 +206,46 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   border: none;
   background: transparent;
-  color: rgba(255,255,255,0.60);
+  color: rgba(255, 255, 255, 0.45);
   cursor: pointer;
-  padding: 8px 0;
+  padding: 4px 0;
+  height: 100%;
   position: relative;
-  transition: color 0.2s var(--m-ease-fast);
+  transition: all 0.2s ease;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .m-nav-item.active {
-  color: #ffffff;
+  color: var(--m-gold, #dca354) !important;
 }
 
 .m-nav-label {
-  font-size: 0.58rem;
-  font-weight: 800;
+  font-size: 0.65rem;
+  font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 
 .m-nav-icon-wrap {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.65);
-  transition: all 0.25s var(--m-ease);
+  border-radius: 50%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  transition: all 0.2s ease;
 }
 
 .m-nav-item.active .m-nav-icon-wrap {
-  background: rgba(255,255,255,0.28);
-  color: #ffffff !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.20);
+  background: rgba(220, 163, 84, 0.12);
+  color: var(--m-gold, #dca354) !important;
+  box-shadow: inset 0 0 8px rgba(220, 163, 84, 0.05);
 }
 
 /* ── Tab Transitions ───────────────────────────────────────────────── */
@@ -381,30 +386,48 @@
 .m-booking-card:active { background: var(--m-hover); transform: scale(0.975); box-shadow: none; }
 
 .m-booking-card.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.10) 0%, rgba(226, 112, 58, 0.02) 50%, var(--m-card) 100%) !important;
-  border: 0.5px solid rgba(226, 112, 58, 0.2) !important;
-  border-left: 4px solid #E2703A !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.10) 0%, rgba(139, 92, 246, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(139, 92, 246, 0.2) !important;
+  border-left: 4px solid #8B5CF6 !important;
 }
 .m-booking-card.svc-corte .m-booking-time {
-  color: #E2703A !important;
+  color: #8B5CF6 !important;
 }
 
-.m-booking-card.svc-cor, .m-booking-card.svc-coloracao, .m-booking-card.svc-mechas {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.10) 0%, rgba(122, 60, 255, 0.02) 50%, var(--m-card) 100%) !important;
-  border: 0.5px solid rgba(122, 60, 255, 0.2) !important;
-  border-left: 4px solid #7A3CFF !important;
+.m-booking-card.svc-combo {
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.10) 0%, rgba(255, 45, 139, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(255, 45, 139, 0.2) !important;
+  border-left: 4px solid #FF2D8B !important;
 }
-.m-booking-card.svc-cor .m-booking-time, .m-booking-card.svc-coloracao .m-booking-time, .m-booking-card.svc-mechas .m-booking-time {
-  color: #7A3CFF !important;
+.m-booking-card.svc-combo .m-booking-time {
+  color: #FF2D8B !important;
 }
 
-.m-booking-card.svc-tratamento, .m-booking-card.svc-terapia-capilar {
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.10) 0%, rgba(31, 111, 235, 0.02) 50%, var(--m-card) 100%) !important;
-  border: 0.5px solid rgba(31, 111, 235, 0.2) !important;
-  border-left: 4px solid #1F6FEB !important;
+.m-booking-card.svc-tratamento {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.10) 0%, rgba(16, 185, 129, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(16, 185, 129, 0.2) !important;
+  border-left: 4px solid #10B981 !important;
 }
-.m-booking-card.svc-tratamento .m-booking-time, .m-booking-card.svc-terapia-capilar .m-booking-time {
-  color: #1F6FEB !important;
+.m-booking-card.svc-tratamento .m-booking-time {
+  color: #10B981 !important;
+}
+
+.m-booking-card.svc-cor {
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.10) 0%, rgba(251, 191, 36, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(251, 191, 36, 0.2) !important;
+  border-left: 4px solid #FBBF24 !important;
+}
+.m-booking-card.svc-cor .m-booking-time {
+  color: #FBBF24 !important;
+}
+
+.m-booking-card.svc-analise {
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.10) 0%, rgba(249, 115, 22, 0.02) 50%, var(--m-card) 100%) !important;
+  border: 0.5px solid rgba(249, 115, 22, 0.2) !important;
+  border-left: 4px solid #F97316 !important;
+}
+.m-booking-card.svc-analise .m-booking-time {
+  color: #F97316 !important;
 }
 
 .m-booking-time {
@@ -651,34 +674,34 @@
   border-left: 3px solid var(--m-muted, #A0A0A0);
   opacity: 0.55;
 }
-.m-slot-booking.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.07) 45%, transparent 100%) !important;
+.m-slot-booking.svc-corte, .m-slot-booking.confirmado.svc-corte, .m-slot-booking.confirmado-pela-cliente.svc-corte, .m-slot-booking.finalizado.svc-corte, .m-slot-booking.pendente.svc-corte {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.07) 45%, transparent 100%) !important;
   border: none !important;
-  border-left: 3px solid #E2703A !important;
+  border-left: 3px solid #8B5CF6 !important;
   color: #ffffff !important;
 }
-.m-slot-booking.svc-cor, .m-slot-booking.svc-coloracao, .m-slot-booking.svc-mechas {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.07) 45%, transparent 100%) !important;
-  border: none !important;
-  border-left: 3px solid #7A3CFF !important;
-  color: #ffffff !important;
-}
-.m-slot-booking.svc-tratamento, .m-slot-booking.svc-terapia-capilar {
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.07) 45%, transparent 100%) !important;
-  border: none !important;
-  border-left: 3px solid #1F6FEB !important;
-  color: #ffffff !important;
-}
-.m-slot-booking.svc-corte-cor, .m-slot-booking.svc-misto, .m-slot-booking[class*="svc-corte-coloracao"], .m-slot-booking[class*="svc-corte-mechas"] {
-  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.07) 45%, transparent 100%) !important;
-  border: none !important;
-  border-left: 3px solid #E5322D !important;
-  color: #ffffff !important;
-}
-.m-slot-booking.svc-consulta, .m-slot-booking.svc-outro {
+.m-slot-booking.svc-combo, .m-slot-booking.confirmado.svc-combo, .m-slot-booking.confirmado-pela-cliente.svc-combo, .m-slot-booking.finalizado.svc-combo, .m-slot-booking.pendente.svc-combo {
   background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.07) 45%, transparent 100%) !important;
   border: none !important;
   border-left: 3px solid #FF2D8B !important;
+  color: #ffffff !important;
+}
+.m-slot-booking.svc-tratamento, .m-slot-booking.confirmado.svc-tratamento, .m-slot-booking.confirmado-pela-cliente.svc-tratamento, .m-slot-booking.finalizado.svc-tratamento, .m-slot-booking.pendente.svc-tratamento {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
+  border-left: 3px solid #10B981 !important;
+  color: #ffffff !important;
+}
+.m-slot-booking.svc-cor, .m-slot-booking.confirmado.svc-cor, .m-slot-booking.confirmado-pela-cliente.svc-cor, .m-slot-booking.finalizado.svc-cor, .m-slot-booking.pendente.svc-cor {
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.22) 0%, rgba(251, 191, 36, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
+  border-left: 3px solid #FBBF24 !important;
+  color: #ffffff !important;
+}
+.m-slot-booking.svc-analise, .m-slot-booking.confirmado.svc-analise, .m-slot-booking.confirmado-pela-cliente.svc-analise, .m-slot-booking.finalizado.svc-analise, .m-slot-booking.pendente.svc-analise {
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
+  border-left: 3px solid #F97316 !important;
   color: #ffffff !important;
 }
 
@@ -697,43 +720,29 @@
 }
 
 .m-slot-booking.svc-corte .appt-badge, .m-booking-bar.svc-corte .appt-badge {
-  color: #E2703A !important;
-  background: rgba(226,112,58,0.12) !important;
-  border-color: rgba(226,112,58,0.25) !important;
+  color: #8B5CF6 !important;
+  background: rgba(139, 92, 246, 0.12) !important;
+  border-color: rgba(139, 92, 246, 0.25) !important;
 }
-
-.m-slot-booking.svc-cor .appt-badge, 
-.m-slot-booking.svc-coloracao .appt-badge, 
-.m-slot-booking.svc-mechas .appt-badge,
-.m-booking-bar.svc-cor .appt-badge {
-  color: #7A3CFF !important;
-  background: rgba(122,60,255,0.12) !important;
-  border-color: rgba(122,60,255,0.25) !important;
-}
-
-.m-slot-booking.svc-tratamento .appt-badge, 
-.m-slot-booking.svc-terapia-capilar .appt-badge,
-.m-booking-bar.svc-tratamento .appt-badge {
-  color: #1F6FEB !important;
-  background: rgba(31,111,235,0.12) !important;
-  border-color: rgba(31,111,235,0.25) !important;
-}
-
-.m-slot-booking.svc-corte-cor .appt-badge, 
-.m-slot-booking.svc-misto .appt-badge, 
-.m-slot-booking[class*="svc-corte-coloracao"] .appt-badge, 
-.m-slot-booking[class*="svc-corte-mechas"] .appt-badge,
-.m-booking-bar.svc-misto .appt-badge {
-  color: #E5322D !important;
-  background: rgba(229,50,45,0.12) !important;
-  border-color: rgba(229,50,45,0.25) !important;
-}
-
-.m-slot-booking.svc-consulta .appt-badge, .m-slot-booking.svc-outro .appt-badge,
-.m-booking-bar.svc-consulta .appt-badge, .m-booking-bar.svc-outro .appt-badge {
+.m-slot-booking.svc-combo .appt-badge, .m-booking-bar.svc-combo .appt-badge {
   color: #FF2D8B !important;
-  background: rgba(255,45,139,0.12) !important;
-  border-color: rgba(255,45,139,0.25) !important;
+  background: rgba(255, 45, 139, 0.12) !important;
+  border-color: rgba(255, 45, 139, 0.25) !important;
+}
+.m-slot-booking.svc-tratamento .appt-badge, .m-booking-bar.svc-tratamento .appt-badge {
+  color: #10B981 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+.m-slot-booking.svc-cor .appt-badge, .m-booking-bar.svc-cor .appt-badge {
+  color: #FBBF24 !important;
+  background: rgba(251, 191, 36, 0.12) !important;
+  border-color: rgba(251, 191, 36, 0.25) !important;
+}
+.m-slot-booking.svc-analise .appt-badge, .m-booking-bar.svc-analise .appt-badge {
+  color: #F97316 !important;
+  background: rgba(249, 115, 22, 0.12) !important;
+  border-color: rgba(249, 115, 22, 0.25) !important;
 }
 
 .m-slot-booking.bloqueado  { border-color: var(--m-muted); background: rgba(122,110,99,0.06); }
@@ -1923,24 +1932,24 @@
 }
 
 .m-booking-bar.svc-corte {
-  border-left: 3px solid #E2703A !important;
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.07) 45%, transparent 100%) !important;
+  border-left: 3px solid #8B5CF6 !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.07) 45%, transparent 100%) !important;
 }
-.m-booking-bar.svc-cor {
-  border-left: 3px solid #7A3CFF !important;
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.07) 45%, transparent 100%) !important;
-}
-.m-booking-bar.svc-tratamento {
-  border-left: 3px solid #1F6FEB !important;
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.07) 45%, transparent 100%) !important;
-}
-.m-booking-bar.svc-misto {
-  border-left: 3px solid #E5322D !important;
-  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.07) 45%, transparent 100%) !important;
-}
-.m-booking-bar.svc-consulta, .m-booking-bar.svc-outro {
+.m-booking-bar.svc-combo {
   border-left: 3px solid #FF2D8B !important;
   background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-tratamento {
+  border-left: 3px solid #10B981 !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-cor {
+  border-left: 3px solid #FBBF24 !important;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.22) 0%, rgba(251, 191, 36, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-analise {
+  border-left: 3px solid #F97316 !important;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.07) 45%, transparent 100%) !important;
 }
 
 .m-booking-info {

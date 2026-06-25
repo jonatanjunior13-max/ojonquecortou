@@ -51,32 +51,44 @@ const minToTime = (min) => {
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 };
 
-const getServiceCategory = (serviceName = '') => {
-  const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  const hasCorte = name.includes('corte');
-  const hasTratamento = name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat');
-  const hasCor = name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza');
-  const hasConsulta = name.includes('consulta') || name.includes('avaliacao') || name.includes('teste');
+const getServiceCategory = (serviceName = '', servicesList = []) => {
+  const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
+  let category = matched?.category;
 
-  if (hasCorte && hasTratamento) {
-    return { class: 'svc-misto', badge: 'MISTO' };
+  if (!category) {
+    const hasCombo = name.includes('combo') || name.includes('misto');
+    const hasCorte = /\b(corte|cortes)\b/.test(name);
+    const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
+    const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
+
+    if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
+      category = 'Combo';
+    } else if (hasCorte) {
+      category = 'Corte';
+    } else if (hasCor) {
+      category = 'Cor';
+    } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
+      category = 'Análise';
+    } else {
+      category = 'Tratamento'; // fallback
+    }
   }
-  if (hasCorte && hasCor) {
-    return { class: 'svc-misto', badge: 'MISTO' };
+
+  const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  if (catLower.includes('combo') || catLower.includes('misto')) {
+    return { class: 'svc-combo', badge: 'COMBO' };
   }
-  if (hasCorte) {
+  if (catLower.includes('corte')) {
     return { class: 'svc-corte', badge: 'CORTE' };
   }
-  if (hasCor) {
+  if (catLower.includes('cor') || catLower.includes('colora')) {
     return { class: 'svc-cor', badge: 'COR' };
   }
-  if (hasTratamento) {
-    return { class: 'svc-tratamento', badge: 'TRAT.' };
+  if (catLower.includes('analise') || catLower.includes('avaliacao')) {
+    return { class: 'svc-analise', badge: 'ANÁLISE' };
   }
-  if (hasConsulta) {
-    return { class: 'svc-consulta', badge: 'CONS.' };
-  }
-  return { class: 'svc-outro', badge: 'OUTRO' };
+  return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
 };
 
 const calculateOverlappingLayout = (items) => {
@@ -2386,9 +2398,9 @@ Grande abraço, Jon.`;
             <div className="m-booking-list">
               {todayBookings.slice(0, 6).map(b => {
                 const svcName = b.service?.name || b.serviceName || "";
-                const cat = getServiceCategory(svcName);
+                const cat = getServiceCategory(svcName, services);
                 return (
-                  <div key={b.id} className="m-booking-card" onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
+                  <div key={b.id} className={`m-booking-card ${cat.class}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                     <div className="m-booking-time">{b.time || '—'}</div>
                     <div className={`m-booking-bar ${cat.class}`}>
                       <div className="m-booking-info">
@@ -2675,11 +2687,11 @@ Grande abraço, Jon.`;
               if (item.type === 'booking') {
                 const bk = item.raw;
                 const svcName = bk.service?.name || bk.serviceName || "";
-                const cat = getServiceCategory(svcName);
+                const cat = getServiceCategory(svcName, services);
                 return (
                   <div
                     key={item.id}
-                    className={`m-slot-booking ${bk.status} ${cat.class}`}
+                    className={`m-slot-booking ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${cat.class}`}
                     style={{
                       position: 'absolute',
                       top: topPx,

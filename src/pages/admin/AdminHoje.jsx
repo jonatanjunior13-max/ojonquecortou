@@ -40,36 +40,44 @@ const statusColor = {
   bloqueado: 'var(--adm-muted)',
 };
 
-const getServiceColor = (serviceName = '') => {
-  const s = serviceName.toLowerCase().trim();
+const getServiceColor = (serviceName = '', servicesList = []) => {
+  const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
+  let category = matched?.category;
 
-  // Combo: Corte + Tratamento
-  if ((s.includes('corte') && (s.includes('tratamento') || s.includes('terapia') || s.includes('cronograma') || s.includes('hidrat'))) || s.includes('combo')) {
-    return { color: '#E5322D', label: 'CORTE + TRATAMENTO' };
+  if (!category) {
+    const hasCombo = name.includes('combo') || name.includes('misto');
+    const hasCorte = /\b(corte|cortes)\b/.test(name);
+    const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
+    const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
+
+    if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
+      category = 'Combo';
+    } else if (hasCorte) {
+      category = 'Corte';
+    } else if (hasCor) {
+      category = 'Cor';
+    } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
+      category = 'Análise';
+    } else {
+      category = 'Tratamento'; // fallback
+    }
   }
 
-  // Corte + Cor
-  if (s.includes('corte') && (s.includes('cor') || s.includes('color') || s.includes('luzes') || s.includes('colora'))) {
-    return { color: '#E5322D', label: 'CORTE + COR' };
+  const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  if (catLower.includes('combo') || catLower.includes('misto')) {
+    return { color: '#FF2D8B', label: 'COMBO' };
   }
-
-  // Corte único
-  if (s.includes('corte') || s.includes('leitura')) {
-    return { color: '#E2703A', label: 'CORTE' };
+  if (catLower.includes('corte')) {
+    return { color: '#8B5CF6', label: 'CORTE' };
   }
-
-  // Coloração/Cor
-  if (s.includes('cor') || s.includes('color') || s.includes('luzes') || s.includes('colora')) {
-    return { color: '#7A3CFF', label: 'COR' };
+  if (catLower.includes('cor') || catLower.includes('colora')) {
+    return { color: '#FBBF24', label: 'COR' };
   }
-
-  // Tratamento Personalizado ou outros tratamentos
-  if (s.includes('tratamento') || s.includes('terapia') || s.includes('cronograma') || s.includes('hidrat')) {
-    return { color: '#1F6FEB', label: 'TRATAMENTO' };
+  if (catLower.includes('analise') || catLower.includes('avaliacao')) {
+    return { color: '#F97316', label: 'ANÁLISE' };
   }
-
-  // Default
-  return { color: '#FF2D8B', label: 'SERVIÇO' };
+  return { color: '#10B981', label: 'TRATAMENTO' };
 };
 
 const AdminHoje = () => {
@@ -425,7 +433,7 @@ const AdminHoje = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {todayBookings.map(b => {
               const svc = b.serviceName || b.service?.name || '';
-              const colorInfo = getServiceColor(svc);
+              const colorInfo = getServiceColor(svc, globalData.services || []);
               const barColor = colorInfo.color;
               const categoryLabel = colorInfo.label;
               return (

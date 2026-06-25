@@ -744,6 +744,7 @@ Use as seguintes tags no "bodyHtml":
   // Google Business Profile states
   const gbpConnected = !!settings?.automations?.googleGbpConnected;
   const [isPublishingGbpId, setIsPublishingGbpId] = useState(null);
+  const [isPublishingGbpNow, setIsPublishingGbpNow] = useState(false);
   const [googleReviews, setGoogleReviews] = useState([
     { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
     { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
@@ -787,7 +788,7 @@ Use as seguintes tags no "bodyHtml":
     }
   };
 
-  const handleSimulateNewReview = () => {
+  const handleSimulateNewReview = async () => {
     const names = ['Amanda Costa', 'Patrícia Oliveira', 'Beatriz Souza', 'Luana Mendes'];
     const comments = [
       'Meu cabelo ondulado nunca teve tanta definição! O visagismo do Jon é impecável.',
@@ -807,14 +808,55 @@ Use as seguintes tags no "bodyHtml":
 
     if (settings?.automations?.google_reviews_enabled !== false) {
       const firstName = names[idx].split(' ')[0];
-      const templates = [
-        `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
-        `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
-        `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
-        `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
-        `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
-      ];
-      newRev.reply = templates[Math.floor(Math.random() * templates.length)];
+      let replyText = '';
+      const apiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+      
+      if (apiKey && apiKey !== 'undefined' && apiKey !== 'null' && !apiKey.includes('placeholder')) {
+        try {
+          const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos, transição capilar e visagismo no salão "O Jon Que Cortou" em Belo Horizonte.
+Escreva uma resposta curta (máximo 250 caracteres), empática, direta e profissional em português para a seguinte avaliação de um cliente.
+Evite frases muito formais ou corporativas genéricas. Responda como o Jon de forma natural, referenciando algum detalhe se houver no comentário (por exemplo, se mencionar transição, volume, definição, corte a seco ou visagismo, responda sobre isso de forma acolhedora).
+
+Nome do cliente: ${names[idx]}
+Nota da avaliação: 5 estrelas
+Comentário do cliente: "${comments[idx]}"
+
+Escreva apenas o texto da resposta direta. Termine assinando com "— Jon".`;
+
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }] }]
+              })
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const generatedReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (generatedReply) {
+              replyText = generatedReply.trim();
+            }
+          }
+        } catch (err) {
+          console.warn('Erro ao gerar resposta simulada com Gemini API:', err);
+        }
+      }
+
+      if (!replyText) {
+        const templates = [
+          `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
+          `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
+          `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
+          `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
+          `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
+        ];
+        replyText = templates[Math.floor(Math.random() * templates.length)];
+      }
+      newRev.reply = replyText;
     }
 
     setGoogleReviews(prev => [newRev, ...prev]);
@@ -826,16 +868,54 @@ Use as seguintes tags no "bodyHtml":
     if (!review) return;
 
     const firstName = review.author.split(' ')[0];
-    const templates = [
-      `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
-      `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
-      `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
-      `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
-      `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
-    ];
+    let replyText = '';
+    const apiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
 
-    // Pick a random template
-    const replyText = templates[Math.floor(Math.random() * templates.length)];
+    if (apiKey && apiKey !== 'undefined' && apiKey !== 'null' && !apiKey.includes('placeholder')) {
+      try {
+        const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos, transição capilar e visagismo no salão "O Jon Que Cortou" em Belo Horizonte.
+Escreva uma resposta curta (máximo 250 caracteres), empática, direta e profissional em português para a seguinte avaliação de um cliente.
+Evite frases muito formais ou corporativas genéricas. Responda como o Jon de forma natural, referenciando algum detalhe se houver no comentário (por exemplo, se mencionar transição, volume, definição, corte a seco ou visagismo, responda sobre isso de forma acolhedora).
+
+Nome do cliente: ${review.author}
+Nota da avaliação: ${review.rating} estrelas
+Comentário do cliente: "${review.comment}"
+
+Escreva apenas o texto da resposta direta. Termine assinando com "— Jon".`;
+
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }]
+            })
+          }
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+          const generatedReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (generatedReply) {
+            replyText = generatedReply.trim();
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao gerar resposta manual com Gemini API:', err);
+      }
+    }
+
+    if (!replyText) {
+      const templates = [
+        `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
+        `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
+        `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
+        `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
+        `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
+      ];
+      replyText = templates[Math.floor(Math.random() * templates.length)];
+    }
 
     if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
       setGoogleReviews(prev => prev.map(rev => {
@@ -1029,22 +1109,96 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       timestamp: new Date().toISOString()
     };
 
+    // Update state immediately to prevent "sumir" feel
+    setScheduledGbpPosts(prev => [newPost, ...prev]);
+    try {
+      const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+      localStorage.setItem('demo_gbp_posts', JSON.stringify([newPost, ...local]));
+    } catch(e){}
+
     if (db) {
       try {
         await setDoc(doc(db, 'gbp_posts', newPost.id), newPost);
       } catch (err) {
         console.error("Erro ao salvar post no Firestore:", err);
       }
-    } else {
-      setScheduledGbpPosts(prev => [newPost, ...prev]);
-      try {
-        const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
-        localStorage.setItem('demo_gbp_posts', JSON.stringify([newPost, ...local]));
-      } catch(e){}
     }
 
     setGeneratedGbpPost(null);
     alert(`Postagem programada nos dias (${daysLabels}) às ${postFreqTime}!`);
+  };
+
+  const handlePublishGbpPostImmediately = async () => {
+    if (!generatedGbpPost) return;
+    setIsPublishingGbpNow(true);
+
+    let postImage = generatedGbpPost.image;
+    if (postImage && postImage.startsWith('data:') && storage) {
+      try {
+        const fileRef = storageRef(storage, `gallery/gbp-${Date.now()}.png`);
+        await uploadString(fileRef, postImage, 'data_url');
+        postImage = await getDownloadURL(fileRef);
+      } catch (err) {
+        console.warn('Erro ao subir imagem do post para o Storage, usando fallback local:', err);
+        postImage = pickGbpFallbackImage();
+      }
+    }
+
+    const newPost = {
+      id: 'post_' + Date.now(),
+      text: generatedGbpPost.text,
+      image: postImage,
+      scheduledDate: 'Agora',
+      status: 'published',
+      timestamp: new Date().toISOString()
+    };
+
+    // Update state immediately
+    setScheduledGbpPosts(prev => [newPost, ...prev]);
+    try {
+      const local = JSON.parse(localStorage.getItem('demo_gbp_posts')) || [];
+      localStorage.setItem('demo_gbp_posts', JSON.stringify([newPost, ...local]));
+    } catch(e){}
+
+    if (db) {
+      try {
+        await setDoc(doc(db, 'gbp_posts', newPost.id), newPost);
+      } catch (err) {
+        console.error("Erro ao salvar post no Firestore:", err);
+      }
+    }
+
+    if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
+      setTimeout(() => {
+        alert('Publicado com sucesso no Google Meu Negócio! 🚀 (Simulado)');
+        setIsPublishingGbpNow(false);
+        setGeneratedGbpPost(null);
+      }, 1000);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/gbp?action=post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: newPost.text,
+          image: newPost.image
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('Publicado com sucesso no Google Meu Negócio! 🚀');
+      } else {
+        alert(`Erro ao publicar no Google: ${data.error || 'Erro desconhecido'}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Erro de conexão ao tentar publicar no Google.');
+    } finally {
+      setIsPublishingGbpNow(false);
+      setGeneratedGbpPost(null);
+    }
   };
 
   const handlePublishGbpPostNow = async (post) => {
@@ -2839,11 +2993,25 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                             <span style={{ position: 'absolute', bottom: 4, right: 4, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: '0.65rem', padding: '2px 6px', borderRadius: 4 }}>Imagem de Cachos</span>
                           </div>
                         )}
-                        <div style={{ display: 'flex', gap: 8 }}>
-                          <button className="btn btn-accent btn-small" style={{ flex: 1, fontSize: '0.75rem' }} onClick={handleScheduleGbpPost}>
-                            📅 Programar na Fila
-                          </button>
-                          <button className="btn btn-outline btn-small" style={{ flex: 1, fontSize: '0.75rem' }} onClick={() => setGeneratedGbpPost(null)}>
+                        <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
+                          <div style={{ display: 'flex', gap: 8 }}>
+                            <button 
+                              className="btn btn-accent btn-small" 
+                              style={{ flex: 1, fontSize: '0.75rem' }} 
+                              onClick={handlePublishGbpPostImmediately}
+                              disabled={isPublishingGbpNow}
+                            >
+                              {isPublishingGbpNow ? 'Publicando...' : '🚀 Publicar Agora'}
+                            </button>
+                            <button 
+                              className="btn btn-primary btn-small" 
+                              style={{ flex: 1, fontSize: '0.75rem', background: 'var(--adm-rule)', color: 'var(--adm-text)', border: 'none' }} 
+                              onClick={handleScheduleGbpPost}
+                            >
+                              📅 Programar na Fila
+                            </button>
+                          </div>
+                          <button className="btn btn-outline btn-small" style={{ fontSize: '0.75rem', width: '100%' }} onClick={() => setGeneratedGbpPost(null)}>
                             Descartar
                           </button>
                         </div>

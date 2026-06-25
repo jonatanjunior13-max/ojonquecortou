@@ -623,6 +623,67 @@ const AdminFinancial = () => {
     })).sort((a, b) => b.value - a.value);
   }, [filteredTransactions]);
 
+  // Aggregate used salon products (insumos) and extra costs
+  const insumosUsageStats = useMemo(() => {
+    const stats = {};
+    let totalInsumosCost = 0;
+    let totalManualExtraCost = 0;
+    const history = [];
+
+    filteredTransactions.forEach(t => {
+      let hasInsumos = false;
+      
+      // Check if this transaction has usedProducts
+      if (t.usedProducts && Array.isArray(t.usedProducts)) {
+        t.usedProducts.forEach(p => {
+          const key = p.productId || p.name;
+          if (!stats[key]) {
+            stats[key] = {
+              name: p.name,
+              quantity: 0,
+              totalCost: 0
+            };
+          }
+          stats[key].quantity += p.quantity || 0;
+          stats[key].totalCost += (p.price || 0) * (p.quantity || 0);
+          totalInsumosCost += (p.price || 0) * (p.quantity || 0);
+          hasInsumos = true;
+        });
+      }
+      
+      // Also look for manual extraCost
+      if (t.extraCost && Number(t.extraCost) > 0) {
+        totalManualExtraCost += Number(t.extraCost);
+        hasInsumos = true;
+      } else if (t.type === 'saida' && t.description && t.description.includes('Extra Manual: R$')) {
+        const match = t.description.match(/Extra Manual: R\$\s*([\d.]+)/);
+        if (match) {
+          totalManualExtraCost += Number(match[1]);
+          hasInsumos = true;
+        }
+      }
+      
+      if (hasInsumos || (t.type === 'saida' && t.description && t.description.includes('Insumos:'))) {
+        history.push({
+          id: t.id,
+          date: t.date,
+          clientName: t.clientName || 'Cliente',
+          description: t.description,
+          value: t.value,
+          usedProducts: t.usedProducts || [],
+          extraCost: t.extraCost || 0
+        });
+      }
+    });
+
+    return {
+      products: Object.values(stats).sort((a, b) => b.totalCost - a.totalCost),
+      totalInsumosCost,
+      totalManualExtraCost,
+      history
+    };
+  }, [filteredTransactions]);
+
   // Save new fee settings to database & local
   const handleSaveFees = async (e) => {
     e.preventDefault();
@@ -1200,6 +1261,7 @@ const AdminFinancial = () => {
           { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
           { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
           { id: 'precificacao', label: 'Precificação', icon: <DollarSign size={14} /> },
+          { id: 'insumos', label: 'Uso de Insumos', icon: <ShoppingBag size={14} /> },
         ].map(tab => (
           <button
             key={tab.id}
@@ -2719,6 +2781,114 @@ const AdminFinancial = () => {
                 O erro mais comum é calcular o preço pensando apenas no produto gasto. O que mais pesa na precificação de um salão de beleza é o <strong>tempo de cadeira ocupada</strong> e o seu <strong>grau de especialização</strong>. Se o seu serviço entrega um diagnóstico personalizado (como a Leitura de Fio) que resolve a dor do cliente, o valor percebido vai muito além do custo do produto físico!
               </p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {activeSubTab === 'insumos' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* KPI Cards specific to insumos */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+            <KpiCard
+              label="Custo Total de Insumos (Geral)"
+              value={`R$ ${(insumosUsageStats.totalInsumosCost + insumosUsageStats.totalManualExtraCost).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+              sub={`No período selecionado`}
+              icon={<ShoppingBag size={16} />}
+              variant="danger"
+            />
+            <KpiCard
+              label="Custo de Insumos Cadastrados"
+              value={`R$ ${insumosUsageStats.totalInsumosCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+              sub={`${insumosUsageStats.products.length} insumos catalogados utilizados`}
+              icon={<TrendingDown size={16} />}
+            />
+            <KpiCard
+              label="Custos Extras Manuais"
+              value={`R$ ${insumosUsageStats.totalManualExtraCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
+              sub={`Lançamentos manuais no fechamento`}
+              icon={<DollarSign size={16} />}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: 20 }}>
+            {/* Table of products/insumos usage */}
+            <Card>
+              <h3 style={{ margin: '0 0 16px 0', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                📊 Consolidação de Insumos por Produto
+              </h3>
+              <div style={{ overflowX: 'auto' }}>
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'left' }}>Nome do Insumo / Produto</th>
+                      <th style={{ textAlign: 'center' }}>Vezes Utilizado</th>
+                      <th style={{ textAlign: 'right' }}>Custo Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {insumosUsageStats.products.length === 0 ? (
+                      <tr>
+                        <td colSpan="3" style={{ textAlign: 'center', color: 'var(--adm-muted)', padding: '24px 0' }}>
+                          Nenhum uso de insumo catalogado registrado neste período.
+                        </td>
+                      </tr>
+                    ) : (
+                      insumosUsageStats.products.map((p, idx) => (
+                        <tr key={idx} style={{ borderBottom: '0.5px solid var(--adm-rule)' }}>
+                          <td style={{ color: '#fff', fontWeight: 600, padding: '12px 8px' }}>{p.name}</td>
+                          <td style={{ textAlign: 'center', padding: '12px 8px' }}>{p.quantity}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-gold)', fontWeight: 700, padding: '12px 8px' }}>
+                            R$ {p.totalCost.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+
+            {/* Historical list of transaction closures */}
+            <Card>
+              <h3 style={{ margin: '0 0 16px 0', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                📜 Histórico de Fechamentos e Custos
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '500px', overflowY: 'auto', paddingRight: 4 }}>
+                {insumosUsageStats.history.length === 0 ? (
+                  <p style={{ textAlign: 'center', color: 'var(--adm-muted)', padding: '24px 0' }}>
+                    Nenhum fechamento com insumos registrado neste período.
+                  </p>
+                ) : (
+                  insumosUsageStats.history.map((h, idx) => (
+                    <div key={idx} style={{ padding: 12, background: 'rgba(255,255,255,0.02)', border: '0.5px solid var(--adm-rule)', borderRadius: 8, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: '#fff' }}>{h.clientName}</span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{h.date.split('-').reverse().join('/')}</span>
+                      </div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)', lineHeight: 1.4 }}>
+                        {h.description}
+                      </div>
+                      
+                      {h.usedProducts && h.usedProducts.length > 0 && (
+                        <div style={{ borderTop: '0.5px solid var(--adm-rule)', paddingTop: 6, marginTop: 2 }}>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 4 }}>
+                            Insumos Detalhados:
+                          </span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            {h.usedProducts.map((p, pIdx) => (
+                              <div key={pIdx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--adm-text-2)' }}>
+                                <span>{p.quantity}x {p.name}</span>
+                                <span style={{ fontWeight: 600 }}>R$ {((p.price || 0) * (p.quantity || 0)).toFixed(2).replace('.', ',')}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </Card>
           </div>
         </div>
       )}
