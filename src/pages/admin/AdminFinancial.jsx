@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, doc, addDoc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
@@ -143,6 +143,7 @@ const AdminFinancial = () => {
   // Load fee configuration from settings on component mount
   useEffect(() => {
     if (settings) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFeesForm({
         feePix: settings.feePix ?? 0,
         feeDebit: settings.feeDebit ?? 1.40,
@@ -198,14 +199,14 @@ const AdminFinancial = () => {
   };
 
   // Helper values for calculating net value and credit card fee deduction
-  const getNetValue = (val, method) => {
+  const getNetValue = useCallback((val, method) => {
     const fees = {
-      feePix: settings.feePix ?? feesForm.feePix,
-      feeDebit: settings.feeDebit ?? feesForm.feeDebit,
-      feeCredit: settings.feeCredit ?? feesForm.feeCredit,
-      feeCredit2x: settings.feeCredit2x ?? feesForm.feeCredit2x,
-      feeCredit3x: settings.feeCredit3x ?? feesForm.feeCredit3x,
-      feeAnticipation: settings.feeAnticipation ?? feesForm.feeAnticipation
+      feePix: settings?.feePix ?? feesForm.feePix,
+      feeDebit: settings?.feeDebit ?? feesForm.feeDebit,
+      feeCredit: settings?.feeCredit ?? feesForm.feeCredit,
+      feeCredit2x: settings?.feeCredit2x ?? feesForm.feeCredit2x,
+      feeCredit3x: settings?.feeCredit3x ?? feesForm.feeCredit3x,
+      feeAnticipation: settings?.feeAnticipation ?? feesForm.feeAnticipation
     };
 
     const m = (method || '').toLowerCase();
@@ -257,14 +258,14 @@ const AdminFinancial = () => {
     }
 
     return val;
-  };
+  }, [feesForm, settings]);
 
-  const getTransactionFee = (val, method) => {
+  const getTransactionFee = useCallback((val, method) => {
     return val - getNetValue(val, method);
-  };
+  }, [getNetValue]);
 
   // Service category mapper
-  const getServiceCategory = (serviceName) => {
+  const getServiceCategory = useCallback((serviceName) => {
     const s = services.find(srv => srv.name === serviceName);
     if (s && s.category) return s.category;
     
@@ -275,7 +276,7 @@ const AdminFinancial = () => {
     if (name.includes('tratamento') || name.includes('detox') || name.includes('trp') || name.includes('reconstru')) return 'Tratamento';
     if (name.includes('finaliz') || name.includes('lavar')) return 'Finalização';
     return 'Outros';
-  };
+  }, [services]);
 
   // Filtered lists in the active time window and professional
   const filteredTransactions = useMemo(() => {
@@ -305,7 +306,7 @@ const AdminFinancial = () => {
     return filteredTransactions
       .filter(t => t.type === 'entrada')
       .reduce((sum, t) => sum + getNetValue(t.value, t.paymentMethod), 0);
-  }, [filteredTransactions]);
+  }, [filteredTransactions, getNetValue]);
 
 
 
@@ -345,7 +346,7 @@ const AdminFinancial = () => {
     return filteredTransactions
       .filter(t => t.type === 'entrada')
       .reduce((sum, t) => sum + getTransactionFee(t.value, t.paymentMethod), 0);
-  }, [filteredTransactions, settings, feesForm]);
+  }, [filteredTransactions, getTransactionFee]);
 
   // Resultado = Receita Bruta - Taxas - Despesas
   const netResultado = netReceita - totalDespesa;
@@ -573,7 +574,7 @@ const AdminFinancial = () => {
         catCounts
       };
     });
-  }, [filteredTransactions, filteredBookings, startDate, endDate]);
+  }, [filteredTransactions, filteredBookings, startDate, endDate, getNetValue, getServiceCategory]);
 
   // Categories representation
   const categoryStats = useMemo(() => {
@@ -602,7 +603,7 @@ const AdminFinancial = () => {
       count: stats[name].count,
       revenue: stats[name].revenue
     })).sort((a, b) => b.revenue - a.revenue);
-  }, [filteredBookings]);
+  }, [filteredBookings, getServiceCategory]);
 
   // Expense categorization and summing
   const expenseCategoryStats = useMemo(() => {

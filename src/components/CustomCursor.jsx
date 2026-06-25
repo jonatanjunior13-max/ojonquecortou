@@ -5,7 +5,6 @@ export default function CustomCursor() {
   const location = useLocation();
   const dotRef = useRef(null);
   const ringRef = useRef(null);
-  const [visible, setVisible] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [clicked, setClicked] = useState(false);
 
@@ -14,19 +13,18 @@ export default function CustomCursor() {
 
   const isAdmin = location.pathname.startsWith('/admin');
 
+  // Determine visibility during render based on environment and context
+  const isFinePointer = typeof window !== 'undefined' ? window.matchMedia('(pointer: fine)').matches : false;
+  const shouldBeVisible = !isAdmin && isFinePointer;
+
   useEffect(() => {
     // Disable custom cursor on admin pages
     if (isAdmin) {
-      setVisible(false);
       document.body.classList.remove('custom-cursor-active');
       return;
     }
 
-    // Only enable on devices with a mouse/fine pointer
-    const isFinePointer = window.matchMedia('(pointer: fine)').matches;
     if (!isFinePointer) return;
-
-    setVisible(true);
 
     const onMouseMove = (e) => {
       mouseCoords.current = { x: e.clientX, y: e.clientY };
@@ -85,9 +83,9 @@ export default function CustomCursor() {
       cancelAnimationFrame(animId);
       document.body.classList.remove('custom-cursor-active');
     };
-  }, [isAdmin]);
+  }, [isAdmin, isFinePointer]);
 
-  if (!visible || isAdmin) return null;
+  if (!shouldBeVisible || isAdmin) return null;
 
   return (
     <>
