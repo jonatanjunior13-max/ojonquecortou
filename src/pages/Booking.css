@@ -407,34 +407,57 @@
 }
 
 .summary-card {
-  max-width: 400px;
+  max-width: 420px;
   margin: 24px auto;
-  border: 1px solid var(--rule);
-  padding: 20px;
-  border-radius: 6px;
-  background: var(--bg-warm);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 3px solid var(--accent);
+  padding: 18px 20px 18px 22px;
+  border-radius: 0;
+  background: linear-gradient(90deg, rgba(255,45,139,0.09) 0%, transparent 70%);
   text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, transparent 50%, rgba(0,0,0,0.02) 100%);
+  pointer-events: none;
 }
 
 .summary-card h3 {
-  font-size: 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
   margin-bottom: 12px;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
   padding-bottom: 8px;
-  color: var(--muted);
+  color: rgba(255,255,255,0.7);
+  position: relative;
+  z-index: 1;
 }
 
 .summary-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.95rem;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
 }
 
 .summary-row strong {
-  color: var(--muted);
+  color: rgba(255,255,255,0.55);
+  font-weight: 600;
+}
+
+.summary-row span {
+  color: rgba(255,255,255,0.85);
+  text-align: right;
+  flex-shrink: 0;
 }
 
 .alert {
@@ -1253,5 +1276,45 @@
     gap: 4px;
   }
 }
+
+/* ========== DAY CHANGE ANIMATIONS ========== */
+@keyframes timePickerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes timeSlotStagger {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.time-picker-wrap {
+  animation: timePickerFadeIn 0.3s ease-out;
+}
+
+.time-picker-grid .time-btn {
+  animation: timeSlotStagger 0.25s ease-out;
+}
+
+.time-picker-grid .time-btn:nth-child(1) { animation-delay: 0.05s; }
+.time-picker-grid .time-btn:nth-child(2) { animation-delay: 0.10s; }
+.time-picker-grid .time-btn:nth-child(3) { animation-delay: 0.15s; }
+.time-picker-grid .time-btn:nth-child(4) { animation-delay: 0.20s; }
+.time-picker-grid .time-btn:nth-child(5) { animation-delay: 0.25s; }
+.time-picker-grid .time-btn:nth-child(6) { animation-delay: 0.30s; }
+.time-picker-grid .time-btn:nth-child(7) { animation-delay: 0.35s; }
+.time-picker-grid .time-btn:nth-child(n+8) { animation-delay: 0.40s; }
 
 

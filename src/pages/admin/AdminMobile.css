@@ -208,7 +208,7 @@
   background: transparent;
   color: rgba(255,255,255,0.60);
   cursor: pointer;
-  padding: 8px 4px;
+  padding: 8px 0;
   position: relative;
   transition: color 0.2s var(--m-ease-fast);
   font-family: inherit;
@@ -227,11 +227,11 @@
 
 .m-nav-icon-wrap {
   width: 44px;
-  height: 28px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
+  border-radius: 12px;
   background: rgba(255,255,255,0.15);
   color: rgba(255,255,255,0.65);
   transition: all 0.25s var(--m-ease);
