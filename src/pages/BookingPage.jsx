@@ -2024,34 +2024,48 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       );
                     }
 
-                    const getCategoryColor = (category) => {
-                      const colors = {
-                        'Corte': '#E2703A',
-                        'Coloração': '#7A3CFF',
-                        'Tratamento': '#1F6FEB',
-                        'Combo': '#E5322D',
-                        'Análise': '#FF2D8B',
-                        'Finalização': '#1F6FEB'
-                      };
-                      return colors[category] || '#FF2D8B';
+                    const getServiceColor = (services) => {
+                      if (!services.length) return { color: '#FF2D8B', label: 'SERVIÇO' };
+
+                      const ids = services.map(s => s.id).sort().join('|');
+                      const names = services.map(s => s.name).join(' + ');
+
+                      // Específico: Corte + Tratamento
+                      if (ids.includes('corte-jon') && ids.includes('tratamento-personalizado-novo') && services.length === 2) {
+                        return { color: '#FF2D8B', label: 'CORTE + TRATAMENTO' };
+                      }
+
+                      // Único: Corte
+                      if (services.length === 1 && services[0].id === 'corte-jon') {
+                        return { color: '#8B5CF6', label: 'CORTE' };
+                      }
+
+                      // Único: Coloração (Luzes, Morena, etc)
+                      if (services.length === 1 && (services[0].category === 'Coloração')) {
+                        return { color: '#FBBF24', label: 'COR' };
+                      }
+
+                      // Único: Tratamento Personalizado
+                      if (services.length === 1 && services[0].id === 'tratamento-personalizado-novo') {
+                        return { color: '#87CEEB', label: 'TRATAMENTO' };
+                      }
+
+                      // Default: múltiplos (não mapeado)
+                      if (services.length > 1) {
+                        return { color: '#E5322D', label: 'COMBO' };
+                      }
+
+                      // Fallback
+                      return { color: '#FF2D8B', label: services[0]?.category?.toUpperCase() || 'SERVIÇO' };
                     };
 
-                    const primaryService = selectedServices[0];
-                    let displayCategory = 'SERVIÇO';
-                    let barColor = '#FF2D8B';
-
-                    if (selectedServices.length > 1) {
-                      displayCategory = 'COMBO';
-                      barColor = '#E5322D';
-                    } else if (primaryService) {
-                      displayCategory = primaryService.category.toUpperCase();
-                      barColor = getCategoryColor(primaryService.category);
-                    }
-
-                    const categoryLabel = displayCategory;
-                    const rgbColor = barColor === '#E2703A' ? '226,112,58' :
-                                    barColor === '#7A3CFF' ? '122,60,255' :
-                                    barColor === '#1F6FEB' ? '31,111,235' :
+                    const colorInfo = getServiceColor(selectedServices);
+                    const barColor = colorInfo.color;
+                    const categoryLabel = colorInfo.label;
+                    const rgbColor = barColor === '#8B5CF6' ? '139,92,246' :
+                                    barColor === '#FF2D8B' ? '255,45,139' :
+                                    barColor === '#FBBF24' ? '251,191,36' :
+                                    barColor === '#87CEEB' ? '135,206,235' :
                                     barColor === '#E5322D' ? '229,50,45' :
                                     '255,45,139';
 
