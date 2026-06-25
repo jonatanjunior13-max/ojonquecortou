@@ -652,34 +652,40 @@
   opacity: 0.55;
 }
 .m-slot-booking.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(226, 112, 58, 0.15) !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
   border-left: 3px solid #E2703A !important;
   color: #ffffff !important;
 }
 .m-slot-booking.svc-cor, .m-slot-booking.svc-coloracao, .m-slot-booking.svc-mechas {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(122, 60, 255, 0.15) !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
   border-left: 3px solid #7A3CFF !important;
   color: #ffffff !important;
 }
 .m-slot-booking.svc-tratamento, .m-slot-booking.svc-terapia-capilar {
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(31, 111, 235, 0.15) !important;
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
   border-left: 3px solid #1F6FEB !important;
   color: #ffffff !important;
 }
-.m-slot-booking.svc-corte-cor, .m-slot-booking[class*="svc-corte-coloracao"], .m-slot-booking[class*="svc-corte-mechas"] {
-  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.08) 40%, rgba(229, 50, 45, 0.02) 100%) !important;
-  border: 1px solid rgba(229, 50, 45, 0.15) !important;
+.m-slot-booking.svc-corte-cor, .m-slot-booking.svc-misto, .m-slot-booking[class*="svc-corte-coloracao"], .m-slot-booking[class*="svc-corte-mechas"] {
+  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
   border-left: 3px solid #E5322D !important;
+  color: #ffffff !important;
+}
+.m-slot-booking.svc-consulta, .m-slot-booking.svc-outro {
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.07) 45%, transparent 100%) !important;
+  border: none !important;
+  border-left: 3px solid #FF2D8B !important;
   color: #ffffff !important;
 }
 
 /* Agenda Badges on Mobile */
-.m-slot-booking .appt-badge {
+.m-slot-booking .appt-badge, .m-booking-bar .appt-badge {
   font-family: 'Inter', sans-serif;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   padding: 2px 6px;
@@ -690,33 +696,44 @@
   display: inline-block;
 }
 
-.m-slot-booking.svc-corte .appt-badge {
-  color: #E2703A;
-  background: rgba(226,112,58,0.12);
-  border-color: rgba(226,112,58,0.25);
+.m-slot-booking.svc-corte .appt-badge, .m-booking-bar.svc-corte .appt-badge {
+  color: #E2703A !important;
+  background: rgba(226,112,58,0.12) !important;
+  border-color: rgba(226,112,58,0.25) !important;
 }
 
 .m-slot-booking.svc-cor .appt-badge, 
 .m-slot-booking.svc-coloracao .appt-badge, 
-.m-slot-booking.svc-mechas .appt-badge {
-  color: #7A3CFF;
-  background: rgba(122,60,255,0.12);
-  border-color: rgba(122,60,255,0.25);
+.m-slot-booking.svc-mechas .appt-badge,
+.m-booking-bar.svc-cor .appt-badge {
+  color: #7A3CFF !important;
+  background: rgba(122,60,255,0.12) !important;
+  border-color: rgba(122,60,255,0.25) !important;
 }
 
 .m-slot-booking.svc-tratamento .appt-badge, 
-.m-slot-booking.svc-terapia-capilar .appt-badge {
-  color: #1F6FEB;
-  background: rgba(31,111,235,0.12);
-  border-color: rgba(31,111,235,0.25);
+.m-slot-booking.svc-terapia-capilar .appt-badge,
+.m-booking-bar.svc-tratamento .appt-badge {
+  color: #1F6FEB !important;
+  background: rgba(31,111,235,0.12) !important;
+  border-color: rgba(31,111,235,0.25) !important;
 }
 
 .m-slot-booking.svc-corte-cor .appt-badge, 
+.m-slot-booking.svc-misto .appt-badge, 
 .m-slot-booking[class*="svc-corte-coloracao"] .appt-badge, 
-.m-slot-booking[class*="svc-corte-mechas"] .appt-badge {
-  color: #E5322D;
-  background: rgba(229,50,45,0.12);
-  border-color: rgba(229,50,45,0.25);
+.m-slot-booking[class*="svc-corte-mechas"] .appt-badge,
+.m-booking-bar.svc-misto .appt-badge {
+  color: #E5322D !important;
+  background: rgba(229,50,45,0.12) !important;
+  border-color: rgba(229,50,45,0.25) !important;
+}
+
+.m-slot-booking.svc-consulta .appt-badge, .m-slot-booking.svc-outro .appt-badge,
+.m-booking-bar.svc-consulta .appt-badge, .m-booking-bar.svc-outro .appt-badge {
+  color: #FF2D8B !important;
+  background: rgba(255,45,139,0.12) !important;
+  border-color: rgba(255,45,139,0.25) !important;
 }
 
 .m-slot-booking.bloqueado  { border-color: var(--m-muted); background: rgba(122,110,99,0.06); }
@@ -1870,6 +1887,102 @@
 .m-seg-btn.active {
   background: var(--m-gold);
   color: #0E0C0B;
+}
+
+/* ── Custom Cards and Slots Styling (Obsidian Spectro mockup) ─────────── */
+.m-booking-card {
+  display: flex !important;
+  align-items: stretch !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-bottom: 8px;
+  border-radius: 0px !important;
+}
+
+.m-booking-time {
+  width: 52px;
+  flex-shrink: 0;
+  font: 500 11px/1 'Inter', sans-serif !important;
+  color: rgba(255, 255, 255, 0.28) !important;
+  display: flex !important;
+  align-items: center !important;
+  padding-right: 12px;
+  justify-content: flex-end;
+}
+
+.m-booking-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-radius: 0px !important;
+  transition: background 0.15s ease;
+}
+
+.m-booking-bar.svc-corte {
+  border-left: 3px solid #E2703A !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-cor {
+  border-left: 3px solid #7A3CFF !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-tratamento {
+  border-left: 3px solid #1F6FEB !important;
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-misto {
+  border-left: 3px solid #E5322D !important;
+  background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.07) 45%, transparent 100%) !important;
+}
+.m-booking-bar.svc-consulta, .m-booking-bar.svc-outro {
+  border-left: 3px solid #FF2D8B !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.07) 45%, transparent 100%) !important;
+}
+
+.m-booking-info {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex: 1;
+  min-width: 0;
+}
+
+.m-booking-name {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m-booking-service-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.m-booking-divider {
+  color: rgba(255, 255, 255, 0.28) !important;
+  font-size: 13px !important;
+  font-weight: 500;
+}
+
+.m-booking-service {
+  font-size: 13px !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+  margin-top: 0 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Responsive (Desktop hide) ─────────────────────────────────────── */

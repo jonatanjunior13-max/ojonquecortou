@@ -607,8 +607,8 @@
   border-left: 3px solid #1F6FEB !important;
   color: #ffffff !important;
 }
-/* Corte + Cor (reddish brown) */
-.appt-card.svc-corte-cor, .appt-card[class*="svc-corte-coloracao"], .appt-card[class*="svc-corte-mechas"] {
+/* Corte + Cor (reddish brown) / Misto (Corte + Tratamento) */
+.appt-card.svc-corte-cor, .appt-card.svc-misto, .appt-card[class*="svc-corte-coloracao"], .appt-card[class*="svc-corte-mechas"] {
   background: linear-gradient(90deg, rgba(229, 50, 45, 0.22) 0%, rgba(229, 50, 45, 0.08) 40%, rgba(229, 50, 45, 0.02) 100%) !important;
   border: 1px solid rgba(229, 50, 45, 0.15) !important;
   border-left: 3px solid #E5322D !important;
@@ -646,7 +646,7 @@
   border-color: rgba(31,111,235,0.25);
 }
 
-.appt-card.svc-corte-cor .appt-badge, .appt-card[class*="svc-corte-coloracao"] .appt-badge, .appt-card[class*="svc-corte-mechas"] .appt-badge {
+.appt-card.svc-corte-cor .appt-badge, .appt-card.svc-misto .appt-badge, .appt-card[class*="svc-corte-coloracao"] .appt-badge, .appt-card[class*="svc-corte-mechas"] .appt-badge {
   color: #E5322D;
   background: rgba(229,50,45,0.12);
   border-color: rgba(229,50,45,0.25);

@@ -51,6 +51,34 @@ const minToTime = (min) => {
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 };
 
+const getServiceCategory = (serviceName = '') => {
+  const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const hasCorte = name.includes('corte');
+  const hasTratamento = name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat');
+  const hasCor = name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza');
+  const hasConsulta = name.includes('consulta') || name.includes('avaliacao') || name.includes('teste');
+
+  if (hasCorte && hasTratamento) {
+    return { class: 'svc-misto', badge: 'MISTO' };
+  }
+  if (hasCorte && hasCor) {
+    return { class: 'svc-misto', badge: 'MISTO' };
+  }
+  if (hasCorte) {
+    return { class: 'svc-corte', badge: 'CORTE' };
+  }
+  if (hasCor) {
+    return { class: 'svc-cor', badge: 'COR' };
+  }
+  if (hasTratamento) {
+    return { class: 'svc-tratamento', badge: 'TRAT.' };
+  }
+  if (hasConsulta) {
+    return { class: 'svc-consulta', badge: 'CONS.' };
+  }
+  return { class: 'svc-outro', badge: 'OUTRO' };
+};
+
 const calculateOverlappingLayout = (items) => {
   if (!items || items.length === 0) return [];
   const sorted = [...items].sort((a, b) => {
@@ -2356,36 +2384,45 @@ Grande abraço, Jon.`;
             </div>
           ) : (
             <div className="m-booking-list">
-              {todayBookings.slice(0, 6).map(b => (
-                <div key={b.id} className={`m-booking-card svc-${(b.service?.name || b.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
-                  <div className="m-booking-time">{b.time || '—'}</div>
-                  <div className="m-booking-info">
-                    <div 
-                      className="m-booking-name" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
-                      }}
-                      style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
-                    >
-                      {b.clientName}
-                      {isClientRecurrent(b.clientName, b.clientPhone) && (
-                        <span style={{
-                          position: 'absolute',
-                          top: '-2px',
-                          right: '-8px',
-                          width: '5px',
-                          height: '5px',
-                          borderRadius: '50%',
-                          backgroundColor: 'var(--m-gold, #dca354)'
-                        }} />
-                      )}
+              {todayBookings.slice(0, 6).map(b => {
+                const svcName = b.service?.name || b.serviceName || "";
+                const cat = getServiceCategory(svcName);
+                return (
+                  <div key={b.id} className="m-booking-card" onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
+                    <div className="m-booking-time">{b.time || '—'}</div>
+                    <div className={`m-booking-bar ${cat.class}`}>
+                      <div className="m-booking-info">
+                        <div 
+                          className="m-booking-name" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedFichaClient({ name: b.clientName, phone: b.clientPhone });
+                          }}
+                          style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', position: 'relative', display: 'inline-block' }}
+                        >
+                          {b.clientName}
+                          {isClientRecurrent(b.clientName, b.clientPhone) && (
+                            <span style={{
+                              position: 'absolute',
+                              top: '-2px',
+                              right: '-8px',
+                              width: '5px',
+                              height: '5px',
+                              borderRadius: '50%',
+                              backgroundColor: 'var(--m-gold, #dca354)'
+                            }} />
+                          )}
+                        </div>
+                        <div className="m-booking-service-container">
+                          <span className="m-booking-divider"> — </span>
+                          <span className="m-booking-service">{svcName}</span>
+                        </div>
+                      </div>
+                      <div className="appt-badge">{cat.badge}</div>
                     </div>
-                    <div className="m-booking-service">{b.service?.name || b.serviceName}</div>
                   </div>
-                  <StatusPill status={b.status}/>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -2637,10 +2674,12 @@ Grande abraço, Jon.`;
 
               if (item.type === 'booking') {
                 const bk = item.raw;
+                const svcName = bk.service?.name || bk.serviceName || "";
+                const cat = getServiceCategory(svcName);
                 return (
                   <div
                     key={item.id}
-                    className={`m-slot-booking ${bk.status} svc-${(bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "-")}`}
+                    className={`m-slot-booking ${bk.status} ${cat.class}`}
                     style={{
                       position: 'absolute',
                       top: topPx,
@@ -2666,21 +2705,26 @@ Grande abraço, Jon.`;
                     }}
                   >
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', width: '100%', justifyContent: 'center' }}>
-                      <span
-                        className="m-slot-client"
-                        style={{
-                          fontWeight: 700,
-                          fontSize: '0.82rem',
-                          color: '#ffffff',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}
-                      >
-                        {bk.clientName}
-                      </span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '4px', width: '100%' }}>
+                        <span
+                          className="m-slot-client"
+                          style={{
+                            fontWeight: 700,
+                            fontSize: '0.82rem',
+                            color: '#ffffff',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}
+                        >
+                          {bk.clientName}
+                        </span>
+                        <span className="appt-badge" style={{ fontSize: '8px', padding: '1px 4px', textTransform: 'uppercase', flexShrink: 0 }}>
+                          {cat.badge}
+                        </span>
+                      </div>
                       <span className="m-slot-svc-info" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {bk.service?.name || bk.serviceName} · {(() => {
+                        {svcName} · {(() => {
                           const m = bk.duration || 60;
                           const h = Math.floor(m / 60);
                           const r = m % 60;

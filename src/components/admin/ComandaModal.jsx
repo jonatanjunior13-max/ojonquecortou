@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { X, Plus, Minus, Search, CreditCard, Banknote, Smartphone as SmartIcon, DollarSign } from 'lucide-react';
+import { X, Plus, Minus, Search, CreditCard, Banknote, Smartphone as SmartIcon, DollarSign, Trash2 } from 'lucide-react';
 
 const fmtBRL = (v) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
@@ -42,8 +42,10 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const [customTip, setCustomTip] = useState('');
   const [productSearch, setProductSearch] = useState('');
   const [serviceSearch, setServiceSearch] = useState('');
+  const [usedProductSearch, setUsedProductSearch] = useState('');
   const [addedProducts, setAddedProducts] = useState([]);
   const [addedServices, setAddedServices] = useState([]);
+  const [usedProducts, setUsedProducts] = useState([]);
   const [discount, setDiscount] = useState(0);
   const [overridePrice, setOverridePrice] = useState(booking?.servicePrice || booking?.service?.price || 0);
   const [requestReview, setRequestReview] = useState(true);
@@ -75,6 +77,11 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
   const productTotal = useMemo(
     () => addedProducts.reduce((s, p) => s + p.price * p.qty, 0),
     [addedProducts]
+  );
+
+  const usedProductsTotal = useMemo(
+    () => usedProducts.reduce((s, p) => s + p.price * p.qty, 0),
+    [usedProducts]
   );
 
   const subtotal = servicePrice + extraServicesTotal + productTotal + tipValue;
@@ -113,6 +120,14 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
     ).slice(0, 5);
   }, [products, productSearch]);
 
+  const filteredUsedProducts = useMemo(() => {
+    if (usedProductSearch.trim().length < 3) return [];
+    return products.filter(p =>
+      p.quantity > 0 &&
+      (p.name || '').toLowerCase().includes(usedProductSearch.toLowerCase())
+    ).slice(0, 5);
+  }, [products, usedProductSearch]);
+
   const filteredServices = useMemo(() => {
     if (serviceSearch.trim().length < 3) return [];
     return services.filter(s =>
@@ -133,6 +148,24 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
 
   const handleQtyChange = useCallback((productId, delta) => {
     setAddedProducts(prev =>
+      prev.map(p => p.productId === productId ? { ...p, qty: Math.max(0, p.qty + delta) } : p)
+        .filter(p => p.qty > 0)
+    );
+  }, []);
+
+  const handleAddUsedProduct = useCallback((prod) => {
+    setUsedProducts(prev => {
+      const existing = prev.find(p => p.productId === prod.id);
+      if (existing) {
+        return prev.map(p => p.productId === prod.id ? { ...p, qty: p.qty + 1 } : p);
+      }
+      return [...prev, { productId: prod.id, name: prod.name, price: prod.costPrice || prod.sellingPrice || prod.price || 0, qty: 1 }];
+    });
+    setUsedProductSearch('');
+  }, []);
+
+  const handleUsedQtyChange = useCallback((productId, delta) => {
+    setUsedProducts(prev =>
       prev.map(p => p.productId === productId ? { ...p, qty: Math.max(0, p.qty + delta) } : p)
         .filter(p => p.qty > 0)
     );
@@ -177,6 +210,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
       tipValue,
       addedProducts,
       addedServices,
+      usedProducts,
       discount,
       overrideBasePrice: overridePrice !== '' ? Number(overridePrice) : null,
       total: totalToPay,
@@ -211,11 +245,11 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
           </button>
         </div>
 
-        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto', flex: 1 }}>
+        <div style={{ padding: '20px 24px', display: 'flex', flexDirection: 'column', gap: 14, overflowY: 'auto', flex: 1 }}>
           {/* Service */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Serviço</div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'var(--adm-card)', borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)', marginBottom: 8 }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Serviço</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: 'var(--adm-card)', borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
               <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--adm-text)' }}>{serviceName}</span>
               <input
                 type="number"
@@ -226,10 +260,110 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             </div>
           </section>
 
+          {/* Payment Method & Split (Moved up to prevent scrolling to see it) */}
+          <section style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: 14, background: 'rgba(255,255,255,0.01)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px' }}>Forma de Pagamento</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <input 
+                  type="checkbox" 
+                  id="comanda-split-payment"
+                  checked={isSplitPayment} 
+                  onChange={e => {
+                    const checked = e.target.checked;
+                    setIsSplitPayment(checked);
+                    if (checked) {
+                      setSplitValues({
+                        'Pix': paymentMethod === 'Pix' ? totalToPay : 0,
+                        'Dinheiro': paymentMethod === 'Dinheiro' ? totalToPay : 0,
+                        'Débito': paymentMethod === 'Débito' ? totalToPay : 0,
+                        'Crédito': paymentMethod === 'Crédito' ? totalToPay : 0,
+                        'Crédito 2x': paymentMethod === 'Crédito 2x' ? totalToPay : 0,
+                        'Crédito 3x': paymentMethod === 'Crédito 3x' ? totalToPay : 0,
+                      });
+                    }
+                  }}
+                  style={{ width: 14, height: 14, accentColor: 'var(--adm-gold)', cursor: 'pointer' }}
+                />
+                <label htmlFor="comanda-split-payment" style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-muted)', cursor: 'pointer' }}>
+                  Dividir?
+                </label>
+              </div>
+            </div>
+            
+            {isSplitPayment ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, background: 'var(--adm-card)', padding: 12, borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
+                {PAYMENT_METHODS.map(m => {
+                  const val = splitValues[m.id] || 0;
+                  const rate = getFee(settings, m.id);
+                  return (
+                    <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 6, borderBottom: '0.5px solid var(--adm-rule)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        {m.icon}
+                        <span style={{ fontSize: '0.8rem', color: 'var(--adm-text)', fontWeight: 600 }}>{m.label}</span>
+                        {rate > 0 && <span style={{ fontSize: '0.65rem', color: 'var(--adm-muted)' }}>({rate}%)</span>}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>R$</span>
+                        <input 
+                          type="number" 
+                          min="0"
+                          placeholder="0,00"
+                          value={val || ''} 
+                          onChange={e => {
+                            const num = Number(e.target.value) || 0;
+                            setSplitValues(prev => ({ ...prev, [m.id]: num }));
+                          }}
+                          style={{ width: 85, padding: '4px 6px', background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', fontSize: '0.82rem', color: 'var(--adm-text)', textAlign: 'right', outline: 'none', fontFamily: 'inherit' }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                {/* Balance validation */}
+                {(() => {
+                  const distributedTotal = Object.values(splitValues).reduce((a, b) => a + b, 0);
+                  const diff = totalToPay - distributedTotal;
+                  if (Math.abs(diff) < 0.01) {
+                    return <div style={{ fontSize: '0.75rem', color: '#48bb78', fontWeight: 600, textAlign: 'center' }}>✓ Total distribuído corretamente.</div>;
+                  } else if (diff > 0) {
+                    return <div style={{ fontSize: '0.75rem', color: 'var(--adm-gold)', fontWeight: 600, textAlign: 'center' }}>Falta: {fmtBRL(diff)}</div>;
+                  } else {
+                    return <div style={{ fontSize: '0.75rem', color: 'var(--adm-danger)', fontWeight: 600, textAlign: 'center' }}>Excesso: {fmtBRL(Math.abs(diff))}</div>;
+                  }
+                })()}
+              </div>
+            ) : (
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {PAYMENT_METHODS.map(m => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setPaymentMethod(m.id)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 4,
+                      padding: '6px 10px', borderRadius: 6, fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                      background: paymentMethod === m.id ? 'rgba(220,163,84,0.15)' : 'var(--adm-card)',
+                      color: paymentMethod === m.id ? 'var(--adm-gold)' : 'var(--adm-muted)',
+                      border: paymentMethod === m.id ? '0.5px solid var(--adm-gold)' : '0.5px solid var(--adm-rule)',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    {m.icon} {m.label}
+                    {paymentMethod === m.id && feeRate > 0 && (
+                      <span style={{ fontSize: '0.65rem', opacity: 0.7 }}>({feeRate}%)</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+
           {/* Add Services */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Adicionar Serviços Extras</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 8 }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Adicionar Serviços Extras</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
@@ -240,7 +374,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               />
             </div>
             {serviceSearch.trim().length >= 3 && filteredServices.length > 0 && (
-              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 8 }}>
+              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
                 {filteredServices.map(svc => (
                   <button
                     key={svc.id}
@@ -255,7 +389,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               </div>
             )}
             {addedServices.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 {addedServices.map(s => (
                   <div key={s.serviceId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
                     <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{s.name}</span>
@@ -273,8 +407,8 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
 
           {/* Products */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Produtos (opcional)</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 8 }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Produtos (opcional)</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
@@ -285,7 +419,7 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               />
             </div>
             {productSearch.trim().length >= 3 && filteredProducts.length > 0 && (
-              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 8 }}>
+              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
                 {filteredProducts.map(prod => (
                   <button
                     key={prod.id}
@@ -316,9 +450,54 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             )}
           </section>
 
+          {/* Used Products (Insumos) */}
+          <section>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Insumos / Produtos Utilizados (Custo entra como Despesa)</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
+              <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
+              <input
+                type="text"
+                placeholder="Buscar insumo utilizado (mín. 3 letras)..."
+                value={usedProductSearch}
+                onChange={e => setUsedProductSearch(e.target.value)}
+                style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
+              />
+            </div>
+            {usedProductSearch.trim().length >= 3 && filteredUsedProducts.length > 0 && (
+              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
+                {filteredUsedProducts.map(prod => (
+                  <button
+                    key={prod.id}
+                    type="button"
+                    onClick={() => handleAddUsedProduct(prod)}
+                    style={{ width: '100%', background: 'var(--adm-card)', border: 'none', borderBottom: '0.5px solid var(--adm-rule)', padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--adm-text)', fontSize: '0.83rem' }}
+                  >
+                    <span>{prod.name}</span>
+                    <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Custo: {fmtBRL(prod.costPrice || prod.sellingPrice)}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {usedProducts.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {usedProducts.map(p => (
+                  <div key={p.productId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
+                    <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{p.name}</span>
+                    <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>Custo: {fmtBRL(p.price * p.qty)}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <button type="button" onClick={() => handleUsedQtyChange(p.productId, -1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
+                      <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.qty}</span>
+                      <button type="button" onClick={() => handleUsedQtyChange(p.productId, 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
           {/* Discount */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Desconto</div>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Desconto</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px' }}>
               <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>R$</span>
               <input
@@ -333,15 +512,15 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
 
           {/* Tip */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Gorjeta</div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Gorjeta</div>
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
               {TIP_OPTIONS.map(opt => (
                 <button
                   key={opt.value}
                   type="button"
                   onClick={() => setTipMode(opt.value)}
                   style={{
-                    padding: '7px 14px', borderRadius: 20, fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+                    padding: '6px 12px', borderRadius: 20, fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                     background: tipMode === opt.value ? 'rgba(220,163,84,0.15)' : 'var(--adm-card)',
                     color: tipMode === opt.value ? 'var(--adm-gold)' : 'var(--adm-muted)',
                     border: tipMode === opt.value ? '0.5px solid var(--adm-gold)' : '0.5px solid var(--adm-rule)',
@@ -365,134 +544,37 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               </div>
             )}
           </section>
-
-          {/* Split Payment Toggle */}
-          <section>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <input 
-                type="checkbox" 
-                id="comanda-split-payment"
-                checked={isSplitPayment} 
-                onChange={e => {
-                  const checked = e.target.checked;
-                  setIsSplitPayment(checked);
-                  if (checked) {
-                    setSplitValues({
-                      'Pix': paymentMethod === 'Pix' ? totalToPay : 0,
-                      'Dinheiro': paymentMethod === 'Dinheiro' ? totalToPay : 0,
-                      'Débito': paymentMethod === 'Débito' ? totalToPay : 0,
-                      'Crédito': paymentMethod === 'Crédito' ? totalToPay : 0,
-                      'Crédito 2x': paymentMethod === 'Crédito 2x' ? totalToPay : 0,
-                      'Crédito 3x': paymentMethod === 'Crédito 3x' ? totalToPay : 0,
-                    });
-                  }
-                }}
-                style={{ width: 16, height: 16, accentColor: 'var(--adm-gold)', cursor: 'pointer' }}
-              />
-              <label htmlFor="comanda-split-payment" style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)', cursor: 'pointer' }}>
-                Dividir pagamento entre múltiplas formas?
-              </label>
-            </div>
-          </section>
-
-          {/* Payment Method */}
-          <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Forma de Pagamento</div>
-            
-            {isSplitPayment ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, background: 'var(--adm-card)', padding: 16, borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
-                {PAYMENT_METHODS.map(m => {
-                  const val = splitValues[m.id] || 0;
-                  const rate = getFee(settings, m.id);
-                  return (
-                    <div key={m.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingBottom: 8, borderBottom: '0.5px solid var(--adm-rule)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        {m.icon}
-                        <span style={{ fontSize: '0.85rem', color: 'var(--adm-text)', fontWeight: 600 }}>{m.label}</span>
-                        {rate > 0 && <span style={{ fontSize: '0.68rem', color: 'var(--adm-muted)' }}>({rate}%)</span>}
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>R$</span>
-                        <input 
-                          type="number" 
-                          min="0"
-                          placeholder="0,00"
-                          value={val || ''} 
-                          onChange={e => {
-                            const num = Number(e.target.value) || 0;
-                            setSplitValues(prev => ({ ...prev, [m.id]: num }));
-                          }}
-                          style={{ width: 100, padding: '6px 8px', background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', fontSize: '0.88rem', color: 'var(--adm-text)', textAlign: 'right', outline: 'none', fontFamily: 'inherit' }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-                
-                {/* Balance validation */}
-                {(() => {
-                  const distributedTotal = Object.values(splitValues).reduce((a, b) => a + b, 0);
-                  const diff = totalToPay - distributedTotal;
-                  if (Math.abs(diff) < 0.01) {
-                    return <div style={{ fontSize: '0.8rem', color: '#48bb78', fontWeight: 600, textAlign: 'center' }}>✓ Tudo certo! Total distribuído corretamente.</div>;
-                  } else if (diff > 0) {
-                    return <div style={{ fontSize: '0.8rem', color: 'var(--adm-gold)', fontWeight: 600, textAlign: 'center' }}>Falta distribuir: {fmtBRL(diff)}</div>;
-                  } else {
-                    return <div style={{ fontSize: '0.8rem', color: 'var(--adm-danger)', fontWeight: 600, textAlign: 'center' }}>Excesso distribuído: {fmtBRL(Math.abs(diff))}</div>;
-                  }
-                })()}
-              </div>
-            ) : (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                {PAYMENT_METHODS.map(m => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => setPaymentMethod(m.id)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 6,
-                      padding: '8px 14px', borderRadius: 8, fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
-                      background: paymentMethod === m.id ? 'rgba(220,163,84,0.15)' : 'var(--adm-card)',
-                      color: paymentMethod === m.id ? 'var(--adm-gold)' : 'var(--adm-muted)',
-                      border: paymentMethod === m.id ? '0.5px solid var(--adm-gold)' : '0.5px solid var(--adm-rule)',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {m.icon} {m.label}
-                    {paymentMethod === m.id && feeRate > 0 && (
-                      <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>({feeRate}%)</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
         </div>
 
         {/* Summary + Footer */}
-        <div style={{ padding: '16px 24px 24px', borderTop: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)' }}>
+        <div style={{ padding: '14px 24px 20px', borderTop: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)' }}>
           {/* Summary */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 16 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 12 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
               <span>Serviço Base</span><span>{fmtBRL(servicePrice)}</span>
             </div>
             {addedServices.length > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
                 <span>Serviços Extras</span><span>{fmtBRL(extraServicesTotal)}</span>
               </div>
             )}
             {productTotal > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
                 <span>Produtos</span><span>{fmtBRL(productTotal)}</span>
               </div>
             )}
+            {usedProductsTotal > 0 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                <span>Custo Insumos (Despesa)</span><span>- {fmtBRL(usedProductsTotal)}</span>
+              </div>
+            )}
             {tipValue > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
                 <span>Gorjeta</span><span>{fmtBRL(tipValue)}</span>
               </div>
             )}
             {discount > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-danger)' }}>
                 <span>Desconto</span><span>- {fmtBRL(discount)}</span>
               </div>
             )}
@@ -500,30 +582,30 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
               <span>Valor Total</span><span>{fmtBRL(totalToPay)}</span>
             </div>
             {feeAmount > 0 && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: 'var(--adm-danger)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-danger)' }}>
                 <span>Taxa da Maquininha {isSplitPayment ? '' : `(${feeRate}%)`}</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
-            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.1rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.05rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
               <span>Valor Líquido Recebido</span><span>{fmtBRL(netTotal)}</span>
             </div>
           </div>
 
           {/* Commission Info */}
-          <div style={{ padding: '8px 12px', background: 'rgba(220,163,84,0.06)', borderRadius: 8, border: '0.5px solid var(--adm-rule)', marginBottom: 14, fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ padding: '6px 10px', background: 'rgba(220,163,84,0.06)', borderRadius: 6, border: '0.5px solid var(--adm-rule)', marginBottom: 10, fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'flex', justifyContent: 'space-between' }}>
             <span>Comissão do profissional ({professionalCommissionRate}%)</span>
             <span style={{ fontWeight: 700, color: 'var(--adm-text-2)' }}>{fmtBRL(commissionValue)}</span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10, marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 6, marginBottom: 12 }}>
             <input 
               type="checkbox" 
               id="comanda-req-review" 
               checked={requestReview}
               onChange={e => setRequestReview(e.target.checked)}
-              style={{ width: 16, height: 16, accentColor: 'var(--adm-gold)', cursor: 'pointer' }}
+              style={{ width: 14, height: 14, accentColor: 'var(--adm-gold)', cursor: 'pointer' }}
             />
-            <label htmlFor="comanda-req-review" style={{ fontSize: '0.85rem', color: 'var(--adm-text)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+            <label htmlFor="comanda-req-review" style={{ fontSize: '0.8rem', color: 'var(--adm-text)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
               Pedir avaliação no Google por WhatsApp
             </label>
           </div>
@@ -534,16 +616,16 @@ const ComandaModal = ({ booking, products = [], services = [], settings = {}, on
             disabled={isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01}
             style={{
               width: '100%', background: 'var(--adm-gold)', color: '#121110',
-              border: 'none', borderRadius: 'var(--adm-radius-sm)', padding: '14px 0',
-              fontSize: '0.95rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
-              transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+              border: 'none', borderRadius: 'var(--adm-radius-sm)', padding: '12px 0',
+              fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               opacity: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 0.5 : 1,
               cursor: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 'not-allowed' : 'pointer'
             }}
             onMouseEnter={e => { if (!(isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01)) e.currentTarget.style.background = 'var(--adm-gold-deep)'; }}
             onMouseLeave={e => { if (!(isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01)) e.currentTarget.style.background = 'var(--adm-gold)'; }}
           >
-            <DollarSign size={18} /> Receber {fmtBRL(totalToPay)} e Fechar Comanda
+            <DollarSign size={16} /> Receber {fmtBRL(totalToPay)} e Fechar Comanda
           </button>
         </div>
       </div>
