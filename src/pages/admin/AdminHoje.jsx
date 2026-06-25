@@ -44,28 +44,28 @@ const getServiceColor = (serviceName = '') => {
   const s = serviceName.toLowerCase().trim();
 
   // Combo: Corte + Tratamento
-  if ((s.includes('corte') && s.includes('tratamento')) || s.includes('combo')) {
-    return { color: '#FF2D8B', label: 'CORTE + TRATAMENTO' };
+  if ((s.includes('corte') && (s.includes('tratamento') || s.includes('terapia') || s.includes('cronograma') || s.includes('hidrat'))) || s.includes('combo')) {
+    return { color: '#E5322D', label: 'CORTE + TRATAMENTO' };
+  }
+
+  // Corte + Cor
+  if (s.includes('corte') && (s.includes('cor') || s.includes('color') || s.includes('luzes') || s.includes('colora'))) {
+    return { color: '#E5322D', label: 'CORTE + COR' };
   }
 
   // Corte único
-  if (s.includes('corte') && !s.includes('tratamento') && !s.includes('manutenção')) {
-    return { color: '#8B5CF6', label: 'CORTE' };
+  if (s.includes('corte') || s.includes('leitura')) {
+    return { color: '#E2703A', label: 'CORTE' };
   }
 
   // Coloração/Cor
   if (s.includes('cor') || s.includes('color') || s.includes('luzes') || s.includes('colora')) {
-    return { color: '#FBBF24', label: 'COR' };
+    return { color: '#7A3CFF', label: 'COR' };
   }
 
-  // Tratamento Personalizado
-  if (s.includes('tratamento personalizado')) {
-    return { color: '#87CEEB', label: 'TRATAMENTO' };
-  }
-
-  // Outros tratamentos
-  if (s.includes('tratamento')) {
-    return { color: '#87CEEB', label: 'TRATAMENTO' };
+  // Tratamento Personalizado ou outros tratamentos
+  if (s.includes('tratamento') || s.includes('terapia') || s.includes('cronograma') || s.includes('hidrat')) {
+    return { color: '#1F6FEB', label: 'TRATAMENTO' };
   }
 
   // Default

@@ -1544,8 +1544,9 @@ const AdminDashboard = () => {
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
-    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], discount: disc = 0, overrideBasePrice: obp, requestReview } = payload;
+    const { paymentMethod: pm, tipValue, addedProducts: ap, addedServices: as = [], usedProducts: up = [], discount: disc = 0, overrideBasePrice: obp, requestReview } = payload;
     const productsNorm = (ap || []).map(p => ({ ...p, quantity: p.qty }));
+    const usedProductsNorm = (up || []).map(p => ({ ...p, quantity: p.qty }));
     const servicePrice = obp !== null && obp !== undefined ? obp : (booking.servicePrice || booking.service?.price || 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
     
@@ -1582,6 +1583,22 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
+    const usedProductsTotal = usedProductsNorm.reduce((s, p) => s + p.price * p.quantity, 0);
+    const saidaPayload = {
+      bookingId: booking.id,
+      date: booking.date || getLocalDateString(new Date()),
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      clientName: booking.clientName,
+      clientPhone: booking.clientPhone || '',
+      type: 'saida',
+      paymentMethod: 'Pix',
+      value: usedProductsTotal,
+      discount: 0,
+      description: `Uso de Insumos - Comanda ${booking.clientName}: ` + usedProductsNorm.map(p => `${p.quantity}x ${p.name}`).join(', '),
+      professionalId: booking.professionalId || booking.profissional || 'jon',
+      createdAt: new Date().toISOString()
+    };
+
     const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
     const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
     const gateway = settings?.waReminderGateway;
@@ -1597,22 +1614,30 @@ const AdminDashboard = () => {
           finalValue: totalValue,
           servicePrice: servicePrice
         } : b));
-        if (productsNorm.length > 0) {
-          const localProds = localStorage.getItem('demo_products');
-          if (localProds) {
-            const prods = JSON.parse(localProds);
-            const updated = prods.map(p => {
-              const added = productsNorm.find(ap => ap.productId === p.id);
-              return added ? { ...p, quantity: Math.max(0, p.quantity - added.quantity) } : p;
-            });
-            localStorage.setItem('demo_products', JSON.stringify(updated));
-            setProducts(updated);
-          }
+        
+        const localProds = localStorage.getItem('demo_products');
+        if (localProds) {
+          const prods = JSON.parse(localProds);
+          const updated = prods.map(p => {
+            const added = productsNorm.find(ap => ap.productId === p.id);
+            const used = usedProductsNorm.find(up => up.productId === p.id);
+            const deductQty = (added ? added.quantity : 0) + (used ? used.quantity : 0);
+            return deductQty > 0 ? { ...p, quantity: Math.max(0, p.quantity - deductQty) } : p;
+          });
+          localStorage.setItem('demo_products', JSON.stringify(updated));
+          setProducts(updated);
         }
+
         const localTx = localStorage.getItem('demo_financial') || '[]';
         const currentTx = JSON.parse(localTx);
         const newTx = { id: 'tx_' + Date.now(), ...transactionPayload };
-        const updatedTxList = [newTx, ...currentTx];
+        let updatedTxList = [newTx, ...currentTx];
+
+        if (usedProductsNorm.length > 0) {
+          const newSaidaTx = { id: 'tx_saida_' + Date.now(), ...saidaPayload };
+          updatedTxList = [newSaidaTx, ...updatedTxList];
+        }
+
         localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
@@ -1631,13 +1656,26 @@ const AdminDashboard = () => {
           servicePrice: servicePrice
         } : b));
         syncBookingToGoogle(booking.id).catch(err => console.warn(err));
+
         for (const p of productsNorm) {
           const match = products.find(prod => prod.id === p.productId);
           if (match) {
             await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
           }
         }
+
+        for (const u of usedProductsNorm) {
+          const match = products.find(prod => prod.id === u.productId);
+          if (match) {
+            await updateDoc(doc(db, 'products', u.productId), { quantity: Math.max(0, match.quantity - u.quantity) });
+          }
+        }
+
         await addDoc(collection(db, 'financial_transactions'), transactionPayload);
+        
+        if (usedProductsNorm.length > 0) {
+          await addDoc(collection(db, 'financial_transactions'), saidaPayload);
+        }
       }
 
       if (waWindow) {
@@ -3183,7 +3221,8 @@ Grande abraço, Jon.`;
                                     key={bk.id} 
                                     className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${(() => {
                                       const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-corte-cor';
+                                      if (name.includes('corte') && (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat'))) return 'svc-misto';
+                                      if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'svc-misto';
                                       if (name.includes('corte')) return 'svc-corte';
                                       if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'svc-cor';
                                       if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'svc-tratamento';
@@ -3249,7 +3288,8 @@ Grande abraço, Jon.`;
                                     <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
                                       {(() => {
                                         const name = (bk.service?.name || bk.serviceName || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'CORTE + COR';
+                                        if (name.includes('corte') && (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat'))) return 'MISTO';
+                                        if (name.includes('corte') && (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza'))) return 'MISTO';
                                         if (name.includes('corte')) return 'CORTE';
                                         if (name.includes('cor') || name.includes('colora') || name.includes('mechas') || name.includes('luzes') || name.includes('tonaliza')) return 'COR';
                                         if (name.includes('tratamento') || name.includes('terapia') || name.includes('cronograma') || name.includes('hidrat')) return 'TRATAMENTO';
