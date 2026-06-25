@@ -931,13 +931,20 @@ const AdminServices = () => {
             <div className="form-row-grid">
               <div className="form-group-sleek">
                 <label>Categoria *</label>
-                <input 
-                  type="text" 
+                <select
                   required
-                  placeholder="Ex: Cabelo"
                   value={form.category}
                   onChange={e => setForm(prev => ({ ...prev, category: e.target.value }))}
-                />
+                >
+                  <option value="">Selecione uma categoria</option>
+                  <option value="Corte">Corte</option>
+                  <option value="Corte + Tratamento">Corte + Tratamento</option>
+                  <option value="Coloração">Coloração</option>
+                  <option value="Tratamento">Tratamento</option>
+                  <option value="Análise">Análise</option>
+                  <option value="Combo">Combo</option>
+                  <option value="Finalização">Finalização</option>
+                </select>
               </div>
 
               <div className="form-group-sleek">
