@@ -644,7 +644,7 @@ export default function ClientAreaPage() {
                       const svc = b.serviceName || b.service?.name || '';
                       const colorInfo = getServiceColor(svc);
                       return (
-                      <div key={b.id} className="client-booking-item" style={{ borderLeftColor: colorInfo.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}>
+                      <div key={b.id} className="client-booking-item" style={{ borderLeft: `3px solid ${colorInfo.color}` }}>
                         <div className="client-booking-info">
                           <h3 className="client-booking-service">{svc}</h3>
                           <div className="client-booking-meta">
@@ -701,7 +701,7 @@ export default function ClientAreaPage() {
                         const svc = b.serviceName || b.service?.name || '';
                         const colorInfo = getServiceColor(svc);
                         return (
-                        <div key={b.id} className="client-history-item" style={{ borderLeftColor: colorInfo.color, borderLeftWidth: '3px', borderLeftStyle: 'solid' }}>
+                        <div key={b.id} className="client-history-item" style={{ borderLeft: `3px solid ${colorInfo.color}` }}>
                           <div className="client-history-left">
                             <span className="client-history-service">{svc}</span>
                             <span className="client-history-date">📅 {formatDate(b.date)} às {b.time}</span>
