@@ -1767,14 +1767,14 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
-    // Calculate service cost
+    // Calculate service cost (sum of base service cost + extra services cost + cost of used products/insumos + manual extra cost)
     const mainService = services.find(s => s.name === (booking.service?.name || booking.serviceName));
     const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
     const extraServicesCost = addedServices.reduce((sum, item) => {
       const match = services.find(s => s.name === item.name);
       return sum + (match ? (Number(match.cost) || 0) : 0);
     }, 0);
-    const totalServiceCost = mainServiceCost + extraServicesCost;
+    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + (Number(extraCost) || 0);
 
     const bookingServiceName = booking.service?.name || booking.serviceName;
     const servObj = globalData.services.find(s => s.name === bookingServiceName);
@@ -1924,29 +1924,11 @@ const AdminDashboard = () => {
             type: 'saida',
             paymentMethod,
             value: totalServiceCost,
-            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}`,
+            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${Number(extraCost) > 0 ? ` (Extra Manual: R$ ${Number(extraCost)})` : ''}`,
             professionalId: booking.profissional || 'jon',
             createdAt: new Date().toISOString()
           };
           updatedTxList = [serviceCostTx, ...updatedTxList];
-        }
-
-        if (Number(extraCost) > 0) {
-          const extraCostTx = {
-            id: 'tx_extracost_' + Date.now(),
-            bookingId: booking.id,
-            date: booking.date || getLocalDateString(new Date()),
-            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            clientName: booking.clientName,
-            clientPhone: booking.clientPhone || '',
-            type: 'saida',
-            paymentMethod,
-            value: Number(extraCost),
-            description: `Custo Extra Comanda - ${booking.clientName}`,
-            professionalId: booking.profissional || 'jon',
-            createdAt: new Date().toISOString()
-          };
-          updatedTxList = [extraCostTx, ...updatedTxList];
         }
 
         localStorage.setItem('demo_financial', JSON.stringify(updatedTxList));
@@ -1995,28 +1977,11 @@ const AdminDashboard = () => {
             type: 'saida',
             paymentMethod,
             value: totalServiceCost,
-            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}`,
+            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${Number(extraCost) > 0 ? ` (Extra Manual: R$ ${Number(extraCost)})` : ''}`,
             professionalId: booking.profissional || 'jon',
             createdAt: new Date().toISOString()
           };
           await addDoc(collection(db, 'financial_transactions'), serviceCostTx);
-        }
-
-        if (Number(extraCost) > 0) {
-          const extraCostTx = {
-            bookingId: booking.id,
-            date: booking.date || getLocalDateString(new Date()),
-            time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            clientName: booking.clientName,
-            clientPhone: booking.clientPhone || '',
-            type: 'saida',
-            paymentMethod,
-            value: Number(extraCost),
-            description: `Custo Extra Comanda - ${booking.clientName}`,
-            professionalId: booking.profissional || 'jon',
-            createdAt: new Date().toISOString()
-          };
-          await addDoc(collection(db, 'financial_transactions'), extraCostTx);
         }
       }
 
