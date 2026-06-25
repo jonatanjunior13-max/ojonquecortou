@@ -40,11 +40,36 @@ const statusColor = {
   bloqueado: 'var(--adm-muted)',
 };
 
-const serviceBarColor = (name = '') => {
-  const n = name.toLowerCase();
-  if (n.includes('corte') || n.includes('leitura')) return '#E2703A';
-  if (n.includes('cor') || n.includes('color') || n.includes('luzes') || n.includes('colora')) return '#7A3CFF';
-  return '#1F6FEB';
+const getServiceColor = (serviceName = '') => {
+  const s = serviceName.toLowerCase().trim();
+
+  // Combo: Corte + Tratamento
+  if ((s.includes('corte') && s.includes('tratamento')) || s.includes('combo')) {
+    return { color: '#FF2D8B', label: 'CORTE + TRATAMENTO' };
+  }
+
+  // Corte único
+  if (s.includes('corte') && !s.includes('tratamento') && !s.includes('manutenção')) {
+    return { color: '#8B5CF6', label: 'CORTE' };
+  }
+
+  // Coloração/Cor
+  if (s.includes('cor') || s.includes('color') || s.includes('luzes') || s.includes('colora')) {
+    return { color: '#FBBF24', label: 'COR' };
+  }
+
+  // Tratamento Personalizado
+  if (s.includes('tratamento personalizado')) {
+    return { color: '#87CEEB', label: 'TRATAMENTO' };
+  }
+
+  // Outros tratamentos
+  if (s.includes('tratamento')) {
+    return { color: '#87CEEB', label: 'TRATAMENTO' };
+  }
+
+  // Default
+  return { color: '#FF2D8B', label: 'SERVIÇO' };
 };
 
 const AdminHoje = () => {
@@ -400,7 +425,9 @@ const AdminHoje = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {todayBookings.map(b => {
               const svc = b.serviceName || b.service?.name || '';
-              const barColor = serviceBarColor(svc);
+              const colorInfo = getServiceColor(svc);
+              const barColor = colorInfo.color;
+              const categoryLabel = colorInfo.label;
               return (
                 <div
                   key={b.id}
@@ -431,8 +458,8 @@ const AdminHoje = () => {
                       {svc}
                     </div>
                   </div>
-                  <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', background: `${statusColor[b.status]}22`, color: statusColor[b.status], textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>
-                    {statusLabel[b.status]}
+                  <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', border: `1px solid ${barColor}`, color: barColor, textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>
+                    {categoryLabel}
                   </span>
                 </div>
               );
