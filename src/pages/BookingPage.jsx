@@ -2037,8 +2037,18 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     };
 
                     const primaryService = selectedServices[0];
-                    const barColor = primaryService ? getCategoryColor(primaryService.category) : '#FF2D8B';
-                    const categoryLabel = primaryService ? primaryService.category.toUpperCase() : 'SERVIÇO';
+                    let displayCategory = 'SERVIÇO';
+                    let barColor = '#FF2D8B';
+
+                    if (selectedServices.length > 1) {
+                      displayCategory = 'COMBO';
+                      barColor = '#E5322D';
+                    } else if (primaryService) {
+                      displayCategory = primaryService.category.toUpperCase();
+                      barColor = getCategoryColor(primaryService.category);
+                    }
+
+                    const categoryLabel = displayCategory;
                     const rgbColor = barColor === '#E2703A' ? '226,112,58' :
                                     barColor === '#7A3CFF' ? '122,60,255' :
                                     barColor === '#1F6FEB' ? '31,111,235' :
@@ -2060,9 +2070,13 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                           >
                             <span className="time-btn-time">{slot}</span>
                             <div className="time-btn-info">
-                              <div className="time-btn-name">{primaryService?.name || 'Horário livre'}</div>
+                              <div className="time-btn-name">
+                                {selectedServices.length > 1
+                                  ? selectedServices.map(s => s.name).join(' + ')
+                                  : (primaryService?.name || 'Horário livre')}
+                              </div>
                               <div className={`time-btn-service${!primaryService ? ' free' : ''}`}>
-                                {primaryService ? `${primaryService.duration || 60}min` : ''}
+                                {selectedServices.length > 0 && `${computedDuration}min`}
                               </div>
                             </div>
                             <span className="time-btn-badge" style={{ borderColor: barColor, color: barColor }}>
