@@ -287,9 +287,9 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px 14px 18px;
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.12) 0%, transparent 70%);
+  gap: 16px;
+  padding: 16px 18px 16px 20px;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.15) 0%, transparent 75%);
   border: none;
   border-radius: 0;
   cursor: pointer;
@@ -297,7 +297,7 @@
   text-align: left;
   color: var(--ink);
   overflow: hidden;
-  min-height: 52px;
+  min-height: 60px;
 }
 
 .time-btn::before {
@@ -306,20 +306,20 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
-  background: inherit;
-  background: var(--bar-color, var(--cat-corte));
+  width: 4px;
+  background: var(--bar-color, #E2703A);
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
 .time-btn-time {
   font-family: var(--mono);
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--accent);
-  min-width: 50px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 48px;
   flex-shrink: 0;
+  letter-spacing: 0.02em;
 }
 
 .time-btn-info {
@@ -327,60 +327,68 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .time-btn-name {
-  font-weight: 700;
-  font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.95);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 1);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: -0.01em;
 }
 
 .time-btn-service {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.55);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 400;
+}
+
+.time-btn-service.free {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .time-btn-badge {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
+  padding: 4px 10px;
+  border-radius: 0;
+  background: transparent;
+  border: 1px solid;
+  border-color: var(--bar-color, #E2703A);
+  color: var(--bar-color, #E2703A);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   flex-shrink: 0;
   white-space: nowrap;
 }
 
 .time-btn:hover:not(:disabled) {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.18) 0%, transparent 65%);
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, transparent 70%);
 }
 
 .time-btn:hover:not(:disabled)::before {
-  box-shadow: 0 0 8px rgba(226, 112, 58, 0.4);
+  box-shadow: inset 0 0 12px rgba(226, 112, 58, 0.3);
 }
 
 .time-btn.selected {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.25) 0%, transparent 65%);
-  border: 1px solid rgba(226, 112, 58, 0.4);
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.28) 0%, transparent 70%);
 }
 
 .time-btn.selected::before {
-  box-shadow: 0 0 12px rgba(226, 112, 58, 0.6);
+  box-shadow: inset 0 0 16px rgba(226, 112, 58, 0.5);
 }
 
 .time-btn:disabled {
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: not-allowed;
-  background: rgba(0, 0, 0, 0.3);
+  background: transparent;
 }
 
 .time-btn:disabled::before {

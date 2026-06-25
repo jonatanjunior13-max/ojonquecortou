@@ -2039,6 +2039,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     const primaryService = selectedServices[0];
                     const barColor = primaryService ? getCategoryColor(primaryService.category) : '#FF2D8B';
                     const categoryLabel = primaryService ? primaryService.category.toUpperCase() : 'SERVIÇO';
+                    const rgbColor = barColor === '#E2703A' ? '226,112,58' :
+                                    barColor === '#7A3CFF' ? '122,60,255' :
+                                    barColor === '#1F6FEB' ? '31,111,235' :
+                                    barColor === '#E5322D' ? '229,50,45' :
+                                    '255,45,139';
 
                     return (
                       <div className="time-picker-grid">
@@ -2050,21 +2055,19 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             onClick={() => setSelectedTime(slot)}
                             style={{
                               '--bar-color': barColor,
-                              background: `linear-gradient(90deg, rgba(${
-                                barColor === '#E2703A' ? '226,112,58' :
-                                barColor === '#7A3CFF' ? '122,60,255' :
-                                barColor === '#1F6FEB' ? '31,111,235' :
-                                barColor === '#E5322D' ? '229,50,45' :
-                                '255,45,139'
-                              }, 0.12) 0%, transparent 70%)`
+                              background: `linear-gradient(90deg, rgba(${rgbColor}, 0.15) 0%, transparent 75%)`
                             }}
                           >
                             <span className="time-btn-time">{slot}</span>
                             <div className="time-btn-info">
-                              <div className="time-btn-name">Disponível</div>
-                              <div className="time-btn-service">{primaryService?.name || 'Selecione um serviço'}</div>
+                              <div className="time-btn-name">{primaryService?.name || 'Horário livre'}</div>
+                              <div className={`time-btn-service${!primaryService ? ' free' : ''}`}>
+                                {primaryService ? `${primaryService.duration || 60}min` : ''}
+                              </div>
                             </div>
-                            <span className="time-btn-badge">{categoryLabel}</span>
+                            <span className="time-btn-badge" style={{ borderColor: barColor, color: barColor }}>
+                              {categoryLabel}
+                            </span>
                           </button>
                         ))}
                       </div>
