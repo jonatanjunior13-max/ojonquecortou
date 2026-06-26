@@ -57,25 +57,32 @@ const getServiceCategory = (serviceName = '', servicesList = []) => {
   let category = matched?.category;
 
   if (!category) {
-    const hasCombo = name.includes('combo') || name.includes('misto');
-    const hasCorte = /\b(corte|cortes)\b/.test(name);
-    const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
-    const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
-
-    if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
-      category = 'Combo';
-    } else if (hasCorte) {
-      category = 'Corte';
-    } else if (hasCor) {
-      category = 'Cor';
-    } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
-      category = 'Análise';
+    if (name.includes('almoco') || name.includes('almo\u00e7o')) {
+      category = 'Almo\u00e7o';
     } else {
-      category = 'Tratamento'; // fallback
+      const hasCombo = name.includes('combo') || name.includes('misto');
+      const hasCorte = /\b(corte|cortes)\b/.test(name);
+      const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
+      const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
+
+      if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
+        category = 'Combo';
+      } else if (hasCorte) {
+        category = 'Corte';
+      } else if (hasCor) {
+        category = 'Cor';
+      } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
+        category = 'Análise';
+      } else {
+        category = 'Tratamento'; // fallback
+      }
     }
   }
 
   const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  if (catLower.includes('almoco') || catLower.includes('almo\u00e7o')) {
+    return { class: 'svc-almoco', badge: 'ALMOÇO' };
+  }
   if (catLower.includes('combo') || catLower.includes('misto')) {
     return { class: 'svc-combo', badge: 'COMBO' };
   }
