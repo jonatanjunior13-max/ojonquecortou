@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
-import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X } from 'lucide-react';
+import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X, Package, ChevronDown } from 'lucide-react';
 import './Admin.css';
 
 import { SEED_SERVICES } from '../../data/seedServices';
@@ -36,6 +36,9 @@ const AdminServices = () => {
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [activeViewTab, setActiveViewTab] = useState('list'); // 'list', 'reorder', or 'packages'
 
+  // Salon products for cost picker
+  const [salonProducts, setSalonProducts] = useState([]);
+
   // Form states
   const [form, setForm] = useState({
     name: '',
@@ -50,8 +53,18 @@ const AdminServices = () => {
     scheduledViaWhatsapp: false,
     position: ''
   });
+  // Cost items state (replaces the simple 'cost' field)
+  const [costItems, setCostItems] = useState([]);
+  const [productSearchQuery, setProductSearchQuery] = useState('');
+  const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const [tempAmount, setTempAmount] = useState({});
 
-  // Package states
+  // Auto-calculated total cost from selected cost items
+  const calculatedCost = useMemo(
+    () => costItems.reduce((sum, item) => sum + (Number(item.pricePerUnit) * Number(item.amount)), 0),
+    [costItems]
+  );
+
   const [packages, setPackages] = useState([]);
   const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
   const [editingPackage, setEditingPackage] = useState(null);
@@ -150,6 +163,21 @@ const AdminServices = () => {
       console.warn('Erro ao conectar pacotes:', err);
     }
   }, [isDemoMode]);
+
+  // Load salon products for cost picker
+  useEffect(() => {
+    if (!db) return;
+    try {
+      const unsub = onSnapshot(collection(db, 'salon_products'), (snap) => {
+        const list = [];
+        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
+        setSalonProducts(list);
+      });
+      return () => unsub();
+    } catch (err) {
+      console.warn('Erro ao carregar produtos de salão:', err);
+    }
+  }, []);
 
   const saveLocalPackages = (updated) => {
     setPackages(updated);
@@ -280,11 +308,13 @@ const AdminServices = () => {
       priceType: 'Fixo',
       promoPrice: '',
       duration: '60',
-      cost: '',
       isPrimary: true,
       scheduledViaWhatsapp: false,
       position: services.length.toString()
     });
+    setCostItems([]);
+    setProductSearchQuery('');
+    setShowProductDropdown(false);
     setIsModalOpen(true);
   };
 
@@ -298,16 +328,20 @@ const AdminServices = () => {
       priceType: service.priceType || 'Fixo',
       promoPrice: service.promoPrice ? service.promoPrice.toString() : '',
       duration: service.duration.toString(),
-      cost: service.cost ? service.cost.toString() : '',
       isPrimary: service.isPrimary ?? true,
       scheduledViaWhatsapp: service.scheduledViaWhatsapp ?? false,
       position: service.position !== undefined ? service.position.toString() : ''
     });
+    // Restore cost items from saved data
+    setCostItems(service.costItems || []);
+    setProductSearchQuery('');
+    setShowProductDropdown(false);
     setIsModalOpen(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const totalCost = calculatedCost > 0 ? calculatedCost : 0;
     const payload = {
       name: form.name,
       category: form.category,
@@ -316,7 +350,15 @@ const AdminServices = () => {
       priceType: form.priceType,
       promoPrice: form.promoPrice ? Number(form.promoPrice) : null,
       duration: Number(form.duration),
-      cost: form.cost ? Number(form.cost) : 0,
+      cost: Number(totalCost.toFixed(2)),
+      costItems: costItems.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        unit: item.unit || 'g',
+        amount: Number(item.amount),
+        pricePerUnit: Number(item.pricePerUnit),
+        subtotal: Number((item.pricePerUnit * item.amount).toFixed(2))
+      })),
       isPrimary: form.isPrimary,
       scheduledViaWhatsapp: !!form.scheduledViaWhatsapp,
       position: form.position !== '' ? Number(form.position) : services.length
@@ -1021,15 +1063,135 @@ const AdminServices = () => {
             </div>
 
             <div className="form-group-sleek" style={{ marginTop: 12 }}>
-              <label>Custo do Serviço (R$)</label>
-              <input 
-                type="number" 
-                min="0"
-                step="0.01"
-                placeholder="Ex: 15.00 (Lançado automaticamente como despesa ao fechar a comanda)"
-                value={form.cost}
-                onChange={e => setForm(prev => ({ ...prev, cost: e.target.value }))}
-              />
+              <label style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Package size={14} />
+                Produtos Usados no Serviço
+              </label>
+
+              {/* Product search input */}
+              <div style={{ position: 'relative' }}>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <input
+                    type="text"
+                    placeholder={salonProducts.length === 0 ? 'Nenhum produto de salão cadastrado ainda...' : 'Buscar produto (ex: Creme, Oxidante...)'}
+                    value={productSearchQuery}
+                    onChange={e => { setProductSearchQuery(e.target.value); setShowProductDropdown(true); }}
+                    onFocus={() => setShowProductDropdown(true)}
+                    disabled={salonProducts.length === 0}
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowProductDropdown(v => !v)}
+                    disabled={salonProducts.length === 0}
+                    style={{ padding: '0 10px', background: 'var(--adm-rule)', border: '1px solid var(--adm-rule)', borderRadius: 6, cursor: 'pointer', color: 'var(--adm-text-2)' }}
+                  >
+                    <ChevronDown size={14} />
+                  </button>
+                </div>
+
+                {/* Dropdown list */}
+                {showProductDropdown && salonProducts.length > 0 && (() => {
+                  const q = productSearchQuery.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+                  const filtered = salonProducts.filter(p => {
+                    const already = costItems.some(ci => ci.productId === p.id);
+                    if (already) return false;
+                    if (!q) return true;
+                    return (p.name || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q);
+                  });
+                  if (filtered.length === 0) return null;
+                  return (
+                    <div style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 50,
+                      background: 'var(--adm-surface)', border: '1px solid var(--adm-rule)',
+                      borderRadius: 8, boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+                      maxHeight: 200, overflowY: 'auto', marginTop: 4
+                    }}>
+                      {filtered.map(p => (
+                        <div
+                          key={p.id}
+                          onClick={() => {
+                            setTempAmount(prev => ({ ...prev, [p.id]: '1' }));
+                            setCostItems(prev => [...prev, {
+                              productId: p.id,
+                              name: p.name,
+                              unit: p.unit || 'g',
+                              amount: 1,
+                              pricePerUnit: Number(p.pricePerUnit) || 0
+                            }]);
+                            setProductSearchQuery('');
+                            setShowProductDropdown(false);
+                          }}
+                          style={{
+                            padding: '8px 12px', cursor: 'pointer', display: 'flex',
+                            justifyContent: 'space-between', alignItems: 'center',
+                            borderBottom: '1px solid var(--adm-rule)', fontSize: '0.82rem',
+                            transition: 'background 0.15s'
+                          }}
+                          onMouseEnter={e => e.currentTarget.style.background = 'var(--adm-rule)'}
+                          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                          <span style={{ fontWeight: 600 }}>{p.name}</span>
+                          <span style={{ color: 'var(--adm-text-2)', fontSize: '0.75rem' }}>
+                            R${(Number(p.pricePerUnit) || 0).toFixed(3)}/{p.unit || 'g'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Added products list */}
+              {costItems.length > 0 && (
+                <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {costItems.map((item, idx) => (
+                    <div key={item.productId} style={{
+                      display: 'flex', alignItems: 'center', gap: 8,
+                      background: 'var(--adm-rule)', borderRadius: 8, padding: '6px 10px',
+                      fontSize: '0.8rem'
+                    }}>
+                      <span style={{ flex: 1, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</span>
+                      <input
+                        type="number"
+                        min="0.1"
+                        step="0.1"
+                        value={item.amount}
+                        onChange={e => {
+                          const val = parseFloat(e.target.value) || 0;
+                          setCostItems(prev => prev.map((ci, i) => i === idx ? { ...ci, amount: val } : ci));
+                        }}
+                        style={{ width: 64, padding: '3px 6px', textAlign: 'right', fontSize: '0.8rem' }}
+                      />
+                      <span style={{ color: 'var(--adm-text-2)', minWidth: 24 }}>{item.unit}</span>
+                      <span style={{ color: 'var(--adm-gold)', minWidth: 54, textAlign: 'right', fontWeight: 700 }}>
+                        R${(item.pricePerUnit * item.amount).toFixed(2)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setCostItems(prev => prev.filter((_, i) => i !== idx))}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--adm-text-2)', padding: 2, lineHeight: 1 }}
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Total */}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 8, padding: '6px 10px', borderTop: '1px solid var(--adm-rule)', marginTop: 4 }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-text-2)' }}>Custo total estimado:</span>
+                    <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--adm-gold)' }}>
+                      R$ {calculatedCost.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {costItems.length === 0 && (
+                <p style={{ fontSize: '0.75rem', color: 'var(--adm-text-2)', marginTop: 6, marginBottom: 0 }}>
+                  Selecione os produtos utilizados para calcular o custo automaticamente.
+                </p>
+              )}
             </div>
 
             <div className="form-group-sleek" style={{ marginTop: 12 }}>
