@@ -220,7 +220,7 @@
 }
 
 .m-nav-item.active {
-  color: var(--m-gold, #FF2D8B) !important;
+  color: #FF4D9F !important;
 }
 
 .m-nav-label {
@@ -243,9 +243,9 @@
 }
 
 .m-nav-item.active .m-nav-icon-wrap {
-  background: var(--m-gold-subtle, rgba(255, 45, 139, 0.09));
-  color: var(--m-gold, #FF2D8B) !important;
-  box-shadow: inset 0 0 8px var(--m-gold-glow, rgba(255, 45, 139, 0.20));
+  background: rgba(255, 77, 159, 0.15);
+  color: #FF4D9F !important;
+  box-shadow: inset 0 0 6px rgba(255, 77, 159, 0.10);
 }
 
 /* ── Tab Transitions ───────────────────────────────────────────────── */
