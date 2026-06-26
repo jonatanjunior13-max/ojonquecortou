@@ -1,5 +1,91 @@
 export const posts = [
   {
+    id: 44,
+    slug: 'caspa-cabelo-cacheado-inverno-como-tratar',
+    scientificData: {
+      summary: "O aumento da incidência de descamação (caspa/dermatite seborreica) no inverno é associado à lavagem com água quente, que remove o estrato córneo lipídico protetor, induzindo hipersecreção sebácea rebote e proliferação do fungo Malassezia. O tratamento requer o uso de agentes antifúngicos/queratolíticos suaves na raiz combinados com co-wash ou proteção catiônica no comprimento para evitar o ressecamento da fibra.",
+      sourceLabel: "Journal of Clinical and Aesthetic Dermatology / SBD",
+      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4852869/",
+      factSheet: [
+        { label: "Temperatura Ideal da Água", value: "Morna a fria (abaixo de 37°C) para evitar desengorduramento excessivo" },
+        { label: "Agente Antifúngico Seguro", value: "Piritionato de zinco ou Cetoconazol (aplicação localizada na raiz)" },
+        { label: "Frequência de Lavagem no Frio", value: "Mínimo 2 e máximo 4 vezes por semana para evitar abafamento" },
+        { label: "Mecanismo da Caspa", value: "Proliferação de fungos Malassezia alimentados por sebo rebote" }
+      ]
+    },
+    title: 'Caspa em Cabelo Cacheado no Inverno: Como Tratar a Raiz Sem Ressecar as Pontas | Studio do Jon',
+    excerpt: 'O inverno em BH nos convida a banhos mais quentes, o que pode desencadear caspa e descamação no couro cabeludo cacheado. Saiba como tratar a raiz sem estragar o comprimento.',
+    metaDescription: 'Lidando com caspa e descamação no cabelo cacheado neste inverno em BH? Descubra dicas de especialista para purificar o couro cabeludo sem ressecar as pontas.',
+    keywords: 'caspa cabelo cacheado, descamação couro cabeludo bh, caspa no inverno, como tratar caspa cachos, dermatite seborreica cabelo cacheado, studio do jon',
+    date: '26 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-caspa-cabelo-cacheado.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que a caspa piora no inverno?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No inverno, tomamos banhos mais quentes, o que remove a barreira de gordura protetora do couro cabeludo. O organismo responde produzindo mais sebo (efeito rebote), que alimenta o fungo Malassezia, causador da caspa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Shampoo anticaspa comum serve para cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Shampoos anticaspa tradicionais de supermercado costumam ter sulfatos fortes que limpam a raiz mas ressecam drasticamente o comprimento e pontas dos cachos. O ideal é usar shampoos anticaspa suaves ou aplicar o shampoo apenas no couro cabeludo, protegendo as pontas com condicionador antes (pré-shampoo)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como proteger as pontas ressecadas durante o tratamento da caspa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use a técnica de Pré-Poo (pré-shampoo): aplique um condicionador barato ou óleo vegetal leve do meio do cabelo até as pontas antes de entrar no banho. Isso cria um escudo protetor contra os agentes de limpeza do shampoo anticaspa."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>O Paradoxo do Inverno: Banho Quente vs. Saúde do Couro Cabeludo</h2>
+      <p>Com as manhãs e noites frias de Belo Horizonte em junho e julho, a tentação de tomar aquele banho extremamente quente é inevitável. Mas o que traz conforto para o corpo pode se transformar em um pesadelo para a sua cabeça. É no inverno que as queixas de coceira, descamação e a indesejada caspa (dermatite seborreica) disparam no Studio.</p>
+      <p>Para quem tem cabelos ondulados, cacheados ou crespos, tratar a caspa se torna um verdadeiro dilema. Os shampoos anticaspa tradicionais do mercado são formulados com sulfatos extremamente agressivos. Se por um lado eles limpam a oleosidade da raiz, por outro eles descem pelo comprimento e estilhaçam as cutículas das pontas, que já são naturalmente mais secas. O resultado? Uma raiz limpa, mas um cabelo áspero, espigado, sem definição e com frizz descontrolado.</p>
+      <p>Mas você não precisa escolher entre ter caspa ou ter um cabelo cacheado ressecado. Com o método correto de lavagem e os produtos certos, é perfeitamente possível purificar o couro cabeludo e manter o comprimento brilhante e definido. Vou te explicar a ciência por trás desse problema e o protocolo prático para resolvê-lo.</p>
+
+      <h2>Como a Água Quente Provoca a Caspa (O Efeito Rebote)</h2>
+      <p>O couro cabeludo é um ecossistema vivo. Ele produz uma camada lipídica natural para proteger a pele contra fungos e bactérias. Quando você toma um banho muito quente, a temperatura elevada da água age como um desengordurante potente, removendo toda essa barreira protetora.</p>
+      <p>O cérebro entende essa perda repentina de gordura como uma agressão e envia um sinal de emergência para as glândulas sebáceas: "produzam mais óleo imediatamente!". Esse processo é chamado de <strong>efeito rebote</strong>. O excesso de sebo produzido na raiz se torna o alimento perfeito para o fungo <em>Malassezia</em>, um microrganismo que vive naturalmente na nossa pele. Quando ele se prolifera desordenadamente, causa uma inflamação que acelera a renovação celular, gerando as famosas plaquinhas brancas que descamam: a caspa.</p>
+
+      <h2>O Protocolo de Proteção das Pontas: Técnica do Pré-Poo</h2>
+      <p>Para tratar a caspa sem destruir o comprimento do seu cacho, você precisa blindar os fios antes de aplicar o shampoo de tratamento. A técnica ideal para isso é o <strong>Pré-Poo (ou pré-shampoo)</strong>:</p>
+      <ol>
+        <li>Antes de entrar no chuveiro, aplique um condicionador leve, creme de co-wash ou algumas gotas de óleo vegetal leve (como óleo de semente de uva) do meio do cabelo até as pontas.</li>
+        <li>Massageie delicadamente para garantir que todos os fios estejam envolvidos pelo creme. Esse creme vai criar um escudo catiônico protetor ao redor das cutículas.</li>
+        <li>Entre no banho e aplique o shampoo anticaspa <strong>apenas na raiz</strong>. Massageie o couro cabeludo com as pontas dos dedos (nunca com as unhas) por 2 minutos para que o agente ativo faça efeito.</li>
+        <li>Na hora do enxágue, a espuma do shampoo vai escorrer pelo comprimento, mas em vez de agredir a fibra, ela vai apenas remover o creme do Pré-Poo que você aplicou antes. O seu cacho fica protegido e a sua raiz fica limpa!</li>
+      </ol>
+
+      <h2>Frequência e Cuidados com o Abafamento do Cabelo no Frio</h2>
+      <p>Outro erro muito comum no inverno em BH é espaçar demais as lavagens com medo do frio ou da demora para secar. Ficar mais de 4 dias sem lavar o cabelo cacheado acumula suor, poluição e resíduos de cremes de pentear no couro cabeludo.</p>
+      <p>Além disso, dormir com o cabelo úmido ou usar gorros e toucas logo após a lavagem cria um ambiente quente, úmido e abafado na raiz — o paraíso ideal para a proliferação de fungos. A recomendação técnica é lavar o cabelo de duas a três vezes por semana e garantir que a raiz seque completamente, seja ao ar livre ou usando o difusor na temperatura morna e velocidade média.</p>
+
+      <h2>A Leitura de Fio e o Diagnóstico do Couro Cabeludo</h2>
+      <p>Nem toda descamação é caspa. Muitas vezes, o que parece caspa é apenas ressecamento severo do couro cabeludo causado por produtos incompatíveis ou dermatite de contato. Tratar um couro cabeludo ressecado com shampoo anticaspa forte só vai piorar a inflamação.</p>
+      <p>No Studio do Jon, o diagnóstico começa sempre com a <a href="/metodo">Leitura de Fio</a>. Na etapa 3 deste método de 7 passos, nós realizamos uma análise detalhada da saúde da sua raiz. Conseguimos diferenciar a descamação por ressecamento da dermatite seborreica por oleosidade rebote. A partir daí, desenhamos um cronograma capilar de tratamento com argiloterapia ou tônicos purificantes que equilibram o microbioma do couro cabeludo sem comprometer a estrutura das suas curvas no comprimento.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Lidando com coceira ou descamação na raiz?</h3>
+        <p>Descubra exatamente o que o seu couro cabeludo precisa com o Método Leitura de Fio e recupere a saúde dos seus cachos de forma integrada.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 43,
     slug: 'transicao-capilar-sem-sofrimento-guia-cachos',
     scientificData: {
