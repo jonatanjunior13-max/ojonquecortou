@@ -39,7 +39,11 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
     s.id === booking?.service?.id || 
     s.name?.toLowerCase() === serviceName?.toLowerCase()
   );
-  const basePrice = matchedService?.promoPrice || booking?.servicePrice || booking?.service?.price || matchedService?.price || 0;
+  const basePrice = matchedService?.promoPrice
+    ?? (booking?.servicePrice != null && booking?.servicePrice !== '' ? Number(booking.servicePrice) : null)
+    ?? booking?.service?.price
+    ?? matchedService?.price
+    ?? 0;
   const prepay = booking?.prepayment ? Number(booking.prepayment) : 0;
 
   const [paymentMethod, setPaymentMethod] = useState('Pix');
@@ -54,6 +58,11 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
   const [extraCost, setExtraCost] = useState('');
   const [discount, setDiscount] = useState(0);
   const [overridePrice, setOverridePrice] = useState(basePrice);
+
+  // Sync overridePrice when the booking changes (e.g. different booking opened without unmounting)
+  useEffect(() => {
+    setOverridePrice(basePrice);
+  }, [booking?.id]);
   const [requestReview, setRequestReview] = useState(false);
 
   // Extract all supplies registered for this service
@@ -106,7 +115,9 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
     'Crédito 3x': 0,
   });
 
-  const servicePrice = overridePrice !== '' && overridePrice !== null && overridePrice !== undefined ? Number(overridePrice) || 0 : 0;
+  const servicePrice = (overridePrice !== '' && overridePrice !== null && overridePrice !== undefined)
+    ? (Number(overridePrice) || 0)
+    : (Number(basePrice) || 0);
 
   const tipValue = useMemo(() => {
     if (tipMode === 0) return 0;
