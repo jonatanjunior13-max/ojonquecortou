@@ -980,9 +980,12 @@ export default function AdminMobileApp() {
         setNonRegisteredProducts([]);
         setDiscount(0);
       }
-      const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
-        ? booking.servicePrice
-        : (booking.service?.promoPrice || booking.service?.price || 0);
+      // Prefer saved serviceBasePrice from transaction, then booking.servicePrice, then service catalog price
+      const bp = (tx && tx.serviceBasePrice != null && tx.serviceBasePrice !== '')
+        ? tx.serviceBasePrice
+        : (booking.servicePrice != null && booking.servicePrice !== '')
+          ? booking.servicePrice
+          : (booking.service?.promoPrice || booking.service?.price || 0);
       setOverrideBasePrice(bp);
     } else {
       setPaymentMethod('Pix');
@@ -998,9 +1001,9 @@ export default function AdminMobileApp() {
       setUsedProducts(defaultUsed);
       setNonRegisteredProducts([]);
       setDiscount(0);
-      const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
+      const bp = (booking.servicePrice != null && booking.servicePrice !== '' && Number(booking.servicePrice) > 0)
         ? booking.servicePrice
-        : (booking.service?.promoPrice || booking.service?.price || 0);
+        : (booking.service?.promoPrice || booking.service?.price || basePrice || 0);
       setOverrideBasePrice(bp);
     }
     
@@ -1134,6 +1137,7 @@ export default function AdminMobileApp() {
         type: 'entrada',
         description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
+        serviceBasePrice: finalBasePrice,
         paymentMethod: methodLabel,
         splitPayments: splitPaymentsList,
         discount: discount,
@@ -4057,7 +4061,7 @@ Grande abraço, Jon.`;
       ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
       : [];
 
-    const currentBasePrice = overrideBasePrice !== null && overrideBasePrice !== '' ? Number(overrideBasePrice) : 0;
+    const currentBasePrice = (overrideBasePrice !== null && overrideBasePrice !== '') ? Number(overrideBasePrice) : Number(basePrice) || 0;
     const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
     const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
     const subtotal = currentBasePrice + extraServicesVal + productsVal;
