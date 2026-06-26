@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, updateDoc, doc, getDoc, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -79,6 +79,236 @@ async function handleOutboundProxy(req, res) {
   }
 }
 
+// ─── Setmore Webhook Helpers & Handler ──────────────────────────────────────
+
+function parseSetmoreDateTime(dateStr, timeStr) {
+  if (!dateStr) return { date: null, time: null };
+  let time = timeStr || '';
+  const pm = /PM/i.test(time);
+  const am = /AM/i.test(time);
+  time = time.replace(/\s*(AM|PM)/i, '').trim();
+  if ((pm || am) && time.includes(':')) {
+    let [h, m] = time.split(':').map(Number);
+    if (pm && h !== 12) h += 12;
+    if (am && h === 12) h = 0;
+    time = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+  }
+  return { date: dateStr, time };
+}
+
+function cleanPhone(phone) {
+  if (!phone) return '';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.startsWith('55') && digits.length >= 12) return digits;
+  if (digits.length === 11 || digits.length === 10) return '55' + digits;
+  return digits;
+}
+
+function ptDate(dateStr) {
+  if (!dateStr) return '';
+  const [y, m, d] = dateStr.split('-');
+  const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                  'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  return `${parseInt(d, 10)} de ${months[parseInt(m, 10) - 1]}`;
+}
+
+async function loadStudioSettings() {
+  try {
+    const snap = await getDoc(doc(db, 'settings', 'studio'));
+    return snap.exists() ? snap.data() : {};
+  } catch { return {}; }
+}
+
+async function sendSetmoreWhatsApp(settings, phone, message) {
+  const { whatsappGateway, zApiInstanceId, zApiToken,
+          evolutionApiUrl, evolutionApiKey, evolutionInstanceName } = settings;
+  if (!whatsappGateway || !phone) return;
+
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : 'https://www.ojonquecortou.com.br';
+
+  const body = {
+    gateway: whatsappGateway,
+    phone,
+    message,
+    config: { zApiInstanceId, zApiToken, evolutionApiUrl, evolutionApiKey, evolutionInstanceName }
+  };
+
+  try {
+    await fetch(`${baseUrl}/api/whatsapp-webhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+  } catch (err) {
+    console.error('[setmore-webhook] Erro ao enviar WhatsApp:', err.message);
+  }
+}
+
+async function handleSetmoreWebhook(req, res) {
+  const payload = req.body;
+  console.log('[setmore-webhook-router] Payload recebido:', JSON.stringify(payload));
+
+  const event = payload?.event || payload?.type || '';
+  const appt = payload?.appointment || payload?.data || payload || {};
+
+  let dateStr = appt.date;
+  let timeStr = appt.start;
+
+  if (!dateStr && appt.start_time) {
+    const iso = appt.start_time; 
+    dateStr = iso.split('T')[0];
+    timeStr = iso.split('T')[1]?.substring(0, 5);
+  }
+
+  const { date, time } = parseSetmoreDateTime(dateStr, timeStr);
+  const clientName  = appt.customer_name  || appt.client_name  || 'Cliente';
+  const clientPhone = cleanPhone(appt.customer_phone || appt.client_phone || '');
+  const clientEmail = appt.customer_email || appt.client_email || '';
+  const serviceName = appt.service_name   || appt.service      || 'Serviço';
+  const duration    = appt.duration       || 60;
+  const setmoreId   = appt.key            || appt.id           || '';
+  const comment     = appt.comment        || appt.notes        || '';
+
+  if (!date || !time) {
+    console.warn('[setmore-webhook-router] Data/hora inválida no payload');
+    return res.status(400).json({ error: 'Data ou hora inválida no payload' });
+  }
+
+  const settings = await loadStudioSettings();
+  const ownerPhone = cleanPhone(settings.whatsappNumber || settings.phone || '');
+
+  // ── BOOKED ────────────────────────────────────────────────────────────────
+  if (!event || event === 'appointment_booked' || event === 'booked') {
+    let existingId = null;
+    if (setmoreId) {
+      const q = query(collection(db, 'bookings'), where('setmoreId', '==', setmoreId));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        existingId = snap.docs[0].id;
+        console.log('[setmore-webhook-router] Agendamento já existe:', existingId);
+        return res.status(200).json({ status: 'already_exists', id: existingId });
+      }
+    }
+
+    const bookingPayload = {
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceName,
+      service: { name: serviceName },
+      date,
+      time,
+      duration: Number(duration),
+      status: 'confirmado',
+      source: 'google',        
+      setmoreId,
+      notes: comment,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    const docRef = await addDoc(collection(db, 'bookings'), bookingPayload);
+    console.log('[setmore-webhook-router] Agendamento salvo:', docRef.id);
+
+    if (clientPhone) {
+      const msg =
+        `Olá, *${clientName}*! 🎉\n\n` +
+        `Seu agendamento no *Studio do Jon* foi confirmado:\n\n` +
+        `📅 *${ptDate(date)}* às *${time}*\n` +
+        `✂️ *${serviceName}*\n\n` +
+        `Nos vemos em breve! Qualquer dúvida é só chamar. 😊`;
+      await sendSetmoreWhatsApp(settings, clientPhone, msg);
+    }
+
+    if (ownerPhone) {
+      const msg =
+        `🔔 *Novo agendamento via Google!*\n\n` +
+        `👤 *${clientName}*` + (clientPhone ? ` | ${clientPhone}` : '') + `\n` +
+        `📅 *${ptDate(date)}* às *${time}*\n` +
+        `✂️ *${serviceName}*\n` +
+        (comment ? `💬 "${comment}"\n` : '') +
+        `\n_Salvo automaticamente no CRM_ ✅`;
+      await sendSetmoreWhatsApp(settings, ownerPhone, msg);
+    }
+
+    return res.status(200).json({ status: 'created', id: docRef.id });
+  }
+
+  // ── CANCELLED ─────────────────────────────────────────────────────────────
+  if (event === 'appointment_cancelled' || event === 'cancelled') {
+    if (setmoreId) {
+      const q = query(collection(db, 'bookings'), where('setmoreId', '==', setmoreId));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const bookingDoc = snap.docs[0];
+        await updateDoc(doc(db, 'bookings', bookingDoc.id), {
+          status: 'cancelado',
+          updatedAt: new Date().toISOString()
+        });
+        console.log('[setmore-webhook-router] Agendamento cancelado:', bookingDoc.id);
+
+        if (ownerPhone) {
+          const msg =
+            `❌ *Cancelamento via Google*\n\n` +
+            `👤 *${clientName}*\n` +
+            `📅 *${ptDate(date)}* às *${time}*\n` +
+            `✂️ *${serviceName}*\n\n` +
+            `_Status atualizado no CRM_ ✅`;
+          await sendSetmoreWhatsApp(settings, ownerPhone, msg);
+        }
+
+        return res.status(200).json({ status: 'cancelled', id: bookingDoc.id });
+      }
+    }
+    return res.status(200).json({ status: 'not_found' });
+  }
+
+  // ── RESCHEDULED ───────────────────────────────────────────────────────────
+  if (event === 'appointment_rescheduled' || event === 'rescheduled') {
+    if (setmoreId) {
+      const q = query(collection(db, 'bookings'), where('setmoreId', '==', setmoreId));
+      const snap = await getDocs(q);
+      if (!snap.empty) {
+        const bookingDoc = snap.docs[0];
+        await updateDoc(doc(db, 'bookings', bookingDoc.id), {
+          date,
+          time,
+          updatedAt: new Date().toISOString()
+        });
+        console.log('[setmore-webhook-router] Agendamento reagendado:', bookingDoc.id);
+
+        if (clientPhone) {
+          const msg =
+            `📅 *Reagendamento confirmado!*\n\n` +
+            `Olá, *${clientName}*! Seu horário foi atualizado:\n\n` +
+            `📅 *${ptDate(date)}* às *${time}*\n` +
+            `✂️ *${serviceName}*\n\n` +
+            `Nos vemos em breve! 😊`;
+          await sendSetmoreWhatsApp(settings, clientPhone, msg);
+        }
+
+        if (ownerPhone) {
+          const msg =
+            `🔄 *Reagendamento via Google*\n\n` +
+            `👤 *${clientName}*\n` +
+            `📅 Novo horário: *${ptDate(date)}* às *${time}*\n` +
+            `✂️ *${serviceName}*\n\n` +
+            `_CRM atualizado_ ✅`;
+          await sendSetmoreWhatsApp(settings, ownerPhone, msg);
+        }
+
+        return res.status(200).json({ status: 'rescheduled', id: bookingDoc.id });
+      }
+    }
+    return res.status(200).json({ status: 'not_found' });
+  }
+
+  console.log('[setmore-webhook-router] Evento desconhecido:', event);
+  return res.status(200).json({ status: 'ignored', event });
+}
+
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -95,6 +325,12 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
+  }
+
+  // Setmore: if setmoreId or source: 'google' or appointment key is present
+  const isSetmore = req.body && (req.body.event?.includes('appointment_') || req.body.appointment || req.body.setmoreId || req.body.source === 'google' || req.query.source === 'google');
+  if (isSetmore) {
+    return handleSetmoreWebhook(req, res);
   }
 
   // Outbound: chamada do painel para enviar mensagem (campo `gateway` presente).
