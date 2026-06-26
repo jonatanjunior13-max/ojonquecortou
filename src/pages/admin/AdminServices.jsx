@@ -8,13 +8,18 @@ import { SEED_SERVICES } from '../../data/seedServices';
 
 const normalizeCategory = (cat) => {
   const c = (cat || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-  if (c.includes('misto') || c.includes('combo') || (c.includes('corte') && (c.includes('tratamento') || c.includes('cor') || c.includes('coloracao')))) {
+  if (c === 'almoco' || c === 'almoço' || c.includes('almoco') || c.includes('almoço')) return 'Almoço';
+  // Use word-boundary test so 'cor' doesn't match inside 'corte'
+  const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(c);
+  const hasCorte = /\b(corte|cortes)\b/.test(c);
+  const hasTratamento = /\b(tratamento|terapia|cronograma|hidrat)\b/.test(c);
+  if (c.includes('misto') || c.includes('combo') || (hasCorte && (hasTratamento || hasCor))) {
     return 'Combo';
   }
-  if (c.includes('corte')) return 'Corte';
-  if (c.includes('cor') || c.includes('coloracao') || c.includes('colora')) return 'Cor';
+  if (hasCorte) return 'Corte';
+  if (hasCor) return 'Cor';
   if (c.includes('analise') || c.includes('avaliacao') || c.includes('teste')) return 'Análise';
-  if (c.includes('tratamento') || c.includes('terapia') || c.includes('cronograma') || c.includes('hidrat') || c.includes('finaliza')) return 'Tratamento';
+  if (hasTratamento || c.includes('terapia') || c.includes('finaliza')) return 'Tratamento';
   return 'Corte'; // default fallback
 };
 

@@ -601,6 +601,12 @@
   border-left: 3px solid #F97316 !important;
   color: #ffffff !important;
 }
+.appt-card.svc-almoco {
+  background: linear-gradient(90deg, rgba(251, 146, 60, 0.28) 0%, rgba(251, 146, 60, 0.08) 50%, transparent 100%) !important;
+  border: 1px solid rgba(251, 146, 60, 0.2) !important;
+  border-left: 3px solid #FB923C !important;
+  color: #ffffff !important;
+}
 
 /* Agenda Badges */
 .appt-badge {
@@ -639,6 +645,11 @@
   color: #F97316;
   background: rgba(249, 115, 22, 0.12);
   border-color: rgba(249, 115, 22, 0.25);
+}
+.appt-card.svc-almoco .appt-badge {
+  color: #FB923C;
+  background: rgba(251, 146, 60, 0.15);
+  border-color: rgba(251, 146, 60, 0.3);
 }
 
 @keyframes pulse-border {

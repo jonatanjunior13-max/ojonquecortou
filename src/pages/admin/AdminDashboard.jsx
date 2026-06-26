@@ -52,26 +52,35 @@ const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
   const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
   let category = matched?.category;
 
+  // Detect lunch break by name (for bookings blocked with title "Almoço")
   if (!category) {
-    const hasCombo = name.includes('combo') || name.includes('misto');
-    const hasCorte = /\b(corte|cortes)\b/.test(name);
-    const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
-    const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
-
-    if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
-      category = 'Combo';
-    } else if (hasCorte) {
-      category = 'Corte';
-    } else if (hasCor) {
-      category = 'Cor';
-    } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
-      category = 'Análise';
+    if (name.includes('almoco') || name.includes('almo\u00e7o')) {
+      category = 'Almo\u00e7o';
     } else {
-      category = 'Tratamento'; // fallback
+      const hasCombo = name.includes('combo') || name.includes('misto');
+      const hasCorte = /\b(corte|cortes)\b/.test(name);
+      const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
+      // Word boundary so 'cor' doesn't match inside 'corte'
+      const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
+
+      if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
+        category = 'Combo';
+      } else if (hasCorte) {
+        category = 'Corte';
+      } else if (hasCor) {
+        category = 'Cor';
+      } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
+        category = 'Análise';
+      } else {
+        category = 'Tratamento'; // fallback
+      }
     }
   }
 
   const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  if (catLower.includes('almoco') || catLower.includes('almo\u00e7o')) {
+    return { class: 'svc-almoco', badge: 'ALMOÇO' };
+  }
   if (catLower.includes('combo') || catLower.includes('misto')) {
     return { class: 'svc-combo', badge: 'COMBO' };
   }
@@ -86,6 +95,7 @@ const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
   }
   return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
 };
+
 
 const calculateOverlappingLayout = (items) => {
   if (!items || items.length === 0) return [];
