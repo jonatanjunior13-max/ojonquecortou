@@ -7,8 +7,11 @@ function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div>
-            <div className="footer-brand">
-              O Jon que<br/><span className="italic">cortou.</span>
+            <div className="footer-brand" style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <img src="/logo-jon-cortou.png" alt="O Jon que Cortou Logo" style={{ width: 44, height: 44, borderRadius: '50%', objectFit: 'cover' }} />
+              <div style={{ fontFamily: 'var(--serif)', fontSize: '20px', fontWeight: 'bold', lineHeight: 1.1 }}>
+                O Jon que<br/><span className="italic" style={{ fontFamily: 'var(--serif-italic)', fontStyle: 'italic', fontWeight: 'normal' }}>cortou.</span>
+              </div>
             </div>
             <p style={{ color: "var(--muted)", fontSize: 14.5, maxWidth: "38ch", margin: "0 0 16px 0" }}>
               Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.

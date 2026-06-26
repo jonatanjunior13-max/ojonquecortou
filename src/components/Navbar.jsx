@@ -78,7 +78,7 @@ function Navbar() {
       <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
         <div className="container nav-inner">
           <Link to="/" className="brand">
-            <span className="mark">J</span>
+            <img src="/logo-jon-cortou.png" alt="O Jon que Cortou Logo" style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover' }} />
             <span className="word">O Jon que Cortou</span>
           </Link>
           <div className="nav-links">
