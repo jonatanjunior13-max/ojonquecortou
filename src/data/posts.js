@@ -13,10 +13,10 @@ export const posts = [
         { label: "Dano Térmico Adicional", value: "Chapinha acima de 180°C causa scab hair e desnaturação proteica" }
       ]
     },
-    title: 'Transição Capilar Sem Sofrimento: O Guia Definitivo para Voltar aos Cachos | Studio do Jon',
+    title: 'Transição Capilar Sem Sofrimento: Guia Completo para Voltar aos Cachos',
     excerpt: 'Voltar ao cabelo natural não precisa ser um processo traumático. Descubra como passar pela transição capilar de forma confortável, saudável e sem pressa.',
-    metaDescription: 'Quer voltar aos cachos sem sofrer na transição capilar? Confira nosso guia definitivo com dicas sobre texturização, cronograma capilar e cortes progressivos. Por Jon.',
-    keywords: 'transição capilar, voltar aos cachos, como passar pela transição, cabelo cacheado transição, big chop bh, studio do jon',
+    metaDescription: 'Quer fazer a transição capilar em BH sem sofrimento? Conheça as melhores técnicas de corte a seco e cronograma para reativar seus cachos com o especialista Jon.',
+    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, transição capilar bh, big chop bh, especialista em cachos bh',
     date: '19 de Junho, 2026',
     author: 'Jon',
     category: 'Transição Capilar',
@@ -139,10 +139,10 @@ export const posts = [
         { label: "Indicação Tricológica", value: "Fios com alta porosidade e perda hídrica rápida" }
       ]
     },
-    title: 'pH do Cacho: Acidificação Capilar para Alta Porosidade | Jon',
+    title: 'pH do Cacho: Como Fazer Acidificação Capilar e Vencer a Porosidade',
     excerpt: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade.',
-    metaDescription: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade. Por Jon, Studio do Jon BH.',
-    keywords: 'acidificação capilar, porosidade capilar bh, cabelo cacheado porosidade, pH do cacho, studio do jon, belo horizonte',
+    metaDescription: 'Descubra como a acidificação capilar combate o frizz e reconstrói o pH do cabelo cacheado em BH. Agende sua leitura de fio com o especialista Jon.',
+    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, acidificação capilar bh, porosidade cabelo cacheado bh, especialista em cachos bh',
     date: '17 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
@@ -246,10 +246,10 @@ export const posts = [
         { label: "Alternativa Recomendada", value: "Óleos insaturados leves (Jojoba, Argan, Uva)" }
       ]
     },
-    title: 'Óleo de Coco no Cabelo Cacheado Resseca? | Studio do Jon',
+    title: 'Óleo de Coco no Cabelo Cacheado Resseca? Entenda a Verdade',
     excerpt: 'Usar óleo de coco puro nos cachos parece a solução para o ressecamento, mas pode ser o motivo do seu cabelo estar opaco e impermeável. Entenda a física capilar por trás do build-up.',
-    metaDescription: 'Óleo de coco no cabelo cacheado pode causar ressecamento crônico por impermeabilizar a fibra. Entenda como tratar o acúmulo de produtos com o Studio do Jon.',
-    keywords: 'oleo de coco no cabelo, cabelo cacheado ressecado, porosidade capilar bh, umectacao capilar bh, studio do jon',
+    metaDescription: 'Será que usar óleo de coco no cabelo cacheado realmente resseca? Descubra a verdade sobre o efeito build-up e como cuidar dos seus cachos com o Studio do Jon em BH.',
+    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, oleo de coco no cabelo cacheado, cabelo cacheado ressecado, umectacao capilar bh',
     date: '17 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
@@ -371,10 +371,10 @@ export const posts = [
         { label: "Tipo de Finalizador Ideal", value: "Cosméticos hidrossolúveis fluidos (Evita build-up)" }
       ]
     },
-    title: 'Day After Perfeito: Reativar Cachos Sem Lavar | Jon',
+    title: 'Day After Perfeito: Como Reativar Cachos Sem Lavar no Dia Seguinte',
     excerpt: 'Acordar com os cachos amassados, sem definição e com frizz é o pesadelo de toda cacheada, especialmente no clima seco de Belo Horizonte. Descubra como ter um day after impecável.',
-    metaDescription: 'Cabelo cacheado amassado e com frizz no day after? Aprenda como reativar os cachos sem lavar o cabelo todo dia no clima seco de BH. Dicas de especialista.',
-    keywords: 'day after cabelo cacheado, como reativar cachos, frizz day after bh, cabelo cacheado amassado, studio do jon, belo horizonte',
+    metaDescription: 'Cabelo cacheado amassado e com frizz no day after? Aprenda como reativar os cachos sem lavar todo dia no clima seco de BH com dicas do especialista do Studio do Jon.',
+    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, day after cabelo cacheado, reativar cachos sem lavar bh, especialista em cachos bh',
     date: '12 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
@@ -465,10 +465,10 @@ export const posts = [
         { label: "Ingredientes Ideais", value: "Extratos vegetais aquosos e gelatinas hidrossolúveis" }
       ]
     },
-    title: 'Você Tem Cabelo Ondulado e Não Sabe? | Jon',
+    title: 'Você Tem Cabelo Ondulado e Não Sabe? Como Identificar e Cuidar',
     excerpt: 'Acha que seu cabelo é liso, indisciplinado e cheio de frizz? Descubra se você na verdade tem cabelos ondulados e como cuidar deles para revelar ondas perfeitas.',
-    metaDescription: 'Cabelo liso com frizz ou ondulado? Descubra como identificar cabelos ondulados (2A, 2B, 2C) e aprenda a cuidar deles com dicas de especialista em BH.',
-    keywords: 'cabelo ondulado, liso com frizz, cabelo ondulado 2b 2c, como saber se meu cabelo e ondulado, studio do jon, belo horizonte',
+    metaDescription: 'Será que seu cabelo é liso com frizz ou ondulado? Descubra como identificar as curvaturas 2A, 2B e 2C em Belo Horizonte e cuide com o especialista Jon.',
+    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, cabelo ondulado ou liso com frizz, especialista em cachos bh, transição capilar bh',
     date: '08 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',

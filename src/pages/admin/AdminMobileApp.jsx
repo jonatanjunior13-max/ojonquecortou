@@ -327,9 +327,10 @@ export default function AdminMobileApp() {
   const [isFinalizingCheckout, setIsFinalizingCheckout] = useState(false);
 
   const [overrideBasePrice, setOverrideBasePrice] = useState(null);
-  const [requestReview, setRequestReview] = useState(true);
+  const [requestReview, setRequestReview] = useState(false);
   const [usedProducts, setUsedProducts] = useState([]);
   const [nonRegisteredProducts, setNonRegisteredProducts] = useState([]);
+  const [salonProducts, setSalonProducts] = useState([]);
   const [selectedUsedProduct, setSelectedUsedProduct] = useState('');
   const [newNonRegName, setNewNonRegName] = useState('');
   const [newNonRegVal, setNewNonRegVal] = useState(0);
@@ -604,6 +605,10 @@ export default function AdminMobileApp() {
           checkLoaded('inventory');
         }, (err) => handleError('inventory', err)));
 
+        unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => {
+          setSalonProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        }, (err) => console.error('Error loading salon_products:', err)));
+
         unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => {
           setPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
           checkLoaded('packages');
@@ -863,6 +868,35 @@ export default function AdminMobileApp() {
     setTouchStart(null);
   };
 
+  const getSuppliesForService = (booking) => {
+    if (!booking || !salonProducts || salonProducts.length === 0) return [];
+    const serviceName = booking.serviceName || booking.service?.name || '';
+    const serviceId = booking.serviceId || booking.service?.id || '';
+    const matchedSupplies = [];
+    salonProducts.forEach(p => {
+      if (p.usedIn && p.usedIn.length > 0) {
+        const match = p.usedIn.find(ui => 
+          (serviceId && ui.serviceId === serviceId) || 
+          (ui.serviceName && ui.serviceName.toLowerCase() === serviceName.toLowerCase())
+        );
+        if (match) {
+          const portionAmount = Number(match.amount) || 0;
+          const pricePerUnit = p.pricePerUnit || (p.volumetry > 0 ? p.costPrice / p.volumetry : 0);
+          const calculatedCost = Number((pricePerUnit * portionAmount).toFixed(2)) || p.costPrice || 0;
+          matchedSupplies.push({
+            productId: p.id,
+            name: p.name,
+            price: calculatedCost,
+            quantity: 1,
+            amount: portionAmount,
+            unit: p.unit || ''
+          });
+        }
+      }
+    });
+    return matchedSupplies;
+  };
+
   // ── Checkout helpers ───────────────────────────────────────────
   const openCheckout = (booking) => {
     setCheckoutBooking(booking);
@@ -937,7 +971,12 @@ export default function AdminMobileApp() {
         setApplyAnticipation(false);
         setSelectedProducts([]);
         setSelectedServices([]);
-        setUsedProducts([]);
+        const serviceSupplies = getSuppliesForService(booking);
+        const defaultUsed = serviceSupplies.filter(supply => {
+          const ln = supply.name.toLowerCase();
+          return ln.includes('shampoo') || ln.includes('condicionador') || ln.includes('finalizador') || ln.includes('oleo') || ln.includes('óleo');
+        });
+        setUsedProducts(defaultUsed);
         setNonRegisteredProducts([]);
         setDiscount(0);
       }
@@ -951,7 +990,12 @@ export default function AdminMobileApp() {
       setApplyAnticipation(false);
       setSelectedProducts([]);
       setSelectedServices([]);
-      setUsedProducts([]);
+      const serviceSupplies = getSuppliesForService(booking);
+      const defaultUsed = serviceSupplies.filter(supply => {
+        const ln = supply.name.toLowerCase();
+        return ln.includes('shampoo') || ln.includes('condicionador') || ln.includes('finalizador') || ln.includes('oleo') || ln.includes('óleo');
+      });
+      setUsedProducts(defaultUsed);
       setNonRegisteredProducts([]);
       setDiscount(0);
       const bp = booking.servicePrice !== undefined && booking.servicePrice !== null
@@ -962,7 +1006,7 @@ export default function AdminMobileApp() {
     
     setProductSearch('');
     setServiceSearch('');
-    setRequestReview(booking.status !== 'finalizado');
+    setRequestReview(false);
     setShowBookingSheet(false);
     setShowCheckoutSheet(true);
   };
@@ -4090,79 +4134,76 @@ Grande abraço, Jon.`;
               )}
             </div>
 
-            {/* Used Products Section */}
+            {/* Insumos de Uso Fixo (Dedução) */}
             <div>
-              <div className="m-label" style={{ marginBottom:8 }}>🧪 Insumos Usados (Dedução)</div>
-              {usedProducts.map((p, idx) => (
-                <div key={'used-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#48bb78' }}>
-                  <span style={{ fontSize:'0.82rem' }}>{p.quantity}x {p.name}</span>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <span style={{ fontSize:'0.82rem', fontWeight: 600 }}>- {fmt(p.price * p.quantity)}</span>
-                    <button onClick={() => removeUsedProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444' }}><Trash2 size={12}/></button>
-                  </div>
+              <div className="m-label" style={{ marginBottom: 6 }}>🧪 Insumos de Uso Fixo (Dedução)</div>
+              {getSuppliesForService(checkoutBooking).length === 0 ? (
+                <div style={{ fontSize: '0.78rem', color: 'var(--m-text-2)', fontStyle: 'italic', padding: '6px 0' }}>
+                  Nenhum insumo cadastrado para este serviço.
                 </div>
-              ))}
-              
-              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
-                <select
-                  value={selectedUsedProduct}
-                  onChange={e => setSelectedUsedProduct(e.target.value)}
-                  style={{ flex: 1, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
-                >
-                  <option value="">-- Selecionar Insumo --</option>
-                  {inventory.filter(p => p.quantity > 0).map(p => (
-                    <option key={p.id} value={`${p.id}|${p.name}|${p.costPrice || p.sellingPrice}`}>
-                      {p.name} (Custo: R$ {p.costPrice || p.sellingPrice})
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  className="m-btn m-btn-outline"
-                  style={{ padding: '0 12px', fontSize: '0.8rem' }}
-                  onClick={() => {
-                    if (!selectedUsedProduct) return;
-                    const [pid, name, price] = selectedUsedProduct.split('|');
-                    addUsedProduct(pid, name, price);
-                  }}
-                >
-                  +
-                </button>
-              </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)' }}>
+                  {getSuppliesForService(checkoutBooking).map(supply => {
+                    const isChecked = usedProducts.some(p => p.productId === supply.productId);
+                    return (
+                      <label key={supply.productId} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.8rem', color: 'var(--m-text)', cursor: 'pointer', userSelect: 'none' }}>
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {
+                            setUsedProducts(prev => {
+                              if (prev.some(p => p.productId === supply.productId)) {
+                                return prev.filter(p => p.productId !== supply.productId);
+                              } else {
+                                return [...prev, supply];
+                              }
+                            });
+                          }}
+                          style={{ accentColor: 'var(--m-gold)', width: 14, height: 14 }}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1, alignItems: 'center' }}>
+                          <span>{supply.name} ({supply.amount}{supply.unit})</span>
+                          <span style={{ color: 'var(--m-gold)', fontWeight: 600 }}>- {fmt(supply.price)}</span>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
-            {/* Non Registered Products Section */}
+            {/* Non Registered Products Section - Compacted */}
             <div>
-              <div className="m-label" style={{ marginBottom:8 }}>🏷️ Produtos Não Cadastrados (Uso Único)</div>
+              <div className="m-label" style={{ marginBottom: 6, fontSize: '0.78rem' }}>🏷️ Uso Único / Não Cadastrados</div>
               {nonRegisteredProducts.map((p, idx) => (
-                <div key={'nonreg-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#38b2ac' }}>
-                  <span style={{ fontSize:'0.82rem' }}>{p.name}</span>
-                  <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <span style={{ fontSize:'0.82rem', fontWeight: 600 }}>- {fmt(p.value)}</span>
-                    <button onClick={() => removeNonRegisteredProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444' }}><Trash2 size={12}/></button>
+                <div key={'nonreg-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'3px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#38b2ac' }}>
+                  <span style={{ fontSize:'0.78rem' }}>{p.name}</span>
+                  <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                    <span style={{ fontSize:'0.78rem', fontWeight: 600 }}>- {fmt(p.value)}</span>
+                    <button onClick={() => removeNonRegisteredProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444', padding: 2 }}><Trash2 size={11}/></button>
                   </div>
                 </div>
               ))}
 
-              <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+              <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
                 <input
                   type="text"
-                  placeholder="Nome do produto"
+                  placeholder="Nome"
                   value={newNonRegName}
                   onChange={e => setNewNonRegName(e.target.value)}
-                  style={{ flex: 2, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
+                  style={{ flex: 1.8, padding: '5px 8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.75rem', color: 'var(--m-text)', fontFamily: 'inherit', height: '30px', boxSizing: 'border-box' }}
                 />
                 <input
                   type="number"
-                  placeholder="Valor"
+                  placeholder="R$"
                   value={newNonRegVal || ''}
                   onChange={e => setNewNonRegVal(Number(e.target.value))}
-                  style={{ flex: 1, padding: '8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.8rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit' }}
+                  style={{ flex: 1, padding: '5px 8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.75rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit', height: '30px', boxSizing: 'border-box' }}
                 />
                 <button
                   type="button"
                   className="m-btn m-btn-outline"
-                  style={{ padding: '0 12px', fontSize: '0.8rem' }}
+                  style={{ padding: '0 8px', fontSize: '0.75rem', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '30px' }}
                   onClick={() => addNonRegisteredProduct(newNonRegName, newNonRegVal)}
                 >
                   +
@@ -4288,12 +4329,6 @@ Grande abraço, Jon.`;
                   }
                 })()}
 
-                {splitValues['Pix'] > 0 && (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 10, padding: '10px 8px', background: 'rgba(220, 163, 84, 0.04)', borderRadius: 'var(--m-radius-sm)', border: '0.5px dashed var(--m-rule-strong)' }}>
-                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--m-gold)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PIX QR Code (R$ {splitValues['Pix'].toFixed(2).replace('.', ',')})</div>
-                    <img src="/qrcode-pix.png" alt="Pix QR Code" style={{ width: 110, height: 110, borderRadius: 'var(--m-radius-sm)', background: '#fff', padding: 4 }} />
-                  </div>
-                )}
               </div>
             ) : (
               <>
@@ -4313,13 +4348,6 @@ Grande abraço, Jon.`;
                     ))}
                   </div>
                 </div>
-
-                {paymentMethod === 'Pix' && (
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, marginTop: 10, padding: '10px 8px', background: 'rgba(220, 163, 84, 0.04)', borderRadius: 'var(--m-radius-sm)', border: '0.5px dashed var(--m-rule-strong)' }}>
-                    <div style={{ fontSize: '0.72rem', fontWeight: 800, color: 'var(--m-gold)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>PIX QR Code (R$ {remaining.toFixed(2).replace('.', ',')})</div>
-                    <img src="/qrcode-pix.png" alt="Pix QR Code" style={{ width: 110, height: 110, borderRadius: 'var(--m-radius-sm)', background: '#fff', padding: 4 }} />
-                  </div>
-                )}
 
                 {/* Installments selection for Credit Card */}
                 {paymentMethod === 'Cartão de Crédito' && (

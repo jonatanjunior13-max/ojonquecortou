@@ -1379,4 +1379,139 @@
 .time-picker-grid .time-btn:nth-child(7) { animation-delay: 0.35s; }
 .time-picker-grid .time-btn:nth-child(n+8) { animation-delay: 0.40s; }
 
+/* ========== CONVERSION OPTIMIZATION & RESPONSIVE CONTRAST ========== */
+.booking-trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(220, 163, 84, 0.08);
+  border: 1px solid rgba(220, 163, 84, 0.2);
+  padding: 6px 14px;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  color: var(--ink);
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.booking-trust-stars {
+  display: inline-flex;
+  gap: 2px;
+  color: #FBBF24;
+}
+
+.service-featured-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #FF2D8B;
+  color: #FFF;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(255, 45, 139, 0.3);
+}
+
+.booking-testimonial-mini {
+  background: rgba(255, 255, 255, 0.02);
+  border: 0.5px solid var(--rule);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-style: italic;
+  color: var(--muted);
+  max-width: 480px;
+  margin: 12px auto 0 auto;
+  line-height: 1.35;
+}
+
+/* Sticky Footer CTA on Mobile */
+.booking-sticky-action {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(20, 16, 13, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(220, 163, 84, 0.15);
+  padding: 14px 20px env(safe-area-inset-bottom, 14px) 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s var(--ease) forwards;
+}
+
+.booking-sticky-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-sticky-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.booking-sticky-val {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: var(--font-display), sans-serif;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .booking-page {
+    padding-top: 90px;
+    padding-bottom: 100px; /* space for sticky footer */
+  }
+
+  .booking-header {
+    margin-bottom: 20px;
+  }
+
+  .booking-header h1 {
+    font-size: 2rem !important;
+    margin-bottom: 6px;
+  }
+
+  .booking-header .lead {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 0;
+  }
+
+  .step-indicator {
+    margin-bottom: 24px;
+    gap: 8px;
+  }
+
+  .step-dot {
+    font-size: 0.78rem;
+  }
+
+  .step-indicator .line {
+    max-width: 25px;
+  }
+}
+
+@media (min-width: 769px) {
+  .booking-sticky-action {
+    display: none !important;
+  }
+}
+
+
 

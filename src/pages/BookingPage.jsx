@@ -1605,6 +1605,20 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         <h1 className="display">Agende sua <span className="italic">experiência.</span></h1>
         <p className="lead">Sem filas, sem ligações. Escolha o serviço ideal e garanta sua vaga na agenda do Jon.</p>
         
+        {step === 1 && (
+          <>
+            <div className="booking-trust-badge">
+              <div className="booking-trust-stars">
+                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+              </div>
+              <span>4.9/5 estrelas no Google (Mais de 1.500 cacheadas atendidas em BH)</span>
+            </div>
+            <div className="booking-testimonial-mini">
+              "O melhor corte a seco que já fiz! O Jon entende perfeitamente a curvatura e o caimento dos cachos." – Mariana S.
+            </div>
+          </>
+        )}
+
         {isDemoMode && (
           <div className="demo-banner">
             Aviso: Conexão rodando localmente (Modo Demonstração)
@@ -1789,6 +1803,12 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             setStep(2);
                           }}
                         >
+                          {(service.id === 'corte-jon' || 
+                            service.name === 'Corte com o Jon' || 
+                            service.id === 'combo-corte-tratamento-personalizado' || 
+                            service.name === 'Combo - Corte com o Jon + Tratamento personalizado') && (
+                            <span className="service-featured-badge">Mais Escolhido</span>
+                          )}
                           {/* Linha superior */}
                           <div className="booking-card-top-decor">
                             <div className="booking-card-emoji-category">
@@ -2671,6 +2691,28 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
               </span>
             )}
           </div>
+        </div>
+      )}
+
+      {/* Sticky Mobile Footer Action for Step 1 */}
+      {step === 1 && selectedServices.length > 0 && (
+        <div className="booking-sticky-action">
+          <div className="booking-sticky-info">
+            <span className="booking-sticky-title">Selecionado</span>
+            <span className="booking-sticky-val">
+              {selectedServices[0]?.name.length > 25 
+                ? `${selectedServices[0].name.substring(0, 25)}...` 
+                : selectedServices[0]?.name}
+            </span>
+          </div>
+          <button 
+            type="button"
+            className="btn btn-accent" 
+            onClick={() => setStep(2)}
+            style={{ padding: '10px 20px', fontSize: '0.9rem', width: 'auto' }}
+          >
+            Avançar <Arrow />
+          </button>
         </div>
       )}
     </main>

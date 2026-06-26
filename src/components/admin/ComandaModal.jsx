@@ -54,38 +54,46 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
   const [extraCost, setExtraCost] = useState('');
   const [discount, setDiscount] = useState(0);
   const [overridePrice, setOverridePrice] = useState(basePrice);
-  const [requestReview, setRequestReview] = useState(true);
+  const [requestReview, setRequestReview] = useState(false);
 
-  // Auto-populate usedProducts (insumos) default for this service
-  useEffect(() => {
-    if (matchedService && salonProducts && salonProducts.length > 0) {
-      const defaultUsed = [];
-      salonProducts.forEach(p => {
-        if (p.usedIn && p.usedIn.length > 0) {
-          const match = p.usedIn.find(ui => 
-            (matchedService.id && ui.serviceId === matchedService.id) || 
-            (ui.serviceName && ui.serviceName.toLowerCase() === matchedService.name?.toLowerCase())
-          );
-          if (match) {
-            const portionAmount = Number(match.amount) || 0;
-            const pricePerUnit = p.pricePerUnit || (p.volumetry > 0 ? p.costPrice / p.volumetry : 0);
-            const calculatedCost = Number((pricePerUnit * portionAmount).toFixed(2)) || p.costPrice || 0;
-            
-            defaultUsed.push({
-              productId: p.id,
-              name: p.name,
-              price: calculatedCost,
-              qty: 1,
-              amount: portionAmount,
-              unit: p.unit || '',
-              isDefault: true
-            });
-          }
+  // Extract all supplies registered for this service
+  const serviceSupplies = useMemo(() => {
+    if (!matchedService || !salonProducts || salonProducts.length === 0) return [];
+    const matchedSupplies = [];
+    salonProducts.forEach(p => {
+      if (p.usedIn && p.usedIn.length > 0) {
+        const match = p.usedIn.find(ui => 
+          (matchedService.id && ui.serviceId === matchedService.id) || 
+          (ui.serviceName && ui.serviceName.toLowerCase() === matchedService.name?.toLowerCase())
+        );
+        if (match) {
+          const portionAmount = Number(match.amount) || 0;
+          const pricePerUnit = p.pricePerUnit || (p.volumetry > 0 ? p.costPrice / p.volumetry : 0);
+          const calculatedCost = Number((pricePerUnit * portionAmount).toFixed(2)) || p.costPrice || 0;
+          
+          matchedSupplies.push({
+            productId: p.id,
+            name: p.name,
+            price: calculatedCost,
+            qty: 1,
+            amount: portionAmount,
+            unit: p.unit || '',
+            isDefault: true
+          });
         }
-      });
-      setUsedProducts(defaultUsed);
-    }
+      }
+    });
+    return matchedSupplies;
   }, [matchedService, salonProducts]);
+
+  // Auto-populate usedProducts (insumos) default for this service (Shampoo, Condicionador, Finalizador, Oleo)
+  useEffect(() => {
+    const defaultUsed = serviceSupplies.filter(supply => {
+      const ln = supply.name.toLowerCase();
+      return ln.includes('shampoo') || ln.includes('condicionador') || ln.includes('finalizador') || ln.includes('oleo') || ln.includes('óleo');
+    });
+    setUsedProducts(defaultUsed);
+  }, [serviceSupplies]);
 
   // Split payment states
   const [isSplitPayment, setIsSplitPayment] = useState(false);
@@ -489,69 +497,40 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
 
           {/* Used Products (Insumos) */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Insumos / Produtos Utilizados (Custo entra como Despesa)</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
-              <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
-              <input
-                type="text"
-                placeholder="Buscar insumo utilizado (mín. 3 letras)..."
-                value={usedProductSearch}
-                onChange={e => setUsedProductSearch(e.target.value)}
-                style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
-              />
-            </div>
-            {usedProductSearch.trim().length >= 3 && filteredUsedProducts.length > 0 && (
-              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
-                {filteredUsedProducts.map(prod => (
-                  <button
-                    key={prod.id}
-                    type="button"
-                    onClick={() => handleAddUsedProduct(prod)}
-                    style={{ width: '100%', background: 'var(--adm-card)', border: 'none', borderBottom: '0.5px solid var(--adm-rule)', padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--adm-text)', fontSize: '0.83rem' }}
-                  >
-                    <span>{prod.name}</span>
-                    <span style={{ color: 'var(--adm-muted)', fontWeight: 600 }}>Custo: {fmtBRL(prod.costPrice || prod.sellingPrice)}</span>
-                  </button>
-                ))}
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Insumos de Uso Fixo (Dedução)</div>
+            {serviceSupplies.length === 0 ? (
+              <div style={{ fontSize: '0.82rem', color: 'var(--adm-muted)', fontStyle: 'italic', padding: '6px 0' }}>
+                Nenhum insumo cadastrado para este serviço.
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'var(--adm-card)', padding: '12px', borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
+                {serviceSupplies.map(supply => {
+                  const isChecked = usedProducts.some(p => p.productId === supply.productId);
+                  return (
+                    <label key={supply.productId} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--adm-text)', cursor: 'pointer', userSelect: 'none' }}>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => {
+                          setUsedProducts(prev => {
+                            if (prev.some(p => p.productId === supply.productId)) {
+                              return prev.filter(p => p.productId !== supply.productId);
+                            } else {
+                              return [...prev, supply];
+                            }
+                          });
+                        }}
+                        style={{ accentColor: 'var(--adm-gold)', width: 14, height: 14 }}
+                      />
+                      <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1, alignItems: 'center', gap: 4 }}>
+                        <span>{supply.name} ({supply.amount}{supply.unit || ''})</span>
+                        <span style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>- {fmtBRL(supply.price)}</span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             )}
-            {usedProducts.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
-                {usedProducts.map(p => (
-                  <div key={p.productId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '0.83rem', color: 'var(--adm-text)', fontWeight: 600 }}>
-                        {p.name} {p.amount ? `(${p.amount}${p.unit || ''})` : ''}
-                      </span>
-                      <span style={{ fontSize: '0.7rem', color: p.isDefault ? 'var(--adm-success, #48bb78)' : 'var(--adm-gold)' }}>
-                        {p.isDefault ? '✓ Insumo Padrão do Serviço' : '➕ Extra Manual'}
-                      </span>
-                    </div>
-                    <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>Custo: {fmtBRL(p.price * p.qty)}</span>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <button type="button" onClick={() => handleUsedQtyChange(p.productId, -1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
-                      <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.qty}</span>
-                      <button type="button" onClick={() => handleUsedQtyChange(p.productId, 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Manual Extra Interno cost */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Custo Extra Interno Manual (Insumo não listado)</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px' }}>
-                <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>R$</span>
-                <input
-                  type="number"
-                  placeholder="0,00"
-                  value={extraCost}
-                  onChange={e => setExtraCost(e.target.value)}
-                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.9rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
-                />
-              </div>
-            </div>
           </section>
 
           {/* Discount */}

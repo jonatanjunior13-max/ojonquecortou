@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import { posts as staticPosts } from '../data/posts';
 import { db } from '../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -9,12 +9,31 @@ import SEO from '../components/SEO';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const staticMatch = staticPosts.find((p) => p.slug === slug);
   
   const [prevSlug, setPrevSlug] = useState(slug);
   const [post, setPost] = useState(staticMatch || null);
   const [loading, setLoading] = useState(!staticMatch);
   const [allPosts, setAllPosts] = useState(staticPosts);
+
+  const cleanTitle = (rawTitle) => {
+    if (!rawTitle) return '';
+    return rawTitle
+      .replace(/\s*\|\s*Studio do Jon\s*$/gi, '')
+      .replace(/\s*\|\s*Jon\s*$/gi, '');
+  };
+
+  const handleContentClick = (e) => {
+    const target = e.target.closest('a');
+    if (target) {
+      const href = target.getAttribute('href');
+      if (href && href.startsWith('/') && !href.startsWith('//')) {
+        e.preventDefault();
+        navigate(href);
+      }
+    }
+  };
 
   if (slug !== prevSlug) {
     setPrevSlug(slug);
@@ -196,7 +215,7 @@ const BlogPostPage = () => {
             <div className="post-meta">
               {post.category} · Atualizado em {post.date} por Jonatan Junior
             </div>
-            <h1 className="heading-xl">{post.title}</h1>
+            <h1 className="heading-xl">{cleanTitle(post.title)}</h1>
           </header>
 
           <div className="reveal active stagger-1">
@@ -245,9 +264,10 @@ const BlogPostPage = () => {
             </div>
           )}
 
-          <div 
+           <div 
             className="post-content reveal active stagger-2" 
             dangerouslySetInnerHTML={{ __html: post.content }} 
+            onClick={handleContentClick}
           />
           
           <section className="related-posts-section reveal active">
