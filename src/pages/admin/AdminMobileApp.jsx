@@ -1045,10 +1045,8 @@ export default function AdminMobileApp() {
       : 0;
     const extraServices = selectedServices.reduce((s, x) => s + x.price * x.qty, 0);
     const prods = selectedProducts.reduce((s, p) => s + p.sellingPrice * p.qty, 0);
-    const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const nonRegProdsVal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = Number(checkoutBooking.prepayment || 0);
-    return Math.max(0, base + extraServices + prods - discount - prepay - usedProdsVal - nonRegProdsVal);
+    return Math.max(0, base + extraServices + prods - discount - prepay);
   };
 
   const addProductToCheckout = (prod) => {
@@ -1134,7 +1132,7 @@ export default function AdminMobileApp() {
 
       const txData = {
         type: 'entrada',
-        description: `${itemsDescription}${usedProducts.length > 0 ? ` (Insumos: -R$ ${usedProductsTotal})` : ''}${nonRegisteredProducts.length > 0 ? ` (Uso Único: -R$ ${nonRegProductsTotal})` : ''}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
+        description: `${itemsDescription}${discount > 0 ? ` (Desconto: R$ ${discount})` : ''}${prepay > 0 ? ` (Sinal: -R$ ${prepay})` : ''}`,
         value: total,
         paymentMethod: methodLabel,
         splitPayments: splitPaymentsList,
@@ -1170,8 +1168,42 @@ export default function AdminMobileApp() {
         createdAt: new Date().toISOString()
       };
 
+      // Calculate service saida cost (expense)
+      const mainService = services.find(s => s.name === (checkoutBooking.service?.name || checkoutBooking.serviceName));
+      const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
+      const extraServicesCost = selectedServices.reduce((sum, item) => {
+        const match = services.find(s => s.name === item.name);
+        return sum + (match ? (Number(match.cost) || 0) : 0);
+      }, 0);
+      const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + nonRegProductsTotal;
+
+      const saidaPayload = {
+        bookingId: checkoutBooking.id,
+        date: checkoutBooking.date || today(),
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        clientName: checkoutBooking.clientName,
+        clientPhone: checkoutBooking.clientPhone || '',
+        type: 'saida',
+        paymentMethod: isSplitPayment ? 'Pix' : (paymentMethod || 'Pix'),
+        value: totalServiceCost,
+        discount: 0,
+        description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}${selectedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${nonRegProductsTotal > 0 ? ` (Uso Único: R$ ${nonRegProductsTotal})` : ''}`,
+        professionalId: checkoutBooking.professionalId || checkoutBooking.profissional || 'jon',
+        usedProducts: usedProducts.map(p => ({
+          productId: p.productId,
+          name: p.name,
+          quantity: p.quantity,
+          price: p.price
+        })),
+        nonRegisteredProducts: nonRegisteredProducts.map(p => ({
+          name: p.name,
+          value: p.value
+        })),
+        createdAt: new Date().toISOString()
+      };
+
       if (db) {
-        const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id);
+        const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'entrada');
         if (bookingTx) {
           // Revert old product inventory adjustments
           if (bookingTx.productSales) {
@@ -1198,6 +1230,18 @@ export default function AdminMobileApp() {
           await updateDoc(doc(db, 'financial_transactions', bookingTx.id), txData);
         } else {
           await addDoc(collection(db, 'financial_transactions'), txData);
+        }
+
+        // Save saida transaction
+        const bookingSaidaTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'saida');
+        if (totalServiceCost > 0) {
+          if (bookingSaidaTx) {
+            await updateDoc(doc(db, 'financial_transactions', bookingSaidaTx.id), saidaPayload);
+          } else {
+            await addDoc(collection(db, 'financial_transactions'), saidaPayload);
+          }
+        } else if (bookingSaidaTx) {
+          await deleteDoc(doc(db, 'financial_transactions', bookingSaidaTx.id));
         }
 
         await updateDoc(doc(db, 'bookings', checkoutBooking.id), { 
@@ -1232,12 +1276,27 @@ export default function AdminMobileApp() {
       }
       setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice } : b));
       
-      const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id);
+      const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'entrada');
+      const bookingSaidaTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'saida');
+      
+      let updatedTx = [...transactions];
       if (bookingTx) {
-        setTransactions(prev => prev.map(t => t.id === bookingTx.id ? { ...t, ...txData } : t));
+        updatedTx = updatedTx.map(t => t.id === bookingTx.id ? { ...t, ...txData } : t);
       } else {
-        setTransactions(prev => [{ id: Date.now().toString(), ...txData }, ...prev]);
+        updatedTx = [{ id: 'entrada_' + Date.now().toString(), ...txData }, ...updatedTx];
       }
+      
+      if (totalServiceCost > 0) {
+        if (bookingSaidaTx) {
+          updatedTx = updatedTx.map(t => t.id === bookingSaidaTx.id ? { ...t, ...saidaPayload } : t);
+        } else {
+          updatedTx = [{ id: 'saida_' + Date.now().toString(), ...saidaPayload }, ...updatedTx];
+        }
+      } else if (bookingSaidaTx) {
+        updatedTx = updatedTx.filter(t => t.id !== bookingSaidaTx.id);
+      }
+      
+      setTransactions(updatedTx);
       
       setShowCheckoutSheet(false);
       setCheckoutBooking(null);
@@ -4405,18 +4464,7 @@ Grande abraço, Jon.`;
                   <span>{fmt(productsVal)}</span>
                 </div>
               )}
-              {usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0) > 0 && (
-                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#48bb78' }}>
-                  <span>Insumos Dedução</span>
-                  <span>- {fmt(usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0))}</span>
-                </div>
-              )}
-              {nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0) > 0 && (
-                <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'#38b2ac' }}>
-                  <span>Produtos não Cadastrados</span>
-                  <span>- {fmt(nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0))}</span>
-                </div>
-              )}
+
               {discount > 0 && (
                 <div style={{ display:'flex', justifyContent:'space-between', fontSize:'0.78rem', color:'var(--m-red)' }}>
                   <span>Desconto</span>

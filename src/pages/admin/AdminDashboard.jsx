@@ -1577,10 +1577,8 @@ const AdminDashboard = () => {
         );
     const extras = addedServices.reduce((sum, item) => sum + item.price, 0);
     const prods = addedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const usedProdsVal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const nonRegProdsVal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = selectedBooking?.prepayment ? Number(selectedBooking.prepayment) : 0;
-    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay - usedProdsVal - nonRegProdsVal);
+    return Math.max(0, base + extras + prods + Number(extraCharged || 0) - discount - prepay);
   };
 
   const handleFinalizeFromComanda = async (booking, payload) => {
@@ -1775,7 +1773,7 @@ const AdminDashboard = () => {
     const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const nonRegProductsTotal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
-    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay - usedProductsTotal - nonRegProductsTotal);
+    const totalComanda = Math.max(0, baseServicePrice + extraServicesTotal + productsTotal + Number(extraCharged || 0) - discount - prepay);
 
     const itemsDescription = [
       sellingPackageId 
@@ -1783,8 +1781,6 @@ const AdminDashboard = () => {
         : (booking.service?.name || booking.serviceName || 'Serviço Base'),
       ...addedServices.map(s => s.name),
       ...addedProducts.map(p => `${p.quantity}x ${p.name}`),
-      usedProducts.length > 0 ? `Insumos Usados (-R$ ${usedProductsTotal})` : '',
-      nonRegisteredProducts.length > 0 ? `Itens não cadastrados (-R$ ${nonRegProductsTotal})` : '',
       Number(extraCharged) > 0 ? `Taxa Extra Cobrada (R$ ${extraCharged})` : ''
     ].filter(Boolean).join(', ');
 

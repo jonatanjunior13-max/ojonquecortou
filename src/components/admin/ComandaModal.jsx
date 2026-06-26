@@ -255,11 +255,11 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
       addedProducts,
       addedServices,
       usedProducts,
-      extraCost: Number(extraCost) || 0,
+      extraCost: 0,
       discount,
       overrideBasePrice: overridePrice !== '' ? Number(overridePrice) : null,
       total: totalToPay,
-      netTotal: netTotal - usedProductsTotal - (Number(extraCost) || 0),
+      netTotal: netTotal,
       feeAmount,
       requestReview,
     });
@@ -624,13 +624,8 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
                 <span>Taxa da Maquininha {isSplitPayment ? '' : `(${feeRate}%)`}</span><span>- {fmtBRL(feeAmount)}</span>
               </div>
             )}
-            {(usedProductsTotal > 0 || Number(extraCost) > 0) && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-danger)' }}>
-                <span>Dedução de Insumos/Custo Interno</span><span>- {fmtBRL(usedProductsTotal + (Number(extraCost) || 0))}</span>
-              </div>
-            )}
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 6, borderTop: '0.5px solid var(--adm-rule)', fontSize: '1.05rem', fontFamily: 'Georgia, serif', fontWeight: 700, color: 'var(--adm-gold)' }}>
-              <span>Valor Líquido do Fechamento</span><span>{fmtBRL(netTotal - usedProductsTotal - (Number(extraCost) || 0))}</span>
+              <span>Valor Líquido do Fechamento</span><span>{fmtBRL(netTotal)}</span>
             </div>
           </div>
 
