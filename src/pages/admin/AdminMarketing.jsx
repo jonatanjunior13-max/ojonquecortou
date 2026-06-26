@@ -2153,7 +2153,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                                       borderRadius: 12,
                                       fontSize: '0.7rem',
                                       fontWeight: 600,
-                                      background: ch === 'whatsapp' ? 'rgba(37,211,102,0.12)' : ch === 'transacional' ? 'rgba(255,45,139,0.1)' : 'rgba(88,166,255,0.1)',
+                                      background: ch === 'whatsapp' ? 'rgba(37,211,102,0.12)' : ch === 'transacional' ? 'rgba(212,132,154,0.1)' : 'rgba(88,166,255,0.1)',
                                       color: CHANNEL_COLOR[ch]
                                     }}>
                                       {CHANNEL_ICON[ch]} {ch === 'transacional' ? 'Transacional' : ch === 'whatsapp' ? 'WhatsApp' : 'E-mail'}

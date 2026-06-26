@@ -66,7 +66,7 @@ const getServiceColor = (serviceName = '', servicesList = []) => {
 
   const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
   if (catLower.includes('combo') || catLower.includes('misto')) {
-    return { color: '#FF2D8B', label: 'COMBO' };
+    return { color: '#D4849A', label: 'COMBO' };
   }
   if (catLower.includes('corte')) {
     return { color: '#8B5CF6', label: 'CORTE' };

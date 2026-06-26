@@ -578,9 +578,9 @@
   color: #ffffff !important;
 }
 .appt-card.svc-combo {
-  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(255, 45, 139, 0.15) !important;
-  border-left: 3px solid #FF2D8B !important;
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.06) 50%, transparent 100%) !important;
+  border: 1px solid rgba(212, 132, 154, 0.15) !important;
+  border-left: 3px solid #D4849A !important;
   color: #ffffff !important;
 }
 .appt-card.svc-tratamento {
@@ -627,9 +627,9 @@
   border-color: rgba(139, 92, 246, 0.25);
 }
 .appt-card.svc-combo .appt-badge {
-  color: #FF2D8B;
-  background: rgba(255, 45, 139, 0.12);
-  border-color: rgba(255, 45, 139, 0.25);
+  color: #D4849A;
+  background: rgba(212, 132, 154, 0.12);
+  border-color: rgba(212, 132, 154, 0.25);
 }
 .appt-card.svc-tratamento .appt-badge {
   color: #10B981;
@@ -2778,7 +2778,7 @@
 }
 
 .admin-table tbody tr:hover td {
-  background: rgba(255, 45, 139, 0.02);
+  background: rgba(212, 132, 154, 0.02);
 }
 
 
