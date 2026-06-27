@@ -1530,8 +1530,8 @@
 }
 
 .slot-card-text span {
-  font-size: 0.78rem;
-  color: var(--adm-muted);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.75);
   line-height: 1.4;
 }
 
@@ -1547,40 +1547,48 @@
 .slot-block-input {
   flex: 1;
   min-width: 160px;
-  padding: 8px 10px;
-  font-size: 0.83rem;
-  border: 1px solid var(--adm-rule);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
-  background: var(--bg-warm, var(--adm-bg));
-  color: #000000;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--adm-text, #ffffff);
   outline: none;
-  transition: border-color 0.16s;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.slot-block-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .slot-block-input:focus {
-  border-color: var(--adm-muted);
+  border-color: var(--adm-gold);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .slot-block-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 8px 14px;
-  font-size: 0.8rem;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
   font-weight: 600;
-  border: 1px solid var(--adm-rule);
+  border: 1px solid var(--adm-gold);
   border-radius: 6px;
-  background: var(--adm-bg);
-  color: var(--adm-muted);
+  background: rgba(212, 132, 154, 0.15);
+  color: var(--adm-gold);
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.16s, border-color 0.16s, color 0.16s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(212, 132, 154, 0.1);
 }
 
 .slot-block-btn:hover {
-  background: var(--adm-rule);
-  color: var(--adm-text);
-  border-color: var(--adm-muted);
+  background: var(--adm-gold);
+  color: #1a1310;
+  border-color: var(--adm-gold);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(212, 132, 154, 0.2);
 }
 
 /* ========== SERVICES VISUAL CATALOG (TRINKS STYLE) ========== */

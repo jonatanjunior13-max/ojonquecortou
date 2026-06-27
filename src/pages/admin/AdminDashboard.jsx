@@ -178,29 +178,29 @@ const getAdjustedDay = (date) => {
   return date.getDay();
 };
 
-const isSlotBlocked = (prof, dateStr, slot) => {
-  if (!prof) return false;
+const getSlotBlockReason = (prof, dateStr, slot) => {
+  if (!prof) return null;
   
   const isUnlockedLocal = localStorage.getItem(`unlock_${dateStr}_${slot}`) === 'true';
-  if (isUnlockedLocal) return false;
+  if (isUnlockedLocal) return null;
   const parts = dateStr.split('-');
   if (parts.length === 3) {
     const dateObj = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     const weekday = getAdjustedDay(dateObj);
     
     // Force Sundays (0) and Mondays (1) to be blocked
-    if (weekday === 0 || weekday === 1) return true;
+    if (weekday === 0 || weekday === 1) return 'Folga Semanal';
 
     // Force Holidays to be blocked
-    if (isFeriado(dateStr)) return true;
+    if (isFeriado(dateStr)) return 'Feriado';
     
     // 1. Check day off
-    if ((prof.daysOff || []).includes(weekday)) return true;
+    if ((prof.daysOff || []).includes(weekday)) return 'Folga';
     
     // 2. Check blocked date
-    if ((prof.blockedDates || []).includes(dateStr)) return true;
+    if ((prof.blockedDates || []).includes(dateStr)) return 'Data Bloqueada';
 
-    // 3. Recurring weekday blocks — format: "weekday-HH:MM-HH:MM" (range) or "weekday-HH:MM" (legacy)
+    // 3. Recurring weekday blocks
     const weekdayBlocks = prof.blockedWeekdayHours || [];
     const hasWeekdayBlock = weekdayBlocks.some(block => {
       const segments = block.split('-');
@@ -210,9 +210,9 @@ const isSlotBlocked = (prof, dateStr, slot) => {
       if (Number(w) !== weekday) return false;
       return slotInRange(slot, start, end);
     });
-    if (hasWeekdayBlock) return true;
+    if (hasWeekdayBlock) return 'Bloqueio de Escala';
 
-    // 4. Specific date blocks — format: "YYYY-MM-DD-HH:MM-HH:MM" (range) or "YYYY-MM-DD-HH:MM" (legacy)
+    // 4. Specific date blocks
     const specificBlocks = prof.blockedSpecificHours || [];
     const hasSpecificBlock = specificBlocks.some(block => {
       if (!block.startsWith(dateStr)) return false;
@@ -222,10 +222,38 @@ const isSlotBlocked = (prof, dateStr, slot) => {
       const end = restParts[1] || null;
       return slotInRange(slot, start, end);
     });
-    if (hasSpecificBlock) return true;
+    if (hasSpecificBlock) return 'Bloqueio de Horário';
+
+    // 5. Check work hours and lunch hours (from professional config or defaults)
+    const workStart = prof.workStart || '09:00';
+    const workEnd = prof.workEnd || '19:00';
+    const lunchStart = prof.lunchStart || '12:00';
+    const lunchEnd = prof.lunchEnd || '13:00';
+
+    const [slotH, slotM] = slot.split(':').map(Number);
+    const [startH, startM] = workStart.split(':').map(Number);
+    const [endH, endM] = workEnd.split(':').map(Number);
+    const [lunchStartH, lunchStartM] = lunchStart.split(':').map(Number);
+    const [lunchEndH, lunchEndM] = lunchEnd.split(':').map(Number);
+
+    const slotMin = slotH * 60 + slotM;
+    const startMin = startH * 60 + startM;
+    const endMin = endH * 60 + endM;
+    const lunchStartMin = lunchStartH * 60 + lunchStartM;
+    const lunchEndMin = lunchEndH * 60 + lunchEndM;
+
+    // Almoço
+    if (slotMin >= lunchStartMin && slotMin < lunchEndMin) return 'Almoço';
+
+    // Fora de expediente
+    if (slotMin < startMin || slotMin >= endMin) return 'Fora de Expediente';
   }
   
-  return false;
+  return null;
+};
+
+const isSlotBlocked = (prof, dateStr, slot) => {
+  return getSlotBlockReason(prof, dateStr, slot) !== null;
 };
 
 // Clientes seed para autocomplete em modo demo (quando não há dados no Firestore)
@@ -1292,7 +1320,6 @@ const AdminDashboard = () => {
       const existingStart = timeToMin(b.time);
       const existingEnd = existingStart + (b.duration || 60);
       
-      // Overlap check: Math.max(start1, start2) < Math.min(end1, end2)
       return Math.max(bStart, existingStart) < Math.min(bEnd, existingEnd);
     });
 
@@ -1303,98 +1330,108 @@ const AdminDashboard = () => {
       }
     }
 
-    try {
-      const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
-      let finalId = '';
+    // --- OPTIMISTIC UPDATE ---
+    const tempId = 'temp-bk-' + Date.now();
+    setBookings(prev => [...prev, { id: tempId, ...payload }]);
+    setShowAddModal(false);
 
-      if (isDemoMode) {
-        finalId = 'demo-' + Date.now();
-        setBookings(prev => [...prev, { id: finalId, ...payload }]);
-        if (payload.prepayment > 0) {
-          await logPrepaymentTransaction(finalId, payload, payload.prepayment);
+    setNewBooking({
+      clientName: '',
+      clientPhone: '',
+      clientEmail: '',
+      serviceName: services[0]?.name || '',
+      servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+      duration: services[0]?.duration || 60,
+      date: getLocalDateString(currentDate),
+      time: '09:00',
+      notes: '',
+      profissional: 'jon'
+    });
+
+    // Run async write in background
+    (async () => {
+      try {
+        const cleanPhone = payload.clientPhone.replace(/\D/g, '');
+        let finalId = '';
+
+        if (isDemoMode) {
+          finalId = 'demo-' + Date.now();
+          if (payload.prepayment > 0) {
+            await logPrepaymentTransaction(finalId, payload, payload.prepayment);
+          }
+        } else {
+          const docRef = await addDoc(collection(db, 'bookings'), payload);
+          finalId = docRef.id;
+          if (payload.prepayment > 0) {
+            await logPrepaymentTransaction(finalId, payload, payload.prepayment);
+          }
+          syncBookingToGoogle(finalId).catch(err => console.warn('Error syncing new booking:', err));
         }
-      } else {
-        const docRef = await addDoc(collection(db, 'bookings'), payload);
-        finalId = docRef.id;
-        if (payload.prepayment > 0) {
-          await logPrepaymentTransaction(finalId, payload, payload.prepayment);
-        }
-        syncBookingToGoogle(finalId).catch(err => console.warn('Error syncing new booking:', err));
-      }
 
-      // Auto-cadastro de cliente
-      if (cleanPhone) {
-        const exists = clients.some(c => c.phone === cleanPhone);
-        if (!exists) {
-          const profilePayload = {
-            name: newBooking.clientName,
-            phone: cleanPhone,
-            email: newBooking.clientEmail || 'Não informado',
-            curvatura: '3A',
-            porosidade: 'Média',
-            elasticidade: 'Normal',
-            quimicas: 'Nenhuma',
-            produtosRecomendados: '',
-            observacoes: 'Cadastrado automaticamente via agendamento manual no painel',
-            sexo: 'Feminino',
-            birthdate: '',
-            createdAt: new Date().toISOString()
-          };
+        // Swap tempId with finalId
+        setBookings(prev => prev.map(b => b.id === tempId ? { ...b, id: finalId } : b));
 
-          if (isDemoMode) {
-            const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
-            localClients.push(profilePayload);
-            localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
-            setClients(prev => [...prev, { id: cleanPhone, ...profilePayload }]);
-          } else {
-            try {
-              const clientRef = doc(db, 'client_profiles', cleanPhone);
-              const clientSnap = await getDoc(clientRef);
-              if (!clientSnap.exists()) {
-                await setDoc(clientRef, profilePayload);
+        // Auto-cadastro de cliente
+        if (cleanPhone) {
+          const exists = clients.some(c => c.phone === cleanPhone);
+          if (!exists) {
+            const profilePayload = {
+              name: payload.clientName,
+              phone: cleanPhone,
+              email: payload.clientEmail || 'Não informado',
+              curvatura: '3A',
+              porosidade: 'Média',
+              elasticidade: 'Normal',
+              quimicas: 'Nenhuma',
+              produtosRecomendados: '',
+              observacoes: 'Cadastrado automaticamente via agendamento manual no painel',
+              sexo: 'Feminino',
+              birthdate: '',
+              createdAt: new Date().toISOString()
+            };
+
+            if (isDemoMode) {
+              const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+              localClients.push(profilePayload);
+              localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+              setClients(prev => [...prev, { id: cleanPhone, ...profilePayload }]);
+            } else {
+              try {
+                const clientRef = doc(db, 'client_profiles', cleanPhone);
+                const clientSnap = await getDoc(clientRef);
+                if (!clientSnap.exists()) {
+                  await setDoc(clientRef, profilePayload);
+                }
+              } catch (profileErr) {
+                console.warn('Erro ao auto-cadastrar cliente no Firestore (Painel):', profileErr);
               }
-            } catch (profileErr) {
-              console.warn('Erro ao auto-cadastrar cliente no Firestore (Painel):', profileErr);
             }
           }
         }
-      }
 
-      if (payload.clientEmail) {
-        triggerEmailNotification({ ...payload, id: finalId });
-      }
-
-      if (blockIdToCancelOnSuccess) {
-        if (isDemoMode) {
-          setBookings(prev => prev.filter(b => b.id !== blockIdToCancelOnSuccess));
-        } else {
-          await updateDoc(doc(db, 'bookings', blockIdToCancelOnSuccess), { status: 'cancelado' });
-          setBookings(prev => prev.map(b => b.id === blockIdToCancelOnSuccess ? { ...b, status: 'cancelado' } : b));
-          syncBookingToGoogle(blockIdToCancelOnSuccess, true).catch(err => console.warn('Error syncing cancelation of block:', err));
+        if (payload.clientEmail) {
+          triggerEmailNotification({ ...payload, id: finalId });
         }
-        setBlockIdToCancelOnSuccess(null);
-      }
 
-      setShowAddModal(false);
-      
-      setNewBooking({
-        clientName: '',
-        clientPhone: '',
-        clientEmail: '',
-        serviceName: services[0]?.name || '',
-        servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
-        duration: services[0]?.duration || 60,
-        date: getLocalDateString(currentDate),
-        time: '09:00',
-        notes: '',
-        profissional: 'jon'
-      });
-    } catch (err) {
-      console.error('Erro ao criar agendamento manual:', err);
-      alert('Falha ao registrar agendamento manual.');
-    } finally {
-      isSubmittingRef.current = false;
-    }
+        if (blockIdToCancelOnSuccess) {
+          if (isDemoMode) {
+            setBookings(prev => prev.filter(b => b.id !== blockIdToCancelOnSuccess));
+          } else {
+            await updateDoc(doc(db, 'bookings', blockIdToCancelOnSuccess), { status: 'cancelado' });
+            setBookings(prev => prev.map(b => b.id === blockIdToCancelOnSuccess ? { ...b, status: 'cancelado' } : b));
+            syncBookingToGoogle(blockIdToCancelOnSuccess, true).catch(err => console.warn('Error syncing cancelation of block:', err));
+          }
+          setBlockIdToCancelOnSuccess(null);
+        }
+
+      } catch (err) {
+        console.error('Erro ao registrar agendamento manual em background:', err);
+        setBookings(prev => prev.filter(b => b.id !== tempId));
+        alert('Erro ao registrar agendamento no servidor. Tente novamente.');
+      } finally {
+        isSubmittingRef.current = false;
+      }
+    })();
   };
 
   const handleCellClick = (dateStr, slot, profId, profName) => {
@@ -1450,56 +1487,79 @@ const AdminDashboard = () => {
       slotsToBlock.push(selectedSlot.time);
     }
 
-    try {
-      if (isDemoMode) {
-        const newBlocks = slotsToBlock.map((slotTime, idx) => ({
-          id: 'demo-block-' + Date.now() + '-' + idx,
-          clientName: 'Horário Bloqueado',
-          clientPhone: '00000000000',
-          clientEmail: '',
-          service: {
-            name: 'Bloqueio Administrativo',
-            price: 0
-          },
-          date: selectedSlot.date,
-          time: slotTime,
-          profissional: selectedSlot.profissional || 'jon',
-          notes: blockMotive || 'Bloqueio administrativo',
-          status: 'bloqueado',
-          createdAt: new Date().toISOString()
-        }));
-        setBookings(prev => [...prev, ...newBlocks]);
-      } else {
-        const promises = slotsToBlock.map(slotTime => {
-          const payload = {
-            clientName: 'Horário Bloqueado',
-            clientPhone: '00000000000',
-            clientEmail: '',
-            service: {
-              name: 'Bloqueio Administrativo',
-              price: 0
-            },
-            date: selectedSlot.date,
-            time: slotTime,
-            profissional: selectedSlot.profissional || 'jon',
-            notes: blockMotive || 'Bloqueio administrativo',
-            status: 'bloqueado',
-            createdAt: new Date().toISOString()
-          };
-          return addDoc(collection(db, 'bookings'), payload).then(docRef => {
+    // --- OPTIMISTIC UPDATE FOR BLOCKS ---
+    const tempBlocks = slotsToBlock.map((slotTime, idx) => ({
+      id: 'temp-block-' + Date.now() + '-' + idx,
+      clientName: 'Horário Bloqueado',
+      clientPhone: '00000000000',
+      clientEmail: '',
+      service: {
+        name: 'Bloqueio Administrativo',
+        price: 0
+      },
+      date: selectedSlot.date,
+      time: slotTime,
+      profissional: selectedSlot.profissional || 'jon',
+      notes: blockMotive || 'Bloqueio administrativo',
+      status: 'bloqueado',
+      createdAt: new Date().toISOString()
+    }));
+
+    // Update UI immediately
+    setBookings(prev => [...prev, ...tempBlocks]);
+
+    // Close modal instantly
+    setShowSlotActionModal(false);
+    const savedBlockMotive = blockMotive;
+    const savedSelectedSlot = selectedSlot;
+    setBlockMotive('');
+    setSelectedSlot(null);
+
+    // Save in background asynchronously
+    (async () => {
+      try {
+        if (isDemoMode) {
+          const demoBlocks = tempBlocks.map((tb, idx) => ({ ...tb, id: 'demo-block-' + Date.now() + '-' + idx }));
+          setBookings(prev => prev.map(b => {
+            const matched = tempBlocks.find(tb => tb.id === b.id);
+            if (matched) {
+              const idx = tempBlocks.indexOf(matched);
+              return demoBlocks[idx];
+            }
+            return b;
+          }));
+        } else {
+          const promises = slotsToBlock.map(async (slotTime, idx) => {
+            const payload = {
+              clientName: 'Horário Bloqueado',
+              clientPhone: '00000000000',
+              clientEmail: '',
+              service: {
+                name: 'Bloqueio Administrativo',
+                price: 0
+              },
+              date: savedSelectedSlot.date,
+              time: slotTime,
+              profissional: savedSelectedSlot.profissional || 'jon',
+              notes: savedBlockMotive || 'Bloqueio administrativo',
+              status: 'bloqueado',
+              createdAt: new Date().toISOString()
+            };
+            const docRef = await addDoc(collection(db, 'bookings'), payload);
             syncBookingToGoogle(docRef.id).catch(err => console.warn('Error syncing block:', err));
-            return docRef;
+            
+            // Swap temp block ID with real Firestore doc ID
+            setBookings(prev => prev.map(b => b.id === tempBlocks[idx].id ? { ...b, id: docRef.id } : b));
           });
-        });
-        await Promise.all(promises);
+          await Promise.all(promises);
+        }
+      } catch (err) {
+        console.error('Erro ao bloquear horário em background:', err);
+        const tempIds = tempBlocks.map(tb => tb.id);
+        setBookings(prev => prev.filter(b => !tempIds.includes(b.id)));
+        alert('Não foi possível salvar o bloqueio de horário no servidor.');
       }
-      setShowSlotActionModal(false);
-      setBlockMotive('');
-      setSelectedSlot(null);
-    } catch (err) {
-      console.error('Erro ao bloquear horário:', err);
-      alert('Não foi possível bloquear o horário.');
-    }
+    })();
   };
 
   const getBlockEndTimeOptions = () => {
@@ -3449,39 +3509,91 @@ Grande abraço, Jon.`;
                                 Ausência
                               </span>
                             </div>
-                          ) : blockedBySettings ? (
-                            <div
-                              className="appt-card bloqueado"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedScaleBlock({
-                                  date: currentDateStr,
-                                  slot: slot,
-                                  profId: prof.id,
-                                  profName: prof.name
-                                });
-                                setShowScaleBlockModal(true);
-                              }}
-                              onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
-                              style={{
-                                background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
-                                color: '#475569',
-                                borderLeft: '4px solid #94a3b8',
-                                opacity: 0.85,
-                                cursor: 'pointer',
-                                margin: '2px',
-                                height: 'calc(100% - 4px)'
-                              }}
-                            >
-                              <span className="appt-time">{slot}</span>
-                              <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                                <Lock size={12} /> Bloqueado
-                              </span>
-                              <span className="appt-service">
-                                Clique para opções
-                              </span>
-                            </div>
-                          ) : null}
+                          ) : blockedBySettings ? (() => {
+                            const reason = getSlotBlockReason(prof, currentDateStr, slot);
+                            
+                            // Se for Almoço, renderiza no estilo semântico do almoço
+                            if (reason === 'Almoço') {
+                              return (
+                                <div
+                                  className="appt-card bloqueado"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedScaleBlock({
+                                      date: currentDateStr,
+                                      slot: slot,
+                                      profId: prof.id,
+                                      profName: prof.name,
+                                      reason: 'Almoço'
+                                    });
+                                    setShowScaleBlockModal(true);
+                                  }}
+                                  onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
+                                  style={{
+                                    background: 'rgba(231, 111, 81, 0.12)',
+                                    color: '#E76F51',
+                                    borderLeft: '4px solid #E76F51',
+                                    cursor: 'pointer',
+                                    margin: '2px',
+                                    height: 'calc(100% - 4px)',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    padding: '6px 8px'
+                                  }}
+                                >
+                                  <span className="appt-time" style={{ color: '#E76F51' }}>{slot}</span>
+                                  <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#E76F51', fontWeight: 600 }}>
+                                    <Lock size={12} /> Almoço
+                                  </span>
+                                  <span className="appt-service" style={{ color: 'rgba(231, 111, 81, 0.7)' }}>
+                                    Intervalo Padrão
+                                  </span>
+                                </div>
+                              );
+                            }
+
+                            // Estilo de bloqueio genérico ou fora de expediente (com excelente contraste dark mode!)
+                            const isOut = reason === 'Fora de Expediente';
+                            return (
+                              <div
+                                className="appt-card bloqueado"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedScaleBlock({
+                                    date: currentDateStr,
+                                    slot: slot,
+                                    profId: prof.id,
+                                    profName: prof.name,
+                                    reason: reason
+                                  });
+                                  setShowScaleBlockModal(true);
+                                }}
+                                onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
+                                style={{
+                                  background: isOut ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.05)',
+                                  color: 'rgba(255, 255, 255, 0.65)',
+                                  borderLeft: '4px solid rgba(255, 255, 255, 0.25)',
+                                  opacity: isOut ? 0.7 : 0.85,
+                                  cursor: 'pointer',
+                                  margin: '2px',
+                                  height: 'calc(100% - 4px)',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  padding: '6px 8px'
+                                }}
+                              >
+                                <span className="appt-time" style={{ color: 'rgba(255, 255, 255, 0.45)' }}>{slot}</span>
+                                <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--adm-text)', fontWeight: 600 }}>
+                                  <Lock size={12} /> {reason || 'Bloqueado'}
+                                </span>
+                                <span className="appt-service" style={{ color: 'rgba(255, 255, 255, 0.45)' }}>
+                                  {isOut ? 'Fora de Horário' : 'Escala Administrativa'}
+                                </span>
+                              </div>
+                            );
+                          })() : null}
                         </div>
                       );
                     })}
