@@ -66,18 +66,18 @@ const getServiceColor = (serviceName = '', servicesList = []) => {
 
   const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
   if (catLower.includes('combo') || catLower.includes('misto')) {
-    return { color: '#D4849A', label: 'COMBO' };
+    return { color: '#D4849A', label: 'COMBO', class: 'svc-combo' };
   }
   if (catLower.includes('corte')) {
-    return { color: '#8B5CF6', label: 'CORTE' };
+    return { color: '#8B5CF6', label: 'CORTE', class: 'svc-corte' };
   }
   if (catLower.includes('cor') || catLower.includes('colora')) {
-    return { color: '#FBBF24', label: 'COR' };
+    return { color: '#FBBF24', label: 'COR', class: 'svc-cor' };
   }
   if (catLower.includes('analise') || catLower.includes('avaliacao')) {
-    return { color: '#F97316', label: 'ANÁLISE' };
+    return { color: '#F97316', label: 'ANÁLISE', class: 'svc-analise' };
   }
-  return { color: '#10B981', label: 'TRATAMENTO' };
+  return { color: '#10B981', label: 'TRATAMENTO', class: 'svc-tratamento' };
 };
 
 const AdminHoje = () => {
@@ -295,14 +295,12 @@ const AdminHoje = () => {
                 <div
                   key={b.id}
                   onClick={() => setSelectedBooking(b)}
+                  className="m-today-next-client-card"
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: 14,
                     padding: '12px 14px',
-                    background: 'var(--adm-card)',
-                    borderRadius: 'var(--adm-radius-sm)',
-                    border: '0.5px solid var(--adm-rule)',
                     cursor: 'pointer'
                   }}
                 >
@@ -436,23 +434,21 @@ const AdminHoje = () => {
               const colorInfo = getServiceColor(svc, globalData.services || []);
               const barColor = colorInfo.color;
               const categoryLabel = colorInfo.label;
+              const catClass = colorInfo.class || 'svc-tratamento';
               return (
                 <div
                   key={b.id}
                   onClick={() => setSelectedBooking(b)}
+                  className={`m-today-all-booking-card ${catClass}`}
                   style={{
                     position: 'relative',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 14,
                     padding: '10px 14px 10px 18px',
-                    background: `linear-gradient(90deg, ${barColor}12 0%, transparent 70%)`,
                     cursor: 'pointer',
                     overflow: 'hidden',
-                    transition: 'background 0.15s ease',
                   }}
-                  onMouseEnter={e => e.currentTarget.style.background = `linear-gradient(90deg, ${barColor}20 0%, transparent 70%)`}
-                  onMouseLeave={e => e.currentTarget.style.background = `linear-gradient(90deg, ${barColor}12 0%, transparent 70%)`}
                 >
                   <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 3, background: barColor }} />
                   <span style={{ fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)', fontWeight: 700, fontSize: '0.88rem', color: 'var(--adm-gold)', minWidth: 46, flexShrink: 0 }}>
