@@ -309,6 +309,19 @@ const cleanSearchText = (str) => {
     .trim();
 };
 
+// Matches product name if all search terms are prefix of at least one word in the product name
+const matchSearchText = (productName, searchText) => {
+  if (!productName || !searchText) return false;
+  const searchTerms = cleanSearchText(searchText).split(/\s+/).filter(Boolean);
+  if (searchTerms.length === 0) return false;
+  
+  const productWords = cleanSearchText(productName).split(/\s+/).filter(Boolean);
+  
+  return searchTerms.every(term => 
+    productWords.some(word => word.startsWith(term))
+  );
+};
+
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
@@ -4125,7 +4138,7 @@ Grande abraço, Jon.`;
       : [];
 
     const filteredProducts = productSearch.trim().length >= 3
-      ? salonProducts.filter(p => cleanSearchText(p.name || '').startsWith(cleanSearchText(productSearch))).slice(0, 5)
+      ? salonProducts.filter(p => matchSearchText(p.name, productSearch)).slice(0, 5)
       : [];
 
     const filteredUsedProductsMobile = selectedUsedProduct.trim().length >= 3

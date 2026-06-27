@@ -42,6 +42,19 @@ const cleanSearchText = (str) => {
     .trim();
 };
 
+// Matches product name if all search terms are prefix of at least one word in the product name
+const matchSearchText = (productName, searchText) => {
+  if (!productName || !searchText) return false;
+  const searchTerms = cleanSearchText(searchText).split(/\s+/).filter(Boolean);
+  if (searchTerms.length === 0) return false;
+  
+  const productWords = cleanSearchText(productName).split(/\s+/).filter(Boolean);
+  
+  return searchTerms.every(term => 
+    productWords.some(word => word.startsWith(term))
+  );
+};
+
 const ComandaModal = ({ booking, products = [], salonProducts = [], services = [], settings = {}, onClose, onConfirm }) => {
   const serviceName = booking?.serviceName || booking?.service?.name || 'Serviço';
   const matchedService = services.find(s => 
@@ -182,9 +195,8 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
 
   const filteredProducts = useMemo(() => {
     if (saleProductSearch.trim().length < 3) return [];
-    const searchNormalized = cleanSearchText(saleProductSearch);
     return salonProducts.filter(p =>
-      cleanSearchText(p.name || '').startsWith(searchNormalized)
+      matchSearchText(p.name, saleProductSearch)
     ).slice(0, 5);
   }, [salonProducts, saleProductSearch]);
 
