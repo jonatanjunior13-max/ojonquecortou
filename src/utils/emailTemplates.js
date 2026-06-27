@@ -76,7 +76,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -162,7 +162,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -266,7 +266,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -368,7 +368,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -472,7 +472,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -573,7 +573,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -677,7 +677,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -754,7 +754,7 @@ export const HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -830,7 +830,7 @@ export const HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -902,7 +902,7 @@ export const HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -974,7 +974,7 @@ export const ADMIN_HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -1042,7 +1042,7 @@ export const ADMIN_HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.4); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Francisco Ovídio, 184 &middot; Caiçara<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou

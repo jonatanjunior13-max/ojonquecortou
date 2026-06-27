@@ -170,11 +170,10 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
 
   const filteredProducts = useMemo(() => {
     if (productSearch.trim().length < 3) return [];
-    return products.filter(p =>
-      p.quantity > 0 &&
+    return salonProducts.filter(p =>
       (p.name || '').toLowerCase().includes(productSearch.toLowerCase())
     ).slice(0, 5);
-  }, [products, productSearch]);
+  }, [salonProducts, productSearch]);
 
   const filteredUsedProducts = useMemo(() => {
     if (usedProductSearch.trim().length < 3) return [];
@@ -196,7 +195,7 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
       if (existing) {
         return prev.map(p => p.productId === prod.id ? { ...p, qty: p.qty + 1 } : p);
       }
-      return [...prev, { productId: prod.id, name: prod.name, price: prod.sellingPrice || prod.price || 0, qty: 1 }];
+      return [...prev, { productId: prod.id, name: prod.name, price: prod.costPrice || prod.price || 0, qty: 1 }];
     });
     setProductSearch('');
   }, []);
@@ -463,12 +462,12 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
 
           {/* Products */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Produtos (opcional)</div>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Produtos Utilizados no Serviço (opcional)</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Buscar produto (mín. 3 letras)..."
+                placeholder="Buscar produto de uso do salão (mín. 3 letras)..."
                 value={productSearch}
                 onChange={e => setProductSearch(e.target.value)}
                 style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
@@ -484,7 +483,7 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
                     style={{ width: '100%', background: 'var(--adm-card)', border: 'none', borderBottom: '0.5px solid var(--adm-rule)', padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--adm-text)', fontSize: '0.83rem' }}
                   >
                     <span>{prod.name}</span>
-                    <span style={{ color: 'var(--adm-gold)', fontWeight: 700 }}>{fmtBRL(prod.sellingPrice || prod.price)}</span>
+                    <span style={{ color: 'var(--adm-gold)', fontWeight: 700 }}>{fmtBRL(prod.costPrice || prod.price)}</span>
                   </button>
                 ))}
               </div>

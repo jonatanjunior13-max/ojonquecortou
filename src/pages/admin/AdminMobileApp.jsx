@@ -1063,7 +1063,8 @@ export default function AdminMobileApp() {
     setSelectedProducts(prev => {
       const existing = prev.find(p => p.id === prod.id);
       if (existing) return prev.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p);
-      return [...prev, { ...prod, qty: 1 }];
+      const priceToUse = prod.costPrice || prod.price || 0;
+      return [...prev, { ...prod, sellingPrice: priceToUse, qty: 1 }];
     });
     setProductSearch('');
   };
@@ -1151,7 +1152,7 @@ export default function AdminMobileApp() {
         date: checkoutBooking.date || today(),
         bookingId: checkoutBooking.id,
         productSales: selectedProducts.map(p => {
-          const match = inventory.find(prod => prod.id === p.id);
+          const match = salonProducts.find(prod => prod.id === p.id);
           return {
             productId: p.id,
             name: p.name,
@@ -1262,15 +1263,8 @@ export default function AdminMobileApp() {
           servicePrice: finalBasePrice 
         });
 
-        // Apply new product inventory adjustments
-        for (const p of selectedProducts) {
-          const prodRef = doc(db, 'products', p.id);
-          const snap = await getDoc(prodRef);
-          if (snap.exists()) {
-            const cur = snap.data().quantity || 0;
-            await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
-          }
-        }
+        // No inventory adjustments needed for salon_products as they represent usage
+        // and do not track direct quantity in stock on this collection.
 
         // Apply new used products inventory adjustments
         for (const u of usedProducts) {
@@ -4082,7 +4076,7 @@ Grande abraço, Jon.`;
       : [];
 
     const filteredProducts = productSearch.trim().length >= 3
-      ? inventory.filter(p => p.quantity > 0 && (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
+      ? salonProducts.filter(p => (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
       : [];
 
     const currentBasePrice = (overrideBasePrice !== null && overrideBasePrice !== '') ? Number(overrideBasePrice) : Number(basePrice) || 0;
@@ -4197,12 +4191,12 @@ Grande abraço, Jon.`;
 
             {/* Add Product input */}
             <div className="m-field">
-              <label className="m-label">Adicionar Produtos</label>
+              <label className="m-label">Produtos Utilizados no Serviço</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
                 <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
                 <input
                   type="text"
-                  placeholder="Buscar produto (mín. 3 letras)..."
+                  placeholder="Buscar produto de uso do salão (mín. 3 letras)..."
                   value={productSearch}
                   onChange={e => setProductSearch(e.target.value)}
                   style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
@@ -4214,7 +4208,7 @@ Grande abraço, Jon.`;
                     <div key={prod.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
                       onClick={() => addProductToCheckout(prod)}>
                       <span>{prod.name}</span>
-                      <span style={{ color: 'var(--m-gold)' }}>{fmt(prod.sellingPrice)}</span>
+                      <span style={{ color: 'var(--m-gold)' }}>{fmt(prod.costPrice || prod.price)}</span>
                     </div>
                   ))}
                 </div>

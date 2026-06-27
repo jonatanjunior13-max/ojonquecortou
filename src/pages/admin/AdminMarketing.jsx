@@ -56,112 +56,133 @@ const TRENDING_THEMES = [
     id: 'theme_corte_hibrido',
     title: 'Corte Híbrido',
     category: 'Corte & Visagismo',
-    description: 'Explica a técnica de cortar molhado para precisão geométrica e lapidar a seco para harmonizar caimento.',
+    description: 'A junção da técnica geométrica molhada com a lapidação a seco. Geometria define a base; o cabelo seco define a leveza e a distribuição real do volume no rosto.',
     keywords: 'corte híbrido, corte de cachos, visagismo, corte a seco'
   },
   {
     id: 'theme_visagismo_cachos',
     title: 'Visagismo de Cachos',
     category: 'Corte & Visagismo',
-    description: 'Como planejar o volume do cabelo baseado nas linhas faciais e no estilo de vida da cliente.',
+    description: 'O cabelo não pode engolir o rosto. Desenhamos o volume com linhas diagonais e verticais para harmonizar com a estrutura óssea facial e o estilo de vida de cada cliente.',
     keywords: 'visagismo capilar, formato do rosto, volume de cachos, identidade visual'
   },
   {
     id: 'theme_efeito_piramide',
-    title: 'Efeito Pirâmide',
+    title: 'Fator de Correção do Efeito Pirâmide',
     category: 'Corte & Visagismo',
-    description: 'Por que o corte reto deixa a raiz sem volume e as pontas largas, e como graduações corrigem isso.',
+    description: 'Corte reto em cabelo cacheado deixa a raiz sem volume e as pontas largas. Explicamos como a graduação geométrica distribui o volume de forma equilibrada pela cabeça.',
     keywords: 'efeito pirâmide, volume nos cachos, corte de cabelo cacheado'
   },
   {
     id: 'theme_fator_encolhimento',
-    title: 'Fator de Encolhimento',
+    title: 'Fator de Encolhimento na Prática',
     category: 'Corte & Visagismo',
-    description: 'Por que o cabelo cacheado parece muito mais curto seco do que molhado, e como o corte prevê isso.',
+    description: 'O cacho seco encolhe até 70% comparado ao fio molhado. Explicamos por que cortar no estado seco é a única forma segura de prever o comprimento real final.',
     keywords: 'fator de encolhimento, elasticidade capilar, comprimento dos cachos'
   },
   {
     id: 'theme_scab_hair',
-    title: 'Scab Hair na Transição',
+    title: 'O que é Scab Hair?',
     category: 'Saúde & Tratamento',
-    description: 'O que é a textura áspera e sem definição que nasce logo após parar com químicas de alisamento.',
+    description: 'Aquela textura áspera e sem definição que nasce logo no início da transição capilar. O folículo está se recuperando da química. Exige paciência e acidificação, não excesso de creme.',
     keywords: 'scab hair, transição capilar, saúde do couro cabelo, folículo piloso'
   },
   {
     id: 'theme_porosidade_capilar',
-    title: 'Mapeamento de Porosidade',
+    title: 'Diagnóstico de Porosidade',
     category: 'Saúde & Tratamento',
-    description: 'Como identificar se o fio tem porosidade alta (perde água fácil) ou baixa (repele hidratação).',
+    description: 'Cabelo de alta porosidade perde água rápido; o de baixa porosidade repele tratamentos. Como o Método Leitura de Fio identifica isso para prescrever o tratamento exato.',
     keywords: 'porosidade capilar, teste de porosidade, cutículas capilares, hidratação'
   },
   {
     id: 'theme_acidificacao_capilar',
-    title: 'Acidificação para Brilho',
+    title: 'O Poder da Acidificação',
     category: 'Saúde & Tratamento',
-    description: 'Como reequilibrar o pH do cabelo para selar cutículas e reter água em fios ressecados ou descoloridos.',
+    description: 'Reequilibrar o pH do fio para selar as cutículas. É o que devolve o brilho natural e impede que a água escape em cabelos que passaram por descoloração ou químicas.',
     keywords: 'acidificação capilar, pH do cabelo, selamento de cutículas, porosidade alta'
   },
   {
     id: 'theme_cronograma_real',
-    title: 'Cronograma Capilar Técnico',
+    title: 'Cronograma Capilar Lógico',
     category: 'Saúde & Tratamento',
-    description: 'Por que cachos precisam mais de nutrição com óleos do que de hidratação com cremes puros de água.',
+    description: 'A maioria enche o cabelo de cremes à base de água, mas o cacho precisa de lipídios (óleos) para segurar a umidade. Menos hidratação vazia, mais nutrição técnica e real.',
     keywords: 'cronograma capilar, nutrição capilar, óleos vegetais, umectação'
+  },
+  {
+    id: 'theme_franja_cacheada',
+    title: 'A Geometria da Franja Cacheada',
+    category: 'Corte & Visagismo',
+    description: 'Franja em cabelo com curvatura funciona sim, desde que cortada cacho por cacho a seco, considerando o encolhimento e o caimento no centro da testa para não subir demais.',
+    keywords: 'franja cacheada, corte a seco franja, visagismo testa, volume frontal'
+  },
+  {
+    id: 'theme_peso_agua',
+    title: 'O Peso da Água no Cacho',
+    category: 'Finalização & Cuidados',
+    description: 'Finalizar com o cabelo pingando água estica o fio e reduz o encolhimento natural. Finalizar com o fio úmido traz mais volume e leveza na raiz. Ajuste a água pro seu objetivo.',
+    keywords: 'peso da água, encolhimento cacho, fitagem leve, volume na raiz'
+  },
+  {
+    id: 'theme_manutencao_corte',
+    title: 'Janela de Manutenção do Corte',
+    category: 'Corte & Visagismo',
+    description: 'Corte a seco bem executado dura de 3 a 4 meses porque cresce de forma proporcional. Passado esse tempo, as pontas perdem a geometria e o volume desce. Hora de refinar a forma.',
+    keywords: 'manutenção de corte, crescimento proporcional, corte a seco bh, caçara'
   },
   {
     id: 'theme_big_chop_progressivo',
     title: 'Big Chop Progressivo',
     category: 'Transição Capilar',
-    description: 'Como cortar partes alisadas aos poucos de forma confortável, sem recorrer ao corte radical de uma vez.',
+    description: 'Você não precisa raspar tudo se não quiser. O corte de transição progressivo remove as pontas lisas em etapas confortáveis, mantendo o comprimento e a autoestima em dia.',
     keywords: 'big chop, transição capilar, corte de transição, corte para cachos'
   },
   {
     id: 'theme_diferenca_texturas',
     title: 'Duas Texturas na Transição',
     category: 'Transição Capilar',
-    description: 'Como gerenciar a raiz natural volumosa e o comprimento alisado sem danificar o fio novo.',
+    description: 'Como lidar com a raiz natural super volumosa e as pontas lisas sem tração e sem quebrar o ponto de junção do fio novo. Leitura técnica da zona de quebra.',
     keywords: 'transição capilar, duas texturas, crescimento capilar, recuperação de cachos'
   },
   {
     id: 'theme_texturizacao_mecanica',
-    title: 'Texturização Mecânica',
+    title: 'Texturização Mecânica Segura',
     category: 'Transição Capilar',
-    description: 'Técnicas de estilização sem calor (como dedoliss, fitagem e coquinhos) para disfarçar o alisamento.',
+    description: 'Dedoliss, fitagem e coquinhos servem para simular a curvatura na parte lisa durante a transição sem usar calor extremo, protegendo a saúde da nova raiz.',
     keywords: 'texturização capilar, fitagem, dedoliss, transição capilar sem chapinha'
   },
   {
     id: 'theme_touca_cetim',
-    title: 'Benefícios do Cetim',
+    title: 'Física do Atrito: Touca de Cetim',
     category: 'Finalização & Cuidados',
-    description: 'Por que usar touca ou fronha de cetim evita o atrito noturno, reduzindo frizz e preservando o corte.',
+    description: 'Algodão rouba umidade e causa atrito que abre as cutículas do fio gerando frizz. O cetim permite que o cacho deslize sem perder a definição durante a noite.',
     keywords: 'touca de cetim, day after, frizz noturno, cuidados com cachos'
   },
   {
     id: 'theme_day_after_duradouro',
-    title: 'Segredo do Day After',
+    title: 'Day After com Base em Diagnóstico',
     category: 'Finalização & Cuidados',
-    description: 'Como fazer a definição dos cachos durar 2 ou mais dias sem precisar lavar ou finalizar de novo.',
+    description: 'Se o dia seguinte é cheio de frizz, faltou veículo fixador ou o corte está sem definição. Cacho bem diagnosticado no Método Leitura de Fio acorda pronto.',
     keywords: 'day after, finalização de cachos, definição duradoura, cuidados diários'
   },
   {
     id: 'theme_finalizacao_express',
-    title: 'Finalização Express de 5min',
+    title: 'Finalização Express de 5 Minutos',
     category: 'Finalização & Cuidados',
-    description: 'Um guia prático de finalização simples sob o chuveiro para quem não tem tempo a perder.',
+    description: 'Fitagem rápida e estruturada sob o chuveiro aproveitar a própria água como veículo de distribuição. Perfeito para quem precisa de praticidade sem abrir mão da definição.',
     keywords: 'finalização rápida, cuidados diários, praticidade capilar, finalizar cachos'
   },
   {
     id: 'theme_mitos_oleo_coco',
-    title: 'Mitos do Óleo de Coco',
+    title: 'O Perigo do Óleo de Coco Puro',
     category: 'Mitos & Verdades',
-    description: 'O risco de usar óleos puros em excesso que criam uma película impermeável e ressecam o fio por dentro.',
+    description: 'O óleo de coco cria uma película impermeabilizante que impede a entrada de água no fio. Usar em excesso deixa o cabelo rígido e quebradiço por dentro.',
     keywords: 'óleo de coco, umectação capilar, mitos de cabelo, saúde do fio'
   },
   {
     id: 'theme_gelatina_vs_gel',
-    title: 'Gelatina vs Gel',
+    title: 'Gelatina vs Gel Estilizador',
     category: 'Mitos & Verdades',
-    description: 'A diferença entre a fixação suave e maleável das gelatinas e a estrutura firme do gel para finalização.',
+    description: 'Gelatina traz retenção de umidade com fixação flexível. Gel comum possui polímeros rígidos que dão o efeito durinho eterno. Saiba escolher a textura certa.',
     keywords: 'gelatina capilar, gel finalizador, fixação de cachos, definição de ondas'
   }
 ];
@@ -227,7 +248,7 @@ const EMAIL_PREVIEWS = {
     Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18; display: block; margin-top: 4px;">— corte com leitura.</span>
   </div>
   <p style="font-size: 13.5px; color: #6B5A4B; line-height: 1.5; margin: 0 0 20px 0;">
-    Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
+    Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30770-040<br>Quarta a Sábado · 9h às 19h
   </p>
   <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B5A4B; border-top: 1px solid rgba(26, 19, 16, 0.14); padding-top: 18px; margin-top: 18px;">
     © 2026 Studio do Jon
@@ -533,21 +554,18 @@ const AdminMarketing = () => {
     }
 
     try {
-      const promptText = `Você é um Psicólogo de Consumo, Especialista em Persuasão e Redator Estratégico de Elite para "O Jon Que Cortou" (@ojonquecortou), salão especializado em curvaturas (cachos, crespos e ondulados) em Belo Horizonte.
+      const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos e visagismo no salão "O Jon Que Cortou" (@ojonquecortou) em Belo Horizonte (Caiçara).
+Você está escrevendo a edição mensal da sua newsletter pessoal "Leitura de Fio" baseando-se no tema: "${randomTopic}".
 
-Escreva a edição mensal da newsletter "Leitura de Fio" baseando-se no seguinte tema: "${randomTopic}".
-
-Sua missão é estruturar a copy aplicando os seguintes gatilhos psicológicos com maestria:
-1. DESEJO: Desperte a vontade de ter um cabelo que funciona no dia a dia, livre de dependência de finalizadores caros ou rotinas exaustivas.
-2. NECESSIDADE: Mostre de forma lógica e irrefutável a raiz do problema associado ao tema proposto, demonstrando que é uma questão anatômica, física ou geométrica do corte/fio, e não falta de cosméticos.
-3. URGÊNCIA: Relembre sutilmente que o Jon atende individualmente de quarta a sábado com atenção máxima, tornando os horários extremamente escassos e disputados.
-4. ESPERANÇA: Mostre que o cabelo da cliente não é "difícil" ou "impossível", ele apenas nunca foi lido no estado seco com a metodologia correta (Método Leitura de Fio).
-
-Tom de Voz e Estilo do Jon:
-- Jon é autista e autoridade técnica. O tom de voz dele deve ser lógico, direto, ultra-especializado e baseado em fatos capilares (ciência do fio).
-- ZERO clichês de marketing genérico (nada de "ficou linda", "cachos perfeitos", "arrase", "empoderamento"). Use analogias exatas de arquitetura, geometria e física do cabelo.
-- Escrita sofisticada, crua, autêntica e altamente persuasiva.
-- Deve soar 100% humano, nada robótico e sem ser repetitivo. É o Jon quem está escrevendo diretamente para a sua lista de clientes.
+Siga rigorosamente as diretrizes abaixo:
+1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva como uma pessoa real em uma conversa direta, com calor humano e informalidade brasileira. Use expressões informais brasileiras e gírias amigáveis com moderação (ex: "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração").
+2. EVITE CLICHÊS DE MARKETING E JARGÃO CORPORATIVO: Nunca use frases prontas ou robotizadas (como "ficou linda", "cachos perfeitos", "venha arrasar", "tratamento revolucionário"). Use analogias reais de arquitetura, geometria e física do cabelo (Método Leitura de Fio, corte a seco, saúde real do fio).
+3. ESTRUTURA PERSUASIVA E TÉCNICA:
+   - Mostre que o cacho seco se comporta diferente do molhado (fator de encolhimento, caimento real).
+   - Explique o problema de forma científica/física (anatomia do fio, cutículas, porosidade, distribuição de peso).
+   - Relembre suavemente que o atendimento no Studio do Jon é individual e exclusivo, com horários disputados de quarta a sábado.
+   - Traga esperança de que nenhum cabelo é "impossível", apenas precisa da leitura geométrica correta.
+4. VARIABILIDADE E NÃO REPETIÇÃO: Construa um texto corrido fluido, mantendo a informalidade técnica de uma conversa sincera de profissional para cliente.
 
 Formato de saída:
 Você deve retornar APENAS um JSON válido contendo exatamente dois campos: "subject" e "bodyHtml". Não inclua markdown, blocos de código markdown ou texto explicativo. Retorne APENAS o JSON puro.
@@ -818,11 +836,10 @@ Use as seguintes tags no "bodyHtml":
 Você está escrevendo uma resposta pessoal, curta (máximo 250 caracteres) e muito natural para um cliente que deixou uma avaliação.
 
 REGRAS CRÍTICAS DE TOM DE VOZ (COMO O JON FALA):
-1. SOE HUMANO E AUTÊNTICO: Escreva como uma pessoa real conversando, não como uma IA ou um robô de suporte. Use termos naturais e informais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
-2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: Nunca use frases prontas do tipo "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou qualquer jargão corporativo.
-3. DIRETO E TÉCNICO: Fale com autoridade sobre a anatomia do fio, caimento natural ou corte a seco, mas de forma leve.
-4. PERSONALIZADO: Se o cliente mencionou algum detalhe específico (ex: transição, definição, volume, franja, corte a seco), comente sobre esse ponto específico com empatia e propriedade técnica.
-5. NÃO REPETITIVO: Evite começar todas as respostas do mesmo jeito. Varie a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
+1. SOE HUMANO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como em uma conversa de WhatsApp. Use termos naturais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
+2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use frases prontas como "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou adjetivos vazios como "cachos perfeitos".
+3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio).
+4. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
 
 Nome do cliente: ${names[idx]}
 Nota da avaliação: 5 estrelas
@@ -863,7 +880,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
         ];
         replyText = templates[Math.floor(Math.random() * templates.length)];
       }
-      newRev.reply = replyText;
+      newRev.pendingReply = replyText;
     }
 
     setGoogleReviews(prev => [newRev, ...prev]);
@@ -884,11 +901,10 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
 Você está escrevendo uma resposta pessoal, curta (máximo 250 caracteres) e muito natural para um cliente que deixou uma avaliação.
 
 REGRAS CRÍTICAS DE TOM DE VOZ (COMO O JON FALA):
-1. SOE HUMANO E AUTÊNTICO: Escreva como uma pessoa real conversando, não como uma IA ou um robô de suporte. Use termos naturais e informais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
-2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: Nunca use frases prontas do tipo "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou qualquer jargão corporativo.
-3. DIRETO E TÉCNICO: Fale com autoridade sobre a anatomia do fio, caimento natural ou corte a seco, mas de forma leve.
-4. PERSONALIZADO: Se o cliente mencionou algum detalhe específico (ex: transição, definição, volume, franja, corte a seco), comente sobre esse ponto específico com empatia e propriedade técnica.
-5. NÃO REPETITIVO: Evite começar todas as respostas do mesmo jeito. Varie a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
+1. SOE HUMANO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como em uma conversa de WhatsApp. Use termos naturais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
+2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use frases prontas como "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou adjetivos vazios como "cachos perfeitos".
+3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio).
+4. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
 
 Nome do cliente: ${review.author}
 Nota da avaliação: ${review.rating} estrelas
@@ -930,14 +946,29 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
       replyText = templates[Math.floor(Math.random() * templates.length)];
     }
 
+    // Save as pending (draft) for approval instead of auto-publishing
+    setGoogleReviews(prev => prev.map(rev => {
+      if (rev.id === id) {
+        return { ...rev, pendingReply: replyText };
+      }
+      return rev;
+    }));
+  };
+
+  const handleApproveReply = async (id) => {
+    const review = googleReviews.find(r => r.id === id);
+    if (!review || !review.pendingReply) return;
+
+    const replyText = review.pendingReply;
+
     if (!gbpConnected || !settings?.automations?.googleGbpAccountId) {
       setGoogleReviews(prev => prev.map(rev => {
         if (rev.id === id) {
-          return { ...rev, reply: replyText };
+          return { ...rev, reply: replyText, pendingReply: null };
         }
         return rev;
       }));
-      alert('Resposta enviada com sucesso! 🚀 (Simulado)');
+      alert('Resposta aprovada e publicada! 🚀');
       return;
     }
 
@@ -954,11 +985,11 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
       if (res.ok && data.success) {
         setGoogleReviews(prev => prev.map(rev => {
           if (rev.id === id) {
-            return { ...rev, reply: replyText };
+            return { ...rev, reply: replyText, pendingReply: null };
           }
           return rev;
         }));
-        alert('Resposta enviada para o Google Maps com sucesso! 🚀');
+        alert('Resposta publicada no Google Maps! 🚀');
       } else {
         alert(`Erro ao enviar resposta: ${data.error || 'Erro desconhecido'}`);
       }
@@ -966,6 +997,17 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
       console.error(err);
       alert('Erro de conexão ao enviar resposta ao Google.');
     }
+  };
+
+  const handleRegenerateReply = async (id) => {
+    // Clear pending and regenerate
+    setGoogleReviews(prev => prev.map(rev => {
+      if (rev.id === id) {
+        return { ...rev, pendingReply: null };
+      }
+      return rev;
+    }));
+    await handleManualGbpReply(id);
   };
 
   const handleGenerateGbpPost = async (specificTheme = null) => {
@@ -1028,10 +1070,10 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
 Tema específico para o post: "${cleanedTheme.title}" - Descrição do tema: "${cleanedTheme.description}".
 
 REGRAS CRÍTICAS DE TOM DE VOZ (É O JON QUEM ESTÁ ESCREVENDO):
-1. SOE HUMANO E DIRETO: Escreva como se você estivesse postando no seu próprio feed de forma orgânica e sincera. Nada de texto robotizado, polido demais ou artificial. Fale diretamente com quem tem cacho/crespo.
-2. ZERO CLICHÊS DE MARKETING: Evite adjetivos vazios ou frases de vendas genéricas ("venha arrasar", "os melhores profissionais", "cachos perfeitos", "tratamento revolucionário"). Use um tom informativo, baseado na técnica (leitura de fio, corte a seco, geometria do cabelo).
-3. CONVITE NATURAL: Convide o cliente de forma tranquila e sem pressão a agendar no link www.ojonquecortou.com.br. Não crie promoções ou descontos artificiais.
-4. EVITE REPETIÇÕES: Não use sempre a mesma fórmula de texto ou as mesmas palavras de transição.
+1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como se estivesse postando no seu próprio feed de forma orgânica. Use termos como "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
+2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use clichês (como "venha arrasar", "cachos perfeitos", "tratamento revolucionário"). Use um tom técnico e lógico baseado na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio, corte a seco).
+3. CONVITE NATURAL: Convide o cliente de forma tranquila e sem pressão a agendar no link www.ojonquecortou.com.br.
+4. VARIABILIDADE E NÃO REPETIÇÃO: Altere a estrutura do texto para não parecer repetitivo.
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 {
@@ -1042,10 +1084,10 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
           promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cachos em BH). Escolha aleatoriamente um tema técnico sobre cachos/crespos (diagnóstico, técnica, transição, visagismo ou cuidado) e escreva de forma lógica e profissional.
 
 REGRAS CRÍTICAS DE TOM DE VOZ (É O JON QUEM ESTÁ ESCREVENDO):
-1. SOE HUMANO E DIRETO: Escreva como se você estivesse postando no seu próprio feed de forma orgânica e sincera. Nada de texto robotizado, polido demais ou artificial. Fale diretamente com quem tem cacho/crespo.
-2. ZERO CLICHÊS DE MARKETING: Evite adjetivos vazios ou frases de vendas genéricas ("venha arrasar", "os melhores profissionais", "cachos perfeitos", "tratamento revolucionário"). Use um tom informativo, baseado na técnica (leitura de fio, corte a seco, geometria do cabelo).
+1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como se estivesse postando no seu próprio feed de forma orgânica. Use termos como "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
+2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use clichês (como "venha arrasar", "cachos perfeitos", "tratamento revolucionário"). Use um tom técnico e lógico baseado na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio, corte a seco).
 3. CONVITE NATURAL: Convide o cliente de forma tranquila e sem pressão a agendar no link www.ojonquecortou.com.br.
-4. EVITE REPETIÇÕES: Não use sempre a mesma fórmula de texto ou as mesmas palavras de transição.
+4. VARIABILIDADE E NÃO REPETIÇÃO: Altere a estrutura do texto para não parecer repetitivo.
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 {
@@ -1419,29 +1461,25 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
           }
         );
 
+        // Clean up any existing defaults/placeholders from database
+        const placeholders = ['post_sched_1', 'post_pub_1', 'post_pub_2', 'post_pub_3'];
+        placeholders.forEach(async (pId) => {
+          try {
+            await deleteDoc(doc(db, 'gbp_posts', pId));
+          } catch (e) {
+            console.error("Error cleaning placeholder", pId, e);
+          }
+        });
+
         unsubscribeGbpPosts = onSnapshot(collection(db, 'gbp_posts'), (postsSnap) => {
           const pst = [];
-          postsSnap.forEach(d => pst.push({ id: d.id, ...d.data() }));
-          if (pst.length === 0) {
-            // Se estiver vazio, popula com os 4 posts de exemplo iniciais no Firestore
-            const defaults = [
-              { id: 'post_sched_1', text: 'Todo mundo fala de técnica. Quase ninguém fala de rosto. Formato do rosto muda tudo no corte cacheado. O volume que emoldura numa pessoa é o mesmo que engole outra. Por isso cada corte precisa ser pensado pro seu rosto, não pra uma técnica.\n\n📍 Studio do Jon – Caiçara, BH\n🔗 Reserve: www.ojonquecortou.com.br', image: '/blog-visagismo-capa.webp', scheduledDate: '31 Mai, 09:00', status: 'scheduled', timestamp: new Date(Date.now() - 5000).toISOString() },
-              { id: 'post_pub_1', text: 'O que parece falta de produto... é falta de diagnóstico. Cacho sem definição, cheio de frizz, sem movimento. A maioria vai trocar de creme. Mas o problema é outro: o fio está mal lido.\n\nConheça sua curvatura. Reserve seu horário.\n🔗 www.ojonquecortou.com.br', image: '/blog-frizz.webp', scheduledDate: 'Ontem', status: 'published', timestamp: new Date(Date.now() - 10000).toISOString() },
-              { id: 'post_pub_2', text: 'Corte molhado em cabelo cacheado é erro de 2015. Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.\n\nCorte a seco é a única forma de ler o cacho de verdade.\n📍 Studio do Jon, BH', image: '/blog-leitura-fio-capa.webp', scheduledDate: 'Ontem', status: 'published', timestamp: new Date(Date.now() - 15000).toISOString() },
-              { id: 'post_pub_3', text: 'Você trocou de produto 3 vezes. O frizz não foi. Produto resolve rotina. Corte errado não tem shampoo que conserte. Fio mal lido na tesoura gera frizz que não sai de nenhuma prateleira.\n\n📍 Reserve seu horário: www.ojonquecortou.com.br', image: '/blog-frizz-dano.webp', scheduledDate: 'Semana passada', status: 'published', timestamp: new Date(Date.now() - 20000).toISOString() }
-            ];
-            defaults.forEach(async (p) => {
-              try {
-                await setDoc(doc(db, 'gbp_posts', p.id), p);
-              } catch (e) {
-                console.error("Error setting default posts", e);
-              }
-            });
-            setScheduledGbpPosts(defaults);
-          } else {
-            pst.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-            setScheduledGbpPosts(pst);
-          }
+          postsSnap.forEach(d => {
+            if (!placeholders.includes(d.id)) {
+              pst.push({ id: d.id, ...d.data() });
+            }
+          });
+          pst.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+          setScheduledGbpPosts(pst);
         });
 
         const profiles = [];
@@ -1526,9 +1564,15 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
         const res = await fetch('/api/gbp?action=get-reviews');
         if (res.ok) {
           const data = await res.json();
-          if (data.success && data.reviews && data.reviews.length > 0) {
-            setGoogleReviews(data.reviews);
-          }
+            setGoogleReviews(prev => {
+              return data.reviews.map(newRev => {
+                const match = prev.find(r => r.id === newRev.id);
+                if (match && match.pendingReply) {
+                  return { ...newRev, pendingReply: match.pendingReply };
+                }
+                return newRev;
+              });
+            });
         }
       } catch (err) {
         console.warn('Erro ao carregar avaliações reais:', err);
@@ -2922,8 +2966,32 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                           
                           {rev.reply ? (
                             <div style={{ padding: 8, background: 'rgba(176,90,46,0.06)', borderLeft: '3px solid var(--adm-gold)', borderRadius: 4, marginTop: 8 }}>
-                              <strong>Resposta do Studio:</strong>
+                              <strong>✅ Resposta publicada:</strong>
                               <p style={{ margin: '4px 0 0 0', color: 'var(--adm-muted)' }}>{rev.reply}</p>
+                            </div>
+                          ) : rev.pendingReply ? (
+                            <div style={{ padding: 10, background: 'rgba(220,163,84,0.08)', borderLeft: '3px solid #DCA354', borderRadius: 4, marginTop: 8 }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                                <strong style={{ fontSize: '0.78rem' }}>✍️ Rascunho gerado:</strong>
+                                <span style={{ fontSize: '0.65rem', color: '#DCA354', fontWeight: 600, background: 'rgba(220,163,84,0.15)', padding: '2px 8px', borderRadius: 12 }}>Aguardando aprovação</span>
+                              </div>
+                              <p style={{ margin: '0 0 10px 0', color: 'var(--adm-text)', fontSize: '0.8rem', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{rev.pendingReply}</p>
+                              <div style={{ display: 'flex', gap: 8 }}>
+                                <button 
+                                  className="btn btn-accent btn-small" 
+                                  style={{ flex: 1, fontSize: '0.75rem', padding: '6px 12px' }}
+                                  onClick={() => handleApproveReply(rev.id)}
+                                >
+                                  ✅ Aprovar e Publicar
+                                </button>
+                                <button 
+                                  className="btn btn-outline btn-small" 
+                                  style={{ flex: 1, fontSize: '0.75rem', padding: '6px 12px' }}
+                                  onClick={() => handleRegenerateReply(rev.id)}
+                                >
+                                  🔄 Gerar Outra
+                                </button>
+                              </div>
                             </div>
                           ) : (
                             <button 
@@ -2931,7 +2999,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                               style={{ width: '100%', fontSize: '0.75rem', padding: '4px' }}
                               onClick={() => handleManualGbpReply(rev.id)}
                             >
-                              ✍️ Responder com IA agora
+                              ✍️ Gerar Resposta com IA
                             </button>
                           )}
                         </div>

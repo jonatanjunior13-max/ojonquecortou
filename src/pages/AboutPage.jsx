@@ -108,7 +108,7 @@ const AboutPage = () => {
           <div className="text-center reveal mb-4">
             <h2 className="heading-md">Como Chegar</h2>
             <p className="paragraph-md" style={{ marginTop: '0.5rem' }}>
-              Studio do Jon · R. Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG
+              Studio do Jon · R. Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG · CEP 30770-040
             </p>
           </div>
           <div className="reveal" style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--rule)', boxShadow: '0 8px 32px rgba(26,19,16,0.08)' }}>

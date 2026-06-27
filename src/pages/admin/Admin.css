@@ -143,19 +143,28 @@
 
 .stat-card:nth-child(1) {
   grid-column: span 1;
-  background: linear-gradient(110deg, #1C2B35 0%, #3B5466 30%, #253744 50%, #4D6B82 70%, #1C2B35 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #1C2B35 0%, #3B5466 30%, #253744 50%, #4D6B82 70%, #1C2B35 100%) !important;
   border: 1px solid rgba(90, 158, 206, 0.35) !important;
 }
 
 .stat-card:nth-child(2) {
   grid-column: span 1;
-  background: linear-gradient(110deg, #3A2E1C 0%, #8E6E3B 30%, #5E4A29 50%, #AA894A 70%, #3A2E1C 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3A2E1C 0%, #8E6E3B 30%, #5E4A29 50%, #AA894A 70%, #3A2E1C 100%) !important;
   border: 1px solid rgba(220, 163, 84, 0.35) !important;
 }
 
 .stat-card:nth-child(3) {
   grid-column: span 1;
-  background: linear-gradient(110deg, #1A2D23 0%, #3B6A55 30%, #254436 50%, #528E72 70%, #1A2D23 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #1A2D23 0%, #3B6A55 30%, #254436 50%, #528E72 70%, #1A2D23 100%) !important;
   border: 1px solid rgba(82, 142, 114, 0.35) !important;
 }
 
@@ -425,26 +434,38 @@
 }
 
 .appt-card.pendente {
-  background: linear-gradient(110deg, #2E1B10 0%, #5D3E29 30%, #40291B 50%, #76543D 70%, #2E1B10 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #2E1B10 0%, #5D3E29 30%, #40291B 50%, #76543D 70%, #2E1B10 100%) !important;
   border: 1px solid rgba(220, 163, 84, 0.3) !important;
   border-left: 4px solid var(--adm-gold) !important;
 }
 
 .appt-card.confirmado {
-  background: linear-gradient(110deg, #3A2315 0%, #754B33 30%, #513220 50%, #946347 70%, #3A2315 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3A2315 0%, #754B33 30%, #513220 50%, #946347 70%, #3A2315 100%) !important;
   border: 1px solid rgba(212, 132, 154, 0.3) !important;
   border-left: 4px solid var(--adm-bronze) !important;
 }
 
 .appt-card.finalizado {
-  background: linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
   border: 1px solid rgba(63, 185, 80, 0.35) !important;
   border-left: 4px solid #3FB950 !important;
   opacity: 0.85;
 }
 
 .appt-card.cancelado {
-  background: linear-gradient(110deg, #381212 0%, #732C2C 30%, #4E1F1F 50%, #8C3E3E 70%, #381212 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #381212 0%, #732C2C 30%, #4E1F1F 50%, #8C3E3E 70%, #381212 100%) !important;
   border: 1px solid rgba(226, 75, 74, 0.35) !important;
   border-left: 4px solid var(--adm-danger) !important;
   text-decoration: line-through;
@@ -573,7 +594,10 @@
 }
 
 .appt-card.bloqueado {
-  background: linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%) !important;
   border: 1px solid rgba(90, 158, 206, 0.35) !important;
   border-left: 4px solid #5A9ECE !important;
   color: #ffffff !important;
@@ -590,37 +614,55 @@
   opacity: 0.65;
 }
 .appt-card.svc-corte {
-  background: linear-gradient(110deg, #2E154D 0%, #5B2E8E 30%, #3B1B66 50%, #6D3BA8 70%, #2E154D 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #2E154D 0%, #5B2E8E 30%, #3B1B66 50%, #6D3BA8 70%, #2E154D 100%) !important;
   border: 1px solid rgba(139, 92, 246, 0.35) !important;
   border-left: 3px solid #8B5CF6 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-combo {
-  background: linear-gradient(110deg, #3A1F26 0%, #8E4C5D 30%, #532C35 50%, #A26173 70%, #3A1F26 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3A1F26 0%, #8E4C5D 30%, #532C35 50%, #A26173 70%, #3A1F26 100%) !important;
   border: 1px solid rgba(212, 132, 154, 0.35) !important;
   border-left: 3px solid #D4849A !important;
   color: #ffffff !important;
 }
 .appt-card.svc-tratamento {
-  background: linear-gradient(110deg, #093322 0%, #1B5E43 30%, #10402E 50%, #28805B 70%, #093322 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #093322 0%, #1B5E43 30%, #10402E 50%, #28805B 70%, #093322 100%) !important;
   border: 1px solid rgba(16, 185, 129, 0.35) !important;
   border-left: 3px solid #10B981 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-cor {
-  background: linear-gradient(110deg, #3E2F13 0%, #8E6E34 30%, #5E4A22 50%, #AA8743 70%, #3E2F13 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3E2F13 0%, #8E6E34 30%, #5E4A22 50%, #AA8743 70%, #3E2F13 100%) !important;
   border: 1px solid rgba(251, 191, 36, 0.35) !important;
   border-left: 3px solid #FBBF24 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-analise {
-  background: linear-gradient(110deg, #3A1D0F 0%, #8E4A28 30%, #5E311A 50%, #AA5E37 70%, #3A1D0F 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3A1D0F 0%, #8E4A28 30%, #5E311A 50%, #AA5E37 70%, #3A1D0F 100%) !important;
   border: 1px solid rgba(249, 115, 22, 0.35) !important;
   border-left: 3px solid #F97316 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-almoco {
-  background: linear-gradient(110deg, #3E1E17 0%, #8E4535 30%, #5E2E23 50%, #AA5543 70%, #3E1E17 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3E1E17 0%, #8E4535 30%, #5E2E23 50%, #AA5543 70%, #3E1E17 100%) !important;
   border: 1px solid rgba(231, 111, 81, 0.35) !important;
   border-left: 3px solid #E76F51 !important;
   color: #ffffff !important;
@@ -2067,7 +2109,10 @@
 }
 
 .birthday-member-card {
-  background: linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: 
+    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
+    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
   border: 1px solid rgba(196, 115, 138, 0.35) !important;
   border-radius: 10px;
   padding: 14px 12px;

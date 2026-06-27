@@ -245,7 +245,7 @@ const SEED_TRANSACTIONS = [
 const DEFAULT_SETTINGS = {
   name: 'Studio do Jon',
   phone: '3135866673',
-  address: 'Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG',
+  address: 'Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG, CEP 30770-040',
   instagram: 'https://instagram.com/ojonquecortou',
   feePix: 0,
   feeDebit: 1.40,
@@ -1625,7 +1625,7 @@ const AdminDashboard = () => {
                    (prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay.toFixed(2)})` : ''),
       professionalId: booking.professionalId || booking.profissional || 'jon',
       productSales: productsNorm.map(p => {
-        const match = products.find(prod => prod.id === p.productId);
+        const match = (globalData.salon_products || []).find(prod => prod.id === p.productId);
         return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
       }),
       usedProducts: usedProductsNorm.map(p => ({
@@ -1728,12 +1728,8 @@ const AdminDashboard = () => {
         } : b));
         syncBookingToGoogle(booking.id).catch(err => console.warn(err));
 
-        for (const p of productsNorm) {
-          const match = products.find(prod => prod.id === p.productId);
-          if (match) {
-            await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
-          }
-        }
+        // No inventory adjustments needed for salon_products as they represent usage
+        // and do not track direct quantity in stock on this collection.
 
         for (const u of usedProductsNorm) {
           const match = products.find(prod => prod.id === u.productId);

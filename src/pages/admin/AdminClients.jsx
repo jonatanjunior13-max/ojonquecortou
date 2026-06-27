@@ -101,7 +101,7 @@ const AdminClients = () => {
     <a href="https://www.ojonquecortou.com.br/agendar" style="background-color: #b05a2e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Agendar Agora no Site</a>
   </div>
   <hr style="border: none; border-top: 1px solid #eaeaea; margin: 24px 0;" />
-  <p style="font-size: 12px; color: #888888; text-align: center;">Studio do Jon • Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG</p>
+  <p style="font-size: 12px; color: #888888; text-align: center;">Studio do Jon • Rua Francisco Ovídio, 184 - Caiçara, Belo Horizonte - MG - CEP 30770-040</p>
 </div>`
   );
   const [isSendingEmail, setIsSendingEmail] = useState(false);
