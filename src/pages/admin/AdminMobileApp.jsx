@@ -4138,7 +4138,7 @@ Grande abraço, Jon.`;
       : [];
 
     const filteredProducts = productSearch.trim().length >= 3
-      ? salonProducts.filter(p => matchSearchText(p.name, productSearch)).slice(0, 5)
+      ? inventory.filter(p => matchSearchText(p.name, productSearch)).slice(0, 5)
       : [];
 
     const filteredUsedProductsMobile = selectedUsedProduct.trim().length >= 3

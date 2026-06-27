@@ -195,10 +195,10 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
 
   const filteredProducts = useMemo(() => {
     if (saleProductSearch.trim().length < 3) return [];
-    return salonProducts.filter(p =>
+    return products.filter(p =>
       matchSearchText(p.name, saleProductSearch)
     ).slice(0, 5);
-  }, [salonProducts, saleProductSearch]);
+  }, [products, saleProductSearch]);
 
   const filteredUsedProducts = useMemo(() => {
     if (usedProductSearch.trim().length < 3) return [];
