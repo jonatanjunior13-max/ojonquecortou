@@ -417,20 +417,28 @@
 
 /* Appointment Card (Inner cell) */
 .appt-card {
-  padding: 5px 7px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 12px !important;
   font-size: 0.72rem;
-  color: #fff;
+  color: inherit;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(26, 19, 16, 0.12), 0 4px 12px rgba(26, 19, 16, 0.08);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, filter 0.2s ease;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.05),
+    0 1px 3px rgba(0, 0, 0, 0.03),
+    inset 0 4px 6px rgba(255, 255, 255, 0.85),
+    inset 0 -4px 6px rgba(0, 0, 0, 0.06) !important;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
   line-height: 1.25;
 }
 
 .appt-card:hover {
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 16px rgba(26, 19, 16, 0.16), 0 16px 32px rgba(26, 19, 16, 0.12);
-  filter: brightness(1.05);
+  box-shadow: 
+    0 8px 20px rgba(0, 0, 0, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 4px 6px rgba(255, 255, 255, 0.95),
+    inset 0 -4px 6px rgba(0, 0, 0, 0.08) !important;
+  filter: brightness(1.03);
 }
 
 .appt-card.pendente {
@@ -613,41 +621,48 @@
   border-left: 4px solid #A94442;
   opacity: 0.65;
 }
-.appt-card.svc-corte {
+.appt-card.svc-corte, .appt-card.pendente.svc-corte, .appt-card.confirmado.svc-corte, .appt-card.finalizado.svc-corte, .appt-card.cancelado.svc-corte {
   background: #EBE4FF !important;
   border: 1px solid #D2C4FF !important;
-  border-left: 3px solid #8B5CF6 !important;
+  border-left: 4px solid #8B5CF6 !important;
   color: #3C1E70 !important;
 }
-.appt-card.svc-combo {
+.appt-card.svc-combo, .appt-card.pendente.svc-combo, .appt-card.confirmado.svc-combo, .appt-card.finalizado.svc-combo, .appt-card.cancelado.svc-combo {
   background: #FFE4EC !important;
   border: 1px solid #F8D3DC !important;
-  border-left: 3px solid #D4849A !important;
+  border-left: 4px solid #D4849A !important;
   color: #6B1F38 !important;
 }
-.appt-card.svc-tratamento {
+.appt-card.svc-tratamento, .appt-card.pendente.svc-tratamento, .appt-card.confirmado.svc-tratamento, .appt-card.finalizado.svc-tratamento, .appt-card.cancelado.svc-tratamento {
   background: #E6F7F0 !important;
   border: 1px solid #B2F2DB !important;
-  border-left: 3px solid #10B981 !important;
+  border-left: 4px solid #10B981 !important;
   color: #0B4D34 !important;
 }
-.appt-card.svc-cor {
+.appt-card.svc-cor, .appt-card.pendente.svc-cor, .appt-card.confirmado.svc-cor, .appt-card.finalizado.svc-cor, .appt-card.cancelado.svc-cor {
   background: #FFF8E7 !important;
   border: 1px solid #FDE8A8 !important;
-  border-left: 3px solid #DCA354 !important;
+  border-left: 4px solid #DCA354 !important;
   color: #66481A !important;
 }
-.appt-card.svc-analise {
+.appt-card.svc-analise, .appt-card.pendente.svc-analise, .appt-card.confirmado.svc-analise, .appt-card.finalizado.svc-analise, .appt-card.cancelado.svc-analise {
   background: #FFF0E6 !important;
   border: 1px solid #FFD2B8 !important;
-  border-left: 3px solid #F97316 !important;
+  border-left: 4px solid #F97316 !important;
   color: #6E2E0A !important;
 }
-.appt-card.svc-almoco {
+.appt-card.svc-almoco, .appt-card.pendente.svc-almoco, .appt-card.confirmado.svc-almoco, .appt-card.finalizado.svc-almoco, .appt-card.cancelado.svc-almoco {
   background: #F5ECEB !important;
   border: 1px solid #E7C8C2 !important;
-  border-left: 3px solid #E76F51 !important;
+  border-left: 4px solid #E76F51 !important;
   color: #6E2718 !important;
+}
+
+.appt-card .appt-time,
+.appt-card .appt-client,
+.appt-card .appt-service,
+.appt-card .appt-service-info {
+  color: inherit !important;
 }
 
 /* Agenda Badges */

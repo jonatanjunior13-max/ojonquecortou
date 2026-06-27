@@ -62,12 +62,12 @@ const PeekingCat = ({ catClass }) => {
   return (
     <svg 
       viewBox="0 0 100 76" 
-      width="34" 
-      height="26" 
+      width="50" 
+      height="38" 
       style={{ 
         position: 'absolute', 
         bottom: '-1px', 
-        right: '8px', 
+        right: '4px', 
         zIndex: 2, 
         pointerEvents: 'none'
       }}
