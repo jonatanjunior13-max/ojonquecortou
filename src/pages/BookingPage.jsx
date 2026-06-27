@@ -124,7 +124,7 @@ const BookingPage = () => {
   const [createdBookingId, setCreatedBookingId] = useState('');
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
-  const [discountVal, setDiscountVal] = useState(0); // discount to be debited from total
+  const discountVal = 0; // discount to be debited from total
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [bookedTimes, setBookedTimes] = useState([]);
@@ -2542,20 +2542,6 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     <strong>R$ {selectedServices.reduce((sum, s) => sum + (s.promoPrice ?? s.price ?? 0), 0).toFixed(2)}</strong>
                   </div>
 
-                  {/* Campo de Desconto */}
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '8px' }}>
-                    <label htmlFor="discountVal" style={{ fontSize: '0.8rem', fontWeight: 600 }}>Desconto (R$):</label>
-                    <input 
-                      type="number"
-                      id="discountVal"
-                      min="0"
-                      step="0.01"
-                      placeholder="Ex: 10.00"
-                      value={discountVal || ''}
-                      onChange={(e) => setDiscountVal(Math.max(0, parseFloat(e.target.value) || 0))}
-                      style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--rule)', background: 'var(--bg)', color: 'var(--text)', width: '100%', maxWidth: '150px' }}
-                    />
-                  </div>
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '1rem', borderTop: '1px solid var(--rule)', paddingTop: '8px', marginTop: '8px', color: 'var(--accent)' }}>
                     <strong>Valor Total:</strong>
