@@ -131,7 +131,7 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
   );
 
   const productTotal = useMemo(
-    () => addedProducts.reduce((s, p) => s + p.price * p.qty, 0),
+    () => addedProducts.reduce((s, p) => s + p.price, 0),
     [addedProducts]
   );
 
@@ -140,7 +140,7 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
     [usedProducts]
   );
 
-  const subtotal = servicePrice + extraServicesTotal + productTotal + tipValue;
+  const subtotal = servicePrice + extraServicesTotal + tipValue;
   const valorTotal = Math.max(0, subtotal - discount);
   const totalToPay = Math.max(0, valorTotal - prepay);
 
@@ -193,17 +193,46 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
     setAddedProducts(prev => {
       const existing = prev.find(p => p.productId === prod.id);
       if (existing) {
-        return prev.map(p => p.productId === prod.id ? { ...p, qty: p.qty + 1 } : p);
+        return prev;
       }
-      return [...prev, { productId: prod.id, name: prod.name, price: prod.costPrice || prod.price || 0, qty: 1 }];
+      const totalVol = Number(prod.volumetry) || 0;
+      const basePr = Number(prod.price || prod.costPrice || 0);
+      const unit = prod.unit || 'g';
+      
+      const initialUsed = totalVol > 0 ? Math.min(10, totalVol) : 1;
+      const calculatedPrice = totalVol > 0 ? (initialUsed / totalVol) * basePr : basePr;
+      
+      return [...prev, {
+        productId: prod.id,
+        name: prod.name,
+        basePrice: basePr,
+        totalVolumetry: totalVol,
+        usedVolumetry: initialUsed,
+        unit: unit,
+        price: Number(calculatedPrice.toFixed(2)),
+        qty: 1
+      }];
     });
     setProductSearch('');
   }, []);
 
-  const handleQtyChange = useCallback((productId, delta) => {
+  const handleVolumetryChange = useCallback((productId, val) => {
     setAddedProducts(prev =>
-      prev.map(p => p.productId === productId ? { ...p, qty: Math.max(0, p.qty + delta) } : p)
-        .filter(p => p.qty > 0)
+      prev.map(p => {
+        if (p.productId !== productId) return p;
+        
+        const usedVol = Math.max(0, val);
+        const calculatedPrice = p.totalVolumetry > 0 
+          ? (usedVol / p.totalVolumetry) * p.basePrice 
+          : usedVol * p.basePrice;
+          
+        return {
+          ...p,
+          usedVolumetry: usedVol,
+          price: Number(calculatedPrice.toFixed(2)),
+          qty: p.totalVolumetry > 0 ? Number((usedVol / p.totalVolumetry).toFixed(4)) : usedVol
+        };
+      })
     );
   }, []);
 
@@ -495,9 +524,34 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
                     <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{p.name}</span>
                     <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>{fmtBRL(p.price)}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <button type="button" onClick={() => handleQtyChange(p.productId, -1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
-                      <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.qty}</span>
-                      <button type="button" onClick={() => handleQtyChange(p.productId, 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
+                      {p.totalVolumetry > 0 ? (
+                        <>
+                          <input
+                            type="number"
+                            min="0"
+                            placeholder="g/ml"
+                            value={p.usedVolumetry || ''}
+                            onChange={(e) => handleVolumetryChange(p.productId, parseFloat(e.target.value) || 0)}
+                            style={{ width: 65, padding: '4px 6px', background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', borderRadius: 4, fontSize: '0.82rem', color: 'var(--adm-text)', textAlign: 'center', outline: 'none', fontFamily: 'inherit' }}
+                          />
+                          <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>{p.unit}</span>
+                        </>
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <button type="button" onClick={() => handleVolumetryChange(p.productId, Math.max(0, p.usedVolumetry - 1))} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
+                          <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.usedVolumetry}</span>
+                          <button type="button" onClick={() => handleVolumetryChange(p.productId, p.usedVolumetry + 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
+                        </div>
+                      )}
+                      
+                      <button 
+                        type="button" 
+                        onClick={() => setAddedProducts(prev => prev.filter(item => item.productId !== p.productId))}
+                        style={{ background: 'none', border: 'none', color: '#c53030', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
+                        title="Remover produto"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -606,14 +660,9 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
                 <span>Serviços Extras</span><span>{fmtBRL(extraServicesTotal)}</span>
               </div>
             )}
-            {productTotal > 0 && (
+            {(usedProductsTotal > 0 || productTotal > 0 || Number(extraCost) > 0) && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                <span>Produtos</span><span>{fmtBRL(productTotal)}</span>
-              </div>
-            )}
-            {(usedProductsTotal > 0 || Number(extraCost) > 0) && (
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                <span>Custo Interno (Insumos)</span><span>{fmtBRL(usedProductsTotal + (Number(extraCost) || 0))}</span>
+                <span>Custo Interno (Insumos)</span><span>{fmtBRL(usedProductsTotal + productTotal + (Number(extraCost) || 0))}</span>
               </div>
             )}
             {tipValue > 0 && (
@@ -665,7 +714,7 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
             style={{
               width: '100%', background: 'var(--adm-gold)', color: '#121110',
               border: 'none', borderRadius: 'var(--adm-radius-sm)', padding: '12px 0',
-              fontSize: '0.9rem', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit',
+              fontSize: '0.9rem', fontWeight: 700, fontFamily: 'inherit',
               transition: 'background 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
               opacity: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 0.5 : 1,
               cursor: (isSplitPayment && Math.abs(totalToPay - Object.values(splitValues).reduce((a, b) => a + b, 0)) > 0.01) ? 'not-allowed' : 'pointer'

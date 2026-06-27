@@ -1659,14 +1659,19 @@ const AdminDashboard = () => {
     const prepay = booking.prepayment ? Number(booking.prepayment) : 0;
     
     const extraServicesTotal = (as || []).reduce((s, x) => s + x.price * x.qty, 0);
-    const productsTotal = (ap || []).reduce((s, p) => s + p.price * p.qty, 0);
-    const subtotal = servicePrice + extraServicesTotal + productsTotal + (tipValue || 0);
+    const productsTotal = (ap || []).reduce((s, p) => s + p.price, 0);
+    const subtotal = servicePrice + extraServicesTotal + (tipValue || 0);
     const totalValue = Math.max(0, subtotal - disc - prepay);
 
     const itemsDescription = [
       booking.service?.name || booking.serviceName || 'Serviço',
       ...(as || []).map(s => `${s.qty}x ${s.name}`),
-      ...(ap || []).map(p => `${p.qty}x ${p.name}`)
+      ...(ap || []).map(p => {
+        if (p.totalVolumetry > 0) {
+          return `${p.usedVolumetry}${p.unit || 'g'} de ${p.name}`;
+        }
+        return `${p.usedVolumetry || p.qty || 1}x ${p.name}`;
+      })
     ].filter(Boolean).join(', ');
 
     const transactionPayload = {
@@ -1684,10 +1689,7 @@ const AdminDashboard = () => {
                    (disc > 0 ? ` (Desconto: R$ ${disc.toFixed(2)})` : '') +
                    (prepay > 0 ? ` (Sinal/Adiantamento: -R$ ${prepay.toFixed(2)})` : ''),
       professionalId: booking.professionalId || booking.profissional || 'jon',
-      productSales: productsNorm.map(p => {
-        const match = (globalData.salon_products || []).find(prod => prod.id === p.productId);
-        return { productId: p.productId, name: p.name, quantity: p.quantity, sellingPrice: p.price, costPrice: match ? (match.costPrice || 0) : 0 };
-      }),
+      productSales: [],
       usedProducts: usedProductsNorm.map(p => ({
         productId: p.productId,
         name: p.name,
@@ -1706,7 +1708,7 @@ const AdminDashboard = () => {
       return sum + (match ? (Number(match.cost) || 0) : 0);
     }, 0);
     const usedProductsTotal = usedProductsNorm.reduce((s, p) => s + p.price * p.quantity, 0);
-    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + extraCost;
+    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + productsTotal + extraCost;
 
     const saidaPayload = {
       bookingId: booking.id,
@@ -1718,14 +1720,22 @@ const AdminDashboard = () => {
       paymentMethod: pm || 'Pix',
       value: totalServiceCost,
       discount: 0,
-      description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${(as || []).length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${extraCost > 0 ? ` (Extra Manual: R$ ${extraCost})` : ''}`,
+      description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${(as || []).length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${productsTotal > 0 ? ` (Insumos Extras: R$ ${productsTotal})` : ''}${extraCost > 0 ? ` (Extra Manual: R$ ${extraCost})` : ''}`,
       professionalId: booking.professionalId || booking.profissional || 'jon',
-      usedProducts: usedProductsNorm.map(p => ({
-        productId: p.productId,
-        name: p.name,
-        quantity: p.quantity,
-        price: p.price
-      })),
+      usedProducts: [
+        ...usedProductsNorm.map(p => ({
+          productId: p.productId,
+          name: p.name,
+          quantity: p.quantity,
+          price: p.price
+        })),
+        ...productsNorm.map(p => ({
+          productId: p.productId,
+          name: p.name,
+          quantity: p.quantity,
+          price: p.price
+        }))
+      ],
       extraCost: Number(extraCost) || 0,
       createdAt: new Date().toISOString()
     };
