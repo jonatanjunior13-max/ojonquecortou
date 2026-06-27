@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
@@ -21,6 +21,8 @@ const AdminInventory = () => {
   const { globalData, setGlobalData } = useOutletContext() || {};
   const [activeTab, setActiveTab] = useState('venda');
   const [products, setProducts] = useState([]);
+  const [saleSort, setSaleSort] = useState('asc');
+  const [salonSort, setSalonSort] = useState('asc');
   const [loading, setLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -28,6 +30,23 @@ const AdminInventory = () => {
 
   // Salon products state
   const salonProducts = globalData?.salon_products || [];
+  
+  const sortedProducts = useMemo(() => {
+    return [...products].sort((a, b) => {
+      const nameA = (a.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const nameB = (b.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return saleSort === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    });
+  }, [products, saleSort]);
+
+  const sortedSalonProducts = useMemo(() => {
+    return [...salonProducts].sort((a, b) => {
+      const nameA = (a.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const nameB = (b.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return salonSort === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    });
+  }, [salonProducts, salonSort]);
+
   const services = globalData?.services || [];
   const [showSalonModal, setShowSalonModal] = useState(false);
   const [editingSalonProduct, setEditingSalonProduct] = useState(null);
@@ -563,7 +582,13 @@ const AdminInventory = () => {
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Produto</th>
+                    <th 
+                      onClick={() => setSaleSort(saleSort === 'asc' ? 'desc' : 'asc')} 
+                      style={{ cursor: 'pointer', userSelect: 'none' }}
+                      title="Clique para ordenar alfabeticamente"
+                    >
+                      Produto <span style={{ fontSize: '0.75rem', marginLeft: 4 }}>{saleSort === 'asc' ? '▲' : '▼'}</span>
+                    </th>
                     <th>Categoria</th>
                     <th>Qtd Atual</th>
                     <th>Custo Unit.</th>
@@ -573,14 +598,14 @@ const AdminInventory = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.length === 0 ? (
-                    <tr>
-                      <td colSpan="7" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
-                        Nenhum produto cadastrado no estoque.
-                      </td>
-                    </tr>
-                  ) : (
-                    products.map((p) => {
+                    {sortedProducts.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
+                          Nenhum produto cadastrado no estoque.
+                        </td>
+                      </tr>
+                    ) : (
+                      sortedProducts.map((p) => {
                       return (
                         <tr key={p.id}>
                           <td style={{ fontWeight: 600 }}>
@@ -697,7 +722,13 @@ const AdminInventory = () => {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>Produto</th>
+                  <th 
+                    onClick={() => setSalonSort(salonSort === 'asc' ? 'desc' : 'asc')} 
+                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                    title="Clique para ordenar alfabeticamente"
+                  >
+                    Produto <span style={{ fontSize: '0.75rem', marginLeft: 4 }}>{salonSort === 'asc' ? '▲' : '▼'}</span>
+                  </th>
                   <th>Tipo</th>
                   <th>Volumetria</th>
                   <th>Unidade</th>
@@ -708,14 +739,14 @@ const AdminInventory = () => {
                 </tr>
               </thead>
               <tbody>
-                {salonProducts.length === 0 ? (
+                {sortedSalonProducts.length === 0 ? (
                   <tr>
                     <td colSpan="8" style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>
                       Nenhum produto de uso interno cadastrado. Clique em "Novo Insumo" para começar.
                     </td>
                   </tr>
                 ) : (
-                  salonProducts.map(p => {
+                  sortedSalonProducts.map(p => {
                     const vol = Number(p.volumetry || 0);
                     const cost = Number(p.costPrice || 0);
                     const ppu = vol > 0 ? (cost / vol) : 0;
