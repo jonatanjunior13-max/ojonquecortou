@@ -2471,8 +2471,14 @@ Grande abraço, Jon.`;
 
         {/* Aniversariantes */}
         {birthdays.length > 0 && (
-          <div style={{ background:'var(--m-gold-subtle)', border:'0.5px solid var(--m-gold)', borderRadius:'var(--m-radius)', padding:'12px 14px' }}>
-            <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>🎂 Aniversariante{birthdays.length > 1 ? 's':''} Hoje</div>
+          <div style={{
+            background: 'linear-gradient(110deg, #3A2E1C 0%, #8E6E3B 30%, #5E4A29 50%, #AA894A 70%, #3A2E1C 100%)',
+            border: '1px solid rgba(220, 163, 84, 0.35)',
+            borderRadius: 'var(--m-radius)',
+            padding: '12px 14px',
+            boxShadow: '0 4px 15px rgba(220, 163, 84, 0.15)'
+          }}>
+            <div style={{ fontSize:'0.72rem', fontWeight:800, color:'#FFF2D4', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>🎂 Aniversariante{birthdays.length > 1 ? 's':''} Hoje</div>
             {birthdays.map(c => (
               <button
                 key={c.id}
@@ -2480,16 +2486,16 @@ Grande abraço, Jon.`;
                 style={{
                   display:'flex', alignItems:'center', justifyContent:'space-between',
                   width:'100%', background:'none', border:'none', padding:'6px 0',
-                  cursor:'pointer', fontFamily:'inherit', borderBottom: birthdays.indexOf(c) < birthdays.length - 1 ? '0.5px solid var(--m-rule)' : 'none'
+                  cursor:'pointer', fontFamily:'inherit', borderBottom: birthdays.indexOf(c) < birthdays.length - 1 ? '0.5px solid rgba(255,255,255,0.1)' : 'none'
                 }}
               >
                 <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                   <span style={{ fontSize:'1.1rem' }}>🎉</span>
-                  <span style={{ fontSize:'0.85rem', color:'var(--m-text)', fontWeight:700 }}>{c.name}</span>
+                  <span style={{ fontSize:'0.85rem', color:'#ffffff', fontWeight:700 }}>{c.name}</span>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                  {c.phone && <span style={{ fontSize:'0.68rem', color:'var(--m-muted)' }}>{c.phone}</span>}
-                  <span style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', background:'rgba(220,163,84,0.15)', borderRadius:8, padding:'3px 8px' }}>Parabenizar →</span>
+                  {c.phone && <span style={{ fontSize:'0.68rem', color:'rgba(255,255,255,0.6)' }}>{c.phone}</span>}
+                  <span style={{ fontSize:'0.72rem', fontWeight:800, color:'#FFF2D4', background:'rgba(255,255,255,0.12)', borderRadius:8, padding:'3px 8px' }}>Parabenizar →</span>
                 </div>
               </button>
             ))}
@@ -2960,15 +2966,16 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
-                      background: 'rgba(90, 158, 206, 0.12)',
+                      background: 'linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%)',
+                      border: '1px solid rgba(90, 158, 206, 0.35)',
                       borderLeft: '4px solid #5A9ECE',
-                      color: '#5A9ECE'
+                      color: '#ffffff'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: '#5A9ECE', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                    <div className="m-slot-client" style={{ color: '#88C0E7', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> {abs.title}
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'rgba(90, 158, 206, 0.7)', fontSize: '0.62rem' }}>Ausência</div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(136, 192, 231, 0.75)', fontSize: '0.62rem' }}>Ausência</div>
                   </div>
                 );
               }
@@ -2990,15 +2997,16 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
-                      background: 'rgba(90, 158, 206, 0.12)',
+                      background: 'linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%)',
+                      border: '1px solid rgba(90, 158, 206, 0.35)',
                       borderLeft: '4px solid #5A9ECE',
-                      color: '#5A9ECE'
+                      color: '#ffffff'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: '#5A9ECE', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                    <div className="m-slot-client" style={{ color: '#88C0E7', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> Bloqueado
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'rgba(90, 158, 206, 0.7)', fontSize: '0.62rem' }}>{item.label}</div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(136, 192, 231, 0.75)', fontSize: '0.62rem' }}>{item.label}</div>
                   </div>
                 );
               }
