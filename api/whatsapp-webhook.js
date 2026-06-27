@@ -147,6 +147,10 @@ async function sendSetmoreWhatsApp(settings, phone, message) {
 }
 
 async function handleSetmoreWebhook(req, res) {
+  if (req.method === 'GET') {
+    return res.status(200).json({ status: 'ok', service: 'setmore-webhook-router' });
+  }
+
   const payload = req.body;
   console.log('[setmore-webhook-router] Payload recebido:', JSON.stringify(payload));
 
@@ -323,14 +327,14 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
   // Setmore: if setmoreId or source: 'google' or appointment key is present
-  const isSetmore = req.body && (req.body.event?.includes('appointment_') || req.body.appointment || req.body.setmoreId || req.body.source === 'google' || req.query.source === 'google');
+  const isSetmore = (req.body && (req.body.event?.includes('appointment_') || req.body.appointment || req.body.setmoreId || req.body.source === 'google')) || req.query.source === 'google';
   if (isSetmore) {
     return handleSetmoreWebhook(req, res);
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   // Outbound: chamada do painel para enviar mensagem (campo `gateway` presente).

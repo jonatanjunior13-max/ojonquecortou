@@ -17,6 +17,15 @@
   --adm-gold-deep: #c47389;
   --adm-bronze: #c47389;
 
+  /* Overrides to prevent hot pink inside Admin */
+  --accent: #D4849A;
+  --accent-deep: #c47389;
+  --accent-warm: rgba(212, 132, 154, 0.45);
+  --support-1: #D4849A;
+  --support-2: #c47389;
+  --support-3: rgba(212, 132, 154, 0.45);
+  --espectro-pink: #D4849A;
+
   /* Paleta de Serviços (agenda cards) */
   --adm-copper: #E2703A;           /* Corte */
   --adm-copper-bg: rgba(226, 112, 58, 0.18);

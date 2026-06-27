@@ -2544,7 +2544,21 @@ Grande abraço, Jon.`;
                           <span className="m-booking-service">{svcName}</span>
                         </div>
                       </div>
-                      <div className="appt-badge">{cat.badge}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                        {b.status === 'finalizado' && (
+                          <span style={{
+                            fontSize: '7px',
+                            fontWeight: 800,
+                            padding: '1px 4px',
+                            background: 'rgba(63, 185, 80, 0.15)',
+                            color: '#3FB950',
+                            border: '1px solid rgba(63, 185, 80, 0.3)',
+                            borderRadius: '4px',
+                            letterSpacing: '0.5px'
+                          }}>✓ FINALIZADO</span>
+                        )}
+                        <div className="appt-badge">{cat.badge}</div>
+                      </div>
                     </div>
                   </div>
                 );
@@ -2845,9 +2859,23 @@ Grande abraço, Jon.`;
                         >
                           {bk.clientName}
                         </span>
-                        <span className="appt-badge" style={{ fontSize: '8px', padding: '1px 4px', textTransform: 'uppercase', flexShrink: 0 }}>
-                          {cat.badge}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                          {bk.status === 'finalizado' && (
+                            <span style={{
+                              fontSize: '7px',
+                              fontWeight: 800,
+                              padding: '1px 4px',
+                              background: 'rgba(63, 185, 80, 0.15)',
+                              color: '#3FB950',
+                              border: '1px solid rgba(63, 185, 80, 0.3)',
+                              borderRadius: '4px',
+                              letterSpacing: '0.5px'
+                            }}>✓ FINALIZADO</span>
+                          )}
+                          <span className="appt-badge" style={{ fontSize: '8px', padding: '1px 4px', textTransform: 'uppercase', flexShrink: 0 }}>
+                            {cat.badge}
+                          </span>
+                        </div>
                       </div>
                       <span className="m-slot-svc-info" style={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.55)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {svcName} · {(() => {
@@ -2868,7 +2896,7 @@ Grande abraço, Jon.`;
                 return (
                   <div
                     key={item.id}
-                    className="m-slot-booking bloqueado"
+                    className="m-slot-booking bloqueado svc-almoco"
                     style={{
                       position: 'absolute',
                       top: topPx,
@@ -2876,14 +2904,15 @@ Grande abraço, Jon.`;
                       left: `${left}%`,
                       width: `calc(${width}% - 4px)`,
                       marginLeft: '2px',
-                      padding: '6px 10px',
+                      padding: '6px 12px',
                       zIndex: 3,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      background: 'rgba(235, 94, 85, 0.1)',
-                      borderLeft: '4px solid var(--m-red)',
-                      color: 'var(--m-red)'
+                      background: 'linear-gradient(90deg, rgba(231, 111, 81, 0.22) 0%, rgba(231, 111, 81, 0.07) 45%, transparent 100%)',
+                      borderLeft: '3px solid #E76F51',
+                      color: '#E76F51',
+                      cursor: 'pointer'
                     }}
                     onClick={() => {
                       if (window.confirm("Deseja liberar este horário (desbloquear a escala)?")) {
@@ -2893,10 +2922,22 @@ Grande abraço, Jon.`;
                       }
                     }}
                   >
-                    <div>
-                      <div className="m-slot-client" style={{ color: 'var(--m-red)', fontSize: '0.75rem' }}>Bloqueio de Almoço</div>
-                      <div className="m-slot-svc" style={{ color: 'rgba(235, 94, 85, 0.7)', fontSize: '0.62rem' }}>Toque para liberar</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <div className="m-slot-client" style={{ color: '#E76F51', fontSize: '0.8rem', fontWeight: 700 }}>Almoço</div>
+                      <div className="m-slot-svc" style={{ color: 'rgba(231, 111, 81, 0.7)', fontSize: '0.62rem' }}>Toque para liberar</div>
                     </div>
+                    <span className="appt-badge" style={{
+                      fontSize: '8px',
+                      padding: '2px 5px',
+                      textTransform: 'uppercase',
+                      color: '#E76F51',
+                      background: 'rgba(231, 111, 81, 0.15)',
+                      borderColor: 'rgba(231, 111, 81, 0.3)',
+                      borderWidth: '1px',
+                      borderStyle: 'solid'
+                    }}>
+                      ALMOÇO
+                    </span>
                   </div>
                 );
               }
@@ -2919,15 +2960,15 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
-                      background: 'rgba(139, 124, 200, 0.12)',
-                      borderLeft: '4px solid #8b7cc8',
-                      color: '#8b7cc8'
+                      background: 'rgba(90, 158, 206, 0.12)',
+                      borderLeft: '4px solid #5A9ECE',
+                      color: '#5A9ECE'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: '#8b7cc8', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                    <div className="m-slot-client" style={{ color: '#5A9ECE', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
                       <Lock size={10} /> {abs.title}
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'rgba(139, 124, 200, 0.7)', fontSize: '0.62rem' }}>Ausência</div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(90, 158, 206, 0.7)', fontSize: '0.62rem' }}>Ausência</div>
                   </div>
                 );
               }
@@ -2949,15 +2990,15 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
-                      background: 'rgba(163, 150, 135, 0.1)',
-                      borderLeft: '4px solid #8A7866',
-                      color: '#8A7866'
+                      background: 'rgba(90, 158, 206, 0.12)',
+                      borderLeft: '4px solid #5A9ECE',
+                      color: '#5A9ECE'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: '#8A7866', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
+                    <div className="m-slot-client" style={{ color: '#5A9ECE', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem' }}>
                       <Lock size={10} /> Bloqueado
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'rgba(138, 120, 102, 0.7)', fontSize: '0.62rem' }}>{item.label}</div>
+                    <div className="m-slot-svc" style={{ color: 'rgba(90, 158, 206, 0.7)', fontSize: '0.62rem' }}>{item.label}</div>
                   </div>
                 );
               }

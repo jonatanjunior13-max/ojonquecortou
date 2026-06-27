@@ -3311,8 +3311,22 @@ Grande abraço, Jon.`;
                                         })()}
                                       </span>
                                     </div>
-                                    <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
-                                      {getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).badge}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      {bk.status === 'finalizado' && (
+                                        <span style={{
+                                          fontSize: '9px',
+                                          fontWeight: 800,
+                                          padding: '2px 6px',
+                                          background: 'rgba(63, 185, 80, 0.15)',
+                                          color: '#3FB950',
+                                          border: '1px solid rgba(63, 185, 80, 0.3)',
+                                          borderRadius: '2px',
+                                          letterSpacing: '0.05em'
+                                        }}>✓ FINALIZADO</span>
+                                      )}
+                                      <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
+                                        {getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).badge}
+                                      </div>
                                     </div>
                                   </div>
                               );
@@ -3405,18 +3419,18 @@ Grande abraço, Jon.`;
                               }}
                               style={(() => {
                                 const title = (absence.title || '').toLowerCase();
-                                let bg = 'rgba(139, 124, 200, 0.12)';
-                                let border = '4px solid #8b7cc8';
-                                let color = '#8b7cc8';
+                                let bg = 'rgba(90, 158, 206, 0.12)';
+                                let border = '4px solid #5A9ECE';
+                                let color = '#5A9ECE';
                                 
                                 if (title.includes('médico') || title.includes('medico')) {
                                   bg = 'rgba(235, 94, 85, 0.12)';
                                   border = '4px solid #eb5e55';
                                   color = '#eb5e55';
-                                } else if (title.includes('almoço') || title.includes('almoco')) {
-                                  bg = 'rgba(220, 163, 84, 0.12)';
-                                  border = '4px solid #dca354';
-                                  color = '#dca354';
+                                  } else if (title.includes('almoço') || title.includes('almoco')) {
+                                    bg = 'rgba(231, 111, 81, 0.12)';
+                                    border = '4px solid #E76F51';
+                                    color = '#E76F51';
                                 } else if (title.includes('folga')) {
                                   bg = 'rgba(114, 137, 218, 0.12)';
                                   border = '4px solid #7289da';
@@ -3453,12 +3467,12 @@ Grande abraço, Jon.`;
                                 color: (() => {
                                   const title = (absence.title || '').toLowerCase();
                                   if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
-                                  if (title.includes('almoço') || title.includes('almoco')) return '#dca354';
+                                  if (title.includes('almoço') || title.includes('almoco')) return '#E76F51';
                                   if (title.includes('folga')) return '#7289da';
                                   if (title.includes('viagem')) return '#4aa3df';
                                   if (title.includes('pausa')) return '#1abc9c';
                                   if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
-                                  return '#8b7cc8';
+                                  return '#5A9ECE';
                                 })()
                               }}>{slot}</span>
                               <span className="appt-client" style={{ 
@@ -3468,7 +3482,7 @@ Grande abraço, Jon.`;
                                 color: (() => {
                                   const title = (absence.title || '').toLowerCase();
                                   if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
-                                  if (title.includes('almoço') || title.includes('almoco')) return '#dca354';
+                                  if (title.includes('almoço') || title.includes('almoco')) return '#E76F51';
                                   if (title.includes('folga')) return '#7289da';
                                   if (title.includes('viagem')) return '#4aa3df';
                                   if (title.includes('pausa')) return '#1abc9c';
@@ -3482,12 +3496,12 @@ Grande abraço, Jon.`;
                                 color: (() => {
                                   const title = (absence.title || '').toLowerCase();
                                   if (title.includes('médico') || title.includes('medico')) return 'rgba(235, 94, 85, 0.7)';
-                                  if (title.includes('almoço') || title.includes('almoco')) return 'rgba(220, 163, 84, 0.7)';
+                                  if (title.includes('almoço') || title.includes('almoco')) return 'rgba(231, 111, 81, 0.7)';
                                   if (title.includes('folga')) return 'rgba(114, 137, 218, 0.7)';
                                   if (title.includes('viagem')) return 'rgba(74, 163, 223, 0.7)';
                                   if (title.includes('pausa')) return 'rgba(26, 188, 156, 0.7)';
                                   if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return 'rgba(155, 89, 182, 0.7)';
-                                  return 'rgba(139, 124, 200, 0.7)';
+                                  return 'rgba(90, 158, 206, 0.7)';
                                 })()
                               }}>
                                 Ausência
@@ -3767,8 +3781,22 @@ Grande abraço, Jon.`;
                                         })()}
                                       </span>
                                     </div>
-                                    <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
-                                      {getServiceCategoryInfo(b.service?.name || b.serviceName, services).badge}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      {b.status === 'finalizado' && (
+                                        <span style={{
+                                          fontSize: '9px',
+                                          fontWeight: 800,
+                                          padding: '2px 6px',
+                                          background: 'rgba(63, 185, 80, 0.15)',
+                                          color: '#3FB950',
+                                          border: '1px solid rgba(63, 185, 80, 0.3)',
+                                          borderRadius: '2px',
+                                          letterSpacing: '0.05em'
+                                        }}>✓ FINALIZADO</span>
+                                      )}
+                                      <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
+                                        {getServiceCategoryInfo(b.service?.name || b.serviceName, services).badge}
+                                      </div>
                                     </div>
                                   </div>
                               );
@@ -3806,18 +3834,18 @@ Grande abraço, Jon.`;
                                   }}
                                   style={(() => {
                                 const title = (abs.title || '').toLowerCase();
-                                let bg = 'rgba(139, 124, 200, 0.12)';
-                                let border = '4px solid #8b7cc8';
-                                let color = '#8b7cc8';
+                                 let bg = 'rgba(90, 158, 206, 0.12)';
+                                 let border = '4px solid #5A9ECE';
+                                 let color = '#5A9ECE';
                                 
                                 if (title.includes('médico') || title.includes('medico')) {
                                   bg = 'rgba(235, 94, 85, 0.12)';
                                   border = '4px solid #eb5e55';
                                   color = '#eb5e55';
                                 } else if (title.includes('almoço') || title.includes('almoco')) {
-                                  bg = 'rgba(220, 163, 84, 0.12)';
-                                  border = '4px solid #dca354';
-                                  color = '#dca354';
+                                  bg = 'rgba(231, 111, 81, 0.12)';
+                                  border = '4px solid #E76F51';
+                                  color = '#E76F51';
                                 } else if (title.includes('folga')) {
                                   bg = 'rgba(114, 137, 218, 0.12)';
                                   border = '4px solid #7289da';

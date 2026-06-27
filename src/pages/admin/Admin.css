@@ -413,23 +413,28 @@
 }
 
 .appt-card.pendente {
-  background: linear-gradient(135deg, #C97B49 0%, #A65A2E 100%);
-  border-left: 4px solid var(--adm-card);
+  background: linear-gradient(110deg, #2E1B10 0%, #5D3E29 30%, #40291B 50%, #76543D 70%, #2E1B10 100%) !important;
+  border: 1px solid rgba(220, 163, 84, 0.3) !important;
+  border-left: 4px solid var(--adm-gold) !important;
 }
 
 .appt-card.confirmado {
-  background: linear-gradient(135deg, var(--adm-bronze) 0%, #8A411C 100%);
-  border-left: 4px solid var(--adm-card);
+  background: linear-gradient(110deg, #3A2315 0%, #754B33 30%, #513220 50%, #946347 70%, #3A2315 100%) !important;
+  border: 1px solid rgba(212, 132, 154, 0.3) !important;
+  border-left: 4px solid var(--adm-bronze) !important;
 }
 
 .appt-card.finalizado {
-  background: linear-gradient(135deg, #4A5D4E 0%, #364439 100%);
-  border-left: 4px solid rgba(151,196,89,0.06);
+  background: linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
+  border: 1px solid rgba(63, 185, 80, 0.35) !important;
+  border-left: 4px solid #3FB950 !important;
+  opacity: 0.85;
 }
 
 .appt-card.cancelado {
-  background: linear-gradient(135deg, #A94442 0%, #8B302F 100%);
-  border-left: 4px solid rgba(226,75,74,0.08);
+  background: linear-gradient(110deg, #381212 0%, #732C2C 30%, #4E1F1F 50%, #8C3E3E 70%, #381212 100%) !important;
+  border: 1px solid rgba(226, 75, 74, 0.35) !important;
+  border-left: 4px solid var(--adm-danger) !important;
   text-decoration: line-through;
   opacity: 0.65;
 }
@@ -572,39 +577,39 @@
   opacity: 0.65;
 }
 .appt-card.svc-corte {
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(139, 92, 246, 0.15) !important;
+  background: linear-gradient(110deg, #2E154D 0%, #5B2E8E 30%, #3B1B66 50%, #6D3BA8 70%, #2E154D 100%) !important;
+  border: 1px solid rgba(139, 92, 246, 0.35) !important;
   border-left: 3px solid #8B5CF6 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-combo {
-  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(212, 132, 154, 0.15) !important;
+  background: linear-gradient(110deg, #3A1F26 0%, #8E4C5D 30%, #532C35 50%, #A26173 70%, #3A1F26 100%) !important;
+  border: 1px solid rgba(212, 132, 154, 0.35) !important;
   border-left: 3px solid #D4849A !important;
   color: #ffffff !important;
 }
 .appt-card.svc-tratamento {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(16, 185, 129, 0.15) !important;
+  background: linear-gradient(110deg, #093322 0%, #1B5E43 30%, #10402E 50%, #28805B 70%, #093322 100%) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
   border-left: 3px solid #10B981 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-cor {
-  background: linear-gradient(90deg, rgba(251, 191, 36, 0.22) 0%, rgba(251, 191, 36, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(251, 191, 36, 0.15) !important;
+  background: linear-gradient(110deg, #3E2F13 0%, #8E6E34 30%, #5E4A22 50%, #AA8743 70%, #3E2F13 100%) !important;
+  border: 1px solid rgba(251, 191, 36, 0.35) !important;
   border-left: 3px solid #FBBF24 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-analise {
-  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.06) 50%, transparent 100%) !important;
-  border: 1px solid rgba(249, 115, 22, 0.15) !important;
+  background: linear-gradient(110deg, #3A1D0F 0%, #8E4A28 30%, #5E311A 50%, #AA5E37 70%, #3A1D0F 100%) !important;
+  border: 1px solid rgba(249, 115, 22, 0.35) !important;
   border-left: 3px solid #F97316 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-almoco {
-  background: linear-gradient(90deg, rgba(251, 146, 60, 0.28) 0%, rgba(251, 146, 60, 0.08) 50%, transparent 100%) !important;
-  border: 1px solid rgba(251, 146, 60, 0.2) !important;
-  border-left: 3px solid #FB923C !important;
+  background: linear-gradient(110deg, #3E1E17 0%, #8E4535 30%, #5E2E23 50%, #AA5543 70%, #3E1E17 100%) !important;
+  border: 1px solid rgba(231, 111, 81, 0.35) !important;
+  border-left: 3px solid #E76F51 !important;
   color: #ffffff !important;
 }
 
@@ -647,9 +652,9 @@
   border-color: rgba(249, 115, 22, 0.25);
 }
 .appt-card.svc-almoco .appt-badge {
-  color: #FB923C;
-  background: rgba(251, 146, 60, 0.15);
-  border-color: rgba(251, 146, 60, 0.3);
+  color: #E76F51;
+  background: rgba(231, 111, 81, 0.12);
+  border-color: rgba(231, 111, 81, 0.25);
 }
 
 @keyframes pulse-border {
