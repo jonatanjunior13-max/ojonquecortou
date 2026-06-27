@@ -2736,87 +2736,33 @@ Grande abraço, Jon.`;
             <option value="semana">Semana</option>
             <option value="mes">Mês</option>
           </select>
-          <button 
-            type="button" 
-            className="btn btn-ghost toggle-details-stats-btn"
-            style={{ padding: '6px 12px', fontSize: '0.85rem' }}
-            onClick={() => setShowDetailedStats(prev => !prev)}
-          >
-            {showDetailedStats ? 'Ocultar Detalhes' : 'Ver Métricas e Nívers'}
-          </button>
         </div>
       </div>
 
-      {showDetailedStats && (
-        <>
-          {/* Cards de Métricas */}
-          <section className="admin-stats-grid">
-            <div className="stat-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>Agendamentos Ativos (Dia)</h3>
-                <Calendar size={18} style={{ color: 'var(--adm-gold)', opacity: 0.8 }} />
-              </div>
-              <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
-            </div>
-            <div className="stat-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>Aguardando Confirmação</h3>
-                <Clock size={18} style={{ color: '#ecc94b', opacity: 0.8 }} />
-              </div>
-              <div className="value" style={{ color: '#ecc94b' }}>{pendingCount}</div>
-            </div>
-            <div className="stat-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3>Receita Consolidada (Semana)</h3>
-                <DollarSign size={18} style={{ color: '#4a5d4e', opacity: 0.8 }} />
-              </div>
-              <div className="value" style={{ color: '#4a5d4e' }}>R$ {revenueThisWeek}</div>
-            </div>
-          </section>
-
-          {/* Bloco de Aniversariantes do Mês */}
-          {birthdayClients.length > 0 && (
-            <section className="dashboard-birthdays-panel">
-              <div className="birthdays-panel-header">
-                <div className="panel-title-group">
-                  <Sparkles size={18} className="birthday-decor-icon" />
-                  <h3>Aniversariantes de {new Date().toLocaleDateString('pt-BR', { month: 'long' })}</h3>
-                  <span className="birthday-count-tag">{birthdayClients.length}</span>
-                </div>
-                <p className="panel-subtitle">Envie uma mensagem carinhosa pelo WhatsApp com apenas um clique!</p>
-              </div>
-              
-              <div className="birthdays-carousel-row">
-                {birthdayClients.map(c => {
-                  const bday = c.birthdate || c.aniversario || '';
-                  const day = bday ? bday.split('-')[2] : '';
-                  const initials = c.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-                  
-                  return (
-                    <div key={c.phone} className="birthday-member-card">
-                      <div className="member-avatar-badge">
-                        {initials}
-                        <span className="balloon-emoji">🎈</span>
-                      </div>
-                      <div className="member-details">
-                        <strong className="member-name">{c.name}</strong>
-                        <span className="member-date">Dia {day}</span>
-                      </div>
-                      <button 
-                        onClick={() => handleWhatsAppCongratulate(c)}
-                        className="btn-birthday-action"
-                        title={`Enviar parabéns para ${c.name}`}
-                      >
-                        <Send size={12} /> Parabenizar
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          )}
-        </>
-      )}
+      {/* Cards de Métricas */}
+      <section className="admin-stats-grid">
+        <div className="stat-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>Agendamentos Ativos (Dia)</h3>
+            <Calendar size={18} style={{ color: 'var(--adm-gold)', opacity: 0.8 }} />
+          </div>
+          <div className="value">{filteredBookingsList.filter(b => b.status !== 'cancelado' && b.status !== 'bloqueado').length}</div>
+        </div>
+        <div className="stat-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>Aguardando Confirmação</h3>
+            <Clock size={18} style={{ color: '#ecc94b', opacity: 0.8 }} />
+          </div>
+          <div className="value" style={{ color: '#ecc94b' }}>{pendingCount}</div>
+        </div>
+        <div className="stat-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>Receita Consolidada (Semana)</h3>
+            <DollarSign size={18} style={{ color: '#4a5d4e', opacity: 0.8 }} />
+          </div>
+          <div className="value" style={{ color: '#4a5d4e' }}>R$ {revenueThisWeek}</div>
+        </div>
+      </section>
 
       {/* Split layout: sidebar + agenda */}
       <div className="admin-agenda-container">
