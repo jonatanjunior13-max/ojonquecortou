@@ -299,6 +299,16 @@ const cleanStatus = (status) => {
     .trim();
 };
 
+// Helper to normalize search text by stripping accents, lowercasing, and trimming
+const cleanSearchText = (str) => {
+  if (!str) return '';
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+};
+
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
@@ -4115,7 +4125,7 @@ Grande abraço, Jon.`;
       : [];
 
     const filteredProducts = productSearch.trim().length >= 3
-      ? salonProducts.filter(p => (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
+      ? salonProducts.filter(p => cleanSearchText(p.name || '').startsWith(cleanSearchText(productSearch))).slice(0, 5)
       : [];
 
     const filteredUsedProductsMobile = selectedUsedProduct.trim().length >= 3

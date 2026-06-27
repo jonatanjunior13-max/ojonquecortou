@@ -32,6 +32,16 @@ const getFee = (settings, method) => {
   return 0;
 };
 
+// Helper to normalize search text by stripping accents, lowercasing, and trimming
+const cleanSearchText = (str) => {
+  if (!str) return '';
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim();
+};
+
 const ComandaModal = ({ booking, products = [], salonProducts = [], services = [], settings = {}, onClose, onConfirm }) => {
   const serviceName = booking?.serviceName || booking?.service?.name || 'Serviço';
   const matchedService = services.find(s => 
@@ -172,8 +182,9 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
 
   const filteredProducts = useMemo(() => {
     if (saleProductSearch.trim().length < 3) return [];
+    const searchNormalized = cleanSearchText(saleProductSearch);
     return salonProducts.filter(p =>
-      (p.name || '').toLowerCase().includes(saleProductSearch.toLowerCase())
+      cleanSearchText(p.name || '').startsWith(searchNormalized)
     ).slice(0, 5);
   }, [salonProducts, saleProductSearch]);
 
