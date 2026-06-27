@@ -696,10 +696,10 @@
   color: #7C2D12 !important;
 }
 .m-slot-booking.svc-almoco, .m-slot-booking.confirmado.svc-almoco, .m-slot-booking.confirmado-pela-cliente.svc-almoco, .m-slot-booking.finalizado.svc-almoco, .m-slot-booking.pendente.svc-almoco {
-  background: #FECACA !important;
-  border: 1px solid #FCA5A5 !important;
-  border-left: 3px solid #EF4444 !important;
-  color: #7F1D1D !important;
+  background: #A5F3FC !important;
+  border: 1px solid #67E8F9 !important;
+  border-left: 3px solid #06B6D4 !important;
+  color: #083344 !important;
 }
 
 /* Agenda Badges on Mobile */

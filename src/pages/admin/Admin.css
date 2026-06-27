@@ -651,10 +651,10 @@
   color: #7C2D12 !important;
 }
 .appt-card.svc-almoco, .appt-card.pendente.svc-almoco, .appt-card.confirmado.svc-almoco, .appt-card.finalizado.svc-almoco, .appt-card.cancelado.svc-almoco {
-  background: #FECACA !important;
-  border: 1px solid #FCA5A5 !important;
-  border-left: 4px solid #EF4444 !important;
-  color: #7F1D1D !important;
+  background: #A5F3FC !important;
+  border: 1px solid #67E8F9 !important;
+  border-left: 4px solid #06B6D4 !important;
+  color: #083344 !important;
 }
 
 .appt-card .appt-time,
