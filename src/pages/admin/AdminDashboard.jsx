@@ -47,67 +47,7 @@ const slotInRange = (slot, start, end) => {
   return slot >= start && slot < end;
 };
 
-const getCatColors = (catClass) => {
-  switch (catClass) {
-    case 'svc-corte': 
-      return { body: '#FFF0D4', stripes: '#E69C5E', ear: '#FFB2B6' }; // Cream-orange cat on purple card
-    case 'svc-combo': 
-      return { body: '#E8F1F5', stripes: '#78909C', ear: '#FFAEC9' }; // Blue-gray cat on pink card
-    case 'svc-tratamento': 
-      return { body: '#FCF9F2', stripes: '#C49470', ear: '#FFAEC9' }; // Creamy-brown cat on mint card
-    case 'svc-cor': 
-      return { body: '#ECEFF1', stripes: '#78909C', ear: '#FFAEC9' }; // Slate cat on yellow card
-    case 'svc-analise': 
-      return { body: '#FFFFFF', stripes: '#B094FF', ear: '#FFAEC9' }; // White-purple cat on orange card
-    default: 
-      return { body: '#FFFDF9', stripes: '#D47A3A', ear: '#FFAEC9' };
-  }
-};
 
-const PeekingCat = ({ catClass }) => {
-  const colors = getCatColors(catClass);
-  return (
-    <svg 
-      viewBox="0 0 100 76" 
-      width="50" 
-      height="38" 
-      style={{ 
-        position: 'absolute', 
-        bottom: '-1px', 
-        right: '4px', 
-        zIndex: 2, 
-        pointerEvents: 'none'
-      }}
-    >
-      {/* Orelha Esquerda */}
-      <path d="M 12 35 L 20 16 L 30 32 Z" fill={colors.ear} stroke="#4D2C18" strokeWidth="2.5" strokeLinejoin="round" />
-      {/* Orelha Direita */}
-      <path d="M 70 32 L 80 16 L 88 35 Z" fill={colors.ear} stroke="#4D2C18" strokeWidth="2.5" strokeLinejoin="round" />
-      
-      {/* Cabeça */}
-      <path d="M 10 42 L 20 12 L 35 28 C 45 23, 55 23, 65 28 L 80 12 L 90 42 C 92 52, 90 62, 85 70 L 15 70 C 10 62, 8 52, 10 42 Z" fill={colors.body} stroke="#4D2C18" strokeWidth="3" strokeLinejoin="round" />
-      
-      {/* Listras na testa */}
-      <path d="M 46 25 L 47 36 L 50 36 L 49 25 Z" fill={colors.stripes} />
-      <path d="M 39 27 L 42 38 L 45 37 L 42 26 Z" fill={colors.stripes} />
-      <path d="M 61 27 L 58 38 L 55 37 L 58 26 Z" fill={colors.stripes} />
-
-      {/* Focinho branco */}
-      <ellipse cx="50" cy="56" rx="12" ry="8" fill="#FFFFFF" stroke="#4D2C18" strokeWidth="2" />
-      
-      {/* Boca fofa :3 */}
-      <path d="M 46 54 Q 48 58, 50 54 Q 52 58, 54 54" fill="none" stroke="#4D2C18" strokeWidth="2.2" strokeLinecap="round" />
-      
-      {/* Olhos pretos redondos */}
-      <circle cx="30" cy="48" r="5" fill="#3D261C" />
-      <circle cx="70" cy="48" r="5" fill="#3D261C" />
-      
-      {/* Duas patinhas fofas penduradas */}
-      <rect x="22" y="62" width="11" height="13" rx="5.5" fill={colors.body} stroke="#4D2C18" strokeWidth="2" />
-      <rect x="67" y="62" width="11" height="13" rx="5.5" fill={colors.body} stroke="#4D2C18" strokeWidth="2" />
-    </svg>
-  );
-};
 
 const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
   const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -3318,7 +3258,6 @@ Grande abraço, Jon.`;
                                       <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
                                         {bk.notes}
                                       </span>
-                                      <PeekingCat catClass="bloqueado" />
                                     </div>
                                   );
                                 }
@@ -3401,7 +3340,6 @@ Grande abraço, Jon.`;
                                         {getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).badge}
                                       </div>
                                     </div>
-                                    {!isSubsequent && <PeekingCat catClass={getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).class} />}
                                   </div>
                               );
                               })}
@@ -3924,7 +3862,6 @@ Grande abraço, Jon.`;
                                         {getServiceCategoryInfo(b.service?.name || b.serviceName, services).badge}
                                       </div>
                                     </div>
-                                    <PeekingCat catClass={getServiceCategoryInfo(b.service?.name || b.serviceName, services).class} />
                                   </div>
                               );
                             }
@@ -4015,7 +3952,6 @@ Grande abraço, Jon.`;
                                   <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                     <Lock size={12} /> {abs.title}
                                   </span>
-                                  <PeekingCat catClass={(abs.title || '').toLowerCase().includes('almoço') || (abs.title || '').toLowerCase().includes('almoco') ? 'svc-almoco' : 'absence'} />
                                 </div>
                               );
                             }
@@ -4047,7 +3983,6 @@ Grande abraço, Jon.`;
                                 <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                   <Lock size={12} /> {item.label}
                                 </span>
-                                <PeekingCat catClass="bloqueado" />
                               </div>
                             );
                           })}
