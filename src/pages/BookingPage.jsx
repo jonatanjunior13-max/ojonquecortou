@@ -2084,6 +2084,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                     const colorInfo = getServiceColor(selectedServices);
                     const barColor = colorInfo.color;
                     const categoryLabel = colorInfo.label;
+                    const computedDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
                     const rgbColor = barColor === '#8B5CF6' ? '139,92,246' :
                                     barColor === '#FF2D8B' ? '255,45,139' :
                                     barColor === '#FBBF24' ? '251,191,36' :
