@@ -614,57 +614,39 @@
   opacity: 0.65;
 }
 .appt-card.svc-corte {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #2E154D 0%, #5B2E8E 30%, #3B1B66 50%, #6D3BA8 70%, #2E154D 100%) !important;
-  border: 1px solid rgba(139, 92, 246, 0.35) !important;
-  border-left: 3px solid #8B5CF6 !important;
+  background: linear-gradient(135deg, #3C2B54 0%, #271C3A 100%) !important;
+  border: 1px solid rgba(183, 148, 244, 0.4) !important;
+  border-left: 3px solid #b794f4 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-combo {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A1F26 0%, #8E4C5D 30%, #532C35 50%, #A26173 70%, #3A1F26 100%) !important;
-  border: 1px solid rgba(212, 132, 154, 0.35) !important;
-  border-left: 3px solid #D4849A !important;
+  background: linear-gradient(135deg, #4E2E3B 0%, #351F27 100%) !important;
+  border: 1px solid rgba(251, 182, 206, 0.4) !important;
+  border-left: 3px solid #fbb6ce !important;
   color: #ffffff !important;
 }
 .appt-card.svc-tratamento {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #093322 0%, #1B5E43 30%, #10402E 50%, #28805B 70%, #093322 100%) !important;
-  border: 1px solid rgba(16, 185, 129, 0.35) !important;
-  border-left: 3px solid #10B981 !important;
+  background: linear-gradient(135deg, #1C3C30 0%, #122820 100%) !important;
+  border: 1px solid rgba(134, 239, 172, 0.4) !important;
+  border-left: 3px solid #86efac !important;
   color: #ffffff !important;
 }
 .appt-card.svc-cor {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3E2F13 0%, #8E6E34 30%, #5E4A22 50%, #AA8743 70%, #3E2F13 100%) !important;
-  border: 1px solid rgba(251, 191, 36, 0.35) !important;
-  border-left: 3px solid #FBBF24 !important;
+  background: linear-gradient(135deg, #463B23 0%, #2F2818 100%) !important;
+  border: 1px solid rgba(253, 224, 71, 0.4) !important;
+  border-left: 3px solid #fde047 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-analise {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A1D0F 0%, #8E4A28 30%, #5E311A 50%, #AA5E37 70%, #3A1D0F 100%) !important;
-  border: 1px solid rgba(249, 115, 22, 0.35) !important;
-  border-left: 3px solid #F97316 !important;
+  background: linear-gradient(135deg, #4A2D1F 0%, #321E15 100%) !important;
+  border: 1px solid rgba(253, 186, 116, 0.4) !important;
+  border-left: 3px solid #fdba74 !important;
   color: #ffffff !important;
 }
 .appt-card.svc-almoco {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3E1E17 0%, #8E4535 30%, #5E2E23 50%, #AA5543 70%, #3E1E17 100%) !important;
-  border: 1px solid rgba(231, 111, 81, 0.35) !important;
-  border-left: 3px solid #E76F51 !important;
+  background: linear-gradient(135deg, #492822 0%, #311B17 100%) !important;
+  border: 1px solid rgba(244, 162, 97, 0.4) !important;
+  border-left: 3px solid #f4a261 !important;
   color: #ffffff !important;
 }
 
@@ -3558,38 +3540,23 @@
   transform: translateY(-1px);
 }
 .m-today-all-booking-card.svc-corte {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #2E154D 0%, #5B2E8E 30%, #3B1B66 50%, #6D3BA8 70%, #2E154D 100%) !important;
-  border: 1px solid rgba(139, 92, 246, 0.35) !important;
+  background: linear-gradient(135deg, #3C2B54 0%, #271C3A 100%) !important;
+  border: 1px solid rgba(183, 148, 244, 0.4) !important;
 }
 .m-today-all-booking-card.svc-combo {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A1F26 0%, #8E4C5D 30%, #532C35 50%, #A26173 70%, #3A1F26 100%) !important;
-  border: 1px solid rgba(212, 132, 154, 0.35) !important;
+  background: linear-gradient(135deg, #4E2E3B 0%, #351F27 100%) !important;
+  border: 1px solid rgba(251, 182, 206, 0.4) !important;
 }
 .m-today-all-booking-card.svc-tratamento {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #093322 0%, #1B5E43 30%, #10402E 50%, #28805B 70%, #093322 100%) !important;
-  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  background: linear-gradient(135deg, #1C3C30 0%, #122820 100%) !important;
+  border: 1px solid rgba(134, 239, 172, 0.4) !important;
 }
 .m-today-all-booking-card.svc-cor {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3E2F13 0%, #8E6E34 30%, #5E4A22 50%, #AA8743 70%, #3E2F13 100%) !important;
-  border: 1px solid rgba(251, 191, 36, 0.35) !important;
+  background: linear-gradient(135deg, #463B23 0%, #2F2818 100%) !important;
+  border: 1px solid rgba(253, 224, 71, 0.4) !important;
 }
 .m-today-all-booking-card.svc-analise {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A1D0F 0%, #8E4A28 30%, #5E311A 50%, #AA5E37 70%, #3A1D0F 100%) !important;
-  border: 1px solid rgba(249, 115, 22, 0.35) !important;
+  background: linear-gradient(135deg, #4A2D1F 0%, #321E15 100%) !important;
+  border: 1px solid rgba(253, 186, 116, 0.4) !important;
 }
 

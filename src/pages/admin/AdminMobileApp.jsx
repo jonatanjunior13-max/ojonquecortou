@@ -51,6 +51,45 @@ const minToTime = (min) => {
   return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
 };
 
+const getCatColor = (catClass) => {
+  switch (catClass) {
+    case 'svc-corte': return '#FFE5B4';
+    case 'svc-combo': return '#E0FFFF';
+    case 'svc-tratamento': return '#FFD1DC';
+    case 'svc-cor': return '#E6E6FA';
+    case 'svc-analise': return '#E8F4F8';
+    default: return '#FFFFFF';
+  }
+};
+
+const PeekingCat = ({ catClass }) => {
+  const color = getCatColor(catClass);
+  return (
+    <svg 
+      viewBox="0 0 24 16" 
+      width="28" 
+      height="20" 
+      style={{ 
+        position: 'absolute', 
+        bottom: '-2px', 
+        right: '12px', 
+        zIndex: 2, 
+        pointerEvents: 'none',
+        color: color
+      }}
+    >
+      <path d="M4 10l2.5-6 3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M20 10l-2.5-6-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 10a8 8 0 0 1 16 0" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7.5 8a1 1 0 0 1 2 0" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M14.5 8a1 1 0 0 1 2 0" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M12 10l-0.5-0.5h1z" fill="currentColor" />
+      <rect x="5" y="11" width="3.5" height="5" rx="1.7" fill="currentColor" />
+      <rect x="15.5" y="11" width="3.5" height="5" rx="1.7" fill="currentColor" />
+    </svg>
+  );
+};
+
 const getServiceCategory = (serviceName = '', servicesList = []) => {
   const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
   const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
@@ -2589,6 +2628,7 @@ Grande abraço, Jon.`;
                         )}
                         <div className="appt-badge">{cat.badge}</div>
                       </div>
+                      <PeekingCat catClass={cat.class} />
                     </div>
                   </div>
                 );
@@ -2918,6 +2958,7 @@ Grande abraço, Jon.`;
                         })()}
                       </span>
                     </div>
+                    <PeekingCat catClass={cat.class} />
                   </div>
                 );
               }
