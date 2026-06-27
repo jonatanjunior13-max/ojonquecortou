@@ -614,40 +614,40 @@
   opacity: 0.65;
 }
 .appt-card.svc-corte {
-  background: linear-gradient(135deg, #3C2B54 0%, #271C3A 100%) !important;
-  border: 1px solid rgba(183, 148, 244, 0.4) !important;
-  border-left: 3px solid #b794f4 !important;
-  color: #ffffff !important;
+  background: #EBE4FF !important;
+  border: 1px solid #D2C4FF !important;
+  border-left: 3px solid #8B5CF6 !important;
+  color: #3C1E70 !important;
 }
 .appt-card.svc-combo {
-  background: linear-gradient(135deg, #4E2E3B 0%, #351F27 100%) !important;
-  border: 1px solid rgba(251, 182, 206, 0.4) !important;
-  border-left: 3px solid #fbb6ce !important;
-  color: #ffffff !important;
+  background: #FFE4EC !important;
+  border: 1px solid #F8D3DC !important;
+  border-left: 3px solid #D4849A !important;
+  color: #6B1F38 !important;
 }
 .appt-card.svc-tratamento {
-  background: linear-gradient(135deg, #1C3C30 0%, #122820 100%) !important;
-  border: 1px solid rgba(134, 239, 172, 0.4) !important;
-  border-left: 3px solid #86efac !important;
-  color: #ffffff !important;
+  background: #E6F7F0 !important;
+  border: 1px solid #B2F2DB !important;
+  border-left: 3px solid #10B981 !important;
+  color: #0B4D34 !important;
 }
 .appt-card.svc-cor {
-  background: linear-gradient(135deg, #463B23 0%, #2F2818 100%) !important;
-  border: 1px solid rgba(253, 224, 71, 0.4) !important;
-  border-left: 3px solid #fde047 !important;
-  color: #ffffff !important;
+  background: #FFF8E7 !important;
+  border: 1px solid #FDE8A8 !important;
+  border-left: 3px solid #DCA354 !important;
+  color: #66481A !important;
 }
 .appt-card.svc-analise {
-  background: linear-gradient(135deg, #4A2D1F 0%, #321E15 100%) !important;
-  border: 1px solid rgba(253, 186, 116, 0.4) !important;
-  border-left: 3px solid #fdba74 !important;
-  color: #ffffff !important;
+  background: #FFF0E6 !important;
+  border: 1px solid #FFD2B8 !important;
+  border-left: 3px solid #F97316 !important;
+  color: #6E2E0A !important;
 }
 .appt-card.svc-almoco {
-  background: linear-gradient(135deg, #492822 0%, #311B17 100%) !important;
-  border: 1px solid rgba(244, 162, 97, 0.4) !important;
-  border-left: 3px solid #f4a261 !important;
-  color: #ffffff !important;
+  background: #F5ECEB !important;
+  border: 1px solid #E7C8C2 !important;
+  border-left: 3px solid #E76F51 !important;
+  color: #6E2718 !important;
 }
 
 /* Agenda Badges */
@@ -3540,23 +3540,23 @@
   transform: translateY(-1px);
 }
 .m-today-all-booking-card.svc-corte {
-  background: linear-gradient(135deg, #3C2B54 0%, #271C3A 100%) !important;
-  border: 1px solid rgba(183, 148, 244, 0.4) !important;
+  background: #EBE4FF !important;
+  border: 1px solid #D2C4FF !important;
 }
 .m-today-all-booking-card.svc-combo {
-  background: linear-gradient(135deg, #4E2E3B 0%, #351F27 100%) !important;
-  border: 1px solid rgba(251, 182, 206, 0.4) !important;
+  background: #FFE4EC !important;
+  border: 1px solid #F8D3DC !important;
 }
 .m-today-all-booking-card.svc-tratamento {
-  background: linear-gradient(135deg, #1C3C30 0%, #122820 100%) !important;
-  border: 1px solid rgba(134, 239, 172, 0.4) !important;
+  background: #E6F7F0 !important;
+  border: 1px solid #B2F2DB !important;
 }
 .m-today-all-booking-card.svc-cor {
-  background: linear-gradient(135deg, #463B23 0%, #2F2818 100%) !important;
-  border: 1px solid rgba(253, 224, 71, 0.4) !important;
+  background: #FFF8E7 !important;
+  border: 1px solid #FDE8A8 !important;
 }
 .m-today-all-booking-card.svc-analise {
-  background: linear-gradient(135deg, #4A2D1F 0%, #321E15 100%) !important;
-  border: 1px solid rgba(253, 186, 116, 0.4) !important;
+  background: #FFF0E6 !important;
+  border: 1px solid #FFD2B8 !important;
 }
 

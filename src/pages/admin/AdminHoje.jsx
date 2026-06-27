@@ -40,41 +40,64 @@ const statusColor = {
   bloqueado: 'var(--adm-muted)',
 };
 
-const getCatColor = (catClass) => {
+const getCatColors = (catClass) => {
   switch (catClass) {
-    case 'svc-corte': return '#FFE5B4';
-    case 'svc-combo': return '#E0FFFF';
-    case 'svc-tratamento': return '#FFD1DC';
-    case 'svc-cor': return '#E6E6FA';
-    case 'svc-analise': return '#E8F4F8';
-    default: return '#FFFFFF';
+    case 'svc-corte': 
+      return { body: '#FCE6C9', stripes: '#9F7356', ear: '#FFAEC9' };
+    case 'svc-combo': 
+      return { body: '#FFE4EC', stripes: '#D4849A', ear: '#FFB7B2' };
+    case 'svc-tratamento': 
+      return { body: '#E6F7F0', stripes: '#10B981', ear: '#FFD1DC' };
+    case 'svc-cor': 
+      return { body: '#FFF9E6', stripes: '#DCA354', ear: '#E6E6FA' };
+    case 'svc-analise': 
+      return { body: '#FFF0E6', stripes: '#F97316', ear: '#BFFCC6' };
+    default: 
+      return { body: '#FCD3A1', stripes: '#9F7356', ear: '#F4989C' };
   }
 };
 
 const PeekingCat = ({ catClass }) => {
-  const color = getCatColor(catClass);
+  const colors = getCatColors(catClass);
   return (
     <svg 
-      viewBox="0 0 24 16" 
-      width="28" 
-      height="20" 
+      viewBox="0 0 100 76" 
+      width="34" 
+      height="26" 
       style={{ 
         position: 'absolute', 
-        bottom: '-2px', 
-        right: '12px', 
+        bottom: '-1px', 
+        right: '8px', 
         zIndex: 2, 
-        pointerEvents: 'none',
-        color: color
+        pointerEvents: 'none'
       }}
     >
-      <path d="M4 10l2.5-6 3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M20 10l-2.5-6-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4 10a8 8 0 0 1 16 0" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M7.5 8a1 1 0 0 1 2 0" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M14.5 8a1 1 0 0 1 2 0" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M12 10l-0.5-0.5h1z" fill="currentColor" />
-      <rect x="5" y="11" width="3.5" height="5" rx="1.7" fill="currentColor" />
-      <rect x="15.5" y="11" width="3.5" height="5" rx="1.7" fill="currentColor" />
+      {/* Orelha Esquerda */}
+      <path d="M 12 35 L 20 16 L 30 32 Z" fill={colors.ear} stroke="#4D2C18" strokeWidth="2.5" strokeLinejoin="round" />
+      {/* Orelha Direita */}
+      <path d="M 70 32 L 80 16 L 88 35 Z" fill={colors.ear} stroke="#4D2C18" strokeWidth="2.5" strokeLinejoin="round" />
+      
+      {/* Cabeça */}
+      <path d="M 10 42 L 20 12 L 35 28 C 45 23, 55 23, 65 28 L 80 12 L 90 42 C 92 52, 90 62, 85 70 L 15 70 C 10 62, 8 52, 10 42 Z" fill={colors.body} stroke="#4D2C18" strokeWidth="3" strokeLinejoin="round" />
+      
+      {/* Listras na testa */}
+      <path d="M 46 25 L 47 36 L 50 36 L 49 25 Z" fill={colors.stripes} />
+      <path d="M 39 27 L 42 38 L 45 37 L 42 26 Z" fill={colors.stripes} />
+      <path d="M 61 27 L 58 38 L 55 37 L 58 26 Z" fill={colors.stripes} />
+
+      {/* Focinho branco */}
+      <ellipse cx="50" cy="56" rx="12" ry="8" fill="#FFFFFF" stroke="#4D2C18" strokeWidth="2" />
+      
+      {/* Boca fofa :3 */}
+      <path d="M 46 54 Q 48 58, 50 54 Q 52 58, 54 54" fill="none" stroke="#4D2C18" strokeWidth="2.2" strokeLinecap="round" />
+      
+      {/* Olhos pretos redondos */}
+      <circle cx="30" cy="48" r="5" fill="#3D261C" />
+      <circle cx="70" cy="48" r="5" fill="#3D261C" />
+      
+      {/* Duas patinhas fofas penduradas */}
+      <rect x="22" y="62" width="11" height="13" rx="5.5" fill={colors.body} stroke="#4D2C18" strokeWidth="2" />
+      <rect x="67" y="62" width="11" height="13" rx="5.5" fill={colors.body} stroke="#4D2C18" strokeWidth="2" />
     </svg>
   );
 };
