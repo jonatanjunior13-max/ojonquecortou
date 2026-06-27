@@ -3003,9 +3003,6 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      background: 'linear-gradient(90deg, rgba(231, 111, 81, 0.22) 0%, rgba(231, 111, 81, 0.07) 45%, transparent 100%)',
-                      borderLeft: '3px solid #E76F51',
-                      color: '#E76F51',
                       cursor: 'pointer'
                     }}
                     onClick={() => {
@@ -3017,21 +3014,13 @@ Grande abraço, Jon.`;
                     }}
                   >
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                      <div className="m-slot-client" style={{ color: '#E76F51', fontSize: '0.8rem', fontWeight: 700 }}>Almoço</div>
-                      <div className="m-slot-svc" style={{ color: 'rgba(231, 111, 81, 0.7)', fontSize: '0.62rem' }}>Toque para liberar</div>
+                      <div className="m-slot-client" style={{ color: 'inherit', fontSize: '0.8rem', fontWeight: 700 }}>Almoço</div>
+                      <div className="m-slot-svc" style={{ color: 'inherit', opacity: 0.7, fontSize: '0.62rem' }}>Toque para liberar</div>
                     </div>
-                    <span className="appt-badge" style={{
-                      fontSize: '8px',
-                      padding: '2px 5px',
-                      textTransform: 'uppercase',
-                      color: '#E76F51',
-                      background: 'rgba(231, 111, 81, 0.15)',
-                      borderColor: 'rgba(231, 111, 81, 0.3)',
-                      borderWidth: '1px',
-                      borderStyle: 'solid'
-                    }}>
+                    <span className="appt-badge">
                       ALMOÇO
                     </span>
+                    <PeekingCat catClass="svc-almoco" />
                   </div>
                 );
               }
@@ -3053,17 +3042,14 @@ Grande abraço, Jon.`;
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'center',
-                      background: 'linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%)',
-                      border: '1px solid rgba(90, 158, 206, 0.35)',
-                      borderLeft: '4px solid #5A9ECE',
-                      color: '#ffffff'
+                      justifyContent: 'center'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: '#88C0E7', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
+                    <div className="m-slot-client" style={{ color: 'inherit', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> {abs.title}
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'rgba(136, 192, 231, 0.75)', fontSize: '0.62rem' }}>Ausência</div>
+                    <div className="m-slot-svc" style={{ color: 'inherit', opacity: 0.7, fontSize: '0.62rem' }}>Ausência</div>
+                    <PeekingCat catClass="faltou" />
                   </div>
                 );
               }
@@ -3084,17 +3070,14 @@ Grande abraço, Jon.`;
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'center',
-                      background: 'linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%)',
-                      border: '1px solid rgba(90, 158, 206, 0.35)',
-                      borderLeft: '4px solid #5A9ECE',
-                      color: '#ffffff'
+                      justifyContent: 'center'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: '#88C0E7', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
+                    <div className="m-slot-client" style={{ color: 'inherit', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> Bloqueado
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'rgba(136, 192, 231, 0.75)', fontSize: '0.62rem' }}>{item.label}</div>
+                    <div className="m-slot-svc" style={{ color: 'inherit', opacity: 0.7, fontSize: '0.62rem' }}>{item.label}</div>
+                    <PeekingCat catClass="bloqueado" />
                   </div>
                 );
               }

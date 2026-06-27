@@ -3318,6 +3318,7 @@ Grande abraço, Jon.`;
                                       <span className="appt-service" style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', display: 'block', maxWidth: '100%' }}>
                                         {bk.notes}
                                       </span>
+                                      <PeekingCat catClass="bloqueado" />
                                     </div>
                                   );
                                 }
@@ -4014,6 +4015,7 @@ Grande abraço, Jon.`;
                                   <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                     <Lock size={12} /> {abs.title}
                                   </span>
+                                  <PeekingCat catClass={(abs.title || '').toLowerCase().includes('almoço') || (abs.title || '').toLowerCase().includes('almoco') ? 'svc-almoco' : 'absence'} />
                                 </div>
                               );
                             }
@@ -4045,6 +4047,7 @@ Grande abraço, Jon.`;
                                 <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                                   <Lock size={12} /> {item.label}
                                 </span>
+                                <PeekingCat catClass="bloqueado" />
                               </div>
                             );
                           })}
