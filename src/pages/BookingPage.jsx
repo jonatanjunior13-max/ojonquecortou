@@ -2036,6 +2036,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       return !isBooked && !isPast;
                     });
 
+                    const primaryService = selectedServices[0] || null;
+
                     if (availableSlots.length === 0) {
                       return (
                         <p style={{ color: 'var(--muted)', fontSize: '0.95rem', margin: '20px 0', textAlign: 'center' }}>
