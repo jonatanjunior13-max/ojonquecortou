@@ -43,17 +43,17 @@ const statusColor = {
 const getCatColors = (catClass) => {
   switch (catClass) {
     case 'svc-corte': 
-      return { body: '#FCE6C9', stripes: '#9F7356', ear: '#FFAEC9' };
+      return { body: '#FFF0D4', stripes: '#E69C5E', ear: '#FFB2B6' }; // Cream-orange cat on purple card
     case 'svc-combo': 
-      return { body: '#FFE4EC', stripes: '#D4849A', ear: '#FFB7B2' };
+      return { body: '#E8F1F5', stripes: '#78909C', ear: '#FFAEC9' }; // Blue-gray cat on pink card
     case 'svc-tratamento': 
-      return { body: '#E6F7F0', stripes: '#10B981', ear: '#FFD1DC' };
+      return { body: '#FCF9F2', stripes: '#C49470', ear: '#FFAEC9' }; // Creamy-brown cat on mint card
     case 'svc-cor': 
-      return { body: '#FFF9E6', stripes: '#DCA354', ear: '#E6E6FA' };
+      return { body: '#ECEFF1', stripes: '#78909C', ear: '#FFAEC9' }; // Slate cat on yellow card
     case 'svc-analise': 
-      return { body: '#FFF0E6', stripes: '#F97316', ear: '#BFFCC6' };
+      return { body: '#FFFFFF', stripes: '#B094FF', ear: '#FFAEC9' }; // White-purple cat on orange card
     default: 
-      return { body: '#FCD3A1', stripes: '#9F7356', ear: '#F4989C' };
+      return { body: '#FFFDF9', stripes: '#D47A3A', ear: '#FFAEC9' };
   }
 };
 

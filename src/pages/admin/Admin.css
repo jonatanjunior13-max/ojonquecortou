@@ -602,14 +602,11 @@
 }
 
 .appt-card.bloqueado {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #1C2730 0%, #3A4F60 30%, #263440 50%, #4D6980 70%, #1C2730 100%) !important;
-  border: 1px solid rgba(90, 158, 206, 0.35) !important;
-  border-left: 4px solid #5A9ECE !important;
-  color: #ffffff !important;
-  opacity: 0.9;
+  background: #CBD5E1 !important;
+  border: 1px solid #94A3B8 !important;
+  border-left: 4px solid #64748B !important;
+  color: #1E293B !important;
+  opacity: 0.95;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -617,45 +614,47 @@
 }
 
 .appt-card.faltou {
-  background: repeating-linear-gradient(45deg, var(--adm-muted), var(--adm-muted) 10px, var(--adm-muted) 10px, var(--adm-muted) 20px);
-  border-left: 4px solid #A94442;
-  opacity: 0.65;
+  background: #CBD5E1 !important;
+  border: 1px solid #94A3B8 !important;
+  border-left: 4px solid #64748B !important;
+  color: #1E293B !important;
+  opacity: 0.75;
 }
 .appt-card.svc-corte, .appt-card.pendente.svc-corte, .appt-card.confirmado.svc-corte, .appt-card.finalizado.svc-corte, .appt-card.cancelado.svc-corte {
-  background: #EBE4FF !important;
-  border: 1px solid #D2C4FF !important;
-  border-left: 4px solid #8B5CF6 !important;
-  color: #3C1E70 !important;
+  background: #C4B5FD !important;
+  border: 1px solid #A78BFA !important;
+  border-left: 4px solid #7C3AED !important;
+  color: #2E1065 !important;
 }
 .appt-card.svc-combo, .appt-card.pendente.svc-combo, .appt-card.confirmado.svc-combo, .appt-card.finalizado.svc-combo, .appt-card.cancelado.svc-combo {
-  background: #FFE4EC !important;
-  border: 1px solid #F8D3DC !important;
-  border-left: 4px solid #D4849A !important;
-  color: #6B1F38 !important;
+  background: #FDA4AF !important;
+  border: 1px solid #F87171 !important;
+  border-left: 4px solid #E11D48 !important;
+  color: #4C0519 !important;
 }
 .appt-card.svc-tratamento, .appt-card.pendente.svc-tratamento, .appt-card.confirmado.svc-tratamento, .appt-card.finalizado.svc-tratamento, .appt-card.cancelado.svc-tratamento {
-  background: #E6F7F0 !important;
-  border: 1px solid #B2F2DB !important;
+  background: #A7F3D0 !important;
+  border: 1px solid #34D399 !important;
   border-left: 4px solid #10B981 !important;
-  color: #0B4D34 !important;
+  color: #064E3B !important;
 }
 .appt-card.svc-cor, .appt-card.pendente.svc-cor, .appt-card.confirmado.svc-cor, .appt-card.finalizado.svc-cor, .appt-card.cancelado.svc-cor {
-  background: #FFF8E7 !important;
-  border: 1px solid #FDE8A8 !important;
+  background: #FDE68A !important;
+  border: 1px solid #FBBF24 !important;
   border-left: 4px solid #DCA354 !important;
-  color: #66481A !important;
+  color: #78350F !important;
 }
 .appt-card.svc-analise, .appt-card.pendente.svc-analise, .appt-card.confirmado.svc-analise, .appt-card.finalizado.svc-analise, .appt-card.cancelado.svc-analise {
-  background: #FFF0E6 !important;
-  border: 1px solid #FFD2B8 !important;
+  background: #FED7AA !important;
+  border: 1px solid #FB923C !important;
   border-left: 4px solid #F97316 !important;
-  color: #6E2E0A !important;
+  color: #7C2D12 !important;
 }
 .appt-card.svc-almoco, .appt-card.pendente.svc-almoco, .appt-card.confirmado.svc-almoco, .appt-card.finalizado.svc-almoco, .appt-card.cancelado.svc-almoco {
-  background: #F5ECEB !important;
-  border: 1px solid #E7C8C2 !important;
-  border-left: 4px solid #E76F51 !important;
-  color: #6E2718 !important;
+  background: #FECACA !important;
+  border: 1px solid #FCA5A5 !important;
+  border-left: 4px solid #EF4444 !important;
+  color: #7F1D1D !important;
 }
 
 .appt-card .appt-time,
@@ -676,6 +675,8 @@
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 0px;
   flex-shrink: 0;
+  position: relative;
+  z-index: 3;
 }
 
 .appt-card.svc-corte .appt-badge {
@@ -3546,7 +3547,7 @@
 
 .m-today-all-booking-card {
   border: 1px solid var(--adm-rule) !important;
-  border-radius: var(--adm-radius-sm);
+  border-radius: 12px !important;
   margin-bottom: 6px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   transition: transform 0.15s ease;
@@ -3555,23 +3556,28 @@
   transform: translateY(-1px);
 }
 .m-today-all-booking-card.svc-corte {
-  background: #EBE4FF !important;
-  border: 1px solid #D2C4FF !important;
+  background: #C4B5FD !important;
+  border: 1px solid #A78BFA !important;
+  color: #2E1065 !important;
 }
 .m-today-all-booking-card.svc-combo {
-  background: #FFE4EC !important;
-  border: 1px solid #F8D3DC !important;
+  background: #FDA4AF !important;
+  border: 1px solid #F87171 !important;
+  color: #4C0519 !important;
 }
 .m-today-all-booking-card.svc-tratamento {
-  background: #E6F7F0 !important;
-  border: 1px solid #B2F2DB !important;
+  background: #A7F3D0 !important;
+  border: 1px solid #34D399 !important;
+  color: #064E3B !important;
 }
 .m-today-all-booking-card.svc-cor {
-  background: #FFF8E7 !important;
-  border: 1px solid #FDE8A8 !important;
+  background: #FDE68A !important;
+  border: 1px solid #FBBF24 !important;
+  color: #78350F !important;
 }
 .m-today-all-booking-card.svc-analise {
-  background: #FFF0E6 !important;
-  border: 1px solid #FFD2B8 !important;
+  background: #FED7AA !important;
+  border: 1px solid #FB923C !important;
+  color: #7C2D12 !important;
 }
 
