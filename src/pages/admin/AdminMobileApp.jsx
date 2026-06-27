@@ -275,9 +275,29 @@ function Toast({ msg, type = 'info', onClose }) {
 // STATUS PILL
 // ═══════════════════════════════════════════════════════════════════
 function StatusPill({ status }) {
-  const labels = { pendente:'Pendente', confirmado:'Confirmado', finalizado:'Finalizado', cancelado:'Cancelado', faltou:'Faltou', bloqueado:'Bloqueado' };
-  return <span className={`m-status-pill ${status}`}>{labels[status] || status}</span>;
+  const cleaned = cleanStatus(status);
+  const labels = { 
+    pendente: 'Pendente', 
+    confirmado: 'Confirmado', 
+    'confirmado pela cliente': 'Confirmado p/ Cliente', 
+    finalizado: 'Finalizado', 
+    cancelado: 'Cancelado', 
+    faltou: 'Faltou', 
+    bloqueado: 'Bloqueado' 
+  };
+  return <span className={`m-status-pill ${cleaned}`}>{labels[cleaned] || status}</span>;
 }
+
+// Helper to normalize booking statuses case-insensitively, removing hyphens and accents.
+const cleanStatus = (status) => {
+  if (!status) return '';
+  return status
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/-/g, ' ')
+    .trim();
+};
 
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
@@ -3762,7 +3782,7 @@ Grande abraço, Jon.`;
             </div>
 
             <div className="m-action-list">
-              {b.status === 'pendente' && (
+              {cleanStatus(b.status) === 'pendente' && (
                 <button className="m-action-btn" onClick={() => changeStatus(b.id, 'confirmado')}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-blue-bg)', color:'var(--m-blue)' }}><Check size={16}/></div>
                   <div className="m-action-btn-text">
@@ -3772,7 +3792,7 @@ Grande abraço, Jon.`;
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
-              {['confirmado', 'confirmado pela cliente', 'confirmado-pela-cliente', 'pendente'].includes(b.status) && (
+              {['confirmado', 'confirmado pela cliente', 'pendente'].includes(cleanStatus(b.status)) && (
                 <button className="m-action-btn" onClick={() => openCheckout(b)}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><DollarSign size={16}/></div>
                   <div className="m-action-btn-text">
@@ -3782,7 +3802,7 @@ Grande abraço, Jon.`;
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
-              {b.status === 'finalizado' && (
+              {cleanStatus(b.status) === 'finalizado' && (
                 <button className="m-action-btn" onClick={() => openCheckout(b)}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><DollarSign size={16}/></div>
                   <div className="m-action-btn-text">
@@ -3792,7 +3812,7 @@ Grande abraço, Jon.`;
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
-              {b.status !== 'cancelado' && b.status !== 'finalizado' && (
+              {cleanStatus(b.status) !== 'cancelado' && cleanStatus(b.status) !== 'finalizado' && (
                 <button className="m-action-btn" onClick={() => {
                   setEditBookingForm({
                     id: b.id,
@@ -3818,7 +3838,7 @@ Grande abraço, Jon.`;
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
-              {b.status === 'finalizado' && b.clientPhone && (
+              {cleanStatus(b.status) === 'finalizado' && b.clientPhone && (
                 <button className="m-action-btn" onClick={() => sendFeedbackWhatsApp(b)}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><Star size={16}/></div>
                   <div className="m-action-btn-text">
@@ -3851,7 +3871,7 @@ Grande abraço, Jon.`;
                 </button>
               )}
 
-              {b.clientPhone && ['confirmado','pendente'].includes(b.status) && (
+              {b.clientPhone && ['confirmado','pendente','confirmado pela cliente'].includes(cleanStatus(b.status)) && (
                 <button className="m-action-btn" onClick={() => {
                   const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
                   const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
