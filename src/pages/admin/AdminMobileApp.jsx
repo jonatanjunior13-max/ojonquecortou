@@ -2469,38 +2469,6 @@ Grande abraço, Jon.`;
           </div>
         </div>
 
-        {/* Aniversariantes */}
-        {birthdays.length > 0 && (
-          <div style={{
-            background: 'linear-gradient(110deg, #3A2E1C 0%, #8E6E3B 30%, #5E4A29 50%, #AA894A 70%, #3A2E1C 100%)',
-            border: '1px solid rgba(220, 163, 84, 0.35)',
-            borderRadius: 'var(--m-radius)',
-            padding: '12px 14px',
-            boxShadow: '0 4px 15px rgba(220, 163, 84, 0.15)'
-          }}>
-            <div style={{ fontSize:'0.72rem', fontWeight:800, color:'#FFF2D4', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>🎂 Aniversariante{birthdays.length > 1 ? 's':''} Hoje</div>
-            {birthdays.map(c => (
-              <button
-                key={c.id}
-                onClick={() => { setBirthdayClient(c); setShowBirthdaySheet(true); }}
-                style={{
-                  display:'flex', alignItems:'center', justifyContent:'space-between',
-                  width:'100%', background:'none', border:'none', padding:'6px 0',
-                  cursor:'pointer', fontFamily:'inherit', borderBottom: birthdays.indexOf(c) < birthdays.length - 1 ? '0.5px solid rgba(255,255,255,0.1)' : 'none'
-                }}
-              >
-                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                  <span style={{ fontSize:'1.1rem' }}>🎉</span>
-                  <span style={{ fontSize:'0.85rem', color:'#ffffff', fontWeight:700 }}>{c.name}</span>
-                </div>
-                <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                  {c.phone && <span style={{ fontSize:'0.68rem', color:'rgba(255,255,255,0.6)' }}>{c.phone}</span>}
-                  <span style={{ fontSize:'0.72rem', fontWeight:800, color:'#FFF2D4', background:'rgba(255,255,255,0.12)', borderRadius:8, padding:'3px 8px' }}>Parabenizar →</span>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
 
         {/* Today's bookings */}
         <div>
