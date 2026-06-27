@@ -49,10 +49,10 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [tipMode, setTipMode] = useState(0);
   const [customTip, setCustomTip] = useState('');
-  const [productSearch, setProductSearch] = useState('');
+  const [saleProductSearch, setSaleProductSearch] = useState('');
   const [serviceSearch, setServiceSearch] = useState('');
   const [usedProductSearch, setUsedProductSearch] = useState('');
-  const [addedProducts, setAddedProducts] = useState([]);
+  const [saleProducts, setSaleProducts] = useState([]);
   const [addedServices, setAddedServices] = useState([]);
   const [usedProducts, setUsedProducts] = useState([]);
   const [extraCost, setExtraCost] = useState('');
@@ -83,10 +83,12 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
           matchedSupplies.push({
             productId: p.id,
             name: p.name,
+            basePrice: p.costPrice || p.price || 0,
+            totalVolumetry: p.volumetry || 0,
+            usedVolumetry: portionAmount,
+            unit: p.unit || 'g',
             price: calculatedCost,
-            qty: 1,
-            amount: portionAmount,
-            unit: p.unit || '',
+            qty: p.volumetry > 0 ? Number((portionAmount / p.volumetry).toFixed(4)) : 1,
             isDefault: true
           });
         }
@@ -130,17 +132,17 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
     [addedServices]
   );
 
-  const productTotal = useMemo(
-    () => addedProducts.reduce((s, p) => s + p.price, 0),
-    [addedProducts]
+  const saleProductsTotal = useMemo(
+    () => saleProducts.reduce((s, p) => s + p.price * p.qty, 0),
+    [saleProducts]
   );
 
   const usedProductsTotal = useMemo(
-    () => usedProducts.reduce((s, p) => s + p.price * p.qty, 0),
+    () => usedProducts.reduce((s, p) => s + p.price, 0),
     [usedProducts]
   );
 
-  const subtotal = servicePrice + extraServicesTotal + tipValue;
+  const subtotal = servicePrice + extraServicesTotal + tipValue + saleProductsTotal;
   const valorTotal = Math.max(0, subtotal - discount);
   const totalToPay = Math.max(0, valorTotal - prepay);
 
@@ -169,11 +171,11 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
   const commissionValue = (totalServicesPrice * professionalCommissionRate) / 100;
 
   const filteredProducts = useMemo(() => {
-    if (productSearch.trim().length < 3) return [];
+    if (saleProductSearch.trim().length < 3) return [];
     return salonProducts.filter(p =>
-      (p.name || '').toLowerCase().includes(productSearch.toLowerCase())
+      (p.name || '').toLowerCase().includes(saleProductSearch.toLowerCase())
     ).slice(0, 5);
-  }, [salonProducts, productSearch]);
+  }, [salonProducts, saleProductSearch]);
 
   const filteredUsedProducts = useMemo(() => {
     if (usedProductSearch.trim().length < 3) return [];
@@ -189,18 +191,41 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
     ).slice(0, 5);
   }, [services, serviceSearch]);
 
-  const handleAddProduct = useCallback((prod) => {
-    setAddedProducts(prev => {
+  const handleAddSaleProduct = useCallback((prod) => {
+    setSaleProducts(prev => {
+      const existing = prev.find(p => p.productId === prod.id);
+      if (existing) {
+        return prev.map(p => p.productId === prod.id ? { ...p, qty: p.qty + 1 } : p);
+      }
+      return [...prev, {
+        productId: prod.id,
+        name: prod.name,
+        price: prod.sellingPrice || prod.price || 0,
+        qty: 1
+      }];
+    });
+    setSaleProductSearch('');
+  }, []);
+
+  const handleSaleQtyChange = useCallback((productId, delta) => {
+    setSaleProducts(prev =>
+      prev.map(p => p.productId === productId ? { ...p, qty: Math.max(0, p.qty + delta) } : p)
+        .filter(p => p.qty > 0)
+    );
+  }, []);
+
+  const handleAddUsedProduct = useCallback((prod) => {
+    setUsedProducts(prev => {
       const existing = prev.find(p => p.productId === prod.id);
       if (existing) {
         return prev;
       }
       const totalVol = Number(prod.volumetry) || 0;
-      const basePr = Number(prod.price || prod.costPrice || 0);
+      const basePr = Number(prod.costPrice || prod.price || 0);
       const unit = prod.unit || 'g';
       
       const initialUsed = totalVol > 0 ? Math.min(10, totalVol) : 1;
-      const calculatedPrice = totalVol > 0 ? (initialUsed / totalVol) * basePr : basePr;
+      const calculatedCost = totalVol > 0 ? (initialUsed / totalVol) * basePr : basePr;
       
       return [...prev, {
         productId: prod.id,
@@ -209,48 +234,30 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
         totalVolumetry: totalVol,
         usedVolumetry: initialUsed,
         unit: unit,
-        price: Number(calculatedPrice.toFixed(2)),
-        qty: 1
+        price: Number(calculatedCost.toFixed(2)),
+        qty: totalVol > 0 ? Number((initialUsed / totalVol).toFixed(4)) : 1
       }];
     });
-    setProductSearch('');
+    setUsedProductSearch('');
   }, []);
 
-  const handleVolumetryChange = useCallback((productId, val) => {
-    setAddedProducts(prev =>
+  const handleUsedVolumetryChange = useCallback((productId, val) => {
+    setUsedProducts(prev =>
       prev.map(p => {
         if (p.productId !== productId) return p;
         
         const usedVol = Math.max(0, val);
-        const calculatedPrice = p.totalVolumetry > 0 
+        const calculatedCost = p.totalVolumetry > 0 
           ? (usedVol / p.totalVolumetry) * p.basePrice 
           : usedVol * p.basePrice;
           
         return {
           ...p,
           usedVolumetry: usedVol,
-          price: Number(calculatedPrice.toFixed(2)),
+          price: Number(calculatedCost.toFixed(2)),
           qty: p.totalVolumetry > 0 ? Number((usedVol / p.totalVolumetry).toFixed(4)) : usedVol
         };
       })
-    );
-  }, []);
-
-  const handleAddUsedProduct = useCallback((prod) => {
-    setUsedProducts(prev => {
-      const existing = prev.find(p => p.productId === prod.id);
-      if (existing) {
-        return prev.map(p => p.productId === prod.id ? { ...p, qty: p.qty + 1 } : p);
-      }
-      return [...prev, { productId: prod.id, name: prod.name, price: prod.costPrice || prod.sellingPrice || prod.price || 0, qty: 1 }];
-    });
-    setUsedProductSearch('');
-  }, []);
-
-  const handleUsedQtyChange = useCallback((productId, delta) => {
-    setUsedProducts(prev =>
-      prev.map(p => p.productId === productId ? { ...p, qty: Math.max(0, p.qty + delta) } : p)
-        .filter(p => p.qty > 0)
     );
   }, []);
 
@@ -291,7 +298,13 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
       paymentMethod: finalMethodLabel,
       splitPayments: splitPaymentsList,
       tipValue,
-      addedProducts,
+      addedProducts: saleProducts.map(p => ({
+        productId: p.productId,
+        name: p.name,
+        price: p.price,
+        qty: p.qty,
+        quantity: p.qty
+      })),
       addedServices,
       usedProducts,
       extraCost: 0,
@@ -489,64 +502,49 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
             )}
           </section>
 
-          {/* Products */}
+          {/* Venda de Produtos (Revenda) */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Produtos Utilizados no Serviço (opcional)</div>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Vender Produtos ao Cliente (Revenda)</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Buscar produto de uso do salão (mín. 3 letras)..."
-                value={productSearch}
-                onChange={e => setProductSearch(e.target.value)}
+                placeholder="Buscar produto para venda (mín. 3 letras)..."
+                value={saleProductSearch}
+                onChange={e => setSaleProductSearch(e.target.value)}
                 style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
               />
             </div>
-            {productSearch.trim().length >= 3 && filteredProducts.length > 0 && (
+            {saleProductSearch.trim().length >= 3 && filteredProducts.length > 0 && (
               <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
                 {filteredProducts.map(prod => (
                   <button
                     key={prod.id}
                     type="button"
-                    onClick={() => handleAddProduct(prod)}
+                    onClick={() => handleAddSaleProduct(prod)}
                     style={{ width: '100%', background: 'var(--adm-card)', border: 'none', borderBottom: '0.5px solid var(--adm-rule)', padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--adm-text)', fontSize: '0.83rem' }}
                   >
                     <span>{prod.name}</span>
-                    <span style={{ color: 'var(--adm-gold)', fontWeight: 700 }}>{fmtBRL(prod.costPrice || prod.price)}</span>
+                    <span style={{ color: 'var(--adm-gold)', fontWeight: 700 }}>{fmtBRL(prod.sellingPrice || prod.price)}</span>
                   </button>
                 ))}
               </div>
             )}
-            {addedProducts.length > 0 && (
+            {saleProducts.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {addedProducts.map(p => (
+                {saleProducts.map(p => (
                   <div key={p.productId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
                     <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{p.name}</span>
-                    <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>{fmtBRL(p.price)}</span>
+                    <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>{fmtBRL(p.price * p.qty)}</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      {p.totalVolumetry > 0 ? (
-                        <>
-                          <input
-                            type="number"
-                            min="0"
-                            placeholder="g/ml"
-                            value={p.usedVolumetry || ''}
-                            onChange={(e) => handleVolumetryChange(p.productId, parseFloat(e.target.value) || 0)}
-                            style={{ width: 65, padding: '4px 6px', background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', borderRadius: 4, fontSize: '0.82rem', color: 'var(--adm-text)', textAlign: 'center', outline: 'none', fontFamily: 'inherit' }}
-                          />
-                          <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>{p.unit}</span>
-                        </>
-                      ) : (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                          <button type="button" onClick={() => handleVolumetryChange(p.productId, Math.max(0, p.usedVolumetry - 1))} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
-                          <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.usedVolumetry}</span>
-                          <button type="button" onClick={() => handleVolumetryChange(p.productId, p.usedVolumetry + 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
-                        </div>
-                      )}
-                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <button type="button" onClick={() => handleSaleQtyChange(p.productId, -1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
+                        <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.qty}</span>
+                        <button type="button" onClick={() => handleSaleQtyChange(p.productId, 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
+                      </div>
                       <button 
                         type="button" 
-                        onClick={() => setAddedProducts(prev => prev.filter(item => item.productId !== p.productId))}
+                        onClick={() => setSaleProducts(prev => prev.filter(item => item.productId !== p.productId))}
                         style={{ background: 'none', border: 'none', color: '#c53030', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
                         title="Remover produto"
                       >
@@ -559,40 +557,72 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
             )}
           </section>
 
-          {/* Used Products (Insumos) */}
+          {/* Produtos Utilizados no Serviço (Uso do Salão) */}
           <section>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Insumos de Uso Fixo (Dedução)</div>
-            {serviceSupplies.length === 0 ? (
-              <div style={{ fontSize: '0.82rem', color: 'var(--adm-muted)', fontStyle: 'italic', padding: '6px 0' }}>
-                Nenhum insumo cadastrado para este serviço.
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--adm-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 8 }}>Produtos Utilizados no Serviço (Insumos)</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-card)', border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', padding: '8px 12px', marginBottom: 6 }}>
+              <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
+              <input
+                type="text"
+                placeholder="Buscar produto de uso do salão (mín. 3 letras)..."
+                value={usedProductSearch}
+                onChange={e => setUsedProductSearch(e.target.value)}
+                style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
+              />
+            </div>
+            {usedProductSearch.trim().length >= 3 && filteredUsedProducts.length > 0 && (
+              <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
+                {filteredUsedProducts.map(prod => (
+                  <button
+                    key={prod.id}
+                    type="button"
+                    onClick={() => handleAddUsedProduct(prod)}
+                    style={{ width: '100%', background: 'var(--adm-card)', border: 'none', borderBottom: '0.5px solid var(--adm-rule)', padding: '9px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--adm-text)', fontSize: '0.83rem' }}
+                  >
+                    <span>{prod.name}</span>
+                    <span style={{ color: 'var(--adm-gold)', fontWeight: 700 }}>{fmtBRL(prod.costPrice || prod.price)}</span>
+                  </button>
+                ))}
               </div>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'var(--adm-card)', padding: '12px', borderRadius: 'var(--adm-radius-sm)', border: '0.5px solid var(--adm-rule)' }}>
-                {serviceSupplies.map(supply => {
-                  const isChecked = usedProducts.some(p => p.productId === supply.productId);
-                  return (
-                    <label key={supply.productId} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.82rem', color: 'var(--adm-text)', cursor: 'pointer', userSelect: 'none' }}>
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        onChange={() => {
-                          setUsedProducts(prev => {
-                            if (prev.some(p => p.productId === supply.productId)) {
-                              return prev.filter(p => p.productId !== supply.productId);
-                            } else {
-                              return [...prev, supply];
-                            }
-                          });
-                        }}
-                        style={{ accentColor: 'var(--adm-gold)', width: 14, height: 14 }}
-                      />
-                      <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1, alignItems: 'center', gap: 4 }}>
-                        <span>{supply.name} ({supply.amount}{supply.unit || ''})</span>
-                        <span style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>- {fmtBRL(supply.price)}</span>
-                      </div>
-                    </label>
-                  );
-                })}
+            )}
+            {usedProducts.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {usedProducts.map(p => (
+                  <div key={p.productId} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: 'var(--adm-card)', borderRadius: 8, border: '0.5px solid var(--adm-rule)' }}>
+                    <span style={{ flex: 1, fontSize: '0.83rem', color: 'var(--adm-text)' }}>{p.name} {p.isDefault ? '(Insumo Fixo)' : ''}</span>
+                    <span style={{ fontSize: '0.83rem', color: 'var(--adm-muted)' }}>{fmtBRL(p.price)}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {p.totalVolumetry > 0 ? (
+                        <>
+                          <input
+                            type="number"
+                            min="0"
+                            placeholder="g/ml"
+                            value={p.usedVolumetry || ''}
+                            onChange={(e) => handleUsedVolumetryChange(p.productId, parseFloat(e.target.value) || 0)}
+                            style={{ width: 65, padding: '4px 6px', background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', borderRadius: 4, fontSize: '0.82rem', color: 'var(--adm-text)', textAlign: 'center', outline: 'none', fontFamily: 'inherit' }}
+                          />
+                          <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>{p.unit}</span>
+                        </>
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <button type="button" onClick={() => handleUsedVolumetryChange(p.productId, Math.max(0, p.usedVolumetry - 1))} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={12} /></button>
+                          <span style={{ fontSize: '0.83rem', fontWeight: 700, color: 'var(--adm-text)', minWidth: 16, textAlign: 'center' }}>{p.usedVolumetry}</span>
+                          <button type="button" onClick={() => handleUsedVolumetryChange(p.productId, p.usedVolumetry + 1)} style={{ background: 'var(--adm-card-hover)', border: 'none', color: 'var(--adm-text)', width: 22, height: 22, borderRadius: 4, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={12} /></button>
+                        </div>
+                      )}
+                      
+                      <button 
+                        type="button" 
+                        onClick={() => setUsedProducts(prev => prev.filter(item => item.productId !== p.productId))}
+                        style={{ background: 'none', border: 'none', color: '#c53030', cursor: 'pointer', padding: 4, display: 'flex', alignItems: 'center' }}
+                        title="Remover insumo"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </section>
@@ -660,9 +690,14 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
                 <span>Serviços Extras</span><span>{fmtBRL(extraServicesTotal)}</span>
               </div>
             )}
-            {(usedProductsTotal > 0 || productTotal > 0 || Number(extraCost) > 0) && (
+            {saleProductsTotal > 0 && (
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                <span>Custo Interno (Insumos)</span><span>{fmtBRL(usedProductsTotal + productTotal + (Number(extraCost) || 0))}</span>
+                <span>Produtos (Revenda)</span><span>{fmtBRL(saleProductsTotal)}</span>
+              </div>
+            )}
+            {(usedProductsTotal > 0 || Number(extraCost) > 0) && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                <span>Custo Interno (Insumos)</span><span>{fmtBRL(usedProductsTotal + (Number(extraCost) || 0))}</span>
               </div>
             )}
             {tipValue > 0 && (

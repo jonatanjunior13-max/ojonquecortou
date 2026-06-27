@@ -893,8 +893,11 @@ export default function AdminMobileApp() {
           matchedSupplies.push({
             productId: p.id,
             name: p.name,
+            basePrice: p.costPrice || p.price || 0,
+            totalVolumetry: Number(p.volumetry) || 0,
+            usedVolumetry: portionAmount,
             price: calculatedCost,
-            quantity: 1,
+            quantity: p.volumetry > 0 ? Number((portionAmount / p.volumetry).toFixed(4)) : 1,
             amount: portionAmount,
             unit: p.unit || ''
           });
@@ -1021,31 +1024,54 @@ export default function AdminMobileApp() {
     setShowCheckoutSheet(true);
   };
 
-  const addUsedProduct = (productId, name, priceStr) => {
-    const price = Number(priceStr) || 0;
+  const addUsedProductToCheckout = (prod) => {
     setUsedProducts(prev => {
-      const existing = prev.find(ap => ap.productId === productId);
-      if (existing) {
-        return prev.map(ap => ap.productId === productId ? { ...ap, quantity: ap.quantity + 1 } : ap);
-      }
-      return [...prev, { productId, name, price, quantity: 1 }];
+      const existing = prev.find(p => p.productId === prod.id);
+      if (existing) return prev;
+      
+      const totalVol = Number(prod.volumetry) || 0;
+      const basePr = Number(prod.costPrice || prod.price || 0);
+      const unit = prod.unit || 'g';
+      
+      const initialUsed = totalVol > 0 ? Math.min(10, totalVol) : 1;
+      const calculatedCost = totalVol > 0 ? (initialUsed / totalVol) * basePr : basePr;
+      
+      return [...prev, {
+        productId: prod.id,
+        name: prod.name,
+        basePrice: basePr,
+        totalVolumetry: totalVol,
+        usedVolumetry: initialUsed,
+        unit: unit,
+        price: Number(calculatedCost.toFixed(2)),
+        quantity: totalVol > 0 ? Number((initialUsed / totalVol).toFixed(4)) : 1
+      }];
     });
     setSelectedUsedProduct('');
   };
 
-  const removeUsedProduct = (index) => {
-    setUsedProducts(prev => prev.filter((_, idx) => idx !== index));
+  const changeUsedProductVolumetry = (productId, val) => {
+    setUsedProducts(prev =>
+      prev.map(p => {
+        if (p.productId !== productId) return p;
+        
+        const usedVol = Math.max(0, val);
+        const calculatedCost = p.totalVolumetry > 0 
+          ? (usedVol / p.totalVolumetry) * p.basePrice 
+          : usedVol * p.basePrice;
+          
+        return {
+          ...p,
+          usedVolumetry: usedVol,
+          price: Number(calculatedCost.toFixed(2)),
+          quantity: p.totalVolumetry > 0 ? Number((usedVol / p.totalVolumetry).toFixed(4)) : usedVol
+        };
+      })
+    );
   };
 
-  const addNonRegisteredProduct = (name, val) => {
-    if (!name || val <= 0) return;
-    setNonRegisteredProducts(prev => [...prev, { name, value: Number(val) }]);
-    setNewNonRegName('');
-    setNewNonRegVal(0);
-  };
-
-  const removeNonRegisteredProduct = (index) => {
-    setNonRegisteredProducts(prev => prev.filter((_, idx) => idx !== index));
+  const removeUsedProductMobile = (productId) => {
+    setUsedProducts(prev => prev.filter(p => p.productId !== productId));
   };
 
   const getCheckoutTotal = () => {
@@ -1063,7 +1089,7 @@ export default function AdminMobileApp() {
     setSelectedProducts(prev => {
       const existing = prev.find(p => p.id === prod.id);
       if (existing) return prev.map(p => p.id === prod.id ? { ...p, qty: p.qty + 1 } : p);
-      const priceToUse = prod.costPrice || prod.price || 0;
+      const priceToUse = prod.sellingPrice || prod.price || 0;
       return [...prev, { ...prod, sellingPrice: priceToUse, qty: 1 }];
     });
     setProductSearch('');
@@ -1138,8 +1164,7 @@ export default function AdminMobileApp() {
         : 0;
 
       // Save transaction
-      const usedProductsTotal = usedProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-      const nonRegProductsTotal = nonRegisteredProducts.reduce((sum, item) => sum + item.value, 0);
+      const usedProductsTotal = usedProducts.reduce((sum, item) => sum + item.price, 0);
 
       const txData = {
         type: 'entrada',
@@ -1170,13 +1195,10 @@ export default function AdminMobileApp() {
         usedProducts: usedProducts.map(p => ({
           productId: p.productId,
           name: p.name,
-          quantity: p.quantity,
+          quantity: p.quantity || p.qty || 1,
           price: p.price
         })),
-        nonRegisteredProducts: nonRegisteredProducts.map(p => ({
-          name: p.name,
-          value: p.value
-        })),
+        nonRegisteredProducts: [],
         createdAt: new Date().toISOString()
       };
 
@@ -1187,7 +1209,7 @@ export default function AdminMobileApp() {
         const match = services.find(s => s.name === item.name);
         return sum + (match ? (Number(match.cost) || 0) : 0);
       }, 0);
-      const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + nonRegProductsTotal;
+      const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal;
 
       const saidaPayload = {
         bookingId: checkoutBooking.id,
@@ -1199,18 +1221,15 @@ export default function AdminMobileApp() {
         paymentMethod: isSplitPayment ? 'Pix' : (paymentMethod || 'Pix'),
         value: totalServiceCost,
         discount: 0,
-        description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}${selectedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${nonRegProductsTotal > 0 ? ` (Uso Único: R$ ${nonRegProductsTotal})` : ''}`,
+        description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}${selectedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}`,
         professionalId: checkoutBooking.professionalId || checkoutBooking.profissional || 'jon',
         usedProducts: usedProducts.map(p => ({
           productId: p.productId,
           name: p.name,
-          quantity: p.quantity,
+          quantity: p.quantity || p.qty || 1,
           price: p.price
         })),
-        nonRegisteredProducts: nonRegisteredProducts.map(p => ({
-          name: p.name,
-          value: p.value
-        })),
+        nonRegisteredProducts: [],
         createdAt: new Date().toISOString()
       };
 
@@ -3753,7 +3772,7 @@ Grande abraço, Jon.`;
                   <ChevronRight size={14} color="var(--m-muted)"/>
                 </button>
               )}
-              {['confirmado','pendente'].includes(b.status) && (
+              {['confirmado', 'confirmado pela cliente', 'confirmado-pela-cliente', 'pendente'].includes(b.status) && (
                 <button className="m-action-btn" onClick={() => openCheckout(b)}>
                   <div className="m-action-btn-icon" style={{ background:'var(--m-gold-subtle)', color:'var(--m-gold)' }}><DollarSign size={16}/></div>
                   <div className="m-action-btn-text">
@@ -4079,6 +4098,10 @@ Grande abraço, Jon.`;
       ? salonProducts.filter(p => (p.name || '').toLowerCase().includes(productSearch.toLowerCase())).slice(0, 5)
       : [];
 
+    const filteredUsedProductsMobile = selectedUsedProduct.trim().length >= 3
+      ? salonProducts.filter(p => (p.name || '').toLowerCase().includes(selectedUsedProduct.toLowerCase())).slice(0, 5)
+      : [];
+
     const currentBasePrice = (overrideBasePrice !== null && overrideBasePrice !== '') ? Number(overrideBasePrice) : Number(basePrice) || 0;
     const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
     const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
@@ -4169,34 +4192,14 @@ Grande abraço, Jon.`;
               )}
             </div>
 
-            {/* Products List */}
-            {selectedProducts.length > 0 && (
-              <div>
-                <div className="m-label" style={{ marginBottom:8 }}>Produtos Adicionados</div>
-                {selectedProducts.map(p => (
-                  <div key={p.id} className="m-info-row" style={{ borderBottom:'none', padding:'4px 0 0 0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                    <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{p.name}</span>
-                    <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                      <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>{fmt(p.sellingPrice * p.qty)}</span>
-                      <div className="m-qty-row" style={{ margin: 0 }}>
-                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, -1)}>−</button>
-                        <span style={{ fontSize:'0.8rem', fontWeight:800, color:'var(--m-gold)', minWidth:12, textAlign:'center' }}>{p.qty}</span>
-                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, 1)}>+</button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Add Product input */}
+            {/* Venda de Produtos ao Cliente (Revenda) */}
             <div className="m-field">
-              <label className="m-label">Produtos Utilizados no Serviço</label>
+              <label className="m-label">Venda de Produtos ao Cliente (Revenda)</label>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
                 <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
                 <input
                   type="text"
-                  placeholder="Buscar produto de uso do salão (mín. 3 letras)..."
+                  placeholder="Buscar produto para vender (mín. 3 letras)..."
                   value={productSearch}
                   onChange={e => setProductSearch(e.target.value)}
                   style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
@@ -4208,89 +4211,80 @@ Grande abraço, Jon.`;
                     <div key={prod.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
                       onClick={() => addProductToCheckout(prod)}>
                       <span>{prod.name}</span>
-                      <span style={{ color: 'var(--m-gold)' }}>{fmt(prod.costPrice || prod.price)}</span>
+                      <span style={{ color: 'var(--m-gold)' }}>{fmt(prod.sellingPrice || prod.price)}</span>
                     </div>
                   ))}
                 </div>
               )}
             </div>
 
-            {/* Insumos de Uso Fixo (Dedução) */}
-            <div>
-              <div className="m-label" style={{ marginBottom: 6 }}>🧪 Insumos de Uso Fixo (Dedução)</div>
-              {getSuppliesForService(checkoutBooking).length === 0 ? (
-                <div style={{ fontSize: '0.78rem', color: 'var(--m-text-2)', fontStyle: 'italic', padding: '6px 0' }}>
-                  Nenhum insumo cadastrado para este serviço.
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)' }}>
-                  {getSuppliesForService(checkoutBooking).map(supply => {
-                    const isChecked = usedProducts.some(p => p.productId === supply.productId);
-                    return (
-                      <label key={supply.productId} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.8rem', color: 'var(--m-text)', cursor: 'pointer', userSelect: 'none' }}>
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => {
-                            setUsedProducts(prev => {
-                              if (prev.some(p => p.productId === supply.productId)) {
-                                return prev.filter(p => p.productId !== supply.productId);
-                              } else {
-                                return [...prev, supply];
-                              }
-                            });
-                          }}
-                          style={{ accentColor: 'var(--m-gold)', width: 14, height: 14 }}
-                        />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1, alignItems: 'center' }}>
-                          <span>{supply.name} ({supply.amount}{supply.unit})</span>
-                          <span style={{ color: 'var(--m-gold)', fontWeight: 600 }}>- {fmt(supply.price)}</span>
-                        </div>
-                      </label>
-                    );
-                  })}
+            {/* List of Retail Products added */}
+            {selectedProducts.length > 0 && (
+              <div style={{ background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)', marginTop: -8 }}>
+                <div className="m-label" style={{ marginBottom: 8, fontSize: '0.78rem' }}>Produtos de Revenda Adicionados</div>
+                {selectedProducts.map(p => (
+                  <div key={p.id} className="m-info-row" style={{ borderBottom: 'none', padding: '4px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--m-text)' }}>{p.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ fontSize: '0.82rem', color: 'var(--m-muted)' }}>{fmt(p.sellingPrice * p.qty)}</span>
+                      <div className="m-qty-row" style={{ margin: 0 }}>
+                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, -1)}>−</button>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--m-gold)', minWidth: 12, textAlign: 'center' }}>{p.qty}</span>
+                        <button className="m-qty-btn" onClick={() => changeProductQty(p.id, 1)}>+</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Produtos Utilizados no Serviço (Insumos) */}
+            <div className="m-field">
+              <label className="m-label">Produtos Utilizados no Serviço (Insumos)</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', padding: '8px 12px' }}>
+                <Search size={14} style={{ color: 'var(--m-muted)', flexShrink: 0 }} />
+                <input
+                  type="text"
+                  placeholder="Buscar insumos utilizados (mín. 3 letras)..."
+                  value={selectedUsedProduct}
+                  onChange={e => setSelectedUsedProduct(e.target.value)}
+                  style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--m-text)', width: '100%', fontFamily: 'inherit' }}
+                />
+              </div>
+              {filteredUsedProductsMobile.length > 0 && (
+                <div style={{ background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', overflow: 'hidden', marginTop: 4 }}>
+                  {filteredUsedProductsMobile.map(prod => (
+                    <div key={prod.id} style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '0.5px solid var(--m-rule)', fontSize: '0.82rem', color: 'var(--m-text)', fontWeight: 600, display: 'flex', justifyContent: 'space-between' }}
+                      onClick={() => addUsedProductToCheckout(prod)}>
+                      <span>{prod.name}</span>
+                      <span style={{ color: 'var(--m-muted)' }}>{prod.volumetry ? `${prod.volumetry}${prod.unit || 'g'}` : ''}</span>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Non Registered Products Section - Compacted */}
-            <div>
-              <div className="m-label" style={{ marginBottom: 6, fontSize: '0.78rem' }}>🏷️ Uso Único / Não Cadastrados</div>
-              {nonRegisteredProducts.map((p, idx) => (
-                <div key={'nonreg-' + idx} className="m-info-row" style={{ borderBottom:'none', padding:'3px 0', display:'flex', justifyContent:'space-between', alignItems:'center', color: '#38b2ac' }}>
-                  <span style={{ fontSize:'0.78rem' }}>{p.name}</span>
-                  <div style={{ display:'flex', alignItems:'center', gap:6 }}>
-                    <span style={{ fontSize:'0.78rem', fontWeight: 600 }}>- {fmt(p.value)}</span>
-                    <button onClick={() => removeNonRegisteredProduct(idx)} className="m-qty-btn" style={{ color: '#ef4444', padding: 2 }}><Trash2 size={11}/></button>
+            {/* List of Used Products (Supplies) added */}
+            {usedProducts.length > 0 && (
+              <div style={{ background: 'rgba(255,255,255,0.01)', padding: '10px 12px', borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)', marginTop: -8 }}>
+                <div className="m-label" style={{ marginBottom: 8, fontSize: '0.78rem' }}>Insumos/Produtos de Uso do Salão</div>
+                {usedProducts.map(p => (
+                  <div key={p.productId} className="m-info-row" style={{ borderBottom: 'none', padding: '4px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.82rem', color: 'var(--m-text)' }}>{p.name}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <input
+                        type="number"
+                        value={p.usedVolumetry}
+                        onChange={e => changeUsedProductVolumetry(p.productId, Number(e.target.value))}
+                        style={{ width: 50, textAlign: 'right', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 4, padding: '3px 6px', fontSize: '0.78rem', color: 'var(--m-text)', fontFamily: 'inherit' }}
+                      />
+                      <span style={{ fontSize: '0.75rem', color: 'var(--m-muted)' }}>{p.unit || 'g'}</span>
+                      <button onClick={() => removeUsedProductMobile(p.productId)} className="m-qty-btn" style={{ color: 'var(--m-red)', marginLeft: 4 }}><Trash2 size={12} /></button>
+                    </div>
                   </div>
-                </div>
-              ))}
-
-              <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
-                <input
-                  type="text"
-                  placeholder="Nome"
-                  value={newNonRegName}
-                  onChange={e => setNewNonRegName(e.target.value)}
-                  style={{ flex: 1.8, padding: '5px 8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.75rem', color: 'var(--m-text)', fontFamily: 'inherit', height: '30px', boxSizing: 'border-box' }}
-                />
-                <input
-                  type="number"
-                  placeholder="R$"
-                  value={newNonRegVal || ''}
-                  onChange={e => setNewNonRegVal(Number(e.target.value))}
-                  style={{ flex: 1, padding: '5px 8px', background: 'var(--m-card)', border: '0.5px solid var(--m-rule)', borderRadius: 'var(--m-radius-sm)', fontSize: '0.75rem', color: 'var(--m-text)', textAlign: 'right', fontFamily: 'inherit', height: '30px', boxSizing: 'border-box' }}
-                />
-                <button
-                  type="button"
-                  className="m-btn m-btn-outline"
-                  style={{ padding: '0 8px', fontSize: '0.75rem', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: '30px' }}
-                  onClick={() => addNonRegisteredProduct(newNonRegName, newNonRegVal)}
-                >
-                  +
-                </button>
+                ))}
               </div>
-            </div>
+            )}
 
             {/* Discount */}
             <div className="m-field">
