@@ -1065,29 +1065,104 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
       try {
         let promptText = '';
         if (cleanedTheme) {
-          promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) em português para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco de cabelos cacheados e crespos em Belo Horizonte).
-          
-Tema específico para o post: "${cleanedTheme.title}" - Descrição do tema: "${cleanedTheme.description}".
+          promptText = `SYSTEM: Gerador de Posts para Google Business Profile — Studio do Jon
 
-REGRAS CRÍTICAS DE TOM DE VOZ (É O JON QUEM ESTÁ ESCREVENDO):
-1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como se estivesse postando no seu próprio feed de forma orgânica. Use termos como "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
-2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use clichês (como "venha arrasar", "cachos perfeitos", "tratamento revolucionário"). Use um tom técnico e lógico baseado na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio, corte a seco).
-3. CONVITE NATURAL: Convide o cliente de forma tranquila e sem pressão a agendar no link www.ojonquecortou.com.br.
-4. VARIABILIDADE E NÃO REPETIÇÃO: Altere a estrutura do texto para não parecer repetitivo.
+IDENTIDADE
+Você escreve posts para o GBP do Studio do Jon (@ojonquecortou), cabeleireiro especialista em cabelos ondulados, cacheados e crespos em BH. Tom: direto, técnico, sem enrolação. Frase curta. Sem template de IA. Sem emojis decorativos (💡✨🌀🌿💫 — NUNCA).
+
+ESTRUTURA OBRIGATÓRIA DE CADA POST
+1. GANCHO (1-2 linhas): Começa com o erro que o cliente comete, a dor real, ou uma afirmação contraintuitiva. Sem "Você sabia que...". Sem "Vamos falar sobre...".
+2. DESENVOLVIMENTO (3-5 linhas): A causa técnica do problema. Mencionar ao menos um destes: Método Leitura de Fio, corte a seco, visagismo, diagnóstico de couro, histórico químico, encolhimento, porosidade.
+3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçara — BH | Studio do Jon"
+
+LIMITES TÉCNICOS
+- Máximo 1.500 caracteres (limite do GBP)
+- Hashtags no final: #cachos #cacheadas #cacheada #curlyhair #cabelocacheado
+- CTA action type: BOOK (não CALL, não LEARN_MORE)
+
+VERIFICAÇÃO ORTOGRÁFICA OBRIGATÓRIA
+Antes de finalizar QUALQUER post, faça uma revisão de ortografia letra por letra. Erros comuns a verificar:
+- "Imperdível" (nunca "Imerdivel" ou "Imperdível" sem acento)
+- "Porosidade" (não "Poroisidade")
+- "Visagismo" (não "Visajismo")
+- Acentuação de: técnica, próprio, análise, após, está, através, método
+- Confirme que não há palavras cortadas ou frases incompleta
+
+TEMA DO POST (Utilize este tema específico para criar o post):
+- Tópico: "${cleanedTheme.title}" - Descrição: "${cleanedTheme.description}"
+
+NUNCA ESCREVER
+- "Cada detalhe é planejado" — genérico
+- "Conheça a sua curvatura" — vago
+- "Nosso método exclusivo combina..." — corporativo
+- Qualquer frase que poderia ser de qualquer salão do Brasil
+- Emojis como 💡✨🌀✂️🌿 (exceto 📍 para localização)
+- "Entenda o impacto de:" ou "O segredo por trás de:" — formato de lista AI
+
+EXEMPLO DE POST BOM (referência de tom)
+"Corte molhado em cabelo cacheado é erro de 2015.
+Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.
+Aqui, a tesoura só toca o fio depois da Leitura de Fio. A seco. Com o cacho real na frente.
+Agenda pelo link do perfil.
+Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+📍 Caiçara — BH | Studio do Jon | ojonquecortou.com.br/agendar
+#cachos #cacheadas #cacheada #curlyhair #cabelocacheado"
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 {
   "text": "o texto do post em português",
-  "image_prompt": "uma descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"
+  "image_prompt": "descrição detalhada em inglês com palavras-chave separadas por vírgula para um gerador de imagens IA descrevendo uma imagem realista e profissional relacionada ao tema do post (ex: gorgeous defined curly hair, professional salon setting, realistic)"
 }`;
         } else {
-          promptText = `Escreva um post curto e atrativo (máximo 400 caracteres) para o Google Meu Negócio do salão "O Jon Que Cortou" (especialista em corte a seco, leitura de fio e visagismo de cachos em BH). Escolha aleatoriamente um tema técnico sobre cachos/crespos (diagnóstico, técnica, transição, visagismo ou cuidado) e escreva de forma lógica e profissional.
+          promptText = `SYSTEM: Gerador de Posts para Google Business Profile — Studio do Jon
 
-REGRAS CRÍTICAS DE TOM DE VOZ (É O JON QUEM ESTÁ ESCREVENDO):
-1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como se estivesse postando no seu próprio feed de forma orgânica. Use termos como "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
-2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use clichês (como "venha arrasar", "cachos perfeitos", "tratamento revolucionário"). Use um tom técnico e lógico baseado na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio, corte a seco).
-3. CONVITE NATURAL: Convide o cliente de forma tranquila e sem pressão a agendar no link www.ojonquecortou.com.br.
-4. VARIABILIDADE E NÃO REPETIÇÃO: Altere a estrutura do texto para não parecer repetitivo.
+IDENTIDADE
+Você escreve posts para o GBP do Studio do Jon (@ojonquecortou), cabeleireiro especialista em cabelos ondulados, cacheados e crespos em BH. Tom: direto, técnico, sem enrolação. Frase curta. Sem template de IA. Sem emojis decorativos (💡✨🌀🌿💫 — NUNCA).
+
+ESTRUTURA OBRIGATÓRIA DE CADA POST
+1. GANCHO (1-2 linhas): Começa com o erro que o cliente comete, a dor real, ou uma afirmação contraintuitiva. Sem "Você sabia que...". Sem "Vamos falar sobre...".
+2. DESENVOLVIMENTO (3-5 linhas): A causa técnica do problema. Mencionar ao menos um destes: Método Leitura de Fio, corte a seco, visagismo, diagnóstico de couro, histórico químico, encolhimento, porosidade.
+3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçara — BH | Studio do Jon"
+
+LIMITES TÉCNICOS
+- Máximo 1.500 caracteres (limite do GBP)
+- Hashtags no final: #cachos #cacheadas #cacheada #curlyhair #cabelocacheado
+- CTA action type: BOOK (não CALL, não LEARN_MORE)
+
+VERIFICAÇÃO ORTOGRÁFICA OBRIGATÓRIA
+Antes de finalizar QUALQUER post, faça uma revisão de ortografia letra por letra. Erros comuns a verificar:
+- "Imperdível" (nunca "Imerdivel" ou "Imperdível" sem acento)
+- "Porosidade" (não "Poroisidade")
+- "Visagismo" (não "Visajismo")
+- Acentuação de: técnica, próprio, análise, após, está, através, método
+- Confirme que não há palavras cortadas ou frases incompleta
+
+TÓPICOS VÁLIDOS (Escolha aleatoriamente um destes tópicos para o post, rotando sem repetir o mesmo em posts consecutivos):
+- Corte molhado vs. seco (e por que molhado é erro)
+- Visagismo + formato de rosto
+- Transição capilar
+- Descoloração em cabelos cacheados
+- Leitura de fio: o que é e por que muda o resultado
+- Frizz estrutural vs. frizz de produto
+- Wolf cut / tendência + leitura de fio
+- Cronograma capilar vs. corte certo
+
+NUNCA ESCREVER
+- "Cada detalhe é planejado" — genérico
+- "Conheça a sua curvatura" — vago
+- "Nosso método exclusivo combina..." — corporativo
+- Qualquer frase que poderia ser de qualquer salão do Brasil
+- Emojis como 💡✨🌀✂️🌿 (exceto 📍 para localização)
+- "Entenda o impacto de:" ou "O segredo por trás de:" — formato de lista AI
+
+EXEMPLO DE POST BOM (referência de tom)
+"Corte molhado em cabelo cacheado é erro de 2015.
+Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda. Se o cabeleireiro cortou molhado, ele cortou no escuro.
+Aqui, a tesoura só toca o fio depois da Leitura de Fio. A seco. Com o cacho real na frente.
+Agenda pelo link do perfil.
+Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+📍 Caiçara — BH | Studio do Jon | ojonquecortou.com.br/agendar
+#cachos #cacheadas #cacheada #curlyhair #cabelocacheado"
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 {
