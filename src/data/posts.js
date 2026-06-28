@@ -1818,9 +1818,10 @@ export const posts = [
   {
     id: 29,
     slug: 'cronograma-capilar-cabelo-cacheado',
-    title: 'Cronograma Capilar para Cabelo Cacheado | Jon',
+    title: 'Cronograma Capilar Passo a Passo para Cabelos Cacheados: o guia que funciona de verdade',
+    seoTitle: 'Cronograma Capilar para Cacheadas Passo a Passo | Studio do Jon BH',
     excerpt: 'O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. Descubra como ler o fio antes de montar qualquer protocolo.',
-    metaDescription: 'Cronograma capilar feito errado resseca o cabelo. Especialista em cachos em BH ensina a montar uma rotina para a porosidade real do seu fio.',
+    metaDescription: 'Cronograma capilar que funciona pra cabelo cacheado. Jon lê seu fio antes de recomendar qualquer protocolo. Studio do Jon, Belo Horizonte.',
     keywords: 'cronograma capilar para cabelo cacheado, cronograma capilar crespo, como montar cronograma capilar, hidratação nutrição reconstrução cabelo cacheado, cronograma capilar porosidade',
     date: '05 de Maio, 2026',
     author: 'Jon',
@@ -1857,6 +1858,8 @@ export const posts = [
       ]
     },
     content: `
+      <p>Cronograma capilar para cabelos cacheados não é a mesma coisa que pra lisos. A sequência errada desidrata o fio em vez de nutrir. Esse guia foi montado com base na Leitura de Fio — a metodologia do Studio do Jon que analisa seu padrão antes de qualquer protocolo.</p>
+
       <h2>Introdução</h2>
       <p>Você pesquisou, escolheu os produtos, montou a sequência — hidratação, nutrição, reconstrução — e seguiu à risca por semanas.</p>
       <p>O cabelo não melhorou. Ou piorou.</p>
@@ -1905,12 +1908,12 @@ export const posts = [
       <p><strong>Frequência sugerida:</strong> hidratação 1–2x por semana, nutrição quinzenal, reconstrução mensal ou a cada 6 semanas.</p>
 
       <h2>Quando o Cronograma Não É o Que Você Precisa</h2>
-      <p>Existe uma situação em que o cronograma capilar não vai resolver nada: quando o problema não é de cuidado, é de corte.</p>
-      <p>Fio com dano mecânico acumulado nas pontas — as pontas duplas que não se hidratam, a região que quebra antes do resto — não responde a produto. Aquela parte do fio está morta. O corte é a única resposta.</p>
-      <p>Do mesmo jeito, fio com distribuição de peso errada vai continuar pesado, murcho e sem definição independente do cronograma que você montar. Isso é problema de corte, não de rotina.</p>
+      <p>Existe uma situação em que o cronograma capilar não vai resolver nada: quando o problema não é de cuidado, é de <a href="/servicos">corte especializado para cacheadas</a>.</p>
+      <p>Fio com dano mecânico acumulado nas pontas — as pontas duplas que não se hidratam, a região que quebra antes do resto — não responde a produto. Aquela parte do fio está morta. O <a href="/servicos">corte especializado para cacheadas</a> é a única resposta.</p>
+      <p>Do mesmo jeito, fio com distribuição de peso errada vai continuar pesado, murcho e sem definição independente do cronograma que você montar. Isso é problema de <a href="/servicos">corte especializado para cacheadas</a> ou formato inadequado, não de rotina.</p>
       <p>Se você está há meses seguindo cronograma e o cabelo continua igual, vale pausar e avaliar: o que está sendo tratado é o sintoma ou a causa?</p>
-      <p>Um diagnóstico profissional — que inclui análise do fio seco, molhado e do couro cabeludo — muitas vezes revela que o cronograma está certo, mas o corte está errado. Ou vice-versa.</p>
-      <p>O <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a> que uso no Studio do Jon começa exatamente aí: antes de falar em produto, em corte ou em qualquer protocolo, o fio precisa ser lido.</p>
+      <p>Um diagnóstico profissional — que inclui análise do fio seco, molhado e do couro cabeludo — muitas vezes revela que o cronograma está certo, mas o <a href="/servicos">corte especializado para cacheadas</a> está errado. Ou vice-versa.</p>
+      <p>O <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a> que uso no Studio do Jon começa exatamente aí: antes de falar em produto, em <a href="/servicos">corte especializado para cacheadas</a> ou em qualquer protocolo, o formato e o fio precisam ser lidos.</p>
 
       <h2>Sinais de Que o Seu Cronograma Está Errado</h2>
       <p>O fio avisa quando o protocolo não está funcionando — ou quando está sendo prejudicial. Aprenda a reconhecer esses sinais:</p>
@@ -1960,10 +1963,10 @@ export const posts = [
       <p>Cronograma resolve problema de nutrição e hidratação do fio. Não resolve distribuição de peso, não resolve ponta dupla acumulada, não resolve fio mal lido.</p>
       <p>Se você não sabe qual é o problema real, qualquer protocolo vai ser uma tentativa no escuro.</p>
       <p>O caminho que funciona começa com diagnóstico — não com lista de produto.</p>
-      <p>Se quiser fazer esse diagnóstico com quem lê o fio antes de qualquer outra coisa, o Studio do Jon atende em Belo Horizonte. O agendamento é pelo link abaixo.</p>
+      <p>Quer saber o cronograma ideal pro SEU fio? Agende uma Leitura de Fio no Studio do Jon →</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">Agendar diagnóstico</a>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">Agendar Leitura de Fio</a>
       </div>
 
       <p><i>Jonatan Junior é especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.</i></p>

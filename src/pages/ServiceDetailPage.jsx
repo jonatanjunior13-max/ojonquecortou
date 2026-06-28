@@ -45,7 +45,7 @@ const ServiceDetailPage = () => {
     ? WA_BASE + encodeURIComponent(`Olá Jon! Gostaria de tirar dúvidas ou fazer um orçamento para: ${service.name}.`) 
     : TRINKS_URL;
   
-  const btnLabel = service.priceType === 'A partir de' ? 'WhatsApp' : 'Agendar Online';
+  const btnLabel = 'Agendar atendimento';
 
   // Dynamic FAQs based on category
   const faqs = [
@@ -73,7 +73,7 @@ const ServiceDetailPage = () => {
   return (
     <main className="service-detail-page">
       <SEO
-        title={`${truncatedName} em BH | Studio do Jon`} 
+        title={`${truncatedName} para Cabelos Cacheados em BH | Studio do Jon`} 
         description={`${service.tagline || service.description.substring(0, 100)}. Corte e tratamento especializado para cabelos cacheados e crespos em Belo Horizonte.`} 
       />
       
@@ -82,7 +82,7 @@ const ServiceDetailPage = () => {
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Service",
-          "name": service.name,
+          "name": `${service.name} para cacheados BH`,
           "description": service.description,
           "provider": {
             "@type": "HairSalon",
@@ -93,6 +93,7 @@ const ServiceDetailPage = () => {
             "@type": "Offer",
             "price": service.promoPrice || service.price,
             "priceCurrency": "BRL",
+            "priceRange": `A partir de R$ ${service.price}`,
             "valueAddedTaxIncluded": "true"
           }
         })}
@@ -102,7 +103,7 @@ const ServiceDetailPage = () => {
         <div className="container text-center reveal active">
           <span className="service-emoji-badge">{service.emoji || '✨'}</span>
           <span className="service-category-badge">{service.category}</span>
-          <h1 className="heading-xl mt-1">{service.name}</h1>
+          <h1 className="heading-xl mt-1">{service.name} para cacheados BH</h1>
           {service.tagline && (
             <p className="paragraph-lg text-gradient max-w-lg mx-auto mt-2 font-semibold">
               {service.tagline}

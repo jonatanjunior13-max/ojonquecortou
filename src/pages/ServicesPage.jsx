@@ -72,8 +72,8 @@ const ServicesPage = () => {
   return (
     <main className="services-page">
       <SEO 
-        title="Corte de Cabelo Cacheado BH | Serviços | Studio do Jon" 
-        description="Preços e serviços de corte técnico, tratamento e morena iluminada para onduladas, cacheadas e crespas no Caiçara, Belo Horizonte. Conheça e agende." 
+        title="Serviços para Cabelos Cacheados, Crespos e Ondulados em BH | Studio do Jon" 
+        description="Corte, descoloração e química especializada em fios cacheados e crespos. Jon usa Leitura de Fio antes de qualquer atendimento. Studio do Jon, Belo Horizonte — agende pelo direct." 
       />
       <section className="services-hero section-padding">
         <div className="container text-center reveal active">
