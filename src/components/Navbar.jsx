@@ -81,37 +81,41 @@ function Navbar() {
             <img src="/logo-jon-cortou.png" alt="O Jon que Cortou Logo" style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover' }} />
             <span className="word">O Jon que Cortou</span>
           </Link>
-          <div className="nav-links">
-            {links.map((l) => {
-              if (l.id === "/servicos") {
-                return (
-                  <div key={l.id} className="nav-dropdown-wrapper">
-                    <Link to={l.id} className={current.startsWith("/servicos") ? "active nav-dropdown-trigger" : "nav-dropdown-trigger"}>
-                      {l.label} <span className="dropdown-caret">▼</span>
-                    </Link>
-                    <div className="nav-dropdown-menu">
-                      <Link to="/servicos">Todos os Serviços</Link>
-                      <Link to="/servicos/descoloracao-cabelo-cacheado">Descoloração de Cachos</Link>
-                      <Link to="/servicos/visagismo-cacheado">Visagismo de Cachos</Link>
+          {current !== '/agendar' && (
+            <div className="nav-links">
+              {links.map((l) => {
+                if (l.id === "/servicos") {
+                  return (
+                    <div key={l.id} className="nav-dropdown-wrapper">
+                      <Link to={l.id} className={current.startsWith("/servicos") ? "active nav-dropdown-trigger" : "nav-dropdown-trigger"}>
+                        {l.label} <span className="dropdown-caret">▼</span>
+                      </Link>
+                      <div className="nav-dropdown-menu">
+                        <Link to="/servicos">Todos os Serviços</Link>
+                        <Link to="/servicos/descoloracao-cabelo-cacheado">Descoloração de Cachos</Link>
+                        <Link to="/servicos/visagismo-cacheado">Visagismo de Cachos</Link>
+                      </div>
                     </div>
-                  </div>
+                  );
+                }
+                return (
+                  <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""}>
+                    {l.label}
+                  </Link>
                 );
-              }
-              return (
-                <Link key={l.id} to={l.id} className={current === l.id ? "active" : ""}>
-                  {l.label}
-                </Link>
-              );
-            })}
-          </div>
-          <div className="nav-cta">
-            <Link to="/agendar" className="btn btn-primary hide-mobile">
-              Agendar <Arrow />
-            </Link>
-            <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
-              <span></span><span></span><span></span>
-            </button>
-          </div>
+              })}
+            </div>
+          )}
+          {current !== '/agendar' && (
+            <div className="nav-cta">
+              <Link to="/agendar" className="btn btn-primary hide-mobile">
+                Agendar <Arrow />
+              </Link>
+              <button className="nav-toggle" aria-label="Menu" onClick={() => setOpen((v) => !v)}>
+                <span></span><span></span><span></span>
+              </button>
+            </div>
+          )}
         </div>
       </nav>
       {open && (

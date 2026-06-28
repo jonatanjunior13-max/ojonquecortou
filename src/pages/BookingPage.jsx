@@ -1594,31 +1594,40 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
   */
 
 
+  if (services.length === 0) {
+    return (
+      <main className="booking-page container">
+        <SEO 
+          title="Agende seu corte | Studio do Jon — Especialista em Cachos BH" 
+          description="Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte." 
+        />
+        <header className="booking-header text-center" style={{ padding: '15px 0 10px 0' }}>
+          <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: '"DM Serif Display", serif', color: 'var(--color-primary)' }}>Studio do Jon</div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginTop: '2px' }}>Especialista em cachos em BH</div>
+        </header>
+
+        <div className="skeleton-booking-widget">
+          <div className="skeleton-indicator"></div>
+          <div className="skeleton-title"></div>
+          <div className="skeleton-card"></div>
+          <div className="skeleton-card"></div>
+          <div className="skeleton-card"></div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="booking-page container">
       <SEO 
-        title="Agendar Horário | Studio do Jon" 
-        description="Agende seu horário online no Studio do Jon em Caiçara, Belo Horizonte. Escolha seu serviço e reserve em poucos minutos." 
+        title="Agende seu corte | Studio do Jon — Especialista em Cachos BH" 
+        description="Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte." 
       />
 
-      <header className="booking-header text-center">
-        <h1 className="display">Agende sua <span className="italic">experiência.</span></h1>
-        <p className="lead">Sem filas, sem ligações. Escolha o serviço ideal e garanta sua vaga na agenda do Jon.</p>
+      <header className="booking-header text-center" style={{ padding: '15px 0 10px 0' }}>
+        <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: '"DM Serif Display", serif', color: 'var(--color-primary)' }}>Studio do Jon</div>
+        <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginTop: '2px' }}>Especialista em cachos em BH</div>
         
-        {step === 1 && (
-          <>
-            <div className="booking-trust-badge">
-              <div className="booking-trust-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-              <span>4.9/5 estrelas no Google (Mais de 1.500 cacheadas atendidas em BH)</span>
-            </div>
-            <div className="booking-testimonial-mini">
-              "O melhor corte a seco que já fiz! O Jon entende perfeitamente a curvatura e o caimento dos cachos." – Mariana S.
-            </div>
-          </>
-        )}
-
         {isDemoMode && (
           <div className="demo-banner">
             Aviso: Conexão rodando localmente (Modo Demonstração)
@@ -2704,6 +2713,31 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           </button>
         </div>
       )}
+
+      {/* Social Proof (Prompt 3) */}
+      <div className="booking-social-proof">
+        <div className="social-proof-header">
+          <div className="stars">★★★★★</div>
+          <p>Mais de 1.500 cachos transformados em Belo Horizonte</p>
+        </div>
+        <div className="social-proof-quotes">
+          <div className="quote-item">
+            <span className="stars">★★★★★</span>
+            <p>"O Jon lê o fio perfeitamente. O melhor corte a seco que já fiz!"</p>
+            <span className="author">- Mariana S.</span>
+          </div>
+          <div className="quote-item">
+            <span className="stars">★★★★★</span>
+            <p>"Depois da Leitura de Fio, meu cronograma finalmente deu resultado."</p>
+            <span className="author">- Camila L.</span>
+          </div>
+          <div className="quote-item">
+            <span className="stars">★★★★★</span>
+            <p>"Ambiente super aconchegante e o Jon é extremamente atencioso."</p>
+            <span className="author">- Beatriz F.</span>
+          </div>
+        </div>
+      </div>
     </main>
   );
 };
