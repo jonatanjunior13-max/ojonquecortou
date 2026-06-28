@@ -3961,6 +3961,47 @@ textarea:focus {
   color: #EAB308 !important;
 }
 
+/* 11. Today Dashboard KPI Cards Custom Fading Gradients */
+.dashboard-kpi-grid > .adm-kpi-card {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left-width: 3px !important;
+  box-shadow: none !important;
+}
+
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(1) {
+  border-left-color: #10B981 !important; /* Faturamento hoje - Verde */
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
+}
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(1) .adm-kpi-value {
+  color: #10B981 !important;
+}
+
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(2) {
+  border-left-color: #06B6D4 !important; /* Atendimentos - Ciano */
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.04) 25%, transparent 60%) !important;
+}
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(2) .adm-kpi-value {
+  color: #06B6D4 !important;
+}
+
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(3) {
+  border-left-color: #EAB308 !important; /* Pendentes de aceite - Amarelo */
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.04) 25%, transparent 60%) !important;
+}
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(3) .adm-kpi-value {
+  color: #EAB308 !important;
+}
+
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(4) {
+  border-left-color: #7A3CFF !important; /* Clientes na base - Roxo */
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.15) 0%, rgba(122, 60, 255, 0.04) 25%, transparent 60%) !important;
+}
+.dashboard-kpi-grid > .adm-kpi-card:nth-child(4) .adm-kpi-value {
+  color: #7A3CFF !important;
+}
+
+
 
 
 
