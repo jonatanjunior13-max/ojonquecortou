@@ -1199,12 +1199,11 @@ const AdminFinancial = () => {
           </div>
         </div>
 
-        {/* Quick action buttons */}
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-accent" style={{ background: '#48bb78', borderColor: '#48bb78' }} onClick={() => setShowProductSaleModal(true)}>
+          <button className="btn btn-spectro-green" onClick={() => setShowProductSaleModal(true)}>
             <ShoppingBag size={16} style={{ marginRight: 6 }} /> Registrar Venda de Produto
           </button>
-          <button className="btn btn-ghost" style={{ color: '#e53e3e', borderColor: '#e53e3e' }} onClick={() => setShowExpenseModal(true)}>
+          <button className="btn btn-spectro-red" onClick={() => setShowExpenseModal(true)}>
             <Plus size={16} style={{ marginRight: 6 }} /> Registrar Saída/Despesa
           </button>
         </div>

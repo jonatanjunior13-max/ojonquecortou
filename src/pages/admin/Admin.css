@@ -3703,4 +3703,199 @@ textarea:focus {
   border-color: var(--adm-gold) !important;
 }
 
+/* 4. Dashboard Stats Cards Redesign (Screenshot 1) */
+.stat-card {
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  transition: transform 0.2s ease !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left-width: 3px !important;
+}
+.stat-card::before {
+  display: none !important; /* Esconde a borda colorida superior antiga */
+}
+.stat-card:nth-child(1) {
+  border-left-color: #06B6D4 !important; /* Ciano para ativos */
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
+}
+.stat-card:nth-child(2) {
+  border-left-color: #EAB308 !important; /* Amarelo/Dourado para pendentes */
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+}
+.stat-card:nth-child(3) {
+  border-left-color: #10B981 !important; /* Verde para receita */
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+}
+.stat-card .value {
+  font-family: inherit !important;
+  font-weight: 800 !important;
+  font-size: 2.2rem !important;
+}
+
+/* 5. Agenda Sidebar buttons & Mini-Calendar Redesign (Screenshot 2 & 3) */
+.agenda-sidebar-btn {
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem !important;
+}
+.agenda-sidebar-btn.primary {
+  background: #030303 !important;
+  border: 1px solid var(--adm-gold) !important;
+  color: var(--adm-gold) !important;
+}
+.agenda-sidebar-btn.primary:hover {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  color: #ffffff !important;
+  border-color: var(--adm-gold) !important;
+}
+
+.mini-calendar {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+.mini-calendar-day {
+  border-radius: 0px !important;
+}
+.mini-calendar-day.active {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  border: 1px solid var(--adm-gold) !important;
+  color: #ffffff !important;
+}
+.mini-calendar-day.today {
+  border-radius: 0px !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* 6. WhatsApp Filter Pills Redesign (Screenshot 3) */
+.wa-filter-pill {
+  border-radius: 0px !important;
+  border-width: 1px !important;
+  background: #030303 !important;
+  transition: all 0.2s ease !important;
+}
+.wa-filter-pill.accent { border-color: var(--adm-gold) !important; color: var(--adm-gold) !important; }
+.wa-filter-pill.accent.active, .wa-filter-pill.accent:hover {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+.wa-filter-pill.red { border-color: #EF4444 !important; color: #EF4444 !important; }
+.wa-filter-pill.red.active, .wa-filter-pill.red:hover {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0.08) 40%, rgba(239, 68, 68, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+.wa-filter-pill.green { border-color: #10B981 !important; color: #10B981 !important; }
+.wa-filter-pill.green.active, .wa-filter-pill.green:hover {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+.wa-filter-pill.yellow { border-color: #EAB308 !important; color: #EAB308 !important; }
+.wa-filter-pill.yellow.active, .wa-filter-pill.yellow:hover {
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+.wa-filter-pill.gray { border-color: #64748B !important; color: #64748B !important; }
+.wa-filter-pill.gray.active, .wa-filter-pill.gray:hover {
+  background: linear-gradient(90deg, rgba(100, 116, 139, 0.22) 0%, rgba(100, 116, 139, 0.08) 40%, rgba(100, 116, 139, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+
+/* 7. Catalog Tabs & Service Cards (Screenshot 4) */
+.category-tab-btn {
+  border-radius: 0px !important;
+  background: #030303 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: #a0aec0 !important;
+  transition: all 0.2s ease !important;
+}
+.category-tab-btn.active {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  border-color: var(--adm-gold) !important;
+  color: #ffffff !important;
+}
+.tab-count-badge {
+  border-radius: 0px !important;
+}
+
+.service-catalog-card {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left-width: 3px !important;
+  box-shadow: none !important;
+  transition: transform 0.2s ease !important;
+}
+.service-catalog-card.cat-corte {
+  border-left-color: #E2703A !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.16) 0%, rgba(226, 112, 58, 0.06) 40%, rgba(226, 112, 58, 0.01) 100%) !important;
+}
+.service-catalog-card.cat-cor {
+  border-left-color: #7A3CFF !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.16) 0%, rgba(122, 60, 255, 0.06) 40%, rgba(122, 60, 255, 0.01) 100%) !important;
+}
+.service-catalog-card.cat-tratamento {
+  border-left-color: #10B981 !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.16) 0%, rgba(16, 185, 129, 0.06) 40%, rgba(16, 185, 129, 0.01) 100%) !important;
+}
+.service-catalog-card.cat-combo {
+  border-left-color: #FF2D8B !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.16) 0%, rgba(255, 45, 139, 0.06) 40%, rgba(255, 45, 139, 0.01) 100%) !important;
+}
+.service-catalog-card.cat-analise {
+  border-left-color: #EAB308 !important;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.16) 0%, rgba(234, 179, 8, 0.06) 40%, rgba(234, 179, 8, 0.01) 100%) !important;
+}
+
+/* 8. Financial Header Elements (Screenshot 5) */
+.orange-pill {
+  border-radius: 0px !important;
+  background: #030303 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  transition: all 0.2s ease !important;
+}
+.orange-pill:hover {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  border-color: var(--adm-gold) !important;
+  color: #ffffff !important;
+}
+.date-picker-dropdown {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #030303 !important;
+}
+.picker-presets button {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #080808 !important;
+  color: #ffffff !important;
+}
+.picker-presets button.active {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  border-color: var(--adm-gold) !important;
+}
+
+/* 9. Action Buttons Espectro Custom Colors */
+.btn.btn-spectro-green {
+  border: 1px solid #10B981 !important;
+  color: #10B981 !important;
+  background: #030303 !important;
+}
+.btn.btn-spectro-green:hover {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+
+.btn.btn-spectro-red {
+  border: 1px solid #EF4444 !important;
+  color: #EF4444 !important;
+  background: #030303 !important;
+}
+.btn.btn-spectro-red:hover {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0.08) 40%, rgba(239, 68, 68, 0.02) 100%) !important;
+  color: #ffffff !important;
+}
+
+
+
 

@@ -566,7 +566,7 @@ const AdminServices = () => {
                 const isDescExpanded = !!expandedDescriptions[s.id];
                 
                 return (
-                  <div key={s.id} className={`service-catalog-card ${s.isPrimary ? 'featured' : ''}`}>
+                  <div key={s.id} className={`service-catalog-card ${s.isPrimary ? 'featured' : ''} cat-${(s.category || 'cabelo').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}`}>
                     {/* Visual Top Bar / Card Header */}
                     <div className="card-top-decoration">
                       <span className="service-category-tag">{s.category || 'Cabelo'}</span>
