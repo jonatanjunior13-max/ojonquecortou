@@ -3905,6 +3905,63 @@ textarea:focus {
   color: #ffffff !important;
 }
 
+/* 10. Financial KPI Cards Custom Fading Gradients (Matches screenshot metrics) */
+.financial-kpi-grid > .adm-kpi-card {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left-width: 3px !important;
+  box-shadow: none !important;
+}
+
+.financial-kpi-grid > .adm-kpi-card:nth-child(1) {
+  border-left-color: #10B981 !important; /* Receita Bruta - Verde */
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
+}
+.financial-kpi-grid > .adm-kpi-card:nth-child(1) .adm-kpi-value {
+  color: #10B981 !important;
+}
+
+.financial-kpi-grid > .adm-kpi-card:nth-child(2) {
+  border-left-color: #F97316 !important; /* Taxas Maquininha - Laranja */
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0.04) 25%, transparent 60%) !important;
+}
+.financial-kpi-grid > .adm-kpi-card:nth-child(2) .adm-kpi-value {
+  color: #F97316 !important;
+}
+
+.financial-kpi-grid > .adm-kpi-card:nth-child(3) {
+  border-left-color: #EF4444 !important; /* Despesas - Vermelho */
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.04) 25%, transparent 60%) !important;
+}
+.financial-kpi-grid > .adm-kpi-card:nth-child(3) .adm-kpi-value {
+  color: #EF4444 !important;
+}
+
+.financial-kpi-grid > .adm-kpi-card:nth-child(4) {
+  border-left-color: var(--adm-gold) !important; /* Resultado Líquido - Rosa Dourado */
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
+}
+.financial-kpi-grid > .adm-kpi-card:nth-child(4) .adm-kpi-value {
+  color: var(--adm-gold) !important;
+}
+
+.financial-kpi-grid > .adm-kpi-card:nth-child(5) {
+  border-left-color: #06B6D4 !important; /* Atendimentos - Ciano */
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.04) 25%, transparent 60%) !important;
+}
+.financial-kpi-grid > .adm-kpi-card:nth-child(5) .adm-kpi-value {
+  color: #06B6D4 !important;
+}
+
+.financial-kpi-grid > .adm-kpi-card:nth-child(6) {
+  border-left-color: #EAB308 !important; /* Lucro Produtos - Amarelo Dourado */
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.04) 25%, transparent 60%) !important;
+}
+.financial-kpi-grid > .adm-kpi-card:nth-child(6) .adm-kpi-value {
+  color: #EAB308 !important;
+}
+
+
 
 
 

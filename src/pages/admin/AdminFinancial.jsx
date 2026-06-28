@@ -1210,7 +1210,7 @@ const AdminFinancial = () => {
       </div>
 
       {/* KPI Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16, marginBottom: 24 }}>
+      <div className="financial-kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 16, marginBottom: 24 }}>
         <KpiCard
           label="Receita Bruta"
           value={`R$ ${grossReceita.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
