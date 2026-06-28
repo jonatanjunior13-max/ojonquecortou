@@ -613,12 +613,20 @@
   align-items: flex-start;
 }
 
-.appt-card.faltou, .appt-card.bloqueado {
+.appt-card.bloqueado {
   background: linear-gradient(90deg, rgba(100, 116, 139, 0.22) 0%, rgba(100, 116, 139, 0.08) 40%, rgba(100, 116, 139, 0.02) 100%) !important;
   border: none !important;
   border-left: 3px solid #64748B !important;
   color: #94A3B8 !important;
   opacity: 0.85;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+}
+.appt-card.faltou, .appt-card.ausencia {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0.08) 40%, rgba(239, 68, 68, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #EF4444 !important;
+  color: #FCA5A5 !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
@@ -639,9 +647,9 @@
   box-shadow: none !important;
 }
 .appt-card.svc-tratamento, .appt-card.pendente.svc-tratamento, .appt-card.confirmado.svc-tratamento, .appt-card.finalizado.svc-tratamento, .appt-card.cancelado.svc-tratamento {
-  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.08) 40%, rgba(31, 111, 235, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #1F6FEB !important;
+  border-left: 3px solid #10B981 !important;
   color: #ffffff !important;
   border-radius: 0px !important;
   box-shadow: none !important;
@@ -655,15 +663,15 @@
   box-shadow: none !important;
 }
 .appt-card.svc-analise, .appt-card.pendente.svc-analise, .appt-card.confirmado.svc-analise, .appt-card.finalizado.svc-analise, .appt-card.cancelado.svc-analise {
-  background: linear-gradient(90deg, rgba(251, 146, 60, 0.22) 0%, rgba(251, 146, 60, 0.08) 40%, rgba(251, 146, 60, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #F97316 !important;
+  border-left: 3px solid #EAB308 !important;
   color: #ffffff !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .appt-card.svc-almoco, .appt-card.pendente.svc-almoco, .appt-card.confirmado.svc-almoco, .appt-card.finalizado.svc-almoco, .appt-card.cancelado.svc-almoco {
-  background: linear-gradient(90deg, rgba(34, 211, 238, 0.22) 0%, rgba(34, 211, 238, 0.08) 40%, rgba(34, 211, 238, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
   border: none !important;
   border-left: 3px solid #06B6D4 !important;
   color: #ffffff !important;
