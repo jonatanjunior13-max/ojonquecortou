@@ -4014,6 +4014,113 @@ textarea:focus {
   background: linear-gradient(90deg, rgba(251, 197, 211, 0.12) 0%, rgba(251, 197, 211, 0.03) 25%, transparent 60%) !important;
 }
 
+/* 13. High-Contrast Client Database Page Layout & Spacing */
+.clients-layout {
+  display: grid !important;
+  grid-template-columns: 350px 1fr !important;
+  gap: 24px !important;
+  width: 100% !important;
+  color: var(--adm-text) !important;
+  position: relative !important;
+}
+
+.clients-list-pane {
+  background: var(--adm-surface) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 0px !important;
+  overflow: hidden !important;
+  height: calc(100vh - 170px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-shadow: none !important;
+  width: auto !important;
+  padding: 0 !important;
+}
+
+.clients-scroll-list {
+  overflow-y: auto !important;
+  flex-grow: 1 !important;
+  padding: 8px 0 !important;
+}
+
+.client-list-item {
+  padding: 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  cursor: pointer !important;
+  border-radius: 0px !important;
+  background: transparent !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  transition: background 0.2s ease !important;
+  margin-bottom: 0px !important;
+  box-shadow: none !important;
+  border-left: 3px solid transparent !important;
+}
+
+.client-list-item:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.client-list-item.selected {
+  border-left-color: var(--adm-gold) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
+}
+
+.client-list-item h4 {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  line-height: 1.3 !important;
+}
+
+.client-item-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-bottom: 4px !important;
+  width: 100% !important;
+}
+
+.client-list-item .client-sub {
+  font-size: 0.8rem !important;
+  color: rgba(255, 255, 255, 0.75) !important;
+  display: block !important;
+  line-height: 1.4 !important;
+  margin-top: 2px !important;
+}
+
+.client-detail-pane {
+  background: var(--adm-card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 32px !important;
+  border-radius: 0px !important;
+  height: calc(100vh - 170px) !important;
+  overflow-y: auto !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+  .clients-layout {
+    display: block !important;
+  }
+  .clients-list-pane {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .client-detail-pane {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
+  }
+}
+
+
 
 
 
