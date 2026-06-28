@@ -3220,7 +3220,7 @@ Grande abraço, Jon.`;
             if (todayTxs.length > 0) {
               const last = todayTxs[0];
               return (
-                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px', marginBottom: 16 }}>
+                <div className="m-card-premium" style={{ padding:'14px', marginBottom: 16 }}>
                   <div style={{ fontSize:'0.72rem', fontWeight:800, color:'var(--m-gold)', textTransform:'uppercase', letterSpacing:'0.6px', marginBottom:8 }}>Último Lançamento Hoje</div>
                   <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                     <div>
@@ -3303,7 +3303,7 @@ Grande abraço, Jon.`;
         </div>
 
         {/* Profile card */}
-        <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px', display:'flex', alignItems:'center', gap:12, marginTop:4 }}>
+        <div className="m-card-premium" style={{ padding:'14px', display:'flex', alignItems:'center', gap:12, marginTop:4 }}>
           <img src="/jon-perfil.webp" alt="Jon" style={{ width:44, height:44, borderRadius:'50%', border:'0.5px solid var(--m-rule-strong)', objectFit:'cover' }} onError={e => { e.target.src = 'https://ui-avatars.com/api/?name=Jon&background=DCA354&color=0E0C0B&bold=true'; }}/>
           <div style={{ flex:1 }}>
             <div style={{ fontWeight:800, color:'var(--m-text)', fontSize:'0.9rem' }}>Jonatan</div>
@@ -3355,7 +3355,7 @@ Grande abraço, Jon.`;
           </button>
 
           {fixedAbsences.map(a => (
-            <div key={a.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+            <div key={a.id} className="m-card-premium" style={{ padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
               <div style={{ width:38, height:38, borderRadius:10, background:'rgba(139,124,200,0.14)', color:'#8b7cc8', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Lock size={16}/></div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{a.title}</div>
@@ -3366,7 +3366,7 @@ Grande abraço, Jon.`;
           ))}
 
           {customAbsences.map(a => (
-            <div key={a.id} style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
+            <div key={a.id} className="m-card-premium" style={{ padding:'13px 14px', display:'flex', alignItems:'center', gap:12 }}>
               <div style={{ width:38, height:38, borderRadius:10, background:'rgba(139,124,200,0.14)', color:'#8b7cc8', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><Calendar size={16}/></div>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ fontWeight:700, color:'var(--m-text)', fontSize:'0.88rem' }}>{a.title}</div>
