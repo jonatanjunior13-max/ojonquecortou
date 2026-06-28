@@ -84,6 +84,60 @@ const BlogPostPage = () => {
     loadPostData();
   }, [slug]);
 
+  // Preload hero image dynamically
+  useEffect(() => {
+    if (!post?.image) return;
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = post.image;
+    document.head.appendChild(link);
+    return () => {
+      if (document.head.contains(link)) {
+        document.head.removeChild(link);
+      }
+    };
+  }, [post?.image]);
+
+  // GA4 Scroll Depth Tracking (25%, 50%, 75%)
+  useEffect(() => {
+    if (!post) return;
+    const trackedDepths = new Set();
+    const handleScroll = () => {
+      const scrollTop = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      if (docHeight <= 0) return;
+      
+      const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+      
+      [25, 50, 75].forEach(depth => {
+        if (scrollPercent >= depth && !trackedDepths.has(depth)) {
+          trackedDepths.add(depth);
+          if (window.gtag) {
+            window.gtag('event', 'scroll', {
+              'percent_scrolled': depth,
+              'page_path': window.location.pathname,
+              'page_title': post.title || document.title
+            });
+          } else if (window.dataLayer) {
+            window.dataLayer.push({
+              event: 'scroll',
+              percent_scrolled: depth,
+              page_path: window.location.pathname
+            });
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [post]);
+
+
   if (loading) {
     return (
       <main className="post-page">
@@ -124,7 +178,7 @@ const BlogPostPage = () => {
       const idB = typeof b.post.id === 'number' ? b.post.id : 0;
       return idB - idA;
     })
-    .slice(0, 6)
+    .slice(0, 3)
     .map(item => item.post);
 
   const generatePostDescription = (post) => {
@@ -196,6 +250,23 @@ const BlogPostPage = () => {
 
   const combinedSchema = post.faqSchema ? [articleSchema, post.faqSchema] : articleSchema;
 
+  const getProcessedContent = (contentHtml) => {
+    if (!contentHtml) return '';
+    const paragraphs = contentHtml.split('</p>');
+    if (paragraphs.length <= 3) {
+      return contentHtml;
+    }
+    const inlineCtaHtml = `
+      <div class="blog-inline-cta">
+        <p class="inline-cta-text">Quer saber como isso se aplica ao SEU cabelo? Jon faz a leitura do fio antes de qualquer corte. Agende:</p>
+        <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>
+      </div>
+    `;
+    const part1 = paragraphs.slice(0, 3).join('</p>') + '</p>';
+    const part2 = paragraphs.slice(3).join('</p>');
+    return part1 + inlineCtaHtml + part2;
+  };
+
   return (
     <main className="post-page">
       <SEO 
@@ -266,7 +337,7 @@ const BlogPostPage = () => {
 
            <div 
             className="post-content reveal active stagger-2" 
-            dangerouslySetInnerHTML={{ __html: post.content }} 
+            dangerouslySetInnerHTML={{ __html: getProcessedContent(post.content) }} 
             onClick={handleContentClick}
           />
           
@@ -317,6 +388,13 @@ const BlogPostPage = () => {
             </div>
           </footer>
         </article>
+      </div>
+      {/* Sticky Bottom CTA Bar */}
+      <div className="sticky-bottom-cta">
+        <div className="sticky-bottom-cta-inner">
+          <span className="sticky-cta-text">Agende seu corte com o Jon</span>
+          <Link to="/agendar" className="sticky-cta-btn">Agendar</Link>
+        </div>
       </div>
     </main>
   );

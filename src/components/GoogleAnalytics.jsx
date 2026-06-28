@@ -6,6 +6,11 @@ const GoogleAnalytics = () => {
   const isFirstRun = useRef(true);
 
   useEffect(() => {
+    // Exclude /admin/* and /mobile from tracking
+    if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/mobile')) {
+      return;
+    }
+
     // Na primeira carga, o snippet estático no index.html já disparou o PageView.
     // Pulamos a execução inicial para evitar contagem duplicada.
     if (isFirstRun.current) {

@@ -2,11 +2,15 @@
 <html lang="pt-BR">
   <head>
     <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-MKKNQRQ4');</script>
+    <script>
+      if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/mobile')) {
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-MKKNQRQ4');
+      }
+    </script>
     <!-- End Google Tag Manager -->
 
     <!-- Google tag (gtag.js) -->
@@ -16,8 +20,10 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', 'G-BC8WXZKTLL');
-      gtag('config', 'AW-666534146');
+      if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/mobile')) {
+        gtag('config', 'G-BC8WXZKTLL');
+        gtag('config', 'AW-666534146');
+      }
     </script>
 
     <meta charset="UTF-8" />
