@@ -3719,29 +3719,20 @@ textarea:focus {
 }
 .stat-card:nth-child(1) {
   border-left-color: #06B6D4 !important; /* Ciano para ativos */
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #092537 0%, #1c5277 30%, #113650 50%, #2b77aa 70%, #092537 100%) !important;
-  border: 1px solid rgba(6, 182, 212, 0.35) !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.04) 25%, transparent 60%) !important;
+  border: 1px solid rgba(6, 182, 212, 0.15) !important;
   border-left-width: 3px !important;
 }
 .stat-card:nth-child(2) {
   border-left-color: #EAB308 !important; /* Amarelo/Dourado para pendentes */
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2E1C 0%, #8E6E3B 30%, #5E4A29 50%, #AA894A 70%, #3A2E1C 100%) !important;
-  border: 1px solid rgba(220, 163, 84, 0.35) !important;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.04) 25%, transparent 60%) !important;
+  border: 1px solid rgba(220, 163, 84, 0.15) !important;
   border-left-width: 3px !important;
 }
 .stat-card:nth-child(3) {
   border-left-color: #10B981 !important; /* Verde para receita */
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #1A2D23 0%, #3B6A55 30%, #254436 50%, #528E72 70%, #1A2D23 100%) !important;
-  border: 1px solid rgba(82, 142, 114, 0.35) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
+  border: 1px solid rgba(82, 142, 114, 0.15) !important;
   border-left-width: 3px !important;
 }
 .stat-card .value {
@@ -3764,10 +3755,7 @@ textarea:focus {
   color: var(--adm-gold) !important;
 }
 .agenda-sidebar-btn.primary:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
   border-color: var(--adm-gold) !important;
 }
@@ -3780,10 +3768,7 @@ textarea:focus {
   border-radius: 0px !important;
 }
 .mini-calendar-day.active {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
   border: 1px solid var(--adm-gold) !important;
   color: #ffffff !important;
 }
@@ -3801,42 +3786,27 @@ textarea:focus {
 }
 .wa-filter-pill.accent { border-color: var(--adm-gold) !important; color: var(--adm-gold) !important; }
 .wa-filter-pill.accent.active, .wa-filter-pill.accent:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 .wa-filter-pill.red { border-color: #EF4444 !important; color: #EF4444 !important; }
 .wa-filter-pill.red.active, .wa-filter-pill.red:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #381212 0%, #732C2C 30%, #4E1F1F 50%, #8C3E3E 70%, #381212 100%) !important;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 .wa-filter-pill.green { border-color: #10B981 !important; color: #10B981 !important; }
 .wa-filter-pill.green.active, .wa-filter-pill.green:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 .wa-filter-pill.yellow { border-color: #EAB308 !important; color: #EAB308 !important; }
 .wa-filter-pill.yellow.active, .wa-filter-pill.yellow:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #2E1B10 0%, #5D3E29 30%, #40291B 50%, #76543D 70%, #2E1B10 100%) !important;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 .wa-filter-pill.gray { border-color: #64748B !important; color: #64748B !important; }
 .wa-filter-pill.gray.active, .wa-filter-pill.gray:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #1E293B 0%, #334155 30%, #243042 50%, #475569 70%, #1E293B 100%) !important;
+  background: linear-gradient(90deg, rgba(100, 116, 139, 0.15) 0%, rgba(100, 116, 139, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 
@@ -3849,10 +3819,7 @@ textarea:focus {
   transition: all 0.2s ease !important;
 }
 .category-tab-btn.active {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
   border-color: var(--adm-gold) !important;
   color: #ffffff !important;
 }
@@ -3869,38 +3836,23 @@ textarea:focus {
 }
 .service-catalog-card.cat-corte {
   border-left-color: #E2703A !important;
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #2E1B10 0%, #5D3E29 30%, #40291B 50%, #76543D 70%, #2E1B10 100%) !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.15) 0%, rgba(226, 112, 58, 0.04) 25%, transparent 60%) !important;
 }
 .service-catalog-card.cat-cor {
   border-left-color: #7A3CFF !important;
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #1F153F 0%, #442E8E 30%, #30206A 50%, #5E41C9 70%, #1F153F 100%) !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.15) 0%, rgba(122, 60, 255, 0.04) 25%, transparent 60%) !important;
 }
 .service-catalog-card.cat-tratamento {
   border-left-color: #10B981 !important;
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
 }
 .service-catalog-card.cat-combo {
   border-left-color: #FF2D8B !important;
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A1024 0%, #862956 30%, #5C1E3C 50%, #B03D72 70%, #3A1024 100%) !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.15) 0%, rgba(255, 45, 139, 0.04) 25%, transparent 60%) !important;
 }
 .service-catalog-card.cat-analise {
   border-left-color: #EAB308 !important;
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #2E2A10 0%, #6E6429 30%, #4C451E 50%, #95883C 70%, #2E2A10 100%) !important;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.15) 0%, rgba(234, 179, 8, 0.04) 25%, transparent 60%) !important;
 }
 
 /* 8. Financial Header Elements (Screenshot 5) */
@@ -3912,10 +3864,7 @@ textarea:focus {
   transition: all 0.2s ease !important;
 }
 .orange-pill:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
   border-color: var(--adm-gold) !important;
   color: #ffffff !important;
 }
@@ -3931,10 +3880,7 @@ textarea:focus {
   color: #ffffff !important;
 }
 .picker-presets button.active {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.15) 0%, rgba(251, 197, 211, 0.04) 25%, transparent 60%) !important;
   border-color: var(--adm-gold) !important;
 }
 
@@ -3945,10 +3891,7 @@ textarea:focus {
   background: #030303 !important;
 }
 .btn.btn-spectro-green:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 
@@ -3958,10 +3901,7 @@ textarea:focus {
   background: #030303 !important;
 }
 .btn.btn-spectro-red:hover {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #381212 0%, #732C2C 30%, #4E1F1F 50%, #8C3E3E 70%, #381212 100%) !important;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.04) 25%, transparent 60%) !important;
   color: #ffffff !important;
 }
 
