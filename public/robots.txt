@@ -2,7 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /cliente
-Disallow: /agendar
 
 # Crawlers de IA — explicitamente permitidos
 User-agent: GPTBot
