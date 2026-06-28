@@ -187,16 +187,16 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  background: rgba(20, 16, 13, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(220, 163, 84, 0.15);
+  background: linear-gradient(180deg, rgba(18, 14, 18, 0.98) 0%, rgba(10, 8, 10, 1) 100%) !important;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
   padding: 0 8px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   flex-shrink: 0;
   position: relative;
   z-index: 10;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.40);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6) !important;
   box-sizing: border-box;
 }
 
@@ -209,7 +209,6 @@
   gap: 3px;
   border: none;
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
   cursor: pointer;
   padding: 4px 0;
   height: 100%;
@@ -219,15 +218,13 @@
   box-sizing: border-box;
 }
 
-.m-nav-item.active {
-  color: #FF4D9F !important;
-}
-
 .m-nav-label {
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 0.2s ease;
 }
 
 .m-nav-icon-wrap {
@@ -238,14 +235,77 @@
   justify-content: center;
   border-radius: 50%;
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
   transition: all 0.2s ease;
 }
 
-.m-nav-item.active .m-nav-icon-wrap {
-  background: rgba(255, 77, 159, 0.15);
+/* 1. Hoje - Green/Emerald */
+.m-nav-item:nth-child(1) .m-nav-icon-wrap {
+  color: #10B981 !important;
+  opacity: 0.5;
+}
+.m-nav-item:nth-child(1).active .m-nav-icon-wrap {
+  background: rgba(16, 185, 129, 0.15) !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 6px rgba(16, 185, 129, 0.1), 0 0 12px rgba(16, 185, 129, 0.2) !important;
+}
+.m-nav-item:nth-child(1).active .m-nav-label {
+  color: #10B981 !important;
+}
+
+/* 2. Agenda - Cyan/Blue */
+.m-nav-item:nth-child(2) .m-nav-icon-wrap {
+  color: #06B6D4 !important;
+  opacity: 0.5;
+}
+.m-nav-item:nth-child(2).active .m-nav-icon-wrap {
+  background: rgba(6, 182, 212, 0.15) !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 6px rgba(6, 182, 212, 0.1), 0 0 12px rgba(6, 182, 212, 0.2) !important;
+}
+.m-nav-item:nth-child(2).active .m-nav-label {
+  color: #06B6D4 !important;
+}
+
+/* 3. Galeria - Violet/Purple */
+.m-nav-item:nth-child(3) .m-nav-icon-wrap {
+  color: #A855F7 !important;
+  opacity: 0.5;
+}
+.m-nav-item:nth-child(3).active .m-nav-icon-wrap {
+  background: rgba(168, 85, 247, 0.15) !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 6px rgba(168, 85, 247, 0.1), 0 0 12px rgba(168, 85, 247, 0.2) !important;
+}
+.m-nav-item:nth-child(3).active .m-nav-label {
+  color: #A855F7 !important;
+}
+
+/* 4. Caixa - Yellow/Gold */
+.m-nav-item:nth-child(4) .m-nav-icon-wrap {
+  color: #EAB308 !important;
+  opacity: 0.5;
+}
+.m-nav-item:nth-child(4).active .m-nav-icon-wrap {
+  background: rgba(234, 179, 8, 0.15) !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 6px rgba(234, 179, 8, 0.1), 0 0 12px rgba(234, 179, 8, 0.2) !important;
+}
+.m-nav-item:nth-child(4).active .m-nav-label {
+  color: #EAB308 !important;
+}
+
+/* 5. Mais - Rose/Pink */
+.m-nav-item:nth-child(5) .m-nav-icon-wrap {
   color: #FF4D9F !important;
-  box-shadow: inset 0 0 6px rgba(255, 77, 159, 0.10);
+  opacity: 0.5;
+}
+.m-nav-item:nth-child(5).active .m-nav-icon-wrap {
+  background: rgba(255, 77, 159, 0.15) !important;
+  opacity: 1 !important;
+  box-shadow: inset 0 0 6px rgba(255, 77, 159, 0.1), 0 0 12px rgba(255, 77, 159, 0.2) !important;
+}
+.m-nav-item:nth-child(5).active .m-nav-label {
+  color: #FF4D9F !important;
 }
 
 /* ── Tab Transitions ───────────────────────────────────────────────── */
@@ -399,53 +459,53 @@
 .m-booking-card:active { background: var(--m-hover); transform: scale(0.975); }
 
 .m-booking-card.svc-corte {
-  background: #C4B5FD !important;
-  border: 1px solid #A78BFA !important;
-  border-left: 4px solid #7C3AED !important;
-  color: #2E1065 !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.08) 40%, rgba(226, 112, 58, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #E2703A !important;
+  color: #ffffff !important;
 }
 .m-booking-card.svc-corte .m-booking-time {
-  color: #7C3AED !important;
+  color: #E2703A !important;
 }
 
 .m-booking-card.svc-combo {
-  background: #FDA4AF !important;
-  border: 1px solid #F87171 !important;
-  border-left: 4px solid #E11D48 !important;
-  color: #4C0519 !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.08) 40%, rgba(255, 45, 139, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #FF2D8B !important;
+  color: #ffffff !important;
 }
 .m-booking-card.svc-combo .m-booking-time {
-  color: #E11D48 !important;
+  color: #FF2D8B !important;
 }
 
 .m-booking-card.svc-tratamento {
-  background: #A7F3D0 !important;
-  border: 1px solid #34D399 !important;
-  border-left: 4px solid #10B981 !important;
-  color: #064E3B !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #10B981 !important;
+  color: #ffffff !important;
 }
 .m-booking-card.svc-tratamento .m-booking-time {
   color: #10B981 !important;
 }
 
 .m-booking-card.svc-cor {
-  background: #FDE68A !important;
-  border: 1px solid #FBBF24 !important;
-  border-left: 4px solid #DCA354 !important;
-  color: #78350F !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.08) 40%, rgba(122, 60, 255, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #7A3CFF !important;
+  color: #ffffff !important;
 }
 .m-booking-card.svc-cor .m-booking-time {
-  color: #DCA354 !important;
+  color: #7A3CFF !important;
 }
 
 .m-booking-card.svc-analise {
-  background: #FED7AA !important;
-  border: 1px solid #FB923C !important;
-  border-left: 4px solid #F97316 !important;
-  color: #7C2D12 !important;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #EAB308 !important;
+  color: #ffffff !important;
 }
 .m-booking-card.svc-analise .m-booking-time {
-  color: #F97316 !important;
+  color: #EAB308 !important;
 }
 
 .m-booking-time {
