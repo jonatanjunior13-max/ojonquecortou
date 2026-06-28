@@ -5,11 +5,11 @@
 
 /* ── Design Tokens ─────────────────────────────────────────────────── */
 .mobile-app {
-  --m-bg:           #0A0A0A;
-  --m-surface:      #141414;
-  --m-card:         #111111;
-  --m-card-2:       #181818;
-  --m-hover:        #1C1C1E;
+  --m-bg:           #080808;
+  --m-surface:      #030303;
+  --m-card:         #030303;
+  --m-card-2:       #060606;
+  --m-hover:        #080808;
   --m-text:         #FFFFFF;
   --m-text-2:       #F4EFE7;
   --m-muted:        #888888;
@@ -22,22 +22,22 @@
   /* Paleta Espectro — serviços */
   --m-corte:        #E2703A;
   --m-cor:          #7A3CFF;
-  --m-trat:         #1F6FEB;
+  --m-trat:         #10B981;
   --m-green:        #3FB950;
   --m-green-bg:     rgba(63, 185, 80, 0.10);
-  --m-red:          #F85149;
-  --m-red-bg:       rgba(248, 81, 73, 0.10);
-  --m-amber:        #E3B341;
-  --m-amber-bg:     rgba(227, 179, 65, 0.10);
-  --m-blue:         #58A6FF;
-  --m-blue-bg:      rgba(88, 166, 255, 0.10);
-  --m-shadow:       0 8px 40px rgba(0, 0, 0, 0.40);
-  --m-shadow-sm:    0 2px 12px rgba(0, 0, 0, 0.20);
-  --m-radius-sm:    12px;
-  --m-radius:       18px;
-  --m-radius-lg:    24px;
-  --m-radius-xl:    32px;
-  --m-ease:         cubic-bezier(0.34, 1.56, 0.64, 1);
+  --m-red:          #EF4444;
+  --m-red-bg:       rgba(239, 68, 68, 0.10);
+  --m-amber:        #EAB308;
+  --m-amber-bg:     rgba(234, 179, 8, 0.10);
+  --m-blue:         #06B6D4;
+  --m-blue-bg:      rgba(6, 182, 212, 0.10);
+  --m-shadow:       none;
+  --m-shadow-sm:    none;
+  --m-radius-sm:    0px;
+  --m-radius:       0px;
+  --m-radius-lg:    0px;
+  --m-radius-xl:    0px;
+  --m-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --m-ease-fast:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --nav-h:          92px;
   --header-h:       78px;
@@ -2040,3 +2040,91 @@
     border-right: 0.5px solid rgba(255,255,255,0.05);
   }
 }
+
+/* ==========================================================================
+   SISTEMA ESPECTRO — OVERRIDES COMPONENTES MOBILE
+   ========================================================================== */
+
+/* 1. Global Reset de Raio e Bordas */
+.m-card,
+.m-booking-card,
+.m-sheet,
+.m-sheet-body,
+.m-menu-item,
+.m-detail-card,
+.m-day-btn,
+.m-slot,
+.m-stats-card,
+.m-activity-item,
+.m-tabs-nav,
+.m-info-box,
+.m-empty {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* 2. Botões Estilo Espectro Mobile */
+.m-btn,
+.m-action-btn,
+.m-pill-btn {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #030303 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.m-btn-primary,
+.m-btn-gold {
+  border: 1px solid var(--m-gold) !important;
+  color: var(--m-gold) !important;
+}
+
+.m-btn-primary:active,
+.m-btn-gold:active {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  color: #ffffff !important;
+  border-color: var(--m-gold) !important;
+}
+
+.m-btn-secondary:active,
+.m-btn:active {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.01) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* 3. Inputs & Forms */
+.m-input,
+.m-field input,
+.m-field select,
+.m-field textarea,
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background-color: #030303 !important;
+  color: #ffffff !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--m-gold) !important;
+}
+
+/* Tab navigation items */
+.m-nav-item.active {
+  color: var(--m-gold) !important;
+}
+.m-nav {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: #030303 !important;
+  border-radius: 0px !important;
+}
+

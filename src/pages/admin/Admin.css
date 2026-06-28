@@ -3603,3 +3603,104 @@
   color: #7C2D12 !important;
 }
 
+/* ==========================================================================
+   SISTEMA ESPECTRO — OVERRIDES COMPONENTES DESKTOP
+   ========================================================================== */
+
+/* 1. Global Reset de Raio e Bordas */
+.sidebar, 
+.modal-content, 
+.card, 
+.panel, 
+.dropdown-menu,
+.admin-card,
+.metric-card,
+.stat-card,
+.crm-card,
+.chart-container,
+.faturamento-summary-card,
+.summary-item-box,
+.checkout-section,
+.comanda-items-list,
+.product-inventory-card,
+.service-mgmt-card,
+.settings-section-card {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* 2. Botões Estilo Espectro (Outline Brilhante com Hover Degradê) */
+.btn, 
+.btn-primary, 
+.btn-secondary, 
+.btn-submit,
+.action-btn,
+.add-btn,
+.crm-tab-btn,
+.category-tab-btn {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #030303 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-primary, 
+.btn-submit,
+.btn-save {
+  border: 1px solid var(--adm-gold) !important;
+  color: var(--adm-gold) !important;
+}
+
+.btn-primary:hover, 
+.btn-submit:hover,
+.btn-save:hover {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  color: #ffffff !important;
+  border-color: var(--adm-gold) !important;
+}
+
+.btn-secondary:hover,
+.btn:hover,
+.action-btn:hover {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.03) 40%, rgba(255, 255, 255, 0.01) 100%) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Active tabs */
+.crm-tab-btn.active,
+.category-tab-btn.active {
+  background: linear-gradient(90deg, rgba(212, 132, 154, 0.22) 0%, rgba(212, 132, 154, 0.08) 40%, rgba(212, 132, 154, 0.02) 100%) !important;
+  border-left: 3px solid var(--adm-gold) !important;
+  color: #ffffff !important;
+}
+
+/* 3. Inputs & Forms */
+input[type="text"], 
+input[type="number"], 
+input[type="email"], 
+input[type="password"], 
+input[type="tel"], 
+input[type="search"], 
+input[type="date"], 
+input[type="time"], 
+select, 
+textarea {
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background-color: #030303 !important;
+  color: #ffffff !important;
+  outline: none !important;
+  box-shadow: none !important;
+  transition: border-color 0.2s !important;
+}
+
+input:focus, 
+select:focus, 
+textarea:focus {
+  border-color: var(--adm-gold) !important;
+}
+
+
