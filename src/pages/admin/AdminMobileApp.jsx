@@ -2713,7 +2713,7 @@ Grande abraço, Jon.`;
     return (
       <div className="m-tab m-page-flush" key="agenda" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
         {/* Week strip */}
-        <div style={{ display: 'flex', alignItems: 'center', background: 'var(--m-surface)', borderBottom: '0.5px solid var(--m-rule)', flexShrink: 0 }}>
+        <div className="m-week-strip-container" style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
           <button 
             style={{ background: 'none', border: 'none', color: 'var(--m-muted)', padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
             onClick={() => {

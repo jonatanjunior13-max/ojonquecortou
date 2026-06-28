@@ -187,7 +187,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  background: linear-gradient(180deg, rgba(18, 14, 18, 0.98) 0%, rgba(10, 8, 10, 1) 100%) !important;
+  background: linear-gradient(90deg, #1E121E 0%, #120D1A 50%, #090B12 100%) !important;
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
@@ -2245,5 +2245,21 @@ textarea:focus {
 .m-mais-card:nth-child(5) {
   border-left-color: #FF4D9F !important;
   background: linear-gradient(90deg, rgba(255, 77, 159, 0.15) 0%, rgba(255, 77, 159, 0.04) 25%, transparent 60%) !important;
+}
+
+/* Agenda Week Strip & Date Bar Gradient Styling (Petrol-Charcoal) */
+.m-week-strip-container {
+  background: linear-gradient(90deg, #0A1C24 0%, #0E151A 50%, #080C0E 100%) !important;
+  border-bottom: 1.5px solid rgba(6, 182, 212, 0.2) !important;
+}
+
+.m-week-strip {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+.m-agenda-date-bar {
+  background: linear-gradient(90deg, #08161D 0%, #0C1115 50%, #06090A 100%) !important;
+  border-bottom: 1.5px solid rgba(6, 182, 212, 0.2) !important;
 }
 

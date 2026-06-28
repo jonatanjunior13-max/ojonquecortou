@@ -486,7 +486,7 @@
     left: 0;
     right: 0;
     height: 76px;
-    background: linear-gradient(180deg, rgba(18, 14, 18, 0.98) 0%, rgba(10, 8, 10, 1) 100%) !important;
+    background: linear-gradient(90deg, #1E121E 0%, #120D1A 50%, #090B12 100%) !important;
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
