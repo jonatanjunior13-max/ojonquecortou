@@ -342,33 +342,32 @@
 }
 
 .m-kpi-card {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #1C2B35 0%, #3B5466 30%, #253744 50%, #4D6B82 70%, #1C2B35 100%) !important;
-  border: 1px solid rgba(90, 158, 206, 0.35) !important;
-  border-radius: var(--m-radius);
+  border-radius: 0px !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left-width: 3px !important;
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  box-shadow: none !important;
 }
 
-.m-kpi-card.gold {
-  border-color: rgba(196, 115, 138, 0.35) !important;
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.85) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #3A2328 0%, #834F5B 30%, #523139 50%, #9C5E6D 70%, #3A2328 100%) !important;
-  box-shadow: 0 4px 15px rgba(196, 115, 138, 0.2);
+.m-kpi-row > .m-kpi-card:nth-child(1) {
+  border-left-color: #10B981 !important; /* Faturamento - Verde */
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.04) 25%, transparent 60%) !important;
 }
-.m-kpi-card.green { border-color: rgba(63, 185, 80, 0.25); }
-.m-kpi-card.red   { border-color: rgba(248, 81, 73, 0.25); }
-.m-kpi-card .m-kpi-value {
-  color: #ffffff !important;
+.m-kpi-row > .m-kpi-card:nth-child(1) .m-kpi-value {
+  color: #10B981 !important;
 }
+
+.m-kpi-row > .m-kpi-card:nth-child(2) {
+  border-left-color: #06B6D4 !important; /* Atendimentos - Ciano */
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.15) 0%, rgba(6, 182, 212, 0.04) 25%, transparent 60%) !important;
+}
+.m-kpi-row > .m-kpi-card:nth-child(2) .m-kpi-value {
+  color: #06B6D4 !important;
+}
+
 
 .m-kpi-label {
   font-size: 0.68rem;
