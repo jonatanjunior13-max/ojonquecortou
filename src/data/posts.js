@@ -2191,8 +2191,9 @@ export const posts = [
       ]
     },
     title: 'Wolf Cut para Cabelos Cacheados | Jon',
+    seoTitle: 'Wolf Cut Cacheado em BH | Studio do Jon — Leitura de Fio',
     excerpt: 'Combinação explosiva entre o Shag dos anos 70 e o Mullet dos 80. Descubra como o Wolf Cut valoriza cabelos cacheados com volume e atitude selvagem.',
-    metaDescription: 'Wolf cut em cabelo cacheado exige técnica. Entenda como funciona o corte lobo em cachos e o que pode dar errado se o cabeleireiro errar a leitura.',
+    metaDescription: 'Não é qualquer corte wolf cut — é wolf cut lido no seu fio. Jon analisa o padrão do seu cabelo antes de qualquer tesoura. BH, sem lista de espera.',
     keywords: 'wolf cut cacheado, corte lobo cabelo cacheado, wolf cut para cachos, wolf cut 2026, corte selvagem cacho, studio do jon, o jon que cortou',
     date: '24 de Abril, 2026',
     author: 'Jon',

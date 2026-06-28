@@ -199,7 +199,7 @@ const BlogPostPage = () => {
   return (
     <main className="post-page">
       <SEO 
-        title={post.title} 
+        title={post.seoTitle || post.title} 
         description={postDesc}
         image={post.image}
         url={`/blog/${post.slug}`}
