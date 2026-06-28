@@ -658,55 +658,62 @@
 .m-slot-booking.faltou,
 .m-slot-booking.ausencia,
 .m-slot-booking.bloqueado {
-  background: linear-gradient(135deg, rgba(100, 116, 139, 0.3) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(100, 116, 139, 0.4) !important;
-  border-left: 3px solid #475569 !important;
+  background: linear-gradient(90deg, rgba(100, 116, 139, 0.22) 0%, rgba(100, 116, 139, 0.08) 40%, rgba(100, 116, 139, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #64748B !important;
   color: #94A3B8 !important;
   opacity: 0.95;
-  box-shadow: inset 0 0 8px rgba(100, 116, 139, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 
 .m-slot-booking.svc-corte, .m-slot-booking.confirmado.svc-corte, .m-slot-booking.confirmado-pela-cliente.svc-corte, .m-slot-booking.finalizado.svc-corte, .m-slot-booking.pendente.svc-corte {
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(167, 139, 250, 0.6) !important;
-  border-left: 3px solid #8B5CF6 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(167, 139, 250, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.08) 40%, rgba(226, 112, 58, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #E2703A !important;
+  color: #ffffff !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .m-slot-booking.svc-combo, .m-slot-booking.confirmado.svc-combo, .m-slot-booking.confirmado-pela-cliente.svc-combo, .m-slot-booking.finalizado.svc-combo, .m-slot-booking.pendente.svc-combo {
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(244, 63, 94, 0.6) !important;
-  border-left: 3px solid #E11D48 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(244, 63, 94, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.08) 40%, rgba(255, 45, 139, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #FF2D8B !important;
+  color: #ffffff !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .m-slot-booking.svc-tratamento, .m-slot-booking.confirmado.svc-tratamento, .m-slot-booking.confirmado-pela-cliente.svc-tratamento, .m-slot-booking.finalizado.svc-tratamento, .m-slot-booking.pendente.svc-tratamento {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(52, 211, 153, 0.6) !important;
-  border-left: 3px solid #10B981 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(52, 211, 153, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.08) 40%, rgba(31, 111, 235, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #1F6FEB !important;
+  color: #ffffff !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .m-slot-booking.svc-cor, .m-slot-booking.confirmado.svc-cor, .m-slot-booking.confirmado-pela-cliente.svc-cor, .m-slot-booking.finalizado.svc-cor, .m-slot-booking.pendente.svc-cor {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(251, 191, 36, 0.6) !important;
-  border-left: 3px solid #F59E0B !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(251, 191, 36, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.08) 40%, rgba(122, 60, 255, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #7A3CFF !important;
+  color: #ffffff !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .m-slot-booking.svc-analise, .m-slot-booking.confirmado.svc-analise, .m-slot-booking.confirmado-pela-cliente.svc-analise, .m-slot-booking.finalizado.svc-analise, .m-slot-booking.pendente.svc-analise {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(251, 146, 60, 0.6) !important;
+  background: linear-gradient(90deg, rgba(251, 146, 60, 0.22) 0%, rgba(251, 146, 60, 0.08) 40%, rgba(251, 146, 60, 0.02) 100%) !important;
+  border: none !important;
   border-left: 3px solid #F97316 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(251, 146, 60, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
+  color: #ffffff !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .m-slot-booking.svc-almoco, .m-slot-booking.confirmado.svc-almoco, .m-slot-booking.confirmado-pela-cliente.svc-almoco, .m-slot-booking.finalizado.svc-almoco, .m-slot-booking.pendente.svc-almoco {
-  background: linear-gradient(135deg, rgba(34, 211, 238, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(34, 211, 238, 0.6) !important;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.22) 0%, rgba(34, 211, 238, 0.08) 40%, rgba(34, 211, 238, 0.02) 100%) !important;
+  border: none !important;
   border-left: 3px solid #06B6D4 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(34, 211, 238, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
+  color: #ffffff !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 
 /* Agenda Badges on Mobile */
@@ -1938,41 +1945,38 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  border-radius: 12px !important;
-  box-shadow: 
-    0 4px 10px rgba(0, 0, 0, 0.05),
-    0 1px 3px rgba(0, 0, 0, 0.03),
-    inset 0 4px 6px rgba(255, 255, 255, 0.85),
-    inset 0 -4px 6px rgba(0, 0, 0, 0.06) !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  border: none !important;
   transition: background 0.15s ease;
   position: relative;
   overflow: hidden;
 }
 
 .m-booking-bar.svc-corte {
-  border-left: 3px solid #8B5CF6 !important;
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  color: #F8FAFC !important;
+  border-left: 3px solid #E2703A !important;
+  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.08) 40%, rgba(226, 112, 58, 0.02) 100%) !important;
+  color: #ffffff !important;
 }
 .m-booking-bar.svc-combo {
-  border-left: 3px solid #E11D48 !important;
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  color: #F8FAFC !important;
+  border-left: 3px solid #FF2D8B !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.08) 40%, rgba(255, 45, 139, 0.02) 100%) !important;
+  color: #ffffff !important;
 }
 .m-booking-bar.svc-tratamento {
-  border-left: 3px solid #10B981 !important;
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  color: #F8FAFC !important;
+  border-left: 3px solid #1F6FEB !important;
+  background: linear-gradient(90deg, rgba(31, 111, 235, 0.22) 0%, rgba(31, 111, 235, 0.08) 40%, rgba(31, 111, 235, 0.02) 100%) !important;
+  color: #ffffff !important;
 }
 .m-booking-bar.svc-cor {
-  border-left: 3px solid #F59E0B !important;
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  color: #F8FAFC !important;
+  border-left: 3px solid #7A3CFF !important;
+  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.08) 40%, rgba(122, 60, 255, 0.02) 100%) !important;
+  color: #ffffff !important;
 }
 .m-booking-bar.svc-analise {
   border-left: 3px solid #F97316 !important;
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  color: #F8FAFC !important;
+  background: linear-gradient(90deg, rgba(251, 146, 60, 0.22) 0%, rgba(251, 146, 60, 0.08) 40%, rgba(251, 146, 60, 0.02) 100%) !important;
+  color: #ffffff !important;
 }
 
 .m-booking-info {
