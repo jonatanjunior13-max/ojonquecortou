@@ -210,7 +210,10 @@ async function handleSetmoreWebhook(req, res) {
       setmoreId,
       notes: comment,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      professionalId: 'jon',
+      profissional: 'jon',
+      professionalName: appt.staff_name || 'Jon'
     };
 
     const docRef = await addDoc(collection(db, 'bookings'), bookingPayload);
