@@ -6,19 +6,19 @@
 /* ── Design Tokens ─────────────────────────────────────────────────── */
 .mobile-app {
   --m-bg:           #080808;
-  --m-surface:      #030303;
-  --m-card:         #030303;
-  --m-card-2:       #060606;
-  --m-hover:        #080808;
+  --m-surface:      #121214;
+  --m-card:         #16161a;
+  --m-card-2:       #1c1c20;
+  --m-hover:        #1c1c20;
   --m-text:         #FFFFFF;
-  --m-text-2:       #F4EFE7;
-  --m-muted:        #888888;
+  --m-text-2:       #FFFFFF;
+  --m-muted:        #B0B0B0;
   --m-rule:         rgba(255, 255, 255, 0.08);
   --m-rule-strong:  rgba(255, 255, 255, 0.14);
-  --m-gold:         #D4849A;
-  --m-gold-deep:    #D9196D;
-  --m-gold-glow:    rgba(212, 132, 154, 0.20);
-  --m-gold-subtle:  rgba(212, 132, 154, 0.09);
+  --m-gold:         #FBC5D3;
+  --m-gold-deep:    #E294A7;
+  --m-gold-glow:    rgba(251, 197, 211, 0.20);
+  --m-gold-subtle:  rgba(251, 197, 211, 0.09);
   /* Paleta Espectro — serviços */
   --m-corte:        #E2703A;
   --m-cor:          #7A3CFF;

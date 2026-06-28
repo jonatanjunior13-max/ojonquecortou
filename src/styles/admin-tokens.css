@@ -2,27 +2,27 @@
   /* Surfaces - Obsidian Dark (Design Reference) */
   --adm-bg: #080808;
   --adm-sidebar-bg: #030303;
-  --adm-surface: #030303;
-  --adm-card: #030303;
-  --adm-card-hover: #080808;
+  --adm-surface: #121214;
+  --adm-card: #16161a;
+  --adm-card-hover: #1c1c20;
 
   /* Text - High Contrast White */
   --adm-text: #FFFFFF;
-  --adm-text-2: #F4EFE7;
-  --adm-text-3: #D4CFC9;
-  --adm-muted: rgba(255, 255, 255, 0.35);
+  --adm-text-2: #FFFFFF;
+  --adm-text-3: #E2E8F0;
+  --adm-muted: rgba(255, 255, 255, 0.65);
 
   /* Brand - Elegant Soft Pink (Rosa Suave) */
-  --adm-gold: #D4849A;
-  --adm-gold-deep: #c47389;
-  --adm-bronze: #c47389;
+  --adm-gold: #FBC5D3;
+  --adm-gold-deep: #E294A7;
+  --adm-bronze: #E294A7;
 
   /* Overrides to prevent hot pink inside Admin */
-  --accent: #D4849A;
-  --accent-deep: #c47389;
-  --accent-warm: rgba(212, 132, 154, 0.45);
-  --support-1: #D4849A;
-  --support-2: #c47389;
+  --accent: #FBC5D3;
+  --accent-deep: #E294A7;
+  --accent-warm: rgba(251, 197, 211, 0.45);
+  --support-1: #FBC5D3;
+  --support-2: #E294A7;
   --support-3: rgba(212, 132, 154, 0.45);
   --espectro-pink: #D4849A;
 
@@ -65,5 +65,5 @@
 
   /* Aliases para compatibilidade com JSX inline styles */
   --sidebar-bg: #030303;
-  --panel-bg: #030303;
+  --panel-bg: #121214;
 }
