@@ -4001,6 +4001,20 @@ textarea:focus {
   color: #7A3CFF !important;
 }
 
+/* 12. Marketing Page Layout Overrides (Svelte Fading Gradient) */
+.marketing-tab-view,
+.marketing-config-card,
+.marketing-targets-card,
+.marketing-automations-card {
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left-width: 3px !important;
+  border-left-color: var(--adm-gold) !important;
+  background: linear-gradient(90deg, rgba(251, 197, 211, 0.12) 0%, rgba(251, 197, 211, 0.03) 25%, transparent 60%) !important;
+}
+
+
 
 
 
