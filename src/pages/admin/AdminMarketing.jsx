@@ -184,6 +184,41 @@ const TRENDING_THEMES = [
     category: 'Mitos & Verdades',
     description: 'Gelatina traz retenção de umidade com fixação flexível. Gel comum possui polímeros rígidos que dão o efeito durinho eterno. Saiba escolher a textura certa.',
     keywords: 'gelatina capilar, gel finalizador, fixação de cachos, definição de ondas'
+  },
+  {
+    id: 'theme_crespos_reais',
+    title: 'Curvatura 4C & Crespos Reais',
+    category: 'Crespos & Ondas',
+    description: 'Parar de tentar esticar ou forçar definição artificial em cabelos tipo 4. O foco técnico está no volume, caimento e nutrição profunda de lipídios de verdade, valorizando o crespo natural.',
+    keywords: 'cabelo crespo, curvatura 4C, volumão crespo, hidratação de crespos'
+  },
+  {
+    id: 'theme_build_up_acumulo',
+    title: 'Build-Up: Acúmulo de Produtos',
+    category: 'Saúde & Tratamento',
+    description: 'Silicones insolúveis e óleos minerais criam uma barreira plástica no cacho que bloqueia a água. O cabelo fica opaco e sem definição por baixo. Como higienizar sem agredir.',
+    keywords: 'build-up, acúmulo de cremes, shampoo antirresíduos, higienização capilar'
+  },
+  {
+    id: 'theme_seco_vs_danificado',
+    title: 'Cabelo Seco vs. Cabelo Danificado',
+    category: 'Saúde & Tratamento',
+    description: 'Cabelo seco precisa de óleo (reposição lipídica); cabelo danificado precisa de proteína (queratina). O perigo de entupir um fio apenas ressecado de reconstrução e deixá-lo rígido.',
+    keywords: 'cabelo seco, cabelo danificado, reconstrução capilar, nutrição capilar'
+  },
+  {
+    id: 'theme_receitas_caseiras',
+    title: 'Os Riscos de Receitas Caseiras',
+    category: 'Mitos & Verdades',
+    description: 'Maionese e abacate têm moléculas grandes que não penetram na fibra capilar. Além de não tratar, acumulam resíduos e geram fungos e caspa no couro cabeludo.',
+    keywords: 'receita caseira capilar, maionese no cabelo, saúde do couro cabeludo, caspa'
+  },
+  {
+    id: 'theme_transicao_sem_neura',
+    title: 'Transição Capilar Sem Neura',
+    category: 'Transição Capilar',
+    description: 'A transição capilar não precisa ser um martírio de autoestima. O corte de transição progressivo respeita o seu tempo e o seu limite sensorial com acolhimento.',
+    keywords: 'transição capilar, big chop progressivo, acolhimento capilar, autoestima'
   }
 ];
 
@@ -267,6 +302,7 @@ const AdminMarketing = () => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
+  const [selectedThemeId, setSelectedThemeId] = useState(TRENDING_THEMES[0].id);
   const cancelSendingRef = useRef(false);
 
   // Marketing states
@@ -413,8 +449,8 @@ const AdminMarketing = () => {
       apiKey = '';
     }
 
-    const randomTheme = TRENDING_THEMES[Math.floor(Math.random() * TRENDING_THEMES.length)];
-    const randomTopic = `${randomTheme.title}: ${randomTheme.description}`;
+    const selectedTheme = TRENDING_THEMES.find(t => t.id === selectedThemeId) || TRENDING_THEMES[0];
+    const randomTopic = `${selectedTheme.title}: ${selectedTheme.description}`;
 
 
     const runFallback = () => {
@@ -1012,9 +1048,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
 
   const handleGenerateGbpPost = async (specificTheme = null) => {
     setIsGeneratingGbpPost(true);
-    const cleanedTheme = (specificTheme && typeof specificTheme === 'object' && 'title' in specificTheme) 
-      ? specificTheme 
-      : TRENDING_THEMES[Math.floor(Math.random() * TRENDING_THEMES.length)];
+    const cleanedTheme = specificTheme || TRENDING_THEMES.find(t => t.id === selectedThemeId) || TRENDING_THEMES[0];
 
     const generateDynamicFallbackPost = (theme = null) => {
       if (theme && theme.title) {
@@ -3004,6 +3038,51 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                     </div>
                   </div>
                 )}
+
+                {/* Seletor de Assuntos Unificado */}
+                <div style={{ padding: '20px', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: '6px', marginBottom: '20px' }}>
+                  <h5 style={{ margin: '0 0 10px 0', fontWeight: 700 }}>🎯 Seletor de Assuntos Unificado</h5>
+                  <p style={{ margin: '0 0 15px 0', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+                    Escolha um tema técnico de cachos. A IA usará o tema selecionado para gerar tanto o Post do Google Meu Negócio quanto a Newsletter mensal.
+                  </p>
+                  <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <select
+                      value={selectedThemeId}
+                      onChange={e => setSelectedThemeId(e.target.value)}
+                      style={{ padding: '8px 12px', borderRadius: 4, border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--adm-text)', fontSize: '0.85rem', flex: 1, minWidth: '250px' }}
+                    >
+                      {TRENDING_THEMES.map(theme => (
+                        <option key={theme.id} value={theme.id}>{theme.category} — {theme.title}</option>
+                      ))}
+                    </select>
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      <button 
+                        className="btn btn-accent btn-small"
+                        onClick={() => handleGenerateGbpPost()}
+                        disabled={isGeneratingGbpPost}
+                        style={{ fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                      >
+                        🤖 Gerar Post GBP
+                      </button>
+                      <button 
+                        className="btn btn-accent btn-small"
+                        onClick={() => activeNewsletter && handleRegenerateNewsletter(activeNewsletter.id)}
+                        disabled={isGeneratingNewsletter}
+                        style={{ fontSize: '0.78rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                      >
+                        📧 Gerar Newsletter
+                      </button>
+                    </div>
+                  </div>
+                  {selectedThemeId && (() => {
+                    const th = TRENDING_THEMES.find(t => t.id === selectedThemeId);
+                    return th ? (
+                      <div style={{ marginTop: '12px', fontSize: '0.78rem', color: 'var(--adm-muted)', borderTop: '1px dashed var(--adm-rule)', paddingTop: '10px' }}>
+                        <strong>Resumo do assunto selecionado:</strong> {th.description}
+                      </div>
+                    ) : null;
+                  })()}
+                </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
                   
