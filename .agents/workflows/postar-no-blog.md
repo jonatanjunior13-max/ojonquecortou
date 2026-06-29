@@ -29,17 +29,38 @@ Abra o arquivo `src/data/posts.js` e adicione um novo objeto ao topo da lista (a
   },
 ```
 
-### 3. Salvar e Publicar
-Após editar o arquivo, abra o terminal na pasta do projeto e execute:
+### 3. Gerar o Build (obrigatório)
 
-// turbo
+> [!IMPORTANT]
+> Este passo é **obrigatório**. O Vercel serve um arquivo HTML pré-renderizado para cada post (`/blog/slug/index.html`). Se o build não rodar, o post fica com 404 e não aparece.
+
+No terminal, dentro da pasta do projeto, execute:
+
 ```powershell
-npx vercel --prod
+npm run build
 ```
+
+Aguarde terminar. A saída vai confirmar algo como:
+```
+Starting Node SEO pre-rendering for XX pages...
+Static pre-rendering completed successfully!
+```
+
+### 4. Publicar no ar
+
+Após o build completar com sucesso, faça o commit e push:
+
+```powershell
+git add -A
+git commit -m "feat: novo post - titulo-do-post"
+git push
+```
+
+O Vercel detecta o push e faz o deploy automaticamente em ~2 minutos. Não use `npx vercel --prod` manualmente — o push já dispara o deploy pelo GitHub.
 
 ---
 
 > [!TIP]
 > **Dica de Formatação:** No campo `content`, você pode usar as tags `<h3>`, `<p>` e `<strong>` para deixar o texto bonito no blog.
 > 
-> **Quer que eu poste pra você?** Basta me enviar o texto e a foto aqui no chat que eu faço todo o processo e dou o deploy automaticamente!
+> **Quer que eu poste pra você?** Basta me enviar o texto e a foto aqui no chat que eu faço todo o processo, rodo o build e dou o push automaticamente!
