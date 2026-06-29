@@ -1,5 +1,134 @@
 export const posts = [
   {
+    id: 47,
+    slug: 'frizz-em-cabelo-cacheado',
+    title: 'Frizz em cabelo cacheado: a física por trás do fio arrepiado',
+    seoTitle: 'Frizz em cabelo cacheado: a física por trás do fio arrepiado | Studio do Jon',
+    excerpt: 'Descubra por que o frizz em cabelo cacheado é uma reação física e como o Método Leitura de Fio no Studio do Jon em BH resolve o problema na raiz.',
+    metaDescription: 'Descubra por que o frizz em cabelo cacheado é uma reação física e como o Método Leitura de Fio no Studio do Jon em BH resolve o problema na raiz.',
+    keywords: 'frizz em cabelo cacheado, como acabar com o frizz em cabelo cacheado, porosidade capilar bh, especialista em cachos belo horizonte, Método Leitura de Fio',
+    date: '29 de Junho, 2026',
+    datePublished: '2026-06-29',
+    dateModified: '2026-06-29',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-frizz-em-cabelo-cacheado.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que meu cabelo cacheado tem tanto frizz mesmo hidratando toda semana?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Se a sua fibra capilar estiver com alta porosidade ou pH desequilibrado (alcalino), as cutículas continuarão abertas. A água da hidratação entra e evapora imediatamente. Para resolver, é preciso fazer a acidificação capilar para fechar as cutículas e reter a hidratação dentro do fio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O Studio do Jon realiza tratamentos para soltar os cachos e tirar o frizz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não realizamos nenhum tipo de alisamento, relaxamento ou química de redução de volume. Nós tratamos o frizz reequilibrando a porosidade e a saúde do fio através de terapia capilar e cortes geométricos a seco para valorizar a estrutura natural do cacho."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Toalhas de microfibra ajudam a evitar o frizz no cacho?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Onde fica o Studio do Jon e como posso agendar um diagnóstico?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O Studio do Jon está localizado no bairro Caiçara, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 3586-6673."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que causa o aparecimento de frizz mecânico?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração."
+          }
+        }
+      ]
+    },
+    content: `
+      <p>O frizz em cabelo cacheado é uma resposta física do fio poroso que busca umidade no ar devido ao desalinhamento das cutículas ou à falta de lipídios na fibra capilar. Para combater esse quadro, é preciso regular a porosidade e selar as cutículas com pH ácido e reposição lipídica em vez de tentar mascarar o fio com cremes pesados.</p>
+      <p>Eu vejo isso todos os dias no meu studio em Belo Horizonte. A cliente chega reclamando que o cabelo é "rebelde" ou que nenhum creme de supermercado consegue abaixar o frizz. Ela gasta fortunas com óleos de silicone e máscaras milagrosas. O erro está em tratar o frizz como um inimigo de comportamento ou um defeito. Frizz é física pura.</p>
+
+      <h2>A biologia da eletrostática e da porosidade capilar</h2>
+      <p>O cacho possui uma anatomia elíptica. Ele se torce e gira sobre si mesmo durante o crescimento do folículo. Essa torção natural cria pontos de menor densidade cuticular ao longo da haste do fio. Nesses pontos de dobra, a cutícula capilar — a barreira de escamas externa que protege a fibra — fica exposta e se abre com mais facilidade.</p>
+      <p>O frizz em cabelo cacheado é um fenômeno físico e biológico onde as cutículas da fibra capilar se abrem e se expandem para absorver a umidade externa. Esse processo ocorre principalmente em fios porosos que carecem de óleo natural para repelir a água do ar ambiente.</p>
+      <p>Quando o ar de Belo Horizonte está úmido, o córtex capilar busca essa água externa. Como a barreira cuticular está desalinhada ou desprotegida por falta de lipídios (óleos), o fio dilata e se afasta das outras fibras para absorver essa umidade. Esse afastamento gera a carga eletrostática negativa que faz o cabelo parecer arrepiado. O frizz é o seu cabelo tentando respirar a umidade que ele não consegue reter por dentro.</p>
+
+      <h2>Carga aniônica vs. carga catiônica</h2>
+      <p>A fibra do cabelo saudável é levemente ácida e possui uma carga elétrica equilibrada. Processos de lavagem com shampoos alcalinos ou atrito mecânico removem essa barreira protetora ácida. Sem ela, o fio acumula cargas elétricas negativas (aniônicas).</p>
+      <p>Cargas iguais se repelem. Quando os fios de cabelo estão repletos de cargas negativas, eles se afastam uns dos outros fisicamente. Isso resulta no volume desordenado e no frizz resistente a finalizações. Tratar o cacho exige repor a acidez e neutralizar essas cargas negativas com agentes catiônicos.</p>
+
+      <h2>A mentira dos finalizadores pesados e dos silicones insolúveis</h2>
+      <p>O mercado tradicional de cosméticos adora vender a ilusão de que basta passar um óleo pesado ou silicone para resolver o frizz. Quanta ignorância técnica. O silicone insolúvel cria uma película plástica ao redor da fibra. Na primeira hora, o frizz desaparece porque o fio fica impermeabilizado e pesado.</p>
+      <p>Só que essa película impede o cabelo de receber água nas lavagens seguintes. Por baixo do plástico do silicone, o córtex seca. A porosidade aumenta e o cabelo enfraquece por dentro.</p>
+      <p>Quando você lava com um shampoo de sulfato forte para remover o acúmulo de silicone, as cutículas são escancaradas. A umidade evapora imediatamente e o frizz volta três vezes pior. Nós precisamos parar de maquiar o fio. Precisamos selar a cutícula de verdade.</p>
+
+      <h2>O perigo do óleo mineral na raiz</h2>
+      <p>Outro erro crônico é aplicar óleos minerais pesados e derivados de petróleo perto do couro cabeludo na tentativa de controlar os fios novos que nascem com frizz. O óleo mineral não é absorvido pela pele ou pelo córtex.</p>
+      <p>Ele acumula na saída do folículo piloso, criando uma barreira impermeável que abafa a raiz. Isso gera dermatite seborreica, caspa e queda por abafamento. O frizz do fio novo deve ser tratado com hidratação leve e controle de pH, nunca com graxa mineral.</p>
+
+      <h2>O que é a Leitura de Fio no Studio do Jon</h2>
+      <p>Eu não adivinho tratamentos. Eu leio a física do seu cabelo. O <a href="/metodo">Método Leitura de Fio</a> é um protocolo técnico de diagnóstico capilar em sete etapas realizado no Studio do Jon antes de iniciar o corte. Ele engloba a escuta ativa, análise do caimento a seco, diagnóstico do couro cabeludo, histórico químico, comportamento molhado, definição da angulação geométrica e finalização.</p>
+      <p>Como autista, meu cérebro funciona mapeando e decodificando padrões geométricos e físicos na fibra. Nas sete etapas do diagnóstico, nós avaliamos:</p>
+      <ul>
+        <li><strong>Escuta:</strong> entender seus hábitos diários de lavagem, secagem e finalização para identificar gatilhos mecânicos de frizz.</li>
+        <li><strong>Análise a seco:</strong> observar o comportamento eletrostático das mechas no estado seco natural, sem a influência de cremes.</li>
+        <li><strong>Diagnóstico do couro cabeludo:</strong> checar se a descamação na raiz é caspa real ou apenas ressecamento severo.</li>
+        <li><strong>Histórico químico:</strong> avaliar a perda de elasticidade e o desgaste das cutículas por procedimentos passados.</li>
+        <li><strong>Análise molhada:</strong> testar a porosidade do cacho para entender a velocidade de absorção e perda de água.</li>
+        <li><strong>Definição de técnica:</strong> planejar o corte geométrico exato sem criar pontas mastigadas que geram frizz mecânico.</li>
+        <li><strong>Finalização como validação:</strong> secar e validar a física do caimento e o equilíbrio estático do cabelo no estado final seco.</li>
+      </ul>
+      <p>A porosidade capilar é a propriedade física que determina a capacidade da fibra capilar de absorver e reter água ou tratamentos em seu córtex. Cutículas altamente porosas deixam a umidade entrar e sair livremente, resultando em frizz crônico e perda rápida de definição dos cachos.</p>
+
+      <h2>Por que tratar com um especialista em cachos em Belo Horizonte</h2>
+      <p>Tratar o frizz exige entender a biologia da haste do cabelo ondulado a crespo. Eu sou <a href="/sobre">Jonatan Junior, o Jon</a>. No meu studio, localizado no bairro Caiçara, em Belo Horizonte, atendemos <a href="/servicos">exclusivamente curvaturas do 2A ao 4C</a>. Não trabalhamos com alisamentos, relaxamentos, progressivas ou qualquer outro processo de alteração química de curvatura. O foco é a integridade real do seu cacho.</p>
+      <p>A nossa avaliação de 4.9/5 com 272 avaliações no Google reflete esse compromisso técnico. Nós eliminamos as suposições e focamos na estrutura física e no caimento geométrico correto de cada mecha. Se o seu cacho está poroso, nós acidificamos para fechar a cutícula e repomos os lipídios corretos que o fio consegue absorver de verdade.</p>
+
+      <h2>Engenharia de lavagem para controlar o frizz em casa</h2>
+      <p>O frizz começa na forma como você lava e seca seus cachos no dia a dia. A engenharia de lavagem exige atenção à temperatura da água e ao atrito físico.</p>
+      <p>Primeiro, pare de esfregar o comprimento do cabelo como se estivesse lavando uma calça jeans. O shampoo deve ser massageado apenas na raiz. A espuma que escorre no enxágue é suficiente para higienizar o comprimento. Esfregar as mechas gera atrito mecânico, que destrói as cutículas já fragilizadas e piora o frizz.</p>
+      <p>Segundo, evite secar o cabelo esfregando toalhas de algodão comuns. O algodão absorve a água rápido demais e gera atrito estático. Prefira usar toalhas de microfibra ou camisetas de algodão macio para apenas pressionar o excesso de água. A secagem deve ser feita com difusor em temperatura morna e velocidade média, sem ficar tocando nas mechas enquanto elas secam.</p>
+
+      <h2><a href="/faq">Perguntas Frequentes</a></h2>
+
+      <h3>Por que meu cabelo cacheado tem tanto frizz mesmo hidratando toda semana?</h3>
+      <p>Se a sua fibra capilar estiver com alta porosidade ou pH desequilibrado (alcalino), as cutículas continuarão abertas. A água da hidratação entra e evapora imediatamente. Para resolver, é preciso fazer a acidificação capilar para fechar as cutículas e reter a hidratação dentro do fio.</p>
+
+      <h3>O Studio do Jon realiza tratamentos para soltar os cachos e tirar o frizz?</h3>
+      <p>Não realizamos nenhum tipo de alisamento, relaxamento ou química de redução de volume. Nós tratamos o frizz reequilibrando a porosidade e a saúde do fio através de terapia capilar e cortes geométricos a seco para valorizar a estrutura natural do cacho.</p>
+
+      <h3>Toalhas de microfibra ajudam a evitar o frizz no cacho?</h3>
+      <p>Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns.</p>
+
+      <h3>Onde fica o Studio do Jon e como posso agendar um diagnóstico?</h3>
+      <p>O Studio do Jon está localizado no bairro Caiçara, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 3586-6673.</p>
+
+      <h3>O que causa o aparecimento de frizz mecânico?</h3>
+      <p>O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer resolver o frizz de uma vez por todas?</h3>
+        <p>Diagnóstico técnico de porosidade e corte geométrico a seco no Studio do Jon, em Belo Horizonte.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 46,
     slug: 'cronograma-capilar-cabelo-cacheado',
     title: 'Cronograma Capilar para Cabelo Cacheado: Por que o Excesso de Hidratação Estraga o Fio',
