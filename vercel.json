@@ -123,6 +123,10 @@
       "dest": "/$1/index.html"
     },
     {
+      "src": "/admin(/(.*))?",
+      "dest": "/index.html"
+    },
+    {
       "src": "/((?!api|.*\\.(txt|webp|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot|mp4|webm|json|xml|pdf|csv|zip)$).*)",
       "dest": "/index.html"
     }
