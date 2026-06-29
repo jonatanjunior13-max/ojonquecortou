@@ -2,7 +2,7 @@ import { posts as staticPosts } from '../data/posts';
 import { db } from '../config/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
-const CACHE_KEY = 'ojon_blog_posts_cache';
+const CACHE_KEY = 'ojon_blog_posts_cache_v2';
 const PINNED_SLUG = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
 
 let memoryCache = null;
@@ -86,7 +86,8 @@ export const fetchLatestPosts = async () => {
   const mergedMap = new Map();
 
   // 1. Add dynamic posts first (putting them at the top)
-  list.forEach(post => {
+  // Exclude Firestore drafts so they don't block the static published version of the same post
+  list.filter(p => p.status !== 'draft').forEach(post => {
     if (post.slug) {
       mergedMap.set(post.slug, post);
     }
