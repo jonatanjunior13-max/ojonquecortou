@@ -2,12 +2,12 @@ import { posts as staticPosts } from '../data/posts';
 import { db } from '../config/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
-const CACHE_KEY = 'ojon_blog_posts_cache_v2';
+const CACHE_KEY = 'ojon_blog_posts_cache_v3';
 const PINNED_SLUG = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
 
 let memoryCache = null;
 
-// Helper to pin the specified post to the top of the list
+// Pin a post to the top of the list
 export const pinPost = (list) => {
   const pinned = list.find(p => p.slug === PINNED_SLUG);
   if (!pinned) return list;
@@ -15,107 +15,95 @@ export const pinPost = (list) => {
   return [pinned, ...rest];
 };
 
-// Helper to filter out drafts
-export const filterDrafts = (list) => {
-  return list.filter(p => p.status !== 'draft');
-};
+// Remove draft posts
+export const filterDrafts = (list) => list.filter(p => p.status !== 'draft');
 
-// Helper to safely get item from sessionStorage
+// Safely read sessionStorage
 const getSessionCache = () => {
   try {
     const raw = sessionStorage.getItem(CACHE_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch (e) {
-    console.warn('Error reading from sessionStorage:', e);
     return null;
   }
 };
 
-// Helper to safely set item in sessionStorage
+// Safely write sessionStorage
 const setSessionCache = (data) => {
   try {
     sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
   } catch (e) {
-    console.warn('Error writing to sessionStorage:', e);
+    // silent fail
   }
 };
 
-// Synchronously get initial posts list (no flashing on navigation/F5)
+/**
+ * Synchronously returns the current post list.
+ * Priority: memoryCache → sessionStorage → staticPosts bundle.
+ * Never causes a loading state — used as useState initializer.
+ */
 export const getInitialPosts = () => {
-  if (memoryCache) {
-    return memoryCache;
-  }
+  if (memoryCache) return memoryCache;
+
   const sessionData = getSessionCache();
   if (sessionData && sessionData.length > 0) {
     memoryCache = sessionData;
     return memoryCache;
   }
-  // Fallback to static posts
-  const filtered = filterDrafts(staticPosts);
-  memoryCache = pinPost(filtered);
+
+  // First visit: use the JS bundle posts directly
+  const result = pinPost(filterDrafts(staticPosts));
+  memoryCache = result;
   return memoryCache;
 };
 
-// Asynchronously fetch latest posts from posts.json and Firestore, merge, deduplicate, and update cache
+/**
+ * Asynchronously enriches the post list with Firestore dynamic posts.
+ *
+ * KEY RULES:
+ * 1. staticPosts (JS bundle) is ALWAYS the baseline — every post in the bundle
+ *    will appear regardless of network conditions or CDN/SW cache state.
+ * 2. Firestore posts can ADD new posts or OVERRIDE static ones (if published).
+ *    They can never hide static posts.
+ * 3. If the result would have fewer posts than the current cache, we keep the
+ *    cache. This prevents a bad Firestore response from wiping the UI.
+ */
 export const fetchLatestPosts = async () => {
-  let freshStatic = staticPosts;
-  try {
-    const res = await fetch(`/posts.json?v=${Date.now()}`);
-    if (res.ok) {
-      freshStatic = await res.json();
-    }
-  } catch (e) {
-    console.warn('Erro ao buscar posts.json na listagem:', e);
-  }
+  // Step 1: Seed the map with ALL static posts from the current JS bundle.
+  const mergedMap = new Map();
+  staticPosts.forEach(post => {
+    if (post.slug) mergedMap.set(post.slug, post);
+  });
 
-  let list = [];
+  // Step 2: Fetch Firestore and let published dynamic posts override statics.
   if (db) {
     try {
       const q = query(collection(db, 'blog_posts'), orderBy('createdAt', 'desc'));
       const snap = await getDocs(q);
       snap.forEach((doc) => {
-        list.push({ id: doc.id, ...doc.data() });
+        const post = { id: doc.id, ...doc.data() };
+        if (post.slug && post.status !== 'draft') {
+          mergedMap.set(post.slug, post);
+        }
       });
     } catch (err) {
-      console.warn('Erro ao carregar posts dinâmicos do Firestore:', err);
+      console.warn('Firestore: erro ao carregar posts dinâmicos:', err);
     }
   }
 
-  // Deduplicate and merge: dynamic (Firestore) has priority, then posts.json, then staticPosts
-  // We use a Map keyed by slug to ensure uniqueness and preserve order
-  const mergedMap = new Map();
+  const result = pinPost(filterDrafts(Array.from(mergedMap.values())));
 
-  // 1. Add dynamic posts first (putting them at the top)
-  // Exclude Firestore drafts so they don't block the static published version of the same post
-  list.filter(p => p.status !== 'draft').forEach(post => {
-    if (post.slug) {
-      mergedMap.set(post.slug, post);
-    }
-  });
+  // Step 3: Guard — never update cache with fewer posts than what we already have.
+  const currentCache = getSessionCache();
+  if (!currentCache || result.length >= currentCache.length) {
+    memoryCache = result;
+    setSessionCache(result);
+  } else {
+    console.warn(
+      `fetchLatestPosts: resultado (${result.length}) < cache atual (${currentCache.length}). Cache preservado.`
+    );
+    memoryCache = currentCache;
+  }
 
-  // 2. Add posts from /posts.json (or static fallback if fetch failed)
-  freshStatic.forEach(post => {
-    if (post.slug && !mergedMap.has(post.slug)) {
-      mergedMap.set(post.slug, post);
-    }
-  });
-
-  // 3. Safety net: always include current JS bundle's staticPosts.
-  // Prevents disappearing posts when the deployed /posts.json is momentarily
-  // outdated (e.g. deploy lag between bundle update and CDN cache flush).
-  staticPosts.forEach(post => {
-    if (post.slug && !mergedMap.has(post.slug)) {
-      mergedMap.set(post.slug, post);
-    }
-  });
-
-  const merged = Array.from(mergedMap.values());
-  const filtered = filterDrafts(merged);
-  const pinned = pinPost(filtered);
-
-  // Update caches
-  memoryCache = pinned;
-  setSessionCache(pinned);
-
-  return pinned;
+  return memoryCache;
 };
