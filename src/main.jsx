@@ -6,6 +6,17 @@ import './index.css';
 import './legacy.css';
 import App from './App.jsx'
 
+// Listen for chunk loading errors and reload to pull new assets
+if (typeof window !== 'undefined') {
+  window.addEventListener('error', (e) => {
+    const msg = e.message || '';
+    if (msg.includes('Failed to fetch dynamically imported module') || msg.includes('error loading dynamically imported module')) {
+      console.warn('Dynamic chunk import failed. Auto-reloading page for fresh assets...');
+      window.location.reload();
+    }
+  }, true);
+}
+
 // Custom Cursor Script
 if (typeof window !== 'undefined') {
   window.addEventListener('mousemove', (e) => {

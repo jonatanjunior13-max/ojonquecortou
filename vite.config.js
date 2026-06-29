@@ -64,7 +64,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,webp}'],
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/^\/api\//, /^\/blog\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/blog\//, /^\/admin\//],
         skipWaiting: true,
         clientsClaim: true,
         // Impede que o Service Worker intercepte chamadas do Firebase/Firestore
