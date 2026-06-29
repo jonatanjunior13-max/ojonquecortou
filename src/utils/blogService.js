@@ -81,7 +81,7 @@ export const fetchLatestPosts = async () => {
     }
   }
 
-  // Deduplicate and merge: dynamic (Firestore) has priority, then posts.json/staticPosts
+  // Deduplicate and merge: dynamic (Firestore) has priority, then posts.json, then staticPosts
   // We use a Map keyed by slug to ensure uniqueness and preserve order
   const mergedMap = new Map();
 
@@ -92,8 +92,17 @@ export const fetchLatestPosts = async () => {
     }
   });
 
-  // 2. Add static posts
+  // 2. Add posts from /posts.json (or static fallback if fetch failed)
   freshStatic.forEach(post => {
+    if (post.slug && !mergedMap.has(post.slug)) {
+      mergedMap.set(post.slug, post);
+    }
+  });
+
+  // 3. Safety net: always include current JS bundle's staticPosts.
+  // Prevents disappearing posts when the deployed /posts.json is momentarily
+  // outdated (e.g. deploy lag between bundle update and CDN cache flush).
+  staticPosts.forEach(post => {
     if (post.slug && !mergedMap.has(post.slug)) {
       mergedMap.set(post.slug, post);
     }
