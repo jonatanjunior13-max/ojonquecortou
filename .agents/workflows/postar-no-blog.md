@@ -1,66 +1,171 @@
 ---
-description: Como postar um novo artigo no Blog do Jon
+description: Como postar um novo artigo no Blog do Jon — processo completo e à prova de bugs
 ---
 
-Para adicionar um novo post ao seu blog, siga estes passos simples no seu ambiente de desenvolvimento:
-
-### 1. Preparar a Imagem
-- Salve a imagem de capa na pasta `public/` do seu projeto. 
-- Use nomes simples sem espaços (ex: `dica-cachos.jpg`).
-
-### 2. Adicionar o Conteúdo
-Abra o arquivo `src/data/posts.js` e adicione um novo objeto ao topo da lista (array), seguindo este modelo:
-
-```javascript
-  {
-    id: 4, // Coloque o próximo número da sequência
-    slug: 'titulo-do-seu-post', // Como aparecerá na URL (ex: d-novo-corte)
-    title: 'Título do Seu Post Aqui',
-    excerpt: 'Um resumo curto para aparecer na listagem.',
-    date: '30 de Março, 2026', // Data de hoje
-    author: 'Jon',
-    category: 'Dicas', // Ou 'Técnica', 'Transição', etc.
-    content: `
-      <p>Seu texto aqui...</p>
-      <h3>Subtítulo se precisar</h3>
-      <p>Mais texto...</p>
-    `,
-    image: '/nome-da-sua-imagem.jpg' // O caminho da imagem que você salvou na pasta public
-  },
-```
-
-### 3. Gerar o Build (obrigatório)
+# Workflow: Postar no Blog do Jon
 
 > [!IMPORTANT]
-> Este passo é **obrigatório**. O Vercel serve um arquivo HTML pré-renderizado para cada post (`/blog/slug/index.html`). Se o build não rodar, o post fica com 404 e não aparece.
+> **Siga os passos na ordem exata.** Pular qualquer etapa causa bugs conhecidos: post sumindo, 404 na URL, imagem quebrada.
 
-No terminal, dentro da pasta do projeto, execute:
+---
+
+## Passo 1 — Escolher o tema e o próximo ID
+
+Verifique qual é o próximo ID disponível:
+
+```powershell
+node -e "const {posts} = require('./src/data/posts.js'); console.log('Próximo ID:', Math.max(...posts.map(p=>p.id)) + 1);"
+```
+
+Escolha um tema que:
+- Seja técnico e relevante para cabelos ondulados, cacheados ou crespos
+- Não repita um slug que já existe na lista
+- **Não trate sobre corte a seco** (tema encerrado)
+
+---
+
+## Passo 2 — Gerar a imagem de capa
+
+Use a ferramenta `generate_image` para criar uma imagem editorial de qualidade.
+
+**Padrão de nome do arquivo:** `blog-[slug-do-post].webp`  
+Exemplo: `blog-frizz-em-cabelo-cacheado.webp`
+
+Após gerar, copie a imagem para a pasta `public/`:
+
+```powershell
+Copy-Item "CAMINHO_DA_IMAGEM_GERADA" "public\blog-[slug-do-post].webp" -Force
+```
+
+O campo `image` no post deve ser: `'/blog-[slug-do-post].webp'`
+
+> [!CAUTION]
+> **Nunca referencie uma imagem no post sem antes copiá-la para `public/`.** Se a imagem não existir, o card do blog fica quebrado visualmente.
+
+---
+
+## Passo 3 — Adicionar o post em `src/data/posts.js`
+
+Abra o arquivo [`src/data/posts.js`](file:///c:/Users/jonat/.gemini/antigravity/scratch/ojonquecortou/src/data/posts.js) e insira o novo objeto **no topo do array** (antes do primeiro post existente), seguindo este modelo completo:
+
+```javascript
+{
+  id: 48,                                    // próximo número da sequência
+  slug: 'slug-do-post',                      // igual ao nome da imagem sem /blog- e sem .webp
+  title: 'Título completo do post',
+  seoTitle: 'Título completo do post | Studio do Jon',
+  excerpt: 'Resumo de 1-2 frases para aparecer nos cards da listagem.',
+  metaDescription: 'Meta description SEO com até 160 caracteres.',
+  keywords: 'palavra-chave principal, variação 1, variação 2, Studio do Jon BH',
+  date: '29 de Junho, 2026',
+  datePublished: '2026-06-29',
+  dateModified: '2026-06-29',
+  author: 'Jon',
+  category: 'Cuidado Capilar',              // ou 'Corte', 'Transição', 'Técnica'
+  image: '/blog-slug-do-post.webp',
+  faqSchema: {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Pergunta 1?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Resposta 1." }
+      },
+      {
+        "@type": "Question",
+        "name": "Pergunta 2?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Resposta 2." }
+      }
+    ]
+  },
+  content: `
+    <p>Parágrafo de abertura...</p>
+
+    <h2>Subtítulo 1</h2>
+    <p>Desenvolvimento...</p>
+
+    <h2>Subtítulo 2</h2>
+    <p>Desenvolvimento...</p>
+
+    <h2>Perguntas Frequentes</h2>
+    <h3>Pergunta 1?</h3>
+    <p>Resposta 1.</p>
+    <h3>Pergunta 2?</h3>
+    <p>Resposta 2.</p>
+
+    <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+      <h3>Quer resolver isso de vez?</h3>
+      <p>Diagnóstico técnico e corte geométrico no Studio do Jon, em Belo Horizonte.</p>
+      <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+    </div>
+  `
+},
+```
+
+> [!WARNING]
+> **Regras obrigatórias para não dar bug:**
+> - O `slug` deve ser único — jamais repita um já existente
+> - O `slug` do post deve ser idêntico ao nome da imagem: `blog-[slug].webp`
+> - O `id` deve ser o próximo número da sequência (sem pular, sem repetir)
+> - Nenhum campo obrigatório pode ficar `undefined` ou em branco
+
+---
+
+## Passo 4 — Rodar o build completo
+
+> [!IMPORTANT]
+> **Obrigatório.** O Vercel serve um HTML pré-renderizado para cada URL de post (`/blog/slug/index.html`). Se esse arquivo não existir, o post retorna 404 e nunca abre. O build gera esses arquivos.
 
 ```powershell
 npm run build
 ```
 
-Aguarde terminar. A saída vai confirmar algo como:
+Aguarde a conclusão. A saída deve conter:
+
 ```
 Starting Node SEO pre-rendering for XX pages...
 Static pre-rendering completed successfully!
+posts.json generated and updated successfully in public/ and dist/!
 ```
 
-### 4. Publicar no ar
+Se aparecer `error` ou `failed`, **não faça o push** — resolva o erro primeiro.
 
-Após o build completar com sucesso, faça o commit e push:
+---
+
+## Passo 5 — Verificar que o HTML foi gerado
+
+Confirme que o arquivo do novo post foi criado:
+
+```powershell
+Test-Path "dist\blog\[slug-do-post]\index.html"
+```
+
+Deve retornar `True`. Se retornar `False`, o prerender não incluiu o post — verifique se o slug no `posts.js` está correto e rode o build novamente.
+
+---
+
+## Passo 6 — Commit e push
 
 ```powershell
 git add -A
-git commit -m "feat: novo post - titulo-do-post"
+git commit -m "feat: novo post - [slug-do-post]"
 git push
 ```
 
-O Vercel detecta o push e faz o deploy automaticamente em ~2 minutos. Não use `npx vercel --prod` manualmente — o push já dispara o deploy pelo GitHub.
+O Vercel detecta o push e faz o deploy automaticamente em ~2 minutos. **Não use `npx vercel --prod`** — o push via GitHub já dispara o deploy.
+
+---
+
+## Passo 7 — Validar no ar
+
+Após o deploy (~2 min), acesse:
+- `https://www.ojonquecortou.com.br/blog` → o novo card deve aparecer no topo
+- `https://www.ojonquecortou.com.br/blog/[slug-do-post]` → a página do post deve abrir
+
+Se o post sumir após aparecer: limpe o `sessionStorage` do navegador (F12 → Application → Session Storage → limpar) e recarregue.
 
 ---
 
 > [!TIP]
-> **Dica de Formatação:** No campo `content`, você pode usar as tags `<h3>`, `<p>` e `<strong>` para deixar o texto bonito no blog.
-> 
-> **Quer que eu poste pra você?** Basta me enviar o texto e a foto aqui no chat que eu faço todo o processo, rodo o build e dou o push automaticamente!
+> **Quer que eu faça tudo isso por você?** Basta pedir o tema aqui no chat. Eu escrevo o post completo, gero a imagem, rodo o build e dou o push — tudo automaticamente.
