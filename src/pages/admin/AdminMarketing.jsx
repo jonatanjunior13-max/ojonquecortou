@@ -593,6 +593,9 @@ const AdminMarketing = () => {
       const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos e visagismo no salão "O Jon Que Cortou" (@ojonquecortou) em Belo Horizonte (Caiçara).
 Você está escrevendo a edição mensal da sua newsletter pessoal "Leitura de Fio" baseando-se no tema: "${randomTopic}".
 
+DIRETRIZ DE ORIGINALIDADE E PESQUISA:
+Faça uma pesquisa interna (seu conhecimento geral da web) para trazer dados inovadores, correlações físicas interessantes ou novidades de cuidados capilares. Evite criar o mesmo texto repetitivo. Cada e-mail gerado deve ter uma perspectiva fresca e única, mesmo se gerado com o mesmo tema.
+
 Siga rigorosamente as diretrizes abaixo:
 1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva como uma pessoa real em uma conversa direta, com calor humano e informalidade brasileira. Use expressões informais brasileiras e gírias amigáveis com moderação (ex: "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração").
 2. EVITE CLICHÊS DE MARKETING E JARGÃO CORPORATIVO: Nunca use frases prontas ou robotizadas (como "ficou linda", "cachos perfeitos", "venha arrasar", "tratamento revolucionário"). Use analogias reais de arquitetura, geometria e física do cabelo (Método Leitura de Fio, corte a seco, saúde real do fio).
@@ -602,6 +605,8 @@ Siga rigorosamente as diretrizes abaixo:
    - Relembre suavemente que o atendimento no Studio do Jon é individual e exclusivo, com horários disputados de quarta a sábado.
    - Traga esperança de que nenhum cabelo é "impossível", apenas precisa da leitura geométrica correta.
 4. VARIABILIDADE E NÃO REPETIÇÃO: Construa um texto corrido fluido, mantendo a informalidade técnica de uma conversa sincera de profissional para cliente.
+
+${extraInstruction ? `INSTRUÇÃO EXTRA/FOCO DO USUÁRIO (Incorpore isso de forma totalmente orgânica): "${extraInstruction}"\n` : ''}
 
 Formato de saída:
 Você deve retornar APENAS um JSON válido contendo exatamente dois campos: "subject" e "bodyHtml". Não inclua markdown, blocos de código markdown ou texto explicativo. Retorne APENAS o JSON puro.
@@ -1124,6 +1129,11 @@ Antes de finalizar QUALQUER post, faça uma revisão de ortografia letra por let
 
 TEMA DO POST (Utilize este tema específico para criar o post):
 - Tópico: "${cleanedTheme.title}" - Descrição: "${cleanedTheme.description}"
+
+DIRETRIZ DE ORIGINALIDADE E PESQUISA:
+Não escreva sempre o mesmo texto. Use seu conhecimento geral da web para correlacionar o tema a novidades, rotinas diárias do ano de 2026, ou fatos curiosos de transição ou saúde do fio. Cada post deve ser totalmente original e único.
+
+${extraInstruction ? `INSTRUÇÃO EXTRA/FOCO DO USUÁRIO (Incorpore isso de forma totalmente orgânica): "${extraInstruction}"\n` : ''}
 
 NUNCA ESCREVER
 - "Cada detalhe é planejado" — genérico
@@ -3043,9 +3053,10 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 <div style={{ padding: '20px', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: '6px', marginBottom: '20px' }}>
                   <h5 style={{ margin: '0 0 10px 0', fontWeight: 700 }}>🎯 Seletor de Assuntos Unificado</h5>
                   <p style={{ margin: '0 0 15px 0', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
-                    Escolha um tema técnico de cachos. A IA usará o tema selecionado para gerar tanto o Post do Google Meu Negócio quanto a Newsletter mensal.
+                    Escolha um tema de cachos e, opcionalmente, digite diretrizes adicionais. A IA usará esses dados e sua inteligência de busca na web para formular um post totalmente original.
                   </p>
-                  <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  
+                  <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '15px' }}>
                     <select
                       value={selectedThemeId}
                       onChange={e => setSelectedThemeId(e.target.value)}
@@ -3073,6 +3084,19 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                         📧 Gerar Newsletter
                       </button>
                     </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
+                    <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-text)' }}>
+                      ✍️ Instruções extras para o post / Pesquisa de novidades na Internet (Opcional):
+                    </label>
+                    <textarea
+                      value={extraInstruction}
+                      onChange={e => setExtraInstruction(e.target.value)}
+                      placeholder="Ex: 'pesquise tendências de visagismo de 2026', 'foco em rotina de hidratação de inverno em BH', 'mencione cabelos descoloridos'"
+                      rows={2}
+                      style={{ padding: '8px 12px', borderRadius: 4, border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--adm-text)', fontSize: '0.82rem', fontFamily: 'inherit', resize: 'vertical' }}
+                    />
                   </div>
                   {selectedThemeId && (() => {
                     const th = TRENDING_THEMES.find(t => t.id === selectedThemeId);
