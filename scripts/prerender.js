@@ -729,6 +729,11 @@ const pages = [
     route: '/servicos/masculino',
     title: 'Corte Cabelo Cacheado Masculino BH | Studio do Jon',
     description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende.'
+  },
+  {
+    route: '/agendar',
+    title: 'Agende seu corte | Studio do Jon — Especialista em Cachos BH',
+    description: 'Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte.'
   }
 ];
 
