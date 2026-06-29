@@ -860,7 +860,8 @@ posts.forEach(post => {
     description: postDesc,
     image: post.image,
     schema: pageSchema,
-    bodyInsert: noscriptContent
+    bodyInsert: noscriptContent,
+    postData: post
   });
 });
 
@@ -919,6 +920,12 @@ pages.forEach(page => {
   if (page.schema) {
     const schemaScript = `\n    <script type="application/ld+json" id="dynamic-page-schema">\n    ${JSON.stringify(page.schema, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
     html = html.replace('<!-- Google Fonts -->', `${schemaScript}\n\n    <!-- Google Fonts -->`);
+  }
+
+  // 6b. Inject Initial Props for Hydration Fallback (SW caching solution)
+  if (page.postData) {
+    const postDataScript = `\n    <script type="application/json" id="pre-rendered-post-data">\n    ${JSON.stringify(page.postData, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
+    html = html.replace('<!-- Google Fonts -->', `${postDataScript}\n\n    <!-- Google Fonts -->`);
   }
   
   // 7. Inject Noscript Body Content for Crawlers
@@ -995,3 +1002,9 @@ const sitemapTxt = generateSitemapTxt(pages);
 fs.writeFileSync(path.join(__dirname, '../public/sitemap.txt'), sitemapTxt);
 fs.writeFileSync(path.join(distDir, 'sitemap.txt'), sitemapTxt);
 console.log('Sitemap.txt generated and updated successfully in public/ and dist/!');
+
+console.log('Generating posts.json...');
+const postsJson = JSON.stringify(posts);
+fs.writeFileSync(path.join(__dirname, '../public/posts.json'), postsJson);
+fs.writeFileSync(path.join(distDir, 'posts.json'), postsJson);
+console.log('posts.json generated and updated successfully in public/ and dist/!');

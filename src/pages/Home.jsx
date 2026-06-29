@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Arrow, Reveal, ContactCTA } from '../components/NewDesignComponents';
-import { posts as blogPosts } from '../data/posts';
+import { getInitialPosts, fetchLatestPosts } from '../utils/blogService';
 import Magnetic from '../components/Magnetic';
 
 // Scroll hint: vanishes once user starts scrolling
@@ -357,23 +357,39 @@ function HomeBlog() {
     "linear-gradient(160deg,#7a4a2e 0%,#2a1a12 100%)"
   ];
 
-  const pinnedSlug = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
-  const pinPost = (list) => {
-    const pinned = list.find(p => p.slug === pinnedSlug);
-    if (!pinned) return list;
-    const rest = list.filter(p => p.slug !== pinnedSlug);
-    return [pinned, ...rest];
-  };
+  const [posts, setPosts] = useState(() => {
+    const initialList = getInitialPosts().slice(0, 3);
+    return initialList.map((post, i) => ({
+      cat: post.category,
+      title: post.title,
+      ex: post.excerpt,
+      time: getReadingTime(post.content),
+      slug: post.slug,
+      image: post.image,
+      grad: defaultGradients[i % defaultGradients.length]
+    }));
+  });
 
-  const posts = pinPost(blogPosts).slice(0, 3).map((post, i) => ({
-    cat: post.category,
-    title: post.title,
-    ex: post.excerpt,
-    time: getReadingTime(post.content),
-    slug: post.slug,
-    image: post.image,
-    grad: defaultGradients[i % defaultGradients.length]
-  }));
+  useEffect(() => {
+    async function loadLatest() {
+      try {
+        const latest = await fetchLatestPosts();
+        const top3 = latest.slice(0, 3);
+        setPosts(top3.map((post, i) => ({
+          cat: post.category,
+          title: post.title,
+          ex: post.excerpt,
+          time: getReadingTime(post.content),
+          slug: post.slug,
+          image: post.image,
+          grad: defaultGradients[i % defaultGradients.length]
+        })));
+      } catch (err) {
+        console.warn('Erro ao carregar posts na home:', err);
+      }
+    }
+    loadLatest();
+  }, []);
 
   return (
     <section className="section">

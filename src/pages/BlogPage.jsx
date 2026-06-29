@@ -1,43 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { posts as staticPosts } from '../data/posts';
 import SEO from '../components/SEO';
-import { db } from '../config/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { getInitialPosts, fetchLatestPosts } from '../utils/blogService';
 import './Blog.css';
 
 const BlogPage = () => {
-  const pinnedSlug = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
-  const pinPost = (list) => {
-    const pinned = list.find(p => p.slug === pinnedSlug);
-    if (!pinned) return list;
-    const rest = list.filter(p => p.slug !== pinnedSlug);
-    return [pinned, ...rest];
-  };
-
-  const [allPosts, setAllPosts] = useState(() => {
-    const filtered = staticPosts.filter(p => p.status !== 'draft');
-    return pinPost(filtered);
-  });
+  const [allPosts, setAllPosts] = useState(() => getInitialPosts());
 
   useEffect(() => {
-    async function loadDbPosts() {
-      if (!db) return;
+    async function loadPosts() {
       try {
-        const q = query(collection(db, 'blog_posts'), orderBy('createdAt', 'desc'));
-        const snap = await getDocs(q);
-        const list = [];
-        snap.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        // Merge static and dynamic, putting dynamic ones first (filtering out drafts)
-        const merged = [...list, ...staticPosts].filter(p => p.status !== 'draft');
-        setAllPosts(pinPost(merged));
-      } catch (err) {
-        console.warn('Erro ao carregar posts dinâmicos do Firestore:', err);
+        const latest = await fetchLatestPosts();
+        setAllPosts(latest);
+      } catch (e) {
+        console.warn('Erro ao carregar posts dinamicamente:', e);
       }
     }
-    loadDbPosts();
+    loadPosts();
   }, []);
 
   return (

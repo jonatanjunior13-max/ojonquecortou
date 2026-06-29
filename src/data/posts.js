@@ -1,5 +1,187 @@
 export const posts = [
   {
+    id: 46,
+    slug: 'cronograma-capilar-cabelo-cacheado',
+    title: 'Cronograma Capilar para Cabelo Cacheado: Por que o Excesso de Hidratação Estraga o Fio',
+    excerpt: 'Descubra por que o excesso de hidratação no cronograma capilar para cabelo cacheado pode enfraquecer o cacho e como a Leitura de Fio resolve a porosidade.',
+    metaDescription: 'Entenda os riscos da fadiga hídrica e do excesso de hidratação nos cachos. Veja como equilibrar o cronograma capilar com diagnóstico em Belo Horizonte.',
+    keywords: 'cronograma-capilar-cabelo-cacheado, cronograma capilar para cachos, hidratação cabelo cacheado bh, tratamento capilar Caiçara, Método Leitura de Fio',
+    date: '29 de Junho, 2026',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-cronograma-capilar.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Como sei se meu cabelo cacheado está com excesso de hidratação?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O cabelo com excesso de hidratação (fadiga hídrica) apresenta-se extremamente macio, mole, elástico, sem definição e com dificuldade de manter o formato do cacho mesmo após a finalização. Ele pode parecer constantemente úmido ou demorar muito mais tempo para secar, quebrando facilmente sob tração leve."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre hidratação, nutrição e reconstrução?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A hidratação repõe a água e a umidade natural do fio. A nutrição devolve os lipídios e óleos essenciais que lubrificam as cutículas e combatem o frizz. A reconstrução fornece proteínas e aminoácidos essenciais para devolver a massa e a resistência mecânica à estrutura interna da fibra capilar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso usar queratina líquida em casa toda semana?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não deve. O uso indiscriminado e semanal de queratina sem avaliação técnica enrijece a estrutura de queratina do fio, tornando o cacho extremamente rígido, seco e quebradiço. A reposição proteica forte deve ser feita com intervalos maiores e sob o diagnóstico de porosidade correto."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como funciona o tratamento de Leitura de Fio no Studio do Jon?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O atendimento consiste em avaliar cientificamente a fibra capilar em sete etapas para descobrir o nível de porosidade, elasticidade e compatibilidade química. A partir do diagnóstico, aplicamos a terapia ideal para regular a acidez e a nutrição do cacho, ensinando você a manter os resultados com uma rotina simplificada em casa."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>A física do fio poroso e a ilusão da hidratação diária</h2>
+      <p>Muitas mulheres passam anos seguindo a tabela padrão de hidratação-hidratação-nutrição. O resultado? Um cabelo sem peso, sem definição, que parece uma esponja molhada e que quebra só de passar o pente. Esse estado de fragilidade extrema é o resultado direto de ignorar a física do próprio cabelo.</p>
+      <p>O cronograma capilar para cabelo cacheado é uma rotina terapêutica estruturada que intercala tratamentos de hidratação, nutrição e reconstrução conforme a porosidade da fibra. Essa rotina visa restabelecer a água, os lipídios e as proteínas perdidas em Belo Horizonte.</p>
+      <p>A porosidade capilar é a capacidade física que a fibra do cabelo tem de absorver e reter umidade e nutrientes em sua estrutura interna. Ela é dividida em baixa, média e alta porosidade, orientando o diagnóstico no Studio do Jon.</p>
+      <p>Se as cutículas do seu cabelo estão escancaradas por processos químicos passados ou danos mecânicos, a água entra e sai imediatamente. O cabelo não fica hidratado; ele fica apenas inchado. É aí que o problema começa.</p>
+
+      <h2>O perigo silencioso da fadiga hídrica nos cachos</h2>
+      <p>A fadiga hídrica é o dano mecânico que ocorre quando o fio de cabelo dilata e contrai excessivamente pelo excesso de absorção de água. Esse fenômeno enfraquece a cutícula dos cabelos tipo 2A ao 4C, causando quebra crônica.</p>
+      <p>Imagine uma esponja de pratos. Se você molhar e secar essa esponja dezenas de vezes, as fibras vão se romper muito mais rápido. No cabelo, o inchaço constante provocado pelo acúmulo de lavagens e excesso de água destrói as ligações de proteína no córtex.</p>
+      <p>O cacho perde a mola, fica com aspecto esticado, sem definição e com frizz resistente a qualquer finalização.</p>
+
+      <h2>O diagnóstico em 7 etapas e o cronograma capilar científico</h2>
+      <p>Para parar de errar, você precisa do Método Leitura de Fio antes de enfiar o cabelo na água quente. No Studio do Jon, nós identificamos o que seu cacho realmente precisa antes de qualquer aplicação.</p>
+      <p>Eu realizo sete etapas de diagnóstico de forma lógica. Como autista, não uso intuição; leio os padrões físicos das cutículas. A análise de elasticidade me diz exatamente se o seu cacho precisa de água (hidratação), lipídios (nutrição) ou massa proteica (reconstrução).</p>
+
+      <h2>Por que o histórico químico e o couro cabeludo mandam no tratamento</h2>
+      <p>Se você tem resíduos de descoloração ou mechas, a sua necessidade principal é reconstrução com aminoácidos de baixo peso molecular para recompor a queratina. Se o seu couro cabeludo está inflamado por excesso de resíduos de produtos pesados de finalização, a prioridade é purificar a raiz para desobstruir os folículos.</p>
+      <p>Aplicar máscaras oleosas em um couro cabeludo com excesso de sebo rebote só vai gerar caspa e queda. O cronograma capilar de internet ignora essas nuances técnicas. Nós não.</p>
+
+      <h2>A mentira dos ingredientes milagrosos e das receitas caseiras</h2>
+      <p>O mercado tradicional de cosméticos quer te vender a ilusão de que passar amido de milho, babosa ou maionese na cabeça vai salvar seus cachos. Quanta bobagem. Essas moléculas orgânicas são gigantescas. Elas não possuem tamanho físico para penetrar no córtex capilar.</p>
+      <p>Elas apenas grudam na parte externa do fio, criando uma maquiagem temporária que impede o cabelo de respirar. Quando você lava, a maquiagem sai e o cabelo continua poroso e fraco por dentro.</p>
+
+      <h2>Como montar seu cronograma baseado na Leitura de Fio real</h2>
+      <p>Cabelos de baixa porosidade precisam de tratamentos com calor controlado para abrir suavemente as cutículas e permitir a entrada de nutrientes leves. Cabelos de alta porosidade exigem tratamentos com pH ácido para selar a cutícula e reter o tratamento dentro da fibra.</p>
+      <p>O equilíbrio correto envolve entender a proporção ideal de reconstrução. Excesso de queratina enrijece o fio e causa quebra por rigidez. Falta de queratina deixa o fio elástico e fraco. O segredo é a dosagem baseada na resposta de tração da fibra capilar.</p>
+      <p>Se você está cansada de gastar dinheiro com produtos que deixam seu cabelo pesado e sem definição, venha fazer o diagnóstico real. Nós não fazemos alisamentos ou relaxamentos.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer entender o que seus cachos realmente precisam?</h3>
+        <p>Saia das tabelas genéricas e faça um diagnóstico científico de porosidade com o Método Leitura de Fio.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
+    id: 45,
+    slug: 'corte-hibrido-cabelo-cacheado',
+    title: 'Corte Híbrido em Cabelo Cacheado: Por que Essa Técnica Supera o Corte Puramente Molhado',
+    excerpt: 'Descubra como o corte híbrido de cabelo cacheado une a precisão a seco com o refinamento molhado sob o diagnóstico do Método Leitura de Fio.',
+    metaDescription: 'Entenda a superioridade geométrica do corte híbrido em cabelos cacheados. Conheça as vantagens do Método Leitura de Fio em Belo Horizonte.',
+    keywords: 'corte híbrido cabelo cacheado, corte híbrido cacheado bh, salão especialista em cachos belo horizonte, corte de cabelo cacheado Caiçara, Método Leitura de Fio',
+    date: '29 de Junho, 2026',
+    author: 'Jon',
+    category: 'Corte e Estilo',
+    image: '/blog-corte-hibrido-cachos.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Como devo levar o meu cabelo para o corte híbrido?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Compareça ao studio com o cabelo totalmente seco, limpo e finalizado da forma como você costuma usar na sua rotina comum. É fundamental que os fios estejam completamente desembaraçados e sem tranças, coques ou finalizadores pesados que alterem a curvatura original."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre o corte seco e o corte híbrido?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O corte seco é realizado exclusivamente com o cabelo seco do início ao fim. O corte híbrido combina o melhor de dois mundos: iniciamos a estrutura de volume e comprimento a seco para respeitar o encolhimento, e fazemos o refinamento e limpeza das linhas com o cabelo molhado após a lavagem."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O corte híbrido ajuda no processo de transição capilar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, o corte híbrido é ideal para quem está passando pela transição capilar. A técnica permite mapear e cortar a seco a parte alisada exatamente na linha de transição onde o cacho natural começa a nascer, refinando o acabamento molhado para dar leveza e estimular a definição da nova curvatura."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quanto tempo dura a sessão de corte híbrido?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A sessão completa dura entre uma hora e meia e duas horas. Esse período engloba a escuta inicial, a análise de Leitura de Fio, o corte inicial a seco, a lavagem com tratamento personalizado, o refinamento molhado e a finalização com instruções educativas para o seu dia a dia."
+          }
+        }
+      ]
+    },
+    content: `
+      <h2>A física da mola capilar e a técnica do corte híbrido</h2>
+      <p>O cacho se comporta como uma mola física que responde ao peso e à tração. Molhar o cabelo completamente e esticar com pente fino mascara essa elasticidade. O corte híbrido resolve esse problema começando a tesoura exatamente onde a mola repousa seca.</p>
+      <p>O corte híbrido em cabelo cacheado é um procedimento técnico que combina a precisão geométrica do corte a seco com o refinamento de linhas no estado molhado. Esse método permite ao visagista controlar o encolhimento e o acabamento do volume em Belo Horizonte.</p>
+      <p>Eu vejo os erros do mercado tradicional todos os dias na minha cadeira. O cabeleireiro comum molha o cabelo, remove a curvatura temporariamente e corta. Quando o cabelo seca e encolhe, o comprimento simplesmente desaparece. Com a abordagem híbrida, isso não acontece.</p>
+
+      <h2>Como a umidade afeta a anatomia e a elasticidade do fio</h2>
+      <p>A água quebra as pontes de hidrogênio da fibra capilar. O fio estica artificialmente. Ao iniciar o corte no cabelo seco, mapeamos o caimento real, as diferentes curvaturas e a densidade de cada quadrante da cabeça.</p>
+      <p>Depois que a estrutura principal do corte híbrido está desenhada, o cabelo é lavado e tratado. Nesse momento, com o fio molhado, realizamos o refinamento das pontas e a limpeza das linhas de base. É um processo de duas etapas que garante simetria perfeita sem comprometer o comprimento útil.</p>
+
+      <h2>O Método Leitura de Fio e a matemática do encolhimento</h2>
+      <p>Não existe milagre no corte de cachos. Existe diagnóstico. No Studio do Jon, nenhum corte híbrido começa sem a aplicação rigorosa do meu método de análise em sete etapas.</p>
+      <p>A Leitura de Fio é o diagnóstico capilar científico realizado em sete etapas no Studio do Jon antes de iniciar o corte híbrido de cabelo. Essa análise avalia a curvatura real do tipo 2A ao 4C, o histórico químico, a porosidade e a saúde do couro cabeludo.</p>
+      <p>O encolhimento capilar é o fenômeno físico pelo qual o cabelo cacheado ou crespo reduz seu comprimento visual quando seco em comparação ao estado molhado. A taxa de encolhimento varia de dez a setenta por cento dependendo da curvatura de cada fibra.</p>
+      <p>Se o profissional não dominar essa matemática, vai errar a mão. Cabelos crespos tipo 4, por exemplo, reduzem drasticamente de tamanho ao secar. O corte híbrido neutraliza essa margem de erro porque a base do formato é definida antes de molhar.</p>
+
+      <h2>As 7 etapas de diagnóstico no Caiçara em Belo Horizonte</h2>
+      <p>Minha rotina de corte a seco e molhado segue etapas claras:</p>
+      <ul>
+        <li><strong>Escuta:</strong> entender seus hábitos de finalização e histórico de traumas capilares.</li>
+        <li><strong>Análise a seco:</strong> avaliar a distribuição real do volume e as múltiplas curvaturas.</li>
+        <li><strong>Diagnóstico do couro cabeludo:</strong> checar a saúde da raiz e identificar disfunções.</li>
+        <li><strong>Histórico químico:</strong> analisar a elasticidade do fio e a presença de metais.</li>
+        <li><strong>Análise molhada:</strong> testar a porosidade e a absorção de nutrientes na lavagem.</li>
+        <li><strong>Definição de técnica:</strong> estruturar a angulação geométrica do corte híbrido.</li>
+        <li><strong>Finalização como validação:</strong> secar com difusor para validar a física do caimento.</li>
+      </ul>
+      <p>Como autista, meu cérebro busca padrões geométricos de forma obsessiva. O corte híbrido é o encaixe lógico dessa necessidade de precisão com a biologia do cabelo texturizado.</p>
+
+      <h2>A falha estrutural dos salões tradicionais no corte de cachos</h2>
+      <p>A maioria dos salões ainda corta cabelo cacheado como se fosse liso. Molham, dividem em linhas retas e puxam com força. Essa pressa ignora que o cabelo texturizado não nasce de forma uniforme.</p>
+      <p>O cabelo cacheado possui zonas com diferentes níveis de encolhimento na mesma cabeça. Um corte puramente molhado gera assimetria crônica. O lado com curvatura mais fechada vai encolher mais, quebrando toda a harmonia visual.</p>
+
+      <h2>Visagismo geométrico aplicado ao corte híbrido</h2>
+      <p>O volume não deve ser domado. Deve ser projetado. O visagismo geométrico usa a distribuição do volume do cacho para emoldurar o rosto e valorizar a identidade de quem o usa.</p>
+      <p>Ao cortar o cabelo a seco primeiro, posicionamos o volume exatamente onde ele precisa ficar para harmonizar com as linhas faciais. A lavagem e o acabamento molhado subsequentes servem apenas para limpar pontas duplas e selar as cutículas com o tratamento correto.</p>
+
+      <h2>A harmonia de caimento em múltiplas curvaturas</h2>
+      <p>É comum encontrar cabelos ondulados na nuca e crespos no topo da cabeça. A técnica híbrida gerencia essa transição de densidades. O corte a seco equilibra as proporções de volume e o corte molhado refina a curvatura, garantindo que o cabelo se comporte bem seco ou com finalização natural.</p>
+      <p>Não trabalhamos com alisamentos, relaxamentos ou qualquer química de transformação. O Studio do Jon respeita e potencializa a curvatura biológica do seu cabelo tipo 2A ao 4C.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer redefinir o volume e o corte dos seus cachos?</h3>
+        <p>Experimente o Corte Híbrido sob o diagnóstico do Método Leitura de Fio e veja a diferença real no caimento natural.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 44,
     slug: 'caspa-cabelo-cacheado-inverno-como-tratar',
     scientificData: {

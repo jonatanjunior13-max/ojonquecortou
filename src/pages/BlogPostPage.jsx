@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
-import { posts as staticPosts } from '../data/posts';
 import { db } from '../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { getInitialPosts, fetchLatestPosts } from '../utils/blogService';
 import './Blog.css';
 import { ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -10,12 +10,33 @@ import SEO from '../components/SEO';
 const BlogPostPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const staticMatch = staticPosts.find((p) => p.slug === slug);
+  const getPreRenderedPost = () => {
+    if (typeof document === 'undefined') return null;
+    const el = document.getElementById('pre-rendered-post-data');
+    if (el) {
+      try {
+        const data = JSON.parse(el.textContent);
+        if (data && data.slug === slug) {
+          return data;
+        }
+      } catch (e) {
+        console.warn('Failed to parse pre-rendered post data', e);
+      }
+    }
+    return null;
+  };
+
+  const getInitialPost = () => {
+    const list = getInitialPosts();
+    return list.find((p) => p.slug === slug) || getPreRenderedPost();
+  };
+
+  const initialPost = getInitialPost();
   
   const [prevSlug, setPrevSlug] = useState(slug);
-  const [post, setPost] = useState(staticMatch || null);
-  const [loading, setLoading] = useState(!staticMatch);
-  const [allPosts, setAllPosts] = useState(staticPosts);
+  const [post, setPost] = useState(initialPost);
+  const [loading, setLoading] = useState(!initialPost);
+  const [allPosts, setAllPosts] = useState(() => getInitialPosts());
 
   const cleanTitle = (rawTitle) => {
     if (!rawTitle) return '';
@@ -37,45 +58,36 @@ const BlogPostPage = () => {
 
   if (slug !== prevSlug) {
     setPrevSlug(slug);
-    const newStaticMatch = staticPosts.find((p) => p.slug === slug);
-    setPost(newStaticMatch || null);
-    setLoading(!newStaticMatch);
+    const newMatch = getInitialPosts().find((p) => p.slug === slug) || getPreRenderedPost();
+    setPost(newMatch || null);
+    setLoading(!newMatch);
   }
 
   useEffect(() => {
     async function loadPostData() {
-      const currentStaticMatch = staticPosts.find((p) => p.slug === slug);
-      if (!currentStaticMatch) {
+      const currentMatch = getInitialPosts().find((p) => p.slug === slug) || getPreRenderedPost();
+      if (!currentMatch) {
         setLoading(true);
       }
-      let foundPost = currentStaticMatch || null;
+      let foundPost = currentMatch || null;
 
-      // Load all posts (including Firestore) to render related posts
-      let merged = [...staticPosts];
-
-      if (db) {
-        try {
-          // Fetch all blog posts for related area
-          const qAll = query(collection(db, 'blog_posts'));
-          const snapAll = await getDocs(qAll);
-          const list = [];
-          snapAll.forEach((doc) => {
-            list.push({ id: doc.id, ...doc.data() });
-          });
-          merged = [...list, ...staticPosts];
-          setAllPosts(merged);
-
-          if (!foundPost) {
-            // Fetch the specific post by slug
-            const q = query(collection(db, 'blog_posts'), where('slug', '==', slug));
-            const snap = await getDocs(q);
-            if (!snap.empty) {
-              foundPost = { id: snap.docs[0].id, ...snap.docs[0].data() };
-            }
+      try {
+        const latestPostsList = await fetchLatestPosts();
+        setAllPosts(latestPostsList);
+        
+        const latestMatch = latestPostsList.find((p) => p.slug === slug);
+        if (latestMatch) {
+          foundPost = latestMatch;
+        } else if (db) {
+          // Absolute fallback: direct Firestore query for this specific slug
+          const q = query(collection(db, 'blog_posts'), where('slug', '==', slug));
+          const snap = await getDocs(q);
+          if (!snap.empty) {
+            foundPost = { id: snap.docs[0].id, ...snap.docs[0].data() };
           }
-        } catch (err) {
-          console.warn('Erro ao carregar post do Firestore:', err);
         }
+      } catch (err) {
+        console.warn('Erro ao carregar post:', err);
       }
 
       setPost(foundPost);
