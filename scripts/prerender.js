@@ -235,24 +235,24 @@ const metodoBody = `
 const localBusinessSchema = {
   "@type": ["HairSalon", "LocalBusiness"],
   "@id": "https://www.ojonquecortou.com.br/#localbusiness",
-  "name": "O Jon que Cortou — Studio do Jon",
+  "name": "Studio do Jon",
   "alternateName": "Studio do Jon",
   "url": "https://www.ojonquecortou.com.br",
   "logo": "https://www.ojonquecortou.com.br/logo.png",
-  "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
-  "telephone": "+55 31 3586-6673",
+  "image": "https://www.ojonquecortou.com.br/capa-studio.jpg",
+  "description": "Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.",
+  "telephone": "+553135866673",
   "email": "contato@ojonquecortou.com.br",
   "priceRange": "$$",
   "hasMap": "https://www.google.com/maps?cid=16629671607593282841",
   "sameAs": [
-    "https://www.instagram.com/ojonquecortou/",
-    "https://www.facebook.com/ojonquecortou/",
-    "https://linktr.ee/ojonquecortou",
-    "https://www.google.com/maps?cid=16629671607593282841"
+    "https://www.instagram.com/ojonquecortou",
+    "https://www.google.com/maps?cid=16629671607593282841",
+    "https://www.facebook.com/ojonquecortou/"
   ],
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Rua Francisco Ovídio, 184, Caiçara",
+    "streetAddress": "Rua Francisco Ovídio, 184",
     "addressLocality": "Belo Horizonte",
     "addressRegion": "MG",
     "postalCode": "30770-040",
@@ -260,21 +260,15 @@ const localBusinessSchema = {
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": -19.908634,
-    "longitude": -43.967875
+    "latitude": "-19.908634",
+    "longitude": "-43.967875"
   },
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       "opens": "09:00",
       "closes": "19:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": "Saturday",
-      "opens": "09:00",
-      "closes": "17:00"
     }
   ],
   "knowsAbout": [
@@ -506,27 +500,22 @@ const pages = [
     bodyInsert: servicesBody,
     schema: {
       "@context": "https://schema.org",
-      "@graph": [
-        localBusinessSchema,
-        {
-          "@type": "ItemList",
-          "name": "Lista de Serviços do Studio do Jon",
-          "numberOfItems": SEED_SERVICES.length,
-          "itemListElement": SEED_SERVICES.map((s, idx) => ({
-            "@type": "ListItem",
-            "position": idx + 1,
-            "item": {
-              "@type": "Service",
-              "name": s.name,
-              "description": s.description,
-              "offers": {
-                "@type": "Offer",
-                "price": s.price,
-                "priceCurrency": "BRL"
-              }
-            }
-          }))
-        }
+      "@type": "OfferCatalog",
+      "name": "Serviços — Studio do Jon",
+      "url": "https://www.ojonquecortou.com.br/servicos",
+      "itemListElement": [
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "190.00", "itemOffered": { "@type": "Service", "name": "Corte com o Jon", "description": "Inclui Leitura de Fio completa, corte a seco/técnico e finalização educativa." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "80.00", "itemOffered": { "@type": "Service", "name": "Leitura de Fio", "description": "Diagnóstico capilar de 7 etapas. Valor revertido em crédito se fechar serviço." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "230.00", "itemOffered": { "@type": "Service", "name": "Combo Corte + Tratamento", "description": "Corte especializado com tratamento de alta performance." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "699.00", "itemOffered": { "@type": "Service", "name": "Luzes ou Morena Iluminada", "description": "Iluminação sem descolorante, preservando a estrutura do fio." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "499.00", "itemOffered": { "@type": "Service", "name": "Coloração Completa", "description": "Cor sob medida respeitando a saúde do cacho." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Tratamento personalizado", "description": "Hidratação, nutrição ou reconstrução conforme diagnóstico." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Inside TRP — Reconstrução Premium", "description": "Tratamento proteico premium para fios danificados." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Detox Estimulante", "description": "Esfoliação detox do couro cabeludo." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "100.00", "itemOffered": { "@type": "Service", "name": "Lavar e Finalizar", "description": "Higienização e finalização sob medida (definição, volume ou leveza)." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "390.00", "itemOffered": { "@type": "Service", "name": "Pacote Cachos Perfeitos", "description": "4 sessões de tratamento com cronograma técnico (30% OFF)." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Manutenção de Corte", "description": "Retoque para clientes que cortaram nos últimos 90 dias." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Retoque de Raiz", "description": "Manutenção da cor sem alterar o comprimento." } }
       ]
     }
   },
@@ -643,17 +632,16 @@ const pages = [
         },
         {
           "@type": "HowTo",
-          "name": "Método Leitura de Fio — 7 Etapas de Diagnóstico Capilar",
-          "description": "Protocolo clínico-estético de análise capilar realizado antes de qualquer corte no Studio do Jon.",
-          "totalTime": "PT30M",
+          "name": "Método Leitura de Fio — diagnóstico capilar em 7 etapas",
+          "description": "Diagnóstico feito pelo especialista Jonatan Junior antes de qualquer corte, no Studio do Jon (Belo Horizonte).",
           "step": [
-            { "@type": "HowToStep", "position": 1, "name": "Escuta", "text": "Ouvimos a história do cabelo, rotina de cuidados, histórico de procedimentos e objetivo do cliente." },
-            { "@type": "HowToStep", "position": 2, "name": "Análise a seco", "text": "Mapeamos volume, caimento e distribuição real da curvatura com o cabelo seco e finalizado do cliente." },
-            { "@type": "HowToStep", "position": 3, "name": "Diagnóstico do couro cabeludo", "text": "Avaliamos oleosidade, sensibilidade e saúde do couro para definir protocolos de limpeza adequados." },
-            { "@type": "HowToStep", "position": 4, "name": "Histórico químico", "text": "Levantamos todo processo químico anterior: colorações, descolorações, relaxamentos e alisamentos." },
-            { "@type": "HowToStep", "position": 5, "name": "Análise molhada", "text": "Testamos porosidade e elasticidade do fio úmido para identificar o estado real da fibra capilar." },
-            { "@type": "HowToStep", "position": 6, "name": "Definição de técnica", "text": "Com base nas 5 etapas anteriores, definimos a técnica exata de corte: molhado, seco ou híbrido." },
-            { "@type": "HowToStep", "position": 7, "name": "Finalização como validação", "text": "Finalizamos o cabelo para validar o corte na textura real do cliente e ensinar a rotina de casa." }
+            { "@type": "HowToStep", "position": 1, "name": "Escuta", "text": "Conversa e avaliação de hábitos e expectativas antes de tocar no cabelo." },
+            { "@type": "HowToStep", "position": 2, "name": "Análise a seco", "text": "Leitura do fio seco para identificar curvatura, volume e comportamento real." },
+            { "@type": "HowToStep", "position": 3, "name": "Diagnóstico do couro cabeludo", "text": "Avaliação da saúde do couro e da raiz." },
+            { "@type": "HowToStep", "position": 4, "name": "Histórico químico", "text": "Levantamento de químicas e processos anteriores que afetam o fio." },
+            { "@type": "HowToStep", "position": 5, "name": "Análise molhada", "text": "Leitura do fio molhado: porosidade, densidade e definição." },
+            { "@type": "HowToStep", "position": 6, "name": "Definição de técnica", "text": "Escolha da técnica de corte ideal para a curvatura e o objetivo." },
+            { "@type": "HowToStep", "position": 7, "name": "Finalização como validação", "text": "Finalização usada para validar o resultado e ensinar a manutenção em casa." }
           ]
         }
       ]

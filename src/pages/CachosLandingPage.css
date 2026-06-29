@@ -1,0 +1,201 @@
+.cachos-landing {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.cachos-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-warm);
+}
+
+.cachos-logo {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.cachos-logo span {
+  font-family: var(--serif-italic);
+  font-style: italic;
+  color: var(--accent);
+}
+
+.cachos-hero {
+  padding: 60px 20px;
+  text-align: center;
+  background: radial-gradient(circle at top, rgba(255, 45, 139, 0.08) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cachos-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cachos-hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.15;
+  margin-bottom: 24px;
+}
+
+.cachos-hero p {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--ink-2);
+  margin-bottom: 32px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-above-fold {
+  margin-bottom: 40px;
+}
+
+.cachos-results-section {
+  padding: 60px 20px;
+  background: var(--bg-warm);
+}
+
+.cachos-section-title {
+  text-align: center;
+  font-family: var(--serif);
+  font-size: clamp(24px, 3.5vw, 36px);
+  margin-bottom: 40px;
+  color: var(--ink);
+}
+
+.cachos-grid-comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.comparison-card {
+  background: var(--surface);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--adm-radius-lg, 16px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.comparison-card:hover {
+  transform: translateY(-4px);
+}
+
+.comparison-image-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.comparison-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.comparison-label {
+  position: absolute;
+  bottom: 12px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.comparison-label.before {
+  left: 12px;
+  background: rgba(226, 75, 74, 0.9);
+  color: white;
+}
+
+.comparison-label.after {
+  right: 12px;
+  background: rgba(151, 196, 89, 0.9);
+  color: white;
+}
+
+.comparison-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.comparison-info h3 {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.comparison-info p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.cachos-method-section {
+  padding: 80px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cachos-method-section h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 42px);
+  margin-bottom: 24px;
+}
+
+.cachos-method-section p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  margin-bottom: 30px;
+}
+
+.cachos-footer {
+  padding: 40px 20px;
+  border-top: 1px solid var(--rule-soft);
+  text-align: center;
+  background: var(--bg);
+  margin-top: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cachos-footer p {
+  margin: 6px 0;
+}
+
+@media (max-width: 768px) {
+  .cachos-hero {
+    padding: 40px 16px;
+  }
+  
+  .cachos-results-section {
+    padding: 40px 16px;
+  }
+  
+  .cachos-grid-comparison {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+  }
+}

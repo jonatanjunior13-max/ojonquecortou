@@ -7,6 +7,27 @@ const WA_NUMBER = '553135866673';
 const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
 const TRINKS_URL = '/agendar';
 
+const servicesSchema = {
+  "@context": "https://schema.org",
+  "@type": "OfferCatalog",
+  "name": "Serviços — Studio do Jon",
+  "url": "https://www.ojonquecortou.com.br/servicos",
+  "itemListElement": [
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "190.00", "itemOffered": { "@type": "Service", "name": "Corte com o Jon", "description": "Inclui Leitura de Fio completa, corte a seco/técnico e finalização educativa." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "80.00", "itemOffered": { "@type": "Service", "name": "Leitura de Fio", "description": "Diagnóstico capilar de 7 etapas. Valor revertido em crédito se fechar serviço." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "230.00", "itemOffered": { "@type": "Service", "name": "Combo Corte + Tratamento", "description": "Corte especializado com tratamento de alta performance." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "699.00", "itemOffered": { "@type": "Service", "name": "Luzes ou Morena Iluminada", "description": "Iluminação sem descolorante, preservando a estrutura do fio." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "499.00", "itemOffered": { "@type": "Service", "name": "Coloração Completa", "description": "Cor sob medida respeitando a saúde do cacho." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Tratamento personalizado", "description": "Hidratação, nutrição ou reconstrução conforme diagnóstico." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Inside TRP — Reconstrução Premium", "description": "Tratamento proteico premium para fios danificados." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Detox Estimulante", "description": "Esfoliação detox do couro cabeludo." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "100.00", "itemOffered": { "@type": "Service", "name": "Lavar e Finalizar", "description": "Higienização e finalização sob medida (definição, volume ou leveza)." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "390.00", "itemOffered": { "@type": "Service", "name": "Pacote Cachos Perfeitos", "description": "4 sessões de tratamento com cronograma técnico (30% OFF)." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Manutenção de Corte", "description": "Retoque para clientes que cortaram nos últimos 90 dias." } },
+    { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Retoque de Raiz", "description": "Manutenção da cor sem alterar o comprimento." } }
+  ]
+};
+
 import { SEED_SERVICES } from '../data/seedServices';
 import { db } from '../config/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
@@ -74,6 +95,7 @@ const ServicesPage = () => {
       <SEO 
         title="Serviços para Cabelos Cacheados, Crespos e Ondulados em BH | Studio do Jon" 
         description="Corte, descoloração e química especializada em fios cacheados e crespos. Jon usa Leitura de Fio antes de qualquer atendimento. Studio do Jon, Belo Horizonte — agende pelo direct." 
+        schema={servicesSchema}
       />
       <section className="services-hero section-padding">
         <div className="container text-center reveal active">

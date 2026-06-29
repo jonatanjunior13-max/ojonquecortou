@@ -73,6 +73,8 @@ function Navbar() {
     { id: "/cliente", label: "Minha Conta" },
   ];
 
+  if (current === '/agendar') return null;
+
   return (
     <React.Fragment>
       <nav className={`nav ${scrolled ? "scrolled" : ""}`}>

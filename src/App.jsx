@@ -30,6 +30,7 @@ import TransicaoCapilarPage from './pages/TransicaoCapilarPage';
 import VisagismoCachosPage from './pages/VisagismoCachosPage';
 import MasculinoPage from './pages/MasculinoPage';
 import LeituraFioPage from './pages/LeituraFioPage';
+import CachosLandingPage from './pages/CachosLandingPage';
 
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
 const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
@@ -45,6 +46,7 @@ import AdminHoje from './pages/admin/AdminHoje';
 
 import GoogleAnalytics from './components/GoogleAnalytics';
 import CustomCursor from './components/CustomCursor';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 // Layout público com cabeçalho, rodapé e botão do WhatsApp
 function PublicLayout() {
@@ -58,15 +60,36 @@ function PublicLayout() {
   );
 }
 
+// Redirects Paid Social traffic from / or /agendar to /cachos
+function PaidSocialRedirector() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const utmSource = params.get('utm_source');
+    if (utmSource && (utmSource.toLowerCase() === 'facebook' || utmSource.toLowerCase() === 'instagram')) {
+      if (location.pathname === '/' || location.pathname === '/agendar') {
+        navigate(`/cachos${location.search}`, { replace: true });
+      }
+    }
+  }, [location, navigate]);
+
+  return null;
+}
 
 function App() {
   return (
     <Router>
+      <PaidSocialRedirector />
       <CustomCursor />
       <GoogleAnalytics />
       <ScrollToTop />
       <CanonicalTag />
       <Routes>
+        {/* Rota dedicada sem Nav/Footer para Meta Ads */}
+        <Route path="/cachos" element={<CachosLandingPage />} />
+
         {/* Rotas Públicas */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />

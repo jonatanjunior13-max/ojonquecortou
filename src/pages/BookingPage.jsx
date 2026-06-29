@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { auth, db, withTimeout } from '../config/firebase';
 import { 
   GoogleAuthProvider, 
@@ -1601,7 +1601,10 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           title="Agende seu corte | Studio do Jon — Especialista em Cachos BH" 
           description="Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte." 
         />
-        <header className="booking-header text-center" style={{ padding: '15px 0 10px 0' }}>
+        <header className="booking-header text-center" style={{ padding: '15px 0 10px 0', position: 'relative', minHeight: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <Link to="/" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
+            <span>← Início</span>
+          </Link>
           <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: '"DM Serif Display", serif', color: 'var(--color-primary)' }}>Studio do Jon</div>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginTop: '2px' }}>Especialista em cachos em BH</div>
         </header>
@@ -1624,7 +1627,10 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         description="Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte." 
       />
 
-      <header className="booking-header text-center" style={{ padding: '15px 0 10px 0' }}>
+      <header className="booking-header text-center" style={{ padding: '15px 0 10px 0', position: 'relative', minHeight: '60px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <Link to="/" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
+          <span>← Início</span>
+        </Link>
         <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: '"DM Serif Display", serif', color: 'var(--color-primary)' }}>Studio do Jon</div>
         <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginTop: '2px' }}>Especialista em cachos em BH</div>
         

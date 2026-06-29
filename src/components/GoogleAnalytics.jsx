@@ -1,9 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const GoogleAnalytics = () => {
   const location = useLocation();
-  const isFirstRun = useRef(true);
 
   useEffect(() => {
     // Exclude /admin/* and /mobile from tracking
@@ -11,35 +10,36 @@ const GoogleAnalytics = () => {
       return;
     }
 
-    // Na primeira carga, o snippet estático no index.html já disparou o PageView.
-    // Pulamos a execução inicial para evitar contagem duplicada.
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
-      return;
-    }
+    // Delay pageview tracking slightly to let SEO/Helmet update the document title
+    const handleTracking = () => {
+      const currentPath = location.pathname + location.search;
+      const currentTitle = document.title;
 
-    // Google Analytics
-    if (window.gtag) {
-      window.gtag('config', 'G-BC8WXZKTLL', {
-        page_path: location.pathname + location.search,
+      // Google Analytics 4 (GA4) - Explicit page_view event
+      if (window.gtag) {
+        window.gtag('event', 'page_view', {
+          page_path: currentPath,
+          page_location: window.location.href,
+          page_title: currentTitle,
+        });
+      }
+
+      // Google Tag Manager - virtual pageview push
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'virtual_pageview',
+        page_path: currentPath,
+        page_title: currentTitle,
       });
-      window.gtag('config', 'AW-666534146', {
-        page_path: location.pathname + location.search,
-      });
-    }
 
-    // Google Tag Manager - virtual pageview push
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'virtual_pageview',
-      page_path: location.pathname + location.search,
-      page_title: document.title
-    });
+      // Meta Pixel
+      if (window.fbq) {
+        window.fbq('track', 'PageView');
+      }
+    };
 
-    // Meta Pixel
-    if (window.fbq) {
-      window.fbq('track', 'PageView');
-    }
+    const timer = setTimeout(handleTracking, 150);
+    return () => clearTimeout(timer);
   }, [location]);
 
   return null;

@@ -21,8 +21,8 @@
       gtag('js', new Date());
 
       if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/mobile')) {
-        gtag('config', 'G-BC8WXZKTLL');
-        gtag('config', 'AW-666534146');
+        gtag('config', 'G-BC8WXZKTLL', { send_page_view: false });
+        gtag('config', 'AW-666534146', { send_page_view: false });
       }
     </script>
 
@@ -92,18 +92,33 @@
       "@context": "https://schema.org",
       "@type": "HairSalon",
       "name": "Studio do Jon",
+      "image": "https://www.ojonquecortou.com.br/capa-studio.jpg",
       "description": "Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.",
       "url": "https://www.ojonquecortou.com.br",
       "telephone": "+553135866673",
+      "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "Rua Francisco Ovídio, 184",
         "addressLocality": "Belo Horizonte",
         "addressRegion": "MG",
+        "postalCode": "30770-040",
         "addressCountry": "BR"
       },
-      "priceRange": "$$",
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "-19.908634",
+        "longitude": "-43.967875"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "272"
+      },
       "sameAs": [
-        "https://www.instagram.com/ojonquecortou"
+        "https://www.instagram.com/ojonquecortou",
+        "https://www.google.com/maps?cid=16629671607593282841",
+        "https://www.facebook.com/ojonquecortou/"
       ],
       "openingHoursSpecification": [
         {

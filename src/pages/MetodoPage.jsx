@@ -16,6 +16,22 @@ const serviceSchema = {
   "url": "https://www.ojonquecortou.com.br/metodo"
 };
 
+const howtoSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Método Leitura de Fio — diagnóstico capilar em 7 etapas",
+  "description": "Diagnóstico feito pelo especialista Jonatan Junior antes de qualquer corte, no Studio do Jon (Belo Horizonte).",
+  "step": [
+    { "@type": "HowToStep", "position": 1, "name": "Escuta", "text": "Conversa e avaliação de hábitos e expectativas antes de tocar no cabelo." },
+    { "@type": "HowToStep", "position": 2, "name": "Análise a seco", "text": "Leitura do fio seco para identificar curvatura, volume e comportamento real." },
+    { "@type": "HowToStep", "position": 3, "name": "Diagnóstico do couro cabeludo", "text": "Avaliação da saúde do couro e da raiz." },
+    { "@type": "HowToStep", "position": 4, "name": "Histórico químico", "text": "Levantamento de químicas e processos anteriores que afetam o fio." },
+    { "@type": "HowToStep", "position": 5, "name": "Análise molhada", "text": "Leitura do fio molhado: porosidade, densidade e definição." },
+    { "@type": "HowToStep", "position": 6, "name": "Definição de técnica", "text": "Escolha da técnica de corte ideal para a curvatura e o objetivo." },
+    { "@type": "HowToStep", "position": 7, "name": "Finalização como validação", "text": "Finalização usada para validar o resultado e ensinar a manutenção em casa." }
+  ]
+};
+
 const steps = [
   {
     number: "01",
@@ -187,7 +203,7 @@ const MetodoPage = () => {
         title="Método Leitura de Fio | Studio do Jon"
         description="O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra."
         url="/metodo"
-        schema={serviceSchema}
+        schema={[serviceSchema, howtoSchema]}
       />
 
       {/* Hero Header */}
