@@ -5,7 +5,7 @@ const Ticker = () => {
   const items = [
     { text: 'Leitura de Fio', emoji: '🌀' },
     { text: 'Nutrição Terapêutica', emoji: '🏺' },
-    { text: 'Caiçara · BH', emoji: '📍' },
+    { text: 'Caiçaras · BH', emoji: '📍' },
     { text: 'Avaliação 5 estrelas', emoji: '⭐' },
     { text: 'Educação real dos cachos', emoji: '💡' },
     { text: 'Atendimento exclusivo', emoji: '💙' },

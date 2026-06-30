@@ -80,7 +80,7 @@ export function ContactCTA() {
               <div className="info-list">
                 <div className="info">
                   <div className="lbl">Endereço</div>
-                  <div className="val">Studio do Jon · Caiçara, Belo Horizonte / MG</div>
+                  <div className="val">Studio do Jon · Caiçaras, Belo Horizonte / MG</div>
                 </div>
                 <div className="info">
                   <div className="lbl">Funcionamento</div>
@@ -106,7 +106,7 @@ export function ContactCTA() {
                   </a>
                   <a className="channel" href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+-+Especialista+em+Cachos" target="_blank" rel="noopener">
                     <span className="left"><MapPin /> Como chegar</span>
-                    <span className="right">Caiçara · BH</span>
+                    <span className="right">Caiçaras · BH</span>
                   </a>
                 </div>
               </div>
@@ -132,7 +132,7 @@ export function ContactCTA() {
   );
 }
 
-export function PageHero({ eyebrow, title, italic, lead, location = "Caiçara · BH" }) {
+export function PageHero({ eyebrow, title, italic, lead, location = "Caiçaras · BH" }) {
   return (
     <header className="page-hero">
       <div className="container">

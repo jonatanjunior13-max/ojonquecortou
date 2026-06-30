@@ -99,7 +99,7 @@ export const TRENDING_THEMES = [
     title: 'Wolf Cut Adaptado a Cabelos Crespos',
     category: 'Corte & Visagismo',
     description: 'Como a fusão do mullet com o shag cria uma moldura marcante no rosto. A leitura geométrica garante que a nuca alongada não fique rala ou sem forma.',
-    keywords: 'wolf cut crespo, mullet cacheado, corte moderno bh, caiçara'
+    keywords: 'wolf cut crespo, mullet cacheado, corte moderno bh, caiçaras'
   },
   {
     id: 'theme_corte_long_bob_angulo',

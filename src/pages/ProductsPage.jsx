@@ -34,7 +34,7 @@ const ProductsPage = () => {
     <main className="products-page">
       <SEO 
         title="Produtos Profissionais para Cachos BH | Studio do Jon" 
-        description="Encontre os melhores produtos para cabelos cacheados, crespos e ondulados. Compre ou retire no Studio do Jon no Caiçara, BH." 
+        description="Encontre os melhores produtos para cabelos cacheados, crespos e ondulados. Compre ou retire no Studio do Jon no Caiçaras, BH." 
       />
       
       <section className="products-hero section-padding">

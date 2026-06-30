@@ -106,10 +106,10 @@ const aboutBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Muito Prazer, O Jon.</h1>
-      <p>Especialista em curvaturas e visagismo no coração do bairro Caiçara, BH.</p>
+      <p>Especialista em curvaturas e visagismo no coração do bairro Caiçaras, BH.</p>
       <h2>O Cabelo não mente. O corte errado, sim.</h2>
       <p>Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.</p>
-      <p>Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçara (BH), construí um espaço focado na liberdade do seu fio natural, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.</p>
+      <p>Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçaras (BH), construí um espaço focado na liberdade do seu fio natural, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.</p>
       <h2>Método & Técnica</h2>
       <ul>
         <li><strong>Leitura de Fio:</strong> Análise clínica de porosidade, espessura e saúde antes de qualquer tesoura.</li>
@@ -117,7 +117,7 @@ const aboutBody = `
         <li><strong>Visagismo:</strong> Harmonização do corte com o formato do seu rosto e sua personalidade.</li>
       </ul>
       <h2>Localização e Endereço</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: (31) 3586-6673.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: (31) 3586-6673.</p>
     </article>
   </noscript>
 `;
@@ -225,7 +225,7 @@ const metodoBody = `
         <li><strong>Volume Superior:</strong> Eleva o olhar, transmite autoridade e alongam o perfil.</li>
         <li><strong>Volume Lateral:</strong> Suaviza traços angulares e traz suavidade e acolhimento à imagem pessoal.</li>
       </ul>
-      <p>Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçara em Belo Horizonte.</p>
+      <p>Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçaras em Belo Horizonte.</p>
     </article>
   </noscript>
 `;
@@ -320,7 +320,7 @@ const founderPersonSchema = {
   "name": "Jonatan Junior",
   "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
   "jobTitle": "Cabeleireiro Especialista em Cachos",
-  "description": "Jonatan Junior (O Jon) é especialista em curvaturas e visagismo no bairro Caiçara, Belo Horizonte. Criador do Método Leitura de Fio.",
+  "description": "Jonatan Junior (O Jon) é especialista em curvaturas e visagismo no bairro Caiçaras, Belo Horizonte. Criador do Método Leitura de Fio.",
   "worksFor": {
     "@id": "https://www.ojonquecortou.com.br/#localbusiness"
   },
@@ -359,7 +359,7 @@ const fallbackReviews = [
     text: "Eu amei o resultado, o Jon foi super gentil do início ao fim, ele é uma pessoa muito legal de conversar. Além disso, foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!",
     rating: 5,
     relative_time_description: "Avaliação no Google",
-    curl_type: "Cacheado · Caiçara"
+    curl_type: "Cacheado · Caiçaras"
   },
   {
     author_name: "Bernardo Pereira",
@@ -445,7 +445,7 @@ const homeBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Especialista em Cabelo Cacheado, Crespo e Ondulado em Belo Horizonte</h1>
-      <p>Jonatan Junior, o Jon, é cabeleireiro especialista em cabelos ondulados, cacheados e crespos no bairro Caiçara, Belo Horizonte (MG). Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas realizado antes de qualquer corte. Atende todas as curvaturas, do tipo 2A ao 4C. Não realiza alisamento, relaxamento ou qualquer procedimento de modificação da curvatura.</p>
+      <p>Jonatan Junior, o Jon, é cabeleireiro especialista em cabelos ondulados, cacheados e crespos no bairro Caiçaras, Belo Horizonte (MG). Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas realizado antes de qualquer corte. Atende todas as curvaturas, do tipo 2A ao 4C. Não realiza alisamento, relaxamento ou qualquer procedimento de modificação da curvatura.</p>
       <h2>Serviços Principais</h2>
       <ul>
         <li><strong>Corte com o Jon</strong> — R$ 190. Inclui Leitura de Fio completa, corte e finalização educativa.</li>
@@ -457,7 +457,7 @@ const homeBody = `
       <h2>O Método Leitura de Fio</h2>
       <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra.</p>
       <h2>Localização e Agendamento</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
     </article>
   </noscript>
@@ -469,7 +469,7 @@ const pages = [
   {
     route: '/',
     title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
-    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçara). Corte a seco, visagismo e transição capilar.',
+    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçaras). Corte a seco, visagismo e transição capilar.',
     bodyInsert: homeBody,
     schema: {
       "@context": "https://schema.org",
@@ -675,7 +675,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Galeria de Resultados — Studio do Jon</h1>
-      <p>Veja fotos reais de antes e depois de cortes, mechas e tratamentos personalizados realizados em cabelos ondulados, cacheados e crespos. Todos os resultados apresentados são de clientes reais atendidos no Studio do Jon no bairro Caiçara, Belo Horizonte. Para agendar: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
+      <p>Veja fotos reais de antes e depois de cortes, mechas e tratamentos personalizados realizados em cabelos ondulados, cacheados e crespos. Todos os resultados apresentados são de clientes reais atendidos no Studio do Jon no bairro Caiçaras, Belo Horizonte. Para agendar: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
     </article>
   </noscript>
 `,

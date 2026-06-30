@@ -37,14 +37,14 @@ const AboutPage = () => {
     <main className="about-page">
       <SEO 
         title="Cabeleireiro Especialista em Cachos BH | Jon" 
-        description="Conheça o Jon, cabeleireiro especialista em cabelos cacheados, crespos e ondulados em BH. Conheça o Método Leitura de Fio e o espaço no bairro Caiçara." 
+        description="Conheça o Jon, cabeleireiro especialista em cabelos cacheados, crespos e ondulados em BH. Conheça o Método Leitura de Fio e o espaço no bairro Caiçaras." 
         schema={personSchema}
       />
       <section className="about-hero section-padding">
         <div className="container text-center reveal active">
           <h1 className="heading-xl">Muito Prazer, <span className="text-gradient">O Jon</span>.</h1>
           <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            Especialista em curvaturas e visagismo no coração do bairro Caiçara, BH.
+            Especialista em curvaturas e visagismo no coração do bairro Caiçaras, BH.
           </p>
         </div>
       </section>
@@ -67,7 +67,7 @@ const AboutPage = () => {
               Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.
             </p>
             <p className="paragraph-md mb-3">
-              Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçara (BH), construí um espaço focado na <strong>liberdade do seu fio natural</strong>, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.
+              Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçaras (BH), construí um espaço focado na <strong>liberdade do seu fio natural</strong>, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.
             </p>
             <div className="cta-group">
               <Link to="/agendar" className="btn btn-primary">Agendar Leitura de Fio</Link>
@@ -108,7 +108,7 @@ const AboutPage = () => {
           <div className="text-center reveal mb-4">
             <h2 className="heading-md">Como Chegar</h2>
             <p className="paragraph-md" style={{ marginTop: '0.5rem' }}>
-              Studio do Jon · R. Francisco Ovídio, 184 · Caiçara · Belo Horizonte, MG · CEP 30770-040
+              Studio do Jon · R. Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040
             </p>
           </div>
           <div className="reveal" style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid var(--rule)', boxShadow: '0 8px 32px rgba(26,19,16,0.08)' }}>
@@ -120,11 +120,11 @@ const AboutPage = () => {
               allowFullScreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Localização do Studio do Jon — Caiçara, Belo Horizonte"
+              title="Localização do Studio do Jon — Caiçaras, Belo Horizonte"
             />
           </div>
           <p className="text-center paragraph-md" style={{ marginTop: '1.5rem', color: 'var(--muted)' }}>
-            📍 Bairro Caiçara · BH · Próximo ao metrô Gameleira
+            📍 Bairro Caiçaras · BH · Próximo ao metrô Gameleira
           </p>
         </div>
       </section>
@@ -133,7 +133,7 @@ const AboutPage = () => {
         <div className="container text-center reveal">
           <h2 className="heading-lg mb-2">Venha viver essa experiência</h2>
           <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Meu Studio no Caiçara está pronto para receber você e seus cachos.
+            Meu Studio no Caiçaras está pronto para receber você e seus cachos.
           </p>
           <Link to="/agendar" className="btn btn-primary">
             Garantir meu horário agora

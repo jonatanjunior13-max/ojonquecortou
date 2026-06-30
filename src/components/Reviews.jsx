@@ -29,7 +29,7 @@ const fallbackReviews = [
     text: "Eu amei o resultado, o Jon foi super gentil do início ao fim, ele é uma pessoa muito legal de conversar. Além disso, foi explicando o que estava fazendo e a técnica que usava. Me senti muito segura e super recomendo!!!",
     rating: 5,
     relative_time_description: "Avaliação no Google",
-    curl_type: "Cacheado · Caiçara"
+    curl_type: "Cacheado · Caiçaras"
   },
   {
     author_name: "Bernardo Pereira",

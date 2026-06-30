@@ -65,7 +65,7 @@ function wrapNewsletterHtml(subject, body) {
           <tr>
             <td style="padding: 24px 40px; background-color: #EFE5D2; border-top: 1px solid rgba(26,19,16,0.1); text-align: center; font-family: 'Manrope', sans-serif;">
               <div style="font-size: 12px; color: #6B5A4B; line-height: 1.6; margin-bottom: 15px;">
-                Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG<br>Quarta a Sábado · 9h às 19h
+                Rua Francisco Ovídio, 184 · Caiçaras<br>Belo Horizonte · MG<br>Quarta a Sábado · 9h às 19h
               </div>
               <div style="margin-bottom: 15px; font-size: 11px; line-height: 1.6; color: #6B5A4B; background: rgba(0,0,0,0.012); padding: 12px 14px; border-radius: 6px; border: 1px solid rgba(26,19,16,0.08); text-align: left; display: inline-block; max-width: 440px; font-family: 'Manrope', sans-serif;">
                 <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #C97B49; font-weight: 600; display: block; margin-bottom: 4px;">Preferências de Leitura</span>

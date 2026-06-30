@@ -18,7 +18,7 @@ const Hero = () => {
           </h1>
           
           <p className="paragraph-lg hero-text mb-4">
-            Antes de qualquer tesoura, Jon analisa espessura, porosidade e curvatura do seu fio. Corte técnico para cabelos ondulados, cacheados e crespos no Caiçara, BH.
+            Antes de qualquer tesoura, Jon analisa espessura, porosidade e curvatura do seu fio. Corte técnico para cabelos ondulados, cacheados e crespos no Caiçaras, BH.
           </p>
           
           <div className="hero-actions stagger-1">

@@ -154,7 +154,7 @@ function getEmailWrapper(title, content, isDark = false) {
                   Studio do Jon <span style="font-style: italic; font-weight: 400; color: ${accentColor}; font-family: 'Bricolage Grotesque', Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
                 </div>
                 <div style="font-size: 12px; color: ${textMuted}; line-height: 1.6; margin-bottom: 15px;">
-                  Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
+                  Rua Francisco Ovídio, 184 · Caiçaras<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
                 </div>
                 <div style="margin-bottom: 20px; font-size: 11px; line-height: 1.6; color: ${textMuted}; background: ${isDark ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.012)'}; padding: 12px 14px; border-radius: 6px; border: 1px solid ${borderInner}; display: inline-block; max-width: 460px; text-align: left; font-family: 'Inter', sans-serif;">
                   <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: ${accentColor}; font-weight: 600; display: block; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace;">Preferências de Conteúdo</span>
@@ -227,8 +227,8 @@ function buildGoogleCalendarLink(data) {
     const end = `${endDate.getFullYear()}${pad(endDate.getMonth()+1)}${pad(endDate.getDate())}T${pad(endDate.getHours())}${pad(endDate.getMinutes())}00`;
 
     const title = encodeURIComponent(`Corte no Studio do Jon — ${data.serviceName || 'Cabelo'}`);
-    const details = encodeURIComponent(`Serviço: ${data.serviceName || ''}\nDuração: ${formatDuration(durationMins)}\nRua Francisco Ovídio, 184 - Caiçara, BH`);
-    const location = encodeURIComponent('Rua Francisco Ovídio, 184, Caiçara, Belo Horizonte - MG');
+    const details = encodeURIComponent(`Serviço: ${data.serviceName || ''}\nDuração: ${formatDuration(durationMins)}\nRua Francisco Ovídio, 184 - Caiçaras, BH`);
+    const location = encodeURIComponent('Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG');
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
   } catch (e) {
@@ -793,7 +793,7 @@ export default async function handler(req, res) {
 
     case 'horario_confirmado': {
       const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
-      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçara,+Belo+Horizonte';
+      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçaras,+Belo+Horizonte';
       const durationLabel = formatDuration(data.duration);
       emailSubject = `Está marcado — ${formatApptDate(data.date, data.time)} às ${data.time}`;
       emailContent = `
@@ -804,7 +804,7 @@ export default async function handler(req, res) {
         <div class="appt-card">
           <div class="label">Agendamento Confirmado</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+          <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
@@ -881,7 +881,7 @@ export default async function handler(req, res) {
         <div class="appt-card">
           <div class="label">Agendamento</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+          <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
@@ -968,7 +968,7 @@ export default async function handler(req, res) {
 
     case 'agendamento_editado': {
       const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
-      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçara,+Belo+Horizonte';
+      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçaras,+Belo+Horizonte';
       const durationLabel = formatDuration(data.duration);
       emailSubject = `Horário Atualizado — ${formatApptDate(data.date, data.time)} às ${data.time}`;
       emailContent = `
@@ -979,7 +979,7 @@ export default async function handler(req, res) {
         <div class="appt-card" style="border-color: #c97b49;">
           <div class="label" style="color: #c97b49;">Novos Detalhes Confirmados</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+          <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
@@ -1210,7 +1210,7 @@ export default async function handler(req, res) {
           <div class="appt-card">
             <div class="label">Agendamento</div>
             <p class="when">${formatApptDate(data.date || data.rawDate, data.time)} <span>às ${data.time}</span></p>
-            <p class="where">Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte</p>
+            <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
             
             <div class="meta-row">
               <div class="cell">

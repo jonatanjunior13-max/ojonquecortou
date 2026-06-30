@@ -67,7 +67,7 @@ function MailFooter({ dark }) {
             <span className="italic">— corte com leitura.</span>
           </div>
           <p className="addr">
-            Rua dos Cacheados, 218 · Caiçara<br/>
+            Rua dos Cacheados, 218 · Caiçaras<br/>
             Belo Horizonte · MG · 30000-000<br/>
             Quarta a Sábado · 9h às 19h
           </p>

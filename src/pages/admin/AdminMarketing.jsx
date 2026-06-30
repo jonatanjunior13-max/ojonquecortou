@@ -114,7 +114,7 @@ const EMAIL_PREVIEWS = {
     Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18; display: block; margin-top: 4px;">— corte com leitura.</span>
   </div>
   <p style="font-size: 13.5px; color: #6B5A4B; line-height: 1.5; margin: 0 0 20px 0;">
-    Rua Francisco Ovídio, 184 · Caiçara<br>Belo Horizonte · MG · 30770-040<br>Quarta a Sábado · 9h às 19h
+    Rua Francisco Ovídio, 184 · Caiçaras<br>Belo Horizonte · MG · 30770-040<br>Quarta a Sábado · 9h às 19h
   </p>
   <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B5A4B; border-top: 1px solid rgba(26, 19, 16, 0.14); padding-top: 18px; margin-top: 18px;">
     © 2026 Studio do Jon
@@ -422,7 +422,7 @@ const AdminMarketing = () => {
     }
 
     try {
-      const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos e visagismo no salão "O Jon Que Cortou" (@ojonquecortou) em Belo Horizonte (Caiçara).
+      const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos e visagismo no salão "O Jon Que Cortou" (@ojonquecortou) em Belo Horizonte (Caiçaras).
 Você está escrevendo a edição mensal da sua newsletter pessoal "Leitura de Fio" baseando-se no tema: "${randomTopic}".
 
 DIRETRIZ DE ORIGINALIDADE E PESQUISA:
@@ -886,7 +886,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
         ];
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
         const image = pickGbpFallbackImage();
-        const text = `${pick(hooks)}\n\n${theme.description || ''}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
+        const text = `${pick(hooks)}\n\n${theme.description || ''}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçaras — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
         return { text, image };
       }
 
@@ -914,7 +914,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
 
       const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
       const image = pickGbpFallbackImage();
-      const text = `${pick(hooks)}\n\n${pick(bodies)}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçara — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
+      const text = `${pick(hooks)}\n\n${pick(bodies)}\n\nNo Studio do Jon, cada detalhe é planejado no estado seco para respeitar a anatomia do seu fio.\n\n📍 Caiçaras — BH | Studio do Jon\n🔗 Reserve agora: www.ojonquecortou.com.br`;
       return { text, image };
     };
 
@@ -933,7 +933,7 @@ Você escreve posts para o GBP do Studio do Jon (@ojonquecortou), cabeleireiro e
 ESTRUTURA OBRIGATÓRIA DE CADA POST
 1. GANCHO (1-2 linhas): Começa com o erro que o cliente comete, a dor real, ou uma afirmação contraintuitiva. Sem "Você sabia que...". Sem "Vamos falar sobre...".
 2. DESENVOLVIMENTO (3-5 linhas): A causa técnica do problema. Mencionar ao menos um destes: Método Leitura de Fio, corte a seco, visagismo, diagnóstico de couro, histórico químico, encolhimento, porosidade.
-3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçara — BH | Studio do Jon"
+3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçaras — BH | Studio do Jon"
 
 LIMITES TÉCNICOS
 - Máximo 1.500 caracteres (limite do GBP)
@@ -970,7 +970,7 @@ Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda
 Aqui, a tesoura só toca o fio depois da Leitura de Fio. A seco. Com o cacho real na frente.
 Agenda pelo link do perfil.
 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
-📍 Caiçara — BH | Studio do Jon | ojonquecortou.com.br/agendar
+📍 Caiçaras — BH | Studio do Jon | ojonquecortou.com.br/agendar
 #cachos #cacheadas #cacheada #curlyhair #cabelocacheado"
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
@@ -987,7 +987,7 @@ Você escreve posts para o GBP do Studio do Jon (@ojonquecortou), cabeleireiro e
 ESTRUTURA OBRIGATÓRIA DE CADA POST
 1. GANCHO (1-2 linhas): Começa com o erro que o cliente comete, a dor real, ou uma afirmação contraintuitiva. Sem "Você sabia que...". Sem "Vamos falar sobre...".
 2. DESENVOLVIMENTO (3-5 linhas): A causa técnica do problema. Mencionar ao menos um destes: Método Leitura de Fio, corte a seco, visagismo, diagnóstico de couro, histórico químico, encolhimento, porosidade.
-3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçara — BH | Studio do Jon"
+3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçaras — BH | Studio do Jon"
 
 LIMITES TÉCNICOS
 - Máximo 1.500 caracteres (limite do GBP)
@@ -1026,7 +1026,7 @@ Seu cacho muda tudo quando seca. O comprimento muda. O volume muda. A forma muda
 Aqui, a tesoura só toca o fio depois da Leitura de Fio. A seco. Com o cacho real na frente.
 Agenda pelo link do perfil.
 Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
-📍 Caiçara — BH | Studio do Jon | ojonquecortou.com.br/agendar
+📍 Caiçaras — BH | Studio do Jon | ojonquecortou.com.br/agendar
 #cachos #cacheadas #cacheada #curlyhair #cabelocacheado"
 
 Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:

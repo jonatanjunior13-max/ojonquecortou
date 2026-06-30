@@ -248,7 +248,7 @@ function buildDigestEmail(bookings, tomorrow) {
                 Studio do Jon <span style="font-style: italic; font-weight: 400; color: #C97B49; font-family: Georgia, serif; text-transform: none; letter-spacing: normal;">— corte com leitura.</span>
               </div>
               <div style="font-size: 11px; color: #6B5A4B; line-height: 1.7;">
-                Rua Francisco Ovídio, 184 · Caiçara · Belo Horizonte · MG<br>
+                Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte · MG<br>
                 Quarta a Sábado · 9h às 19h
               </div>
               <div style="margin-top: 14px; font-size: 10px; color: #8A7866; text-transform: uppercase; letter-spacing: 0.08em;">

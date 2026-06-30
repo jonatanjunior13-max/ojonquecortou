@@ -440,7 +440,7 @@ const MetodoPage = () => {
               Linhas verticais e diagonais longas transmitem força, dinamismo e alongam a silhueta facial. Indicadas para suavizar rostos redondos ou mandíbulas proeminentes. Linhas horizontais criam estabilidade, peso e alargam visualmente o rosto. Excelentes para equilibrar rostos longos ou testas proeminentes. O volume superior eleva o olhar, transmite autoridade e alonga o perfil, enquanto o volume lateral suaviza traços angulares e traz suavidade e acolhimento à imagem pessoal.
             </p>
             <p>
-              Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçara em Belo Horizonte.
+              Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçaras em Belo Horizonte.
             </p>
           </div>
         </div>

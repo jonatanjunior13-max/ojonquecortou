@@ -29,7 +29,7 @@ function EmailConfirmacao() {
       <AppointmentCard
         when="Terça, 18 de Junho"
         whenItalic="às 14h00"
-        where="Rua dos Cacheados, 218 · Caiçara · Belo Horizonte"
+        where="Rua dos Cacheados, 218 · Caiçaras · Belo Horizonte"
         service="Corte + leitura de fio"
         duration="2h00"
       />
@@ -103,7 +103,7 @@ function EmailLembrete() {
         <div>
           <div className="m-small" style={{ color: 'rgba(245,237,219,0.55)' }}>Endereço</div>
           <p className="m-body mt-8" style={{ color: 'var(--bg-warm)' }}>
-            Rua dos Cacheados, 218<br/>Caiçara · BH
+            Rua dos Cacheados, 218<br/>Caiçaras · BH
           </p>
         </div>
         <div>

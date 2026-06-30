@@ -12,7 +12,7 @@ const faqs = [
   {
     key: "especialidade",
     question: "Qual é a especialidade do Studio do Jon?",
-    answer: "O Studio do Jon é um salão especializado no atendimento técnico e personalizado de cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçara). Nossa especialidade é a lapidação estética de curvaturas do tipo 2A ao 4C utilizando o visagismo para desenhar volumes e formas sob medida. Não realizamos procedimentos de alisamento, escovas alisadoras ou químicas de modificação térmica da fibra. Focamos 100% no tratamento, transição e valorização da curvatura natural do seu fio."
+    answer: "O Studio do Jon é um salão especializado no atendimento técnico e personalizado de cabelos ondulados, cacheados e crespos em Belo Horizonte (bairro Caiçaras). Nossa especialidade é a lapidação estética de curvaturas do tipo 2A ao 4C utilizando o visagismo para desenhar volumes e formas sob medida. Não realizamos procedimentos de alisamento, escovas alisadoras ou químicas de modificação térmica da fibra. Focamos 100% no tratamento, transição e valorização da curvatura natural do seu fio."
   },
   {
     question: "Quanto custa um corte no Studio do Jon?",

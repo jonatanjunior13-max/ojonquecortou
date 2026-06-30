@@ -88,7 +88,7 @@ function HomeHero() {
       <div className="hero-blob" aria-hidden="true" />
       <div className="container">
         <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
-          Studio do Jon · Caiçara · Belo Horizonte
+          Studio do Jon · Caiçaras · Belo Horizonte
         </div>
 
         <div className="hero-grid">
@@ -458,7 +458,7 @@ const Home = () => {
     <main>
       <SEO 
         title="Especialista em Cabelo Cacheado BH | Studio do Jon" 
-        description="Especialista em cachos em Belo Horizonte. O Studio do Jon oferece corte a seco, diagnóstico técnico e tratamentos sob medida no Caiçara. Agende seu horário!" 
+        description="Especialista em cachos em Belo Horizonte. O Studio do Jon oferece corte a seco, diagnóstico técnico e tratamentos sob medida no Caiçaras. Agende seu horário!" 
       />
       <HomeHero />
       <hr className="technical-rule" />

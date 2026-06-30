@@ -62,7 +62,7 @@ function Footer() {
             <p style={{ color: "var(--muted)", fontSize: "14px", lineHeight: "1.5", margin: "0 0 10px 0" }}>
               <strong>O Jon que Cortou — Studio do Jon</strong><br />
               Rua Francisco Ovídio, 184<br />
-              Caiçara, Belo Horizonte - MG<br />
+              Caiçaras, Belo Horizonte - MG<br />
               Telefone: (31) 3586-6673
             </p>
             <p style={{ color: "var(--muted)", fontSize: "14.5px", lineHeight: "1.5", margin: 0 }}>
@@ -74,7 +74,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH</span>
-          <span>Feito com cuidado · Caiçara, Belo Horizonte</span>
+          <span>Feito com cuidado · Caiçaras, Belo Horizonte</span>
         </div>
       </div>
     </footer>

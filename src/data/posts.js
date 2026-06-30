@@ -46,7 +46,7 @@ export const posts = [
           "name": "Onde fica o Studio do Jon e como posso agendar um diagnóstico?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "O Studio do Jon está localizado no bairro Caiçara, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 3586-6673."
+            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 3586-6673."
           }
         },
         {
@@ -96,7 +96,7 @@ export const posts = [
       <p>A porosidade capilar é a propriedade física que determina a capacidade da fibra capilar de absorver e reter água ou tratamentos em seu córtex. Cutículas altamente porosas deixam a umidade entrar e sair livremente, resultando em frizz crônico e perda rápida de definição dos cachos.</p>
 
       <h2>Por que tratar com um especialista em cachos em Belo Horizonte</h2>
-      <p>Tratar o frizz exige entender a biologia da haste do cabelo ondulado a crespo. Eu sou <a href="/sobre">Jonatan Junior, o Jon</a>. No meu studio, localizado no bairro Caiçara, em Belo Horizonte, atendemos <a href="/servicos">exclusivamente curvaturas do 2A ao 4C</a>. Não trabalhamos com alisamentos, relaxamentos, progressivas ou qualquer outro processo de alteração química de curvatura. O foco é a integridade real do seu cacho.</p>
+      <p>Tratar o frizz exige entender a biologia da haste do cabelo ondulado a crespo. Eu sou <a href="/sobre">Jonatan Junior, o Jon</a>. No meu studio, localizado no bairro Caiçaras, em Belo Horizonte, atendemos <a href="/servicos">exclusivamente curvaturas do 2A ao 4C</a>. Não trabalhamos com alisamentos, relaxamentos, progressivas ou qualquer outro processo de alteração química de curvatura. O foco é a integridade real do seu cacho.</p>
       <p>A nossa avaliação de 4.9/5 com 272 avaliações no Google reflete esse compromisso técnico. Nós eliminamos as suposições e focamos na estrutura física e no caimento geométrico correto de cada mecha. Se o seu cacho está poroso, nós acidificamos para fechar a cutícula e repomos os lipídios corretos que o fio consegue absorver de verdade.</p>
 
       <h2>Engenharia de lavagem para controlar o frizz em casa</h2>
@@ -116,7 +116,7 @@ export const posts = [
       <p>Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns.</p>
 
       <h3>Onde fica o Studio do Jon e como posso agendar um diagnóstico?</h3>
-      <p>O Studio do Jon está localizado no bairro Caiçara, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 3586-6673.</p>
+      <p>O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 3586-6673.</p>
 
       <h3>O que causa o aparecimento de frizz mecânico?</h3>
       <p>O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração.</p>
@@ -134,7 +134,7 @@ export const posts = [
     title: 'Cronograma Capilar para Cabelo Cacheado: Por que o Excesso de Hidratação Estraga o Fio',
     excerpt: 'Descubra por que o excesso de hidratação no cronograma capilar para cabelo cacheado pode enfraquecer o cacho e como a Leitura de Fio resolve a porosidade.',
     metaDescription: 'Entenda os riscos da fadiga hídrica e do excesso de hidratação nos cachos. Veja como equilibrar o cronograma capilar com diagnóstico em Belo Horizonte.',
-    keywords: 'cronograma capilar cabelo cacheado, fadiga hidrica cachos, excesso de hidratacao cabelo cacheado, tratamento capilar Caiçara, Método Leitura de Fio',
+    keywords: 'cronograma capilar cabelo cacheado, fadiga hidrica cachos, excesso de hidratacao cabelo cacheado, tratamento capilar Caiçaras, Método Leitura de Fio',
     date: '29 de Junho, 2026',
     datePublished: '2026-06-29',
     dateModified: '2026-06-29',
@@ -221,7 +221,7 @@ export const posts = [
     title: 'Corte Híbrido em Cabelo Cacheado: Por que Essa Técnica Supera o Corte Puramente Molhado',
     excerpt: 'Descubra como o corte híbrido de cabelo cacheado une a precisão a seco com o refinamento molhado sob o diagnóstico do Método Leitura de Fio.',
     metaDescription: 'Entenda a superioridade geométrica do corte híbrido em cabelos cacheados. Conheça as vantagens do Método Leitura de Fio em Belo Horizonte.',
-    keywords: 'corte híbrido cabelo cacheado, corte híbrido cacheado bh, salão especialista em cachos belo horizonte, corte de cabelo cacheado Caiçara, Método Leitura de Fio',
+    keywords: 'corte híbrido cabelo cacheado, corte híbrido cacheado bh, salão especialista em cachos belo horizonte, corte de cabelo cacheado Caiçaras, Método Leitura de Fio',
     date: '29 de Junho, 2026',
     author: 'Jon',
     category: 'Corte e Estilo',
@@ -280,7 +280,7 @@ export const posts = [
       <p>O encolhimento capilar é o fenômeno físico pelo qual o cabelo cacheado ou crespo reduz seu comprimento visual quando seco em comparação ao estado molhado. A taxa de encolhimento varia de dez a setenta por cento dependendo da curvatura de cada fibra.</p>
       <p>Se o profissional não dominar essa matemática, vai errar a mão. Cabelos crespos tipo 4, por exemplo, reduzem drasticamente de tamanho ao secar. O corte híbrido neutraliza essa margem de erro porque a base do formato é definida antes de molhar.</p>
 
-      <h2>As 7 etapas de diagnóstico no Caiçara em Belo Horizonte</h2>
+      <h2>As 7 etapas de diagnóstico no Caiçaras em Belo Horizonte</h2>
       <p>Minha rotina de corte a seco e molhado segue etapas claras:</p>
       <ul>
         <li><strong>Escuta:</strong> entender seus hábitos de finalização e histórico de traumas capilares.</li>
@@ -3080,7 +3080,7 @@ export const posts = [
     title: 'Corte a Seco para Cabelo Cacheado | Jon',
     excerpt: 'Cortar a seco virou a isca da internet, mas sem projeto geométrico você vira vítima de um fio mal lido. Entenda por que o corte para cabelo cacheado de sucesso exige arquitetura.',
     metaDescription: 'Nem todo corte a seco é igual. Especialista em cachos em BH explica o marketing por trás do termo e o que define um corte a seco feito correto.',
-    keywords: 'corte para cabelo cacheado bh, mentira do corte a seco, cabeleireiro especialista em cachos caiçara, studio do jon, corte a seco crespo bh, leitura de fio',
+    keywords: 'corte para cabelo cacheado bh, mentira do corte a seco, cabeleireiro especialista em cachos caiçaras, studio do jon, corte a seco crespo bh, leitura de fio',
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Corte & Técnica',
@@ -3194,7 +3194,7 @@ export const posts = [
     title: 'Corte a Seco Deixou Buracos no Volume? | Jon',
     excerpt: 'Cortar a seco sem ler a densidade da nuca não serve de nada. Entenda por que cortes genéricos deixam buracos no seu volume e como a arquitetura do cacho evita traumas.',
     metaDescription: 'Ficou com buraco no volume após o corte a seco? Especialista em cachos em BH explica a causa técnica e como saber se o problem é a finalização.',
-    keywords: 'corte a seco cabelo cacheado bh, buraco no volume cacho, cabeleireiro especialista em cachos caiçara, studio do jon, corte a seco crespo bh, leitura de fio',
+    keywords: 'corte a seco cabelo cacheado bh, buraco no volume cacho, cabeleireiro especialista em cachos caiçaras, studio do jon, corte a seco crespo bh, leitura de fio',
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Técnica & Corte',
@@ -3488,7 +3488,7 @@ export const posts = [
     title: 'Efeito Pirâmide no Cabelo Cacheado | Jon',
     excerpt: 'O seu cabelo não tem vontade própria. Ele só está com o peso geométrico acumulado no lugar errado. Entenda por que o efeito pirâmide acontece e como a arquitetura do corte resolve isso.',
     metaDescription: 'Seu corte cacheado sempre termina em formato de pirâmide? Especialista em cachos em BH explica a causa técnica e como o corte correto resolve.',
-    keywords: 'corte cabelo cacheado bh, efeito piramide cabelo, corte a seco bh, volume na raiz cachos, cabeleireiro especialista em cachos caiçara, studio do jon',
+    keywords: 'corte cabelo cacheado bh, efeito piramide cabelo, corte a seco bh, volume na raiz cachos, cabeleireiro especialista em cachos caiçaras, studio do jon',
     date: '14 de Abril, 2026',
     author: 'Jon',
     category: 'Corte & Volume',
@@ -3501,7 +3501,7 @@ export const posts = [
       <p>Cabelo cacheado não desce. Ele expande. E quando um profissional ignora a contração do cacho, a física cobra o preço. Cortar o cabelo molhado é criar uma mentira temporária: quando a água seca e o cacho encolhe, a base reta sobe de uma vez, a raiz chapa e as pontas "explodem" para os lados.</p>
 
       <h2>A engenharia da distribuição de peso</h2>
-      <p>Para destruir o efeito pirâmide, você precisa de um arquiteto, não de um tosador. Aqui no Caiçara, no Studio do Jon, meu foco é a <strong>Leitura de Fio</strong> com o cabelo seco. Eu preciso ver como a sua mola se comporta na vida real.</p>
+      <p>Para destruir o efeito pirâmide, você precisa de um arquiteto, não de um tosador. Aqui no Caiçaras, no Studio do Jon, meu foco é a <strong>Leitura de Fio</strong> com o cabelo seco. Eu preciso ver como a sua mola se comporta na vida real.</p>
       
       <p>Corte em camadas não é só picotar o cabelo. É criar "pilares de sustentação". O corte a seco permite criar camadas invisíveis que "empurram" o cabelo de fora para cima, criando volume na raiz sem precisar de pente garfo o dia todo. É a engenharia trabalhando a seu favor.</p>
 
@@ -3728,7 +3728,7 @@ export const posts = [
       <h2>O que a ciência explica (e os salões ignoram)</h2>
       <p>Quanto mais fechada é a sua curvatura — alô, maravilhosas do 4ABC! — mais as pontes de hidrogênio do fio se unem para formar a espiral. Quando o cabelo está molhado, o peso da água estica essas pontes. Quando seca, elas voltam para o lugar original.</p>
 
-      <p>Se o profissional não faz uma Leitura de Fio antes de começar, ele vai cortar o seu cabelo "mentiroso" (molhado) e ignorar como ele se comporta na vida real. Por isso, aqui no Caiçara, a minha tesoura só entra em ação depois que eu entendo como o seu cacho funciona de verdade.</p>
+      <p>Se o profissional não faz uma Leitura de Fio antes de começar, ele vai cortar o seu cabelo "mentiroso" (molhado) e ignorar como ele se comporta na vida real. Por isso, aqui no Caiçaras, a minha tesoura só entra em ação depois que eu entendo como o seu cacho funciona de verdade.</p>
 
       <h2>3 Coisas que você precisa saber para não sofrer mais:</h2>
       <ul>
@@ -4361,7 +4361,7 @@ export const posts = [
 
       <p>Aqui no Studio O Jon que Cortou, eu não acredito em fórmulas mágicas. Eu acredito em saúde capilar. O seu cacho só "desmancha" rápido se ele estiver gritando por socorro (ou por água!). Se a fibra está porosa e desidratada, não existe geléia capilar no mundo que segure esse look por muito tempo.</p>
 
-      <p>Como seu especialista de confiança aqui no bairro Caiçara, em BH, separei 5 segredos técnicos (mas descomplicados) que vão mudar sua relação com o travesseiro:</p>
+      <p>Como seu especialista de confiança aqui no bairro Caiçaras, em BH, separei 5 segredos técnicos (mas descomplicados) que vão mudar sua relação com o travesseiro:</p>
 
       <ul>
         <li><strong>A Regra de Ouro da Água:</strong> A técnica da fitagem precisa de água, muita água! Se o seu cabelo estiver "bebendo" o creme e as fitas não estiverem se formando com aquele brilho espelhado, use o borrifador. O creme sela a hidratação, mas quem dá a forma é a água.</li>
@@ -4446,7 +4446,7 @@ export const posts = [
       </ul>
 
       <h2>O Studio do Jon é o seu lugar em BH.</h2>
-      <p>No meu Studio no Caiçara, o foco é você. Eu priorizo a escuta ativa para entender sua rotina antes de encostar na tesoura. Aqui, a gente une a ciência do fio com o acolhimento de quem sabe o que você está passando.</p>
+      <p>No meu Studio no Caiçaras, o foco é você. Eu priorizo a escuta ativa para entender sua rotina antes de encostar na tesoura. Aqui, a gente une a ciência do fio com o acolhimento de quem sabe o que você está passando.</p>
 
       <p>Se você está sentindo aquele "fogo no rabo" para mudar, mas ainda tem receio, vem conversar comigo. Vamos transformar esse medo em um visual que te dê orgulho.</p>
 
@@ -4454,7 +4454,7 @@ export const posts = [
 
       <p>Quer dar o primeiro passo? Vem pro Studio do Jon. Vamos traçar o plano perfeito para você assumir sua melhor versão.</p>
       
-      <p>📍 Rua Francisco Ovídio, 184 – Bairro Caiçara, BH-MG<br />
+      <p>📍 Rua Francisco Ovídio, 184 – Bairro Caiçaras, BH-MG<br />
       📲 Agende pelo link na bio: <a href="https://www.instagram.com/ojonquecortou" target="_blank" rel="noopener noreferrer">@ojonquecortou</a></p>
 
       <p>Liberte sua curvatura. Quem cortou? O Jon que cortou.</p>
@@ -4494,13 +4494,13 @@ export const posts = [
           ]
     },
     title: 'Guia de Sobrevivência ao Frizz em BH | Jon',
-    excerpt: 'Se você mora em BH, sabe que o clima é uma montanha-russa. Entenda como o frizz funciona e como manter seus cachos impecáveis no Caiçara.',
+    excerpt: 'Se você mora em BH, sabe que o clima é uma montanha-russa. Entenda como o frizz funciona e como manter seus cachos impecáveis no Caiçaras.',
     metaDescription: 'Sofre com frizz em Belo Horizonte? Descubra como o clima da capital mineira afeta o cabelo cacheado e veja dicas para manter a definição.',
     date: '30 de Março, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
     content: `
-      <p>Se você mora em BH, já sabe: o clima aqui é uma montanha-russa. Um dia o sol castiga no hipercentro, no outro a umidade do Caiçara decide que seu cabelo vai dobrar de tamanho em cinco minutos. E aí vem ele, o temido, o polêmico, o onipresente: o Frizz.</p>
+      <p>Se você mora em BH, já sabe: o clima aqui é uma montanha-russa. Um dia o sol castiga no hipercentro, no outro a umidade do Caiçaras decide que seu cabelo vai dobrar de tamanho em cinco minutos. E aí vem ele, o temido, o polêmico, o onipresente: o Frizz.</p>
       
       <p>Mas antes de você sair correndo atrás de qualquer "milagre" de prateleira, senta aqui e vamos conversar como gente grande. O frizz não é um castigo divino, ele é ciência pura (e um pedido de socorro do seu cacho).</p>
 
@@ -4531,7 +4531,7 @@ export const posts = [
     id: 2,
     slug: 'transicao-capilar-bh-corte-seco',
     title: 'Transição Capilar: Corte a Seco é Aliado | Jon',
-    excerpt: 'Decidir parar com a química e assumir a textura natural é um ato de coragem em BH. Entenda como o corte a seco facilita essa jornada no Caiçara.',
+    excerpt: 'Decidir parar com a química e assumir a textura natural é um ato de coragem em BH. Entenda como o corte a seco facilita essa jornada no Caiçaras.',
     date: '30 de Março, 2026',
     author: 'Jon',
     category: 'Transição Capilar',
@@ -4569,7 +4569,7 @@ export const posts = [
     content: `
       <p>Decidir parar com a química e assumir a textura natural é um ato de coragem, mas a gente sabe: a fase das "duas texturas" não é fácil. Se você está em transição capilar em Belo Horizonte, provavelmente já se pegou no espelho sem saber o que fazer com a raiz cacheada e as pontas lisas.</p>
 
-      <p>É aqui que entra o diferencial de um especialista. No meu Studio no Caiçara, eu não apenas corto cabelo; eu ajudo você a atravessar essa ponte com autoestima. E o segredo para isso tem nome: <strong>Corte a Seco (Dry Cutting)</strong>.</p>
+      <p>É aqui que entra o diferencial de um especialista. No meu Studio no Caiçaras, eu não apenas corto cabelo; eu ajudo você a atravessar essa ponte com autoestima. E o segredo para isso tem nome: <strong>Corte a Seco (Dry Cutting)</strong>.</p>
 
       <h2>O problema do corte molhado na transição</h2>
       <p>Quando o cabelo está molhado, o peso da água estica o fio e esconde o real fator de encolhimento da sua nova curvatura. Cortar assim é um risco: você só descobre o tamanho real quando o cabelo seca, e muitas vezes o resultado é aquele "degrau" indesejado entre o liso e o crespo/cacheado.</p>
@@ -4584,7 +4584,7 @@ export const posts = [
       </ul>
 
       <h2>O Big Chop (BC) no seu tempo</h2>
-      <p>Muitas clientes chegam ao Studio no Caiçara com medo do "Big Chop" (o grande corte). Meu papel como especialista em cabelos naturais é respeitar o seu tempo. Se você quer tirar tudo de uma vez, fazemos um BC cheio de estilo. Se prefere ir cortando aos poucos, traçamos um plano de cortes trimestrais para eliminar a química gradualmente.</p>
+      <p>Muitas clientes chegam ao Studio no Caiçaras com medo do "Big Chop" (o grande corte). Meu papel como especialista em cabelos naturais é respeitar o seu tempo. Se você quer tirar tudo de uma vez, fazemos um BC cheio de estilo. Se prefere ir cortando aos poucos, traçamos um plano de cortes trimestrais para eliminar a química gradualmente.</p>
 
       <h2>Além do corte: Saúde da Fibra em BH</h2>
       <p>A transição não é só sobre tesoura; é sobre devolver nutrientes para o fio que está nascendo. Aqui no Studio, aliamos o corte a seco com tratamentos de alta performance para garantir que seu novo cabelo cresça forte, brilhante e com definição desde a raiz.</p>
