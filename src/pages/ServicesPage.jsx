@@ -39,8 +39,8 @@ const ServicesPage = () => {
   const [servicesData, setServicesData] = useState([]);
 
   useEffect(() => {
-    // Escuta em tempo real as mudanças no Firestore
-    const unsub = onSnapshot(collection(db, 'servicos'), (snapshot) => {
+    // Escuta em tempo real as mudanças no Firestore na coleção unificada
+    const unsub = onSnapshot(collection(db, 'services'), (snapshot) => {
       if (!snapshot.empty) {
         const list = [];
         snapshot.forEach((doc) => {

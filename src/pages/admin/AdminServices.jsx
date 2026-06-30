@@ -469,9 +469,32 @@ const AdminServices = () => {
             <Plus size={16} /> Novo Pacote
           </button>
         ) : (
-          <button className="btn btn-accent btn-add-service" onClick={handleOpenCreate}>
-            <Plus size={16} /> Novo Serviço
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button 
+              className="btn btn-outline" 
+              onClick={async () => {
+                try {
+                  const toSeed = SEED_SERVICES.filter(s => !services.some(curr => curr.id === s.id));
+                  if (toSeed.length === 0) {
+                    alert('Todos os serviços do site já estão sincronizados no CRM!');
+                    return;
+                  }
+                  for (const serv of toSeed) {
+                    await setDoc(doc(db, 'services', serv.id), { ...serv, category: normalizeCategory(serv.category) });
+                  }
+                  alert(`${toSeed.length} novos serviços sincronizados com sucesso no CRM!`);
+                } catch (e) {
+                  console.error(e);
+                  alert('Erro ao sincronizar. Verifique se você está logado no painel.');
+                }
+              }}
+            >
+              🔄 Sincronizar Novos Serviços
+            </button>
+            <button className="btn btn-accent btn-add-service" onClick={handleOpenCreate}>
+              <Plus size={16} /> Novo Serviço
+            </button>
+          </div>
         )}
       </div>
 
