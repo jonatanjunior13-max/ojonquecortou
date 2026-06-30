@@ -40,7 +40,7 @@
 
 .service-detail-card {
   background: var(--color-surface);
-  border: 3px solid var(--color-dark);
+  border: 3px solid var(--color-border);
   border-radius: var(--radius);
   padding: 1.5rem; /* Reduced from 2.5rem to give text more space */
   display: flex;
@@ -51,17 +51,31 @@
 
 .service-detail-card:hover {
   transform: translate(-4px, -4px);
-  box-shadow: 10px 10px 0px var(--color-yellow);
+  box-shadow: 10px 10px 0px var(--color-accent);
 }
 
 .highlight-card {
-  background: var(--color-accent);
-  color: var(--color-white);
-  box-shadow: 6px 6px 0px var(--color-dark);
+  background: var(--color-surface);
+  border: 3px solid var(--color-accent);
+  color: var(--color-text-main);
+  box-shadow: 6px 6px 0px var(--color-accent);
 }
 
-.highlight-card .sdc-name, .highlight-card .sdc-description, .highlight-card .sdc-price {
-  color: var(--color-white);
+.highlight-card:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 10px 10px 0px var(--color-yellow);
+}
+
+.highlight-card .sdc-name {
+  color: var(--color-text-main);
+}
+
+.highlight-card .sdc-description {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.highlight-card .sdc-price {
+  color: var(--color-accent);
 }
 
 .highlight-card .sdc-category, .highlight-card .sdc-tagline {
@@ -103,7 +117,7 @@
 
 .sdc-description {
   font-size: 0.9rem; /* Reduced from 0.95rem */
-  color: var(--color-text-secondary);
+  color: var(--ink-2);
   line-height: 1.5; /* Reduced from 1.7 */
   margin-bottom: 1rem;
 }
