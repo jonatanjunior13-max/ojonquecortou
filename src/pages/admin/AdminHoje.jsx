@@ -42,10 +42,22 @@ const statusColor = {
 
 
 
-const getServiceColor = (serviceName = '', servicesList = []) => {
+const getServiceColor = (serviceName = '', servicesList = [], booking = null) => {
   const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const isBlocked = booking && (
+    booking.status === 'bloqueado' ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('bloqueado') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('bloqueio') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('ausencia') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('indisponivel')
+  );
+
   const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
   let category = matched?.category;
+
+  if (isBlocked || name.includes('bloqueado') || name.includes('bloqueio') || name.includes('ausencia') || name.includes('indisponivel')) {
+    category = 'Ausência';
+  }
 
   if (!category) {
     const hasCombo = name.includes('combo') || name.includes('misto');
@@ -84,6 +96,9 @@ const getServiceColor = (serviceName = '', servicesList = []) => {
   }
   if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
     return { color: '#A855F7', label: 'FINALIZAÇÃO', class: 'svc-finalizacao' };
+  }
+  if (catLower.includes('ausencia') || catLower.includes('bloqueio') || catLower.includes('indisponivel') || catLower.includes('bloqueado')) {
+    return { color: '#52525B', label: 'AUSÊNCIA', class: 'svc-ausencia' };
   }
   return { color: '#06B6D4', label: 'TRATAMENTO', class: 'svc-tratamento' };
 };
@@ -439,7 +454,7 @@ const AdminHoje = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
             {todayBookings.map(b => {
               const svc = b.serviceName || b.service?.name || '';
-              const colorInfo = getServiceColor(svc, globalData.services || []);
+              const colorInfo = getServiceColor(svc, globalData.services || [], b);
               const barColor = colorInfo.color;
               const categoryLabel = colorInfo.label;
               const catClass = colorInfo.class || 'svc-tratamento';

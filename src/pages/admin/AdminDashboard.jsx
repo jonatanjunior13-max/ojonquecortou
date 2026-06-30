@@ -49,10 +49,24 @@ const slotInRange = (slot, start, end) => {
 
 
 
-const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
+const getServiceCategoryInfo = (serviceName = '', servicesList = [], booking = null) => {
   const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const isBlocked = booking && (
+    booking.status === 'bloqueado' ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('bloqueado') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('bloqueio') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('ausencia') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('indisponivel')
+  );
+
   const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
   let category = matched?.category;
+
+  if (isBlocked || name.includes('bloqueado') || name.includes('bloqueio') || name.includes('ausencia') || name.includes('indisponivel')) {
+    category = 'Ausência';
+  } else if (name.includes('almoco') || name.includes('almo\u00e7o')) {
+    category = 'Almo\u00e7o';
+  }
 
   // Detect lunch break by name (for bookings blocked with title "Almoço")
   if (!category) {
@@ -73,6 +87,8 @@ const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
         category = 'Cor';
       } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
         category = 'Análise';
+      } else if (name.includes('bloqueado') || name.includes('bloqueio') || name.includes('ausencia') || name.includes('indisponivel')) {
+        category = 'Ausência';
       } else {
         category = 'Tratamento'; // fallback
       }
@@ -97,6 +113,9 @@ const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
   }
   if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
     return { class: 'svc-finalizacao', badge: 'FINALIZAÇÃO' };
+  }
+  if (catLower.includes('ausencia') || catLower.includes('bloqueio') || catLower.includes('indisponivel') || catLower.includes('bloqueado')) {
+    return { class: 'svc-ausencia', badge: 'AUSÊNCIA' };
   }
   return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
 };
@@ -3277,7 +3296,7 @@ Grande abraço, Jon.`;
                                   return (
                                     <div 
                                       key={bk.id}
-                                      className={`appt-card bloqueado bloqueado-${(bk.notes || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
+                                      className={`appt-card bloqueado svc-ausencia bloqueado-${(bk.notes || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
                                       onClick={(e) => handleBookingLeftClick(e, bk)}
                                       onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                       style={{ 
@@ -3303,10 +3322,12 @@ Grande abraço, Jon.`;
                                   );
                                 }
 
+                                const svcName = bk.service?.name || bk.serviceName || "";
+                                let catInfo = getServiceCategoryInfo(svcName, services, bk);
                                 return (
                                   <div 
                                     key={bk.id} 
-                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).class}`}
+                                    className={`appt-card ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${catInfo.class}`}
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
@@ -3380,7 +3401,7 @@ Grande abraço, Jon.`;
                                         }}>✓ FINALIZADO</span>
                                       )}
                                       <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
-                                        {getServiceCategoryInfo(bk.service?.name || bk.serviceName, services).badge}
+                                        {catInfo.badge}
                                       </div>
                                     </div>
                                   </div>
@@ -3788,10 +3809,12 @@ Grande abraço, Jon.`;
                               const endStr = `${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
                               const apptTimeText = `${startStr} - ${endStr}`;
 
+                              const svcName = b.service?.name || b.serviceName || "";
+                              let catInfo = getServiceCategoryInfo(svcName, services, b);
                               return (
                                   <div 
                                     key={item.id} 
-                                    className={`appt-card ${b.status} ${getServiceCategoryInfo(b.service?.name || b.serviceName, services).class}`}
+                                    className={`appt-card ${b.status} ${catInfo.class}`}
                                     onClick={(e) => handleBookingLeftClick(e, b)}
                                     style={{
                                       top: `${topPercent}%`,
@@ -3858,7 +3881,7 @@ Grande abraço, Jon.`;
                                         }}>✓ FINALIZADO</span>
                                       )}
                                       <div className="appt-badge" style={{ textTransform: 'uppercase' }}>
-                                        {getServiceCategoryInfo(b.service?.name || b.serviceName, services).badge}
+                                        {catInfo.badge}
                                       </div>
                                     </div>
                                   </div>

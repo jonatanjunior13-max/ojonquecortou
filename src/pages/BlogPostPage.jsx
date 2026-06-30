@@ -295,24 +295,25 @@ const BlogPostPage = () => {
 
         <article className="post-container text-content">
           <header className="post-header reveal active">
-          <div className="post-meta">
+            <div className="post-meta">
               <span>{post.category}</span>
-              <span>
-                Por <strong>Jonatan Junior</strong>
-                {' '}— Cabeleireiro especialista em cabelos cacheados, crespos e ondulados
-              </span>
-              <span>
-                Publicado em <strong>
-                  <time dateTime={post.datePublished || isoDate}>{post.date}</time>
-                </strong>
-                {post.dateModified && post.dateModified !== post.datePublished && (
-                  <> · Atualizado em <strong>
-                    <time dateTime={post.dateModified}>{post.dateModified}</time>
-                  </strong></>
-                )}
-              </span>
             </div>
             <h1 className="heading-xl">{cleanTitle(post.title)}</h1>
+            <div className="post-byline" style={{ marginTop: '1.5rem', color: 'var(--color-text-secondary)', fontSize: '0.95rem', lineHeight: '1.5' }}>
+              <div className="byline-author">
+                By <strong>Jonatan Junior</strong> (Especialista em cabelo cacheado)
+              </div>
+              <div className="byline-dates">
+                Published: <time dateTime={post.datePublished || isoDate}>{post.date}</time>
+                {post.dateModified && post.dateModified !== post.datePublished && post.dateModified !== isoDate && (
+                  <> &bull; Updated: <time dateTime={post.dateModified}>{
+                    new Date(post.dateModified).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) !== 'Invalid Date' 
+                    ? new Date(post.dateModified).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) 
+                    : post.dateModified
+                  }</time></>
+                )}
+              </div>
+            </div>
           </header>
 
           <div className="reveal active stagger-1">

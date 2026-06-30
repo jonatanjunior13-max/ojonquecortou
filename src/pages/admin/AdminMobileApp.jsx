@@ -53,10 +53,24 @@ const minToTime = (min) => {
 
 
 
-const getServiceCategory = (serviceName = '', servicesList = []) => {
+const getServiceCategory = (serviceName = '', servicesList = [], booking = null) => {
   const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  const isBlocked = booking && (
+    booking.status === 'bloqueado' ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('bloqueado') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('bloqueio') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('ausencia') ||
+    (booking.clientName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes('indisponivel')
+  );
+
   const matched = servicesList.find(s => (s.name || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() === name);
   let category = matched?.category;
+
+  if (isBlocked || name.includes('bloqueado') || name.includes('bloqueio') || name.includes('ausencia') || name.includes('indisponivel')) {
+    category = 'Ausência';
+  } else if (name.includes('almoco') || name.includes('almo\u00e7o')) {
+    category = 'Almo\u00e7o';
+  }
 
   if (!category) {
     if (name.includes('almoco') || name.includes('almo\u00e7o')) {
@@ -75,6 +89,8 @@ const getServiceCategory = (serviceName = '', servicesList = []) => {
         category = 'Cor';
       } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
         category = 'Análise';
+      } else if (name.includes('bloqueado') || name.includes('bloqueio') || name.includes('ausencia') || name.includes('indisponivel')) {
+        category = 'Ausência';
       } else {
         category = 'Tratamento'; // fallback
       }
@@ -99,6 +115,9 @@ const getServiceCategory = (serviceName = '', servicesList = []) => {
   }
   if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
     return { class: 'svc-finalizacao', badge: 'FINALIZAÇÃO' };
+  }
+  if (catLower.includes('ausencia') || catLower.includes('bloqueio') || catLower.includes('indisponivel') || catLower.includes('bloqueado')) {
+    return { class: 'svc-ausencia', badge: 'AUSÊNCIA' };
   }
   return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
 };
@@ -2547,7 +2566,11 @@ Grande abraço, Jon.`;
             <div className="m-booking-list">
               {todayBookings.slice(0, 6).map(b => {
                 const svcName = b.service?.name || b.serviceName || "";
-                const cat = getServiceCategory(svcName, services);
+                let cat = getServiceCategory(svcName, services, b);
+                const cliName = (b.clientName || '').toLowerCase();
+                if (cliName.includes('bloqueado') || cliName.includes('bloqueio') || cliName.includes('ausencia') || cliName.includes('ausência')) {
+                  cat = { class: 'svc-ausencia', badge: 'AUSÊNCIA' };
+                }
                 return (
                   <div key={b.id} className={`m-booking-card ${b.status} ${cat.class}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                     <div className="m-booking-time">{b.time || '—'}</div>
@@ -2850,7 +2873,11 @@ Grande abraço, Jon.`;
               if (item.type === 'booking') {
                 const bk = item.raw;
                 const svcName = bk.service?.name || bk.serviceName || "";
-                const cat = getServiceCategory(svcName, services);
+                let cat = getServiceCategory(svcName, services, bk);
+                const cliName = (bk.clientName || '').toLowerCase();
+                if (cliName.includes('bloqueado') || cliName.includes('bloqueio') || cliName.includes('ausencia') || cliName.includes('ausência')) {
+                  cat = { class: 'svc-ausencia', badge: 'AUSÊNCIA' };
+                }
                 return (
                   <div
                     key={item.id}
@@ -2967,10 +2994,20 @@ Grande abraço, Jon.`;
 
               if (item.type === 'absence') {
                 const abs = item.raw;
+                const blockClass = (() => {
+                  const title = (abs.title || '').toLowerCase();
+                  if (title.includes('médico') || title.includes('medico')) return 'bloqueado-medico';
+                  if (title.includes('almoço') || title.includes('almoco')) return 'bloqueado-almoco';
+                  if (title.includes('folga')) return 'bloqueado-folga';
+                  if (title.includes('viagem')) return 'bloqueado-viagem';
+                  if (title.includes('psicóloga') || title.includes('psicologa')) return 'bloqueado-psicologa';
+                  if (title.includes('reunião') || title.includes('reuniao')) return 'bloqueado-reuniao';
+                  return '';
+                })();
                 return (
                   <div
                     key={item.id}
-                    className="m-slot-booking bloqueado"
+                    className={`m-slot-booking bloqueado ${blockClass}`}
                     style={{
                       position: 'absolute',
                       top: topPx,
@@ -2985,19 +3022,29 @@ Grande abraço, Jon.`;
                       justifyContent: 'center'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: 'inherit', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
+                    <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> {abs.title}
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'inherit', opacity: 0.7, fontSize: '0.62rem' }}>Ausência</div>
+                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>Ausência</div>
                   </div>
                 );
               }
 
               if (item.type === 'scale_block') {
+                const blockClass = (() => {
+                  const title = (item.label || '').toLowerCase();
+                  if (title.includes('médico') || title.includes('medico')) return 'bloqueado-medico';
+                  if (title.includes('almoço') || title.includes('almoco')) return 'bloqueado-almoco';
+                  if (title.includes('folga')) return 'bloqueado-folga';
+                  if (title.includes('viagem')) return 'bloqueado-viagem';
+                  if (title.includes('psicóloga') || title.includes('psicologa')) return 'bloqueado-psicologa';
+                  if (title.includes('reunião') || title.includes('reuniao')) return 'bloqueado-reuniao';
+                  return '';
+                })();
                 return (
                   <div
                     key={item.id}
-                    className="m-slot-booking bloqueado"
+                    className={`m-slot-booking bloqueado ${blockClass}`}
                     style={{
                       position: 'absolute',
                       top: topPx,
@@ -3012,10 +3059,10 @@ Grande abraço, Jon.`;
                       justifyContent: 'center'
                     }}
                   >
-                    <div className="m-slot-client" style={{ color: 'inherit', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
+                    <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> Bloqueado
                     </div>
-                    <div className="m-slot-svc" style={{ color: 'inherit', opacity: 0.7, fontSize: '0.62rem' }}>{item.label}</div>
+                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>{item.label}</div>
                   </div>
                 );
               }
