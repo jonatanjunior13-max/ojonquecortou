@@ -622,6 +622,28 @@
   border-radius: 0px !important;
   box-shadow: none !important;
 }
+/* Cores individuais por categoria de bloqueio */
+.appt-card.bloqueado.bloqueado-medico {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.25) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(139, 92, 246, 0.02) 100%) !important;
+  border-left: 3.5px solid #8B5CF6 !important;
+  color: #C4B5FD !important;
+}
+.appt-card.bloqueado.bloqueado-folga {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.25) 0%, rgba(239, 68, 68, 0.08) 40%, rgba(239, 68, 68, 0.02) 100%) !important;
+  border-left: 3.5px solid #EF4444 !important;
+  color: #FCA5A5 !important;
+}
+.appt-card.bloqueado.bloqueado-descanso {
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.25) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+  border-left: 3.5px solid #EAB308 !important;
+  color: #FEF08A !important;
+}
+.appt-card.bloqueado.bloqueado-almoco {
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.35) 0%, rgba(6, 182, 212, 0.15) 40%, rgba(6, 182, 212, 0.04) 100%) !important;
+  border-left: 3.5px solid #00E5FF !important;
+  color: #E0FFFF !important;
+  font-weight: bold;
+}
 .appt-card.faltou, .appt-card.ausencia {
   background: linear-gradient(90deg, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0.08) 40%, rgba(239, 68, 68, 0.02) 100%) !important;
   border: none !important;

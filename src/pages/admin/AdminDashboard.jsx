@@ -408,7 +408,7 @@ const AdminDashboard = () => {
   // Slot Action and Block States
   const [showSlotActionModal, setShowSlotActionModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const [blockMotive, setBlockMotive] = useState('');
+  const [blockMotive, setBlockMotive] = useState('Almoço');
   const [blockEndTime, setBlockEndTime] = useState('');
   const [blockIdToCancelOnSuccess, setBlockIdToCancelOnSuccess] = useState(null);
   const [showScaleBlockModal, setShowScaleBlockModal] = useState(false);
@@ -1514,7 +1514,7 @@ const AdminDashboard = () => {
     setShowSlotActionModal(false);
     const savedBlockMotive = blockMotive;
     const savedSelectedSlot = selectedSlot;
-    setBlockMotive('');
+    setBlockMotive('Almoço');
     setSelectedSlot(null);
 
     // Save in background asynchronously
@@ -3245,7 +3245,7 @@ Grande abraço, Jon.`;
                                   return (
                                     <div 
                                       key={bk.id}
-                                      className="appt-card bloqueado"
+                                      className={`appt-card bloqueado bloqueado-${(bk.notes || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
                                       onClick={(e) => handleBookingLeftClick(e, bk)}
                                       onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                       style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
@@ -6191,7 +6191,7 @@ Grande abraço, Jon.`;
               <button
                 type="button"
                 className="btn-icon"
-                onClick={() => { setShowSlotActionModal(false); setBlockMotive(''); setSelectedSlot(null); }}
+                onClick={() => { setShowSlotActionModal(false); setBlockMotive('Almoço'); setSelectedSlot(null); }}
               >
                 <X size={18} />
               </button>
@@ -6248,13 +6248,21 @@ Grande abraço, Jon.`;
                       ))}
                     </select>
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Motivo (ex: Almoço, Folga, Reunião)..."
-                    value={blockMotive}
-                    onChange={e => setBlockMotive(e.target.value)}
-                    className="slot-block-input"
-                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', width: '100%', marginBottom: '6px' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', fontWeight: 600 }}>Motivo:</span>
+                    <select
+                      value={blockMotive}
+                      onChange={e => setBlockMotive(e.target.value)}
+                      className="slot-block-input"
+                      style={{ padding: '6px', cursor: 'pointer', width: '100%', background: 'var(--adm-card)', color: 'var(--adm-text)', border: '1px solid var(--adm-rule)', borderRadius: '4px' }}
+                    >
+                      <option value="Almoço">Almoço</option>
+                      <option value="Médico">Médico</option>
+                      <option value="Folga">Folga</option>
+                      <option value="Descanso">Descanso</option>
+                      <option value="Outro">Outro / Bloqueio Geral</option>
+                    </select>
+                  </div>
                   <button type="submit" className="slot-block-btn">
                     <Lock size={13} /> Confirmar Bloqueio
                   </button>

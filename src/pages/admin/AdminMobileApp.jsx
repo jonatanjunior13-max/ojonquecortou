@@ -2851,7 +2851,7 @@ Grande abraço, Jon.`;
                 return (
                   <div
                     key={item.id}
-                    className={`m-slot-booking ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${cat.class}`}
+                    className={`m-slot-booking ${bk.status} ${(bk.status || '').replace(/\s+/g, '-')} ${cat.class} bloqueado-${(bk.notes || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
                     style={{
                       position: 'absolute',
                       top: topPx,
@@ -3985,7 +3985,7 @@ Grande abraço, Jon.`;
                         const defaultEndMin = timeToMin(selectedSlot) + 60;
                         const defaultEndTime = minToTime(defaultEndMin);
                         setBlockEndTime(endOptions.includes(defaultEndTime) ? defaultEndTime : (endOptions[0] || ''));
-                        setBlockMotive('');
+                        setBlockMotive('Almoço');
                         setIsBlockingRange(true);
                       }}>
                         <div className="m-action-btn-icon" style={{ background:'rgba(235,94,85,0.12)', color:'var(--m-red)' }}><AlertCircle size={16}/></div>
@@ -4073,14 +4073,18 @@ Grande abraço, Jon.`;
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--m-muted)', marginBottom: '4px' }}>Motivo / Observações</label>
-                    <input 
-                      type="text" 
-                      placeholder="Ex: Almoço, Folga, Reunião, Curso..." 
+                    <select
                       value={blockMotive} 
                       onChange={e => setBlockMotive(e.target.value)} 
                       className="m-input" 
-                      style={{ background: 'var(--m-card)', color: 'var(--m-text)', border: '1px solid var(--m-card-border)', height: '40px', borderRadius: '8px', padding: '0 12px', width: '100%', boxSizing: 'border-box' }}
-                    />
+                      style={{ background: 'var(--m-card)', color: 'var(--m-text)', border: '1px solid var(--m-card-border)', height: '40px', borderRadius: '8px', padding: '0 8px', width: '100%', boxSizing: 'border-box' }}
+                    >
+                      <option value="Almoço">Almoço</option>
+                      <option value="Médico">Médico</option>
+                      <option value="Folga">Folga</option>
+                      <option value="Descanso">Descanso</option>
+                      <option value="Outro">Outro / Geral</option>
+                    </select>
                   </div>
 
                   <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
