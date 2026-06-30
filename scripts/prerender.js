@@ -796,7 +796,7 @@ posts.forEach(post => {
     "headline": post.title,
     "description": postDesc,
     "image": post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`,
-    "author": founderPersonSchema,
+    "author": { "@id": "https://www.ojonquecortou.com.br/#person" },
     "publisher": {
       "@type": "Organization",
       "name": "Studio do Jon",
@@ -808,6 +808,10 @@ posts.forEach(post => {
     "datePublished": post.datePublished || isoDate,
     "dateModified": currentDate,
     "wordCount": wordCount,
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".post-content h2", ".post-content h3", ".post-content p:not(.meta)"]
+    },
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`
