@@ -515,7 +515,10 @@ const pages = [
         { "@type": "Offer", "priceCurrency": "BRL", "price": "100.00", "itemOffered": { "@type": "Service", "name": "Lavar e Finalizar", "description": "Higienização e finalização sob medida (definição, volume ou leveza)." } },
         { "@type": "Offer", "priceCurrency": "BRL", "price": "390.00", "itemOffered": { "@type": "Service", "name": "Pacote Cachos Perfeitos", "description": "4 sessões de tratamento com cronograma técnico (30% OFF)." } },
         { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Manutenção de Corte", "description": "Retoque para clientes que cortaram nos últimos 90 dias." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Retoque de Raiz", "description": "Manutenção da cor sem alterar o comprimento." } }
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Retoque de Raiz", "description": "Manutenção da cor sem alterar o comprimento." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "150.00", "itemOffered": { "@type": "Service", "name": "Infusão de Carga Hídrica para Cabelos Porosos", "description": "Tratamento de hidratação profunda sob medida conforme Leitura de Fio." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "170.00", "itemOffered": { "@type": "Service", "name": "Ritual de Reposição Lipídica para Nutrição Profunda", "description": "Nutrição lipídica intensiva com blends biocompatíveis para curvaturas ressecadas." } },
+        { "@type": "Offer", "priceCurrency": "BRL", "price": "200.00", "itemOffered": { "@type": "Service", "name": "Protocolo de Blindagem de pH e Reconstrução", "description": "Acidificação técnica e reposição de aminoácidos para cabelos pós-química ou fragilizados." } }
       ]
     }
   },

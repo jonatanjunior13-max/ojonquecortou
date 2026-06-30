@@ -178,5 +178,50 @@ export const SEED_SERVICES = [
     isPrimary: false,
     position: 11,
     includes: ['Aplicação técnica', 'Proteção do comprimento']
+  },
+  {
+    id: 'infusao-carga-hidrica-porosos',
+    emoji: '💧',
+    category: 'Tratamento',
+    name: 'Infusão de Carga Hídrica para Cabelos Porosos',
+    tagline: 'Hidratação profunda sob medida',
+    description: 'Tratamento de hidratação profunda indicado para cabelos ondulados, cacheados e crespos com alta porosidade natural ou que perderam o brilho. A partir dos dados da sua Leitura de Fio, utilizamos ativos de alta performance que penetram nas camadas internas do córtex, devolvendo a umidade ideal, combatendo o frizz excessivo e garantindo definição e movimento sem pesar os fios. Perfeito para manutenção da saúde capilar entre os cortes.',
+    price: 150,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 45,
+    isPrimary: false,
+    position: 12,
+    includes: ['Análise de porosidade', 'Ativos de penetração cortical', 'Definição e movimento leve']
+  },
+  {
+    id: 'ritual-reposicao-lipidica-nutricao',
+    emoji: '🥥',
+    category: 'Tratamento',
+    name: 'Ritual de Reposição Lipídica para Nutrição Profunda',
+    tagline: 'Adeus ao ressecamento severo',
+    description: 'Nutrição intensiva desenvolvida especialmente para curvaturas de 2A a 4C que sofrem com ressecamento severo ou encolhimento rígido. Através de um blend de óleos vegetais nobres e biocompatíveis, este ritual devolve a maleabilidade, o toque sedoso e a nutrição essencial que o óleo natural do couro cabeludo não consegue levar até as pontas. Essencial para recuperar a flexibilidade natural dos cabelos crespos e cacheados.',
+    price: 170,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 45,
+    isPrimary: false,
+    position: 13,
+    includes: ['Blend de óleos nobres', 'Nutrição lipídica profunda', 'Maleabilidade e toque sedoso']
+  },
+  {
+    id: 'protocolo-blindagem-ph-reconstrucao',
+    emoji: '🧬',
+    category: 'Tratamento',
+    name: 'Protocolo de Blindagem de pH e Reconstrução',
+    tagline: 'Recuperação intensiva pós-química',
+    description: 'Tratamento reconstrutor avançado indicado para recuperar cabelos cacheados danificados por descoloração, sol ou desgaste mecânico. O protocolo atua na acidificação técnica e na reposição de aminoácidos estruturais, selando as cutículas e reequilibrando o pH do fio. Ideal para quem acabou de fazer luzes/mechas ou precisa salvar o cabelo fragilizado, devolvendo a força e a elasticidade identificadas no diagnóstico.',
+    price: 200,
+    priceType: 'Fixo',
+    promoPrice: null,
+    duration: 60,
+    isPrimary: false,
+    position: 14,
+    includes: ['Acidificação técnica capilar', 'Reposição de aminoácidos', 'Selamento de cutículas']
   }
 ];
