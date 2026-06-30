@@ -2784,7 +2784,7 @@
 
 /* Left-Click Popover Details Tooltip */
 .booking-popover {
-  position: absolute;
+  position: fixed;
   background: var(--adm-surface);
   border: 1.5px solid var(--adm-rule);
   border-radius: 8px;

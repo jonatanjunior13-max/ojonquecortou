@@ -17,7 +17,7 @@ console.log('Text content preview (first 2000 chars):');
 console.log(textContent.substring(0, 2000));
 
 // Let's find occurrences of interesting terms
-const terms = ['Jon', 'Cachos', 'Cabeleireiro', 'BH', 'Avaliação', 'Estrela', 'trinks', 'instagram', 'Facebook', 'site', 'telefone', 'endereço', 'Caiçara'];
+const terms = ['Jon', 'Cachos', 'Cabeleireiro', 'BH', 'Avaliação', 'Estrela', 'trinks', 'instagram', 'Facebook', 'site', 'telefone', 'endereço', 'Caiçaras'];
 terms.forEach(term => {
   const count = (textContent.match(new RegExp(term, 'gi')) || []).length;
   console.log(`Term "${term}": ${count} matches`);

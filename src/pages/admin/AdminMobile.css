@@ -458,13 +458,13 @@
 .m-booking-card:active { background: var(--m-hover); transform: scale(0.975); }
 
 .m-booking-card.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.08) 40%, rgba(226, 112, 58, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(139, 92, 246, 0.02) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-left: 3px solid #E2703A !important;
+  border-left: 3px solid #8B5CF6 !important;
   color: #ffffff !important;
 }
 .m-booking-card.svc-corte .m-booking-time {
-  color: #E2703A !important;
+  color: #8B5CF6 !important;
 }
 
 .m-booking-card.svc-combo {
@@ -478,33 +478,52 @@
 }
 
 .m-booking-card.svc-tratamento {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-left: 3px solid #10B981 !important;
+  border-left: 3px solid #06B6D4 !important;
   color: #ffffff !important;
 }
 .m-booking-card.svc-tratamento .m-booking-time {
-  color: #10B981 !important;
+  color: #06B6D4 !important;
 }
 
 .m-booking-card.svc-cor {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.08) 40%, rgba(122, 60, 255, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.08) 40%, rgba(249, 115, 22, 0.02) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-left: 3px solid #7A3CFF !important;
+  border-left: 3px solid #F97316 !important;
   color: #ffffff !important;
 }
 .m-booking-card.svc-cor .m-booking-time {
-  color: #7A3CFF !important;
+  color: #F97316 !important;
 }
 
 .m-booking-card.svc-analise {
-  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.22) 0%, rgba(148, 163, 184, 0.08) 40%, rgba(148, 163, 184, 0.02) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-left: 3px solid #EAB308 !important;
+  border-left: 3px solid #94A3B8 !important;
   color: #ffffff !important;
 }
 .m-booking-card.svc-analise .m-booking-time {
-  color: #EAB308 !important;
+  color: #94A3B8 !important;
+}
+
+.m-booking-card.svc-finalizacao {
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.08) 40%, rgba(168, 85, 247, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #A855F7 !important;
+  color: #ffffff !important;
+}
+.m-booking-card.svc-finalizacao .m-booking-time {
+  color: #A855F7 !important;
+}
+
+.m-booking-card.finalizado {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border-left: 4px solid #34D399 !important;
+  color: #ECFDF5 !important;
+}
+.m-booking-card.finalizado .m-booking-time {
+  color: #ECFDF5 !important;
 }
 
 .m-booking-time {
@@ -755,26 +774,13 @@
   box-shadow: none !important;
   opacity: 0.65;
 }
-.m-slot-booking.finalizado,
-.m-slot-booking.finalizado.svc-corte,
-.m-slot-booking.finalizado.svc-combo,
-.m-slot-booking.finalizado.svc-tratamento,
-.m-slot-booking.finalizado.svc-cor,
-.m-slot-booking.finalizado.svc-analise,
-.m-slot-booking.finalizado.svc-finalizacao {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
-  border: none !important;
-  border-left: 3px solid #10B981 !important;
-  color: #A7F3D0 !important;
-  border-radius: 0px !important;
-  box-shadow: none !important;
-}
+
 
 .m-slot-booking.svc-corte, .m-slot-booking.confirmado.svc-corte, .m-slot-booking.confirmado-pela-cliente.svc-corte, .m-slot-booking.finalizado.svc-corte, .m-slot-booking.pendente.svc-corte {
-  background: linear-gradient(90deg, rgba(212, 163, 89, 0.22) 0%, rgba(212, 163, 89, 0.08) 40%, rgba(212, 163, 89, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(139, 92, 246, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #D4A359 !important;
-  color: #F3E5D8 !important;
+  border-left: 3px solid #8B5CF6 !important;
+  color: #F5F3FF !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
@@ -787,45 +793,61 @@
   box-shadow: none !important;
 }
 .m-slot-booking.svc-tratamento, .m-slot-booking.confirmado.svc-tratamento, .m-slot-booking.confirmado-pela-cliente.svc-tratamento, .m-slot-booking.finalizado.svc-tratamento, .m-slot-booking.pendente.svc-tratamento {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #10B981 !important;
+  border-left: 3px solid #06B6D4 !important;
   color: #ffffff !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .m-slot-booking.svc-cor, .m-slot-booking.confirmado.svc-cor, .m-slot-booking.confirmado-pela-cliente.svc-cor, .m-slot-booking.finalizado.svc-cor, .m-slot-booking.pendente.svc-cor {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.08) 40%, rgba(122, 60, 255, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.08) 40%, rgba(249, 115, 22, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #7A3CFF !important;
+  border-left: 3px solid #F97316 !important;
   color: #ffffff !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .m-slot-booking.svc-analise, .m-slot-booking.confirmado.svc-analise, .m-slot-booking.confirmado-pela-cliente.svc-analise, .m-slot-booking.finalizado.svc-analise, .m-slot-booking.pendente.svc-analise {
-  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.22) 0%, rgba(148, 163, 184, 0.08) 40%, rgba(148, 163, 184, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #EAB308 !important;
+  border-left: 3px solid #94A3B8 !important;
   color: #ffffff !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .m-slot-booking.svc-finalizacao, .m-slot-booking.confirmado.svc-finalizacao, .m-slot-booking.confirmado-pela-cliente.svc-finalizacao, .m-slot-booking.finalizado.svc-finalizacao, .m-slot-booking.pendente.svc-finalizacao {
-  background: linear-gradient(90deg, rgba(236, 72, 153, 0.22) 0%, rgba(236, 72, 153, 0.08) 40%, rgba(236, 72, 153, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.08) 40%, rgba(168, 85, 247, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #EC4899 !important;
+  border-left: 3px solid #A855F7 !important;
   color: #ffffff !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .m-slot-booking.svc-almoco, .m-slot-booking.confirmado.svc-almoco, .m-slot-booking.confirmado-pela-cliente.svc-almoco, .m-slot-booking.finalizado.svc-almoco, .m-slot-booking.pendente.svc-almoco {
-  background: linear-gradient(90deg, rgba(6, 182, 212, 0.35) 0%, rgba(6, 182, 212, 0.15) 40%, rgba(6, 182, 212, 0.04) 100%) !important;
+  background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
   border: none !important;
-  border-left: 3.5px solid #00E5FF !important;
-  color: #E0FFFF !important;
+  border-left: 3.5px solid #4B5563 !important;
+  color: #9CA3AF !important;
   font-weight: bold;
   border-radius: 0px !important;
   box-shadow: none !important;
+}
+
+.m-slot-booking.finalizado,
+.m-slot-booking.finalizado.svc-corte,
+.m-slot-booking.finalizado.svc-combo,
+.m-slot-booking.finalizado.svc-tratamento,
+.m-slot-booking.finalizado.svc-cor,
+.m-slot-booking.finalizado.svc-analise,
+.m-slot-booking.finalizado.svc-finalizacao {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border: none !important;
+  border-left: 4px solid #34D399 !important;
+  color: #ECFDF5 !important;
+  border-radius: 0px !important;
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
+  opacity: 0.95;
 }
 
 /* Agenda Badges on Mobile */
@@ -850,29 +872,29 @@
   border-color: rgba(139, 92, 246, 0.25) !important;
 }
 .m-slot-booking.svc-combo .appt-badge, .m-booking-bar.svc-combo .appt-badge {
-  color: #D4849A !important;
-  background: rgba(212, 132, 154, 0.12) !important;
-  border-color: rgba(212, 132, 154, 0.25) !important;
+  color: #FF2D8B !important;
+  background: rgba(255, 45, 139, 0.12) !important;
+  border-color: rgba(255, 45, 139, 0.25) !important;
 }
 .m-slot-booking.svc-tratamento .appt-badge, .m-booking-bar.svc-tratamento .appt-badge {
-  color: #10B981 !important;
-  background: rgba(16, 185, 129, 0.12) !important;
-  border-color: rgba(16, 185, 129, 0.25) !important;
+  color: #06B6D4 !important;
+  background: rgba(6, 182, 212, 0.12) !important;
+  border-color: rgba(6, 182, 212, 0.25) !important;
 }
 .m-slot-booking.svc-cor .appt-badge, .m-booking-bar.svc-cor .appt-badge {
-  color: #FBBF24 !important;
-  background: rgba(251, 191, 36, 0.12) !important;
-  border-color: rgba(251, 191, 36, 0.25) !important;
-}
-.m-slot-booking.svc-analise .appt-badge, .m-booking-bar.svc-analise .appt-badge {
   color: #F97316 !important;
   background: rgba(249, 115, 22, 0.12) !important;
   border-color: rgba(249, 115, 22, 0.25) !important;
 }
+.m-slot-booking.svc-analise .appt-badge, .m-booking-bar.svc-analise .appt-badge {
+  color: #94A3B8 !important;
+  background: rgba(148, 163, 184, 0.12) !important;
+  border-color: rgba(148, 163, 184, 0.25) !important;
+}
 .m-slot-booking.svc-almoco .appt-badge, .m-booking-bar.svc-almoco .appt-badge {
-  color: #E76F51 !important;
-  background: rgba(231, 111, 81, 0.15) !important;
-  border-color: rgba(231, 111, 81, 0.3) !important;
+  color: #9CA3AF !important;
+  background: rgba(75, 85, 99, 0.12) !important;
+  border-color: rgba(75, 85, 99, 0.25) !important;
 }
 
 .m-slot-booking.bloqueado  { border-color: var(--m-muted); background: rgba(122,110,99,0.06); }

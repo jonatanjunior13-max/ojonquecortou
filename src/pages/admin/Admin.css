@@ -460,13 +460,12 @@
 }
 
 .appt-card.finalizado {
-  background: 
-    linear-gradient(to bottom, transparent 35%, rgba(0, 0, 0, 0.8) 100%),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 2px),
-    linear-gradient(110deg, #113018 0%, #296037 30%, #1B4527 50%, #3B7B4B 70%, #113018 100%) !important;
-  border: 1px solid rgba(63, 185, 80, 0.35) !important;
-  border-left: 4px solid #3FB950 !important;
-  opacity: 0.85;
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+  border-left: 4px solid #34D399 !important;
+  color: #ECFDF5 !important;
+  opacity: 0.95;
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
 }
 
 .appt-card.cancelado {
@@ -590,8 +589,9 @@
 }
 
 .appt-card.finalizado {
-  background: linear-gradient(135deg, #4A5D4E 0%, #364439 100%);
-  border-left: 4px solid rgba(151,196,89,0.06);
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border-left: 4px solid #34D399 !important;
+  color: #ECFDF5 !important;
 }
 
 .appt-card.cancelado {
@@ -653,25 +653,12 @@
   box-shadow: none !important;
   opacity: 0.65;
 }
-.appt-card.finalizado,
-.appt-card.finalizado.svc-corte,
-.appt-card.finalizado.svc-combo,
-.appt-card.finalizado.svc-tratamento,
-.appt-card.finalizado.svc-cor,
-.appt-card.finalizado.svc-analise,
-.appt-card.finalizado.svc-finalizacao {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
-  border: none !important;
-  border-left: 3px solid #10B981 !important;
-  color: #A7F3D0 !important;
-  border-radius: 0px !important;
-  box-shadow: none !important;
-}
+
 .appt-card.svc-corte, .appt-card.pendente.svc-corte, .appt-card.confirmado.svc-corte, .appt-card.finalizado.svc-corte, .appt-card.cancelado.svc-corte {
-  background: linear-gradient(90deg, rgba(212, 163, 89, 0.22) 0%, rgba(212, 163, 89, 0.08) 40%, rgba(212, 163, 89, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(139, 92, 246, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #D4A359 !important;
-  color: #F3E5D8 !important;
+  border-left: 3px solid #8B5CF6 !important;
+  color: #F5F3FF !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
@@ -679,50 +666,66 @@
   background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.08) 40%, rgba(255, 45, 139, 0.02) 100%) !important;
   border: none !important;
   border-left: 3px solid #FF2D8B !important;
-  color: #ffffff !important;
+  color: #FFF5F9 !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .appt-card.svc-tratamento, .appt-card.pendente.svc-tratamento, .appt-card.confirmado.svc-tratamento, .appt-card.finalizado.svc-tratamento, .appt-card.cancelado.svc-tratamento {
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #10B981 !important;
-  color: #ffffff !important;
+  border-left: 3px solid #06B6D4 !important;
+  color: #ECFEFF !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .appt-card.svc-cor, .appt-card.pendente.svc-cor, .appt-card.confirmado.svc-cor, .appt-card.finalizado.svc-cor, .appt-card.cancelado.svc-cor {
-  background: linear-gradient(90deg, rgba(122, 60, 255, 0.22) 0%, rgba(122, 60, 255, 0.08) 40%, rgba(122, 60, 255, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.08) 40%, rgba(249, 115, 22, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #7A3CFF !important;
-  color: #ffffff !important;
+  border-left: 3px solid #F97316 !important;
+  color: #FFF7ED !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .appt-card.svc-analise, .appt-card.pendente.svc-analise, .appt-card.confirmado.svc-analise, .appt-card.finalizado.svc-analise, .appt-card.cancelado.svc-analise {
-  background: linear-gradient(90deg, rgba(234, 179, 8, 0.22) 0%, rgba(234, 179, 8, 0.08) 40%, rgba(234, 179, 8, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.22) 0%, rgba(148, 163, 184, 0.08) 40%, rgba(148, 163, 184, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #EAB308 !important;
-  color: #ffffff !important;
+  border-left: 3px solid #94A3B8 !important;
+  color: #F8FAFC !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .appt-card.svc-finalizacao, .appt-card.pendente.svc-finalizacao, .appt-card.confirmado.svc-finalizacao, .appt-card.finalizado.svc-finalizacao, .appt-card.cancelado.svc-finalizacao {
-  background: linear-gradient(90deg, rgba(236, 72, 153, 0.22) 0%, rgba(236, 72, 153, 0.08) 40%, rgba(236, 72, 153, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.08) 40%, rgba(168, 85, 247, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #EC4899 !important;
-  color: #ffffff !important;
+  border-left: 3px solid #A855F7 !important;
+  color: #FAF5FF !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
 .appt-card.svc-almoco, .appt-card.pendente.svc-almoco, .appt-card.confirmado.svc-almoco, .appt-card.finalizado.svc-almoco, .appt-card.cancelado.svc-almoco {
-  background: linear-gradient(90deg, rgba(6, 182, 212, 0.35) 0%, rgba(6, 182, 212, 0.15) 40%, rgba(6, 182, 212, 0.04) 100%) !important;
+  background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
   border: none !important;
-  border-left: 3.5px solid #00E5FF !important;
-  color: #E0FFFF !important;
+  border-left: 3.5px solid #4B5563 !important;
+  color: #9CA3AF !important;
   font-weight: bold;
   border-radius: 0px !important;
   box-shadow: none !important;
+}
+
+.appt-card.finalizado,
+.appt-card.finalizado.svc-corte,
+.appt-card.finalizado.svc-combo,
+.appt-card.finalizado.svc-tratamento,
+.appt-card.finalizado.svc-cor,
+.appt-card.finalizado.svc-analise,
+.appt-card.finalizado.svc-finalizacao {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border: none !important;
+  border-left: 4px solid #34D399 !important;
+  color: #ECFDF5 !important;
+  border-radius: 0px !important;
+  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
+  opacity: 0.95;
 }
 
 .appt-card .appt-time,
@@ -753,30 +756,36 @@
   border-color: rgba(139, 92, 246, 0.25);
 }
 .appt-card.svc-combo .appt-badge {
-  color: #D4849A;
-  background: rgba(212, 132, 154, 0.12);
-  border-color: rgba(212, 132, 154, 0.25);
+  color: #FF2D8B;
+  background: rgba(255, 45, 139, 0.12);
+  border-color: rgba(255, 45, 139, 0.25);
 }
 .appt-card.svc-tratamento .appt-badge {
-  color: #10B981;
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.25);
+  color: #06B6D4;
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.25);
 }
 .appt-card.svc-cor .appt-badge {
-  color: #FBBF24;
-  background: rgba(251, 191, 36, 0.12);
-  border-color: rgba(251, 191, 36, 0.25);
-}
-.appt-card.svc-analise .appt-badge {
   color: #F97316;
   background: rgba(249, 115, 22, 0.12);
   border-color: rgba(249, 115, 22, 0.25);
 }
-.appt-card.svc-almoco .appt-badge {
-  color: #E76F51;
-  background: rgba(231, 111, 81, 0.12);
-  border-color: rgba(231, 111, 81, 0.25);
+.appt-card.svc-analise .appt-badge {
+  color: #94A3B8;
+  background: rgba(148, 163, 184, 0.12);
+  border-color: rgba(148, 163, 184, 0.25);
 }
+.appt-card.svc-finalizacao .appt-badge {
+  color: #A855F7;
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.25);
+}
+.appt-card.svc-almoco .appt-badge {
+  color: #9CA3AF;
+  background: rgba(75, 85, 99, 0.12);
+  border-color: rgba(75, 85, 99, 0.25);
+}
+
 
 @keyframes pulse-border {
   0% { border-color: rgba(229, 62, 62, 0.2); }
@@ -3630,29 +3639,51 @@
   transform: translateY(-1px);
 }
 .m-today-all-booking-card.svc-corte {
-  background: #C4B5FD !important;
-  border: 1px solid #A78BFA !important;
-  color: #2E1065 !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(139, 92, 246, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #8B5CF6 !important;
+  color: #ffffff !important;
 }
 .m-today-all-booking-card.svc-combo {
-  background: #FDA4AF !important;
-  border: 1px solid #F87171 !important;
-  color: #4C0519 !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.08) 40%, rgba(255, 45, 139, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #FF2D8B !important;
+  color: #ffffff !important;
 }
 .m-today-all-booking-card.svc-tratamento {
-  background: #A7F3D0 !important;
-  border: 1px solid #34D399 !important;
-  color: #064E3B !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #06B6D4 !important;
+  color: #ffffff !important;
 }
 .m-today-all-booking-card.svc-cor {
-  background: #FDE68A !important;
-  border: 1px solid #FBBF24 !important;
-  color: #78350F !important;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.08) 40%, rgba(249, 115, 22, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #F97316 !important;
+  color: #ffffff !important;
 }
 .m-today-all-booking-card.svc-analise {
-  background: #FED7AA !important;
-  border: 1px solid #FB923C !important;
-  color: #7C2D12 !important;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.22) 0%, rgba(148, 163, 184, 0.08) 40%, rgba(148, 163, 184, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #94A3B8 !important;
+  color: #ffffff !important;
+}
+.m-today-all-booking-card.svc-finalizacao {
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.08) 40%, rgba(168, 85, 247, 0.02) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3px solid #A855F7 !important;
+  color: #ffffff !important;
+}
+.m-today-all-booking-card.svc-almoco {
+  background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-left: 3.5px solid #4B5563 !important;
+  color: #9CA3AF !important;
+}
+.m-today-all-booking-card.finalizado {
+  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  border: 1px solid rgba(52, 211, 153, 0.35) !important;
+  color: #ECFDF5 !important;
 }
 
 /* ==========================================================================

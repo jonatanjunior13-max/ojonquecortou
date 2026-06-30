@@ -159,9 +159,9 @@ Para perguntas como "melhor cabeleireiro cachos BH" ou "como fazer transição c
 
 Páginas de FAQ e blog seriam candidatos ideais para `SpeakableSpecification`, permitindo que assistentes de voz (Google Assistant, Alexa) extraiam trechos.
 
-### BAIXO-2: Endereço usa "Caiçaras" em alguns lugares, "Caiçara" em outros
+### BAIXO-2: Endereço usa "Caiçaras" em alguns lugares, "Caiçaras" em outros
 
-Inconsistência menor no streetAddress — ora `"Caiçaras"`, ora `"Caiçara"`. Padronizar para `"Caiçara"`.
+Inconsistência menor no streetAddress — ora `"Caiçaras"`, ora `"Caiçaras"`. Padronizar para `"Caiçaras"`.
 
 ### BAIXO-3: Sem datePublished no schema da homepage
 

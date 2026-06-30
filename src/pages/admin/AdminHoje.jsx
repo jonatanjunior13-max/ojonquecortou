@@ -52,6 +52,7 @@ const getServiceColor = (serviceName = '', servicesList = []) => {
     const hasCorte = /\b(corte|cortes)\b/.test(name);
     const hasTratamento = /\b(tratamento|tratamentos|terapia|cronograma|hidrat|hidratacao)\b/.test(name);
     const hasCor = /\b(cor|coloracao|colora|mechas|luzes|tonaliza)\b/.test(name);
+    const hasFinalizacao = /\b(finalizacao|finaliza)\b/.test(name);
 
     if (hasCombo || (hasCorte && (hasTratamento || hasCor))) {
       category = 'Combo';
@@ -61,6 +62,8 @@ const getServiceColor = (serviceName = '', servicesList = []) => {
       category = 'Cor';
     } else if (name.includes('analise') || name.includes('avaliacao') || name.includes('teste')) {
       category = 'Análise';
+    } else if (hasFinalizacao) {
+      category = 'Finalização';
     } else {
       category = 'Tratamento'; // fallback
     }
@@ -68,18 +71,21 @@ const getServiceColor = (serviceName = '', servicesList = []) => {
 
   const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
   if (catLower.includes('combo') || catLower.includes('misto')) {
-    return { color: '#D4849A', label: 'COMBO', class: 'svc-combo' };
+    return { color: '#FF2D8B', label: 'COMBO', class: 'svc-combo' };
   }
   if (catLower.includes('corte')) {
     return { color: '#8B5CF6', label: 'CORTE', class: 'svc-corte' };
   }
   if (catLower.includes('cor') || catLower.includes('colora')) {
-    return { color: '#FBBF24', label: 'COR', class: 'svc-cor' };
+    return { color: '#F97316', label: 'COR', class: 'svc-cor' };
   }
   if (catLower.includes('analise') || catLower.includes('avaliacao')) {
-    return { color: '#F97316', label: 'ANÁLISE', class: 'svc-analise' };
+    return { color: '#94A3B8', label: 'ANÁLISE', class: 'svc-analise' };
   }
-  return { color: '#10B981', label: 'TRATAMENTO', class: 'svc-tratamento' };
+  if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
+    return { color: '#A855F7', label: 'FINALIZAÇÃO', class: 'svc-finalizacao' };
+  }
+  return { color: '#06B6D4', label: 'TRATAMENTO', class: 'svc-tratamento' };
 };
 
 const AdminHoje = () => {
@@ -441,7 +447,7 @@ const AdminHoje = () => {
                 <div
                   key={b.id}
                   onClick={() => setSelectedBooking(b)}
-                  className={`m-today-all-booking-card ${catClass}`}
+                  className={`m-today-all-booking-card ${b.status} ${catClass}`}
                   style={{
                     position: 'relative',
                     display: 'flex',

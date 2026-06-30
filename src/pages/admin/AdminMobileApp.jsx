@@ -2549,7 +2549,7 @@ Grande abraço, Jon.`;
                 const svcName = b.service?.name || b.serviceName || "";
                 const cat = getServiceCategory(svcName, services);
                 return (
-                  <div key={b.id} className={`m-booking-card ${cat.class}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
+                  <div key={b.id} className={`m-booking-card ${b.status} ${cat.class}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                     <div className="m-booking-time">{b.time || '—'}</div>
                     <div className={`m-booking-bar ${cat.class}`}>
                       <div className="m-booking-info">
