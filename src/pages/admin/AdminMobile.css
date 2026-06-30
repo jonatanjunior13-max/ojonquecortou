@@ -756,10 +756,10 @@
 }
 
 .m-slot-booking.svc-corte, .m-slot-booking.confirmado.svc-corte, .m-slot-booking.confirmado-pela-cliente.svc-corte, .m-slot-booking.finalizado.svc-corte, .m-slot-booking.pendente.svc-corte {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.22) 0%, rgba(226, 112, 58, 0.08) 40%, rgba(226, 112, 58, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(212, 163, 89, 0.22) 0%, rgba(212, 163, 89, 0.08) 40%, rgba(212, 163, 89, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #E2703A !important;
-  color: #ffffff !important;
+  border-left: 3px solid #D4A359 !important;
+  color: #F3E5D8 !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
