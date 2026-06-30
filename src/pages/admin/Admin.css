@@ -702,7 +702,8 @@
   border-radius: 0px !important;
   box-shadow: none !important;
 }
-.appt-card.svc-almoco, .appt-card.pendente.svc-almoco, .appt-card.confirmado.svc-almoco, .appt-card.finalizado.svc-almoco, .appt-card.cancelado.svc-almoco {
+/* Ausência Genérica */
+.appt-card.bloqueado {
   background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
   border: none !important;
   border-left: 3.5px solid #4B5563 !important;
@@ -710,6 +711,34 @@
   font-weight: bold;
   border-radius: 0px !important;
   box-shadow: none !important;
+}
+
+/* Almoço */
+.appt-card.bloqueado-almoco, .appt-card.svc-almoco {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%) !important;
+  border-left: 3.5px solid #F59E0B !important;
+  color: #D97706 !important;
+}
+
+/* Folga */
+.appt-card.bloqueado-folga {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+  border-left: 3.5px solid #10B981 !important;
+  color: #059669 !important;
+}
+
+/* Reunião */
+.appt-card.bloqueado-reuniao {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%) !important;
+  border-left: 3.5px solid #3B82F6 !important;
+  color: #2563EB !important;
+}
+
+/* Psicóloga / Médico / Viagem */
+.appt-card.bloqueado-psicologa, .appt-card.bloqueado-medico, .appt-card.bloqueado-viagem {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
+  border-left: 3.5px solid #EF4444 !important;
+  color: #DC2626 !important;
 }
 
 .appt-card.finalizado,
@@ -780,10 +809,30 @@
   background: rgba(168, 85, 247, 0.12);
   border-color: rgba(168, 85, 247, 0.25);
 }
-.appt-card.svc-almoco .appt-badge {
+.appt-card.bloqueado .appt-badge {
   color: #9CA3AF;
   background: rgba(75, 85, 99, 0.12);
   border-color: rgba(75, 85, 99, 0.25);
+}
+.appt-card.bloqueado-almoco .appt-badge, .appt-card.svc-almoco .appt-badge {
+  color: #D97706;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+.appt-card.bloqueado-folga .appt-badge {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.appt-card.bloqueado-reuniao .appt-badge {
+  color: #2563EB;
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+.appt-card.bloqueado-psicologa .appt-badge, .appt-card.bloqueado-medico .appt-badge, .appt-card.bloqueado-viagem .appt-badge {
+  color: #DC2626;
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.25);
 }
 
 
@@ -3674,11 +3723,31 @@
   border-left: 3px solid #A855F7 !important;
   color: #ffffff !important;
 }
-.m-today-all-booking-card.svc-almoco {
+.m-today-all-booking-card.bloqueado {
   background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-left: 3.5px solid #4B5563 !important;
   color: #9CA3AF !important;
+}
+.m-today-all-booking-card.bloqueado-almoco, .m-today-all-booking-card.svc-almoco {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%) !important;
+  border-left: 3.5px solid #F59E0B !important;
+  color: #D97706 !important;
+}
+.m-today-all-booking-card.bloqueado-folga {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+  border-left: 3.5px solid #10B981 !important;
+  color: #059669 !important;
+}
+.m-today-all-booking-card.bloqueado-reuniao {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%) !important;
+  border-left: 3.5px solid #3B82F6 !important;
+  color: #2563EB !important;
+}
+.m-today-all-booking-card.bloqueado-psicologa, .m-today-all-booking-card.bloqueado-medico, .m-today-all-booking-card.bloqueado-viagem {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
+  border-left: 3.5px solid #EF4444 !important;
+  color: #DC2626 !important;
 }
 .m-today-all-booking-card.finalizado {
   background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;

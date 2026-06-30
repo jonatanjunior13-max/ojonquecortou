@@ -759,9 +759,9 @@
   color: #FEF08A !important;
 }
 .m-slot-booking.bloqueado.bloqueado-almoco {
-  background: linear-gradient(90deg, rgba(6, 182, 212, 0.35) 0%, rgba(6, 182, 212, 0.15) 40%, rgba(6, 182, 212, 0.04) 100%) !important;
-  border-left: 3.5px solid #00E5FF !important;
-  color: #E0FFFF !important;
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.35) 0%, rgba(245, 158, 11, 0.15) 40%, rgba(245, 158, 11, 0.04) 100%) !important;
+  border-left: 3.5px solid #F59E0B !important;
+  color: #FDE68A !important;
   font-weight: bold;
 }
 
@@ -824,7 +824,7 @@
   border-radius: 0px !important;
   box-shadow: none !important;
 }
-.m-slot-booking.svc-almoco, .m-slot-booking.confirmado.svc-almoco, .m-slot-booking.confirmado-pela-cliente.svc-almoco, .m-slot-booking.finalizado.svc-almoco, .m-slot-booking.pendente.svc-almoco {
+.m-slot-booking.bloqueado {
   background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
   border: none !important;
   border-left: 3.5px solid #4B5563 !important;
@@ -832,6 +832,39 @@
   font-weight: bold;
   border-radius: 0px !important;
   box-shadow: none !important;
+}
+.m-slot-booking.bloqueado-almoco, .m-slot-booking.svc-almoco, .m-slot-booking.confirmado.svc-almoco, .m-slot-booking.confirmado-pela-cliente.svc-almoco, .m-slot-booking.finalizado.svc-almoco, .m-slot-booking.pendente.svc-almoco {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%) !important;
+  border: none !important;
+  border-left: 3.5px solid #F59E0B !important;
+  color: #D97706 !important;
+  font-weight: bold;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+}
+.m-slot-booking.bloqueado-folga {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+  border: none !important;
+  border-left: 3.5px solid #10B981 !important;
+  color: #059669 !important;
+  font-weight: bold;
+  border-radius: 0px !important;
+}
+.m-slot-booking.bloqueado-reuniao {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%) !important;
+  border: none !important;
+  border-left: 3.5px solid #3B82F6 !important;
+  color: #2563EB !important;
+  font-weight: bold;
+  border-radius: 0px !important;
+}
+.m-slot-booking.bloqueado-psicologa, .m-slot-booking.bloqueado-medico, .m-slot-booking.bloqueado-viagem {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
+  border: none !important;
+  border-left: 3.5px solid #EF4444 !important;
+  color: #DC2626 !important;
+  font-weight: bold;
+  border-radius: 0px !important;
 }
 
 .m-slot-booking.finalizado,
@@ -891,10 +924,30 @@
   background: rgba(148, 163, 184, 0.12) !important;
   border-color: rgba(148, 163, 184, 0.25) !important;
 }
-.m-slot-booking.svc-almoco .appt-badge, .m-booking-bar.svc-almoco .appt-badge {
+.m-slot-booking.bloqueado .appt-badge, .m-booking-bar.bloqueado .appt-badge {
   color: #9CA3AF !important;
   background: rgba(75, 85, 99, 0.12) !important;
   border-color: rgba(75, 85, 99, 0.25) !important;
+}
+.m-slot-booking.bloqueado-almoco .appt-badge, .m-booking-bar.bloqueado-almoco .appt-badge, .m-slot-booking.svc-almoco .appt-badge, .m-booking-bar.svc-almoco .appt-badge {
+  color: #D97706 !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+.m-slot-booking.bloqueado-folga .appt-badge, .m-booking-bar.bloqueado-folga .appt-badge {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+.m-slot-booking.bloqueado-reuniao .appt-badge, .m-booking-bar.bloqueado-reuniao .appt-badge {
+  color: #2563EB !important;
+  background: rgba(59, 130, 246, 0.12) !important;
+  border-color: rgba(59, 130, 246, 0.25) !important;
+}
+.m-slot-booking.bloqueado-psicologa .appt-badge, .m-slot-booking.bloqueado-medico .appt-badge, .m-slot-booking.bloqueado-viagem .appt-badge {
+  color: #DC2626 !important;
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
 }
 
 .m-slot-booking.bloqueado  { border-color: var(--m-muted); background: rgba(122,110,99,0.06); }

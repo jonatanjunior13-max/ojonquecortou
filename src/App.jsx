@@ -7,31 +7,36 @@ import ScrollToTop from './components/ScrollToTop';
 import CanonicalTag from './components/CanonicalTag';
 import AdminErrorBoundary from './components/admin/AdminErrorBoundary';
 
-import Home from './pages/Home';
-import AboutPage from './pages/AboutPage';
-import ServicesPage from './pages/ServicesPage';
-import BleachServicePage from './pages/BleachServicePage';
-import VisagismServicePage from './pages/VisagismServicePage';
-import ServiceDetailPage from './pages/ServiceDetailPage';
-import BlogPage from './pages/BlogPage';
-import BlogPostPage from './pages/BlogPostPage';
-import ReviewsPage from './pages/ReviewsPage';
-import GalleryPage from './pages/GalleryPage';
-import FaqPage from './pages/FaqPage';
-import MetodoPage from './pages/MetodoPage';
-import InvestimentoPage from './pages/InvestimentoPage';
-import BookingPage from './pages/BookingPage';
-import CancelBookingPage from './pages/CancelBookingPage';
-import ClientAreaPage from './pages/ClientAreaPage';
-import ProductsPage from './pages/ProductsPage';
-import ProductDetailPage from './pages/ProductDetailPage';
+const Home = React.lazy(() => import('./pages/Home'));
+const AboutPage = React.lazy(() => import('./pages/AboutPage'));
+const ServicesPage = React.lazy(() => import('./pages/ServicesPage'));
+const BleachServicePage = React.lazy(() => import('./pages/BleachServicePage'));
+const VisagismServicePage = React.lazy(() => import('./pages/VisagismServicePage'));
+const ServiceDetailPage = React.lazy(() => import('./pages/ServiceDetailPage'));
+const BlogPage = React.lazy(() => import('./pages/BlogPage'));
+const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
+const ReviewsPage = React.lazy(() => import('./pages/ReviewsPage'));
+const GalleryPage = React.lazy(() => import('./pages/GalleryPage'));
+const FaqPage = React.lazy(() => import('./pages/FaqPage'));
+const MetodoPage = React.lazy(() => import('./pages/MetodoPage'));
+const InvestimentoPage = React.lazy(() => import('./pages/InvestimentoPage'));
+const BookingPage = React.lazy(() => import('./pages/BookingPage'));
+const CancelBookingPage = React.lazy(() => import('./pages/CancelBookingPage'));
+const ClientAreaPage = React.lazy(() => import('./pages/ClientAreaPage'));
+const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
+const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
 
-import CorteHibridoPage from './pages/CorteHibridoPage';
-import TransicaoCapilarPage from './pages/TransicaoCapilarPage';
-import VisagismoCachosPage from './pages/VisagismoCachosPage';
-import MasculinoPage from './pages/MasculinoPage';
-import LeituraFioPage from './pages/LeituraFioPage';
-import CachosLandingPage from './pages/CachosLandingPage';
+const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
+const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
+const VisagismoCachosPage = React.lazy(() => import('./pages/VisagismoCachosPage'));
+const MasculinoPage = React.lazy(() => import('./pages/MasculinoPage'));
+const LeituraFioPage = React.lazy(() => import('./pages/LeituraFioPage'));
+const CachosLandingPage = React.lazy(() => import('./pages/CachosLandingPage'));
+
+import AdminHoje from './pages/admin/AdminHoje';
+import GoogleAnalytics from './components/GoogleAnalytics';
+import CustomCursor from './components/CustomCursor';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
 const AdminLayout = React.lazy(() => import('./components/admin/AdminLayout'));
@@ -43,11 +48,6 @@ const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'));
 const AdminMarketing = React.lazy(() => import('./pages/admin/AdminMarketing'));
 const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'));
 const AdminMobileApp = React.lazy(() => import('./pages/admin/AdminMobileApp'));
-import AdminHoje from './pages/admin/AdminHoje';
-
-import GoogleAnalytics from './components/GoogleAnalytics';
-import CustomCursor from './components/CustomCursor';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 // Layout público com cabeçalho, rodapé e botão do WhatsApp
 function PublicLayout() {
@@ -82,59 +82,59 @@ function PaidSocialRedirector() {
 function App() {
   return (
     <Router>
-      <PaidSocialRedirector />
-      <CustomCursor />
-      <GoogleAnalytics />
       <ScrollToTop />
       <CanonicalTag />
-      <Routes>
-        {/* Rota dedicada sem Nav/Footer para Meta Ads */}
-        <Route path="/cachos" element={<CachosLandingPage />} />
+      <CustomCursor />
+      <React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando...</div>}>
+        <Routes>
+          {/* Rota dedicada sem Nav/Footer para Meta Ads */}
+          <Route path="/cachos" element={<CachosLandingPage />} />
 
-        {/* Rotas Públicas */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/sobre" element={<AboutPage />} />
-          <Route path="/servicos" element={<ServicesPage />} />
-          <Route path="/servicos/corte-hibrido" element={<CorteHibridoPage />} />
-          <Route path="/servicos/leitura-de-fio" element={<LeituraFioPage />} />
-          <Route path="/servicos/transicao-capilar" element={<TransicaoCapilarPage />} />
-          <Route path="/servicos/visagismo-cachos" element={<VisagismoCachosPage />} />
-          <Route path="/servicos/masculino" element={<MasculinoPage />} />
-          <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
-          <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />
-          <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
-          <Route path="/galeria" element={<GalleryPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/blog/:slug" element={<BlogPostPage />} />
-          <Route path="/depoimentos" element={<ReviewsPage />} />
-          <Route path="/faq" element={<FaqPage />} />
-          <Route path="/metodo" element={<MetodoPage />} />
-          <Route path="/metodologia" element={<MetodoPage />} />
-          <Route path="/investimento" element={<InvestimentoPage />} />
-          <Route path="/agendar" element={<BookingPage />} />
-          <Route path="/cancelar" element={<CancelBookingPage />} />
-          <Route path="/cliente" element={<ClientAreaPage />} />
-          <Route path="/produtos" element={<ProductsPage />} />
-          <Route path="/produtos/:productId" element={<ProductDetailPage />} />
-          <Route path="/blog/corte-hibrido-cachos-seco-molhado" element={<Navigate to="/servicos/corte-hibrido" replace />} />
-        </Route>
+          {/* Rotas Públicas */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/sobre" element={<AboutPage />} />
+            <Route path="/servicos" element={<ServicesPage />} />
+            <Route path="/servicos/corte-hibrido" element={<CorteHibridoPage />} />
+            <Route path="/servicos/leitura-de-fio" element={<LeituraFioPage />} />
+            <Route path="/servicos/transicao-capilar" element={<TransicaoCapilarPage />} />
+            <Route path="/servicos/visagismo-cachos" element={<VisagismoCachosPage />} />
+            <Route path="/servicos/masculino" element={<MasculinoPage />} />
+            <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
+            <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />
+            <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
+            <Route path="/galeria" element={<GalleryPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/depoimentos" element={<ReviewsPage />} />
+            <Route path="/faq" element={<FaqPage />} />
+            <Route path="/metodo" element={<MetodoPage />} />
+            <Route path="/metodologia" element={<MetodoPage />} />
+            <Route path="/investimento" element={<InvestimentoPage />} />
+            <Route path="/agendar" element={<BookingPage />} />
+            <Route path="/cancelar" element={<CancelBookingPage />} />
+            <Route path="/cliente" element={<ClientAreaPage />} />
+            <Route path="/produtos" element={<ProductsPage />} />
+            <Route path="/produtos/:productId" element={<ProductDetailPage />} />
+            <Route path="/blog/corte-hibrido-cachos-seco-molhado" element={<Navigate to="/servicos/corte-hibrido" replace />} />
+          </Route>
 
-        {/* Rotas Administrativas */}
-        <Route path="/admin/login" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Acesso...</div>}><AdminLogin /></React.Suspense>} />
-        <Route path="/admin/mobile" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense>} />
-        <Route path="/admin" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Painel...</div>}><AdminLayout /></React.Suspense>}>
-          <Route index element={<Navigate to="/admin/hoje" replace />} />
-          <Route path="hoje" element={<AdminHoje />} />
-          <Route path="agenda" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Agenda...</div>}><AdminDashboard /></React.Suspense>} />
-          <Route path="servicos" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Serviços...</div>}><AdminServices /></React.Suspense>} />
-          <Route path="clientes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense>} />
-          <Route path="estoque" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Estoque...</div>}><AdminInventory /></React.Suspense>} />
-          <Route path="financeiro" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Financeiro...</div>}><AdminFinancial /></React.Suspense>} />
-          <Route path="marketing" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Marketing...</div>}><AdminMarketing /></React.Suspense></AdminErrorBoundary>} />
-          <Route path="configuracoes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense>} />
-        </Route>
-      </Routes>
+          {/* Rotas Administrativas */}
+          <Route path="/admin/login" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Acesso...</div>}><AdminLogin /></React.Suspense>} />
+          <Route path="/admin/mobile" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense>} />
+          <Route path="/admin" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Painel...</div>}><AdminLayout /></React.Suspense>}>
+            <Route index element={<Navigate to="/admin/hoje" replace />} />
+            <Route path="hoje" element={<AdminHoje />} />
+            <Route path="agenda" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Agenda...</div>}><AdminDashboard /></React.Suspense>} />
+            <Route path="servicos" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Serviços...</div>}><AdminServices /></React.Suspense>} />
+            <Route path="clientes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense>} />
+            <Route path="estoque" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Estoque...</div>}><AdminInventory /></React.Suspense>} />
+            <Route path="financeiro" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Financeiro...</div>}><AdminFinancial /></React.Suspense>} />
+            <Route path="marketing" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Marketing...</div>}><AdminMarketing /></React.Suspense></AdminErrorBoundary>} />
+            <Route path="configuracoes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense>} />
+          </Route>
+        </Routes>
+      </React.Suspense>
     </Router>
   );
 }
