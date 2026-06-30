@@ -2568,10 +2568,30 @@ Grande abraço, Jon.`;
   const handleBookingLeftClick = (e, appt) => {
     e.stopPropagation();
     e.preventDefault();
+    
+    // Dimensões estimadas da popover do booking
+    const popoverWidth = 260;
+    const popoverHeight = 220;
+    
+    let x = e.clientX + 10;
+    let y = e.clientY + 10;
+    
+    // Evita transbordamento na direita
+    if (x + popoverWidth > window.innerWidth) {
+      x = e.clientX - popoverWidth - 10;
+      if (x < 10) x = 10; // Fallback se a tela for muito pequena
+    }
+    
+    // Evita transbordamento na parte inferior
+    if (y + popoverHeight > window.innerHeight) {
+      y = e.clientY - popoverHeight - 10;
+      if (y < 10) y = 10;
+    }
+    
     setActivePopover({
       visible: true,
-      x: e.clientX,
-      y: e.clientY,
+      x: x,
+      y: y,
       booking: appt
     });
     setContextMenu({ visible: false, x: 0, y: 0, booking: null, date: '', time: '', professional: 'jon' });
@@ -4120,7 +4140,7 @@ Grande abraço, Jon.`;
       {activePopover.visible && activePopover.booking && (
         <div 
           className="booking-popover" 
-          style={{ top: activePopover.y + 10, left: activePopover.x + 10 }}
+          style={{ top: activePopover.y, left: activePopover.x }}
           onClick={e => e.stopPropagation()}
         >
           <div className="booking-popover-header">
