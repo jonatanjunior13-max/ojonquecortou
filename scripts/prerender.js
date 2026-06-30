@@ -253,7 +253,7 @@ const localBusinessSchema = {
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Rua Francisco Ovídio, 184",
-    "addressLocality": "Belo Horizonte",
+    "addressLocality": "Caiçaras",
     "addressRegion": "MG",
     "postalCode": "30770-040",
     "addressCountry": "BR"
@@ -420,7 +420,7 @@ const reviewsSchema = {
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "Rua Francisco Ovídio, 184",
-          "addressLocality": "Belo Horizonte",
+          "addressLocality": "Caiçaras",
           "addressRegion": "MG",
           "postalCode": "30770-040",
           "addressCountry": "BR"
