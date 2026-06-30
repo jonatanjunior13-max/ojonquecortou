@@ -2,7 +2,8 @@ import fs from 'fs';
 import https from 'https';
 
 const SITE_URL = 'https://www.ojonquecortou.com.br';
-const KEY = 'ad570ba1c6ba4630b664a7f571d247d0';
+const KEY = '2778862fb97f435e968549a6ef8f4f05';
+const KEY_LOCATION = `${SITE_URL}/2778862fb97f435e968549a6ef8f4f05.txt`;
 const SITEMAP_PATH = './public/sitemap.xml';
 
 try {
@@ -14,7 +15,7 @@ try {
   const data = JSON.stringify({
     host: 'www.ojonquecortou.com.br',
     key: KEY,
-    keyLocation: `${SITE_URL}/${KEY}.txt`,
+    keyLocation: KEY_LOCATION,
     urlList: urls
   });
 

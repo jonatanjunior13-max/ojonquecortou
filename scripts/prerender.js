@@ -815,6 +815,11 @@ posts.forEach(post => {
     <noscript>
       <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
         <h1>${post.title}</h1>
+        <p style="font-size: 0.85rem; color: #555; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 20px;">
+          Categoria: <strong>${post.category || 'Cuidado Capilar'}</strong> ·
+          Escrito por <strong>Jonatan Junior</strong> (Cabeleireiro especialista em cabelos cacheados, crespos e ondulados) ·
+          Publicado em: <strong><time datetime="${post.datePublished || isoDate}">${post.date || isoDate}</time></strong>${post.dateModified && post.dateModified !== post.datePublished ? ` · Atualizado em: <strong><time datetime="${post.dateModified}">${post.dateModified}</time></strong>` : ''}
+        </p>
         <p style="font-weight: bold; color: #555;">${post.excerpt || ''}</p>
         <hr />
         <div>${post.content}</div>

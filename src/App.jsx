@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
 import ScrollToTop from './components/ScrollToTop';
 import CanonicalTag from './components/CanonicalTag';
+import AdminErrorBoundary from './components/admin/AdminErrorBoundary';
 
 import Home from './pages/Home';
 import AboutPage from './pages/AboutPage';
@@ -130,7 +131,7 @@ function App() {
           <Route path="clientes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense>} />
           <Route path="estoque" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Estoque...</div>}><AdminInventory /></React.Suspense>} />
           <Route path="financeiro" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Financeiro...</div>}><AdminFinancial /></React.Suspense>} />
-          <Route path="marketing" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Marketing...</div>}><AdminMarketing /></React.Suspense>} />
+          <Route path="marketing" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Marketing...</div>}><AdminMarketing /></React.Suspense></AdminErrorBoundary>} />
           <Route path="configuracoes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense>} />
         </Route>
       </Routes>

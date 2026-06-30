@@ -257,7 +257,9 @@
   margin-top: 20px;
   border-top: 1px solid var(--rule);
   padding-top: 20px;
-  margin-bottom: 24px;
+  /* Padding extra para a barra fixa do rodapé não bloquear os botões */
+  margin-bottom: 80px;
+  padding-bottom: 20px;
 }
 
 .time-picker-wrap h3 {
@@ -378,11 +380,18 @@
 }
 
 .time-btn.selected {
-  background: linear-gradient(90deg, rgba(226, 112, 58, 0.28) 0%, transparent 70%);
+  background: linear-gradient(90deg, rgba(var(--bar-color-rgb, 226, 112, 58), 0.32) 0%, rgba(var(--bar-color-rgb, 226, 112, 58), 0.06) 100%);
+  outline: 2px solid var(--bar-color, #E2703A);
+  outline-offset: -2px;
 }
 
 .time-btn.selected::before {
-  box-shadow: inset 0 0 16px rgba(226, 112, 58, 0.5);
+  width: 6px;
+  box-shadow: 0 0 12px var(--bar-color, #E2703A);
+}
+
+.time-btn.selected .time-btn-time {
+  color: #fff;
 }
 
 .time-btn:disabled {
@@ -1367,17 +1376,17 @@
 }
 
 .time-picker-grid .time-btn {
-  animation: timeSlotStagger 0.25s ease-out;
+  animation: timeSlotStagger 0.25s ease-out both;
 }
 
-.time-picker-grid .time-btn:nth-child(1) { animation-delay: 0.05s; }
-.time-picker-grid .time-btn:nth-child(2) { animation-delay: 0.10s; }
-.time-picker-grid .time-btn:nth-child(3) { animation-delay: 0.15s; }
-.time-picker-grid .time-btn:nth-child(4) { animation-delay: 0.20s; }
-.time-picker-grid .time-btn:nth-child(5) { animation-delay: 0.25s; }
-.time-picker-grid .time-btn:nth-child(6) { animation-delay: 0.30s; }
-.time-picker-grid .time-btn:nth-child(7) { animation-delay: 0.35s; }
-.time-picker-grid .time-btn:nth-child(n+8) { animation-delay: 0.40s; }
+.time-picker-grid .time-btn:nth-child(1) { animation-delay: 0.02s; }
+.time-picker-grid .time-btn:nth-child(2) { animation-delay: 0.05s; }
+.time-picker-grid .time-btn:nth-child(3) { animation-delay: 0.08s; }
+.time-picker-grid .time-btn:nth-child(4) { animation-delay: 0.11s; }
+.time-picker-grid .time-btn:nth-child(5) { animation-delay: 0.14s; }
+.time-picker-grid .time-btn:nth-child(6) { animation-delay: 0.17s; }
+.time-picker-grid .time-btn:nth-child(7) { animation-delay: 0.20s; }
+.time-picker-grid .time-btn:nth-child(n+8) { animation-delay: 0.23s; }
 
 /* ========== CONVERSION OPTIMIZATION & RESPONSIVE CONTRAST ========== */
 .booking-trust-badge {

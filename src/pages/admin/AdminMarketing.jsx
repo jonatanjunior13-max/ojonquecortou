@@ -5,6 +5,7 @@ import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storag
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
+import { TRENDING_THEMES, GBP_REVIEW_REPLIES } from '../../utils/marketingDatabase.js';
 
 // Imagens próprias on-brand (existem em /public) usadas como fallback confiável
 // quando a geração de imagem do Gemini falhar. Servem rápido do domínio e são
@@ -51,176 +52,6 @@ async function generateGeminiImage(imagePrompt, apiKey) {
   }
 }
 
-const TRENDING_THEMES = [
-  {
-    id: 'theme_corte_hibrido',
-    title: 'Corte Híbrido',
-    category: 'Corte & Visagismo',
-    description: 'A junção da técnica geométrica molhada com a lapidação a seco. Geometria define a base; o cabelo seco define a leveza e a distribuição real do volume no rosto.',
-    keywords: 'corte híbrido, corte de cachos, visagismo, corte a seco'
-  },
-  {
-    id: 'theme_visagismo_cachos',
-    title: 'Visagismo de Cachos',
-    category: 'Corte & Visagismo',
-    description: 'O cabelo não pode engolir o rosto. Desenhamos o volume com linhas diagonais e verticais para harmonizar com a estrutura óssea facial e o estilo de vida de cada cliente.',
-    keywords: 'visagismo capilar, formato do rosto, volume de cachos, identidade visual'
-  },
-  {
-    id: 'theme_efeito_piramide',
-    title: 'Fator de Correção do Efeito Pirâmide',
-    category: 'Corte & Visagismo',
-    description: 'Corte reto em cabelo cacheado deixa a raiz sem volume e as pontas largas. Explicamos como a graduação geométrica distribui o volume de forma equilibrada pela cabeça.',
-    keywords: 'efeito pirâmide, volume nos cachos, corte de cabelo cacheado'
-  },
-  {
-    id: 'theme_fator_encolhimento',
-    title: 'Fator de Encolhimento na Prática',
-    category: 'Corte & Visagismo',
-    description: 'O cacho seco encolhe até 70% comparado ao fio molhado. Explicamos por que cortar no estado seco é a única forma segura de prever o comprimento real final.',
-    keywords: 'fator de encolhimento, elasticidade capilar, comprimento dos cachos'
-  },
-  {
-    id: 'theme_scab_hair',
-    title: 'O que é Scab Hair?',
-    category: 'Saúde & Tratamento',
-    description: 'Aquela textura áspera e sem definição que nasce logo no início da transição capilar. O folículo está se recuperando da química. Exige paciência e acidificação, não excesso de creme.',
-    keywords: 'scab hair, transição capilar, saúde do couro cabelo, folículo piloso'
-  },
-  {
-    id: 'theme_porosidade_capilar',
-    title: 'Diagnóstico de Porosidade',
-    category: 'Saúde & Tratamento',
-    description: 'Cabelo de alta porosidade perde água rápido; o de baixa porosidade repele tratamentos. Como o Método Leitura de Fio identifica isso para prescrever o tratamento exato.',
-    keywords: 'porosidade capilar, teste de porosidade, cutículas capilares, hidratação'
-  },
-  {
-    id: 'theme_acidificacao_capilar',
-    title: 'O Poder da Acidificação',
-    category: 'Saúde & Tratamento',
-    description: 'Reequilibrar o pH do fio para selar as cutículas. É o que devolve o brilho natural e impede que a água escape em cabelos que passaram por descoloração ou químicas.',
-    keywords: 'acidificação capilar, pH do cabelo, selamento de cutículas, porosidade alta'
-  },
-  {
-    id: 'theme_cronograma_real',
-    title: 'Cronograma Capilar Lógico',
-    category: 'Saúde & Tratamento',
-    description: 'A maioria enche o cabelo de cremes à base de água, mas o cacho precisa de lipídios (óleos) para segurar a umidade. Menos hidratação vazia, mais nutrição técnica e real.',
-    keywords: 'cronograma capilar, nutrição capilar, óleos vegetais, umectação'
-  },
-  {
-    id: 'theme_franja_cacheada',
-    title: 'A Geometria da Franja Cacheada',
-    category: 'Corte & Visagismo',
-    description: 'Franja em cabelo com curvatura funciona sim, desde que cortada cacho por cacho a seco, considerando o encolhimento e o caimento no centro da testa para não subir demais.',
-    keywords: 'franja cacheada, corte a seco franja, visagismo testa, volume frontal'
-  },
-  {
-    id: 'theme_peso_agua',
-    title: 'O Peso da Água no Cacho',
-    category: 'Finalização & Cuidados',
-    description: 'Finalizar com o cabelo pingando água estica o fio e reduz o encolhimento natural. Finalizar com o fio úmido traz mais volume e leveza na raiz. Ajuste a água pro seu objetivo.',
-    keywords: 'peso da água, encolhimento cacho, fitagem leve, volume na raiz'
-  },
-  {
-    id: 'theme_manutencao_corte',
-    title: 'Janela de Manutenção do Corte',
-    category: 'Corte & Visagismo',
-    description: 'Corte a seco bem executado dura de 3 a 4 meses porque cresce de forma proporcional. Passado esse tempo, as pontas perdem a geometria e o volume desce. Hora de refinar a forma.',
-    keywords: 'manutenção de corte, crescimento proporcional, corte a seco bh, caçara'
-  },
-  {
-    id: 'theme_big_chop_progressivo',
-    title: 'Big Chop Progressivo',
-    category: 'Transição Capilar',
-    description: 'Você não precisa raspar tudo se não quiser. O corte de transição progressivo remove as pontas lisas em etapas confortáveis, mantendo o comprimento e a autoestima em dia.',
-    keywords: 'big chop, transição capilar, corte de transição, corte para cachos'
-  },
-  {
-    id: 'theme_diferenca_texturas',
-    title: 'Duas Texturas na Transição',
-    category: 'Transição Capilar',
-    description: 'Como lidar com a raiz natural super volumosa e as pontas lisas sem tração e sem quebrar o ponto de junção do fio novo. Leitura técnica da zona de quebra.',
-    keywords: 'transição capilar, duas texturas, crescimento capilar, recuperação de cachos'
-  },
-  {
-    id: 'theme_texturizacao_mecanica',
-    title: 'Texturização Mecânica Segura',
-    category: 'Transição Capilar',
-    description: 'Dedoliss, fitagem e coquinhos servem para simular a curvatura na parte lisa durante a transição sem usar calor extremo, protegendo a saúde da nova raiz.',
-    keywords: 'texturização capilar, fitagem, dedoliss, transição capilar sem chapinha'
-  },
-  {
-    id: 'theme_touca_cetim',
-    title: 'Física do Atrito: Touca de Cetim',
-    category: 'Finalização & Cuidados',
-    description: 'Algodão rouba umidade e causa atrito que abre as cutículas do fio gerando frizz. O cetim permite que o cacho deslize sem perder a definição durante a noite.',
-    keywords: 'touca de cetim, day after, frizz noturno, cuidados com cachos'
-  },
-  {
-    id: 'theme_day_after_duradouro',
-    title: 'Day After com Base em Diagnóstico',
-    category: 'Finalização & Cuidados',
-    description: 'Se o dia seguinte é cheio de frizz, faltou veículo fixador ou o corte está sem definição. Cacho bem diagnosticado no Método Leitura de Fio acorda pronto.',
-    keywords: 'day after, finalização de cachos, definição duradoura, cuidados diários'
-  },
-  {
-    id: 'theme_finalizacao_express',
-    title: 'Finalização Express de 5 Minutos',
-    category: 'Finalização & Cuidados',
-    description: 'Fitagem rápida e estruturada sob o chuveiro aproveitar a própria água como veículo de distribuição. Perfeito para quem precisa de praticidade sem abrir mão da definição.',
-    keywords: 'finalização rápida, cuidados diários, praticidade capilar, finalizar cachos'
-  },
-  {
-    id: 'theme_mitos_oleo_coco',
-    title: 'O Perigo do Óleo de Coco Puro',
-    category: 'Mitos & Verdades',
-    description: 'O óleo de coco cria uma película impermeabilizante que impede a entrada de água no fio. Usar em excesso deixa o cabelo rígido e quebradiço por dentro.',
-    keywords: 'óleo de coco, umectação capilar, mitos de cabelo, saúde do fio'
-  },
-  {
-    id: 'theme_gelatina_vs_gel',
-    title: 'Gelatina vs Gel Estilizador',
-    category: 'Mitos & Verdades',
-    description: 'Gelatina traz retenção de umidade com fixação flexível. Gel comum possui polímeros rígidos que dão o efeito durinho eterno. Saiba escolher a textura certa.',
-    keywords: 'gelatina capilar, gel finalizador, fixação de cachos, definição de ondas'
-  },
-  {
-    id: 'theme_crespos_reais',
-    title: 'Curvatura 4C & Crespos Reais',
-    category: 'Crespos & Ondas',
-    description: 'Parar de tentar esticar ou forçar definição artificial em cabelos tipo 4. O foco técnico está no volume, caimento e nutrição profunda de lipídios de verdade, valorizando o crespo natural.',
-    keywords: 'cabelo crespo, curvatura 4C, volumão crespo, hidratação de crespos'
-  },
-  {
-    id: 'theme_build_up_acumulo',
-    title: 'Build-Up: Acúmulo de Produtos',
-    category: 'Saúde & Tratamento',
-    description: 'Silicones insolúveis e óleos minerais criam uma barreira plástica no cacho que bloqueia a água. O cabelo fica opaco e sem definição por baixo. Como higienizar sem agredir.',
-    keywords: 'build-up, acúmulo de cremes, shampoo antirresíduos, higienização capilar'
-  },
-  {
-    id: 'theme_seco_vs_danificado',
-    title: 'Cabelo Seco vs. Cabelo Danificado',
-    category: 'Saúde & Tratamento',
-    description: 'Cabelo seco precisa de óleo (reposição lipídica); cabelo danificado precisa de proteína (queratina). O perigo de entupir um fio apenas ressecado de reconstrução e deixá-lo rígido.',
-    keywords: 'cabelo seco, cabelo danificado, reconstrução capilar, nutrição capilar'
-  },
-  {
-    id: 'theme_receitas_caseiras',
-    title: 'Os Riscos de Receitas Caseiras',
-    category: 'Mitos & Verdades',
-    description: 'Maionese e abacate têm moléculas grandes que não penetram na fibra capilar. Além de não tratar, acumulam resíduos e geram fungos e caspa no couro cabeludo.',
-    keywords: 'receita caseira capilar, maionese no cabelo, saúde do couro cabeludo, caspa'
-  },
-  {
-    id: 'theme_transicao_sem_neura',
-    title: 'Transição Capilar Sem Neura',
-    category: 'Transição Capilar',
-    description: 'A transição capilar não precisa ser um martírio de autoestima. O corte de transição progressivo respeita o seu tempo e o seu limite sensorial com acolhimento.',
-    keywords: 'transição capilar, big chop progressivo, acolhimento capilar, autoestima'
-  }
-];
 
 const EMAIL_PREVIEWS = {
   seqD1: { subject: '{nome}, como tá o fio hoje?', body: HTML_TEMPLATES['d1'] },
@@ -303,6 +134,7 @@ const AdminMarketing = () => {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
   const [selectedThemeId, setSelectedThemeId] = useState(TRENDING_THEMES[0].id);
+  const [extraInstruction, setExtraInstruction] = useState('');
   const cancelSendingRef = useRef(false);
 
   // Marketing states
@@ -912,14 +744,8 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
       }
 
       if (!replyText) {
-        const templates = [
-          `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
-          `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
-          `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
-          `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
-          `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
-        ];
-        replyText = templates[Math.floor(Math.random() * templates.length)];
+        const template = GBP_REVIEW_REPLIES[Math.floor(Math.random() * GBP_REVIEW_REPLIES.length)];
+        replyText = template.replace(/{nome}/g, firstName);
       }
       newRev.pendingReply = replyText;
     }
@@ -945,7 +771,8 @@ REGRAS CRÍTICAS DE TOM DE VOZ (COMO O JON FALA):
 1. SOE HUMANO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como em uma conversa de WhatsApp. Use termos naturais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
 2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use frases prontas como "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou adjetivos vazios como "cachos perfeitos".
 3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio).
-4. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
+4. VARIABILIDADE E NÃO REPETIÇÃO: Altere a abertura e a estrutura das respostas para não parecerem templates repetitivos.
+5. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
 
 Nome do cliente: ${review.author}
 Nota da avaliação: ${review.rating} estrelas
@@ -977,14 +804,8 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
     }
 
     if (!replyText) {
-      const templates = [
-        `Muito obrigado pelo retorno, ${firstName}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
-        `Valeu demais pela confiança, ${firstName}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
-        `Que depoimento incrível, ${firstName}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
-        `Obrigado de coração, ${firstName}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
-        `Muito bom ler isso, ${firstName}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`
-      ];
-      replyText = templates[Math.floor(Math.random() * templates.length)];
+      const template = GBP_REVIEW_REPLIES[Math.floor(Math.random() * GBP_REVIEW_REPLIES.length)];
+      replyText = template.replace(/{nome}/g, firstName);
     }
 
     // Save as pending (draft) for approval instead of auto-publishing
@@ -3053,19 +2874,112 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 <div style={{ padding: '20px', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: '6px', marginBottom: '20px' }}>
                   <h5 style={{ margin: '0 0 10px 0', fontWeight: 700 }}>🎯 Seletor de Assuntos Unificado</h5>
                   <p style={{ margin: '0 0 15px 0', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
-                    Escolha um tema de cachos e, opcionalmente, digite diretrizes adicionais. A IA usará esses dados e sua inteligência de busca na web para formular um post totalmente original.
+                    Escolha um tema técnico de cachos nas abas da Galeria ou use a busca abaixo. A IA usará esses dados e sua inteligência de busca na web para formular um post totalmente original.
                   </p>
                   
-                  <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '15px' }}>
+                  {/* Busca e Categoria */}
+                  <div style={{ display: 'flex', gap: '12px', marginBottom: '15px', flexWrap: 'wrap' }}>
+                    <div style={{ position: 'relative', flex: 1, minWidth: '200px' }}>
+                      <Search size={14} style={{ position: 'absolute', left: '10px', top: '11px', color: 'var(--adm-muted)' }} />
+                      <input 
+                        type="text"
+                        placeholder="Buscar assunto (ex: 'frizz', 'crespo', 'visagismo')..."
+                        value={themeSearchQuery}
+                        onChange={e => setThemeSearchQuery(e.target.value)}
+                        style={{ width: '100%', padding: '8px 12px 8px 30px', borderRadius: '4px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--adm-text)', fontSize: '0.82rem' }}
+                      />
+                    </div>
                     <select
-                      value={selectedThemeId}
-                      onChange={e => setSelectedThemeId(e.target.value)}
-                      style={{ padding: '8px 12px', borderRadius: 4, border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--adm-text)', fontSize: '0.85rem', flex: 1, minWidth: '250px' }}
+                      value={selectedThemeCategory}
+                      onChange={e => setSelectedThemeCategory(e.target.value)}
+                      style={{ padding: '8px 12px', borderRadius: '4px', border: '1px solid var(--adm-rule)', background: 'var(--panel-bg)', color: 'var(--adm-text)', fontSize: '0.82rem', minWidth: '160px' }}
                     >
-                      {TRENDING_THEMES.map(theme => (
-                        <option key={theme.id} value={theme.id}>{theme.category} — {theme.title}</option>
-                      ))}
+                      <option value="todos">Todas as Categorias</option>
+                      <option value="Corte & Visagismo">Corte & Visagismo</option>
+                      <option value="Saúde & Tratamento">Saúde & Tratamento</option>
+                      <option value="Finalização & Cuidados">Finalização & Cuidados</option>
+                      <option value="Transição Capilar">Transição Capilar</option>
+                      <option value="Mitos & Verdades">Mitos & Verdades</option>
+                      <option value="Crespos & Ondas">Crespos & Ondas</option>
+                      <option value="Coloração & Química">Coloração & Química</option>
+                      <option value="Casos Reais & Rotinas">Casos Reais & Rotinas</option>
                     </select>
+                  </div>
+
+                  {/* Grid de Cards de Temas */}
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', 
+                    gap: '12px', 
+                    maxHeight: '260px', 
+                    overflowY: 'auto', 
+                    padding: '6px', 
+                    border: '1px solid var(--adm-rule)', 
+                    borderRadius: '4px',
+                    background: 'var(--panel-bg)',
+                    marginBottom: '15px'
+                  }}>
+                    {TRENDING_THEMES.filter(theme => {
+                      const matchesCategory = selectedThemeCategory === 'todos' || theme.category === selectedThemeCategory;
+                      const matchesSearch = theme.title.toLowerCase().includes(themeSearchQuery.toLowerCase()) || 
+                                            theme.description.toLowerCase().includes(themeSearchQuery.toLowerCase()) ||
+                                            (theme.keywords && theme.keywords.toLowerCase().includes(themeSearchQuery.toLowerCase()));
+                      return matchesCategory && matchesSearch;
+                    }).map(theme => {
+                      const isSelected = selectedThemeId === theme.id;
+                      return (
+                        <div 
+                          key={theme.id}
+                          onClick={() => {
+                            setSelectedThemeId(theme.id);
+                            // Rola a tela levemente para focar nas ações do formulário se necessário
+                          }}
+                          style={{
+                            padding: '10px 12px',
+                            borderRadius: '4px',
+                            border: isSelected ? '1px solid var(--adm-gold)' : '1px solid rgba(255,255,255,0.06)',
+                            background: isSelected ? 'rgba(220,163,84,0.08)' : 'var(--sidebar-bg)',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            gap: '4px'
+                          }}
+                          onMouseEnter={e => {
+                            if (!isSelected) e.currentTarget.style.border = '1px solid rgba(220,163,84,0.4)';
+                          }}
+                          onMouseLeave={e => {
+                            if (!isSelected) e.currentTarget.style.border = '1px solid rgba(255,255,255,0.06)';
+                          }}
+                        >
+                          <div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                              <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--adm-gold)', textTransform: 'uppercase' }}>
+                                {theme.category}
+                              </span>
+                              {isSelected && <span style={{ fontSize: '0.65rem', color: 'var(--adm-gold)' }}>● Ativo</span>}
+                            </div>
+                            <h6 style={{ margin: 0, fontSize: '0.8rem', fontWeight: 700, color: 'var(--adm-text)' }}>{theme.title}</h6>
+                            <p style={{ margin: '4px 0 0 0', fontSize: '0.72rem', color: 'var(--adm-muted)', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                              {theme.description}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '15px' }}>
+                    <div style={{ flex: 1, minWidth: '250px' }}>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                        Tema Ativo: <strong style={{ color: 'var(--adm-text)' }}>{(() => {
+                          const activeTheme = TRENDING_THEMES.find(t => t.id === selectedThemeId);
+                          return activeTheme ? `${activeTheme.category} — ${activeTheme.title}` : 'Nenhum selecionado';
+                        })()}</strong>
+                      </span>
+                    </div>
+                    
                     <div style={{ display: 'flex', gap: '10px' }}>
                       <button 
                         className="btn btn-accent btn-small"
@@ -3102,7 +3016,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                     const th = TRENDING_THEMES.find(t => t.id === selectedThemeId);
                     return th ? (
                       <div style={{ marginTop: '12px', fontSize: '0.78rem', color: 'var(--adm-muted)', borderTop: '1px dashed var(--adm-rule)', paddingTop: '10px' }}>
-                        <strong>Resumo do assunto selecionado:</strong> {th.description}
+                        <strong>Descrição Técnica:</strong> {th.description}
                       </div>
                     ) : null;
                   })()}

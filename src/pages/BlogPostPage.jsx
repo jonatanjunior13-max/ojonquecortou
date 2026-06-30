@@ -295,8 +295,22 @@ const BlogPostPage = () => {
 
         <article className="post-container text-content">
           <header className="post-header reveal active">
-            <div className="post-meta">
-              {post.category} · Atualizado em {post.date} por Jonatan Junior
+          <div className="post-meta">
+              <span>{post.category}</span>
+              <span>
+                Por <strong>Jonatan Junior</strong>
+                {' '}— Cabeleireiro especialista em cabelos cacheados, crespos e ondulados
+              </span>
+              <span>
+                Publicado em <strong>
+                  <time dateTime={post.datePublished || isoDate}>{post.date}</time>
+                </strong>
+                {post.dateModified && post.dateModified !== post.datePublished && (
+                  <> · Atualizado em <strong>
+                    <time dateTime={post.dateModified}>{post.dateModified}</time>
+                  </strong></>
+                )}
+              </span>
             </div>
             <h1 className="heading-xl">{cleanTitle(post.title)}</h1>
           </header>
