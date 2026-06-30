@@ -747,10 +747,19 @@
 }
 
 .m-slot-booking.faltou, .m-slot-booking.ausencia {
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.22) 0%, rgba(239, 68, 68, 0.08) 40%, rgba(239, 68, 68, 0.02) 100%) !important;
+  background: linear-gradient(90deg, rgba(82, 82, 91, 0.25) 0%, rgba(82, 82, 91, 0.08) 40%, rgba(82, 82, 91, 0.02) 100%) !important;
   border: none !important;
-  border-left: 3px solid #EF4444 !important;
-  color: #FCA5A5 !important;
+  border-left: 3px solid #52525B !important;
+  color: #D4D4D8 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  opacity: 0.65;
+}
+.m-slot-booking.finalizado {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
   border-radius: 0px !important;
   box-shadow: none !important;
 }
