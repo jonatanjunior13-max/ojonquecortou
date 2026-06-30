@@ -95,6 +95,9 @@ const getServiceCategoryInfo = (serviceName = '', servicesList = []) => {
   if (catLower.includes('analise') || catLower.includes('avaliacao')) {
     return { class: 'svc-analise', badge: 'ANÁLISE' };
   }
+  if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
+    return { class: 'svc-finalizacao', badge: 'FINALIZAÇÃO' };
+  }
   return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
 };
 

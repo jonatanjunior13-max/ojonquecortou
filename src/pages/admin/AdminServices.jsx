@@ -19,7 +19,8 @@ const normalizeCategory = (cat) => {
   if (hasCorte) return 'Corte';
   if (hasCor) return 'Cor';
   if (c.includes('analise') || c.includes('avaliacao') || c.includes('teste')) return 'Análise';
-  if (hasTratamento || c.includes('terapia') || c.includes('finaliza')) return 'Tratamento';
+  if (c.includes('finaliza')) return 'Finalização';
+  if (hasTratamento || c.includes('terapia')) return 'Tratamento';
   return 'Corte'; // default fallback
 };
 
