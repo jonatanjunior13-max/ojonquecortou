@@ -3247,11 +3247,20 @@ Grande abraço, Jon.`;
                            }}
                         >
                           {cellBookings.length > 0 ? (
-                            <div style={{ display: 'flex', gap: 4, width: '100%', height: '100%', padding: '2px' }}>
+                            <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '60px' }}>
                               {cellBookings.map(bk => {
                                 const bStart = timeToMin(bk.time);
                                 const isSubsequent = bStart < slotMin;
                                 const duration = bk.duration || 60;
+
+                                const bEnd = bStart + duration;
+                                const actStart = Math.max(bStart, slotMin);
+                                const actEnd = Math.min(bEnd, slotMin + 60);
+                                const offset = actStart - slotMin;
+                                const actDuration = actEnd - actStart;
+
+                                const topPct = (offset / 60) * 100;
+                                const heightPct = (actDuration / 60) * 100;
                                 
                                 let apptTimeText = '';
                                 const startStr = bk.time || '00:00';
@@ -3271,7 +3280,16 @@ Grande abraço, Jon.`;
                                       className={`appt-card bloqueado bloqueado-${(bk.notes || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '-')}`}
                                       onClick={(e) => handleBookingLeftClick(e, bk)}
                                       onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
-                                      style={{ flex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative' }}
+                                      style={{ 
+                                        position: 'absolute',
+                                        top: `${topPct}%`,
+                                        height: `${heightPct}%`,
+                                        left: '2px',
+                                        width: 'calc(100% - 4px)',
+                                        display: 'flex', 
+                                        flexDirection: 'column', 
+                                        justifyContent: 'center', 
+                                      }}
                                     >
                                       <MoreVertical size={13} style={{ position: 'absolute', top: '5px', right: '4px', opacity: 0.6 }} />
                                       <span className="appt-time">{apptTimeText}</span>
@@ -3292,13 +3310,15 @@ Grande abraço, Jon.`;
                                     onClick={(e) => handleBookingLeftClick(e, bk)}
                                     onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, bk)}
                                     style={{ 
-                                      flex: 1, 
-                                      height: '100%', 
+                                      position: 'absolute',
+                                      top: `${topPct}%`,
+                                      height: `${heightPct}%`,
+                                      left: '2px',
+                                      width: 'calc(100% - 4px)',
                                       display: 'flex', 
                                       flexDirection: 'row', 
                                       alignItems: 'center',
                                       justifyContent: 'space-between',
-                                      position: 'relative',
                                       padding: '8px 16px',
                                       overflow: 'hidden',
                                       borderRadius: '0px',
@@ -3369,7 +3389,16 @@ Grande abraço, Jon.`;
                             </div>
                           ) : absence ? (
                             <div 
-                              className="appt-card bloqueado"
+                              className={`appt-card bloqueado ${(() => {
+                                  const title = (absence.title || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return 'bloqueado-medico';
+                                  if (title.includes('almoço') || title.includes('almoco')) return 'bloqueado-almoco';
+                                  if (title.includes('folga')) return 'bloqueado-folga';
+                                  if (title.includes('viagem')) return 'bloqueado-viagem';
+                                  if (title.includes('psicóloga') || title.includes('psicologa')) return 'bloqueado-psicologa';
+                                  if (title.includes('reunião') || title.includes('reuniao')) return 'bloqueado-reuniao';
+                                  return '';
+                                })()}`}
                               onClick={(e) => {
                                 e.stopPropagation();
                                if (absence.fixed) {
@@ -3452,93 +3481,25 @@ Grande abraço, Jon.`;
                                   }
                                 }
                               }}
-                              style={(() => {
-                                const title = (absence.title || '').toLowerCase();
-                                let bg = 'rgba(90, 158, 206, 0.12)';
-                                let border = '4px solid #5A9ECE';
-                                let color = '#5A9ECE';
-                                
-                                if (title.includes('médico') || title.includes('medico')) {
-                                  bg = 'rgba(235, 94, 85, 0.12)';
-                                  border = '4px solid #eb5e55';
-                                  color = '#eb5e55';
-                                  } else if (title.includes('almoço') || title.includes('almoco')) {
-                                    bg = 'rgba(231, 111, 81, 0.12)';
-                                    border = '4px solid #E76F51';
-                                    color = '#E76F51';
-                                } else if (title.includes('folga')) {
-                                  bg = 'rgba(114, 137, 218, 0.12)';
-                                  border = '4px solid #7289da';
-                                  color = '#7289da';
-                                } else if (title.includes('viagem')) {
-                                  bg = 'rgba(74, 163, 223, 0.12)';
-                                  border = '4px solid #4aa3df';
-                                  color = '#4aa3df';
-                                } else if (title.includes('pausa')) {
-                                  bg = 'rgba(26, 188, 156, 0.12)';
-                                  border = '4px solid #1abc9c';
-                                  color = '#1abc9c';
-                                } else if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) {
-                                  bg = 'rgba(155, 89, 182, 0.12)';
-                                  border = '4px solid #9b59b6';
-                                  color = '#9b59b6';
-                                }
-                                
-                                return {
-                                  background: bg, 
-                                  borderLeft: border, 
-                                  color: color, 
-                                  cursor: 'pointer',
-                                  height: '100%',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  justifyContent: 'center',
-                                  padding: '6px 8px',
-                                  margin: '2px'
-                                };
-                              })()}
+                              style={{
+                                cursor: 'pointer',
+                                height: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                padding: '6px 8px',
+                                margin: '2px'
+                              }}
                             >
-                              <span className="appt-time" style={{ 
-                                color: (() => {
-                                  const title = (absence.title || '').toLowerCase();
-                                  if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
-                                  if (title.includes('almoço') || title.includes('almoco')) return '#E76F51';
-                                  if (title.includes('folga')) return '#7289da';
-                                  if (title.includes('viagem')) return '#4aa3df';
-                                  if (title.includes('pausa')) return '#1abc9c';
-                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
-                                  return '#5A9ECE';
-                                })()
-                              }}>{slot}</span>
+                              <span className="appt-time">{slot}</span>
                               <span className="appt-client" style={{ 
                                 display: 'flex', 
                                 alignItems: 'center', 
                                 gap: 4, 
-                                color: (() => {
-                                  const title = (absence.title || '').toLowerCase();
-                                  if (title.includes('médico') || title.includes('medico')) return '#eb5e55';
-                                  if (title.includes('almoço') || title.includes('almoco')) return '#E76F51';
-                                  if (title.includes('folga')) return '#7289da';
-                                  if (title.includes('viagem')) return '#4aa3df';
-                                  if (title.includes('pausa')) return '#1abc9c';
-                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return '#9b59b6';
-                                  return '#8b7cc8';
-                                })()
                               }}>
                                 <Lock size={12} /> {absence.title}
                               </span>
-                              <span className="appt-service" style={{ 
-                                color: (() => {
-                                  const title = (absence.title || '').toLowerCase();
-                                  if (title.includes('médico') || title.includes('medico')) return 'rgba(235, 94, 85, 0.7)';
-                                  if (title.includes('almoço') || title.includes('almoco')) return 'rgba(231, 111, 81, 0.7)';
-                                  if (title.includes('folga')) return 'rgba(114, 137, 218, 0.7)';
-                                  if (title.includes('viagem')) return 'rgba(74, 163, 223, 0.7)';
-                                  if (title.includes('pausa')) return 'rgba(26, 188, 156, 0.7)';
-                                  if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) return 'rgba(155, 89, 182, 0.7)';
-                                  return 'rgba(90, 158, 206, 0.7)';
-                                })()
-                              }}>
+                              <span className="appt-service">
                                 Ausência
                               </span>
                             </div>
@@ -3549,7 +3510,7 @@ Grande abraço, Jon.`;
                             if (reason === 'Almoço') {
                               return (
                                 <div
-                                  className="appt-card bloqueado"
+                                  className="appt-card bloqueado bloqueado-almoco"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setSelectedScaleBlock({
@@ -3563,9 +3524,6 @@ Grande abraço, Jon.`;
                                   }}
                                   onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
                                   style={{
-                                    background: 'rgba(231, 111, 81, 0.12)',
-                                    color: '#E76F51',
-                                    borderLeft: '4px solid #E76F51',
                                     cursor: 'pointer',
                                     margin: '2px',
                                     height: 'calc(100% - 4px)',
@@ -3575,11 +3533,11 @@ Grande abraço, Jon.`;
                                     padding: '6px 8px'
                                   }}
                                 >
-                                  <span className="appt-time" style={{ color: '#E76F51' }}>{slot}</span>
-                                  <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#E76F51', fontWeight: 600 }}>
+                                  <span className="appt-time">{slot}</span>
+                                  <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600 }}>
                                     <Lock size={12} /> Almoço
                                   </span>
-                                  <span className="appt-service" style={{ color: 'rgba(231, 111, 81, 0.7)' }}>
+                                  <span className="appt-service">
                                     Intervalo Padrão
                                   </span>
                                 </div>
@@ -3588,9 +3546,19 @@ Grande abraço, Jon.`;
 
                             // Estilo de bloqueio genérico ou fora de expediente (com excelente contraste dark mode!)
                             const isOut = reason === 'Fora de Expediente';
+                            const blockClass = (() => {
+                              const title = (reason || '').toLowerCase();
+                              if (title.includes('médico') || title.includes('medico')) return 'bloqueado-medico';
+                              if (title.includes('almoço') || title.includes('almoco')) return 'bloqueado-almoco';
+                              if (title.includes('folga')) return 'bloqueado-folga';
+                              if (title.includes('viagem')) return 'bloqueado-viagem';
+                              if (title.includes('psicóloga') || title.includes('psicologa')) return 'bloqueado-psicologa';
+                              if (title.includes('reunião') || title.includes('reuniao')) return 'bloqueado-reuniao';
+                              return '';
+                            })();
                             return (
                               <div
-                                className="appt-card bloqueado"
+                                className={`appt-card bloqueado ${blockClass}`}
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   setSelectedScaleBlock({
@@ -3603,7 +3571,7 @@ Grande abraço, Jon.`;
                                   setShowScaleBlockModal(true);
                                 }}
                                 onContextMenu={(e) => handleCellContextMenu(e, currentDateStr, slot, prof.id, null, true)}
-                                style={{
+                                style={blockClass === '' ? {
                                   background: isOut ? 'rgba(255, 255, 255, 0.03)' : 'rgba(255, 255, 255, 0.05)',
                                   color: 'rgba(255, 255, 255, 0.65)',
                                   borderLeft: '4px solid rgba(255, 255, 255, 0.25)',
@@ -3615,13 +3583,21 @@ Grande abraço, Jon.`;
                                   flexDirection: 'column',
                                   justifyContent: 'center',
                                   padding: '6px 8px'
+                                } : {
+                                  cursor: 'pointer',
+                                  margin: '2px',
+                                  height: 'calc(100% - 4px)',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  justifyContent: 'center',
+                                  padding: '6px 8px'
                                 }}
                               >
-                                <span className="appt-time" style={{ color: 'rgba(255, 255, 255, 0.45)' }}>{slot}</span>
-                                <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--adm-text)', fontWeight: 600 }}>
+                                <span className="appt-time" style={blockClass === '' ? { color: 'rgba(255, 255, 255, 0.45)' } : {}}>{slot}</span>
+                                <span className="appt-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600, color: blockClass === '' ? 'var(--adm-text)' : undefined }}>
                                   <Lock size={12} /> {reason || 'Bloqueado'}
                                 </span>
-                                <span className="appt-service" style={{ color: 'rgba(255, 255, 255, 0.45)' }}>
+                                <span className="appt-service" style={blockClass === '' ? { color: 'rgba(255, 255, 255, 0.45)' } : {}}>
                                   {isOut ? 'Fora de Horário' : 'Escala Administrativa'}
                                 </span>
                               </div>
@@ -3894,7 +3870,16 @@ Grande abraço, Jon.`;
                               return (
                                 <div 
                                   key={item.id} 
-                                  className="appt-card bloqueado"
+                                  className={`appt-card bloqueado ${(() => {
+                                    const title = (abs.title || '').toLowerCase();
+                                    if (title.includes('médico') || title.includes('medico')) return 'bloqueado-medico';
+                                    if (title.includes('almoço') || title.includes('almoco')) return 'bloqueado-almoco';
+                                    if (title.includes('folga')) return 'bloqueado-folga';
+                                    if (title.includes('viagem')) return 'bloqueado-viagem';
+                                    if (title.includes('psicóloga') || title.includes('psicologa')) return 'bloqueado-psicologa';
+                                    if (title.includes('reunião') || title.includes('reuniao')) return 'bloqueado-reuniao';
+                                    return '';
+                                  })()}`}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (abs.fixed) {
@@ -3919,55 +3904,19 @@ Grande abraço, Jon.`;
                                       }
                                     }
                                   }}
-                                  style={(() => {
-                                const title = (abs.title || '').toLowerCase();
-                                 let bg = 'rgba(90, 158, 206, 0.12)';
-                                 let border = '4px solid #5A9ECE';
-                                 let color = '#5A9ECE';
-                                
-                                if (title.includes('médico') || title.includes('medico')) {
-                                  bg = 'rgba(235, 94, 85, 0.12)';
-                                  border = '4px solid #eb5e55';
-                                  color = '#eb5e55';
-                                } else if (title.includes('almoço') || title.includes('almoco')) {
-                                  bg = 'rgba(231, 111, 81, 0.12)';
-                                  border = '4px solid #E76F51';
-                                  color = '#E76F51';
-                                } else if (title.includes('folga')) {
-                                  bg = 'rgba(114, 137, 218, 0.12)';
-                                  border = '4px solid #7289da';
-                                  color = '#7289da';
-                                } else if (title.includes('viagem')) {
-                                  bg = 'rgba(74, 163, 223, 0.12)';
-                                  border = '4px solid #4aa3df';
-                                  color = '#4aa3df';
-                                } else if (title.includes('pausa')) {
-                                  bg = 'rgba(26, 188, 156, 0.12)';
-                                  border = '4px solid #1abc9c';
-                                  color = '#1abc9c';
-                                } else if (title.includes('ausência') || title.includes('ausencia') || title.includes('psicóloga') || title.includes('psicologa')) {
-                                  bg = 'rgba(155, 89, 182, 0.12)';
-                                  border = '4px solid #9b59b6';
-                                  color = '#9b59b6';
-                                }
-                                
-                                return {
-                                  position: 'absolute',
-                                  top: `${topPercent}%`,
-                                  height: `${heightPercent}%`,
-                                  left: `${left}%`,
-                                  width: `${width}%`,
-                                  background: bg, 
-                                  borderLeft: border, 
-                                  color: color, 
-                                  cursor: 'pointer',
-                                  padding: '6px 8px',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  overflow: 'hidden',
-                                  zIndex: 2
-                                };
-                              })()}
+                                  style={{
+                                    position: 'absolute',
+                                    top: `${topPercent}%`,
+                                    height: `${heightPercent}%`,
+                                    left: `${left}%`,
+                                    width: `${width}%`,
+                                    cursor: 'pointer',
+                                    padding: '6px 8px',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    overflow: 'hidden',
+                                    zIndex: 2
+                                  }}
                                 >
                                   <span className="appt-time" style={{ fontWeight: 'bold' }}>
                                     {abs.allDay ? 'Dia Inteiro' : `${abs.startTime} - ${abs.endTime}`}
@@ -3983,16 +3932,23 @@ Grande abraço, Jon.`;
                             return (
                               <div 
                                 key={item.id} 
-                                className="appt-card bloqueado"
+                                className={`appt-card bloqueado ${(() => {
+                                  const title = (item.label || '').toLowerCase();
+                                  if (title.includes('médico') || title.includes('medico')) return 'bloqueado-medico';
+                                  if (title.includes('almoço') || title.includes('almoco')) return 'bloqueado-almoco';
+                                  if (title.includes('folga')) return 'bloqueado-folga';
+                                  if (title.includes('viagem')) return 'bloqueado-viagem';
+                                  if (title.includes('psicóloga') || title.includes('psicologa')) return 'bloqueado-psicologa';
+                                  if (title.includes('reunião') || title.includes('reuniao')) return 'bloqueado-reuniao';
+                                  return '';
+                                })()}`}
                                 style={{
                                   top: `${topPercent}%`,
                                   height: `${heightPercent}%`,
                                   position: 'absolute',
                                   left: `${left}%`,
                                   width: `${width}%`,
-                                  background: 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)',
-                                  color: '#475569',
-                                  borderLeft: '4px solid #94a3b8',
+                                  background: item.label === 'Fora de Expediente' || item.label === 'Fora de Horário' ? 'repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #cbd5e1 10px, #cbd5e1 20px)' : undefined,
                                   opacity: 0.85,
                                   padding: '6px 8px',
                                   display: 'flex',
