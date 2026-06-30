@@ -755,7 +755,13 @@
   box-shadow: none !important;
   opacity: 0.65;
 }
-.m-slot-booking.finalizado {
+.m-slot-booking.finalizado,
+.m-slot-booking.finalizado.svc-corte,
+.m-slot-booking.finalizado.svc-combo,
+.m-slot-booking.finalizado.svc-tratamento,
+.m-slot-booking.finalizado.svc-cor,
+.m-slot-booking.finalizado.svc-analise,
+.m-slot-booking.finalizado.svc-finalizacao {
   background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
   border: none !important;
   border-left: 3px solid #10B981 !important;

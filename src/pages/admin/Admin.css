@@ -653,7 +653,13 @@
   box-shadow: none !important;
   opacity: 0.65;
 }
-.appt-card.finalizado {
+.appt-card.finalizado,
+.appt-card.finalizado.svc-corte,
+.appt-card.finalizado.svc-combo,
+.appt-card.finalizado.svc-tratamento,
+.appt-card.finalizado.svc-cor,
+.appt-card.finalizado.svc-analise,
+.appt-card.finalizado.svc-finalizacao {
   background: linear-gradient(90deg, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
   border: none !important;
   border-left: 3px solid #10B981 !important;
