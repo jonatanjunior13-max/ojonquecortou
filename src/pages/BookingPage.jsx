@@ -2117,6 +2117,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             onClick={() => setSelectedTime(slot)}
                             style={{
                               '--bar-color': barColor,
+                              '--bar-color-rgb': rgbColor,
                               background: `linear-gradient(90deg, rgba(${rgbColor}, 0.15) 0%, transparent 75%)`
                             }}
                           >
