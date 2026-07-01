@@ -3,6 +3,7 @@ import { useParams, Link, Navigate, useNavigate } from 'react-router-dom';
 import { db } from '../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { getInitialPosts, fetchLatestPosts } from '../utils/blogService';
+import { injectBlogLinks } from '../data/blogLinkMap';
 import './Blog.css';
 import { ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -264,9 +265,14 @@ const BlogPostPage = () => {
 
   const getProcessedContent = (contentHtml) => {
     if (!contentHtml) return '';
-    const paragraphs = contentHtml.split('</p>');
+    let processed = contentHtml;
+
+    // Inject blog-to-blog internal links for GEO
+    processed = injectBlogLinks(processed, slug);
+
+    const paragraphs = processed.split('</p>');
     if (paragraphs.length <= 3) {
-      return contentHtml;
+      return processed;
     }
     const inlineCtaHtml = `
       <div class="blog-inline-cta">
