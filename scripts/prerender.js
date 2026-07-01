@@ -110,6 +110,14 @@ const aboutBody = `
       <h2>O Cabelo não mente. O corte errado, sim.</h2>
       <p>Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.</p>
       <p>Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçaras (BH), construí um espaço focado na liberdade do seu fio natural, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.</p>
+      <h2>Trajetória e Anos de Experiência</h2>
+      <p>Há mais de uma década atrás da cadeira, Jonatan Junior construiu sua trajetória profissional dedicada quase que integralmente ao universo dos cabelos com curvatura — ondulados, cacheados e crespos. Passou por formações técnicas em corte, coloração e química capilar, mas foi na prática diária, atendendo centenas de texturas diferentes no bairro Caiçaras, que desenvolveu o olhar clínico que hoje é a marca registrada do Studio do Jon. Anos de atendimento a cabelos que chegavam danificados por descolorações mal avaliadas, cortes feitos com o fio molhado e esticado, ou queixas de "cabelo que não cresce" (quando na verdade só estava quebrando) revelaram um padrão: a maioria dos problemas capilares não nascia do cabelo em si, mas da falta de diagnóstico antes da tesoura ou da química.</p>
+      <h2>A Origem do Método Leitura de Fio</h2>
+      <p>O Método Leitura de Fio não surgiu de um curso ou de uma fórmula copiada. Nasceu da repetição de um mesmo erro visto em centenas de atendimentos: cortar ou transformar quimicamente um cabelo cacheado do mesmo jeito que se trata um cabelo liso, ignorando que a fibra com curvatura se comporta como uma mola — encolhe ao secar, reage diferente à porosidade e exige leitura individual antes de qualquer intervenção. Jonatan percebeu que preview e resultado só coincidiam quando havia, antes da tesoura, uma etapa de escuta, análise a seco, análise molhada e checagem de histórico químico. Dessa constatação nasceu um protocolo estruturado em 7 etapas, testado e refinado atendimento após atendimento, até se tornar parte obrigatória (e sem custo extra) de todo corte realizado no Studio do Jon. Hoje, a Leitura de Fio é o que diferencia o Studio do Jon de salões que ainda tratam cabelo cacheado com fórmulas prontas de revista.</p>
+      <h2>Especialização em Curvaturas 2A a 4C</h2>
+      <p>Jonatan Junior atende e se especializou em todo o espectro de curvaturas — do tipo 2A (ondulado suave, raiz mais lisa e onda que aparece no comprimento) ao 4C (crespo compacto, altíssimo fator de encolhimento e fibra fina, porém volumosa). Essa amplitude importa porque cada faixa de curvatura exige uma abordagem técnica distinta: um corte que funciona perfeitamente em um 3A pode arruinar a forma de um 4B se aplicado sem ajuste. No Studio do Jon, o diagnóstico da Leitura de Fio identifica exatamente em qual (ou quais, já que é comum uma cabeça abrigar mais de um padrão) tipo de curvatura o cliente se encaixa, e a partir disso define graduação, angulação e técnica de finalização. Essa especialização multi-curvatura é rara: muitos profissionais dominam bem apenas uma faixa (geralmente ondulados ou cacheados leves) e "empurram" a mesma técnica para todo mundo. Jonatan trata 2A, 2B, 2C, 3A, 3B, 3C, 4A, 4B e 4C como universos técnicos distintos, cada um com sua própria lógica de corte, volume e cuidado.</p>
+      <h2>Filosofia: Respeito ao Cacho Natural, Zero Química Alisante</h2>
+      <p>A filosofia por trás do Studio do Jon é simples de enunciar e rigorosa de cumprir: o cabelo com curvatura não precisa ser corrigido, precisa ser compreendido. Por isso, Jonatan Junior não realiza nenhum tipo de alisamento, relaxamento, escova progressiva ou qualquer procedimento que modifique quimicamente a curvatura natural do fio. O trabalho é 100% voltado para cabelos naturais — definição, saúde e forma são conquistadas através de corte técnico, visagismo e tratamentos capilares (hidratação, nutrição, reconstrução), nunca através de química alisante. Essa escolha é também um posicionamento: em um mercado ainda cheio de salões que "domesticam" o cacho com escova ou química, o Studio do Jon existe para provar que dá para ter cabelo saudável, bonito e de manutenção viável sem abrir mão da textura natural. Para quem está em transição capilar, esse compromisso significa suporte técnico real, sem pressa e sem empurrar procedimentos químicos como atalho.</p>
       <h2>Método & Técnica</h2>
       <ul>
         <li><strong>Leitura de Fio:</strong> Análise clínica de porosidade, espessura e saúde antes de qualquer tesoura.</li>
@@ -133,6 +141,8 @@ const investmentBody = `
         <li><strong>Descoloração em cabelo cacheado:</strong> Sob consulta. Inclui diagnóstico de porosidade, análise de histórico químico, processo e finalização. Valor varia conforme comprimento e estado do fio.</li>
         <li><strong>Consultoria Leitura de Fio:</strong> Sob consulta. Para quem quer só o diagnóstico, sem corte. Inclui análise completa do fio e orientações de cuidado personalizadas.</li>
       </ul>
+      <h2>Corte Cabelo Cacheado Masculino BH</h2>
+      <p>Homem com cacho também precisa de leitura de fio antes da tesoura. O corte cabelo cacheado masculino no Studio do Jon segue o mesmo Método Leitura de Fio dos atendimentos femininos: diagnóstico de curvatura e formato do rosto antes de qualquer corte, com visagismo aplicado aos traços masculinos. Nada de máquina padronizada — o volume e o encaracolamento natural são respeitados, evitando o efeito pirâmide e o frizz comum em barbearias que não entendem cabelo com curvatura. O valor segue a mesma faixa do Corte especializado (R$ 190 a R$ 230), incluindo a Leitura de Fio completa e a finalização educativa. Ideal para quem tem cabelo ondulado, cacheado ou crespo em Belo Horizonte.</p>
     </article>
   </noscript>
 `;
@@ -459,6 +469,7 @@ const homeBody = `
       <h2>Localização e Agendamento</h2>
       <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
+      <p>Localizado no bairro Caiçaras, na Rua Pedro II, o Studio do Jon fica a poucos passos do metrô Gameleira, um dos pontos mais acessíveis de Belo Horizonte para quem busca um especialista em cabelo cacheado sem depender de carro. Clientes de toda a região metropolitana chegam de metrô, ônibus ou a pé para o diagnóstico da Leitura de Fio, tornando o Caiçaras uma referência local para cortes técnicos em cachos, crespos e ondulados.</p>
     </article>
   </noscript>
 `;
@@ -529,33 +540,19 @@ const pages = [
     bodyInsert: aboutBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Jonatan Junior",
-      "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
-      "alternateName": "Jon",
-      "jobTitle": "Especialista em cabelos ondulados, cacheados e crespos",
-      "description": "Cabeleireiro especialista em cabelos cacheados, crespos e ondulados em Belo Horizonte. Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas antes de qualquer corte.",
-      "worksFor": {
-        "@type": "HairSalon",
-        "name": "Studio do Jon",
-        "url": "https://www.ojonquecortou.com.br"
-      },
-      "url": "https://www.ojonquecortou.com.br/sobre",
-      "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
-      "sameAs": [
-        "https://www.instagram.com/ojonquecortou/",
-        "https://www.facebook.com/ojonquecortou/",
-        "https://linktr.ee/ojonquecortou",
-        "https://www.google.com/maps?cid=16629671607593282841"
-      ],
-      "knowsAbout": [
-        "Método Leitura de Fio",
-        "Corte a seco para cabelos cacheados",
-        "Visagismo capilar",
-        "Transição capilar",
-        "Descoloração em cabelos cacheados",
-        "Porosidade capilar",
-        "Curvatura capilar tipos 2A ao 4C"
+      "@graph": [
+        founderPersonSchema,
+        {
+          "@type": "WebPage",
+          "@id": "https://www.ojonquecortou.com.br/sobre",
+          "url": "https://www.ojonquecortou.com.br/sobre",
+          "name": "Sobre o Jonatan Junior | Especialista em Cachos BH | Studio do Jon",
+          "description": "Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.",
+          "mainEntity": { "@id": "https://www.ojonquecortou.com.br/#person" },
+          "about": {
+            "@id": "https://www.ojonquecortou.com.br/#person"
+          }
+        }
       ]
     }
   },
@@ -679,6 +676,8 @@ const pages = [
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Galeria de Resultados — Studio do Jon</h1>
       <p>Veja fotos reais de antes e depois de cortes, mechas e tratamentos personalizados realizados em cabelos ondulados, cacheados e crespos. Todos os resultados apresentados são de clientes reais atendidos no Studio do Jon no bairro Caiçaras, Belo Horizonte. Para agendar: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
+      <hr />
+      <p>Cada transformação começa com uma leitura técnica do fio: cachos ressecados e sem forma chegam ao estúdio e saem com curvatura definida, camadas que respeitam o comprimento e frizz sob controle. Em cortes masculinos e femininos, o antes costuma ser volume desalinhado ou pontas danificadas — o depois mostra definição uniforme da raiz às pontas, sem perder a textura natural. Coloração e mechas seguem o mesmo cuidado: contraste e brilho aplicados sem comprometer a saúde da fibra cacheada, crespa ou ondulada.</p>
     </article>
   </noscript>
 `,
@@ -686,7 +685,7 @@ const pages = [
       "@context": "https://schema.org",
       "@type": "ImageGallery",
       "name": "Galeria de Resultados — Studio do Jon",
-      "description": "Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados e crespos atendidos pelo Jon em Belo Horizonte.",
+      "description": "Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados e crespos atendidos pelo Jon em Belo Horizonte. Cada imagem documenta a transformação: da curvatura sem definição e cheia de frizz ao resultado com forma, movimento e brilho preservados, incluindo cortes femininos, masculinos e infantis.",
       "author": { "@id": "https://www.ojonquecortou.com.br/#jonatan" },
       "url": "https://www.ojonquecortou.com.br/galeria"
     }
@@ -873,7 +872,8 @@ posts.forEach(post => {
     image: post.image,
     schema: pageSchema,
     bodyInsert: noscriptContent,
-    postData: post
+    postData: post,
+    lastmod: post.dateModified || post.datePublished
   });
 });
 
@@ -979,8 +979,8 @@ function generateSitemap(pagesList) {
     } else if (page.route.startsWith('/blog/')) {
       changefreq = 'monthly';
       priority = '0.8';
-      if (page.schema && page.schema.datePublished) {
-        lastmod = page.schema.datePublished;
+      if (page.lastmod) {
+        lastmod = page.lastmod;
       }
     }
     
