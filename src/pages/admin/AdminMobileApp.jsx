@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db, storage } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -716,11 +716,13 @@ export default function AdminMobileApp() {
   }, [navigate]);
 
   // ── Derived: today's bookings ──────────────────────────────────
-  const todayBookings = bookings
-    .filter(b => b.date === today() && b.status !== 'cancelado' && b.status !== 'bloqueado')
-    .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+  const todayBookings = useMemo(() => {
+    return bookings
+      .filter(b => b.date === today() && b.status !== 'cancelado' && b.status !== 'bloqueado')
+      .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+  }, [bookings]);
 
-  const todayRevenue = (() => {
+  const todayRevenue = useMemo(() => {
     const seen = new Set();
     return transactions
       .filter(t => {
@@ -731,9 +733,9 @@ export default function AdminMobileApp() {
       })
       .filter(t => t.date === today() && t.type === 'entrada')
       .reduce((s, t) => s + Number(t.value || 0), 0);
-  })();
+  }, [transactions]);
 
-  const monthRevenue = (() => {
+  const monthRevenue = useMemo(() => {
     const m = new Date().toISOString().slice(0, 7);
     const seen = new Set();
     return transactions
@@ -745,24 +747,128 @@ export default function AdminMobileApp() {
       })
       .filter(t => (t.date || '').startsWith(m) && t.type === 'entrada')
       .reduce((s, t) => s + Number(t.value || 0), 0);
-  })();
+  }, [transactions]);
 
-  const pendingCount = bookings.filter(b => b.status === 'pendente').length;
+  const pendingCount = useMemo(() => {
+    return bookings.filter(b => b.status === 'pendente').length;
+  }, [bookings]);
 
-  const isClientRecurrent = (clientName, clientPhone) => {
+  // Pre-calculate count of bookings per client name and phone for recurrent check in O(N) instead of O(N^2)
+  const clientBookingCounts = useMemo(() => {
+    const counts = {};
+    bookings.forEach(b => {
+      if (b.status === 'cancelado' || b.status === 'bloqueado') return;
+      const cleanName = (b.clientName || '').trim().toLowerCase();
+      const cleanPhone = (b.clientPhone || b.phone || '').replace(/\D/g, '');
+      if (cleanName) {
+        counts[cleanName] = (counts[cleanName] || 0) + 1;
+      }
+      if (cleanPhone) {
+        counts[cleanPhone] = (counts[cleanPhone] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [bookings]);
+
+  const isClientRecurrent = useCallback((clientName, clientPhone) => {
     if (!clientName) return false;
     const cleanName = clientName.trim().toLowerCase();
     const cleanPhone = (clientPhone || '').replace(/\D/g, '');
+    const nameCount = clientBookingCounts[cleanName] || 0;
+    const phoneCount = cleanPhone ? (clientBookingCounts[cleanPhone] || 0) : 0;
+    return nameCount > 1 || phoneCount > 1;
+  }, [clientBookingCounts]);
 
-    const count = bookings.filter(b => {
-      if (b.status === 'cancelado' || b.status === 'bloqueado') return false;
-      const bName = (b.clientName || '').trim().toLowerCase();
-      const bPhone = (b.clientPhone || b.phone || '').replace(/\D/g, '');
-      return (cleanPhone && bPhone === cleanPhone) || (bName === cleanName);
-    }).length;
+  const agendaDayData = useMemo(() => {
+    const dayBookings = bookings.filter(b => b.date === currentDate && b.status !== 'cancelado');
+    const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
+    
+    // Collect absences
+    const effectiveAbsences = getEffectiveAbsences(settings);
+    const dayAbsences = effectiveAbsences.filter(a => absenceCoversDate(a, currentDate));
 
-    return count > 1;
-  };
+    // Lunch lock
+    const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_12:00`) === 'true';
+    const hasLunchBooking = dayBookings.some(b => {
+      const bStart = timeToMin(b.time);
+      const bEnd = bStart + (b.duration || 60);
+      return Math.max(bStart, 720) < Math.min(bEnd, 780);
+    });
+    const isLunchLocked = !isUnlockedLocal && !hasLunchBooking;
+
+    const layoutItems = [];
+
+    // Add bookings
+    dayBookings.forEach(b => {
+      layoutItems.push({
+        id: b.id,
+        type: 'booking',
+        startMin: timeToMin(b.time),
+        endMin: timeToMin(b.time) + (b.duration || 60),
+        raw: b
+      });
+    });
+
+    // Add scale blocks (folga, feriado, etc.)
+    const dtForLabel = parseLocalDate(currentDate);
+    const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
+    const isHolidayDay = isFeriado(currentDate);
+
+    if (isHolidayDay || isSunMon) {
+      layoutItems.push({
+        id: 'full-day-block',
+        type: 'scale_block',
+        startMin: 480, // 08:00
+        endMin: 1260,  // 21:00
+        label: isHolidayDay ? 'Feriado' : 'Folga',
+        raw: { label: isHolidayDay ? 'Feriado' : 'Folga' }
+      });
+    } else {
+      // Check scale blocks from professional config
+      HOURLY_SLOTS.forEach(slot => {
+        if (isSlotBlocked(prof, currentDate, slot)) {
+          layoutItems.push({
+            id: `scale-block-${slot}`,
+            type: 'scale_block',
+            startMin: timeToMin(slot),
+            endMin: timeToMin(slot) + 60,
+            label: 'Escala Bloqueada',
+            raw: { label: 'Escala Bloqueada' }
+          });
+        }
+      });
+
+      // Add default lunch block
+      if (isLunchLocked) {
+        layoutItems.push({
+          id: 'lunch-block',
+          type: 'lunch_block',
+          startMin: 720, // 12:00
+          endMin: 780,  // 13:00
+          label: 'Almoço',
+          raw: { label: 'Almoço' }
+        });
+      }
+    }
+
+    // Add absences
+    dayAbsences.forEach((abs, idx) => {
+      const start = abs.allDay ? '08:00' : (abs.startTime || '08:00');
+      const end = abs.allDay ? '21:00' : (abs.endTime || '21:00');
+      layoutItems.push({
+        id: `absence-${abs.id || idx}`,
+        type: 'absence',
+        startMin: timeToMin(start),
+        endMin: timeToMin(end),
+        label: abs.title,
+        raw: abs
+      });
+    });
+
+    const positionedItems = calculateOverlappingLayout(layoutItems);
+
+    return { positionedItems, layoutItems, isLunchLocked };
+  }, [bookings, currentDate, settings]);
 
   const getWeekDays = (centerDate) => {
     const d = parseLocalDate(centerDate);
@@ -775,7 +881,7 @@ export default function AdminMobileApp() {
       return dateStr(wd);
     });
   };
-  const weekDays = getWeekDays(currentDate);
+  const weekDays = useMemo(() => getWeekDays(currentDate), [currentDate]);
   const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
 
   const navigateDate = (delta) => {
@@ -2648,93 +2754,7 @@ Grande abraço, Jon.`;
 
   // ── TAB: AGENDA ────────────────────────────────────────────────
   const renderAgenda = () => {
-    const dayBookings = bookings.filter(b => b.date === currentDate && b.status !== 'cancelado');
-    const prof = (settings?.professionals || []).find(p => p.id === 'jon') || (settings?.professionals || [])[0] || { id: 'jon', name: 'Jon', active: true };
-    
-    // Collect absences
-    const effectiveAbsences = getEffectiveAbsences(settings);
-    const dayAbsences = effectiveAbsences.filter(a => absenceCoversDate(a, currentDate));
-
-    // Lunch lock
-    const isUnlockedLocal = localStorage.getItem(`unlock_${currentDate}_12:00`) === 'true';
-    const hasLunchBooking = dayBookings.some(b => {
-      const bStart = timeToMin(b.time);
-      const bEnd = bStart + (b.duration || 60);
-      return Math.max(bStart, 720) < Math.min(bEnd, 780);
-    });
-    const isLunchLocked = !isUnlockedLocal && !hasLunchBooking;
-
-    const layoutItems = [];
-
-    // Add bookings
-    dayBookings.forEach(b => {
-      layoutItems.push({
-        id: b.id,
-        type: 'booking',
-        startMin: timeToMin(b.time),
-        endMin: timeToMin(b.time) + (b.duration || 60),
-        raw: b
-      });
-    });
-
-    // Add scale blocks (folga, feriado, etc.)
-    const dtForLabel = parseLocalDate(currentDate);
-    const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
-    const isHolidayDay = isFeriado(currentDate);
-    const blockLabel = isHolidayDay ? 'Feriado' : (isSunMon ? 'Folga' : 'Configurações de Escala');
-
-    if (isHolidayDay || isSunMon) {
-      layoutItems.push({
-        id: 'full-day-block',
-        type: 'scale_block',
-        startMin: 480, // 08:00
-        endMin: 1260,  // 21:00
-        label: isHolidayDay ? 'Feriado' : 'Folga',
-        raw: { label: isHolidayDay ? 'Feriado' : 'Folga' }
-      });
-    } else {
-      // Check scale blocks from professional config
-      HOURLY_SLOTS.forEach(slot => {
-        if (isSlotBlocked(prof, currentDate, slot)) {
-          layoutItems.push({
-            id: `scale-block-${slot}`,
-            type: 'scale_block',
-            startMin: timeToMin(slot),
-            endMin: timeToMin(slot) + 60,
-            label: 'Escala Bloqueada',
-            raw: { label: 'Escala Bloqueada' }
-          });
-        }
-      });
-
-      // Add default lunch block
-      if (isLunchLocked) {
-        layoutItems.push({
-          id: 'lunch-block',
-          type: 'lunch_block',
-          startMin: 720, // 12:00
-          endMin: 780,  // 13:00
-          label: 'Almoço',
-          raw: { label: 'Almoço' }
-        });
-      }
-    }
-
-    // Add absences
-    dayAbsences.forEach((abs, idx) => {
-      const start = abs.allDay ? '08:00' : (abs.startTime || '08:00');
-      const end = abs.allDay ? '21:00' : (abs.endTime || '21:00');
-      layoutItems.push({
-        id: `absence-${abs.id || idx}`,
-        type: 'absence',
-        startMin: timeToMin(start),
-        endMin: timeToMin(end),
-        label: abs.title,
-        raw: abs
-      });
-    });
-
-    const positionedItems = calculateOverlappingLayout(layoutItems);
+    const { positionedItems, layoutItems, isLunchLocked } = agendaDayData;
 
     return (
       <div className="m-tab m-page-flush" key="agenda" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
