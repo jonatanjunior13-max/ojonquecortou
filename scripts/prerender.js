@@ -69,7 +69,13 @@ function manualServiceBody({ name, text, route }) {
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>${name} em Belo Horizonte</h1>
       <p>${text}</p>
-      <p><a href="/agendar">Agende seu horário</a> &middot; <a href="/servicos">Ver todos os serviços</a></p>
+      <h2>Entenda melhor o processo</h2>
+      <ul>
+        <li><a href="/metodo">Método Leitura de Fio</a> — diagnóstico técnico em 7 etapas antes de qualquer corte.</li>
+        <li><a href="/blog">Blog do Jon</a> — artigos técnicos e guias sobre cuidados capilares.</li>
+        <li><a href="/investimento">Investimento e Valores</a> — conheça nossos preços e pacotes.</li>
+      </ul>
+      <p><strong><a href="/agendar">Agende seu horário agora</a></strong></p>
     </article>
   </noscript>
 `;
@@ -188,6 +194,7 @@ const investmentBody = `
       </ul>
       <h2>Corte Cabelo Cacheado Masculino BH</h2>
       <p>Homem com cacho também precisa de leitura de fio antes da tesoura. O corte cabelo cacheado masculino no Studio do Jon segue o mesmo Método Leitura de Fio dos atendimentos femininos: diagnóstico de curvatura e formato do rosto antes de qualquer corte, com visagismo aplicado aos traços masculinos. Nada de máquina padronizada — o volume e o encaracolamento natural são respeitados, evitando o efeito pirâmide e o frizz comum em barbearias que não entendem cabelo com curvatura. O valor segue a mesma faixa do Corte especializado (R$ 190 a R$ 230), incluindo a Leitura de Fio completa e a finalização educativa. Ideal para quem tem cabelo ondulado, cacheado ou crespo em Belo Horizonte.</p>
+      <p>Quer aprender mais sobre diagnóstico capilar e cuidados técnicos? Visite nosso <a href="/blog">blog com 50+ artigos</a> sobre cabelos cacheados, crespos e ondulados.</p>
       <p><a href="/agendar">Pronto para agendar? Clique aqui e escolha seu horário.</a></p>
     </article>
   </noscript>
@@ -596,7 +603,7 @@ const pages = [
   },
   {
     route: '/servicos',
-    title: 'Serviços e Valores | Especialista em Cabelo Cacheado BH | Studio do Jon',
+    title: 'Serviços em BH | Corte, Tratamento e Visagismo | Studio do Jon',
     description: 'Veja nossos serviços de corte de cabelo cacheado a seco, visagismo, tratamentos e coloração. Agende seu horário online no Studio do Jon em BH.',
     bodyInsert: servicesBody,
     schema: {
@@ -625,7 +632,7 @@ const pages = [
   },
   {
     route: '/sobre',
-    title: 'Sobre o Jonatan Junior | Especialista em Cachos BH | Studio do Jon',
+    title: 'Sobre Jonatan Junior | Especialista Cabelos Cacheados em BH',
     description: 'Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.',
     bodyInsert: aboutBody,
     schema: {
@@ -760,7 +767,7 @@ const pages = [
   },
   {
     route: '/galeria',
-    title: 'Galeria de Resultados | Cortes de Cabelo Cacheado BH | Studio do Jon',
+    title: 'Galeria | Cortes de Cabelos Cacheados em Belo Horizonte',
     description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.',
     bodyInsert: `
   <noscript>
@@ -828,7 +835,7 @@ const pages = [
   },
   {
     route: '/servicos/transicao-capilar',
-    title: 'Transição Capilar BH | Studio do Jon — Especialista em Cachos',
+    title: 'Transição Capilar em Belo Horizonte | Studio do Jon',
     description: 'Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende.',
     bodyInsert: manualServiceBody({
       name: 'Transição Capilar',

@@ -131,7 +131,7 @@ export const posts = [
   {
     id: 46,
     slug: 'excesso-hidratacao-cronograma-capilar-cacheado',
-    title: 'Cronograma Capilar para Cabelo Cacheado: Por que o Excesso de Hidratação Estraga o Fio',
+    title: 'Cronograma Capilar: Por que Excesso de Hidratação Danifica o Fio',
     excerpt: 'Descubra por que o excesso de hidratação no cronograma capilar para cabelo cacheado pode enfraquecer o cacho e como a Leitura de Fio resolve a porosidade.',
     metaDescription: 'Entenda os riscos da fadiga hídrica e do excesso de hidratação nos cachos. Veja como equilibrar o cronograma capilar com diagnóstico em Belo Horizonte.',
     keywords: 'cronograma capilar cabelo cacheado, fadiga hidrica cachos, excesso de hidratacao cabelo cacheado, tratamento capilar Caiçaras, Método Leitura de Fio',
@@ -218,7 +218,7 @@ export const posts = [
   {
     id: 45,
     slug: 'corte-hibrido-cabelo-cacheado',
-    title: 'Corte Híbrido em Cabelo Cacheado: Por que Essa Técnica Supera o Corte Puramente Molhado',
+    title: 'Corte Híbrido em Cabelo Cacheado: Técnica Molhada + Seca',
     excerpt: 'Descubra como o corte híbrido de cabelo cacheado une a precisão a seco com o refinamento molhado sob o diagnóstico do Método Leitura de Fio.',
     metaDescription: 'Entenda a superioridade geométrica do corte híbrido em cabelos cacheados. Conheça as vantagens do Método Leitura de Fio em Belo Horizonte.',
     keywords: 'corte híbrido cabelo cacheado, corte híbrido cacheado bh, salão especialista em cachos belo horizonte, corte de cabelo cacheado Caiçaras, Método Leitura de Fio',
@@ -326,7 +326,7 @@ export const posts = [
         { label: "Mecanismo da Caspa", value: "Proliferação de fungos Malassezia alimentados por sebo rebote" }
       ]
     },
-    title: 'Caspa em Cabelo Cacheado no Inverno: Como Tratar a Raiz Sem Ressecar as Pontas | Studio do Jon',
+    title: 'Caspa em Cabelo Cacheado: Tratamento Sem Ressecar as Pontas',
     excerpt: 'O inverno em BH nos convida a banhos mais quentes, o que pode desencadear caspa e descamação no couro cabeludo cacheado. Saiba como tratar a raiz sem estragar o comprimento.',
     metaDescription: 'Lidando com caspa e descamação no cabelo cacheado neste inverno em BH? Descubra dicas de especialista para purificar o couro cabeludo sem ressecar as pontas.',
     keywords: 'caspa cabelo cacheado, descamação couro cabeludo bh, caspa no inverno, como tratar caspa cachos, dermatite seborreica cabelo cacheado, studio do jon',
@@ -2131,7 +2131,7 @@ export const posts = [
   {
     id: 29,
     slug: 'cronograma-capilar-cabelo-cacheado',
-    title: 'Cronograma Capilar Passo a Passo para Cabelos Cacheados: o guia que funciona de verdade',
+    title: 'Cronograma Capilar Passo a Passo para Cabelos Cacheados',
     seoTitle: 'Cronograma Capilar para Cacheadas Passo a Passo | Studio do Jon BH',
     excerpt: 'O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. Descubra como ler o fio antes de montar qualquer protocolo.',
     metaDescription: 'Cronograma capilar que funciona pra cabelo cacheado. Jon lê seu fio antes de recomendar qualquer protocolo. Studio do Jon, Belo Horizonte.',
