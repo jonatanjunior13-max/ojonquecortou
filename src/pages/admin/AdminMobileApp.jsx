@@ -6,7 +6,7 @@ import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc, writeBatch
 } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getEffectiveAbsences, getAbsenceForSlot } from '../../utils/absences';
+import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
 import {
   Home, Calendar, Camera, Users, DollarSign, MoreHorizontal,
   Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
