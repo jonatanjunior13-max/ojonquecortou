@@ -1,0 +1,421 @@
+{
+  "services": [
+    {
+      "id": "leitura-de-fio",
+      "name": "Leitura de Fio (diagnóstico)",
+      "idealFor": [
+        "Primeira vez buscando diagnóstico antes de qualquer intervenção",
+        "Cabelo com histórico químico desconhecido",
+        "Buscando orientação personalizada de cuidados",
+        "Diagnosticar porosidade real antes de investir em tratamentos"
+      ],
+      "benefits": [
+        "Mapa completo de curvatura, densidade e porosidade",
+        "Identificação precisa do histórico químico do fio",
+        "Orientação de produtos e cronograma personalizados",
+        "Reduz gastos futuros com produtos inadequados",
+        "100% revertido em crédito se fechar serviço"
+      ],
+      "duration": "30m",
+      "price": "R$ 80",
+      "bestFor": "Qualquer pessoa que quer tomar decisão técnica sobre seus cabelos sem a tesoura ainda tocar."
+    },
+    {
+      "id": "corte-jon",
+      "name": "Corte com o Jon",
+      "idealFor": [
+        "Cabelo ondulado, cacheado ou crespo procurando corte técnico",
+        "Primeira vez cortando com Leitura de Fio integrada",
+        "Busca movimento real e definição natural",
+        "Visagismo aplicado à própria curvatura"
+      ],
+      "benefits": [
+        "Leitura de Fio técnica incluída (diagnostica curvatura verdadeira e encolhimento real)",
+        "Corte híbrido (molhado de precisão + lapidado a seco) customizado",
+        "Finalização educativa mostrando rotina de cuidado",
+        "Visagismo equilibra volume com formato do rosto",
+        "Dura 3-4 meses com cronograma de manutenção"
+      ],
+      "duration": "1h - 1h30m",
+      "price": "R$ 190",
+      "bestFor": "Cliente que quer corte personalizado baseado em diagnóstico, respeitando curvatura natural e formato do rosto."
+    },
+    {
+      "id": "corte-masculino",
+      "name": "Corte Masculino",
+      "idealFor": [
+        "Homem com cabelo ondulado, cacheado ou crespo",
+        "Cabelo curto com volume natural a respeitar",
+        "Evitar efeito pirâmide típico de máquina",
+        "Visagismo aplicado a traços faciais masculinos"
+      ],
+      "benefits": [
+        "Leitura de Fio completa (diagnóstico de curvatura e fator de encolhimento)",
+        "Corte técnico sem máquina padronizada (respeita volume natural)",
+        "Visagismo harmonia com formato de rosto masculino",
+        "Finalização educativa",
+        "Evita ressecamento e frizz de cortes convencionais"
+      ],
+      "duration": "1h - 1h30m",
+      "price": "R$ 190",
+      "bestFor": "Homem com cacho natural que quer qualidade similar ao corte feminino, respeitando sua curvatura e traços."
+    },
+    {
+      "id": "corte-seco",
+      "name": "Corte Seco (Lapidagem)",
+      "idealFor": [
+        "Primeira vez cortando a seco",
+        "Cabelo em transição capilar (equilibra raiz natural com pontas alisadas)",
+        "Precisão máxima de comprimento e formato",
+        "Depois de tratamentos químicos recentes"
+      ],
+      "benefits": [
+        "Mostra encolhimento real de cada fio (não mascara com água)",
+        "Lapidagem técnica mantém volume estruturado",
+        "Ideal para transição capilar (remove pontas danificadas com precisão)",
+        "Geralmente combinado com Corte Híbrido para melhor resultado"
+      ],
+      "duration": "45m - 1h30m",
+      "price": "R$ 190",
+      "bestFor": "Cliente em transição capilar ou em primeira avaliação onde encolhimento real precisa ser visto com precisão máxima."
+    },
+    {
+      "id": "combo-corte-tratamento",
+      "name": "Combo Corte + Tratamento Personalizado",
+      "idealFor": [
+        "Cabelo cacheado/crespo procurando corte novo E recuperação de saúde",
+        "Ressecamento moderado com curvatura bonita",
+        "Transição capilar em estágio inicial com boas condições",
+        "Busca resultado visual + estrutura de fio fortemente potencializado"
+      ],
+      "benefits": [
+        "Leitura de Fio rápida integrada (orienta corte e tratamento)",
+        "Tratamento restaurador profundo (maciez + brilho)",
+        "Corte híbrido personalizado com visagismo",
+        "Finalização premium com cachos definidos e leves",
+        "Custo-benefício comparado a corte + tratamento separados"
+      ],
+      "duration": "1h - 1h30m",
+      "price": "R$ 230 (promocional, preço base R$ 320)",
+      "bestFor": "Cliente buscando transformação visual e de saúde ao mesmo tempo, com bom orçamento."
+    },
+    {
+      "id": "visagismo-cachos",
+      "name": "Visagismo Cacheado",
+      "idealFor": [
+        "Rosto redondo buscando alongamento visual",
+        "Rosto quadrado precisando suavizar ângulos",
+        "Rosto coração (testa larga, queixo fino) equilibrando proporções",
+        "Busca harmonia entre curvatura do cabelo e formato do rosto"
+      ],
+      "benefits": [
+        "Proporção facial equilibrada através de corte técnico",
+        "Distribuição de volume estratégica (afina redondo, suaviza quadrado)",
+        "Movimento direcionado para realçar traços positivos",
+        "Estilo alinhado com identidade pessoal",
+        "Evita efeito pirâmide ou desfavorecimento visual"
+      ],
+      "duration": "1h - 1h30m",
+      "price": "R$ 190 (incluído em Corte com o Jon)",
+      "bestFor": "Cliente que quer corte tecnicamente bonito AND harmonioso com seu rosto, respeitando curvatura natural."
+    },
+    {
+      "id": "visagismo-para-cachos",
+      "name": "Visagismo para Cachos (Consultoria)",
+      "idealFor": [
+        "Já tem corte mas quer avaliar se harmoniza com rosto",
+        "Está em transição e busca guia visual para próximos cortes",
+        "Quer entender peso, volume e direção ideais antes de cortador novo"
+      ],
+      "benefits": [
+        "Análise visual de proporções faciais",
+        "Recomendações de comprimento, volume e movimento",
+        "Fotografia referência personalizada",
+        "Orientação para comunicar ideias a qualquer cortador futuro"
+      ],
+      "duration": "30m - 45m",
+      "price": "Sob consulta",
+      "bestFor": "Cliente buscando orientação visual e técnica sem necessidade imediata de corte, puro design capilar."
+    },
+    {
+      "id": "transicao-capilar",
+      "name": "Transição Capilar (Corte Progressivo)",
+      "idealFor": [
+        "Vindo de alisamento químico, querendo voltar ao natural",
+        "Cabelo danificado por química anterior com ponto de junção frágil",
+        "Quer manter comprimento enquanto remove pontas danificadas",
+        "Fator de encolhimento 4C com demanda de precisão alta"
+      ],
+      "benefits": [
+        "Cortes frequentes e estratégicos (2-4 cm a cada 6-8 semanas)",
+        "Leitura de Fio avalia dano no ponto de junção",
+        "Remove gradualmente o alisado sem Big Chop radical",
+        "Cronograma técnico de tratamentos acompanha cada fase",
+        "Suporte emocional e técnico durante mudança"
+      ],
+      "duration": "1h - 1h30m (primeira), 45m (manutenções)",
+      "price": "R$ 190 (primeira), R$ 130 (manutenções)",
+      "bestFor": "Cliente corajoso saindo de alisamento químico e buscando cabelo natural com acompanhamento técnico rigoroso."
+    },
+    {
+      "id": "descoloracao-cacheado",
+      "name": "Descoloração Cabelo Cacheado",
+      "idealFor": [
+        "Cabelo cacheado/crespo com alta porosidade",
+        "Cabelo danificado por química anterior (alisamento, coloração)",
+        "Busca iluminação sem agredir mais a estrutura",
+        "Histórico químico crítico necessitando teste de mecha obrigatório"
+      ],
+      "benefits": [
+        "Leitura de Fio diagnóstica de porosidade e histórico químico",
+        "Técnica exclusiva de Mechas Sem Descolorante (agride menos)",
+        "Teste de mecha obrigatório evita queimadura",
+        "Proteção da estrutura através de ativos durante processo",
+        "Finalização com reflexos naturais e brilho"
+      ],
+      "duration": "2h30m - 3h",
+      "price": "R$ 699 (a partir de, varia com comprimento)",
+      "bestFor": "Cliente que quer mudança radical de cor SEM danificar cabelo já frágil, respeitando curvatura natural."
+    },
+    {
+      "id": "tratamento-personalizado",
+      "name": "Tratamento Personalizado",
+      "idealFor": [
+        "Cabelo com alta porosidade ressecado",
+        "Perda de brilho e definição após corte novo",
+        "Cronograma inicial entre hidratação/nutrição/reconstrução",
+        "Cabelo cacheado em transição capilar"
+      ],
+      "benefits": [
+        "Análise personalizada baseada em Leitura de Fio anterior",
+        "Nutrição profunda com óleos e ativos poderosos",
+        "Devolve maciez, brilho e definição",
+        "Reduz frizz e encolhimento excessivo",
+        "Estrutura reconstruída para próximos 4-6 semanas"
+      ],
+      "duration": "45m",
+      "price": "R$ 130",
+      "bestFor": "Cliente com diagnóstico já feito, buscando manutenção de saúde capilar entre cortes."
+    },
+    {
+      "id": "coloracao-completa",
+      "name": "Coloração Completa",
+      "idealFor": [
+        "Mudança radical de tom desejada",
+        "Intensificação de cor natural",
+        "Cabelo cacheado/crespo com diagnóstico técnico prévio",
+        "Histórico químico mapeado na Leitura de Fio"
+      ],
+      "benefits": [
+        "Leitura de Fio avalia porosidade e histórico antes da cor",
+        "Cor uniforme respeitando curvatura e definição",
+        "Fibra protegida e cacho definido após processo",
+        "Sem ressecamento ou danificação estrutural",
+        "Reflexo de visagismo: cor escolhida alinhada com tom de pele"
+      ],
+      "duration": "2h",
+      "price": "R$ 499 (a partir de, varia com comprimento e tipo)",
+      "bestFor": "Cliente buscando transformação de cor com segurança técnica e respeito à saúde natural do fio."
+    },
+    {
+      "id": "manutencao-corte",
+      "name": "Manutenção de Corte",
+      "idealFor": [
+        "Cortou com o Jon nos últimos 90 dias",
+        "Quer preservar formato original do corte híbrido",
+        "Apenas retoque de ponta, sem nova Leitura de Fio completa",
+        "Manutenção regular 3-4 em 3-4 meses"
+      ],
+      "benefits": [
+        "Retoque estratégico mantém caimento original",
+        "Respeita visagismo definido no corte primeiro",
+        "Limpeza de pontas danificadas",
+        "Sessão mais rápida que corte primeiro",
+        "Preserva investimento inicial de corte técnico"
+      ],
+      "duration": "45m",
+      "price": "R$ 130",
+      "bestFor": "Cliente recorrente que já investiu em corte primeiro e quer manter qualidade com manutenção econômica."
+    },
+    {
+      "id": "luzes-morena",
+      "name": "Luzes ou Morena Iluminada",
+      "idealFor": [
+        "Busca iluminação natural e sutil",
+        "Cabelo cacheado/ondulado/crespo com boa saúde",
+        "Técnica Mechas Sem Descolorante (agride menos)",
+        "Primeira coloração após Leitura de Fio"
+      ],
+      "benefits": [
+        "Avaliação de porosidade orienta distribuição das mechas",
+        "Mechas posicionadas por visagismo (ilumina rosto)",
+        "Efeito natural e harmonioso",
+        "Teste de mecha obrigatório garante segurança",
+        "Sem danificar definição natural do cacho"
+      ],
+      "duration": "3h",
+      "price": "R$ 699 (a partir de)",
+      "bestFor": "Cliente buscando transformação sutil e sofisticada sem agressão química severa."
+    },
+    {
+      "id": "detox-estimulante",
+      "name": "Detox e Tratamentos Estimulantes",
+      "idealFor": [
+        "Couro cabeludo com acúmulo de resíduos (produtos, poluição)",
+        "Cabelo cacheado/crespo com volume mascarado pelo acúmulo",
+        "Busca estimular crescimento saudável",
+        "Preparação para nova Leitura de Fio (limpa antes de diagnosticar)"
+      ],
+      "benefits": [
+        "Esfoliação com semente de damasco remove impurezas profundas",
+        "Reduz oleosidade excessiva",
+        "Estimula crescimento mais saudável a partir da raiz",
+        "Revela curvatura e definição real dos cachos",
+        "Couro cabeludo mais respirável para próximos tratamentos"
+      ],
+      "duration": "1h",
+      "price": "R$ 180",
+      "bestFor": "Cliente que quer resetar saúde capilar e couro cabeludo antes de nova avaliação ou corte."
+    },
+    {
+      "id": "infusao-hidrica-porosos",
+      "name": "Infusão de Carga Hídrica (Cabelos Porosos)",
+      "idealFor": [
+        "Cabelo com alta porosidade natural ou após descoloração",
+        "Perda de brilho e frizz resistente",
+        "Busca definição e movimento sem pesar",
+        "Manutenção entre cortes para cabelo poroso"
+      ],
+      "benefits": [
+        "Ativos de alta performance penetram córtex capilar",
+        "Devolve umidade ideal respeitando porosidade",
+        "Combate frizz excessivo",
+        "Preserva definição e movimento",
+        "Cronograma entre cortes (4-6 semanas)"
+      ],
+      "duration": "45m",
+      "price": "R$ 150",
+      "bestFor": "Cliente com diagnóstico de alta porosidade buscando manutenção técnica entre cortes."
+    },
+    {
+      "id": "ritual-lipidica",
+      "name": "Ritual de Reposição Lipídica (Nutrição Profunda)",
+      "idealFor": [
+        "Cabelo 2A a 4C com ressecamento severo",
+        "Encolhimento rígido ou falta de maleabilidade",
+        "Fios que não seguram umidade natural",
+        "Pós-transição capilar ou história de alisamento"
+      ],
+      "benefits": [
+        "Blend de óleos nobres biodisponíveis",
+        "Devolve maleabilidade e toque sedoso",
+        "Nutrição essencial que óleo natural não alcança as pontas",
+        "Recupera flexibilidade natural",
+        "Essencial para cabelos crespos estruturalmente rígidos"
+      ],
+      "duration": "45m",
+      "price": "R$ 170",
+      "bestFor": "Cliente com ressecamento severo ou cabelo muito crespo (4A-4C) buscando recuperação de maleabilidade."
+    },
+    {
+      "id": "inside-trp",
+      "name": "Inside TRP – Reconstrução Premium",
+      "eligleFor": [
+        "Cabelo danificado por química, calor ou processos agressivos",
+        "Alta porosidade com perda estrutural severa",
+        "Fios frágeis com tendência a quebra",
+        "Pós-descoloração ou múltiplos processos químicos"
+      ],
+      "benefits": [
+        "Tecnologia Deep Complex repara córtex capilar",
+        "Reposição de massa proteica perdida",
+        "Reduz porosidade excessiva",
+        "Evita quebra futura (preventivo + curativo)",
+        "Cachos mais fortes, elásticos e vibrantes"
+      ],
+      "duration": "1h",
+      "price": "R$ 180",
+      "bestFor": "Cliente com cabelo severamente danificado precisando reconstrução química completa, não apenas limpeza."
+    },
+    {
+      "id": "protocolo-blindagem-ph",
+      "name": "Protocolo de Blindagem de pH e Reconstrução",
+      "idealFor": [
+        "Pós-descoloração imediata (acabou de fazer luzes/mechas)",
+        "Cabelo cacheado danificado por sol ou desgaste mecânico",
+        "Acidificação técnica necessária para selar cutícula",
+        "Recuperação de força estrutural crítica"
+      ],
+      "benefits": [
+        "Acidificação técnica reequilibra pH aberto",
+        "Reposição de aminoácidos estruturais",
+        "Selamento de cutículas danificadas",
+        "Força e elasticidade restauradas",
+        "Proteção duradoura pós-química agressiva"
+      ],
+      "duration": "1h",
+      "price": "R$ 200",
+      "bestFor": "Cliente que acabou de fazer descoloração ou sofrer dano mecânico severo, precisando blindagem urgente."
+    },
+    {
+      "id": "retoque-raiz",
+      "name": "Retoque de Raiz",
+      "idealFor": [
+        "Manutenção de cor após coloração completa",
+        "Cabelo cacheado já colorido com raiz crescendo",
+        "Preservar efeito de visagismo do corte híbrido original",
+        "Uniformidade visual entre raiz e comprimento"
+      ],
+      "benefits": [
+        "Aplicação técnica respeitando curvatura e porosidade",
+        "Evita ressecamento adicional na raiz",
+        "Preserva comprimento colorido",
+        "Harmonia visual mantida",
+        "Durabilidade da cor estendida com cronograma"
+      ],
+      "duration": "1h30m",
+      "price": "R$ 180",
+      "bestFor": "Cliente com coloração prévia mantendo o visual harmônico a cada 4-6 semanas de crescimento."
+    },
+    {
+      "id": "lavar-finalizar",
+      "name": "Lavar e Finalizar (Definição e Volume)",
+      "idealFor": [
+        "Já tem corte híbrido bem estruturado",
+        "Quer finalização perfeita do cacho específica",
+        "Busca definição, volume ou leveza conforme vontade",
+        "Preparação para evento (foto, encontro, trabalho)"
+      ],
+      "benefits": [
+        "Higienização suave respeitando curvatura",
+        "Finalização técnica sob medida (definição vs volume)",
+        "Conversa sobre preferências pessoais",
+        "Educação: como replicar em casa",
+        "Cachos definidos, soltos e com brilho"
+      ],
+      "duration": "1h",
+      "price": "R$ 100",
+      "bestFor": "Cliente com corte já feito buscando finalização técnica perfeita para momento específico ou aprendizado."
+    },
+    {
+      "id": "pacote-cachos-perfeitos",
+      "name": "Pacote Cachos Perfeitos (4 sessões)",
+      "idealFor": [
+        "Em transição capilar com acompanhamento técnico",
+        "Cabelo severamente danificado por química",
+        "Busca cronograma estruturado por 4-5 meses",
+        "Quer suporte próximo e evolução acompanhada"
+      ],
+      "benefits": [
+        "Leitura de Fio inicial estabelece baseline",
+        "4 sessões de tratamento ajustadas sessão a sessão",
+        "Acompanhamento de evolução de porosidade e curvatura",
+        "Desconto de 30% comparado a sessões individuais",
+        "Suporte técnico contínuo e personalizado"
+      ],
+      "duration": "60m cada (total 4h em 4-5 meses)",
+      "price": "R$ 390 (promocional, preço base R$ 520)",
+      "bestFor": "Cliente comprometido com transformação profunda e manutenção de saúde capilar por período estendido."
+    }
+  ]
+}
