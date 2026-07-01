@@ -4804,4 +4804,22 @@ export const posts = [
       <p>O primeiro passo é a Leitura de Fio: <a href="/agendar">agende seu horário</a> e comece o diagnóstico da sua curvatura. Para entender os valores antes, dá para consultar o <a href="/investimento">investimento</a>.</p>
     `
   }
+,
+  {
+    id: 48,
+    slug: 'por-que-saloes-falham-cabelo-texturizado',
+    title: 'Por que a maioria dos salões falha com cabelo cacheado — e como o Studio do Jon não',
+    seoTitle: 'Por que salões falham em cabelo cacheado e texturizado | Studio do Jon BH',
+    excerpt: 'Descubra as razões técnicas por trás dos fracassos de salões genéricos com cabelo texturizado e por que o Método Leitura de Fio do Studio do Jon em Belo Horizonte não comete esses erros.',
+    metaDescription: 'Entenda por que salões convencionais falham com cabelo cacheado e crespo. O Studio do Jon em BH diagnostica cada fio antes de qualquer corte — sem templates genéricos.',
+    keywords: 'cabelo cacheado salão BH, por que salão falha em cabelo texturizado, especialista em cachos Belo Horizonte, Método Leitura de Fio, diagnóstico capilar, corte para cabelo texturizado',
+    date: '01 de Julho, 2026',
+    datePublished: '2026-07-01',
+    dateModified: '2026-07-01',
+    author: 'Jon',
+    category: 'Educação Técnica',
+    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
+    content: `<p>CONTENT_PLACEHOLDER</p>`,
+    faqSchema: {}
+  }
 ];
