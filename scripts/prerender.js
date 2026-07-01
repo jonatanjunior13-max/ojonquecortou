@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { posts } from '../src/data/posts.js';
 import { SEED_SERVICES } from '../src/data/seedServices.js';
+import { EXPANDED_SERVICE_BODIES, SEED_SERVICE_EXPANDED_BODIES } from '../src/data/expandedServiceBodies.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '../dist');
@@ -827,11 +828,13 @@ const pages = [
     route: '/servicos/descoloracao-cabelo-cacheado',
     title: 'Descoloração em Cabelo Cacheado em BH | Studio do Jon',
     description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho. Agende.',
-    bodyInsert: manualServiceBody({
-      name: 'Descoloração em Cabelo Cacheado',
-      text: 'Descoloração em cabelo cacheado em Belo Horizonte com protocolo técnico: avaliação de porosidade, levantamento do histórico químico e leitura da textura antes de qualquer aplicação. O objetivo é iluminar os fios sem comprometer a definição do cacho nem a saúde da fibra.',
-      route: '/servicos/descoloracao-cabelo-cacheado'
-    }),
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      ${EXPANDED_SERVICE_BODIES['descoloracao-cabelo-cacheado']}
+    </article>
+  </noscript>
+`,
     schema: manualServiceSchema({
       name: 'Descoloração em Cabelo Cacheado',
       description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho.',
@@ -842,11 +845,13 @@ const pages = [
     route: '/servicos/visagismo-cacheado',
     title: 'Visagismo para Cabelos Cacheados em BH | Studio do Jon',
     description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal. Agende online.',
-    bodyInsert: manualServiceBody({
-      name: 'Visagismo para Cabelos Cacheados',
-      text: 'Visagismo para cabelos cacheados em Belo Horizonte: analisamos o formato do rosto, a textura do fio e a rotina do dia a dia para planejar um corte que funcione de verdade, não só no espelho do salão. Parte do diagnóstico completo feito na Leitura de Fio.',
-      route: '/servicos/visagismo-cacheado'
-    }),
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      ${EXPANDED_SERVICE_BODIES['visagismo-cacheado']}
+    </article>
+  </noscript>
+`,
     schema: manualServiceSchema({
       name: 'Visagismo para Cabelos Cacheados',
       description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal.',
@@ -857,11 +862,13 @@ const pages = [
     route: '/servicos/corte-hibrido',
     title: 'Corte Híbrido Cabelo Cacheado BH | Studio do Jon',
     description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já.',
-    bodyInsert: manualServiceBody({
-      name: 'Corte Híbrido',
-      text: 'O Corte Híbrido combina precisão molhada com lapidação a seco: o corte molhado garante exatidão nas linhas, e o ajuste a seco, feito com o cacho já formado, corrige o caimento real do fio depois do encolhimento. Uma técnica pensada especificamente para cabelo cacheado em Belo Horizonte.',
-      route: '/servicos/corte-hibrido'
-    }),
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      ${EXPANDED_SERVICE_BODIES['corte-hibrido']}
+    </article>
+  </noscript>
+`,
     schema: manualServiceSchema({
       name: 'Corte Híbrido',
       description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Corte Híbrido: molhado para precisão e seco para caimento.',
@@ -872,11 +879,13 @@ const pages = [
     route: '/servicos/transicao-capilar',
     title: 'Transição Capilar em Belo Horizonte | Studio do Jon',
     description: 'Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende.',
-    bodyInsert: manualServiceBody({
-      name: 'Transição Capilar',
-      text: 'Suporte técnico para quem está em transição capilar em Belo Horizonte: cortes progressivos que equilibram a raiz natural e as pontas quimicamente tratadas, sem exigir o Big Chop radical a menos que seja essa a sua escolha. Acompanhamento pensado para cada fase da transição.',
-      route: '/servicos/transicao-capilar'
-    }),
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      ${EXPANDED_SERVICE_BODIES['transicao-capilar']}
+    </article>
+  </noscript>
+`,
     schema: manualServiceSchema({
       name: 'Transição Capilar',
       description: 'Transição capilar em BH. O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança.',
@@ -887,11 +896,13 @@ const pages = [
     route: '/servicos/visagismo-cachos',
     title: 'Visagismo Cabelo Cacheado Belo Horizonte | Studio do Jon',
     description: 'Valorize sua imagem através do visagismo para cabelos cacheados em Belo Horizonte. Cortes planejados para sua estrutura facial e rotina. Agende.',
-    bodyInsert: manualServiceBody({
-      name: 'Visagismo Cabelo Cacheado',
-      text: 'Cortes planejados a partir da sua estrutura facial e da física real do seu cacho, não de moda de revista. O visagismo aplicado ao cabelo cacheado em Belo Horizonte respeita o fator de encolhimento de cada curvatura para entregar um resultado que funciona no dia a dia.',
-      route: '/servicos/visagismo-cachos'
-    }),
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      ${EXPANDED_SERVICE_BODIES['visagismo-cachos']}
+    </article>
+  </noscript>
+`,
     schema: manualServiceSchema({
       name: 'Visagismo Cabelo Cacheado',
       description: 'Visagismo para cabelos cacheados em Belo Horizonte. Cortes planejados para sua estrutura facial e rotina.',
@@ -902,11 +913,13 @@ const pages = [
     route: '/servicos/masculino',
     title: 'Corte Cabelo Cacheado Masculino BH | Studio do Jon',
     description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende.',
-    bodyInsert: manualServiceBody({
-      name: 'Corte Cabelo Cacheado Masculino',
-      text: 'Corte cabelo cacheado masculino em Belo Horizonte com o mesmo Método Leitura de Fio dos atendimentos femininos: diagnóstico de curvatura e formato do rosto antes de qualquer corte, com visagismo aplicado aos traços masculinos. Nada de máquina padronizada — o volume e o encaracolamento natural são respeitados.',
-      route: '/servicos/masculino'
-    }),
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      ${EXPANDED_SERVICE_BODIES['masculino']}
+    </article>
+  </noscript>
+`,
     schema: manualServiceSchema({
       name: 'Corte Cabelo Cacheado Masculino',
       description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico.',
@@ -952,7 +965,14 @@ SEED_SERVICES.forEach(service => {
     ]
   };
 
-  const serviceBody = `
+  // Use expanded body if available, otherwise use default
+  const serviceBody = SEED_SERVICE_EXPANDED_BODIES[service.id] ? `
+    <noscript>
+      <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+        ${SEED_SERVICE_EXPANDED_BODIES[service.id]}
+      </article>
+    </noscript>
+  ` : `
     <noscript>
       <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
         <h1>${service.name} em Belo Horizonte | Studio do Jon</h1>
