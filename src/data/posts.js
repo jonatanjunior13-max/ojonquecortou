@@ -275,8 +275,8 @@ export const posts = [
       <p>Depois que a estrutura principal do corte híbrido está desenhada, o cabelo é lavado e tratado. Nesse momento, com o fio molhado, realizamos o refinamento das pontas e a limpeza das linhas de base. É um processo de duas etapas que garante simetria perfeita sem comprometer o comprimento útil.</p>
 
       <h2>O Método Leitura de Fio e a matemática do encolhimento</h2>
-      <p>Não existe milagre no corte de cachos. Existe diagnóstico. No Studio do Jon, nenhum corte híbrido começa sem a aplicação rigorosa do meu método de análise em sete etapas.</p>
-      <p>A Leitura de Fio é o diagnóstico capilar científico realizado em sete etapas no Studio do Jon antes de iniciar o corte híbrido de cabelo. Essa análise avalia a curvatura real do tipo 2A ao 4C, o histórico químico, a porosidade e a saúde do couro cabeludo.</p>
+      <p>Não existe milagre no corte de cachos. Existe diagnóstico. No Studio do Jon, nenhum corte híbrido começa sem a aplicação rigorosa do meu <a href="/metodo">Método Leitura de Fio</a> em sete etapas.</p>
+      <p>A Leitura de Fio é o diagnóstico capilar científico realizado em sete etapas no Studio do Jon antes de iniciar o corte híbrido de cabelo. Essa análise avalia a curvatura real do tipo 2A ao 4C, o histórico químico, a porosidade e a saúde do couro cabeludo, e é justamente na Etapa 6, a Definição de Técnica, que decidimos se o corte híbrido é a abordagem certa para a sua estrutura.</p>
       <p>O encolhimento capilar é o fenômeno físico pelo qual o cabelo cacheado ou crespo reduz seu comprimento visual quando seco em comparação ao estado molhado. A taxa de encolhimento varia de dez a setenta por cento dependendo da curvatura de cada fibra.</p>
       <p>Se o profissional não dominar essa matemática, vai errar a mão. Cabelos crespos tipo 4, por exemplo, reduzem drasticamente de tamanho ao secar. O corte híbrido neutraliza essa margem de erro porque a base do formato é definida antes de molhar.</p>
 
@@ -621,7 +621,7 @@ export const posts = [
       <p>Por essa razão, ela é considerada a única solução física real e duradoura para o problema da alta porosidade. Tentar tratar um cabelo poroso apenas com hidratações sucessivas é o equivalente a tentar encher um balde furado. A água entra, mas escorre pelos buracos das cutículas abertas. Quando realizamos a acidificação capilar, nós tapamos esses buracos. Cutículas fechadas e alinhadas refletem muito mais luz, resultando em um brilho espelhado, além de reterem toda a hidratação e lipídios aplicados na finalização.</p>
 
       <h2>A Aplicação Prática no Studio do Jon: O Diagnóstico Precise</h2>
-      <p>No meu salão em Belo Horizonte, eu não acredito em tratamentos genéricos baseados em palpites. Antes de aplicar qualquer produto ou realizar um corte, nós executamos o <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a>. Este diagnóstico científico exclusivo analisa a saúde do cabelo sob uma perspectiva física e química em 7 etapas detalhadas: triagem visual, teste de elasticidade em água, análise de porosidade real mecha a mecha, avaliação do couro cabeludo, histórico químico detalhado, teste de tração e análise de compatibilidade de resíduos.</p>
+      <p>No meu salão em Belo Horizonte, eu não acredito em tratamentos genéricos baseados em palpites. Antes de aplicar qualquer produto ou realizar um corte, nós executamos o <a href="/metodo">Método Leitura de Fio</a>. Este diagnóstico científico exclusivo analisa a saúde do cabelo sob uma perspectiva física e química em 7 etapas detalhadas: triagem visual, teste de elasticidade em água, análise de porosidade real mecha a mecha, avaliação do couro cabeludo, histórico químico detalhado, teste de tração e análise de compatibilidade de resíduos. É justamente na Etapa 5, a Análise Molhada, que medimos com precisão o grau de porosidade de cada mecha antes de decidir se a acidificação entra no protocolo de tratamento.</p>
       <p>Ao entender a resposta física do fio ao toque e à água, eu consigo descobrir se a alta porosidade é congênita ou causada por químicas antigas. Esse diagnóstico nos guia na elaboração de um <a href="/servicos">Tratamento personalizado</a> para cada cliente. Se a leitura indicar que o pH está desequilibrado e as cutículas estão danificadas, a acidificação entra como etapa fundamental e imediata do tratamento. Usamos acidificantes profissionais de alta tecnologia combinados com aminoácidos para reconstruir a estrutura molecular do cacho, devolvendo a maleabilidade e a definição que a cliente achava ter perdido para sempre.</p>
 
       <h2>O Perigo de Ignorar a Porosidade dos Seus Cabelos</h2>
@@ -940,7 +940,7 @@ export const posts = [
 
       <h2>Como a Leitura de Fio te Ajuda a Redescobrir Suas Ondas</h2>
       <p>Se você tentou de tudo e seu cabelo continua parecendo uma nuvem de frizz na Savassi, o problema pode estar na porosidade e no histórico do seu fio. Fios ondulados que passaram por anos de progressiva ou descoloração perdem a elasticidade e precisam de tratamentos reconstrutores específicos antes de conseguirem formar ondas novamente.</p>
-      <p>No Studio do Jon, nós não acreditamos em receitas prontas. Antes de sugerir qualquer corte ou tratamento, nós realizamos a <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Leitura de Fio</a>. São 7 etapas de análise onde identificamos a elasticidade da sua fibra, a porosidade real, o histórico químico invisível e o caimento das diferentes texturas da sua cabeça. Só assim conseguimos desenhar um corte a seco que valorize o volume e definir a rotina de cuidados ideal para o seu estilo de vida.</p>
+      <p>No Studio do Jon, nós não acreditamos em receitas prontas. Antes de sugerir qualquer corte ou tratamento, nós realizamos o <a href="/metodo">Método Leitura de Fio</a>. São 7 etapas de análise onde identificamos a elasticidade da sua fibra, a porosidade real, o histórico químico invisível e o caimento das diferentes texturas da sua cabeça — incluindo a análise a seco que separa de vez o ondulado real do liso com frizz. Só assim conseguimos desenhar um corte a seco que valorize o volume e definir a rotina de cuidados ideal para o seu estilo de vida.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
         <h3>Chega de brigar com o espelho e com o secador!</h3>
@@ -1384,7 +1384,7 @@ export const posts = [
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
         <h3>Não tem certeza de qual é o seu tipo?</h3>
-        <p>Agenda uma consulta. A gente lê o fio aqui no Studio, identifica o padrão e desenha a rotina que vai funcionar pra você — não a que funciona pra sua prima, nem a que a influenciadora faz.</p>
+        <p>Agenda uma consulta. A gente aplica o <a href="/metodo">Método Leitura de Fio</a> aqui no Studio, mapeia exatamente a sua curvatura (do 2A ao 4C, incluindo texturas mistas) e desenha a rotina que vai funcionar pra você — não a que funciona pra sua prima, nem a que a influenciadora faz.</p>
         <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta de Diagnóstico</a>
       </div>
 
@@ -2455,8 +2455,8 @@ export const posts = [
       <p>Se você respondeu "sim" para duas ou mais, o seu pH está alto. Você está perdendo nutrientes por uma porta que nunca fecha.</p>
 
       <h2>Conclusão: Pare de Gastar, Comece a Estabilizar</h2>
-      <p>Não adianta colocar o melhor combustível em um tanque furado. Se o pH está alto, o tratamento vai embora no ralo. A base de todo cacho saudável é a estabilidade química.</p>
-      
+      <p>Não adianta colocar o melhor combustível em um tanque furado. Se o pH está alto, o tratamento vai embora no ralo. A base de todo cacho saudável é a estabilidade química. É exatamente por isso que o <a href="/metodo">Método Leitura de Fio</a> inclui um diagnóstico técnico de porosidade e elasticidade antes de qualquer indicação: só medindo o real estado da cutícula é possível saber se o seu cacho precisa de acidificação ou de outro tipo de cuidado.</p>
+
 
 
       <p><i>Jon é especialista em leitura biológica do fio e visagismo capilar em Belo Horizonte. Foco total na saúde e identidade da textura natural.</i></p>
@@ -2907,7 +2907,7 @@ export const posts = [
 
       <h2>O método que funciona</h2>
       <p>Primeira coisa: <strong>escuta</strong>.</p>
-      <p>Eu pergunto qual é o seu tipo, o que a incomoda e quanto tempo de rotina o corte pode demandar. Só depois dessa conversa focada no comportamento da fibra do seu cacho é que faço a análise real do fio. Eu conto a você o que eu vi. Sem segredos, com transparência total. E aí sim eu corto.</p>
+      <p>Eu pergunto qual é o seu tipo, o que a incomoda e quanto tempo de rotina o corte pode demandar. Só depois dessa conversa focada no comportamento da fibra do seu cacho é que faço a análise real do fio. Eu conto a você o que eu vi. Sem segredos, com transparência total. E aí sim eu corto. Essa é a lógica por trás do <a href="/metodo">Método Leitura de Fio</a>, o protocolo que une o visagismo integrado ao rosto com o diagnóstico técnico da sua curvatura antes de qualquer tesourada.</p>
       
       <h2>Visagismo e Formato do Rosto com Textura</h2>
       <p>Vamos simplificar para cabelos naturais estruturados:</p>
@@ -3014,7 +3014,7 @@ export const posts = [
       <p>Se você quer controlar o volume sem danificar seu fio, existem duas coisas que EU uso e que recomendo:</p>
 
       <h3>O corte certo</h3>
-      <p>Não é decoração. É leitura de fio. Sou cabeleireiro. Quando você chega aqui, eu não olho só para "ah, deixa curto que controla volume". Eu leio como o fio <em>behave</em> (se comporta). Como ele cai. Onde ele tem mais peso. Onde ele tem mais movimento.</p>
+      <p>Não é decoração. É leitura de fio. Sou cabeleireiro. Quando você chega aqui, eu não olho só para "ah, deixa curto que controla volume". Eu leio como o fio <em>behave</em> (se comporta). Como ele cai. Onde ele tem mais peso. Onde ele tem mais movimento. E antes de qualquer corte, o <a href="/metodo">Método Leitura de Fio</a> inclui o levantamento completo do seu histórico químico, justamente para identificar se já houve botox, progressiva ou outra química que precise ser considerada antes de tocar a tesoura.</p>
 
       <img src="/blog-botox-comparacao.webp" alt="Comparação: Cacho plastificado vs Cacho saudável com corte especializado" class="post-inline-image" />
       <blockquote>Um corte bem feito respeita a curvatura natural do seu cacho e redistribui o peso de forma que o volume é controlado pelo próprio fio. Não é alisado. Não é danificado. É inteligência no corte.</blockquote>
@@ -3097,7 +3097,7 @@ export const posts = [
       <h2>O perigo na transição capilar e o crime do desfiado</h2>
       <p>Muitas vezes em transição capilar, profissionais tentam "conectar" as texturas desfiando as pontas. Desfiar fio com curvatura é um crime estrutural. A navalha estraçalha a cutícula e cria um frizz crônico. O corte com leitura resolve isso extirpando o peso morto de forma limpa e estratégica.</p>
 
-      <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, conheça todos os nossos <a href="/servicos">serviços de especialista em cachos</a> e agende sua avaliação técnica no Studio do Jon.</p>
+      <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, conheça todos os nossos <a href="/servicos">serviços de especialista em cachos</a> e agende sua avaliação técnica no Studio do Jon. Aqui, nenhuma tesoura entra em ação antes do <a href="/metodo">Método Leitura de Fio</a>, porque o diagnóstico geométrico do seu cacho sempre vem antes da técnica de corte, seca ou molhada.</p>
     `
   },
   {
@@ -3172,7 +3172,7 @@ export const posts = [
         <p>Porque a textura mais solta não aguenta o próprio comprimento sem camadas internas. O corte com leitura cria pontos de apoio para que a nuca mais lisa não despenque, mantendo o formato redondo.</p>
       </div>
 
-      <p>A guerra contra as texturas do seu cabelo termina no segundo em que você encontra a geometria certa para ele. O Studio do Jon está de portas abertas para ler seu fio pela ótica certa.</p>
+      <p>A guerra contra as texturas do seu cabelo termina no segundo em que você encontra a geometria certa para ele. O Studio do Jon está de portas abertas para ler seu fio pela ótica certa, mapeando cada padrão de curvatura com o <a href="/metodo">Método Leitura de Fio</a> — porque uma única cabeça frequentemente abriga múltiplos padrões, e ignorar isso é o que gera o degrau.</p>
 
 
     `
@@ -3449,7 +3449,7 @@ export const posts = [
       <p>Quando a barreira de retenção acabou, o fio não segura água, óleo ou proteína. O produto entra, bate nas paredes rompidas e vai direto para o ralo no primeiro enxágue. Continuar tentando tratar o que já passou do ponto de não retorno é tentar encher uma peneira com água.</p>
 
       <h2>A tesoura é o tratamento mais rápido do mundo</h2>
-      <p>Cortar a seco e remover essa memória química é a única reconstrução verdadeira. O <strong>Método Jon</strong> foca na escuta antes de tocar. Remover o que está sabotando seu resultado é o que libera a mola natural do seu cacho.</p>
+      <p>Cortar a seco e remover essa memória química é a única reconstrução verdadeira. O <strong>Método Jon</strong> foca na escuta antes de tocar. Remover o que está sabotando seu resultado é o que libera a mola natural do seu cacho. É por isso que, antes de qualquer indicação, o <a href="/metodo">Método Leitura de Fio</a> inclui uma análise molhada específica para diferenciar porosidade genética de scab hair, evitando que você continue investindo em creme para uma haste que já perdeu a capacidade de retê-lo.</p>
     `
   },
   {
@@ -3501,7 +3501,7 @@ export const posts = [
       <p>Cabelo cacheado não desce. Ele expande. E quando um profissional ignora a contração do cacho, a física cobra o preço. Cortar o cabelo molhado é criar uma mentira temporária: quando a água seca e o cacho encolhe, a base reta sobe de uma vez, a raiz chapa e as pontas "explodem" para os lados.</p>
 
       <h2>A engenharia da distribuição de peso</h2>
-      <p>Para destruir o efeito pirâmide, você precisa de um arquiteto, não de um tosador. Aqui no Caiçaras, no Studio do Jon, meu foco é a <strong>Leitura de Fio</strong> com o cabelo seco. Eu preciso ver como a sua mola se comporta na vida real.</p>
+      <p>Para destruir o efeito pirâmide, você precisa de um arquiteto, não de um tosador. Aqui no Caiçaras, no Studio do Jon, meu foco é o <a href="/metodo">Método Leitura de Fio</a>, que começa com o cabelo seco. Eu preciso ver como a sua mola se comporta na vida real, entendendo o fator de encolhimento antes de decidir onde cortar.</p>
       
       <p>Corte em camadas não é só picotar o cabelo. É criar "pilares de sustentação". O corte a seco permite criar camadas invisíveis que "empurram" o cabelo de fora para cima, criando volume na raiz sem precisar de pente garfo o dia todo. É a engenharia trabalhando a seu favor.</p>
 
@@ -3728,7 +3728,7 @@ export const posts = [
       <h2>O que a ciência explica (e os salões ignoram)</h2>
       <p>Quanto mais fechada é a sua curvatura — alô, maravilhosas do 4ABC! — mais as pontes de hidrogênio do fio se unem para formar a espiral. Quando o cabelo está molhado, o peso da água estica essas pontes. Quando seca, elas voltam para o lugar original.</p>
 
-      <p>Se o profissional não faz uma Leitura de Fio antes de começar, ele vai cortar o seu cabelo "mentiroso" (molhado) e ignorar como ele se comporta na vida real. Por isso, aqui no Caiçaras, a minha tesoura só entra em ação depois que eu entendo como o seu cacho funciona de verdade.</p>
+      <p>Se o profissional não faz uma Leitura de Fio antes de começar, ele vai cortar o seu cabelo "mentiroso" (molhado) e ignorar como ele se comporta na vida real. Por isso, aqui no Caiçaras, a minha tesoura só entra em ação depois que eu entendo como o seu cacho funciona de verdade, seguindo o <a href="/metodo">Método Leitura de Fio</a>, que calcula justamente esse fator de encolhimento antes de qualquer corte.</p>
 
       <h2>3 Coisas que você precisa saber para não sofrer mais:</h2>
       <ul>
@@ -4100,7 +4100,7 @@ export const posts = [
 
       <h2>Conclusão: Conhecimento é Liberdade</h2>
       <p>Aqui no Studio do Jon, meu papel é te dar as ferramentas para você ser mestre do seu próprio cacho. Entender a porosidade é o primeiro passo para um cabelo saudável, brilhante e, acima de tudo, livre.</p>
-      <p>Se o seu teste deu "Porosidade Alta" e você sente que o cabelo está pedindo socorro, talvez seja a hora de uma análise profissional aqui no Studio para recuperarmos a saúde dessa fibra.</p>
+      <p>Se o seu teste deu "Porosidade Alta" e você sente que o cabelo está pedindo socorro, talvez seja a hora de uma análise profissional aqui no Studio para recuperarmos a saúde dessa fibra. O teste do copo é um ótimo termômetro caseiro, mas a versão profissional dele é a Análise Molhada do <a href="/metodo">Método Leitura de Fio</a>, onde medimos a porosidade real mecha a mecha antes de definir qualquer tratamento.</p>
     `
   },
   {
@@ -4196,7 +4196,7 @@ export const posts = [
         <li><strong>Crespos (4ABC):</strong> Manteiga de karité, óleo de rícino, abacate e ativos reconrutores (queratina vegetal/aminoácidos).</li>
       </ul>
 
-      <p>Entender sua curvatura é o primeiro passo para parar de brigar com o espelho. A finalização não é para te prender a um padrão, mas para te dar a liberdade de exibir sua textura natural com saúde máxima.</p>
+      <p>Entender sua curvatura é o primeiro passo para parar de brigar com o espelho. A finalização não é para te prender a um padrão, mas para te dar a liberdade de exibir sua textura natural com saúde máxima. É justamente por isso que o mapeamento preciso da sua curvatura, feito no <a href="/metodo">Método Leitura de Fio</a>, é o que garante que a técnica de finalização indicada combine com o padrão real do seu fio, e não com uma média genérica de "cabelo cacheado".</p>
     `
   },
   {
@@ -4676,8 +4676,8 @@ export const posts = [
       </ul>
 
       <h2>E o corte? Sim, o corte faz parte da hidratação!</h2>
-      <p>Aqui vem o papo que muita gente ignora: pontas ressecadas e com dano não absorvem tratamento. Um corte especializado remove o dano e deixa o fio saudável absorver a hidratação de verdade.</p>
-      
+      <p>Aqui vem o papo que muita gente ignora: pontas ressecadas e com dano não absorvem tratamento. Um corte especializado remove o dano e deixa o fio saudável absorver a hidratação de verdade. É por isso que, antes de qualquer corte, o <a href="/metodo">Método Leitura de Fio</a> inclui uma etapa dedicada a medir a porosidade real de cada mecha, garantindo que o tratamento indicado ataque a causa e não só o sintoma do ressecamento.</p>
+
       <blockquote>"Aqui no Studio do Jon, a gente não corta só cabelo. A gente corta o que tá te impedindo de brilhar."</blockquote>
 
 

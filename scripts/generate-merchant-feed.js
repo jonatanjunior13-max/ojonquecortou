@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, terminate } from 'firebase/firestore';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -68,6 +68,8 @@ async function generateFeed() {
     console.log(`Google Merchant feed successfully generated at ${destPath}`);
   } catch (error) {
     console.error('Error generating Google Merchant feed:', error);
+  } finally {
+    await terminate(db);
   }
 }
 

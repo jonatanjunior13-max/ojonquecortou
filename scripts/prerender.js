@@ -289,6 +289,41 @@ const metodoBody = `
         <li><strong>Volume Lateral:</strong> Suaviza traços angulares e traz suavidade e acolhimento à imagem pessoal.</li>
       </ul>
       <p>Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçaras em Belo Horizonte.</p>
+
+      <h2>Artigos Relacionados</h2>
+      <h3>Diagnóstico &amp; Porosidade</h3>
+      <ul>
+        <li><a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Leitura de Fio: O Método Exclusivo | Jon</a></li>
+        <li><a href="/blog/teste-de-porosidade-guia-definitivo">Teste de Porosidade: Segredo para Absorver | Jon</a></li>
+        <li><a href="/blog/cabelo-poroso-nao-absorve-creme-scab-hair">Cabelo Poroso Não Absorve Creme? | Jon</a></li>
+        <li><a href="/blog/acidificacao-capilar-cachos-porosidade">pH do Cacho: Como Fazer Acidificação Capilar e Vencer a Porosidade</a></li>
+        <li><a href="/blog/frizz-em-cabelo-cacheado">Frizz em cabelo cacheado: a física por trás do fio arrepiado</a></li>
+      </ul>
+      <h3>Curvaturas 2A-4C</h3>
+      <ul>
+        <li><a href="/blog/curvatura-4c-cabelo-crespo-guia-completo">Curvatura 4C: o guia técnico completo para entender e cuidar do cabelo crespo</a></li>
+        <li><a href="/blog/cacho-vs-crespo-qual-diferenca">Cacho vs Crespo: Qual é a Diferença | Jon</a></li>
+        <li><a href="/blog/fator-encolhimento-cabelo-cacheado">Fator Encolhimento do Cabelo Cacheado | Jon</a></li>
+        <li><a href="/blog/especialista-em-cabelo-cacheado-bh-texturas">Três Texturas na Mesma Cabeça | Jon</a></li>
+        <li><a href="/blog/finalizacao-por-curvatura-guia-tecnico">Finalização por Curvatura: Do 2C ao 4C | Jon</a></li>
+        <li><a href="/blog/voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz">Você Tem Cabelo Ondulado e Não Sabe? Como Identificar e Cuidar</a></li>
+      </ul>
+      <h3>Transição Capilar</h3>
+      <ul>
+        <li><a href="/blog/transicao-capilar-sem-sofrimento-guia-cachos">Transição Capilar Sem Sofrimento: Guia Completo para Voltar aos Cachos</a></li>
+        <li><a href="/blog/transicao-capilar-bh-danos-botox">Progressiva Derreteu Seus Cachos? | Jon</a></li>
+      </ul>
+      <h3>Corte Técnico (seco/híbrido) &amp; Visagismo</h3>
+      <ul>
+        <li><a href="/blog/corte-hibrido-cabelo-cacheado">Corte Híbrido em Cabelo Cacheado: Técnica Molhada + Seca</a></li>
+        <li><a href="/blog/corte-cabelo-cacheado-visagismo-influenciadora">Corte de Influenciadora Pode Não Ficar em Você | Jon</a></li>
+        <li><a href="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">Corte a Seco para Cabelo Cacheado | Jon</a></li>
+        <li><a href="/blog/corte-para-cabelo-cacheado-bh-volume">Efeito Pirâmide no Cabelo Cacheado | Jon</a></li>
+      </ul>
+      <h3>Química &amp; Danos</h3>
+      <ul>
+        <li><a href="/blog/botox-capilar-cabelo-cacheado-perigos">Botox Capilar em Cabelo Cacheado | Jon</a></li>
+      </ul>
     </article>
   </noscript>
 `;

@@ -32,6 +32,52 @@ const howtoSchema = {
   ]
 };
 
+const relatedArticleClusters = [
+  {
+    name: "Diagnóstico & Porosidade",
+    posts: [
+      { slug: "leitura-de-fio-metodo-exclusivo-studio-do-jon", title: "Leitura de Fio: O Método Exclusivo | Jon" },
+      { slug: "teste-de-porosidade-guia-definitivo", title: "Teste de Porosidade: Segredo para Absorver | Jon" },
+      { slug: "cabelo-poroso-nao-absorve-creme-scab-hair", title: "Cabelo Poroso Não Absorve Creme? | Jon" },
+      { slug: "acidificacao-capilar-cachos-porosidade", title: "pH do Cacho: Como Fazer Acidificação Capilar e Vencer a Porosidade" },
+      { slug: "frizz-em-cabelo-cacheado", title: "Frizz em cabelo cacheado: a física por trás do fio arrepiado" },
+    ],
+  },
+  {
+    name: "Curvaturas 2A-4C",
+    posts: [
+      { slug: "curvatura-4c-cabelo-crespo-guia-completo", title: "Curvatura 4C: o guia técnico completo para entender e cuidar do cabelo crespo" },
+      { slug: "cacho-vs-crespo-qual-diferenca", title: "Cacho vs Crespo: Qual é a Diferença | Jon" },
+      { slug: "fator-encolhimento-cabelo-cacheado", title: "Fator Encolhimento do Cabelo Cacheado | Jon" },
+      { slug: "especialista-em-cabelo-cacheado-bh-texturas", title: "Três Texturas na Mesma Cabeça | Jon" },
+      { slug: "finalizacao-por-curvatura-guia-tecnico", title: "Finalização por Curvatura: Do 2C ao 4C | Jon" },
+      { slug: "voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz", title: "Você Tem Cabelo Ondulado e Não Sabe? Como Identificar e Cuidar" },
+    ],
+  },
+  {
+    name: "Transição Capilar",
+    posts: [
+      { slug: "transicao-capilar-sem-sofrimento-guia-cachos", title: "Transição Capilar Sem Sofrimento: Guia Completo para Voltar aos Cachos" },
+      { slug: "transicao-capilar-bh-danos-botox", title: "Progressiva Derreteu Seus Cachos? | Jon" },
+    ],
+  },
+  {
+    name: "Corte Técnico (seco/híbrido) & Visagismo",
+    posts: [
+      { slug: "corte-hibrido-cabelo-cacheado", title: "Corte Híbrido em Cabelo Cacheado: Técnica Molhada + Seca" },
+      { slug: "corte-cabelo-cacheado-visagismo-influenciadora", title: "Corte de Influenciadora Pode Não Ficar em Você | Jon" },
+      { slug: "corte-para-cabelo-cacheado-mentira-do-corte-a-seco", title: "Corte a Seco para Cabelo Cacheado | Jon" },
+      { slug: "corte-para-cabelo-cacheado-bh-volume", title: "Efeito Pirâmide no Cabelo Cacheado | Jon" },
+    ],
+  },
+  {
+    name: "Química & Danos",
+    posts: [
+      { slug: "botox-capilar-cabelo-cacheado-perigos", title: "Botox Capilar em Cabelo Cacheado | Jon" },
+    ],
+  },
+];
+
 const steps = [
   {
     number: "01",
@@ -442,6 +488,84 @@ const MetodoPage = () => {
             <p>
               Ao unir a biologia do folículo, a física da mola capilar, a química dos tratamentos e as proporções do visagismo, o Studio do Jon garante que seu cabelo seja cortado de forma personalizada, funcional e livre de fórmulas genéricas. O Método Leitura de Fio devolve a liberdade e a saúde natural dos seus cachos no bairro Caiçaras em Belo Horizonte.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Artigos Relacionados Section */}
+      <section style={{
+        padding: 'clamp(60px, 8vw, 100px) 0',
+        borderTop: '1px solid var(--border, rgba(255,255,255,0.08))',
+      }}>
+        <div className="container" style={{ maxWidth: 800 }}>
+          <h2 style={{
+            fontFamily: "'DM Serif Display', Georgia, serif",
+            fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+            fontWeight: 400,
+            marginBottom: '16px',
+            color: 'var(--ink, #1A1310)',
+          }}>
+            Artigos Relacionados
+          </h2>
+          <p style={{
+            fontFamily: "'Manrope', sans-serif",
+            fontSize: '1rem',
+            color: 'var(--muted, #a39687)',
+            marginBottom: '40px',
+            maxWidth: '65ch',
+          }}>
+            Aprofunde-se nos temas que sustentam o Método Leitura de Fio: diagnóstico, curvatura, transição capilar, técnicas de corte e química capilar.
+          </p>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {relatedArticleClusters.map((cluster, cIdx) => (
+              <div key={cIdx}>
+                <h3 style={{
+                  fontFamily: "'DM Serif Display', Georgia, serif",
+                  fontSize: '1.4rem',
+                  color: 'var(--ink, #1A1310)',
+                  marginTop: 0,
+                  marginBottom: '12px',
+                }}>
+                  {cluster.name}
+                </h3>
+                <ul style={{
+                  listStyle: 'none',
+                  margin: 0,
+                  padding: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                }}>
+                  {cluster.posts.map((post, pIdx) => (
+                    <li key={pIdx}>
+                      <Link
+                        to={`/blog/${post.slug}`}
+                        style={{
+                          fontFamily: "'Manrope', sans-serif",
+                          fontSize: '0.975rem',
+                          lineHeight: 1.6,
+                          color: 'var(--ink, #1A1310)',
+                          textDecoration: 'none',
+                          borderBottom: '1px solid var(--border, rgba(255,255,255,0.15))',
+                          transition: 'color 0.2s ease, border-color 0.2s ease',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.color = 'var(--accent, #FF2D8B)';
+                          e.currentTarget.style.borderColor = 'var(--accent, #FF2D8B)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.color = 'var(--ink, #1A1310)';
+                          e.currentTarget.style.borderColor = 'var(--border, rgba(255,255,255,0.15))';
+                        }}
+                      >
+                        {post.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>
