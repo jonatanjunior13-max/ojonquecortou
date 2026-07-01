@@ -80,7 +80,7 @@ function Navbar() {
       <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
         <div className="container nav-inner">
           <Link to="/" className="brand">
-            <img src="/logo-jon-cortou.png" alt="O Jon que Cortou Logo" style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover' }} />
+            <img src="/logo-jon-cortou.png" alt="O Jon que Cortou — Especialista em cortes para cabelos cacheados em Belo Horizonte" style={{ width: 30, height: 30, borderRadius: '50%', objectFit: 'cover' }} />
             <span className="word">O Jon que Cortou</span>
           </Link>
           {current !== '/agendar' && (

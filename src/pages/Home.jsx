@@ -414,7 +414,7 @@ function HomeBlog() {
                   {p.image ? (
                     <img
                       src={p.image}
-                      alt={p.title}
+                      alt={`${p.title} — Guia técnico sobre cuidados de cabelos cacheados`}
                       loading="lazy"
                       decoding="async"
                       width="600"

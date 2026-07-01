@@ -323,7 +323,7 @@ const BlogPostPage = () => {
           </header>
 
           <div className="reveal active stagger-1">
-            <img src={post.image} alt={post.title} className="post-hero-image" />
+            <img src={post.image} alt={`${post.title} — Artigo técnico sobre cabelos cacheados e crespos`} className="post-hero-image" />
           </div>
 
           {post.scientificData && (
