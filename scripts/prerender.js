@@ -61,6 +61,42 @@ function replaceOrAddCanonical(html, url) {
   }
 }
 
+// Helper to build noscript bodyInsert + Service schema for manually-defined /servicos/* pages
+// (distinct from the SEED_SERVICES.forEach-generated pages, which build their own serviceBody/schema)
+function manualServiceBody({ name, text, route }) {
+  return `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>${name} em Belo Horizonte</h1>
+      <p>${text}</p>
+      <p><a href="/agendar">Agende seu horário</a> &middot; <a href="/servicos">Ver todos os serviços</a></p>
+    </article>
+  </noscript>
+`;
+}
+
+function manualServiceSchema({ name, description, route }) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "name": name,
+        "description": description,
+        "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+          { "@type": "ListItem", "position": 2, "name": "Serviços", "item": "https://www.ojonquecortou.com.br/servicos" },
+          { "@type": "ListItem", "position": 3, "name": name, "item": `https://www.ojonquecortou.com.br${route}` }
+        ]
+      }
+    ]
+  };
+}
+
 // Helper to convert date format from PT-BR "02 de Junho, 2026" to ISO "2026-06-02"
 function parseDateToISO(dateStr) {
   if (!dateStr) return "2026-05-14";
@@ -98,7 +134,16 @@ const fullFaqList = [
   { q: "Como agendar?", a: "Agendamento direto e seguro pelo link /agendar. Selecione o serviço, o dia e a hora. Confirmação instantânea sem enrolação." },
   { q: "O que é visagismo para cachos?", a: "Técnica de planejar o corte e a distribuição de volumes baseada nas proporções faciais e na imagem que você quer transmitir, respeitando a física do cacho." },
   { q: "Faz química (progressiva, relaxamento)?", a: "Não. O Studio do Jon é focado em cabelos naturais e na sua saúde real. Não realizamos nenhum tipo de alisamento, relaxamento ou procedimento de modificação química da curvatura." },
-  { q: "Qual a diferença de atendimento do Studio do Jon para outros salões?", a: "Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela Leitura de Fio, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia." }
+  { q: "Qual a diferença de atendimento do Studio do Jon para outros salões?", a: "Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela Leitura de Fio, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia." },
+  { q: "Cabelo cacheado precisa de escova para 'domar' o volume?", a: "Não. Volume não é defeito a ser corrigido — é resultado de curvatura, densidade e de um corte mal ajustado ao formato do fio. Um corte técnico, feito após a Leitura de Fio, distribui o peso e organiza o volume sem precisar recorrer à escova ou à química alisante." },
+  { q: "Qual a diferença entre cabelo ondulado, cacheado e crespo?", a: "É uma questão de curvatura do fio: ondulado (tipo 2A a 2C) forma ondas suaves, cacheado (tipo 3A a 3C) forma cachos definidos em espiral, e crespo (tipo 4A a 4C) tem curvatura mais fechada e maior fator de encolhimento. Atendemos todo esse espectro, do 2A ao 4C, cada um com técnica de corte própria." },
+  { q: "Corte a seco funciona em qualquer tamanho de cabelo?", a: "Sim. O Corte Híbrido se adapta a qualquer comprimento, do curto ao longo. A decisão de cortar mais a seco ou mais molhado depende do comportamento do fio identificado na Leitura de Fio, não do tamanho do cabelo." },
+  { q: "Quanto custa um corte no Studio do Jon?", a: "O Corte com o Jon (Leitura de Fio completa + corte técnico + finalização educativa) custa R$ 190. Há também o Combo Corte + Tratamento por R$ 230, e a Leitura de Fio isolada, sem corte, por R$ 80 (valor revertido em crédito caso feche o serviço na sequência)." },
+  { q: "Quais os horários de atendimento e onde fica o Studio do Jon?", a: "Atendemos de segunda a sábado, das 9h às 19h. Ficamos na Rua Francisco Ovídio, 184, bairro Caiçaras, Belo Horizonte (MG), próximo ao metrô Gameleira e à Avenida Pedro II. Telefone: (31) 3586-6673." },
+  { q: "Posso fazer só a Leitura de Fio, sem cortar?", a: "Sim. A consultoria de Leitura de Fio isolada custa R$ 80 e inclui o diagnóstico completo de porosidade, curvatura, histórico químico e orientações de cuidado, sem compromisso de corte. Se você decidir fechar o corte na sequência, o valor é revertido em crédito." },
+  { q: "Como cuidar do cabelo depois do corte?", a: "Siga a rotina de manutenção mostrada na finalização educativa do próprio atendimento, que é ensinada durante o corte. Em linhas gerais: hidrate com regularidade conforme a porosidade identificada na Leitura de Fio, evite manipulação excessiva do fio seco e retome o cronograma de tratamento (hidratação, nutrição ou reconstrução) conforme o diagnóstico." },
+  { q: "Quando devo voltar para manutenção do corte?", a: "O ideal é retornar de 3 em 3 ou de 4 em 4 meses para manter o design do corte. Se cortou há até 90 dias e quer só um retoque, oferecemos a Manutenção de Corte (R$ 130), voltada para quem já passou pela Leitura de Fio recentemente." },
+  { q: "O que fazer se o cabelo ressecar ou perder definição depois do tratamento?", a: "Isso costuma indicar desequilíbrio entre hidratação e nutrição para a porosidade do seu fio. Procure retomar o Tratamento Personalizado (R$ 130), que reavalia o diagnóstico e ajusta entre hidratação, nutrição ou reconstrução conforme o que o fio estiver pedindo naquele momento." }
 ];
 
 // Content blocks for noscript body injection
@@ -143,6 +188,7 @@ const investmentBody = `
       </ul>
       <h2>Corte Cabelo Cacheado Masculino BH</h2>
       <p>Homem com cacho também precisa de leitura de fio antes da tesoura. O corte cabelo cacheado masculino no Studio do Jon segue o mesmo Método Leitura de Fio dos atendimentos femininos: diagnóstico de curvatura e formato do rosto antes de qualquer corte, com visagismo aplicado aos traços masculinos. Nada de máquina padronizada — o volume e o encaracolamento natural são respeitados, evitando o efeito pirâmide e o frizz comum em barbearias que não entendem cabelo com curvatura. O valor segue a mesma faixa do Corte especializado (R$ 190 a R$ 230), incluindo a Leitura de Fio completa e a finalização educativa. Ideal para quem tem cabelo ondulado, cacheado ou crespo em Belo Horizonte.</p>
+      <p><a href="/agendar">Pronto para agendar? Clique aqui e escolha seu horário.</a></p>
     </article>
   </noscript>
 `;
@@ -466,6 +512,7 @@ const homeBody = `
       </ul>
       <h2>O Método Leitura de Fio</h2>
       <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra. Saiba mais sobre o <a href="/metodo">Método Leitura de Fio</a>.</p>
+      <p>Veja todos os <a href="/investimento">valores e formas de investimento</a> antes de agendar seu horário.</p>
       <h2>Localização e Agendamento</h2>
       <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
@@ -474,6 +521,49 @@ const homeBody = `
   </noscript>
 `;
 
+const agendarBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Agende seu Horário — Studio do Jon</h1>
+      <p>Marque seu horário com Jon, especialista em cabelos ondulados, cacheados e crespos no bairro Caiçaras, Belo Horizonte (MG). O Método Leitura de Fio — diagnóstico capilar em 7 etapas — está incluído em todo atendimento, sem custo extra. O agendamento é feito de forma instantânea e online, direto por este site.</p>
+      <h2>Como Funciona</h2>
+      <ul>
+        <li>Escolha o serviço desejado (corte, tratamento, coloração ou consultoria).</li>
+        <li>Selecione a data e o horário disponíveis na agenda online.</li>
+        <li>Receba a confirmação instantânea do seu agendamento.</li>
+      </ul>
+      <h2>Localização e Contato</h2>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Instagram: @ojonquecortou.</p>
+    </article>
+  </noscript>
+`;
+
+// Build dynamically the Blog hub page body insert (top 20 most recent posts by datePublished)
+const blogHubPosts = [...posts]
+  .sort((a, b) => new Date(b.datePublished) - new Date(a.datePublished))
+  .slice(0, 20);
+
+let blogHubBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Blog do Jon — Dicas e Ciência para Cabelo Cacheado, Crespo e Ondulado</h1>
+      <p>Artigos práticos e embasados sobre cabelos com curvatura, escritos por Jonatan Junior, especialista em cachos em Belo Horizonte. Aqui você encontra guias sobre porosidade, frizz, hidratação, técnicas de finalização e a ciência por trás do Método Leitura de Fio.</p>
+      <p>Confira os artigos mais recentes do blog:</p>
+`;
+blogHubPosts.forEach(post => {
+  const hubPostDesc = post.excerpt || post.metaDescription || '';
+  blogHubBody += `
+      <article style="margin-top: 20px;">
+        <h2><a href="/blog/${post.slug}">${post.title}</a></h2>
+        <time>${post.date}</time>
+        <p>${hubPostDesc}</p>
+      </article>
+  `;
+});
+blogHubBody += `
+    </article>
+  </noscript>
+`;
 
 // Definition of static pages with their specific metadata
 const pages = [
@@ -560,6 +650,7 @@ const pages = [
     route: '/blog',
     title: 'Blog do Jon | Dicas e Cuidados para Cabelo Cacheado e Crespo',
     description: 'Dicas práticas, guias de produtos, técnicas de finalização e tudo o que você precisa saber sobre cabelos cacheados, crespos e ondulados.',
+    bodyInsert: blogHubBody,
     schema: {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
@@ -578,7 +669,7 @@ const pages = [
   },
   {
     route: '/faq',
-    title: 'Perguntas Frequentes — Studio do Jon | Especialista em Cachos BH',
+    title: 'Perguntas Frequentes | Especialista em Cachos BH | Studio do Jon',
     description: 'Tire suas dúvidas sobre o Método Leitura de Fio, diagnóstico capilar, agendamento e cuidados com cabelo cacheado no Studio do Jon em Belo Horizonte.',
     bodyInsert: faqBody,
     schema: {
@@ -693,37 +784,98 @@ const pages = [
   {
     route: '/servicos/descoloracao-cabelo-cacheado',
     title: 'Descoloração em Cabelo Cacheado em BH | Studio do Jon',
-    description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho. Agende.'
+    description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho. Agende.',
+    bodyInsert: manualServiceBody({
+      name: 'Descoloração em Cabelo Cacheado',
+      text: 'Descoloração em cabelo cacheado em Belo Horizonte com protocolo técnico: avaliação de porosidade, levantamento do histórico químico e leitura da textura antes de qualquer aplicação. O objetivo é iluminar os fios sem comprometer a definição do cacho nem a saúde da fibra.',
+      route: '/servicos/descoloracao-cabelo-cacheado'
+    }),
+    schema: manualServiceSchema({
+      name: 'Descoloração em Cabelo Cacheado',
+      description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho.',
+      route: '/servicos/descoloracao-cabelo-cacheado'
+    })
   },
   {
     route: '/servicos/visagismo-cacheado',
     title: 'Visagismo para Cabelos Cacheados em BH | Studio do Jon',
-    description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal. Agende online.'
+    description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal. Agende online.',
+    bodyInsert: manualServiceBody({
+      name: 'Visagismo para Cabelos Cacheados',
+      text: 'Visagismo para cabelos cacheados em Belo Horizonte: analisamos o formato do rosto, a textura do fio e a rotina do dia a dia para planejar um corte que funcione de verdade, não só no espelho do salão. Parte do diagnóstico completo feito na Leitura de Fio.',
+      route: '/servicos/visagismo-cacheado'
+    }),
+    schema: manualServiceSchema({
+      name: 'Visagismo para Cabelos Cacheados',
+      description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal.',
+      route: '/servicos/visagismo-cacheado'
+    })
   },
   {
     route: '/servicos/corte-hibrido',
     title: 'Corte Híbrido Cabelo Cacheado BH | Studio do Jon',
-    description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já.'
+    description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já.',
+    bodyInsert: manualServiceBody({
+      name: 'Corte Híbrido',
+      text: 'O Corte Híbrido combina precisão molhada com lapidação a seco: o corte molhado garante exatidão nas linhas, e o ajuste a seco, feito com o cacho já formado, corrige o caimento real do fio depois do encolhimento. Uma técnica pensada especificamente para cabelo cacheado em Belo Horizonte.',
+      route: '/servicos/corte-hibrido'
+    }),
+    schema: manualServiceSchema({
+      name: 'Corte Híbrido',
+      description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Corte Híbrido: molhado para precisão e seco para caimento.',
+      route: '/servicos/corte-hibrido'
+    })
   },
   {
     route: '/servicos/transicao-capilar',
     title: 'Transição Capilar BH | Studio do Jon — Especialista em Cachos',
-    description: 'Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende.'
+    description: 'Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende.',
+    bodyInsert: manualServiceBody({
+      name: 'Transição Capilar',
+      text: 'Suporte técnico para quem está em transição capilar em Belo Horizonte: cortes progressivos que equilibram a raiz natural e as pontas quimicamente tratadas, sem exigir o Big Chop radical a menos que seja essa a sua escolha. Acompanhamento pensado para cada fase da transição.',
+      route: '/servicos/transicao-capilar'
+    }),
+    schema: manualServiceSchema({
+      name: 'Transição Capilar',
+      description: 'Transição capilar em BH. O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança.',
+      route: '/servicos/transicao-capilar'
+    })
   },
   {
     route: '/servicos/visagismo-cachos',
     title: 'Visagismo Cabelo Cacheado Belo Horizonte | Studio do Jon',
-    description: 'Valorize sua imagem através do visagismo para cabelos cacheados em Belo Horizonte. Cortes planejados para sua estrutura facial e rotina. Agende.'
+    description: 'Valorize sua imagem através do visagismo para cabelos cacheados em Belo Horizonte. Cortes planejados para sua estrutura facial e rotina. Agende.',
+    bodyInsert: manualServiceBody({
+      name: 'Visagismo Cabelo Cacheado',
+      text: 'Cortes planejados a partir da sua estrutura facial e da física real do seu cacho, não de moda de revista. O visagismo aplicado ao cabelo cacheado em Belo Horizonte respeita o fator de encolhimento de cada curvatura para entregar um resultado que funciona no dia a dia.',
+      route: '/servicos/visagismo-cachos'
+    }),
+    schema: manualServiceSchema({
+      name: 'Visagismo Cabelo Cacheado',
+      description: 'Visagismo para cabelos cacheados em Belo Horizonte. Cortes planejados para sua estrutura facial e rotina.',
+      route: '/servicos/visagismo-cachos'
+    })
   },
   {
     route: '/servicos/masculino',
     title: 'Corte Cabelo Cacheado Masculino BH | Studio do Jon',
-    description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende.'
+    description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende.',
+    bodyInsert: manualServiceBody({
+      name: 'Corte Cabelo Cacheado Masculino',
+      text: 'Corte cabelo cacheado masculino em Belo Horizonte com o mesmo Método Leitura de Fio dos atendimentos femininos: diagnóstico de curvatura e formato do rosto antes de qualquer corte, com visagismo aplicado aos traços masculinos. Nada de máquina padronizada — o volume e o encaracolamento natural são respeitados.',
+      route: '/servicos/masculino'
+    }),
+    schema: manualServiceSchema({
+      name: 'Corte Cabelo Cacheado Masculino',
+      description: 'Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico.',
+      route: '/servicos/masculino'
+    })
   },
   {
     route: '/agendar',
     title: 'Agende seu corte | Studio do Jon — Especialista em Cachos BH',
-    description: 'Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte.'
+    description: 'Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte.',
+    bodyInsert: agendarBody
   }
 ];
 
@@ -761,11 +913,17 @@ SEED_SERVICES.forEach(service => {
   const serviceBody = `
     <noscript>
       <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
-        <h1>${service.name} em Belo Horizonte</h1>
+        <h1>${service.name} em Belo Horizonte | Studio do Jon</h1>
         <p style="font-weight: bold; color: #ccc;">${service.tagline || ''}</p>
         <hr />
         <p>${service.description}</p>
-        ${service.includes && service.includes.length > 0 ? `<p><strong>O que está incluso:</strong> ${service.includes.join(', ')}</p>` : ''}
+        ${service.includes && service.includes.length > 0 ? `
+        <h2>O que inclui</h2>
+        <ul>
+          ${service.includes.map(item => `<li>${item}</li>`).join('\n          ')}
+        </ul>` : ''}
+        <p><strong>Investimento:</strong> ${service.priceType ? `${service.priceType} ` : ''}R$ ${service.promoPrice || service.price}${service.duration ? ` &middot; <strong>Duração:</strong> ${service.duration} minutos` : ''}</p>
+        <p><a href="/agendar">Agende seu horário</a> &middot; <a href="/servicos">Ver todos os serviços</a>${service.id === 'leitura-de-fio' ? ' &middot; <a href="/metodo">Conheça o Método Leitura de Fio completo</a>' : ''}</p>
       </article>
     </noscript>
   `;

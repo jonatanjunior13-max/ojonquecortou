@@ -4800,6 +4800,8 @@ export const posts = [
       <p>Talvez a informação mais importante deste guia não seja técnica, mas conceitual: a curvatura 4C não é uma versão "incompleta" ou "mais difícil" de cabelo cacheado. É uma estrutura própria, com física própria, que exige entendimento próprio. Quando o cuidado é desenhado para a curvatura real do fio — e não para uma média genérica de "cabelo com textura" — o resultado é um cabelo crespo saudável, definido do jeito que ele naturalmente é, sem depender de alisamento ou de produtos que prometem "domar" o que nunca precisou ser domado.</p>
 
       <p>Se você tem cabelo crespo 4C e sente que nunca encontrou um profissional que realmente entendesse sua curvatura em Belo Horizonte, esse é exatamente o hiato que o Studio do Jon existe para preencher.</p>
+
+      <p>O primeiro passo é a Leitura de Fio: <a href="/agendar">agende seu horário</a> e comece o diagnóstico da sua curvatura. Para entender os valores antes, dá para consultar o <a href="/investimento">investimento</a>.</p>
     `
   }
 ];
