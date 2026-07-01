@@ -1,5 +1,98 @@
 export const posts = [
   {
+    id: 49,
+    slug: 'por-que-saloes-falham-cabelo-texturizado',
+    title: 'Por que a maioria dos salões falha com cabelo cacheado — e como o Studio do Jon não',
+    seoTitle: 'Por que salões falham em cabelo cacheado e texturizado | Studio do Jon BH',
+    excerpt: 'Descubra as razões técnicas por trás dos fracassos de salões genéricos com cabelo texturizado e por que o Método Leitura de Fio do Studio do Jon em Belo Horizonte não comete esses erros.',
+    metaDescription: 'Entenda por que salões convencionais falham com cabelo cacheado e crespo. O Studio do Jon em BH diagnostica cada fio antes de qualquer corte — sem templates genéricos.',
+    keywords: 'cabelo cacheado salão BH, por que salão falha em cabelo texturizado, especialista em cachos Belo Horizonte, Método Leitura de Fio, diagnóstico capilar, corte para cabelo texturizado',
+    date: '01 de Julho, 2026',
+    datePublished: '2026-07-01',
+    dateModified: '2026-07-01',
+    author: 'Jon',
+    category: 'Educação Técnica',
+    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
+    content: `<p>Seu cabelo cacheado não é quebrado. Não é rebelde. Não é impossível de lidar. Seu cabelo é <strong>mal-lido</strong>.</p>
+
+<p>A diferença entre um salão genérico e um especialista em texturas é que o genérico olha para o seu fio e vê um problema. O especialista vê um código. O genérico aplica um template universal. O especialista diagnostica.</p>
+
+<p>Quanta ignorância técnica circula por aí. Vejo mulheres saindo de salões com o cabelo \"perfeito\" por três horas, apenas para desastre acontecer em casa. O corte sumiu. O brilho desapareceu. O volume virou um monstro. Não é culpa sua. É culpa do método genérico que o salão usa.</p>
+
+<h2>O problema fundamental: salões tratam cabelo como se fosse um único tipo</h2>
+
+<p>Um salão genérico em Belo Horizonte — e estou falando de 99% deles — trabalha com a mesma metodologia para cabelo ondulado (2A), cacho (3A-3C), crespo (4A-4B) e crespo muito fechado (4C). A mesma técnica de corte molhado. A mesma receita de cronograma. O mesmo shampoo alcalino com sulfato. O mesmo enxágue com água fria.</p>
+
+<p>Isso funcionaria se todos os cabelos fossem idênticos em porosidade, densidade, histórico químico e encolhimento. Mas não são.</p>
+
+<p>Cabelo 2A ondulado encolhe 10-15% quando seca. Cabelo 3C encolhe 40-50%. Cabelo 4C encolhe até 70%. Se você entrar em um salão genérico com 4C e sair com um corte que \"parecia lindo molhado\", é porque o salão ignorou completamente essa realidade. Ele cortou você como se fosse 2A. Quando você chega em casa e o cabelo seca, o comprimento desapareceu. As camadas ficam desiguais. O visual não faz sentido.</p>
+
+<p>Isso não é culpa sua. <strong>Nenhum salão genérico diagnostica encolhimento</strong>. Eles só cortam.</p>
+
+<h2>Erro 1: O corte molhado sem compensação de encolhimento</h2>
+
+<p>A maioria dos salões usa corte molhado porque é mais rápido e mais fácil. Água estica o fio em até 30%, removendo completamente a curvatura. O cabelo fica reto, liso, fácil de medir.</p>
+
+<p>Um especialista corta de forma híbrida: mapeia as camadas a seco (respeita curvatura real e encolhimento), depois refina molhado (limpa pontas). Resultado: o que você vê molhado é próximo ao que você terá em casa.</p>
+
+<h2>Erro 2: Cronograma genérico sem diagnóstico de porosidade</h2>
+
+<p>Quase todos os salões usam receitas universais. <a href=\"/blog/teste-de-porosidade-capilar\">A porosidade é a capacidade da fibra de absorver e reter água</a>. Nenhum salão genérico testa isso. Um especialista faz testes de elasticidade no molhado, observa a velocidade de absorção, analisa o brilho, e ENTÃO prescreve cronograma personalizado.</p>
+
+<h2>Erro 3: Shampoo com sulfato + falta de acidificação</h2>
+
+<p>Sulfatos removem a barreira natural de óleos da cutícula. Após remover, é essencial fechar com <a href=\"/blog/acidificacao-capilar-cachos-porosidade\">enxágue ácido (acidificação capilar)</a>. A maioria dos salões não faz isso. Resultado: cliente sai com cabelo bonito molhado, mas em 24-48h o cabelo descasca.</p>
+
+<h2>Por que o Método Leitura de Fio faz diferença</h2>
+
+<p>No Studio do Jon, ninguém corta antes de diagnosticar. O <a href=\"/metodo\">Método Leitura de Fio é um protocolo de sete etapas</a> que mapeia a física exata do seu cabelo:</p>
+
+<ol>
+<li><strong>Escuta:</strong> Entender hábitos, gatilhos, histórico químico.</li>
+<li><strong>Análise a seco:</strong> Observar comportamento eletrostático, volume, frizz, padrão de queda.</li>
+<li><strong>Diagnóstico do couro cabeludo:</strong> Checar descamação, pH, sensibilidade.</li>
+<li><strong>Histórico químico:</strong> Avaliar perda de elasticidade por descoloração, alisamento.</li>
+<li><strong>Análise molhada:</strong> Testar porosidade, elasticidade, retenção proteica.</li>
+<li><strong>Definição de técnica:</strong> Mapear encolhimento de cada zona, planejar corte geométrico.</li>
+<li><strong>Finalização como validação:</strong> Secar e validar que o corte funciona.</li>
+</ol>
+
+<p>Nenhuma suposição. Nenhum template. <a href=\"/agendar\">Agende uma Leitura de Fio diagnóstica</a> e mapeie a física exata do seu cabelo antes de qualquer coisa.</p>
+
+<p>Seu cabelo não é problema. O método anterior era.</p>`,
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que meu cabelo fica tão diferente em casa do que ficou no salão?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Porque o salão fez o corte molhado sem compensar o encolhimento real do seu fio. Cabelo cacheado 3B encolhe 40-50% quando seca. Cabelo 4C encolhe até 70%. Se o salão não mapear essas diferenças antes de cortar, você chega em casa e o comprimento desapareceu."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que é o Método Leitura de Fio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "É um protocolo de diagnóstico em 7 etapas: escuta, análise seco, couro cabeludo, histórico químico, análise molhada, técnica e finalização. Mapeia a física exata do seu cabelo antes de qualquer intervenção."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que salões genéricos falham com cabelo texturizado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Porque aplicam templates universais ignorando as diferenças de porosidade, encolhimento e histórico químico. Um cabelo 4C não responde bem ao cronograma de um 2A. A falta de diagnóstico é a raiz do problema."
+          }
+        }
+      ]
+    }
+  },
+
+  {
     id: 47,
     slug: 'frizz-em-cabelo-cacheado',
     title: 'Frizz em cabelo cacheado: a física por trás do fio arrepiado',
@@ -4804,97 +4897,5 @@ export const posts = [
       <p>O primeiro passo é a Leitura de Fio: <a href="/agendar">agende seu horário</a> e comece o diagnóstico da sua curvatura. Para entender os valores antes, dá para consultar o <a href="/investimento">investimento</a>.</p>
     `
   }
-,
-  {
-    id: 49,
-    slug: 'por-que-saloes-falham-cabelo-texturizado',
-    title: 'Por que a maioria dos salões falha com cabelo cacheado — e como o Studio do Jon não',
-    seoTitle: 'Por que salões falham em cabelo cacheado e texturizado | Studio do Jon BH',
-    excerpt: 'Descubra as razões técnicas por trás dos fracassos de salões genéricos com cabelo texturizado e por que o Método Leitura de Fio do Studio do Jon em Belo Horizonte não comete esses erros.',
-    metaDescription: 'Entenda por que salões convencionais falham com cabelo cacheado e crespo. O Studio do Jon em BH diagnostica cada fio antes de qualquer corte — sem templates genéricos.',
-    keywords: 'cabelo cacheado salão BH, por que salão falha em cabelo texturizado, especialista em cachos Belo Horizonte, Método Leitura de Fio, diagnóstico capilar, corte para cabelo texturizado',
-    date: '01 de Julho, 2026',
-    datePublished: '2026-07-01',
-    dateModified: '2026-07-01',
-    author: 'Jon',
-    category: 'Educação Técnica',
-    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
-    content: `<p>Seu cabelo cacheado não é quebrado. Não é rebelde. Não é impossível de lidar. Seu cabelo é <strong>mal-lido</strong>.</p>
 
-<p>A diferença entre um salão genérico e um especialista em texturas é que o genérico olha para o seu fio e vê um problema. O especialista vê um código. O genérico aplica um template universal. O especialista diagnostica.</p>
-
-<p>Quanta ignorância técnica circula por aí. Vejo mulheres saindo de salões com o cabelo \"perfeito\" por três horas, apenas para desastre acontecer em casa. O corte sumiu. O brilho desapareceu. O volume virou um monstro. Não é culpa sua. É culpa do método genérico que o salão usa.</p>
-
-<h2>O problema fundamental: salões tratam cabelo como se fosse um único tipo</h2>
-
-<p>Um salão genérico em Belo Horizonte — e estou falando de 99% deles — trabalha com a mesma metodologia para cabelo ondulado (2A), cacho (3A-3C), crespo (4A-4B) e crespo muito fechado (4C). A mesma técnica de corte molhado. A mesma receita de cronograma. O mesmo shampoo alcalino com sulfato. O mesmo enxágue com água fria.</p>
-
-<p>Isso funcionaria se todos os cabelos fossem idênticos em porosidade, densidade, histórico químico e encolhimento. Mas não são.</p>
-
-<p>Cabelo 2A ondulado encolhe 10-15% quando seca. Cabelo 3C encolhe 40-50%. Cabelo 4C encolhe até 70%. Se você entrar em um salão genérico com 4C e sair com um corte que \"parecia lindo molhado\", é porque o salão ignorou completamente essa realidade. Ele cortou você como se fosse 2A. Quando você chega em casa e o cabelo seca, o comprimento desapareceu. As camadas ficam desiguais. O visual não faz sentido.</p>
-
-<p>Isso não é culpa sua. <strong>Nenhum salão genérico diagnostica encolhimento</strong>. Eles só cortam.</p>
-
-<h2>Erro 1: O corte molhado sem compensação de encolhimento</h2>
-
-<p>A maioria dos salões usa corte molhado porque é mais rápido e mais fácil. Água estica o fio em até 30%, removendo completamente a curvatura. O cabelo fica reto, liso, fácil de medir.</p>
-
-<p>Um especialista corta de forma híbrida: mapeia as camadas a seco (respeita curvatura real e encolhimento), depois refina molhado (limpa pontas). Resultado: o que você vê molhado é próximo ao que você terá em casa.</p>
-
-<h2>Erro 2: Cronograma genérico sem diagnóstico de porosidade</h2>
-
-<p>Quase todos os salões usam receitas universais. <a href=\"/blog/teste-de-porosidade-capilar\">A porosidade é a capacidade da fibra de absorver e reter água</a>. Nenhum salão genérico testa isso. Um especialista faz testes de elasticidade no molhado, observa a velocidade de absorção, analisa o brilho, e ENTÃO prescreve cronograma personalizado.</p>
-
-<h2>Erro 3: Shampoo com sulfato + falta de acidificação</h2>
-
-<p>Sulfatos removem a barreira natural de óleos da cutícula. Após remover, é essencial fechar com <a href=\"/blog/acidificacao-capilar-cachos-porosidade\">enxágue ácido (acidificação capilar)</a>. A maioria dos salões não faz isso. Resultado: cliente sai com cabelo bonito molhado, mas em 24-48h o cabelo descasca.</p>
-
-<h2>Por que o Método Leitura de Fio faz diferença</h2>
-
-<p>No Studio do Jon, ninguém corta antes de diagnosticar. O <a href=\"/metodo\">Método Leitura de Fio é um protocolo de sete etapas</a> que mapeia a física exata do seu cabelo:</p>
-
-<ol>
-<li><strong>Escuta:</strong> Entender hábitos, gatilhos, histórico químico.</li>
-<li><strong>Análise a seco:</strong> Observar comportamento eletrostático, volume, frizz, padrão de queda.</li>
-<li><strong>Diagnóstico do couro cabeludo:</strong> Checar descamação, pH, sensibilidade.</li>
-<li><strong>Histórico químico:</strong> Avaliar perda de elasticidade por descoloração, alisamento.</li>
-<li><strong>Análise molhada:</strong> Testar porosidade, elasticidade, retenção proteica.</li>
-<li><strong>Definição de técnica:</strong> Mapear encolhimento de cada zona, planejar corte geométrico.</li>
-<li><strong>Finalização como validação:</strong> Secar e validar que o corte funciona.</li>
-</ol>
-
-<p>Nenhuma suposição. Nenhum template. <a href=\"/agendar\">Agende uma Leitura de Fio diagnóstica</a> e mapeie a física exata do seu cabelo antes de qualquer coisa.</p>
-
-<p>Seu cabelo não é problema. O método anterior era.</p>`,
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Por que meu cabelo fica tão diferente em casa do que ficou no salão?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Porque o salão fez o corte molhado sem compensar o encolhimento real do seu fio. Cabelo cacheado 3B encolhe 40-50% quando seca. Cabelo 4C encolhe até 70%. Se o salão não mapear essas diferenças antes de cortar, você chega em casa e o comprimento desapareceu."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "O que é o Método Leitura de Fio?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "É um protocolo de diagnóstico em 7 etapas: escuta, análise seco, couro cabeludo, histórico químico, análise molhada, técnica e finalização. Mapeia a física exata do seu cabelo antes de qualquer intervenção."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Por que salões genéricos falham com cabelo texturizado?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Porque aplicam templates universais ignorando as diferenças de porosidade, encolhimento e histórico químico. Um cabelo 4C não responde bem ao cronograma de um 2A. A falta de diagnóstico é a raiz do problema."
-          }
-        }
-      ]
-    }
-  }
 ];
