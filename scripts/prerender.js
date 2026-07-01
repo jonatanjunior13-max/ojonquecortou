@@ -603,7 +603,7 @@ const pages = [
   },
   {
     route: '/servicos',
-    title: 'Serviços em BH | Corte, Tratamento e Visagismo | Studio do Jon',
+    title: 'Serviços em BH | Cortes, Tratamentos',
     description: 'Veja nossos serviços de corte de cabelo cacheado a seco, visagismo, tratamentos e coloração. Agende seu horário online no Studio do Jon em BH.',
     bodyInsert: servicesBody,
     schema: {
@@ -632,7 +632,7 @@ const pages = [
   },
   {
     route: '/sobre',
-    title: 'Sobre Jonatan Junior | Especialista Cabelos Cacheados em BH',
+    title: 'Sobre o Jon — Cabeleireiro de Cachos',
     description: 'Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.',
     bodyInsert: aboutBody,
     schema: {
@@ -767,7 +767,7 @@ const pages = [
   },
   {
     route: '/galeria',
-    title: 'Galeria | Cortes de Cabelos Cacheados em Belo Horizonte',
+    title: 'Galeria de Cortes Cacheados',
     description: 'Fotos reais de antes e depois de cortes, mechas e tratamentos em cabelos cacheados, crespos and ondulados feitos pelo Jon.',
     bodyInsert: `
   <noscript>
