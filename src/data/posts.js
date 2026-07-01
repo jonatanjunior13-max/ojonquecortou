@@ -12,7 +12,7 @@ export const posts = [
     dateModified: '2026-07-01',
     author: 'Jon',
     category: 'Educação Técnica',
-    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
+    image: '/blog-por-que-saloes-falham-cabelo-texturizado.png',
     content: `<p>Seu cabelo cacheado não é quebrado. Não é rebelde. Não é impossível de lidar. Seu cabelo é <strong>mal-lido</strong>.</p>
 
 <p>A diferença entre um salão genérico e um especialista em texturas é que o genérico olha para o seu fio e vê um problema. O especialista vê um código. O genérico aplica um template universal. O especialista diagnostica.</p>
