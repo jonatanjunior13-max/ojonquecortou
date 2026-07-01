@@ -1,0 +1,302 @@
+[
+  {
+    "term": "Folículo capilar",
+    "definition": "Estrutura da pele que contém a raiz do cabelo e é responsável por seu crescimento. A saúde do folículo determina a força e a vitalidade do fio que nasce dele. Qualquer inflamação ou obstrução no folículo resulta em fios fracos ou despigmentados.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, diagnóstico do couro cabeludo"
+  },
+  {
+    "term": "Queratina",
+    "definition": "Proteína fibrosa que constitui a estrutura principal da fibra capilar. Representa aproximadamente 95% da composição seca do fio. A queratina forma as cadeias polipeptídicas que mantêm a elasticidade e a resistência mecânica do cabelo.",
+    "context": "Used in excesso-hidratacao-cronograma-capilar-cacheado, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Cutícula capilar",
+    "definition": "Camada externa de escamas sobrepostas que protege o interior do fio. Quando as cutículas estão alinhadas (fechadas), o cabelo retém umidade e brilho. Quando abertas ou danificadas, o fio perde água, ganha frizz e se torna quebradiço.",
+    "context": "Used in frizz-em-cabelo-cacheado, acidificacao-capilar-cachos-porosidade, teste-de-porosidade-guia-definitivo"
+  },
+  {
+    "term": "Córtex capilar",
+    "definition": "Camada interna da fibra localizada abaixo da cutícula, composta por estruturas de queratina entrelaçadas. É no córtex que a água, os nutrientes e a umidade são armazenados. Danos ao córtex resultam em perda de elasticidade permanente.",
+    "context": "Used in frizz-em-cabelo-cacheado, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Paracórtex",
+    "definition": "Região do córtex composta por estruturas de queratina mais soltas e espaçadas. Responsável pela flexibilidade e elasticidade do fio. Em cabelos cacheados, o paracórtex permite que o fio se curve sem quebrar.",
+    "context": "Used in especialista-em-cabelo-cacheado-bh-texturas, estrutura de curvatura"
+  },
+  {
+    "term": "Ortocórtex",
+    "definition": "Região do córtex composta por estruturas de queratina mais densas e compactas. Responsável pela resistência e rigidez do fio. Em fios danificados, o ortocórtex enfraquece primeiro, comprometendo a integridade estrutural.",
+    "context": "Used in estrutura interna do fio, avaliação de elasticidade"
+  },
+  {
+    "term": "Medula capilar",
+    "definition": "Núcleo central do fio, presente em alguns tipos de cabelo. Não existe em fios muito finos. Quando presente, a medula contém queratina menos compactada e oferece volume natural ao fio.",
+    "context": "Used in análise de densidade capilar"
+  },
+  {
+    "term": "Bulbo capilar",
+    "definition": "Estrutura localizada na base do folículo onde ocorre a mitose celular e o crescimento do cabelo. O bulbo contém melanócitos que conferem cor ao fio. Qualquer trauma ou inflamação no bulbo resulta em fios descoloridos ou ausência de crescimento.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, histórico químico"
+  },
+  {
+    "term": "Cacho",
+    "definition": "Unidade de fio que forma uma volta ou onda bem definida, típica de cabelos ondulados a cacheados (2A a 3C). Cada cacho é uma estrutura geométrica criada pela torção natural da fibra durante o crescimento. Diferentes tipos de cacho exigem técnicas de corte distintas.",
+    "context": "Used in cacho-vs-crespo-qual-diferenca, finalizacao-por-curvatura-guia-tecnico"
+  },
+  {
+    "term": "Crespo compacto",
+    "definition": "Padrão de curvatura extremamente compactado e denso, típico de cabelos tipo 4C. As voltas são tão próximas uma da outra que o comprimento aparenta ser muito menor do que realmente é. Exige técnicas de corte molhado e análise precisa do fator de encolhimento.",
+    "context": "Used in curvatura-4c-cabelo-crespo-guia-completo, fator-encolhimento-cabelo-cacheado"
+  },
+  {
+    "term": "Fator de encolhimento",
+    "definition": "Percentual de redução do comprimento do fio quando ele seca após estar molhado. Cabelos cacheados e crespos podem encolher entre 30% a 70% de seu comprimento. O fator de encolhimento varia por curvatura e deve ser calculado antes do corte para evitar assimetrias.",
+    "context": "Used in fator-encolhimento-cabelo-cacheado, corte-hibrido-cabelo-cacheado"
+  },
+  {
+    "term": "Tipo de curvatura",
+    "definition": "Classificação do padrão natural de onda ou cacho do cabelo, variando de 1A (totalmente liso) a 4C (crespo compacto). A classificação ocorre em base seca natural, sem produto. Cada tipo de curvatura exige estratégias de cuidado e corte específicas.",
+    "context": "Used in especialista-em-cabelo-cacheado-bh-texturas, finalizacao-por-curvatura-guia-tecnico"
+  },
+  {
+    "term": "Padrão de onda",
+    "definition": "Configuração tridimensional específica que o fio assume quando cresce do folículo. É determinado geneticamente e não muda. Um mesmo indivíduo pode ter múltiplos padrões de onda na mesma cabeça dependendo da região de crescimento.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, análise molhada"
+  },
+  {
+    "term": "Cacho espiral",
+    "definition": "Padrão de curvatura em forma de espiral ou hélice, típico de cabelos tipo 3C a 4B. O fio gira sobre si mesmo em ângulos que variam entre 45° e 90°. É o padrão mais comum em cabelos textúrizados afro-brasileiros.",
+    "context": "Used in finalizacao-por-curvatura-guia-tecnico, corte-para-cabelo-cacheado-mentira-do-corte-a-seco"
+  },
+  {
+    "term": "Porosidade capilar",
+    "definition": "Capacidade da fibra de absorver e reter umidade e nutrientes. Determinada pela densidade e aspereza das escamas cuticulares. A porosidade é dividida em baixa, média e alta, orientando completamente o cronograma de tratamento e a resposta do fio a produtos.",
+    "context": "Used in teste-de-porosidade-guia-definitivo, cronograma-capilar-cabelo-cacheado, frizz-em-cabelo-cacheado"
+  },
+  {
+    "term": "Baixa porosidade",
+    "definition": "Estado onde as cutículas estão fechadas e compactas, impedindo a absorção rápida de água e nutrientes. Cabelos com baixa porosidade são resistentes a produtos e secam muito lentamente. Exigem produtos leves e técnicas de penetração como calor moderado.",
+    "context": "Used in teste-de-porosidade-guia-definitivo, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Alta porosidade",
+    "definition": "Estado onde as cutículas estão abertas ou danificadas, absorvendo água e perdendo-a muito rapidamente. Resulta em frizz crônico, falta de definição e fragilidade. Exige tratamentos com pH ácido para fechar as cutículas e produtos que ofereçam proteção lipídica.",
+    "context": "Used in frizz-em-cabelo-cacheado, acidificacao-capilar-cachos-porosidade, teste-de-porosidade-guia-definitivo"
+  },
+  {
+    "term": "Média porosidade",
+    "definition": "Estado equilibrado onde as cutículas absorvem água em velocidade moderada e a retêm adequadamente. Cabelos com média porosidade respondem bem a tratamentos equilibrados de hidratação e nutrição. É o estado de equilíbrio ideal.",
+    "context": "Used in teste-de-porosidade-guia-definitivo, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Absorção hídrica",
+    "definition": "Velocidade e quantidade de água que a fibra capilar absorve quando entra em contato com umidade ou durante a lavagem. Afeta diretamente o tempo de secagem e o comportamento do fio em climas úmidos. Medida através de testes práticos de imersão.",
+    "context": "Used in análise molhada, teste-de-porosidade-guia-definitivo"
+  },
+  {
+    "term": "Retenção de umidade",
+    "definition": "Capacidade da fibra de manter a água absorvida dentro do córtex sem perder para o ambiente. Determinada pela eficiência de fechamento das cutículas e pela presença de lipídios protetores. Uma retenção deficiente resulta em frizz e perda rápida de definição.",
+    "context": "Used in frizz-em-cabelo-cacheado, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Fadiga hídrica",
+    "definition": "Dano mecânico que ocorre quando o fio dilata e contrai excessivamente pelo ciclo repetido de absorção e perda de água. Enfraquece as ligações de proteína no córtex, resultando em quebra crônica e perda de elasticidade. Comum em cabelos submetidos a excesso de hidratação.",
+    "context": "Used in excesso-hidratacao-cronograma-capilar-cacheado, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Inchaço hídrico",
+    "definition": "Expansão temporária das fibras capilares quando absorvem água em excesso. O inchaço repete a cada ciclo de lavagem, causando micro-rupturas nas ligações estruturais do fio. Contribui para a fadiga hídrica quando ocorre cronicamente.",
+    "context": "Used in teste-de-porosidade-guia-definitivo, excesso-hidratacao-cronograma-capilar-cacheado"
+  },
+  {
+    "term": "pH ácido",
+    "definition": "Nível de acidez entre 0 e 7 na escala de pH. O cabelo saudável é levemente ácido (pH 4.5 a 5.5). Um pH ácido fecha as cutículas, aumenta a retenção de umidade e reduz a carga eletrostática que causa frizz. Essencial para selar tratamentos capilares.",
+    "context": "Used in acidificacao-capilar-cachos-porosidade, frizz-em-cabelo-cacheado"
+  },
+  {
+    "term": "pH alcalino",
+    "definition": "Nível de alcalinidade entre 7 e 14 na escala de pH. Shampoos alcalinos abrem as cutículas e removem a camada ácida protetora do fio. Resulta em dano às cutículas, perda de umidade, frizz e enfraquecimento crônico. Deve ser evitado e neutralizado com acidificação.",
+    "context": "Used in acidificacao-capilar-cachos-porosidade, frizz-em-cabelo-cacheado"
+  },
+  {
+    "term": "Acidificação",
+    "definition": "Processo de aplicação de um produto ácido (vinagre, ácido cítrico, condicionador ácido) para restaurar o pH ácido natural do cabelo após lavagem ou tratamento. Fecha as cutículas, aumenta o brilho, reduz frizz e melhora a retenção de umidade. Etapa final essencial no cronograma.",
+    "context": "Used in acidificacao-capilar-cachos-porosidade, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Ligação de hidrogênio",
+    "definition": "Ligação química débil entre moléculas de água e as proteínas da fibra capilar. Responsável pela hidratação temporária do fio. Diferente das ligações disulfeto (permanentes), as ligações de hidrogênio são quebradas com lavagem, exigindo re-hidratação constante.",
+    "context": "Used in hidratação vs nutrição, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Descoloração capilar",
+    "definition": "Processo químico que remove ou altera o pigmento natural (melanina) do fio para criar tons mais claros. Enfraquece a estrutura do córtex ao quebrar as ligações entre a melanina e a queratina. Cabelos descoloridos exigem histórico químico rigoroso antes de novos procedimentos.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, histórico químico"
+  },
+  {
+    "term": "Dano químico",
+    "definition": "Enfraquecimento ou ruptura da estrutura da fibra causado por processos químicos como progressiva, relaxante, descoloração ou botox capilar. Resulta em perda permanente de elasticidade, cutículas abertas e alta porosidade. Exige avaliação rigorosa antes de novos procedimentos.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, transicao-capilar-sem-sofrimento-guia-cachos"
+  },
+  {
+    "term": "Corte a seco",
+    "definition": "Técnica de corte realizado no cabelo completamente seco, sem molhá-lo previamente. Permite ver o caimento e o volume reais do fio. Ideal para cortar pontas danificadas e definir o volume geométrico desejado. Deve ser precedido de análise molhada para determinar o comprimento final.",
+    "context": "Used in corte-a-seco-cabelo-cacheado-bh-volume, corte-hibrido-cabelo-cacheado"
+  },
+  {
+    "term": "Corte molhado",
+    "definition": "Técnica de corte realizada no cabelo molhado ou úmido para trabalhar com a curvatura e o padrão de onda natural. Permite calcular o fator de encolhimento com precisão. Comum em cabelos 4A a 4C onde a curvatura é muito compactada quando seca.",
+    "context": "Used in corte-hibrido-cabelo-cacheado, corte-para-cabelo-cacheado-mentira-do-corte-a-seco"
+  },
+  {
+    "term": "Corte híbrido",
+    "definition": "Técnica que combina corte molhado de precisão (para marcar os ângulos e calcular encolhimento) com lapidação a seco (para refinar o volume e o caimento). Integra os benefícios de ambas as técnicas e exige maior domínio técnico. É a base da metodologia do Studio do Jon.",
+    "context": "Used in corte-hibrido-cabelo-cacheado, leitura-de-fio-metodo-exclusivo-studio-do-jon"
+  },
+  {
+    "term": "Visagismo",
+    "definition": "Ciência de harmonizar o formato do corte com as linhas faciais, proporções e expressão pessoal. Usa conceitos de geometria e psicologia das formas para realçar traços positivos e minimizar desproporções. Deve ser aplicado conjuntamente com a análise técnica do fio.",
+    "context": "Used in corte-cabelo-cacheado-visagismo-influenciadora, leitura-de-fio-metodo-exclusivo-studio-do-jon"
+  },
+  {
+    "term": "Proporções faciais",
+    "definition": "Medidas relativas entre altura da testa, largura de maxilar, comprimento do rosto e tamanho de características faciais. Determinam quais formatos de corte e qual volume distribuído no topo funcionam melhor para cada pessoa. Avaliação essencial antes de definir a técnica de corte.",
+    "context": "Used in visagismo, corte-cabelo-cacheado-visagismo-influenciadora"
+  },
+  {
+    "term": "Volume distribuído",
+    "definition": "Estratégia de corte onde o cabelo é estruturado para criar volume em regiões específicas (topo para alongar, laterais para ampliar) conforme as proporções faciais e preferência estética. Exige domínio de técnicas de angulação e texturização.",
+    "context": "Used in corte-para-cabelo-cacheado-bh-volume, corte-a-seco-cabelo-cacheado-bh-volume"
+  },
+  {
+    "term": "Ponto de junção",
+    "definition": "Local onde dois cortes feitos em direções diferentes se encontram. Exige precisão milimétrica para evitar degraus indesejados ou fraturas. Em cabelos cacheados, o ponto de junção deve ser calculado considerando o fator de encolhimento de cada lado.",
+    "context": "Used in técnicas de corte, precisão geométrica"
+  },
+  {
+    "term": "Leitura de Fio",
+    "definition": "Método de diagnóstico capilar em sete etapas desenvolvido no Studio do Jon. Engloba escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Fornece base científica para todas as decisões de corte e tratamento.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, metodo"
+  },
+  {
+    "term": "Cronograma capilar",
+    "definition": "Rotina terapêutica semanal ou semanal estruturada que intercala tratamentos de hidratação, nutrição e reconstrução conforme a porosidade da fibra. Objetivo é restabelecer água, lipídios e proteínas perdidas. Deve ser personalizado conforme diagnóstico técnico de porosidade.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, teste-de-porosidade-guia-definitivo"
+  },
+  {
+    "term": "Teste de porosidade",
+    "definition": "Método prático para classificar o nível de porosidade da fibra capilar. Pode ser realizado com teste de flutuação de mechas em água ou teste de absorção com água e conta-gotas. Resultado orienta a composição ideal do cronograma capilar e a escolha de produtos.",
+    "context": "Used in teste-de-porosidade-guia-definitivo, diagnóstico de porosidade"
+  },
+  {
+    "term": "Teste de elasticidade",
+    "definition": "Teste mecânico onde um fio molhado é esticado para avaliar sua capacidade de voltar ao comprimento original. Um fio elástico indica boa saúde proteica. Um fio que não volta ou quebra durante o teste indica alta porosidade ou dano proteico. Realizado durante a Leitura de Fio.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, análise molhada"
+  },
+  {
+    "term": "Transição capilar",
+    "definition": "Processo contínuo de crescimento do cabelo natural após cessar processos químicos de alisamento ou redução de volume. Exige cuidado durante a transição para evitar quebra mecânica na junção entre fio novo (cacheado) e comprimento anterior (alisado). Pode durar 1 a 3 anos.",
+    "context": "Used in transicao-capilar-sem-sofrimento-guia-cachos, transicao-capilar-bh-danos-botox"
+  },
+  {
+    "term": "Big chop",
+    "definition": "Decisão de cortar todos os comprimentos com dano químico (alisamento, progressiva, botox) de uma vez para acelerar o processo de transição. Deixa apenas o cabelo natural novo. Exige coragem emocional, mas garante uniformidade de textura e saúde.",
+    "context": "Used in transicao-capilar-sem-sofrimento-guia-cachos"
+  },
+  {
+    "term": "Cropping",
+    "definition": "Técnica gradual de corte durante a transição onde o comprimento com química é reduzido em pequenos aportes a cada 2 a 3 meses. Permite ajuste emocional ao comprimento novo enquanto elimina gradualmente o fio danificado. Alternativa menos radical ao big chop.",
+    "context": "Used in transicao-capilar-sem-sofrimento-guia-cachos"
+  },
+  {
+    "term": "Silicone",
+    "definition": "Polímero sintético frequentemente usado em condicionadores e finalizadores para criar brilho e maciez temporária. Silicones insolúveis acumulam no fio, impermeabilizando e criando barreira que impede absorção de água em lavagens subsequentes. Deve ser periodicamente removido com xampus purificantes.",
+    "context": "Used in frizz-em-cabelo-cacheado, produtos capilares"
+  },
+  {
+    "term": "Condicionador",
+    "definition": "Produto que sela a cutícula capilar para reduzir o frizz e aumentar o brilho. Oferece ação superficial, selando a cutícula sem penetrar o córtex. Deve ser aplicado do meio para as pontas, nunca nas raízes em fios propensos a oleosidade excessiva.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, produtos capilares"
+  },
+  {
+    "term": "Máscara hidratante",
+    "definition": "Produto com consistência mais densa que penetra o córtex para repor umidade e água perdidas. Mantém as moléculas de água dentro da fibra através de ligações de hidrogênio. Deve ser aplicada uma vez por semana conforme a porosidade e deixada por 15 a 20 minutos.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, excesso-hidratacao-cronograma-capilar-cacheado"
+  },
+  {
+    "term": "Leave-in",
+    "definition": "Condicionador ou produto nutritivo que não é enxaguado após aplicação. Oferece proteção contínua contra frizz e umidade ambiental. Deve ser aplicado em pequena quantidade nas pontas para evitar oleosidade. Ideal para finalização e reativação de cachos.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, finalizacao-por-curvatura-guia-tecnico"
+  },
+  {
+    "term": "Óleo capilar",
+    "definition": "Produto lipídico que repõe os óleos naturais (sebo) removidos pela lavagem. Oferece proteção contra umidade ambiental e frizz mecânico. Em cabelos tipo 4, é elemento indispensável. Deve ser aplicado nas pontas e comprimento, evitando raiz.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, nutrição capilar"
+  },
+  {
+    "term": "Emoliente",
+    "definition": "Substância que amolece e lubrifica a fibra capilar, reduzindo o frizz e melhorando a flexibilidade. Exemplos incluem óleos vegetais (argan, coco), silicones e proteínas hidrolisadas. Trabalha em conjunto com hidratantes para restaurar a saúde do fio.",
+    "context": "Used in produtos capilares, nutrição"
+  },
+  {
+    "term": "Agente catiônico",
+    "definition": "Moléculas com carga elétrica positiva que neutralizam as cargas negativas acumuladas no fio poroso. Reduz a eletrostática que causa frizz e volumização desordenada. Encontrado em condicionadores e máscaras, oferece proteção contra repulsão entre fios.",
+    "context": "Used in frizz-em-cabelo-cacheado, acidificacao-capilar-cachos-porosidade"
+  },
+  {
+    "term": "Ressecamento capilar",
+    "definition": "Estado onde o fio carece de umidade (hidratação) e/ou lipídios (nutrição). Resulta em aparência opaca, sem brilho, frizz constante e fragilidade. Pode ser causado por excesso de lavagem, produtos alcalinos, calor excessivo ou negligência no cronograma de tratamento.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, condições de cabelo"
+  },
+  {
+    "term": "Frizz",
+    "definition": "Fenômeno físico onde as cutículas se abrem e se expandem para absorver umidade ambiental devido a desalinhamento cuticular ou falta de lipídios. Resulta em aparência volumizada e despenteada. Existem dois tipos: frizz de porosidade (curável com acidificação) e frizz mecânico (evitável com técnica).",
+    "context": "Used in frizz-em-cabelo-cacheado, acidificacao-capilar-cachos-porosidade"
+  },
+  {
+    "term": "Frizz mecânico",
+    "definition": "Tipo de frizz causado por atrito físico: uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos ou cortes com lâminas cegas. Diferente do frizz de porosidade, é prevenido através de técnica correta e cuidado mecânico diário.",
+    "context": "Used in frizz-em-cabelo-cacheado, 3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos"
+  },
+  {
+    "term": "Quebra capilar",
+    "definition": "Ruptura prematura da fibra capilar acima da raiz, causada por alta porosidade, fadiga hídrica, atrito mecânico ou uso de acessórios inadequados. Diferente da queda (onde o fio sai com bulbo), a quebra apenas remove o comprimento. Exige diagnóstico e tratamento específico.",
+    "context": "Used in excesso-hidratacao-cronograma-capilar-cacheado, cronograma-capilar-cabelo-cacheado"
+  },
+  {
+    "term": "Queda de cabelo",
+    "definition": "Expulsão do fio completo (com bulbo) do folículo. Normal perder 50-100 fios por dia. Queda excessiva pode indicar inflamação do couro cabeludo, desnutrição, estresse ou obstrução de folículos por resíduos de produto.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, diagnóstico do couro cabeludo"
+  },
+  {
+    "term": "Caspa",
+    "definition": "Descamação excessiva de células mortas do couro cabeludo, frequentemente associada a ressecamento, sensibilidade ou condições como dermatite seborreica. Deve ser diferenciada de ressecamento simples. Exige diagnóstico técnico para identificar causa e tratamento apropriado.",
+    "context": "Used in leitura-de-fio-metodo-exclusivo-studio-do-jon, diagnóstico do couro cabeludo"
+  },
+  {
+    "term": "Dermatite seborreica",
+    "definition": "Condição inflamatória do couro cabeludo caracterizada por descamação excessiva, oleosidade anormal e prurido. Causada frequentemente por acúmulo de resíduos de produtos pesados de finalização ou shampoos inadequados. Requer avaliação dermatológica e tratamento específico.",
+    "context": "Used in diagnóstico do couro cabeludo, frizz-em-cabelo-cacheado"
+  },
+  {
+    "term": "Hidratação",
+    "definition": "Tratamento que repõe água e umidade no córtex capilar. Utiliza moléculas de água que formam ligações de hidrogênio com a proteína. Efeito é temporário (dura até a próxima lavagem). Essencial em cabelos porosos que perdem água rapidamente.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, excesso-hidratacao-cronograma-capilar-cacheado"
+  },
+  {
+    "term": "Nutrição",
+    "definition": "Tratamento que repõe óleos naturais (lipídios) e outros nutrientes que lubrificam a fibra. Protege contra frizz e umidade ambiental. Atua selando a cutícula. Diferente da hidratação, o efeito da nutrição pode durar mais tempo.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, excesso-hidratacao-cronograma-capilar-cacheado"
+  },
+  {
+    "term": "Reconstrução",
+    "definition": "Tratamento que fornece proteínas, queratina e aminoácidos para restaurar a massa e a elasticidade perdidas em fios danificados. Recompõe a estrutura interna do córtex. Deve ser feita conforme diagnóstico técnico de porosidade para evitar enrijecimento excessivo.",
+    "context": "Used in cronograma-capilar-cabelo-cacheado, excesso-hidratacao-cronograma-capilar-cacheado"
+  },
+  {
+    "term": "Elasticidade",
+    "definition": "Capacidade do fio de se alongar quando submetido a tração e retornar ao comprimento original sem quebra. Determinada pela integridade das ligações de proteína no córtex. Um fio com boa elasticidade indica equilíbrio entre hidratação e proteína.",
+    "context": "Used in teste-de-elasticidade, leitura-de-fio-metodo-exclusivo-studio-do-jon"
+  }
+]

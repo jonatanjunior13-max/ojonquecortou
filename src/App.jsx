@@ -18,6 +18,7 @@ const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage'));
 const ReviewsPage = React.lazy(() => import('./pages/ReviewsPage'));
 const GalleryPage = React.lazy(() => import('./pages/GalleryPage'));
 const FaqPage = React.lazy(() => import('./pages/FaqPage'));
+const GlossaryPage = React.lazy(() => import('./pages/GlossaryPage'));
 const MetodoPage = React.lazy(() => import('./pages/MetodoPage'));
 const InvestimentoPage = React.lazy(() => import('./pages/InvestimentoPage'));
 const BookingPage = React.lazy(() => import('./pages/BookingPage'));
@@ -108,6 +109,7 @@ function App() {
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/depoimentos" element={<ReviewsPage />} />
             <Route path="/faq" element={<FaqPage />} />
+            <Route path="/glossario" element={<GlossaryPage />} />
             <Route path="/metodo" element={<MetodoPage />} />
             <Route path="/metodologia" element={<MetodoPage />} />
             <Route path="/investimento" element={<InvestimentoPage />} />

@@ -278,6 +278,28 @@ faqBody += `
   </noscript>
 `;
 
+// Build glossary body insert
+const glossaryData = JSON.parse(fs.readFileSync(path.join('src', 'data', 'glossary.json'), 'utf8'));
+let glossaryBody = `
+  <noscript>
+    <article style="max-width: 900px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Glossário — Ciência do Cabelo Cacheado</h1>
+      <p>Termos técnicos explicados com precisão. Sem marketing. Sem simplificação.</p>
+      <dl style="margin-top: 24px;">
+`;
+glossaryData.forEach(item => {
+  glossaryBody += `
+        <dt style="font-weight: bold; margin-top: 20px; font-size: 1.1rem;">${item.term}</dt>
+        <dd style="margin-left: 0; margin-top: 8px; color: #1a1310;">${item.definition}</dd>
+        <dd style="margin-left: 0; margin-top: 4px; font-size: 0.85rem; color: #999; font-style: italic;">${item.context}</dd>
+  `;
+});
+glossaryBody += `
+      </dl>
+    </article>
+  </noscript>
+`;
+
 // Build dynamically the Services page body insert
 let servicesBody = `
   <noscript>
@@ -796,6 +818,34 @@ const pages = [
             "acceptedAnswer": {
               "@type": "Answer",
               "text": faq.a
+            }
+          }))
+        }
+      ]
+    }
+  },
+  {
+    route: '/glossario',
+    title: 'Glossário de Cabelo Cacheado | Studio do Jon',
+    description: 'Glossário técnico com 56 termos sobre cabelo cacheado, crespo e ondulado. Descubra a ciência por trás de porosidade, pH, cronograma capilar e Método Leitura de Fio.',
+    bodyInsert: glossaryBody,
+    schema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Glossário — Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br/glossario",
+          "description": "Glossário técnico com 56 termos sobre cabelo cacheado, crespo e ondulado."
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": glossaryData.map(term => ({
+            "@type": "Question",
+            "name": term.term,
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": term.definition
             }
           }))
         }
