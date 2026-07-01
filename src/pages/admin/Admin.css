@@ -645,112 +645,100 @@
   font-weight: bold;
 }
 .appt-card.faltou, .appt-card.ausencia, .appt-card.svc-ausencia {
-  background: linear-gradient(135deg, rgba(82, 82, 91, 0.25) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(82, 82, 91, 0.4) !important;
-  border-left: 4px solid #52525B !important;
+  background: linear-gradient(90deg, rgba(82, 82, 91, 0.25) 0%, rgba(82, 82, 91, 0.08) 40%, rgba(82, 82, 91, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #52525B !important;
   color: #A1A1AA !important;
-  box-shadow: inset 0 0 8px rgba(82, 82, 91, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
   opacity: 0.65;
 }
 
 .appt-card.svc-corte, .appt-card.pendente.svc-corte, .appt-card.confirmado.svc-corte, .appt-card.finalizado.svc-corte, .appt-card.cancelado.svc-corte {
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(167, 139, 250, 0.6) !important;
-  border-left: 4px solid #8B5CF6 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(167, 139, 250, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(139, 92, 246, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #8B5CF6 !important;
+  color: #F5F3FF !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .appt-card.svc-combo, .appt-card.pendente.svc-combo, .appt-card.confirmado.svc-combo, .appt-card.finalizado.svc-combo, .appt-card.cancelado.svc-combo {
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(244, 63, 94, 0.6) !important;
-  border-left: 4px solid #E11D48 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(244, 63, 94, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(255, 45, 139, 0.22) 0%, rgba(255, 45, 139, 0.08) 40%, rgba(255, 45, 139, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #FF2D8B !important;
+  color: #FFF5F9 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .appt-card.svc-tratamento, .appt-card.pendente.svc-tratamento, .appt-card.confirmado.svc-tratamento, .appt-card.finalizado.svc-tratamento, .appt-card.cancelado.svc-tratamento {
-  background: linear-gradient(135deg, rgba(52, 211, 153, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(52, 211, 153, 0.6) !important;
-  border-left: 4px solid #10B981 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(52, 211, 153, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(6, 182, 212, 0.08) 40%, rgba(6, 182, 212, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #06B6D4 !important;
+  color: #ECFEFF !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .appt-card.svc-cor, .appt-card.pendente.svc-cor, .appt-card.confirmado.svc-cor, .appt-card.finalizado.svc-cor, .appt-card.cancelado.svc-cor {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(251, 191, 36, 0.6) !important;
-  border-left: 4px solid #F59E0B !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(251, 191, 36, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(249, 115, 22, 0.22) 0%, rgba(249, 115, 22, 0.08) 40%, rgba(249, 115, 22, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #F97316 !important;
+  color: #FFF7ED !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .appt-card.svc-analise, .appt-card.pendente.svc-analise, .appt-card.confirmado.svc-analise, .appt-card.finalizado.svc-analise, .appt-card.cancelado.svc-analise {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(251, 146, 60, 0.6) !important;
-  border-left: 4px solid #F97316 !important;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.22) 0%, rgba(148, 163, 184, 0.08) 40%, rgba(148, 163, 184, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #94A3B8 !important;
   color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(251, 146, 60, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 .appt-card.svc-finalizacao, .appt-card.pendente.svc-finalizacao, .appt-card.confirmado.svc-finalizacao, .appt-card.finalizado.svc-finalizacao, .appt-card.cancelado.svc-finalizacao {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(168, 85, 247, 0.6) !important;
-  border-left: 4px solid #A855F7 !important;
-  color: #F8FAFC !important;
-  box-shadow: inset 0 0 8px rgba(168, 85, 247, 0.35), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.22) 0%, rgba(168, 85, 247, 0.08) 40%, rgba(168, 85, 247, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #A855F7 !important;
+  color: #FAF5FF !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 /* Ausência Genérica */
 .appt-card.bloqueado {
-  background: linear-gradient(135deg, rgba(100, 116, 139, 0.3) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(100, 116, 139, 0.4) !important;
-  border-left: 4px solid #475569 !important;
-  color: #94A3B8 !important;
-  opacity: 0.75;
-  box-shadow: inset 0 0 8px rgba(100, 116, 139, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(75, 85, 99, 0.15) 0%, rgba(75, 85, 99, 0.05) 100%) !important;
+  border: none !important;
+  border-left: 3.5px solid #4B5563 !important;
+  color: #9CA3AF !important;
+  font-weight: bold;
+  border-radius: 0px !important;
+  box-shadow: none !important;
 }
 
 /* Almoço */
 .appt-card.bloqueado-almoco, .appt-card.svc-almoco {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(245, 158, 11, 0.4) !important;
-  border-left: 4px solid #F59E0B !important;
-  color: #F59E0B !important;
-  box-shadow: inset 0 0 8px rgba(245, 158, 11, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%) !important;
+  border-left: 3.5px solid #F59E0B !important;
+  color: #D97706 !important;
 }
 
 /* Folga */
 .appt-card.bloqueado-folga {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(16, 185, 129, 0.4) !important;
-  border-left: 4px solid #10B981 !important;
-  color: #10B981 !important;
-  box-shadow: inset 0 0 8px rgba(16, 185, 129, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+  border-left: 3.5px solid #10B981 !important;
+  color: #059669 !important;
 }
 
 /* Reunião */
 .appt-card.bloqueado-reuniao {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(59, 130, 246, 0.4) !important;
-  border-left: 4px solid #3B82F6 !important;
-  color: #3B82F6 !important;
-  box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%) !important;
+  border-left: 3.5px solid #3B82F6 !important;
+  color: #2563EB !important;
 }
 
 /* Psicóloga / Médico / Viagem */
 .appt-card.bloqueado-psicologa, .appt-card.bloqueado-medico, .appt-card.bloqueado-viagem {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, #111115 65%, #000000 100%) !important;
-  border: 1.5px solid rgba(239, 68, 68, 0.4) !important;
-  border-left: 4px solid #EF4444 !important;
-  color: #EF4444 !important;
-  box-shadow: inset 0 0 8px rgba(239, 68, 68, 0.2), 0 3px 10px rgba(0,0,0,0.5) !important;
-  border-radius: 12px !important;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
+  border-left: 3.5px solid #EF4444 !important;
+  color: #DC2626 !important;
 }
 
 .appt-card.finalizado,
@@ -764,7 +752,7 @@
   border: none !important;
   border-left: 4px solid #34D399 !important;
   color: #ECFDF5 !important;
-  border-radius: 12px !important;
+  border-radius: 0px !important;
   box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
   opacity: 0.95;
 }

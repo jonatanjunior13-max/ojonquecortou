@@ -126,7 +126,7 @@ const investmentBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Investimento — Studio do Jon</h1>
-      <p>Antes de qualquer tesoura, vem o diagnóstico. O Método Leitura de Fio está incluído em todo atendimento — sem cobrança extra. O que você paga é pelo resultado que foi planejado desde o início.</p>
+      <p>Antes de qualquer tesoura, vem o diagnóstico. O <a href="/metodo">Método Leitura de Fio</a> está incluído em todo atendimento — sem cobrança extra. O que você paga é pelo resultado que foi planejado desde o início.</p>
       <h2>Nossos Valores e Serviços</h2>
       <ul>
         <li><strong>Corte especializado:</strong> R$ 190 a R$ 230. Inclui Leitura de Fio completa (7 etapas), corte, finalização como validação.</li>
@@ -455,7 +455,7 @@ const homeBody = `
         <li><strong>Tratamento Personalizado</strong> — R$ 130. Hidratação, nutrição ou reconstrução conforme diagnóstico.</li>
       </ul>
       <h2>O Método Leitura de Fio</h2>
-      <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra.</p>
+      <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra. Saiba mais sobre o <a href="/metodo">Método Leitura de Fio</a>.</p>
       <h2>Localização e Agendamento</h2>
       <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
