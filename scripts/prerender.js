@@ -622,7 +622,7 @@ const homeBody = `
       <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra. Saiba mais sobre o <a href="/metodo">Método Leitura de Fio</a>.</p>
       <p>Veja todos os <a href="/investimento">valores e formas de investimento</a> antes de agendar seu horário.</p>
       <h2>Localização e Agendamento</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Agendamento online: ojonquecortou.com.br/agendar. Instagram: @ojonquecortou.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+553135866673">(31) 3586-6673</a>. <a href="/agendar">Agende seu horário online</a> ou fale pelo <a href="https://wa.me/553135866673">WhatsApp</a>. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
       <p>Localizado no bairro Caiçaras, na Rua Pedro II, o Studio do Jon fica a poucos passos do metrô Gameleira, um dos pontos mais acessíveis de Belo Horizonte para quem busca um especialista em cabelo cacheado sem depender de carro. Clientes de toda a região metropolitana chegam de metrô, ônibus ou a pé para o diagnóstico da Leitura de Fio, tornando o Caiçaras uma referência local para cortes técnicos em cachos, crespos e ondulados.</p>
     </article>
@@ -641,7 +641,7 @@ const agendarBody = `
         <li>Receba a confirmação instantânea do seu agendamento.</li>
       </ul>
       <h2>Localização e Contato</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: (31) 3586-6673. Instagram: @ojonquecortou.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+553135866673">(31) 3586-6673</a>. Prefere falar antes? Chame no <a href="https://wa.me/553135866673">WhatsApp</a>. Instagram: @ojonquecortou.</p>
     </article>
   </noscript>
 `;
