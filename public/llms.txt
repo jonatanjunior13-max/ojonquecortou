@@ -19,6 +19,7 @@
 - Método Leitura de Fio: https://www.ojonquecortou.com.br/metodo
 - Perguntas Frequentes (FAQ): https://www.ojonquecortou.com.br/faq
 - Blog e Artigos: https://www.ojonquecortou.com.br/blog
+- Glossário Técnico (56 termos): https://www.ojonquecortou.com.br/glossario
 
 ## Contato
 - Endereço: Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040
