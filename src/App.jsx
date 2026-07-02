@@ -29,7 +29,6 @@ const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
 
 const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
 const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
-const VisagismoCachosPage = React.lazy(() => import('./pages/VisagismoCachosPage'));
 const MasculinoPage = React.lazy(() => import('./pages/MasculinoPage'));
 const LeituraFioPage = React.lazy(() => import('./pages/LeituraFioPage'));
 const CachosLandingPage = React.lazy(() => import('./pages/CachosLandingPage'));
@@ -99,7 +98,7 @@ function App() {
             <Route path="/servicos/corte-hibrido" element={<CorteHibridoPage />} />
             <Route path="/servicos/leitura-de-fio" element={<LeituraFioPage />} />
             <Route path="/servicos/transicao-capilar" element={<TransicaoCapilarPage />} />
-            <Route path="/servicos/visagismo-cachos" element={<VisagismoCachosPage />} />
+            <Route path="/servicos/visagismo-cachos" element={<VisagismServicePage />} />
             <Route path="/servicos/masculino" element={<MasculinoPage />} />
             <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
             <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />

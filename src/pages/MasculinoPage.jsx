@@ -59,15 +59,15 @@ const MasculinoPage = () => {
               <img src="/corte-masculino-cacheado-bh-resultado.webp" alt="Corte masculino cacheado no Studio do Jon em BH" className="about-image" />
             </div>
             <div className="experience-tag">
-              <span className="exp-number">1h</span>
-              <span className="exp-text">Prático & Técnico</span>
+              <span className="exp-number">R$ 130</span>
+              <span className="exp-text">Valor do Investimento</span>
             </div>
           </div>
           
           <div className="about-content reveal">
             <h2 className="heading-lg mb-2">Chega de degradê genérico que ignora a curvatura do seu cacho.</h2>
             <p className="paragraph-md mb-2">
-              Cabelo masculino cacheado e crespo exige um corte estruturado que respeite o caimento. Se o barbeiro passar a máquina nas laterais sem ler o comportamento do seu fio, o resultado é um topo sem definição e laterais espetadas.
+              Cabelo masculino cacheado e crespo exige um corte estruturado que respeite o caimento. Se o barbeiro passar a máquina nas laterais sem ler o comportamento do seu fio, o resultado é um topo sem definição e laterais espetadas. A haste capilar texturizada masculina tem particularidades de densidade e distribuição que exigem conexões precisas feitas à tesoura.
             </p>
             <p className="paragraph-md mb-3">
               No Studio do Jon, aplicamos a **Leitura de Fio** e técnicas de visagismo masculino para criar cortes práticos e com excelente definição. Trabalhamos com Wolf Cuts, Undercuts desenhados para cachos e cortes clássicos na tesoura que valorizam o volume sem dar trabalho na hora de arrumar. O foco é praticidade: acordar, finalizar rápido e sair pronto.
@@ -80,7 +80,39 @@ const MasculinoPage = () => {
         </div>
       </section>
 
-      <section className="section-padding technique-section">
+      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
+        <div className="container" style={{ maxWidth: '800px' }}>
+          <h2 className="heading-md mb-2">A Importância do Corte Geométrico com Tesoura</h2>
+          <p className="paragraph-md mb-3">
+            Nas barbearias comuns, o uso excessivo de máquina de corte com pentes genéricos destrói a coesão dos cachos masculinos. Ao cortar os fios na mesma altura mecânica, a máquina corta os cachos no meio de sua curvatura natural, deixando pontas retas que espetam e perdem a capacidade de espiralar sozinhos.
+          </p>
+          <p className="paragraph-md mb-3">
+            O nosso corte masculino é estruturado **seção por seção à tesoura**, respeitando o ângulo de crescimento. Isso garante que:
+          </p>
+          <ul className="about-list mb-3">
+            <li>As laterais tenham encaixe harmônico com o topo, sem criar o efeito "capacete".</li>
+            <li>O topo mantenha o volume ideal com balanço natural e cachos definidos.</li>
+            <li>O acabamento de nuca e costeletas seja limpo e dure mais tempo sem perder o desenho.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="container" style={{ maxWidth: '800px' }}>
+          <h2 className="heading-md text-center mb-3">Guia Rápido de Estilização Masculina em 3 Minutos</h2>
+          <p className="paragraph-md mb-3 text-center">
+            Praticidade é a regra. Siga estes passos simples pela manhã para manter os cachos alinhados o dia todo:
+          </p>
+          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <p className="paragraph-md mb-2"><strong>Passo 1: Umedecer (30s)</strong> - Borrifar água de leve ou finalizar logo após o banho. O cacho precisa de água para reativar as pontes de hidrogênio e ganhar forma.</p>
+            <p className="paragraph-md mb-2"><strong>Passo 2: Leave-in Fluido (1min)</strong> - Distribua uma pequena quantidade de creme de pentear leve apenas no topo, usando a técnica de fitagem rápida com os dedos.</p>
+            <p className="paragraph-md mb-2"><strong>Passo 3: Gelatina ou Gel (30s)</strong> - Amasse os cachos de baixo para cima com uma pequena quantidade de gel ou gelatina líquida para garantir fixação e evitar que o vento desfaça a definição.</p>
+            <p className="paragraph-md mb-0"><strong>Passo 4: Secar ao ar ou Difusor (1min)</strong> - Deixe secar naturalmente ou use o difusor por 1 minuto se estiver com pressa.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding technique-section" style={{ background: 'var(--bg-warm)' }}>
         <div className="container">
           <div className="text-center reveal mb-4">
             <h2 className="heading-md">Diferenciais do Corte Masculino</h2>
@@ -90,17 +122,17 @@ const MasculinoPage = () => {
             <div className="card reveal stagger-1">
               <span className="tech-emoji">⚡</span>
               <h3>Praticidade Diária</h3>
-              <p>Cortes pensados para que a sua finalização dure menos de 5 minutos, sem mistérios.</p>
+              <p>Cortes pensados para que a sua finalização dure menos de 5 minutos, sem mistérios ou rotinas complexas.</p>
             </div>
             <div className="card reveal stagger-2">
               <span className="tech-emoji">📐</span>
               <h3>Acabamento Limpo</h3>
-              <p>Laterais e nuca limpas de forma integrada com o volume e caimento do topo.</p>
+              <p>Laterais e nuca limpas de forma integrada com o volume e caimento do topo, valorizando o desenho do corte.</p>
             </div>
             <div className="card reveal stagger-3">
               <span className="tech-emoji">✂️</span>
               <h3>Estrutura na Tesoura</h3>
-              <p>Evitamos o uso excessivo de máquina para preservar a textura e a definição das pontas.</p>
+              <p>Evitamos o uso excessivo de máquina para preservar a textura e a definição das pontas, garantindo caimento orgânico.</p>
             </div>
           </div>
         </div>
@@ -109,68 +141,31 @@ const MasculinoPage = () => {
       <section className="section-padding">
         <div className="container">
           <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Leia Mais Sobre Cortes Masculinos</h2>
+            <h2 className="heading-md">Leia Mais e Conheça Nosso Trabalho</h2>
           </div>
 
           <div className="technique-grid">
-            <Link to="/blog/melhores-cortes-cabelo-cacheado-masculino-2026" className="card reveal stagger-1" style={{ textDecoration: 'none' }}>
-              <h3>Estilos Masculinos em Alta</h3>
-              <p>Os cortes masculinos que valorizam a textura natural do cacho sem dar trabalho.</p>
+            <Link to="/servicos/corte-hibrido" className="card reveal stagger-1" style={{ textDecoration: 'none' }}>
+              <h3>Corte Híbrido</h3>
+              <p>Conheça nossa técnica de corte que combina precisão úmida e lapidação seca.</p>
             </Link>
-            <Link to="/blog/wolf-cut-cabelos-cacheados-tendencia" className="card reveal stagger-2" style={{ textDecoration: 'none' }}>
-              <h3>Wolf Cut para Cachos</h3>
-              <p>O corte lobo adaptado para cabelos cacheados masculinos com volume estruturado.</p>
+            <Link to="/metodo" className="card reveal stagger-2" style={{ textDecoration: 'none' }}>
+              <h3>O Método do Studio</h3>
+              <p>Entenda a metodologia científica que aplicamos a cada tipo de curvatura.</p>
             </Link>
-            <Link to="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon" className="card reveal stagger-3" style={{ textDecoration: 'none' }}>
+            <Link to="/servicos/leitura-de-fio" className="card reveal stagger-3" style={{ textDecoration: 'none' }}>
               <h3>Leitura de Fio</h3>
-              <p>Entenda o diagnóstico que fazemos antes de qualquer corte no Studio.</p>
+              <p>Entenda o diagnóstico individual que fazemos antes de qualquer corte no Studio.</p>
             </Link>
           </div>
         </div>
       </section>
 
-      <section className="section-padding" style={{ paddingTop: 0 }}>
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Recursos Úteis para Cabelos Cacheados</h2>
-          </div>
-
-          <div className="resources-grid">
-            <div className="card reveal stagger-1">
-              <h3>Guias de Cuidado</h3>
-              <p>Aprenda técnicas de cuidado diário e produtos recomendados:</p>
-              <ul style={{textAlign: 'left', marginTop: '10px'}}>
-                <li><a href="https://www.curlsbot.com/curl-guide/" target="_blank" rel="noopener noreferrer">The Curl Girl Method Guide</a></li>
-                <li><a href="https://www.reddit.com/r/curlyhair/" target="_blank" rel="noopener noreferrer">r/CurlyHair Community</a></li>
-              </ul>
-            </div>
-
-            <div className="card reveal stagger-2">
-              <h3>Educação Capilar</h3>
-              <p>Entenda a estrutura e comportamento dos fios cacheados:</p>
-              <ul style={{textAlign: 'left', marginTop: '10px'}}>
-                <li><a href="https://www.science-of-hair.com/" target="_blank" rel="noopener noreferrer">Science of Hair</a></li>
-                <li><a href="https://www.naturalhaircommunity.com/" target="_blank" rel="noopener noreferrer">Natural Hair Community</a></li>
-              </ul>
-            </div>
-
-            <div className="card reveal stagger-3">
-              <h3>Técnicas Profissionais</h3>
-              <p>Informações sobre cortes e técnicas para cabelos cacheados:</p>
-              <ul style={{textAlign: 'left', marginTop: '10px'}}>
-                <li><a href="https://curlsmith.com/" target="_blank" rel="noopener noreferrer">Curl Smith - Educação em Cuidado de Cachos</a></li>
-                <li><a href="https://www.behindthechair.com/curly-hair" target="_blank" rel="noopener noreferrer">Behind the Chair - Curly Hair</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="about-cta-bottom section-padding">
+      <section className="about-cta-bottom section-padding" style={{ background: 'var(--bg-warm)' }}>
         <div className="container text-center reveal">
           <h2 className="heading-lg mb-2">Seu cabelo com estilo e sem enrolação.</h2>
           <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Agende seu horário com quem entende a mecânica do cacho masculino em Belo Horizonte.
+            Agende seu horário com quem entende a mecânica do cacho masculino em Belo Horizonte. Atendimento exclusivo por R$ 130.
           </p>
           <Link to="/agendar" className="btn btn-primary">
             Agendar Corte Masculino
