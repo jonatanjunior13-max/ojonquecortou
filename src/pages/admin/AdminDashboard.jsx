@@ -5149,7 +5149,7 @@ Grande abraço, Jon.`;
                               </div>
                               <div className="detail-row" style={{ margin: 0 }}>
                                 <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total:</label>
-                                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {tx.value?.toFixed(2).replace('.', ',')}</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {Number(tx.value || 0).toFixed(2).replace('.', ',')}</span>
                               </div>
                               
                               <div style={{ marginTop: 8 }}>
@@ -5161,7 +5161,7 @@ Grande abraço, Jon.`;
                                     {tx.productSales.map((ps, idx) => (
                                       <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
                                         <span>{ps.name} (x{ps.quantity})</span>
-                                        <span style={{ fontWeight: 600 }}>R$ {(ps.sellingPrice * ps.quantity).toFixed(2).replace('.', ',')}</span>
+                                        <span style={{ fontWeight: 600 }}>R$ {(Number(ps.sellingPrice || 0) * Number(ps.quantity || 0)).toFixed(2).replace('.', ',')}</span>
                                       </div>
                                     ))}
                                   </div>

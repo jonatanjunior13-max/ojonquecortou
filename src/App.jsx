@@ -127,14 +127,14 @@ function App() {
           <Route path="/admin/mobile" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense>} />
           <Route path="/admin" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Painel...</div>}><AdminLayout /></React.Suspense>}>
             <Route index element={<Navigate to="/admin/hoje" replace />} />
-            <Route path="hoje" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando...</div>}><AdminHoje /></React.Suspense>} />
-            <Route path="agenda" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Agenda...</div>}><AdminDashboard /></React.Suspense>} />
-            <Route path="servicos" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Serviços...</div>}><AdminServices /></React.Suspense>} />
-            <Route path="clientes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense>} />
-            <Route path="estoque" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Estoque...</div>}><AdminInventory /></React.Suspense>} />
-            <Route path="financeiro" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Financeiro...</div>}><AdminFinancial /></React.Suspense>} />
+            <Route path="hoje" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando...</div>}><AdminHoje /></React.Suspense></AdminErrorBoundary>} />
+            <Route path="agenda" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Agenda...</div>}><AdminDashboard /></React.Suspense></AdminErrorBoundary>} />
+            <Route path="servicos" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Serviços...</div>}><AdminServices /></React.Suspense></AdminErrorBoundary>} />
+            <Route path="clientes" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense></AdminErrorBoundary>} />
+            <Route path="estoque" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Estoque...</div>}><AdminInventory /></React.Suspense></AdminErrorBoundary>} />
+            <Route path="financeiro" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Financeiro...</div>}><AdminFinancial /></React.Suspense></AdminErrorBoundary>} />
             <Route path="marketing" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Marketing...</div>}><AdminMarketing /></React.Suspense></AdminErrorBoundary>} />
-            <Route path="configuracoes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense>} />
+            <Route path="configuracoes" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Configurações...</div>}><AdminSettings /></React.Suspense></AdminErrorBoundary>} />
           </Route>
         </Routes>
       </React.Suspense>

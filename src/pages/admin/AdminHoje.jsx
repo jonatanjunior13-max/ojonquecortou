@@ -671,7 +671,7 @@ const AdminHoje = () => {
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Valor Total:</span>
-                          <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {tx.value?.toFixed(2).replace('.', ',')}</span>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--adm-gold)' }}>R$ {Number(tx.value || 0).toFixed(2).replace('.', ',')}</span>
                         </div>
                         
                         <div style={{ marginTop: 8 }}>
@@ -683,7 +683,7 @@ const AdminHoje = () => {
                               {tx.productSales.map((ps, idx) => (
                                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '4px 6px', background: 'rgba(255,255,255,0.03)', borderRadius: 4 }}>
                                   <span>{ps.name} (x{ps.quantity})</span>
-                                  <span style={{ fontWeight: 600 }}>R$ {(ps.sellingPrice * ps.quantity).toFixed(2).replace('.', ',')}</span>
+                                  <span style={{ fontWeight: 600 }}>R$ {(Number(ps.sellingPrice || 0) * Number(ps.quantity || 0)).toFixed(2).replace('.', ',')}</span>
                                 </div>
                               ))}
                             </div>
