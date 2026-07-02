@@ -632,8 +632,9 @@ export const posts = [
       ]
     },
     title: 'pH do Cacho: Como Fazer Acidificação Capilar e Vencer a Porosidade',
+    seoTitle: 'Acidificação Capilar: Adeus ao Frizz | Studio do Jon',
     excerpt: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade.',
-    metaDescription: 'Descubra como a acidificação capilar combate o frizz e reconstrói o pH do cabelo cacheado em BH. Agende sua leitura de fio com o especialista Jon.',
+    metaDescription: 'Cabelo poroso, ressecado ou com frizz? A acidificação capilar reequilibra o pH do cacho. Veja como funciona e agende com o Jon em BH.',
     keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, acidificação capilar bh, porosidade cabelo cacheado bh, especialista em cachos bh',
     date: '17 de Junho, 2026',
     author: 'Jon',
@@ -1750,145 +1751,13 @@ export const posts = [
         <h3>Continue Lendo</h3>
         <ul style="list-style: none; padding-left: 0;">
           <li style="margin-bottom: 1rem;">
-            → <a href="/blog/rotina-basica-cabelo-cacheado-cronograma">Rotina Básica para Cabelos Cacheados: Cronograma que Funciona</a>
+            → <a href="/blog/cronograma-capilar-cabelo-cacheado">Cronograma Capilar por Porosidade: o Guia Completo</a>
           </li>
           <li style="margin-bottom: 1rem;">
             → <a href="/blog/frequencia-de-corte-cabelo-cacheado">Frequência de Corte para Cabelo Cacheado: Saiba Quando Cortar</a>
           </li>
         </ul>
       </div>
-    `
-  },
-  {
-    id: 32,
-    slug: 'rotina-basica-cabelo-cacheado-cronograma',
-    faqSchema: {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-                {
-                      "@type": "Question",
-                      "name": "O que é o cronograma capilar para cabelos cacheados?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "É uma rotina organizada em três etapas: Hidratação (reposição de água), Nutrição (reposição de óleos e lipídios) e Reconstrução (reposição de massa e proteínas)."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "Quantas vezes por semana devo lavar o cabelo cacheado?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "O ideal é lavar de 2 a 3 vezes por semana. Lavar todo dia retira a proteção lipídica natural do fio, enquanto passar mais de uma semana sem lavar pode acumular resíduos no couro cabeludo."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "Como começar uma rotina básica sem gastar muito?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Você só precisa de 3 itens essenciais de qualidade: um shampoo suave (low poo), uma máscara de tratamento coringa e um bom leave-in para finalizar."
-                      }
-                }
-          ]
-    },
-    title: 'Rotina Básica para Cabelo Cacheado | Jon',
-    excerpt: 'Descubra a rotina ideal para cabelos cacheados em 2026. Cronograma capilar (H, N, R), frequência de lavagem e produtos essenciais que fazem diferença real...',
-    metaDescription: 'Cronograma capilar simplificado: o que fazer em cada lavagem para manter cachos saudáveis e definidos. Rotina validada por especialista em BH.',
-    keywords: 'rotina cabelo cacheado, cronograma capilar cacheado, hidratação nutrição reconstrução, como cuidar cabelo cacheado, produtos para cacho, rotina weekly curly hair',
-    date: '14 de Maio, 2026',
-    author: 'Jon',
-    category: 'Cuidado Capilar',
-    image: '/rotina-cachos-hero.webp',
-    content: `
-      <h2>ROTINA DE CUIDADOS BÁSICOS PARA CABELO CACHEADO: PORQUE NÃO É "LAVA E PRONTO"</h2>
-      <p>Seu cabelo cacheado não é igual ao do seu primo liso. A estrutura do fio é diferente. O caminho que a oleosidade natural faz é diferente. O que funciona pra hidratação é diferente.</p>
-      <p>Ignorar isso é condenar seu cacho a viver ressecado, quebradiço, frizz constante.</p>
-      <p>Uma rotina básica não é complicada. Mas é específica. E sim, ela faz toda diferença.</p>
-      <p>Vou ser direto: uma pessoa que segue uma rotina estruturada tem cachos bonitos. Uma pessoa que lava o cabelo aleatoriamente tem só... cabelo.</p>
-      <p>Aqui tá o que funciona.</p>
-
-      <h2>A BASE: NÃO LAVE SEU CABELO CACHEADO TODOS OS DIAS</h2>
-      <p>Isso precisa entrar na sua cabeça: lavar cabelo cacheado todo dia é autossabotagem.</p>
-      <p>Lavagem diária remove a oleosidade natural que protege. Remove hidratação. Deixa o fio vulnerável. Frizz, quebra, ressecamento — tudo vem daí.</p>
-      <p>O ideal? <strong>Lavar a cada 2 ou 3 dias.</strong></p>
-      <p>Sim, parece muito tempo. Não é. Seu cacho tá longe do couro cabeludo. A oleosidade não desce rápido. E quando você começa a respeitar esse intervalo, seu fio aprende a se autoproteger melhor.</p>
-      <p>Resultado? Com o tempo, você sente menos vontade de lavar todo dia. O cacho fica mais forte, mais saudável, menos dependente de água quente e xampus agressivos.</p>
-      <p><strong>Dias alternados:</strong> Lava num dia, descansa 2 dias, lava de novo.</p>
-      <p>Se você faz atividade física todo dia e transpira muito, pode lavar a cada 2 dias (não todo dia). Mas busca uma versão mais suave — um co-wash ou xampu específico, não aquele que tira tudo.</p>
-
-      <img src="/rotina-cachos-hero.webp" alt="Mulher branca com cachos saudáveis e volumosos sorrindo enquanto cuida do cabelo em um ambiente relaxante" class="post-inline-image" />
-
-      <h2>O CRONOGRAMA CAPILAR: H, N, R (A ESTRUTURA QUE FUNCIONA)</h2>
-      <p>Aqui tá a parada que a maioria não entende: seu cabelo cacheado precisa de 3 coisas alternadas, não da mesma coisa toda semana.</p>
-      <ul>
-        <li><strong>H = Hidratação</strong> — Repõe água</li>
-        <li><strong>N = Nutrição</strong> — Repõe óleos (lipídios)</li>
-        <li><strong>R = Reconstrução</strong> — Repõe proteína</li>
-      </ul>
-      <p>Cada uma faz um trabalho. Cada uma é importante. Mas em sequência errada, você danifica.</p>
-
-      <h3>HIDRATAÇÃO (O Alicerce)</h3>
-      <p>Hidratação é repor água no fio. Parece óbvio, mas a maioria faz errado.</p>
-      <p><strong>O que procurar:</strong> Xampus e condicionadores com glicerina, aloe vera, ácido hialurônico, hidrolisados. Essas substâncias puxam e retêm água no fio.</p>
-      <p><strong>Como usar:</strong> Lava com xampu hidratante suave. Aplica o condicionador e deixa agir 10 a 15 minutos (não é só passar e sair). Enxágua bem e finaliza com leave-in.</p>
-      <p><strong>Frequência:</strong> 1 a 2 vezes por semana. Sinal de necessidade: Fio mole, sem definição, muito frizz, aspecto opaco.</p>
-
-      <img src="/cronograma-semanal-cachos.webp" alt="Infográfico do cronograma capilar semanal mostrando as etapas de hidratação, nutrição e reconstrução para cabelos cacheados" class="post-inline-image" />
-
-      <h3>NUTRIÇÃO (O Construtor)</h3>
-      <p>Nutrição é repor óleos. Isso é o que torna o cacho macio, brilhoso, definido. É especialmente importante porque o óleo natural tem dificuldade de percorrer toda a extensão do cacho.</p>
-      <p><strong>O que procurar:</strong> Máscaras com óleos de coco, argan, jojoba, abacate, açaí ou manteigas (cupuaçu, karité).</p>
-      <p><strong>Como usar:</strong> Aplica mecha por mecha e deixa agir 20 a 30 minutos. Enxágua com água morna.</p>
-      <p><strong>Frequência:</strong> 1 a 2 vezes por semana (é o passo mais importante). Sinal de necessidade: Frizz incontrolável, fio opaco, sem brilho.</p>
-
-      <h3>RECONSTRUÇÃO (O Reparo)</h3>
-      <p>Reconstrução é repor proteína. Fios danificados, quebradiços ou em transição perdem proteína. Mas atenção: em excesso, deixa o cacho rígido.</p>
-      <p><strong>O que procurar:</strong> Máscaras com queratina, colágeno, proteínas de trigo ou aminoácidos.</p>
-      <p><strong>Como usar:</strong> Aplica em toda extensão, deixa agir 15 a 20 minutos e enxágua bem. Sempre finalize com um leave-in nutritivo depois.</p>
-      <p><strong>Frequência:</strong> 1 vez por semana OU a cada 15 dias. Sinal de necessidade: Fio muito quebrado, pontinhas duplas visíveis, fragilidade extrema.</p>
-
-      <h2>EXEMPLO DE CRONOGRAMA REAL (O QUE FUNCIONA)</h2>
-      <ul>
-        <li><strong>Segunda-feira:</strong> Lavagem com hidratação</li>
-        <li><strong>Quarta-feira:</strong> Nutrição profunda</li>
-        <li><strong>Sexta-feira:</strong> Reconstrução</li>
-        <li><strong>Domingo:</strong> Lavagem suave (co-wash) + leave-in</li>
-        <li><strong>Dias sem lavar:</strong> Terça, quinta, sábado (usa apenas leave-in ou finalizador)</li>
-      </ul>
-
-      <h2>PRODUTOS ESSENCIAIS ALÉM DA MÁSCARA</h2>
-      <p>Sua rotina não é só máscara em casa. Tem coisas pro dia a dia que fazem diferença:</p>
-      <ul>
-        <li><strong>Leave-in:</strong> Aplica na mecha úmida. Hidrata e prepara o cacho pra durar o dia.</li>
-        <li><strong>Finalizador (Gel ou Creme):</strong> Define o cacho e controla o frizz com mais fixação.</li>
-        <li><strong>Óleos para Finalização:</strong> Uma gota para selar o cacho já seco e dar brilho.</li>
-      </ul>
-
-      <img src="/aplicacao-produtos-cachos.webp" alt="Passo a passo da aplicação de produtos: leave-in, pente de dentes largos, técnica de praying hands com gel e resultado final definido" class="post-inline-image" />
-
-      <h2>DETALHES QUE FAZEM A DIFERENÇA</h2>
-      <h3>A Fronha de Cetim</h3>
-      <p>Troque o algodão pelo cetim. O algodão cria atrito que gera frizz e quebra. O cetim preserva a definição enquanto você dorme. É um investimento pequeno com impacto máximo.</p>
-
-      <h3>Integração com o Corte</h3>
-      <p>Sua rotina deve ser compatível com seu corte. Camadas pedem nutrição constante nas pontas expostas. Um especialista ajuda a alinhar o corte com a manutenção ideal.</p>
-
-      <h2>SINAIS DE ALERTA</h2>
-      <ul>
-        <li><strong>Frizz constante:</strong> Aumente a nutrição.</li>
-        <li><strong>Cacho mole/sem forma:</strong> Teste um finalizador mais forte ou aumente a nutrição.</li>
-        <li><strong>Fio quebradiço:</strong> Aumente a reconstrução e reduza as lavagens.</li>
-        <li><strong>Couro irritado:</strong> Use xampus mais suaves ou faça um detox capilar.</li>
-      </ul>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <h3>Quer uma rotina personalizada para o seu tipo de cacho?</h3>
-        <p>Marcas uma consulta. Vamos analisar seu fio e montar um cronograma que funciona com a sua vida, não contra ela.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem;">Agendar Consulta</a>
-      </div>
-
-      <p><i>Especialista em diagnóstico e rotina para cabelos cacheados em Belo Horizonte</i></p>
     `
   },
   {
@@ -2225,9 +2094,9 @@ export const posts = [
     id: 29,
     slug: 'cronograma-capilar-cabelo-cacheado',
     title: 'Cronograma Capilar Passo a Passo para Cabelos Cacheados',
-    seoTitle: 'Cronograma Capilar para Cacheadas Passo a Passo | Studio do Jon BH',
+    seoTitle: 'Cronograma Capilar por Porosidade: Guia Cacheado | Studio do Jon',
     excerpt: 'O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. Descubra como ler o fio antes de montar qualquer protocolo.',
-    metaDescription: 'Cronograma capilar que funciona pra cabelo cacheado. Jon lê seu fio antes de recomendar qualquer protocolo. Studio do Jon, Belo Horizonte.',
+    metaDescription: 'Cronograma capilar genérico não funciona pra todo cacho. Veja como montar o seu por tipo de porosidade com o especialista do Studio do Jon, BH.',
     keywords: 'cronograma capilar para cabelo cacheado, cronograma capilar crespo, como montar cronograma capilar, hidratação nutrição reconstrução cabelo cacheado, cronograma capilar porosidade',
     date: '05 de Maio, 2026',
     author: 'Jon',
@@ -2362,6 +2231,17 @@ export const posts = [
         <li><strong>Curvatura:</strong> fio mais fechado (3C, 4A, 4B, 4C) tem mais dificuldade de distribuir a oleosidade natural da raiz até as pontas — por isso resseca mais. A <a href="/blog/finalizacao-por-curvatura-guia-tecnico">finalização por curvatura</a> muda dependendo do grau de curvatura, e o cronograma acompanha essa lógica. No caso da <a href="/blog/curvatura-4c-cabelo-crespo-guia-completo">curvatura 4C</a>, essa diferença é ainda mais extrema, e o cronograma precisa se adaptar de verdade, não só reduzir quantidade de produto.</li>
         <li><strong>Rotina atual:</strong> se você já tem uma rotina funcionando, não precisa reinventar tudo. Identifica o que está funcionando, o que está faltando e ajusta só o que for necessário. Pode ser que uma <a href="/blog/rotina-minimalista-cabelos-cacheados">rotina minimalista para cacheados</a> com menos produtos já resolva o que o cronograma carregado não conseguiu.</li>
       </ul>
+
+      <h2>Exemplo de Cronograma Semanal na Prática</h2>
+      <p>Pra sair da teoria, um exemplo de distribuição semanal (ajuste a frequência de cada etapa conforme sua porosidade, como descrito acima):</p>
+      <ul>
+        <li><strong>Segunda-feira:</strong> Lavagem com hidratação</li>
+        <li><strong>Quarta-feira:</strong> Nutrição profunda</li>
+        <li><strong>Sexta-feira:</strong> Reconstrução (quando houver sinal real de dano — não por calendário fixo em porosidade baixa)</li>
+        <li><strong>Domingo:</strong> Lavagem suave (co-wash) + leave-in</li>
+        <li><strong>Dias sem lavar:</strong> Terça, quinta, sábado — apenas leave-in ou finalizador</li>
+      </ul>
+      <p>Além da máscara, dois detalhes que fazem diferença na prática: troque a fronha de algodão por uma de cetim (o algodão cria atrito que gera frizz e quebra; o cetim preserva a definição enquanto você dorme), e não deixe de usar leave-in na mecha úmida e um selante (óleo leve) nas pontas já secas para travar o resultado do cronograma até a próxima lavagem.</p>
 
       <h2>A Pergunta Certa Antes de Começar</h2>
       <p>Antes de pesquisar "melhor cronograma capilar para cacheado", há uma pergunta mais útil:</p>
@@ -2600,9 +2480,9 @@ export const posts = [
       ]
     },
     title: 'Wolf Cut para Cabelos Cacheados | Jon',
-    seoTitle: 'Wolf Cut Cacheado em BH | Studio do Jon — Leitura de Fio',
+    seoTitle: 'Wolf Cut (Corte Lobo) em Cacheado: Guia BH | Studio do Jon',
     excerpt: 'Combinação explosiva entre o Shag dos anos 70 e o Mullet dos 80. Descubra como o Wolf Cut valoriza cabelos cacheados com volume e atitude selvagem.',
-    metaDescription: 'Não é qualquer corte wolf cut — é wolf cut lido no seu fio. Jon analisa o padrão do seu cabelo antes de qualquer tesoura. BH, sem lista de espera.',
+    metaDescription: 'Wolf cut, corte lobo ou cabelo de lobo? No cacheado o corte muda tudo. Veja como fica no seu cacho e agende com o especialista em BH.',
     keywords: 'wolf cut cacheado, corte lobo cabelo cacheado, wolf cut para cachos, wolf cut 2026, corte selvagem cacho, studio do jon, o jon que cortou',
     date: '24 de Abril, 2026',
     author: 'Jon',

@@ -464,28 +464,7 @@ const localBusinessSchema = {
     "bestRating": "5",
     "worstRating": "1"
   },
-  "founder": {
-    "@type": "Person",
-    "@id": "https://www.ojonquecortou.com.br/#jonatan",
-    "name": "Jonatan Junior",
-    "alternateName": "Jon",
-    "jobTitle": "Cabeleireiro especialista em cabelos cacheados, crespos e ondulados",
-    "description": "Criador do Método Leitura de Fio, processo de diagnóstico capilar em 7 etapas realizado antes de qualquer corte. Especialista em corte com visagismo e descoloração para cabelos texturizados (curvaturas 2A a 4C).",
-    "worksFor": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
-    "knowsAbout": [
-      "corte para cabelo cacheado",
-      "visagismo",
-      "descoloração em cabelo texturizado",
-      "transição capilar",
-      "Método Leitura de Fio"
-    ],
-    "sameAs": [
-      "https://www.instagram.com/ojonquecortou/",
-      "https://www.facebook.com/ojonquecortou/",
-      "https://linktr.ee/ojonquecortou",
-      "https://www.google.com/maps?cid=16629671607593282841"
-    ]
-  },
+  "founder": { "@id": "https://www.ojonquecortou.com.br/#person" },
   "areaServed": {
     "@type": "City",
     "name": "Belo Horizonte"
@@ -502,6 +481,13 @@ const founderPersonSchema = {
   "worksFor": {
     "@id": "https://www.ojonquecortou.com.br/#localbusiness"
   },
+  "knowsAbout": [
+    "corte para cabelo cacheado",
+    "visagismo",
+    "descoloração em cabelo texturizado",
+    "transição capilar",
+    "Método Leitura de Fio"
+  ],
   "sameAs": [
     "https://www.instagram.com/ojonquecortou/",
     "https://www.facebook.com/ojonquecortou/",
@@ -718,8 +704,8 @@ const pages = [
   },
   {
     route: '/servicos',
-    title: 'Serviços em BH | Cortes, Tratamentos',
-    description: 'Veja nossos serviços de corte de cabelo cacheado a seco, visagismo, tratamentos e coloração. Agende seu horário online no Studio do Jon em BH.',
+    title: 'Serviços para Cabelo Cacheado em BH',
+    description: 'Corte a seco, tratamentos e coloração para cachos, com leitura de fio antes de qualquer tesoura. Veja preços e agende no Studio do Jon, BH.',
     bodyInsert: servicesBody,
     schema: {
       "@context": "https://schema.org",
@@ -747,8 +733,8 @@ const pages = [
   },
   {
     route: '/sobre',
-    title: 'Sobre o Jon — Cabeleireiro de Cachos',
-    description: 'Conheça a história de Jonatan Junior, cabeleireiro especialista em cachos em Belo Horizonte. Criador do Método Leitura de Fio para cabelos naturais.',
+    title: 'Sobre o Jon | Especialista em Cachos em BH | Studio do Jon',
+    description: 'Criador do Método Leitura de Fio, Jon é referência em corte e tratamento para cabelo cacheado em BH. Conheça a trajetória e agende sua avaliação.',
     bodyInsert: aboutBody,
     schema: {
       "@context": "https://schema.org",
@@ -1194,13 +1180,13 @@ posts.forEach(post => {
 
   pages.push({
     route: `/blog/${post.slug}`,
-    title: post.title,
+    title: post.seoTitle || post.title,
     description: postDesc,
     image: post.image,
     schema: pageSchema,
     bodyInsert: noscriptContent,
     postData: post,
-    lastmod: post.dateModified || post.datePublished
+    lastmod: post.dateModified || post.datePublished || parseDateToISO(post.date)
   });
 });
 

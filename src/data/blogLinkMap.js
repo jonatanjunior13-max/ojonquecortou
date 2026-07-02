@@ -15,8 +15,7 @@ export const blogLinkMap = [
   { source: 'cronograma-capilar-cabelo-cacheado', target: 'excesso-hidratacao-cronograma-capilar-cacheado', anchor: 'excesso de hidratação' },
   { source: 'cronograma-capilar-cabelo-cacheado', target: 'teste-de-porosidade-guia-definitivo', anchor: 'nível de porosidade' },
   { source: 'excesso-hidratacao-cronograma-capilar-cacheado', target: 'cronograma-capilar-cabelo-cacheado', anchor: 'cronograma científico' },
-  { source: 'rotina-basica-cabelo-cacheado-cronograma', target: 'cronograma-capilar-cabelo-cacheado', anchor: 'estrutura do cronograma' },
-  { source: 'rotina-minimalista-cabelos-cacheados', target: 'rotina-basica-cabelo-cacheado-cronograma', anchor: 'rotina básica' },
+  { source: 'rotina-minimalista-cabelos-cacheados', target: 'cronograma-capilar-cabelo-cacheado', anchor: 'rotina básica' },
   { source: 'guia-completo-produtos-cabelo-cacheado-2026', target: 'cronograma-capilar-cabelo-cacheado', anchor: 'cronograma capilar' },
 
   // Leitura de Fio hub
