@@ -34,9 +34,6 @@ const MasculinoPage = React.lazy(() => import('./pages/MasculinoPage'));
 const LeituraFioPage = React.lazy(() => import('./pages/LeituraFioPage'));
 const CachosLandingPage = React.lazy(() => import('./pages/CachosLandingPage'));
 
-import AdminHoje from './pages/admin/AdminHoje';
-import GoogleAnalytics from './components/GoogleAnalytics';
-import CustomCursor from './components/CustomCursor';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
@@ -49,6 +46,9 @@ const AdminServices = React.lazy(() => import('./pages/admin/AdminServices'));
 const AdminMarketing = React.lazy(() => import('./pages/admin/AdminMarketing'));
 const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'));
 const AdminMobileApp = React.lazy(() => import('./pages/admin/AdminMobileApp'));
+const AdminHoje = React.lazy(() => import('./pages/admin/AdminHoje'));
+const GoogleAnalytics = React.lazy(() => import('./components/GoogleAnalytics'));
+const CustomCursor = React.lazy(() => import('./components/CustomCursor'));
 
 // Layout público com cabeçalho, rodapé e botão do WhatsApp
 function PublicLayout() {
@@ -85,7 +85,9 @@ function App() {
     <Router>
       <ScrollToTop />
       <CanonicalTag />
-      <CustomCursor />
+      <React.Suspense fallback={null}>
+        <CustomCursor />
+      </React.Suspense>
       <React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Carregando...</div>}>
         <Routes>
           {/* Rota dedicada sem Nav/Footer para Meta Ads */}
@@ -126,7 +128,7 @@ function App() {
           <Route path="/admin/mobile" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense>} />
           <Route path="/admin" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Painel...</div>}><AdminLayout /></React.Suspense>}>
             <Route index element={<Navigate to="/admin/hoje" replace />} />
-            <Route path="hoje" element={<AdminHoje />} />
+            <Route path="hoje" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando...</div>}><AdminHoje /></React.Suspense>} />
             <Route path="agenda" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Agenda...</div>}><AdminDashboard /></React.Suspense>} />
             <Route path="servicos" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Serviços...</div>}><AdminServices /></React.Suspense>} />
             <Route path="clientes" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Clientes...</div>}><AdminClients /></React.Suspense>} />
