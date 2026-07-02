@@ -55,6 +55,16 @@
       "headers": { "Location": "/servicos" }
     },
     {
+      "src": "/blog/rotina-basica-cabelo-cacheado-cronograma",
+      "status": 301,
+      "headers": { "Location": "/blog/cronograma-capilar-cabelo-cacheado" }
+    },
+    {
+      "src": "/sobre-o-jon",
+      "status": 301,
+      "headers": { "Location": "/sobre" }
+    },
+    {
       "src": "/metodologia",
       "status": 301,
       "headers": { "Location": "/metodo" }
