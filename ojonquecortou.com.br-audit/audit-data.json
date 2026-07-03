@@ -1,0 +1,308 @@
+{
+  "changelog_2026_07_03_same_day_fix_pass": {
+    "note": "See FULL-AUDIT-REPORT.md top section for full detail. Findings below are left as originally written (point-in-time audit record) but the following were fixed and verified via clean `npm run build` on 2026-07-03: duplicate static LocalBusiness JSON-LD block removed from index.html; a $$-to-$ priceRange corruption bug in prerender.js's String.replace() calls was found and fixed (7 call sites); og:image/logo repointed off 404ing assets; Service.provider and Review.itemReviewed switched to @id references; opening-hours schema corrected; dead linktr.ee sameAs removed, Wikidata sameAs added; homepage/llms.txt stale Combo price (R$320) corrected to the real active promo price (R$230); llms.txt glossary count corrected; CSP media-src added (unblocks /galeria video); /assets/* cache-control set to immutable; X-Robots-Tag noindex added for /admin and /cliente; WhatsApp button hidden on /agendar. Corrected as false positives: the IndexNow finding (audit checked the wrong filename) and part of the pricing finding (the R$230/R$320 split was an intentional promoPrice, not a bug). Still open: LCP/TBT performance work, /galeria server-side image rendering, /admin+/cliente shared-shell architecture, soft-404 template, blog-post WhatsApp overlap, all Phase 3 content authoring, near-duplicate blog post manual review, GA4 tag dedup, minor polish items."
+  },
+  "summary": {
+    "health_score": 70,
+    "business_type": "Local Service — Hair Salon (brick-and-mortar, single location), curly/wavy/coily hair specialist, Belo Horizonte, Brazil",
+    "top_findings": [
+      "Pricing inconsistency for 'Combo Corte + Tratamento' across /faq (R$230), /investimento (R$190-230), homepage JSON-LD + llms.txt (R$320) — independently confirmed by 4 specialist agents (technical/sxo/geo/schema/local all touched it)",
+      "Duplicate @id LocalBusiness JSON-LD block is a live regression — a static block added to index.html in a recent commit duplicates the prerender.js dynamic block on every route, re-declaring the same @id as a separate object on / and /depoimentos",
+      "og:image (/capa-studio.jpg) and JSON-LD logo (/logo.png) both 404 site-wide, breaking every social share preview (Facebook, WhatsApp, LinkedIn, X) and degrading Merchant/Knowledge Panel image validation",
+      "/galeria is functionally broken: CSP has no media-src directive so a Firebase Storage gallery video is hard-blocked, and the page has zero <img> tags in raw HTML (100% client-fetched)",
+      "Homepage LCP measured at 8.4s (Poor, threshold 4.0s) and TBT at 2,820ms — fully client-rendered hero with no fetchpriority/preload, third-party scripts (duplicate GA4 tag, Facebook Pixel, GTM) saturating the main thread"
+    ],
+    "quick_wins": [
+      "Repoint og:image + JSON-LD logo/image fields to the working /jon-perfil.webp asset (or restore the missing files) — one template edit fixes every social share preview site-wide",
+      "Remove the static duplicate LocalBusiness JSON-LD block from index.html — prerender.js already covers every route; this single edit also resolves the downstream priceRange conflict",
+      "Add media-src to the Content-Security-Policy header — unblocks the /galeria video immediately, a one-line config change",
+      "Reposition/z-index the WhatsApp floating bubble on mobile /agendar — it currently overlaps the primary 'Adicionar' button on the booking page, the most important conversion step",
+      "Standardize the 'Combo Corte + Tratamento' price to one number everywhere (copy + schema) — no dev work, just a content decision and 4 find-replace edits"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technical SEO",
+      "score": 76,
+      "what_works": [
+        "Sitemap lastmod fix from 2026-07-02 is holding — dates genuinely span 2026-03-30 to 2026-07-03",
+        "robots.txt correctly allows all major AI crawlers, blocks /admin and /cliente",
+        "Canonical tags self-referencing and consistent (www, https) across all page types sampled",
+        "Meta robots index,follow correct everywhere; no accidental noindex",
+        "Prerendered noscript content present in raw HTML for all page types — not JS-dependent for crawlers",
+        "Known redirects (/sobre-o-jon, old blog slug) both clean single-hop 301s"
+      ],
+      "findings": [
+        {"title": "/admin and /cliente return HTTP 200 with byte-identical homepage HTML", "severity": "High", "description": "Despite robots.txt Disallow, both routes return the exact same 21,341-byte prerendered homepage snapshot at the HTTP level, with the same canonical and index,follow meta robots — no real access control or distinct shell exists.", "recommendation": "Return true 401/403 or a noindex shell for these routes at the edge/prerender layer."},
+        {"title": "Soft-404 content mismatch", "severity": "Medium", "description": "Invalid URLs correctly return HTTP 404 status, but the response body is byte-identical to the homepage (same canonical→/, same index,follow).", "recommendation": "Serve a distinct 404 template with noindex and no canonical-to-home."},
+        {"title": "og:image and JSON-LD logo/image 404 site-wide", "severity": "High", "description": "/capa-studio.jpg (og:image, Twitter card, JSON-LD image) and /logo.png (JSON-LD logo) both 404, referenced on every page type. Working alternates exist: /logo-app.png, /jon-perfil.webp.", "recommendation": "Restore the files or repoint prerender.js template + meta tags to /jon-perfil.webp."},
+        {"title": "IndexNow key file still missing", "severity": "High", "description": "Confirmed still 404 at both /indexnow.txt and /.well-known/indexnow.txt — a previously-known open issue.", "recommendation": "Deploy the IndexNow key file to production; verify the submission code path is actually wired to a live route."},
+        {"title": "Bare-domain redirect has 2 hops; non-www uses 307 not 301", "severity": "Low", "description": "http://ojonquecortou.com.br → 308 → https://ojonquecortou.com.br/ → 307 → https://www.ojonquecortou.com.br/.", "recommendation": "Collapse to a single 301 hop straight to https+www."},
+        {"title": "Pinch-zoom disabled", "severity": "Low", "description": "Viewport meta uses user-scalable=no, maximum-scale=1.0 site-wide — a WCAG 1.4.4 accessibility anti-pattern.", "recommendation": "Remove user-scalable=no and maximum-scale=1.0 from the viewport meta tag."},
+        {"title": "Google Fonts loaded without font-display/preload", "severity": "Low", "description": "Render-blocking stylesheet from fonts.googleapis.com with no display=swap parameter and no preload hint — a plausible FOIT/LCP-delay contributor.", "recommendation": "Add &display=swap to the Google Fonts URL, or self-host the fonts alongside other hashed assets."}
+      ]
+    },
+    {
+      "name": "Content Quality",
+      "score": 84,
+      "what_works": [
+        "Real founder specificity on /sobre — concrete origin story, all curl types named (2A-4C), not generic AI-credentialing language",
+        "Abundant AI-citable facts: specific prices, address, phone, technique durations",
+        "FAQPage schema with speakable markup correctly implemented on /faq",
+        "No duplicate-content problem across the 19 /servicos subpages — body copy genuinely distinct",
+        "Cannibalization fix (rotina-basica → cronograma-capilar) confirmed holding via curl -L; all 5 previously-applied CTR title rewrites render correctly"
+      ],
+      "findings": [
+        {"title": "Six /servicos subpages are thin, template-shaped (400-700 words)", "severity": "Medium", "description": "infusao-carga-hidrica-porosos, inside-trp, lavar-finalizar, pacote-cachos-perfeitos, protocolo-blindagem-ph-reconstrucao, retoque-raiz, ritual-reposicao-lipidica-nutricao all sit at 648-694 words vs 2,900w+ on flagship pages, same intro+price+CTA shape.", "recommendation": "Expand to 1,200-1,500 words with 'para quem é indicado', technique steps, and FAQ-style objections — prioritize the high-ticket services first (inside-trp, protocolo-blindagem-ph-reconstrucao)."},
+        {"title": "Zero internal links from blog posts to /glossario despite heavy jargon use", "severity": "Medium", "description": "Checked 3 posts using terms like 'porosidade', 'fator de encolhimento', 'curvatura' extensively — 0 glossario links each, despite 46-58 blog-to-blog links per post. The 56-term glossary is effectively orphaned from the blog.", "recommendation": "Add contextual first-mention links from blog posts to relevant glossário entries."},
+        {"title": "12+ posts frozen at dateModified = datePublished for 3+ months", "severity": "Low", "description": "Posts dated 2026-04-13/04-14 show no distinct 'Atualizado em' signal despite being 13+ weeks stale as of 2026-07-03.", "recommendation": "Refresh evergreen posts periodically and surface a real updated-date signal in the UI."},
+        {"title": "Author attribution shallow on blog posts", "severity": "Low", "description": "A 'Publicado em' byline + JSON-LD author field exist, but no in-article author-bio/credential block, unlike the rich bio on /sobre.", "recommendation": "Add a compact reusable byline component linking to /sobre."},
+        {"title": "/metodo's 7-step process isn't individually schema-marked", "severity": "Info", "description": "The Leitura de Fio method is described in prose with no HowTo/numbered-list schema — a missed extraction opportunity for AI answer engines.", "recommendation": "Mark up the 7 steps as a HowTo or ItemList schema."}
+      ]
+    },
+    {
+      "name": "On-Page SEO",
+      "score": 72,
+      "what_works": [
+        "All 5 previously-flagged CTR title issues (wolf-cut, acidificacao, servicos, sobre, cronograma) confirmed fixed and rendering correctly",
+        "Canonical tags and meta robots are clean and consistent across every page type sampled",
+        "/investimento and /servicos are the correct page TYPES for transactional/pricing intent — prices are bold and bulleted, not buried in prose"
+      ],
+      "findings": [
+        {"title": "Pricing inconsistency on the money page (/investimento) and across the site", "severity": "Critical", "description": "/investimento's own title says 'a partir de R$200', its body says 'R$190 a R$230', and its schema PriceSpecification disagrees again (min190/max230). Separately, 'Combo Corte + Tratamento' shows R$230 on /faq, R$190-230 on /investimento, and R$320 on the homepage/llms.txt. Confirmed independently by 4 different specialist passes.", "recommendation": "Pick one true price per service and propagate it identically across title tags, meta, on-page copy, JSON-LD, and llms.txt."},
+        {"title": "/agendar (the conversion page) has almost no crawlable content", "severity": "High", "description": "Just 3 short paragraphs, no pricing recap, no trust signals — the weakest-content page at the most important funnel step.", "recommendation": "Add richer fallback content: price recap, rating badge, and friction-reducers (e.g. surface the existing cancel/reschedule flexibility)."},
+        {"title": "Single, end-of-post CTA on long blog posts", "severity": "High", "description": "A 1,500+ word sample post had exactly one CTA, placed at the very last line, breaking the cold-blog-to-booking path.", "recommendation": "Add mid-article and intro CTAs with a standardized, staged pattern across all 47 posts."},
+        {"title": "No dedicated 'salão em Belo Horizonte' local-reinforcement per service page", "severity": "Medium", "description": "The ~18 individual /servicos/* pages rely on the shared footer for BH signal rather than reinforcing it in their own H1/intro.", "recommendation": "Add a one-line local-context sentence to each service page's H1/intro area."}
+      ]
+    },
+    {
+      "name": "Schema / Structured Data",
+      "score": 58,
+      "what_works": [
+        "JSON-LD used exclusively, correct https context, absolute URLs, ISO 8601 dates, no deprecated types",
+        "BreadcrumbList correctly formed on service and blog pages",
+        "Blog Article schema solid: headline, description, image, author via @id reference, dates, mainEntityOfPage",
+        "Service + nested Offer with typed price and priceCurrency BRL on the sampled service page — ready to scale to all 20 /servicos/* pages",
+        "AggregateRating (4.9/272) with 7 real Review nodes matching the site's own claim, not just prose",
+        "FAQPage on /faq (60+ Q&As) correctly retained for AI/GEO citation value despite Google retiring FAQ rich results 2026-05-07"
+      ],
+      "findings": [
+        {"title": "Sitewide duplicate @id LocalBusiness node — confirmed live regression", "severity": "Critical", "description": "A recent commit ('LocalBusiness schema estruturado no index.html base') added a static HairSalon/LocalBusiness block (@id=#localbusiness) to the base template. It now renders on every route ALONGSIDE the prerender.js-injected dynamic-page-schema block — and on / and /depoimentos the second block re-declares the same @id as a separate object. This is the exact regression risk previously flagged, now live again.", "recommendation": "Remove the static schema block from index.html — prerender.js already covers every route (confirmed is_spa=false everywhere)."},
+        {"title": "priceRange conflict between the two duplicate homepage JSON-LD blocks", "severity": "High", "description": "Static block declares priceRange \"$$\", the dynamic-page-schema @graph block declares \"$\" — same root duplication issue as above.", "recommendation": "Resolves automatically once the duplicate block is removed; establish single source of truth in prerender.js."},
+        {"title": "Service.provider and all 7 Review.itemReviewed embed full inline LocalBusiness copies", "severity": "High", "description": "Instead of {\"@id\": \"#localbusiness\"} references, these embed anonymous full copies of the business entity — the Review copies don't even carry an @id.", "recommendation": "Replace inline copies with @id references to the canonical LocalBusiness node."},
+        {"title": "Article publisher is a disconnected identity", "severity": "Medium", "description": "The Article schema's publisher is an unlinked, @id-less Organization using a different logo file than the canonical business node — a third disconnected entity in the graph.", "recommendation": "Reference the canonical Organization/LocalBusiness @id instead of declaring a separate publisher object."},
+        {"title": "/depoimentos reviews lack datePublished and aren't tied to AggregateRating", "severity": "Medium", "description": "Downstream of the inline-copy issue above — reviews aren't structurally connected to the single canonical rating node.", "recommendation": "Fix once Review.itemReviewed uses @id references; add datePublished to each review."}
+      ]
+    },
+    {
+      "name": "Performance (Core Web Vitals)",
+      "score": 32,
+      "what_works": [
+        "TTFB excellent everywhere (40-186ms) — Vercel edge + Cloudflare caching",
+        "CLS good on homepage: 0.024, well under the 0.1 threshold",
+        "HTTP/2+H3, zstd compression, and security headers all correctly configured",
+        "JS already code-split into hashed vendor/app chunks — good foundation"
+      ],
+      "findings": [
+        {"title": "LCP fails on homepage — 8.4s (Poor, threshold 4.0s)", "severity": "Critical", "description": "The site is entirely client-rendered React; #root ships empty from the server. No fetchpriority=high or preload hint exists for the LCP candidate.", "recommendation": "Prerender the real hero markup server-side with explicit dimensions and fetchpriority=high, not just noscript text."},
+        {"title": "Total Blocking Time 2,820ms", "severity": "Critical", "description": "Main thread saturated by third-party scripts: react-vendor 733ms, gtag.js (two separate configs) ~1.2s combined, gtm.js 611ms.", "recommendation": "Consolidate to GTM-only tag firing and defer analytics until idle/interaction."},
+        {"title": "504 KiB of unused JavaScript, nearly all third-party", "severity": "High", "description": "Facebook Pixel 94% wasted, a duplicate/second GA4 stream (G-2HCS01RSP2 alongside G-BC8WXZKTLL) 65% wasted, firebase-vendor bundle 58% wasted globally.", "recommendation": "Dedupe the GA4 tags and lazy-load Firebase only on pages that need it."},
+        {"title": "/galeria is functionally broken and worse than home for LCP", "severity": "Critical", "description": "CSP has no media-src directive so a Firebase Storage gallery video is hard-blocked (console error confirmed). Raw HTML has zero <img> tags anywhere — gallery content is 100% client-fetched from Firestore/Storage post-JS-boot, a multi-hop waterfall.", "recommendation": "Add media-src to the CSP immediately (this is a functional bug, not just a perf issue) and prerender the first 2-4 gallery images server-side."},
+        {"title": "Hashed static assets cached only 4 hours, not immutable", "severity": "High", "description": "Cache-Control: public, max-age=14400 on content-hashed JS/CSS that is safe to cache for a year.", "recommendation": "Set max-age=31536000, immutable for /assets/*."},
+        {"title": "Render-blocking third-party Google Fonts request", "severity": "Medium", "description": "display=swap is set correctly but the request still blocks first paint via an extra origin round-trip.", "recommendation": "Self-host fonts alongside other hashed assets."},
+        {"title": "Four independent analytics vendors fire on every page", "severity": "Medium", "description": "GTM, two gtag.js configs, two Meta Pixel IDs, and Ahrefs Analytics — the largest cumulative TBT contributor.", "recommendation": "Route all tags through GTM with idle/scroll-gated triggers."}
+      ]
+    },
+    {
+      "name": "AI Search Readiness (GEO)",
+      "score": 78,
+      "what_works": [
+        "Exceptional SSR/noscript fallback on every page — dense, fact-specific answer blocks (prices, percentages, addresses) fully visible to non-JS AI crawlers, plus a hidden nav repeating ~49 blog links as a crawlable internal sitemap",
+        "Full JSON-LD entity graph correctly links LocalBusiness + Person + WebSite by @id — textbook AI entity disambiguation for 'Studio do Jon'/'Jonatan Junior'",
+        "RSL 1.0 correctly declared (robots.txt License: + link rel=license) permitting ai-index/ai-include while prohibiting ai-train — an ideal posture for citation traffic without training exposure",
+        "/metodo is genuinely excellent: clinical-register prose with concrete numbers, near the optimal citation-passage length",
+        "60-term glossário in proper dl/dt/dd structure with source backlinks per term"
+      ],
+      "findings": [
+        {"title": "Pricing conflict across 3+ sources risks wrong-price AI citations", "severity": "High", "description": "Same root issue flagged by the schema, sxo, and local specialists — an AI system citing this site risks quoting the wrong price.", "recommendation": "Reconcile to one true price across llms.txt, homepage schema, /faq, and /investimento."},
+        {"title": "No Wikidata sameAs despite an existing entity", "severity": "Medium", "description": "Wikidata item Q140387726 exists (created 2026-06-30) but zero on-site references to it exist in any sameAs array.", "recommendation": "Add https://www.wikidata.org/wiki/Q140387726 to prerender.js's localBusinessSchema."},
+        {"title": "Zero YouTube/Reddit/LinkedIn presence", "severity": "Medium", "description": "YouTube is the strongest known AI-citation correlate (~0.737) among third-party platforms, and the business has no presence there.", "recommendation": "Longer-term strategic gap — consider short-form video content repurposed from existing blog/method material."},
+        {"title": "llms.txt under-represents content depth", "severity": "Medium", "description": "The file lists routes only; it doesn't sample any of the ~49 blog posts, 20+ FAQ pairs, or glossary terms.", "recommendation": "Add a curated 'Principais Artigos' list plus 3-5 sample FAQ Q&As to llms.txt."},
+        {"title": "llms.txt glossary count is stale", "severity": "Low", "description": "File says '56 termos'; actual current count is 60.", "recommendation": "Update the count or automate it at build time."},
+        {"title": "No external authoritative citations", "severity": "Low", "description": "Hurts visibility on Perplexity specifically, which weights well-sourced pages more heavily.", "recommendation": "Pursue citations in beauty-press roundups (ties to the press-page recommendation under Backlinks)."}
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 50,
+      "what_works": [
+        "Working image alternates exist and are correctly used elsewhere: /logo-app.png (apple-touch-icon), /jon-perfil.webp (Person schema image)",
+        "No broken images found on the core pages sampled outside of the og:image/logo/gallery issues below"
+      ],
+      "findings": [
+        {"title": "og:image and JSON-LD logo/image 404 site-wide", "severity": "High", "description": "Duplicate of the Technical SEO finding — /capa-studio.jpg and /logo.png both 404, referenced in meta tags and both JSON-LD blocks on every page.", "recommendation": "Repoint to /jon-perfil.webp or restore the missing files."},
+        {"title": "/galeria has zero <img> tags in raw HTML", "severity": "Critical", "description": "All gallery imagery is 100% client-fetched post-JS-boot with no server-rendered fallback, and the accompanying video is CSP-blocked entirely.", "recommendation": "Prerender the first 2-4 gallery images server-side; fix the CSP media-src gap."},
+        {"title": "Possible lazy-load failure on homepage blog card thumbnails", "severity": "Medium", "description": "Unconfirmed: 3 related-article thumbnails showed complete:false/naturalWidth:0 after a 3s wait on both viewports tested, even though direct HTTP requests to those URLs return 200 with valid image data. Likely a lazy-load/intersection-observer timing issue, not missing files.", "recommendation": "Manually scroll-confirm on a real device; check the intersection-observer threshold/rootMargin config for the blog card image component."}
+      ]
+    },
+    {
+      "name": "Sitemap",
+      "score": 92,
+      "what_works": [
+        "XML well-formed, correct namespace; all 78 URLs checked return 100% HTTP 200 with zero redirects",
+        "Zero coverage gaps — every internal link discoverable from the site's own navigation is already in the sitemap",
+        "/cliente and /admin correctly absent from the sitemap and correctly Disallowed in robots.txt",
+        "rotina-basica confirmed removed from the sitemap and redirecting live",
+        "lastmod dates legitimately varied (not the old blanket-fake-date bug) — 40% sharing today's date is exactly the non-blog template pages, not a recurrence"
+      ],
+      "findings": [
+        {"title": "priority/changefreq present but ignored by Google", "severity": "Info", "description": "Sane hierarchy exists but both fields have no ranking effect.", "recommendation": "Optional cleanup only, not urgent."},
+        {"title": "Sitemap index not yet needed", "severity": "Info", "description": "78 URLs is far under any practical splitting threshold.", "recommendation": "Revisit only if blog volume approaches 500-1000 posts."}
+      ]
+    },
+    {
+      "name": "Local SEO",
+      "score": 78,
+      "what_works": [
+        "NAP string byte-for-byte identical across homepage, /sobre, /agendar footers",
+        "Correct schema subtype (HairSalon + LocalBusiness), geo coordinates at 6-decimal precision",
+        "Google Maps embed confirmed present, correctly titled, pointed at the right address",
+        "'Belo Horizonte'/'Caiçaras'/'BH' repeated naturally across hero, /sobre, /servicos, testimonials — not a token mention",
+        "Click-to-call and click-to-WhatsApp both present together in the footer contact sentence on every page checked"
+      ],
+      "findings": [
+        {"title": "Opening hours: schema contradicts visible on-page text", "severity": "High", "description": "Visible UI reads Tuesday-Friday 9h-19h / Saturday 9h-17h (closed Sun+Mon), but JSON-LD openingHoursSpecification declares Monday-Saturday uniformly 09:00-19:00 on every page.", "recommendation": "Fix prerender.js's schema generator to emit two correct day-range blocks matching the real hours."},
+        {"title": "Testimonials lack dates/photos and per-review schema", "severity": "Medium", "description": "7 named, geo-tagged testimonials on /depoimentos have no dates, making review recency/velocity unverifiable from the page itself; only the aggregate rating is marked up.", "recommendation": "Add dates to displayed testimonials and per-review schema tied to the canonical business @id."},
+        {"title": "No dedicated 'salão em Belo Horizonte' pillar page", "severity": "Medium", "description": "Defensible for a single-location business (avoids doorway-page risk), but individual service pages could do more work reinforcing locality themselves.", "recommendation": "Reinforce BH context in each /servicos/* page's own H1/intro rather than relying only on the shared footer."}
+      ]
+    },
+    {
+      "name": "Search Experience (SXO)",
+      "score": 58,
+      "what_works": [
+        "/investimento and /servicos are the correct page types for transactional/pricing intent, with prices bold and bulleted up front",
+        "'Faz química?' is answered explicitly and marked up as FAQPage — a strong, citable answer for the chemical-avoidance persona",
+        "/metodo (Leitura de Fio) is a genuinely differentiated asset — no competitor found across 4 SERP checks has an equivalent named method"
+      ],
+      "findings": [
+        {"title": "No content asset for 'best-of'/comparison search intent", "severity": "Medium", "description": "'Melhor salão cabelo crespo BH' is dominated by competitors and third-party listicles that don't mention the site.", "recommendation": "Build a differentiation page and pursue citations in existing roundups."},
+        {"title": "Cluster fragmentation dilutes ranking authority", "severity": "Medium", "description": "Transição capilar and cronograma capilar intents split across 3-4 near-duplicate assets with no pillar hierarchy; neither surfaces in real SERPs while single-asset competitors dominate.", "recommendation": "Consolidate into pillar pages — see Content Architecture category."},
+        {"title": "Domain identity inconsistency in search-facing citations", "severity": "Low", "description": "A WebSearch check surfaced 'ojonquecortou.com' (no www/.br) alongside the real domain.", "recommendation": "Audit GBP and third-party citations for NAP/URL consistency."}
+      ]
+    },
+    {
+      "name": "Content Architecture (Clustering)",
+      "score": 52,
+      "what_works": [
+        "Strong topical depth: 47 posts show genuine subtopic differentiation in most clusters",
+        "The cronograma-capilar cannibalization pair was already resolved via 301 redirect — good hygiene precedent",
+        "/metodo and /glossario both already link out to 30-50 posts each, giving genuine internal-link density",
+        "Matching /servicos/* pages exist for most content themes — the conversion inventory exists, just not consistently wired to content"
+      ],
+      "findings": [
+        {"title": "Near-identical slugs likely duplicate content — highest-priority manual check", "severity": "High", "description": "corte-a-seco-cabelo-cacheado-bh-volume vs corte-para-cabelo-cacheado-bh-volume both target BH+volume+cut intent with nearly identical slugs — same pattern as the already-fixed cronograma pair.", "recommendation": "Manually verify; merge/redirect if confirmed duplicate, following the cronograma precedent."},
+        {"title": "No formal pillar pages for 3 of 4 major topic clusters", "severity": "High", "description": "Frizz (5 posts), porosidade/pH, and cortes/tendências (9 posts) have zero curated pillar — only the flat /metodo and /glossario directories.", "recommendation": "Build 3 pillar pages (2,500-4,000 words) synthesizing each cluster with mandatory bidirectional links to every spoke."},
+        {"title": "Near-duplicate 'day after' posts", "severity": "Medium", "description": "fim-do-bad-hair-day-after and day-after-cabelo-cacheado-bh-como-reativar-sem-lavar appear to target the identical intent.", "recommendation": "Verify via title/H1; merge/redirect if confirmed, following the cronograma precedent."},
+        {"title": "Transição capilar cluster (3 posts) lacks pillar hierarchy", "severity": "Medium", "description": "No confirmed cross-linking or hub declaration despite /servicos/transicao-capilar existing as a natural conversion target.", "recommendation": "Make the 'sem-sofrimento-guia' post the pillar, linking to both spokes and the service page."},
+        {"title": "Wolf cut vs shag cacheado — borderline cannibalization", "severity": "Medium", "description": "Both are 2026-trend curly-cut articles with overlapping intent; differentiation exists in principle but reciprocal cross-linking wasn't confirmed.", "recommendation": "Add explicit comparison cross-links ('Wolf cut ou shag — qual combina com seu cacho?')."}
+      ]
+    },
+    {
+      "name": "Visual / Mobile",
+      "score": 76,
+      "what_works": [
+        "Mobile homepage nails the above-the-fold: name, location, H1 value prop, and primary CTA all visible without scrolling",
+        "Dark theme has strong, consistent contrast — no low-contrast text observed anywhere",
+        "No horizontal scroll/overflow on any of the 8 page/viewport combinations tested",
+        "Blog post has a persistent sticky booking CTA reinforcing conversion intent"
+      ],
+      "findings": [
+        {"title": "WhatsApp bubble overlaps primary CTA on /agendar mobile", "severity": "High", "description": "The fixed WhatsApp widget sits directly on top of the first service card's 'Adicionar' button, text visibly clipped — this is the core conversion action on the most important page.", "recommendation": "Reposition the WhatsApp bubble or add bottom padding/z-index management so it never covers primary buttons."},
+        {"title": "Same overlap pattern on blog post mobile footer", "severity": "Medium", "description": "The sticky booking bar sits adjacent to/behind the WhatsApp bubble at the bottom-right.", "recommendation": "Same fix as above, applied to the blog post template."},
+        {"title": "Small tap targets on /agendar service cards", "severity": "Medium", "description": "'Ver descrição completa' toggles are 151x23px, half the 44px guideline, sitting directly above the real action button — a mis-tap risk during the booking flow specifically.", "recommendation": "Increase toggle height to at least 44px or add spacing from the action button."},
+        {"title": "Font-family mismatch on /agendar header", "severity": "Low", "description": "'Studio do Jon' renders in a serif font while the rest of the site uses sans-serif/mono.", "recommendation": "Align to the site's standard type system; likely unintended."}
+      ]
+    },
+    {
+      "name": "Backlinks",
+      "score": null,
+      "what_works": [
+        "Google Business Profile/Maps citation is live and verified, the core local-SEO citation anchor",
+        "Instagram and Facebook profile links are live and verified",
+        "A genuine, well-documented differentiator story already exists on-site ('Método Leitura de Fio')",
+        "A Wikidata entity (Q140387726, created 2026-06-30) is live and correctly points back to the site"
+      ],
+      "findings": [
+        {"title": "Broken link inside structured data (linktr.ee)", "severity": "High", "description": "The homepage Person sameAs JSON-LD (both schema blocks) lists https://linktr.ee/ojonquecortou, which returns HTTP 404 (verified twice, different user agents).", "recommendation": "Remove or restore the linktr.ee link in prerender.js's localBusinessSchema — same edit location as the Wikidata sameAs addition."},
+        {"title": "No press/media page", "severity": "Medium", "description": "/imprensa and /na-midia both 404. The 'Leitura de Fio' story has no packaged asset (bio, photos, pitch) for journalists/directories to pick up from.", "recommendation": "Build a simple press page — highest-leverage low-cost link-building fix identified in this audit."},
+        {"title": "No numeric score assigned — insufficient data", "severity": "Info", "description": "Ahrefs MCP returned 'Insufficient plan' on all site-explorer calls; Moz/Bing/DataForSEO are unconfigured; Common Crawl returned zero data for this domain (in_crawl:false, normal for a smaller/newer domain, not a negative signal). A fabricated 0-100 number would be misleading.", "recommendation": "Re-check Common Crawl quarterly; consider a Moz free-tier key (2,500 rows/month) for basic DA/PA visibility."}
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Critical Fixes",
+        "timeframe": "Week 1",
+        "items": [
+          "Remove the static duplicate LocalBusiness JSON-LD block from index.html (resolves the @id duplication + priceRange conflict in one edit)",
+          "Standardize the 'Combo Corte + Tratamento' price (and check other services) to one number across /faq, /investimento, homepage schema, and llms.txt",
+          "Repoint og:image and JSON-LD logo/image fields to /jon-perfil.webp (or restore /capa-studio.jpg and /logo.png)",
+          "Add media-src to the Content-Security-Policy header to unblock the /galeria video (functional bug, not just SEO)",
+          "Reposition/z-index the WhatsApp bubble on mobile /agendar so it stops covering the primary booking CTA",
+          "Fix homepage LCP: prerender real hero markup server-side with fetchpriority=high and explicit image dimensions",
+          "Deploy the IndexNow key file to production at /indexnow.txt and /.well-known/indexnow.txt"
+        ]
+      },
+      {
+        "name": "Phase 2: High-Impact Improvements",
+        "timeframe": "Weeks 2-3",
+        "items": [
+          "Fix opening-hours schema to match the real Tuesday-Friday/Saturday-only hours shown in the UI",
+          "Fix /admin and /cliente to return true 401/403 or a distinct noindex shell instead of the homepage snapshot; fix the soft-404 body to match",
+          "Replace Service.provider and all Review.itemReviewed inline copies with @id references to the canonical LocalBusiness node",
+          "Dedupe the two GA4 tags and lazy-load Firebase only where needed (504 KiB unused JS)",
+          "Set Cache-Control to max-age=31536000, immutable for hashed /assets/*",
+          "Add real content to /agendar (price recap, rating badge, cancel/reschedule flexibility) — it's the conversion page with almost no crawlable content",
+          "Add mid-article and intro CTAs to blog posts, not just end-of-post",
+          "Manually verify and merge/redirect corte-a-seco-cabelo-cacheado-bh-volume vs corte-para-cabelo-cacheado-bh-volume (likely duplicate, same pattern as the fixed cronograma pair)",
+          "Add Wikidata sameAs (https://www.wikidata.org/wiki/Q140387726) and remove the dead linktr.ee link, both in the same prerender.js edit",
+          "Expand the 6 thin /servicos subpages (400-700 words) to 1,200-1,500 words, prioritizing high-ticket services",
+          "Fix small tap targets on /agendar service card toggles (currently 23px tall)"
+        ]
+      },
+      {
+        "name": "Phase 3: Content & Authority",
+        "timeframe": "Month 2",
+        "items": [
+          "Build 3 pillar pages (2,500-4,000 words) for the frizz, porosidade/pH, and cortes/tendências clusters with bidirectional spoke links",
+          "Verify and merge/redirect the near-duplicate 'day after' posts if confirmed",
+          "Add explicit comparison cross-links between wolf-cut and shag-cacheado posts",
+          "Add contextual links from blog posts to /glossario on first jargon mention",
+          "Refresh the 12+ stale posts (dateModified frozen 3+ months) and add a visible 'Atualizado em' signal",
+          "Build a press/media page and pursue beauty-press outreach using the 'Leitura de Fio' differentiator story",
+          "Add dates and per-review schema to /depoimentos testimonials",
+          "Reinforce 'Belo Horizonte' locally in each /servicos/* page's own H1/intro",
+          "Expand llms.txt with a curated 'Principais Artigos' list and sample FAQ Q&As",
+          "Build a comparison/'best-of' content asset to compete for 'melhor salão cabelo crespo BH' intent",
+          "Self-host Google Fonts and add HowTo schema to the /metodo 7-step process"
+        ]
+      },
+      {
+        "name": "Phase 4: Monitoring & Iteration",
+        "timeframe": "Ongoing",
+        "items": [
+          "Seed a drift baseline now (no prior baseline existed) so future audits can detect regressions automatically — the duplicate-schema regression in this audit would have been caught immediately by drift monitoring",
+          "Re-check Common Crawl backlink data quarterly; consider a free-tier Moz key for basic DA/PA visibility",
+          "Track GSC/GA4 impact after the pricing-consistency and image fixes ship",
+          "Re-measure Core Web Vitals after the LCP/TBT fixes ship (lab tools here had no PageSpeed API key — consider adding one for field data)",
+          "Polish remaining Low-severity items: pinch-zoom, font-family mismatch on /agendar, minor sub-44px tap targets, bare-domain redirect hop collapse"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/"
+  }
+}

@@ -89,7 +89,7 @@
       "headers": { "Location": "/servicos/visagismo-cachos" }
     },
     {
-      "src": "/servicos/tratamento-personalizado/?",
+      "src": "/servicos/tratamento-personalizado(/)?$",
       "dest": "/index.html"
     },
     {
