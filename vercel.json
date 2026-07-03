@@ -154,8 +154,7 @@
     },
     {
       "src": "/((?!api|.*\\.(txt|webp|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot|mp4|webm|json|xml|pdf|csv|zip)$).*)",
-      "dest": "/index.html",
-      "status": 404
+      "dest": "/index.html"
     }
   ],
   "crons": [
