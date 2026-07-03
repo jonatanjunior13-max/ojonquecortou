@@ -628,13 +628,24 @@ const agendarBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Agende seu Horário — Studio do Jon</h1>
+      <p style="color: #c8852a;">★★★★★ 4.9/5 com base em 272 avaliações no Google</p>
       <p>Marque seu horário com Jon, especialista em cabelos ondulados, cacheados e crespos no bairro Caiçaras, Belo Horizonte (MG). O Método Leitura de Fio — diagnóstico capilar em 7 etapas — está incluído em todo atendimento, sem custo extra. O agendamento é feito de forma instantânea e online, direto por este site.</p>
+      <h2>Serviços e Valores</h2>
+      <ul>
+        <li><strong>Corte com o Jon</strong> — R$ 190 (inclui Leitura de Fio + finalização educativa)</li>
+        <li><strong>Leitura de Fio</strong> — R$ 80 (revertido em crédito se fechar serviço)</li>
+        <li><strong>Combo Corte + Tratamento</strong> — R$ 230 (promocional, de R$ 320)</li>
+        <li><strong>Luzes / Morena Iluminada</strong> — a partir de R$ 699</li>
+        <li><strong>Tratamento personalizado</strong> — R$ 130</li>
+      </ul>
+      <p>Veja a lista completa de <a href="/investimento">valores e formas de investimento</a>.</p>
       <h2>Como Funciona</h2>
       <ul>
         <li>Escolha o serviço desejado (corte, tratamento, coloração ou consultoria).</li>
         <li>Selecione a data e o horário disponíveis na agenda online.</li>
         <li>Receba a confirmação instantânea do seu agendamento.</li>
       </ul>
+      <p>Precisa remarcar ou cancelar depois de agendado? Você pode fazer isso direto pelo site, sem precisar ligar — acesse o link enviado na confirmação ou a <a href="/cancelar">página de cancelamento</a>.</p>
       <h2>Localização e Contato</h2>
       <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+553135866673">(31) 3586-6673</a>. Prefere falar antes? Chame no <a href="https://wa.me/553135866673">WhatsApp</a>. Instagram: @ojonquecortou.</p>
     </article>
@@ -1071,6 +1082,23 @@ SEED_SERVICES.forEach(service => {
 });
 
 // Add blog posts dynamically
+// Mirrors BlogPostPage.jsx's client-side getProcessedContent() mid-article CTA
+// insertion, so crawlers/no-JS clients see the same CTA placement real users do.
+function injectMidArticleCta(contentHtml) {
+  if (!contentHtml) return contentHtml;
+  const paragraphs = contentHtml.split('</p>');
+  if (paragraphs.length <= 3) return contentHtml;
+  const ctaHtml = `
+      <div class="blog-inline-cta">
+        <p class="inline-cta-text">Quer saber como isso se aplica ao SEU cabelo? Jon faz a leitura do fio antes de qualquer corte. Agende:</p>
+        <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>
+      </div>
+    `;
+  const part1 = paragraphs.slice(0, 3).join('</p>') + '</p>';
+  const part2 = paragraphs.slice(3).join('</p>');
+  return part1 + ctaHtml + part2;
+}
+
 posts.forEach(post => {
   const postDesc = post.metaDescription || `${post.excerpt || post.title}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
   const isoDate = parseDateToISO(post.date);
@@ -1119,7 +1147,11 @@ posts.forEach(post => {
         </p>
         <p style="font-weight: bold; color: #555;">${post.excerpt || ''}</p>
         <hr />
-        <div>${post.content}</div>
+        <div>${injectMidArticleCta(post.content)}</div>
+        <div class="blog-inline-cta" style="margin-top: 32px;">
+          <p class="inline-cta-text">O seu cabelo não precisa de mais testes. Agende uma leitura de fio no Studio do Jon e descubra o corte técnico exato para a sua curvatura.</p>
+          <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>
+        </div>
       </article>
     </noscript>
   `;
