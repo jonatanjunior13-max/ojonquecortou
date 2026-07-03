@@ -30,6 +30,7 @@ const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 const ColoracaoCompletaPage = React.lazy(() => import('./pages/ColoracaoCompletaPage'));
 const ManutencaoCortePagePage = React.lazy(() => import('./pages/ManutencaoCortePagePage'));
 const DetoxEstimulantePage = React.lazy(() => import('./pages/DetoxEstimulantePage'));
+const TratamentoPersonalizadoPage = React.lazy(() => import('./pages/TratamentoPersonalizadoPage'));
 
 const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
 const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
@@ -113,6 +114,7 @@ function App() {
             <Route path="/servicos/coloracao-completa" element={<ColoracaoCompletaPage />} />
             <Route path="/servicos/manutencao-corte" element={<ManutencaoCortePagePage />} />
             <Route path="/servicos/detox-estimulante" element={<DetoxEstimulantePage />} />
+            <Route path="/servicos/tratamento-personalizado" element={<TratamentoPersonalizadoPage />} />
             <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/galeria" element={<GalleryPage />} />
             <Route path="/blog" element={<BlogPage />} />
