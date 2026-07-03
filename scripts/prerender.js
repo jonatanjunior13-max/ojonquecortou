@@ -1101,7 +1101,7 @@ posts.forEach(post => {
       }
     },
     "datePublished": post.datePublished || isoDate,
-    "dateModified": currentDate,
+    "dateModified": post.dateModified || post.datePublished || isoDate,
     "wordCount": wordCount,
     "speakable": {
       "@type": "SpeakableSpecification",
@@ -1261,8 +1261,8 @@ function generateSitemap(pagesList) {
     const loc = `https://www.ojonquecortou.com.br${page.route === '/' ? '' : page.route}`;
     let changefreq = 'monthly';
     let priority = '0.8';
-    let lastmod = currentDate;
-    
+    let lastmod = page.lastmod || currentDate;
+
     if (page.route === '/') {
       changefreq = 'weekly';
       priority = '1.0';
@@ -1275,9 +1275,6 @@ function generateSitemap(pagesList) {
     } else if (page.route.startsWith('/blog/')) {
       changefreq = 'monthly';
       priority = '0.8';
-      if (page.lastmod) {
-        lastmod = page.lastmod;
-      }
     }
     
     xml += '  <url>\n';

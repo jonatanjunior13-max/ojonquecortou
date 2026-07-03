@@ -631,7 +631,7 @@ export const posts = [
         { label: "Indicação Tricológica", value: "Fios com alta porosidade e perda hídrica rápida" }
       ]
     },
-    title: 'pH do Cacho: Como Fazer Acidificação Capilar e Vencer a Porosidade',
+    title: 'Acidificação Capilar: Adeus ao Frizz',
     seoTitle: 'Acidificação Capilar: Adeus ao Frizz | Studio do Jon',
     excerpt: 'Entenda por que o pH ácido sela a cutícula do cabelo cacheado e como a acidificação capilar é a única solução física para alta porosidade.',
     metaDescription: 'Cabelo poroso, ressecado ou com frizz? A acidificação capilar reequilibra o pH do cacho. Veja como funciona e agende com o Jon em BH.',
@@ -2093,7 +2093,7 @@ export const posts = [
   {
     id: 29,
     slug: 'cronograma-capilar-cabelo-cacheado',
-    title: 'Cronograma Capilar Passo a Passo para Cabelos Cacheados',
+    title: 'Cronograma Capilar por Porosidade: Guia Cacheado',
     seoTitle: 'Cronograma Capilar por Porosidade: Guia Cacheado | Studio do Jon',
     excerpt: 'O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. Descubra como ler o fio antes de montar qualquer protocolo.',
     metaDescription: 'Cronograma capilar genérico não funciona pra todo cacho. Veja como montar o seu por tipo de porosidade com o especialista do Studio do Jon, BH.',
@@ -2479,10 +2479,10 @@ export const posts = [
         { label: "Foco do Design", value: "Moldura do rosto e redistribuição de volume nas laterais" }
       ]
     },
-    title: 'Wolf Cut para Cabelos Cacheados | Jon',
-    seoTitle: 'Wolf Cut (Corte Lobo) em Cacheado: Guia BH | Studio do Jon',
-    excerpt: 'Combinação explosiva entre o Shag dos anos 70 e o Mullet dos 80. Descubra como o Wolf Cut valoriza cabelos cacheados com volume e atitude selvagem.',
-    metaDescription: 'Wolf cut, corte lobo ou cabelo de lobo? No cacheado o corte muda tudo. Veja como fica no seu cacho e agende com o especialista em BH.',
+    title: 'Corte Lobo em Cabelo Cacheado | Tendência 2026 | Studio do Jon',
+    seoTitle: 'Corte Lobo (Wolf Cut) em Cabelo Cacheado BH — Técnica & Agendamento',
+    excerpt: 'Corte lobo em cacheado: volume agressivo no topo com leveza nas pontas. A tendência viral do TikTok que realmente funciona em textura natural. Agende com especialista em BH.',
+    metaDescription: 'Corte lobo em cabelo cacheado — como fica, técnica correta e manutenção. Veja fotos antes/depois e agende sua transformação com o especialista em Belo Horizonte.',
     keywords: 'wolf cut cacheado, corte lobo cabelo cacheado, wolf cut para cachos, wolf cut 2026, corte selvagem cacho, studio do jon, o jon que cortou',
     date: '24 de Abril, 2026',
     author: 'Jon',
