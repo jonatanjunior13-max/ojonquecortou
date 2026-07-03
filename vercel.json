@@ -36,6 +36,13 @@
       "continue": true
     },
     {
+      "src": "/(sw\\.js|registerSW\\.js)",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      },
+      "continue": true
+    },
+    {
       "src": "/api/media/([^/]+)",
       "dest": "/api/media-proxy.js?file=$1"
     },
