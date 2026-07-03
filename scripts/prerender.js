@@ -601,7 +601,37 @@ const reviewsSchema = {
 };
 
 
+// Static (non-noscript) hero shell for the homepage — this is LIVE DOM, not a
+// crawler-only fallback. It uses the same CSS classes HomeHero renders
+// (.hero/.hero-grid/.hero-portrait/etc.) so it's pixel-correct once the
+// stylesheet applies, and it paints from the raw HTML response alone —
+// no JS download/parse/execute/hydrate required for the LCP element to
+// appear. React's createRoot().render() on mount replaces #root's children
+// wholesale (it does not hydrate), so there's no hydration-mismatch risk:
+// this is a plain "static shell, then swap" pattern, not real SSR of the
+// component tree (which would need to run Firebase Auth in Node — a much
+// riskier path, since it calls indexedDB-dependent APIs at import time).
+const homeLiveHeroShell = `
+    <header id="top" class="hero" style="min-height: 100vh;">
+      <div class="container">
+        <div class="eyebrow reveal in" style="margin-bottom: 36px;">Studio do Jon &middot; Caiçaras &middot; Belo Horizonte</div>
+        <div class="hero-grid">
+          <div>
+            <h1 class="display reveal in">Especialista em Cabelo Cacheado em <span class="accent-word">Belo Horizonte</span>.</h1>
+            <p class="lead reveal in" style="margin-top: 28px;">Porosidade, curvatura, histórico. Cada cacho conta uma história — e o corte só começa depois que a história fica clara. Sem fórmula pronta, sem tendência genérica.</p>
+          </div>
+          <div class="reveal in hero-portrait">
+            <span class="badge">Studio &middot; BH</span>
+            <div class="caption">"Antes da tesoura, a leitura."</div>
+            <img src="/jon-perfil.jpg" alt="Jon, especialista em cabelo cacheado em Belo Horizonte" width="480" height="600" fetchpriority="high" style="width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/5;" />
+          </div>
+        </div>
+      </div>
+    </header>
+`;
+
 const homeBody = `
+  ${homeLiveHeroShell}
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Especialista em Cabelo Cacheado, Crespo e Ondulado em Belo Horizonte</h1>
