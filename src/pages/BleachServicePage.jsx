@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
+import { Reveal, Arrow } from '../components/NewDesignComponents';
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -35,139 +36,189 @@ const faqSchema = {
 
 const BleachServicePage = () => {
   return (
-    <main className="about-page">
-      <SEO 
-        title="Descoloração e Mechas em Cabelo Cacheado BH | Studio do Jon" 
-        description="Ilumine seus cachos sem perder a definição. Protocolo exclusivo em Belo Horizonte com teste de mecha, Plex e reacidificação pós-química. Agende." 
+    <main>
+      <SEO
+        title="Descoloração e Mechas em Cabelo Cacheado BH | Studio do Jon"
+        description="Ilumine seus cachos sem perder a definição. Protocolo exclusivo em Belo Horizonte com teste de mecha, Plex e reacidificação pós-química. Agende."
         url="/servicos/descoloracao-cabelo-cacheado"
         schema={faqSchema}
       />
-      <section className="about-hero section-padding">
-        <div className="container text-center reveal active">
-          <h1 className="heading-xl">Descoloração de <span className="text-gradient">Cachos</span></h1>
-          <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            Ilumine seus fios sem perder a definição e a integridade da sua curvatura natural.
-          </p>
+
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
+        <div className="container">
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            Descoloração — Iluminação com Proteção
+          </div>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                Ilumine seus fios <span className="accent-word">sem perder definição</span>
+              </h1>
+
+              <Reveal delay={120}>
+                <p className="lead" style={{ marginTop: 28 }}>
+                  Descoloração em cabelo cacheado destrói pontes de dissulfeto se feita com pH descontrolado. Nosso protocolo usa volumagem baixa, Plex protetor e reacidificação imediata. Resultado: fios claros, cachos ainda definidos.
+                </p>
+              </Reveal>
+
+              <Reveal delay={220} className="hero-actions">
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar Descoloração <Arrow />
+                </Link>
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">A partir de</div>
+                  <div className="l">R$ 699</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">3-5 horas</div>
+                  <div className="l">Atendimento exclusivo</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">100%</div>
+                  <div className="l">Teste de mecha obrigatório</div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Química em cacho exige respeito e ciência
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-3">
+            A descoloração é um processo químico de oxidação que remove os grânulos de melanina natural do córtex. Em cabelos texturizados (curvaturas 2-4), também ataca pontes de hidrogênio e ligações cisteínicas (dissulfeto). Sem proteção, o cacho estira, perde definição e sofre corte químico.
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            No Studio do Jon, descoloração só começa após Leitura de Fio completa. Avaliamos porosidade, elasticidade e histórico químico em teste de mecha rigoroso antes de encostar qualquer produto na sua cabeça.
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding bg-light">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Por que o protocolo protege seu cabelo
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Diferente de salões que usam descolorantes ultra-rápidos com volumagem alta, adotamos descoloração lenta e controlada. Veja os pilares:
+          </Reveal>
+          <div className="grid-2">
+            <Reveal className="card">
+              <h3 className="heading-md">Aditivo Plex de Proteção</h3>
+              <p className="paragraph-sm">Agentes protetores de pontes moleculares diretamente no pó descolorante. Escudo sacrificial absorve agressão oxidativa antes de romper o córtex.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Oxidação Baixa Volumagem</h3>
+              <p className="paragraph-sm">Oxidantes 10 ou 20 volumes em sessões longas. Clareamento lento preserva lipídios naturais e mantém cacho unido.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Acidificação Imediata</h3>
+              <p className="paragraph-sm">Após clareamento, pH sobe a 9.0-11.0. Aplicamos reacidificante profissional para pH 4.5-5.0, selando cutícula e retendo cor.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Teste de Mecha Rigoroso</h3>
+              <p className="paragraph-sm">Antes de qualquer aplicação, testamos em mecha discreta. Avaliamos resultado e ajustamos tempo/volumagem se necessário.</p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container about-grid">
-          <div className="about-visual reveal">
-            <div className="about-image-wrap">
-              <img src="/coloracao-ruivo-cachos-explosao.webp" alt="Cabelo cacheado descolorido e iluminado com técnica segura" className="about-image" />
-            </div>
-            <div className="experience-tag">
-              <span className="exp-number">A partir de R$699</span>
-              <span className="exp-text">Investimento</span>
-            </div>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Protocolo Descoloração Completa
+          </Reveal>
+          <div className="timeline">
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">Leitura de Fio (15 min)</span>
+              <p className="paragraph-sm">Avaliamos porosidade, elasticidade, histórico químico e cor-alvo desejada. Isso informa toda estratégia de descoloração.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">Teste de Mecha (20 min)</span>
+              <p className="paragraph-sm">Aplicamos fórmula em mecha discreta, aguardamos tempo real e avaliamos antes de prosseguir.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">Aplicação Técnica (90-180 min)</span>
+              <p className="paragraph-sm">Dividimos em seções, aplicamos conforme porosidade mapeada. Volumagem baixa, tempo estendido para segurança.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">Enxague + Acidificação (15 min)</span>
+              <p className="paragraph-sm">Água filtrada → máscara proteica → selamento ácido. Reduz drasticamente ressecamento pós-descoloração.</p>
+            </Reveal>
           </div>
-          
-          <div className="about-content reveal">
-            <h2 className="heading-lg mb-2">Química em cacho exige respeito e ciência.</h2>
-            <p className="paragraph-md mb-2">
-              A descoloração é um processo químico de oxidação que remove os grânulos de melanina natural localizados no córtex do fio. No entanto, em cabelos texturizados (curvaturas de 2 a 4), esse processo também ataca as pontes de hidrogênio e as ligações cisteínicas (pontes de dissulfeto). Quando essas pontes são rompidas sem proteção, o cabelo perde a elasticidade mecânica, fazendo com que o cacho estique, perca a definição e sofra corte químico ou quebra.
-            </p>
-            <p className="paragraph-md mb-3">
-              No Studio do Jon, a descoloração só começa após a aplicação completa do <strong>Método Leitura de Fio</strong>. Nós avaliamos a porosidade, a elasticidade e o histórico químico dos seus fios em um teste de mecha rigoroso antes de encostar qualquer produto químico na sua cabeça.
-            </p>
-            <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Avaliação</Link>
-              <Link to="/servicos" className="btn btn-outline">Outros Serviços</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">Por que o nosso protocolo protege seu cabelo?</h2>
-          <p className="paragraph-md mb-3">
-            Diferente dos salões convencionais que usam descolorantes ultra rápidos com água oxigenada de volumagem alta para acelerar o fluxo de clientes, nós adotamos uma descoloração lenta e controlada. Veja os pilares de segurança que usamos:
-          </p>
-          <ul className="about-list mb-4">
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Aditivo Plex de Proteção Interna:</strong> Misturamos agentes protetores de pontes moleculares diretamente ao pó descolorante. Eles atuam como um escudo sacrificial, absorvendo a agressão oxidativa antes que ela rompa o córtex do cacho.</span>
-            </li>
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Oxidação de Baixa Volumagem:</strong> Preferimos trabalhar com oxidantes de 10 ou 20 volumes em sessões mais longas. O clareamento lento preserva os lipídios naturais que impedem o ressecamento extremo e mantêm o cacho unido.</span>
-            </li>
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Acidificação e Neutralização Imediata:</strong> Após o clareamento, o PH do cabelo sobe a níveis alcalinos extremos (9.0 a 11.0). Aplicamos imediatamente um tratamento reacidificante profissional para trazer o PH de volta ao nível ácido saudável (4.5 a 5.0), selando a cutícula e retendo a nova cor.</span>
-            </li>
-          </ul>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md text-center mb-3">Calendário de Preparação Pré-Química (15 dias antes)</h2>
-          <p className="paragraph-md mb-3 text-center">
-            Para garantir que sua fibra capilar resista ao teste de mecha e clareie de forma saudável, siga este cronograma doméstico:
-          </p>
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <p className="paragraph-md mb-2"><strong>15 dias antes:</strong> Faça uma nutrição profunda com máscara rica em óleos vegetais biocompatíveis (coco, argan, abacate). Fios cacheados são naturalmente carentes de lipídios nas pontas.</p>
-            <p className="paragraph-md mb-2"><strong>7 dias antes:</strong> Aplique uma máscara reconstrutora de queratina vegetal ou aminoácidos para reforçar o córtex capilar.</p>
-            <p className="paragraph-md mb-2"><strong>3 dias antes:</strong> Evite lavar o cabelo. O sebo natural produzido pelo couro cabeludo serve como uma barreira protetora ácida contra a ação alcalina do descolorante.</p>
-            <p className="paragraph-md mb-0"><strong>No dia:</strong> Venha com o cabelo seco, desembaraçado e sem finalizadores pesados ou géis à base de álcool.</p>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Cuidados Pré-Descoloração (2 semanas antes)
+          </Reveal>
+          <div className="grid-2">
+            <Reveal className="card">
+              <h3 className="heading-md">Cronograma de Nutrição</h3>
+              <p className="paragraph-sm">Reposição lipídica 2 semanas antes. Hidrata o córtex e prepara fibra para oxidação.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Suspender Calor</h3>
+              <p className="paragraph-sm">Sem secador, chapinha ou fontes de calor pesadas. Reserva térmica prejudica processamento químico.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Desembaraçar</h3>
+              <p className="paragraph-sm">Chegue com cabelo totalmente desembaraçado e seco em sua forma natural, para facilitar divisão em seções.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Evitar Coloração Recente</h3>
+              <p className="paragraph-sm">Se colorido há menos de 3 semanas, sempre faça teste de mecha. Química residual muda processamento.</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="section-padding technique-section">
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Diferenciais do Nosso Protocolo</h2>
-          </div>
-          
-          <div className="technique-grid">
-            <div className="card reveal stagger-1">
-              <span className="tech-emoji">🔬</span>
-              <h3>Teste de Mecha</h3>
-              <p>Rigorosa avaliação prévia de resistência e compatibilidade química do seu fio. Se o cabelo não passar, não realizamos o procedimento e montamos um cronograma de recuperação.</p>
-            </div>
-            <div className="card reveal stagger-2">
-              <span className="tech-emoji">🧪</span>
-              <h3>Plex Integrado</h3>
-              <p>Uso de protetores de ligações químicas durante a descoloração para evitar danos na estrutura interna e perda de curvatura.</p>
-            </div>
-            <div className="card reveal stagger-3">
-              <span className="tech-emoji">💧</span>
-              <h3>Tratamento Pós-Química</h3>
-              <p>Protocolo imediato de reposição lipídica e ácida para fechar as cutículas e reter a hidratação dentro do fio clareado.</p>
-            </div>
-          </div>
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>A descoloração vai destruir meus cachos?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Não, se feita com protocolo Plex + volumagem baixa + reacidificação. Destruição ocorre com salões que usam vol 40+ sem proteção.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Preciso fazer mais de uma sessão?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Depende da cor atual e alvo. Louro claríssimo em cabelo muito escuro pode exigir 2-3 sessões espaçadas 3 semanas.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Quanto tempo leva para o cabelo "recuperar"?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Com nosso protocolo, retoque de raiz a cada 6-8 semanas. Manutenção mensal de tratamento (Detox) acelera recuperação.</p>
+          </Reveal>
         </div>
       </section>
 
-      <section className="service-faq-section section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Dúvidas Frequentes</h2>
-          </div>
-          <div className="faq-grid max-w-lg mx-auto">
-            {faqSchema.mainEntity.map((faq, idx) => (
-              <div className="faq-card reveal" key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px', marginBottom: '15px' }}>
-                <h4 style={{ color: 'var(--accent)', fontWeight: 'bold', marginBottom: '8px' }}>{faq.name}</h4>
-                <p style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>{faq.acceptedAnswer.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="about-cta-bottom section-padding">
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Pronta para mudar com segurança?</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Agende uma avaliação com teste de mecha e vamos planejar a iluminação ideal para preservar a identidade do seu cacho.
-          </p>
-          <Link to="/agendar" className="btn btn-primary">
-            Agendar minha avaliação agora
-          </Link>
+      <section className="section-padding text-center">
+        <div className="container max-w-lg">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Iluminação sem sacrificar definição
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Agende sua Leitura de Fio + teste de mecha. Primeira sessão de descoloração começa com segurança.
+          </Reveal>
+          <Reveal>
+            <Link to="/agendar" className="btn btn-accent">
+              Agendar Descoloração Completa <Arrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </main>

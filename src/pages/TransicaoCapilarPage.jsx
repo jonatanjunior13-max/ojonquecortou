@@ -36,147 +36,177 @@ const faqSchema = {
 
 const TransicaoCapilarPage = () => {
   return (
-    <main className="about-page">
-      <SEO 
-        title="Transição Capilar BH | Studio do Jon — Especialista em Cachos" 
-        description="Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende." 
+    <main>
+      <SEO
+        title="Transição Capilar BH | Studio do Jon — Especialista em Cachos"
+        description="Passando pela transição capilar em BH? O Studio do Jon oferece cortes progressivos e suporte técnico para recuperar seus cachos com segurança. Agende."
         url="/servicos/transicao-capilar"
         schema={faqSchema}
       />
-      <section className="about-hero section-padding">
-        <div className="container text-center reveal active">
-          <h1 className="heading-xl">Transição <span className="text-gradient">Capilar</span></h1>
-          <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            Recupere a sua curvatura natural e reconstrua sua identidade sem pressa e com técnica.
-          </p>
+
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
+        <div className="container">
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            Transição Capilar — Recuperação Técnica
+          </div>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                Recupere sua curvatura <span className="accent-word">sem pressa</span>
+              </h1>
+
+              <Reveal delay={120}>
+                <p className="lead" style={{ marginTop: 28 }}>
+                  Transição capilar não é sobre paciência — é sobre técnica. Coexistência de duas texturas incompatíveis (alisada + raiz natural) exige cortes estratégicos para disfarçar pontas lisas enquanto comprimento natural ganha espaço. Ensinar técnicas de texturização sem calor para manter harmonia visual.
+                </p>
+              </Reveal>
+
+              <Reveal delay={220} className="hero-actions">
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar Atendimento <Arrow />
+                </Link>
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">Gradual ou Big Chop</div>
+                  <div className="l">Sua escolha</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">A partir de</div>
+                  <div className="l">R$ 130</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">Suporte contínuo</div>
+                  <div className="l">Reduz quebra</div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Entenda a transição capilar
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-3">
+            Transição é período de coexistência de duas texturas incompatíveis na mesma haste: base alisada (hidróxidos, tioglicolato, ácidos orgânicos) + raiz natural com padrão espiralado. Cortar linha de demarcação exata exige leitura precisa de onde química perdeu força.
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Identificamos onde sua curvatura natural (ondulado tipo 2, cacheado tipo 3 ou crespo tipo 4) está se reestruturando. O corte é estratégico para disfarçar pontas lisas enquanto comprimento natural ganha espaço, mantendo harmonia visual.
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding bg-light">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            A Linha do Tempo da Transição Capilar
+          </Reveal>
+          <div className="timeline">
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">1 a 3 Meses: A Linha de Demarcação</span>
+              <p className="paragraph-sm">Raiz começa a crescer (~1-3 cm). Diferença de volume fica evidente. Fase com maior quebra física na junção exata das duas texturas.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">4 a 8 Meses: O Desafio do Volume</span>
+              <p className="paragraph-sm">Raiz possui tamanho para formar primeiras espirais completas. Usamos técnicas de texturização para simular cachos nas pontas lisas, harmonizando visual.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">9 Meses em diante: O Momento da Decisão</span>
+              <p className="paragraph-sm">Com 10 cm+ de cabelo natural, caimento da raiz começa a ter sustentação própria. Ideal para fazer Big Chop ou continuar com cortes suaves a cada 60 dias.</p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container about-grid">
-          <div className="about-visual reveal">
-            <div className="about-image-wrap">
-              <img src="/blog-transicao-bh.webp" alt="Transição capilar no Studio do Jon em BH" className="about-image" />
-            </div>
-            <div className="experience-tag">
-              <span className="exp-number">A partir de R$130</span>
-              <span className="exp-text">Sessão de Tratamento</span>
-            </div>
-          </div>
-          
-          <div className="about-content reveal">
-            <h2 className="heading-lg mb-2">A transição capilar não é sobre paciência, é sobre técnica.</h2>
-            <p className="paragraph-md mb-2">
-              Cortar a parte com química exige entender a linha de demarcação exata onde o seu cacho natural volta a nascer. No Studio do Jon, ajudamos você a passar por esse processo de forma confortável, sem precisar recorrer ao Big Chop radical logo no primeiro dia — a menos que você queira. A transição capilar é o período de coexistência de duas texturas incompatíveis na mesma haste capilar: a base alisada (hidróxidos, tioglicolato ou ácidos orgânicos) e a raiz natural com padrão espiralado.
-            </p>
-            <p className="paragraph-md mb-3">
-              O processo começa com a **Leitura de Fio**. Identificamos onde a química perdeu a força e onde a sua curvatura natural (seja ondulado tipo 2, cacheado tipo 3 ou crespo tipo 4) está se reestruturando. O corte é feito estrategicamente para disfarçar as pontas lisas enquanto o comprimento natural ganha espaço, mantendo a harmonia visual.
-            </p>
-            <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Atendimento</Link>
-              <Link to="/metodo" className="btn btn-outline">Ver as 7 Etapas</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">A Linha do Tempo da Transição Capilar</h2>
-          <p className="paragraph-md mb-3">
-            O tempo de transição varia conforme a taxa metabólica de crescimento de cada folículo e o comprimento final desejado. Veja as fases principais:
-          </p>
-          <div style={{ position: 'relative', borderLeft: '2px solid var(--accent)', paddingLeft: '20px', marginLeft: '10px' }} className="mb-4">
-            <div className="mb-3">
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)', display: 'block' }}>1 a 3 Meses: A Linha de Demarcação</span>
-              <p className="paragraph-md" style={{ fontSize: '0.9rem' }}>A raiz começa a crescer (cerca de 1 a 3 cm). A diferença de volume fica evidente e é a fase onde ocorre maior quebra física na junção exata das duas texturas devido à diferença de elasticidade.</p>
-            </div>
-            <div className="mb-3">
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)', display: 'block' }}>4 a 8 Meses: O Desafio do Volume</span>
-              <p className="paragraph-md" style={{ fontSize: '0.9rem' }}>A raiz já possui tamanho para formar as primeiras espirais completas. Usamos técnicas de texturização para simular cachos nas pontas lisas, harmonizando o visual no dia a dia.</p>
-            </div>
-            <div className="mb-0">
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)', display: 'block' }}>9 Meses em diante: O Momento da Decisão</span>
-              <p className="paragraph-md" style={{ fontSize: '0.9rem' }}>Com 10 cm ou mais de cabelo natural, o caimento da raiz começa a ter sustentação própria. É a fase ideal para realizar o **Big Chop** ou continuar com cortes de transição suaves a cada 60 dias.</p>
-            </div>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Manejar as Duas Texturas Sem Calor
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Uso frequente de chapinha ou secador quente causa danos térmicos irreversíveis nas novas células de queratina. Recomendamos métodos físicos de estilização:
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">Plopping com Camiseta</h3>
+              <p className="paragraph-sm">Retira excesso de umidade sem atrito. Acentua curvatura da raiz sem gerar frizz nas pontas lisadas.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Texturização com Coquinhos</h3>
+              <p className="paragraph-sm">Aplique creme de pentear nas partes lisas. Faça tranças soltas ou coquinhos antes de dormir para uniformizar ondulações.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Dedoliss Seletivo</h3>
+              <p className="paragraph-sm">Enrole mecha por mecha ao redor dos dedos nas regiões de transição mais brusca (topo e contorno do rosto).</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">Guia Prático: Como Manejar as Duas Texturas sem Calor</h2>
-          <p className="paragraph-md mb-3">
-            O uso frequente de chapinha ou secador quente na raiz em transição causa danos térmicos irreversíveis nas novas células de queratina, impedindo que o cabelo nasça com sua curvatura ideal. Recomendamos métodos físicos de estilização:
-          </p>
-          <ul className="about-list mb-4">
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Plopping com Camiseta de Algodão:</strong> Retira o excesso de umidade sem atrito, ajudando a acentuar a curvatura da raiz sem gerar frizz nas pontas lisadas.</span>
-            </li>
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Texturização com Coquinhos ou Tranças:</strong> Aplique creme de pentear de fixação média nas partes lisas e faça tranças soltas ou pequenos coquinhos antes de dormir para uniformizar as ondulações.</span>
-            </li>
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Dedoliss Seletivo:</strong> Enrole mecha por mecha ao redor dos dedos nas regiões onde a transição da textura é mais brusca (como topo da cabeça e contorno do rosto).</span>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-padding technique-section" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Suporte Completo na Transição</h2>
-          </div>
-          
-          <div className="technique-grid">
-            <div className="card reveal stagger-1">
-              <span className="tech-emoji">✂️</span>
-              <h3>Cortes Adaptativos</h3>
-              <p>Cortes graduais estrategicamente pensados para remover as pontas lisas aos poucos, mantendo o formato, a moldura do rosto e o comprimento confortável.</p>
-            </div>
-            <div className="card reveal stagger-2">
-              <span className="tech-emoji">🌱</span>
-              <h3>Saúde Folicular</h3>
-              <p>Tratamentos específicos de desintoxicação e terapia capilar para o couro cabeludo, estimulando a circulação sanguínea e acelerando o crescimento saudável dos novos fios.</p>
-            </div>
-            <div className="card reveal stagger-3">
-              <span className="tech-emoji">🎓</span>
-              <h3>Treino de Estilização</h3>
-              <p>Aprenda na prática técnicas de finalização e texturização sem fontes de calor para disfarçar o liso químico com segurança.</p>
-            </div>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Suporte Completo na Transição
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">✂️ Cortes Adaptativos</h3>
+              <p className="paragraph-sm">Cortes graduais estrategicamente pensados para remover pontas lisas aos poucos, mantendo formato, moldura do rosto e comprimento confortável.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">🌱 Saúde Folicular</h3>
+              <p className="paragraph-sm">Tratamentos específicos de desintoxicação e terapia capilar para o couro, estimulando circulação sanguínea e acelerando crescimento saudável.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">🎓 Treino de Estilização</h3>
+              <p className="paragraph-sm">Aprenda na prática técnicas de finalização e texturização sem fontes de calor para disfarçar o liso químico com segurança.</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="service-faq-section section-padding">
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Dúvidas Frequentes</h2>
-          </div>
-          <div className="faq-grid max-w-lg mx-auto">
-            {faqSchema.mainEntity.map((faq, idx) => (
-              <div className="faq-card reveal" key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px', marginBottom: '15px' }}>
-                <h4 style={{ color: 'var(--accent)', fontWeight: 'bold', marginBottom: '8px' }}>{faq.name}</h4>
-                <p style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>{faq.acceptedAnswer.text}</p>
-              </div>
-            ))}
-          </div>
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>O que é o Big Chop?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Corte que remove toda química de uma vez. Sua escolha: Big Chop direto se tiver comprimento, ou cortes graduais para remover aos poucos.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Como lidar com as duas texturas?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Ensinamos técnicas de texturização sem fonte de calor para igualar caimento da parte lisa com raiz cacheada sem quebrar o fio.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Quanto tempo dura a transição?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Depende da velocidade de crescimento e comprimento final desejado. Suporte técnico contínuo reduz quebra nesse período.</p>
+          </Reveal>
         </div>
       </section>
 
-      <section className="about-cta-bottom section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Pronta para redefinir seu visual?</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Agende uma avaliação e vamos criar uma estratégia de corte confortável para o seu crescimento natural.
-          </p>
-          <Link to="/agendar" className="btn btn-primary">
-            Agendar Transição Capilar
-          </Link>
+      <section className="section-padding text-center">
+        <div className="container max-w-lg">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Redefinir seu visual com técnica
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Agende uma avaliação e vamos criar estratégia de corte confortável para seu crescimento natural.
+          </Reveal>
+          <Reveal>
+            <Link to="/agendar" className="btn btn-accent">
+              Agendar Transição Capilar <Arrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </main>

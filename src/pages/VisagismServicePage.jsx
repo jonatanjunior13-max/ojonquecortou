@@ -36,147 +36,167 @@ const faqSchema = {
 
 const VisagismServicePage = () => {
   return (
-    <main className="about-page">
-      <SEO 
-        title="Visagismo para Cabelos Cacheados em BH | Studio do Jon" 
-        description="Valorize sua imagem através do visagismo especializado em cabelos cacheados em Belo Horizonte. Cortes estruturados para sua expressão e rotina. Agende." 
+    <main>
+      <SEO
+        title="Visagismo para Cabelos Cacheados em BH | Studio do Jon"
+        description="Valorize sua imagem através do visagismo especializado em cabelos cacheados em Belo Horizonte. Cortes estruturados para sua expressão e rotina. Agende."
         url="/servicos/visagismo-cachos"
         schema={faqSchema}
       />
-      <section className="about-hero section-padding">
-        <div className="container text-center reveal active">
-          <h1 className="heading-xl">Visagismo de <span className="text-gradient">Cachos</span></h1>
-          <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            Mais do que um corte: uma escultura baseada na sua identidade, traços e caimento real dos fios.
-          </p>
+
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
+        <div className="container">
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            Visagismo — Design Personalizado
+          </div>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                Corte esculpido para <span className="accent-word">sua identidade</span>
+              </h1>
+
+              <Reveal delay={120}>
+                <p className="lead" style={{ marginTop: 28 }}>
+                  Copiar corte de influenciadora não funciona em seu cabelo. Cada cacho responde diferente — densidade, elasticidade, crescimento natural são únicos. Visagismo adapta geometria do corte para seu rosto, rotina e curvatura real.
+                </p>
+              </Reveal>
+
+              <Reveal delay={220} className="hero-actions">
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar Diagnóstico <Arrow />
+                </Link>
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">Personalizado</div>
+                  <div className="l">Sem fórmulas prontas</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">3x duração</div>
+                  <div className="l">Crescimento simétrico</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">Fácil de manter</div>
+                  <div className="l">Conforme sua rotina</div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            A Ciência das Proporções Faciais no Cabelo Cacheado
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            O cabelo cacheado funciona como moldura 3D ativa. Volume das laterais ou topo altera percepção de largura e altura do rosto. Cada formato de rosto exige geometria diferente:
+          </Reveal>
+          <div className="grid-2">
+            <Reveal className="card">
+              <h3 className="heading-md">Rosto Redondo</h3>
+              <p className="paragraph-sm">Evitamos volume horizontal nas laterais. Concentramos camadas no topo para alongar verticalmente a silhueta.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Rosto Quadrado</h3>
+              <p className="paragraph-sm">Usamos linhas arredondadas e franjas desfiadas para suavizar rigidez dos ângulos de mandíbula e testa.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Rosto Oblongo/Longo</h3>
+              <p className="paragraph-sm">Adicionamos volume lateral controlado e franjas cheias na altura das sobrancelhas para encurtar visualmente.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Rosto Coração</h3>
+              <p className="paragraph-sm">Mantemos topo mais limpo e projetamos volume da altura das bochechas até queixo para preencher terço inferior.</p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding bg-light">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Cortes Icônicos Adaptados com Visagismo
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">Shaggy Hair</h3>
+              <p className="paragraph-sm">Camadas curtas no topo, franja desconectada e muita textura. Ideal para visual despojado, volumoso e com muito balanço.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Wolf Cut</h3>
+              <p className="paragraph-sm">Fusão moderna entre mullet e shaggy. Perfeito para acentuar volume da coroa mantendo comprimento mais leve.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Bob em Camadas</h3>
+              <p className="paragraph-sm">Clássico atemporal que valoriza linha do queixo e pescoço. Volume distribuído na diagonal para evitar formato triangular.</p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container about-grid">
-          <div className="about-visual reveal">
-            <div className="about-image-wrap">
-              <img src="/corte-visagista-cachos-bh.webp" alt="Cliente após corte de cabelo cacheado com visagismo" className="about-image" />
-            </div>
-            <div className="experience-tag">
-              <span className="exp-number">Exclusivo</span>
-              <span className="exp-text">Sem Fórmulas Prontas</span>
-            </div>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            As Etapas do Visagismo no Cacho
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">📐 Análise de Proporções</h3>
+              <p className="paragraph-sm">Estudo do formato de rosto, linhas e pontos de destaque (olhos, maxilar, bochechas) com base nos terços faciais.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">📋 Estilo de Vida</h3>
+              <p className="paragraph-sm">Conversa honesta sobre sua rotina de cuidados capilares para desenhar corte prático que funcione sozinho em casa.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">✂️ Escultura a Seco</h3>
+              <p className="paragraph-sm">O corte é finalizado cacho por cacho com cabelo seco, respeitando taxas de encolhimento individuais em tempo real.</p>
+            </Reveal>
           </div>
-          
-          <div className="about-content reveal">
-            <h2 className="heading-lg mb-2">Por que copiar a influenciadora não funciona no seu cabelo.</h2>
-            <p className="paragraph-md mb-2">
-              É muito comum ver uma foto de corte na internet, salvá-la no celular e pedir para o cabeleireiro fazer igual. O problema é que o caimento de um cacho depende da densidade capilar, da elasticidade, de como os fios nascem no couro cabeludo e, acima de tudo, do formato do seu rosto e da sua rotina.
-            </p>
-            <p className="paragraph-md mb-3">
-              O <strong>Visagismo aplicado a cachos</strong> no Studio do Jon adapta a geometria dos cortes (seja um Shaggy, Wolf Cut ou em camadas clássicas) para o seu biotipo físico e estilo de vida. O objetivo é criar uma forma harmônica que valorize seus melhores traços e seja fácil de manter em casa.
-            </p>
-            <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Diagnóstico</Link>
-              <Link to="/metodo" className="btn btn-outline">Ver o Método</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">A Ciência das Proporções Faciais no Cabelo Cacheado</h2>
-          <p className="paragraph-md mb-3">
-            O cabelo cacheado funciona como uma moldura tridimensional ativa. O volume das laterais ou do topo pode alterar completamente a percepção de largura e altura do rosto do cliente:
-          </p>
-          <ul className="about-list mb-4">
-            <li>
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)' }}>Rosto Redondo:</span> Evitamos volume excessivamente horizontal nas laterais, concentrando camadas sutis no topo da cabeça para alongar verticalmente a silhueta.
-            </li>
-            <li style={{ marginTop: '10px' }}>
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)' }}>Rosto Quadrado:</span> Usamos linhas arredondadas e franjas desfiadas para suavizar a rigidez dos ângulos da mandíbula e da testa.
-            </li>
-            <li style={{ marginTop: '10px' }}>
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)' }}>Rosto Oblongo/Longo:</span> Adicionamos volume lateral controlado e franjas cheias na altura das sobrancelhas para encurtar visualmente o rosto.
-            </li>
-            <li style={{ marginTop: '10px' }}>
-              <span style={{ fontWeight: 'bold', color: 'var(--accent)' }}>Rosto Coração:</span> Mantemos o topo mais limpo e projetamos o volume da altura das bochechas até o queixo para preencher visualmente o terço inferior mais estreito.
-            </li>
-          </ul>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md text-center mb-3">Cortes Icônicos Adaptados com Visagismo</h2>
-          <p className="paragraph-md mb-4 text-center">
-            Não impomos tendências; adaptamos cortes clássicos para que funcionem com o seu padrão de curvatura e densidade:
-          </p>
-          <div className="technique-grid">
-            <div className="card reveal">
-              <h3>Shaggy Hair</h3>
-              <p>Camadas curtas no topo, franja desconectada e muita textura. Ideal para quem busca um visual despojado, volumoso e com muito balanço.</p>
-            </div>
-            <div className="card reveal">
-              <h3>Wolf Cut</h3>
-              <p>A fusão moderna entre o mullet e o shaggy. Perfeito para acentuar o volume da coroa mantendo o comprimento mais leve e alongado.</p>
-            </div>
-            <div className="card reveal">
-              <h3>Bob em Camadas</h3>
-              <p>O clássico atemporal que valoriza a linha do queixo e pescoço. O volume é distribuído na diagonal para evitar o formato triangular.</p>
-            </div>
-          </div>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>O que muda no corte com visagismo?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Deixamos de usar fórmulas prontas. Cada camada é desenhada para projetar volume onde valoriza sua estrutura facial, linhas e estilo individual.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Tenho que mudar radicalmente o meu estilo?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Não. Visagismo otimiza comprimento e formato que já te deixa confortável. Ajusta só distribuição de volumes e ângulos para criar harmonia.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Como o corte se comporta com o crescimento?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Como é esculpido respeitando direção de crescimento natural e encolhimento de cada cacho, crescimento ocorre de forma simétrica. Design dura o dobro do tempo.</p>
+          </Reveal>
         </div>
       </section>
 
-      <section className="section-padding technique-section" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">As Etapas do Visagismo no Cacho</h2>
-          </div>
-          
-          <div className="technique-grid">
-            <div className="card reveal stagger-1">
-              <span className="tech-emoji">📐</span>
-              <h3>Análise de Proporções</h3>
-              <p>Estudo do formato de rosto, linhas e pontos de destaque (olhos, maxilar, bochechas) com base nos terços faciais.</p>
-            </div>
-            <div className="card reveal stagger-2">
-              <span className="tech-emoji">📋</span>
-              <h3>Estilo de Vida</h3>
-              <p>Conversa honesta sobre sua rotina de cuidados capilares para desenhar um corte prático que funcione sozinho em casa.</p>
-            </div>
-            <div className="card reveal stagger-3">
-              <span className="tech-emoji">✂️</span>
-              <h3>Escultura a Seco</h3>
-              <p>O corte é finalizado cacho por cacho com o cabelo seco, respeitando as taxas de encolhimento individuais em tempo real.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="service-faq-section section-padding">
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Dúvidas Frequentes</h2>
-          </div>
-          <div className="faq-grid max-w-lg mx-auto">
-            {faqSchema.mainEntity.map((faq, idx) => (
-              <div className="faq-card reveal" key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '8px', marginBottom: '15px' }}>
-                <h4 style={{ color: 'var(--accent)', fontWeight: 'bold', marginBottom: '8px' }}>{faq.name}</h4>
-                <p style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>{faq.acceptedAnswer.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="about-cta-bottom section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Descubra o corte ideal para a sua identidade</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
+      <section className="section-padding text-center">
+        <div className="container max-w-lg">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Descubra o corte ideal para sua identidade
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
             Agende seu diagnóstico de visagismo com o Jon e liberte o verdadeiro potencial do seu cabelo cacheado.
-          </p>
-          <Link to="/agendar" className="btn btn-primary">
-            Garantir meu horário agora
-          </Link>
+          </Reveal>
+          <Reveal>
+            <Link to="/agendar" className="btn btn-accent">
+              Agendar Visagismo <Arrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </main>

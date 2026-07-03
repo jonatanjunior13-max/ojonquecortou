@@ -36,163 +36,206 @@ const faqSchema = {
 
 const CorteHibridoPage = () => {
   return (
-    <main className="about-page">
-      <SEO 
-        title="Corte Híbrido Cabelo Cacheado BH | Studio do Jon" 
-        description="Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já." 
+    <main>
+      <SEO
+        title="Corte Híbrido Cabelo Cacheado BH | Studio do Jon"
+        description="Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já."
         url="/servicos/corte-hibrido"
         schema={faqSchema}
       />
-      <section className="about-hero section-padding">
-        <div className="container text-center reveal active">
-          <h1 className="heading-xl">Corte <span className="text-gradient">Híbrido</span></h1>
-          <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            A união perfeita entre a precisão da linha molhada e a lapidação cacho por cacho a seco.
-          </p>
-        </div>
-      </section>
 
-      <section className="section-padding">
-        <div className="container about-grid">
-          <div className="about-visual reveal">
-            <div className="about-image-wrap">
-              <img src="/corte-a-seco-cachos-definidos-bh.webp" alt="Corte Híbrido em cabelo cacheado no Studio do Jon" className="about-image" />
-            </div>
-            <div className="experience-tag">
-              <span className="exp-number">R$ 190</span>
-              <span className="exp-text">Valor do Investimento</span>
-            </div>
-          </div>
-          
-          <div className="about-content reveal">
-            <h2 className="heading-lg mb-2">Cortar apenas a seco ou apenas molhado é limitar o caimento.</h2>
-            <p className="paragraph-md mb-2">
-              Cada cacho tem um fator de encolhimento único e múltiplas texturas na mesma cabeça. Cortar às cegas ou seguir uma fórmula padrão de revista resulta em assimetria e perda de controle sobre o volume. O caimento real do cacho é dinâmico e depende da gravidade, da densidade de fios por centímetro quadrado e do nível de encolhimento de cada mecha quando perde a umidade.
-            </p>
-            <p className="paragraph-md mb-3">
-              No Studio do Jon, trabalhamos com o <strong>Corte Híbrido</strong>. Iniciamos o corte com os fios úmidos para estruturar a base geométrica com precisão cirúrgica. Após a finalização e secagem completa, lapidamos a seco cacho por cacho. Isso permite visualizar o volume e o caimento real que você terá no seu dia a dia.
-            </p>
-            <p className="paragraph-md mb-3">
-              Todo atendimento é precedido pelo **Método Leitura de Fio** de 7 etapas para avaliar a saúde, elasticidade e curvatura do seu cabelo antes de qualquer tesourada.
-            </p>
-            <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Atendimento</Link>
-              <Link to="/metodo" className="btn btn-outline">Conhecer o Método</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '900px' }}>
-          <h2 className="heading-md text-center mb-3">Entenda a Diferença: Seco vs. Molhado vs. Híbrido</h2>
-          <p className="paragraph-md mb-3">
-            O mercado de salões de beleza costuma se dividir em dois extremos quando o assunto é cabelo texturizado: os que cortam apenas o cabelo molhado e esticado, e os que cortam estritamente a seco. Ambas as abordagens isoladas têm falhas estruturais graves:
-          </p>
-          <div style={{ overflowX: 'auto', marginBottom: '2rem' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', color: 'var(--text-main)', fontSize: '0.9rem' }}>
-              <thead>
-                <tr style={{ borderBottom: '2px solid var(--accent)', textAlign: 'left' }}>
-                  <th style={{ padding: '12px', fontWeight: 'bold' }}>Método de Corte</th>
-                  <th style={{ padding: '12px', fontWeight: 'bold' }}>Vantagens</th>
-                  <th style={{ padding: '12px', fontWeight: 'bold' }}>Desvantagens nos Cachos</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                  <td style={{ padding: '12px', fontWeight: 'bold' }}>Apenas Molhado</td>
-                  <td style={{ padding: '12px' }}>Precisão geométrica absoluta nas linhas de base e perímetros limpos.</td>
-                  <td style={{ padding: '12px' }}>Desconsidera o fator de encolhimento. Ao secar, os cachos encolhem em taxas diferentes, criando degraus e buracos.</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                  <td style={{ padding: '12px', fontWeight: 'bold' }}>Apenas a Seco</td>
-                  <td style={{ padding: '12px' }}>Respeita a contração imediata do cacho e permite desenhar o volume em tempo real.</td>
-                  <td style={{ padding: '12px' }}>Falta de alinhamento estrutural interno. Se o cabelo for escovado ou molhar sob chuva, a base geométrica revela-se torta e irregular.</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid var(--accent)', background: 'rgba(212, 175, 55, 0.05)' }}>
-                  <td style={{ padding: '12px', fontWeight: 'bold', color: 'var(--accent)' }}>Corte Híbrido (Jon)</td>
-                  <td style={{ padding: '12px', fontWeight: 600 }}>Combina a base de precisão cirúrgica molhada com a lapidação cacho a cacho a seco.</td>
-                  <td style={{ padding: '12px' }}>Exige mais tempo de atendimento (aproximadamente 1 hora) e alta especialização técnica.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">Quem se beneficia do Corte Híbrido?</h2>
-          <p className="paragraph-md mb-3">
-            O método híbrido é especialmente desenhado para quem possui curvaturas de tipo **2 (ondulados), 3 (cacheados) e 4 (crespos)**. Ele resolve os principais incômodos estruturais que clientes enfrentam em salões comuns:
-          </p>
-          <ul className="about-list mb-4">
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Múltiplas Curvaturas na mesma cabeça:</strong> É comum ter raiz ondulada 2C e pontas cacheadas 3B. A base molhada organiza o comprimento total e a lapidação seca ajusta a diferença de altura após o encolhimento.</span>
-            </li>
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Controle de Densidade e Volume excessivo nas pontas:</strong> Evita o temido efeito "pirâmide" (cabelo sem volume no topo e excessivamente armado nas pontas), distribuindo o peso de maneira inteligente.</span>
-            </li>
-            <li>
-              <div className="list-icon">✓</div>
-              <span><strong>Definição e Balanço Orgânico:</strong> As pontas são esculpidas seguindo a direção de nascimento e caimento dos fios, garantindo que o cabelo se acomode sozinho após a lavagem doméstica.</span>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-padding technique-section">
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
         <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">As Três Fases da Execução Técnica</h2>
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            Corte Híbrido — Molhado + Seco
           </div>
-          
-          <div className="technique-grid">
-            <div className="card reveal stagger-1">
-              <span className="tech-emoji">📐</span>
-              <h3>1. Arquitetura Úmida</h3>
-              <p>Com os fios umedecidos uniformemente, traçamos as linhas guias de base, nuca e perímetros laterais. Essa etapa garante a simetria de suporte e evita fios perdidos ou desalinhados.</p>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                A união perfeita entre <span className="accent-word">precisão e caimento real</span>
+              </h1>
+
+              <Reveal delay={120}>
+                <p className="lead" style={{ marginTop: 28 }}>
+                  Cortar apenas seco ou apenas molhado limita o resultado. Cada cacho tem fator de encolhimento único. Iniciamos com fios úmidos para estrutura base, depois lapidamos seco cacho por cacho. Resultado: volume e caimento que duram 3-4 meses.
+                </p>
+              </Reveal>
+
+              <Reveal delay={220} className="hero-actions">
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar Corte Híbrido <Arrow />
+                </Link>
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">R$ 190</div>
+                  <div className="l">Investimento</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">60 min</div>
+                  <div className="l">Atendimento completo</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">3-4 meses</div>
+                  <div className="l">Duração do design</div>
+                </div>
+              </Reveal>
             </div>
-            <div className="card reveal stagger-2">
-              <span className="tech-emoji">✂️</span>
-              <h3>2. Secagem & Análise</h3>
-              <p>Realizamos a finalização educativa e secagem com difusor profissional sem manipulação brusca. Assim, visualizamos o caimento real e o fator de encolhimento natural de cada zona da cabeça.</p>
-            </div>
-            <div className="card reveal stagger-3">
-              <span className="tech-emoji">⏱️</span>
-              <h3>3. Lapidação a Seco</h3>
-              <p>Cacho por cacho, eliminamos pontas duplas, ajustamos a distribuição de volumes e conectamos as camadas de transição. É a escultura que garante um crescimento bonito por meses.</p>
-            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Por que cortar apenas seco ou apenas molhado é limitar
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-3">
+            Cada cacho tem fator de encolhimento único e múltiplas texturas na mesma cabeça. Cortar às cegas ou seguir fórmula padrão resulta em assimetria e perda de controle sobre volume. O caimento real do cacho é dinâmico.
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            No Studio do Jon, iniciamos com fios úmidos para estruturar base geométrica com precisão. Após secagem completa, lapidamos seco cacho por cacho. Isso permite visualizar volume e caimento real que terá no dia a dia. Todo atendimento precedido pelo Método Leitura de Fio de 7 etapas.
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding bg-light">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Entenda: Seco vs. Molhado vs. Híbrido
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">Apenas Molhado</h3>
+              <p className="paragraph-sm">Precisão geométrica nas linhas. Desvantagem: desconsidera fator de encolhimento. Ao secar, cachos encolhem em taxas diferentes, criando degraus.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Apenas Seco</h3>
+              <p className="paragraph-sm">Respeita contração imediata do cacho, permite desenhar volume em tempo real. Desvantagem: falta alinhamento estrutural interno. Se escovado, base geométrica fica torta.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Corte Híbrido</h3>
+              <p className="paragraph-sm"><strong>Nossa abordagem:</strong> combina base de precisão cirúrgica molhada com lapidação cacho a cacho seco. O melhor dos dois mundos.</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">Instruções de Preparação para o seu Atendimento</h2>
-          <p className="paragraph-md mb-3">
-            Para garantir a eficácia do diagnóstico e da etapa de lapidação a seco, solicitamos que siga rigorosamente as orientações de preparação abaixo antes de comparecer ao Studio:
-          </p>
-          <ol style={{ paddingLeft: '20px', color: 'var(--text-main)', lineHeight: '1.7', fontSize: '0.95rem' }} className="mb-4">
-            <li className="mb-2"><strong>Cabelo 100% Seco:</strong> Não venha com os fios úmidos ou molhados. O cabelo deve estar totalmente seco no seu caimento natural de uso diário.</li>
-            <li className="mb-2"><strong>Desembaraçado por Completo:</strong> O cabelo deve estar sem nós ou embaraços. A presença de nós impede a divisão correta das mechas e pode causar tração dolorosa.</li>
-            <li className="mb-2"><strong>Sem Penteados ou Amarrações:</strong> Evite usar coques, tranças, rabos de cavalo, presilhas ou faixas no dia. Esses acessórios alteram a memória de curvatura do fio, mascarando o volume real.</li>
-            <li className="mb-2"><strong>Finalizadores Leves:</strong> Lave o cabelo no dia anterior ou no dia do atendimento usando apenas um creme de pentear leve. Evite o uso de géis pesados, gelatinas duras, óleos em excesso ou sprays fixadores que enrijecem a fibra capilar.</li>
-          </ol>
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Quem se beneficia do Corte Híbrido
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Método híbrido é especialmente desenhado para curvaturas tipo 2 (ondulados), 3 (cacheados) e 4 (crespos). Resolve os principais incômodos estruturais:
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">Múltiplas Curvaturas</h3>
+              <p className="paragraph-sm">Raiz ondulada 2C + pontas 3B? Base molhada organiza comprimento total. Lapidação seca ajusta altura após encolhimento.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Controle de Volume</h3>
+              <p className="paragraph-sm">Evita efeito "pirâmide" (topo sem volume, pontas excessivamente armadas). Distribuição inteligente de peso.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Definição Orgânica</h3>
+              <p className="paragraph-sm">Pontas esculpidas conforme direção de nascimento natural dos fios. Cabelo se acomoda sozinho após lavagem.</p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      <section className="about-cta-bottom section-padding">
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Chega de cortes imprevisíveis.</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            As Três Fases da Execução Técnica
+          </Reveal>
+          <div className="timeline">
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">1. Arquitetura Úmida</span>
+              <p className="paragraph-sm">Fios umedecidos uniformemente. Traçamos linhas guias de base, nuca e perímetros laterais. Garante simetria de suporte.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">2. Secagem & Análise</span>
+              <p className="paragraph-sm">Finalização educativa e secagem com difusor profissional. Visualizamos caimento real e fator de encolhimento de cada zona.</p>
+            </Reveal>
+            <Reveal className="timeline-item">
+              <span className="timeline-marker">3. Lapidação a Seco</span>
+              <p className="paragraph-sm">Cacho por cacho, eliminamos pontas duplas, ajustamos distribuição de volumes, conectamos camadas. Escultura que garante crescimento bonito.</p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Preparação para seu Atendimento
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Para garantir eficácia do diagnóstico e lapidação seco:
+          </Reveal>
+          <div className="grid-2">
+            <Reveal className="card">
+              <h3 className="heading-md">Cabelo 100% Seco</h3>
+              <p className="paragraph-sm">Não venha com fios úmidos ou molhados. Deve estar totalmente seco no caimento natural de uso diário.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Totalmente Desembaraçado</h3>
+              <p className="paragraph-sm">Sem nós ou embaraços. Presença de nós impede divisão correta das mechas e pode causar tração dolorosa.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Sem Penteados ou Amarrações</h3>
+              <p className="paragraph-sm">Evite coques, tranças, rabos, presilhas ou faixas. Esses acessórios alteram memória de curvatura do fio, mascarando volume real.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Finalizadores Leves</h3>
+              <p className="paragraph-sm">Lave no dia anterior ou do atendimento com apenas creme de pentear leve. Evite géis pesados, óleos em excesso ou sprays.</p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Como funciona o Corte Híbrido?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Iniciado no cabelo molhado para estrutura. Após secagem, lapidação a seco cacho por cacho para ajustar volume e caimento real.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Qual a frequência recomendada?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>A cada 3 ou 4 meses para manter design e evitar pontas duplas que causam nós e quebra.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Preciso ir com o cabelo lavado?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Venha com cabelo 100% seco, finalizado do seu jeito comum, totalmente desembaraçado. Sem coques, tranças ou presilhas.</p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding text-center">
+        <div className="container max-w-lg">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Chega de cortes imprevisíveis
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
             Agende seu Corte Híbrido com Leitura de Fio inclusa por R$ 190. Um caimento planejado sob medida para a física do seu cacho.
-          </p>
-          <Link to="/agendar" className="btn btn-primary">
-            Agendar Corte Híbrido agora
-          </Link>
+          </Reveal>
+          <Reveal>
+            <Link to="/agendar" className="btn btn-accent">
+              Agendar Corte Híbrido <Arrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </main>

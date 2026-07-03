@@ -36,140 +36,155 @@ const faqSchema = {
 
 const MasculinoPage = () => {
   return (
-    <main className="about-page">
-      <SEO 
-        title="Corte Cabelo Cacheado Masculino BH | Studio do Jon" 
-        description="Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende." 
+    <main>
+      <SEO
+        title="Corte Cabelo Cacheado Masculino BH | Studio do Jon"
+        description="Especialista em corte masculino para cabelos cacheados e crespos em BH. Definição, praticidade e visagismo sem degradê genérico. Agende."
         url="/servicos/masculino"
         schema={faqSchema}
       />
-      <section className="about-hero section-padding">
-        <div className="container text-center reveal active">
-          <h1 className="heading-xl">Masculino <span className="text-gradient">Cacheado</span></h1>
-          <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            Cortes estruturados com tesoura e acabamentos de precisão que valorizam seu volume natural.
-          </p>
-        </div>
-      </section>
 
-      <section className="section-padding">
-        <div className="container about-grid">
-          <div className="about-visual reveal">
-            <div className="about-image-wrap">
-              <img src="/corte-masculino-cacheado-bh-resultado.webp" alt="Corte masculino cacheado no Studio do Jon em BH" className="about-image" />
-            </div>
-            <div className="experience-tag">
-              <span className="exp-number">R$ 130</span>
-              <span className="exp-text">Valor do Investimento</span>
-            </div>
-          </div>
-          
-          <div className="about-content reveal">
-            <h2 className="heading-lg mb-2">Chega de degradê genérico que ignora a curvatura do seu cacho.</h2>
-            <p className="paragraph-md mb-2">
-              Cabelo masculino cacheado e crespo exige um corte estruturado que respeite o caimento. Se o barbeiro passar a máquina nas laterais sem ler o comportamento do seu fio, o resultado é um topo sem definição e laterais espetadas. A haste capilar texturizada masculina tem particularidades de densidade e distribuição que exigem conexões precisas feitas à tesoura.
-            </p>
-            <p className="paragraph-md mb-3">
-              No Studio do Jon, aplicamos a **Leitura de Fio** e técnicas de visagismo masculino para criar cortes práticos e com excelente definição. Trabalhamos com Wolf Cuts, Undercuts desenhados para cachos e cortes clássicos na tesoura que valorizam o volume sem dar trabalho na hora de arrumar. O foco é praticidade: acordar, finalizar rápido e sair pronto.
-            </p>
-            <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Atendimento</Link>
-              <Link to="/servicos" className="btn btn-outline">Outros Serviços</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-2">A Importância do Corte Geométrico com Tesoura</h2>
-          <p className="paragraph-md mb-3">
-            Nas barbearias comuns, o uso excessivo de máquina de corte com pentes genéricos destrói a coesão dos cachos masculinos. Ao cortar os fios na mesma altura mecânica, a máquina corta os cachos no meio de sua curvatura natural, deixando pontas retas que espetam e perdem a capacidade de espiralar sozinhos.
-          </p>
-          <p className="paragraph-md mb-3">
-            O nosso corte masculino é estruturado **seção por seção à tesoura**, respeitando o ângulo de crescimento. Isso garante que:
-          </p>
-          <ul className="about-list mb-3">
-            <li>As laterais tenham encaixe harmônico com o topo, sem criar o efeito "capacete".</li>
-            <li>O topo mantenha o volume ideal com balanço natural e cachos definidos.</li>
-            <li>O acabamento de nuca e costeletas seja limpo e dure mais tempo sem perder o desenho.</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md text-center mb-3">Guia Rápido de Estilização Masculina em 3 Minutos</h2>
-          <p className="paragraph-md mb-3 text-center">
-            Praticidade é a regra. Siga estes passos simples pela manhã para manter os cachos alinhados o dia todo:
-          </p>
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <p className="paragraph-md mb-2"><strong>Passo 1: Umedecer (30s)</strong> - Borrifar água de leve ou finalizar logo após o banho. O cacho precisa de água para reativar as pontes de hidrogênio e ganhar forma.</p>
-            <p className="paragraph-md mb-2"><strong>Passo 2: Leave-in Fluido (1min)</strong> - Distribua uma pequena quantidade de creme de pentear leve apenas no topo, usando a técnica de fitagem rápida com os dedos.</p>
-            <p className="paragraph-md mb-2"><strong>Passo 3: Gelatina ou Gel (30s)</strong> - Amasse os cachos de baixo para cima com uma pequena quantidade de gel ou gelatina líquida para garantir fixação e evitar que o vento desfaça a definição.</p>
-            <p className="paragraph-md mb-0"><strong>Passo 4: Secar ao ar ou Difusor (1min)</strong> - Deixe secar naturalmente ou use o difusor por 1 minuto se estiver com pressa.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding technique-section" style={{ background: 'var(--bg-warm)' }}>
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
         <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Diferenciais do Corte Masculino</h2>
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            Masculino Cacheado — Praticidade & Estilo
           </div>
-          
-          <div className="technique-grid">
-            <div className="card reveal stagger-1">
-              <span className="tech-emoji">⚡</span>
-              <h3>Praticidade Diária</h3>
-              <p>Cortes pensados para que a sua finalização dure menos de 5 minutos, sem mistérios ou rotinas complexas.</p>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                Cortes estruturados que <span className="accent-word">valorizam sua volume</span>
+              </h1>
+
+              <Reveal delay={120}>
+                <p className="lead" style={{ marginTop: 28 }}>
+                  Degradê genérico ignora curvatura do cacho. Se barbeiro passar máquina sem ler comportamento do fio, resultado é topo sem definição e laterais espetadas. Cabelo masculino texturizado exige conexões precisas à tesoura, visagismo adaptado e foco em praticidade: acordar, finalizar rápido, sair pronto.
+                </p>
+              </Reveal>
+
+              <Reveal delay={220} className="hero-actions">
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar Atendimento <Arrow />
+                </Link>
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">R$ 130</div>
+                  <div className="l">Investimento</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">45-60 min</div>
+                  <div className="l">Atendimento completo</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">Estrutura na Tesoura</div>
+                  <div className="l">Sem máquina excessiva</div>
+                </div>
+              </Reveal>
             </div>
-            <div className="card reveal stagger-2">
-              <span className="tech-emoji">📐</span>
-              <h3>Acabamento Limpo</h3>
-              <p>Laterais e nuca limpas de forma integrada com o volume e caimento do topo, valorizando o desenho do corte.</p>
-            </div>
-            <div className="card reveal stagger-3">
-              <span className="tech-emoji">✂️</span>
-              <h3>Estrutura na Tesoura</h3>
-              <p>Evitamos o uso excessivo de máquina para preservar a textura e a definição das pontas, garantindo caimento orgânico.</p>
-            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Por que o corte geométrico com tesoura importa
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-3">
+            Nas barbearias comuns, máquina de corte com pentes genéricos destrói coesão dos cachos masculinos. Ao cortar fios na mesma altura mecânica, máquina corta cachos no meio de sua curvatura natural, deixando pontas retas que espetam e perdem capacidade de espiralar sozinhas.
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Nosso corte masculino é estruturado seção por seção à tesoura, respeitando ângulo de crescimento. Garante: laterais com encaixe harmônico (sem efeito "capacete"), topo com volume ideal e balanço natural, acabamento de nuca e costeletas limpo que dura.
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding bg-light">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Guia Rápido de Estilização Masculina (3 min)
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Praticidade é a regra. Passos simples pela manhã para manter cachos alinhados o dia todo:
+          </Reveal>
+          <div style={{ background: 'rgba(255,255,255,0.05)', padding: '20px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }} className="mb-4">
+            <Reveal>
+              <p className="paragraph-sm mb-2"><strong>Passo 1: Umedecer (30s)</strong> — Borrifar água de leve ou finalizar logo após banho. Cacho precisa água para reativar pontes de hidrogênio.</p>
+            </Reveal>
+            <Reveal>
+              <p className="paragraph-sm mb-2"><strong>Passo 2: Leave-in Fluido (1min)</strong> — Distribua creme de pentear leve no topo apenas, usando técnica de fitagem rápida.</p>
+            </Reveal>
+            <Reveal>
+              <p className="paragraph-sm mb-2"><strong>Passo 3: Gelatina ou Gel (30s)</strong> — Amasse cachos de baixo para cima com pequena quantidade para garantir fixação.</p>
+            </Reveal>
+            <Reveal>
+              <p className="paragraph-sm mb-0"><strong>Passo 4: Secar ao ar ou Difusor (1min)</strong> — Deixe secar naturalmente ou use difusor por 1 minuto se com pressa.</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="section-padding">
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Leia Mais e Conheça Nosso Trabalho</h2>
-          </div>
-
-          <div className="technique-grid">
-            <Link to="/servicos/corte-hibrido" className="card reveal stagger-1" style={{ textDecoration: 'none' }}>
-              <h3>Corte Híbrido</h3>
-              <p>Conheça nossa técnica de corte que combina precisão úmida e lapidação seca.</p>
-            </Link>
-            <Link to="/metodo" className="card reveal stagger-2" style={{ textDecoration: 'none' }}>
-              <h3>O Método do Studio</h3>
-              <p>Entenda a metodologia científica que aplicamos a cada tipo de curvatura.</p>
-            </Link>
-            <Link to="/servicos/leitura-de-fio" className="card reveal stagger-3" style={{ textDecoration: 'none' }}>
-              <h3>Leitura de Fio</h3>
-              <p>Entenda o diagnóstico individual que fazemos antes de qualquer corte no Studio.</p>
-            </Link>
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Diferenciais do Corte Masculino
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">⚡ Praticidade Diária</h3>
+              <p className="paragraph-sm">Cortes pensados para que finalização dure menos de 5 minutos, sem mistérios ou rotinas complexas.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">📐 Acabamento Limpo</h3>
+              <p className="paragraph-sm">Laterais e nuca limpas de forma integrada com volume e caimento do topo, valorizando desenho do corte.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">✂️ Estrutura na Tesoura</h3>
+              <p className="paragraph-sm">Evitamos máquina excessiva para preservar textura e definição das pontas, garantindo caimento orgânico.</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="about-cta-bottom section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Seu cabelo com estilo e sem enrolação.</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Agende seu horário com quem entende a mecânica do cacho masculino em Belo Horizonte. Atendimento exclusivo por R$ 130.
-          </p>
-          <Link to="/agendar" className="btn btn-primary">
-            Agendar Corte Masculino
-          </Link>
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Quais cortes masculinos estão em alta para cachos?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Shag Masculino, Wolf Cut adaptado e Undercut volumoso. Todos valorizam caimento natural no topo com laterais mais limpas.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Dá para controlar volume sem perder os cachos?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Sim. Usamos cortes internos de desconexão que reduzem excesso de peso sem tirar definição dos cachos do topo.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Qual o tempo de duração?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Atendimento completo dura 45 min a 1 hora, incluindo diagnóstico rápido e lavagem.</p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding text-center">
+        <div className="container max-w-lg">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Seu cabelo com estilo e sem enrolação
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Agende seu horário com quem entende a mecânica do cacho masculino em BH. Atendimento exclusivo por R$ 130.
+          </Reveal>
+          <Reveal>
+            <Link to="/agendar" className="btn btn-accent">
+              Agendar Corte Masculino <Arrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </main>

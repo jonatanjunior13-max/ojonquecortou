@@ -36,153 +36,194 @@ const faqSchema = {
 
 const LeituraFioPage = () => {
   return (
-    <main className="about-page">
-      <SEO 
-        title="Leitura de Fio Cabelo Cacheado BH | Studio do Jon" 
-        description="Conheça a Leitura de Fio no Studio do Jon em Belo Horizonte. Análise técnica de curvatura, porosidade e saúde da raiz. R$ 80 revertidos em crédito. Agende." 
+    <main>
+      <SEO
+        title="Leitura de Fio Cabelo Cacheado BH | Studio do Jon"
+        description="Conheça a Leitura de Fio no Studio do Jon em Belo Horizonte. Análise técnica de curvatura, porosidade e saúde da raiz. R$ 80 revertidos em crédito. Agende."
         url="/servicos/leitura-de-fio"
         schema={faqSchema}
       />
-      <section className="about-hero section-padding">
-        <div className="container text-center reveal active">
-          <h1 className="heading-xl">Leitura de <span className="text-gradient">Fio</span></h1>
-          <p className="paragraph-lg max-w-lg mx-auto mt-2">
-            Entenda a ciência, a saúde e as curvaturas reais do seu cabelo antes de qualquer tesourada.
-          </p>
-        </div>
-      </section>
 
-      <section className="section-padding">
-        <div className="container about-grid">
-          <div className="about-visual reveal active">
-            <div className="about-image-wrap">
-              <img src="/jon-trabalhando.jpg" alt="Jonatan Junior realizando análise técnica e leitura de fio no Studio do Jon em Belo Horizonte" className="about-image" />
-            </div>
-            <div className="experience-tag">
-              <span className="exp-number">R$ 80</span>
-              <span className="exp-text">Valor da Análise</span>
-            </div>
-          </div>
-
-          <div className="about-content reveal active">
-            <h2 className="heading-lg mb-2">Não existe cabelo errado. Existe fio mal lido.</h2>
-            <p className="paragraph-md mb-2">
-              Antes de qualquer tesoura tocar o seu cabelo, existe uma etapa que quase ninguém faz: ler o fio. Aqui no studio, essa etapa virou serviço — pra você que quer entender o próprio cabelo antes de decidir qualquer coisa. A Leitura de Fio é um protocolo proprietário de diagnóstico estrutural e tricologia básica adaptado para a mecânica de fios espiralados.
-            </p>
-            <p className="paragraph-md mb-2">
-              Não é avaliação de balcão, daquelas de cinco minutos com olhar de longe. É meia hora de análise de verdade, só sua.
-            </p>
-            <p className="paragraph-md mb-3">
-              A gente começa pela escuta — sua rotina, seus hábitos, o que você já fez no cabelo e o que já fizeram nele. Depois eu vou pro couro cabeludo: análise completa de saúde, oleosidade e comportamento da raiz. Em seguida, o fio: curvatura real (a maioria das cabeças tem mais de uma), densidade, porosidade e memória de química — aquele histórico que o cabelo carrega mesmo quando você não conta.
-            </p>
-            
-            <p className="paragraph-md mb-3" style={{ background: 'var(--bg-warm)', padding: '15px', borderRadius: '8px', borderLeft: '4px solid var(--accent)' }}>
-              <strong>E o melhor: você não paga pela leitura.</strong><br/>
-              Se você fechar um corte ou tratamento comigo, os <strong>R$ 80 viram crédito</strong> e abatem integralmente do valor do serviço. A leitura funciona como entrada — não como custo.
-            </p>
-
-            <div className="cta-group">
-              <Link to="/agendar" className="btn btn-primary">Agendar Leitura de Fio</Link>
-              <Link to="/servicos" className="btn btn-outline">Outros Serviços</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding" style={{ background: 'var(--bg-warm)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-3 text-center">As 7 Etapas do Protocolo de Leitura de Fio</h2>
-          <p className="paragraph-md mb-4 text-center">
-            Cada etapa do diagnóstico fornece dados cruciais para projetar o corte ideal e selecionar os cosméticos corretos:
-          </p>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 1: Anamnese e Rotina (Histórico do Cuidado)</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Investigamos sua rotina de lavagem, marcas de produtos mais utilizadas, frequência de uso de secadores e histórico de processos alcalinos nos últimos 3 anos.</p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 2: Tricoscopia e Saúde do Couro Cabeludo</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Análise visual da epiderme do couro cabeludo para detectar excesso de sebo, descamação, dermatites ou obstruções foliculares que impedem o crescimento forte.</p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 3: Mapeamento de Curvaturas Multi-Textura</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Identificamos a variação de curvatura na sua cabeça. Quase todo mundo tem texturas mistas (como 3A na nuca e 3C no topo). Isso orienta a distribuição do corte.</p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 4: Teste de Porosidade e Absorção Hídrica</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Medimos a capacidade das cutículas de absorver e reter água. Cabelos muito porosos absorvem rápido mas perdem hidratação em minutos, exigindo acidificação de pH.</p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 5: Teste Físico de Elasticidade e Tensão</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Tracionamos suavemente alguns fios úmidos para avaliar o limite elástico. Fios que esticam e não voltam estão com falta de queratina; fios rígidos que quebram de imediato necessitam de nutrição lipídica.</p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 6: Análise de Densidade e Distribuição de Volume</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Avaliamos a quantidade de folículos ativos por centímetro quadrado. Isso nos permite prever a massa visual do corte e projetar as camadas para evitar o efeito pirâmide.</p>
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '8px', borderLeft: '3px solid var(--accent)' }}>
-              <strong>Etapa 7: Rastreamento de Resíduos Acumulados (Scab Hair)</strong>
-              <p style={{ fontSize: '0.9rem', marginTop: '5px' }}>Identificamos o acúmulo de silicones insolúveis, parafinas e óleos minerais que criam um filme impermeabilizante sobre a fibra, mascarando a textura e impedindo a entrada de tratamentos reais.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding">
-        <div className="container" style={{ maxWidth: '800px' }}>
-          <h2 className="heading-md mb-3">Você sai daqui com três coisas no bolso:</h2>
-          <ul className="about-list" style={{ marginTop: '0.5rem', marginBottom: '1.5rem' }}>
-            <li className="mb-2">
-              <div className="list-icon">✓</div>
-              <span><strong>Orientação técnica de produtos:</strong> Chega de desperdiçar dinheiro comprando cremes errados indicados por blogueiras. Explicamos o que o seu fio necessita quimicamente.</span>
-            </li>
-            <li className="mb-2">
-              <div className="list-icon">✓</div>
-              <span><strong>Mapa de finalizações:</strong> Ensinamos as técnicas de fitagem, dedoliss ou estimulação de cachos ideais para a anatomia do seu cabelo.</span>
-            </li>
-            <li className="mb-2">
-              <div className="list-icon">✓</div>
-              <span><strong>Direcionamento de Corte e Volume:</strong> Definimos a angulação de corte e os volumes ideais baseados na física do seu fio e formato de rosto.</span>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="section-padding technique-section" style={{ background: 'var(--bg-warm)' }}>
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
         <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Para quem é recomendado?</h2>
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            Leitura de Fio — Diagnóstico Técnico
           </div>
-          
-          <div className="technique-grid">
-            <div className="card reveal stagger-1">
-              <span className="tech-emoji">🌱</span>
-              <h3>Transição Capilar</h3>
-              <p>Perfeito para quem está em transição e não sabe por onde começar a cuidar da nova textura natural.</p>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                Entenda a ciência do <span className="accent-word">seu cabelo</span>
+              </h1>
+
+              <Reveal delay={120}>
+                <p className="lead" style={{ marginTop: 28 }}>
+                  Não existe cabelo errado. Existe fio mal lido. Antes de qualquer tesoura, existe análise que quase ninguém faz: ler o fio. 30 minutos de análise real — não avaliação de balcão. Couro cabeludo, curvatura real, porosidade, elasticidade, memória de química. Resultado: entender profundamente seu cabelo antes de decidir qualquer coisa.
+                </p>
+              </Reveal>
+
+              <Reveal delay={220} className="hero-actions">
+                <Link to="/agendar" className="btn btn-accent">
+                  Agendar Leitura de Fio <Arrow />
+                </Link>
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">R$ 80</div>
+                  <div className="l">Vira crédito se contratar</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">30 min</div>
+                  <div className="l">Análise completa</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">7 etapas</div>
+                  <div className="l">Protocolo técnico</div>
+                </div>
+              </Reveal>
             </div>
-            <div className="card reveal stagger-2">
-              <span className="tech-emoji">🧴</span>
-              <h3>Acerto de Produtos</h3>
-              <p>Para quem já gastou centenas de reais com cremes e tratamentos que simplesmente pesaram ou ressecaram o cabelo.</p>
-            </div>
-            <div className="card reveal stagger-3">
-              <span className="tech-emoji">✂️</span>
-              <h3>Evitar Erros</h3>
-              <p>Para quem teve experiências ruins em salões convencionais e quer segurança antes de encarar a tesoura.</p>
-            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            O que inclui a Leitura de Fio
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-3">
+            Começamos pela escuta — sua rotina, seus hábitos, o que você já fez no cabelo e o que já fizeram nele. Depois análise completa de couro cabeludo: saúde, oleosidade, comportamento da raiz. Em seguida, o fio: curvatura real (maioria das cabeças tem mais de uma), densidade, porosidade e memória de química — histórico que cabelo carrega mesmo quando não conta.
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4" style={{ background: 'var(--bg-warm)', padding: '15px', borderRadius: '8px', borderLeft: '4px solid var(--accent)' }}>
+            <strong>E o melhor: você não paga pela leitura.</strong><br/>
+            Se fechar um corte ou tratamento, os <strong>R$ 80 viram crédito</strong> e abatem integralmente do valor do serviço. A leitura funciona como entrada — não como custo.
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding bg-light">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            As 7 Etapas do Protocolo de Leitura de Fio
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Cada etapa fornece dados cruciais para projetar corte ideal e selecionar cosméticos corretos:
+          </Reveal>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 1: Anamnese e Rotina</h3>
+              <p className="paragraph-sm">Investigamos sua rotina de lavagem, marcas de produtos mais utilizadas, frequência de secadores e histórico de processos alcalinos últimos 3 anos.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 2: Tricoscopia e Couro Cabeludo</h3>
+              <p className="paragraph-sm">Análise visual da epiderme para detectar excesso de sebo, descamação, dermatites ou obstruções foliculares que impedem crescimento forte.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 3: Mapeamento de Curvaturas Multi-Textura</h3>
+              <p className="paragraph-sm">Identificamos variação de curvatura na sua cabeça. Quase todo mundo tem texturas mistas (como 3A na nuca e 3C no topo). Isso orienta distribuição do corte.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 4: Teste de Porosidade</h3>
+              <p className="paragraph-sm">Medimos capacidade das cutículas de absorver e reter água. Cabelos muito porosos absorvem rápido mas perdem hidratação em minutos, exigindo acidificação.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 5: Teste de Elasticidade</h3>
+              <p className="paragraph-sm">Tracionamos suavemente alguns fios úmidos para avaliar limite elástico. Fios que esticam e não voltam estão com falta de queratina.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 6: Análise de Densidade</h3>
+              <p className="paragraph-sm">Avaliamos quantidade de folículos ativos por cm². Permite prever massa visual do corte e projetar camadas para evitar efeito pirâmide.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">Etapa 7: Rastreamento de Resíduos</h3>
+              <p className="paragraph-sm">Identificamos acúmulo de silicones, parafinas e óleos minerais que criam filme impermeabilizante sobre fibra, mascarando textura real.</p>
+            </Reveal>
           </div>
         </div>
       </section>
 
-      <section className="about-cta-bottom section-padding">
-        <div className="container text-center reveal">
-          <h2 className="heading-lg mb-2">Vagas limitadas por semana.</h2>
-          <p className="paragraph-lg mb-4 max-w-md mx-auto">
-            Reserve seu horário de análise individual de 30 minutos e entenda de uma vez por todas o comportamento real dos seus fios.
-          </p>
-          <Link to="/agendar" className="btn btn-primary">
-            Agendar minha Leitura de Fio
-          </Link>
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Você sai daqui com três coisas
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">🧪 Orientação de Produtos</h3>
+              <p className="paragraph-sm">Explicamos o que seu fio necessita quimicamente. Chega de desperdiçar comprando cremes errados indicados por blogueiras.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">📋 Mapa de Finalizações</h3>
+              <p className="paragraph-sm">Ensinamos técnicas de fitagem, dedoliss ou estimulação de cachos ideais para anatomia do seu cabelo.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">✂️ Direcionamento de Corte</h3>
+              <p className="paragraph-sm">Definimos angulação de corte e volumes ideais baseados na física do seu fio e formato de rosto.</p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            Para quem é recomendado?
+          </Reveal>
+          <div className="grid-3">
+            <Reveal className="card">
+              <h3 className="heading-md">🌱 Transição Capilar</h3>
+              <p className="paragraph-sm">Perfeito para quem está em transição e não sabe por onde começar a cuidar da nova textura natural.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">🧴 Acerto de Produtos</h3>
+              <p className="paragraph-sm">Para quem já gastou centenas de reais com cremes e tratamentos que simplesmente pesaram ou ressecaram o cabelo.</p>
+            </Reveal>
+            <Reveal className="card">
+              <h3 className="heading-md">✂️ Evitar Erros</h3>
+              <p className="paragraph-sm">Para quem teve experiências ruins em salões convencionais e quer segurança antes de encarar a tesoura.</p>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>O que é a Leitura de Fio?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Análise minuciosa de 30 min antes de qualquer procedimento. Investigamos saúde do couro, curvatura real, porosidade, densidade e histórico químico de forma individual e detalhada.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Como funciona o crédito de R$ 80?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Valor pago é revertido integralmente em crédito se realizar corte ou tratamento. Funciona como entrada — análise acaba saindo de graça.</p>
+          </Reveal>
+          <Reveal as="details" className="faq-item">
+            <summary>Quem deve fazer?</summary>
+            <p className="paragraph-sm" style={{ marginTop: 12 }}>Ideal para quem está em transição, gastou muito com produtos errados, teve más experiências em salões, ou quer conhecer profundamente a própria curvatura.</p>
+          </Reveal>
+        </div>
+      </section>
+
+      <section className="section-padding text-center">
+        <div className="container max-w-lg">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Vagas limitadas por semana
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4">
+            Reserve seu horário de análise individual de 30 min e entenda de uma vez por todas o comportamento real dos seus fios.
+          </Reveal>
+          <Reveal>
+            <Link to="/agendar" className="btn btn-accent">
+              Agendar Leitura de Fio <Arrow />
+            </Link>
+          </Reveal>
         </div>
       </section>
     </main>
