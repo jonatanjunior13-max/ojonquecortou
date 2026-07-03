@@ -1530,10 +1530,23 @@ const BookingPage = () => {
           }
         }
       }
-      
+
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
       if (bookingPayload.clientEmail) {
         triggerEmailNotification(bookingPayload);
+      }
+      if (window.gtag) {
+        window.gtag('event', 'purchase', {
+          value: computedFinalTotal,
+          currency: 'BRL',
+          transaction_id: `booking-${Date.now()}`,
+          items: [{
+            item_name: bookingPayload.serviceName,
+            item_id: bookingPayload.service?.id || 'combined-services',
+            price: computedFinalTotal,
+            quantity: 1
+          }]
+        });
       }
       setSuccess(true);
       setStep(4);
