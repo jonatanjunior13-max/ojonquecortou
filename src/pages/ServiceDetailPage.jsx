@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { SEED_SERVICES } from '../data/seedServices';
+import { Reveal, Arrow } from '../components/NewDesignComponents';
 import './ServiceDetailPage.css';
 
 const WA_NUMBER = '553135866673';
@@ -99,117 +100,105 @@ const ServiceDetailPage = () => {
         })}
       </script>
 
-      <section className="service-hero section-padding">
-        <div className="container text-center reveal active">
-          <span className="service-emoji-badge">{service.emoji || '✨'}</span>
-          <span className="service-category-badge">{service.category}</span>
-          <h1 className="heading-xl mt-1">{service.name} para cacheados BH</h1>
-          {service.tagline && (
-            <p className="paragraph-lg text-gradient max-w-lg mx-auto mt-2 font-semibold">
-              {service.tagline}
-            </p>
+      <header className="hero">
+        <div className="hero-blob" aria-hidden="true" />
+        <div className="container">
+          <div className="eyebrow reveal in" style={{ marginBottom: 36 }}>
+            {service.category}
+          </div>
+
+          <div className="hero-grid">
+            <div>
+              <h1 className="display reveal in">
+                {service.name}
+              </h1>
+
+              {service.tagline && (
+                <Reveal delay={120}>
+                  <p className="lead" style={{ marginTop: 28 }}>
+                    {service.tagline}
+                  </p>
+                </Reveal>
+              )}
+
+              <Reveal delay={220} className="hero-actions">
+                {ctaUrl.startsWith('http') ? (
+                  <a href={ctaUrl} target="_blank" rel="noreferrer" className="btn btn-accent">
+                    {btnLabel} <Arrow />
+                  </a>
+                ) : (
+                  <Link to={ctaUrl} className="btn btn-accent">
+                    {btnLabel} <Arrow />
+                  </Link>
+                )}
+                <Link to="/servicos" className="btn btn-ghost">
+                  Ver Outros Serviços
+                </Link>
+              </Reveal>
+
+              <Reveal delay={320} className="hero-meta">
+                <div className="hero-stat">
+                  <div className="n">{service.priceType === 'A partir de' ? 'A partir de' : ''}</div>
+                  <div className="l">R$ {service.promoPrice || service.price}</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">{service.duration}</div>
+                  <div className="l">minutos</div>
+                </div>
+                <div className="hero-stat">
+                  <div className="n">Sem taxas</div>
+                  <div className="l">ocultas</div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-3">
+            Entenda o Processo Técnico
+          </Reveal>
+          <Reveal as="p" className="paragraph-md mb-4 whitespace-pre-line">
+            {service.description}
+          </Reveal>
+
+          {service.includes && service.includes.length > 0 && (
+            <Reveal className="grid-2 mb-4">
+              {service.includes.map((item, idx) => (
+                <div key={idx} className="card">
+                  <p className="paragraph-sm"><span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>✓</span> {item}</p>
+                </div>
+              ))}
+            </Reveal>
+          )}
+
+          {(isCut || isChemistry) && (
+            <Reveal className="card" style={{ background: 'var(--bg-warm)', padding: '24px', borderRadius: '8px', borderLeft: '4px solid var(--accent)', marginTop: '24px' }}>
+              <h3 className="heading-md mb-2" style={{ color: 'var(--accent)' }}>Diferencial: Diagnóstico Integrado</h3>
+              <p className="paragraph-sm mb-3">
+                Não acreditamos em cortes universais. Analisamos elasticidade capilar, encolhimento e porosidade para desenhar resultado duradouro com caimento orgânico.
+              </p>
+              <Link to="/metodo" className="paragraph-sm" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>
+                Conheça o Método Completo →
+              </Link>
+            </Reveal>
           )}
         </div>
       </section>
 
-      <section className="service-content-section section-padding">
-        <div className="container service-detail-grid">
-          
-          {/* Main Info Columns */}
-          <div className="service-main-info reveal">
-            <h2 className="heading-lg mb-2">Entenda o Processo Técnico</h2>
-            <p className="paragraph-md mb-3 whitespace-pre-line">
-              {service.description}
-            </p>
-
-            {service.includes && service.includes.length > 0 && (
-              <div className="service-inclusions-block">
-                <h3>O que está incluso:</h3>
-                <ul className="inclusions-list">
-                  {service.includes.map((item, idx) => (
-                    <li key={idx}>
-                      <span className="check-icon">✓</span> {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Leitura de Fio connection */}
-            {(isCut || isChemistry) && (
-              <div className="leitura-fio-highlight-box mt-4">
-                <span className="highlight-badge">Diferencial</span>
-                <h4>Diagnóstico Integrado de Textura</h4>
-                <p>
-                  Não acreditamos em cortes universais. Analisamos elasticidade capilar, encolhimento e a porosidade para desenhar um resultado duradouro e com caimento orgânico.
-                </p>
-                <Link to="/metodo" className="highlight-link">Conheça o Método Completo →</Link>
-              </div>
-            )}
-          </div>
-
-          {/* Pricing & CTA Card */}
-          <div className="service-sidebar reveal">
-            <div className="booking-cta-card">
-              <div className="card-availability">
-                <div className="avail-dot"></div>
-                <span>Horários Disponíveis</span>
-              </div>
-
-              <div className="card-price-block">
-                <span className="price-label">Valor do Investimento</span>
-                {service.promoPrice ? (
-                  <div className="price-values">
-                    <span className="original-price strike">R$ {service.price}</span>
-                    <span className="current-price text-gradient">R$ {service.promoPrice}</span>
-                  </div>
-                ) : (
-                  <span className="current-price">
-                    {service.priceType === 'A partir de' ? 'A partir de ' : ''}R$ {service.price}
-                  </span>
-                )}
-                <span className="duration-label">⏱ Duração estimada: {service.duration} minutos</span>
-              </div>
-
-              {ctaUrl.startsWith('http') ? (
-                <a href={ctaUrl} target="_blank" rel="noreferrer" className="btn btn-primary btn-block">
-                  {btnLabel}
-                </a>
-              ) : (
-                <Link to={ctaUrl} className="btn btn-primary btn-block">
-                  {btnLabel}
-                </Link>
-              )}
-
-              <div className="card-trust-badges">
-                <span>✓ Sem taxas ocultas</span>
-                <span>✓ Reagendamento fácil</span>
-                <span>✓ Atendimento individual</span>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="service-faq-section section-padding">
-        <div className="container">
-          <div className="text-center reveal mb-4">
-            <h2 className="heading-md">Dúvidas Frequentes</h2>
-            <p className="paragraph-md max-w-sm mx-auto mt-1">
-              Esclareça suas principais dúvidas sobre o procedimento antes de garantir a sua vaga.
-            </p>
-          </div>
-
-          <div className="faq-grid max-w-lg mx-auto">
-            {faqs.map((faq, idx) => (
-              <div className="faq-card reveal" key={idx}>
-                <h4>{faq.q}</h4>
-                <p>{faq.a}</p>
-              </div>
-            ))}
-          </div>
+      <section className="section-padding">
+        <div className="container max-w-2xl">
+          <Reveal as="h2" className="heading-lg mb-4">
+            FAQ
+          </Reveal>
+          {faqs.map((faq, idx) => (
+            <Reveal key={idx} as="details" className="faq-item">
+              <summary>{faq.q}</summary>
+              <p className="paragraph-sm">{faq.a}</p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
