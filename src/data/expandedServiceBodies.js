@@ -1407,5 +1407,40 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>É desenhado pensando em quem está começando ou corrigindo uma rota, mas cliente antigo com um problema específico — por exemplo, dano recente por calor ou uma fase de ressecamento fora do padrão — também se beneficia do formato. O critério não é "há quanto tempo você é cliente", é se o cabelo precisa de correção estrutural e de saúde ao mesmo tempo, acompanhada de perto.</p>
 
 <p>Se você está nessa fase de transição, ou simplesmente decidiu levar o cuidado com o cacho a sério pela primeira vez, o próximo passo é <a href="/agendar">agendar sua primeira sessão</a>. Para entender em detalhe como funciona o diagnóstico que guia todo o pacote, veja como é a <a href="/metodo">Leitura de Fio</a>.</p>
+`,
+  'retoque-raiz': `<h1>Retoque de Raiz | Studio do Jon</h1>
+<h2>Coloração ganha textura errada quando quem faz o retoque não entende cacho</h2>
+<p>Retoque de raiz parece o serviço mais simples do salão — cor nova só na regência, deixa o resto em paz. Em cabelo liso, é basicamente isso. Em cabelo cacheado, ondulado ou crespo, é onde a maioria dos coloristas erra sem perceber que errou.</p>
+<p>A raiz de um cabelo cacheado frequentemente não tem o mesmo padrão de cacho do comprimento. É comum a raiz nascer mais fechada (3C, 4A) do que o resto do fio processado, que com o tempo — química anterior, calor, porosidade alta — relaxa para um padrão mais aberto (3A, 3B). Colorista que trabalha só com colorimetria, sem diagnóstico de textura, trata a raiz como uma extensão do comprimento: mesmo tempo de pausa, mesma técnica de aplicação, mesmo produto. O resultado é uma faixa de demarcação que não é só de cor — é de comportamento. A raiz nova cresce, cacheia diferente da extensão colorida, e a transição fica visualmente quebrada mesmo com a cor perfeitamente igualada.</p>
+<p>Tem um segundo problema, técnico e mais sério: porosidade. A raiz é, na grande maioria dos casos, fio virgem ou pouco processado — cutícula mais fechada, porosidade mais baixa que o comprimento, que já carrega histórico de coloração ou luzes. Aplicar o mesmo produto, na mesma concentração, pelo mesmo tempo nos dois pontos é tratar dois materiais diferentes como se fossem um só. Ou a raiz sub-processa e a cor fica desigual, ou — o erro mais comum quando a aplicadora tenta "garantir" a cor — o produto invade a zona já processada por sobreposição, reprocessando um fio que não devia ser tocado de novo. É essa sobreposição, repetida a cada retoque, que degrada o comprimento ao longo do tempo e é a principal causa de cabelo colorido opaco, quebradiço e com cacho murcho depois de vários retoques mal feitos.</p>
+<p>No Studio do Jon, retoque de raiz começa pela mesma lógica da <strong>Leitura de Fio</strong>: a raiz é diagnosticada como uma unidade separada do comprimento, não como "mais do mesmo cabelo". Isso muda tempo de pausa, técnica de aplicação e o ponto exato onde o produto para.</p>
+
+<h2>Para quem é indicado</h2>
+<ul>
+<li><strong>Clientes com coloração ou luzes já feitas aqui</strong> que estão com regrowth visível e precisam de manutenção — o intervalo mais comum fica entre 6 e 8 semanas, dependendo da velocidade de crescimento e do contraste entre a cor natural e a processada.</li>
+<li><strong>Clientes que notaram a raiz "se comportando diferente"</strong> do resto do cabelo depois de um serviço de cor feito em outro salão — cacho mais fechado, mais frizz, textura que não bate com o restante do comprimento. Geralmente é sinal de que o retoque anterior não considerou a textura da raiz isoladamente.</li>
+<li><strong>Quem quer evitar reprocessar o cabelo inteiro</strong> a cada manutenção. Reaplicar cor ou luz em fio que já está processado, só porque é mais rápido tratar a cabeça inteira igual, é dano acumulado sem necessidade — retoque bem feito trata só o que precisa ser tratado.</li>
+</ul>
+
+<h2>Como funciona o protocolo</h2>
+<h3>1. Diagnóstico da raiz isolado do comprimento</h3>
+<p>Antes de qualquer produto, a raiz passa por checagem de porosidade e padrão de cacho separada da leitura do comprimento — princípio direto da Leitura de Fio. Isso define se a raiz precisa de mais ou menos tempo de pausa que o resto, e se o padrão de cacho ali é realmente diferente do restante (é, na maioria dos casos).</p>
+<h3>2. Igualação de cor com o comprimento já processado</h3>
+<p>A cor nova é calculada para fechar com o resultado que já existe no comprimento — não com uma referência genérica de catálogo. Isso evita o efeito "duas cores" quando o comprimento já sofreu alteração de tom por sol, lavagens ou oxidação natural desde o último serviço.</p>
+<h3>3. Aplicação com controle de sobreposição</h3>
+<p>Produto aplicado só na raiz nova, com controle rigoroso da linha de encontro entre fio virgem e fio processado. É o passo que mais separa um retoque bem feito de um malfeito: sobrepor na zona já colorida, mesmo por alguns milímetros a cada visita, é reprocessamento cumulativo — a causa mais comum de comprimento ressecado e sem definição de cacho depois de meses de retoques.</p>
+<h3>4. Cuidado pós-cor com ativação de cacho na raiz</h3>
+<p>Depois da cor, a raiz recém-processada recebe cuidado de ativação de cacho compatível com o que acabou de passar por oxidação — não o mesmo produto usado no comprimento, que tem histórico de porosidade diferente. O objetivo é a raiz nova já sair de cacho ativado e coeso com o restante, sem a transição de textura ficar visualmente exposta.</p>
+
+<h3>De quanto em quanto tempo devo fazer o retoque de raiz?</h3>
+<p>O intervalo mais comum é de 6 a 8 semanas. Cabelo de crescimento mais rápido ou com maior contraste entre cor natural e processada (caso clássico de loiro sobre base escura) tende para o lado mais curto dessa janela; contrastes mais suaves toleram esperar mais.</p>
+<h3>Posso combinar com corte ou tratamento na mesma visita?</h3>
+<p>Sim. É comum encaixar corte de manutenção ou um tratamento de hidratação/reconstrução na mesma visita do retoque, já que o cabelo já está sendo avaliado fio a fio. A ordem dos serviços é definida na Leitura de Fio do dia, conforme o estado da raiz e do comprimento.</p>
+<h3>Minha raiz vai cachear diferente do meu comprimento depois disso?</h3>
+<p>Se o diagnóstico de textura for feito corretamente na raiz — que é justamente o ponto deste serviço — não. O objetivo do protocolo é fechar cor e comportamento de cacho entre raiz e comprimento, não só a cor. Quando a diferença aparece, normalmente é sintoma de um retoque anterior que ignorou a textura da raiz como variável separada.</p>
+<h3>Isso só funciona para loiro ou cabelo com luzes?</h3>
+<p>Não. O protocolo se aplica a qualquer coloração já existente — Coloração Completa, Morena Iluminada ou Luzes. O que muda entre os casos é o grau de contraste entre raiz natural e comprimento processado, que influencia o intervalo ideal entre retoques, não a lógica do serviço.</p>
+
+<p>Retoque de raiz aqui não é manutenção genérica de cor — é continuação do diagnóstico que começou no seu primeiro atendimento. Para agendar, <a href="/agendar">clique aqui para agendar</a>. Para entender a lógica por trás de cada etapa, veja como funciona a <a href="/metodo">Leitura de Fio</a>.</p>
 `
 };
