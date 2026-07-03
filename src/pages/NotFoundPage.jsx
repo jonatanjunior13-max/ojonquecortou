@@ -9,6 +9,7 @@ const NotFoundPage = () => {
         title="Página não encontrada"
         description="A página que você procura não existe ou foi movida."
         url="/404"
+        noindex
       />
       <section className="about-hero section-padding">
         <div className="container text-center reveal active">

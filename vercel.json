@@ -157,12 +157,12 @@
     },
     {
       "src": "/admin(/(.*))?",
-      "dest": "/index.html",
+      "dest": "/app-shell.html",
       "headers": { "X-Robots-Tag": "noindex, nofollow" }
     },
     {
       "src": "/cliente/?",
-      "dest": "/index.html",
+      "dest": "/app-shell.html",
       "headers": { "X-Robots-Tag": "noindex, nofollow" }
     },
     {

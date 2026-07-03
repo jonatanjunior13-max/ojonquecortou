@@ -137,20 +137,23 @@ function HomeHero() {
             </Reveal>
           </div>
 
-          <Reveal delay={180}>
-            <div className="hero-portrait" style={{ willChange: 'transform' }}>
-              <span ref={badgeRef} className="badge" style={{ willChange: 'transform' }}>Studio · BH</span>
-              <div ref={captionRef} className="caption" style={{ willChange: 'transform' }}>"Antes da tesoura, a leitura."</div>
-              <img
-                ref={portraitRef}
-                src="/jon-perfil.jpg"
-                alt="Jon, especialista em cabelo cacheado em Belo Horizonte"
-                width="480"
-                height="600"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '4/5', willChange: 'transform' }}
-              />
-            </div>
-          </Reveal>
+          {/* Static "reveal in" (not the JS/IntersectionObserver-gated <Reveal>
+              wrapper) — this is the LCP element; it must not sit at opacity:0
+              waiting on hydration + an observer + a 180ms timeout to become
+              visible. The H1 next to it already gets the same treatment. */}
+          <div className="reveal in hero-portrait" style={{ willChange: 'transform' }}>
+            <span ref={badgeRef} className="badge" style={{ willChange: 'transform' }}>Studio · BH</span>
+            <div ref={captionRef} className="caption" style={{ willChange: 'transform' }}>"Antes da tesoura, a leitura."</div>
+            <img
+              ref={portraitRef}
+              src="/jon-perfil.jpg"
+              alt="Jon, especialista em cabelo cacheado em Belo Horizonte"
+              width="480"
+              height="600"
+              fetchpriority="high"
+              style={{ width: '100%', height: '100%', objectFit: 'cover', aspectRatio: '4/5', willChange: 'transform' }}
+            />
+          </div>
         </div>
       </div>
 

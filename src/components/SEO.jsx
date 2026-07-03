@@ -6,7 +6,7 @@ const optimizeTitleForSEO = (rawTitle) => {
   return `${rawTitle} | Studio do Jon`;
 };
 
-const SEO = ({ title, description, image, url, schema }) => {
+const SEO = ({ title, description, image, url, schema, noindex = false }) => {
   useEffect(() => {
     // Helper para atualizar ou criar meta tags
     const updateMeta = (name, content, isProperty = false) => {
@@ -23,6 +23,11 @@ const SEO = ({ title, description, image, url, schema }) => {
         document.head.appendChild(tag);
       }
     };
+
+    // Explicit set on every navigation (both directions): a page that opts
+    // into noindex must not leave that meta behind for the next client-side
+    // route the visitor lands on.
+    updateMeta('robots', noindex ? 'noindex, nofollow' : 'index, follow', false);
 
     if (title) {
       const seoTitle = optimizeTitleForSEO(title);
@@ -80,7 +85,7 @@ const SEO = ({ title, description, image, url, schema }) => {
       }
     }
 
-  }, [title, description, image, url, schema]);
+  }, [title, description, image, url, schema, noindex]);
 
   return null;
 };

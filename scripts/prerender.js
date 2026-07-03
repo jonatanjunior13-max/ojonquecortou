@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { posts } from '../src/data/posts.js';
 import { SEED_SERVICES } from '../src/data/seedServices.js';
 import { EXPANDED_SERVICE_BODIES, SEED_SERVICE_EXPANDED_BODIES } from '../src/data/expandedServiceBodies.js';
+import { galleryImages } from '../src/data/galleryImages.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '../dist');
@@ -911,6 +912,13 @@ const pages = [
       <p>Veja fotos reais de antes e depois de cortes, mechas e tratamentos personalizados realizados em cabelos ondulados, cacheados e crespos. Todos os resultados apresentados são de clientes reais atendidos no Studio do Jon no bairro Caiçaras, Belo Horizonte. Para agendar: <a href="/agendar">ojonquecortou.com.br/agendar</a></p>
       <hr />
       <p>Cada transformação começa com uma leitura técnica do fio: cachos ressecados e sem forma chegam ao estúdio e saem com curvatura definida, camadas que respeitam o comprimento e frizz sob controle. Em cortes masculinos e femininos, o antes costuma ser volume desalinhado ou pontas danificadas — o depois mostra definição uniforme da raiz às pontas, sem perder a textura natural. Coloração e mechas seguem o mesmo cuidado: contraste e brilho aplicados sem comprometer a saúde da fibra cacheada, crespa ou ondulada.</p>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-top: 20px;">
+        ${galleryImages.map(img => `
+        <figure style="margin: 0;">
+          <img src="${img.url}" alt="${img.title} — ${img.description}" loading="lazy" style="width: 100%; height: 160px; object-fit: cover; border-radius: 4px; display: block;" />
+          <figcaption style="font-size: 0.8rem; margin-top: 4px;">${img.title}</figcaption>
+        </figure>`).join('')}
+      </div>
     </article>
   </noscript>
 `,
@@ -1278,6 +1286,18 @@ pages.forEach(page => {
   fs.mkdirSync(routeDir, { recursive: true });
   fs.writeFileSync(path.join(routeDir, 'index.html'), html);
 });
+
+// Minimal shell for private/app routes (/admin, /cliente): these aren't
+// public SEO surfaces, so they shouldn't serve the full homepage snapshot
+// (noscript article, LocalBusiness schema, OG tags) the way vercel.json's
+// SPA fallback used to give them. Built from the pristine pre-page-mutation
+// template, noindex'd, generic title — just enough for the tab bar while
+// the real SPA bundle boots and React Router takes over client-side.
+let appShellHtml = template;
+appShellHtml = replaceTitle(appShellHtml, 'Studio do Jon');
+appShellHtml = replaceOrAddMeta(appShellHtml, 'robots', 'noindex, nofollow', false);
+fs.writeFileSync(path.join(distDir, 'app-shell.html'), appShellHtml);
+console.log('Generated app-shell.html for /admin and /cliente routes.');
 
 console.log('Static pre-rendering completed successfully!');
 
