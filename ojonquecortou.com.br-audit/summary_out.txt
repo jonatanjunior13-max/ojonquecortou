@@ -1,0 +1,21 @@
+=== agendar / desktop ===
+success: True error: None
+broken_images: []
+scroll_check: {'scrollWidth': 1440, 'clientWidth': 1440}
+h1: None
+ctas: []
+small_tap_targets count: 15
+
+=== agendar / mobile ===
+success: True error: None
+broken_images: []
+scroll_check: {'scrollWidth': 390, 'clientWidth': 390}
+h1: None
+ctas: []
+small_tap_targets count: 10
+   Traceback (most recent call last):
+  File "<stdin>", line 19, in <module>
+  File "C:\Users\jonat\AppData\Local\Python\pythoncore-3.14-64\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2190' in position 22: character maps to <undefined>

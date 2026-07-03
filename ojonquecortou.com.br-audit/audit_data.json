@@ -1,0 +1,1635 @@
+{
+  "home": {
+    "desktop": {
+      "url": "https://www.ojonquecortou.com.br",
+      "viewport": "desktop",
+      "success": true,
+      "error": null,
+      "broken_images": [
+        "https://www.ojonquecortou.com.br/blog-leitura-fio-capa.webp",
+        "https://www.ojonquecortou.com.br/blog-por-que-saloes-falham-cabelo-texturizado.png",
+        "https://www.ojonquecortou.com.br/blog-frizz-em-cabelo-cacheado.webp"
+      ],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "O JON QUE CORTOU",
+          "width": 188,
+          "height": 30,
+          "top": 23,
+          "left": 120
+        },
+        {
+          "tag": "A",
+          "text": "Início",
+          "width": 34,
+          "height": 32,
+          "top": 22,
+          "left": 340
+        },
+        {
+          "tag": "A",
+          "text": "Sobre o Jon",
+          "width": 76,
+          "height": 32,
+          "top": 22,
+          "left": 402
+        },
+        {
+          "tag": "A",
+          "text": "Serviços\n▼",
+          "width": 67,
+          "height": 32,
+          "top": 22,
+          "left": 507
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 77,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 114,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 150,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "Investimento",
+          "width": 81,
+          "height": 32,
+          "top": 22,
+          "left": 602
+        },
+        {
+          "tag": "A",
+          "text": "Galeria",
+          "width": 45,
+          "height": 32,
+          "top": 22,
+          "left": 711
+        },
+        {
+          "tag": "A",
+          "text": "Depoimentos",
+          "width": 84,
+          "height": 32,
+          "top": 22,
+          "left": 784
+        },
+        {
+          "tag": "A",
+          "text": "FAQ",
+          "width": 26,
+          "height": 32,
+          "top": 22,
+          "left": 896
+        },
+        {
+          "tag": "A",
+          "text": "Método",
+          "width": 48,
+          "height": 32,
+          "top": 22,
+          "left": 950
+        },
+        {
+          "tag": "A",
+          "text": "Blog",
+          "width": 28,
+          "height": 32,
+          "top": 22,
+          "left": 1026
+        },
+        {
+          "tag": "A",
+          "text": "Minha Conta",
+          "width": 80,
+          "height": 32,
+          "top": 22,
+          "left": 1082
+        }
+      ],
+      "font_sizes": {
+        "19px": 1,
+        "12px": 15,
+        "13px": 26,
+        "8px": 1,
+        "16px": 27,
+        "72px": 2,
+        "17px": 5,
+        "48px": 12,
+        "10px": 5,
+        "9.5px": 1,
+        "28px": 5,
+        "15.5px": 10,
+        "26px": 4,
+        "14.5px": 24,
+        "10.5px": 18,
+        "40px": 2,
+        "19.2px": 2,
+        "15.2px": 4,
+        "13.6px": 4,
+        "20px": 2,
+        "24px": 3,
+        "11px": 3,
+        "21px": 7,
+        "11.2px": 1,
+        "12.8px": 2,
+        "22px": 1,
+        "15px": 1,
+        "14px": 1
+      },
+      "scroll_check": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "fold_visibility": {
+        "h1": {
+          "top": 290,
+          "bottom": 517,
+          "visible": true,
+          "text": "Especialista em Cabelo Cacheado em Belo Horizonte."
+        },
+        "ctas": [
+          {
+            "top": 16,
+            "bottom": 60,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 678,
+            "bottom": 722,
+            "visible": true,
+            "text": "AGENDAR CORTE E AVALIAÇÃO"
+          },
+          {
+            "top": 4658,
+            "bottom": 4702,
+            "visible": false,
+            "text": "AGENDAR MEU HORÁRIO"
+          },
+          {
+            "top": 7197,
+            "bottom": 7217,
+            "visible": false,
+            "text": "Prefere pelo WhatsApp? Fale agora"
+          },
+          {
+            "top": 7754,
+            "bottom": 7811,
+            "visible": false,
+            "text": "WhatsApp\nRESPOSTA < 1H"
+          }
+        ]
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=1819064302.1783078276&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=1819064302.1783078276&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=16&frm=0&ae=g&auid=1819064302.1783078276&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=1303097041.1783078276&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938465~115938469~119027224&apve=1&apvf=f&apvc=1&tft=1783078275930&tfd=4278&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=16&frm=0&ae=g&auid=1819064302.1783078276&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=1303097041.1783078276&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938465~115938469~119027224&apve=1&apvf=f&apvc=1&tft=1783078275930&tfd=4278&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078276292&cv=11&fst=1783078276292&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1819064302.1783078276&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078276292&cv=11&fst=1783078276292&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1819064302.1783078276&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078276292&cv=11&fst=1783078276292&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1819064302.1783078276&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.googleadservices.com/pagead/conversion/666534146/?random=1783078276345&cv=11&fst=1783078276345&fmt=7&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&capi=1&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=1819064302.1783078276&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.googleadservices.com/pagead/conversion/666534146/?random=1783078276345&cv=11&fst=1783078276345&fmt=7&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&capi=1&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=1819064302.1783078276&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=10&frm=0&auid=1819064302.1783078276&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=1303097041.1783078276&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078276361&tfd=4709&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=10&frm=0&auid=1819064302.1783078276&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=1303097041.1783078276&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078276361&tfd=4709&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/pagead/1p-conversion/666534146/?random=1783078276345&cv=11&fst=1783078276345&fmt=3&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&capi=1&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=1819064302.1783078276&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&gcp=1&sscte=1&ct_cookie_present=1&ept=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/pagead/1p-conversion/666534146/?random=1783078276345&cv=11&fst=1783078276345&fmt=3&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&capi=1&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=1819064302.1783078276&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&gcp=1&sscte=1&ct_cookie_present=1&ept=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1v9252327816za200zd9252327816&_p=1783078274700&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAAC&ae=a&are=1&cid=1913639165.1783078275&frm=0&pscdl=noapi&rcb=13&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078275&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=scroll&_fv=1&_nsi=1&_ss=1&epn.percent_scrolled=90&tfd=3583",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078276292&cv=11&fst=1783078276292&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=10&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1819064302.1783078276&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078274700&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=1913639165.1783078275&frm=0&pscdl=noapi&rcb=10&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078276&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&_fv=1&_ss=1&tfd=4636",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1v9252327816z89227286728za200zd9252327816&_p=1783078274700&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQC&are=1&cid=1913639165.1783078275&frm=0&pscdl=noapi&rcb=13&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&tag_exp=115938465~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078275&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&_s=2&tfd=9384"
+      ]
+    },
+    "mobile": {
+      "url": "https://www.ojonquecortou.com.br",
+      "viewport": "mobile",
+      "success": true,
+      "error": null,
+      "broken_images": [
+        "https://www.ojonquecortou.com.br/blog-leitura-fio-capa.webp",
+        "https://www.ojonquecortou.com.br/blog-por-que-saloes-falham-cabelo-texturizado.png",
+        "https://www.ojonquecortou.com.br/blog-frizz-em-cabelo-cacheado.webp"
+      ],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "O JON QUE CORTOU",
+          "width": 153,
+          "height": 30,
+          "top": 23,
+          "left": 16
+        }
+      ],
+      "font_sizes": {
+        "19px": 1,
+        "12px": 15,
+        "13px": 10,
+        "8px": 1,
+        "16px": 34,
+        "38px": 2,
+        "15px": 6,
+        "34px": 2,
+        "10px": 5,
+        "9.5px": 1,
+        "11px": 19,
+        "28px": 16,
+        "15.5px": 10,
+        "26px": 4,
+        "14.5px": 24,
+        "10.5px": 18,
+        "19.2px": 2,
+        "15.2px": 4,
+        "13.6px": 4,
+        "20px": 2,
+        "24px": 3,
+        "11.2px": 1,
+        "22.4px": 1,
+        "12.8px": 2,
+        "22px": 1,
+        "14px": 1
+      },
+      "scroll_check": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "fold_visibility": {
+        "h1": {
+          "top": 168,
+          "bottom": 288,
+          "visible": true,
+          "text": "Especialista em Cabelo Cacheado em Belo Horizonte."
+        },
+        "ctas": [
+          {
+            "top": 16,
+            "bottom": 60,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 442,
+            "bottom": 486,
+            "visible": true,
+            "text": "AGENDAR CORTE E AVALIAÇÃO"
+          },
+          {
+            "top": 7286,
+            "bottom": 7330,
+            "visible": false,
+            "text": "AGENDAR MEU HORÁRIO"
+          },
+          {
+            "top": 11133,
+            "bottom": 11153,
+            "visible": false,
+            "text": "Prefere pelo WhatsApp? Fale agora"
+          },
+          {
+            "top": 12045,
+            "bottom": 12101,
+            "visible": false,
+            "text": "WhatsApp\nRESPOSTA < 1H"
+          }
+        ]
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Loading the script 'https://apis.google.com/js/api.js?onload=__iframefcb327916' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=772050750.1783078287&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=772050750.1783078287&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=19&frm=0&ae=g&auid=772050750.1783078287&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=132273296.1783078287&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~118897921~118897931~119027224&apve=1&apvf=f&apvc=1&tft=1783078287430&tfd=1073&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=19&frm=0&ae=g&auid=772050750.1783078287&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=132273296.1783078287&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~118897921~118897931~119027224&apve=1&apvf=f&apvc=1&tft=1783078287430&tfd=1073&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078288168&cv=11&fst=1783078288168&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=772050750.1783078287&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078288168&cv=11&fst=1783078288168&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=772050750.1783078287&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078288168&cv=11&fst=1783078288168&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=772050750.1783078287&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.googleadservices.com/pagead/conversion/666534146/?random=1783078288210&cv=11&fst=1783078288210&fmt=7&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&capi=2&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=772050750.1783078287&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.googleadservices.com/pagead/conversion/666534146/?random=1783078288210&cv=11&fst=1783078288210&fmt=7&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&capi=2&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=772050750.1783078287&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&ept=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=0&frm=0&auid=772050750.1783078287&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=132273296.1783078287&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078288228&tfd=1870&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=0&frm=0&auid=772050750.1783078287&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&scrsrc=www.googletagmanager.com&rnd=132273296.1783078287&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078288228&tfd=1870&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/pagead/1p-conversion/666534146/?random=1783078288210&cv=11&fst=1783078288210&fmt=3&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&capi=2&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=772050750.1783078287&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&gcp=1&sscte=1&ct_cookie_present=1&ept=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/pagead/1p-conversion/666534146/?random=1783078288210&cv=11&fst=1783078288210&fmt=3&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be66u1v885757749za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&capi=2&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&npa=0&pscdl=noapi&auid=772050750.1783078287&label=CaD_CLK9vK0cEIKC6r0C&hn=www.googleadservices.com&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&ec_mode=a&gcl_ctr=1~0~0~0&data=event%3Dgtag.config&category=acrcp_v1_512&em=tv.1&emd=tvd.1&gcp=1&sscte=1&ct_cookie_present=1&ept=8. Refused to connect because it violates the document's Content Security Policy."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://apis.google.com/js/api.js?onload=__iframefcb327916",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1v9252327816za200zd9252327816&_p=1783078286509&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAAC&ae=a&are=1&cid=1908613228.1783078287&frm=0&pscdl=noapi&rcb=1&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938468~118395333~119027224~119576881~119576885~119576891~119576895&sid=1783078287&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=scroll&_fv=1&_nsi=1&_ss=1&epn.percent_scrolled=90&tfd=791",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078288168&cv=11&fst=1783078288168&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~118131808~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&rcb=0&frm=0&tiba=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=772050750.1783078287&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078286509&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=1908613228.1783078287&frm=0&pscdl=noapi&rcb=0&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&sid=1783078288&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2F&dt=Especialista%20em%20Cabelo%20Cacheado%20BH%20%7C%20Studio%20do%20Jon&en=page_view&_fv=1&_ss=1&tfd=1808"
+      ]
+    }
+  },
+  "servicos": {
+    "desktop": {
+      "url": "https://www.ojonquecortou.com.br/servicos",
+      "viewport": "desktop",
+      "success": true,
+      "error": null,
+      "broken_images": [],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "O JON QUE CORTOU",
+          "width": 188,
+          "height": 30,
+          "top": 23,
+          "left": 120
+        },
+        {
+          "tag": "A",
+          "text": "Início",
+          "width": 34,
+          "height": 32,
+          "top": 22,
+          "left": 340
+        },
+        {
+          "tag": "A",
+          "text": "Sobre o Jon",
+          "width": 76,
+          "height": 32,
+          "top": 22,
+          "left": 402
+        },
+        {
+          "tag": "A",
+          "text": "Serviços\n▼",
+          "width": 67,
+          "height": 32,
+          "top": 22,
+          "left": 507
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 77,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 114,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 150,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "Investimento",
+          "width": 81,
+          "height": 32,
+          "top": 22,
+          "left": 602
+        },
+        {
+          "tag": "A",
+          "text": "Galeria",
+          "width": 45,
+          "height": 32,
+          "top": 22,
+          "left": 711
+        },
+        {
+          "tag": "A",
+          "text": "Depoimentos",
+          "width": 84,
+          "height": 32,
+          "top": 22,
+          "left": 784
+        },
+        {
+          "tag": "A",
+          "text": "FAQ",
+          "width": 26,
+          "height": 32,
+          "top": 22,
+          "left": 896
+        },
+        {
+          "tag": "A",
+          "text": "Método",
+          "width": 48,
+          "height": 32,
+          "top": 22,
+          "left": 950
+        },
+        {
+          "tag": "A",
+          "text": "Blog",
+          "width": 28,
+          "height": 32,
+          "top": 22,
+          "left": 1026
+        },
+        {
+          "tag": "A",
+          "text": "Minha Conta",
+          "width": 80,
+          "height": 32,
+          "top": 22,
+          "left": 1082
+        },
+        {
+          "tag": "BUTTON",
+          "text": "TODOS",
+          "width": 104,
+          "height": 43,
+          "top": 474,
+          "left": 288
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ANÁLISE",
+          "width": 116,
+          "height": 43,
+          "top": 476,
+          "left": 410
+        },
+        {
+          "tag": "BUTTON",
+          "text": "MISTO",
+          "width": 100,
+          "height": 43,
+          "top": 476,
+          "left": 541
+        },
+        {
+          "tag": "BUTTON",
+          "text": "CORTE",
+          "width": 102,
+          "height": 43,
+          "top": 476,
+          "left": 657
+        },
+        {
+          "tag": "BUTTON",
+          "text": "COR",
+          "width": 83,
+          "height": 43,
+          "top": 476,
+          "left": 775
+        },
+        {
+          "tag": "BUTTON",
+          "text": "TRATAMENTO",
+          "width": 153,
+          "height": 43,
+          "top": 476,
+          "left": 874
+        },
+        {
+          "tag": "BUTTON",
+          "text": "COMBO",
+          "width": 108,
+          "height": 43,
+          "top": 476,
+          "left": 1042
+        },
+        {
+          "tag": "A",
+          "text": "Leitura de Fio",
+          "width": 119,
+          "height": 22,
+          "top": 792,
+          "left": 147
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 917,
+          "left": 147
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 1010,
+          "left": 147
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 960,
+          "left": 558
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 1010,
+          "left": 558
+        },
+        {
+          "tag": "A",
+          "text": "Corte com o Jon",
+          "width": 146,
+          "height": 22,
+          "top": 792,
+          "left": 968
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 936,
+          "left": 968
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 1010,
+          "left": 968
+        },
+        {
+          "tag": "A",
+          "text": "Luzes ou Iluminado",
+          "width": 170,
+          "height": 22,
+          "top": 1294,
+          "left": 147
+        }
+      ],
+      "font_sizes": {
+        "19px": 1,
+        "12px": 24,
+        "13px": 10,
+        "8px": 1,
+        "16px": 17,
+        "56px": 2,
+        "19.2px": 1,
+        "12.8px": 26,
+        "24px": 15,
+        "11.2px": 17,
+        "18.4px": 30,
+        "14.4px": 15,
+        "13.6px": 15,
+        "16.8px": 15,
+        "10.4px": 15,
+        "28px": 1,
+        "15.2px": 1,
+        "20px": 1,
+        "14.5px": 14,
+        "10px": 1,
+        "14px": 1,
+        "10.5px": 2
+      },
+      "scroll_check": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "fold_visibility": {
+        "h1": {
+          "top": 158,
+          "bottom": 219,
+          "visible": true,
+          "text": "Tabela de Serviços"
+        },
+        "ctas": [
+          {
+            "top": 16,
+            "bottom": 60,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1063,
+            "bottom": 1107,
+            "visible": false,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1063,
+            "bottom": 1107,
+            "visible": false,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1063,
+            "bottom": 1107,
+            "visible": false,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1541,
+            "bottom": 1585,
+            "visible": false,
+            "text": "WHATSAPP"
+          }
+        ]
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=1546261880.1783078297&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=1546261880.1783078297&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=8&frm=0&ae=g&auid=1546261880.1783078297&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1660205701.1783078297&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115616985~115938466~115938469~118012008~119027224&apve=1&apvf=f&apvc=1&tft=1783078296924&tfd=1197&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=8&frm=0&ae=g&auid=1546261880.1783078297&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1660205701.1783078297&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115616985~115938466~115938469~118012008~119027224&apve=1&apvf=f&apvc=1&tft=1783078296924&tfd=1197&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078297062&cv=11&fst=1783078297062&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=10&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1546261880.1783078297&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078297062&cv=11&fst=1783078297062&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=10&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1546261880.1783078297&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078297062&cv=11&fst=1783078297062&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=10&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1546261880.1783078297&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=10&frm=0&auid=1546261880.1783078297&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1660205701.1783078297&navt=n&npa=0&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078297092&tfd=1365&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=10&frm=0&auid=1546261880.1783078297&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1660205701.1783078297&navt=n&npa=0&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078297092&tfd=1365&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1h1v9252327816za200zd9252327816&_p=1783078296048&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAAC&ae=a&are=1&cid=1060288473.1783078297&frm=0&pscdl=noapi&rcb=19&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115616985~115938466~115938469~119027224~119576881~119576885~119576891~119576895&sid=1783078296&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&dt=Servi%C3%A7os%20para%20Cabelo%20Cacheado%20em%20BH%20%7C%20Studio%20do%20Jon&en=scroll&_fv=1&_nsi=1&_ss=1&epn.percent_scrolled=90&tfd=853",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078297062&cv=11&fst=1783078297062&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=10&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1546261880.1783078297&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078296048&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=1060288473.1783078297&frm=0&pscdl=noapi&rcb=10&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078297&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&_fv=1&_ss=1&tfd=1333"
+      ]
+    },
+    "mobile": {
+      "url": "https://www.ojonquecortou.com.br/servicos",
+      "viewport": "mobile",
+      "success": true,
+      "error": null,
+      "broken_images": [],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "O JON QUE CORTOU",
+          "width": 153,
+          "height": 30,
+          "top": 23,
+          "left": 16
+        },
+        {
+          "tag": "BUTTON",
+          "text": "TODOS",
+          "width": 104,
+          "height": 43,
+          "top": 337,
+          "left": 14
+        },
+        {
+          "tag": "BUTTON",
+          "text": "ANÁLISE",
+          "width": 116,
+          "height": 43,
+          "top": 339,
+          "left": 136
+        },
+        {
+          "tag": "BUTTON",
+          "text": "MISTO",
+          "width": 100,
+          "height": 43,
+          "top": 339,
+          "left": 267
+        },
+        {
+          "tag": "BUTTON",
+          "text": "CORTE",
+          "width": 102,
+          "height": 43,
+          "top": 339,
+          "left": 383
+        },
+        {
+          "tag": "BUTTON",
+          "text": "COR",
+          "width": 83,
+          "height": 43,
+          "top": 339,
+          "left": 501
+        },
+        {
+          "tag": "BUTTON",
+          "text": "TRATAMENTO",
+          "width": 153,
+          "height": 43,
+          "top": 339,
+          "left": 600
+        },
+        {
+          "tag": "BUTTON",
+          "text": "COMBO",
+          "width": 108,
+          "height": 43,
+          "top": 339,
+          "left": 768
+        },
+        {
+          "tag": "A",
+          "text": "Leitura de Fio",
+          "width": 119,
+          "height": 22,
+          "top": 598,
+          "left": 43
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 723,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 773,
+          "left": 43
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 1225,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 1275,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "Corte com o Jon",
+          "width": 146,
+          "height": 22,
+          "top": 1534,
+          "left": 43
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 1678,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 1728,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "Luzes ou Iluminado",
+          "width": 170,
+          "height": 22,
+          "top": 1988,
+          "left": 43
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 2132,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 2182,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "Coloração Completa",
+          "width": 180,
+          "height": 22,
+          "top": 2442,
+          "left": 43
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver mais ▼",
+          "width": 73,
+          "height": 29,
+          "top": 2586,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "SABER MAIS DETALHES →",
+          "width": 166,
+          "height": 19,
+          "top": 2636,
+          "left": 43
+        },
+        {
+          "tag": "A",
+          "text": "Manuteção de Corte",
+          "width": 180,
+          "height": 22,
+          "top": 2895,
+          "left": 43
+        }
+      ],
+      "font_sizes": {
+        "19px": 1,
+        "12px": 24,
+        "13px": 10,
+        "8px": 1,
+        "16px": 17,
+        "32px": 2,
+        "19.2px": 1,
+        "12.8px": 26,
+        "24px": 15,
+        "11.2px": 17,
+        "18.4px": 30,
+        "14.4px": 15,
+        "13.6px": 15,
+        "16.8px": 15,
+        "10.4px": 15,
+        "22.4px": 1,
+        "15.2px": 1,
+        "20px": 1,
+        "14.5px": 14,
+        "10px": 1,
+        "14px": 1,
+        "10.5px": 2
+      },
+      "scroll_check": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "fold_visibility": {
+        "h1": {
+          "top": 85,
+          "bottom": 121,
+          "visible": true,
+          "text": "Tabela de Serviços"
+        },
+        "ctas": [
+          {
+            "top": 16,
+            "bottom": 60,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 826,
+            "bottom": 870,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1327,
+            "bottom": 1371,
+            "visible": false,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1781,
+            "bottom": 1825,
+            "visible": false,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 2235,
+            "bottom": 2279,
+            "visible": false,
+            "text": "WHATSAPP"
+          }
+        ]
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Loading the script 'https://apis.google.com/js/api.js?onload=__iframefcb622548' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=184640594.1783078304&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=184640594.1783078304&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=6&frm=0&ae=g&auid=184640594.1783078304&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1500302158.1783078304&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938469~118395334~118897920~118897930~119027224&apve=1&apvf=f&apvc=1&tft=1783078304055&tfd=1159&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=6&frm=0&ae=g&auid=184640594.1783078304&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1500302158.1783078304&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938469~118395334~118897920~118897930~119027224&apve=1&apvf=f&apvc=1&tft=1783078304055&tfd=1159&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078304313&cv=11&fst=1783078304313&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=13&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=184640594.1783078304&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078304313&cv=11&fst=1783078304313&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=13&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=184640594.1783078304&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078304313&cv=11&fst=1783078304313&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=13&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=184640594.1783078304&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=13&frm=0&auid=184640594.1783078304&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1500302158.1783078304&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078304361&tfd=1465&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=13&frm=0&auid=184640594.1783078304&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&scrsrc=www.googletagmanager.com&rnd=1500302158.1783078304&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078304361&tfd=1465&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://apis.google.com/js/api.js?onload=__iframefcb622548",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078304313&cv=11&fst=1783078304313&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&rcb=13&frm=0&tiba=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=184640594.1783078304&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1v9252327816z89227286728za200zd9252327816&_p=1783078303004&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=1815126202.1783078304&frm=0&pscdl=noapi&rcb=11&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938469~118395335~119027224~119576881~119576885~119576891~119576895&sid=1783078304&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=gtm.dom&_fv=1&_nsi=1&_ss=1&evnid=c442b338-4f1f-4a0b-8767-7132910266c6_1783078303007.14&ep.event_name=PageView&tfd=1188",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078303004&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=1815126202.1783078304&frm=0&pscdl=noapi&rcb=13&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&sid=1783078304&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fservicos&dt=Servi%C3%A7os%20para%20Cabelos%20Cacheados%2C%20Crespos%20e%20Ondulados%20em%20BH%20%7C%20Studio%20do%20Jon&en=page_view&_fv=1&_ss=1&tfd=1415"
+      ]
+    }
+  },
+  "agendar": {
+    "desktop": {
+      "url": "https://www.ojonquecortou.com.br/agendar",
+      "viewport": "desktop",
+      "success": true,
+      "error": null,
+      "broken_images": [],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "← Início",
+          "width": 52,
+          "height": 21,
+          "top": 168,
+          "left": 375
+        },
+        {
+          "tag": "BUTTON",
+          "text": "💇 Cabelo\n15",
+          "width": 139,
+          "height": 44,
+          "top": 463,
+          "left": 650
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 782,
+          "left": 402
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 760,
+          "left": 745
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1111,
+          "left": 402
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1111,
+          "left": 745
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1406,
+          "left": 402
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1440,
+          "left": 745
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1769,
+          "left": 402
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1735,
+          "left": 745
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2098,
+          "left": 402
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2098,
+          "left": 745
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2393,
+          "left": 745
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2810,
+          "left": 402
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2810,
+          "left": 745
+        }
+      ],
+      "font_sizes": {
+        "13.6px": 2,
+        "21.6px": 1,
+        "14.08px": 4,
+        "14px": 2,
+        "11.2px": 1,
+        "10.4px": 6,
+        "19.2px": 15,
+        "10.88px": 15,
+        "16.8px": 15,
+        "12.8px": 25,
+        "12.48px": 17,
+        "12px": 19,
+        "11.52px": 16,
+        "18.4px": 1,
+        "15.2px": 3,
+        "20px": 1,
+        "14.5px": 14,
+        "10px": 1,
+        "16px": 13,
+        "10.5px": 2
+      },
+      "scroll_check": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "fold_visibility": {
+        "h1": null,
+        "ctas": []
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=391102082.1783078312&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=391102082.1783078312&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=13&frm=0&ae=g&auid=391102082.1783078312&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=1750327439.1783078312&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938465~115938469~119027224&apve=1&apvf=f&apvc=1&tft=1783078312168&tfd=1497&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=13&frm=0&ae=g&auid=391102082.1783078312&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=1750327439.1783078312&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938465~115938469~119027224&apve=1&apvf=f&apvc=1&tft=1783078312168&tfd=1497&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078312457&cv=11&fst=1783078312457&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=14&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=391102082.1783078312&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078312457&cv=11&fst=1783078312457&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=14&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=391102082.1783078312&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078312457&cv=11&fst=1783078312457&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=14&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=391102082.1783078312&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=14&frm=0&auid=391102082.1783078312&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=1750327439.1783078312&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078312529&tfd=1858&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=14&frm=0&auid=391102082.1783078312&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=1750327439.1783078312&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078312529&tfd=1858&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078312457&cv=11&fst=1783078312457&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=14&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=391102082.1783078312&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1v9252327816z89227286728za200zd9252327816&_p=1783078310992&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=779807342.1783078312&frm=0&pscdl=noapi&rcb=0&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115616985~115938465~115938468~118395334~119027224~119576881~119576885~119576891~119576895&sid=1783078312&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=gtm.dom&_fv=1&_nsi=1&_ss=1&evnid=c442b338-4f1f-4a0b-8767-7132910266c6_1783078310995.14&ep.event_name=PageView&tfd=1530",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078310992&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=779807342.1783078312&frm=0&pscdl=noapi&rcb=14&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115616985~115938465~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078312&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&_fv=1&_ss=1&tfd=1780",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js"
+      ]
+    },
+    "mobile": {
+      "url": "https://www.ojonquecortou.com.br/agendar",
+      "viewport": "mobile",
+      "success": true,
+      "error": null,
+      "broken_images": [],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "← Início",
+          "width": 52,
+          "height": 21,
+          "top": 103,
+          "left": 35
+        },
+        {
+          "tag": "BUTTON",
+          "text": "💇 Cabelo\n15",
+          "width": 139,
+          "height": 44,
+          "top": 425,
+          "left": 125
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 744,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1073,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1402,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 1731,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2027,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2356,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2685,
+          "left": 52
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ver descrição completa ▼",
+          "width": 151,
+          "height": 23,
+          "top": 2980,
+          "left": 52
+        }
+      ],
+      "font_sizes": {
+        "13.6px": 2,
+        "21.6px": 1,
+        "14.08px": 4,
+        "14px": 2,
+        "11.2px": 1,
+        "10.4px": 6,
+        "19.2px": 15,
+        "10.88px": 15,
+        "16.8px": 15,
+        "12.8px": 25,
+        "12.48px": 17,
+        "12px": 19,
+        "11.52px": 16,
+        "18.4px": 1,
+        "15.2px": 3,
+        "20px": 1,
+        "14.5px": 14,
+        "10px": 1,
+        "16px": 13,
+        "10.5px": 2
+      },
+      "scroll_check": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "fold_visibility": {
+        "h1": null,
+        "ctas": []
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Loading the script 'https://apis.google.com/js/api.js?onload=__iframefcb373821' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=1270728184.1783078319&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=1270728184.1783078319&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=6&frm=0&ae=g&auid=1270728184.1783078319&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=271802148.1783078319&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938466~115938468~118395334~119027224&apve=1&apvf=f&apvc=1&tft=1783078319467&tfd=1105&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=6&frm=0&ae=g&auid=1270728184.1783078319&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=271802148.1783078319&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115938466~115938468~118395334~119027224&apve=1&apvf=f&apvc=1&tft=1783078319467&tfd=1105&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078319721&cv=11&fst=1783078319721&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=7&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1270728184.1783078319&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078319721&cv=11&fst=1783078319721&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=7&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1270728184.1783078319&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078319721&cv=11&fst=1783078319721&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=7&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1270728184.1783078319&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=7&frm=0&auid=1270728184.1783078319&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=271802148.1783078319&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078319750&tfd=1388&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=7&frm=0&auid=1270728184.1783078319&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&scrsrc=www.googletagmanager.com&rnd=271802148.1783078319&navt=n&npa=0&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078319750&tfd=1388&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://apis.google.com/js/api.js?onload=__iframefcb373821",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078319721&cv=11&fst=1783078319721&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&rcb=7&frm=0&tiba=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1270728184.1783078319&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1v9252327816z89227286728za200zd9252327816&_p=1783078318477&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=2070526801.1783078319&frm=0&pscdl=noapi&rcb=0&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938469~119027224~119576881~119576885~119576891~119576895&sid=1783078319&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=gtm.dom&_fv=1&_nsi=1&_ss=1&evnid=c442b338-4f1f-4a0b-8767-7132910266c6_1783078318479.14&ep.event_name=PageView&tfd=1136",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078318477&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=2070526801.1783078319&frm=0&pscdl=noapi&rcb=7&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115938466~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078319&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fagendar&dt=Agende%20seu%20corte%20%7C%20Studio%20do%20Jon%20%E2%80%94%20Especialista%20em%20Cachos%20BH&en=page_view&_fv=1&_ss=1&tfd=1357"
+      ]
+    }
+  },
+  "blog-cronograma-capilar": {
+    "desktop": {
+      "url": "https://www.ojonquecortou.com.br/blog/cronograma-capilar-cabelo-cacheado",
+      "viewport": "desktop",
+      "success": true,
+      "error": null,
+      "broken_images": [],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "O JON QUE CORTOU",
+          "width": 188,
+          "height": 30,
+          "top": 23,
+          "left": 120
+        },
+        {
+          "tag": "A",
+          "text": "Início",
+          "width": 34,
+          "height": 32,
+          "top": 22,
+          "left": 340
+        },
+        {
+          "tag": "A",
+          "text": "Sobre o Jon",
+          "width": 76,
+          "height": 32,
+          "top": 22,
+          "left": 402
+        },
+        {
+          "tag": "A",
+          "text": "Serviços\n▼",
+          "width": 67,
+          "height": 32,
+          "top": 22,
+          "left": 507
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 77,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 114,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "",
+          "width": 194,
+          "height": 27,
+          "top": 150,
+          "left": 443
+        },
+        {
+          "tag": "A",
+          "text": "Investimento",
+          "width": 81,
+          "height": 32,
+          "top": 22,
+          "left": 602
+        },
+        {
+          "tag": "A",
+          "text": "Galeria",
+          "width": 45,
+          "height": 32,
+          "top": 22,
+          "left": 711
+        },
+        {
+          "tag": "A",
+          "text": "Depoimentos",
+          "width": 84,
+          "height": 32,
+          "top": 22,
+          "left": 784
+        },
+        {
+          "tag": "A",
+          "text": "FAQ",
+          "width": 26,
+          "height": 32,
+          "top": 22,
+          "left": 896
+        },
+        {
+          "tag": "A",
+          "text": "Método",
+          "width": 48,
+          "height": 32,
+          "top": 22,
+          "left": 950
+        },
+        {
+          "tag": "A",
+          "text": "Blog",
+          "width": 28,
+          "height": 32,
+          "top": 22,
+          "left": 1026
+        },
+        {
+          "tag": "A",
+          "text": "Minha Conta",
+          "width": 80,
+          "height": 32,
+          "top": 22,
+          "left": 1082
+        },
+        {
+          "tag": "A",
+          "text": "VOLTAR PARA O BLOG",
+          "width": 167,
+          "height": 20,
+          "top": 150,
+          "left": 120
+        },
+        {
+          "tag": "A",
+          "text": "AGENDAR",
+          "width": 106,
+          "height": 38,
+          "top": 850,
+          "left": 1014
+        }
+      ],
+      "font_sizes": {
+        "19px": 1,
+        "12px": 10,
+        "13px": 10,
+        "8px": 1,
+        "16px": 19,
+        "12.8px": 4,
+        "56px": 1,
+        "28px": 8,
+        "17.6px": 79,
+        "16.8px": 7,
+        "13.6px": 4,
+        "20px": 5,
+        "40px": 2,
+        "11.2px": 6,
+        "14.4px": 1,
+        "14.5px": 14,
+        "10px": 1,
+        "14px": 1,
+        "10.5px": 2
+      },
+      "scroll_check": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440
+      },
+      "fold_visibility": {
+        "h1": {
+          "top": 274,
+          "bottom": 459,
+          "visible": true,
+          "text": "Cronograma Capilar para Cabelo Cacheado: O Que Ninguém Te Co"
+        },
+        "ctas": [
+          {
+            "top": 16,
+            "bottom": 60,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1543,
+            "bottom": 1588,
+            "visible": false,
+            "text": "AGENDAR HORÁRIO"
+          },
+          {
+            "top": 8358,
+            "bottom": 8421,
+            "visible": false,
+            "text": "AGENDAR DIAGNÓSTICO"
+          },
+          {
+            "top": 10748,
+            "bottom": 10792,
+            "visible": false,
+            "text": "AGENDAR HORÁRIO"
+          },
+          {
+            "top": 10748,
+            "bottom": 10792,
+            "visible": false,
+            "text": "WHATSAPP"
+          }
+        ]
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=1965243804.1783078328&gtm=45He66u1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=1965243804.1783078328&gtm=45He66u1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=13&frm=0&ae=g&auid=1965243804.1783078328&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=1777109075.1783078328&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115616985~115938465~115938469~119027224&apve=1&apvf=f&apvc=1&tft=1783078327921&tfd=1378&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=13&frm=0&ae=g&auid=1965243804.1783078328&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=1777109075.1783078328&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=0~115616985~115938465~115938469~119027224&apve=1&apvf=f&apvc=1&tft=1783078327921&tfd=1378&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078328662&cv=11&fst=1783078328662&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=10&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1965243804.1783078328&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078328662&cv=11&fst=1783078328662&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=10&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1965243804.1783078328&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078328662&cv=11&fst=1783078328662&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=10&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1965243804.1783078328&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=10&frm=0&auid=1965243804.1783078328&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=1777109075.1783078328&navt=n&npa=0&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078328721&tfd=2178&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=10&frm=0&auid=1965243804.1783078328&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=1777109075.1783078328&navt=n&npa=0&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078328721&tfd=2178&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1h1v9252327816za200zd9252327816&_p=1783078327018&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AEAAAAAC&ae=a&are=1&cid=53320654.1783078328&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115616985~115938465~115938468~119027224~119381663~119576881~119576885~119576891~119576895&sid=1783078327&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=scroll&_fv=1&_nsi=1&_ss=1&epn.percent_scrolled=90&tfd=1171",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078328662&cv=11&fst=1783078328662&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&u_w=1440&u_h=900&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=10&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1965243804.1783078328&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be66u1h1v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078327018&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=53320654.1783078328&frm=0&pscdl=noapi&rcb=10&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&_s=1&tag_exp=115938465~115938469~118897921~118897931~119027224~119576881~119576885~119576891~119576895&sid=1783078328&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&_fv=1&_ss=1&tfd=2113",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je66u1h1v9252327816z89227286728za200zd9252327816&_p=1783078327018&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQC&are=1&cid=53320654.1783078328&frm=0&pscdl=noapi&rcb=4&sr=1440x900&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=pt-br&tag_exp=115616985~115938465~115938468~119027224~119381663~119576881~119576885~119576891~119576895&sid=1783078327&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&_s=2&tfd=6421"
+      ]
+    },
+    "mobile": {
+      "url": "https://www.ojonquecortou.com.br/blog/cronograma-capilar-cabelo-cacheado",
+      "viewport": "mobile",
+      "success": true,
+      "error": null,
+      "broken_images": [],
+      "small_tap_targets": [
+        {
+          "tag": "A",
+          "text": "O JON QUE CORTOU",
+          "width": 153,
+          "height": 30,
+          "top": 23,
+          "left": 16
+        },
+        {
+          "tag": "A",
+          "text": "VOLTAR PARA O BLOG",
+          "width": 167,
+          "height": 20,
+          "top": 150,
+          "left": 16
+        },
+        {
+          "tag": "A",
+          "text": "AGENDAR",
+          "width": 106,
+          "height": 38,
+          "top": 794,
+          "left": 264
+        }
+      ],
+      "font_sizes": {
+        "19px": 1,
+        "12px": 10,
+        "13px": 10,
+        "8px": 1,
+        "16px": 19,
+        "12.8px": 4,
+        "32px": 1,
+        "28px": 10,
+        "17.6px": 79,
+        "16.8px": 7,
+        "13.6px": 4,
+        "20px": 5,
+        "11.2px": 6,
+        "14.4px": 1,
+        "14.5px": 14,
+        "10px": 1,
+        "14px": 1,
+        "10.5px": 2
+      },
+      "scroll_check": {
+        "scrollWidth": 390,
+        "clientWidth": 390
+      },
+      "fold_visibility": {
+        "h1": {
+          "top": 260,
+          "bottom": 436,
+          "visible": true,
+          "text": "Cronograma Capilar para Cabelo Cacheado: O Que Ninguém Te Co"
+        },
+        "ctas": [
+          {
+            "top": 16,
+            "bottom": 60,
+            "visible": true,
+            "text": "AGENDAR"
+          },
+          {
+            "top": 1546,
+            "bottom": 1590,
+            "visible": false,
+            "text": "AGENDAR HORÁRIO"
+          },
+          {
+            "top": 12673,
+            "bottom": 12736,
+            "visible": false,
+            "text": "AGENDAR DIAGNÓSTICO"
+          },
+          {
+            "top": 16115,
+            "bottom": 16159,
+            "visible": false,
+            "text": "AGENDAR HORÁRIO"
+          },
+          {
+            "top": 16175,
+            "bottom": 16219,
+            "visible": false,
+            "text": "WHATSAPP"
+          }
+        ]
+      },
+      "console_errors": [
+        "Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Loading the script 'https://apis.google.com/js/api.js?onload=__iframefcb813981' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://ad.doubleclick.net/ccm/s/collect?auid=105510942.1783078342&gtm=45He66u1h1v9227286728za200zd9227286728xea' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://ad.doubleclick.net/ccm/s/collect?auid=105510942.1783078342&gtm=45He66u1h1v9227286728za200zd9227286728xea. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=14&frm=0&ae=g&auid=105510942.1783078342&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=108789815.1783078342&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1h1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~118897920~118897930~119027224&apve=1&apvf=f&apvc=1&tft=1783078342015&tfd=2103&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=14&frm=0&ae=g&auid=105510942.1783078342&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=108789815.1783078342&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He66u1h1v9227286728za200zd9227286728xea&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~118897920~118897930~119027224&apve=1&apvf=f&apvc=1&tft=1783078342015&tfd=2103&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078342613&cv=11&fst=1783078342613&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=19&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=105510942.1783078342&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked.",
+        "Connecting to 'https://www.google.com/rmkt/collect/666534146/?random=1783078342613&cv=11&fst=1783078342613&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=19&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=105510942.1783078342&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/rmkt/collect/666534146/?random=1783078342613&cv=11&fst=1783078342613&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=19&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=105510942.1783078342&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=68&gcp=5. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=19&frm=0&auid=105510942.1783078342&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=108789815.1783078342&navt=n&npa=0&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078342703&tfd=2791&fmt=8' violates the following Content Security Policy directive: \"connect-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://*.googleapis.com https://*.firebaseio.com https://analytics.ahrefs.com https://www.facebook.com\". The action has been blocked.",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=19&frm=0&auid=105510942.1783078342&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&scrsrc=www.googletagmanager.com&rnd=108789815.1783078342&navt=n&npa=0&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&apve=1&apvf=f&apvc=0&tids=AW-666534146&tid=AW-666534146&tft=1783078342703&tfd=2791&fmt=8. Refused to connect because it violates the document's Content Security Policy.",
+        "Loading the script 'https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://analytics.ahrefs.com\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+      ],
+      "failed_requests": [
+        "https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496",
+        "https://apis.google.com/js/api.js?onload=__iframefcb813981",
+        "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/666534146/?random=1783078342613&cv=11&fst=1783078342613&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&u_w=390&u_h=844&url=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&rcb=19&frm=0&tiba=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=105510942.1783078342&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uamb=0&uam=&uap=iOS&uapv=17_0&uaw=0&data=event%3Dgtag.config&ept=9&rfmt=3&fmt=4",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-BC8WXZKTLL&gtm=45je6710h2v9252327816z89227286728za200zd9252327816&_p=1783078340055&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=753873116.1783078342&frm=0&pscdl=noapi&rcb=2&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078342&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=gtm.dom&_fv=1&_nsi=1&_ss=1&evnid=c442b338-4f1f-4a0b-8767-7132910266c6_1783078340057.14&ep.event_name=PageView&tfd=2250",
+        "https://www.google-analytics.com/g/collect?v=2&tid=G-2HCS01RSP2&gtm=45be6710h2v885757749z89227286728za200zb9252327816zd9252327816&_p=1783078340055&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAAC&are=1&cid=753873116.1783078342&frm=0&pscdl=noapi&rcb=19&sr=390x844&uaa=arm&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=iOS&uapv=17_0&uaw=0&ul=pt-br&_s=1&tag_exp=115616985~115938466~115938468~119027224~119576881~119576885~119576891~119576895&sid=1783078342&sct=1&seg=0&dl=https%3A%2F%2Fwww.ojonquecortou.com.br%2Fblog%2Fcronograma-capilar-cabelo-cacheado&dt=Cronograma%20Capilar%20por%20Porosidade%3A%20Guia%20Cacheado%20%7C%20Studio%20do%20Jon&en=page_view&_fv=1&_ss=1&tfd=2694",
+        "https://capi-automation.s3.us-east-2.amazonaws.com/public/client_js/capiParamBuilder/clientParamBuilder.bundle.js"
+      ]
+    }
+  }
+}

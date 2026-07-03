@@ -1,0 +1,64 @@
+=== agendar / desktop ===
+small_tap_targets count: 15
+   {'tag': 'A', 'text': '← Início', 'width': 52, 'height': 21, 'top': 168, 'left': 375}
+   {'tag': 'BUTTON', 'text': '💇 Cabelo\n15', 'width': 139, 'height': 44, 'top': 463, 'left': 650}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 782, 'left': 402}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 760, 'left': 745}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1111, 'left': 402}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1111, 'left': 745}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1406, 'left': 402}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1440, 'left': 745}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1769, 'left': 402}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1735, 'left': 745}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2098, 'left': 402}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2098, 'left': 745}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2393, 'left': 745}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2810, 'left': 402}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2810, 'left': 745}
+broken_images: []
+scroll_check: {'scrollWidth': 1440, 'clientWidth': 1440}
+
+=== agendar / mobile ===
+small_tap_targets count: 10
+   {'tag': 'A', 'text': '← Início', 'width': 52, 'height': 21, 'top': 103, 'left': 35}
+   {'tag': 'BUTTON', 'text': '💇 Cabelo\n15', 'width': 139, 'height': 44, 'top': 425, 'left': 125}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 744, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1073, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1402, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 1731, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2027, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2356, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2685, 'left': 52}
+   {'tag': 'BUTTON', 'text': 'Ver descrição completa ▼', 'width': 151, 'height': 23, 'top': 2980, 'left': 52}
+broken_images: []
+scroll_check: {'scrollWidth': 390, 'clientWidth': 390}
+
+=== blog-cronograma-capilar / desktop ===
+small_tap_targets count: 16
+   {'tag': 'A', 'text': 'O JON QUE CORTOU', 'width': 188, 'height': 30, 'top': 23, 'left': 120}
+   {'tag': 'A', 'text': 'Início', 'width': 34, 'height': 32, 'top': 22, 'left': 340}
+   {'tag': 'A', 'text': 'Sobre o Jon', 'width': 76, 'height': 32, 'top': 22, 'left': 402}
+   {'tag': 'A', 'text': 'Serviços\n▼', 'width': 67, 'height': 32, 'top': 22, 'left': 507}
+   {'tag': 'A', 'text': '', 'width': 194, 'height': 27, 'top': 77, 'left': 443}
+   {'tag': 'A', 'text': '', 'width': 194, 'height': 27, 'top': 114, 'left': 443}
+   {'tag': 'A', 'text': '', 'width': 194, 'height': 27, 'top': 150, 'left': 443}
+   {'tag': 'A', 'text': 'Investimento', 'width': 81, 'height': 32, 'top': 22, 'left': 602}
+   {'tag': 'A', 'text': 'Galeria', 'width': 45, 'height': 32, 'top': 22, 'left': 711}
+   {'tag': 'A', 'text': 'Depoimentos', 'width': 84, 'height': 32, 'top': 22, 'left': 784}
+   {'tag': 'A', 'text': 'FAQ', 'width': 26, 'height': 32, 'top': 22, 'left': 896}
+   {'tag': 'A', 'text': 'Método', 'width': 48, 'height': 32, 'top': 22, 'left': 950}
+   {'tag': 'A', 'text': 'Blog', 'width': 28, 'height': 32, 'top': 22, 'left': 1026}
+   {'tag': 'A', 'text': 'Minha Conta', 'width': 80, 'height': 32, 'top': 22, 'left': 1082}
+   {'tag': 'A', 'text': 'VOLTAR PARA O BLOG', 'width': 167, 'height': 20, 'top': 150, 'left': 120}
+   {'tag': 'A', 'text': 'AGENDAR', 'width': 106, 'height': 38, 'top': 850, 'left': 1014}
+broken_images: []
+scroll_check: {'scrollWidth': 1440, 'clientWidth': 1440}
+
+=== blog-cronograma-capilar / mobile ===
+small_tap_targets count: 3
+   {'tag': 'A', 'text': 'O JON QUE CORTOU', 'width': 153, 'height': 30, 'top': 23, 'left': 16}
+   {'tag': 'A', 'text': 'VOLTAR PARA O BLOG', 'width': 167, 'height': 20, 'top': 150, 'left': 16}
+   {'tag': 'A', 'text': 'AGENDAR', 'width': 106, 'height': 38, 'top': 794, 'left': 264}
+broken_images: []
+scroll_check: {'scrollWidth': 390, 'clientWidth': 390}
+
