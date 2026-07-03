@@ -1,11 +1,20 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import './WhatsAppButton.css';
 
 const WhatsAppButton = () => {
+  const location = useLocation();
   const phoneNumber = "553135866673";
   const message = "Olá, gostaria de mais informações";
   const encodedMessage = encodeURIComponent(message);
   const waUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+  // Hidden on /agendar: the floating bubble was overlapping the primary
+  // "Adicionar" booking CTA on mobile, and the booking flow already offers
+  // its own WhatsApp contact option.
+  if (location.pathname.startsWith('/agendar')) {
+    return null;
+  }
 
   return (
     <a 

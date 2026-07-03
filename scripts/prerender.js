@@ -31,11 +31,13 @@ function replaceOrAddMeta(html, nameOrProperty, content, isProperty = false) {
   const cleanContent = content.replace(/"/g, '&quot;').replace(/\n/g, ' ').trim();
   const regex = new RegExp(`<meta\\s+${attrName}=["']${nameOrProperty}["']\\s+content=["'].*?["']\\s*\\/?>`, 'i');
   const newTag = `<meta ${attrName}="${nameOrProperty}" content="${cleanContent}" />`;
+  // Replacement passed as a function: a literal "$$" (or "$1", "$&", etc.) inside
+  // newTag would otherwise be misinterpreted by String.replace's special $-patterns.
   if (regex.test(html)) {
-    return html.replace(regex, newTag);
+    return html.replace(regex, () => newTag);
   } else {
     // Inject before </head>
-    return html.replace('</head>', `    ${newTag}\n  </head>`);
+    return html.replace('</head>', () => `    ${newTag}\n  </head>`);
   }
 }
 
@@ -45,9 +47,9 @@ function replaceTitle(html, title) {
   const cleanTitle = title.replace(/"/g, '&quot;').trim();
   const regex = /<title>.*?<\/title>/i;
   if (regex.test(html)) {
-    return html.replace(regex, `<title>${cleanTitle}</title>`);
+    return html.replace(regex, () => `<title>${cleanTitle}</title>`);
   }
-  return html.replace('</head>', `    <title>${cleanTitle}</title>\n  </head>`);
+  return html.replace('</head>', () => `    <title>${cleanTitle}</title>\n  </head>`);
 }
 
 // Helper to replace or add a canonical link tag in the HTML head
@@ -56,9 +58,9 @@ function replaceOrAddCanonical(html, url) {
   const regex = /<link\s+rel=["']canonical["']\s+href=["'].*?["']\s*\/?>/i;
   const newTag = `<link rel="canonical" href="${url}" />`;
   if (regex.test(html)) {
-    return html.replace(regex, newTag);
+    return html.replace(regex, () => newTag);
   } else {
-    return html.replace('</head>', `    ${newTag}\n  </head>`);
+    return html.replace('</head>', () => `    ${newTag}\n  </head>`);
   }
 }
 
@@ -416,8 +418,8 @@ const localBusinessSchema = {
   "name": "Studio do Jon",
   "alternateName": "Studio do Jon",
   "url": "https://www.ojonquecortou.com.br",
-  "logo": "https://www.ojonquecortou.com.br/logo.png",
-  "image": "https://www.ojonquecortou.com.br/capa-studio.jpg",
+  "logo": "https://www.ojonquecortou.com.br/logo-app.png",
+  "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
   "description": "Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.",
   "telephone": "+553135866673",
   "email": "contato@ojonquecortou.com.br",
@@ -426,7 +428,8 @@ const localBusinessSchema = {
   "sameAs": [
     "https://www.instagram.com/ojonquecortou",
     "https://www.google.com/maps?cid=16629671607593282841",
-    "https://www.facebook.com/ojonquecortou/"
+    "https://www.facebook.com/ojonquecortou/",
+    "https://www.wikidata.org/wiki/Q140387726"
   ],
   "address": {
     "@type": "PostalAddress",
@@ -444,9 +447,15 @@ const localBusinessSchema = {
   "openingHoursSpecification": [
     {
       "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday"],
       "opens": "09:00",
       "closes": "19:00"
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Saturday"],
+      "opens": "09:00",
+      "closes": "17:00"
     }
   ],
   "knowsAbout": [
@@ -491,7 +500,6 @@ const founderPersonSchema = {
   "sameAs": [
     "https://www.instagram.com/ojonquecortou/",
     "https://www.facebook.com/ojonquecortou/",
-    "https://linktr.ee/ojonquecortou",
     "https://www.google.com/maps?cid=16629671607593282841"
   ]
 };
@@ -576,20 +584,7 @@ const reviewsSchema = {
     localBusinessSchema,
     ...fallbackReviews.map(r => ({
       "@type": "Review",
-      "itemReviewed": {
-        "@type": "HairSalon",
-        "name": "Studio do Jon",
-        "image": "https://www.ojonquecortou.com.br/jon-perfil.webp",
-        "telephone": "+553135866673",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Rua Francisco Ovídio, 184",
-          "addressLocality": "Caiçaras",
-          "addressRegion": "MG",
-          "postalCode": "30770-040",
-          "addressCountry": "BR"
-        }
-      },
+      "itemReviewed": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
       "author": {
         "@type": "Person",
         "name": r.author_name
@@ -614,7 +609,7 @@ const homeBody = `
       <ul>
         <li><strong>Corte com o Jon</strong> — R$ 190. Inclui Leitura de Fio completa, corte e finalização educativa.</li>
         <li><strong>Leitura de Fio</strong> — R$ 80 (revertido em crédito se fechar serviço). Diagnóstico exclusivo de 7 etapas.</li>
-        <li><strong>Combo Corte + Tratamento</strong> — R$ 320. Corte especializado com tratamento de alta performance.</li>
+        <li><strong>Combo Corte + Tratamento</strong> — R$ 230 (promocional, de R$ 320). Corte especializado com tratamento de alta performance.</li>
         <li><strong>Descoloração em Cabelo Cacheado</strong> — A partir de R$ 699. Com diagnóstico de porosidade e histórico químico.</li>
         <li><strong>Tratamento Personalizado</strong> — R$ 130. Hidratação, nutrição ou reconstrução conforme diagnóstico.</li>
       </ul>
@@ -1017,7 +1012,7 @@ SEED_SERVICES.forEach(service => {
     "@type": "Service",
     "name": service.name,
     "description": service.description,
-    "provider": localBusinessSchema,
+    "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
     "offers": {
       "@type": "Offer",
       "price": service.promoPrice || service.price,
@@ -1225,20 +1220,23 @@ pages.forEach(page => {
   }
   
   // 6. Inject LD+JSON Schema
+  // NOTE: replacement is a function, not a string — a literal "$$" in the JSON
+  // (e.g. priceRange) would otherwise be silently collapsed to "$" by
+  // String.replace's special $-pattern handling in a string replacement.
   if (page.schema) {
     const schemaScript = `\n    <script type="application/ld+json" id="dynamic-page-schema">\n    ${JSON.stringify(page.schema, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
-    html = html.replace('<!-- Google Fonts -->', `${schemaScript}\n\n    <!-- Google Fonts -->`);
+    html = html.replace('<!-- Google Fonts -->', () => `${schemaScript}\n\n    <!-- Google Fonts -->`);
   }
 
   // 6b. Inject Initial Props for Hydration Fallback (SW caching solution)
   if (page.postData) {
     const postDataScript = `\n    <script type="application/json" id="pre-rendered-post-data">\n    ${JSON.stringify(page.postData, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
-    html = html.replace('<!-- Google Fonts -->', `${postDataScript}\n\n    <!-- Google Fonts -->`);
+    html = html.replace('<!-- Google Fonts -->', () => `${postDataScript}\n\n    <!-- Google Fonts -->`);
   }
-  
+
   // 7. Inject Noscript Body Content for Crawlers
   if (page.bodyInsert) {
-    html = html.replace('<div id="root">', `<div id="root">\n      ${page.bodyInsert.trim()}`);
+    html = html.replace('<div id="root">', () => `<div id="root">\n      ${page.bodyInsert.trim()}`);
   }
   
   // Write index.html inside the route directory
