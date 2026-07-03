@@ -95,7 +95,7 @@ function Navbar() {
                       <div className="nav-dropdown-menu">
                         <Link to="/servicos">Todos os Serviços</Link>
                         <Link to="/servicos/descoloracao-cabelo-cacheado">Descoloração de Cachos</Link>
-                        <Link to="/servicos/visagismo-cacheado">Visagismo de Cachos</Link>
+                        <Link to="/servicos/visagismo-cachos">Visagismo de Cachos</Link>
                       </div>
                     </div>
                   );
@@ -142,7 +142,7 @@ function Navbar() {
                         <Link to="/servicos/descoloracao-cabelo-cacheado" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
                           ↳ Descoloração de Cachos
                         </Link>
-                        <Link to="/servicos/visagismo-cacheado" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
+                        <Link to="/servicos/visagismo-cachos" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
                           ↳ Visagismo de Cachos
                         </Link>
                       </div>

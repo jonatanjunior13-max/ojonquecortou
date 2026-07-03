@@ -1223,7 +1223,7 @@ export const posts = [
 
       <h3>Etapa 6 — Definição de Técnica</h3>
       <p>Só depois de passar pelas cinco etapas anteriores eu decido a estratégia. Vamos fazer o corte a seco ou molhado? Para mim, o verdadeiro <a href="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">corte a seco</a> não é moda, é necessidade técnica para desenhar o volume em tempo real. Vamos usar camadas desconectadas para dar volume ou uma linha geométrica para controlar o caimento? Quanto comprimento vamos tirar?</p>
-      <p>Essa decisão não segue um padrão de revista ou de vídeo do Instagram. Ela é baseada nas necessidades específicas do seu fio naquele exato momento. O <a href="/servicos/visagismo-cacheado">visagismo</a> entra aqui com força, harmonizando o formato do corte com as linhas do seu rosto, valorizando a sua expressão pessoal.</p>
+      <p>Essa decisão não segue um padrão de revista ou de vídeo do Instagram. Ela é baseada nas necessidades específicas do seu fio naquele exato momento. O <a href="/servicos/visagismo-cachos">visagismo</a> entra aqui com força, harmonizando o formato do corte com as linhas do seu rosto, valorizando a sua expressão pessoal.</p>
 
       <h3>Etapa 7 — Finalização como Validação</h3>
       <p>A finalização no meu Studio não é apenas o acabamento estético para você tirar fotos. Ela é o teste de estresse do corte. É o momento onde validamos se o diagnóstico estava correto.</p>

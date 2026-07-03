@@ -70,6 +70,11 @@
       "headers": { "Location": "/metodo" }
     },
     {
+      "src": "/servicos/visagismo-cacheado",
+      "status": 301,
+      "headers": { "Location": "/servicos/visagismo-cachos" }
+    },
+    {
       "src": "/api/indexnow",
       "dest": "/api/cron.js?task=indexnow"
     },
@@ -137,8 +142,13 @@
       "dest": "/index.html"
     },
     {
-      "src": "/((?!api|.*\\.(txt|webp|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot|mp4|webm|json|xml|pdf|csv|zip)$).*)",
+      "src": "/(agendar|cancelar|cliente|cachos|glossario|produtos(/[^/]+)?)/?",
       "dest": "/index.html"
+    },
+    {
+      "src": "/((?!api|.*\\.(txt|webp|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot|mp4|webm|json|xml|pdf|csv|zip)$).*)",
+      "dest": "/index.html",
+      "status": 404
     }
   ],
   "crons": [

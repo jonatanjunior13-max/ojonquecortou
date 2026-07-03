@@ -26,6 +26,7 @@ const CancelBookingPage = React.lazy(() => import('./pages/CancelBookingPage'));
 const ClientAreaPage = React.lazy(() => import('./pages/ClientAreaPage'));
 const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
 const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
+const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
 
 const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
 const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
@@ -103,7 +104,7 @@ function App() {
             <Route path="/servicos/visagismo-cachos" element={<VisagismServicePage />} />
             <Route path="/servicos/masculino" element={<MasculinoPage />} />
             <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
-            <Route path="/servicos/visagismo-cacheado" element={<VisagismServicePage />} />
+            <Route path="/servicos/visagismo-cacheado" element={<Navigate to="/servicos/visagismo-cachos" replace />} />
             <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/galeria" element={<GalleryPage />} />
             <Route path="/blog" element={<BlogPage />} />
@@ -120,6 +121,7 @@ function App() {
             <Route path="/produtos" element={<ProductsPage />} />
             <Route path="/produtos/:productId" element={<ProductDetailPage />} />
             <Route path="/blog/corte-hibrido-cachos-seco-molhado" element={<Navigate to="/servicos/corte-hibrido" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
 
           {/* Rotas Administrativas */}

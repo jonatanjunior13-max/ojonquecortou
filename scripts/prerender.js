@@ -935,23 +935,6 @@ const pages = [
     })
   },
   {
-    route: '/servicos/visagismo-cacheado',
-    title: 'Visagismo para Cabelos Cacheados em BH | Studio do Jon',
-    description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal. Agende online.',
-    bodyInsert: `
-  <noscript>
-    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
-      ${EXPANDED_SERVICE_BODIES['visagismo-cacheado']}
-    </article>
-  </noscript>
-`,
-    schema: manualServiceSchema({
-      name: 'Visagismo para Cabelos Cacheados',
-      description: 'Visagismo para cabelos cacheados em Belo Horizonte. Analisamos seu formato de rosto, textura e rotina para planejar o corte ideal.',
-      route: '/servicos/visagismo-cacheado'
-    })
-  },
-  {
     route: '/servicos/corte-hibrido',
     title: 'Corte Híbrido Cabelo Cacheado BH | Studio do Jon',
     description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já.',
