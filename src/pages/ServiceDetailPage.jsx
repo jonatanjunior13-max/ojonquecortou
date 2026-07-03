@@ -17,16 +17,16 @@ const ServiceDetailPage = () => {
 
   if (!service) {
     return (
-      <main className="service-detail-page error-page">
-        <SEO 
-          title="Serviço Não Encontrado | Studio do Jon" 
+      <main className="service-detail-page error-page" style={{ background: 'var(--bg)', color: 'var(--ink)' }}>
+        <SEO
+          title="Serviço Não Encontrado | Studio do Jon"
           description="O serviço procurado não foi localizado. Veja todos os nossos tratamentos e cortes para cachos no Studio do Jon BH."
         />
-        <section className="service-hero section-padding text-center">
+        <section className="service-hero section-padding text-center" style={{ background: 'transparent' }}>
           <div className="container">
             <span className="error-emoji">🧐</span>
-            <h1 className="heading-xl mt-2">Serviço não encontrado</h1>
-            <p className="paragraph-lg max-w-sm mx-auto mt-2">
+            <h1 className="heading-xl mt-2" style={{ color: 'var(--ink)' }}>Serviço não encontrado</h1>
+            <p className="paragraph-lg max-w-sm mx-auto mt-2" style={{ color: 'var(--muted)' }}>
               Não conseguimos localizar o serviço selecionado no momento.
             </p>
             <div className="cta-group mt-3">
