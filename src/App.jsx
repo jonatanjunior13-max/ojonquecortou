@@ -27,6 +27,9 @@ const ClientAreaPage = React.lazy(() => import('./pages/ClientAreaPage'));
 const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
 const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
+const ColoracaoCompletaPage = React.lazy(() => import('./pages/ColoracaoCompletaPage'));
+const ManutencaoCortePagePage = React.lazy(() => import('./pages/ManutencaoCortePagePage'));
+const DetoxEstimulantePage = React.lazy(() => import('./pages/DetoxEstimulantePage'));
 
 const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
 const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
@@ -105,6 +108,9 @@ function App() {
             <Route path="/servicos/masculino" element={<MasculinoPage />} />
             <Route path="/servicos/descoloracao-cabelo-cacheado" element={<BleachServicePage />} />
             <Route path="/servicos/visagismo-cacheado" element={<Navigate to="/servicos/visagismo-cachos" replace />} />
+            <Route path="/servicos/coloracao-completa" element={<ColoracaoCompletaPage />} />
+            <Route path="/servicos/manutencao-corte" element={<ManutencaoCortePagePage />} />
+            <Route path="/servicos/detox-estimulante" element={<DetoxEstimulantePage />} />
             <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/galeria" element={<GalleryPage />} />
             <Route path="/blog" element={<BlogPage />} />
