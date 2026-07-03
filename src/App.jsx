@@ -27,6 +27,7 @@ const ClientAreaPage = React.lazy(() => import('./pages/ClientAreaPage'));
 const ProductsPage = React.lazy(() => import('./pages/ProductsPage'));
 const ProductDetailPage = React.lazy(() => import('./pages/ProductDetailPage'));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'));
+const PressPage = React.lazy(() => import('./pages/PressPage'));
 const ColoracaoCompletaPage = React.lazy(() => import('./pages/ColoracaoCompletaPage'));
 const ManutencaoCortePagePage = React.lazy(() => import('./pages/ManutencaoCortePagePage'));
 const DetoxEstimulantePage = React.lazy(() => import('./pages/DetoxEstimulantePage'));
@@ -125,6 +126,7 @@ function App() {
             <Route path="/metodo" element={<MetodoPage />} />
             <Route path="/metodologia" element={<MetodoPage />} />
             <Route path="/investimento" element={<InvestimentoPage />} />
+            <Route path="/imprensa" element={<PressPage />} />
             <Route path="/agendar" element={<BookingPage />} />
             <Route path="/cancelar" element={<CancelBookingPage />} />
             <Route path="/cliente" element={<ClientAreaPage />} />

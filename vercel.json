@@ -152,7 +152,7 @@
       "dest": "/servicos/$1/index.html"
     },
     {
-      "src": "/(sobre|servicos|galeria|depoimentos|blog|faq|metodo|investimento)/?",
+      "src": "/(sobre|servicos|galeria|depoimentos|blog|faq|metodo|investimento|imprensa)/?",
       "dest": "/$1/index.html"
     },
     {

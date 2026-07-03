@@ -1178,5 +1178,234 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende seu Detox Estimulante</a> e sinta a diferença na saúde do seu couro cabeludo.</p>
+`,
+  'infusao-carga-hidrica-porosos': `<h1>Infusão de Carga Hídrica para Fios Porosos | Studio do Jon</h1>
+<h2>Por que o cabelo de alta porosidade não retém hidratação</h2>
+<p>Porosidade alta não é um "tipo" de cabelo — é um estado da cutícula. As camadas de queratina que deveriam estar fechadas e sobrepostas (como telhas) estão levantadas, afastadas ou parcialmente destruídas. Isso acontece por três vias principais: química agressiva (alisamentos anteriores, descolorações, transições mal conduzidas), calor repetido sem proteção adequada, ou desgaste mecânico e ambiental acumulado (sol, atrito, manipulação excessiva).</p>
+<p>O problema não é falta de água entrando no fio. É retenção. Com a cutícula aberta, a água entra rápido — o fio incha, fica pesado, parece hidratado no banho — e evapora com a mesma velocidade, porque não há barreira física segurando essa umidade dentro do córtex. É a lógica de uma esponja furada: você despeja água, ela some pelos buracos antes de cumprir função. Na prática, isso aparece como cabelo que resseca em menos de 24h após a lavagem, que "estala" ao toque quando seco, e que parece absorver produto sem nunca parecer nutrido de fato.</p>
+<p>Rotinas de hidratação genéricas falham aqui porque tratam o sintoma errado. Aplicar mais produto, com mais frequência, em um fio que não retém, só aumenta o ciclo de intumescimento e ressecamento — e em casos avançados, contribui para hidratação excessiva sem nutrição ou selagem, deixando o fio ainda mais frágil e poroso. A porosidade alta precisa de uma sequência técnica: identificar o grau de abertura da cutícula, repor o que falta na estrutura interna do fio (não só na superfície) e, por fim, fechar mecanicamente essa cutícula para reter o que foi infundido. Sem a etapa de selagem, qualquer hidratação é temporária.</p>
+
+<h2>Para quem é indicado</h2>
+<ul>
+  <li><strong>Cabelo quimicamente transicionado</strong> — fios que passaram por alisamento, relaxamento ou descoloração e hoje têm porosidade elevada em toda a extensão ou em trechos específicos.</li>
+  <li><strong>Cabelo com histórico de dano térmico</strong> — uso frequente de chapinha, babyliss ou secador em alta temperatura sem proteção térmica consistente.</li>
+  <li><strong>Cabelo que resseca rápido demais</strong> — se o fio está seco, opaco ou embaraçado menos de 24h depois de lavar e hidratar, é sinal clássico de cutícula que não retém.</li>
+  <li><strong>Cabelo onde o produto "não entra"</strong> — quando leave-in, creme ou máscara ficam depositados na superfície do fio, deixando-o pesado ou com aspecto encardido, em vez de serem absorvidos.</li>
+  <li><strong>Cabelo com porosidade mista ou irregular</strong> — comum em transição capilar, onde raiz e comprimento têm comportamentos de absorção completamente diferentes.</li>
+</ul>
+<p>Não é indicado como manutenção de rotina para cabelos com porosidade baixa ou normal — nesses casos, o excesso de infusão pode gerar sobrecarga proteica ou hídrica sem necessidade.</p>
+
+<h2>Como funciona o protocolo</h2>
+<h3>1. Leitura de Fio</h3>
+<p>Todo serviço começa pelo diagnóstico. Antes de qualquer produto ser aplicado, avaliamos o grau de porosidade real do fio — não por achismo, mas pelos 7 pontos da Leitura de Fio: comportamento do fio molhado, elasticidade, densidade, padrão de cacho, histórico químico, resposta ao toque e teste de flutuação em mecha-teste quando necessário. Esse diagnóstico determina a concentração dos produtos e o tempo de cada etapa seguinte — não existe protocolo padrão aplicado sem essa leitura prévia.</p>
+<h3>2. Pré-selagem e limpeza direcionada</h3>
+<p>Higienização com produto de pH ajustado para começar a fechar levemente a cutícula antes da infusão, removendo resíduos de produtos que possam estar bloqueando a absorção (silicones não solúveis, acúmulo de proteína mal enxaguada).</p>
+<h3>3. Infusão ativa</h3>
+<p>Aplicação de composto hidratante de baixo peso molecular, formulado para penetrar o córtex e não apenas revestir a superfície. Nesta fase usamos calor controlado (touca térmica ou vapor de ozônio, conforme o resultado da Leitura de Fio) para abrir levemente a cutícula por tempo determinado e permitir a entrada do ativo — o oposto do calor descontrolado que causou o dano em primeiro lugar.</p>
+<h3>4. Reposição de nutrientes internos</h3>
+<p>Em fios de porosidade muito alta, água sozinha não resolve: o córtex também perdeu lipídios e proteínas estruturais. Nessa etapa aplicamos um complexo nutritivo direcionado ao que a Leitura de Fio identificou como deficiente — proteico, lipídico ou ambos — evitando o erro comum de proteinizar um fio que já está com excesso de proteína, ou hidratar ainda mais um fio que precisa de lipídios.</p>
+<h3>5. Selagem mecânica e térmica</h3>
+<p>Etapa decisiva: a cutícula é fechada com produto selante de pH ácido, seguida de resfriamento ou finalização térmica controlada, dependendo da textura do fio. É essa etapa que diferencia o resultado de uma hidratação comum — sem ela, tudo que foi infundido nas etapas anteriores volta a evaporar em poucas lavagens.</p>
+<h3>6. Finalização e orientação de manutenção</h3>
+<p>Definição do cacho ou styling conforme o método do fio, e orientação prática de quais produtos e frequência de lavagem sustentam o resultado em casa — porque porosidade alta também se maneja no dia a dia, não só na cadeira do salão.</p>
+
+<h3>Isso é diferente de uma hidratação profunda comum?</h3>
+<p>Sim. Uma hidratação convencional aplica produto e calor sem diagnóstico prévio de porosidade, e geralmente pula a etapa de selagem — o que explica por que o efeito costuma durar poucos dias em fios muito porosos. Aqui a sequência é diagnóstico, infusão direcionada por deficiência real (água, lipídio ou proteína) e selagem mecânica da cutícula. É tratamento de estrutura, não só de superfície.</p>
+<h3>Quanto tempo o resultado dura?</h3>
+<p>Varia com o grau de dano e com os cuidados em casa, mas a maioria dos casos sustenta o efeito por 3 a 5 semanas antes de precisar de reforço. Fios com porosidade extrema (transição avançada ou histórico de química forte) tendem para o intervalo mais curto até a estrutura se estabilizar ao longo de sessões consecutivas.</p>
+<h3>Posso combinar com corte no mesmo dia?</h3>
+<p>Pode, e em muitos casos é recomendado — pontas com dano acumulado costumam ser a região de porosidade mais alta do fio inteiro, e removê-las facilita a manutenção do resultado da infusão no restante do comprimento. A ordem ideal é definida na Leitura de Fio, mas geralmente o corte acontece antes da infusão, para não desperdiçar produto em fio que será removido.</p>
+<h3>Com que frequência devo repetir?</h3>
+<p>Para porosidade alta em processo de recuperação, o intervalo costuma ser mensal nos primeiros 3 a 4 ciclos. Depois que a cutícula estabiliza — o que a Leitura de Fio confirma sessão a sessão — o espaçamento pode aumentar para manutenção trimestral.</p>
+
+<p>Se o seu cabelo "bebe" água e resseca de novo no dia seguinte, o problema provavelmente está na cutícula, não na quantidade de produto que você usa. O primeiro passo é sempre o diagnóstico: <a href="/metodo">conheça o método Leitura de Fio</a> e entenda o que está acontecendo com o seu fio antes de investir em mais um produto que promete e não resolve. Para agendar sua avaliação e infusão de carga hídrica, <a href="/agendar">marque seu horário</a>.</p>
+`,
+  'inside-trp': `<h1>Reconstrução Premium — Inside TRP | Studio do Jon</h1>
+<h2>Por que a hidratação comum não resolve fio quebrando</h2>
+<p>Dano estrutural em cabelo cacheado não é falta de "brilho" ou de "maciez" — é perda de proteína. A fibra capilar é feita majoritariamente de queratina, uma proteína fibrosa mantida coesa por ligações dissulfeto (pontes de enxofre entre cadeias de aminoácidos) e por uma camada externa de cutículas que protege o córtex. Quando o fio passa por descoloração, transição capilar mal conduzida, calor repetido de secador/difusor em temperatura alta, ou simplesmente o desgaste mecânico acumulado de anos, essas ligações dissulfeto se rompem. A cutícula levanta, racha ou se perde em trechos, e o córtex — que é onde mora a resistência mecânica do fio — fica exposto.</p>
+<p>É aqui que a maioria das pessoas erra o diagnóstico. Fio com dano estrutural costuma parecer "ressecado", e a resposta automática é jogar mais hidratação: máscara de hidratação, óleo, leave-in em camadas. O problema é que água e óleo agem na superfície e na retenção de umidade — eles não reconstroem ligação química nenhuma. Um fio que perdeu proteína continua poroso e frágil mesmo depois de hidratado, porque a hidratação não repõe o que foi perdido na estrutura interna. O resultado prático é o ciclo clássico: hidrata, o fio fica bom por um dia, no dia seguinte volta a quebrar ou embolar. Isso não é falha do produto — é tratamento errado para o problema. Perda de proteína se resolve com reposição de proteína, não com água.</p>
+
+<h2>Para quem é indicado</h2>
+<p>A Reconstrução Premium — Inside TRP é indicada para cabelos com sinais objetivos de comprometimento estrutural, não para manutenção de rotina. Os quadros mais comuns que atendemos:</p>
+<ul>
+<li><strong>Perda de elasticidade:</strong> o fio estica quando puxado e não volta à forma original — sinal direto de que a matriz proteica não tem mais coesão suficiente para sustentar o cacho.</li>
+<li><strong>Quebra e pontas duplas além do desgaste normal:</strong> fios curtos espalhados no chuveiro, pontas que se abrem em pouco tempo depois de cortadas, mechas que afinam no meio do comprimento.</li>
+<li><strong>Recuperação de transição capilar ou dano térmico:</strong> cabelo saindo de alisamento, relaxamento ou anos de chapinha/babyliss, com o córtex fragilizado pela química ou pelo calor acumulado.</li>
+<li><strong>Fio "meloso" ou emborrachado quando molhado:</strong> se o cabelo parece elástico demais e meio gosmento no banho, esse não é sinal de hidratação em dia — é o clássico indicador de deficiência proteica com overhidratação. A cutícula aberta deixa entrar água demais e não há proteína suficiente para dar estrutura, então o fio incha e perde a forma.</li>
+</ul>
+<p>Se o seu cabelo está apenas opaco ou ressecado na pontas, sem esses sinais de comprometimento estrutural, provavelmente o caso é hidratação reforçada — não reconstrução. É exatamente por isso que o protocolo começa com diagnóstico, não com produto.</p>
+
+<h2>Como funciona o protocolo</h2>
+<h3>1. Leitura de Fio — confirmando que é proteína mesmo</h3>
+<p>Toda Reconstrução Premium começa com a Leitura de Fio, nosso diagnóstico de 7 etapas, sem custo adicional. Isso não é formalidade: aplicar proteína em fio que não precisa de proteína é tão prejudicial quanto não aplicar em fio que precisa. Excesso de proteína deixa o cabelo rígido, quebradiço e sem movimento — o oposto do que se busca. A Leitura de Fio avalia porosidade, elasticidade, densidade e o histórico químico/térmico do fio para confirmar que o quadro é, de fato, deficiência proteica, e não outra causa (ressecamento simples, acúmulo de resíduo de produto, ou desequilíbrio de pH, por exemplo). Só avançamos para a reconstrução quando o diagnóstico confirma a necessidade.</p>
+<h3>2. Aplicação reconstrutora</h3>
+<p>Com o diagnóstico confirmado, aplicamos a linha Inside TRP diretamente no córtex exposto, mecha a mecha, respeitando o tempo de ação necessário para que os aminoácidos e proteínas hidrolisadas se liguem aos pontos de ruptura na fibra. O tempo de pausa é ajustado conforme o grau de dano identificado na Leitura de Fio — cabelo com dano severo (química + calor, por exemplo) recebe tempo de ação diferente de um dano pontual.</p>
+<h3>3. Balanceamento — evitando o excesso de proteína</h3>
+<p>Depois da reconstrução, entra uma etapa de equilíbrio com ativos umectantes e emolientes. Esse passo existe porque proteína em excesso, sem contrapeso de maciez, deixa o fio duro e quebradiço — o mesmo tipo de dano estrutural que estamos tratando, só que na direção oposta. O balanceamento devolve flexibilidade à fibra sem desfazer a reconstrução.</p>
+<h3>4. Selagem</h3>
+<p>Por fim, selamos a cutícula para reter o que foi reconstruído e reduzir a porosidade — o que diminui a entrada excessiva de água no próximo contato com umidade e prolonga o efeito do tratamento até a próxima manutenção.</p>
+
+<h2>Perguntas frequentes</h2>
+<h3>Como sei se meu cabelo precisa de proteína ou de hidratação?</h3>
+<p>Você não precisa saber com certeza — é justamente para isso que existe a Leitura de Fio. Como sinais de alerta gerais: fio que estica e não volta, quebra em excesso ou fica emborrachado ao molhar geralmente pede proteína. Fio opaco, áspero e sem esses sintomas geralmente pede hidratação. A avaliação confirma antes de qualquer aplicação.</p>
+<h3>Com que frequência posso repetir sem exagerar?</h3>
+<p>Depende do grau de dano e da rotina de calor/química de cada pessoa, e isso também é definido na Leitura de Fio a cada visita. Como regra geral, cabelo em processo de recuperação ativa costuma se beneficiar de reconstruções espaçadas, intercaladas com hidratação de manutenção entre elas — nunca reconstrução sobre reconstrução em sequência curta, porque isso é o caminho mais direto para o excesso de proteína.</p>
+<h3>Isso substitui a hidratação profunda de rotina?</h3>
+<p>Não. São tratamentos com função diferente. A reconstrução repõe proteína perdida na estrutura do fio; a hidratação de rotina mantém o nível de água e maciez no dia a dia. Um cabelo saudável normalmente precisa das duas coisas em momentos diferentes — a reconstrução resolve o dano estrutural, a hidratação sustenta o resultado.</p>
+<h3>É seguro fazer perto de um evento ou ensaio de fotos?</h3>
+<p>Sim, com uma ressalva de timing: por envolver reposição estrutural e uma etapa de balanceamento, o resultado final — cacho mais definido, com elasticidade e movimento — fica mais evidente 1 a 2 dias depois do procedimento, quando o fio termina de assentar. Se o compromisso for já no dia seguinte, avisa na Leitura de Fio para ajustarmos o planejamento.</p>
+
+<p>Se os sinais acima batem com o que você está vendo no espelho ou no ralo do banho, o primeiro passo é o diagnóstico, não a aplicação. <a href="/metodo">Conheça como funciona a Leitura de Fio</a> e entenda o que ela avalia antes de qualquer procedimento. Para agendar a Reconstrução Premium — Inside TRP com avaliação incluída, <a href="/agendar">marque seu horário aqui</a>.</p>
+`,
+  'protocolo-blindagem-ph-reconstrucao': `<h1>Protocolo Blindagem de pH e Reconstrução | Studio do Jon</h1>
+<h2>Por que pH desequilibrado e dano estrutural andam juntos</h2>
+<p>Cutícula aberta é a porta de entrada para os dois problemas ao mesmo tempo — e é por isso que eles quase sempre aparecem juntos, não isolados. Quando o fio passa por química (alisamento anterior, coloração, luzes) ou fica exposto a produtos de pH alto, as escamas da cutícula levantam. Isso tem duas consequências simultâneas, não sequenciais: a cutícula aberta deixa a água e a proteína escaparem de dentro do córtex (perda de brilho, definição e maciez — sinais de pH), e ao mesmo tempo deixa o córtex exposto a mais atrito, mais quebra e mais perda de elasticidade (sinais estruturais). Uma coisa alimenta a outra. Fio com cutícula aberta perde proteína mais rápido, e fio com deficit de proteína perde a capacidade de manter a cutícula selada. É um ciclo, não dois problemas separados na fila.</p>
+<p>É por isso que tratar só um lado costuma dar resultado incompleto. Selar o pH sem repor proteína estabiliza a superfície, mas o córtex continua fragilizado por dentro — o fio volta a abrir em poucos dias. Reconstruir sem corrigir o pH devolve resistência, mas em cutícula ainda aberta, o que foi reposto continua vazando. O <strong>Protocolo Blindagem de pH e Reconstrução</strong> existe porque, na prática, boa parte dos cabelos cacheados/crespos em transição química ou com histórico de processos agressivos chegam ao salão com as duas frentes comprometidas ao mesmo tempo, em proporções diferentes — e isso muda como o protocolo é conduzido.</p>
+
+<h2>Para quem é indicado</h2>
+<ul>
+<li>Fios em transição química (saindo de alisamento, relaxamento ou escova progressiva), onde o comprimento ainda carrega histórico de processo mesmo sem repetição recente.</li>
+<li>Cabelo com sinais de pH alterado — opacidade, frizz constante mesmo hidratado, cacho que "não fecha" — <strong>e</strong>, ao mesmo tempo, sinais estruturais — quebra ao pentear, elasticidade baixa (o fio estica e não volta), pontas com aspecto de "escova" mesmo sem uso de calor.</li>
+<li>Cabelo que já passou por hidratação ou reconstrução isoladas e "não resolveu por completo" — o resultado durou pouco ou não trouxe a definição esperada, sinal de que só metade do problema foi tratada.</li>
+<li>Fios que estão no meio do caminho: já não estão no auge do dano (não é caso de reconstrução pesada isolada), mas também não estão só ressecados (não é caso de hidratação/selagem simples).</li>
+</ul>
+<p>Não é indicado para cabelo saudável em manutenção de rotina — nesse caso o protocolo é peso desnecessário, e existe tratamento mais direcionado. A avaliação decide isso antes de qualquer produto ser aberto.</p>
+
+<h2>Como funciona o protocolo combinado</h2>
+<h3>1. Leitura de Fio — diagnóstico e proporção do problema</h3>
+<p>Antes de qualquer produto entrar em contato com o fio, a <a href="/metodo">Leitura de Fio</a> mapeia densidade, porosidade, elasticidade e histórico químico em 7 etapas. Aqui ela cumpre uma função extra: determinar a <strong>proporção real</strong> entre o componente de pH e o componente estrutural. Isso importa porque fio já fragilizado reage mal a acidificação forte demais — se o problema é 70% estrutural e 30% pH, acidificar como se fosse o contrário pode deixar o fio ainda mais quebradiço. A leitura define a ordem, o tempo de pausa e a concentração de cada etapa seguinte.</p>
+<h3>2. Selagem e acidificação da cutícula</h3>
+<p>Com o diagnóstico definido, aplicamos um selante ácido para trazer o fio de volta à faixa de pH em que a cutícula naturalmente se fecha — em torno de 4,5 a 5,5. Isso reduz a porosidade aberta, devolve o assentamento das escamas e já corta boa parte do frizz por conta própria. É a etapa que impede que o passo seguinte "vaze" para fora do fio.</p>
+<h3>3. Reconstrução estrutural</h3>
+<p>Com a cutícula mais fechada, entra a reposição de proteína e queratina no córtex, na concentração que a Leitura de Fio indicou. A cutícula selada na etapa anterior funciona como barreira — o que é reposto agora tem mais chance de permanecer no fio em vez de ser lavado embora no primeiro shampoo. É essa sequência (selar, depois repor) que faz o combinado funcionar melhor do que os dois tratamentos soltos.</p>
+<h3>4. Validação e finalização</h3>
+<p>Fechamos com uma nova leitura rápida de elasticidade e porosidade para confirmar que o fio respondeu dentro do esperado — não em excesso, não de menos — e com finalização que testa o cacho já formado, sem calor agressivo. Se algum ponto do fio pedir ajuste, é aqui que ele é feito, ainda na cadeira.</p>
+
+<h3>Qual a diferença entre fazer esse protocolo combinado e fazer os dois tratamentos separadamente, em dias diferentes?</h3>
+<p>A ordem e o intervalo importam. Selar e reconstruir na mesma sessão, na sequência certa, faz a reconstrução ficar retida atrás de uma cutícula já fechada. Fazer em dias separados deixa a cutícula reabrir entre uma etapa e outra, e parte do que foi reposto se perde antes da próxima visita — normalmente o resultado final leva mais sessões para ficar estável.</p>
+<h3>Quanto tempo dura o atendimento combinado?</h3>
+<p>Em média de 2h30 a 3h30, variando com densidade e extensão do fio, porque a Leitura de Fio e a etapa de validação fazem parte do tempo — não são adicionadas depois.</p>
+<h3>Dá para combinar com coloração ou luzes?</h3>
+<p>Depende da ordem e do intervalo, não é um "sim" automático. Fio recém-quimicamente processado (luzes, coloração com amônia) geralmente precisa de um intervalo antes do protocolo, porque o córtex ainda está reagindo ao processo anterior. Isso é avaliado na Leitura de Fio — em alguns casos o protocolo é o que prepara o fio para receber química com mais segurança depois, não o contrário.</p>
+<h3>Com que frequência repetir?</h3>
+<p>Não é um tratamento de manutenção mensal. A frequência normal é a cada 45 a 60 dias enquanto o fio ainda carrega dano estrutural relevante, com espaçamento maior conforme os sinais (elasticidade, porosidade) se estabilizam. Repetir com frequência maior que a necessária, em fio que já respondeu bem, tende a ser desperdício — a própria leitura de acompanhamento indica quando espaçar.</p>
+
+<p>Se o seu fio está entre dois mundos — opaco e sem definição, mas também quebrando ou perdendo elasticidade — vale entender com precisão qual é a proporção real do problema antes de tratar. <a href="/metodo">Conheça a Leitura de Fio</a> e <a href="/agendar">agende seu horário</a> para começar pelo diagnóstico.</p>
+`,
+  'ritual-reposicao-lipidica-nutricao': `<h1>Ritual de Reposição Lipídica e Nutrição | Studio do Jon</h1>
+<h2>O que é "nutrição" capilar — e por que fio cacheado perde lipídio mais rápido</h2>
+<p>Todo protocolo sério de tratamento capilar trabalha em cima de três pilares: <strong>hidratação</strong> (repõe água na fibra), <strong>nutrição</strong> (repõe lipídios) e <strong>reconstrução</strong> (repõe proteína/queratina perdida por dano estrutural). São três carências diferentes, com três soluções diferentes — e aplicar a errada não corrige o problema, só mascara o sintoma por alguns dias.</p>
+<p>O Ritual de Reposição Lipídica e Nutrição ataca especificamente o segundo pilar. Ele não foi desenhado para fio ressecado por falta de água (isso é hidratação) nem para fio quebradiço por perda de proteína (isso é reconstrução). Ele existe para um problema estrutural bem definido: a perda da camada lipídica que reveste a cutícula do fio.</p>
+
+<h3>A camada lipídica: o que é e por que ela existe</h3>
+<p>A fibra capilar saudável é revestida por uma camada de lipídios — o principal é o <strong>18-MEA (ácido 18-metileicosanóico)</strong>, uma cadeia graxa ligada covalentemente à superfície da cutícula, reforçada pelo sebo produzido no couro cabeludo. Essa camada tem três funções mecânicas: reduz o atrito entre fios (é o que dá a sensação de "escorregadio" no cabelo saudável), sela a cutícula reduzindo porosidade, e é responsável por boa parte do brilho que você vê — luz refletindo numa superfície lisa e lubrificada, não numa cutícula áspera e aberta.</p>
+<p>Quando essa camada se degrada — por exposição solar, por lavagens com tensoativos agressivos, por calor, por processos químicos anteriores ou simplesmente pelo tempo — o fio perde brilho, perde "escorregamento" e passa a sentir-se áspero mesmo estando bem hidratado. É esse quadro específico que o ritual trata.</p>
+
+<h3>Por que cabelo cacheado e crespo perdem lipídio mais rápido que o liso</h3>
+<p>Isso não é força de expressão, é geometria. O sebo que lubrifica o fio é produzido nas glândulas sebáceas do couro cabeludo e precisa <strong>viajar pela haste capilar</strong> para revestir toda a extensão do fio. Num fio liso, esse trajeto é uma linha reta — o sebo desce por gravidade e capilaridade sem obstrução.</p>
+<p>Num fio cacheado, ondulado ou crespo (tipos 2A a 4C), a haste tem curvaturas, torções e, nos tipos mais fechados, mudanças de direção ao longo do próprio eixo. O sebo tem que percorrer um caminho em espiral, e a cada curva perde eficiência de deslocamento. O resultado prático: pontas de cabelo cacheado raramente recebem lipídio suficiente por via natural, e a camada de 18-MEA nessas regiões se esgota muito mais rápido do que em um fio reto de comprimento equivalente.</p>
+<p>É por isso que "cabelo cacheado é mais seco" não é generalização vazia — é consequência direta da estrutura do fio. E é por isso que a reposição lipídica não pode ser esporádica: ela precisa ser deliberada e repetida, porque o mecanismo natural de reposição (o sebo) simplesmente não alcança essas áreas com a mesma eficiência que alcança um fio liso.</p>
+
+<h2>Para quem é indicado</h2>
+<ul>
+<li><strong>Fio ressecado mesmo com hidratação em dia.</strong> Você hidrata, o cabelo fica bom por um dia ou dois, e volta a sentir áspero rápido demais.</li>
+<li><strong>Cabelo já reconstruído que continua sem maciez.</strong> A parte proteica está resolvida — o fio não está elástico nem quebrando — mas falta o "escorregar" característico de fio saudável.</li>
+<li><strong>Falta de brilho apesar de bem hidratado.</strong> Brilho é, em grande parte, um fenômeno óptico de superfície lisa. Sem lipídio, a cutícula fica áspera e dispersa a luz em vez de refletir.</li>
+<li><strong>Pontas com textura de palha.</strong> Exatamente a região que, pela geometria explicada acima, menos recebe sebo natural.</li>
+<li><strong>Cabelo "sem movimento".</strong> Fio bem lipidado tem leveza e queda natural. Fio sem lipídio fica opaco, pesado de forma errada, ou emaranhando com facilidade mesmo hidratado.</li>
+</ul>
+
+<h2>Como funciona o protocolo</h2>
+<h3>1. Diagnóstico com Leitura de Fio</h3>
+<p>Todo ritual começa pela Leitura de Fio, nosso diagnóstico de 7 etapas, incluído gratuitamente em qualquer serviço. Aqui ela cumpre um papel específico: <strong>diferenciar carência lipídica de carência hídrica e de carência proteica</strong> — o ponto mais comum de erro de diagnóstico caseiro. Cabelo "ressecado" é frequentemente tratado com mais uma máscara de hidratação, quando na verdade já está saturado de água e o que falta é lipídio (ou o oposto: cabelo tratado como se precisasse de óleo quando na verdade está com déficit de proteína e simplesmente elástico demais). A Leitura de Fio avalia porosidade, elasticidade, densidade e comportamento do fio molhado vs. seco para apontar exatamente qual dos três pilares está deficiente antes de qualquer produto ser aplicado.</p>
+<h3>2. Aplicação da reposição lipídica</h3>
+<p>Definido que a carência é lipídica, selecionamos óleos e manteigas de acordo com a <strong>porosidade específica</strong> identificada na leitura — não existe um óleo "universal" que funcione igual em qualquer fio. Fio de porosidade alta (cutícula mais aberta) absorve ativos mais leves com rapidez, mas perde retenção se o produto for pesado demais. Fio de porosidade baixa (cutícula mais fechada) precisa de ativos com moléculas menores e de um tempo de ação maior para penetrar em vez de só cobrir a superfície. Aplicar o produto errado para a porosidade errada é a razão mais comum de "esse óleo não fez nada" — ele não penetrou, só ficou sentado em cima do fio.</p>
+<h3>3. Selagem</h3>
+<p>Depois da absorção, fazemos a selagem: a etapa que fecha a cutícula sobre o lipídio recém-aplicado, retendo o ativo dentro da fibra em vez de deixá-lo se perder já no primeiro contato com água ou calor. É essa selagem que faz a diferença durar além do dia da aplicação.</p>
+
+<h2>Perguntas frequentes</h2>
+<h3>Qual a diferença entre este ritual e uma hidratação comum?</h3>
+<p>Hidratação repõe água na fibra usando ativos como glicerina, pantenol ou ácido hialurônico — resolve ressecamento por perda de umidade. O Ritual de Reposição Lipídica trabalha com óleos e manteigas para repor a camada gordurosa que reveste a cutícula. São mecanismos diferentes: uma máscara hidratante não repõe 18-MEA, e um óleo puro não repõe água. Cabelo que precisa dos dois costuma se beneficiar de protocolos combinados ao longo do tempo, não de uma sessão só.</p>
+<h3>Como sei se meu cabelo precisa de nutrição, hidratação ou reconstrução?</h3>
+<p>É exatamente o que a Leitura de Fio resolve — por isso ela é obrigatória antes de qualquer ritual, não uma etapa opcional. Em linhas gerais: fio que estica muito e não volta ao normal costuma pedir proteína (reconstrução); fio ressecado, sem elasticidade e opaco costuma pedir água (hidratação); fio áspero, sem brilho e sem "escorregar" mesmo hidratado costuma pedir lipídio (nutrição). Mas essa avaliação depende de examinar o fio na prática — auto-diagnóstico por sintoma isolado erra com frequência.</p>
+<h3>Posso combinar com um corte no mesmo dia?</h3>
+<p>Sim. Como o ritual não envolve química nem processo que exija fio intacto sem manipulação prévia ou posterior, ele se combina bem com corte na mesma visita. Em muitos casos faz sentido nutrir antes do corte, já que fio bem lipidado se comporta de forma mais previsível na hora de definir o formato do cacho.</p>
+<h3>Com que frequência devo repetir?</h3>
+<p>Depende do tipo de fio e da rotina de lavagem, mas como referência: cabelos cacheados e crespos (3A a 4C), pela dificuldade estrutural de reposição natural de sebo já explicada, geralmente se beneficiam de repetir a cada 3 a 4 semanas. Fios ondulados (2A a 2C) costumam sustentar por mais tempo, a cada 5 a 6 semanas. A Leitura de Fio na próxima visita indica se o intervalo está adequado ou precisa ajustar.</p>
+
+<p>Para agendar o Ritual de Reposição Lipídica e Nutrição, <a href="/agendar">clique aqui para marcar seu horário</a>. Se quiser entender em profundidade como funciona nosso diagnóstico antes de qualquer serviço, veja <a href="/metodo">como funciona o método Leitura de Fio</a>.</p>
+`,
+  'lavar-finalizar': `<h1>Lavar e Finalizar | Studio do Jon</h1>
+<h2>Por que a técnica de lavagem importa tanto quanto o produto</h2>
+<p>A maioria das pessoas com cabelo cacheado, ondulado ou crespo troca de produto quando o resultado não sai bom. Raramente troca de técnica. E na prática, a técnica é responsável pela maior parte do que se vê no espelho — o produto certo aplicado do jeito errado produz frizz do mesmo jeito que o produto errado.</p>
+<p>O cacho se forma por um princípio físico simples: fios de cabelo próximos, ainda encharcados de água e cobertos por uma camada de produto, se agrupam em unidades maiores — os chamados clumps. É esse agrupamento que cria a definição. Se o cabelo seca com os fios soltos e separados, cada fio expande individualmente e o resultado é volume desorganizado, não cacho definido.</p>
+<p>Isso significa que o momento de aplicação do produto é decisivo. Produto em cabelo já parcialmente seco, ou aplicado com o fio solto no ar, não tem como criar esse agrupamento — ele só vai untar mechas que já perderam a chance de clumpar. Por isso a aplicação é feita com o cabelo ainda saturado de água, usando as mãos em concha (a técnica conhecida como praying hands) para juntar mechas vizinhas e no scrunching para comprimir a raiz na direção do couro cabeludo, reforçando o padrão natural do fio em vez de esticá-lo.</p>
+<p>A segunda variável é a secagem. Do ar livre (air-dry) sem nenhuma fonte de calor direcionado, o cabelo seca de fora para dentro de forma lenta e desigual — a superfície da mecha resseca e forma cutícula áspera antes do miolo secar, o que é uma das causas mais comuns de frizz em quem já acertou o produto. O difusor resolve isso porque distribui ar quente de forma ampla e constante, acelerando a secagem da superfície de maneira uniforme e "selando" o clump formado antes que ele tenha tempo de desmanchar.</p>
+<p>A terceira variável, e a mais ignorada, é a disturbância durante a secagem. Tocar, remexer, virar de um lado para o outro ou prender o cabelo enquanto ele ainda está parcialmente úmido rompe os clumps que já haviam se formado. É por isso que muita gente com produto bom, técnica de aplicação correta e até difusor ainda tem frizz: mexe no cabelo no meio do processo. O cacho precisa secar até o ponto em que perde a maior parte da umidade sem ser tocado — só depois disso ele pode ser manuseado sem se desfazer.</p>
+
+<h2>Para quem é indicado</h2>
+<ul>
+<li><strong>Quem está entre cortes</strong> e quer o cabelo com resultado de salão sem alterar o comprimento ou a forma do corte atual.</li>
+<li><strong>Quem quer aprender a técnica</strong> observando de perto — como o produto é aplicado, em que ponto do processo, e como o difusor é posicionado — para replicar em casa no dia a dia.</li>
+<li><strong>Quem tem evento, ensaio ou fotos marcados</strong> e precisa do cacho no ponto máximo de definição em um horário específico, sem depender do resultado incerto de uma lavagem em casa.</li>
+<li><strong>Quem já investe em produto bom e ainda assim tem frizz.</strong> Esse é o caso mais comum que chega no salão: a pessoa troca de shampoo, testa três marcas de creme, e o resultado não muda — porque o problema nunca foi o produto, foi o momento de aplicação, a quantidade, ou a movimentação durante a secagem.</li>
+</ul>
+
+<h2>Como funciona o atendimento</h2>
+<h3>1. Diagnóstico rápido</h3>
+<p>Antes de molhar o cabelo, fazemos uma leitura rápida baseada nos princípios da Leitura de Fio: identificação do padrão de cacho predominante (2A a 4C), teste simples de porosidade e avaliação do estado atual da fibra. Isso define quanto produto será usado, em que ordem, e qual técnica de secagem o fio pede naquele dia — porque o mesmo cabelo pode pedir abordagens diferentes dependendo do nível de ressecamento ou oleosidade do couro cabeludo.</p>
+<h3>2. Higienização</h3>
+<p>Lavagem com shampoo sem sulfato, com foco no couro cabeludo — é ali que a sujeira e a oleosidade se acumulam, não no comprimento. Fricção suave com as pontas dos dedos, nunca com unha, para não gerar frizz mecânico antes mesmo da finalização começar.</p>
+<h3>3. Camadas de produto por porosidade</h3>
+<p>Fio de baixa porosidade recebe produtos mais leves, em menor quantidade, para não sobrecarregar e pesar o cacho. Fio de alta porosidade recebe camadas mais generosas, muitas vezes com um selante, porque perde umidade rápido demais durante a secagem. Essa é a etapa em que a maioria dos cuidados caseiros erra — aplicando a mesma quantidade de produto independente do tipo de fio.</p>
+<h3>4. Finalização e diffusing</h3>
+<p>Aplicação com o cabelo saturado, técnica de praying hands e scrunching mecha por mecha, seguida de secagem com difusor em temperatura controlada. O processo respeita o tempo de formação do clump antes de qualquer manuseio — não existe atalho aqui.</p>
+<h3>5. Finalização educativa</h3>
+<p>No final, mostramos o que foi feito e por quê: qual produto entrou em cada camada, o motivo da quantidade usada, o ângulo do difusor e o ponto de secagem em que o cabelo pôde ser tocado sem perder definição. A ideia não é só entregar um resultado bonito na saída — é que a cliente saia sabendo replicar o essencial da técnica em casa.</p>
+
+<h3>Isso é a mesma coisa que vem incluída num corte?</h3>
+<p>Não exatamente. No corte, a finalização é ajustada ao que o novo formato exige e ao tempo do atendimento. No Lavar e Finalizar, o foco inteiro do horário é a lavagem e a técnica — o que permite mais tempo de explicação e mais atenção a detalhes de aplicação que num corte ficariam em segundo plano.</p>
+<h3>Quanto tempo dura o atendimento?</h3>
+<p>Varia com o comprimento e a densidade do fio, mas o tempo é dedicado inteiramente à lavagem, aplicação e secagem — sem a etapa de corte, o processo tende a ser mais tranquilo e permite mais atenção à parte educativa.</p>
+<h3>Posso levar meus próprios produtos?</h3>
+<p>Pode. Se você já tem um produto que funciona bem para o seu fio, avaliamos e incorporamos ao processo. Se notarmos que a porosidade do seu fio pede outra coisa, sugerimos o ajuste — mas a decisão final é sua.</p>
+<h3>Isso realmente me ensina a fazer em casa?</h3>
+<p>Esse é o objetivo central do serviço. Cada etapa é explicada no momento em que acontece, não só relatada depois. Você sai sabendo por que aquela quantidade de produto, por que aquela ordem de aplicação e por que aquele ponto de secagem — não é um mistério guardado no salão.</p>
+
+<p>Quer sentir a diferença que a técnica certa faz no seu cacho? <a href="/agendar">Agende seu horário</a> ou entenda primeiro os fundamentos por trás de tudo isso na <a href="/metodo">Leitura de Fio</a>.</p>
+`,
+  'pacote-cachos-perfeitos': `<h1>Pacote Cachos Perfeitos | Studio do Jon</h1>
+<h2>Por que um pacote, e não uma sessão isolada</h2>
+<p>Corte e tratamento em cacheados/crespos têm uma limitação física que nenhuma técnica resolve numa visita só: o padrão de cacho real do fio novo — o que nasce sem histórico de química ou calor — só aparece conforme o comprimento danificado é removido ao longo de vários cortes, e conforme o cabelo passa por múltiplos ciclos de lavagem sob o mesmo protocolo de cuidado. Uma <strong>Leitura de Fio</strong> isolada te dá o diagnóstico certo para aquele momento. Mas o fio muda: reconstrução puxa a fibra pra um estado, hidratação e nutrição vão reequilibrando ao longo das semanas seguintes, e o próximo corte já parte de um cabelo diferente do que você tinha na primeira visita.</p>
+<p>Isso não é papo de venda — é o motivo pelo qual tratamento capilar sério em qualquer protocolo técnico é pensado em sessões, não em evento único. Um cabelo com dano estrutural (ressecamento por química removida, quebra por calor, comprimento sem definição alguma) não reconstrói fibra em um atendimento. O que a <strong>Pacote Cachos Perfeitos</strong> resolve é isso: ao invés de você reagendar um "tratamento avulso" e torcer para estar fazendo a escolha certa a cada visita, o pacote já é desenhado como uma sequência — cada sessão informada pelo resultado da anterior, com ajuste de rota incluído.</p>
+<p>Dito isso, nem todo mundo precisa do pacote completo. Se o seu cabelo já tem corte definido, rotina estabelecida e você só quer manutenção pontual, um <strong>Corte com o Jon</strong> ou um <strong>Tratamento Personalizado</strong> avulso resolve. O pacote existe para quem está começando do zero ou corrigindo uma rota errada — não é a opção "melhor" por padrão, é a opção certa pra um cenário específico.</p>
+
+<h2>Para quem é indicado</h2>
+<ul>
+<li><strong>Transição capilar em andamento ou recém-concluída:</strong> você está deixando a química crescer e precisa de cortes espaçados e estratégicos para remover o comprimento danificado sem perder comprimento total de uma vez.</li>
+<li><strong>Big chop recente:</strong> o fio 100% natural está exposto, geralmente sem definição de cacho visível ainda, e precisa de um protocolo de cuidado construído do zero — não de um corte único seguido de "se vira".</li>
+<li><strong>Primeira vez assumindo a textura natural</strong> depois de anos de alisamento, escova ou chapinha, mesmo sem ter feito transição formal — não sabe qual é seu padrão real de cacho porque nunca deu chance dele aparecer.</li>
+<li><strong>Fio que precisa de correção estrutural E recuperação de saúde ao mesmo tempo:</strong> pontas duplas ou quebradas junto com ressecamento ou baixa elasticidade — corrigir só o corte sem tratar a saúde da fibra (ou vice-versa) dá resultado parcial.</li>
+<li><strong>Quem quer acompanhamento guiado</strong> em vez de agendar serviços avulsos e tentar adivinhar o que fazer na próxima visita — o pacote inclui a leitura de progresso entre sessões, não só a execução técnica.</li>
+</ul>
+
+<h2>Como funciona, sessão por sessão</h2>
+<h3>1. Leitura de Fio + corte inicial</h3>
+<p>Primeira sessão: diagnóstico completo de 7 etapas — avaliação de porosidade, elasticidade, densidade, padrão de cacho por zona (nem todo cabelo tem um padrão único da raiz à ponta), histórico químico, estado da fibra e objetivo da pessoa. O corte é feito com base nesse diagnóstico, não num molde padrão: remove comprimento comprometido, define o formato de acordo com o cacho que existe hoje (não o que existia antes da química).</p>
+<h3>2. Sessão(ões) de tratamento direcionado</h3>
+<p>Com base no que a Leitura de Fio identificou, a(s) sessão(ões) seguinte(s) atacam a necessidade real do fio: hidratação para fibra ressecada, nutrição para fio com falta de lipídios e opacidade, ou reconstrução para fibra com perda de massa proteica e elasticidade baixa. Não é um tratamento genérico repetido — é o protocolo certo para o que o diagnóstico apontou, podendo combinar mais de uma frente se o fio precisar.</p>
+<h3>3. Sessão de acompanhamento e ajuste</h3>
+<p>Depois que o fio passou por alguns ciclos de lavagem com o novo cuidado, avaliamos o que mudou: definição de cacho, textura, resposta ao produto usado em casa. É aqui que a rota se ajusta — se a fibra respondeu bem, seguimos para manutenção; se ainda precisa de reforço em alguma frente, redirecionamos. A orientação de cuidados em casa (produtos, técnica de aplicação, frequência) é recalibrada nessa etapa, porque a que fazia sentido na sessão 1 pode não ser mais a ideal.</p>
+
+<h3>Qual a diferença entre fazer o pacote e simplesmente agendar corte e tratamento separados?</h3>
+<p>A diferença não é o que é feito em cada visita — é a continuidade entre elas. Serviços avulsos são pontos isolados: cada agendamento você decide de novo o que fazer, sem necessariamente saber se aquele é o momento certo para tratamento X ou Y. No pacote, a sessão de acompanhamento existe justamente para isso: reavaliar antes de decidir o próximo passo, em vez de você adivinhar.</p>
+<h3>Qual o intervalo entre as sessões?</h3>
+<p>Varia com o estado do fio e o ritmo de crescimento, mas a lógica é dar tempo para o cabelo passar por ciclos de lavagem suficientes para o tratamento mostrar resultado e para o corte anterior "assentar". Isso normalmente significa semanas entre sessões, não dias — tratamento capilar não acelera com sessões em sequência apertada.</p>
+<h3>E se minha necessidade mudar no meio do pacote?</h3>
+<p>É esperado que mude — é exatamente por isso que existe a sessão de acompanhamento em vez de um roteiro fixo de três tratamentos idênticos. Se a Leitura de Fio inicial apontou reconstrução e o fio responder rápido, a sessão seguinte pode virar hidratação de manutenção. O pacote se adapta ao que o fio mostra, não o contrário.</p>
+<h3>É só para quem está começando com cacheados, ou cliente antigo também pode fazer?</h3>
+<p>É desenhado pensando em quem está começando ou corrigindo uma rota, mas cliente antigo com um problema específico — por exemplo, dano recente por calor ou uma fase de ressecamento fora do padrão — também se beneficia do formato. O critério não é "há quanto tempo você é cliente", é se o cabelo precisa de correção estrutural e de saúde ao mesmo tempo, acompanhada de perto.</p>
+
+<p>Se você está nessa fase de transição, ou simplesmente decidiu levar o cuidado com o cacho a sério pela primeira vez, o próximo passo é <a href="/agendar">agendar sua primeira sessão</a>. Para entender em detalhe como funciona o diagnóstico que guia todo o pacote, veja como é a <a href="/metodo">Leitura de Fio</a>.</p>
 `
 };

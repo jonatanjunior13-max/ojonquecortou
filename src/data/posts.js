@@ -1,5 +1,397 @@
 export const posts = [
   {
+    id: 52,
+    slug: 'guia-completo-cortes-cabelo-cacheado-tendencias',
+    title: 'Cortes para Cabelo Cacheado: Guia Completo de Técnicas e Tendências',
+    seoTitle: 'Cortes p/ Cabelo Cacheado: Guia Completo | Studio do Jon',
+    excerpt: 'Tudo sobre cortar cabelo cacheado: por que a técnica muda com a textura, corte a seco vs corte molhado, os erros mais comuns e como escolher o corte certo para o seu tipo de cacho — com a Leitura de Fio como base de tudo.',
+    metaDescription: 'Guia completo de cortes para cabelo cacheado: fator de encolhimento, corte a seco vs molhado, tendências e como a Leitura de Fio evita erros no corte.',
+    keywords: 'corte cabelo cacheado, corte a seco cabelo cacheado, cortes para cachos, tendências corte cacheado 2026, leitura de fio, corte cabelo cacheado bh, técnica corte cacheado, cabelo cacheado belo horizonte',
+    date: '03 de Julho, 2026',
+    datePublished: '2026-07-03',
+    dateModified: '2026-07-03',
+    author: 'Jon',
+    category: 'Guia Completo',
+    image: '/blog-wolf-capa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Corte a seco é sempre melhor que corte molhado para cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não necessariamente — depende do padrão de cacho e do objetivo. O corte a seco permite ver o comportamento real do cacho e ajustar volume mecha por mecha, ideal para texturas com alto fator de encolhimento (3C a 4C). Já o corte molhado ajuda a definir comprimento total e simetria de base. Na prática, os dois métodos costumam ser combinados." }
+        },
+        {
+          "@type": "Question",
+          "name": "O que é o fator de encolhimento e por que ele importa tanto no corte?",
+          "acceptedAnswer": { "@type": "Answer", "text": "É a diferença de comprimento entre o cabelo esticado (molhado) e o cabelo na forma natural (seco, cacho ativado). Em cachos 3A/3B esse encolhimento fica entre 30% e 50%; em crespos 4B/4C pode passar de 70%. Se o profissional corta sem calcular esse fator, o resultado seco fica muito diferente do previsto." }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre wolf cut, shag e shaggy em cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Wolf cut tem camadas curtas e desconectadas no topo com contraste forte, criando volume concentrado na coroa. Shag também usa camadas, mas com transição mais suave e gradual. Shaggy não é bem um estilo à parte — é a técnica de corte a seco que dá leveza e pontas repicadas, aplicável tanto a um wolf cut quanto a um shag." }
+        },
+        {
+          "@type": "Question",
+          "name": "Preciso pagar por um diagnóstico antes do corte?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não. A Leitura de Fio — o diagnóstico de 7 etapas usado antes de qualquer corte aqui no Studio do Jon — já está incluída no valor do serviço de Corte com o Jon (R$ 190), sem custo adicional." }
+        }
+      ]
+    },
+    content: `<p>Se você já saiu de um salão com o cabelo "certinho" no espelho e, dois dias depois, em casa, aquele corte simplesmente não existia mais — bem-vindo ao problema mais comum e mais mal resolvido da cabeleireira brasileira: <strong>cortar cacho como se fosse cabelo liso</strong>. Este guia existe para explicar, com técnica e sem enrolação, por que isso acontece e o que muda quando o corte é pensado de verdade para fio 2A a 4C.</p>
+
+<p>Reuni aqui tudo que já escrevi sobre o assunto — tendências, técnicas, erros comuns e como escolher o corte certo pro seu formato de rosto e estilo de vida — organizado de um jeito que você consegue navegar direto pro que precisa. Mas antes de mandar para os posts específicos, preciso explicar os fundamentos, porque é isso que separa um corte que dura de um que desmorona.</p>
+
+<h2>Por que cortar cabelo cacheado é um problema técnico diferente</h2>
+
+<p>Cabelo liso cai na vertical. Corte um centímetro, tira um centímetro de comprimento visível. Simples, previsível, o mesmo resultado seco ou molhado.</p>
+
+<p>Cabelo cacheado não funciona assim. Cada cacho é uma mola. Quando você molha o fio para cortar, ele estica. Quando seca e o cacho se forma de novo, ele <strong>encolhe</strong> — e esse encolhimento não é igual em todo mundo. É isso que chamamos de <strong>fator de encolhimento</strong>, e é a razão número um por trás de cortes que ficam completamente diferentes do esperado.</p>
+
+<ul>
+<li><strong>Cachos 2A/2B (ondulados):</strong> encolhimento de 10% a 20% — pouca diferença entre molhado e seco.</li>
+<li><strong>Cachos 3A/3B (cacheados definidos):</strong> encolhimento de 30% a 50% — um fio de 20 cm molhado pode "sumir" para 12-14 cm seco.</li>
+<li><strong>Cachos 3C/4A (cacheados fechados/crespos-cacheados):</strong> encolhimento de 50% a 65%.</li>
+<li><strong>Crespos 4B/4C:</strong> encolhimento pode passar de 70% — mechas de 25 cm estirado podem parecer ter 7-8 cm no cabelo seco e solto.</li>
+</ul>
+
+<p>Isso significa uma coisa muito prática: <strong>se eu corto todo mundo com o cabelo esticado e molhado, do mesmo jeito, o resultado seco vai ser imprevisível</strong> — porque cada padrão de cacho vai "puxar" o comprimento de um jeito diferente. É por isso que um template de corte genérico (aquele "todo mundo em camadas na régua") funciona péssimo em textura: ele ignora que a física do fio muda de pessoa para pessoa, e às vezes de mecha para mecha na mesma cabeça.</p>
+
+<h3>O debate: corte a seco vs. corte molhado</h3>
+
+<p>Não existe "o certo" absoluto — existe o certo para aquele padrão de cacho, aquele objetivo, aquele histórico de cabelo. Mas os dois métodos resolvem problemas diferentes:</p>
+
+<p><strong>Corte molhado (wet cut):</strong> o cabelo é cortado esticado pela água e pelo peso. É ótimo para definir comprimento total e simetria de base, mas tem uma limitação real: você está cortando o fio numa forma (esticada) que não é a forma final (contraída). Em texturas com alto fator de encolhimento, um corte molhado mal calculado é a causa clássica do "efeito triângulo" ou de mechas que ficam desproporcionais quando secam.</p>
+
+<p><strong>Corte a seco (dry cut):</strong> o cabelo é cortado já na forma que ele assume no dia a dia — cacho contraído, movimento natural, volume real visível durante o corte. Isso permite ajustar cacho por cacho, corrigir peso exatamente onde ele sobra, e prever o resultado final porque você já está olhando pra ele. É a técnica que uso como base no <a href="/metodo">Método Leitura de Fio</a>, mas — e isso é importante — corte a seco bem feito não é a mesma coisa que "aparar as pontas sem critério". É uma técnica de precisão que exige entender ângulo, tensão e o comportamento elástico de cada cacho. Mal executado, o corte a seco cria os próprios problemas, como expliquei em detalhe no post sobre <a href="/blog/corte-a-seco-cabelo-cacheado-bh-volume">buracos de volume causados por corte a seco malfeito</a>.</p>
+
+<p>Na prática, uso os dois: analiso seco, ajusto peso e camadas com o cabelo na forma real, e uso referência molhada para conferir comprimento e simetria de base quando o corte pede isso. Anda muito mercado por aí vendendo "corte a seco" como bandeira de marketing sem explicar que a técnica, sozinha, não é garantia de nada — desmonto esse mito com mais profundidade no post <a href="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">a mentira do corte a seco</a>.</p>
+
+<h3>Por que o diagnóstico vem antes da tesoura</h3>
+
+<p>A maioria dos cortes que dão errado em cabelo cacheado não erra na execução — erra porque ninguém parou pra diagnosticar antes de cortar. Cacho não é uma categoria única: dentro da mesma cabeça você pode ter três padrões de cacho diferentes, porosidade desigual por causa de química antiga, e um histórico de danos que muda completamente como aquele fio vai reagir à tesoura.</p>
+
+<p>É por isso que todo corte aqui no Studio do Jon começa pela <strong><a href="/metodo">Leitura de Fio</a></strong>, meu método de diagnóstico em 7 etapas, sempre incluso e sem custo extra dentro do serviço de corte:</p>
+
+<ol>
+<li><strong>Escuta</strong> — entendo rotina, frustrações com cortes anteriores e o que a pessoa quer resolver, não só "cortar as pontas".</li>
+<li><strong>Análise a seco</strong> — observo o cacho na forma natural dele: padrão, densidade, onde o volume se concentra, onde falta.</li>
+<li><strong>Diagnóstico do couro cabeludo</strong> — oleosidade, ressecamento, sensibilidade, porque isso influencia frequência de lavagem e o que o corte precisa aguentar entre um corte e outro.</li>
+<li><strong>Histórico químico</strong> — coloração, descoloração, alisamentos antigos (mesmo anos atrás) mudam a elasticidade e a resistência do fio à tesoura.</li>
+<li><strong>Análise molhada</strong> — comparo com o comportamento seco pra calcular o fator de encolhimento real daquela pessoa, não uma média genérica.</li>
+<li><strong>Definição de técnica</strong> — decido, com base em tudo isso, se o corte vai ser a seco, molhado, misto, em camadas, uniforme, o que fizer sentido pro objetivo.</li>
+<li><strong>Finalização como validação</strong> — finalizo o cabelo e confiro o resultado ativado, porque é assim que a pessoa vai usar no dia a dia — não escorrido na pia.</li>
+</ol>
+
+<p>Esse processo é o que evita os dois desastres mais comuns em corte de cacho: cortar curto demais achando que "vai crescer" (esquecendo o encolhimento) e criar camadas mal distribuídas que geram buracos de volume ou efeito pirâmide — os dois problemas que detalho mais abaixo.</p>
+
+<h2>Cortes de tendência: wolf cut, shag e shaggy no cabelo cacheado</h2>
+
+<p>Três nomes que se confundem o tempo todo nas redes — e que, em cabelo cacheado, pedem calibragem bem diferente uma da outra.</p>
+
+<p>O <strong><a href="/blog/wolf-cut-cabelos-cacheados-tendencia">wolf cut em cabelos cacheados</a></strong> é o mais radical dos três: camadas curtas e desconectadas no topo, contraste forte com o comprimento das pontas, mullet e shag se encontrando no meio. É o corte certo pra quem quer volume máximo no topo da cabeça e não tem medo de um visual mais despojado e texturizado — mas exige uma leitura de cacho bem precisa, porque em fio de alto encolhimento as camadas curtas do topo podem encolher mais que o esperado e ficar mais curtas do que a intenção original.</p>
+
+<p>O <strong><a href="/blog/shag-cacheado-corte-tendencia-2026">shag cacheado</a></strong> é o primo mais equilibrado do wolf cut: camadas também, mas com transição mais suave e menos contraste entre topo e comprimento. É a entrada ideal pra quem quer sair do "cabelo em bloco só na régua" sem ir para o extremo desconectado do wolf cut. Tende a envelhecer melhor entre manutenções, porque a transição gradual disfarça melhor o crescimento.</p>
+
+<p>Já o <strong><a href="/blog/shaggy-cacheado-corte-seco">shaggy</a></strong> não é exatamente um "estilo" concorrente dos outros dois — é mais uma execução: a técnica de corte a seco aplicada pra criar aquele efeito repicado, leve, com pontas soltas e movimento, sem a estrutura mais deliberada de camadas do wolf cut ou do shag. Muita gente pede "um shaggy" quando na real quer um shag ou um wolf cut — vale a leitura de fio pra alinhar o nome com o resultado que a pessoa tem na cabeça (literalmente).</p>
+
+<p>Resumindo a diferença em uma frase: <strong>wolf cut = contraste máximo e volume concentrado no topo; shag = camadas graduais e equilibradas; shaggy = a técnica de execução a seco que dá leveza e movimento a qualquer um dos dois.</strong></p>
+
+<h2>Os dois problemas de volume que ninguém explica direito</h2>
+
+<p>"Meu cabelo cacheado tem volume demais" e "meu cabelo cacheado tem volume de menos" às vezes são <strong>o mesmo erro de corte</strong> se manifestando de formas opostas — e às vezes são dois erros completamente diferentes que só parecem parecidos. Vale separar bem os dois, porque a solução não é igual.</p>
+
+<p>O primeiro é o que descrevo em <a href="/blog/corte-a-seco-cabelo-cacheado-bh-volume">corte a seco e buracos de volume</a>: quando o corte a seco é feito sem controle de tensão e ângulo, tesourada errada em mecha errada cria "buracos" — áreas com muito menos massa capilar que as vizinhas. Na hora, seco, pode nem aparecer. Depois de algumas lavagens, com o cacho ativado, esses buracos ficam visíveis como falhas de volume, pontos onde o cabelo "cai" enquanto o resto mantém a forma.</p>
+
+<p>O segundo é o <strong>efeito pirâmide</strong>, que detalho em <a href="/blog/corte-para-cabelo-cacheado-bh-volume">corte reto e o efeito pirâmide no cacho</a>: acontece quando o corte é feito em linha reta, no fio esticado, sem levar em conta que cachos diferentes camadas do comprimento vão encolher em proporções diferentes. O resultado é um cabelo que fica com base larga embaixo e vai estreitando pra cima — literalmente o formato de uma pirâmide — porque as camadas de cima encolheram mais (proporcionalmente) que as de baixo.</p>
+
+<p>São causas opostas: um é falta de estrutura (corte a seco sem técnica tirando massa onde não devia), o outro é excesso de estrutura rígida aplicada de um jeito que ignora a física do encolhimento (corte reto tradicional sem compensar a diferença de contração entre camadas). Os dois só se resolvem com diagnóstico prévio — é exatamente o papel da Leitura de Fio identificar qual dos dois riscos existe naquele cabelo específico antes de tocar na tesoura.</p>
+
+<h2>Manutenção e cortes por perfil: frequência, masculino e visagismo</h2>
+
+<p>Corte bom não é só sobre a técnica no dia do serviço — é sobre frequência certa e escolha alinhada com quem você é e como vive.</p>
+
+<p>Sobre frequência: cabelo cacheado não precisa (e não deveria) ser cortado com a mesma regularidade de cabelo liso. Detalho os intervalos reais por tipo de cacho e objetivo em <a href="/blog/frequencia-de-corte-cabelo-cacheado">frequência ideal de corte para cabelo cacheado</a> — cortar cedo demais interrompe o crescimento do formato antes dele "assentar", cortar tarde demais deixa pontas duplas comerem a definição do cacho.</p>
+
+<p>Para cabelo cacheado masculino, o critério muda bastante — geralmente menos sobre camadas longas e mais sobre proporção com a lateral, fade, e como o topo se comporta com cacho curto (que tem menos peso puxando pra baixo, então o volume se comporta diferente). Cobri os cortes que mais funcionam nesse contexto em <a href="/blog/melhores-cortes-cabelo-cacheado-masculino-2026">melhores cortes para cabelo cacheado masculino 2026</a>.</p>
+
+<p>E para quem quer escolher o corte pensando em formato de rosto e não só em tendência do momento, escrevi sobre como aplicar critérios de visagismo ao cacho — que é mais complexo que em cabelo liso, porque o volume do cacho já "desenha" ao redor do rosto de um jeito que um corte reto não faz. Tem um caso prático detalhado em <a href="/blog/corte-cabelo-cacheado-visagismo-influenciadora">visagismo aplicado a cabelo cacheado</a>.</p>
+
+<h2>Como isso tudo vira um corte na cadeira</h2>
+
+<p>Tendência, técnica e teoria só valem alguma coisa quando viram um corte que funciona no seu cabelo, na sua rotina, no seu formato de rosto. É por isso que nenhum corte aqui começa direto na tesoura — começa na <a href="/metodo">Leitura de Fio</a>, os 7 passos que decidem se o seu cabelo pede corte a seco, molhado, misto, em camadas ou uniforme, e evitam os erros de volume que descrevi acima antes que eles aconteçam.</p>
+
+<p>O serviço <strong>Corte com o Jon custa R$ 190</strong> e já inclui a Leitura de Fio completa — não é um diagnóstico à parte, é o que estrutura o corte do início ao fim. Se você quer aliar o corte a um tratamento no mesmo dia, o <strong>Combo Corte + Tratamento sai por R$ 230</strong> (de R$ 320) durante a promoção atual.</p>
+
+<p>Se você chegou até aqui, já sabe mais sobre a técnica por trás do corte de cacho do que a maioria dos salões explica em anos de atendimento. O próximo passo é simples: <a href="/agendar">agende seu horário</a> e leve esse cabelo pra uma leitura de verdade.</p>`
+  },
+  {
+    id: 51,
+    slug: 'guia-completo-porosidade-ph-capilar-cachos',
+    title: 'Porosidade e pH Capilar: O Guia Completo para Entender Seu Cacho',
+    seoTitle: 'Porosidade e pH Capilar: Guia | Studio do Jon',
+    excerpt: 'Porosidade e pH são os dois fatores que mais determinam se o seu cacho absorve ou perde água — e a maioria das pessoas cuida de um sem entender o outro. Este guia junta tudo que você precisa saber, com links para testes, técnicas e os erros mais comuns.',
+    metaDescription: 'Guia completo sobre porosidade e pH capilar: o que são, como testar, por que se confundem e como isso muda o cuidado do seu cacho. Por Jon, BH.',
+    keywords: 'porosidade capilar, pH capilar, teste de porosidade, cabelo poroso, cutícula capilar, pH ideal para cabelo, cacho ressecado, acidificação capilar, scab hair, cronograma capilar, leitura de fio, hidratação capilar',
+    date: '03 de Julho, 2026',
+    datePublished: '2026-07-03',
+    dateModified: '2026-07-03',
+    author: 'Jon',
+    category: 'Guia Completo',
+    image: '/blog-porosidade.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre porosidade e pH capilar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Porosidade é a estrutura física da cutícula — se ela está fechada (baixa porosidade) ou aberta (alta porosidade) — e depende de genética, histórico químico e desgaste. pH é a escala de acidez (0 a 14) que determina se essa cutícula fica fechada ou aberta num dado momento: pH ácido (4,5 a 5,5) fecha a cutícula, pH alcalino (acima de 7) abre." }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual o pH ideal para cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "O couro cabeludo e o fio saudável vivem naturalmente numa faixa entre 4,5 e 5,5, ligeiramente ácida. Produtos com pH nessa faixa mantêm a cutícula fechada, resultando em mais brilho e definição. Produtos com pH acima de 7 (alcalino) levantam a cutícula, causando frizz e opacidade." }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber se meu cabelo tem porosidade alta ou baixa em casa?",
+          "acceptedAnswer": { "@type": "Answer", "text": "O teste mais acessível é o do copo d'água: coloque um fio limpo num copo com água à temperatura ambiente. Se ele flutuar por vários minutos, a porosidade é baixa. Se afundar rápido (menos de 2 minutos), a porosidade é alta." }
+        },
+        {
+          "@type": "Question",
+          "name": "Hidratar mais resolve a alta porosidade?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não. Cabelo de alta porosidade perde água tão rápido quanto absorve, então hidratação em excesso sem nutrição e sem selagem (acidificação) deixa o fio elástico, mole e mais propenso a quebrar quando molhado. O correto é alternar hidratação com nutrição e reconstrução, sempre fechando com um passo ácido." }
+        }
+      ]
+    },
+    content: `<p>Toda semana alguém senta na minha cadeira e me diz a mesma frase: "meu cabelo não absorve nada" ou então "por mais que eu hidrate, ele continua seco". Na maioria das vezes, a resposta não está no produto que a pessoa está usando. Está em dois fatores que ninguém explicou direito pra ela: <strong>porosidade</strong> e <strong>pH</strong>.</p>
+
+<p>Esses dois conceitos aparecem juntos o tempo todo no universo cacheado, e é exatamente por isso que viram uma bagunça na cabeça de quem está tentando entender o próprio fio. Porosidade não é pH. pH não determina porosidade. Mas os dois trabalham juntos — e quando um está desalinhado, o outro sofre as consequências. Este guia existe para separar as duas coisas com clareza, explicar como elas se relacionam de verdade e te mostrar onde aprofundar cada parte no blog.</p>
+
+<h2>O que é porosidade capilar, de verdade</h2>
+
+<p>Porosidade é a capacidade que o fio tem de absorver e reter água e produtos. Ponto. Não é sobre "cabelo bom" ou "cabelo ruim" — é sobre a estrutura física da cutícula, a camada mais externa do fio, formada por células sobrepostas parecidas com telhas de um telhado.</p>
+
+<p>Quando essas "telhas" estão bem fechadas e alinhadas, a água e os ativos do produto encontram resistência para entrar — isso é <strong>baixa porosidade</strong>. Quando estão levantadas, danificadas ou com espaços entre elas, a água entra fácil, mas também sai fácil — isso é <strong>alta porosidade</strong>. Existe ainda a porosidade média (ou normal), quando a cutícula tem uma abertura equilibrada: absorve em tempo razoável e retém bem.</p>
+
+<p>Três coisas determinam a porosidade de um fio:</p>
+
+<ul>
+<li><strong>Genética</strong> — a densidade e o espaçamento natural das cutículas variam de pessoa para pessoa e até entre fios da mesma cabeça.</li>
+<li><strong>Histórico químico</strong> — descoloração, alisamentos, relaxamentos e coloração abrem a cutícula de forma permanente ou semipermanente.</li>
+<li><strong>Desgaste mecânico e ambiental</strong> — sol, calor, atrito de fronha, escovação agressiva e poluição levantam as cutículas ao longo do tempo.</li>
+</ul>
+
+<p>É por isso que porosidade não é fixa: você pode nascer com fios de porosidade baixa e, depois de uma descoloração, passar a ter trechos de porosidade alta no mesmo comprimento. Isso é comum em quem já químicou o cabelo e hoje faz transição — e é um dos motivos pelos quais, na <strong>Leitura de Fio</strong>, eu sempre pergunto o histórico químico completo antes de tocar em qualquer tesoura.</p>
+
+<h3>Como testar sua porosidade em casa</h3>
+
+<p>O teste mais popular é o do copo d'água: um fio limpo (sem resíduo de produto) é colocado num copo com água à temperatura ambiente. Fio de baixa porosidade tende a flutuar por vários minutos porque resiste à entrada de água. Fio de alta porosidade afunda rápido, muitas vezes em menos de 2 minutos, porque a cutícula aberta deixa a água entrar sem resistência.</p>
+
+<p>Só que esse teste sozinho engana bastante gente — ele sofre interferência de resíduo de produto, temperatura da água, tipo de fio testado (um fio da nuca se comporta diferente de um fio da coroa) e até da oleosidade natural do couro cabeludo. Eu escrevi um guia detalhado com o passo a passo correto, os erros que invalidam o teste e outros dois métodos complementares (o teste do deslizar e a observação do tempo de secagem) no <a href="/blog/teste-de-porosidade-guia-definitivo">Teste de Porosidade: o guia definitivo</a>. Se você só vai fazer uma coisa depois de ler este artigo, faça esse teste do jeito certo antes de mudar sua rotina de produtos.</p>
+
+<h2>O que é pH capilar e por que ele decide se a cutícula abre ou fecha</h2>
+
+<p>pH é a escala que mede o quão ácida ou alcalina uma substância é, de 0 (extremamente ácido) a 14 (extremamente alcalino), com 7 sendo neutro. O couro cabeludo e o fio saudável vivem numa faixa ligeiramente ácida — normalmente entre <strong>4,5 e 5,5</strong>. Esse manto ácido natural da pele também protege contra fungos e bactérias, e no fio ele tem uma função mecânica direta: pH ácido mantém a cutícula fechada e alinhada; pH alcalino (acima de 7) faz a cutícula levantar e abrir.</p>
+
+<p>Isso não é só teoria de rótulo de produto — é físico-química básica de proteína. A queratina do cabelo tem cargas elétricas que respondem ao pH do meio. Em pH ácido, as cutículas ficam compactadas e o fio reflete mais luz (o que a gente vê como brilho e definição). Em pH alcalino, as cutículas incham, se afastam umas das outras, e o resultado visível é frizz, opacidade e fio mais áspero ao toque — mesmo em cabelo sem dano químico algum.</p>
+
+<p>É por isso que água da torneira (que costuma ter pH próximo de 7, às vezes mais alcalina dependendo da região), muitos xampus mais antigos e até bicarbonato de sódio usado em "receitas caseiras" deixam o cabelo cacheado opaco e áspero depois do uso, mesmo quando a pessoa jura que "hidratou". O produto até pode ter entrado — mas a cutícula ficou aberta, não seleu, e a água que entrou evapora rápido.</p>
+
+<p>Eu detalho a relação entre pH, brilho e definição de cacho — incluindo por que dois produtos com o mesmo "efeito hidratante" no rótulo podem dar resultados opostos no fio — no artigo <a href="/blog/ph-capilar-cachos-brilho-definicao">pH Capilar: o segredo por trás do brilho e da definição</a>.</p>
+
+<h2>Onde porosidade e pH se confundem (e por que isso importa)</h2>
+
+<p>Aqui mora a maior fonte de confusão que eu vejo em atendimento: as pessoas tratam porosidade e pH como se fossem a mesma coisa, ou como se resolver um resolvesse o outro automaticamente. Não resolve.</p>
+
+<p><strong>Porosidade é uma condição estrutural</strong> — ela descreve o estado físico da cutícula num dado momento. <strong>pH é uma ferramenta de manejo</strong> — é o que você usa para fechar ou abrir essa cutícula temporariamente durante um processo. Você não "cura" alta porosidade baixando o pH de um produto. Você usa pH ácido para <em>selar temporariamente</em> uma cutícula que já está aberta, reduzindo a perda de umidade e melhorando o brilho enquanto o fio recompõe (ou é substituído, no crescimento, por fio novo mais saudável).</p>
+
+<p>Na prática, isso significa: cabelo de alta porosidade se beneficia demais de um passo de <strong>acidificação</strong> — o uso estratégico de um produto com pH baixo (geralmente entre 3,5 e 4,5) ao final da rotina de hidratação ou nutrição, para fechar a cutícula que ficou aberta durante o processo e travar o resultado. Sem esse selamento final, o cabelo de alta porosidade absorve tudo rápido e perde tudo rápido — um ciclo frustrante de "hidratei ontem e hoje já tá seco de novo".</p>
+
+<p>Eu ensino a técnica de acidificação completa — quando usar, com que frequência e quais ativos funcionam melhor pra cada tipo de porosidade — no artigo <a href="/blog/acidificacao-capilar-cachos-porosidade">Acidificação Capilar: a técnica que fecha a cutícula do cacho poroso</a>.</p>
+
+<h2>Quando a cutícula está tão aberta que nada entra: o "scab hair"</h2>
+
+<p>Existe um extremo de alta porosidade que confunde muita gente porque parece o oposto do que deveria ser: o cabelo está tão danificado, com a cutícula tão irregular e cheia de "rebarbas", que os produtos escorrem por cima em vez de penetrar. É o que a comunidade internacional chama de <strong>"scab hair"</strong> — uma analogia com uma crosta de ferida, onde a superfície irregular impede a absorção normal em vez de facilitá-la.</p>
+
+<p>Isso costuma acontecer em cabelo com histórico de múltiplos processos químicos (descolorações repetidas, alisamentos antigos, coloração frequente) somado a rotina de hidratação sem selagem — o ciclo vicioso de hidratar sem nunca fechar a cutícula, que deixa a fibra cada vez mais desestruturada. O resultado prático: a pessoa passa creme, o creme "escorrega", o cabelo não amacia e ela conclui — errado — que "esse produto não funciona pra mim" e troca de linha inteira sem necessidade.</p>
+
+<p>Eu explico como identificar esse quadro e o protocolo de recuperação (que passa por reconstrução proteica antes de qualquer hidratação, não depois) em <a href="/blog/cabelo-poroso-nao-absorve-creme-scab-hair">Cabelo Poroso Não Absorve Creme? Entenda o Scab Hair</a>. Se você já tentou de tudo e nada "pega" no seu cabelo, comece por ali.</p>
+
+<h2>Porosidade alta e cabelo sempre ressecado: a conexão direta</h2>
+
+<p>Ressecamento crônico — aquele cabelo que fica bom por um dia e volta a ficar áspero e sem brilho no seguinte — é, na grande maioria dos casos que eu vejo na Leitura de Fio, um problema de porosidade alta não tratada, não um problema de "falta de hidratação". A pessoa está hidratando; ela só não está retendo, porque a cutícula aberta deixa a água escapar quase na mesma velocidade que entra.</p>
+
+<p>Diferenciar esses dois cenários muda completamente o plano de tratamento: cabelo ressecado por porosidade baixa (que resiste à entrada de produto) pede calor e tempo de ação maiores. Cabelo ressecado por porosidade alta pede exatamente o oposto — hidratações mais rápidas, seguidas sempre de nutrição e acidificação, sem excesso de calor, que só danifica ainda mais uma cutícula já fragilizada. Eu detalho essa diferenciação e como montar a rotina certa para cada caso em <a href="/blog/cabelo-cacheado-ressecado-porosidade">Cabelo Cacheado Ressecado: a Porosidade que Ninguém te Contou</a>.</p>
+
+<h2>O erro oposto: hidratar demais tentando compensar a porosidade alta</h2>
+
+<p>Esse é o erro que mais vejo em quem já pesquisou sobre porosidade e decidiu "resolver sozinho": ao descobrir que tem porosidade alta, a pessoa parte para hidratação extrema — máscara toda semana, cronograma capilar todo dia, produtos hidratantes empilhados um em cima do outro. O raciocínio parece lógico ("meu cabelo perde água rápido, então preciso repor mais água"), mas na prática gera o efeito inverso.</p>
+
+<p>Excesso de hidratação sem nutrição e sem selagem deixa o fio elástico, mole, quebradiço quando puxado, e paradoxalmente ainda mais poroso — porque a fibra incha, a cutícula abre ainda mais para "deixar entrar" tanta água, e sem os lipídios da nutrição para reconstruir a camada externa, ela nunca fecha de volta direito. É o famoso cabelo "borrachudo" ou "elástico" que quebra fácil ao pentear molhado. O cronograma capilar é uma ferramenta ótima, mas só funciona quando os três passos — hidratação, nutrição e reconstrução — são alternados com critério, não quando um deles é usado sozinho e em excesso.</p>
+
+<p>Eu detalho os sinais de excesso de hidratação e como reequilibrar o cronograma capilar no artigo <a href="/blog/excesso-hidratacao-cronograma-capilar-cacheado">Excesso de Hidratação: Quando o Cronograma Capilar Vira o Problema</a>. Vale muito a leitura antes de sair comprando máscara para usar todo santo dia.</p>
+
+<h2>Como eu diagnostico porosidade na Leitura de Fio</h2>
+
+<p>Eu não confio só no teste do copo d'água para decidir o tratamento de alguém — nem só numa conversa. A <strong>Leitura de Fio</strong> é o método que eu desenvolvi justamente porque porosidade e pH não podem ser avaliados isoladamente, e ela é feita antes de qualquer corte, sem custo adicional quando junto com o serviço:</p>
+
+<ul>
+<li><strong>Escuta</strong> — o que a pessoa já tentou, o que funcionou e o que não funcionou.</li>
+<li><strong>Análise a seco</strong> — textura, densidade e comportamento do fio sem interferência de água ou produto.</li>
+<li><strong>Diagnóstico do couro cabeludo</strong> — oleosidade, ressecamento e sensibilidade, que afetam diretamente o pH natural da região.</li>
+<li><strong>Histórico químico</strong> — todo processo que o fio já passou, porque cada descoloração e cada alisamento antigo desloca a porosidade permanentemente.</li>
+<li><strong>Análise molhada</strong> — aqui é onde eu vejo a porosidade em ação de verdade: como o fio absorve água, quanto tempo leva para secar, como ele se comporta molhado versus seco.</li>
+<li><strong>Definição de técnica</strong> — corte e tratamento decididos com base em tudo isso, não num padrão genérico de "cabelo cacheado".</li>
+<li><strong>Finalização como validação</strong> — o resultado do dia confirma (ou ajusta) o diagnóstico.</li>
+</ul>
+
+<p>A análise molhada e o histórico químico são, na prática, os dois passos mais diretamente ligados à porosidade — é ali que teoria de blog vira diagnóstico real, na sua cabeça, com as mãos no seu fio. Você pode agendar a <strong>Leitura de Fio avulsa por R$ 80</strong>, ou incluída sem custo extra no <strong>Corte com o Jon (R$ 190)</strong>. Saiba mais sobre o método completo em <a href="/metodo">/metodo</a>.</p>
+
+<p>Quando o diagnóstico aponta porosidade alta desregulada — cutícula muito aberta, histórico de química, ressecamento crônico — o encaminhamento natural é o <strong>Tratamento Personalizado (R$ 130)</strong>, montado a partir do que a Leitura de Fio revelou: pode envolver reconstrução, nutrição intensiva, acidificação ou uma combinação das três, na ordem certa para o seu caso específico, não uma receita fechada de prateleira.</p>
+
+<h2>Resumo rápido: o que fazer com cada tipo de porosidade</h2>
+
+<ul>
+<li><strong>Baixa porosidade</strong> (fio flutua no teste do copo, demora a molhar e a secar): use calor leve para abrir a cutícula na hidratação (touca térmica, vapor), evite proteína em excesso, prefira produtos mais líquidos que cremosos.</li>
+<li><strong>Porosidade média/normal</strong> (comportamento equilibrado): rotina de manutenção padrão — hidratação, nutrição e reconstrução alternadas, sem necessidade de ajustes agressivos.</li>
+<li><strong>Alta porosidade</strong> (fio afunda rápido, seca rápido, sempre parece sedento): hidratações mais curtas e frequentes, nutrição para repor lipídios, e acidificação final sempre — sem esse último passo, o ciclo de "hidrata e resseca de novo" não quebra.</li>
+<li><strong>Scab hair / cutícula muito danificada</strong> (produto escorrega, nada "pega"): pare a hidratação, comece por reconstrução proteica leve e progressiva antes de qualquer outra coisa.</li>
+</ul>
+
+<p>Se depois de ler tudo isso você ainda não tem certeza de qual desses perfis é o seu — e é normal não ter, porque cabelo real raramente é um caso de livro-texto — o caminho mais rápido é uma Leitura de Fio comigo. <a href="/agendar">Agende seu horário aqui</a> e a gente descobre junto, com as mãos no fio e não só no achismo.</p>`
+  },
+  {
+    id: 50,
+    slug: 'guia-completo-frizz-cabelo-cacheado',
+    title: 'Guia Completo do Frizz em Cabelo Cacheado: Causas, Ciência e Solução Definitiva',
+    seoTitle: 'Guia Completo do Frizz | Studio do Jon',
+    excerpt: 'Um raio-x completo do frizz — o que acontece na cutícula do fio, por que cabelo cacheado sofre mais, e como saber se é frizz normal ou dano capilar. Com links para todos os guias específicos do blog.',
+    metaDescription: 'Frizz explicado com ciência: cutícula, porosidade, umidade. Guia completo com diagnóstico e solução real para cabelo cacheado em BH.',
+    keywords: 'frizz cabelo cacheado, o que é frizz, causas do frizz, porosidade capilar, frizz ou dano capilar, tratamento para frizz, leitura de fio, salão cabelo cacheado bh',
+    date: '03 de Julho, 2026',
+    datePublished: '2026-07-03',
+    dateModified: '2026-07-03',
+    author: 'Jon',
+    category: 'Guia Completo',
+    image: '/blog-frizz.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Frizz tem cura definitiva?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não existe uma \"cura\" única porque frizz é um comportamento da cutícula em resposta ao ambiente. O que existe é controle estável: com cutícula reconstruída e rotina adequada à porosidade real do fio, o frizz reduz drasticamente e passa a ser previsível." }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que meu frizz piora mais em uns dias do que em outros, mesmo usando os mesmos produtos?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Porque a variável que muda não é o seu produto, é a umidade relativa do ar. Como o cabelo é higroscópico, dias de umidade muito alta ou muito baixa geram mais troca descontrolada de água pela cutícula — e mais frizz visível, independente do produto usado." }
+        },
+        {
+          "@type": "Question",
+          "name": "Produto antifrizz resolve de vez ou é só disfarce?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Depende do tipo. Cremes, géis e óleos seladores com silicone ou polímero são controle de superfície: funcionam no dia, mas somem na próxima lavagem. Para resultado duradouro, é preciso corrigir a cutícula na origem — diagnóstico de porosidade e tratamento reconstrutor." }
+        },
+        {
+          "@type": "Question",
+          "name": "Como sei se meu problema é frizz normal ou dano capilar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Frizz normal responde a hidratação e técnica em 1-2 lavagens e mantém elasticidade. Dano capilar não melhora com a mesma rapidez, perde elasticidade ou se rompe ao esticar, e concentra-se mais grave nas pontas." }
+        }
+      ]
+    },
+    content: `<p>Frizz não é falta de sorte. Não é "cabelo rebelde". E não é um problema que se resolve com mais produto jogado em cima sem entender o que está acontecendo na fibra capilar. Frizz é um fenômeno físico com causa estrutural definida, e uma vez que você entende o mecanismo, fica muito mais fácil parar de tratar sintoma e começar a tratar causa.</p>
+
+<p>Esse texto é o guia de referência: reúne a base científica e organiza os ângulos específicos que já cobrimos aqui no blog — clima de BH, inverno, diagnóstico de dano e o caso (mais comum do que parece) de fio ondulado sendo tratado como se fosse liso com frizz. Se você quer entender frizz da cutícula até a prática, começa por aqui.</p>
+
+<h2>O que é frizz, estruturalmente falando</h2>
+
+<p>O fio de cabelo é coberto por uma camada externa chamada cutícula, formada por células sobrepostas como telhas de um telhado — em cabelo saudável, essas "telhas" ficam achatadas e alinhadas, refletindo luz de forma uniforme e criando aquela superfície lisa ao toque. Frizz acontece quando essas células da cutícula se levantam, abrindo pequenas frestas na superfície do fio.</p>
+
+<p>Essas frestas fazem duas coisas ao mesmo tempo: primeiro, dispersam a luz de forma irregular, o que visualmente lê como "opacidade" ou fio "sem vida" — é por isso que cabelo com frizz nunca parece brilhante, mesmo com produto. Segundo, e mais importante, elas expõem o córtex (camada interna do fio) à troca de umidade com o ar. O cabelo é <strong>higroscópico</strong>: ele absorve e perde água constantemente, tentando entrar em equilíbrio com a umidade relativa do ambiente. Com a cutícula levantada, essa troca acontece de forma descontrolada e desigual ao longo da fibra — algumas partes incham mais que outras, o fio perde a coesão do formato, e o resultado visual é o que chamamos de frizz.</p>
+
+<p>Aqui está o ponto que a maioria dos textos sobre frizz não explica: frizz não é o cabelo ficando "seco". É o cabelo absorvendo umidade do ar de forma desorganizada. Em dias muito secos, o mecanismo é o oposto — o fio perde água para o ar e a cutícula também se levanta por desidratação. Os dois extremos de umidade produzem o mesmo efeito visual porque o problema real é a integridade da cutícula, não a quantidade de água em si. Cobrimos esse mecanismo em detalhe, incluindo os erros mais comuns de rotina que pioram o quadro, no <a href="/blog/frizz-em-cabelo-cacheado">guia fundamental sobre frizz em cabelo cacheado</a>.</p>
+
+<h3>Porosidade: por que o mesmo clima afeta cada cabelo diferente</h3>
+
+<p>Porosidade é a capacidade do fio de absorver e reter umidade, determinada por quão aberta ou fechada está a cutícula. Existem três categorias práticas:</p>
+
+<ul>
+<li><strong>Baixa porosidade</strong>: cutícula muito fechada e sobreposta. O fio demora para absorver água e produtos, mas também demora para perder — tende a ter menos frizz por umidade externa, mas sofre com acúmulo de produto (build-up) na superfície.</li>
+<li><strong>Porosidade média</strong>: cutícula com abertura moderada, absorve e retém umidade de forma relativamente equilibrada. É a porosidade mais fácil de manejar.</li>
+<li><strong>Alta porosidade</strong>: cutícula muito aberta, geralmente por dano químico, térmico ou mecânico acumulado. Absorve umidade rapidamente e perde rapidamente — é o perfil que mais sofre com frizz, porque a troca com o ambiente é constante e descontrolada.</li>
+</ul>
+
+<p>Isso explica por que duas pessoas no mesmo dia, na mesma cidade, têm reações completamente diferentes de frizz: não é o clima que muda, é a porosidade de cada fibra que determina o quanto aquele clima vai afetar o cabelo.</p>
+
+<h2>Por que cabelo cacheado e crespo frizza mais que o liso</h2>
+
+<p>Não é impressão. Existe uma razão geométrica clara. Em fios lisos, o óleo natural produzido pelo couro cabeludo (sebo) escorre pela haste do fio com relativa facilidade, porque o caminho é reto. Em fios cacheados e crespos (tipos 2A a 4C na classificação de curvatura), a haste tem torções e ângulos ao longo do próprio formato do fio — o sebo precisa percorrer um caminho curvo, e na prática ele não chega às pontas na mesma quantidade. O resultado é um fio que já nasce com tendência a ressecamento nas extremidades, com cutícula naturalmente mais propensa a levantar.</p>
+
+<p>Some a isso outro fator estrutural: quanto mais fechado o padrão de cacho (especialmente em 3C e tipos 4), maior o número de pontos de torção ao longo da fibra — e cada ponto de torção é um ponto onde a cutícula fica mecanicamente mais vulnerável a abrir. É por isso que produtos e técnicas pensados para cabelo liso quase sempre pioram o frizz em cabelo cacheado: eles não consideram essa geometria.</p>
+
+<h2>Frizz normal ou dano capilar? Como saber a diferença</h2>
+
+<p>Esse é o erro de diagnóstico mais caro que existe em rotina capilar: tratar dano estrutural como se fosse frizz comum. Frizz normal responde a hidratação, técnica de finalização e proteção — some ou reduz drasticamente em 1 a 2 lavagens com o cuidado certo. Dano capilar (por química agressiva, calor mal aplicado, química de descoloração, ou desgaste mecânico acumulado) não responde da mesma forma, porque a cutícula não está temporariamente levantada — ela está estruturalmente comprometida, às vezes com perdas reais de córtex.</p>
+
+<p>Alguns sinais práticos para diferenciar: fio com frizz normal tem elasticidade preservada (estica e volta ao formato); fio danificado perde elasticidade ou se rompe ao esticar levemente. Frizz normal concentra-se mais no comprimento médio e raiz por crescimento do cacho; dano frequentemente aparece de forma mais grave nas pontas, com aspecto "esfiapado" mesmo seco. Fizemos um checklist completo, com testes que você pode fazer em casa antes de decidir o próximo passo, no <a href="/blog/frizz-normal-ou-dano-capilar">guia de diagnóstico: frizz normal ou dano capilar</a>. Vale a leitura antes de investir em qualquer tratamento — porque o tratamento certo para frizz e o tratamento certo para dano não são o mesmo produto, nem o mesmo protocolo.</p>
+
+<h2>O erro de diagnóstico mais comum: achar que tem cabelo liso com frizz (quando na verdade é ondulado)</h2>
+
+<p>Um padrão que vemos com frequência aqui no salão: pessoa passa a vida inteira se descrevendo como "liso com frizz" e investindo em produtos e técnicas de alisamento/controle para fio liso — quando na verdade o cabelo é ondulado (tipo 2) e nunca teve a chance de expressar a onda, porque a rotina (excesso de escovação, produtos errados, secagem mal feita) sempre desfez o padrão antes dele se formar. Isso não é frizz no sentido estrutural que descrevemos acima — é onda sendo mecanicamente destruída e o resultado lido como "fio liso rebelde".</p>
+
+<p>A distinção importa porque a solução é oposta: quem tem fio liso de verdade com frizz precisa de disciplina de alisamento e proteção térmica; quem tem ondulado não-diagnosticado precisa parar de brigar com o próprio padrão e aprender a definir a onda. Detalhamos como identificar qual é o seu caso no <a href="/blog/voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz">guia sobre cabelo ondulado não diagnosticado</a>.</p>
+
+<h2>Frizz em Belo Horizonte: por que o clima local intensifica tudo isso</h2>
+
+<p>A física do frizz que explicamos lá em cima (troca de umidade descontrolada pela cutícula aberta) fica mais visível em climas de alta variação de umidade relativa — e BH é um caso particular: verão com umidade alta e chuva concentrada, inverno seco com quedas bruscas de umidade, e oscilações de temperatura no mesmo dia que são comuns no clima de altitude da região metropolitana. Cabelo cacheado e crespo, que já tem cutícula estruturalmente mais propensa a abrir (como explicamos acima), sente essa oscilação com mais intensidade que fio liso.</p>
+
+<p>Reunimos as adaptações de rotina específicas para esse clima — incluindo ajustes por estação e por bairro — no <a href="/blog/guia-sobrevivencia-frizz-bh">guia de sobrevivência ao frizz em BH</a>. E porque o inverno de BH tem uma combinação particular de baixa umidade e uso de aquecedores/chuveiro muito quente que resseca o fio rápido, escrevemos um guia à parte, com protocolo de troca sazonal de produto, no <a href="/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento">guia de cabelo cacheado no inverno de BH</a>.</p>
+
+<h2>O que realmente controla frizz (e o que é maquiagem temporária)</h2>
+
+<p>Existem duas categorias de solução, e misturar as duas sem saber qual é qual é a razão pela qual muita gente sente que "nada funciona":</p>
+
+<ul>
+<li><strong>Controle temporário de superfície</strong>: cremes de pentear, géis, óleos seladores e leave-ins com silicones ou polímeros filmogênicos. Eles preenchem a fresta da cutícula fisicamente, bloqueando a troca de umidade por algumas horas ou até a próxima lavagem. Funcionam, mas são reaplicados sempre — não mudam a estrutura do fio.</li>
+<li><strong>Correção estrutural</strong>: tratamentos que reconstroem a superfície da cutícula com proteína, lipídios e agentes seladores, e técnica de corte que remove o segmento do fio onde o dano está concentrado (geralmente as pontas). Isso reduz a necessidade de controle diário porque ataca a causa, não o efeito.</li>
+</ul>
+
+<p>Na prática, a maioria das rotinas de frizz falha porque usa só a primeira categoria indefinidamente, tentando "tapar" um problema estrutural com produto de finalização — o que funciona parcialmente e cansa a pessoa, porque o resultado nunca é estável.</p>
+
+<h2>Por que cortar frizz sem diagnóstico raramente funciona</h2>
+
+<p>Frizz não é uniforme ao longo do comprimento do fio nem uniforme entre uma cabeça e outra. Duas pessoas com "muito frizz" podem ter causas completamente diferentes: uma com porosidade alta por química antiga, outra com padrão de cacho simplesmente mal definido por técnica de finalização errada, outra ainda com ondulado não-diagnosticado (como no caso que descrevemos acima). Cortar ou aplicar tratamento sem identificar qual dessas situações está na sua frente é, na melhor das hipóteses, aposta — e na pior, piora o quadro.</p>
+
+<p>É exatamente por isso que todo corte aqui no salão começa pela <a href="/metodo">Leitura de Fio</a>, meu método de diagnóstico em 7 etapas: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Antes de qualquer tesoura encostar no fio, eu preciso saber: essa cutícula está fechada ou aberta? Essa porosidade é uniforme ou varia entre raiz e ponta (sinal de química ou calor no passado)? Esse frizz é geométrico (fio saudável, técnica de finalização errada) ou é dano real? A resposta muda completamente a técnica de corte e o produto indicado depois. A Leitura de Fio custa R$80 isolada, mas está inclusa gratuitamente em qualquer <a href="/agendar">Corte com o Jon</a> (R$190) — porque eu não corto cabelo cacheado sem entender a fibra primeiro.</p>
+
+<p>Quando o diagnóstico aponta frizz de causa estrutural — porosidade alta, cutícula danificada, histórico de química — a resposta não é só corte, é reconstrução: o <strong>Tratamento Personalizado (R$130)</strong> é formulado a partir do que a Leitura de Fio identificou naquele fio específico, focado em fechar cutícula e devolver a capacidade do fio de reter umidade de forma estável, reduzindo a dependência de produto de finalização no dia a dia. Para quem já sabe que precisa dos dois — diagnóstico, corte e tratamento no mesmo dia — o <strong>Combo Corte + Tratamento sai por R$230</strong> (preço normal R$320).</p>
+
+<h2>Resumo prático: o que fazer com essa informação</h2>
+
+<ul>
+<li>Se você não sabe se seu cabelo é liso, ondulado ou cacheado com frizz, comece pelo <a href="/blog/voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz">guia de diagnóstico de padrão de cacho</a> — a rotina certa depende dessa resposta.</li>
+<li>Se seu frizz muda muito entre estações, veja os ajustes sazonais nos guias de <a href="/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento">inverno</a> e <a href="/blog/guia-sobrevivencia-frizz-bh">clima de BH</a>.</li>
+<li>Se você suspeita que não é frizz comum, faça o checklist do <a href="/blog/frizz-normal-ou-dano-capilar">guia de frizz vs. dano capilar</a> antes de gastar em qualquer tratamento.</li>
+<li>Se quer entender a base completa da rotina de controle, o <a href="/blog/frizz-em-cabelo-cacheado">guia fundamental de frizz em cabelo cacheado</a> cobre produto, técnica de finalização e erros comuns.</li>
+<li>Se quer parar de adivinhar e ter um diagnóstico real da sua fibra, <a href="/agendar">agende um horário</a> — a Leitura de Fio está inclusa em qualquer corte.</li>
+</ul>
+
+<h2>Perguntas frequentes sobre frizz</h2>
+
+<h3>Frizz tem cura definitiva?</h3>
+<p>Não existe uma "cura" única porque frizz é um comportamento da cutícula em resposta ao ambiente — vai sempre reagir a umidade em algum grau, mesmo em fio saudável. O que existe é controle estável: com cutícula reconstruída e rotina adequada à porosidade real do fio, o frizz reduz drasticamente e passa a ser previsível, em vez de aparecer de forma aleatória e intensa.</p>
+
+<h3>Por que meu frizz piora mais em uns dias do que em outros, mesmo usando os mesmos produtos?</h3>
+<p>Porque a variável que muda não é o seu produto, é a umidade relativa do ar. Como o cabelo é higroscópico (absorve e libera água constantemente tentando equilibrar com o ambiente), dias de umidade muito alta ou muito baixa em relação ao normal da sua rotina vão gerar mais troca descontrolada de água pela cutícula — e mais frizz visível, independente do produto usado.</p>
+
+<h3>Produto antifrizz resolve de vez ou é só disfarce?</h3>
+<p>Depende do tipo. Cremes, géis e óleos seladores com silicone ou polímero são controle de superfície: funcionam bem no dia, mas somem na próxima lavagem e não mudam a estrutura do fio. Para resultado que dura além de uma lavagem, é preciso corrigir a cutícula na origem — o que exige diagnóstico de porosidade e, geralmente, tratamento reconstrutor, não só produto de finalização.</p>`
+  },
+  {
     id: 49,
     slug: 'por-que-saloes-falham-cabelo-texturizado',
     title: 'Por que a maioria dos salões falha com cabelo cacheado — e como o Studio do Jon não',

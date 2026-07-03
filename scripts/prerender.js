@@ -932,6 +932,43 @@ const pages = [
     }
   },
   {
+    route: '/imprensa',
+    title: 'Imprensa | Studio do Jon',
+    description: 'Material de imprensa do Studio do Jon: história, diferencial técnico (Método Leitura de Fio), dados do negócio e contato para pauta.',
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Imprensa</h1>
+      <p>Material de referência para jornalistas, criadores de conteúdo e parceiros que queiram pautar o Studio do Jon.</p>
+      <h2>Sobre o Studio do Jon</h2>
+      <p>O Studio do Jon (também conhecido como "O Jon que Cortou") é um salão especializado em cabelos ondulados, cacheados e crespos — do tipo 2A ao 4C — no bairro Caiçaras, em Belo Horizonte. Não realiza alisamento, relaxamento ou qualquer procedimento de modificação da curvatura natural do fio. O salão é liderado pelo cabeleireiro Jonatan Junior, criador do <a href="/metodo">Método Leitura de Fio</a>: um diagnóstico capilar em 7 etapas realizado antes de qualquer corte, incluído sem custo extra em todo atendimento.</p>
+      <h2>Dados rápidos</h2>
+      <ul>
+        <li><strong>Fundador:</strong> Jonatan Junior</li>
+        <li><strong>Localização:</strong> Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte, MG</li>
+        <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A-4C)</li>
+        <li><strong>Avaliação:</strong> 4.9/5 com base em 272 avaliações no Google</li>
+        <li><strong>Instagram:</strong> @ojonquecortou</li>
+      </ul>
+      <h2>Contato para pauta</h2>
+      <p>Para entrevistas ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/553135866673">(31) 3586-6673</a>.</p>
+    </article>
+  </noscript>
+`,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Studio do Jon",
+      "alternateName": "O Jon que Cortou",
+      "url": "https://www.ojonquecortou.com.br",
+      "logo": "https://www.ojonquecortou.com.br/logo-app.png",
+      "sameAs": [
+        "https://www.instagram.com/ojonquecortou",
+        "https://www.wikidata.org/wiki/Q140387726"
+      ]
+    }
+  },
+  {
     route: '/servicos/descoloracao-cabelo-cacheado',
     title: 'Descoloração em Cabelo Cacheado em BH | Studio do Jon',
     description: 'Descoloração em cabelo cacheado em BH. Protocolo com avaliação de porosidade, histórico químico e textura para manter a saúde do cacho. Agende.',
