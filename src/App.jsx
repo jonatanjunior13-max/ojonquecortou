@@ -35,6 +35,7 @@ const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
 const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
 const MasculinoPage = React.lazy(() => import('./pages/MasculinoPage'));
 const LeituraFioPage = React.lazy(() => import('./pages/LeituraFioPage'));
+const EspecialistaCachosBhPage = React.lazy(() => import('./pages/EspecialistaCachosBhPage'));
 const CachosLandingPage = React.lazy(() => import('./pages/CachosLandingPage'));
 
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -101,6 +102,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/sobre" element={<AboutPage />} />
             <Route path="/servicos" element={<ServicesPage />} />
+            <Route path="/servicos/especialista-cachos-bh" element={<EspecialistaCachosBhPage />} />
             <Route path="/servicos/corte-hibrido" element={<CorteHibridoPage />} />
             <Route path="/servicos/leitura-de-fio" element={<LeituraFioPage />} />
             <Route path="/servicos/transicao-capilar" element={<TransicaoCapilarPage />} />

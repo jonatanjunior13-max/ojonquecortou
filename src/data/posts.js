@@ -306,6 +306,11 @@ export const posts = [
         <p>Saia das tabelas genéricas e faça um diagnóstico científico de porosidade com o Método Leitura de Fio.</p>
         <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
       </div>
+
+      <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <h3>Começar do Zero?</h3>
+        <p>Se você quer entender como construir um cronograma desde o início (antes de errar), leia: <a href="/blog/cronograma-capilar-cabelo-cacheado"><strong>Cronograma Capilar por Porosidade: Guia Completo</strong></a></p>
+      </div>
     `
   },
   {
@@ -2260,6 +2265,9 @@ export const posts = [
       <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
         <h3>Continue Lendo</h3>
         <ul style="list-style: none; padding-left: 0;">
+          <li style="margin-bottom: 1rem;">
+            ⚠️ <a href="/blog/excesso-hidratacao-cronograma-capilar-cacheado"><strong>Cuidado: Excesso de Hidratação Está Danificando Seu Cacho</strong></a> — Por que seu cronograma pode estar piorando tudo
+          </li>
           <li style="margin-bottom: 1rem;">
             → <a href="/blog/teste-de-porosidade-guia-definitivo">Teste da Porosidade: O segredo para parar de "jogar produto fora"</a>
           </li>
