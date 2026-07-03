@@ -1,393 +1,475 @@
 export const EXPANDED_SERVICE_BODIES = {
   'descoloracao-cabelo-cacheado': `<h1>Descoloração em Cabelo Cacheado em Belo Horizonte | Studio do Jon</h1>
-<p>A descoloração em cabelo cacheado é uma disciplina que exige muito mais que clarear fios — é um exercício de preservação da saúde estrutural e da definição natural enquanto se modifica a cor. No Studio do Jon, em Belo Horizonte, entendemos que cada cabelo cacheado, crespo ou ondulado tem suas próprias limitações físicas de porosidade, densidade e histórico químico que ditam se uma descoloração é viável, segura e resultará em um visual que compense o risco.</p>
+<p>A descoloração em cabelo cacheado é uma disciplina que exige muito mais que clarear fios — é um exercício de preservação da saúde estrutural e da definição natural enquanto se modifica a cor. No Studio do Jon, em Belo Horizonte, entendemos que cada cabelo cacheado, crespo ou ondulado tem suas próprias limitações físicas de porosidade, densidade e histórico químico que ditam se uma descoloração é viável, segura e resultará em um visual que compense o risco. Não existe "receita de bolo" para descoloração em fio com curvatura — existe diagnóstico, teste, técnica e acompanhamento.</p>
 
-<h2>Por que a Descoloração é Diferente em Cabelo Cacheado</h2>
-<p>O cabelo com curvatura é estruturalmente diferente do cabelo liso. Enquanto um fio liso distribui a oleosidade natural do couro cabeludo ao longo de toda a extensão, criando uma barreira protetora natural, o cabelo cacheado sofre do "paradoxo do cacho": quanto mais encaracolado, menos a oleosidade consegue descer até as pontas. Isso torna a fibra crespa naturalmente mais seca e mais susceptível a danos químicos como a descoloração.</p>
-<p>Além disso, a descoloração expõe a matriz cortical do fio — o córtex, onde reside a melanina que define a cor. Para cabelos com curvatura, isso significa abrir ainda mais as cutículas já naturalmente vulneráveis nas dobras da espiral, aumentando a perda de proteínas estruturais e reduzindo a elasticidade. Por isso, uma descoloração mal avaliada em cabelo cacheado resulta em quebra massiva, frizz incontrolável e perda acelerada de definição.</p>
+<h2>A Química da Descoloração: O Que Realmente Acontece no Fio</h2>
+<p>Descolorir não é remover pigmento — é oxidar a melanina que já existe dentro do córtex do fio até que ela pare de refletir cor visível. O processo usa peróxido de hidrogênio combinado com um agente alcalinizante (geralmente amônia ou um substituto) para abrir a cutícula, penetrar no córtex e quebrar as moléculas de melanina em fragmentos incolores. O problema é que essa mesma reação química não distingue melanina de queratina: o peróxido também oxida parte das proteínas estruturais do córtex, e a abertura da cutícula que permite a entrada do produto é a mesma abertura que depois permite a saída de água e proteína — porosidade induzida quimicamente.</p>
+<p>Em cabelo liso, essa abertura cuticular tem consequência cosmética moderada porque a fibra é geometricamente reta e a oleosidade natural do couro cabeludo desce por gravidade ao longo de toda a extensão, repondo parcialmente a proteção perdida. Em cabelo com curvatura, dois fatores pioram o quadro: primeiro, o "paradoxo do cacho" — quanto mais encaracolado o fio, menos a oleosidade natural consegue descer até as pontas, deixando a fibra cronicamente mais seca mesmo antes de qualquer química. Segundo, a geometria espiral do cacho concentra tensão mecânica nas dobras da hélice capilar, exatamente onde a cutícula já é mais fina — é ali que a descoloração abre mais e quebra primeiro.</p>
+
+<h2>Por Que a Descoloração é Diferente em Cabelo Cacheado</h2>
+<p>Além da diferença geométrica, cada padrão de curvatura tem diâmetro médio de fio e densidade folicular distintos, o que muda a velocidade de processamento. Um fio 4C, por exemplo, costuma ter diâmetro mais fino nas curvas internas da espiral — pontos de menor resistência mecânica que processam mais rápido e quebram mais fácil que um 2C de fio mais espesso. Isso significa que dois clientes com "o mesmo tempo de descoloração" podem ter resultados de dano completamente diferentes, e é exatamente por isso que tempo fixo de bula nunca é a referência certa em cabelo cacheado — o tempo real é definido pela leitura do fio, não pelo relógio.</p>
+<p>A descoloração expõe a matriz cortical do fio — o córtex, onde reside a melanina que define a cor. Para cabelos com curvatura, isso significa abrir ainda mais as cutículas já naturalmente vulneráveis nas dobras da espiral, aumentando a perda de proteínas estruturais e reduzindo a elasticidade. Por isso, uma descoloração mal avaliada em cabelo cacheado resulta em quebra massiva, frizz incontrolável e perda acelerada de definição — o cacho literalmente perde a capacidade física de retrair de volta ao formato original porque as pontes de dissulfeto que sustentam a curvatura foram degradadas junto com a melanina.</p>
 
 <h2>O Protocolo de Descoloração do Studio do Jon</h2>
-<p>Antes de qualquer descolorante tocar seu cabelo, o Studio do Jon executa um diagnóstico completo em 5 etapas:</p>
+<p>Antes de qualquer descolorante tocar seu cabelo, o Studio do Jon executa um diagnóstico completo em 5 etapas, sempre na mesma ordem:</p>
 <ol>
-  <li><strong>Teste de Mecha Obrigatório:</strong> Aplicamos o descolorante em uma pequena área protegida para validar a força do produto, o tempo de processamento e a previsão de resultado. Avaliamos também como o cacho se comporta sob o processo — se quebra facilmente, se enruga, se perde elasticidade.</li>
-  <li><strong>Análise de Porosidade:</strong> Através da Leitura de Fio, identificamos se o cabelo é de baixa, média ou alta porosidade. Alta porosidade significa que o fio já está danificado ou muito aberto — nesses casos, a descoloração é contraindicada ou exige técnicas modificadas com produtos mais suaves e tempos menores.</li>
-  <li><strong>Levantamento de Histórico Químico:</strong> Indagamos sobre qualquer processo anterior: progressivas, relaxamentos, alisamentos, tinturas, descolorações antigas. Cada etapa química anterior reduz a segurança de uma nova descoloração. Cabelos com múltiplos processos podem não suportar o descolorante sem se desintegrar.</li>
-  <li><strong>Mapeamento de Comprimento e Curvatura:</strong> Identificamos se há diferenças de curvatura ou desgaste entre a raiz, meio e pontas. Isso afeta o tempo e a força de aplicação em cada seção — as pontas podem precisar de metade do tempo da raiz.</li>
-  <li><strong>Definição de Objetivo Realista:</strong> Conversamos sobre a cor desejada versus o que é seguro alcançar. Às vezes, é melhor fazer uma descoloração progressiva em 2-3 sessões do que destruir o cabelo tentando alcançar um loiro claro em uma única aplicação.</li>
+  <li><strong>Teste de Mecha Obrigatório:</strong> Aplicamos o descolorante em uma pequena área protegida para validar a força do produto, o tempo de processamento real (não o da bula) e a previsão de resultado. Avaliamos também como o cacho se comporta sob o processo — se quebra facilmente, se enruga, se perde elasticidade quando esticado e solto.</li>
+  <li><strong>Análise de Porosidade:</strong> Através da Leitura de Fio, identificamos se o cabelo é de baixa, média ou alta porosidade. Alta porosidade significa que o fio já está danificado ou com cutícula naturalmente mais aberta — nesses casos, a descoloração é contraindicada ou exige técnicas modificadas com produtos mais suaves e tempos menores, porque o fio já processa o químico mais rápido do que o esperado.</li>
+  <li><strong>Levantamento de Histórico Químico:</strong> Indagamos sobre qualquer processo anterior: progressivas, relaxamentos, alisamentos, tinturas, descolorações antigas. Cada etapa química anterior reduz a segurança de uma nova descoloração porque o córtex acumula dano cumulativo — proteína degradada não se regenera, só se repõe parcialmente via tratamento. Cabelos com múltiplos processos podem não suportar o descolorante sem se desintegrar em contato com a solução alcalina.</li>
+  <li><strong>Mapeamento de Comprimento e Curvatura:</strong> Identificamos se há diferenças de curvatura ou desgaste entre a raiz, meio e pontas. Isso afeta o tempo e a força de aplicação em cada seção — as pontas, que já passaram por mais ciclos de lavagem, sol e manipulação, podem precisar de metade do tempo da raiz recém-nascida.</li>
+  <li><strong>Definição de Objetivo Realista:</strong> Conversamos sobre a cor desejada versus o que é seguro alcançar no fio que você tem hoje, não no fio ideal hipotético. Às vezes, é tecnicamente mais responsável fazer uma descoloração progressiva em 2-3 sessões espaçadas por semanas do que tentar destruir o cabelo tentando alcançar um loiro claro em uma única aplicação.</li>
 </ol>
 
 <h2>Técnicas de Aplicação Exclusivas para Cabelo Cacheado</h2>
-<p>A aplicação do descolorante em cabelo cacheado segue regras rigorosas:</p>
+<p>A aplicação do descolorante em cabelo cacheado segue regras rigorosas que a maioria dos salões generalistas simplesmente ignora por não terem sido treinados para fibra com curvatura:</p>
 <ul>
-  <li><strong>Divisão por Zonas de Curvatura:</strong> Não aplicamos o descolorante uniformemente. As áreas com mais volume e menor porosidade (raiz, em geral) recebem o descolorante primeiro. As pontas, mais porosas e delicadas, recebem o produto por último e por menos tempo.</li>
-  <li><strong>Proteção de Pontas:</strong> As pontas são pré-saturadas com óleos protetores antes da aplicação para reduzir a penetração excessiva do descolorante. Isso é especialmente importante em cabelo cacheado, onde as pontas já são mais secas.</li>
-  <li><strong>Tempo de Processamento Reduzido:</strong> Em cabelo cacheado, usamos tempos de processamento 10-20% menores comparado a cabelos lisos da mesma estrutura. O risco de dano aumenta exponencialmente com o tempo em fios com curvatura.</li>
-  <li><strong>Finalização com Reconstrução Imediata:</strong> Logo após remover o descolorante, aplicamos um protocolo intensivo de reconstrução: banho ácido para selar cutículas, máscara proteica profunda e selamento final com óleos nobres. Isso reduz drasticamente a quebra pós-processo.</li>
+  <li><strong>Divisão por Zonas de Curvatura:</strong> Não aplicamos o descolorante uniformemente como se fosse cabelo liso. As áreas com mais volume e menor porosidade (raiz, em geral) recebem o descolorante primeiro. As pontas, mais porosas e delicadas, recebem o produto por último e por menos tempo — uma inversão da lógica de aplicação usada em fio liso, onde muitas vezes se começa pelas pontas.</li>
+  <li><strong>Proteção de Pontas:</strong> As pontas são pré-saturadas com óleos protetores antes da aplicação para reduzir a penetração excessiva do descolorante. Isso é especialmente importante em cabelo cacheado, onde as pontas já são cronicamente mais secas pelo paradoxo do cacho mencionado acima.</li>
+  <li><strong>Tempo de Processamento Reduzido:</strong> Em cabelo cacheado, usamos tempos de processamento 10-30% menores comparado a cabelos lisos da mesma estrutura de melanina, dependendo do tipo de curvatura. O risco de dano aumenta exponencialmente (não linearmente) com o tempo em fios com curvatura, porque a fadiga mecânica das dobras da espiral se soma ao dano químico.</li>
+  <li><strong>Finalização com Reconstrução Imediata:</strong> Logo após remover o descolorante, aplicamos um protocolo intensivo de reconstrução: banho ácido para fechar e selar cutículas (voltando o pH do fio de alcalino para a faixa ácida natural de 4.5-5.5), máscara proteica profunda para repor parcialmente a queratina oxidada, e selamento final com óleos nobres. Isso reduz drasticamente a quebra pós-processo nos dias seguintes.</li>
 </ul>
 
 <h2>Tipo de Descoloração: Sem Descolorante vs. Descolorante Tradicional</h2>
-<p>O Studio do Jon oferece duas abordagens:</p>
+<p>O Studio do Jon oferece duas abordagens, escolhidas conforme o resultado da Leitura de Fio, não conforme preferência estética isolada:</p>
 <ul>
-  <li><strong>Mechas Sem Descolorante (Morena Iluminada, Luzes Sutis):</strong> Usamos tinturas com pigmentos claros que refletem luz sem agredir a estrutura. Ideal para quem quer um efeito iluminado mas não precisa ficar loiro claro. Resultado? Brilho e movimento sem o risco de quebra severa.</li>
-  <li><strong>Descoloração Clássica (para Loiro Claro ou Muito Claro):</strong> Para mudanças radicais, usamos descolorante tradicional, mas com protocolos extremamente controlados e sempre com pré e pós-tratamento robusto.</li>
+  <li><strong>Mechas Sem Descolorante (Morena Iluminada, Luzes Sutis):</strong> Usamos tinturas com pigmentos claros que refletem luz sem agredir a estrutura com peróxido em alta concentração. Ideal para quem quer um efeito iluminado mas não precisa ficar loiro claro, ou para quem a Leitura de Fio indicou porosidade alta demais para suportar descoloração tradicional. Resultado: brilho e movimento sem o risco de quebra severa.</li>
+  <li><strong>Descoloração Clássica (para Loiro Claro ou Muito Claro):</strong> Para mudanças radicais de cor, usamos descolorante tradicional, mas sempre com protocolos extremamente controlados, teste de mecha obrigatório e pré e pós-tratamento robusto documentado.</li>
 </ul>
 
 <h2>Descoloração em Diferentes Curvaturas</h2>
-<p>A viabilidade e a abordagem mudam conforme o tipo de curvatura:</p>
+<p>A viabilidade e a abordagem mudam conforme o tipo de curvatura, porque diâmetro de fio, densidade folicular e grau de dobra da hélice capilar variam sistematicamente entre os padrões:</p>
 <ul>
-  <li><strong>Cabelo Ondulado (2A-2C):</strong> Mais resiliente. Suporta descoloração com pouco risco, desde que o histórico químico seja limpo. Tempo de processamento padrão.</li>
-  <li><strong>Cabelo Cacheado (3A-3C):</strong> Moderadamente resiliente. Requer teste de mecha e redução de tempo em 10-15%. Exige proteção de pontas.</li>
-  <li><strong>Cabelo Crespo (4A-4C):</strong> Altamente vulnerável. Requer cuidado máximo. Teste de mecha é obrigatório, tempo reduzido em 20-30%, e muitos casos são inviáveis em uma única sessão ou exigem métodos sem descolorante.</li>
+  <li><strong>Cabelo Ondulado (2A-2C):</strong> Mais resiliente por ter menor grau de dobra na hélice capilar. Suporta descoloração com risco relativamente controlado, desde que o histórico químico seja limpo. Tempo de processamento próximo ao padrão de fio liso.</li>
+  <li><strong>Cabelo Cacheado (3A-3C):</strong> Moderadamente resiliente. Requer teste de mecha obrigatório e redução de tempo em 10-20%. Exige proteção de pontas e acompanhamento visual constante durante o processamento.</li>
+  <li><strong>Cabelo Crespo (4A-4C):</strong> Altamente vulnerável pela combinação de maior número de dobras por centímetro e diâmetro frequentemente mais fino nos pontos de curva. Requer cuidado máximo: teste de mecha é obrigatório, tempo reduzido em 20-30%, e muitos casos são inviáveis em uma única sessão ou exigem métodos sem descolorante como ponto de partida.</li>
+</ul>
+
+<h2>Erros Comuns de Salões Genéricos na Descoloração de Cabelo Cacheado</h2>
+<p>A maioria dos problemas que vemos em clientes que vêm de outros salões para correção não é falta de produto de qualidade — é aplicação de protocolo de cabelo liso em fibra com curvatura. Os erros mais recorrentes:</p>
+<ul>
+  <li><strong>Seguir o tempo da bula sem ajustar para curvatura:</strong> Bulas de descolorante são formuladas pensando em fio liso padrão. Aplicar o mesmo tempo em cacho 4C é, na prática, um sobre-processamento garantido.</li>
+  <li><strong>Não avaliar histórico químico completo:</strong> Aplicar descolorante sem perguntar sobre progressiva de 8 meses atrás é o erro mais comum e mais destrutivo que vemos — o fio já processado quimicamente reage de forma imprevisível e violenta ao novo produto.</li>
+  <li><strong>Aplicação uniforme raiz-a-ponta:</strong> Ignorar que as pontas já são mais porosas naturalmente por causa do paradoxo do cacho é receita para pontas queimadas mesmo com raiz ainda subprocessada.</li>
+  <li><strong>Pular o pós-tratamento imediato:</strong> Liberar a cliente sem reconstrução no mesmo atendimento é abrir mão da janela mais importante para conter o dano — depois de 24-48h a proteína já degradada não responde tão bem ao mesmo tratamento.</li>
 </ul>
 
 <h2>Pós-Descoloração: Cronograma de Manutenção</h2>
-<p>Após uma descoloração bem-sucedida, o trabalho não termina. O Studio do Jon recomenda:</p>
+<p>Após uma descoloração bem-sucedida, o trabalho não termina — na verdade, começa. O Studio do Jon recomenda um cronograma técnico, não genérico:</p>
 <ul>
-  <li><strong>Semana 1:</strong> Apenas água filtrada, sem xampus nem produtos químicos. O fio está extremamente sensível.</li>
-  <li><strong>Semana 2-3:</strong> Início de cronograma técnico de tratamento — hidratação + nutrição + reconstrução, conforme a Leitura de Fio indicar.</li>
-  <li><strong>Mês 2+:</strong> Manutenção mensal de reconstrução para evitar quebra excessiva e manter definição.</li>
+  <li><strong>Semana 1:</strong> Apenas água filtrada ou xampu extremamente suave, sem produtos com sulfato ou álcool. O fio está extremamente sensível e a cutícula ainda não se reorganizou completamente após a abertura induzida pela química.</li>
+  <li><strong>Semana 2-3:</strong> Início de cronograma técnico de tratamento — hidratação, nutrição e reconstrução alternados, conforme a Leitura de Fio indicar, priorizando reconstrução se a elasticidade estiver comprometida.</li>
+  <li><strong>Mês 2 em diante:</strong> Manutenção mensal de reconstrução para evitar quebra excessiva e manter definição do cacho, já que a fibra descolorida permanece estruturalmente mais frágil de forma permanente até crescer e ser substituída por fio virgem.</li>
 </ul>
 
+<h2>Descoloração e o Clima de Belo Horizonte</h2>
+<p>A umidade relativa e a variação térmica de Belo Horizonte ao longo do ano afetam diretamente como um cabelo descolorido se comporta entre as sessões de manutenção. Em períodos mais secos, a fibra já fragilizada perde umidade mais rápido, aumentando o risco de frizz e ponta dupla. Por isso, ajustamos a frequência de hidratação recomendada conforme a estação, não aplicamos o mesmo cronograma genérico o ano inteiro.</p>
+
 <h2>Descoloração + Corte Híbrido = Resultado Completo</h2>
-<p>Se você planeja descolorir e depois cortar, o Studio do Jon recomenda fazer o corte uma semana após a descoloração. Assim, avaliamos o comportamento real do fio após o processo químico antes de decidir sobre linhas e graduações.</p>
+<p>Se você planeja descolorir e depois cortar, o Studio do Jon recomenda fazer o corte uma semana após a descoloração. Assim, avaliamos o comportamento real do fio após o processo químico — inclusive possível mudança temporária no padrão de encolhimento — antes de decidir sobre linhas e graduações definitivas.</p>
+
+<h2>Perguntas Frequentes</h2>
+<p><strong>Descoloração acaba com o cacho?</strong> Não necessariamente, mas pode reduzir temporariamente a definição se o processo não for bem controlado, porque a mesma proteína que dá sustentação ao formato espiral do fio é parcialmente afetada pelo processo oxidativo. Com protocolo correto e pós-tratamento, a maioria dos cachos mantém padrão de curvatura reconhecível.</p>
+<p><strong>Posso descolorir cabelo em transição capilar?</strong> Depende do histórico da parte quimicamente tratada. A raiz natural em geral processa diferente do comprimento com química residual, então costuma ser necessário protocolo dividido — outra razão pela qual teste de mecha é obrigatório, não opcional.</p>
+<p><strong>Quanto tempo depois de uma progressiva posso descolorir?</strong> Recomendamos aguardar no mínimo 30 dias e, mesmo assim, sempre com teste de mecha, já que o córtex ainda carrega resíduo químico da progressiva que muda a reação ao novo processo.</p>
+<p><strong>Descoloração dói mais em cabelo crespo?</strong> A sensação na aplicação é similar entre curvaturas, mas o risco de dano estrutural é maior em crespo pela geometria da fibra, não pela sensibilidade do couro cabeludo em si.</p>
 
 <h2>Investimento e Agendamento</h2>
 <p>O valor da descoloração varia conforme comprimento, porosidade inicial e objetivo final. Descolorações começam em R$ 699 e podem chegar a R$ 1.200+ em casos com muito comprimento ou histórico químico complexo. O valor inclui teste de mecha, aplicação técnica, tratamento pós-descoloração e finalização.</p>
-<p><a href="/agendar">Agende uma consulta inicial</a> para avaliar se sua descoloração é viável e qual protocolo recomendamos para seu caso específico.</p>`,
+<p><a href="/agendar">Agende uma consulta inicial</a> para avaliar se sua descoloração é viável e qual protocolo recomendamos para seu caso específico.</p>
+`,
 
   'visagismo-cacheado': `<h1>Visagismo para Cabelos Cacheados em Belo Horizonte | Studio do Jon</h1>
-<p>Visagismo é a ciência de harmonizar o corte de cabelo com as proporções do rosto, considerando linhas, volumes, luz e sombra. Quando aplicado a cabelo cacheado, ondulado ou crespo, o visagismo se torna ainda mais crítico porque você não está apenas cortando cabelo — está esculpindo volume dentro de um padrão de curvatura que será validado pela física da mola capilar após a secagem.</p>
+<p>Visagismo é a ciência de harmonizar o corte de cabelo com as proporções do rosto, considerando linhas, volumes, luz e sombra. Quando aplicado a cabelo cacheado, ondulado ou crespo, o visagismo se torna ainda mais crítico porque você não está apenas cortando cabelo — está esculpindo volume dentro de um padrão de curvatura que será validado pela física da mola capilar após a secagem. Um corte de visagismo planejado sem essa validação física é apenas um desenho bonito no papel que não sobrevive ao primeiro banho.</p>
+
+<h2>Por Que Visagismo em Cacho é Mais Complexo que em Fio Liso</h2>
+<p>Em cabelo liso, o corte cai por gravidade de forma previsível — o que você vê recém-cortado é essencialmente o que você terá no dia a dia, ajustado por escova ou secagem. Em cabelo com curvatura, o fio se comporta como uma mola: ele encolhe ao secar, em proporção que varia de 10% em ondulados até 75% em crespos tipo 4C. Isso significa que o comprimento, o volume e até a proporção facial que o visagismo planejou no fio molhado, esticado, pode se transformar completamente depois da secagem. O visagismo em cacho, portanto, não trabalha sobre uma forma fixa — trabalha sobre uma forma que muda de estado, e o corte precisa ser projetado para funcionar nos dois estados.</p>
 
 <h2>Os Pilares do Visagismo Aplicado a Cabelo Cacheado</h2>
 <p>No Studio do Jon, o visagismo para cabelo cacheado segue 4 pilares fundamentais:</p>
 <ol>
-  <li><strong>Análise das Proporções Faciais:</strong> Usando princípios da proporção áurea, identificamos se seu rosto é mais redondo, quadrado, alongado ou em forma de coração. Cada formato exige uma estratégia visual diferente.</li>
-  <li><strong>Mapeamento de Linhas de Força:</strong> Linhas verticais (alongadas) criam dinamismo e elevam visualmente. Linhas horizontais trazem peso e alargam. Diagonais transmitem movimento e suavidade. O visagismo escolhe qual linha domina seu corte baseado na sua estrutura.</li>
-  <li><strong>Distribuição Estratégica de Volume:</strong> Volume no topo eleva o olhar e alonga. Volume lateral suaviza traços angulares. Volume nas pontas traz leveza. Para cabelo cacheado, essa distribuição de volume precisa respeitar a curvatura natural — não adianta planejar um volume que não será mantido pela física do fio.</li>
-  <li><strong>Integração com a Imagem Pessoal:</strong> O visagismo não é sobre seguir tendências. É sobre amplificar quem você é. Conversamos sobre seu estilo, sua rotina, quanto tempo você investe na finalização do cabelo e qual mensagem você quer transmitir. Um corte de visagismo bom funciona no seu dia a dia, não só no espelho do salão.</li>
+  <li><strong>Análise das Proporções Faciais:</strong> Usando princípios da proporção áurea, identificamos se seu rosto é mais redondo, quadrado, alongado, em forma de coração ou losango. Medimos a relação entre largura da testa, das maçãs do rosto e da mandíbula, além da proporção entre o terço superior, médio e inferior do rosto. Cada formato exige uma estratégia visual diferente, e a mesma técnica de corte pode harmonizar um rosto e desequilibrar outro completamente.</li>
+  <li><strong>Mapeamento de Linhas de Força:</strong> Linhas verticais (alongadas) criam dinamismo e elevam visualmente, sendo úteis para rostos mais curtos. Linhas horizontais trazem peso e alargam, úteis para rostos alongados. Diagonais transmitem movimento e suavidade, equilibrando ângulos rígidos. O visagismo escolhe qual linha domina seu corte baseado na sua estrutura óssea, não em tendência.</li>
+  <li><strong>Distribuição Estratégica de Volume:</strong> Volume no topo eleva o olhar e alonga visualmente o rosto. Volume lateral suaviza traços angulares como mandíbula quadrada. Volume nas pontas traz leveza e movimento. Para cabelo cacheado, essa distribuição de volume precisa respeitar a curvatura natural — não adianta planejar um volume que a física do fio, uma vez seco, simplesmente não vai sustentar.</li>
+  <li><strong>Integração com a Imagem Pessoal:</strong> O visagismo não é sobre seguir tendências de revista ou influenciadora. É sobre amplificar quem você é. Conversamos sobre seu estilo, sua rotina, quanto tempo você realisticamente investe na finalização do cabelo e qual mensagem você quer transmitir. Um corte de visagismo bom funciona no seu dia a dia, não só no espelho do salão no dia da execução.</li>
 </ol>
 
 <h2>Análise Facial: Identidade e Harmonia</h2>
-<p>A primeira etapa do visagismo para cabelo cacheado é entender sua face:</p>
+<p>A primeira etapa do visagismo para cabelo cacheado é entender sua face em detalhe:</p>
 <ul>
-  <li><strong>Rosto Redondo:</strong> Precisa de linhas mais longas e diagonais para alongar visualmente. Evitamos volume excessivo nas laterais. Recomendamos camadas discretas que tragam leveza nas pontas e altura no topo.</li>
-  <li><strong>Rosto Quadrado:</strong> Tem mandíbula e testa proeminentes. Precisa de linhas curvas e suavidade lateral para equilibrar. Volume moderado nas laterais ajuda a reduzir a angularidade.</li>
-  <li><strong>Rosto Alongado:</strong> Benéfico a linhas horizontais que trazem largura. Recomendamos franja ou movimento horizontal na altura dos ombros para interromper a verticalidade.</li>
-  <li><strong>Rosto em Coração:</strong> Testa larga, queixo afilado. Precisa de movimento na mandíbula para equilibrar. Menos volume no topo, mais nas pontas.</li>
+  <li><strong>Rosto Redondo:</strong> Largura e altura próximas, ângulos suaves, sem mandíbula definida. Precisa de linhas mais longas e diagonais para alongar visualmente. Evitamos volume excessivo nas laterais, que alargaria ainda mais. Recomendamos camadas discretas que tragam leveza nas pontas e altura no topo, criando ilusão de comprimento vertical.</li>
+  <li><strong>Rosto Quadrado:</strong> Tem mandíbula e testa proeminentes, com largura similar em ambas. Precisa de linhas curvas e suavidade lateral para equilibrar a angularidade natural. Volume moderado nas laterais, distribuído de forma assimétrica ou em camadas suaves, ajuda a reduzir a percepção de ângulos rígidos.</li>
+  <li><strong>Rosto Alongado:</strong> Altura significativamente maior que a largura. Benéfico a linhas horizontais que trazem largura visual. Recomendamos franja ou movimento horizontal na altura dos ombros ou queixo para interromper a verticalidade e criar equilíbrio de proporção.</li>
+  <li><strong>Rosto em Coração:</strong> Testa larga, queixo afilado, maçãs do rosto proeminentes. Precisa de movimento na altura da mandíbula para equilibrar visualmente a base afilada. Menos volume no topo, que acentuaria a largura da testa, e mais nas pontas próximas ao queixo.</li>
+  <li><strong>Rosto Losango:</strong> Maçãs do rosto largas, testa e queixo mais estreitos. Precisa de volume equilibrado entre topo e mandíbula, com foco em suavizar a proeminência central das maçãs do rosto através de camadas que quebrem essa linha.</li>
 </ul>
 
 <h2>Como o Visagismo Muda Conforme a Curvatura</h2>
-<p>O visagismo para ondulado (2A-2C) é diferente do para cacheado (3A-3C) e do para crespo (4A-4C):</p>
+<p>O visagismo para ondulado (2A-2C) é estruturalmente diferente do para cacheado (3A-3C) e do para crespo (4A-4C), porque o grau de encolhimento e a forma como o fio se agrupa mudam a distribuição final de volume:</p>
 <ul>
-  <li><strong>Ondulado:</strong> Mantém melhor a forma planejada. Linhas definidas funcionam bem. Camadas funcionam bem porque a onda as mantém no lugar.</li>
-  <li><strong>Cacheado:</strong> Cachos tendem a afundar e se agrupar. Precisa de mais escultura e menos camadas finas. As linhas precisam ser pensadas em 3D, considerando como o cacho se agrupa quando seco.</li>
-  <li><strong>Crespo:</strong> Volume imponente. Visagismo para crespo é sobre controlar o volume, não criar mais. Linhas precisam ser muito bem definidas na raiz para que o volume seja organizado e respeitoso aos traços.</li>
+  <li><strong>Ondulado:</strong> Mantém melhor a forma planejada porque o encolhimento é menor (10-20%). Linhas definidas funcionam bem. Camadas funcionam bem porque a onda as mantém relativamente no lugar após secar.</li>
+  <li><strong>Cacheado:</strong> Cachos tendem a afundar e se agrupar em cachos maiores conforme secam. Precisa de mais escultura e menos camadas finas, que se perderiam dentro do agrupamento. As linhas precisam ser pensadas em 3D, considerando como o cacho se agrupa quando seco, não apenas como cai molhado.</li>
+  <li><strong>Crespo:</strong> Volume imponente e encolhimento severo (até 75%). Visagismo para crespo é sobre controlar e direcionar o volume, não criar mais volume. Linhas precisam ser muito bem definidas na raiz para que o volume final seja organizado e respeitoso aos traços faciais, em vez de crescer de forma desproporcional em uma única direção.</li>
 </ul>
 
 <h2>Integração com a Leitura de Fio</h2>
-<p>No Studio do Jon, o visagismo não é uma decisão isolada. Ele vem integrado à Leitura de Fio, que informa:</p>
+<p>No Studio do Jon, o visagismo não é uma decisão isolada nem estética. Ele vem integrado à Leitura de Fio, que informa tecnicamente:</p>
 <ul>
-  <li>Quanta graduação o seu fio suporta sem se afundar ou perder curvatura.</li>
-  <li>Se você tem densidade suficiente para sustentar camadas.</li>
-  <li>Qual é o fator de encolhimento do seu cacho — isso afeta o comprimento final que você terá após a secagem.</li>
-  <li>Como o cacho se comporta em movimento — um corte que fica perfeito molhado pode virar um desastre após secar se o visagismo não respeitou a física.</li>
+  <li>Quanta graduação o seu fio suporta sem se afundar ou perder curvatura definida — fios de densidade baixa não sustentam camadas muito finas.</li>
+  <li>Se você tem densidade suficiente para sustentar o volume planejado nas áreas estratégicas identificadas na análise facial.</li>
+  <li>Qual é o fator de encolhimento real do seu cacho — isso afeta diretamente o comprimento final que você terá após a secagem, e portanto onde as linhas de visagismo realmente vão "pousar" no rosto.</li>
+  <li>Como o cacho se comporta em movimento — um corte que fica perfeito molhado pode virar um desastre visual e proporcional depois de seco, se o visagismo não respeitou a física de encolhimento medida na Leitura de Fio.</li>
 </ul>
 
 <h2>O Corte de Visagismo Passo a Passo</h2>
 <ol>
-  <li><strong>Conversa Inicial (15 min):</strong> Entendemos sua rotina, sua disponibilidade de finalização, quais cortes você amou (ou odiou) no passado, como você se vê e como quer se ver.</li>
-  <li><strong>Análise Facial e Mapeamento (15 min):</strong> Medimos proporções, identificamos formato, traços proeminentes e distribuição de volume desejada.</li>
-  <li><strong>Leitura de Fio (15 min):</strong> Curvatura, porosidade, densidade, histórico químico, comportamento a seco versus molhado.</li>
-  <li><strong>Planejamento do Corte (10 min):</strong> Definimos exatamente como o corte será estruturado para harmonizar face + curvatura + rotina.</li>
-  <li><strong>Corte Técnico (20-25 min):</strong> Execução do corte híbrido ou seco, respeitando as linhas planejadas.</li>
-  <li><strong>Finalização Educativa (5 min):</strong> Mostramos como replicar a finalização em casa para que o corte funcione além do salão.</li>
+  <li><strong>Conversa Inicial (15 min):</strong> Entendemos sua rotina, sua disponibilidade real de finalização, quais cortes você amou (ou odiou) no passado e por quê, como você se vê e como quer se ver.</li>
+  <li><strong>Análise Facial e Mapeamento (15 min):</strong> Medimos proporções, identificamos formato, traços proeminentes e distribuição de volume desejada, com base nos princípios de proporção áurea aplicados ao seu rosto específico.</li>
+  <li><strong>Leitura de Fio (15 min):</strong> Curvatura, porosidade, densidade, histórico químico, comportamento a seco versus molhado — os dados técnicos que vão validar (ou revisar) o plano de visagismo.</li>
+  <li><strong>Planejamento do Corte (10 min):</strong> Definimos exatamente como o corte será estruturado para harmonizar face, curvatura real e rotina, cruzando os dados das etapas anteriores.</li>
+  <li><strong>Corte Técnico (20-25 min):</strong> Execução do corte híbrido ou seco, respeitando as linhas planejadas e ajustando em tempo real conforme o fio reage.</li>
+  <li><strong>Finalização Educativa (5 min):</strong> Mostramos como replicar a finalização em casa para que o corte funcione além do salão, não apenas no dia da execução.</li>
 </ol>
 
 <h2>Diferenças: Corte Híbrido vs. Corte a Seco no Visagismo</h2>
-<p>O visagismo é mais preciso com o Corte Híbrido (molhado + lapidação seca) porque avaliamos as linhas nos dois estados — molhado (quando o cacho está esticado) e seco (quando está encolhido). No corte exclusivamente a seco, corremos o risco de errar na proporção porque o fio já está contraído e erra-se facilmente na avaliação de comprimento final.</p>
+<p>O visagismo é mais preciso com o Corte Híbrido (molhado + lapidação seca) porque avaliamos as linhas nos dois estados — molhado, quando o cacho está esticado pela água, e seco, quando está encolhido pela física natural da mola capilar. No corte exclusivamente a seco, corremos o risco de errar na proporção porque o fio já está contraído e é mais difícil visualizar linhas retas e simetria de comprimento entre lados.</p>
+
+<h2>Erros Comuns de Visagismo em Salões Sem Especialização em Cacho</h2>
+<p>Vemos com frequência clientes que passaram por "visagismo" em salões generalistas e saíram com resultado desproporcional. Os erros mais comuns:</p>
+<ul>
+  <li><strong>Planejar o corte só no molhado:</strong> Sem considerar o encolhimento real, o volume planejado para uma área específica do rosto acaba pousando em outra depois de seco.</li>
+  <li><strong>Ignorar densidade ao planejar camadas:</strong> Camadas finas demais em fio de densidade baixa somem visualmente, desperdiçando o planejamento facial.</li>
+  <li><strong>Copiar corte de referência sem adaptar à curvatura real:</strong> Um corte que funciona em cacho 3A raramente funciona sem adaptação estrutural em cacho 4B, mesmo que a foto de referência seja linda.</li>
+  <li><strong>Não considerar rotina de finalização:</strong> Um visagismo tecnicamente perfeito que exige 40 minutos de finalização diária para funcionar não é um visagismo funcional para a maioria das rotinas reais.</li>
+</ul>
 
 <h2>Visagismo para Quem Está em Transição Capilar</h2>
-<p>Se você está em transição, o visagismo muda. Você tem duas texturas na mesma cabeça — raiz natural e comprimento relaxado/alisado. O visagismo para transição precisa equilibrar essas duas realidades visuais, criando linhas que funcionem em ambas.</p>
+<p>Se você está em transição, o visagismo muda estruturalmente. Você tem duas texturas na mesma cabeça — raiz natural com curvatura própria e comprimento relaxado ou alisado que ainda não foi cortado. O visagismo para transição precisa equilibrar essas duas realidades visuais simultaneamente, criando linhas que funcionem tanto na textura natural quanto na química residual, até que o corte progressivo elimine a mistura.</p>
+
+<h2>Manutenção do Visagismo ao Longo do Tempo</h2>
+<p>Um corte de visagismo não é estático — o cabelo cresce, e o crescimento desorganizado gradualmente desfaz as linhas planejadas. Recomendamos retorno a cada 3-4 meses para lapidação de manutenção, que restaura as linhas originais sem refazer o planejamento facial do zero, mantendo o investimento inicial funcionando por mais tempo.</p>
+
+<h2>Perguntas Frequentes</h2>
+<p><strong>Visagismo funciona em qualquer tipo de cacho?</strong> Sim, mas a técnica e a expectativa de resultado mudam conforme a curvatura. O princípio é universal, a execução é individual.</p>
+<p><strong>Preciso trazer foto de referência?</strong> Pode ajudar a entender seu gosto estético, mas o corte final será adaptado à sua proporção facial e curvatura real, não copiado literalmente.</p>
+<p><strong>Visagismo custa mais que um corte comum?</strong> Não — está incluído em todo Corte com o Jon, porque consideramos visagismo parte inseparável de um corte tecnicamente bem feito, não um serviço à parte.</p>
+<p><strong>Posso pedir só a consulta de visagismo sem cortar?</strong> Sim, através da Leitura de Fio com foco em visagismo (R$ 80, revertido em crédito se você fechar o corte depois).</p>
 
 <h2>O Valor do Visagismo</h2>
-<p>Visagismo aplicado a cabelo cacheado está incluído em todo Corte com o Jon (R$ 190) e é extremamente valioso porque multiplica o resultado do corte. Um corte bem pensado visagismo vale a pena porque funciona, porque faz você se sentir mais confiante e porque dura mais — você não quer voltar precocemente porque o corte não está funcionando.</p>
+<p>Visagismo aplicado a cabelo cacheado está incluído em todo Corte com o Jon (R$ 190) e é extremamente valioso porque multiplica o resultado do corte. Um corte bem pensado em visagismo vale a pena porque funciona no seu rosto real, porque faz você se sentir mais confiante no dia a dia e porque dura mais — você não precisa voltar precocemente porque o corte não estava funcionando com sua estrutura facial.</p>
 
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende seu corte de visagismo</a> e prepare-se para descobrir qual formato de cacho, qual distribuição de volume e qual comprimento fazem você se sentir mais você.</p>`,
+<p><a href="/agendar">Agende seu corte de visagismo</a> e prepare-se para descobrir qual formato de cacho, qual distribuição de volume e qual comprimento fazem você se sentir mais você.</p>
+`,
 
   'corte-hibrido': `<h1>Corte Híbrido em Cabelo Cacheado | Studio do Jon</h1>
-<p>O Corte Híbrido é a técnica que combina precisão molhada com lapidação a seco — é a metodologia que dominou a especialização do Studio do Jon em cabelos cacheados, crespos e ondulados em Belo Horizonte. Diferente do corte exclusivamente a seco ou do corte exclusivamente molhado, o híbrido permite que o cabeleireiro avalie a linha tanto no estado contraído (seco) quanto no estado esticado (molhado), garantindo um resultado simétrico e funcional nos dois cenários.</p>
+<p>O Corte Híbrido é a técnica que combina precisão molhada com lapidação a seco — é a metodologia que dominou a especialização do Studio do Jon em cabelos cacheados, crespos e ondulados em Belo Horizonte. Diferente do corte exclusivamente a seco ou do corte exclusivamente molhado, o híbrido permite que o cabeleireiro avalie a linha tanto no estado contraído (seco) quanto no estado esticado (molhado), garantindo um resultado simétrico e funcional nos dois cenários — não apenas no espelho do salão no dia do corte.</p>
+
+<h2>A Física do Encolhimento: Por Que Nenhum Corte de Cacho é Confiável em Um Estado Só</h2>
+<p>Cabelo com curvatura se comporta fisicamente como uma mola helicoidal. Quando molhado, a tensão superficial da água e o peso próprio esticam parcialmente essa espiral, alongando o fio. Quando seca, a estrutura de pontes de hidrogênio dentro do córtex se reorganiza e a fibra retorna à sua forma helicoidal natural — encolhendo. Esse encolhimento não é uma estimativa vaga: varia de forma previsível conforme o padrão de curvatura, de cerca de 10% em ondulados tipo 2A até 75% em crespos tipo 4C. Um corte planejado e finalizado inteiramente no estado molhado ignora essa variável física fundamental, e o resultado só se revela — geralmente para pior — depois que a cliente já foi embora do salão.</p>
 
 <h2>Por Que o Corte Híbrido Funciona para Cabelo Cacheado</h2>
-<p>A física do cacho é implacável: ao secar, o fio encolhe. Esse encolhimento varia de 10% em ondulados até 75% em crespos tipo 4C. Se você corta o cabelo exclusivamente molhado, o fio está esticado pela água e você prevê um comprimento que não será mantido após a secagem — resultado? Cortes excessivamente curtos ou assimétricos. Se você corta exclusivamente a seco, você trabalha com o fio já contraído, o que torna difícil visualizar linhas retas e comprimentos simétricos.</p>
-<p>O Corte Híbrido resolve isso fazendo ambos: primeiro, você trabalha a precisão molhada (linhas bem cortadas, ângulos definidos), depois valida e ajusta a seco (confirma simetria e caimento real). O resultado é um corte que funciona bom tanto no molhado quanto no seco, independente do fator de encolhimento do cliente.</p>
+<p>Se você corta o cabelo exclusivamente molhado, o fio está esticado pela água e você prevê um comprimento que não será mantido após a secagem — resultado: cortes excessivamente curtos ou assimétricos, porque cachos vizinhos raramente encolhem exatamente na mesma proporção. Se você corta exclusivamente a seco, você trabalha com o fio já contraído, o que torna difícil visualizar linhas retas e comprimentos simétricos, já que a curvatura naturalmente disfarça pequenas diferenças de comprimento entre mechas.</p>
+<p>O Corte Híbrido resolve isso fazendo ambos, em sequência deliberada: primeiro, você trabalha a precisão molhada (linhas bem cortadas, ângulos definidos, referência geométrica clara), depois valida e ajusta a seco (confirma simetria e caimento real, já com o encolhimento manifestado). O resultado é um corte que funciona bem tanto no molhado quanto no seco, independente do fator de encolhimento específico daquele cliente — que só a Leitura de Fio e a observação direta durante o processo revelam com precisão.</p>
 
 <h2>As Três Fases do Corte Híbrido</h2>
 
 <h3>Fase 1: Corte Molhado (Precisão)</h3>
-<p>O cabelo é lavado, penteado para remover nós e dividido em seções. O cabeleireiro trabalha com tesoura e pente, cortando cada seção com linhas bem definidas — geralmente um corte que segue as naturais linhas de curvatura ou que cria graduação (cada camada um pouco menor que a anterior). O objetivo aqui é criar uma base estruturada, mesmo que o resultado molhado pareça assustadoramente curto.</p>
+<p>O cabelo é lavado, penteado para remover nós e dividido em seções. O cabeleireiro trabalha com tesoura e pente, cortando cada seção com linhas bem definidas — geralmente um corte que segue as naturais linhas de curvatura ou que cria graduação (cada camada um pouco menor que a anterior). O objetivo aqui é criar uma base estruturada, mesmo que o resultado molhado pareça assustadoramente curto para quem não conhece o processo.</p>
 <p>Durante essa fase, o cabeleireiro está avaliando constantemente:</p>
 <ul>
-  <li>A curvatura real de cada cacho (nem todos os cachos na cabeça têm o mesmo padrão).</li>
-  <li>Onde há densidade maior (raiz) e onde há menos (pontas).</li>
-  <li>Se há diferenças de histórico químico entre áreas (raiz natural vs. pontas descoloridas).</li>
-  <li>O ângulo de inserção de cada cacho no couro cabeludo — alguns cachos nascem mais para trás, outros para frente.</li>
+  <li>A curvatura real de cada cacho — nem todos os cachos na mesma cabeça têm exatamente o mesmo padrão de encolhimento, mesmo que pareçam visualmente similares molhados.</li>
+  <li>Onde há densidade maior (raiz, em geral) e onde há menos (pontas, desgastadas por lavagem e manipulação ao longo do tempo).</li>
+  <li>Se há diferenças de histórico químico entre áreas (raiz natural versus pontas com química residual de processos anteriores).</li>
+  <li>O ângulo de inserção de cada cacho no couro cabeludo — alguns cachos nascem mais para trás, outros para frente, o que afeta como a linha final vai se comportar.</li>
 </ul>
 
 <h3>Fase 2: Secagem Controlada</h3>
-<p>Após o corte molhado, o cabelo é seco com secador de mão, geralmente sem produto (ou com produto levíssimo) e sem difusor. O objetivo é observar como o cacho se comporta ao secar. Você percebe o encolhimento real, como o volume se distribui e onde há frizz ou desmembramento de linhas. É a fase de transição entre o "corte molhado perfeito" e a "realidade seca".</p>
+<p>Após o corte molhado, o cabelo é seco com secador de mão, geralmente sem produto (ou com produto levíssimo) e sem difusor. O objetivo é observar como o cacho se comporta ao secar sem interferência externa. Você percebe o encolhimento real, como o volume se distribui e onde há frizz ou desmembramento de linhas. É a fase de transição entre o "corte molhado perfeito" e a realidade que você vai viver todos os dias em casa.</p>
 
 <h3>Fase 3: Lapidação a Seco (Validação e Ajuste)</h3>
 <p>Com o cabelo seco e formado em seus cachos reais, o cabeleireiro faz ajustes minuciosos:</p>
 <ul>
-  <li>Remove fios que ficaram compridos demais ou fora de linha.</li>
-  <li>Afila pontas que ficaram muito volumosas.</li>
-  <li>Confirma simetria lado a lado.</li>
-  <li>Corrige qualquer assimetria no encolhimento.</li>
+  <li>Remove fios que ficaram compridos demais ou fora de linha depois do encolhimento revelado.</li>
+  <li>Afila pontas que ficaram muito volumosas em relação ao restante do corte.</li>
+  <li>Confirma simetria lado a lado, já que o encolhimento pode variar minimamente entre os dois lados da cabeça.</li>
+  <li>Corrige qualquer assimetria no encolhimento que não era visível no estado molhado.</li>
 </ul>
-<p>Essa lapidação é cirúrgica — cortes de 0,5cm a 2cm por ponto, dependendo da necessidade. O resultado final é um corte que respeita a curvatura natural, que tem volume distribuído harmonicamente e que funciona no dia a dia da pessoa, não só no espelho do salão.</p>
+<p>Essa lapidação é cirúrgica — cortes de 0,5cm a 2cm por ponto, dependendo da necessidade, nunca um corte generalizado por cima. O resultado final é um corte que respeita a curvatura natural, tem volume distribuído harmonicamente e funciona no dia a dia da pessoa, não só no espelho do salão no dia da execução.</p>
 
 <h2>Diferenças: Corte Híbrido vs. Alternativas</h2>
-
 <h3>Corte Híbrido (Molhado + Seco)</h3>
-<p>Vantagens: Preciso, respeitoso à curvatura, funcional a seco, sem assimetrias. Desvantagens: Demora ~60min, custa mais que um corte simples.</p>
-
+<p>Vantagens: preciso, respeitoso à curvatura real de cada cliente, funcional tanto molhado quanto seco, sem assimetrias reveladas só em casa. Desvantagens: demora cerca de 60 minutos e custa mais que um corte simples de máquina.</p>
 <h3>Corte Exclusivamente Molhado</h3>
-<p>Vantagens: Rápido, linhas limpas molhado. Desvantagens: Pode ficar curto demais a seco, assimetria após encolhimento, requer finalização muito específica para funcionar bem.</p>
-
+<p>Vantagens: mais rápido, linhas limpas no momento do corte. Desvantagens: pode ficar curto demais depois de seco, assimetria revelada só após o encolhimento, requer finalização muito específica e disciplinada para disfarçar imprecisões.</p>
 <h3>Corte Exclusivamente a Seco</h3>
-<p>Vantagens: Visualiza resultado final direto, não há surpresa após secagem. Desvantagens: Mais difícil visualizar linhas retas, requer expertise extrema, pode deixar parte mais volumosa que outra se não mantiver precisão.</p>
+<p>Vantagens: visualiza o resultado final direto, sem surpresa após secagem. Desvantagens: mais difícil visualizar linhas retas porque a curvatura mascara diferenças de comprimento, requer expertise extrema do profissional, pode deixar uma área mais volumosa que outra se a precisão não for rigorosa.</p>
 
 <h2>O Corte Híbrido para Diferentes Curvaturas</h2>
-
 <h3>Ondulado (2A-2C)</h3>
-<p>O corte híbrido funciona muito bem em ondulado. O encolhimento é menor (10-20%), então as linhas se mantêm previsíveis. O ajuste a seco é mínimo, apenas validação.</p>
-
+<p>O corte híbrido funciona muito bem em ondulado. O encolhimento é menor (10-20%), então as linhas planejadas molhadas se mantêm relativamente previsíveis depois de secas. O ajuste a seco é mínimo, principalmente validação e pequenos refinamentos.</p>
 <h3>Cacheado (3A-3C)</h3>
-<p>Onde o híbrido brilha. O encolhimento é moderado (30-50%), o que torna a validação seca essencial. Cada curvatura dentro dessa faixa pode exigir abordagem ligeiramente diferente, mas o híbrido se adapta.</p>
-
+<p>Aqui o híbrido realmente se justifica. O encolhimento é moderado (30-50%), o que torna a validação seca essencial, não opcional. Cada curvatura dentro dessa faixa pode exigir abordagem ligeiramente diferente de graduação, mas o híbrido se adapta a essa variação.</p>
 <h3>Crespo (4A-4C)</h3>
-<p>O encolhimento é severo (50-75%), então a lapidação seca é minuciosa. Pode ser necessário fazer ajustes em raias horizontais porque o volume seco é muito diferente do molhado. O híbrido ainda funciona, mas exige expertise muito alta.</p>
+<p>O encolhimento é severo (50-75%), então a lapidação seca é minuciosa e frequentemente extensa. Pode ser necessário fazer ajustes em camadas horizontais porque o volume seco é radicalmente diferente do volume molhado. O híbrido ainda funciona e é, na nossa experiência, a única abordagem que produz resultado consistente em crespo — mas exige expertise muito alta do profissional.</p>
 
 <h2>Graduação vs. Camadas no Híbrido</h2>
-<p>Dois estilos principais de Corte Híbrido:</p>
+<p>Dois estilos principais de Corte Híbrido, escolhidos conforme a Leitura de Fio e o objetivo do cliente:</p>
 <ul>
-  <li><strong>Graduado:</strong> Cada seção é progressivamente mais curta que a anterior (raiz curta, pontas longas). Cria volume de forma natural, é fácil manter, funciona em todos os tipos de curvatura.</li>
-  <li><strong>Com Camadas:</strong> Há cortes em profundidade que criam texturas e movimento. Funciona melhor em ondulados e cacheados leves; em crespo, pode ficar muito desorganizado. Demanda mais finalização.</li>
+  <li><strong>Graduado:</strong> Cada seção é progressivamente mais curta que a anterior, criando uma base de raiz mais curta e pontas mais longas. Cria volume de forma natural, é mais fácil de manter no dia a dia e funciona bem em praticamente todos os tipos de curvatura.</li>
+  <li><strong>Com Camadas:</strong> Há cortes em profundidade que criam textura e movimento adicional. Funciona melhor em ondulados e cacheados leves; em crespo, camadas profundas podem ficar desorganizadas visualmente. Demanda mais finalização diária para funcionar bem.</li>
 </ul>
+
+<h2>Erros Comuns em Corte de Cabelo Cacheado Fora de Salões Especializados</h2>
+<p>A maioria dos cortes ruins que corrigimos no Studio do Jon compartilham um padrão: o profissional cortou em um único estado (geralmente molhado, por hábito de fio liso) sem validar a seco. Outros erros recorrentes: uso de máquina de corte padronizada em fio com curvatura acentuada, o que abre a ponta do fio transversalmente e gera frizz permanente; ignorar diferença de densidade entre raiz e pontas ao definir graduação; e aplicar a mesma técnica de corte independente do tipo de curvatura, como se "cabelo cacheado" fosse uma categoria única e não um espectro de 2A a 4C.</p>
 
 <h2>Cuidados Pós-Corte Híbrido</h2>
-<p>O Corte Híbrido, sendo muito estruturado, requer cuidado para se manter:</p>
+<p>O Corte Híbrido, sendo muito estruturado, requer cuidado específico para se manter no seu melhor:</p>
 <ul>
-  <li><strong>Primeiras 2 Semanas:</strong> Evite muito manejo do fio — quanto menos você tocar, melhor o cacho se comporta.</li>
-  <li><strong>Finalização:</strong> Use a finalização ensinada no próprio corte — cradle cast ou praying hands, conforme sua curvatura e porosidade.</li>
-  <li><strong>Hidratação Regular:</strong> Comece um cronograma de tratamento (hidratação 1x/semana, nutrição 1x/semana) conforme a Leitura de Fio indicou.</li>
-  <li><strong>Retorno em 3-4 meses:</strong> Para manutenção, com uma lapidação seca rápida para restaurar as linhas. Não é um corte novo, apenas ajuste.</li>
+  <li><strong>Primeiras 2 Semanas:</strong> Evite manejo excessivo do fio — quanto menos você tocar e remexer, melhor o cacho se organiza sozinho no novo formato.</li>
+  <li><strong>Finalização:</strong> Use a finalização ensinada no próprio corte — cradle cast ou praying hands, conforme sua curvatura e porosidade específicas identificadas na Leitura de Fio.</li>
+  <li><strong>Hidratação Regular:</strong> Comece ou mantenha um cronograma de tratamento (hidratação e nutrição alternadas semanalmente) conforme a Leitura de Fio indicou para seu tipo de porosidade.</li>
+  <li><strong>Retorno em 3-4 meses:</strong> Para manutenção, com uma lapidação seca rápida que restaura as linhas originais. Não é um corte novo do zero, é apenas ajuste de crescimento.</li>
 </ul>
 
+<h2>Corte Híbrido e a Umidade de Belo Horizonte</h2>
+<p>A variação de umidade relativa ao longo do ano em Belo Horizonte afeta como o fio recém-cortado se comporta nas primeiras semanas. Em períodos mais úmidos, o cacho tende a expandir mais e revelar volume que pode não ter sido totalmente previsto no dia do corte; em períodos mais secos, a definição pode parecer mais compacta. Por isso a lapidação de manutenção em 3-4 meses é importante mesmo quando o comprimento não mudou muito — ela recalibra o corte para a estação atual.</p>
+
+<h2>Perguntas Frequentes</h2>
+<p><strong>O Corte Híbrido dói mais ou demora muito mais que um corte comum?</strong> Não dói mais — a diferença é o tempo, cerca de 60 minutos contra 20-30 de um corte convencional, porque há duas etapas de avaliação em vez de uma.</p>
+<p><strong>Posso pedir Corte Híbrido mesmo se meu cacho for bem definido naturalmente?</strong> Sim, e recomendamos — mesmo cachos bem definidos têm variação de encolhimento entre mechas que só a validação a seco revela com precisão.</p>
+<p><strong>O Corte Híbrido funciona em cabelo com química residual (progressiva antiga, por exemplo)?</strong> Funciona, mas o comportamento de encolhimento muda entre a parte com química e a parte natural, então o planejamento leva isso em conta explicitamente durante a Leitura de Fio.</p>
+<p><strong>Preciso lavar o cabelo antes de vir para o corte híbrido?</strong> Não, lavamos no salão como parte do próprio processo — isso garante que a avaliação de porosidade e comportamento seja feita em condições padronizadas.</p>
+
 <h2>Investimento</h2>
-<p>Um Corte Híbrido completo com Leitura de Fio, corte molhado, secagem e lapidação seca custa R$ 190. O valor inclui também a finalização educativa para você replicar em casa.</p>
+<p>Um Corte Híbrido completo com Leitura de Fio, corte molhado, secagem controlada e lapidação seca custa R$ 190. O valor inclui também a finalização educativa para você replicar o resultado em casa.</p>
 
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende seu Corte Híbrido</a> e experimente a técnica que transforma cabelo cacheado, crespo e ondulado em Belo Horizonte.</p>`,
+<p><a href="/agendar">Agende seu Corte Híbrido</a> e experimente a técnica que transforma cabelo cacheado, crespo e ondulado em Belo Horizonte.</p>
+`,
 
   'transicao-capilar': `<h1>Transição Capilar em Belo Horizonte | Studio do Jon</h1>
 <p>Transição capilar é o processo de retornar aos cachos naturais após anos ou décadas de alisamento químico (progressiva, relaxamento, alisamento escova progressiva). É simultaneamente uma jornada física (de 6 meses a 2 anos ou mais, dependendo do comprimento) e emocional, porque significa redescobrir como seu cabelo realmente é, aceitá-lo e aprender a cuidar dele de forma completamente diferente da que você fez quando tinha fios lisos.</p>
 
+<h2>A Linha de Demarcação: O Ponto Técnico Mais Crítico da Transição</h2>
+<p>Do ponto de vista estrutural, a transição capilar gira inteira em torno de um único ponto físico: a linha de demarcação, onde o fio natural (curvo) encontra o fio quimicamente relaxado (com as pontes de dissulfeto rompidas e reformadas de forma permanente para ficar reto). Essa junção é o ponto de maior fragilidade mecânica de toda a fibra capilar — é onde a estrutura muda abruptamente de rígida-reta para flexível-curva, e qualquer tensão de escovação, penteado ou até o próprio peso do cabelo se concentra exatamente ali. É por isso que a quebra na linha de demarcação é a reclamação mais comum entre quem está em transição sem acompanhamento técnico: não é falta de sorte, é física de material sendo ignorada.</p>
+
 <h2>As Duas Realidades da Transição Capilar</h2>
 <p>Durante a transição, você tem literalmente duas texturas na cabeça: a raiz natural (curva, cacheada ou crespa) e o comprimento químico (liso ou relaxado). Essa diferença é o maior desafio visual e técnico da transição, porque:</p>
 <ul>
-  <li>As duas texturas reagem diferente a produtos, água, calor e manipulação.</li>
-  <li>O volume da raiz natural pode contrastar drasticamente com o formato do comprimento liso.</li>
-  <li>É fácil danificar o comprimento relaxado tentando cuidar da raiz natural.</li>
-  <li>Muitas pessoas se sentem inseguras com a mistura visual nas primeiras semanas.</li>
+  <li>As duas texturas reagem diferente a produtos, água, calor e manipulação — um creme que hidrata bem a raiz pode deixar o comprimento relaxado com aspecto oleoso e pesado.</li>
+  <li>O volume da raiz natural pode contrastar drasticamente com o formato do comprimento liso, criando uma silhueta que muitas pessoas acham desconfortável visualmente.</li>
+  <li>É fácil danificar o comprimento relaxado tentando cuidar da raiz natural com técnicas ou produtos pensados para curvatura.</li>
+  <li>Muitas pessoas se sentem inseguras com a mistura visual nas primeiras semanas, o que é uma reação emocional completamente esperada e válida.</li>
 </ul>
 
 <h2>As Duas Abordagens da Transição</h2>
-
 <h3>Big Chop — A Abordagem Radical</h3>
-<p>Big Chop significa cortar todo o comprimento alisado de uma vez, mantendo apenas a raiz natural. É feito geralmente entre 3-12 meses, dependendo de quão rápido a pessoa se sente confortável com cabelo curto e quanta raiz natural ela quer expor.</p>
-<p><strong>Vantagens:</strong> Você se libertacimà do alisamento imediatamente, sem meses de duas texturas. Psicologicamente, é mais marcante e empoderador para algumas pessoas. Praticamente, você não precisa se preocupar com danificar o comprimento relaxado.</p>
-<p><strong>Desvantagens:</strong> Você perde comprimento drasticamente — muitas mulheres não se sentem confortáveis com cabelo muito curto. O crescimento de volta é lento (cabelo cresce ~15cm/ano em média). Estilo limitado nos primeiros meses.</p>
-
+<p>Big Chop significa cortar todo o comprimento alisado de uma vez, mantendo apenas a raiz natural. É feito geralmente entre 3-12 meses de crescimento, dependendo de quão rápido a pessoa se sente confortável com cabelo curto e quanta raiz natural ela quer expor no momento do corte.</p>
+<p><strong>Vantagens:</strong> Você se liberta do alisamento imediatamente, sem meses adicionais convivendo com duas texturas. Psicologicamente, é mais marcante e empoderador para algumas pessoas. Praticamente, você elimina de vez o risco de danificar o comprimento relaxado, porque ele simplesmente não existe mais.</p>
+<p><strong>Desvantagens:</strong> Você perde comprimento drasticamente — muitas mulheres não se sentem confortáveis com cabelo muito curto de imediato. O crescimento de volta é lento (cabelo cresce em média cerca de 1-1,5cm por mês). Opções de estilo ficam mais limitadas nos primeiros meses.</p>
 <h3>Transição Progressiva — A Abordagem Gradual</h3>
-<p>Você mantém o comprimento relaxado enquanto deixa a raiz natural crescer, fazendo cortes progressivos que equilibram a raiz natural com o comprimento alisado, reduzindo a proporção de fio relaxado aos poucos. Pode levar 1-2 anos, mas você nunca fica excessivamente curto.</p>
-<p><strong>Vantagens:</strong> Você mantém comprimento o tempo inteiro. Menos shock visual — a transição é gradual. Mais flexibilidade de estilos (você pode prender o comprimento relaxado se quiser enfatizar a raiz natural, ou soltar tudo se quiser volumão). Psicologicamente, é menos arriscado para quem tem medo de ficar curto.</p>
-<p><strong>Desvantagens:</strong> Demora mais. Você tem duas texturas por muito tempo. Requer cuidado extremo para não danificar o comprimento relaxado enquanto o natural cresce. Mais idas ao salão = mais custo.</p>
+<p>Você mantém o comprimento relaxado enquanto deixa a raiz natural crescer, fazendo cortes progressivos que equilibram a raiz natural com o comprimento alisado, reduzindo a proporção de fio relaxado aos poucos, sessão após sessão. Pode levar 1-2 anos, mas você nunca fica excessivamente curto em nenhum momento do processo.</p>
+<p><strong>Vantagens:</strong> Você mantém comprimento o tempo inteiro. Menos choque visual — a transição acontece de forma gradual e menos perceptível para quem olha de fora. Mais flexibilidade de estilos, já que você pode prender o comprimento relaxado se quiser enfatizar a raiz natural, ou soltar tudo se quiser volume completo. Psicologicamente, é uma opção menos arriscada para quem tem medo de ficar muito curto.</p>
+<p><strong>Desvantagens:</strong> Demora consideravelmente mais tempo. Você convive com duas texturas por período prolongado. Requer cuidado técnico extremo para não danificar o comprimento relaxado enquanto o natural cresce e a linha de demarcação se desloca. Mais idas ao salão significam mais investimento ao longo do processo.</p>
 
 <h2>O Protocolo de Transição do Studio do Jon</h2>
-<p>No Studio do Jon, oferecemos suporte técnico para ambas as abordagens:</p>
-
+<p>No Studio do Jon, oferecemos suporte técnico estruturado para ambas as abordagens, nunca empurrando uma decisão — a escolha é sua, o suporte técnico é nosso.</p>
 <h3>Se Você Escolher Big Chop:</h3>
 <ol>
-  <li><strong>Conversa Inicial:</strong> Avaliamos seu medo, sua expectativa de comprimento após o corte, seu tipo de rosto e como você quer se sentir. Big Chop não é para todos, e às vezes a transição progressiva é a melhor opção mesmo que você inicialmente prefira Big Chop.</li>
-  <li><strong>Corte de Transição Inicial:</strong> Cortamos para um comprimento confortável — pode ser 5cm, 10cm, 15cm, depende de você. Deixamos bastante raiz natural para trabalhar com visagismo.</li>
-  <li><strong>Leitura de Fio da Sua Curvatura Natural:</strong> Agora que a raiz natural está exposta, diagnosticamos seu tipo de curvatura real (pode ser diferente do que você imaginava!), porosidade e saúde.</li>
-  <li><strong>Cronograma de Tratamento:</strong> Você provavelmente vai precisar de tratamento intenso nos primeiros meses — a raiz natural pode estar danificada por química da raiz anterior, e precisa se recuperar.</li>
-  <li><strong>Cortes de Manutenção:</strong> A cada 2-3 meses, você volta para um retoque que mantém a forma e remove qualquer comprimento relaxado remanescente.</li>
+  <li><strong>Conversa Inicial:</strong> Avaliamos seu medo, sua expectativa de comprimento após o corte, seu tipo de rosto e como você quer se sentir. Big Chop não é para todos, e às vezes a transição progressiva é a melhor opção técnica mesmo que você inicialmente prefira o Big Chop por impulso.</li>
+  <li><strong>Corte de Transição Inicial:</strong> Cortamos para um comprimento confortável — pode ser 5cm, 10cm, 15cm, depende do que você e sua raiz natural exposta permitem. Deixamos raiz suficiente para trabalhar visagismo de verdade, não apenas remover o comprimento.</li>
+  <li><strong>Leitura de Fio da Sua Curvatura Natural:</strong> Agora que a raiz natural está exposta e visível, diagnosticamos seu tipo de curvatura real — que frequentemente é diferente do que a pessoa imaginava — além de porosidade e saúde geral do fio.</li>
+  <li><strong>Cronograma de Tratamento:</strong> Você provavelmente vai precisar de tratamento intenso nos primeiros meses — a raiz natural pode carregar dano residual da química que estava acima dela, e precisa se recuperar estruturalmente.</li>
+  <li><strong>Cortes de Manutenção:</strong> A cada 2-3 meses, você volta para um retoque técnico que mantém a forma planejada e remove qualquer resquício de comprimento relaxado remanescente.</li>
 </ol>
-
 <h3>Se Você Escolher Transição Progressiva:</h3>
 <ol>
-  <li><strong>Conversa Inicial e Planejamento:</strong> Definimos juntos o cronograma — quantos cortes você fará? A cada quanto tempo? Qual será o comprimento final em cada fase?</li>
-  <li><strong>Primeiro Corte de Transição:</strong> Você tem raiz natural e comprimento relaxado. O corte é pensado em visagismo para equilibrar as duas texturas — podemos enfatizar a raiz natural cortando um pouco mais curto, ou suavizar deixando mais comprimento.</li>
-  <li><strong>Leitura de Fio Dupla:</strong> Diagnosticamos TANTO a raiz natural (curvatura, porosidade, saúde) QUANTO o comprimento relaxado (dano, porosidade, resistência). Cada um recebe um protocolo de tratamento.</li>
-  <li><strong>Protocolos de Tratamento Separados:</strong> A raiz natural pode precisar de reconstrução e nutrição para se recuperar da química anterior. O comprimento relaxado precisa de reconstrução intensa para não quebrar enquanto você espera a raiz crescer.</li>
-  <li><strong>Cortes Progressivos a Cada 2-3 meses:</strong> Cada corte remove um pouco mais de comprimento relaxado, sempre mantendo visagismo e estrutura.</li>
+  <li><strong>Conversa Inicial e Planejamento:</strong> Definimos juntos o cronograma completo — quantos cortes você vai precisar, a cada quanto tempo, e qual será o comprimento final estimado em cada fase do processo.</li>
+  <li><strong>Primeiro Corte de Transição:</strong> Você tem raiz natural e comprimento relaxado simultaneamente. O corte é pensado com visagismo para equilibrar as duas texturas — podemos enfatizar a raiz natural cortando um pouco mais curto nela, ou suavizar deixando mais comprimento relaxado por enquanto.</li>
+  <li><strong>Leitura de Fio Dupla:</strong> Diagnosticamos tanto a raiz natural (curvatura, porosidade, saúde) quanto o comprimento relaxado (grau de dano, porosidade, resistência mecânica restante). Cada área recebe um protocolo de tratamento próprio, porque são estruturalmente fibras diferentes coexistindo no mesmo fio.</li>
+  <li><strong>Protocolos de Tratamento Separados:</strong> A raiz natural pode precisar de reconstrução e nutrição para se recuperar de química residual da raiz anterior. O comprimento relaxado precisa de reconstrução intensa e frequente para não quebrar exatamente na linha de demarcação enquanto você espera a raiz crescer.</li>
+  <li><strong>Cortes Progressivos a Cada 2-3 meses:</strong> Cada corte remove um pouco mais de comprimento relaxado de forma planejada, sempre mantendo visagismo e estrutura geral do corte, nunca cortando de forma aleatória.</li>
 </ol>
 
 <h2>Tipos de Curvatura na Transição: Do 2A ao 4C</h2>
-<p>Sua transição muda completamente conforme o tipo de curvatura real descoberto:</p>
+<p>Sua transição muda completamente conforme o tipo de curvatura real descoberto — e é comum descobrir um padrão diferente do que se imaginava, já que anos de química escondem a curvatura natural real:</p>
 <ul>
-  <li><strong>Descobrir que é Ondulado (2A-2C):</strong> Transição mais tranquila — ondulado é resiliente. Você pode fazer progressiva rápido se quiser; se for transição, vai ficar lindo com comprimento misto.</li>
-  <li><strong>Descobrir que é Cacheado (3A-3C):</strong> Transição moderada — cacheado precisa de cuidado, mas é funcional. Muitas pessoas ficam muito felizes com essa descoberta porque o cacho é bem definido e lindo com pouco esforço.</li>
-  <li><strong>Descobrir que é Crespo (4A-4C):</strong> Transição demanda mais cuidado — crespo é mais frágil e exigente em tratamento. Mas é também absolutamente lindo e poderoso quando bem cuidado. Muitas mulheres crespas têm transição mais longa porque querem estar muito preparadas para cuidar da textura.</li>
+  <li><strong>Descobrir que é Ondulado (2A-2C):</strong> Transição costuma ser mais tranquila — ondulado tem menor grau de dobra na hélice e é relativamente resiliente a manipulação. Se optar por transição progressiva, o comprimento misto costuma ficar visualmente harmonioso mais rápido.</li>
+  <li><strong>Descobrir que é Cacheado (3A-3C):</strong> Transição moderada em complexidade — cacheado precisa de cuidado técnico consistente, mas é funcional e responde bem a tratamento. Muitas pessoas ficam muito felizes com essa descoberta porque o cacho é bem definido e vistoso com esforço de manutenção moderado.</li>
+  <li><strong>Descobrir que é Crespo (4A-4C):</strong> Transição demanda mais cuidado técnico — crespo é estruturalmente mais frágil (maior número de dobras por centímetro de fio) e mais exigente em tratamento regular. Mas é também absolutamente vistoso e potente quando bem cuidado. Muitas clientes com fio crespo optam por transição mais longa justamente para chegar bem preparadas tecnicamente antes de assumir o comprimento total natural.</li>
 </ul>
+
+<h2>Erros Mais Comuns Durante a Transição Sem Acompanhamento Técnico</h2>
+<p>Vemos recorrentemente os mesmos erros em quem tentou fazer a transição sozinha ou com orientação genérica: escovar o cabelo seco com força na linha de demarcação (o ponto exato de maior fragilidade mecânica), usar produtos formulados para cabelo já 100% natural quando ainda há química residual significativa, prender o cabelo com elásticos apertados que tracionam justamente onde o fio já está mais vulnerável, e abandonar o cronograma de tratamento assim que o cabelo "parece" estar bem — mesmo que a estrutura interna ainda esteja se recuperando.</p>
 
 <h2>Os Desafios Emocionais da Transição</h2>
-<p>Transição capilar é tanto uma jornada emocional quanto técnica:</p>
+<p>Transição capilar é tanto uma jornada emocional quanto técnica, e reconhecer isso faz parte do acompanhamento:</p>
 <ul>
-  <li><strong>Semanas 1-4:</strong> Euforia. Você cortou! Você está iniciando! Tudo parece possível.</li>
-  <li><strong>Semanas 5-12:</strong> Realismo. Seu cabelo precisa de muito mais cuidado do que você imaginava. O cacho pode parecer frizzy ou sem definição ainda. Muitos abandonam a transição aqui.</li>
-  <li><strong>Meses 4-9:</strong> Paciência. Com cronograma técnico de tratamento e cortes regulares, você começa a ver o padrão de curvatura se estabelecer. O cabelo fica mais bonito, mais saudável.</li>
-  <li><strong>Meses 10+:</strong> Estabilidade. Você sabe como cuidar do seu cacho, tem uma rotina, entende sua curvatura e porosidade. Transição virou simplesmente... sua vida capilar normal.</li>
+  <li><strong>Semanas 1-4:</strong> Euforia. Você deu o primeiro passo, iniciou o processo, e tudo parece possível e empolgante.</li>
+  <li><strong>Semanas 5-12:</strong> Realismo. Seu cabelo precisa de muito mais cuidado técnico do que se imaginava inicialmente. O cacho pode parecer frizzy ou sem definição clara ainda. É nesse período que a maioria das pessoas sem acompanhamento abandona a transição.</li>
+  <li><strong>Meses 4-9:</strong> Paciência. Com cronograma técnico de tratamento e cortes regulares, você começa a ver o padrão de curvatura real se estabelecer com clareza. O cabelo fica visivelmente mais bonito e mais saudável.</li>
+  <li><strong>Meses 10 em diante:</strong> Estabilidade. Você já sabe como cuidar do seu cacho, tem uma rotina estabelecida, entende sua curvatura e porosidade reais. A transição deixa de ser um evento e vira, simplesmente, sua vida capilar normal.</li>
 </ul>
+
+<h2>Transição Capilar e o Clima de Belo Horizonte</h2>
+<p>A oscilação de umidade ao longo do ano em Belo Horizonte tem impacto direto sobre como a linha de demarcação se comporta durante a transição. Em períodos mais secos, o comprimento relaxado — já mais poroso e frágil — perde umidade mais rápido, aumentando o risco de quebra exatamente na junção com a raiz natural. Por isso ajustamos a frequência de hidratação recomendada ao longo do ano, com mais atenção redobrada em meses secos.</p>
 
 <h2>Suporte Técnico do Studio do Jon Durante a Transição</h2>
-<p>Não deixamos você sozinho. Durante sua transição capilar, você tem:</p>
+<p>Não deixamos você sozinha nesse processo. Durante sua transição capilar, você tem:</p>
 <ul>
   <li>Cortes regulares de transição (R$ 190 cada, a cada 2-3 meses).</li>
-  <li>Cronograma de tratamento personalizado (R$ 130-150 por sessão).</li>
-  <li>Leitura de Fio reavaliada a cada corte para ajustar o tratamento conforme sua curvatura evolui.</li>
-  <li>Educação sobre produtos — qual tipo de creme, qual tipo de óleo, qual rotina é ideal para sua porosidade real.</li>
-  <li>Suporte emocional — muitas clientes em transição sentem-se inseguras. Você merece profissional que entenda isso.</li>
+  <li>Cronograma de tratamento personalizado (R$ 130-150 por sessão), ajustado conforme a evolução real do seu fio.</li>
+  <li>Leitura de Fio reavaliada a cada corte para ajustar o tratamento conforme sua curvatura e a linha de demarcação evoluem.</li>
+  <li>Educação sobre produtos — qual tipo de creme, qual tipo de óleo, qual rotina é realmente ideal para sua porosidade específica, não uma recomendação genérica de internet.</li>
+  <li>Suporte emocional — muitas clientes em transição sentem-se inseguras em algum momento do processo. Você merece um profissional que entenda e acolha isso como parte legítima da jornada.</li>
 </ul>
 
+<h2>Perguntas Frequentes</h2>
+<p><strong>Quanto tempo dura uma transição capilar completa?</strong> Depende da abordagem e do comprimento desejado: Big Chop resolve a mistura de texturas imediatamente, mas o crescimento total do comprimento leva anos; transição progressiva costuma levar de 1 a 2 anos até eliminar todo o comprimento quimicamente tratado.</p>
+<p><strong>Posso fazer transição sem cortar nada no início?</strong> Tecnicamente sim, mas não recomendamos — sem nenhum corte inicial de equilíbrio, a linha de demarcação fica mais longa e mais vulnerável por mais tempo.</p>
+<p><strong>Vou descobrir minha curvatura real logo no início?</strong> Uma estimativa inicial é possível já na primeira Leitura de Fio, mas a curvatura real muitas vezes só se revela completamente conforme mais raiz virgem cresce, sem influência de química residual próxima.</p>
+<p><strong>Transição progressiva é mais cara no total que Big Chop?</strong> Em geral sim, porque envolve mais sessões de corte e tratamento ao longo de um período mais longo, mas o investimento é distribuído ao longo do tempo em vez de concentrado.</p>
+
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende sua consulta de transição capilar</a> e descubra qual abordagem (Big Chop ou Progressiva) é ideal para você.</p>`,
+<p><a href="/agendar">Agende sua consulta de transição capilar</a> e descubra qual abordagem — Big Chop ou Progressiva — é tecnicamente mais adequada para você.</p>
+`,
 
   'visagismo-cachos': `<h1>Visagismo para Cabelos Cacheados em Belo Horizonte | Studio do Jon</h1>
-<p>Este é nosso serviço de Visagismo Cabelo Cacheado. A diferença entre um corte que funciona e um que não funciona é frequentemente a diferença entre um cabeleireiro que entende proporções faciais e um que apenas copia tendências de revista. Aqui no Studio do Jon, visagismo para cabelo cacheado é a ciência de harmonizar o corte com os traços únicos de sua face, considerando também a física real da sua curvatura.</p>
+<p>A diferença entre um corte que funciona e um que não funciona é frequentemente a diferença entre um cabeleireiro que entende proporções faciais e um que apenas copia tendências de revista ou de rede social. Aqui no Studio do Jon, visagismo para cabelo cacheado é a ciência de harmonizar o corte com os traços únicos da sua face, considerando também a física real da sua curvatura — porque um plano de visagismo que ignora como o cacho se comporta ao secar é só um esboço bonito, não um corte funcional.</p>
 
-<h2>Como Funciona o Visagismo para Cachos</h2>
-<p>Visagismo é análise. Começamos com sua face:</p>
+<h2>Como Funciona o Visagismo para Cachos, na Prática</h2>
+<p>Visagismo é análise aplicada, não intuição. Começamos com sua face, observando de forma sistemática:</p>
 <ul>
-  <li><strong>Formato do Rosto:</strong> É redondo, quadrado, alongado, em coração ou losango? Cada formato tem desafios e oportunidades de visagismo diferentes.</li>
-  <li><strong>Traços Proeminentes:</strong> Você tem testa grande? Queixo afilado? Mandíbula quadrada? Maçãs do rosto salientes? Cada destaque pode ser suavizado ou enfatizado através do corte.</li>
-  <li><strong>Distância Olhos-Queixo vs. Testa-Olhos:</strong> A proporção entre essas medidas afeta como você quer distribuir volume — mais em cima alonga, mais embaixo suaviza.</li>
-  <li><strong>Linhas Naturais do Rosto:</strong> Você tem olhos mais caídos? Comissura da boca caída? Uma boa distribuição de volume e movimento no cacho pode elevar visualmente esses traços.</li>
+  <li><strong>Formato do Rosto:</strong> É redondo, quadrado, alongado, em coração ou losango? Cada formato tem desafios e oportunidades de visagismo diferentes, e a mesma técnica pode harmonizar um rosto e desequilibrar outro.</li>
+  <li><strong>Traços Proeminentes:</strong> Você tem testa grande? Queixo afilado? Mandíbula quadrada? Maçãs do rosto salientes? Cada destaque pode ser suavizado ou enfatizado, dependendo do que você quer projetar.</li>
+  <li><strong>Distância Olhos-Queixo vs. Testa-Olhos:</strong> A proporção entre essas medidas afeta como você quer distribuir volume — mais em cima alonga visualmente, mais embaixo suaviza e traz equilíbrio.</li>
+  <li><strong>Linhas Naturais do Rosto:</strong> Você tem olhos mais caídos nos cantos? Comissura da boca naturalmente mais baixa? Uma boa distribuição de volume e movimento no cacho pode elevar visualmente esses traços sem cirurgia nenhuma, só com geometria de corte.</li>
 </ul>
 
 <h2>Ferramentas do Visagismo: Volume, Comprimento e Linha</h2>
-<p>Com cabelo cacheado, o visagismo usa três ferramentas principais:</p>
+<p>Com cabelo cacheado, o visagismo trabalha com três ferramentas principais, combinadas de forma específica para cada rosto:</p>
 <ul>
-  <li><strong>Volume Superior (Topo da Cabeça):</strong> Elevamuda o olhar, alonga o rosto, transmite autoridade. Indicado para rostos muito redondos ou quadrados.</li>
-  <li><strong>Volume Lateral (Laterais):</strong> Suaviza traços angulares, traz acolhimento, amplia rostos muito alongados. Indicado para rostos quadrados ou losango.</li>
-  <li><strong>Comprimento e Linha:</strong> Um corte mais curto e estruturado transmite modernidade e foco. Um corte mais longo e suave transmite feminilidade. A linha (reta, chanfrada, etc.) reforça a direção que você quer levar o olhar.</li>
+  <li><strong>Volume Superior (Topo da Cabeça):</strong> Eleva o olhar, alonga o rosto visualmente, transmite presença e autoridade. Indicado principalmente para rostos muito redondos ou quadrados que se beneficiam de altura extra.</li>
+  <li><strong>Volume Lateral (Laterais):</strong> Suaviza traços angulares, traz acolhimento visual, amplia rostos muito alongados que precisam de largura aparente. Indicado para rostos quadrados ou losango.</li>
+  <li><strong>Comprimento e Linha:</strong> Um corte mais curto e estruturado transmite modernidade e foco. Um corte mais longo e suave transmite delicadeza. A linha — reta, chanfrada, assimétrica — reforça a direção para onde você quer levar o olhar de quem observa.</li>
 </ul>
 
-<h2>Integração com Curvatura: O Grande Desafio</h2>
-<p>O desafio do visagismo para cacheado é que você não está apenas cortando cabelo — você está trabalhando contra a gravidade e o encolhimento da mola capilar. Um volume que planejou para o topo pode afundar após a secagem se você não respeitar a física do seu cacho específico.</p>
-<p>No Studio do Jon, nós primeiro fazemos a Leitura de Fio (diagnosticamos sua curvatura, densidade, porosidade), depois aplicamos visagismo RESPEITANDO esses dados:</p>
+<h2>Integração com Curvatura: O Grande Desafio Técnico</h2>
+<p>O desafio central do visagismo para cacheado é que você não está apenas cortando cabelo — você está trabalhando contra a gravidade e o encolhimento natural da mola capilar. Um volume planejado para o topo pode simplesmente afundar depois da secagem se você não respeitar a física específica daquele cacho.</p>
+<p>No Studio do Jon, primeiro fazemos a Leitura de Fio — diagnosticamos curvatura, densidade e porosidade — depois aplicamos visagismo respeitando esses dados, não ignorando-os:</p>
 <ul>
-  <li>Se você tem densidade baixa, não podemos criar camadas finas que desaparecerão.</li>
-  <li>Se você tem cacho pesado que afunda, o volume no topo precisa ser suficiente para resistir ao peso.</li>
-  <li>Se você tem porosidade alta, seus cachos podem não sustentar volume — precisamos trabalhar com a estrutura real, não com fantasias.</li>
+  <li>Se você tem densidade baixa, não criamos camadas finas que vão desaparecer visualmente assim que o cabelo crescer um pouco.</li>
+  <li>Se você tem cacho pesado que naturalmente afunda, o volume planejado no topo precisa ser estruturalmente suficiente para resistir a esse peso, senão o plano não sobrevive ao primeiro dia normal de uso.</li>
+  <li>Se você tem porosidade alta, seus cachos podem não sustentar volume elevado por muito tempo ao longo do dia — precisamos trabalhar com a estrutura real que a Leitura de Fio revelou, não com uma expectativa idealizada.</li>
 </ul>
 
 <h2>Exemplos Práticos de Visagismo para Cacheado</h2>
+<p><strong>Rosto Redondo + Cacho 3B com Densidade Média:</strong> Aumentamos volume no topo, até o limite que a densidade real suporta sem parecer artificial, e criamos linhas diagonais com comprimento levemente irregular nas pontas que alongam visualmente o rosto. Evitamos volume lateral excessivo, que alargaria ainda mais uma estrutura já arredondada.</p>
+<p><strong>Rosto Quadrado + Cacho 4A com Cacho Pesado:</strong> Distribuímos volume equilibrado entre topo e lateral, criando uma silhueta suave que reduz a percepção de angularidade da mandíbula. Mantemos linhas bem definidas na raiz para organizar o volume crespo, evitando que ele cresça de forma desorganizada em uma única direção.</p>
+<p><strong>Rosto Alongado + Cacho 2C com Densidade Alta:</strong> Criamos movimento horizontal deliberado — comprimento na altura dos ombros, franja quando possível, volume lateral para interromper a verticalidade natural do rosto. O cacho ondulado responde bem a esse tipo de movimento horizontal planejado.</p>
+<p><strong>Rosto em Coração + Cacho 3C com Densidade Baixa:</strong> Reduzimos volume no topo, que acentuaria a largura já presente na testa, e concentramos movimento na altura do queixo para trazer equilíbrio visual à base mais afilada do rosto.</p>
 
-<p><strong>Rosto Redondo + Cacho 3B com Densidade Média:</strong> Aumentamos volume no topo (ao máximo que a densidade suporta) e criamos linhas diagonais/comprimento irregular nas pontas que alongam. Evitamos volume muito lateral que teria alargado mais o rosto.</p>
-
-<p><strong>Rosto Quadrado + Cacho 4A com Cacho Pesado:</strong> Distribuímos volume equilibrado entre topo e lateral, criando uma silhueta suave que reduz a angularidade natural do rosto quadrado. Mantemos linhas definidas na raiz para organizar o volume crespo.</p>
-
-<p><strong>Rosto Alongado + Cacho 2C com Densidade Alta:</strong> Criamos movimento horizontal — comprimento na altura dos ombros, franja se possível, volume lateral para interromper a verticalidade. O cacho ondulado funciona bem com esse movimento.</p>
+<h2>Visagismo e o Dia a Dia Real, Não Só o Dia do Corte</h2>
+<p>Um erro comum em visagismo mal executado é planejar um resultado que só funciona bem no dia da execução, quando o cabelo acabou de ser lavado, cortado e finalizado com máxima atenção. No Studio do Jon, pensamos o visagismo para funcionar no segundo dia, no terceiro dia, em dia de chuva, em dia quente — porque é isso que você realmente vive. Um plano de visagismo que só existe fotografado no espelho do salão não é um plano funcional, é uma demonstração.</p>
 
 <h2>Processo Passo a Passo</h2>
 <ol>
-  <li><strong>Análise Facial (10-15 min):</strong> Conversamos, medimos mentalmente, tomamos notas. Qual é seu estilo? Como você quer se sentir?</li>
-  <li><strong>Leitura de Fio (15-20 min):</strong> Avaliamos curvatura, densidade, porosidade, histórico químico. Mapeamos o quanto de volume você realmente consegue sustentar.</li>
-  <li><strong>Planejamento do Corte (10 min):</strong> Definimos exatamente que linhas, que volume, que comprimento vão harmonizar seu rosto respeitando a física do seu cacho.</li>
-  <li><strong>Corte Técnico (25-30 min):</strong> Híbrido (molhado + seco) ou seco conforme planejado, com máxima precisão.</li>
-  <li><strong>Finalização Educativa (5 min):</strong> Ensinamos a replicar a finalização em casa, incluindo para qual lado e como penteiar para maximizar o visagismo.</li>
+  <li><strong>Análise Facial (10-15 min):</strong> Conversamos, observamos proporções, tomamos notas específicas. Qual é seu estilo pessoal? Como você quer se sentir com o resultado final?</li>
+  <li><strong>Leitura de Fio (15-20 min):</strong> Avaliamos curvatura, densidade, porosidade e histórico químico. Mapeamos exatamente o quanto de volume você realmente consegue sustentar de forma natural ao longo do dia.</li>
+  <li><strong>Planejamento do Corte (10 min):</strong> Definimos exatamente que linhas, que volume e que comprimento vão harmonizar seu rosto respeitando a física real do seu cacho, não uma versão idealizada dele.</li>
+  <li><strong>Corte Técnico (25-30 min):</strong> Execução híbrida (molhado + seco) ou exclusivamente seca, conforme planejado, com máxima precisão em cada linha.</li>
+  <li><strong>Finalização Educativa (5 min):</strong> Ensinamos a replicar a finalização em casa, incluindo direção de penteado e técnica específica para maximizar o efeito de visagismo planejado.</li>
 </ol>
 
 <h2>Visagismo Não é Moda</h2>
-<p>Muitas pessoas chegam dizendo "Quero o corte que a influenciadora X tem". O problema é que o corte que funciona lindo nela pode ser um desastre em você — porque você tem rosto diferente, curvatura diferente, rotina diferente, densidade diferente. No Studio do Jon, visagismo é PARA VOCÊ, respeitando quem você é, não quem você imagina ser.</p>
+<p>Muitas pessoas chegam dizendo "quero o corte que a influenciadora X tem". O problema é que o corte que funciona lindo nela pode ser um desastre proporcional em você — porque você tem rosto diferente, curvatura diferente, rotina diferente, densidade diferente. No Studio do Jon, visagismo é pensado para você especificamente, respeitando quem você é estruturalmente, não quem você imagina replicar de uma referência externa.</p>
+
+<h2>Erros Comuns em Visagismo Sem Base Técnica</h2>
+<p>Vemos com frequência cortes vendidos como "visagismo" que na verdade são só um corte padrão com nome bonito. Os sinais de que o visagismo não foi feito de forma técnica: nenhuma menção a formato de rosto durante a consulta, corte planejado apenas no cabelo molhado sem validação seca, e ausência total de Leitura de Fio antes de definir volume e linhas — sem esses dados, qualquer "visagismo" é, na melhor das hipóteses, um chute educado.</p>
 
 <h2>Após o Corte: Manutenção Baseada em Visagismo</h2>
-<p>Um bom corte de visagismo demanda manutenção. A cada 3-4 meses, você volta para uma lapidação seca que restaura as linhas planejadas. Quanto menos você deixa descer o crescimento desorganizado, melhor o visagismo funciona.</p>
+<p>Um bom corte de visagismo demanda manutenção regular. A cada 3-4 meses, você volta para uma lapidação seca que restaura as linhas originalmente planejadas. Quanto menos você deixa o crescimento desorganizar essas linhas, melhor o visagismo continua funcionando ao longo do tempo.</p>
+
+<h2>Perguntas Frequentes</h2>
+<p><strong>Visagismo para cacheado é diferente de visagismo comum?</strong> O princípio é o mesmo — harmonizar proporções faciais — mas a execução precisa considerar encolhimento, densidade e comportamento do cacho, variáveis que não existem em cabelo liso.</p>
+<p><strong>Posso mudar de visagismo se não gostar do resultado?</strong> Sim, mas recomendamos dar pelo menos 2-3 semanas de convivência real com o corte antes de qualquer ajuste, já que o cacho recém-cortado ainda está se "acomodando" ao novo formato.</p>
+<p><strong>Visagismo funciona em cabelo em transição?</strong> Funciona, mas com abordagem adaptada, já que há duas texturas convivendo na mesma cabeça durante esse período.</p>
 
 <h2>Investimento</h2>
-<p>Visagismo completo para cabelo cacheado está incluso no Corte com o Jon (R$ 190). Se você quer apenas a consulta de visagismo, sem cortar, oferecemos Leitura de Fio com foco em visagismo por R$ 80 (revertido em crédito se você fechar o corte depois).</p>
+<p>Visagismo completo para cabelo cacheado está incluso em todo Corte com o Jon (R$ 190). Se você quer apenas a consulta de visagismo, sem cortar, oferecemos Leitura de Fio com foco em visagismo por R$ 80 (revertido em crédito se você fechar o corte depois).</p>
 
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende agora</a> e descubra qual corte de visagismo vai transformar como você se vê.</p>`,
+<p><a href="/agendar">Agende agora</a> e descubra qual corte de visagismo vai transformar como você se vê no espelho todos os dias, não só no dia do salão.</p>
+`,
 
   'masculino': `<h1>Corte Cabelo Cacheado Masculino em Belo Horizonte | Studio do Jon</h1>
-<p>Homem com cacho merece especialista. Infelizmente, a maioria das barbearias não entende cabelo com curvatura — eles aplicam a máquina padrão (número 1, 2 ou 3) e pronto. Resultado? Efeito pirâmide, frizz incontrolável, cacho desorganizado que não cresce de forma bonita. Aqui no Studio do Jon, o corte masculino para cabelo cacheado, ondulado ou crespo é tão técnico e personalizado quanto qualquer corte feminino — porque cabelo curvo é cabelo curvo, independente de ser homem ou mulher.</p>
+<p>Homem com cacho merece especialista. Infelizmente, a maioria das barbearias não entende cabelo com curvatura — eles aplicam a máquina padrão (número 1, 2 ou 3) e pronto. Resultado: efeito pirâmide, frizz incontrolável, cacho desorganizado que não cresce de forma bonita. Aqui no Studio do Jon, o corte masculino para cabelo cacheado, ondulado ou crespo é tão técnico e personalizado quanto qualquer corte feminino — porque cabelo curvo é cabelo curvo, independente de ser homem ou mulher. A física da mola capilar não distingue gênero.</p>
 
 <h2>Por Que Corte Masculino em Cabelo Cacheado é Diferente</h2>
-<p>O desafio do corte masculino em cacho é que você quer praticidade (não quer gastar 30 minutos toda manhã finalizando), mas não quer parecer desleixado ou ter um corte que não o faça se sentir bonito. Isso exige uma técnica que simultaneamente organize o volume, respeite a curvatura e crie linhas definidas que funcionem bem curto.</p>
-<p>Além disso, muitos homens não crescem barba simétrica ou têm barba que contrasta com o cabelo — o corte precisa considerar essa dinâmica facial.</p>
+<p>O desafio do corte masculino em cacho é que você quer praticidade — não quer gastar 30 minutos toda manhã finalizando — mas não quer parecer desleixado ou ter um corte que não faça você se sentir bem com o resultado. Isso exige uma técnica que simultaneamente organize o volume, respeite a curvatura natural e crie linhas definidas que funcionem bem mesmo em comprimentos curtos, onde qualquer erro de proporção fica muito mais evidente do que em comprimentos longos.</p>
+<p>Além disso, muitos homens não crescem barba simétrica ou têm barba com textura que contrasta significativamente com o cabelo — o corte precisa considerar essa dinâmica facial completa, não só o topo da cabeça isoladamente.</p>
 
 <h2>Os Desafios Técnicos do Corte Masculino em Cacho</h2>
-
 <h3>O Efeito Pirâmide</h3>
-<p>Quando você corta cacho muito curto (com máquina, por exemplo), o efeito é uma pirâmide — mais volume no topo, afinando para os lados e nuca. Isso acontece porque, quando o cacho está muito curto, a curvatura compacta o volume para cima. Solução? Trabalhar graduação na lateral e nuca para distribuir o peso, não deixar virar apenas volume no topo.</p>
-
+<p>Quando você corta cacho muito curto com máquina padronizada, o efeito visual é uma pirâmide — mais volume no topo, afinando drasticamente para os lados e nuca. Isso acontece porque, quando o cacho está muito curto, o encolhimento natural da curvatura compacta o volume disponível para cima, sem ter comprimento suficiente nas laterais para equilibrar visualmente. A solução técnica é trabalhar graduação calculada na lateral e na nuca para distribuir o peso visual, em vez de deixar o corte virar apenas volume concentrado no topo.</p>
 <h3>O Frizz Masculino</h3>
-<p>Homem geralmente não quer ficar finalizando cabelo com creme e gel o tempo todo. Mas cabelo cacheado sem finalização fica frizzy. Solução? Cortar de forma que o próprio cacho, quando seco naturalmente, já tenha alguma definição. Exige tesoura, não máquina — máquina corta o fio transversalmente e deixa pontas abertas, causando frizz.</p>
-
+<p>Homem geralmente não quer ficar finalizando o cabelo com creme e gel todos os dias antes de sair de casa. Mas cabelo cacheado sem nenhuma finalização tende a ficar frizzy, especialmente nas pontas mais expostas. A solução é cortar de forma que o próprio cacho, quando seca naturalmente sem produto, já tenha alguma definição estrutural. Isso exige corte com tesoura, não máquina — a máquina corta o fio transversalmente de forma abrupta e deixa a ponta aberta, o que é justamente o gatilho mecânico para frizz.</p>
 <h3>Definição sem Parecer Feminino</h3>
-<p>Há um receio comum de que "cabelo definido parece feminino". Não parece não. Definição é definição — o que muda é o comprimento, a graduação e o styling. Um corte curto, bem estruturado, com linhas limpas em homem parece sempre masculino, não importa o quanto o cacho esteja definido.</p>
+<p>Há um receio comum de que "cabelo definido parece feminino". Não parece. Definição é definição estrutural — o que muda a percepção de masculinidade ou feminilidade é comprimento, graduação e estilo de finalização, não o grau de definição do cacho em si. Um corte curto, bem estruturado, com linhas limpas em homem parece sempre masculino, independente de quão definido o cacho esteja.</p>
 
 <h2>O Protocolo de Corte Masculino do Studio do Jon</h2>
-
 <h3>Etapa 1: Leitura de Fio (15 min)</h3>
-<p>Diagnosticamos curvatura (é 2A, 3B, 4C?), densidade (fino, médio, grosso?), histórico de corte (já cresceu cacho antes ou sempre fez máquina?) e comportamento do fio (seca rápido ou lento? Frizz muito ou pouco?). Isso informa tudo que vem depois.</p>
-
+<p>Diagnosticamos curvatura (é 2A, 3B, 4C?), densidade (fino, médio, grosso?), histórico de corte (já cresceu cacho antes ou sempre fez máquina baixa?) e comportamento do fio (seca rápido ou lento? Frizz muito ou pouco?). Isso informa tecnicamente tudo que vem depois no processo.</p>
 <h3>Etapa 2: Conversa (10 min)</h3>
-<p>Entendemos sua rotina — você toma banho e sai? Você gasta 5 minutos finalizando? Você quer corte que creça bonito ou você quer sempre curto? Você trabalha em ambiente formal (precisa parecer muito arrumado) ou informal? Qual é seu estilo pessoal?</p>
-
+<p>Entendemos sua rotina real — você toma banho e sai correndo? Você aceita gastar 5 minutos finalizando? Você quer um corte que cresça bonito e alongue o intervalo entre sessões, ou prefere sempre bem curto? Você trabalha em ambiente formal, que exige aparência mais arrumada, ou informal? Qual é seu estilo pessoal de verdade, não o que acha que deveria querer?</p>
 <h3>Etapa 3: Planejamento (10 min)</h3>
-<p>Definimos comprimento na lateral e nuca, como trabalhar o topo (muito curto, moderado ou deixar crescer um pouco?), se faremos transição na lateral/nuca ou linha reta. Tudo considerando sua curvatura e sua rotina.</p>
-
+<p>Definimos comprimento na lateral e na nuca, como trabalhar o topo — muito curto, moderado, ou deixar crescer um pouco mais —, e se faremos transição gradual na lateral e nuca ou uma linha mais reta e marcada. Tudo considerando sua curvatura real e sua rotina, não uma referência de foto genérica.</p>
 <h3>Etapa 4: Corte Técnico (20-30 min)</h3>
-<p>Geralmente um corte molhado com tesoura ou máquina quenix (máquina com controle de comprimento que não deixa fio aberto como máquina tradicional). Depois, lapidação seca para validar caimento e simetria. Para cacho 4A-4C, frequentemente fazemos apenas tesoura, sem máquina.</p>
-
+<p>Geralmente um corte molhado com tesoura ou máquina quenix — máquina com controle de comprimento que corta de forma menos abrupta que a máquina tradicional, deixando o fio menos aberto na ponta. Depois, lapidação seca para validar caimento e simetria real. Para cacho 4A-4C, frequentemente trabalhamos apenas com tesoura, sem máquina em nenhuma etapa.</p>
 <h3>Etapa 5: Finalização Educativa (5 min)</h3>
-<p>Ensinamos: como pentear para deixar bem (do jeito que quer crescer), se vale usar creme/gel e qual, como manter o corte entre sessões (as vezes é só pentear com pente largo, às vezes precisa lavar com rotina mais cuidadosa).</p>
+<p>Ensinamos como pentear para o cabelo crescer no formato desejado, se vale a pena usar creme ou gel e qual tipo específico para sua porosidade, e como manter o corte entre sessões — às vezes basta pentear com pente de dentes largos, às vezes é necessário uma rotina de lavagem mais cuidadosa.</p>
 
 <h2>Diferentes Abordagens Conforme a Curvatura</h2>
-
 <h3>Ondulado Masculino (2A-2C)</h3>
-<p>Mais flexível. Pode ficar curto com máquina e não fica excessivamente frizzy. Recomendamos transição lateral/nuca para não ficar muito desproporcionado. Crescimento funcional — o cacho cria volume mesmo curto.</p>
-
+<p>Mais flexível estruturalmente. Pode ficar curto com máquina sem ficar excessivamente frizzy, já que o grau de dobra da hélice é menor. Recomendamos transição gradual entre lateral e nuca para não ficar desproporcional. O crescimento é funcional — o cacho cria volume mesmo em comprimento curto.</p>
 <h3>Cacheado Masculino (3A-3C)</h3>
-<p>Aqui o híbrido funciona bem. Você pode manter um comprimento moderado no topo (5-8cm) e deixar lateral/nuca mais curta (3-5cm), criando um contraste que organiza o volume e parece moderno. Crescimento define lindo conforme cresce.</p>
-
+<p>Aqui o corte híbrido funciona particularmente bem. Você pode manter um comprimento moderado no topo (5-8cm) e deixar lateral e nuca mais curtas (3-5cm), criando um contraste que organiza o volume e parece contemporâneo. O crescimento define de forma bonita conforme avança entre as sessões.</p>
 <h3>Crespo Masculino (4A-4C)</h3>
-<p>Exige mais expertise. Máquina geralmente não funciona bem porque deixa fio aberto e frizzy. Preferimos tesoura. Comprimento precisa ser consistente (evitar muita diferença entre topo e lateral, senão piramida). Cacho crespo curto bem cortado é extremamente lindo — vibrante, volumoso, organizado.</p>
+<p>Exige mais expertise técnica. Máquina geralmente não funciona bem porque deixa o fio aberto e propenso a frizz. Preferimos tesoura em praticamente todas as etapas. O comprimento precisa ser mantido consistente entre topo e laterais para evitar o efeito pirâmide já descrito. Cacho crespo curto bem cortado é extremamente vistoso — vibrante, volumoso e organizado quando a técnica é respeitada.</p>
 
 <h2>Comprimento em Corte Masculino: Opções</h2>
 <ul>
-  <li><strong>Muito Curto (1-2cm):</strong> Máquina padronizada. Rápido de manter, mas pode parecer meio frizzy em cacho. Bom para quem realmente não quer lidar com cabelo.</li>
-  <li><strong>Curto-Moderado (3-5cm):</strong> Tesoura. Mostra o cacho, define lindo, crescimento funcional. Precisa pentear quando sai do banho. Nosso sweet spot de recomendação.</li>
-  <li><strong>Moderado (6-10cm):</strong> Tesoura com transição. Deixa mais volume no topo, mostra a curvatura. Requer finalização leve — creme ou gel. Crescimento define muito bem.</li>
+  <li><strong>Muito Curto (1-2cm):</strong> Máquina padronizada. Rápido de manter no dia a dia, mas pode parecer um pouco frizzy em cacho mais fechado. Bom para quem realmente não quer investir tempo nenhum em manutenção diária.</li>
+  <li><strong>Curto-Moderado (3-5cm):</strong> Tesoura. Mostra o padrão de cacho, define de forma bonita, crescimento funcional entre sessões. Precisa pentear ao sair do banho. É nosso ponto de recomendação padrão para a maioria dos clientes.</li>
+  <li><strong>Moderado (6-10cm):</strong> Tesoura com transição gradual. Deixa mais volume no topo, mostra a curvatura de forma mais expressiva. Requer finalização leve com creme ou gel. O crescimento define muito bem ao longo do tempo.</li>
 </ul>
 
+<h2>Barba e Cabelo: Harmonia Facial Completa</h2>
+<p>Um corte masculino técnico não termina no couro cabeludo. A textura, densidade e formato da barba interagem diretamente com a percepção geral do corte — uma barba densa e volumosa ao lado de um corte muito curto e raspado nas laterais pode criar desequilíbrio visual, assim como uma barba rala com um corte muito volumoso no topo. Durante a consulta, avaliamos essa relação e ajustamos as recomendações de comprimento e finalização considerando o conjunto, não o cabelo isoladamente.</p>
+
+<h2>Erros Comuns em Barbearias Sem Especialização em Cacho</h2>
+<p>Os erros mais recorrentes que vemos em clientes vindos de barbearias generalistas: uso de máquina única em todo o comprimento sem considerar variação de densidade entre topo e laterais; corte planejado apenas seco, sem validação; ausência completa de orientação de finalização, deixando o cliente sem saber como manter o resultado entre cortes; e recusa em usar tesoura em cacho crespo por falta de treino técnico específico, resultando em frizz sistemático.</p>
+
+<h2>Corte Masculino e o Clima de Belo Horizonte</h2>
+<p>A variação de umidade ao longo do ano em Belo Horizonte afeta diretamente o volume percebido do corte masculino, especialmente em comprimentos moderados. Em períodos mais úmidos, o volume tende a expandir mais; em períodos secos, o cacho pode parecer mais compacto e menos definido. Orientamos ajuste sazonal de produto — geralmente menos produto em dias úmidos, um pouco mais de leave-in em dias secos — para manter o resultado consistente o ano todo.</p>
+
 <h2>Contra Mitos: "Cabelo Comprido em Homem é Feminino"</h2>
-<p>Comprimento em homem com cacho não é feminino. Jimi Hendrix, Bob Marley, muitos homens contemporâneos usam cabelo mais comprido e são 100% masculinos. O que torna um corte masculino ou feminino é contexto, estrutura, propósito — não comprimento. Um corte cacheado bem estruturado em homem é sempre masculino.</p>
+<p>Comprimento em homem com cacho não é feminino. O que torna um corte masculino ou feminino é contexto, estrutura e propósito visual — não comprimento isolado. Um corte cacheado bem estruturado em homem é sempre masculino, independente de quantos centímetros tenha.</p>
+
+<h2>Perguntas Frequentes</h2>
+<p><strong>Preciso usar produto todo dia depois do corte masculino?</strong> Depende do comprimento escolhido e da sua porosidade — em cortes mais curtos, muitas vezes um simples penteado com água já é suficiente; em comprimentos moderados, algum produto leve ajuda a manter a definição.</p>
+<p><strong>Corte masculino de cacho serve para ambiente corporativo formal?</strong> Sim, perfeitamente — a percepção de "arrumado" vem da estrutura e das linhas do corte, não da ausência de curvatura.</p>
+<p><strong>Posso pedir para deixar crescer sem perder a forma?</strong> Sim, planejamos justamente para isso na etapa de planejamento, escolhendo uma estrutura de corte que envelhece bem entre as sessões de manutenção.</p>
 
 <h2>Manutenção Entre Cortes</h2>
-<p>Um corte masculino de cacho bem feito dura 6-8 semanas se você pentear regularmente, ou até 12 semanas se você deixar crescer sem preocupar. Quando voltar, fazemos uma lapidação rápida (20-30 min) para restaurar as linhas — custa R$ 130 (Manutenção de Corte).</p>
+<p>Um corte masculino de cacho bem feito dura de 6 a 8 semanas se você pentear regularmente, ou até 12 semanas se preferir deixar crescer sem muita preocupação estética. Quando voltar, fazemos uma lapidação rápida (20-30 min) para restaurar as linhas originais — esse serviço custa R$ 130 (Manutenção de Corte).</p>
 
 <h2>Investimento</h2>
-<p>Um Corte Masculino completo com Leitura de Fio, planejamento e execução técnica custa R$ 190 (igual ao corte feminino — mesma técnica, mesmo valor). Manutenção depois custa R$ 130.</p>
+<p>Um Corte Masculino completo com Leitura de Fio, planejamento técnico e execução custa R$ 190 — o mesmo valor do corte feminino, já que a técnica e o tempo investido são equivalentes. Manutenção posterior custa R$ 130.</p>
 
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende seu corte masculino de cacho</a> e finalmente veja seu cabelo da forma que era para ser desde o início.</p>`
+<p><a href="/agendar">Agende seu corte masculino de cacho</a> e finalmente veja seu cabelo da forma que era para ser desde o início.</p>
+`
 };
 
 export const SEED_SERVICE_EXPANDED_BODIES = {
@@ -905,165 +987,196 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p><a href="/agendar">Agende seu Tratamento Personalizado</a> e comece a recuperar a saúde do seu cabelo com um protocolo baseado em diagnóstico, não em suposição.</p>`,
 
   'coloracao-completa': `<h1>Coloração Completa | Cabelo Cacheado, Crespo e Ondulado | Studio do Jon</h1>
-<p>Coloração Completa é para mudanças radicais de cor — de moreno escuro para castanho claro, de castanho para louro, de louro para vermelho, etc. Diferente das Mechas (que são parciais) e do Retoque de Raiz (que é manutenção), Coloração Completa aplica cor em toda a extensão do cabelo, exigindo planejamento muito cuidadoso.</p>
+<p>Coloração Completa é para mudanças radicais de cor — de moreno escuro para castanho claro, de castanho para louro, de louro para vermelho, entre outras combinações. Diferente das Mechas (que são parciais) e do Retoque de Raiz (que é manutenção pontual), a Coloração Completa aplica cor em toda a extensão do cabelo, exigindo planejamento muito mais cuidadoso, especialmente quando a fibra tem curvatura.</p>
+
+<h2>A Química da Coloração: Por Que Uniformidade é Difícil em Cabelo Cacheado</h2>
+<p>Tinta capilar deposita moléculas de corante dentro do córtex do fio, atravessando a cutícula que precisa estar parcialmente aberta para permitir a penetração. Em fio liso, essa abertura acontece de forma relativamente uniforme ao longo de toda a extensão. Em fio com curvatura, a geometria espiral cria variação natural de porosidade entre raiz e pontas — a raiz costuma ser menos porosa (fio mais novo, menos desgastado) enquanto as pontas, expostas a mais ciclos de lavagem, sol e manipulação ao longo do tempo, são naturalmente mais porosas. Isso significa que, com o mesmo tempo de aplicação, a cor processa em velocidades diferentes em pontos diferentes do mesmo fio — e é exatamente aí que nasce o resultado irregular que tanto se vê em coloração feita sem essa consideração técnica.</p>
 
 <h2>Por Que Coloração Completa é Complexa em Cabelo Cacheado</h2>
-<p>O desafio é que a cor precisa ficar uniforme em toda a cabeça, em um cabelo que tem variações de porosidade (raiz vs. pontas), variações de histórico químico (se tem raiz natural + comprimento alisado), e variações de curvatura (diferentes curvas absorvem cor diferentemente).</p>
-<p>Se aplicado sem expertise, coloração completa deixa cor irregular — pontas mais claras que raiz, ou vice-versa; ou cores que parecem duas em uma cabeça.</p>
+<p>O desafio central é que a cor precisa ficar uniforme em toda a cabeça, em um cabelo que tem variações de porosidade entre raiz e pontas, variações de histórico químico (se há raiz natural combinada com comprimento já alisado, por exemplo) e variações de curvatura, já que diferentes graus de curva absorvem cor de forma diferente pela quantidade de superfície cuticular exposta em cada dobra da hélice.</p>
+<p>Se aplicado sem esse nível de expertise, coloração completa deixa cor irregular — pontas visivelmente mais claras que a raiz, ou o oposto — ou uma cor que parece duas tonalidades distintas convivendo na mesma cabeça, um problema estético que só se resolve com nova intervenção química, aumentando o dano acumulado.</p>
 
 <h2>Protocolo da Coloração Completa no Studio do Jon</h2>
 <ol>
-  <li><strong>Leitura de Fio Minuciosa (15 min):</strong> Porosidade em raiz vs. pontas, histórico químico, saúde atual, pigmentação natural. Isso informa a estratégia de cor.</li>
-  <li><strong>Conversa de Cor (10 min):</strong> O que você quer? Você quer louro claro (demanda tinta + talvez descolorante), ou apenas um tom mais escuro (só tinta)? O objetivo muda a abordagem.</li>
-  <li><strong>Teste de Mecha Obrigatório (15 min):</strong> Aplicamos a cor escolhida em uma mecha, esperamos o tempo de processamento, vemos resultado. Ajustamos o tempo ou a cor conforme necessário.</li>
-  <li><strong>Planejamento de Aplicação (10 min):</strong> Decidimos a ordem — começamos pela raiz (onde a cor processada demora mais) ou pelas pontas? Deixamos menos tempo nas pontas que na raiz?</li>
-  <li><strong>Aplicação Técnica (30-45 min):</strong> Dividimos o cabelo em seções, aplicamos cor respeitando as diferenças de porosidade. Frequentemente, raiz recebe tinta primeiro e fica 10 min, depois a gente passa nas pontas e deixa apenas 5 min.</li>
-  <li><strong>Processamento (15-20 min):</strong> Deixamos a cor desenvolver de forma controlada.</li>
-  <li><strong>Enxague e Proteção (10 min):</strong> Enxague com água filtrada fria, aplicação imediata de máscara proteora (porque tinta deixa fio um pouco mais seco), selamento ácido rápido.</li>
-  <li><strong>Finalização (5 min):</strong> Creme/gel conforme sua curvatura, validação de cor.</li>
+  <li><strong>Leitura de Fio Minuciosa (15 min):</strong> Avaliamos porosidade em raiz versus pontas separadamente, histórico químico completo, saúde atual da fibra e pigmentação natural de base. Isso informa toda a estratégia de cor que vem a seguir.</li>
+  <li><strong>Conversa de Cor (10 min):</strong> O que você realmente quer? Louro claro demanda tinta e possivelmente descolorante na base; um tom apenas um pouco mais escuro pode precisar só de tinta direta. O objetivo final muda completamente a abordagem técnica.</li>
+  <li><strong>Teste de Mecha Obrigatório (15 min):</strong> Aplicamos a cor escolhida em uma mecha discreta, aguardamos o tempo de processamento real (não o da bula genérica) e avaliamos o resultado antes de aplicar na cabeça toda. Ajustamos tempo ou formulação conforme necessário.</li>
+  <li><strong>Planejamento de Aplicação (10 min):</strong> Decidimos a ordem de aplicação — geralmente começamos pela raiz, que processa mais devagar por ser menos porosa, e deixamos as pontas, já mais receptivas, para o final com tempo reduzido.</li>
+  <li><strong>Aplicação Técnica (30-45 min):</strong> Dividimos o cabelo em seções e aplicamos cor respeitando as diferenças de porosidade mapeadas. Tipicamente a raiz recebe a tinta primeiro e processa por cerca de 10 minutos antes de estendermos para as pontas, que recebem apenas 5 minutos adicionais.</li>
+  <li><strong>Processamento (15-20 min):</strong> Deixamos a cor se desenvolver de forma controlada e monitorada, sem exceder o tempo necessário.</li>
+  <li><strong>Enxague e Proteção (10 min):</strong> Enxague com água filtrada fria, que ajuda a fechar a cutícula recém-aberta, seguido de aplicação imediata de máscara proteica — já que a tinta deixa o fio temporariamente mais seco — e um selamento ácido rápido para estabilizar o pH.</li>
+  <li><strong>Finalização (5 min):</strong> Creme ou gel conforme sua curvatura específica, com validação visual final da cor sob luz natural.</li>
 </ol>
 
 <h2>Tipos de Coloração Completa</h2>
-
 <h3>Cobertura de Raiz Branca</h3>
-<p>Você tem fios brancos/grisalhos e quer cobrir. Tinta opaca de boa cobertura aplica sobre os fios brancos até 100% cobrir. Precisa ser feita a cada 4-6 semanas conforme o crescimento da raiz branca.</p>
-
+<p>Você tem fios brancos ou grisalhos e quer cobri-los completamente. Usamos tinta opaca de boa cobertura, aplicada especificamente sobre os fios brancos até atingir cobertura próxima de 100%. Precisa ser refeita a cada 4-6 semanas conforme o crescimento natural da raiz revela fio branco novo.</p>
 <h3>Mudança Radical de Tom</h3>
-<p>Você quer sair de um tom completamente diferente. Exemplo: moreno escuro para louro médio. Dependendo da diferença, pode exigir pré-tratamento ou até descolorante parcial + tinta. É mais complexa que cobertura simples.</p>
-
+<p>Você quer sair de um tom completamente diferente do atual — por exemplo, de moreno escuro para louro médio. Dependendo da diferença tonal, pode exigir pré-tratamento estrutural ou até descoloração parcial combinada com tinta. É tecnicamente mais complexa que uma cobertura simples e geralmente exige mais de uma sessão espaçada.</p>
 <h3>Aprofundamento de Tom</h3>
-<p>Você quer escurecer. Exemplo: louro para castanho ou moreno. Essa é mais tranquila — não requer cobertura tão agressiva, geralmente funciona com uma única aplicação.</p>
+<p>Você quer escurecer o tom atual — por exemplo, de louro para castanho ou moreno. Essa direção é mais tranquila do ponto de vista de dano estrutural, já que não requer abertura agressiva da cutícula, e geralmente funciona bem com uma única aplicação.</p>
+
+<h2>Erros Comuns em Coloração Completa Feita Sem Especialização em Cacho</h2>
+<p>Vemos com frequência resultados de coloração feita em salões generalistas que aplicaram o mesmo tempo de processamento em toda a extensão sem considerar a diferença de porosidade entre raiz e pontas, resultando em pontas ressecadas e superprocessadas enquanto a raiz ainda estava subprocessada. Outro erro comum é pular completamente o teste de mecha em nome de agilidade, o que elimina a única forma confiável de prever o resultado real naquele fio específico antes de comprometer a cabeça inteira.</p>
 
 <h2>Manutenção Pós-Coloração</h2>
 <ul>
-  <li><strong>Semana 1:</strong> Apenas água filtrada, sem xampu, sem manipulação excessiva. Deixa a cor se estabilizar.</li>
-  <li><strong>Semana 2-4:</strong> Xampu para cabelo tingido (mais suave), máscara hidratante 1-2x/semana.</li>
-  <li><strong>Mês 2+:</strong> Tratamento profissional mensal (Tratamento Personalizado, R$ 130) para manter cor vibrante e fio saudável. Retoque de Raiz (R$ 180) a cada 4-6 semanas conforme a cor desbota.</li>
+  <li><strong>Semana 1:</strong> Apenas água filtrada, sem xampu e sem manipulação excessiva, para deixar a cor se estabilizar completamente dentro do córtex.</li>
+  <li><strong>Semana 2-4:</strong> Xampu específico para cabelo colorido, mais suave que o convencional, com máscara hidratante 1-2 vezes por semana.</li>
+  <li><strong>Mês 2 em diante:</strong> Tratamento profissional mensal (Tratamento Personalizado, R$ 130) para manter a cor vibrante e o fio saudável, com Retoque de Raiz (R$ 180) a cada 4-6 semanas conforme a cor natural volta a crescer.</li>
 </ul>
 
 <h2>Diferenças: Tinta vs. Descolorante na Coloração Completa</h2>
 <ul>
-  <li><strong>Tinta Apenas:</strong> Depositamos cor sem abrir cutículas muito. Funciona para claro para tom mais escuro ou para mesmo tom. Menos dano, mais seguro em cabelo cacheado.</li>
-  <li><strong>Tinta + Descolorante (Para Tons Muito Claros):</strong> Quando você quer ficar muito claro, usamos descolorante na base (para clarear a melanina) e depois tinta para depositar tom novo. Mais risco de dano, exige cuidado máximo em cabelo cacheado.</li>
+  <li><strong>Tinta Apenas:</strong> Deposita cor sem abrir a cutícula de forma muito agressiva. Funciona bem para ir de claro para um tom mais escuro, ou para tons próximos ao natural. Menos dano estrutural, mais seguro em cabelo com curvatura.</li>
+  <li><strong>Tinta + Descolorante (Para Tons Muito Claros):</strong> Quando o objetivo é um tom bem mais claro que o natural, usamos descolorante na base para reduzir a melanina existente e depois tinta para depositar o tom desejado. Maior risco de dano, exige cuidado técnico máximo em fibra com curvatura.</li>
 </ul>
 
+<h2>Perguntas Frequentes</h2>
+<p><strong>Coloração completa funciona bem em cabelo já em transição capilar?</strong> Funciona, mas exige planejamento específico já que raiz natural e comprimento quimicamente tratado absorvem cor de forma diferente — geralmente tratamos como duas aplicações distintas dentro do mesmo atendimento.</p>
+<p><strong>Quanto tempo a cor dura antes de precisar retoque?</strong> Varia conforme frequência de lavagem e exposição solar, mas em geral a raiz pede retoque a cada 4-6 semanas, enquanto o tom geral da cor tende a se manter vibrante por 6-8 semanas com manutenção adequada.</p>
+<p><strong>Posso fazer coloração completa se já fiz progressiva recentemente?</strong> Recomendamos aguardar e sempre fazer teste de mecha, já que química residual da progressiva altera a forma como o fio reage à nova coloração.</p>
+
 <h2>Investimento</h2>
-<p>Coloração Completa começa em R$ 499 e pode chegar a R$ 800+ dependendo de comprimento, densidade e complexidade da mudança desejada. Inclui Leitura de Fio, teste de mecha, aplicação técnica, tratamento imediato, e finalização.</p>
+<p>Coloração Completa começa em R$ 499 e pode chegar a R$ 800 ou mais, dependendo de comprimento, densidade e complexidade da mudança desejada. Inclui Leitura de Fio, teste de mecha, aplicação técnica, tratamento imediato pós-coloração e finalização.</p>
 
 <h2>Combinação Ideal: Coloração + Corte</h2>
-<p>Se você vai fazer Coloração Completa, recomendamos agendar Corte 1 semana depois (não é preciso esperar muito). O corte complementa o resultado da cor, removendo qualquer pontas danificadas, e valida a nova cor em forma.</p>
+<p>Se você vai fazer Coloração Completa, recomendamos agendar o corte cerca de uma semana depois. O corte complementa o resultado da cor, remove qualquer ponta que tenha sofrido mais desgaste no processo, e valida a nova cor já em forma definitiva.</p>
 
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende sua Coloração Completa</a> e prepare-se para a transformação.</p>`,
+<p><a href="/agendar">Agende sua Coloração Completa</a> e prepare-se para a transformação, com segurança técnica em cada etapa.</p>
+`,
 
   'manutencao-corte': `<h1>Manutenção de Corte | Retoque para Clientes Recorrentes | Studio do Jon</h1>
-<p>Manutenção de Corte é para quem já fez um corte técnico no Studio do Jon e quer manter a forma. Custa R$ 130, leva ~45 minutos, e é válido para quem cortou com o Jon nos últimos 90 dias. É basicamente um ajuste rápido sem reavaliar tudo do zero.</p>
+<p>Manutenção de Corte é para quem já fez um corte técnico no Studio do Jon e quer manter a forma sem precisar de uma reavaliação completa do zero. Custa R$ 130, leva cerca de 45 minutos, e é válido para quem cortou com o Jon nos últimos 90 dias. É essencialmente um ajuste cirúrgico rápido que restaura as linhas de um corte já bem estruturado, em vez de recomeçar o processo inteiro.</p>
 
-<h2>O Que Inclui</h2>
+<h2>Por Que um Corte de Cacho Precisa de Manutenção Diferente de um Corte Liso</h2>
+<p>Em cabelo liso, o crescimento tende a ser visualmente mais previsível — o corte "desce" de forma relativamente uniforme e o ajuste costuma ser simples aparar as pontas por igual. Em cabelo com curvatura, o crescimento revela um fenômeno diferente: conforme o fio novo nasce na raiz, ele se junta ao comprimento já formado e processado pelo corte anterior, criando uma mistura de "camada nova, ainda sem curvatura totalmente definida" com "camada antiga, já na forma planejada". Isso pode fazer um corte híbrido bem estruturado parecer gradualmente mais desorganizado, mesmo sem ter perdido comprimento significativo — não é o cabelo que ficou "feio", é a estrutura original que precisa de recalibração pontual.</p>
+
+<h2>O Que Inclui a Manutenção de Corte</h2>
 <ol>
-  <li><strong>Análise Rápida (5 min):</strong> Como o cabelo cresceu? Qual seção desce mais? Há alguma assimetria?</li>
-  <li><strong>Lapidação Seca Minuciosa (30 min):</strong> Com o cabelo seco e formado em seus cachos, ajustamos pontas, restauramos simetria, removemos qualquer fio que ficou fora de lugar. Não é um corte novo — é ajuste cirúrgico, respeitando as linhas do corte anterior.</li>
-  <li><strong>Finalização Rápida (5-10 min):</strong> Creme/gel conforme sua curvatura, validação visual.</li>
+  <li><strong>Análise Rápida (5 min):</strong> Como o cabelo cresceu desde o último corte? Qual seção desceu mais? Há alguma assimetria visível entre os lados? Essa análise é rápida porque já conhecemos a estrutura original planejada.</li>
+  <li><strong>Lapidação Seca Minuciosa (30 min):</strong> Com o cabelo seco e formado em seus cachos naturais, ajustamos pontas, restauramos simetria e removemos qualquer fio que ficou fora de linha durante o crescimento. Não é um corte novo — é um ajuste cirúrgico que respeita e reforça as linhas do corte anterior, tipicamente cortes de 0,5cm a 1,5cm por ponto.</li>
+  <li><strong>Finalização Rápida (5-10 min):</strong> Aplicação de creme ou gel conforme sua curvatura já mapeada, com validação visual final do resultado.</li>
 </ol>
 
-<h2>Para Quem é Manutenção de Corte</h2>
+<h2>Para Quem é a Manutenção de Corte</h2>
 <ul>
-  <li>Você cortou com o Jon há 3-4 meses e a forma começou a descer.</li>
-  <li>Você deixou crescer um pouco e quer restaurar as linhas sem fazer corte novo.</li>
-  <li>Você quer manter a estrutura do corte híbrido com investimento menor.</li>
-  <li>Você não quer reavaliar tudo (Leitura de Fio) — só quer ajuste.</li>
+  <li>Você cortou com o Jon há 3-4 meses e a forma começou a "descer" ou perder definição nas linhas originais.</li>
+  <li>Você deixou o cabelo crescer um pouco e quer restaurar as linhas sem fazer um corte novo do zero.</li>
+  <li>Você quer manter a estrutura do seu corte híbrido com um investimento menor que o corte completo.</li>
+  <li>Você não precisa reavaliar tudo com uma nova Leitura de Fio — só quer um ajuste pontual e rápido.</li>
 </ul>
 
 <h2>Frequência Recomendada</h2>
-<p>Se você faz Corte completo (R$ 190) a cada 6-8 meses, pode fazer Manutenção (R$ 130) nos meses intermediários para manter forma impecável. Ou você faz Manutenção a cada 4 semanas e deixa crescer lentamente entre cortes completos.</p>
+<p>Se você faz Corte Completo (R$ 190) a cada 6-8 meses, pode intercalar com Manutenção (R$ 130) nos meses intermediários para manter a forma impecável o ano inteiro. Alternativamente, alguns clientes preferem fazer Manutenção a cada 4 semanas e deixar o comprimento crescer lentamente entre os cortes completos — a escolha depende do seu objetivo de comprimento a longo prazo.</p>
 
-<h2>Diferenças: Manutenção vs. Corte Completo vs. Big Chop</h2>
+<h2>Diferenças: Manutenção vs. Corte Completo vs. Corte Novo Drástico</h2>
 <ul>
-  <li><strong>Manutenção (R$ 130, 45 min):</strong> Ajuste das linhas existentes. Sem Leitura de Fio. Para clientes recorrentes que já conhecemos bem.</li>
-  <li><strong>Corte Completo (R$ 190, 60 min):</strong> Leitura de Fio nova, planejamento novo, corte novo. Para quem quer reavaliar ou para primeira vez.</li>
-  <li><strong>Corte novo drástico (customizado):</strong> Mudança radical de estilo ou comprimento. Custa R$ 250+.</li>
+  <li><strong>Manutenção (R$ 130, ~45 min):</strong> Ajuste das linhas já existentes, sem nova Leitura de Fio. Indicado para clientes recorrentes cuja curvatura e histórico já conhecemos bem.</li>
+  <li><strong>Corte Completo (R$ 190, ~60 min):</strong> Nova Leitura de Fio, novo planejamento de visagismo, corte completo do zero. Indicado para quem quer reavaliar a estrutura ou para primeira visita.</li>
+  <li><strong>Corte Novo Drástico (customizado, a partir de R$ 250):</strong> Mudança radical de estilo ou comprimento, como sair de um corte longo para um curto estruturalmente diferente.</li>
 </ul>
 
-<h2>O Que Não Inclui Manutenção</h2>
+<h2>O Que Não Está Incluído na Manutenção</h2>
 <ul>
-  <li>Mudança radical de estilo (se quer virar dos ombros, não é manutenção).</li>
-  <li>Tratamento integrado (se quer Manutenção + Tratamento, é R$ 130 + R$ 130 = R$ 260).</li>
-  <li>Leitura de Fio nova (se sua curvatura mudou ou você quer reavaliar porosidade, sugiro Corte completo).</li>
+  <li>Mudança radical de estilo — se você quer transformar completamente o corte, não é caso de manutenção, é caso de Corte Completo ou Corte Novo Drástico.</li>
+  <li>Tratamento integrado — se você quer Manutenção junto com Tratamento no mesmo dia, o investimento soma os dois serviços separadamente (R$ 130 + R$ 130).</li>
+  <li>Nova Leitura de Fio — se sua curvatura parece ter mudado (comum após descoloração, gravidez ou mudanças hormonais) ou você quer reavaliar porosidade, o indicado é o Corte Completo, não a Manutenção.</li>
 </ul>
 
-<h2>Investimento</h2>
-<p>R$ 130. Duração: ~45 minutos. Inclui lapidação seca e finalização.</p>
+<h2>Sinais de Que Você Precisa de Manutenção, Não de Corte Completo</h2>
+<p>Se o formato geral do seu corte ainda está reconhecível, mas as pontas parecem menos definidas, há alguma assimetria pontual entre os lados, ou o volume está ligeiramente desproporcional ao que era logo após o corte original — esses são sinais claros de que uma Manutenção resolve. Se, por outro lado, você sente que perdeu completamente a estrutura original, ou sua rotina e curvatura mudaram significativamente desde o último corte, o Corte Completo é o caminho tecnicamente mais correto.</p>
+
+<h2>Manutenção e Crescimento entre Sessões</h2>
+<p>Um dado prático importante: cabelo cresce em média entre 1 e 1,5cm por mês. Isso significa que entre um Corte Completo e a Manutenção seguinte (geralmente 8-12 semanas depois), você já acumulou de 2 a 4,5cm de crescimento na raiz — comprimento suficiente para começar a desorganizar visualmente as linhas planejadas originalmente, mesmo sem ter descido muito o comprimento total percebido.</p>
 
 <h2>Cronograma de Manutenção Ideal</h2>
-<p>Se você faz Corte Híbrido bem feito:</p>
+<p>Se você fez um Corte Híbrido bem estruturado, o cronograma típico de evolução é:</p>
 <ul>
-  <li><strong>Semana 1-4:</strong> Perfeito — sem manutenção necessária.</li>
-  <li><strong>Semana 5-8:</strong> Ainda funciona bem; manutenção opcional.</li>
-  <li><strong>Semana 9-12:</strong> Começa a descer/perder forma; Manutenção recomendada (R$ 130).</li>
-  <li><strong>Semana 13-16:</strong> Está crescido; Corte novo completo (R$ 190) ou Manutenção maior.</li>
+  <li><strong>Semanas 1-4:</strong> Corte ainda perfeito — sem necessidade de manutenção.</li>
+  <li><strong>Semanas 5-8:</strong> Ainda funciona bem visualmente; manutenção é opcional nesse ponto.</li>
+  <li><strong>Semanas 9-12:</strong> Começa a "descer" ou perder definição de linha; Manutenção é recomendada aqui (R$ 130).</li>
+  <li><strong>Semanas 13-16:</strong> Crescimento já significativo; indicamos Corte Completo (R$ 190) ou uma Manutenção mais extensa, dependendo do quanto você quer preservar de comprimento.</li>
 </ul>
 
+<h2>Perguntas Frequentes</h2>
+<p><strong>Posso fazer Manutenção se cortei em outro salão da última vez?</strong> Não recomendamos — a Manutenção pressupõe conhecimento prévio da estrutura exata do corte anterior feito aqui. Nesse caso, o indicado é o Corte Completo.</p>
+<p><strong>A Manutenção inclui lavagem?</strong> Sim, o cabelo é lavado antes da lapidação seca para garantir avaliação em condições padronizadas.</p>
+<p><strong>Posso pedir para mudar levemente o comprimento durante a Manutenção?</strong> Pequenos ajustes de comprimento pontual são possíveis, mas mudanças estruturais maiores exigem reclassificação como Corte Completo.</p>
+
+<h2>Investimento</h2>
+<p>R$ 130. Duração aproximada de 45 minutos. Inclui análise rápida, lapidação seca e finalização.</p>
+
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende sua Manutenção de Corte</a> e mantenha sua forma impecável.</p>`,
+<p><a href="/agendar">Agende sua Manutenção de Corte</a> e mantenha sua forma impecável entre os cortes completos.</p>
+`,
 
   'detox-estimulante': `<h1>Detox Estimulante | Saúde do Couro Cabeludo | Studio do Jon</h1>
-<p>Detox Estimulante é o serviço de limpeza profunda e saúde de couro cabeludo. Ideal para quem tem acúmulo de resíduos, oleosidade excessiva, coceira ou descamação. Custa R$ 180, leva ~60 minutos, e é recomendado 1-2x por mês para manutenção ou semanalmente se há problema de couro.</p>
+<p>Detox Estimulante é o serviço de limpeza profunda e saúde de couro cabeludo do Studio do Jon. Ideal para quem tem acúmulo de resíduos, oleosidade excessiva, coceira ou descamação. Custa R$ 180, leva cerca de 60 minutos, e é recomendado de 1 a 2 vezes por mês para manutenção preventiva, ou semanalmente em casos de problema ativo de couro.</p>
 
-<h2>Por Que o Couro Cabeludo Importa</h2>
-<p>O couro cabeludo é a raiz da saúde capilar. Se está inflamado, oleoso em excesso, ou cheio de resíduos, o cabelo não cresce bonito — cresce opaco, sem brilho, às vezes com coceira. Especialmente em cabelo cacheado e crespo, o couro cabeludo coleta muito mais resíduo de produtos porque a curvatura dificulta a circulação de ar e a limpeza natural.</p>
+<h2>Por Que o Couro Cabeludo Importa Mais do Que Parece</h2>
+<p>O couro cabeludo é literalmente a raiz da saúde capilar — cada fio que você vê nasce de um folículo alimentado por vasos sanguíneos que passam por essa região. Se o couro está inflamado, com oleosidade em excesso ou coberto de resíduos acumulados, o ambiente onde o fio nasce já começa comprometido, e o cabelo tende a crescer opaco, sem brilho, às vezes acompanhado de coceira ou sensibilidade. Especialmente em cabelo cacheado e crespo, o couro cabeludo acumula muito mais resíduo de produto do que em fio liso, porque a própria curvatura dificulta a circulação de ar e a remoção natural de oleosidade e partículas ao longo do dia.</p>
+
+<h2>A Física do Acúmulo em Couro com Curvatura</h2>
+<p>Em fio liso, a oleosidade natural produzida pelo couro cabeludo desce por gravidade relativamente sem obstáculos, distribuindo-se ao longo da fibra. Em fio com curvatura, essa mesma oleosidade encontra resistência física nas dobras da hélice capilar e tende a se acumular mais próxima da raiz, junto com resíduos de produtos de finalização que também ficam presos nessas dobras. Esse acúmulo, se não removido periodicamente, pode obstruir parcialmente o folículo e criar um ambiente propício para inflamação leve, descamação e crescimento de fio mais fraco.</p>
 
 <h2>O Protocolo do Detox Estimulante</h2>
 <ol>
-  <li><strong>Análise de Couro (5 min):</strong> Avaliamos saúde, oleosidade, presença de resíduos ou descamação. Tudo isso informa a abordagem.</li>
-  <li><strong>Esfoliação Gentil (10 min):</strong> Aplicamos um esfoliante suave (geralmente sementes de damasco moídas finas ou açúcar) diluído em água. Massageamos suavemente, estimulando circulação sem agredir.</li>
-  <li><strong>Remoção de Resíduos (5 min):</strong> Enxague minucioso com água morna, removendo todas as partículas do esfoliante e resíduos presos no couro.</li>
-  <li><strong>Xampu Detox (5 min):</strong> Xampu específico que remove óleo e deposita ativos estimulantes (geralmente óleos essenciais como menta ou eucalipto).</li>
-  <li><strong>Máscara Estimulante (25 min):</strong> Aplicamos máscara especial que estimula, nutre o couro e reduz inflamação. Deixamos agir — às vezes aplicamos calor leve (difusor) para aumentar a absorção.</li>
-  <li><strong>Enxague Final (5 min):</strong> Água filtrada fria, que sela o couro e traz brilho.</li>
+  <li><strong>Análise de Couro (5 min):</strong> Avaliamos saúde geral, nível de oleosidade, presença de resíduos acumulados ou sinais de descamação. Essa análise define a intensidade da abordagem seguinte.</li>
+  <li><strong>Esfoliação Gentil (10 min):</strong> Aplicamos um esfoliante suave — geralmente à base de partículas finas naturais — diluído em água. Massageamos com movimentos circulares suaves, estimulando a circulação sanguínea local sem agredir mecanicamente o couro.</li>
+  <li><strong>Remoção de Resíduos (5 min):</strong> Enxague minucioso com água morna, garantindo remoção completa das partículas esfoliantes e de qualquer resíduo previamente preso no couro cabeludo.</li>
+  <li><strong>Xampu Detox (5 min):</strong> Aplicação de xampu específico formulado para remover excesso de óleo e depositar ativos calmantes e estimulantes, geralmente derivados de óleos essenciais com propriedade vasodilatadora leve.</li>
+  <li><strong>Máscara Estimulante (25 min):</strong> Aplicamos uma máscara especial que estimula a circulação, nutre o couro cabeludo e ajuda a reduzir sinais de inflamação leve. Em alguns casos aplicamos calor controlado com difusor para aumentar a absorção dos ativos.</li>
+  <li><strong>Enxague Final (5 min):</strong> Água filtrada fria, que ajuda a selar o couro cabeludo e traz sensação imediata de frescor e brilho ao fio.</li>
 </ol>
 
 <h2>O Que Você Sente Durante e Depois</h2>
-<p>Durante: Esfoliação é um pouco adocicante, depois relaxante. A máscara estimulante traz sensação de alívio, limpeza, até um leve "aquecimento" que é o estímulo circulatório.</p>
-<p>Depois: Sai do salão com couro leve, limpo, sem oleosidade. Cabelo brilhante desde a raiz. Se tinha coceira ou descamação, frequentemente melhora drasticamente em poucas sessões.</p>
+<p>Durante o processo: a esfoliação traz uma sensação leve de formigamento agradável, seguida de relaxamento profundo. A máscara estimulante costuma trazer uma sensação de alívio e limpeza, às vezes acompanhada de um leve "aquecimento" local que é justamente o sinal do estímulo circulatório funcionando.</p>
+<p>Depois do atendimento: você sai com o couro cabeludo leve, limpo e sem sensação de oleosidade acumulada, e o cabelo com brilho visível desde a raiz. Se você tinha coceira ou descamação antes, é comum notar melhora perceptível já nas primeiras sessões, com resolução mais completa ao longo de um cronograma regular.</p>
 
-<h2>Tipos de Couro que Beneficiam</h2>
+<h2>Tipos de Couro que Mais se Beneficiam</h2>
 <ul>
-  <li><strong>Couro Oleoso:</strong> Acumula sebo rapidamente, deixando cabelo pesado em 3-4 dias. Precisa esfoliação regular para regular as glândulas sebáceas.</li>
-  <li><strong>Couro com Descamação:</strong> Caspa ou ressecamento do couro. Precisa esfoliação + nutrição, ambas incluídas no Detox.</li>
-  <li><strong>Couro Inflamado:</strong> Você tem coceira ou vermelhidão. Precisa desintoxicação e estímulo para restaurar pH.</li>
-  <li><strong>Couro com Residuos de Produto:</strong> Você usa muito leave-in, creme, gel? Acumula tudo. Detox remove tudo, deixando espaço para novos produtos funcionarem.</li>
+  <li><strong>Couro Oleoso:</strong> Acumula sebo rapidamente, deixando o cabelo com aspecto pesado em apenas 3-4 dias após a lavagem. Precisa de esfoliação regular para ajudar a regular a produção das glândulas sebáceas.</li>
+  <li><strong>Couro com Descamação:</strong> Caspa ou ressecamento visível do couro cabeludo. Precisa de esfoliação combinada com nutrição, ambas incluídas no protocolo do Detox.</li>
+  <li><strong>Couro Inflamado ou com Coceira:</strong> Sinais de vermelhidão ou desconforto recorrente. Precisa de desintoxicação e estímulo específico para ajudar a restaurar o equilíbrio de pH da região.</li>
+  <li><strong>Couro com Acúmulo de Resíduo de Produto:</strong> Se você usa regularmente leave-in, creme ou gel, esses produtos acumulam progressivamente na raiz ao longo das semanas. O Detox remove esse acúmulo, abrindo espaço para que novos produtos funcionem com máxima eficácia.</li>
 </ul>
 
 <h2>Para Cabelo Cacheado e Crespo Especialmente</h2>
-<p>Em cabelo cacheado e crespo, o couro cabeludo sofre mais porque:</p>
-<ul>
-  <li>O cacho bloqueia circulação de ar natural.</li>
-  <li>Oleosidade não consegue descer pelas espirais para proteger as pontas.</li>
-  <li>Resíduos de produto ficam presos nas dobras da curvatura.</li>
-</ul>
-<p>Por isso, recomendamos Detox 2x/mês como manutenção para cacheado/crespo, e 1x/mês para ondulado.</p>
+<p>Em cabelo cacheado e crespo, o couro cabeludo sofre proporcionalmente mais por três razões estruturais específicas: o próprio formato do cacho bloqueia parte da circulação natural de ar; a oleosidade produzida na raiz não consegue descer pelas espirais da fibra para proteger o comprimento e as pontas, ficando concentrada justamente na raiz; e resíduos de produto ficam fisicamente presos nas dobras da curvatura, sem serem removidos completamente mesmo com lavagem regular.</p>
+<p>Por isso, recomendamos Detox com frequência de 2 vezes por mês como manutenção preventiva para cabelo cacheado ou crespo, e 1 vez por mês para cabelo ondulado, que sofre menos com esse acúmulo pela geometria mais aberta da fibra.</p>
 
-<h2>Manutenção em Casa</h2>
-<p>Entre sessões profissionais, recomendamos:</p>
+<h2>Detox e o Clima de Belo Horizonte</h2>
+<p>A variação de temperatura e umidade ao longo do ano em Belo Horizonte também influencia a produção de oleosidade do couro cabeludo — em meses mais quentes, a produção de sebo tende a aumentar, o que pode justificar aumentar temporariamente a frequência do Detox nessa época específica do ano, voltando ao cronograma padrão nos meses mais frescos.</p>
+
+<h2>Manutenção em Casa Entre Sessões</h2>
+<p>Entre as sessões profissionais, recomendamos alguns cuidados simples para prolongar o efeito do Detox:</p>
 <ul>
-  <li>Xampu neutro 1-2x/semana (se muito oleoso, 2-3x/semana).</li>
-  <li>Massagem do couro com as pontas dos dedos diariamente para estimular circulação.</li>
-  <li>Evitar produtos pesados na raiz — deixa para a raiz apenas se vai prender.</li>
+  <li>Xampu neutro 1-2 vezes por semana, aumentando para 2-3 vezes se o couro for muito oleoso.</li>
+  <li>Massagem do couro cabeludo com as pontas dos dedos diariamente, mesmo sem produto, para estimular circulação de forma simples e gratuita.</li>
+  <li>Evitar aplicar produtos pesados de finalização diretamente na raiz — reserve esses produtos para o comprimento, deixando a raiz mais livre a menos que você vá prender o cabelo.</li>
 </ul>
+
+<h2>Perguntas Frequentes</h2>
+<p><strong>Detox Estimulante substitui o xampu do dia a dia?</strong> Não — é um serviço profissional complementar, feito periodicamente, que não substitui sua rotina de lavagem regular em casa.</p>
+<p><strong>Posso fazer Detox se estiver com o cabelo recém-colorido?</strong> Sim, mas recomendamos aguardar pelo menos uma semana após coloração para não interferir na fixação da cor.</p>
+<p><strong>Detox resolve queda de cabelo?</strong> Detox melhora a saúde do ambiente onde o fio nasce, o que pode ajudar em quedas relacionadas a couro cabeludo desequilibrado, mas quedas de origem hormonal ou genética exigem avaliação médica específica, fora do escopo deste serviço.</p>
 
 <h2>Investimento</h2>
-<p>R$ 180. Duração: ~60 minutos. Inclui análise, esfoliação, máscara estimulante, e enxague final.</p>
+<p>R$ 180. Duração aproximada de 60 minutos. Inclui análise, esfoliação, máscara estimulante e enxague final.</p>
 
 <h2>Cronograma Recomendado</h2>
 <ul>
-  <li><strong>Cacheado/Crespo Saudável:</strong> 2x/mês (a cada 2 semanas).</li>
-  <li><strong>Ondulado Saudável:</strong> 1x/mês.</li>
-  <li><strong>Couro com Problema:</strong> Semanal por 4-6 semanas, depois 2x/mês.</li>
+  <li><strong>Cacheado ou Crespo Saudável:</strong> 2 vezes por mês, aproximadamente a cada 2 semanas.</li>
+  <li><strong>Ondulado Saudável:</strong> 1 vez por mês.</li>
+  <li><strong>Couro com Problema Ativo:</strong> Semanalmente por 4 a 6 semanas, reduzindo depois para 2 vezes por mês como manutenção.</li>
 </ul>
 
 <h2>Combinação Ideal: Detox + Tratamento</h2>
-<p>O protocolo perfeito é: Detox (limpa couro e raiz) + Tratamento 1-2 semanas depois (nutre fio). Assim você tem couro super saudável e fio super nutrido.</p>
+<p>O protocolo mais completo é: Detox Estimulante (que limpa o couro e a raiz) seguido de Tratamento Personalizado 1 a 2 semanas depois (que nutre o comprimento do fio). Dessa forma você garante couro saudável e fio bem nutrido simultaneamente, em vez de tratar só uma parte do sistema capilar.</p>
 
 <h2>Agendamento</h2>
-<p><a href="/agendar">Agende seu Detox Estimulante</a> e sinta a diferença na saúde do seu couro.</p>`
+<p><a href="/agendar">Agende seu Detox Estimulante</a> e sinta a diferença na saúde do seu couro cabeludo.</p>
+`
 };
