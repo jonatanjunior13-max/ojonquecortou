@@ -1330,15 +1330,19 @@ pages.forEach(page => {
   // NOTE: replacement is a function, not a string — a literal "$$" in the JSON
   // (e.g. priceRange) would otherwise be silently collapsed to "$" by
   // String.replace's special $-pattern handling in a string replacement.
+  // Anchored on the schema placeholder comment itself (not "<!-- Google Fonts -->",
+  // which no longer exists in index.html since fonts are now self-hosted inline —
+  // that anchor going stale is exactly what silently broke this injection).
+  const SCHEMA_ANCHOR = '<!-- Schema Markup: injected per-page by prerender.js at build time, right before Google Fonts below (script#dynamic-page-schema) -->';
   if (page.schema) {
     const schemaScript = `\n    <script type="application/ld+json" id="dynamic-page-schema">\n    ${JSON.stringify(page.schema, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
-    html = html.replace('<!-- Google Fonts -->', () => `${schemaScript}\n\n    <!-- Google Fonts -->`);
+    html = html.replace(SCHEMA_ANCHOR, () => `${SCHEMA_ANCHOR}${schemaScript}`);
   }
 
   // 6b. Inject Initial Props for Hydration Fallback (SW caching solution)
   if (page.postData) {
     const postDataScript = `\n    <script type="application/json" id="pre-rendered-post-data">\n    ${JSON.stringify(page.postData, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
-    html = html.replace('<!-- Google Fonts -->', () => `${postDataScript}\n\n    <!-- Google Fonts -->`);
+    html = html.replace(SCHEMA_ANCHOR, () => `${SCHEMA_ANCHOR}${postDataScript}`);
   }
 
   // 7. Inject Noscript Body Content for Crawlers
