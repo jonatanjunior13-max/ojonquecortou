@@ -174,6 +174,10 @@ hr.technical-rule {
   font-size: 19px;
   line-height: 1;
   letter-spacing: -0.01em;
+  /* Real touch target: padding + matching negative margin extends the
+     tappable area to ~44px without shifting surrounding nav layout. */
+  padding: 10px 4px;
+  margin: -10px -4px;
 }
 .brand .mark {
   width: 30px; height: 30px;

@@ -392,6 +392,112 @@ export const posts = [
 <p>Depende do tipo. Cremes, géis e óleos seladores com silicone ou polímero são controle de superfície: funcionam bem no dia, mas somem na próxima lavagem e não mudam a estrutura do fio. Para resultado que dura além de uma lavagem, é preciso corrigir a cutícula na origem — o que exige diagnóstico de porosidade e, geralmente, tratamento reconstrutor, não só produto de finalização.</p>`
   },
   {
+    id: 53,
+    slug: 'guia-completo-transicao-capilar-cabelo-natural',
+    title: 'Transição Capilar: Guia Completo para Voltar ao Cabelo Natural sem Sofrimento',
+    seoTitle: 'Guia Completo de Transição Capilar | Studio do Jon',
+    excerpt: 'Tudo sobre transição capilar: por que a junção entre raiz natural e química antiga é o ponto mais frágil do fio, Big Chop vs cortes progressivos, o papel do corte a seco e os disfarces químicos que sabotam a transição sem você perceber.',
+    metaDescription: 'Guia completo de transição capilar: ponto de quebra, Big Chop vs corte progressivo, corte a seco e cuidado com botox capilar. Por Jon, especialista em cachos em BH.',
+    keywords: 'transição capilar, transição capilar sem sofrimento, big chop, corte a seco transição capilar, botox capilar alisa, cronograma capilar transição, leitura de fio, transição capilar bh',
+    date: '04 de Julho, 2026',
+    datePublished: '2026-07-04',
+    dateModified: '2026-07-04',
+    author: 'Jon',
+    category: 'Guia Completo',
+    image: '/blog-transicao-capilar.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qual é o ponto mais frágil do cabelo durante a transição capilar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "É a junção entre a raiz natural (que nasce com elasticidade normal) e o comprimento que ainda carrega química antiga, que pode ter perdido até 60% da elasticidade da fibra. Esse ponto de encontro entre duas estruturas tão diferentes é onde a quebra mecânica acontece com mais frequência, principalmente sob tração de escova ou pente." }
+        },
+        {
+          "@type": "Question",
+          "name": "Big Chop ou transição progressiva: qual é a opção certa?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não existe opção certa universal — existe a que faz sentido para o seu momento. Big Chop entrega 100% de cabelo natural imediatamente, mas é uma mudança radical de comprimento. Cortes progressivos removem a química aos poucos (a cada 2-3 meses) e preservam o comprimento com o qual você se sente confortável, ao custo de conviver mais tempo com duas texturas na mesma cabeça." }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que 'botox capilar' pode atrapalhar minha transição sem eu perceber?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Muitos produtos vendidos como 'botox capilar' ou 'redução de volume' contêm ácidos que alisam e impermeabilizam a fibra de forma muito parecida com uma progressiva — mesmo sem chamar isso de alisamento. Se você está em transição e aplica esse tipo de produto achando que é só hidratação, está reintroduzindo química que trava exatamente o processo que você está tentando completar." }
+        },
+        {
+          "@type": "Question",
+          "name": "Corte a seco ajuda de verdade na transição capilar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sim. Como a raiz natural e o comprimento processado reagem de forma diferente à água (encolhimento desigual), cortar molhado nessa fase tende a gerar contornos imprevisíveis. O corte a seco permite ver exatamente onde termina a curvatura natural e onde começa o trecho processado, cortando com precisão sem arriscar tirar mais comprimento saudável do que o necessário." }
+        }
+      ]
+    },
+    content: `<p>Transição capilar não é só "parar de alisar e esperar crescer". É um processo com um ponto técnico crítico — a junção entre duas estruturas de fibra completamente diferentes — que, se ignorado, é a razão mais comum de frustração, quebra e desistência no meio do caminho. Esse texto reúne a base técnica da transição e organiza os ângulos específicos que já cobrimos aqui no blog: o guia de transição sem sofrimento, o papel do corte a seco nessa fase, e o alerta sobre produtos que sabotam a transição disfarçados de tratamento.</p>
+
+<p>Se você está decidindo parar com a química ou já está no meio do processo e sentindo que "não sabe mais o que fazer com esse cabelo", começa por aqui.</p>
+
+<h2>O que acontece estruturalmente durante a transição</h2>
+
+<p>Transição capilar é o período em que você interrompe químicas de alisamento (progressiva, relaxamento, alguns "botox" com ácidos) e deixa o cabelo natural — ondulado, cacheado ou crespo — crescer a partir da raiz. Durante esse período, convivem na mesma cabeça duas fibras com propriedades mecânicas opostas: a raiz nova, com elasticidade normal e curvatura intacta, e o comprimento antigo, quimicamente alterado, com elasticidade reduzida em até 60% segundo dados da Sociedade Brasileira de Dermatologia.</p>
+
+<p>O ponto onde essas duas fibras se encontram — a linha de demarcação entre raiz natural e comprimento processado — é estruturalmente o mais frágil do fio inteiro. Não é uma fragilidade uniforme ao longo do cabelo: é concentrada exatamente nessa junção, porque ali a fibra muda abruptamente de comportamento sob tração. Puxar, escovar com força ou pentear de cima para baixo sem cuidado é o que mais frequentemente rompe o fio bem nesse ponto — o que muita gente descreve como "meu cabelo não cresce", quando na verdade está quebrando na mesma velocidade que cresce.</p>
+
+<h2>Big Chop ou transição progressiva: a decisão é sua, não da internet</h2>
+
+<p>A ideia mais repetida sobre transição capilar é que você precisa cortar toda a parte processada de uma vez (o Big Chop) para "começar do zero". Isso funciona muito bem para quem quer isso — é imediato, resolve a convivência de texturas no mesmo dia. Mas não é obrigatório, e para muita gente é desnecessariamente radical.</p>
+
+<p>A alternativa são os cortes progressivos: remoção gradual da parte processada, a cada 2 a 3 meses, mantendo o comprimento com o qual você se sente confortável enquanto a raiz natural cresce. É mais lento (12 a 24 meses até eliminar toda a química, dependendo da velocidade de crescimento), mas evita o impacto psicológico de uma mudança radical de comprimento. Detalhamos a comparação completa entre as duas abordagens — incluindo uma tabela lado a lado de velocidade, impacto na autoestima e dificuldade de estilização — no <a href="/blog/transicao-capilar-sem-sofrimento-guia-cachos">guia de transição capilar sem sofrimento</a>.</p>
+
+<h2>Por que corte molhado nessa fase é um risco (e o corte a seco não é)</h2>
+
+<p>A raiz natural e o comprimento processado não encolhem da mesma forma quando molhados — a raiz, com curvatura intacta, encolhe de acordo com o fator de encolhimento normal daquele padrão de cacho; o comprimento processado, mais relaxado pela química, encolhe pouco ou nada. Cortar essa cabeça inteira molhada, medindo por comprimento como se fosse uma fibra única, é a receita para um contorno desigual assim que tudo seca — porque as duas partes nunca reagiram da mesma forma à água em primeiro lugar.</p>
+
+<p>O corte a seco resolve isso na origem: com o cabelo seco, dá para ver exatamente onde a curvatura natural termina e onde o trecho processado começa, e ajustar cada mecha considerando essa fronteira real, não uma estimativa molhada. Isso também reduz o risco clássico de "cortar demais" tentando adivinhar onde a química acaba. Explicamos a técnica com mais profundidade, incluindo como ela se aplica especificamente ao contexto de Belo Horizonte, no <a href="/blog/transicao-capilar-bh-corte-seco">guia sobre corte a seco na transição capilar</a>.</p>
+
+<h2>O disfarce químico que sabota transições: "botox capilar" e primos</h2>
+
+<p>Um erro que vemos com frequência: pessoa decide fazer a transição, para de alisar quimicamente, mas continua aplicando (ou aplica pela primeira vez) um "botox capilar" ou tratamento de "redução de volume" achando que é só hidratação profunda. O problema é que boa parte desses produtos contém ácidos que agem estruturalmente como uma progressiva — alisam e impermeabilizam a fibra por meses, mesmo sem serem vendidos com esse nome.</p>
+
+<p>O resultado prático é uma transição que nunca sai do lugar: a raiz nasce natural, mas volta a ser quimicamente tratada a cada aplicação de "botox", e a pessoa vive meses achando que está em transição sem realmente estar. Reconhecer esse disfarce — e entender que a única reversão real, uma vez que a fibra foi alterada por ácidos, é deixar crescer e cortar a parte alisada — está detalhado no <a href="/blog/transicao-capilar-bh-danos-botox">guia sobre os danos do botox capilar na transição</a>.</p>
+
+<h2>Cronograma capilar de transição: os três pilares que importam</h2>
+
+<p>O cabelo em transição pede cuidado redobrado, concentrado especialmente naquele ponto de junção frágil que descrevemos acima. O cronograma técnico se apoia em três frentes:</p>
+
+<ul>
+<li><strong>Hidratação:</strong> mantém a maleabilidade da fibra e reduz o risco de quebra sob tração — ativos como pantenol, aloe vera e glicerina.</li>
+<li><strong>Nutrição:</strong> repõe os lipídios que a curvatura natural, ainda mais nova, já perde mais rápido pela própria geometria do fio — óleos vegetais leves na raiz e no comprimento.</li>
+<li><strong>Reconstrução:</strong> a mais crítica das três nessa fase, porque fortalece exatamente o ponto de junção entre as duas texturas, reduzindo a chance de ruptura. Recomenda-se a cada 15 dias enquanto a transição estiver ativa, com queratina vegetal ou máscaras reconstrutoras.</li>
+</ul>
+
+<p>Negligenciar a reconstrução achando que "só hidratação resolve" é um dos erros mais comuns nessa fase — hidratação sozinha não repõe a proteína que o ponto de junção precisa para não romper.</p>
+
+<h2>Por que a transição não deveria ser feita sem diagnóstico</h2>
+
+<p>Cada fibra reage de um jeito à transição: em algumas pessoas a curvatura natural se revela rápido e com definição clara; em outras, a raiz nasce indefinida pelo estresse mecânico e químico acumulado de anos de alisamento. Sem saber qual é o seu caso, é fácil escolher o cronograma errado ou o corte errado para o momento em que você está.</p>
+
+<p>Por isso, todo atendimento de transição no Studio do Jon começa pela <a href="/metodo">Leitura de Fio</a>, o diagnóstico de 7 etapas que avalia a elasticidade real da sua fibra, identifica a curvatura que está nascendo e define o corte de transição (progressivo ou Big Chop) mais adequado ao seu objetivo — sem radicalismo desnecessário. A Leitura de Fio custa R$ 80 isolada, mas está inclusa sem custo extra em qualquer <a href="/agendar">Corte com o Jon (R$ 190)</a>. Quando o diagnóstico aponta necessidade de reforço estrutural no ponto de junção, o <strong>Tratamento Personalizado (R$ 130)</strong> é ajustado especificamente para isso — e para quem quer diagnóstico, corte e tratamento na mesma visita, o <strong>Combo Corte + Tratamento sai por R$ 230</strong> (preço normal R$ 320).</p>
+
+<h2>Resumo prático: por onde seguir</h2>
+
+<ul>
+<li>Se você ainda está decidindo entre Big Chop e corte progressivo, veja a comparação completa no <a href="/blog/transicao-capilar-sem-sofrimento-guia-cachos">guia de transição sem sofrimento</a>.</li>
+<li>Se você já está em transição e quer entender por que o corte a seco reduz o risco de contorno desigual, leia o <a href="/blog/transicao-capilar-bh-corte-seco">guia sobre corte a seco na transição</a>.</li>
+<li>Se você usa (ou pensa em usar) "botox capilar" durante a transição, confira antes o <a href="/blog/transicao-capilar-bh-danos-botox">alerta sobre os danos do botox capilar</a>.</li>
+<li>Se quer um diagnóstico real da sua fibra antes de decidir qualquer coisa, <a href="/agendar">agende um horário</a> — a Leitura de Fio está inclusa em qualquer corte.</li>
+</ul>
+
+<h2>Perguntas frequentes sobre transição capilar</h2>
+
+<h3>Qual é o ponto mais frágil do cabelo durante a transição capilar?</h3>
+<p>É a junção entre a raiz natural (elasticidade normal) e o comprimento que ainda carrega química antiga (elasticidade reduzida em até 60%). Esse encontro de duas estruturas tão diferentes é onde a quebra mecânica acontece com mais frequência, principalmente sob tração de escova ou pente.</p>
+
+<h3>Big Chop ou transição progressiva: qual é a opção certa?</h3>
+<p>Não existe opção certa universal. Big Chop entrega 100% de cabelo natural no mesmo dia, mas é uma mudança radical de comprimento. Cortes progressivos removem a química aos poucos e preservam o comprimento com o qual você se sente confortável, ao custo de conviver mais tempo com duas texturas na mesma cabeça.</p>
+
+<h3>Por que "botox capilar" pode atrapalhar minha transição sem eu perceber?</h3>
+<p>Porque boa parte desses produtos contém ácidos que alisam e impermeabilizam a fibra de forma parecida com uma progressiva, mesmo sem esse nome. Aplicar durante a transição, achando que é só hidratação, reintroduz química que trava o processo que você está tentando completar.</p>`
+  },
+  {
     id: 49,
     slug: 'por-que-saloes-falham-cabelo-texturizado',
     title: 'Por que a maioria dos salões falha com cabelo cacheado — e como o Studio do Jon não',
@@ -401,7 +507,7 @@ export const posts = [
     keywords: 'cabelo cacheado salão BH, por que salão falha em cabelo texturizado, especialista em cachos Belo Horizonte, Método Leitura de Fio, diagnóstico capilar, corte para cabelo texturizado',
     date: '01 de Julho, 2026',
     datePublished: '2026-07-01',
-    dateModified: '2026-07-01',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Educação Técnica',
     image: '/blog-por-que-saloes-falham-cabelo-texturizado.png',
@@ -451,6 +557,8 @@ export const posts = [
 
 <p>Nenhuma suposição. Nenhum template. <a href=\"/agendar\">Agende uma Leitura de Fio diagnóstica</a> e mapeie a física exata do seu cabelo antes de qualquer coisa.</p>
 
+<p>Quer um checklist prático para aplicar antes de agendar em qualquer salão? Veja os <a href=\"/blog/como-escolher-especialista-cabelo-cacheado-bh\">7 sinais técnicos de um especialista real em cabelo cacheado</a>.</p>
+
 <p>Seu cabelo não é problema. O método anterior era.</p>`,
     faqSchema: {
       "@context": "https://schema.org",
@@ -482,6 +590,139 @@ export const posts = [
         }
       ]
     }
+  },
+
+  {
+    id: 54,
+    slug: 'como-escolher-especialista-cabelo-cacheado-bh',
+    title: 'Como Escolher um Especialista em Cabelo Cacheado em BH: Checklist de 7 Sinais',
+    seoTitle: 'Como Escolher Especialista em Cabelo Cacheado em BH | Studio do Jon',
+    excerpt: 'Antes de agendar em qualquer salão de Belo Horizonte, use este checklist técnico de 7 sinais para diferenciar um especialista de verdade em cabelo cacheado, crespo e ondulado de um corte genérico com marketing bonito.',
+    metaDescription: 'Como saber se um salão realmente entende de cabelo cacheado? Checklist de 7 perguntas técnicas para escolher um especialista em cachos em Belo Horizonte com segurança.',
+    keywords: 'melhor especialista em cabelo cacheado bh, como escolher salão cabelo cacheado, especialista em cachos belo horizonte, cabeleireiro cacheado bh, checklist salão cabelo cacheado, corte a seco bh',
+    date: '04 de Julho, 2026',
+    datePublished: '2026-07-04',
+    dateModified: '2026-07-04',
+    author: 'Jon',
+    category: 'Educação Técnica',
+    image: '/blog-por-que-saloes-falham-cabelo-texturizado.png',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qual é o sinal mais confiável de que um salão realmente entende de cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Existir algum tipo de diagnóstico estruturado antes do corte — perguntas sobre porosidade, histórico químico e comportamento do fio seco, não só \"que corte você quer\". Salão que parte direto para a tesoura sem entender a fibra está trabalhando por template, não por técnica." }
+        },
+        {
+          "@type": "Question",
+          "name": "Corte a seco é obrigatório para ser considerado um bom especialista em cachos?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não isoladamente — o que importa é se a técnica (seca, molhada ou híbrida) foi escolhida com base no seu padrão de encolhimento, não por hábito do salão. Um profissional que corta 100% molhado sem nunca avaliar a seco, em qualquer tipo de cacho, é um sinal de alerta." }
+        },
+        {
+          "@type": "Question",
+          "name": "Preço alto é garantia de que o salão é especialista de verdade?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não. Preço reflete posicionamento de mercado, não necessariamente técnica. Já vimos serviços caros aplicando corte genérico e serviços mais acessíveis com diagnóstico completo. Os sinais técnicos deste checklist são indicadores mais confiáveis do que o valor cobrado." }
+        },
+        {
+          "@type": "Question",
+          "name": "É normal um salão não saber explicar minha porosidade capilar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "É comum, mas não é um bom sinal. Porosidade determina como seu fio reage a produto e a corte — é informação técnica básica para qualquer atendimento sério em cabelo cacheado, crespo ou ondulado. Se ninguém no salão consegue te explicar isso com clareza, é sinal de que a decisão de corte está sendo tomada sem esse dado." }
+        }
+      ]
+    },
+    content: `<p>"Melhor salão para cabelo cacheado em BH" é uma das buscas mais comuns de quem já se decepcionou uma vez — e não quer repetir o erro. O problema é que "melhor" não é uma nota fixa, é um conjunto de critérios técnicos que qualquer pessoa consegue verificar antes de sentar na cadeira, sem precisar confiar cegamente em fotos de antes-e-depois ou em quantas estrelas aparecem no Google.</p>
+
+<p>Este checklist reúne os 7 sinais técnicos que realmente diferenciam um especialista em cabelo cacheado, crespo e ondulado de um corte genérico bem divulgado. Nenhum deles depende de opinião — são perguntas objetivas que você pode fazer antes de agendar, ou observar já na primeira consulta.</p>
+
+<h2>1. Existe algum tipo de diagnóstico antes do corte?</h2>
+
+<p>Esse é o divisor de águas mais confiável. Um especialista de verdade não começa pela tesoura — começa perguntando sobre seu histórico químico, observando o cabelo seco antes de molhar, e entendendo como ele se comporta no dia a dia. Um salão genérico parte direto para "que corte você quer hoje?" e trata a resposta como suficiente.</p>
+
+<p>Pergunta prática para fazer antes de agendar: <em>"Vocês fazem algum tipo de avaliação do meu cabelo antes de decidir o corte?"</em>. Se a resposta for vaga ou "a gente já vê na hora", é sinal de ausência de protocolo.</p>
+
+<h2>2. O profissional sabe explicar sua porosidade</h2>
+
+<p>Porosidade — a capacidade da cutícula de absorver e reter água — determina se seu fio precisa de produtos leves ou pesados, se hidrata rápido demais ou de menos, e por que a mesma máscara "não funciona" em cabelos diferentes. É informação técnica básica, não jargão de marketing.</p>
+
+<p>Se você perguntar "qual é a porosidade do meu cabelo?" e ninguém no salão souber responder ou testar isso na sua frente (o teste do copo d'água é simples e rápido), é sinal de que o atendimento não considera essa variável — mesmo que o resultado do dia pareça bonito.</p>
+
+<h2>3. A técnica de corte é escolhida, não fixa</h2>
+
+<p>Cabelo cacheado encolhe de forma diferente conforme a curvatura: pouco em ondulados (2A/2B), muito em crespos fechados (4B/4C). Um especialista escolhe entre corte seco, molhado ou híbrido com base nesse comportamento específico do seu fio. Um salão genérico corta todo mundo do mesmo jeito — geralmente 100% molhado, porque é mais rápido — independente do padrão de encolhimento.</p>
+
+<h2>Comparativo rápido: sinais de alerta vs sinais de especialista real</h2>
+
+<table style="width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+  <thead>
+    <tr style="background: rgba(205, 168, 128, 0.1);">
+      <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Critério</th>
+      <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Sinal de Alerta</th>
+      <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Sinal de Especialista Real</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Diagnóstico</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Vai direto para o corte sem avaliar o fio</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Analisa porosidade, curvatura, densidade e histórico químico antes de cortar</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Técnica de corte</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Sempre a mesma técnica, para qualquer cliente</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Escolhe seco, molhado ou híbrido conforme o encolhimento real do seu fio</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Explicação técnica</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Respostas vagas sobre porosidade, elasticidade ou curvatura</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Explica com clareza o que está avaliando e por quê</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Cronograma pós-corte</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Indica a mesma linha de produtos para todo mundo</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Personaliza hidratação, nutrição e reconstrução conforme seu diagnóstico</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Finalização</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Só modela o cabelo, sem ensinar a replicar em casa</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Explica produto, técnica e ordem de aplicação para você repetir sozinha</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>4. A finalização do dia é educativa, não só estética</h2>
+
+<p>Um corte bonito na saída do salão que você não consegue replicar em casa não resolveu seu problema — só adiou. Especialistas de verdade usam a finalização como uma aula prática: qual produto, em que quantidade, com qual técnica de aplicação (fitagem, scrunching, praying hands) e em que ponto da secagem. Se a resposta para "como eu faço isso em casa?" é só "usa um creme bom", falta profundidade técnica.</p>
+
+<h2>5. O cronograma de cuidados é personalizado, não copiado</h2>
+
+<p>Hidratação, nutrição e reconstrução resolvem carências diferentes — água, lipídio e proteína, respectivamente. Um especialista recomenda a combinação certa com base no que identificou no seu fio. Um salão genérico entrega a mesma "linha de produtos indicada" para qualquer pessoa que sente na cadeira, o que explica por que a mesma máscara "funciona" para uma amiga e "não faz nada" para você.</p>
+
+<h2>6. Existe honestidade sobre limitações</h2>
+
+<p>Um sinal sutil, mas revelador: como o profissional reage quando seu cabelo tem um histórico complicado (química antiga, dano estrutural, curvatura muito irregular). Especialistas de verdade explicam o que é realista alcançar e em quanto tempo — inclusive quando a resposta é "isso vai levar mais de uma sessão". Quem promete transformação total e imediata para qualquer tipo de dano geralmente está vendendo expectativa, não tratando fibra.</p>
+
+<h2>7. As avaliações mencionam entendimento técnico, não só simpatia</h2>
+
+<p>Simpatia importa, mas não é indicador técnico. Ao ler avaliações de outros clientes, procure menções específicas: "explicou minha porosidade", "entendeu meu tipo de cacho", "me ensinou a cuidar em casa" — esses comentários indicam método. Avaliações genéricas do tipo "adorei, super educado" são válidas, mas não dizem nada sobre competência técnica com cabelo texturizado especificamente.</p>
+
+<h2>Como o Studio do Jon aplica esses 7 sinais</h2>
+
+<p>Não escrevemos este checklist de fora — é literalmente a estrutura do nosso atendimento. Todo corte no Studio do Jon começa pela <a href="/metodo">Leitura de Fio</a>, um diagnóstico de 7 etapas que avalia porosidade, curvatura, densidade, elasticidade e histórico químico antes de qualquer tesoura encostar no fio. A técnica de corte (seca, molhada ou híbrida) é decidida a partir desse diagnóstico, não por hábito. Detalhamos, com mais profundidade técnica, por que esse tipo de diagnóstico faz tanta diferença no <a href="/blog/por-que-saloes-falham-cabelo-texturizado">guia sobre por que a maioria dos salões falha com cabelo texturizado</a>.</p>
+
+<p>A Leitura de Fio custa R$ 80 isolada, mas está incluída sem custo extra em qualquer <a href="/agendar">Corte com o Jon (R$ 190)</a>. Se quiser aplicar este checklist você mesma antes de decidir, <a href="/agendar">agende uma avaliação</a> e veja se cada um dos 7 sinais aparece no seu atendimento.</p>
+
+<h2>Perguntas frequentes</h2>
+
+<h3>Qual é o sinal mais confiável de que um salão realmente entende de cabelo cacheado?</h3>
+<p>Existir algum tipo de diagnóstico estruturado antes do corte — perguntas sobre porosidade, histórico químico e comportamento do fio seco, não só "que corte você quer". Salão que parte direto para a tesoura sem entender a fibra está trabalhando por template, não por técnica.</p>
+
+<h3>Corte a seco é obrigatório para ser considerado um bom especialista em cachos?</h3>
+<p>Não isoladamente — o que importa é se a técnica foi escolhida com base no seu padrão de encolhimento, não por hábito do salão. Um profissional que corta 100% molhado sem nunca avaliar a seco, em qualquer tipo de cacho, é um sinal de alerta.</p>
+
+<h3>Preço alto é garantia de que o salão é especialista de verdade?</h3>
+<p>Não. Preço reflete posicionamento de mercado, não necessariamente técnica. Os sinais técnicos deste checklist são indicadores mais confiáveis do que o valor cobrado.</p>`
   },
 
   {
@@ -907,6 +1148,7 @@ export const posts = [
     metaDescription: 'Quer fazer a transição capilar em BH sem sofrimento? Conheça as melhores técnicas de corte a seco e cronograma para reativar seus cachos com o especialista Jon.',
     keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, transição capilar bh, big chop bh, especialista em cachos bh',
     date: '19 de Junho, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-transicao-capilar.png',
@@ -1006,6 +1248,8 @@ export const posts = [
       <h2>O Papel da Leitura de Fio na Transição Capilar</h2>
       <p>Cada cabelo reage de uma forma durante a transição. Em algumas pessoas, a curvatura natural se revela facilmente; em outras, a raiz nasce indefinida devido ao estresse mecânico e químico acumulado. Para passar por isso sem errar no tratamento e nos produtos, o ideal é ter um diagnóstico preciso.</p>
       <p>No Studio do Jon, antes de qualquer corte ou indicação de cronograma na transição, nós realizamos a <a href="/metodo">Leitura de Fio</a>. São 7 etapas de análise técnica onde avaliamos a elasticidade da sua fibra, identificamos a verdadeira curvatura que está nascendo e definimos o corte de transição progressiva ideal que valorize a sua imagem pessoal sem radicalismos. Assim, você passa pela transição sabendo exatamente o que esperar e como cuidar do seu cabelo em casa.</p>
+
+      <p>Para o panorama técnico completo da transição capilar — incluindo o ponto exato onde o fio mais quebra e os disfarces químicos que sabotam o processo — veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
         <h3>Pensando em voltar ao seu cabelo natural?</h3>
@@ -2885,6 +3129,7 @@ export const posts = [
     metaDescription: 'Corte lobo em cabelo cacheado — como fica, técnica correta e manutenção. Veja fotos antes/depois e agende sua transformação com o especialista em Belo Horizonte.',
     keywords: 'wolf cut cacheado, corte lobo cabelo cacheado, wolf cut para cachos, wolf cut 2026, corte selvagem cacho, studio do jon, o jon que cortou',
     date: '24 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Corte & Técnica',
     image: '/blog-wolf-capa.webp',
@@ -2901,7 +3146,7 @@ export const posts = [
       <p>TikTok explodiu com wolf cut em 2024/2025. O algoritmo amou os antes e depois, as celebridades adotaram e o Pinterest viu as buscas aumentarem 6x. A razão é simples: o wolf cut celebra o caos do cacho em vez de tentar domá-lo. Em um mundo cansado de controle, esse corte traz a atitude necessária.</p>
 
       <h2>A Diferença Entre Wolf Cut E Outros Cortes</h2>
-      <p><strong>Wolf Cut vs Shag:</strong> No Shag, a bagunça é democraticamente distribuída. No Wolf cut, a bagunça é estratégica, concentrando o volume no topo e o comprimento na nuca.</p>
+      <p><strong>Wolf Cut vs <a href="/blog/shag-cacheado-corte-tendencia-2026">Shag</a>:</strong> No Shag, a bagunça é democraticamente distribuída. No Wolf cut, a bagunça é estratégica, concentrando o volume no topo e o comprimento na nuca.</p>
       <p><strong>Wolf Cut vs Corte em Camadas Normal:</strong> Camadas normais são previsíveis e estruturadas. O Wolf cut é selvagem e tem um contraste visual muito mais marcado.</p>
       <p><strong>Wolf Cut vs Bob com Camadas:</strong> O Bob é elegante e controlado. O Wolf cut é descontrolado — mas com total intencionalidade artística.</p>
 
@@ -2984,6 +3229,7 @@ export const posts = [
     metaDescription: 'O shag cacheado é tendência in 2026, mas feito errado vira bagunça. Especialista em cachos em BH explica como o corte funciona em cada curvatura.',
     keywords: 'shag cacheado, corte shag bh, tendências corte 2026, corte em camadas cachos, visagismo cacheado, cabeleireiro bh, studio do jon, o jon que cortou',
     date: '21 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Tendências & Estilo',
     image: '/blog-shag-capa.webp',
@@ -3025,7 +3271,7 @@ export const posts = [
 
       <h2>Shag Cacheado x Outros Cortes (Qual É a Diferença?)</h2>
       <p><strong>Shag vs Bob com Camadas:</strong> Bob é mais estruturado. Shag é propositalmente bagunçado. Um tem intenção geométrica. Outro tem intenção artística.</p>
-      <p><strong>Shag vs Wolf Cut:</strong> Wolf cut tem mais peso na parte de trás e mais leveza em cima. Shag distribui melhor. Wolf é mais selvagem. Shag é mais acessível.</p>
+      <p><strong>Shag vs <a href="/blog/wolf-cut-cabelos-cacheados-tendencia">Wolf Cut</a>:</strong> Wolf cut tem mais peso na parte de trás e mais leveza em cima. Shag distribui melhor. Wolf é mais selvagem. Shag é mais acessível.</p>
       <p><strong>Shag vs Corte em Camadas Normal:</strong> Camadas normais são mais previsíveis. Shag celebra a irregularidade. Um você escova e fica perfeito. Outro você escova e fica... bem, mais interessante.</p>
 
       <h2>Quando Shag Funciona (E Quando Não)</h2>
@@ -3735,6 +3981,7 @@ export const posts = [
     metaDescription: 'Passando pela transição capilar? Especialista em cachos em BH explica como identificar danos por químicas mascaradas e recuperar a textura natural.',
     keywords: 'transição capilar bh, botox capilar estraga cachos, como recuperar cachos com quimica, corte a seco bh, Studio do Jon, big chop bh, cabelo com duas texturas',
     date: '14 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-transicao-quimica.webp',
@@ -3752,6 +3999,7 @@ export const posts = [
 
       <h2>O Método Jon e a precisão do corte a seco crespo</h2>
       <p>A única saída honesta para o golpe do alisamento natural é a tesoura. Mas isso não significa um Big Chop traumático. Usando técnicas de angulação e <strong>Corte a Seco</strong>, eu esculpo o seu cabelo tirando a química aos poucos, disfarçando a diferença de texturas.</p>
+      <p>Para entender a transição capilar por completo — do ponto de quebra entre as duas texturas até o cronograma de cuidados — veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
     `
   },
   {
@@ -3926,6 +4174,7 @@ export const posts = [
     metaDescription: 'Por que o cabelo fica diferente em casa? Especialista em cachos em BH explica os fatores técnicos e como reproduzir a finalização perfeita.',
     keywords: 'cabelo no salão vs em casa, finalização de cachos, educação capilar, Studio do Jon, corte personalizado BH, autonomia capilar',
     date: '13 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Educação Capilar',
     image: '/blog-salao-casa.webp',
@@ -3948,7 +4197,7 @@ export const posts = [
 
       <p><strong>"Básico? Hoje não, Faro."</strong> Meu objetivo não é que você venha aqui toda semana. É que você aprenda a dominar o seu próprio cabelo. Se você entende a lógica do seu fio, o "mistério" do salão desaparece e você assume o controle da sua identidade.</p>
 
-
+      <p>Esse "descolamento" entre salão e casa costuma ser sintoma de falta de diagnóstico. Veja os <a href="/blog/como-escolher-especialista-cabelo-cacheado-bh">7 sinais técnicos de um especialista real em cabelo cacheado</a> para saber o que perguntar antes de agendar em qualquer salão.</p>
     `
   },
   {
@@ -4266,6 +4515,7 @@ export const posts = [
     metaDescription: 'Sulfato em shampoo: vilão ou aliado? Especialista em cachos em BH explica quais evitar, quais são aceitáveis e como escolher sem erro.',
     keywords: 'sulfato no shampoo, shampoo sem sulfato cabelo cacheado, o que é sulfato, build up capilar, low poo no poo, surfactante forte fraco, limpeza profunda cabelo crespo',
     date: '07 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-sulfato.webp',
@@ -4347,6 +4597,8 @@ export const posts = [
       </blockquote>
 
       <p>No Studio do Jon, eu avalio o histórico do seu fio antes de qualquer indicação. Porque cabelo saudável não é sobre seguir regras cegas, é sobre entender o que o seu fio está pedindo.</p>
+
+      <p>Sulfato em excesso é uma das causas mais comuns de alta porosidade. Para entender a fundo como isso afeta a cutícula, veja o <a href="/blog/guia-completo-porosidade-ph-capilar-cachos">guia completo de porosidade e pH capilar</a>.</p>
     `
   },
   {
@@ -4368,6 +4620,7 @@ export const posts = [
     metaDescription: 'Seu produto capilar não funciona? O problema pode ser a porosidade. Aprenda a fazer o teste correto e adapte a sua rotina em BH.',
     keywords: 'teste de porosidade, porosidade alta o que fazer, cabelo cacheado ressecado, cronograma capilar porosidade, Studio do Jon, especialista em cachos BH',
     date: '06 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-porosidade.webp',
@@ -4474,6 +4727,8 @@ export const posts = [
       <h2>Conclusão: Conhecimento é Liberdade</h2>
       <p>Aqui no Studio do Jon, meu papel é te dar as ferramentas para você ser mestre do seu próprio cacho. Entender a porosidade é o primeiro passo para um cabelo saudável, brilhante e, acima de tudo, livre.</p>
       <p>Se o seu teste deu "Porosidade Alta" e você sente que o cabelo está pedindo socorro, talvez seja a hora de uma análise profissional aqui no Studio para recuperarmos a saúde dessa fibra. O teste do copo é um ótimo termômetro caseiro, mas a versão profissional dele é a Análise Molhada do <a href="/metodo">Método Leitura de Fio</a>, onde medimos a porosidade real mecha a mecha antes de definir qualquer tratamento.</p>
+
+      <p>Para o guia técnico completo — porosidade, pH e como os dois se conectam — veja <a href="/blog/guia-completo-porosidade-ph-capilar-cachos">porosidade e pH capilar: o guia completo</a>.</p>
     `
   },
   {
@@ -4591,6 +4846,7 @@ export const posts = [
     metaDescription: 'Nem todo frizz é dano. Especialista em cachos em BH explica como diferenciar o frizz natural de textura daquele que avisa que o fio está fraco.',
     keywords: 'frizz cabelo cacheado, frizz ou dano, transição capilar, saúde capilar, especialista em cachos BH, corte a seco',
     date: '06 de Abril, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Saúde Capilar',
     image: '/blog-frizz-dano.webp',
@@ -4683,71 +4939,8 @@ export const posts = [
 
       <p>Se o seu frizz é apenas parte da sua identidade e volume, abrace-o. Mas se ele está deixando seu cabelo frágil e sem forma, é hora de olhar para a saúde do seu fio com mais critério. O diagnóstico começa pela observação: toque seu cabelo, sinta a textura e observe como ele reage aos produtos. O autoconhecimento capilar é o maior aliado da sua liberdade.</p>
 
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
-      </div>
-    `
-  },
-  {
-    id: 5,
-    slug: 'fim-do-bad-hair-day-after',
-    faqSchema: {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-                {
-                      "@type": "Question",
-                      "name": "Como evitar o famoso 'bad hair day' ao acordar?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "O segredo é proteger os fios à noite usando fronha ou touca de cetim e prender o cabelo em um coque abacaxi bem solto."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "O que fazer quando o cacho acorda sem definição?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Em vez de lavar, umedeça levemente os fios com um spray reativador ou leave-in líquido e amasse de baixo para cima para reativar o formato."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "Qual o papel do gel ou gelatina na finalização?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "O gel ou gelatina cria uma película protetora ao redor do cacho que segura a forma por mais tempo, garantindo day afters muito mais tranquilos."
-                      }
-                }
-          ]
-    },
-    title: 'Fim do Bad Hair Day: 5 Segredos | Jon',
-    excerpt: 'Aprenda a manter a definição dos seus cachos sem sofrimento.',
-    metaDescription: 'Day after incrível sem lavar o cabelo? Especialista em cachos em BH ensina 5 técnicas para refrescar e definir as curvaturas no dia seguinte.',
-    keywords: 'Finalização de cachos, day after cacheadas, como definir cabelos crespos, especialista em cachos BH, corte a seco Belo Horizonte',
-    date: '05 de Abril, 2026',
-    author: 'Jon',
-    category: 'Cuidado Capilar',
-    image: '/blog-day-after.webp',
-    content: `
-      <p>Sabe aquele desespero de acordar, olhar no espelho e ver que os cachos que você demorou uma era para finalizar ontem resolveram tirar férias hoje? Pois é, a gente sabe que o day after pode ser um verdadeiro campo de batalha. Mas ó: ter definição duradoura não é sorte nem milagre, é ciência aplicada com os movimentos certos.</p>
+      <p>Para entender a física completa do frizz — cutícula, porosidade e clima — veja o <a href="/blog/guia-completo-frizz-cabelo-cacheado">guia completo do frizz em cabelo cacheado</a>.</p>
 
-      <p>Aqui no Studio O Jon que Cortou, eu não acredito em fórmulas mágicas. Eu acredito em saúde capilar. O seu cacho só "desmancha" rápido se ele estiver gritando por socorro (ou por água!). Se a fibra está porosa e desidratada, não existe geléia capilar no mundo que segure esse look por muito tempo.</p>
-
-      <p>Como seu especialista de confiança aqui no bairro Caiçaras, em BH, separei 5 segredos técnicos (mas descomplicados) que vão mudar sua relação com o travesseiro:</p>
-
-      <ul>
-        <li><strong>A Regra de Ouro da Água:</strong> A técnica da fitagem precisa de água, muita água! Se o seu cabelo estiver "bebendo" o creme e as fitas não estiverem se formando com aquele brilho espelhado, use o borrifador. O creme sela a hidratação, mas quem dá a forma é a água.</li>
-        <li><strong>Proteção Noturna é Lei:</strong> Dormir com o cabelo solto em fronha de algodão é pedir pro frizz ganhar a briga. A fronha de cetim ou a touca são suas melhores amigas. Elas evitam o atrito que destrói a definição enquanto você sonha com o seu próximo look.</li>
-        <li><strong>Menos é Mais no Refazer:</strong> Viu um cacho desfeito? Não precisa molhar a cabeça toda! Use um pouquinho do nosso Óleo Reparador de Semente de Uva ou um tiquinho de geléia apenas na mecha rebelde. Entuchar o cabelo de creme todo dia só vai dar peso e causar o acúmulo de resíduos.</li>
-        <li><strong>Conheça sua Curvatura:</strong> Do 2ABC ao 4ABC, cada fio reage de um jeito. Um ondulado pede produtos mais leves, enquanto um crespo precisa de nutrição potente. Usar o produto errado é o caminho mais curto pro desastre no dia seguinte.</li>
-        <li><strong>Corte Estratégico a Seco:</strong> Se o seu corte está reto ou sem camadas, o peso vai "esticar" o cacho e a definição vai embora rapidinho. Um corte feito a seco, respeitando o seu balanço natural, garante que o cabelo tenha força para se manter definido por dias.</li>
-      </ul>
-
-      <p>Minha missão aqui no Studio é a Educação Capilar. Eu quero que você aprenda a cuidar do seu cabelo em casa, combatendo a dependência do salão. Cabelo bonito é aquele que te traz liberdade, risadas e zero estresse na frente do espelho.</p>
-
-      <p>Quer descobrir o ritual exato para o seu tipo de fio e nunca mais sofrer com o day after?</p>
-      
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
         <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
       </div>
@@ -4791,6 +4984,7 @@ export const posts = [
     metaDescription: 'Quer parar de lutar contra a textura do seu cabelo? Especialista em cachos em BH fala sobre o movimento de transição e o poder do corte certo.',
     keywords: 'transição capilar, aceitação cabelo natural, como assumir os cachos, autoestima capilar, especialista em cachos BH, libertar a curvatura',
     date: '30 de Março, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-liberdade-2026.webp',
@@ -4822,6 +5016,8 @@ export const posts = [
       <p>No meu Studio no Caiçaras, o foco é você. Eu priorizo a escuta ativa para entender sua rotina antes de encostar na tesoura. Aqui, a gente une a ciência do fio com o acolhimento de quem sabe o que você está passando.</p>
 
       <p>Se você está sentindo aquele "fogo no rabo" para mudar, mas ainda tem receio, vem conversar comigo. Vamos transformar esse medo em um visual que te dê orgulho.</p>
+
+      <p>Para o passo a passo técnico completo da transição — Big Chop vs cortes progressivos, cronograma e os cuidados no ponto mais frágil do fio — veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
 
       <p><strong>"Seu cabelo é a sua coroa natural. É hora de parar de escondê-la."</strong></p>
 
@@ -4870,6 +5066,7 @@ export const posts = [
     excerpt: 'Se você mora em BH, sabe que o clima é uma montanha-russa. Entenda como o frizz funciona e como manter seus cachos impecáveis no Caiçaras.',
     metaDescription: 'Sofre com frizz em Belo Horizonte? Descubra como o clima da capital mineira afeta o cabelo cacheado e veja dicas para manter a definição.',
     date: '30 de Março, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Cuidado Capilar',
     content: `
@@ -4895,7 +5092,9 @@ export const posts = [
       <p>Às vezes, por mais que você use o melhor creme do mundo, o frizz não vai embora. E sabe por quê? Porque o seu cabelo pode estar com a porosidade lá no alto ou precisando de uma reposição de massa que o condicionador de mercado não resolve.</p>
       
       <p>O frizz excessivo é o jeito do seu cabelo dizer: "Jon, me ajuda!". Não adianta tentar "domar" o cacho se a saúde da fibra está comprometida.</p>
-      
+
+      <p>Para entender a física do frizz com mais profundidade — cutícula, porosidade e a diferença entre frizz saudável e dano real — veja o <a href="/blog/guia-completo-frizz-cabelo-cacheado">guia completo do frizz em cabelo cacheado</a>.</p>
+
       <p>Se você quer entender as reais necessidades do seu cabelo e acabar de vez com o frizz, conheça o nosso <a href="/metodo">Método Leitura de Fio</a>. O primeiro passo é <a href="/agendar">agendar seu horário</a> no Studio do Jon para um diagnóstico científico e personalizado.</p>
     `,
     image: '/blog-frizz.webp'
@@ -4906,6 +5105,7 @@ export const posts = [
     title: 'Transição Capilar: Corte a Seco é Aliado | Jon',
     excerpt: 'Decidir parar com a química e assumir a textura natural é um ato de coragem em BH. Entenda como o corte a seco facilita essa jornada no Caiçaras.',
     date: '30 de Março, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Transição Capilar',
     image: '/blog-transicao-bh.webp',
@@ -4961,6 +5161,7 @@ export const posts = [
 
       <h2>Além do corte: Saúde da Fibra em BH</h2>
       <p>A transição não é só sobre tesoura; é sobre devolver nutrientes para o fio que está nascendo. Aqui no Studio, aliamos o corte a seco com tratamentos de alta performance para garantir que seu novo cabelo cresça forte, brilhante e com definição desde a raiz.</p>
+      <p>Quer entender a transição capilar do início ao fim — do ponto de quebra entre raiz e química ao cronograma de cuidados? Veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
     `
   },
   {
@@ -5000,6 +5201,7 @@ export const posts = [
     excerpt: 'Cabelo que não retém hidratação? Entenda o papel da porosidade capilar e como a técnica LOC pode salvar seus cachos.',
     metaDescription: 'Cabelo que resseca rápido tem problema de retenção. Especialista em cachos em BH explica como a porosidade afeta o fio e qual o tratamento ideal.',
     date: '30 de Março, 2026',
+    dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-ressecamento.webp',
@@ -5053,7 +5255,7 @@ export const posts = [
 
       <blockquote>"Aqui no Studio do Jon, a gente não corta só cabelo. A gente corta o que tá te impedindo de brilhar."</blockquote>
 
-
+      <p>Para entender porosidade e pH a fundo — testes, causas e como os dois se relacionam — veja o <a href="/blog/guia-completo-porosidade-ph-capilar-cachos">guia completo de porosidade e pH capilar</a>.</p>
     `
   },
   {

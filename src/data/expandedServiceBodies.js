@@ -565,6 +565,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
   <li>Confiança de que qualquer decisão futura sobre seu cabelo será informada por dado, não por achismo ou tendência de rede social.</li>
 </ul>
 
+<p>A Leitura de Fio é realizada presencialmente no Studio do Jon, no bairro Caiçaras, em Belo Horizonte.</p>
+
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende sua Leitura de Fio</a> e finalmente entenda seu cabelo.</p>`,
 
@@ -647,6 +649,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h2>Investimento e Duração</h2>
 <p>R$ 230 no valor promocional (preço normal R$ 320). Duração total da sessão: aproximadamente 60 minutos, distribuídos entre Leitura de Fio Rápida (10 min), Tratamento Personalizado (25 min), Corte Híbrido (20 min) e Finalização Premium (5 min). O valor inclui diagnóstico, tratamento sob medida conforme porosidade e histórico do fio, corte híbrido completo (molhado + lapidação a seco) e finalização educativa para replicação em casa.</p>
+
+<p>Combo realizado no Studio do Jon, no bairro Caiçaras, em Belo Horizonte.</p>
 
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende seu Combo Corte + Tratamento</a> e saia do Studio com o cabelo estruturalmente mais saudável e visualmente transformado.</p>`,
@@ -762,6 +766,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <h3>Com que frequência preciso voltar?</h3>
 <p>O intervalo recomendado é de 3 a 4 meses entre cortes completos, período em que o crescimento normal começa a alterar o ângulo de queda do cacho e distorcer o contorno original. Entre um corte completo e outro, a Manutenção de Corte (R$ 130) é suficiente para quem só precisa ajustar pontas sem reavaliar a curvatura geral.</p>
 
+<p>O Corte com o Jon é feito presencialmente no Studio do Jon, no Caiçaras, em Belo Horizonte.</p>
+
 <h2>Agendamento</h2>
 
 <p><a href="/agendar">Agende seu Corte com o Jon</a> e experimente um corte pensado desde o diagnóstico até a manutenção em casa — não apenas o resultado do dia no espelho do estúdio.</p>`,
@@ -866,6 +872,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h3>Qual o investimento?</h3>
 <p>Morena Iluminada e Luzes começam em R$ 699, valor que varia conforme comprimento e densidade do cabelo. Inclui teste de mecha, aplicação técnica completa, tratamento imediato pós-coloração e finalização.</p>
+
+<p>Aplicação realizada no Studio do Jon, em Belo Horizonte, por quem entende de coloração em cabelo com curvatura.</p>
 
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende sua Morena Iluminada</a> e se prepare para sair brilhando.</p>`,
@@ -983,6 +991,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <h2>Investimento</h2>
 <p>R$ 130 por sessão. Duração: aproximadamente 45 minutos. Inclui análise personalizada, escolha técnica do tratamento (hidratação, nutrição ou reconstrução), aplicação e finalização.</p>
 
+<p>Tratamento realizado no Studio do Jon, no Caiçaras, em Belo Horizonte.</p>
+
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende seu Tratamento Personalizado</a> e comece a recuperar a saúde do seu cabelo com um protocolo baseado em diagnóstico, não em suposição.</p>`,
 
@@ -1042,6 +1052,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h2>Combinação Ideal: Coloração + Corte</h2>
 <p>Se você vai fazer Coloração Completa, recomendamos agendar o corte cerca de uma semana depois. O corte complementa o resultado da cor, remove qualquer ponta que tenha sofrido mais desgaste no processo, e valida a nova cor já em forma definitiva.</p>
+
+<p>Coloração técnica feita no Studio do Jon, em Belo Horizonte, com foco total na saúde do cacho.</p>
 
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende sua Coloração Completa</a> e prepare-se para a transformação, com segurança técnica em cada etapa.</p>
@@ -1107,6 +1119,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h2>Investimento</h2>
 <p>R$ 130. Duração aproximada de 45 minutos. Inclui análise rápida, lapidação seca e finalização.</p>
+
+<p>Serviço exclusivo do Studio do Jon, no bairro Caiçaras, em Belo Horizonte, para clientes que já passaram pela Leitura de Fio.</p>
 
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende sua Manutenção de Corte</a> e mantenha sua forma impecável entre os cortes completos.</p>
@@ -1219,6 +1233,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Para porosidade alta em processo de recuperação, o intervalo costuma ser mensal nos primeiros 3 a 4 ciclos. Depois que a cutícula estabiliza — o que a Leitura de Fio confirma sessão a sessão — o espaçamento pode aumentar para manutenção trimestral.</p>
 
 <p>Se o seu cabelo "bebe" água e resseca de novo no dia seguinte, o problema provavelmente está na cutícula, não na quantidade de produto que você usa. O primeiro passo é sempre o diagnóstico: <a href="/metodo">conheça o método Leitura de Fio</a> e entenda o que está acontecendo com o seu fio antes de investir em mais um produto que promete e não resolve. Para agendar sua avaliação e infusão de carga hídrica, <a href="/agendar">marque seu horário</a>.</p>
+
+<p>Tratamento disponível no Studio do Jon, no bairro Caiçaras, em Belo Horizonte.</p>
 `,
   'inside-trp': `<h1>Reconstrução Premium — Inside TRP | Studio do Jon</h1>
 <h2>Por que a hidratação comum não resolve fio quebrando</h2>
@@ -1256,6 +1272,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Sim, com uma ressalva de timing: por envolver reposição estrutural e uma etapa de balanceamento, o resultado final — cacho mais definido, com elasticidade e movimento — fica mais evidente 1 a 2 dias depois do procedimento, quando o fio termina de assentar. Se o compromisso for já no dia seguinte, avisa na Leitura de Fio para ajustarmos o planejamento.</p>
 
 <p>Se os sinais acima batem com o que você está vendo no espelho ou no ralo do banho, o primeiro passo é o diagnóstico, não a aplicação. <a href="/metodo">Conheça como funciona a Leitura de Fio</a> e entenda o que ela avalia antes de qualquer procedimento. Para agendar a Reconstrução Premium — Inside TRP com avaliação incluída, <a href="/agendar">marque seu horário aqui</a>.</p>
+
+<p>Protocolo aplicado no Studio do Jon, em Belo Horizonte, para quem precisa de reconstrução capilar de verdade.</p>
 `,
   'protocolo-blindagem-ph-reconstrucao': `<h1>Protocolo Blindagem de pH e Reconstrução | Studio do Jon</h1>
 <h2>Por que pH desequilibrado e dano estrutural andam juntos</h2>
@@ -1291,6 +1309,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Não é um tratamento de manutenção mensal. A frequência normal é a cada 45 a 60 dias enquanto o fio ainda carrega dano estrutural relevante, com espaçamento maior conforme os sinais (elasticidade, porosidade) se estabilizam. Repetir com frequência maior que a necessária, em fio que já respondeu bem, tende a ser desperdício — a própria leitura de acompanhamento indica quando espaçar.</p>
 
 <p>Se o seu fio está entre dois mundos — opaco e sem definição, mas também quebrando ou perdendo elasticidade — vale entender com precisão qual é a proporção real do problema antes de tratar. <a href="/metodo">Conheça a Leitura de Fio</a> e <a href="/agendar">agende seu horário</a> para começar pelo diagnóstico.</p>
+
+<p>Protocolo de recuperação intensiva realizado no Studio do Jon, em Belo Horizonte, no bairro Caiçaras.</p>
 `,
   'ritual-reposicao-lipidica-nutricao': `<h1>Ritual de Reposição Lipídica e Nutrição | Studio do Jon</h1>
 <h2>O que é "nutrição" capilar — e por que fio cacheado perde lipídio mais rápido</h2>
@@ -1334,6 +1354,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Depende do tipo de fio e da rotina de lavagem, mas como referência: cabelos cacheados e crespos (3A a 4C), pela dificuldade estrutural de reposição natural de sebo já explicada, geralmente se beneficiam de repetir a cada 3 a 4 semanas. Fios ondulados (2A a 2C) costumam sustentar por mais tempo, a cada 5 a 6 semanas. A Leitura de Fio na próxima visita indica se o intervalo está adequado ou precisa ajustar.</p>
 
 <p>Para agendar o Ritual de Reposição Lipídica e Nutrição, <a href="/agendar">clique aqui para marcar seu horário</a>. Se quiser entender em profundidade como funciona nosso diagnóstico antes de qualquer serviço, veja <a href="/metodo">como funciona o método Leitura de Fio</a>.</p>
+
+<p>Ritual aplicado no Studio do Jon, em Belo Horizonte, especialmente pensado para curvaturas 2 a 4 ressecadas.</p>
 `,
   'lavar-finalizar': `<h1>Lavar e Finalizar | Studio do Jon</h1>
 <h2>Por que a técnica de lavagem importa tanto quanto o produto</h2>
@@ -1373,6 +1395,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Esse é o objetivo central do serviço. Cada etapa é explicada no momento em que acontece, não só relatada depois. Você sai sabendo por que aquela quantidade de produto, por que aquela ordem de aplicação e por que aquele ponto de secagem — não é um mistério guardado no salão.</p>
 
 <p>Quer sentir a diferença que a técnica certa faz no seu cacho? <a href="/agendar">Agende seu horário</a> ou entenda primeiro os fundamentos por trás de tudo isso na <a href="/metodo">Leitura de Fio</a>.</p>
+
+<p>Sessão realizada no Studio do Jon, no Caiçaras, em Belo Horizonte, por quem vive de entender cabelo com curvatura.</p>
 `,
   'pacote-cachos-perfeitos': `<h1>Pacote Cachos Perfeitos | Studio do Jon</h1>
 <h2>Por que um pacote, e não uma sessão isolada</h2>
@@ -1407,6 +1431,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>É desenhado pensando em quem está começando ou corrigindo uma rota, mas cliente antigo com um problema específico — por exemplo, dano recente por calor ou uma fase de ressecamento fora do padrão — também se beneficia do formato. O critério não é "há quanto tempo você é cliente", é se o cabelo precisa de correção estrutural e de saúde ao mesmo tempo, acompanhada de perto.</p>
 
 <p>Se você está nessa fase de transição, ou simplesmente decidiu levar o cuidado com o cacho a sério pela primeira vez, o próximo passo é <a href="/agendar">agendar sua primeira sessão</a>. Para entender em detalhe como funciona o diagnóstico que guia todo o pacote, veja como é a <a href="/metodo">Leitura de Fio</a>.</p>
+
+<p>Um plano de cuidado contínuo, com acompanhamento presencial no Studio do Jon, em Belo Horizonte.</p>
 `,
   'retoque-raiz': `<h1>Retoque de Raiz | Studio do Jon</h1>
 <h2>Coloração ganha textura errada quando quem faz o retoque não entende cacho</h2>
@@ -1442,5 +1468,7 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Não. O protocolo se aplica a qualquer coloração já existente — Coloração Completa, Morena Iluminada ou Luzes. O que muda entre os casos é o grau de contraste entre raiz natural e comprimento processado, que influencia o intervalo ideal entre retoques, não a lógica do serviço.</p>
 
 <p>Retoque de raiz aqui não é manutenção genérica de cor — é continuação do diagnóstico que começou no seu primeiro atendimento. Para agendar, <a href="/agendar">clique aqui para agendar</a>. Para entender a lógica por trás de cada etapa, veja como funciona a <a href="/metodo">Leitura de Fio</a>.</p>
+
+<p>Serviço do Studio do Jon, em Belo Horizonte, para manter a cor em dia sem descuidar da saúde do cacho.</p>
 `
 };

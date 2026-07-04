@@ -49,6 +49,11 @@
     width: 26px;
     height: 26px;
   }
+  /* Clears the full-width .sticky-bottom-cta bar (bottom:0) that blog
+     post pages render, so the two fixed elements don't overlap. */
+  .whatsapp-float--above-sticky-bar {
+    bottom: 76px;
+  }
 }
 
 /* Respect reduced motion */

@@ -37,7 +37,6 @@ export const blogLinkMap = [
   // Day-after / secagem cluster
   { source: 'day-after-cabelo-cacheado-bh-como-reativar-sem-lavar', target: 'secagem-cachos-difusor-vs-natural', anchor: 'secagem com difusor' },
   { source: 'secagem-cachos-difusor-vs-natural', target: 'day-after-cabelo-cacheado-bh-como-reativar-sem-lavar', anchor: 'reativação de cachos' },
-  { source: 'day-after-cabelo-cacheado-bh-como-reativar-sem-lavar', target: 'fim-do-bad-hair-day-after', anchor: 'guia anti-frizz' },
 
   // Transição cluster
   { source: 'transicao-capilar-sem-sofrimento-guia-cachos', target: 'transicao-capilar-bh-corte-seco', anchor: 'roteiro de corte' },

@@ -16,12 +16,18 @@ const WhatsAppButton = () => {
     return null;
   }
 
+  // Individual blog posts render their own full-width sticky booking bar
+  // (.sticky-bottom-cta, bottom:0) on mobile — raise the bubble above it
+  // instead of letting both fixed elements occupy the same bottom-right
+  // corner.
+  const isBlogPost = /^\/blog\/.+/.test(location.pathname);
+
   return (
-    <a 
-      href={waUrl} 
-      target="_blank" 
-      rel="noopener noreferrer" 
-      className="whatsapp-float"
+    <a
+      href={waUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`whatsapp-float${isBlogPost ? ' whatsapp-float--above-sticky-bar' : ''}`}
       aria-label="Falar conosco no WhatsApp"
     >
       <svg

@@ -150,9 +150,9 @@ const ServicesPage = () => {
                   {service.description && service.description.length > 100 && (
                     <button 
                       type="button" 
-                      className="btn-toggle-desc" 
+                      className="btn-toggle-desc"
                       onClick={() => toggleCard(service.id)}
-                      style={{ background: 'none', border: 'none', color: service.highlight ? 'var(--color-yellow)' : 'var(--color-accent)', cursor: 'pointer', fontSize: '0.85rem', padding: '4px 0', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, marginBottom: '1rem' }}
+                      style={{ background: 'none', border: 'none', color: service.highlight ? 'var(--color-yellow)' : 'var(--color-accent)', cursor: 'pointer', fontSize: '0.85rem', padding: '12px 0', minHeight: '44px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, marginBottom: '0.3rem' }}
                     >
                       {expandedCards[service.id] ? 'Ver menos ▲' : 'Ver mais ▼'}
                     </button>

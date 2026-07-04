@@ -1618,7 +1618,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           <Link to="/" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
             <span>← Início</span>
           </Link>
-          <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: '"DM Serif Display", serif', color: 'var(--color-primary)' }}>Studio do Jon</div>
+          <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: 'var(--serif)', color: 'var(--color-primary)' }}>Studio do Jon</div>
           <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginTop: '2px' }}>Especialista em cachos em BH</div>
         </header>
 
@@ -1644,7 +1644,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         <Link to="/" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.85rem', color: 'var(--color-primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}>
           <span>← Início</span>
         </Link>
-        <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: '"DM Serif Display", serif', color: 'var(--color-primary)' }}>Studio do Jon</div>
+        <div style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: 'var(--serif)', color: 'var(--color-primary)' }}>Studio do Jon</div>
         <div style={{ fontSize: '0.85rem', color: 'var(--color-accent)', fontWeight: 700, letterSpacing: '0.5px', textTransform: 'uppercase', marginTop: '2px' }}>Especialista em cachos em BH</div>
         
         {isDemoMode && (

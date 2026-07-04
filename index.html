@@ -28,7 +28,7 @@
 
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="google-site-verification" content="THs63AhNeGJtfN8EPg0uhiaDPm_075Wsa_zzBoE8mIU" />
     
     <!-- PWA & Mobile Install (iPhone/Android) -->
@@ -60,10 +60,52 @@
     
     <!-- Schema Markup: injected per-page by prerender.js at build time, right before Google Fonts below (script#dynamic-page-schema) -->
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@700;800&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Self-hosted fonts (moved off fonts.googleapis.com to drop the third-party
+         request/redirect/DNS+TLS hop; files live in /public/fonts, latin subset only) -->
+    <style>
+      @font-face {
+        font-family: 'Bricolage Grotesque';
+        font-style: normal;
+        font-weight: 700;
+        font-display: swap;
+        src: url('/fonts/bricolage-grotesque-700.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Bricolage Grotesque';
+        font-style: normal;
+        font-weight: 800;
+        font-display: swap;
+        src: url('/fonts/bricolage-grotesque-800.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/fonts/inter-400.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('/fonts/inter-500.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'JetBrains Mono';
+        font-style: normal;
+        font-weight: 500;
+        font-display: swap;
+        src: url('/fonts/jetbrains-mono-500.woff2') format('woff2');
+      }
+    </style>
 
 
 

@@ -11,7 +11,9 @@ A Leitura de Fio no Studio do Jon segue um protocolo de 7 etapas: anamnese da ro
 
 Essa leitura aprofundada embasa a próxima decisão, seja um corte híbrido personalizado, visagismo de cachos, descoloração com proteção, ou um protocolo de tratamento sob medida. O valor de R$ 80 é 100% revertido em crédito se você fechar um corte ou tratamento no mesmo mês, funcionando como uma entrada — a análise acaba saindo de graça.
 
-Saindo daqui você leva três coisas no bolso: orientação técnica de produtos (chega de desperdiçar com cremes errados indicados por influenciadores), um mapa de finalizações ideais para sua anatomia capilar, e um direcionamento preciso de corte e volume baseado na física do seu fio e formato de rosto.`,
+Saindo daqui você leva três coisas no bolso: orientação técnica de produtos (chega de desperdiçar com cremes errados indicados por influenciadores), um mapa de finalizações ideais para sua anatomia capilar, e um direcionamento preciso de corte e volume baseado na física do seu fio e formato de rosto.
+
+Atendimento presencial no Studio do Jon, no bairro Caiçaras, em Belo Horizonte.`,
     price: 80,
     priceType: 'Fixo',
     promoPrice: null,
@@ -32,7 +34,9 @@ Em seguida, você recebe uma restauração profunda (20 min) que devolve maciez,
 
 A finalização é bespoke: escolhemos o creme, gel ou leave-in conforme a curvatura e porosidade mapeadas, garantindo cachos definidos, leves e com brilho duradouro. Resultado: você sai com cabelo recuperado, cortado com design e já sabendo como manter em casa.
 
-Combo perfeito para quem está em transição capilar, recuperando de química, ou simplesmente quer um refresh completo sem compromissos. Promoção: R$ 230 (economia de R$ 90 sobre o valor normal).`,
+Combo perfeito para quem está em transição capilar, recuperando de química, ou simplesmente quer um refresh completo sem compromissos. Promoção: R$ 230 (economia de R$ 90 sobre o valor normal).
+
+Um combo pensado para quem busca um especialista em cabelo cacheado em Belo Horizonte sem abrir mão da praticidade.`,
     price: 320,
     priceType: 'Fixo',
     promoPrice: 230,
@@ -53,7 +57,9 @@ O corte é totalmente personalizado. Muitas vezes um corte híbrido (molhado + s
 
 Nós não impomos tendências. Adaptamos cortes clássicos (shaggy, wolf cut, bob em camadas) para que funcionem com seu padrão de curvatura, sua densidade capilar e sua realidade de cuidados em casa. O objetivo é criar uma forma harmônica que valorize seus melhores traços e seja fácil de manter.
 
-Incluso: Leitura de Fio técnica completa, corte a seco/técnico com padrão real de caimento, finalização educativa (ensinamos como replicar em casa). Resultado: um cacho que cresce simétrico, que se acomoda naturalmente após lavagem, sem precisar de artifícios.`,
+Incluso: Leitura de Fio técnica completa, corte a seco/técnico com padrão real de caimento, finalização educativa (ensinamos como replicar em casa). Resultado: um cacho que cresce simétrico, que se acomoda naturalmente após lavagem, sem precisar de artifícios.
+
+O corte que é porta de entrada de quem procura um especialista em cabelo cacheado no Caiçaras, em Belo Horizonte.`,
     price: 190,
     priceType: 'Fixo',
     promoPrice: null,
@@ -74,7 +80,9 @@ Diferente de salões convencionais que aplicam descolorante bruto com volumagem 
 
 Aplicamos mechas usando um protocolo de proteção integrada (Plex protetor misturado no pó descolorante, reacidificação imediata após enxague, máscara proteica). A distribuição é estratégica, baseada em visagismo: colocamos as luzes onde elas realçam seus melhores traços e a estrutura natural do cacho.
 
-Resultado: morena iluminada elegante ou loiro natural com raiz definida, sem danificar a elasticidade, sem perder a curvatura original. O cacho mantém maciez e brilho, e a cor fica vibrante por 6-8 semanas com manutenção adequada. Ideal para quem quer transformação sutil e sofisticada que respeita a saúde capilar.`,
+Resultado: morena iluminada elegante ou loiro natural com raiz definida, sem danificar a elasticidade, sem perder a curvatura original. O cacho mantém maciez e brilho, e a cor fica vibrante por 6-8 semanas com manutenção adequada. Ideal para quem quer transformação sutil e sofisticada que respeita a saúde capilar.
+
+Serviço realizado no Studio do Jon, em Belo Horizonte, por quem entende de coloração em cabelo com curvatura.`,
     price: 699,
     priceType: 'A partir de',
     promoPrice: null,
@@ -95,7 +103,9 @@ Conversamos antes, apoiados pelos dados da sua leitura de fio anterior, para ent
 
 Com base nisso montamos um protocolo sob medida: pode ser nutrição lipídica (óleos nobres), infusão de carga hídrica (ativos de penetração), ou reposição proteica (reconstrução de córtex danificado). Aplicamos com técnica profissional, muitas vezes com calor controlado para aumentar absorção dos ativos.
 
-Resultado? Fios nutridos, sem frizz, com definição recuperada e muito mais vida. O cacho volta a brilhar, ganha elasticidade e você vê diferença desde a primeira sessão. Ideal como manutenção mensal entre cortes, ou como protocolo intensivo semanal se o cabelo está muito danificado.`,
+Resultado? Fios nutridos, sem frizz, com definição recuperada e muito mais vida. O cacho volta a brilhar, ganha elasticidade e você vê diferença desde a primeira sessão. Ideal como manutenção mensal entre cortes, ou como protocolo intensivo semanal se o cabelo está muito danificado.
+
+Disponível no Studio do Jon, no Caiçaras, para quem busca tratamento capilar especializado em Belo Horizonte.`,
     price: 130,
     priceType: 'Fixo',
     promoPrice: null,
@@ -116,7 +126,9 @@ Partimos sempre de um diagnóstico técnico para entender porosidade, elasticida
 
 A aplicação é dividida em seções conforme porosidade mapeada. Raiz primeiro (processa mais lentamente), depois pontas (já mais porosas, processam rápido). Tempo reduzido nas pontas evita sobreprocessamento e ressecamento.
 
-Finalizamos com protocolo blindagem pós-química: enxague com água filtrada, máscara proteica profunda, acidificação (sealing) para fechar as cutículas. Resultado: cabelo cacheado, crespo ou ondulado sai da cadeira com cor uniforme de raiz à ponta, fibra protegida e cacho definido, sem ressecamento — pronto para durar vibrante por 6-8 semanas.`,
+Finalizamos com protocolo blindagem pós-química: enxague com água filtrada, máscara proteica profunda, acidificação (sealing) para fechar as cutículas. Resultado: cabelo cacheado, crespo ou ondulado sai da cadeira com cor uniforme de raiz à ponta, fibra protegida e cacho definido, sem ressecamento — pronto para durar vibrante por 6-8 semanas.
+
+Coloração técnica feita no Studio do Jon, em Belo Horizonte, com foco total na saúde do cacho.`,
     price: 499,
     priceType: 'A partir de',
     promoPrice: null,
@@ -137,7 +149,9 @@ Ideal para quem tem cabelo cacheado, crespo ou ondulado e quer preservar a propo
 
 O processo: análise rápida de como o cabelo cresceu (qual seção desceu mais, há assimetria?), depois lapidação seca minuciosa cacho-a-cacho. Removemos pontas duplas, restauramos simetria, reafirmamos as linhas de corte original com ajustes de 0,5-1,5cm cirúrgicos. Tudo com cabelo seco no caimento real.
 
-Finalizamos com educação sobre como manter em casa: qual direção pentear, técnicas de finalização ajustadas à sua estrutura. Resultado: você estende a vida do corte original por mais 4-6 semanas com conforto e definição. Válido para quem cortou com o Jon nos últimos 90 dias.`,
+Finalizamos com educação sobre como manter em casa: qual direção pentear, técnicas de finalização ajustadas à sua estrutura. Resultado: você estende a vida do corte original por mais 4-6 semanas com conforto e definição. Válido para quem cortou com o Jon nos últimos 90 dias.
+
+Serviço exclusivo do Studio do Jon, no bairro Caiçaras, em Belo Horizonte, para clientes que já passaram pela Leitura de Fio.`,
     price: 130,
     priceType: 'Fixo',
     promoPrice: null,
@@ -158,7 +172,9 @@ Detox Estimulante limpa a raiz profundamente, reequilibra pH e estimula circula�
 
 Resultado: couro mais saudável, com produção de sebo equilibrada. Cabelo nasce mais forte, com raiz volumosa e mais espaço para respirar. Ideal como manutenção preventiva — recomendamos 2x por mês para cacheado/crespo (sofre mais acúmulo), 1x por mês para ondulado.
 
-Especialmente indicado para quem tem: couro oleoso (seborreia), couro com descamação (caspa, ressecamento), couro inflamado (coceira recorrente), ou acúmulo excessivo de produto (leave-in, creme, gel que criam filme impermeabilizante).`,
+Especialmente indicado para quem tem: couro oleoso (seborreia), couro com descamação (caspa, ressecamento), couro inflamado (coceira recorrente), ou acúmulo excessivo de produto (leave-in, creme, gel que criam filme impermeabilizante).
+
+Realizado no Studio do Jon, em Belo Horizonte, com foco na saúde do couro cabeludo de cabelos com curvatura.`,
     price: 180,
     priceType: 'Fixo',
     promoPrice: null,
@@ -181,7 +197,9 @@ Protocolo: aplicação do Inside TRP em toda extensão com foco em pontas, deixa
 
 Resultado durável: fios que antes quebravam apenas ao pentear agora têm elasticidade de volta. Não é mágica (dano químico severo pode deixar cicatrizes permanentes), mas é a melhor chance de recuperação que existe. Recomendado como sessão intensiva semanal por 4 semanas para danificação severa, ou mensal como manutenção preventiva após química.
 
-Combina muito bem com protocolos de blindagem pós-descoloração ou pós-coloração.`,
+Combina muito bem com protocolos de blindagem pós-descoloração ou pós-coloração.
+
+Protocolo aplicado no Studio do Jon, em Belo Horizonte, para quem precisa de reconstrução capilar de verdade.`,
     price: 180,
     priceType: 'Fixo',
     promoPrice: null,
@@ -204,7 +222,9 @@ Protocolo: higienização com xampu suave que não resseca, aplicação de leave
 
 Resultado: saindo daqui seus cachos estão definidos, soltos, com brilho e volume. Se você replicar em casa com os mesmos produtos, consegue manter por 3-4 dias.
 
-Indicado para quem já tem um corte híbrido bem estruturado, tem cabelo saudável mas não sabe como finalizar em casa, ou quer aprender técnicas específicas de definição/volume com profissional. Não inclui corte.`,
+Indicado para quem já tem um corte híbrido bem estruturado, tem cabelo saudável mas não sabe como finalizar em casa, ou quer aprender técnicas específicas de definição/volume com profissional. Não inclui corte.
+
+Sessão realizada no Studio do Jon, no Caiçaras, em Belo Horizonte, por quem vive de entender cabelo com curvatura.`,
     price: 100,
     priceType: 'Fixo',
     promoPrice: null,
@@ -229,7 +249,9 @@ Ideal para: quem está em transição capilar e quer recuperação acompanhada, 
 
 Benefício: acompanhamento próximo do resultado. Você vai vendo semana a semana a evolução — cabelo ganhando brilho, elasticidade, leveza. A leitura de fio é revisada na sessão 2 para validar mudanças. Economia de 30% no valor total (R$ 520 vira R$ 390).
 
-Compromisso: 4 sessões em 12 semanas (uma a cada 3 semanas aproximadamente). Você marca tudo antecipado, garantindo horários.`,
+Compromisso: 4 sessões em 12 semanas (uma a cada 3 semanas aproximadamente). Você marca tudo antecipado, garantindo horários.
+
+Um plano de cuidado contínuo, com acompanhamento presencial no Studio do Jon, em Belo Horizonte.`,
     price: 520,
     priceType: 'Fixo',
     promoPrice: 390,
@@ -252,7 +274,9 @@ Aplicamos a tinta apenas na raiz, respeitando a curvatura que mapeamos na leitur
 
 Finalizamos com protocolo blindagem: enxague, máscara proteica, acidificação. Resultado: visual uniforme e harmônico, raiz integrada com o resto da cor. Você sai com cabelo colorido que parece naturalmente assim — sem demarcação brusca de cor ou sinal de raiz.
 
-Ideal como manutenção mensal/bimestral de cores já estabelecidas (morena, louro, tons vibrantes). Recomendado para quem quer evitar a raiz crescida visível mas mantém a saúde capilar.`,
+Ideal como manutenção mensal/bimestral de cores já estabelecidas (morena, louro, tons vibrantes). Recomendado para quem quer evitar a raiz crescida visível mas mantém a saúde capilar.
+
+Serviço do Studio do Jon, em Belo Horizonte, para manter a cor em dia sem descuidar da saúde do cacho.`,
     price: 180,
     priceType: 'Fixo',
     promoPrice: null,
@@ -275,7 +299,9 @@ A partir dos dados da sua leitura de fio, selecionamos os ativos específicos: p
 
 Resultado: cabelo ganha brilho imediato, frizz diminui, definição recuperada, cacho mais solto mas definido ao mesmo tempo. Combina muito bem com corte híbrido — depois que o cacho está hidratado, a curvatura original aparece muito melhor.
 
-Recomendado como manutenção preventiva mensal entre cortes, ou como protocolo intensivo semanal por 4 semanas se o cabelo está muito ressecado. Ideal para quem tem histórico de muita química (descoloração, coloração), usa praia/piscina com frequência, ou simplesmente tem curvatura que perde umidade naturalmente.`,
+Recomendado como manutenção preventiva mensal entre cortes, ou como protocolo intensivo semanal por 4 semanas se o cabelo está muito ressecado. Ideal para quem tem histórico de muita química (descoloração, coloração), usa praia/piscina com frequência, ou simplesmente tem curvatura que perde umidade naturalmente.
+
+Tratamento disponível no Studio do Jon, no bairro Caiçaras, em Belo Horizonte, para cabelos de alta porosidade.`,
     price: 150,
     priceType: 'Fixo',
     promoPrice: null,
@@ -300,7 +326,9 @@ Aplicamos em toda extensão com foco em pontas, deixamos agir 15-20 min com calo
 
 Essencial para recuperar a flexibilidade natural que cabelos crespos e muito cacheados perdem com ressecamento. Não deixa cabelo pesado (use a quantidade certa) — deixa natural, sedoso e forte.
 
-Recomendado: mensal como manutenção, ou semanal por 4 semanas se o ressecamento é severo. Combina com detox couro (coloca o ritual após detox para máximo resultado).`,
+Recomendado: mensal como manutenção, ou semanal por 4 semanas se o ressecamento é severo. Combina com detox couro (coloca o ritual após detox para máximo resultado).
+
+Ritual aplicado no Studio do Jon, em Belo Horizonte, especialmente pensado para curvaturas 2 a 4 ressecadas.`,
     price: 170,
     priceType: 'Fixo',
     promoPrice: null,
@@ -325,7 +353,9 @@ Resultado: fio volta a ter força e elasticidade. Aquele cabelo quebradiço que 
 
 Protocolo recomendado: sessão intensiva LOGO após descoloração ou coloração agressiva, depois manutenção mensal. Se o dano é severo (múltiplas descolorações, química acumulada), recomendamos semanal por 4 semanas. Especialmente importante se você pretende fazer outro procedimento químico em breve — cabelo precisa estar forte.
 
-Combina com: detox couro (coloca detox antes, protocolo depois), reposição lipídica (protocolo primeiro, reposição lipídica depois para selar ainda mais).`,
+Combina com: detox couro (coloca detox antes, protocolo depois), reposição lipídica (protocolo primeiro, reposição lipídica depois para selar ainda mais).
+
+Protocolo de recuperação intensiva realizado no Studio do Jon, em Belo Horizonte, no bairro Caiçaras.`,
     price: 200,
     priceType: 'Fixo',
     promoPrice: null,
