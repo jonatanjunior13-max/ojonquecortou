@@ -398,6 +398,8 @@ export const EXPANDED_SERVICE_BODIES = {
 <h2>Investimento</h2>
 <p>Visagismo completo para cabelo cacheado está incluso em todo Corte com o Jon (R$ 190). Se você quer apenas a consulta de visagismo, sem cortar, oferecemos Leitura de Fio com foco em visagismo por R$ 80 (revertido em crédito se você fechar o corte depois).</p>
 
+<p>Atendimento realizado no Studio do Jon, no bairro Caiçaras, em Belo Horizonte.</p>
+
 <h2>Agendamento</h2>
 <p><a href="/agendar">Agende agora</a> e descubra qual corte de visagismo vai transformar como você se vê no espelho todos os dias, não só no dia do salão.</p>
 `,

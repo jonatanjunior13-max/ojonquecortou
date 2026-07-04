@@ -44,6 +44,13 @@
       "continue": true
     },
     {
+      "src": "/jon-perfil\\.(jpg|webp)",
+      "headers": {
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800"
+      },
+      "continue": true
+    },
+    {
       "src": "/api/media/([^/]+)",
       "dest": "/api/media-proxy.js?file=$1"
     },

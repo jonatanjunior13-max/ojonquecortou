@@ -237,7 +237,7 @@ const aboutBody = `
         <li><strong>Visagismo:</strong> Harmonização do corte com o formato do seu rosto e sua personalidade.</li>
       </ul>
       <h2>Localização e Endereço</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: (31) 3586-6673.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: <a href="tel:+553135866673">(31) 3586-6673</a>.</p>
     </article>
   </noscript>
 `;
@@ -623,7 +623,7 @@ const homeLiveHeroShell = `
           <div class="reveal in hero-portrait">
             <span class="badge">Studio &middot; BH</span>
             <div class="caption">"Antes da tesoura, a leitura."</div>
-            <img src="/jon-perfil.jpg" alt="Jon, especialista em cabelo cacheado em Belo Horizonte" width="480" height="600" fetchpriority="high" style="width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/5;" />
+            <img src="/jon-perfil.webp" alt="Jon, especialista em cabelo cacheado em Belo Horizonte" width="480" height="600" fetchpriority="high" style="width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4/5;" />
           </div>
         </div>
       </div>
@@ -1006,6 +1006,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['descoloracao-cabelo-cacheado']}
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+553135866673">(31) 3586-6673</a></p>
     </article>
   </noscript>
 `,
@@ -1023,6 +1024,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['corte-hibrido']}
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+553135866673">(31) 3586-6673</a></p>
     </article>
   </noscript>
 `,
@@ -1040,6 +1042,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['transicao-capilar']}
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+553135866673">(31) 3586-6673</a></p>
     </article>
   </noscript>
 `,
@@ -1057,6 +1060,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['visagismo-cachos']}
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+553135866673">(31) 3586-6673</a></p>
     </article>
   </noscript>
 `,
@@ -1074,6 +1078,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['masculino']}
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+553135866673">(31) 3586-6673</a></p>
     </article>
   </noscript>
 `,
@@ -1122,11 +1127,16 @@ SEED_SERVICES.forEach(service => {
     ]
   };
 
+  // Shared NAP line — appended to every /servicos/* prerendered body so
+  // local-SEO signals aren't confined to home/sobre only.
+  const napFooter = `<p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+553135866673">(31) 3586-6673</a></p>`;
+
   // Use expanded body if available, otherwise use default
   const serviceBody = SEED_SERVICE_EXPANDED_BODIES[service.id] ? `
     <noscript>
       <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
         ${SEED_SERVICE_EXPANDED_BODIES[service.id]}
+        ${napFooter}
       </article>
     </noscript>
   ` : `
@@ -1143,6 +1153,7 @@ SEED_SERVICES.forEach(service => {
         </ul>` : ''}
         <p><strong>Investimento:</strong> ${service.priceType ? `${service.priceType} ` : ''}R$ ${service.promoPrice || service.price}${service.duration ? ` &middot; <strong>Duração:</strong> ${service.duration} minutos` : ''}</p>
         <p><a href="/agendar">Agende seu horário</a> &middot; <a href="/servicos">Ver todos os serviços</a>${service.id === 'leitura-de-fio' ? ' &middot; <a href="/metodo">Conheça o Método Leitura de Fio completo</a>' : ''}</p>
+        ${napFooter}
       </article>
     </noscript>
   `;
@@ -1337,6 +1348,15 @@ pages.forEach(page => {
   if (page.schema) {
     const schemaScript = `\n    <script type="application/ld+json" id="dynamic-page-schema">\n    ${JSON.stringify(page.schema, null, 2).replace(/\n/g, '\n    ')}\n    </script>`;
     html = html.replace(SCHEMA_ANCHOR, () => `${SCHEMA_ANCHOR}${schemaScript}`);
+  }
+
+  // 6a. Preload the LCP hero image, homepage only — every other route would
+  // just waste priority on a resource it doesn't render.
+  if (page.route === '/') {
+    html = html.replace(
+      '<meta name="viewport"',
+      () => `<link rel="preload" href="/jon-perfil.webp" as="image" fetchpriority="high" />\n    <meta name="viewport"`
+    );
   }
 
   // 6b. Inject Initial Props for Hydration Fallback (SW caching solution)
