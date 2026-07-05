@@ -6,7 +6,7 @@ import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc, writeBatch
 } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
+import { getEffectiveAbsences, absenceCoversDate } from '../../utils/absences';
 import {
   Home, Calendar, Camera, Users, DollarSign, MoreHorizontal,
   Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
@@ -5398,9 +5398,7 @@ Grande abraço, Jon.`;
     );
   };
 
-  // ── FAB Menu Sheet ──────────────────────────────────────────────
-  // renderFabMenu: não é mais usado (speed-dial é inline no JSX)
-  const renderFabMenu = () => null;
+
 
   // ── Product Exit Sheet ──────────────────────────────────────────
   const renderProductExitSheet = () => {
@@ -5798,7 +5796,6 @@ Grande abraço, Jon.`;
       {toast && <Toast msg={toast.msg} type={toast.type} onClose={() => setToast(null)}/>}
 
       {/* Sheets */}
-      {renderFabMenu()}
       {renderProductExitSheet()}
       {renderProductEntrySheet()}
       {renderAbsenceSheet()}

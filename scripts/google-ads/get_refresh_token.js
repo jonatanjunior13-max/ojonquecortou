@@ -1,6 +1,9 @@
+import dotenv from 'dotenv';
 import readline from 'readline';
 import http from 'http';
 import { exec } from 'child_process';
+
+dotenv.config();
 
 const CLIENT_ID = process.env.GOOGLE_CLIENT_ID || 'PLACEHOLDER_CLIENT_ID';
 const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || 'PLACEHOLDER_CLIENT_SECRET';
