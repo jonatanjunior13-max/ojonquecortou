@@ -3045,13 +3045,20 @@ Grande abraço, Jon.`;
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      borderRadius: '6px'
+                    }}
+                    onClick={() => {
+                      if (window.confirm(`Deseja excluir a ausência "${abs.title}"?`)) {
+                        deleteAbsence(abs.id);
+                      }
                     }}
                   >
                     <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> {abs.title}
                     </div>
-                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>Ausência</div>
+                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>Ausência · Toque para excluir</div>
                   </div>
                 );
               }
@@ -3083,7 +3090,8 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      borderRadius: '6px'
                     }}
                     onClick={() => {
                       const isFullDay = item.id === 'full-day-block';
@@ -3091,8 +3099,8 @@ Grande abraço, Jon.`;
                       
                       const action = window.confirm(
                         isFullDay
-                          ? `Este dia está bloqueado na sua escala como "${item.label}".\n\nDeseja desbloquear/liberar este dia inteiro para agendamentos?`
-                          : `Este horário (${slot}) está bloqueado na sua escala.\n\nClique em OK para AGENDAR um cliente neste horário mesmo assim, ou em CANCELAR para LIBERAR/DESBLOQUEAR este horário na escala.`
+                          ? `Este dia está fora da sua escala como "${item.label}".\n\nDeseja liberar este dia inteiro para agendamentos?`
+                          : `Este horário (${slot}) está fora da sua escala de trabalho.\n\nClique em OK para AGENDAR um cliente neste horário mesmo assim, ou em CANCELAR para LIBERAR/DESBLOQUEAR este horário.`
                       );
                       
                       if (isFullDay) {
@@ -3127,10 +3135,10 @@ Grande abraço, Jon.`;
                       }
                     }}
                   >
-                    <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
-                      <Lock size={10} /> Bloqueado
+                    <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)' }}>
+                      <Lock size={10} /> Fora de Escala
                     </div>
-                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>{item.label}</div>
+                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>{item.label === 'Escala Bloqueada' ? 'Toque para liberar' : item.label}</div>
                   </div>
                 );
               }
