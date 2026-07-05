@@ -826,14 +826,18 @@ export default function AdminMobileApp() {
         raw: { label: isHolidayDay ? 'Feriado' : 'Folga' }
       });
     } else {
-      // Check scale blocks from professional config
-      HOURLY_SLOTS.forEach(slot => {
+      // Check scale blocks from professional config (hourly and half-hourly)
+      const allSlots = HOURLY_SLOTS.flatMap(hour => {
+        const prefix = hour.substring(0, 3);
+        return [`${prefix}00`, `${prefix}30`].filter(s => timeToMin(s) <= 1260);
+      });
+      allSlots.forEach(slot => {
         if (isSlotBlocked(prof, currentDate, slot)) {
           layoutItems.push({
             id: `scale-block-${slot}`,
             type: 'scale_block',
             startMin: timeToMin(slot),
-            endMin: timeToMin(slot) + 60,
+            endMin: timeToMin(slot) + 30,
             label: 'Escala Bloqueada',
             raw: { label: 'Escala Bloqueada' }
           });
