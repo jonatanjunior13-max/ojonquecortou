@@ -709,7 +709,7 @@ export const posts = [
     dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Educação Técnica',
-    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
+    image: '/blog-como-escolher-especialista.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
