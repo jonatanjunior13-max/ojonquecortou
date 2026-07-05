@@ -864,21 +864,38 @@
   font-weight: bold;
   border-radius: 0px !important;
 }
-
+/* ── Status-specific Overrides (higher priority than service classes) ── */
 .m-slot-booking.finalizado,
-.m-slot-booking.finalizado.svc-corte,
-.m-slot-booking.finalizado.svc-combo,
-.m-slot-booking.finalizado.svc-tratamento,
-.m-slot-booking.finalizado.svc-cor,
-.m-slot-booking.finalizado.svc-analise,
-.m-slot-booking.finalizado.svc-finalizacao {
+.m-slot-booking.finalizado[class*="svc-"] {
   background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
   border: none !important;
   border-left: 4px solid #34D399 !important;
   color: #ECFDF5 !important;
-  border-radius: 0px !important;
+  border-radius: 6px !important;
   box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
   opacity: 0.95;
+}
+
+.m-slot-booking.cancelado,
+.m-slot-booking.cancelado[class*="svc-"] {
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.04) 100%) !important;
+  border: none !important;
+  border-left: 3.5px solid #EF4444 !important;
+  color: #C9BCA8 !important;
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.m-slot-booking.faltou,
+.m-slot-booking.faltou[class*="svc-"],
+.m-slot-booking.ausencia,
+.m-slot-booking.ausencia[class*="svc-"],
+.m-slot-booking.svc-ausencia {
+  background: linear-gradient(90deg, rgba(82, 82, 91, 0.25) 0%, rgba(82, 82, 91, 0.08) 40%, rgba(82, 82, 91, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #52525B !important;
+  color: #D4D4D8 !important;
+  opacity: 0.65;
 }
 
 /* Agenda Badges on Mobile */

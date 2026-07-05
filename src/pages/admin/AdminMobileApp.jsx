@@ -231,6 +231,8 @@ const getAdjustedDay = (date) => {
 };
 
 const isSlotBlocked = (prof, dateStr, slot) => {
+  if (localStorage.getItem(`scale_unlock_${dateStr}_${slot}`) === 'true') return false;
+  if (localStorage.getItem(`scale_unlock_${dateStr}_all`) === 'true') return false;
   if (!prof) return false;
   
   const parts = dateStr.split('-');
@@ -809,12 +811,12 @@ export default function AdminMobileApp() {
       });
     });
 
-    // Add scale blocks (folga, feriado, etc.)
     const dtForLabel = parseLocalDate(currentDate);
     const isSunMon = (getAdjustedDay(dtForLabel) === 0 || getAdjustedDay(dtForLabel) === 1);
     const isHolidayDay = isFeriado(currentDate);
+    const isFullDayUnlocked = localStorage.getItem(`scale_unlock_${currentDate}_all`) === 'true';
 
-    if (isHolidayDay || isSunMon) {
+    if ((isHolidayDay || isSunMon) && !isFullDayUnlocked) {
       layoutItems.push({
         id: 'full-day-block',
         type: 'scale_block',
@@ -3076,7 +3078,49 @@ Grande abraço, Jon.`;
                       zIndex: 3,
                       display: 'flex',
                       flexDirection: 'column',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => {
+                      const isFullDay = item.id === 'full-day-block';
+                      const slot = isFullDay ? null : item.id.replace('scale-block-', '');
+                      
+                      const action = window.confirm(
+                        isFullDay
+                          ? `Este dia está bloqueado na sua escala como "${item.label}".\n\nDeseja desbloquear/liberar este dia inteiro para agendamentos?`
+                          : `Este horário (${slot}) está bloqueado na sua escala.\n\nClique em OK para AGENDAR um cliente neste horário mesmo assim, ou em CANCELAR para LIBERAR/DESBLOQUEAR este horário na escala.`
+                      );
+                      
+                      if (isFullDay) {
+                        if (action) {
+                          localStorage.setItem(`scale_unlock_${currentDate}_all`, 'true');
+                          showToast("Dia liberado para agendamentos!", "success");
+                          window.location.reload();
+                        }
+                      } else {
+                        if (action) {
+                          // Open booking form
+                          setNbForm(prev => ({
+                            ...prev,
+                            date: currentDate,
+                            time: slot,
+                            clientName: '',
+                            clientPhone: '',
+                            serviceName: '',
+                            servicePrice: '',
+                            notes: '',
+                            prepayment: ''
+                          }));
+                          setShowNewBookingSheet(true);
+                        } else {
+                          // Unblock slot
+                          if (window.confirm(`Deseja desbloquear/liberar o horário ${slot} na agenda?`)) {
+                            localStorage.setItem(`scale_unlock_${currentDate}_${slot}`, 'true');
+                            showToast("Horário liberado!", "success");
+                            window.location.reload();
+                          }
+                        }
+                      }
                     }}
                   >
                     <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
