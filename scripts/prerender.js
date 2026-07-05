@@ -1387,7 +1387,7 @@ pages.forEach(page => {
   // 3. Replace OG URL
   html = replaceOrAddMeta(html, 'og:url', `https://www.ojonquecortou.com.br${page.route}`, true);
   
-  // Fix og:type and add article meta for blog posts
+  // Set og:type and add article meta for blog posts
   if (page.route.startsWith('/blog/')) {
     html = html.replace(
       '<meta property="og:type" content="website" />',
