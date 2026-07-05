@@ -1398,6 +1398,27 @@ const BookingPage = () => {
       totalPrice: computedFinalTotal
     };
 
+    let conversionEventFired = false;
+    const fireBookingConversionEvent = () => {
+      if (conversionEventFired || !window.gtag) return;
+      conversionEventFired = true;
+      try {
+        window.gtag('event', 'purchase', {
+          value: computedFinalTotal,
+          currency: 'BRL',
+          transaction_id: `booking-${Date.now()}`,
+          items: [{
+            item_name: bookingPayload.serviceName,
+            item_id: bookingPayload.service?.id || 'combined-services',
+            price: computedFinalTotal,
+            quantity: 1
+          }]
+        });
+      } catch (gtagErr) {
+        console.warn('Erro ao disparar evento de conversão:', gtagErr);
+      }
+    };
+
     try {
       const cleanPhone = clientData.phone.replace(/\D/g, '');
 
@@ -1531,28 +1552,17 @@ const BookingPage = () => {
         }
       }
 
+      fireBookingConversionEvent();
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
       if (bookingPayload.clientEmail) {
         triggerEmailNotification(bookingPayload);
-      }
-      if (window.gtag) {
-        window.gtag('event', 'purchase', {
-          value: computedFinalTotal,
-          currency: 'BRL',
-          transaction_id: `booking-${Date.now()}`,
-          items: [{
-            item_name: bookingPayload.serviceName,
-            item_id: bookingPayload.service?.id || 'combined-services',
-            price: computedFinalTotal,
-            quantity: 1
-          }]
-        });
       }
       setSuccess(true);
       setStep(4);
     } catch (err) {
       console.error('Erro ao processar agendamento:', err);
       // Ainda simula o sucesso para não travar a cliente
+      fireBookingConversionEvent();
       setIsDemoMode(true);
       const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
       if (rescheduleId) {
