@@ -394,6 +394,8 @@ export default function AdminMobileApp() {
   const [currentDate, setCurrentDate] = useState(today());
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [showSlotSheet, setShowSlotSheet] = useState(false);
+  const [showScaleBlockSheet, setShowScaleBlockSheet] = useState(false);
+  const [selectedScaleBlock, setSelectedScaleBlock] = useState(null);
   const [showNewBookingSheet, setShowNewBookingSheet] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showBookingSheet, setShowBookingSheet] = useState(false);
@@ -3116,43 +3118,8 @@ Grande abraço, Jon.`;
                     onClick={() => {
                       const isFullDay = item.id === 'full-day-block';
                       const slot = isFullDay ? null : item.id.replace('scale-block-', '');
-                      
-                      const action = window.confirm(
-                        isFullDay
-                          ? `Este dia está fora da sua escala como "${item.label}".\n\nDeseja liberar este dia inteiro para agendamentos?`
-                          : `Este horário (${slot}) está fora da sua escala de trabalho.\n\nClique em OK para AGENDAR um cliente neste horário mesmo assim, ou em CANCELAR para LIBERAR/DESBLOQUEAR este horário.`
-                      );
-                      
-                      if (isFullDay) {
-                        if (action) {
-                          localStorage.setItem(`scale_unlock_${currentDate}_all`, 'true');
-                          showToast("Dia liberado para agendamentos!", "success");
-                          window.location.reload();
-                        }
-                      } else {
-                        if (action) {
-                          // Open booking form
-                          setNbForm(prev => ({
-                            ...prev,
-                            date: currentDate,
-                            time: slot,
-                            clientName: '',
-                            clientPhone: '',
-                            serviceName: '',
-                            servicePrice: '',
-                            notes: '',
-                            prepayment: ''
-                          }));
-                          setShowNewBookingSheet(true);
-                        } else {
-                          // Unblock slot
-                          if (window.confirm(`Deseja desbloquear/liberar o horário ${slot} na agenda?`)) {
-                            localStorage.setItem(`scale_unlock_${currentDate}_${slot}`, 'true');
-                            showToast("Horário liberado!", "success");
-                            window.location.reload();
-                          }
-                        }
-                      }
+                      setSelectedScaleBlock({ isFullDay, slot, label: item.label });
+                      setShowScaleBlockSheet(true);
                     }}
                   >
                     <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)' }}>
@@ -5755,6 +5722,93 @@ Grande abraço, Jon.`;
     );
   };
 
+  const renderScaleBlockSheet = () => {
+    if (!showScaleBlockSheet || !selectedScaleBlock) return null;
+    const { isFullDay, slot, label } = selectedScaleBlock;
+
+    return (
+      <div className="m-overlay" onClick={() => setShowScaleBlockSheet(false)}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+          <div className="m-sheet-handle"/>
+          <div className="m-sheet-header">
+            <div className="m-sheet-title">Opções do Horário</div>
+            <button onClick={() => setShowScaleBlockSheet(false)} className="m-icon-btn"><X size={18}/></button>
+          </div>
+          <div className="m-sheet-body" style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ textAlign: 'center', marginBottom: 12 }}>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--m-gold)', fontFamily: '"Bricolage Grotesque", sans-serif' }}>
+                {isFullDay ? `${label}` : `${slot}`}
+              </div>
+              <div style={{ fontSize: '0.82rem', color: 'var(--m-muted)', marginTop: 4 }}>
+                {isFullDay ? 'Dia inteiro fora de escala' : 'Horário fora de escala de trabalho'}
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* Option 1: Book Client */}
+              {!isFullDay && (
+                <button
+                  className="m-btn m-btn-gold"
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, padding: '14px', borderRadius: '10px' }}
+                  onClick={() => {
+                    setShowScaleBlockSheet(false);
+                    setNbForm(prev => ({
+                      ...prev,
+                      date: currentDate,
+                      time: slot,
+                      clientName: '',
+                      clientPhone: '',
+                      serviceName: '',
+                      servicePrice: '',
+                      notes: '',
+                      prepayment: ''
+                    }));
+                    setShowNewBookingSheet(true);
+                  }}
+                >
+                  <Calendar size={18} />
+                  Agendar Cliente
+                </button>
+              )}
+
+              {/* Option 2: Liberar/Desbloquear */}
+              <button
+                className="m-btn"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  padding: '14px',
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid var(--m-rule)',
+                  color: '#fff',
+                  borderRadius: '10px'
+                }}
+                onClick={() => {
+                  setShowScaleBlockSheet(false);
+                  if (isFullDay) {
+                    localStorage.setItem(`scale_unlock_${currentDate}_all`, 'true');
+                    showToast("Dia liberado para agendamentos!", "success");
+                    window.location.reload();
+                  } else {
+                    localStorage.setItem(`scale_unlock_${currentDate}_${slot}`, 'true');
+                    showToast("Horário liberado!", "success");
+                    window.location.reload();
+                  }
+                }}
+              >
+                <Zap size={18} style={{ color: 'var(--m-gold)' }} />
+                {isFullDay ? 'Liberar o dia na escala' : 'Liberar horário na escala'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   // ═══════════════════════════════════════════════════════════════
   // MAIN RENDER
   // ═══════════════════════════════════════════════════════════════
@@ -5885,6 +5939,7 @@ Grande abraço, Jon.`;
       {renderAddTxSheet()}
       {renderUploadSheet()}
       {renderNotifSheet()}
+      {renderScaleBlockSheet()}
 
       {/* Photo preview (fullscreen) */}
       {renderPhotoPreview()}
