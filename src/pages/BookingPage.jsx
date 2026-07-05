@@ -1419,6 +1419,21 @@ const BookingPage = () => {
       }
     };
 
+    let metaPixelEventFired = false;
+    const fireMetaPixelConversion = () => {
+      if (metaPixelEventFired || typeof fbq === 'undefined') return;
+      metaPixelEventFired = true;
+      try {
+        fbq('track', 'Schedule', {
+          content_name: bookingPayload.serviceName,
+          value: computedFinalTotal,
+          currency: 'BRL'
+        });
+      } catch (fbqErr) {
+        console.warn('Erro ao disparar Meta Pixel:', fbqErr);
+      }
+    };
+
     try {
       const cleanPhone = clientData.phone.replace(/\D/g, '');
 
@@ -1553,6 +1568,7 @@ const BookingPage = () => {
       }
 
       fireBookingConversionEvent();
+      fireMetaPixelConversion();
       localStorage.setItem('last_booking', JSON.stringify(bookingPayload));
       if (bookingPayload.clientEmail) {
         triggerEmailNotification(bookingPayload);
@@ -1563,6 +1579,7 @@ const BookingPage = () => {
       console.error('Erro ao processar agendamento:', err);
       // Ainda simula o sucesso para não travar a cliente
       fireBookingConversionEvent();
+      fireMetaPixelConversion();
       setIsDemoMode(true);
       const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
       if (rescheduleId) {
