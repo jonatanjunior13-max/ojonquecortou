@@ -836,14 +836,29 @@ export default function AdminMobileApp() {
       // Check scale blocks from professional config (hourly)
       HOURLY_SLOTS.forEach(slot => {
         if (isSlotBlocked(prof, currentDate, slot)) {
-          layoutItems.push({
-            id: `scale-block-${slot}`,
-            type: 'scale_block',
-            startMin: timeToMin(slot),
-            endMin: timeToMin(slot) + 60,
-            label: 'Fora de Escala',
-            raw: { label: 'Fora de Escala', slot }
+          const slotMin = timeToMin(slot);
+          const hasBookingOrAbsence = dayBookings.some(b => {
+            const bStart = timeToMin(b.time);
+            const bEnd = bStart + (b.duration || 60);
+            return slotMin >= bStart && slotMin < bEnd;
+          }) || dayAbsences.some(abs => {
+            const start = abs.allDay ? '08:00' : (abs.startTime || '08:00');
+            const end = abs.allDay ? '21:00' : (abs.endTime || '21:00');
+            const absStart = timeToMin(start);
+            const absEnd = timeToMin(end);
+            return slotMin >= absStart && slotMin < absEnd;
           });
+
+          if (!hasBookingOrAbsence) {
+            layoutItems.push({
+              id: `scale-block-${slot}`,
+              type: 'scale_block',
+              startMin: slotMin,
+              endMin: slotMin + 60,
+              label: 'Fora de Escala',
+              raw: { label: 'Fora de Escala', slot }
+            });
+          }
         }
       });
 
