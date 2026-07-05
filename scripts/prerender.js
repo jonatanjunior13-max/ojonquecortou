@@ -705,13 +705,97 @@ blogHubPosts.forEach(post => {
       </article>
   `;
 });
-blogHubBody += `
+const especialistaCachosBhBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Especialista em Cachos Belo Horizonte — Studio do Jon</h1>
+      <p>Seu cabelo cacheado merece um especialista que lê antes de cortar. No Studio do Jon, localizado no bairro Caiçaras, em BH, desenvolvemos o Método Leitura de Fio para diagnosticar com precisão a porosidade, o encolhimento e a saúde do seu fio antes de tocar com a tesoura.</p>
+      <h2>Por que um Especialista em Cachos?</h2>
+      <p>Salões genéricos cortam cabelos cacheados molhados e esticados, ignorando a física da curvatura. O resultado seco quase sempre é imprevisível. Jon trabalha com técnicas de visagismo e corte híbrido (a seco e molhado de precisão) para desenhar um corte que se ajusta à sua identidade e é fácil de finalizar em casa.</p>
+      <ul>
+        <li><a href="/metodo">Conheça o Método Leitura de Fio</a></li>
+        <li><a href="/servicos/corte-hibrido">Saiba mais sobre o Corte Híbrido</a></li>
+        <li><a href="/servicos/transicao-capilar">Apoio técnico na Transição Capilar</a></li>
+      </ul>
+      <p><strong><a href="/agendar">Agende o seu atendimento online</a></strong></p>
+    </article>
+  </noscript>
+`;
+
+const tratamentoPersonalizadoBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Tratamento Personalizado para Cachos em BH — Studio do Jon</h1>
+      <p>Tratamento sob medida para o seu tipo de cabelo. Cada fio de cabelo responde de forma diferente aos ativos cosméticos devido à sua porosidade, espessura e histórico químico. Por isso, no Studio do Jon em Belo Horizonte, não usamos fórmulas prontas.</p>
+      <h2>Nosso Protocolo de Tratamento</h2>
+      <p>Começamos sempre com a Leitura de Fio para identificar se o seu cacho precisa de hidratação profunda, nutrição lipídica, reconstrução de queratina ou reequilíbrio de pH (acidificação). A partir do diagnóstico, preparamos uma combinação exclusiva de ativos para tratar o fio de dentro para fora.</p>
+      <ul>
+        <li><a href="/metodo">Entenda a importância da Leitura de Fio</a></li>
+        <li><a href="/servicos">Ver outros serviços e preços</a></li>
+        <li><a href="/blog/cronograma-capilar-cabelo-cacheado">Dicas de cronograma capilar no nosso blog</a></li>
+      </ul>
+      <p><strong><a href="/agendar">Agende seu tratamento com o Jon</a></strong></p>
     </article>
   </noscript>
 `;
 
 // Definition of static pages with their specific metadata
 const pages = [
+  {
+    route: '/servicos/especialista-cachos-bh',
+    title: 'Especialista em Cachos BH | Cortes para Cabelo Cacheado em Belo Horizonte | Studio do Jon',
+    description: 'Conhece o Jon, especialista em cortes e tratamentos para cabelos cacheados, crespos e ondulados. Método Leitura de Fio — diagnóstico antes de qualquer corte. Agende em BH.',
+    bodyInsert: especialistaCachosBhBody,
+    schema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que torna um especialista em cachos diferente de um cabeleireiro genérico?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Um especialista diagnostica antes de cortar. Analisa porosidade, encolhimento, histórico químico e padrão de curvatura. Um genérico aplica templates. No Studio do Jon, usamos o Método Leitura de Fio — 7 etapas de diagnóstico que mapeiam a física exata do seu fio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como funciona o Método Leitura de Fio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "É um protocolo em 7 etapas: escuta do histórico, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada (porosidade/elasticidade), definição da técnica de corte, e finalização com validação. Nenhuma suposição — tudo baseado na física real do seu cabelo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quanto custa uma consulta com especialista em cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A Leitura de Fio (diagnóstico) com corte começa a partir de R$ 190 com o Jon. Serviços específicos como transição capilar ou coloração cacheada variam. Agende para receber orçamento personalizado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
+          }
+        }
+      ]
+    }
+  },
+  {
+    route: '/servicos/tratamento-personalizado',
+    title: 'Tratamento Personalizado | Cabelo Cacheado em BH | Studio do Jon',
+    description: 'Tratamento sob medida para seu tipo de cabelo. Diagnóstico técnico + protocolos customizados. Recupere força, hidratação e definição. Agende em Belo Horizonte.',
+    bodyInsert: tratamentoPersonalizadoBody,
+    schema: manualServiceSchema({
+      name: 'Tratamento Personalizado',
+      description: 'Tratamento sob medida para seu tipo de cabelo. Diagnóstico técnico + protocolos customizados. Recupere força, hidratação e definição.',
+      route: '/servicos/tratamento-personalizado'
+    })
+  },
   {
     route: '/',
     title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
@@ -1389,6 +1473,29 @@ appShellHtml = replaceTitle(appShellHtml, 'Studio do Jon');
 appShellHtml = replaceOrAddMeta(appShellHtml, 'robots', 'noindex, nofollow', false);
 fs.writeFileSync(path.join(distDir, 'app-shell.html'), appShellHtml);
 console.log('Generated app-shell.html for /admin and /cliente routes.');
+
+// Static 404 page for unmatched routes (handles Soft-404 on Vercel)
+let notFoundHtml = template;
+notFoundHtml = replaceTitle(notFoundHtml, 'Página não encontrada | Studio do Jon');
+notFoundHtml = replaceOrAddMeta(notFoundHtml, 'robots', 'noindex, nofollow', false);
+notFoundHtml = replaceOrAddMeta(notFoundHtml, 'description', 'A página que você procura não existe ou foi movida.', false);
+const notFoundBody = `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2; text-align: center;">
+      <h1>Página não encontrada</h1>
+      <p>O endereço que você tentou acessar não existe ou foi movido. Confira alguns caminhos possíveis:</p>
+      <div style="margin-top: 20px;">
+        <a href="/" style="padding: 10px 20px; background: #c8852a; color: white; text-decoration: none; border-radius: 4px; margin: 5px; display: inline-block;">Página Inicial</a>
+        <a href="/servicos" style="padding: 10px 20px; background: #333; color: white; text-decoration: none; border-radius: 4px; margin: 5px; display: inline-block;">Serviços</a>
+        <a href="/blog" style="padding: 10px 20px; background: #333; color: white; text-decoration: none; border-radius: 4px; margin: 5px; display: inline-block;">Blog</a>
+        <a href="/agendar" style="padding: 10px 20px; background: #333; color: white; text-decoration: none; border-radius: 4px; margin: 5px; display: inline-block;">Agendar Horário</a>
+      </div>
+    </article>
+  </noscript>
+`;
+notFoundHtml = notFoundHtml.replace('<div id="root">', () => `<div id="root">\n      ${notFoundBody.trim()}`);
+fs.writeFileSync(path.join(distDir, '404.html'), notFoundHtml);
+console.log('Generated 404.html for custom error routing.');
 
 console.log('Static pre-rendering completed successfully!');
 
