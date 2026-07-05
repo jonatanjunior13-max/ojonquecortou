@@ -1320,7 +1320,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     }
   };
 
-  const getDeliveryStats = () => {
+  const deliveryStats = useMemo(() => {
     const now = new Date();
     const stats = {
       today: { email: 0, whatsapp: 0 },
@@ -1365,7 +1365,26 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     });
 
     return stats;
-  };
+  }, [automationLogs]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setShowEmailEditModal(false);
+        setShowBounceListModal(false);
+        setShowPreviewModal(false);
+        setShowPreviewNewsletterFull(false);
+        setShowAutomationEditModal(false);
+        setShowAutomationPreviewModal(false);
+        setShowEmailPreviewModal(false);
+        try { setShowGbpLogModal(false); } catch(e){}
+        try { setShowCustomHtmlModal(false); } catch(e){}
+        try { setShowCustomPreviewModal(false); } catch(e){}
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     let unsubscribeProfiles;
@@ -1400,16 +1419,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             setAdminNotifications(list);
           }
         );
-
-        // Clean up any existing defaults/placeholders from database
         const placeholders = ['post_sched_1', 'post_pub_1', 'post_pub_2', 'post_pub_3'];
-        placeholders.forEach(async (pId) => {
-          try {
-            await deleteDoc(doc(db, 'gbp_posts', pId));
-          } catch (e) {
-            console.error("Error cleaning placeholder", pId, e);
-          }
-        });
 
         unsubscribeGbpPosts = onSnapshot(collection(db, 'gbp_posts'), (postsSnap) => {
           const pst = [];
@@ -1529,24 +1539,22 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  // Returns clients whose birthday falls within the next `windowDays` days (0 = only today)
-  const getBirthdayClients = (windowDays = 0) => {
+  const birthdayClients = useMemo(() => {
     const today = new Date();
     return clients.filter(c => {
       if (!c.birthdate) return false;
-      // birthdate stored as YYYY-MM-DD
       const parts = c.birthdate.split('-');
       if (parts.length < 2) return false;
       const bMonth = parseInt(parts[1], 10);
       const bDay   = parseInt(parts[2], 10);
-      for (let offset = 0; offset <= windowDays; offset++) {
+      for (let offset = 0; offset <= birthdayWindowDays; offset++) {
         const d = new Date(today);
         d.setDate(today.getDate() + offset);
         if (d.getMonth() + 1 === bMonth && d.getDate() === bDay) return true;
       }
       return false;
     });
-  };
+  }, [clients, birthdayWindowDays]);
 
   const getBirthdayWaLink = (client) => {
     const firstName = (client.name || '').split(' ')[0];
@@ -1555,7 +1563,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
   };
 
   const handleSendBirthdayWaCampaign = async () => {
-    const targets = getBirthdayClients(birthdayWindowDays);
+    const targets = birthdayClients;
     if (targets.length === 0) return;
     setIsSendingBirthdayWa(true);
     cancelSendingRef.current = false;
@@ -1602,15 +1610,17 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     (c.phone || '').includes(searchTerm || '')
   );
 
-  const marketingTargetsList = clients.filter(c => {
-    const days = getDaysAbsent(c.lastVisit);
-    if (marketingTarget === 'todos') return true;
-    if (marketingTarget === 'inativos_30') return days >= 30 && days <= 60;
-    if (marketingTarget === 'inativos_60') return days > 60 && days !== Infinity;
-    if (marketingTarget === 'nunca_visitaram') return days === Infinity;
-    if (marketingTarget === 'selecionados') return selectedCampaignPhones.includes(c.phone);
-    return false;
-  });
+  const marketingTargetsList = useMemo(() => {
+    return clients.filter(c => {
+      const days = getDaysAbsent(c.lastVisit);
+      if (marketingTarget === 'todos') return true;
+      if (marketingTarget === 'inativos_30') return days >= 30 && days <= 60;
+      if (marketingTarget === 'inativos_60') return days > 60 && days !== Infinity;
+      if (marketingTarget === 'nunca_visitaram') return days === Infinity;
+      if (marketingTarget === 'selecionados') return selectedCampaignPhones.includes(c.phone);
+      return false;
+    });
+  }, [clients, marketingTarget, selectedCampaignPhones]);
 
   const getCampaignMessageLink = (client) => {
     const days = getDaysAbsent(client.lastVisit);
@@ -1916,7 +1926,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
               
               {/* Histórico de Envios Dashboard Widget */}
               {(() => {
-                const stats = getDeliveryStats();
+                const stats = deliveryStats;
                 return (
                   <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
@@ -2240,7 +2250,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 
                 {/* Lista de aniversariantes */}
                 {(() => {
-                  const bClients = getBirthdayClients(birthdayWindowDays);
+                  const bClients = birthdayClients;
                   return bClients.length === 0 ? (
                     <div style={{ padding: '20px', textAlign: 'center', border: '1px dashed var(--adm-rule)', borderRadius: '8px', color: 'var(--adm-muted)', fontSize: '0.9rem', marginBottom: '20px' }}>
                       🎉 Nenhum aniversariante {birthdayWindowDays === 0 ? 'hoje' : `nos próximos ${birthdayWindowDays} dias`}.
