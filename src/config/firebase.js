@@ -34,12 +34,9 @@ if (isConfigValid) {
     // Configuração mínima do Firestore — sem opções experimentais
     db = getFirestore(app);
     storage = getStorage(app);
-    console.log('Firebase inicializado.');
   } catch (err) {
     console.error('Erro ao inicializar Firebase:', err);
   }
-} else {
-  console.log('Firebase em Modo Demo.');
 }
 
 /**
