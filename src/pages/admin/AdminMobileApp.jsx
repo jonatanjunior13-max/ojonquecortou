@@ -245,6 +245,13 @@ const isSlotBlocked = (prof, dateStr, slot) => {
 
     // Force Holidays to be blocked
     if (isFeriado(dateStr)) return true;
+
+    // Force 19:00, 20:00, 21:00 slots on Tue-Sat to be out of scale
+    if (weekday >= 2 && weekday <= 6) {
+      if (['19:00', '19:30', '20:00', '20:30', '21:00'].includes(slot)) {
+        return true;
+      }
+    }
     
     // 1. Check day off
     if ((prof.daysOff || []).includes(weekday)) return true;
@@ -826,20 +833,16 @@ export default function AdminMobileApp() {
         raw: { label: isHolidayDay ? 'Feriado' : 'Folga' }
       });
     } else {
-      // Check scale blocks from professional config (hourly and half-hourly)
-      const allSlots = HOURLY_SLOTS.flatMap(hour => {
-        const prefix = hour.substring(0, 3);
-        return [`${prefix}00`, `${prefix}30`].filter(s => timeToMin(s) <= 1260);
-      });
-      allSlots.forEach(slot => {
+      // Check scale blocks from professional config (hourly)
+      HOURLY_SLOTS.forEach(slot => {
         if (isSlotBlocked(prof, currentDate, slot)) {
           layoutItems.push({
             id: `scale-block-${slot}`,
             type: 'scale_block',
             startMin: timeToMin(slot),
-            endMin: timeToMin(slot) + 30,
-            label: 'Escala Bloqueada',
-            raw: { label: 'Escala Bloqueada' }
+            endMin: timeToMin(slot) + 60,
+            label: 'Fora de Escala',
+            raw: { label: 'Fora de Escala', slot }
           });
         }
       });
@@ -3046,6 +3049,7 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
+                      alignItems: 'center',
                       cursor: 'pointer',
                       borderRadius: '6px'
                     }}
@@ -3058,7 +3062,7 @@ Grande abraço, Jon.`;
                     <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700 }}>
                       <Lock size={10} /> {abs.title}
                     </div>
-                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>Ausência · Toque para excluir</div>
+                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>Ausência</div>
                   </div>
                 );
               }
@@ -3090,6 +3094,7 @@ Grande abraço, Jon.`;
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
+                      alignItems: 'center',
                       cursor: 'pointer',
                       borderRadius: '6px'
                     }}
@@ -3138,7 +3143,6 @@ Grande abraço, Jon.`;
                     <div className="m-slot-client" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255,255,255,0.85)' }}>
                       <Lock size={10} /> Fora de Escala
                     </div>
-                    <div className="m-slot-svc" style={{ opacity: 0.7, fontSize: '0.62rem' }}>{item.label === 'Escala Bloqueada' ? 'Toque para liberar' : item.label}</div>
                   </div>
                 );
               }
