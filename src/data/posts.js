@@ -1,5 +1,109 @@
 export const posts = [
   {
+    id: 55,
+    slug: 'quimica-da-agua-bh-cabelo-cacheado',
+    title: 'A Química da Água em BH: Como Metais e Cloro da Copasa Destroem Seus Cachos',
+    seoTitle: 'A Química da Água em BH e Cabelos Cacheados | Studio do Jon',
+    excerpt: 'Descubra por que a água de Belo Horizonte é carregada de minerais e cloro da Copasa, como eles penetram nas cutículas dos cachos provocando ressecamento severo, e como proteger sua fibra.',
+    metaDescription: 'A água de BH, rica em ferro e cloro da Copasa, detona cabelos cacheados. Aprenda a física do acúmulo de metais, acidificação e detox capilar com Jon.',
+    keywords: 'agua de bh, copasa cabelo, metais no cabelo, cloro no cabelo, detox capilar bh, acidificacao capilar, cabelo cacheado bh, leitura de fio caiçaras',
+    date: '04 de Julho, 2026',
+    datePublished: '2026-07-04',
+    dateModified: '2026-07-04',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-quimica-da-agua-bh-cabelo-cacheado.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que a água de Belo Horizonte resseca mais o cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Porque BH está localizada em uma região de solo rico em minérios. A água da Copasa carrega concentrações de cálcio, magnésio, ferro e cobre. Fios com curvatura (que têm cutículas mais abertas) atraem esses metais positivamente carregados, criando um acúmulo que endurece a queratina e impede a entrada de água e cremes." }
+        },
+        {
+          "@type": "Question",
+          "name": "O que o acúmulo de metais faz com os cachos?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Causa rigidez (fio áspero e sem movimento), perda de definição, frizz crônico que não responde a cremes, e pode provocar reações químicas violentas (superaquecimento e quebra extrema) durante processos de descoloração ou luzes." }
+        },
+        {
+          "@type": "Question",
+          "name": "Como remover os metais e o cloro do cabelo em casa?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A melhor alternativa caseira é o uso de agentes quelantes (como produtos com fitato de sódio ou vinagre de maçã diluído) combinados com acidificação capilar (pH baixo). Instalar um filtro de chuveiro de alta qualidade com KDF-55 também bloqueia grande parte do cloro e metais pesados." }
+        },
+        {
+          "@type": "Question",
+          "name": "O que é o tratamento quelante ou detox capilar no salão?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No Studio do Jon, usamos o Detox Estimulante para desobstruir o couro cabeludo e a fibra, associado a tratamentos com agentes quelantes que se ligam aos metais depositados e os removem do interior do fio, devolvendo a elasticidade e o brilho naturais dos cachos." }
+        }
+      ]
+    },
+    content: `<p>Se você mora em Belo Horizonte e sente que seu cabelo cacheado anda rígido, sem definição e que nenhum creme "pega" no fio, deixa eu te contar uma verdade técnica que a indústria de cosméticos esconde de você: <strong>o culpado pode ser o seu chuveiro</strong>. Especificamente, a química da água fornecida pela Copasa na região metropolitana de BH.</p>
+
+<p>Quem trabalha com cabelo natural sabe que o solo de Minas Gerais é riquíssimo em minérios. Isso é ótimo para a economia, mas é um desafio físico-químico diário para a fibra capilar. A água que abastece nossas casas carrega partículas de ferro, magnésio, cálcio e cobre. Para o cabelo liso, isso já é ruim; para cabelos ondulados, cacheados e crespos (curvaturas 2A a 4C), que têm cutículas naturalmente mais abertas, é um desastre silencioso.</p>
+
+<p>Neste artigo, vou te explicar cientificamente por que a água de BH detona os seus cachos e o que você precisa fazer para desintoxicar o fio de verdade, sem truques de marketing.</p>
+
+<h2>A Física da Atração: Por que o Cacho atrai Minerais?</h2>
+
+<p>O cabelo cacheado possui uma estrutura de queratinização assimétrica. O folículo piloso elíptico (em forma de mola) faz com que o fio se curve. Nos pontos onde o fio dobra para formar o cacho, as cutículas (as escamas protetoras externas) se levantam ligeiramente. É uma característica mecânica natural do cabelo texturizado.</p>
+
+<p>Essas cutículas abertas expõem o córtex — a parte interna do fio, rica em proteínas carregadas negativamente. Por outro lado, os minerais presentes na água (como cálcio, ferro e cobre) são íons carregados positivamente. Na física clássica, opostos se atraem. O seu cabelo cacheado age literalmente como um **ímã para os minerais da água**. A cada banho, uma nova camada de cálcio, cobre e ferro se liga fortemente à estrutura do seu cabelo, criando o que chamamos tecnicamente de <em>build-up mineral</em>.</p>
+
+<h3>Os Vilões do Chuveiro: Cálcio, Ferro e Cobre</h3>
+
+<p>Cada mineral da água de BH causa um dano específico na fibra capilar:</p>
+
+<ul>
+  <li><strong>Cálcio (Água Dura):</strong> O cálcio se liga à queratina e cristaliza. Ele endurece o fio de dentro para fora, deixando os cachos rígidos, ásperos e sem o movimento natural (a famosa "mola" travada).</li>
+  <li><strong>Cobre:</strong> O cobre oxida no fio. Além de esverdear cabelos mais claros e mechas, ele funciona como um catalisador térmico. Quando você tenta descolorir o cabelo para fazer mechas, o descolorante reage com o cobre acumulado, gerando superaquecimento imediato e quebra (corte químico).</li>
+  <li><strong>Ferro e Manganês:</strong> Abundantes no solo de BH, deixam o cacho pesado, sem volume e com um tom opaco, marrom-avermelhado nas pontas.</li>
+  <li><strong>Cloro:</strong> O cloro usado para tratar a água da Copasa é um agente oxidante forte. Ele remove os lipídios naturais (a gordura boa que protege o cacho) e altera o pH do couro cabeludo, provocando ressecamento extremo e descamação.</li>
+</ul>
+
+<h2>Como saber se seu cacho está saturado de metais e minerais?</h2>
+
+<p>No Studio do Jon, durante a <strong><a href="/metodo">Leitura de Fio</a></strong>, eu faço testes físicos de elasticidade e porosidade que revelam imediatamente essa saturação. Mas em casa, você pode notar os seguintes sinais:</p>
+
+<ol>
+  <li><strong>Falta de penetração:</strong> As máscaras de hidratação mais caras parecem escorregar pelo fio sem fazer efeito.</li>
+  <li><strong>Rigidez áspera:</strong> O cabelo parece seco mesmo após usar muito creme de pentear ou leave-in.</li>
+  <li><strong>Perda de definição:</strong> Os cachos não formam o padrão de espiral definido e ficam pesados, "esticados" na raiz.</li>
+  <li><strong>Frizz estático:</strong> Um frizz resistente que não abaixa com óleo nem com gelatina capilar.</li>
+</ol>
+
+<h2>Como Reverter e Proteger Seus Cachos em BH</h2>
+
+<p>Não adianta apenas trocar de máscara capilar. Se você continuar lavando o cabelo com água dura e cheia de cloro, o acúmulo voltará em 48 horas. A solução exige uma estratégia em três etapa:</p>
+
+<h3>1. Filtro de Chuveiro com KDF-55</h3>
+
+<p>A primeira linha de defesa é mecânica. Recomendo fortemente instalar um filtro de chuveiro que contenha **KDF-55** (liga de cobre-zinco de alta pureza) associado a carvão ativado. Os filtros comuns de argila não seguram metais pesados, mas o KDF-55 remove até 98% do cloro e reduz significativamente os metais dissolvidos por reação redox antes que a água toque na sua cabeça.</p>
+
+<h3>2. Agentes Quelantes (Desintoxicação Química)</h3>
+
+<p>Para o metal que já está grudado dentro do córtex, precisamos de um agente quelante (do grego <em>chele</em>, garra). Quelantes são moléculas que "agarram" os íons de metais pesados e os tornam solúveis em água, permitindo que sejam eliminados no enxágue. Em casa, você pode usar um acidificante ou shampoo quelante que contenha *Sodium Phytate* (Fitato de Sódio) ou *Disodium EDTA* em alta concentração. O vinagre de maçã diluído em água fria (proporção 1 para 5) ajuda a neutralizar o pH e remover o cálcio superficial da cutícula.</p>
+
+<h3>3. Acidificação Capilar Sistemática</h3>
+
+<p>Lavar o cacho com o pH neutro ou alcalino da água da torneira mantém as cutículas abertas, facilitando a entrada de mais metais. O uso de um acidificante capilar (pH entre 3,0 e 4,0) após o tratamento fecha as cutículas, sela a umidade e impede que os metais encontrem brechas para se ligar à queratina interna.</p>
+
+<h2>O Tratamento Profissional: Detox Estimulante no Studio</h2>
+
+<p>Se o seu cacho já está muito enrijecido, a desintoxicação caseira pode demorar semanas. No Studio do Jon, no bairro Caiçaras, temos um protocolo específico para isso: o <strong><a href="/servicos/detox-estimulante">Detox Estimulante (R$ 180)</a></strong>. </p>
+
+<p>Usamos cosméticos profissionais com alta carga de agentes quelantes biotecnológicos para remover o ferro, o cálcio e o cobre da fibra sem agredir os fios. Associamos isso a uma esfoliação capilar com sementes naturais para desobstruir os folículos, reequilibrar o pH do couro cabeludo e estimular a circulação periférica. O cacho volta a respirar, recupera a elasticidade instantaneamente e o volume se distribui de forma leve e harmônica.</p>
+
+<p>O primeiro passo é sempre o diagnóstico. Na nossa <strong><a href="/metodo">Leitura de Fio</a></strong> (inclusa no valor de R$ 190 do corte com o Jon, ou R$ 80 avulsa revertidos em crédito), mapeamos o nível de porosidade e os depósitos de metais para desenhar o tratamento exato que o seu cabelo precisa. Sem receitas prontas de prateleira.</p>
+
+<div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+  <h3>Chega de brigar com a água do chuveiro.</h3>
+  <p>Agende uma Leitura de Fio e recupere a elasticidade real dos seus cachos no Studio do Jon, em Belo Horizonte.</p>
+  <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+</div>`
+  },
+  {
     id: 52,
     slug: 'guia-completo-cortes-cabelo-cacheado-tendencias',
     title: 'Cortes para Cabelo Cacheado: Guia Completo de Técnicas e Tendências',
