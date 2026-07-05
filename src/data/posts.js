@@ -508,7 +508,7 @@ export const posts = [
     dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Guia Completo',
-    image: '/blog-transicao-capilar.png',
+    image: '/blog-transicao-capilar.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -614,7 +614,7 @@ export const posts = [
     dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Educação Técnica',
-    image: '/blog-por-que-saloes-falham-cabelo-texturizado.png',
+    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
     content: `<p>Seu cabelo cacheado não é quebrado. Não é rebelde. Não é impossível de lidar. Seu cabelo é <strong>mal-lido</strong>.</p>
 
 <p>A diferença entre um salão genérico e um especialista em texturas é que o genérico olha para o seu fio e vê um problema. O especialista vê um código. O genérico aplica um template universal. O especialista diagnostica.</p>
@@ -709,7 +709,7 @@ export const posts = [
     dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Educação Técnica',
-    image: '/blog-por-que-saloes-falham-cabelo-texturizado.png',
+    image: '/blog-por-que-saloes-falham-cabelo-texturizado.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -970,7 +970,7 @@ export const posts = [
     dateModified: '2026-06-29',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-cronograma-capilar.png',
+    image: '/blog-cronograma-capilar.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -1060,7 +1060,7 @@ export const posts = [
     date: '29 de Junho, 2026',
     author: 'Jon',
     category: 'Corte e Estilo',
-    image: '/blog-corte-hibrido-cachos.png',
+    image: '/blog-corte-hibrido-cachos.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -1168,7 +1168,7 @@ export const posts = [
     date: '26 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-caspa-cabelo-cacheado.png',
+    image: '/blog-caspa-cabelo-cacheado.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -1255,7 +1255,7 @@ export const posts = [
     dateModified: '2026-07-04',
     author: 'Jon',
     category: 'Transição Capilar',
-    image: '/blog-transicao-capilar.png',
+    image: '/blog-transicao-capilar.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -1616,7 +1616,7 @@ export const posts = [
     date: '12 de Junho, 2026',
     author: 'Jon',
     category: 'Cuidado Capilar',
-    image: '/blog-day-after-cachos.png',
+    image: '/blog-day-after-cachos.webp',
     faqSchema: {
       "@context": "https://schema.org",
       "@type": "FAQPage",
