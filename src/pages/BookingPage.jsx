@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   onAuthStateChanged,
-  signOut
+  signOut,
+  signInAnonymously
 } from 'firebase/auth';
 import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
@@ -456,10 +457,19 @@ const BookingPage = () => {
     if (!auth) return;
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setCurrentUser(user);
-        await loadProfileByUserId(user.uid, user.email);
+        if (user.isAnonymous) {
+          setCurrentUser(null); // Keep UI showing as logged out for anonymous users
+        } else {
+          setCurrentUser(user);
+          await loadProfileByUserId(user.uid, user.email);
+        }
       } else {
         setCurrentUser(null);
+        try {
+          await signInAnonymously(auth);
+        } catch (err) {
+          console.warn('Anonymous auth failed:', err);
+        }
       }
     });
     return () => unsubscribe();
