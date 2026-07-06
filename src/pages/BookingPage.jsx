@@ -7,7 +7,8 @@ import {
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   onAuthStateChanged,
-  signOut
+  signOut,
+  signInAnonymously
 } from 'firebase/auth';
 import { collection, addDoc, getDocs, query, where, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import SEO from '../components/SEO';
@@ -1231,6 +1232,24 @@ const BookingPage = () => {
       } catch (authErr) {
         console.warn('Erro ao criar credenciais durante cadastro:', authErr);
         setAuthError(getFriendlyAuthMessage(authErr.code));
+        setLoading(false);
+        return;
+      }
+    } else if (!currentUser) {
+      // Login anônimo para clientes que não criaram conta
+      try {
+        const isDemo = !auth || isDemoMode;
+        if (isDemo) {
+          finalUserId = 'demo-anon-uid-' + Date.now();
+          finalAuthProvider = 'anonymous';
+        } else {
+          const anonCredential = await signInAnonymously(auth);
+          finalUserId = anonCredential.user.uid;
+          finalAuthProvider = 'anonymous';
+        }
+      } catch (anonErr) {
+        console.warn('Erro ao autenticar anonimamente:', anonErr);
+        setAuthError('Houve um problema de comunicação. Tente novamente.');
         setLoading(false);
         return;
       }
