@@ -470,6 +470,12 @@ export default function AdminMobileApp() {
   const [prodExitSelectedId, setProdExitSelectedId] = useState('');
   const [prodExitQuantity, setProdExitQuantity] = useState(1);
   const [prodExitType, setProdExitType] = useState('venda');
+  const [exitCart, setExitCart] = useState([]);
+  const [exitClientType, setExitClientType] = useState('avulso');
+  const [exitClientPhone, setExitClientPhone] = useState('');
+  const [exitClientSearch, setExitClientSearch] = useState('');
+  const [exitPaymentMethod, setExitPaymentMethod] = useState('Pix');
+  const [exitProductSearch, setExitProductSearch] = useState('');
 
   // Product entry states
   const [prodEntryName, setProdEntryName] = useState('');
@@ -2343,61 +2349,67 @@ Grande abraço, Jon.`;
   };
 
   const handleProductExit = async () => {
-    if (!prodExitSelectedId) {
-      showToast('Selecione um produto', 'error');
+    if (exitCart.length === 0) {
+      showToast('Adicione pelo menos um produto na comanda', 'error');
       return;
     }
-    const product = inventory.find(p => p.id === prodExitSelectedId);
-    if (!product) return;
-
-    const qty = Number(prodExitQuantity);
-    if (isNaN(qty) || qty <= 0) {
-      showToast('Quantidade inválida', 'error');
-      return;
-    }
-
-    if (qty > product.quantity) {
-      showToast('Estoque insuficiente', 'error');
-      return;
-    }
-
-    const newQty = product.quantity - qty;
 
     try {
-      if (db) {
-        await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
-      }
-
-      // Saída de produto SEMPRE debita o custo (não o preço de venda)
-      // Venda avulsa = entrada de caixa pelo preço de venda; mas a saída de estoque
-      // gera uma despesa de custo (custo da mercadoria). Uso interno = só despesa de custo.
-      const costVal = (product.costPrice || 0) * qty;
-      const isSale = prodExitType === 'venda';
       const txDataList = [];
+      const updatedInventory = [...inventory];
 
-      // Sempre lança saída de custo do estoque
-      txDataList.push({
-        type: 'saida',
-        category: 'estoque',
-        value: costVal,
-        description: isSale
-          ? `CMV - Venda Avulsa: ${product.name} (x${qty})`
-          : `Uso do Salão: ${product.name} (-${qty} un.)`,
-        date: today(),
-        createdAt: new Date().toISOString()
-      });
+      for (const item of exitCart) {
+        const product = inventory.find(p => p.id === item.productId);
+        if (!product) continue;
 
-      // Se for venda, lança também a entrada pelo preço de venda
-      if (isSale && product.sellingPrice) {
+        if (item.quantity > product.quantity) {
+          showToast(`Estoque insuficiente para ${product.name}`, 'error');
+          return;
+        }
+
+        const newQty = product.quantity - item.quantity;
+        if (db) {
+          await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
+        }
+
+        // Update local copy
+        const idx = updatedInventory.findIndex(p => p.id === product.id);
+        if (idx !== -1) {
+          updatedInventory[idx].quantity = newQty;
+        }
+
+        // CMV (Custo da Mercadoria)
+        const costVal = (product.costPrice || 0) * item.quantity;
+        const isSale = prodExitType === 'venda';
+        const clientSuffix = exitClientType === 'client' && exitClientPhone
+          ? ` - Cliente: ${(() => {
+              const c = clients.find(cl => cl.phone === exitClientPhone);
+              return c ? `${c.name} (${c.phone})` : exitClientPhone;
+            })()}`
+          : '';
+
         txDataList.push({
-          type: 'entrada',
+          type: 'saida',
           category: 'estoque',
-          value: (product.sellingPrice || 0) * qty,
-          description: `Venda Avulsa: ${product.name} (x${qty})`,
+          value: costVal,
+          description: isSale
+            ? `CMV - Venda Avulsa: ${product.name} (x${item.quantity})${clientSuffix}`
+            : `Uso do Salão: ${product.name} (-${item.quantity} un.)`,
           date: today(),
-          paymentMethod: 'Pix',
           createdAt: new Date().toISOString()
         });
+
+        if (isSale && product.sellingPrice) {
+          txDataList.push({
+            type: 'entrada',
+            category: 'estoque',
+            value: (product.sellingPrice || 0) * item.quantity,
+            description: `Venda Avulsa: ${product.name} (x${item.quantity})${clientSuffix}`,
+            date: today(),
+            paymentMethod: exitPaymentMethod,
+            createdAt: new Date().toISOString()
+          });
+        }
       }
 
       if (db) {
@@ -2405,18 +2417,21 @@ Grande abraço, Jon.`;
           await addDoc(collection(db, 'financial_transactions'), txData);
         }
       }
-      setInventory(prev => prev.map(p => p.id === product.id ? { ...p, quantity: newQty } : p));
+
+      setInventory(updatedInventory);
       setTransactions(prev => [
         ...txDataList.map(tx => ({ id: Date.now().toString() + Math.random(), ...tx })),
         ...prev
       ]);
 
-      showToast(isSale ? 'Venda registrada! 💰 Custo debitado do caixa.' : 'Saída por uso registrada! 💸', 'success');
+      showToast(prodExitType === 'venda' ? 'Venda registrada! 💰 Custo debitado do caixa.' : 'Saída por uso registrada! 💸', 'success');
       setShowProductExitSheet(false);
-      setProdExitSelectedId('');
-      setProdExitQuantity(1);
+      setExitCart([]);
+      setExitClientPhone('');
+      setExitClientSearch('');
+      setExitProductSearch('');
     } catch (err) {
-      showToast('Erro ao registrar saída: ' + err.message, 'error');
+      showToast('Erro ao registrar venda: ' + err.message, 'error');
     }
   };
 
@@ -5445,51 +5460,276 @@ Grande abraço, Jon.`;
   // ── Product Exit Sheet ──────────────────────────────────────────
   const renderProductExitSheet = () => {
     if (!showProductExitSheet) return null;
+
+    // Filter products by search
+    const filteredProducts = inventory.filter(p => 
+      p.name.toLowerCase().includes(exitProductSearch.toLowerCase())
+    );
+
+    // Filter clients by search
+    const filteredClients = clients.filter(c => 
+      c.name.toLowerCase().includes(exitClientSearch.toLowerCase()) ||
+      c.phone.includes(exitClientSearch)
+    );
+
+    // Calculate cart total
+    const cartTotal = exitCart.reduce((acc, item) => {
+      const p = inventory.find(prod => prod.id === item.productId);
+      return acc + (p ? (p.sellingPrice || 0) * item.quantity : 0);
+    }, 0);
+
+    const handleAddToCart = () => {
+      if (!prodExitSelectedId) {
+        showToast('Selecione um produto', 'error');
+        return;
+      }
+      const product = inventory.find(p => p.id === prodExitSelectedId);
+      if (!product) return;
+
+      const qty = Number(prodExitQuantity);
+      if (isNaN(qty) || qty <= 0) {
+        showToast('Quantidade inválida', 'error');
+        return;
+      }
+
+      if (qty > product.quantity) {
+        showToast('Estoque insuficiente', 'error');
+        return;
+      }
+
+      // Check if already in cart
+      const existingIdx = exitCart.findIndex(item => item.productId === product.id);
+      if (existingIdx !== -1) {
+        const newCart = [...exitCart];
+        const newQty = newCart[existingIdx].quantity + qty;
+        if (newQty > product.quantity) {
+          showToast('Estoque total insuficiente', 'error');
+          return;
+        }
+        newCart[existingIdx].quantity = newQty;
+        setExitCart(newCart);
+      } else {
+        setExitCart(prev => [...prev, { productId: product.id, quantity: qty }]);
+      }
+
+      showToast(`${product.name} adicionado!`, 'success');
+      setProdExitSelectedId('');
+      setProdExitQuantity(1);
+      setExitProductSearch('');
+    };
+
+    const handleRemoveFromCart = (productId) => {
+      setExitCart(prev => prev.filter(item => item.productId !== productId));
+    };
+
     return (
-      <div className="m-overlay" onClick={() => setShowProductExitSheet(false)}>
-        <div className="m-sheet" onClick={e => e.stopPropagation()}>
+      <div className="m-overlay" onClick={() => { setShowProductExitSheet(false); setExitCart([]); }}>
+        <div className="m-sheet" onClick={e => e.stopPropagation()} style={{ maxHeight: '92%', display: 'flex', flexDirection: 'column' }}>
           <div className="m-sheet-handle"/>
           <div className="m-sheet-header">
-            <div className="m-sheet-title">Saída Avulsa de Produto</div>
-            <button onClick={() => setShowProductExitSheet(false)} className="m-icon-btn"><X size={18}/></button>
+            <div className="m-sheet-title">Comanda de Produtos</div>
+            <button onClick={() => { setShowProductExitSheet(false); setExitCart([]); }} className="m-icon-btn"><X size={18}/></button>
           </div>
-          <div className="m-sheet-body">
-            <div className="m-field">
-              <label className="m-label">Produto *</label>
-              <select 
-                className="m-select" 
-                value={prodExitSelectedId} 
-                onChange={e => setProdExitSelectedId(e.target.value)}
-              >
-                <option value="">Selecione um produto...</option>
-                {inventory.map(p => (
-                  <option key={p.id} value={p.id}>{p.name} (Dispo: {p.quantity})</option>
-                ))}
-              </select>
-            </div>
 
-            <div className="m-field">
-              <label className="m-label">Quantidade *</label>
-              <input 
-                className="m-input" 
-                type="number" 
-                min="1" 
-                value={prodExitQuantity} 
-                onChange={e => setProdExitQuantity(e.target.value)}
-              />
-            </div>
-
-            <div className="m-field">
-              <label className="m-label">Motivo / Tipo de Saída</label>
+          <div className="m-sheet-body" style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+            
+            {/* Segment: Reason */}
+            <div className="m-field" style={{ marginBottom: '14px' }}>
+              <label className="m-label">Finalidade da Saída</label>
               <div className="m-segmented">
-                <button className={`m-seg-btn ${prodExitType === 'venda' ? 'active' : ''}`} onClick={() => setProdExitType('venda')}>💰 Venda Avulsa</button>
+                <button className={`m-seg-btn ${prodExitType === 'venda' ? 'active' : ''}`} onClick={() => setProdExitType('venda')}>💰 Venda Comercial</button>
                 <button className={`m-seg-btn ${prodExitType === 'uso' ? 'active' : ''}`} onClick={() => setProdExitType('uso')}>💆 Uso no Salão</button>
               </div>
             </div>
+
+            {/* Segment: Client selection (only for Venda) */}
+            {prodExitType === 'venda' && (
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--m-rule)', marginBottom: '14px' }}>
+                <label className="m-label" style={{ marginBottom: '8px', display: 'block' }}>Identificar Cliente?</label>
+                <div className="m-segmented" style={{ marginBottom: '10px' }}>
+                  <button className={`m-seg-btn ${exitClientType === 'avulso' ? 'active' : ''}`} onClick={() => setExitClientType('avulso')}>Cliente Avulso (Sem Identificar)</button>
+                  <button className={`m-seg-btn ${exitClientType === 'client' ? 'active' : ''}`} onClick={() => setExitClientType('client')}>Cliente Cadastrado</button>
+                </div>
+
+                {exitClientType === 'client' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <input 
+                      type="text" 
+                      className="m-input" 
+                      placeholder="Buscar cliente por nome ou celular..." 
+                      value={exitClientSearch}
+                      onChange={e => setExitClientSearch(e.target.value)}
+                    />
+                    
+                    {exitClientSearch && (
+                      <div style={{ maxHeight: '110px', overflowY: 'auto', background: 'var(--m-card)', borderRadius: '6px', border: '1px solid var(--m-rule)', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
+                        {filteredClients.slice(0, 5).map(c => (
+                          <div 
+                            key={c.phone} 
+                            onClick={() => {
+                              setExitClientPhone(c.phone);
+                              setExitClientSearch(c.name);
+                            }}
+                            style={{ 
+                              padding: '8px 12px', 
+                              cursor: 'pointer', 
+                              fontSize: '0.8rem',
+                              borderBottom: '1px solid var(--m-rule)',
+                              background: exitClientPhone === c.phone ? 'var(--m-gold-subtle)' : 'transparent',
+                              color: exitClientPhone === c.phone ? 'var(--m-gold)' : 'inherit'
+                            }}
+                          >
+                            {c.name} ({c.phone})
+                          </div>
+                        ))}
+                        {filteredClients.length === 0 && (
+                          <div style={{ padding: '8px 12px', fontSize: '0.8rem', color: 'var(--m-muted)' }}>Nenhum cliente encontrado</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Segment: Add Product to Comanda */}
+            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--m-rule)', marginBottom: '16px' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--m-gold)', marginBottom: '8px', display: 'block' }}>Adicionar Item</span>
+              
+              <div className="m-field" style={{ marginBottom: '10px' }}>
+                <input 
+                  type="text" 
+                  className="m-input" 
+                  placeholder="Digitar nome do produto..." 
+                  value={exitProductSearch}
+                  onChange={e => setExitProductSearch(e.target.value)}
+                />
+              </div>
+
+              <div className="m-field" style={{ marginBottom: '10px' }}>
+                <select 
+                  className="m-select" 
+                  value={prodExitSelectedId} 
+                  onChange={e => setProdExitSelectedId(e.target.value)}
+                >
+                  <option value="">Selecione o produto...</option>
+                  {(exitProductSearch ? filteredProducts : inventory).map(p => (
+                    <option key={p.id} value={p.id}>{p.name} (R$ {p.sellingPrice || 0} | Estoque: {p.quantity})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
+                <div className="m-field" style={{ flex: 1, marginBottom: 0 }}>
+                  <label className="m-label">Quantidade</label>
+                  <input 
+                    type="number" 
+                    min="1" 
+                    className="m-input" 
+                    value={prodExitQuantity} 
+                    onChange={e => setProdExitQuantity(e.target.value)}
+                  />
+                </div>
+                <button 
+                  type="button" 
+                  className="m-btn m-btn-gold" 
+                  style={{ height: '42px', padding: '0 16px', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  onClick={handleAddToCart}
+                >
+                  <Plus size={16} /> Adicionar
+                </button>
+              </div>
+            </div>
+
+            {/* Comanda Summary List */}
+            <div style={{ marginBottom: '14px' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, display: 'block', marginBottom: '8px' }}>📋 Itens na Comanda ({exitCart.length})</span>
+              
+              {exitCart.length === 0 ? (
+                <div style={{ padding: '16px', border: '1px dashed var(--m-rule)', borderRadius: '8px', textAlign: 'center', color: 'var(--m-muted)', fontSize: '0.8rem' }}>
+                  Comanda vazia. Adicione produtos acima!
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {exitCart.map(item => {
+                    const p = inventory.find(prod => prod.id === item.productId);
+                    if (!p) return null;
+                    const subtotal = (p.sellingPrice || 0) * item.quantity;
+                    return (
+                      <div 
+                        key={item.productId} 
+                        style={{ 
+                          display: 'flex', 
+                          justifyContent: 'space-between', 
+                          alignItems: 'center', 
+                          padding: '10px 12px', 
+                          background: 'var(--m-card)', 
+                          borderRadius: '6px', 
+                          border: '1px solid var(--m-rule)',
+                          fontSize: '0.8rem'
+                        }}
+                      >
+                        <div>
+                          <div style={{ fontWeight: 700 }}>{p.name}</div>
+                          <div style={{ color: 'var(--m-muted)', fontSize: '0.72rem', marginTop: '2px' }}>
+                            {item.quantity} x R$ {p.sellingPrice || 0}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <span style={{ fontWeight: 800, color: 'var(--m-gold)' }}>R$ {subtotal}</span>
+                          <button 
+                            onClick={() => handleRemoveFromCart(item.productId)} 
+                            className="m-icon-btn" 
+                            style={{ color: 'var(--m-red)', padding: '4px' }}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {/* Total Comanda Summary */}
+                  {prodExitType === 'venda' && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(218,163,84,0.06)', borderRadius: '6px', border: '1px solid var(--m-gold-subtle)', marginTop: '4px' }}>
+                      <span style={{ fontWeight: 700, fontSize: '0.85rem' }}>Valor Total da Comanda:</span>
+                      <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--m-gold)' }}>R$ {cartTotal}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Segment: Payment Method (only for Venda and if cart not empty) */}
+            {prodExitType === 'venda' && exitCart.length > 0 && (
+              <div className="m-field">
+                <label className="m-label">Forma de Pagamento</label>
+                <div className="m-segmented">
+                  {['Pix', 'Crédito', 'Débito', 'Dinheiro'].map(method => (
+                    <button 
+                      key={method} 
+                      className={`m-seg-btn ${exitPaymentMethod === method ? 'active' : ''}`}
+                      onClick={() => setExitPaymentMethod(method)}
+                    >
+                      {method}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
           </div>
+
           <div className="m-sheet-footer">
-            <button className="m-btn m-btn-outline" style={{ flex:1 }} onClick={() => setShowProductExitSheet(false)}>Cancelar</button>
-            <button className="m-btn m-btn-gold" style={{ flex:2 }} onClick={handleProductExit}><Check size={14}/> Confirmar Saída</button>
+            <button className="m-btn m-btn-outline" style={{ flex: 1 }} onClick={() => { setShowProductExitSheet(false); setExitCart([]); }}>Cancelar</button>
+            <button 
+              className="m-btn m-btn-gold" 
+              style={{ flex: 2 }} 
+              onClick={handleProductExit}
+              disabled={exitCart.length === 0}
+            >
+              <Check size={14}/> {prodExitType === 'venda' ? 'Finalizar Venda' : 'Confirmar Uso'}
+            </button>
           </div>
         </div>
       </div>
