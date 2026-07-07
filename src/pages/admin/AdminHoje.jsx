@@ -455,7 +455,15 @@ const AdminHoje = () => {
             {todayBookings.map(b => {
               const svc = b.serviceName || b.service?.name || '';
               const colorInfo = getServiceColor(svc, globalData.services || [], b);
-              const barColor = colorInfo.color;
+              
+              // Color indicator by status if finalizado or pending, otherwise by service
+              let barColor = colorInfo.color;
+              if (b.status === 'finalizado') {
+                barColor = '#10B981'; // Green
+              } else if (b.status === 'pendente') {
+                barColor = 'var(--adm-warning)'; // Gold/Orange warning
+              }
+
               const categoryLabel = colorInfo.label;
               const catClass = colorInfo.class || 'svc-tratamento';
               return (
@@ -485,9 +493,23 @@ const AdminHoje = () => {
                       {svc}
                     </div>
                   </div>
-                  <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', border: `1px solid ${barColor}`, color: barColor, textTransform: 'uppercase', letterSpacing: '0.5px', flexShrink: 0 }}>
-                    {categoryLabel}
-                  </span>
+                  <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 7px', border: `1px solid ${colorInfo.color}`, color: colorInfo.color, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {categoryLabel}
+                    </span>
+                    <span style={{
+                      fontSize: '0.68rem',
+                      fontWeight: 700,
+                      padding: '2px 7px',
+                      borderRadius: 4,
+                      background: `${statusColor[b.status]}22`,
+                      color: statusColor[b.status],
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px'
+                    }}>
+                      {statusLabel[b.status]}
+                    </span>
+                  </div>
                 </div>
               );
             })}
