@@ -1914,6 +1914,26 @@ Grande abraço, Jon.`;
       if (status === 'cancelado') setTab('hoje');
       showToast(`Status atualizado: ${status}`, 'success');
 
+      if (status === 'confirmado' && booking?.clientPhone) {
+        try {
+          const bookingStart = new Date(`${booking.date}T${booking.time || '00:00'}:00`);
+          const bookingCreated = booking.createdAt ? new Date(booking.createdAt) : new Date();
+          if (!isNaN(bookingStart.getTime()) && !isNaN(bookingCreated.getTime())) {
+            const diffHours = (bookingStart.getTime() - bookingCreated.getTime()) / (1000 * 60 * 60);
+            if (diffHours < 24) {
+              const cleanPhone = booking.clientPhone.replace(/\D/g, '');
+              const firstName = (booking.clientName || 'Cliente').split(' ')[0];
+              const dataBr = booking.date.split('-').reverse().join('/');
+              const svcName = booking.service?.name || booking.serviceName || 'serviço';
+              const msg = `Fala, ${firstName}! Jon por aqui. Vi seu agendamento em cima da hora e já separei seu horário por aqui! Ficou confirmado para dia ${dataBr} às ${booking.time} (${svcName}). Se rolar qualquer imprevisto me avisa. TMJ! 👊`;
+              window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+          }
+        } catch (e) {
+          console.warn('Erro ao processar mensagem de WhatsApp para agendamento rápido:', e);
+        }
+      }
+
       if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
         const updatedBooking = { ...booking, id: bookingId, clientEmail: emailToUse };
         if (status === 'confirmado') {

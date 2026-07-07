@@ -1069,6 +1069,21 @@ const AdminDashboard = () => {
                 .catch(err => console.warn('WA confirmação cliente:', err));
             }
           }
+
+          // Short notice check (<24h) to trigger custom manual confirmation message
+          const bookingStart = new Date(`${booking.date}T${booking.time || '00:00'}:00`);
+          const bookingCreated = booking.createdAt ? new Date(booking.createdAt) : new Date();
+          if (!isNaN(bookingStart.getTime()) && !isNaN(bookingCreated.getTime())) {
+            const diffHours = (bookingStart.getTime() - bookingCreated.getTime()) / (1000 * 60 * 60);
+            if (diffHours < 24) {
+              const cleanPhone = booking.clientPhone.replace(/\D/g, '');
+              const firstName = (booking.clientName || 'Cliente').split(' ')[0];
+              const dataBr = booking.date.split('-').reverse().join('/');
+              const svcName = booking.service?.name || booking.serviceName || 'serviço';
+              const msg = `Fala, ${firstName}! Jon por aqui. Vi seu agendamento em cima da hora e já separei seu horário por aqui! Ficou confirmado para dia ${dataBr} às ${booking.time} (${svcName}). Se rolar qualquer imprevisto me avisa. TMJ! 👊`;
+              window.open(`https://wa.me/55${cleanPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            }
+          }
         } catch (waErr) {
           console.warn('Erro ao enviar WA de confirmação ao cliente:', waErr);
         }
