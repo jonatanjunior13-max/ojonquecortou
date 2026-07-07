@@ -460,12 +460,13 @@
 }
 
 .appt-card.finalizado {
-  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
-  border: 1px solid rgba(52, 211, 153, 0.35) !important;
-  border-left: 4px solid #34D399 !important;
-  color: #ECFDF5 !important;
-  opacity: 0.95;
-  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  opacity: 0.9;
 }
 
 .appt-card.cancelado {
@@ -589,9 +590,13 @@
 }
 
 .appt-card.finalizado {
-  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
-  border-left: 4px solid #34D399 !important;
-  color: #ECFDF5 !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  opacity: 0.9;
 }
 
 .appt-card.cancelado {
@@ -748,13 +753,13 @@
 .appt-card.finalizado.svc-cor,
 .appt-card.finalizado.svc-analise,
 .appt-card.finalizado.svc-finalizacao {
-  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
   border: none !important;
-  border-left: 4px solid #34D399 !important;
-  color: #ECFDF5 !important;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
   border-radius: 0px !important;
-  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
-  opacity: 0.95;
+  box-shadow: none !important;
+  opacity: 0.9;
 }
 
 .appt-card .appt-time,
@@ -3750,10 +3755,15 @@
   color: #DC2626 !important;
 }
 .m-today-all-booking-card.finalizado {
-  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
-  border: 1px solid rgba(52, 211, 153, 0.35) !important;
-  color: #ECFDF5 !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
+  border: none !important;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  opacity: 0.9;
 }
+
 
 /* ==========================================================================
    SISTEMA ESPECTRO — OVERRIDES COMPONENTES DESKTOP
