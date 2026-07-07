@@ -1407,14 +1407,20 @@ export default function AdminMobileApp() {
         createdAt: new Date().toISOString()
       };
 
-      // Calculate service saida cost (expense)
+      // Calculate service saida cost (expense) + product sales cost (CMV)
       const mainService = services.find(s => s.name === (checkoutBooking.service?.name || checkoutBooking.serviceName));
       const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
       const extraServicesCost = selectedServices.reduce((sum, item) => {
         const match = services.find(s => s.name === item.name);
         return sum + (match ? (Number(match.cost) || 0) : 0);
       }, 0);
-      const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal;
+
+      const soldProductsCost = selectedProducts.reduce((sum, p) => {
+        const match = inventory.find(prod => prod.id === p.id);
+        return sum + (match ? (Number(match.costPrice) || 0) : 0) * p.qty;
+      }, 0);
+
+      const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + soldProductsCost;
 
       const saidaPayload = {
         bookingId: checkoutBooking.id,
@@ -1426,7 +1432,7 @@ export default function AdminMobileApp() {
         paymentMethod: isSplitPayment ? 'Pix' : (paymentMethod || 'Pix'),
         value: totalServiceCost,
         discount: 0,
-        description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}${selectedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}`,
+        description: `Custo de Execução - ${checkoutBooking.service?.name || checkoutBooking.serviceName || 'Serviço'}${selectedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${soldProductsCost > 0 ? ` (Custo de Venda Produtos: R$ ${soldProductsCost.toFixed(2)})` : ''}`,
         professionalId: checkoutBooking.professionalId || checkoutBooking.profissional || 'jon',
         usedProducts: usedProducts.map(p => ({
           productId: p.productId,
@@ -1487,8 +1493,15 @@ export default function AdminMobileApp() {
           servicePrice: finalBasePrice 
         });
 
-        // No inventory adjustments needed for salon_products as they represent usage
-        // and do not track direct quantity in stock on this collection.
+        // Deduct sold products stock
+        for (const p of selectedProducts) {
+          const prodRef = doc(db, 'products', p.id);
+          const snap = await getDoc(prodRef);
+          if (snap.exists()) {
+            const cur = snap.data().quantity || 0;
+            await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
+          }
+        }
 
         // Apply new used products inventory adjustments
         for (const u of usedProducts) {

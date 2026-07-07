@@ -1739,7 +1739,7 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
-    // Calculate service cost (operational supplies only, sales not included as execution cost)
+    // Calculate service cost + product sales cost (CMV)
     const mainService = services.find(s => s.name === (booking.service?.name || booking.serviceName));
     const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
     const extraServicesCost = (as || []).reduce((sum, item) => {
@@ -1747,7 +1747,13 @@ const AdminDashboard = () => {
       return sum + (match ? (Number(match.cost) || 0) : 0);
     }, 0);
     const usedProductsTotal = usedProductsNorm.reduce((s, p) => s + p.price, 0);
-    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + extraCost;
+
+    const soldProductsCost = productsNorm.reduce((sum, p) => {
+      const match = products.find(prod => prod.id === p.productId);
+      return sum + (match ? (Number(match.costPrice) || 0) : 0) * (p.quantity || 1);
+    }, 0);
+
+    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + extraCost + soldProductsCost;
 
     const saidaPayload = {
       bookingId: booking.id,
@@ -1759,7 +1765,7 @@ const AdminDashboard = () => {
       paymentMethod: pm || 'Pix',
       value: totalServiceCost,
       discount: 0,
-      description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${(as || []).length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${extraCost > 0 ? ` (Extra Manual: R$ ${extraCost})` : ''}`,
+      description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${(as || []).length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${soldProductsCost > 0 ? ` (Custo de Venda Produtos: R$ ${soldProductsCost.toFixed(2)})` : ''}${extraCost > 0 ? ` (Extra Manual: R$ ${extraCost})` : ''}`,
       professionalId: booking.professionalId || booking.profissional || 'jon',
       usedProducts: usedProductsNorm.map(p => ({
         productId: p.productId,
@@ -1941,14 +1947,20 @@ const AdminDashboard = () => {
       createdAt: new Date().toISOString()
     };
 
-    // Calculate service cost (sum of base service cost + extra services cost + cost of used products/insumos + manual extra cost)
+    // Calculate service cost (sum of base service cost + extra services cost + cost of used products/insumos + manual extra cost) + product sales cost (CMV)
     const mainService = services.find(s => s.name === (booking.service?.name || booking.serviceName));
     const mainServiceCost = mainService ? (Number(mainService.cost) || 0) : 0;
     const extraServicesCost = addedServices.reduce((sum, item) => {
       const match = services.find(s => s.name === item.name);
       return sum + (match ? (Number(match.cost) || 0) : 0);
     }, 0);
-    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + (Number(extraCost) || 0);
+
+    const soldProductsCost = addedProducts.reduce((sum, p) => {
+      const match = products.find(prod => prod.id === p.productId);
+      return sum + (match ? (Number(match.costPrice) || 0) : 0) * (p.quantity || 1);
+    }, 0);
+
+    const totalServiceCost = mainServiceCost + extraServicesCost + usedProductsTotal + (Number(extraCost) || 0) + soldProductsCost;
 
     const bookingServiceName = booking.service?.name || booking.serviceName;
     const servObj = globalData.services.find(s => s.name === bookingServiceName);
@@ -2098,7 +2110,7 @@ const AdminDashboard = () => {
             type: 'saida',
             paymentMethod,
             value: totalServiceCost,
-            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${Number(extraCost) > 0 ? ` (Extra Manual: R$ ${Number(extraCost)})` : ''}`,
+            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${soldProductsCost > 0 ? ` (Custo de Venda Produtos: R$ ${soldProductsCost.toFixed(2)})` : ''}${Number(extraCost) > 0 ? ` (Extra Manual: R$ ${Number(extraCost)})` : ''}`,
             professionalId: booking.profissional || 'jon',
             createdAt: new Date().toISOString()
           };
@@ -2151,7 +2163,7 @@ const AdminDashboard = () => {
             type: 'saida',
             paymentMethod,
             value: totalServiceCost,
-            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${Number(extraCost) > 0 ? ` (Extra Manual: R$ ${Number(extraCost)})` : ''}`,
+            description: `Custo de Execução - ${booking.service?.name || booking.serviceName || 'Serviço'}${addedServices.length > 0 ? ' + extras' : ''}${usedProductsTotal > 0 ? ` (Insumos: R$ ${usedProductsTotal})` : ''}${soldProductsCost > 0 ? ` (Custo de Venda Produtos: R$ ${soldProductsCost.toFixed(2)})` : ''}${Number(extraCost) > 0 ? ` (Extra Manual: R$ ${Number(extraCost)})` : ''}`,
             professionalId: booking.profissional || 'jon',
             createdAt: new Date().toISOString()
           };
