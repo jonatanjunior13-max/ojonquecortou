@@ -1731,6 +1731,33 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
             <div className="booking-step">
               <h2>Escolha o serviço desejado</h2>
               <p className="step-desc">Selecione uma categoria abaixo para filtrar nosso menu de serviços e tratamentos capilares.</p>
+
+              {/* Trust recap block for conversion and SEO context */}
+              <div className="booking-trust-block" style={{
+                background: 'rgba(218,163,84,0.06)',
+                border: '1px solid rgba(218,163,84,0.15)',
+                borderRadius: '8px',
+                padding: '16px',
+                marginBottom: '20px',
+                fontSize: '0.9rem',
+                color: 'rgba(255,255,255,0.85)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', color: 'var(--accent)', fontWeight: 'bold' }}>
+                  <Sparkles size={16} />
+                  <span>Método Leitura de Fio Incluso</span>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.85rem', lineHeight: '1.4' }}>
+                  Todo corte técnico ou tratamento no Studio é precedido pelo diagnóstico exclusivo de 7 etapas da <strong>Leitura de Fio</strong> (elasticidade, porosidade, curvaturas e visagismo a seco), garantindo o design perfeito para o seu cacho.
+                </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '12px', paddingTop: '12px', borderTop: '1px dashed rgba(255,255,255,0.08)', fontSize: '0.8rem' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Check size={14} style={{ color: '#22c55e' }} /> Cancelamento/Reagendamento fácil pelo site
+                  </span>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <Check size={14} style={{ color: '#22c55e' }} /> Sem química alisante (100% natural)
+                  </span>
+                </div>
+              </div>
               
               {/* Abas de Categorias */}
               <div className="booking-category-tabs">

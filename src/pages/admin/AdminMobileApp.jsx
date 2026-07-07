@@ -2196,6 +2196,12 @@ Grande abraço, Jon.`;
       if (db) {
         const ref = await addDoc(collection(db, 'client_profiles'), data);
         setClients(prev => [{ id: ref.id, ...data }, ...prev]);
+      } else {
+        const fakeId = 'demo-cli-' + Date.now();
+        const localClients = JSON.parse(localStorage.getItem('demo_client_profiles') || '[]');
+        localClients.push({ id: fakeId, ...data });
+        localStorage.setItem('demo_client_profiles', JSON.stringify(localClients));
+        setClients(prev => [{ id: fakeId, ...data }, ...prev]);
       }
       setShowNewClientSheet(false);
       setNewClientForm({ name:'', phone:'', email:'', curvatura:'3A', observacoes:'' });
@@ -2213,6 +2219,9 @@ Grande abraço, Jon.`;
       if (db) {
         const ref = await addDoc(collection(db, 'financial_transactions'), data);
         setTransactions(prev => [{ id: ref.id, ...data }, ...prev]);
+      } else {
+        const fakeId = 'demo-tx-' + Date.now();
+        setTransactions(prev => [{ id: fakeId, ...data }, ...prev]);
       }
       setShowAddTxSheet(false);
       setTxForm({ type:'saida', description:'', value:'', paymentMethod:'Pix', date: today() });
@@ -2369,7 +2378,11 @@ Grande abraço, Jon.`;
 
         const newQty = product.quantity - item.quantity;
         if (db) {
-          await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
+          try {
+            await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
+          } catch (dbErr) {
+            console.warn('Erro ao atualizar estoque no Firestore:', dbErr);
+          }
         }
 
         // Update local copy
@@ -2413,12 +2426,18 @@ Grande abraço, Jon.`;
       }
 
       if (db) {
-        for (const txData of txDataList) {
-          await addDoc(collection(db, 'financial_transactions'), txData);
+        try {
+          for (const txData of txDataList) {
+            await addDoc(collection(db, 'financial_transactions'), txData);
+          }
+        } catch (dbErr) {
+          console.warn('Erro ao registrar transação financeira no Firestore:', dbErr);
         }
       }
 
       setInventory(updatedInventory);
+      localStorage.setItem('demo_products', JSON.stringify(updatedInventory));
+
       setTransactions(prev => [
         ...txDataList.map(tx => ({ id: Date.now().toString() + Math.random(), ...tx })),
         ...prev
@@ -5596,28 +5615,65 @@ Grande abraço, Jon.`;
             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid var(--m-rule)', marginBottom: '16px' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--m-gold)', marginBottom: '8px', display: 'block' }}>Adicionar Item</span>
               
-              <div className="m-field" style={{ marginBottom: '10px' }}>
+              <div className="m-field" style={{ marginBottom: '10px', position: 'relative' }}>
                 <input 
                   type="text" 
                   className="m-input" 
                   placeholder="Digitar nome do produto..." 
                   value={exitProductSearch}
-                  onChange={e => setExitProductSearch(e.target.value)}
+                  onChange={e => {
+                    setExitProductSearch(e.target.value);
+                    setProdExitSelectedId('');
+                  }}
                 />
+                {exitProductSearch.trim().length >= 3 && (!prodExitSelectedId || inventory.find(p => p.id === prodExitSelectedId)?.name !== exitProductSearch) && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: 0,
+                    right: 0,
+                    maxHeight: '180px',
+                    overflowY: 'auto',
+                    background: 'var(--m-card)',
+                    border: '1px solid var(--m-rule)',
+                    borderRadius: '6px',
+                    zIndex: 10,
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
+                  }}>
+                    {filteredProducts.map(p => (
+                      <div 
+                        key={p.id}
+                        onClick={() => {
+                          setProdExitSelectedId(p.id);
+                          setExitProductSearch(p.name);
+                        }}
+                        style={{
+                          padding: '10px 12px',
+                          cursor: 'pointer',
+                          fontSize: '0.8rem',
+                          borderBottom: '1px solid var(--m-rule)',
+                          background: prodExitSelectedId === p.id ? 'var(--m-gold-subtle)' : 'transparent',
+                          color: prodExitSelectedId === p.id ? 'var(--m-gold)' : 'inherit'
+                        }}
+                      >
+                        {p.name} (R$ {p.sellingPrice || 0} | Estoque: {p.quantity})
+                      </div>
+                    ))}
+                    {filteredProducts.length === 0 && (
+                      <div style={{ padding: '10px 12px', fontSize: '0.8rem', color: 'var(--m-muted)' }}>Nenhum produto encontrado</div>
+                    )}
+                  </div>
+                )}
               </div>
 
-              <div className="m-field" style={{ marginBottom: '10px' }}>
-                <select 
-                  className="m-select" 
-                  value={prodExitSelectedId} 
-                  onChange={e => setProdExitSelectedId(e.target.value)}
-                >
-                  <option value="">Selecione o produto...</option>
-                  {(exitProductSearch ? filteredProducts : inventory).map(p => (
-                    <option key={p.id} value={p.id}>{p.name} (R$ {p.sellingPrice || 0} | Estoque: {p.quantity})</option>
-                  ))}
-                </select>
-              </div>
+              {prodExitSelectedId && (() => {
+                const selectedProd = inventory.find(p => p.id === prodExitSelectedId);
+                return selectedProd ? (
+                  <div style={{ fontSize: '0.8rem', color: 'var(--m-gold)', fontWeight: 600, marginBottom: '10px' }}>
+                    Selecionado: {selectedProd.name} (R$ {selectedProd.sellingPrice || 0} | Estoque: {selectedProd.quantity})
+                  </div>
+                ) : null;
+              })()}
 
               <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
                 <div className="m-field" style={{ flex: 1, marginBottom: 0 }}>

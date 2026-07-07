@@ -44,6 +44,20 @@ const AdminFinancial = () => {
   const [showDatePickerDropdown, setShowDatePickerDropdown] = useState(false);
   const [showProfDropdown, setShowProfDropdown] = useState(false);
 
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [showTxDetailModal, setShowTxDetailModal] = useState(false);
+  const [isEditingTx, setIsEditingTx] = useState(false);
+  const [editTxForm, setEditTxForm] = useState({
+    description: '',
+    value: 0,
+    category: '',
+    clientName: '',
+    paymentMethod: 'Pix',
+    date: '',
+    time: '00:00',
+    type: 'entrada'
+  });
+
   // Time Window State (Default to 'mes' - Esse mês)
   const [dateWindow, setDateWindow] = useState('mes');
   const [startDate, setStartDate] = useState(() => {
@@ -869,6 +883,76 @@ const AdminFinancial = () => {
     } catch (err) {
       console.error('Erro ao registrar venda de produto:', err);
       alert('Erro ao processar venda.');
+    }
+  };
+
+  const handleDeleteTransaction = async (txId) => {
+    if (!window.confirm('Tem certeza que deseja excluir esta transação?')) return;
+    try {
+      if (isDemoMode) {
+        const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
+        const updated = local.filter(tx => tx.id !== txId);
+        localStorage.setItem('demo_financial', JSON.stringify(updated));
+        setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
+      } else {
+        await deleteDoc(doc(db, 'financial_transactions', txId));
+        const updated = (globalData.financial_transactions || []).filter(tx => tx.id !== txId);
+        setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
+      }
+      alert('Transação excluída com sucesso!');
+      setShowTxDetailModal(false);
+      setSelectedTransaction(null);
+    } catch (err) {
+      console.error('Erro ao excluir transação:', err);
+      alert('Erro ao excluir transação.');
+    }
+  };
+
+  const startEditTx = () => {
+    setEditTxForm({
+      description: selectedTransaction.description || '',
+      value: selectedTransaction.value || 0,
+      category: selectedTransaction.category || '',
+      clientName: selectedTransaction.clientName || '',
+      paymentMethod: selectedTransaction.paymentMethod || 'Pix',
+      date: selectedTransaction.date || '',
+      time: selectedTransaction.time || '00:00',
+      type: selectedTransaction.type || 'entrada'
+    });
+    setIsEditingTx(true);
+  };
+
+  const handleSaveEditTx = async (e) => {
+    e.preventDefault();
+    try {
+      const updatedFields = {
+        description: editTxForm.description,
+        value: Number(editTxForm.value),
+        category: editTxForm.category,
+        clientName: editTxForm.clientName,
+        paymentMethod: editTxForm.paymentMethod,
+        date: editTxForm.date,
+        time: editTxForm.time,
+        type: editTxForm.type
+      };
+
+      if (isDemoMode) {
+        const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
+        const updated = local.map(tx => tx.id === selectedTransaction.id ? { ...tx, ...updatedFields } : tx);
+        localStorage.setItem('demo_financial', JSON.stringify(updated));
+        setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
+      } else {
+        await updateDoc(doc(db, 'financial_transactions', selectedTransaction.id), updatedFields);
+        const updated = (globalData.financial_transactions || []).map(tx => tx.id === selectedTransaction.id ? { ...tx, ...updatedFields } : tx);
+        setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
+      }
+
+      alert('Transação atualizada com sucesso!');
+      setSelectedTransaction({ id: selectedTransaction.id, ...updatedFields });
+      setIsEditingTx(false);
+    } catch (err) {
+      console.error('Erro ao atualizar transação:', err);
+      alert('Erro ao atualizar transação.');
     }
   };
 
@@ -1745,7 +1829,15 @@ const AdminFinancial = () => {
                     }
                     
                     return (
-                      <tr key={t.id}>
+                      <tr 
+                        key={t.id} 
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                          setSelectedTransaction(t);
+                          setShowTxDetailModal(true);
+                          setIsEditingTx(false);
+                        }}
+                      >
                         <td>{t.date.split('-').reverse().join('/')} às {t.time || '00:00'}</td>
                         <td style={{ fontWeight: 600 }}>
                           {t.description}
@@ -3195,6 +3287,190 @@ const AdminFinancial = () => {
           </div>
         );
       })()}
+
+      {/* MODAL: DETALHES / EDIÇÃO DE TRANSAÇÃO */}
+      {showTxDetailModal && selectedTransaction && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '600px', width: '90%' }}>
+            {isEditingTx ? (
+              <form onSubmit={handleSaveEditTx}>
+                <h3>Editar Lançamento</h3>
+
+                <div className="form-group" style={{ marginBottom: 12 }}>
+                  <label>Descrição *</label>
+                  <input 
+                    type="text" 
+                    required 
+                    value={editTxForm.description}
+                    onChange={e => setEditTxForm(prev => ({ ...prev, description: e.target.value }))}
+                    style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div className="form-group">
+                    <label>Tipo *</label>
+                    <select
+                      value={editTxForm.type}
+                      onChange={e => setEditTxForm(prev => ({ ...prev, type: e.target.value }))}
+                      style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                    >
+                      <option value="entrada">Entrada (Receita)</option>
+                      <option value="saida">Saída (Despesa)</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Valor (R$) *</label>
+                    <input 
+                      type="number" 
+                      required 
+                      step="0.01"
+                      min="0.01"
+                      value={editTxForm.value}
+                      onChange={e => setEditTxForm(prev => ({ ...prev, value: e.target.value }))}
+                      style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div className="form-group">
+                    <label>Categoria</label>
+                    <input 
+                      type="text" 
+                      value={editTxForm.category}
+                      onChange={e => setEditTxForm(prev => ({ ...prev, category: e.target.value }))}
+                      placeholder="Ex: estoque, marketing, etc."
+                      style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Cliente</label>
+                    <input 
+                      type="text" 
+                      value={editTxForm.clientName}
+                      onChange={e => setEditTxForm(prev => ({ ...prev, clientName: e.target.value }))}
+                      placeholder="Nome do cliente (ou N/A)"
+                      style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                  <div className="form-group">
+                    <label>Forma de Pagamento / Saída *</label>
+                    <select
+                      value={editTxForm.paymentMethod}
+                      onChange={e => setEditTxForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                      style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                    >
+                      <option value="Pix">Pix</option>
+                      <option value="Dinheiro">Dinheiro</option>
+                      <option value="Cartão de Débito">Débito</option>
+                      <option value="Cartão de Crédito">Crédito à Vista</option>
+                      <option value="Crédito 2x">Crédito 2x</option>
+                      <option value="Crédito 3x">Crédito 3x</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Data *</label>
+                    <input 
+                      type="date" 
+                      required
+                      value={editTxForm.date}
+                      onChange={e => setEditTxForm(prev => ({ ...prev, date: e.target.value }))}
+                      style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: 20 }}>
+                  <label>Horário</label>
+                  <input 
+                    type="time" 
+                    value={editTxForm.time}
+                    onChange={e => setEditTxForm(prev => ({ ...prev, time: e.target.value }))}
+                    style={{ width: '100%', padding: '10px', borderRadius: 4, border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+
+                <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12 }}>
+                  <button type="button" className="btn btn-ghost" onClick={() => setIsEditingTx(false)}>Voltar para Detalhes</button>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <button type="button" className="btn btn-ghost" onClick={() => setShowTxDetailModal(false)}>Cancelar</button>
+                    <button type="submit" className="btn btn-accent" style={{ background: '#48bb78', borderColor: '#48bb78' }}>Salvar Alterações</button>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <h3 style={{ margin: 0 }}>Detalhes do Lançamento</h3>
+                  <span className={`status-badge ${selectedTransaction.type === 'entrada' ? 'confirmado' : 'cancelado'}`}>
+                    {selectedTransaction.type === 'entrada' ? 'Entrada' : 'Saída'}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24, fontSize: '0.9rem' }}>
+                  <div style={{ borderBottom: '1px solid var(--adm-rule)', paddingBottom: 8 }}>
+                    <span style={{ color: 'var(--adm-muted)', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>DESCRIÇÃO</span>
+                    <strong>{selectedTransaction.description}</strong>
+                  </div>
+                  <div style={{ borderBottom: '1px solid var(--adm-rule)', paddingBottom: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>
+                      <span style={{ color: 'var(--adm-muted)', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>VALOR BRUTO</span>
+                      <strong style={{ fontSize: '1.1rem', color: selectedTransaction.type === 'entrada' ? '#48bb78' : '#e53e3e' }}>
+                        R$ {selectedTransaction.value.toFixed(2)}
+                      </strong>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--adm-muted)', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>CATEGORIA</span>
+                      <span>{selectedTransaction.category || 'N/A'}</span>
+                    </div>
+                  </div>
+                  <div style={{ borderBottom: '1px solid var(--adm-rule)', paddingBottom: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>
+                      <span style={{ color: 'var(--adm-muted)', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>DATA / HORA</span>
+                      <span>{selectedTransaction.date.split('-').reverse().join('/')} às {selectedTransaction.time || '00:00'}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--adm-muted)', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>MÉTODO</span>
+                      <span>{selectedTransaction.paymentMethod}</span>
+                    </div>
+                  </div>
+                  <div style={{ borderBottom: '1px solid var(--adm-rule)', paddingBottom: 8 }}>
+                    <span style={{ color: 'var(--adm-muted)', display: 'block', fontSize: '0.75rem', fontWeight: 600 }}>CLIENTE</span>
+                    <span>{selectedTransaction.clientName || 'N/A'}</span>
+                  </div>
+                </div>
+
+                <div className="modal-actions" style={{ justifyContent: 'space-between', gap: 12 }}>
+                  <button 
+                    type="button" 
+                    className="btn btn-spectro-red" 
+                    style={{ background: '#e53e3e', borderColor: '#e53e3e', color: '#fff', display: 'flex', alignItems: 'center', gap: 6 }} 
+                    onClick={() => handleDeleteTransaction(selectedTransaction.id)}
+                  >
+                    <Trash2 size={14} /> Excluir Lançamento
+                  </button>
+                  <div style={{ display: 'flex', gap: 12 }}>
+                    <button type="button" className="btn btn-ghost" onClick={() => setShowTxDetailModal(false)}>Fechar</button>
+                    <button 
+                      type="button" 
+                      className="btn btn-accent" 
+                      style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                      onClick={startEditTx}
+                    >
+                      <Edit3 size={14} /> Editar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
