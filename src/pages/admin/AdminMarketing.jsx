@@ -282,10 +282,39 @@ const AdminMarketing = () => {
     }
 
     const selectedTheme = TRENDING_THEMES.find(t => t.id === selectedThemeId) || TRENDING_THEMES[0];
-    const randomTopic = `${selectedTheme.title}: ${selectedTheme.description}`;
-
     const runFallback = () => {
       const fallbackSubject = selectedTheme.title;
+      
+      const introTemplates = [
+        `Fala, pessoal! Por aqui o foco sempre foi a saúde real e a física por trás de cada curvatura. Hoje, trago um assunto crucial para quem busca liberdade e praticidade: <strong>${selectedTheme.title}</strong>.`,
+        `E aí, pessoal! Passando aqui para bater um papo sincero e técnico sobre um assunto que impacta diretamente o caimento do seu cabelo: <strong>${selectedTheme.title}</strong>.`,
+        `Olá! Quem frequenta o Studio sabe que eu prezo muito pela explicação lógica de cada tratamento. Hoje vamos analisar um ponto importante: <strong>${selectedTheme.title}</strong>.`
+      ];
+
+      const midTemplates = [
+        `Muitos me perguntam sobre isso, e a resposta está na leitura da estrutura de cada mecha: ${selectedTheme.description}`,
+        `No dia a dia do salão, vejo muitas dúvidas sobre esse ponto. A explicação científica para isso é simples: ${selectedTheme.description}`,
+        `Entender esse comportamento é fundamental para que você tenha autonomia na sua finalização: ${selectedTheme.description}`
+      ];
+
+      const concludeTemplates = [
+        `No Studio do Jon, com o Método Leitura de Fio, nós analisamos a anatomia e a geometria da sua curvatura antes de qualquer corte ou tratamento. Respeitamos o caimento natural e a taxa de encolhimento de cada mecha no seu dia a dia, sem surpresas desagradáveis ou truques de finalizadores pesados.`,
+        `Com o Método Leitura de Fio, o objetivo é entender a fundo a densidade e a porosidade de cada mecha. Planejamos a distribuição de camadas respeitando a identidade visual e o caimento natural para que o visual funcione de verdade na sua rotina.`,
+        `Aqui, cada corte é desenhado individualmente. Estudamos a distribuição de peso e a geometria tridimensional do cacho para que você tenha leveza, volume equilibrado e a certeza de um caimento incrível.`
+      ];
+
+      const quotes = [
+        `"Cabelo com curvatura não aceita regras prontas ou adivinhações. A física do fio dita o caimento e o visagismo revela a identidade."`,
+        `"O cabelo é a moldura do rosto. O visagismo traduz quem você é através das linhas tridimensionais do cacho."`,
+        `"Saúde capilar não é milagre de internet; é ciência, pH equilibrado e o respeito à individualidade de cada curvatura."`
+      ];
+
+      const hash = selectedTheme.title.length % 3;
+      const intro = introTemplates[hash];
+      const mid = midTemplates[(hash + 1) % 3];
+      const conclude = concludeTemplates[(hash + 2) % 3];
+      const quote = quotes[hash];
+
       const fallbackBody = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
@@ -309,19 +338,19 @@ const AdminMarketing = () => {
   <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">
-    Fala, pessoal! Por aqui o foco sempre foi a saúde real e a física por trás de cada cacho. Hoje, trago um assunto crucial para quem busca liberdade e praticidade: <strong>${selectedTheme.title}</strong>.
+    ${intro}
   </p>
   
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">
-    ${selectedTheme.description}
+    ${mid}
   </p>
 
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">
-    No Studio do Jon, com o Método Leitura de Fio, nós analisamos a anatomia e a geometria da sua curvatura antes de qualquer corte ou tratamento. Cortamos a seco para respeitar o caimento natural e a taxa de encolhimento de cada mecha no seu dia a dia, sem surpresas desagradáveis ou truques de finalização pesada.
+    ${conclude}
   </p>
 
   <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
-    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"Cabelo com curvatura não aceita regras prontas ou adivinhações. A física do fio seco dita o caimento e o visagismo revela a identidade."</p>
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">${quote}</p>
     <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
   </div>
 
@@ -616,12 +645,35 @@ Use as seguintes tags no "bodyHtml":
     }
   };
 
+  const generatePersonalizedFallbackReply = (authorName, commentText = '') => {
+    const firstName = authorName.split(' ')[0];
+    const textLower = commentText.toLowerCase();
+
+    if (textLower.includes('transição') || textLower.includes('química') || textLower.includes('scab')) {
+      return `Fala, ${firstName}! Que orgulho ver sua evolução. A transição capilar exige muita paciência e acolhimento, e o método de leitura de fio serve justamente pra te guiar nas texturas e devolver a autoestima. Conta comigo nessa jornada! — Jon`;
+    }
+    if (textLower.includes('visagismo') || textLower.includes('rosto') || textLower.includes('formato') || textLower.includes('traço')) {
+      return `Que depoimento sensacional, ${firstName}! O visagismo associado à leitura de fio serve exatamente para desenhar as camadas e volumes ideais para destacar a sua personalidade e traços únicos. Valeu demais pela confiança! — Jon`;
+    }
+    if (textLower.includes('crespo') || textLower.includes('crespa') || textLower.includes('4c') || textLower.includes('volume')) {
+      return `Fala, ${firstName}! Valorizar a textura rica do cabelo crespo e o volume tridimensional sem tentar forçar padrões artificiais é a nossa filosofia aqui. Muito obrigado pela confiança no Método Leitura de Fio! TMJ! — Jon`;
+    }
+    if (textLower.includes('frizz') || textLower.includes('porosidade') || textLower.includes('ressecado') || textLower.includes('hidrat')) {
+      return `Muito obrigado pelo retorno, ${firstName}! Entender a porosidade do fio e equilibrar o pH faz toda a diferença para acabar com o frizz de forma lógica, sem encher o cabelo de cremes. Qualquer coisa, tô por aqui! — Jon`;
+    }
+    if (textLower.includes('defin') || textLower.includes('cacho') || textLower.includes('mola')) {
+      return `Valeu demais pela confiança, ${firstName}! A leitura de fio serve justamente para entender o que o seu cacho precisa para reter a umidade natural e a definição perfeita. Fico felizão que tenha gostado do resultado! — Jon`;
+    }
+
+    return `E aí, ${firstName}! Valeu demais pelo carinho e pela visita. Cada detalhe que a gente desenha serve para valorizar a sua identidade natural e trazer mais praticidade no dia a dia. Tamo junto! — Jon`;
+  };
+
   const handleSimulateNewReview = async () => {
     const names = ['Amanda Costa', 'Patrícia Oliveira', 'Beatriz Souza', 'Luana Mendes'];
     const comments = [
       'Meu cabelo ondulado nunca teve tanta definição! O visagismo do Jon é impecável.',
       'O Studio do Jon é o melhor lugar de BH para cabelos crespos. Amei a experiência.',
-      'Excelente profissional. Fez o corte a seco no meu crespo e tirou todo o scab hair.',
+      'Excelente profissional. Fez o corte geométrico no meu crespo e tirou todo o scab hair.',
       'Atendimento maravilhoso, o método de leitura de fio antes da tesoura é sensacional!'
     ];
     const idx = Math.floor(Math.random() * names.length);
@@ -635,7 +687,6 @@ Use as seguintes tags no "bodyHtml":
     };
 
     if (settings?.automations?.google_reviews_enabled !== false) {
-      const firstName = names[idx].split(' ')[0];
       let replyText = '';
       const apiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
       
@@ -647,8 +698,8 @@ Você está escrevendo uma resposta pessoal, curta (máximo 250 caracteres) e mu
 REGRAS CRÍTICAS DE TOM DE VOZ (COMO O JON FALA):
 1. SOE HUMANO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como em uma conversa de WhatsApp. Use termos naturais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
 2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use frases prontas como "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou adjetivos vazios como "cachos perfeitos".
-3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio).
-4. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
+3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo em seu caimento natural (Método Leitura de Fio). NUNCA mencione o termo "corte a seco".
+4. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso de forma natural. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
 
 Nome do cliente: ${names[idx]}
 Nota da avaliação: 5 estrelas
@@ -680,8 +731,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
       }
 
       if (!replyText) {
-        const template = GBP_REVIEW_REPLIES[Math.floor(Math.random() * GBP_REVIEW_REPLIES.length)];
-        replyText = template.replace(/{nome}/g, firstName);
+        replyText = generatePersonalizedFallbackReply(names[idx], comments[idx]);
       }
       newRev.pendingReply = replyText;
     }
@@ -694,7 +744,6 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
     const review = googleReviews.find(r => r.id === id);
     if (!review) return;
 
-    const firstName = review.author.split(' ')[0];
     let replyText = '';
     const apiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
 
@@ -706,9 +755,9 @@ Você está escrevendo uma resposta pessoal, curta (máximo 250 caracteres) e mu
 REGRAS CRÍTICAS DE TOM DE VOZ (COMO O JON FALA):
 1. SOE HUMANO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como em uma conversa de WhatsApp. Use termos naturais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
 2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use frases prontas como "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou adjetivos vazios como "cachos perfeitos".
-3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo no estado seco (Método Leitura de Fio).
+3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo em seu caimento natural (Método Leitura de Fio). NUNCA mencione o termo "corte a seco".
 4. VARIABILIDADE E NÃO REPETIÇÃO: Altere a abertura e a estrutura das respostas para não parecerem templates repetitivos.
-5. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
+5. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso de forma natural. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
 
 Nome do cliente: ${review.author}
 Nota da avaliação: ${review.rating} estrelas
@@ -740,8 +789,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
     }
 
     if (!replyText) {
-      const template = GBP_REVIEW_REPLIES[Math.floor(Math.random() * GBP_REVIEW_REPLIES.length)];
-      replyText = template.replace(/{nome}/g, firstName);
+      replyText = generatePersonalizedFallbackReply(review.author, review.comment);
     }
 
     // Save as pending (draft) for approval instead of auto-publishing

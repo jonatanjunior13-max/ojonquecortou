@@ -647,13 +647,13 @@ export const TRENDING_THEMES = [
  */
 export const GBP_REVIEW_REPLIES = [
   // 5 ESTRELAS — GERAIS / CORTE
-  `Muito obrigado pelo retorno, {nome}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte a seco com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
+  `Muito obrigado pelo retorno, {nome}! Fico feliz demais em ler isso. Estudar cada textura e planejar o corte com visagismo é o que garante que seu cacho caia perfeitamente e tenha caimento prático no dia a dia. Qualquer coisa, tô por aqui! — Jon`,
   `Valeu demais pela confiança, {nome}! O método de leitura de fio antes de cortar é justamente para não ter surpresa e respeitar o caimento natural do seu cacho. Fico muito feliz que tenha gostado do resultado! TMJ! — Jon`,
   `Que depoimento incrível, {nome}! Muito obrigado mesmo pelo carinho. Cada camada e volume que a gente desenha no visagismo serve para valorizar a sua identidade natural. Nos vemos na próxima manutenção! — Jon`,
-  `Obrigado de coração, {nome}! Fico extremamente satisfeito em ver que o corte a seco trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
+  `Obrigado de coração, {nome}! Fico extremamente satisfeito em ver que o corte geométrico trouxe a definição e leveza que você buscava. Esse cuidado individualizado com a saúde do fio é a nossa assinatura aqui. Grande abraço! — Jon`,
   `Muito bom ler isso, {nome}! Ver seu cacho volumoso e definido do jeito que você curte é a melhor parte do meu dia. Agradeço demais a recomendação e a confiança no meu trabalho! — Jon`,
-  `E aí, {nome}! Valeu demais! A proposta do corte a seco é justamente essa: respeitar o encolhimento para que você consiga finalizar em casa sem sofrimento. Fico felizão que curtiu! — Jon`,
-  `Fala, {nome}! Obrigado de verdade pelo carinho. Quando analisamos a física do fio no estado seco, tudo faz mais sentido no caimento. Tamo junto na caminhada dos cachos! — Jon`,
+  `E aí, {nome}! Valeu demais! A proposta do design geométrico é justamente essa: respeitar o encolhimento para que você consiga finalizar em casa sem sofrimento. Fico felizão que curtiu! — Jon`,
+  `Fala, {nome}! Obrigado de verdade pelo carinho. Quando analisamos a física do fio em seu estado natural, tudo faz mais sentido no caimento. Tamo junto na caminhada dos cachos! — Jon`,
   `Que massa seu feedback, {nome}! O visagismo serve exatamente para tirar o peso onde precisa e dar destaque aos seus traços. Valeu demais pela parceria e confiança! — Jon`,
   `Grande abraço, {nome}! Obrigado por registrar sua experiência. Manter a saúde da fibra alinhada com um corte geométrico bem feito muda tudo no dia a dia. Até a próxima! — Jon`,
   `Fico felizão em ler isso, {nome}! Saber que você saiu daqui se sentindo bem e com os cachos leves é o que me move. Obrigado de coração pela confiança! — Jon`,
@@ -661,7 +661,7 @@ export const GBP_REVIEW_REPLIES = [
   // 5 ESTRELAS — TRANSIÇÃO CAPILAR
   `Que orgulho ver sua evolução, {nome}! A transição capilar exige muita paciência e acolhimento, e o corte progressivo tá aí justamente pra te devolver a autoestima sem neura. Conta comigo! — Jon`,
   `Valeu pelo depoimento, {nome}! Cuidar do scab hair e das duas texturas nessa fase é desafiador, mas ver a sua raiz natural ganhando força e forma é incrível. Parabéns pela decisão! — Jon`,
-  `Muito obrigado, {nome}! Fico feliz em poder fazer parte dessa sua volta ao natural. O corte a seco ajuda a tirar a parte química sem tirar o seu sorriso. Abraço forte! — Jon`,
+  `Muito obrigado, {nome}! Fico feliz em poder fazer parte dessa sua volta ao natural. O corte geométrico ajuda a tirar a parte química sem tirar o seu sorriso. Abraço forte! — Jon`,
   `E aí, {nome}! Transição é processo, e fico muito feliz que o corte tenha te trazido essa leveza e segurança. A saúde do seu couro cabeludo agora está livre para o fio crescer forte. TMJ! — Jon`,
 
   // 5 ESTRELAS — SAÚDE / TRATAMENTO / LEITURA DE FIO
@@ -677,11 +677,11 @@ export const GBP_REVIEW_REPLIES = [
 
   // 4 ESTRELAS — COM SUGESTÃO / DICAS
   `Agradeço muito pelo feedback e pela visita, {nome}! Vou levar em consideração o seu ponto sobre o tempo de espera. Nossa Leitura de Fio às vezes é minuciosa, mas buscarei otimizar. Grande abraço! — Jon`,
-  `Valeu pela avaliação, {nome}! Fico muito satisfeito que tenha gostado do corte a seco. Na próxima visita, faremos um ajuste ainda mais fino na altura do volume lateral. Até mais! — Jon`,
+  `Valeu pela avaliação, {nome}! Fico muito satisfeito que tenha gostado do design do corte. Na próxima visita, faremos um ajuste ainda mais fino na altura do volume lateral. Até mais! — Jon`,
   `Obrigado por avaliar, {nome}! Fico feliz que curtiu o visagismo. Se precisar de alguma dica extra de day after ou finalização em casa, é só me mandar no WhatsApp. TMJ! — Jon`,
 
   // 3 ESTRELAS OU MENOS (POLIDAS, EMPÁTICAS E DIRETAS)
   `Olá, {nome}. Obrigado por pontuar sua experiência. Sinto muito que o resultado final do volume não tenha ficado exatamente como você planejava. Me chame no WhatsApp para fazermos um ajuste sem custo. — Jon`,
-  `Obrigado pelo retorno, {nome}. O encolhimento do cacho seco pode surpreender às vezes, mesmo com a nossa medição. Gostaria muito de entender melhor o caimento e ajustar o corte se necessário. — Jon`,
+  `Obrigado pelo retorno, {nome}. O encolhimento do cacho natural pode surpreender às vezes, mesmo com a nossa medição. Gostaria muito de entender melhor o caimento e ajustar o corte se necessário. — Jon`,
   `Agradeço sua avaliação, {nome}. Lamento que o atendimento não tenha superado suas expectativas. Estamos sempre refinando nossa dinâmica de agenda para dar atenção total a cada cliente. — Jon`
 ];
