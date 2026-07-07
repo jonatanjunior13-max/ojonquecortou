@@ -15,10 +15,10 @@
   --m-muted:        #B0B0B0;
   --m-rule:         rgba(255, 255, 255, 0.08);
   --m-rule-strong:  rgba(255, 255, 255, 0.14);
-  --m-gold:         #c8852a;
-  --m-gold-deep:    #965f1c;
-  --m-gold-glow:    rgba(200, 133, 42, 0.20);
-  --m-gold-subtle:  rgba(200, 133, 42, 0.09);
+  --m-gold:         #FBC5D3;
+  --m-gold-deep:    #E294A7;
+  --m-gold-glow:    rgba(251, 197, 211, 0.20);
+  --m-gold-subtle:  rgba(251, 197, 211, 0.09);
   /* Paleta Espectro — serviços */
   --m-corte:        #E2703A;
   --m-cor:          #7A3CFF;
@@ -1439,20 +1439,20 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: var(--m-gold);
+  background: #c8852a; /* Obsidian Gold */
   border: none;
   color: #0E0C0B;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(220,163,84,0.40);
+  box-shadow: 0 4px 20px rgba(200, 133, 42, 0.40); /* Gold glow */
   transition: all 0.25s var(--m-ease);
   font-family: inherit;
   flex-shrink: 0;
 }
 .m-fab:hover {
-  background: var(--m-gold-deep);
+  background: #965f1c; /* Deep gold */
   color: #0E0C0B;
 }
 .m-fab:active { transform: scale(0.92); }
