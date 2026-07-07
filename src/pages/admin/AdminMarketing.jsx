@@ -285,23 +285,13 @@ const AdminMarketing = () => {
     const runFallback = () => {
       const fallbackSubject = selectedTheme.title;
       
-      const introTemplates = [
-        `Fala, pessoal! Por aqui o foco sempre foi a saúde real e a física por trás de cada curvatura. Hoje, trago um assunto crucial para quem busca liberdade e praticidade: <strong>${selectedTheme.title}</strong>.`,
-        `E aí, pessoal! Passando aqui para bater um papo sincero e técnico sobre um assunto que impacta diretamente o caimento do seu cabelo: <strong>${selectedTheme.title}</strong>.`,
-        `Olá! Quem frequenta o Studio sabe que eu prezo muito pela explicação lógica de cada tratamento. Hoje vamos analisar um ponto importante: <strong>${selectedTheme.title}</strong>.`
-      ];
-
-      const midTemplates = [
-        `Muitos me perguntam sobre isso, e a resposta está na leitura da estrutura de cada mecha: ${selectedTheme.description}`,
-        `No dia a dia do salão, vejo muitas dúvidas sobre esse ponto. A explicação científica para isso é simples: ${selectedTheme.description}`,
-        `Entender esse comportamento é fundamental para que você tenha autonomia na sua finalização: ${selectedTheme.description}`
-      ];
-
-      const concludeTemplates = [
-        `No Studio do Jon, com o Método Leitura de Fio, nós analisamos a anatomia e a geometria da sua curvatura antes de qualquer corte ou tratamento. Respeitamos o caimento natural e a taxa de encolhimento de cada mecha no seu dia a dia, sem surpresas desagradáveis ou truques de finalizadores pesados.`,
-        `Com o Método Leitura de Fio, o objetivo é entender a fundo a densidade e a porosidade de cada mecha. Planejamos a distribuição de camadas respeitando a identidade visual e o caimento natural para que o visual funcione de verdade na sua rotina.`,
-        `Aqui, cada corte é desenhado individualmente. Estudamos a distribuição de peso e a geometria tridimensional do cacho para que você tenha leveza, volume equilibrado e a certeza de um caimento incrível.`
-      ];
+      const intro = `Fala, pessoal! Jon por aqui. Hoje o papo é rápido e vai direto ao ponto sobre o que realmente importa para a saúde do seu cacho: <strong>${selectedTheme.title}</strong>.`;
+      
+      const p2 = `Quando olhamos para a física e a geometria da curvatura, percebemos que tratar o cabelo sem um diagnóstico individualizado é apenas tentativa e erro. ${selectedTheme.description}. O Método Leitura de Fio decodifica a necessidade da fibra de forma lógica, identificando o nível de elasticidade e porosidade capilar para devolver os lipídios e proteínas corretos, sem falsas promessas ou acúmulo desnecessário de cosméticos.`;
+      
+      const p3 = `A distribuição tridimensional do volume do seu cabelo também depende desse planejamento técnico. Para cabelos ondulados, cacheados e crespos, o caimento natural é influenciado diretamente pela taxa de encolhimento e pela estrutura do folículo. Quando cortamos e tratamos respeitando essa anatomia, a sua curvatura trabalha a favor do seu cotidiano, proporcionando leveza, balanço e muito mais praticidade na finalização diária.`;
+      
+      const conclusion = `No Studio do Jon, cada detalhe do design é planejado para valorizar a sua identidade real. Te espero para uma leitura de fio exclusiva de quarta a sábado.`;
 
       const quotes = [
         `"Cabelo com curvatura não aceita regras prontas ou adivinhações. A física do fio dita o caimento e o visagismo revela a identidade."`,
@@ -310,9 +300,6 @@ const AdminMarketing = () => {
       ];
 
       const hash = selectedTheme.title.length % 3;
-      const intro = introTemplates[hash];
-      const mid = midTemplates[(hash + 1) % 3];
-      const conclude = concludeTemplates[(hash + 2) % 3];
       const quote = quotes[hash];
 
       const fallbackBody = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -342,11 +329,11 @@ const AdminMarketing = () => {
   </p>
   
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">
-    ${mid}
+    ${p2}
   </p>
 
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">
-    ${conclude}
+    ${p3}
   </p>
 
   <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
@@ -355,7 +342,7 @@ const AdminMarketing = () => {
   </div>
 
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">
-    Quer entender como isso se aplica à sua rotina? O atendimento é exclusivo, feito com hora marcada de quarta a sábado, para dar a atenção que você e seus fios merecem.
+    ${conclusion}
   </p>
 
   <div style="margin-top: 8px; margin-bottom: 32px;">
