@@ -518,12 +518,13 @@
 }
 
 .m-booking-card.finalizado {
-  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
   border: none !important;
-  border-left: 4px solid #34D399 !important;
-  color: #ECFDF5 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  opacity: 0.9;
 }
 
 .m-booking-time {
@@ -867,13 +868,13 @@
 /* ── Status-specific Overrides (higher priority than service classes) ── */
 .m-slot-booking.finalizado,
 .m-slot-booking.finalizado[class*="svc-"] {
-  background: linear-gradient(135deg, #10B981 0%, #047857 100%) !important;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.22) 0%, rgba(16, 185, 129, 0.08) 40%, rgba(16, 185, 129, 0.02) 100%) !important;
   border: none !important;
-  border-left: 4px solid #34D399 !important;
-  color: #ECFDF5 !important;
-  border-radius: 6px !important;
-  box-shadow: 0 4px 12px rgba(4, 120, 87, 0.15) !important;
-  opacity: 0.95;
+  border-left: 3px solid #10B981 !important;
+  color: #A7F3D0 !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  opacity: 0.9;
 }
 
 .m-slot-booking.cancelado,
