@@ -339,7 +339,7 @@ const AdminDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const isSubmittingRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(!db);
   
   const toast = useToast();
@@ -1321,8 +1321,8 @@ const AdminDashboard = () => {
 
   const handleAddManualBooking = async (e) => {
     e.preventDefault();
-    if (isSubmittingRef.current) return;
-    isSubmittingRef.current = true;
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     const activeServName = newBooking.serviceName || (services[0]?.name || 'Corte com o Jon');
     const activeServPrice = newBooking.servicePrice || (services[0]?.promoPrice || services[0]?.price || 150);
@@ -1364,7 +1364,7 @@ const AdminDashboard = () => {
 
     if (hasConflict) {
       if (!confirm("Já existe outro agendamento neste horário para este profissional.\nDeseja continuar?")) {
-        isSubmittingRef.current = false;
+        setIsSubmitting(false);
         return;
       }
     }
@@ -1468,7 +1468,7 @@ const AdminDashboard = () => {
         setBookings(prev => prev.filter(b => b.id !== tempId));
         alert('Erro ao registrar agendamento no servidor. Tente novamente.');
       } finally {
-        isSubmittingRef.current = false;
+        setIsSubmitting(false);
       }
     })();
   };
@@ -1875,6 +1875,8 @@ const AdminDashboard = () => {
   };
 
   const handleCloseComanda = async (booking) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     const baseServicePrice = usingClientPackageId 
       ? 0 
       : (sellingPackageId 
@@ -2168,6 +2170,8 @@ const AdminDashboard = () => {
     } catch (err) {
       console.error('Erro ao fechar comanda:', err);
       toast('Falha ao fechar comanda.', 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -4030,11 +4034,18 @@ Grande abraço, Jon.`;
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 10 }}>
                 {getDaysInMonthGrid(currentDate).map((cell, idx) => {
                   const cellDateStr = getLocalDateString(cell.dateObj);
-                  const dayBookings = bookings.filter(b => 
+                  let dayBookings = bookings.filter(b => 
                     b.date === cellDateStr && 
                     (b.profissional || 'jon') === selectedWeeklyMonthlyProf && 
                     b.status !== 'cancelado'
                   );
+                  const seenBookings = new Set();
+                  dayBookings = dayBookings.filter(b => {
+                    if (!b.id) return true;
+                    if (seenBookings.has(b.id)) return false;
+                    seenBookings.add(b.id);
+                    return true;
+                  });
                   
                   const isToday = cellDateStr === getLocalDateString(new Date());
                   const isCurrentMonth = cell.isCurrentMonth;
@@ -5811,7 +5822,9 @@ Grande abraço, Jon.`;
  
                 <div className="modal-actions" style={{ justifyContent: 'space-between', borderTop: '1px solid var(--adm-rule)', paddingTop: '8px', marginTop: '2px', display: 'flex', gap: '8px' }}>
                   <button type="button" className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: '0.78rem' }} onClick={() => { setIsCheckoutOpen(false); setOverrideBasePrice(null); }}>Voltar</button>
-                  <button type="button" className="btn btn-accent" style={{ padding: '4px 12px', fontSize: '0.78rem' }} onClick={() => handleCloseComanda(selectedBooking)}>Finalizar Comanda</button>
+                  <button type="button" className="btn btn-accent" style={{ padding: '4px 12px', fontSize: '0.78rem' }} disabled={isSubmitting} onClick={() => handleCloseComanda(selectedBooking)}>
+                    {isSubmitting ? 'Finalizando...' : 'Finalizar Comanda'}
+                  </button>
                 </div>
               </div>
             )}
@@ -6039,7 +6052,9 @@ Grande abraço, Jon.`;
                     Enviar Confirmação WhatsApp
                   </a>
                 )}
-                <button type="submit" className="btn btn-accent">Salvar na Agenda</button>
+                <button type="submit" className="btn btn-accent" disabled={isSubmitting}>
+                  {isSubmitting ? 'Salvando...' : 'Salvar na Agenda'}
+                </button>
               </div>
             </div>
           </form>

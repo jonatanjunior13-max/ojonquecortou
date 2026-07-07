@@ -1664,7 +1664,7 @@ export default function AdminMobileApp() {
     try {
       if (db) {
         const ref = await addDoc(collection(db, 'bookings'), data);
-        setBookings(prev => [...prev, { id: ref.id, ...data }]);
+        // setBookings is handled by onSnapshot listener automatically
         try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
 
         if (clientEmail && clientEmail !== 'Não informado' && clientEmail.includes('@')) {
@@ -2573,8 +2573,8 @@ Grande abraço, Jon.`;
 
     try {
       if (db) {
-        const ref = await addDoc(collection(db, 'bookings'), payload);
-        setBookings(prev => [...prev, { id: ref.id, ...payload }]);
+        await addDoc(collection(db, 'bookings'), payload);
+        // setBookings is handled by onSnapshot listener automatically
       } else {
         const fakeId = 'demo-block-' + Date.now();
         setBookings(prev => [...prev, { id: fakeId, ...payload }]);
@@ -4199,8 +4199,8 @@ Grande abraço, Jon.`;
                 };
 
                 if (db) {
-                  const ref = await addDoc(collection(db, 'bookings'), payload);
-                  setBookings(prev => [...prev, { id: ref.id, ...payload }]);
+                  await addDoc(collection(db, 'bookings'), payload);
+                  // setBookings is handled by onSnapshot listener automatically
                 } else {
                   const fakeId = 'demo-block-' + Date.now();
                   setBookings(prev => [...prev, { id: fakeId, ...payload }]);

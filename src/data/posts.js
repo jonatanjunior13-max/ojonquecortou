@@ -1,5 +1,165 @@
 export const posts = [
   {
+    id: 56,
+    slug: 'buildup-capilar-cachos-ressecamento-falso',
+    title: 'Build-Up Capilar: Como o Acúmulo de Produto Cria um Ressecamento Falso no Cacho',
+    seoTitle: 'Build-Up Capilar: Ressecamento Falso em Cachos | Studio do Jon',
+    excerpt: 'Seu cacho parece seco mesmo depois de hidratar? O problema pode não ser falta de produto — pode ser excesso. Entenda a ciência do build-up e como eliminar a barreira que impede sua hidratação de funcionar.',
+    metaDescription: 'Build-up capilar cria uma barreira que bloqueia hidratação e gera ressecamento falso. Entenda a ciência e como detectar e eliminar o acúmulo no cacho. Por Jon, BH.',
+    keywords: 'build-up capilar, acúmulo de produto cabelo, ressecamento falso cacho, silicone cabelo cacheado, shampoo clarificante cacho, cabelo cacheado sem brilho, leitura de fio bh, Studio do Jon',
+    date: '07 de Julho, 2026',
+    datePublished: '2026-07-07',
+    dateModified: '2026-07-07',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-buildup-capilar-cachos-ressecamento-falso.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é build-up capilar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Build-up capilar é o acúmulo de resíduos de produtos (cremes, silicones, óleos, géis) sobre a cutícula do fio. Esses resíduos formam uma película que impede a entrada de água e de ativos hidratantes, criando ressecamento mesmo com rotina intensa de cuidados." }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber se meu cabelo tem build-up?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Os sinais mais comuns são: cabelo que parece sempre pesado e opaco mesmo recém-lavado, hidratações que não fazem efeito, frizz rígido que não abaixa com nenhum produto, e cachos que perdem definição rápido. Se trocou linha de produtos e nada mudou, é muito provável que seja build-up." }
+        },
+        {
+          "@type": "Question",
+          "name": "Silicone faz mal para cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Depende do tipo. Silicones não solúveis em água (como Dimethicone puro) acumulam e exigem shampoo com sulfato para remover. Silicones solúveis em água (com PEG na nomenclatura) são removíveis em lavagens normais. O problema não é o silicone em si, mas usá-lo sem fazer limpeza profunda periódica." }
+        },
+        {
+          "@type": "Question",
+          "name": "Com que frequência devo usar shampoo clarificante no cabelo cacheado?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Para cachos com rotina regular de produtos (cremes, géis, óleos), uma limpeza profunda a cada 2 a 4 semanas costuma ser suficiente. Para crespos com rotina mais densa, pode ser mensal. O melhor indicador é o comportamento do fio: quando a hidratação para de funcionar, está na hora de clarificar." }
+        },
+        {
+          "@type": "Question",
+          "name": "Usar mais produto resolve o ressecamento causado por build-up?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Não — é exatamente o oposto. Adicionar mais produto sobre uma camada de resíduos aumenta o acúmulo e piora o bloqueio. O primeiro passo é sempre a limpeza profunda para remover a barreira. Só depois a hidratação consegue penetrar de verdade no córtex." }
+        }
+      ]
+    },
+    content: `<blockquote><p><strong>TL;DR:</strong> Build-up capilar é o acúmulo de resíduos de cremes, silicones e óleos sobre a cutícula do fio. Essa camada age como uma barreira física que bloqueia a entrada de água e de ativos hidratantes, criando um ressecamento que parece crônico mas não é — é reversível. A solução começa com uma limpeza profunda estratégica, não com mais produto empilhado em cima do problema.</p></blockquote>
+
+<p>Essa cena é clássica: você hidrata, nutre, usa máscara toda semana, segue o cronograma à risca. Mas o cabelo continua seco, opaco e sem brilho — e parece que nada funciona. Antes de concluir que seu cabelo é "resistente" ou que precisa trocar toda a linha de produtos, existe uma possibilidade muito mais simples e muito mais comum: <strong>o problema não é o que está faltando, é o que está acumulado em cima da fibra</strong>.</p>
+
+<p>O build-up capilar é um dos diagnósticos que aparecem com mais frequência na minha <a href="/metodo">Leitura de Fio</a> — e é também o erro mais fácil de resolver quando identificado certo. Este artigo vai explicar a ciência do acúmulo, como ele cria um ressecamento que parece real mas não é, e o que fazer para eliminar essa barreira de vez.</p>
+
+<h2>O que é build-up capilar e como ele se forma</h2>
+
+<p>Build-up capilar é o nome dado ao acúmulo progressivo de resíduos de produtos capilares — cremes de pentear, leave-ins, géis de fixação, óleos, silicones e até condicionadores pesados — sobre a superfície externa do fio, a cutícula. Esse acúmulo não acontece de um dia para o outro: ele vai se formando lavagem a lavagem, aplicação a aplicação, sempre que o produto usado não é completamente removido pelo shampoo da rotina.</p>
+
+<p>A maioria dos shampoos sem sulfato (os "low-poo" e "no-poo" amplamente adotados na comunidade cacheada) é formulada para ser suave e não agredir a cutícula — o que é ótimo para o dia a dia, mas insuficiente para remover compostos de alta aderência, como silicones não solúveis em água e óleos minerais. Esses ingredientes foram projetados para aderir ao fio e resistir à lavagem convencional. Usados sem uma limpeza profunda periódica, eles se acumulam camada sobre camada até formarem uma película impermeável sobre a cutícula.</p>
+
+<p>É aí que mora o problema. A cutícula é a porta de entrada do fio para água e ativos hidratantes. Quando essa porta está coberta por uma camada de resíduos endurecidos, nenhuma hidratação — por mais cara ou concentrada que seja — consegue penetrar de verdade no córtex. O ativo fica sentado em cima do build-up, o enxágue remove tudo, e o fio continua exatamente igual ao que estava: seco, opaco e sem resposta.</p>
+
+<h3>Os ingredientes que mais acumulam (e que ninguém te avisa)</h3>
+
+<p>Nem todo ingrediente acumula da mesma forma. Os principais vilões do build-up em cabelos cacheados e crespos são:</p>
+
+<ul>
+  <li><strong>Silicones não solúveis em água</strong> (Dimethicone, Cyclomethicone, Amodimethicone em formulações sem PEG): formam um filme plástico sobre a cutícula que só sai com sulfato ou agente surfactante específico. São os responsáveis pelo efeito de "cabelo bonito por um dia, pesado e sem brilho depois".</li>
+  <li><strong>Óleos minerais e petrolatos</strong> (Mineral Oil, Paraffinum Liquidum, Petrolatum): extremamente oclusivos. Em fios de baixa porosidade que já têm dificuldade de absorver produto, eles criam uma barreira quase impermeável que bloqueia tanto a entrada de umidade quanto sua saída — o fio parece hidratado mas a umidade não está dentro dele, está presa do lado de fora.</li>
+  <li><strong>Ceras</strong> (Cera Carnauba, Beeswax): comuns em pomadas e cremes de definição, acumulam rápido em quem usa diariamente e exigem limpeza frequente.</li>
+  <li><strong>Condicionador em excesso na raiz</strong>: condicionador aplicado no couro cabeludo pode entupir os folículos e criar um acúmulo que gera coceira, descamação e até inibe o crescimento dos novos fios.</li>
+</ul>
+
+<h2>Por que o build-up cria um ressecamento que parece real</h2>
+
+<p>O ressecamento por build-up é um dos diagnósticos mais contraintuitivos que existe no universo do cabelo cacheado porque ele imita perfeitamente um ressecamento genuíno. Os sintomas são quase idênticos: fio áspero ao toque, frizz persistente, falta de brilho e definição, e sensação de que nenhum produto resolve. Mas a causa é oposta.</p>
+
+<p>No ressecamento genuíno, o fio está com falta de água dentro do córtex — a cutícula pode estar aberta (alta porosidade) ou resistente (baixa porosidade), mas o problema é a hidratação que não está chegando lá dentro. No ressecamento por build-up, a hidratação pode até estar tentando entrar — mas encontra uma barreira física de resíduos que a bloqueia antes que ela alcance a camada interna do fio.</p>
+
+<p>O teste prático que eu uso na <a href="/metodo">Leitura de Fio</a> para diferenciar um do outro é direto: molho um trecho do cabelo com água pura, sem nenhum produto, e observo como ele absorve. Se a água fica repelida e escorre pela superfície do fio — especialmente em cabelo que não deveria ter baixa porosidade — é build-up, não porosidade. A cutícula está coberta por uma camada de produto que repele a água como cera repele chuva.</p>
+
+<p>Esse diagnóstico muda completamente a estratégia de tratamento. Para ressecamento genuíno, o caminho é otimizar a rotina de hidratação e corrigir a porosidade. Para build-up, o primeiro passo é sempre a limpeza — e só depois a hidratação faz sentido.</p>
+
+<h2>Como detectar build-up antes de ir ao salão</h2>
+
+<p>Você não precisa esperar pela Leitura de Fio para suspeitar que seu cabelo está sobrecarregado de produto. Esses são os sinais mais claros:</p>
+
+<ol>
+  <li><strong>Hidratação que não funciona</strong>: você aplica máscara, leave-in, tudo certinho — mas no dia seguinte o cabelo está exatamente igual, sem nenhuma melhora em textura ou brilho.</li>
+  <li><strong>Peso sem volume</strong>: o cabelo parece pesado e grudado, mas não tem volume. Os cachos ficam esticados para baixo e sem a forma natural de mola.</li>
+  <li><strong>Opacidade persistente</strong>: o fio não reflete luz, parece sempre "sujo" ou acinzentado, mesmo recém-lavado e sem produto.</li>
+  <li><strong>Frizz que não baixa</strong>: um frizz rígido, quase arrepiado, que não responde nem a óleo, nem a gel, nem a creme mais pesado. Adicionar mais produto piora, não melhora.</li>
+  <li><strong>Coceira no couro cabeludo sem causa aparente</strong>: resíduos de condicionador na raiz obstruem os folículos e causam um prurido que parece ser de ressecamento, mas é de acúmulo.</li>
+</ol>
+
+<p>Se você reconheceu três ou mais desses sinais na sua rotina, é bem provável que seu cabelo esteja pedindo uma limpeza profunda antes de qualquer outra coisa.</p>
+
+<h2>Como eliminar o build-up: limpeza profunda estratégica</h2>
+
+<p>A boa notícia é que build-up é completamente reversível. A má notícia é que muita gente no meio cacheado tem pavor de shampoo com sulfato e evita a limpeza profunda por tanto tempo que o acúmulo vira uma camada sólida difícil de remover em uma única lavagem.</p>
+
+<p>Não existe solução correta sem diagnóstico da causa. Mas em linhas gerais, o protocolo para remover build-up funciona assim:</p>
+
+<h3>1. Shampoo clarificante ou antirresíduos</h3>
+
+<p>Para remover silicones não solúveis, óleos minerais e ceras, você precisa de um agente surfactante mais potente que o low-poo convencional. Existem duas opções principais:</p>
+
+<ul>
+  <li><strong>Shampoo clarificante com sulfato em baixa concentração</strong>: eficaz e direto. Usado uma vez, com boa hidratação em seguida, não vai estragar meses de cuidado. O medo exagerado do sulfato na comunidade cacheada faz muita gente acumular produto por meses sem necessidade.</li>
+  <li><strong>Shampoo antirresíduos sem sulfato</strong>: formulado com outros surfactantes que removem build-up sem alterar tanto o pH da fibra. Bom para quem tem couro cabeludo muito sensível ou está em processo de transição química.</li>
+</ul>
+
+<p>Importante: faça a lavagem com boa quantidade de shampoo diretamente no couro cabeludo, massageando por pelo menos dois minutos antes de enxaguar. Repita a aplicação se necessário. O sinal de que o build-up saiu é que a espuma fica mais densa e estável na segunda aplicação — se na primeira lavagem mal espumou, é porque o surfactante estava sendo consumido pelos resíduos.</p>
+
+<h3>2. Acidificação após a limpeza</h3>
+
+<p>Após o shampoo clarificante, o pH da fibra fica mais alcalino e a cutícula mais aberta. Esse é o melhor momento para uma hidratação profunda — e o pior momento para deixar o cabelo sem selagem. Feche sempre com um acidificante ou um condicionador de pH ácido para selar a cutícula antes de aplicar os produtos de finalização.</p>
+
+<p>Você vai perceber imediatamente a diferença: o produto vai penetrar como nunca tinha penetrado antes, porque agora não tem barreira bloqueando a entrada.</p>
+
+<h3>3. Revisão da rotina de finalização</h3>
+
+<p>Depois de limpar o build-up, vale revisar o que causou o acúmulo. Se você usa produto diariamente e tem dificuldade de remover tudo com o shampoo convencional, algumas mudanças simples ajudam:</p>
+
+<ul>
+  <li>Prefira silicones solúveis em água (leia o rótulo: se tiver "PEG" antes do nome do silicone, ele é solúvel).</li>
+  <li>Evite óleos minerais pesados na rotina de finalização diária — reserve para hidratações ocasionais com oclusão controlada.</li>
+  <li>Reduza a quantidade de produtos, não aumente. Cabelo cacheado não precisa de oito camadas de creme para ter definição — precisa que o produto certo chegue até a cutícula.</li>
+</ul>
+
+<h2>Quando o build-up vira problema crônico: o que muda na Leitura de Fio</h2>
+
+<p>A maioria dos casos de build-up se resolve com uma ou duas limpezas profundas seguidas de ajuste na rotina. Mas quando o acúmulo é muito antigo ou muito intenso — especialmente em quem usou produtos muito oclusivos por anos sem limpeza profunda — o diagnóstico presencial muda algumas coisas.</p>
+
+<p>Na Leitura de Fio, consigo avaliar o grau de build-up pelo teste de absorção com água pura, pela textura do fio seco, e pelo histórico de produtos que a pessoa usou. Em casos mais avançados, o cabelo pode precisar de mais de uma sessão de clarificação espaçada, além de um tratamento de reconstrução para recuperar a estrutura da cutícula que ficou aberta por muito tempo sem selagem adequada.</p>
+
+<p>O Detox Estimulante (R$ 180) que ofereço no Studio do Jon inclui justamente esse diagnóstico + limpeza profunda profissional com agentes quelantes biotecnológicos, esfoliação capilar e reequilíbrio de pH — o protocolo completo para quem quer fazer a limpeza certa em vez de fazer no escuro. E o <strong>Tratamento Personalizado (R$ 130)</strong> permite montar a hidratação de reposição logo depois, já que o fio fica com a cutícula aberta e receptiva após a limpeza.</p>
+
+<p>A Leitura de Fio avulsa custa R$ 80 (revertidos em crédito no serviço) ou está inclusa sem custo adicional no serviço de <strong>Corte com o Jon (R$ 190)</strong>. Você não precisa adivinhar se o seu cabelo está com build-up — a gente descobre junto, com teste real, não com suposição.</p>
+
+<h2>Perguntas Frequentes</h2>
+
+<h3>O que é build-up capilar?</h3>
+<p>É o acúmulo de resíduos de produtos (cremes, silicones, óleos, géis) sobre a cutícula do fio. Essa camada impermeável bloqueia a entrada de água e de ativos hidratantes, criando ressecamento mesmo com rotina intensa de cuidados.</p>
+
+<h3>Como saber se meu cabelo tem build-up?</h3>
+<p>Sinais principais: cabelo pesado e opaco mesmo recém-lavado, hidratações que não fazem efeito, frizz rígido que não responde a nenhum produto, e cachos que perdem definição rapidamente. Se trocou toda a linha de produtos e nada mudou, muito provável que seja build-up.</p>
+
+<h3>Silicone faz mal para cabelo cacheado?</h3>
+<p>Depende do tipo. Silicones não solúveis em água acumulam e exigem shampoo mais potente para remover. Silicones solúveis em água (com PEG no nome) saem na lavagem convencional. O problema não é o silicone em si — é usá-lo sem limpeza profunda periódica.</p>
+
+<h3>Com que frequência devo usar shampoo clarificante?</h3>
+<p>Para rotina regular com géis, cremes e óleos, a cada 2 a 4 semanas funciona bem. O melhor indicador é o cabelo: quando a hidratação parar de fazer efeito, está na hora de clarificar.</p>
+
+<h3>Usar mais produto resolve o ressecamento por build-up?</h3>
+<p>Não — piora. Adicionar produto sobre camada de resíduos aumenta o bloqueio. O primeiro passo é sempre a limpeza profunda para remover a barreira. Só depois a hidratação penetra de verdade.</p>
+
+<div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+  <h3>Seu cacho não vai melhorar com mais produto — vai melhorar com o diagnóstico certo.</h3>
+  <p>Agende uma Leitura de Fio no Studio do Jon, em Belo Horizonte, e descubra o que está bloqueando sua hidratação de dentro pra fora.</p>
+  <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+</div>`
+  },
+  {
     id: 55,
     slug: 'quimica-da-agua-bh-cabelo-cacheado',
     title: 'A Química da Água em BH: Como Metais e Cloro da Copasa Destroem Seus Cachos',
