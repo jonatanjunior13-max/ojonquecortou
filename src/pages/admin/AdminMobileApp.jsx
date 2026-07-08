@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import './AdminMobile.css';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
+import { calculateNetValue } from '../../utils/finance';
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -640,9 +641,10 @@ export default function AdminMobileApp() {
       let inventoryLoaded = false;
       let packagesLoaded = false;
       let settingsLoaded = false;
-      let galleryLoaded = false;
 
       let loadedCount = 0;
+      // Gallery is NOT in the critical path — 7 collections unlock the UI
+      const CRITICAL_TOTAL = 7;
       const checkLoaded = (key) => {
         if (key === 'bookings' && !bookingsLoaded) { bookingsLoaded = true; loadedCount++; }
         if (key === 'clients' && !clientsLoaded) { clientsLoaded = true; loadedCount++; }
@@ -651,9 +653,8 @@ export default function AdminMobileApp() {
         if (key === 'inventory' && !inventoryLoaded) { inventoryLoaded = true; loadedCount++; }
         if (key === 'packages' && !packagesLoaded) { packagesLoaded = true; loadedCount++; }
         if (key === 'settings' && !settingsLoaded) { settingsLoaded = true; loadedCount++; }
-        if (key === 'gallery' && !galleryLoaded) { galleryLoaded = true; loadedCount++; }
 
-        if (loadedCount >= 8) {
+        if (loadedCount >= CRITICAL_TOTAL) {
           setLoading(false);
           if (failSafeTimeout) clearTimeout(failSafeTimeout);
         }
@@ -664,10 +665,10 @@ export default function AdminMobileApp() {
         checkLoaded(key);
       };
 
-      // Failsafe: unlock UI after 1.5s even if some collections are slow
+      // Failsafe: unlock UI after 800ms even if a collection is slow
       failSafeTimeout = setTimeout(() => {
         setLoading(false);
-      }, 1500);
+      }, 800);
 
       // Register the 8 listeners
       try {
@@ -710,13 +711,13 @@ export default function AdminMobileApp() {
           checkLoaded('settings');
         }, (err) => handleError('settings', err)));
 
+        // Gallery is NOT critical — loads lazily without blocking UI spinner
         unsubs.push(onSnapshot(collection(db, 'gallery_photos'), (snap) => {
           const sorted = snap.docs
             .map(d => ({ id: d.id, ...d.data() }))
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           setGalleryPhotos(sorted);
-          checkLoaded('gallery');
-        }, (err) => handleError('gallery', err)));
+        }, (err) => console.error('Error loading gallery_photos:', err)));
 
       } catch (err) {
         console.error('Error subscribing to Firestore collections:', err);
@@ -1325,7 +1326,14 @@ export default function AdminMobileApp() {
     const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
     const gateway = settings?.waReminderGateway;
     const needsWaOpen = requestReview && hasValidPhone && (!gateway || gateway === 'none');
-    const waWindow = needsWaOpen ? window.open('', '_blank') : null;
+    let waWindow = null;
+    if (needsWaOpen) {
+      try {
+        waWindow = window.open('', '_blank');
+      } catch (e) {
+        console.warn('Failed to pre-open window:', e);
+      }
+    }
 
     try {
       const total = getCheckoutTotal();
@@ -1680,9 +1688,10 @@ export default function AdminMobileApp() {
         // setBookings is handled by onSnapshot listener automatically
         try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
 
-        if (clientEmail && clientEmail !== 'Não informado' && clientEmail.includes('@')) {
-          triggerEmailNotification({ ...data, id: ref.id });
-        }
+        const finalEmail = (clientEmail && clientEmail.includes('@') && clientEmail !== 'Não informado') 
+          ? clientEmail 
+          : 'sem-email@ojonquecortou.com.br';
+        triggerEmailNotification({ ...data, id: ref.id, clientEmail: finalEmail });
 
         // Log prepayment transaction if > 0
         if (prepay > 0) {
@@ -1786,11 +1795,14 @@ export default function AdminMobileApp() {
 
       const dateChanged = oldB?.date !== editBookingForm.date;
       const timeChanged = oldB?.time !== editBookingForm.time;
-      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@') && (dateChanged || timeChanged)) {
+      if (dateChanged || timeChanged) {
+        const finalEmail = (emailToUse && emailToUse.includes('@') && emailToUse !== 'Não informado') 
+          ? emailToUse 
+          : 'sem-email@ojonquecortou.com.br';
         triggerEmailNotification({
           ...data,
           id: editBookingForm.id,
-          clientEmail: emailToUse
+          clientEmail: finalEmail
         }, 'agendamento_editado');
       }
 
@@ -1870,7 +1882,11 @@ Grande abraço, Jon.`;
       console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
       // Fallback: abrir wa.me link diretamente se o gateway falhar
       const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
-      window.open(waUrl, '_blank');
+      try {
+        window.open(waUrl, '_blank');
+      } catch (e) {
+        console.warn('Fallback window.open failed:', e);
+      }
       showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }
   };
@@ -1947,13 +1963,14 @@ Grande abraço, Jon.`;
         }
       }
 
-      if (emailToUse && emailToUse !== 'Não informado' && emailToUse.includes('@')) {
-        const updatedBooking = { ...booking, id: bookingId, clientEmail: emailToUse };
-        if (status === 'confirmado') {
-          triggerEmailNotification(updatedBooking, 'horario_confirmado');
-        } else if (status === 'cancelado') {
-          triggerEmailNotification({ ...updatedBooking, cancelledBy: 'admin' }, 'agendamento_cancelado');
-        }
+      const finalEmail = (emailToUse && emailToUse.includes('@') && emailToUse !== 'Não informado') 
+        ? emailToUse 
+        : 'sem-email@ojonquecortou.com.br';
+      const updatedBooking = { ...booking, id: bookingId, clientEmail: finalEmail };
+      if (status === 'confirmado') {
+        triggerEmailNotification(updatedBooking, 'horario_confirmado');
+      } else if (status === 'cancelado') {
+        triggerEmailNotification({ ...updatedBooking, cancelledBy: 'admin' }, 'agendamento_cancelado');
       }
     } catch (err) {
       showToast('Erro: ' + err.message, 'error');
@@ -2773,7 +2790,7 @@ Grande abraço, Jon.`;
                 return (
                   <div key={b.id} className={`m-booking-card ${b.status} ${cat.class}`} onClick={() => { setSelectedBooking(b); setShowBookingSheet(true); }}>
                     <div className="m-booking-time">{b.time || '—'}</div>
-                    <div className={`m-booking-bar ${cat.class}`}>
+                    <div className={`m-booking-bar ${b.status} ${cat.class}`}>
                       <div className="m-booking-info">
                         <div 
                           className="m-booking-name" 
@@ -3350,11 +3367,12 @@ Grande abraço, Jon.`;
       }
     })();
 
-    const periodIn = filteredTxByPeriod.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(t.value||0), 0);
+    const periodIn = filteredTxByPeriod.filter(t => t.type === 'entrada').reduce((s,t) => s + Number(calculateNetValue(t.value, t.paymentMethod, settings) || 0), 0);
     const periodOut = filteredTxByPeriod.filter(t => t.type === 'saida').reduce((s,t) => s + Number(t.value||0), 0);
     const periodProfit = periodIn - periodOut;
 
     const recentTx = transactions
+      .filter(t => (t.date || '') <= today())
       .sort((a,b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || '').localeCompare(a.createdAt || ''))
       .slice(0, 15);
 
@@ -4644,19 +4662,12 @@ Grande abraço, Jon.`;
                   </div>
                 )}
 
-                {/* Anticipation toggle */}
+                {/* Anticipation toggle (automatic) */}
                 {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
-                    <input 
-                      type="checkbox" 
-                      id="m-anticipate"
-                      checked={applyAnticipation} 
-                      onChange={e => setApplyAnticipation(e.target.checked)}
-                      style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
-                    />
-                    <label htmlFor="m-anticipate" style={{ fontSize: '0.8rem', color: 'var(--m-text-2)', cursor: 'pointer' }}>
-                      Antecipar recebimento? (taxa maquininha)
-                    </label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, padding: '2px 4px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--m-gold)', fontWeight: 600 }}>
+                      ✓ Antecipação automática ativa (taxa aplicada)
+                    </span>
                   </div>
                 )}
               </>

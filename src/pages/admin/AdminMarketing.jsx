@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { db, storage } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
@@ -130,12 +131,67 @@ const EMAIL_PREVIEWS = {
 
 
 const AdminMarketing = () => {
-  const [clients, setClients] = useState([]);
+  const { globalData } = useOutletContext();
+  const bookings = globalData.bookings || [];
+  const rawClients = globalData.clients || [];
+  const settings = globalData.settings || { automations: {} };
+
   const [loading, setLoading] = useState(true);
-  const [settings, setSettings] = useState(null);
   const [selectedThemeId, setSelectedThemeId] = useState(TRENDING_THEMES[0].id);
   const [extraInstruction, setExtraInstruction] = useState('');
   const cancelSendingRef = useRef(false);
+
+  // Compute unified clients with visit stats from globalData (no database queries!)
+  const clients = useMemo(() => {
+    const clientMap = new Map();
+    bookings.forEach(b => {
+      if (['Pendente', 'Confirmado', 'Concluído', 'finalizado', 'concluido'].includes(b.status)) {
+        const phone = b.clientPhone || b.phone;
+        if (!phone) return;
+        const existing = clientMap.get(phone) || { 
+          name: b.clientName, 
+          phone: phone, 
+          visits: [], 
+          lastServiceName: b.serviceName || b.service?.name || 'Nenhum', 
+          email: '', 
+          birthdate: b.clientBirthdate || b.birthdate || '' 
+        };
+        if (b.date) {
+          existing.visits.push(new Date(b.date + 'T00:00:00'));
+        }
+        if (!existing.email && b.clientEmail) existing.email = b.clientEmail;
+        if (!existing.email && b.email) existing.email = b.email;
+        if (!existing.birthdate && (b.clientBirthdate || b.birthdate)) existing.birthdate = b.clientBirthdate || b.birthdate;
+        clientMap.set(phone, existing);
+      }
+    });
+
+    rawClients.forEach(p => {
+      const existing = clientMap.get(p.phone) || { 
+        name: p.name || 'Cliente', 
+        phone: p.phone, 
+        visits: [], 
+        lastServiceName: 'Nenhum', 
+        email: p.email || '', 
+        birthdate: p.birthdate || '', 
+        lastVisit: p.lastVisit || '' 
+      };
+      if (p.email) existing.email = p.email;
+      if (p.name) existing.name = p.name;
+      if (p.birthdate) existing.birthdate = p.birthdate;
+      if (p.lastVisit) existing.lastVisit = p.lastVisit;
+      clientMap.set(p.phone, existing);
+    });
+
+    return Array.from(clientMap.values()).map(c => {
+      c.visits.sort((a, b) => b - a);
+      return {
+        ...c,
+        lastVisit: c.visits.length > 0 ? c.visits[0].toISOString() : (c.lastVisit || 'Nunca visitou'),
+        totalVisits: c.visits.length
+      };
+    });
+  }, [rawClients, bookings]);
 
   // Marketing states
   const [searchTerm, setSearchTerm] = useState('');
@@ -1359,29 +1415,19 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
   }, []);
 
   useEffect(() => {
-    let unsubscribeProfiles;
-    let unsubscribeBookings;
     let unsubscribeLogs;
-    let unsubscribeSettings;
     let unsubscribeAdminNotifs;
     let unsubscribeGbpPosts;
 
     const loadData = async () => {
       try {
-        unsubscribeSettings = onSnapshot(doc(db, 'settings', 'studio'), (docSnap) => {
-          if (docSnap.exists()) {
-            setSettings(docSnap.data());
-          } else {
-            setSettings({ automations: {} });
-          }
-        });
-
         unsubscribeLogs = onSnapshot(collection(db, 'automation_logs'), (logsSnap) => {
           const lgs = [];
           logsSnap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
           lgs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
           setAutomationLogs(lgs);
-        });
+          setLoading(false);
+        }, () => setLoading(false));
 
         unsubscribeAdminNotifs = onSnapshot(
           query(collection(db, 'admin_notifications'), orderBy('timestamp', 'desc'), limit(50)),
@@ -1404,53 +1450,6 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
           setScheduledGbpPosts(pst);
         });
 
-        const profiles = [];
-        unsubscribeProfiles = onSnapshot(collection(db, 'client_profiles'), (profSnap) => {
-          profiles.length = 0;
-          profSnap.forEach(d => profiles.push({ phone: d.id, ...d.data() }));
-          
-          unsubscribeBookings = onSnapshot(collection(db, 'bookings'), (bookSnap) => {
-            const bookings = [];
-            bookSnap.forEach(d => bookings.push({ id: d.id, ...d.data() }));
-            
-            // Build unified clients array
-            const clientMap = new Map();
-            bookings.forEach(b => {
-              if (['Pendente', 'Confirmado', 'Concluído'].includes(b.status)) {
-                const phone = b.clientPhone || b.phone;
-                if (!phone) return;
-                const existing = clientMap.get(phone) || { name: b.clientName, phone: phone, visits: [], lastServiceName: b.serviceName, email: '', birthdate: b.clientBirthdate || b.birthdate || '' };
-                existing.visits.push(new Date(b.date + 'T00:00:00'));
-                if (!existing.email && b.clientEmail) existing.email = b.clientEmail;
-                if (!existing.email && b.email) existing.email = b.email;
-                if (!existing.birthdate && (b.clientBirthdate || b.birthdate)) existing.birthdate = b.clientBirthdate || b.birthdate;
-                clientMap.set(phone, existing);
-              }
-            });
-
-            profiles.forEach(p => {
-              const existing = clientMap.get(p.phone) || { name: p.name || 'Cliente', phone: p.phone, visits: [], lastServiceName: 'Nenhum', email: p.email || '', birthdate: p.birthdate || '', lastVisit: p.lastVisit || '' };
-              if (p.email) existing.email = p.email;
-              if (p.name) existing.name = p.name;
-              if (p.birthdate) existing.birthdate = p.birthdate;
-              if (p.lastVisit) existing.lastVisit = p.lastVisit;
-              clientMap.set(p.phone, existing);
-            });
-
-            const merged = Array.from(clientMap.values()).map(c => {
-              c.visits.sort((a, b) => b - a);
-              return {
-                ...c,
-                lastVisit: c.visits.length > 0 ? c.visits[0].toISOString() : (c.lastVisit || 'Nunca visitou'),
-                totalVisits: c.visits.length
-              };
-            });
-            
-            setClients(merged);
-            setLoading(false);
-          });
-        });
-
       } catch (err) {
         console.error(err);
         setLoading(false);
@@ -1470,10 +1469,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     }
 
     return () => {
-      if (unsubscribeProfiles) unsubscribeProfiles();
-      if (unsubscribeBookings) unsubscribeBookings();
       if (unsubscribeLogs) unsubscribeLogs();
-      if (unsubscribeSettings) unsubscribeSettings();
       if (unsubscribeAdminNotifs) unsubscribeAdminNotifs();
       if (unsubscribeGbpPosts) unsubscribeGbpPosts();
     };

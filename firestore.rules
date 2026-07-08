@@ -5,8 +5,6 @@ service cloud.firestore {
 
     // ============================
     // AGENDAMENTOS (bookings)
-    // Qualquer pessoa pode criar um agendamento (cliente público)
-    // Leitura restrita: somente por quem criou OU admin autenticado
     // ============================
     match /bookings/{bookingId} {
       allow create, read: if true; // público pode agendar e ler
@@ -16,22 +14,23 @@ service cloud.firestore {
 
     // ============================
     // PERFIS DE CLIENTES (client_profiles)
-    // Público pode criar (auto-cadastro no agendamento)
-    // Público pode ler/atualizar o próprio perfil pelo userId
+    // Público pode criar (auto-cadastro)
+    // Público pode ler o próprio perfil pelo userId (para a página do cliente)
+    // Serverless functions (sem auth) precisam ler para checar opt-out
     // Admin autenticado pode tudo
     // ============================
     match /client_profiles/{phone} {
       allow create: if true;
-      allow read, update: if request.auth != null
-        || (request.auth != null && resource.data.userId == request.auth.uid)
+      // Permite leitura: admin logado OU dono do perfil OU leitura pública
+      // (necessário para API serverless verificar opt-out de email)
+      allow read: if true;
+      allow update: if request.auth != null
         || resource.data.userId == request.auth.uid;
       allow delete: if request.auth != null;
     }
 
     // ============================
     // SERVIÇOS (services)
-    // Qualquer um pode ler (exibição pública no catálogo)
-    // Só admin autenticado pode escrever
     // ============================
     match /services/{serviceId} {
       allow read: if true;
@@ -40,8 +39,6 @@ service cloud.firestore {
 
     // ============================
     // PRODUTOS / ESTOQUE (products)
-    // Qualquer um pode ler (exibição pública no catálogo)
-    // Só admin autenticado pode escrever
     // ============================
     match /products/{productId} {
       allow read: if true;
@@ -50,7 +47,6 @@ service cloud.firestore {
 
     // ============================
     // TRANSAÇÕES FINANCEIRAS (financial_transactions)
-    // Só admin autenticado
     // ============================
     match /financial_transactions/{txId} {
       allow read, write: if request.auth != null;
@@ -58,10 +54,11 @@ service cloud.firestore {
 
     // ============================
     // CONFIGURAÇÕES DO STUDIO (settings)
-    // Só admin autenticado
+    // Leitura pública necessária (BookingPage, API serverless)
     // ============================
     match /settings/{docId} {
-      allow read, write: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
     }
 
     // ============================
@@ -79,8 +76,6 @@ service cloud.firestore {
 
     // ============================
     // GALERIA DE FOTOS (gallery_photos)
-    // Leitura pública (galeria exibida no site)
-    // Escrita só admin autenticado
     // ============================
     match /gallery_photos/{photoId} {
       allow read: if true;
@@ -88,15 +83,17 @@ service cloud.firestore {
     }
 
     // ============================
-    // LOGS DE AUTOMAÇÃO E NOTIFICAÇÕES (automation_logs / admin_notifications)
-    // Só admin autenticado
+    // LOGS DE AUTOMAÇÃO E NOTIFICAÇÕES
+    // API serverless precisa escrever em admin_notifications sem auth
     // ============================
     match /automation_logs/{logId} {
       allow read, write: if request.auth != null;
     }
 
     match /admin_notifications/{notifId} {
-      allow read, write: if request.auth != null;
+      // Serverless functions precisam criar notificações (sem auth de usuário)
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
     }
 
     // ============================
@@ -108,7 +105,7 @@ service cloud.firestore {
     }
 
     // ============================
-    // SALON PRODUCTS (salon_products) / INSUMOS
+    // SALON PRODUCTS / INSUMOS
     // ============================
     match /salon_products/{productId} {
       allow read, write: if request.auth != null;
@@ -122,7 +119,7 @@ service cloud.firestore {
     }
 
     // ============================
-    // PACKAGES (packages / client_packages)
+    // PACKAGES (pacotes e créditos de clientes)
     // ============================
     match /packages/{packageId} {
       allow read: if true;
@@ -130,18 +127,20 @@ service cloud.firestore {
     }
 
     match /client_packages/{cpId} {
-      allow read, write: if request.auth != null;
+      // Cliente precisa ler seus próprios pacotes no agendamento
+      allow read: if true;
+      allow write: if request.auth != null;
     }
 
     // ============================
-    // NEWSLETTER SENDS (newsletter_sends)
+    // NEWSLETTER SENDS
     // ============================
     match /newsletter_sends/{sendId} {
       allow read, write: if request.auth != null;
     }
 
     // ============================
-    // SERVICOS (servicos)
+    // SERVICOS (alias)
     // ============================
     match /servicos/{sId} {
       allow read: if true;

@@ -302,7 +302,7 @@ export default function ClientAreaPage() {
     setAuthError('');
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(provider);
+      await signInWithPopup(auth, provider);
     } catch (err) {
       console.error(err);
       setAuthError('Erro ao autenticar com o Google. Tente novamente.');

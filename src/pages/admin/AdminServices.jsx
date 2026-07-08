@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
-import { collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, addDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Percent, Layers, HelpCircle, X, Package, ChevronDown } from 'lucide-react';
 import './Admin.css';
 
@@ -25,12 +26,12 @@ const normalizeCategory = (cat) => {
 };
 
 const AdminServices = () => {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const { globalData, setGlobalData } = useOutletContext() || {};
+  const services = globalData?.services || [];
+  const loading = false; // Layout handles critical loading
+  const isDemoMode = !db;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
-  
   
   // Catalog View states
   const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -38,7 +39,7 @@ const AdminServices = () => {
   const [activeViewTab, setActiveViewTab] = useState('list'); // 'list', 'reorder', or 'packages'
 
   // Salon products for cost picker
-  const [salonProducts, setSalonProducts] = useState([]);
+  const salonProducts = globalData?.salon_products || [];
 
   // Form states
   const [form, setForm] = useState({
@@ -66,7 +67,7 @@ const AdminServices = () => {
     [costItems]
   );
 
-  const [packages, setPackages] = useState([]);
+  const packages = globalData?.packages || [];
   const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
   const [editingPackage, setEditingPackage] = useState(null);
   const [selectedServiceForPackage, setSelectedServiceForPackage] = useState('');
@@ -84,105 +85,18 @@ const AdminServices = () => {
     return sum + (price * item.sessions);
   }, 0) : 0;
 
-  useEffect(() => {
-    let unsubscribe;
-    let timedOut = false;
-
-    const getMockServices = () => {
-      const localData = localStorage.getItem('demo_services');
-      const dataList = localData ? JSON.parse(localData) : SEED_SERVICES;
-      const normalizedList = dataList.map(s => ({ ...s, category: normalizeCategory(s.category) }));
-      normalizedList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
-      return normalizedList;
-    };
-
-    if (!db) {
-      setIsDemoMode(true);
-      setServices(getMockServices());
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      unsubscribe = onSnapshot(collection(db, 'services'), (snapshot) => {
-        const list = [];
-        snapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        
-        if (list.length === 0 && !localStorage.getItem('services_seeded')) {
-          // Se o banco estiver vazio, semeia os dados iniciais uma única vez
-          SEED_SERVICES.forEach(async (serv) => {
-            await setDoc(doc(db, 'services', serv.id), { ...serv, category: normalizeCategory(serv.category) });
-          });
-          localStorage.setItem('services_seeded', 'true');
-        }
-        const normalizedList = list.map(s => ({ ...s, category: normalizeCategory(s.category) }));
-        normalizedList.sort((a, b) => (a.position ?? 99) - (b.position ?? 99));
-        setServices(normalizedList);
-        setLoading(false);
-        setIsDemoMode(false);
-      }, (error) => {
-        console.warn('Erro ao conectar Firestore para serviços:', error);
-        alert('Erro ao carregar serviços. Tente recarregar a página.');
-        setLoading(false);
-      });
-
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      console.warn('Erro na conexão do banco para serviços:', err);
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    let unsubscribe;
-    if (isDemoMode) {
-      const local = localStorage.getItem('demo_packages');
-      setPackages(local ? JSON.parse(local) : []);
-      return;
-    }
-    if (!db) return;
-    try {
-      unsubscribe = onSnapshot(collection(db, 'packages'), (snapshot) => {
-        const list = [];
-        snapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setPackages(list);
-      }, (error) => {
-        console.warn('Erro ao carregar pacotes:', error);
-      });
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      console.warn('Erro ao conectar pacotes:', err);
-    }
-  }, [isDemoMode]);
-
-  // Load salon products for cost picker
-  useEffect(() => {
-    if (!db) return;
-    try {
-      const unsub = onSnapshot(collection(db, 'salon_products'), (snap) => {
-        const list = [];
-        snap.forEach(d => list.push({ id: d.id, ...d.data() }));
-        setSalonProducts(list);
-      });
-      return () => unsub();
-    } catch (err) {
-      console.warn('Erro ao carregar produtos de salão:', err);
-    }
-  }, []);
-
   const saveLocalPackages = (updated) => {
-    setPackages(updated);
     localStorage.setItem('demo_packages', JSON.stringify(updated));
+    if (setGlobalData) {
+      setGlobalData(prev => ({ ...prev, packages: updated }));
+    }
+  };
+
+  const saveLocalServices = (updated) => {
+    localStorage.setItem('demo_services', JSON.stringify(updated));
+    if (setGlobalData) {
+      setGlobalData(prev => ({ ...prev, services: updated }));
+    }
   };
 
   const handleOpenCreatePackage = () => {
@@ -294,10 +208,7 @@ const AdminServices = () => {
     }
   };
 
-  const saveLocalServices = (updated) => {
-    setServices(updated);
-    localStorage.setItem('demo_services', JSON.stringify(updated));
-  };
+
 
   const handleOpenCreate = () => {
     setEditingService(null);

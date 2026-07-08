@@ -20,11 +20,11 @@ const SALON_PRODUCT_TYPES = ['Creme', 'Pó Descolorante', 'Oxidante', 'Shampoo',
 const AdminInventory = () => {
   const { globalData, setGlobalData } = useOutletContext() || {};
   const [activeTab, setActiveTab] = useState('venda');
-  const [products, setProducts] = useState([]);
+  const products = globalData?.products || [];
   const [saleSort, setSaleSort] = useState('asc');
   const [salonSort, setSalonSort] = useState('asc');
-  const [loading, setLoading] = useState(true);
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const loading = false; // Layout handles critical data loading
+  const isDemoMode = !db;
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
 
@@ -114,53 +114,12 @@ const AdminInventory = () => {
   const [photoSearchLoading, setPhotoSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
 
-  useEffect(() => {
-    let unsubscribe;
-
-    const getMockProducts = () => {
-      const localData = localStorage.getItem('demo_products');
-      if (localData) return JSON.parse(localData);
-      localStorage.setItem('demo_products', JSON.stringify(SEED_PRODUCTS));
-      return SEED_PRODUCTS;
-    };
-
-    if (!db) {
-      setIsDemoMode(true);
-      setProducts(getMockProducts());
-      setLoading(false);
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      unsubscribe = onSnapshot(collection(db, 'products'), (snapshot) => {
-        const prodList = [];
-        snapshot.forEach((doc) => {
-          prodList.push({ id: doc.id, ...doc.data() });
-        });
-        setProducts(prodList);
-        setLoading(false);
-        setIsDemoMode(false);
-      }, (error) => {
-        console.warn('Erro ao carregar Firestore:', error);
-        alert('Erro ao carregar o estoque. Tente recarregar a página.');
-        setLoading(false);
-      });
-
-      return () => {
-        if (unsubscribe) unsubscribe();
-      };
-    } catch (err) {
-      console.warn('Falha na conexão com Firestore para produtos:', err);
-      setLoading(false);
-    }
-  }, []);
-
   // Salva no localStorage no modo Demo
   const saveLocalProducts = (updated) => {
-    setProducts(updated);
     localStorage.setItem('demo_products', JSON.stringify(updated));
+    if (setGlobalData) {
+      setGlobalData(prev => ({ ...prev, products: updated }));
+    }
   };
 
   // Buscador de imagens de produto comercial gerando imagens dinâmicas e reais correspondentes ao nome

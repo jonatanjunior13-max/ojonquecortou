@@ -36,6 +36,7 @@ import './Admin.css';
 // Lista de horários padrão
 const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 import { SEED_SERVICES } from '../../data/seedServices';
+import { calculateNetValue } from '../../utils/finance';
 import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
 
 // Mapeia dias da semana
@@ -344,6 +345,7 @@ const AdminDashboard = () => {
   
   const toast = useToast();
   const [selectedFichaClient, setSelectedFichaClient] = useState(null);
+  const serviceInitialized = useRef(false);
 
   // Checkout / Comanda states
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -523,8 +525,8 @@ const AdminDashboard = () => {
     }
   }, [settings]);
 
-  // Helper to construct a unified list of clients from profiles, bookings, and seed fallback
-  const getUniqueClientsList = () => {
+  // Memoized unified list of clients constructed from profiles, bookings, and seed fallback
+  const uniqueClientsList = useMemo(() => {
     const unique = new Map();
 
     SEED_CLIENTS.forEach(c => {
@@ -557,29 +559,42 @@ const AdminDashboard = () => {
     }
 
     return Array.from(unique.values());
-  };
+  }, [clients, bookings]);
+
+  // Pre-calculate count of bookings per client for recurrent badge rendering in O(1) time
+  const recurrentClientKeys = useMemo(() => {
+    const countByPhone = {};
+    const countByName = {};
+
+    if (Array.isArray(bookings)) {
+      bookings.forEach(b => {
+        if (b.status === 'cancelado' || b.status === 'bloqueado') return;
+        const phone = (b.clientPhone || b.phone || '').replace(/\D/g, '');
+        const name = (b.clientName || '').trim().toLowerCase();
+        if (phone) {
+          countByPhone[phone] = (countByPhone[phone] || 0) + 1;
+        }
+        if (name) {
+          countByName[name] = (countByName[name] || 0) + 1;
+        }
+      });
+    }
+
+    return { phone: countByPhone, name: countByName };
+  }, [bookings]);
 
   const isClientRecurrent = (clientName, clientPhone) => {
     if (!clientName) return false;
-    const cleanName = clientName.trim().toLowerCase();
-    const cleanPhone = (clientPhone || '').replace(/\D/g, '');
-
-    const count = bookings.filter(b => {
-      if (b.status === 'cancelado' || b.status === 'bloqueado') return false;
-      const bName = (b.clientName || '').trim().toLowerCase();
-      const bPhone = (b.clientPhone || b.phone || '').replace(/\D/g, '');
-      return (cleanPhone && bPhone === cleanPhone) || (bName === cleanName);
-    }).length;
-
-    return count > 1;
+    const phone = (clientPhone || '').replace(/\D/g, '');
+    const name = clientName.trim().toLowerCase();
+    return (recurrentClientKeys.phone[phone] || 0) > 1 || (recurrentClientKeys.name[name] || 0) > 1;
   };
 
   // Autocomplete filtering helper
   const getFilteredClients = (queryText) => {
     if (!queryText || queryText.trim().length < 3) return [];
     const normQuery = queryText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const listToFilter = getUniqueClientsList();
-    return listToFilter.filter(c => {
+    return uniqueClientsList.filter(c => {
       if (!c.name) return false;
       const normName = c.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       const nameMatch = normName.includes(normQuery);
@@ -620,8 +635,7 @@ const AdminDashboard = () => {
   const handlePhoneBlurForAdd = () => {
     const cleanPhone = newBooking.clientPhone.replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) return;
-    const allClients = getUniqueClientsList();
-    const match = allClients.find(c => c.phone && c.phone.replace(/\D/g, '') === cleanPhone);
+    const match = uniqueClientsList.find(c => c.phone && c.phone.replace(/\D/g, '') === cleanPhone);
     if (match) {
       setNewBooking(prev => ({
         ...prev,
@@ -635,8 +649,7 @@ const AdminDashboard = () => {
   const handlePhoneBlurForEdit = () => {
     const cleanPhone = editBookingForm.clientPhone.replace(/\D/g, '');
     if (!cleanPhone || cleanPhone.length < 10) return;
-    const allClients = getUniqueClientsList();
-    const match = allClients.find(c => c.phone && c.phone.replace(/\D/g, '') === cleanPhone);
+    const match = uniqueClientsList.find(c => c.phone && c.phone.replace(/\D/g, '') === cleanPhone);
     if (match) {
       setEditBookingForm(prev => ({
         ...prev,
@@ -775,12 +788,13 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (globalData.services.length > 0 && !newBooking.serviceName) {
+    if (services.length > 0 && !serviceInitialized.current) {
+      serviceInitialized.current = true;
       setNewBooking(prev => ({
         ...prev,
-        serviceName: services[0].name,
-        servicePrice: services[0].promoPrice || services[0].price,
-        duration: services[0].duration || 60
+        serviceName: services[0]?.name || '',
+        servicePrice: services[0]?.promoPrice || services[0]?.price || 0,
+        duration: services[0]?.duration || 60
       }));
     }
   }, [services]);
@@ -1029,8 +1043,11 @@ const AdminDashboard = () => {
         emailForStatus = matched?.email || '';
       }
 
-      if (booking && emailForStatus && emailForStatus.includes('@') && emailForStatus !== 'Não informado') {
-        const bookingWithEmail = { ...booking, clientEmail: emailForStatus };
+      if (booking) {
+        const finalEmail = (emailForStatus && emailForStatus.includes('@') && emailForStatus !== 'Não informado') 
+          ? emailForStatus 
+          : 'sem-email@ojonquecortou.com.br';
+        const bookingWithEmail = { ...booking, clientEmail: finalEmail };
         if (newStatus === 'confirmado') {
           await triggerEmailNotification({ ...bookingWithEmail, type: 'horario_confirmado' }, 'horario_confirmado');
         } else if (newStatus === 'cancelado') {
@@ -1781,7 +1798,14 @@ const AdminDashboard = () => {
     const hasValidPhone = cleanPhone && cleanPhone.length >= 10;
     const gateway = settings?.waReminderGateway;
     const needsWaOpen = requestReview && hasValidPhone && (!gateway || gateway === 'none');
-    const waWindow = needsWaOpen ? window.open('', '_blank') : null;
+    let waWindow = null;
+    if (needsWaOpen) {
+      try {
+        waWindow = window.open('', '_blank');
+      } catch (e) {
+        console.warn('Failed to pre-open window:', e);
+      }
+    }
 
     try {
       if (isDemoMode || !db) {
@@ -2279,7 +2303,7 @@ const AdminDashboard = () => {
 
     const weekEntradas = transactions
       .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
-      .reduce((sum, t) => sum + t.value, 0);
+      .reduce((sum, t) => sum + Number(calculateNetValue(t.value, t.paymentMethod, settings) || 0), 0);
     setRevenueThisWeek(weekEntradas);
   }, [transactions, currentDate]);
 
@@ -2446,7 +2470,11 @@ Grande abraço, Jon.`;
     if (!gateway || gateway === 'none') {
       console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
       const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
-      window.open(waUrl, '_blank');
+      try {
+        window.open(waUrl, '_blank');
+      } catch (e) {
+        console.warn('Direct window.open failed:', e);
+      }
       toast('Abrindo WhatsApp diretamente... 🚀', 'success');
       return;
     }
@@ -2485,7 +2513,11 @@ Grande abraço, Jon.`;
     } catch (err) {
       console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
       const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
-      window.open(waUrl, '_blank');
+      try {
+        window.open(waUrl, '_blank');
+      } catch (e) {
+        console.warn('Fallback window.open failed:', e);
+      }
       toast('Abrindo WhatsApp diretamente... 🚀', 'success');
     }
   };
@@ -3473,7 +3505,6 @@ Grande abraço, Jon.`;
                                         window.dispatchEvent(new Event('settingsUpdated'));
                                       }
                                       toast("Bloqueio de Psicóloga desativado!", "success");
-                                      window.location.reload();
                                     };
                                     updateFn();
                                   } else if (opt === '3') {
@@ -3507,7 +3538,6 @@ Grande abraço, Jon.`;
                                             window.dispatchEvent(new Event('settingsUpdated'));
                                           }
                                           toast("Ausência atualizada!", "success");
-                                          window.location.reload();
                                         };
                                         saveFn();
                                       }
@@ -3527,7 +3557,6 @@ Grande abraço, Jon.`;
                                         window.dispatchEvent(new Event('settingsUpdated'));
                                       }
                                       toast("Ausência definida como recorrente!", "success");
-                                      window.location.reload();
                                     };
                                     saveFn();
                                   }
@@ -3948,7 +3977,7 @@ Grande abraço, Jon.`;
                                             window.dispatchEvent(new Event('settingsUpdated'));
                                           }
                                           toast("Bloqueio de Psicóloga desativado!", "success");
-                                          window.location.reload();
+
                                         };
                                         updateFn();
                                       }
@@ -4336,7 +4365,6 @@ Grande abraço, Jon.`;
                           }
                           toast("Bloqueio de Psicóloga desativado!", "success");
                           setActivePopover({ visible: false, x: 0, y: 0, booking: null });
-                          window.location.reload();
                         };
                         updateFn();
                       } else {
@@ -6384,7 +6412,7 @@ Grande abraço, Jon.`;
                   toast("Horário liberado!", "success");
                   setShowScaleBlockModal(false);
                   setSelectedScaleBlock(null);
-                  window.location.reload();
+                  setCurrentDate(new Date(currentDate));
                 }}
                 style={{ width: '100%', display: 'flex', gap: '12px', padding: '16px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--adm-rule)', borderRadius: '8px', cursor: 'pointer', textAlign: 'left' }}
               >

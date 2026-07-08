@@ -564,7 +564,8 @@ export default async function handler(req, res) {
   const data = req.body;
   const { type = 'horario_confirmado', clientEmail, clientName, subject, htmlBody } = data;
 
-  if (!clientEmail) {
+  const isAdminType = ['solicitacao_recebida', 'horario_confirmado', 'agendamento_cancelado', 'agendamento_alterado', 'agendamento_editado'].includes(type);
+  if (!clientEmail && !isAdminType) {
     return res.status(400).json({ message: 'Campos obrigatórios ausentes: clientEmail' });
   }
 
@@ -1116,7 +1117,8 @@ export default async function handler(req, res) {
       shouldSendClientEmail = false;
     }
 
-    if (shouldSendClientEmail) {
+    const isPlaceholderEmail = !clientEmail || clientEmail === 'Não informado' || clientEmail.startsWith('sem-email@');
+    if (shouldSendClientEmail && !isPlaceholderEmail) {
       const isLaunchCampaign = type === 'launch_campaign';
       const mailgunApiKey = (process.env.MAILGUN_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
       const resendApiKey = (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '').trim();

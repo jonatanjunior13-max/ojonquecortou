@@ -8,8 +8,8 @@ import {
   FileText, ShoppingBag, Eye, Settings, HelpCircle, ArrowUpRight,
   Search, Edit3
 } from 'lucide-react';
-import './Admin.css';
 import KpiCard from '../../components/admin/ui/KpiCard';
+import { calculateNetValue, calculateTransactionFee, calculateProfessionalCommission as calculateProfessionalCommissionUtil } from '../../utils/finance';
 
 // Seed data for historical comparison if database is empty/fresh (matches Figma layout screenshots)
 const SEED_HISTORICAL_TRANSACTIONS = [];
@@ -212,70 +212,8 @@ const AdminFinancial = () => {
   };
 
   // Helper values for calculating net value and credit card fee deduction
-  const getNetValue = (val, method) => {
-    const fees = {
-      feePix: settings.feePix ?? feesForm.feePix,
-      feeDebit: settings.feeDebit ?? feesForm.feeDebit,
-      feeCredit: settings.feeCredit ?? feesForm.feeCredit,
-      feeCredit2x: settings.feeCredit2x ?? feesForm.feeCredit2x,
-      feeCredit3x: settings.feeCredit3x ?? feesForm.feeCredit3x,
-      feeAnticipation: settings.feeAnticipation ?? feesForm.feeAnticipation
-    };
-
-    const m = (method || '').toLowerCase();
-    if (val === 0 || m.includes('pacote')) return 0;
-    let rate = 0;
-
-    if (m === 'pix') {
-      rate = fees.feePix;
-      return val * (1 - rate / 100);
-    } else if (m === 'dinheiro') {
-      return val;
-    } else if (m.includes('débito') || m.includes('debito')) {
-      rate = fees.feeDebit;
-      return val * (1 - rate / 100);
-    } else if (m.includes('crédito') || m.includes('credito') || m.includes('credit')) {
-      // Detect installments from payment method label, e.g., "Cartão de Crédito (3x)" or "Crédito 2x"
-      let installments = 1;
-      const match = m.match(/(\d+)x/);
-      if (match) {
-        installments = parseInt(match[1], 10);
-      }
-
-      if (installments === 2) {
-        rate = fees.feeCredit2x;
-      } else if (installments >= 3) {
-        rate = fees.feeCredit3x;
-      } else {
-        rate = fees.feeCredit;
-      }
-
-      const hasAnticipation = m.includes('antecip') || m.includes('adiant');
-      if (hasAnticipation) {
-        // Stone calculates anticipation fee per installment pro-rata (simple interest per month)
-        // Installment i is anticipated by (30 * i - 1) days if received on day 1 (tomorrow)
-        const valPerInstallment = val / installments;
-        let totalNet = 0;
-        const antRatePerMonth = fees.feeAnticipation / 100;
-        
-        for (let i = 1; i <= installments; i++) {
-          const days = 30 * i - 1;
-          const netInstallment = valPerInstallment * (1 - rate / 100);
-          const payout = netInstallment * (1 - antRatePerMonth * (days / 30));
-          totalNet += payout;
-        }
-        return totalNet;
-      } else {
-        return val * (1 - rate / 100);
-      }
-    }
-
-    return val;
-  };
-
-  const getTransactionFee = (val, method) => {
-    return val - getNetValue(val, method);
-  };
+  const getNetValue = (val, method) => calculateNetValue(val, method, settings);
+  const getTransactionFee = (val, method) => calculateTransactionFee(val, method, settings);
 
   // Service category mapper
   const getServiceCategory = (serviceName) => {
@@ -998,41 +936,8 @@ const AdminFinancial = () => {
     document.body.removeChild(link);
   };
 
-  // Commission table mapping calculator
   const calculateProfessionalCommission = (prof) => {
-    if (!prof) return { services: 0, products: 0, total: 0 };
-    const commServ = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 0);
-    const commProd = prof.commissionProduct !== undefined ? prof.commissionProduct : 0;
-    
-    let servicesPayout = 0;
-    let productsPayout = 0;
-
-    filteredTransactions
-      .filter(t => t.type === 'entrada' && t.professionalId === prof.id)
-      .forEach(t => {
-        const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
-        const isProdSale = t.isProductSale || t.category === 'venda_produto';
-        
-        let rawProd = 0;
-        let rawServ = 0;
-
-        if (isProdSale) {
-          rawProd = t.value;
-        } else {
-          rawProd = productVal;
-          rawServ = Math.max(0, t.value - productVal);
-        }
-
-        const feeFactor = t.value > 0 ? getNetValue(t.value, t.paymentMethod) / t.value : 1;
-        servicesPayout += rawServ * (commServ / 100) * feeFactor;
-        productsPayout += rawProd * (commProd / 100) * feeFactor;
-      });
-
-    return {
-      services: servicesPayout,
-      products: productsPayout,
-      total: servicesPayout + productsPayout
-    };
+    return calculateProfessionalCommissionUtil(prof, filteredTransactions);
   };
 
   // Filter Ledger Entries
@@ -1958,9 +1863,8 @@ const AdminFinancial = () => {
                       rawServ = Math.max(0, t.value - productVal);
                     }
 
-                    const feeFactor = t.value > 0 ? netVal / t.value : 1;
-                    const servComm = rawServ * (commServ / 100) * feeFactor;
-                    const prodComm = rawProd * (commProd / 100) * feeFactor;
+                    const servComm = rawServ * (commServ / 100);
+                    const prodComm = rawProd * (commProd / 100);
                     
                     repasseValue = servComm + prodComm;
 

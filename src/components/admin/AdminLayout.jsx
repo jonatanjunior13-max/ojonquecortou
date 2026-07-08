@@ -26,6 +26,11 @@ const AdminLayoutInner = () => {
   const previousBookings = useRef([]);
   const initialLoadDone = useRef(false);
   const notified30Min = useRef(new Set());
+  // Stable ref so the interval never resets when bookings update
+  const bookingsRef = useRef([]);
+  // Gate: true after the 3 critical collections (bookings, services, settings) resolved
+  const [dataReady, setDataReady] = useState(false);
+  const resolvedCollections = useRef(new Set());
 
   useEffect(() => {
     if ('Notification' in window) {
@@ -214,12 +219,20 @@ const AdminLayoutInner = () => {
         }
         
         previousBookings.current = newBookings;
+        bookingsRef.current = newBookings; // keep stable ref for interval
         initialLoadDone.current = true;
         setGlobalData(prev => ({ ...prev, bookings: newBookings }));
+        // Mark bookings as resolved for data-ready gate
+        resolvedCollections.current.add('bookings');
+        if (['bookings','services','settings'].every(k => resolvedCollections.current.has(k))) setDataReady(true);
       }));
 
       unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => setGlobalData(prev => ({ ...prev, clients: snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'services'), (snap) => setGlobalData(prev => ({ ...prev, services: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'services'), (snap) => {
+        setGlobalData(prev => ({ ...prev, services: snap.docs.map(d => ({ id: d.id, ...d.data() })) }));
+        resolvedCollections.current.add('services');
+        if (['bookings','services','settings'].every(k => resolvedCollections.current.has(k))) setDataReady(true);
+      }));
       unsubs.push(onSnapshot(collection(db, 'products'), (snap) => setGlobalData(prev => ({ ...prev, products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => setGlobalData(prev => ({ ...prev, financial_transactions: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'coupons'), (snap) => setGlobalData(prev => ({ ...prev, coupons: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
@@ -227,7 +240,11 @@ const AdminLayoutInner = () => {
       unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => setGlobalData(prev => ({ ...prev, packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => setGlobalData(prev => ({ ...prev, client_packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
       unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => setGlobalData(prev => ({ ...prev, salon_products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }))));
+      unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
+        setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }));
+        resolvedCollections.current.add('settings');
+        if (['bookings','services','settings'].every(k => resolvedCollections.current.has(k))) setDataReady(true);
+      }));
     } else {
       // Demo Mode fallback
       try {
@@ -274,6 +291,11 @@ const AdminLayoutInner = () => {
     return () => unsubs.forEach(u => u && u());
   }, [authorized]);
 
+  // Keep bookingsRef in sync separately so interval doesn't reset on every booking change
+  useEffect(() => {
+    bookingsRef.current = globalData.bookings;
+  }, [globalData.bookings]);
+
   useEffect(() => {
     if (!authorized) return;
 
@@ -288,7 +310,8 @@ const AdminLayoutInner = () => {
 
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-      globalData.bookings.forEach(booking => {
+      // Use ref instead of state to avoid cancelling/recreating interval on each booking update
+      bookingsRef.current.forEach(booking => {
         if (booking.date !== todayStr || booking.status === 'cancelado' || booking.status === 'faltou') return;
         if (!booking.time || booking.status === 'bloqueado') return;
 
@@ -313,7 +336,7 @@ const AdminLayoutInner = () => {
     const interval = setInterval(checkUpcomingBookings, 30000);
 
     return () => clearInterval(interval);
-  }, [authorized, globalData.bookings]);
+  }, [authorized]); // removed globalData.bookings — now reads from stable ref
 
   const handleLogout = async () => {
     if (auth) {
@@ -327,12 +350,14 @@ const AdminLayoutInner = () => {
     navigate('/admin/login');
   };
 
-  if (authorized === null) {
+  if (authorized === null || (authorized && !dataReady && db)) {
     return (
       <div className="admin-loading">
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
           <img src="/logo-jon-cortou.png" alt="Logo" style={{ width: 48, height: 48, borderRadius: 8, opacity: 0.6, animation: 'pulse 1.5s ease-in-out infinite' }} />
-          <span style={{ fontSize: '0.83rem', letterSpacing: 1 }}>Verificando acesso...</span>
+          <span style={{ fontSize: '0.83rem', letterSpacing: 1 }}>
+            {authorized === null ? 'Verificando acesso...' : 'Carregando dados...'}
+          </span>
         </div>
       </div>
     );

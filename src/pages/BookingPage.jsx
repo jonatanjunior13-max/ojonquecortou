@@ -672,7 +672,7 @@ const BookingPage = () => {
         } else if (authMode === 'login' || !authMode) {
           if (uid === existingProfile.userId || isDemo || email === existingProfile.email) {
             if (uid !== existingProfile.userId && !isDemo) {
-              const clientRef = doc(db, 'client_profiles', existingProfile.phone);
+              const clientRef = doc(db, 'client_profiles', existingProfile.id || existingProfile.phone);
               await setDoc(clientRef, { userId: uid }, { merge: true });
             }
             setAuthSuccess(true);
