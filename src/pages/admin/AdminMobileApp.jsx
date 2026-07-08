@@ -1388,6 +1388,9 @@ export default function AdminMobileApp() {
         splitPayments: splitPaymentsList,
         discount: discount,
         date: checkoutBooking.date || today(),
+        time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        clientName: checkoutBooking.clientName || 'Cliente',
+        clientPhone: checkoutBooking.clientPhone || '',
         bookingId: checkoutBooking.id,
         productSales: selectedProducts.map(p => {
           const match = salonProducts.find(prod => prod.id === p.id);
