@@ -146,10 +146,6 @@
       "handle": "filesystem"
     },
     {
-      "src": "/(.*)\\.(jpg|jpeg|png|webp|svg|gif|css|js|ico|map|xml|txt)$",
-      "status": 404
-    },
-    {
       "src": "/blog/([^/]+)/?",
       "dest": "/blog/$1/index.html"
     },

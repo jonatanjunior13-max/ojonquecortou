@@ -1715,13 +1715,15 @@ export default function AdminMobileApp() {
         const fakeId = 'demo-bk-' + Date.now();
         setBookings(prev => [...prev, { id: fakeId, ...data }]);
       }
+      showToast('Agendamento criado! ✅', 'success');
+    } catch (err) {
+      showToast('Erro: ' + err.message, 'error');
+    } finally {
+      // Sempre fecha o sheet e reseta o formulário — independente de sucesso ou erro
       setShowNewBookingSheet(false);
       setNbRegisterClient(false);
       setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
       setTab('hoje');
-      showToast('Agendamento criado!', 'success');
-    } catch (err) {
-      showToast('Erro: ' + err.message, 'error');
     }
   };
 
