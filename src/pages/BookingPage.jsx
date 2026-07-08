@@ -1910,6 +1910,27 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                           <div className="booking-service-card-body">
                             <h3 className="booking-service-card-title">{service.name}</h3>
                             {tagline && <p className="booking-service-tagline">{tagline}</p>}
+
+                            {/* Preço do Serviço */}
+                            {!isWaOnly && (service.price !== undefined || service.promoPrice !== undefined) && (
+                              <div className="booking-service-price-row" style={{ display: 'flex', flexDirection: 'column', gap: '2px', alignItems: 'flex-start', margin: '8px 0 12px 0' }}>
+                                {service.promoPrice && service.price > service.promoPrice && (
+                                  <span style={{ fontSize: '0.82rem', textDecoration: 'line-through', color: 'var(--muted)' }}>
+                                    De R$ {Number(service.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                  </span>
+                                )}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <span className="booking-service-price" style={{ color: 'var(--accent)', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                                    R$ {Number(service.promoPrice || service.price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                  </span>
+                                  {service.promoPrice && service.price > service.promoPrice && (
+                                    <span className="booking-service-tag-discount" style={{ background: 'rgba(140,80,39,0.15)', color: 'var(--accent)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 'bold' }}>
+                                      -{(100 - (Number(service.promoPrice) * 100 / Number(service.price))).toFixed(0)}% OFF
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                             
                             <div className="booking-service-duration-info">
                               <Clock size={12} />
