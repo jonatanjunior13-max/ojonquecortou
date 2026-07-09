@@ -4080,13 +4080,51 @@ Grande abraço, Jon.`;
 
               {b.clientPhone && ['confirmado','pendente','confirmado pela cliente'].includes(cleanStatus(b.status)) && (
                 <button className="m-action-btn" onClick={() => {
+                  const bookingDate = b.date || '';
+
+                  // Lógica de fuso horário de Brasília para detectar se é hoje, amanhã ou outro dia
+                  const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
+                  const parts = formatter.formatToParts(new Date());
+                  const day = parts.find(p => p.type === 'day').value;
+                  const month = parts.find(p => p.type === 'month').value;
+                  const year = parts.find(p => p.type === 'year').value;
+                  const todayStr = `${year}-${month}-${day}`;
+
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomParts = formatter.formatToParts(tomorrow);
+                  const tomDay = tomParts.find(p => p.type === 'day').value;
+                  const tomMonth = tomParts.find(p => p.type === 'month').value;
+                  const tomYear = tomParts.find(p => p.type === 'year').value;
+                  const tomorrowStr = `${tomYear}-${tomMonth}-${tomDay}`;
+
+                  let quandoText = 'no dia';
+                  if (bookingDate === todayStr) {
+                    quandoText = 'hoje';
+                  } else if (bookingDate === tomorrowStr) {
+                    quandoText = 'amanhã';
+                  }
+
                   const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
                   const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+                  
                   let msg = template
                     .replace('{cliente}', b.clientName.split(' ')[0])
                     .replace('{data}', b.date.split('-').reverse().join('/'))
                     .replace('{hora}', b.time)
                     .replace('{servico}', b.service?.name || b.serviceName);
+
+                  // Ajuste dinâmico de tempo
+                  if (msg.includes('{quando}')) {
+                    msg = msg.replace(/{quando}/gi, quandoText);
+                  } else {
+                    if (quandoText === 'hoje') {
+                      msg = msg.replace(/amanhã/gi, 'hoje');
+                    } else if (quandoText === 'no dia') {
+                      msg = msg.replace(/amanhã/gi, 'no dia');
+                    }
+                  }
+
                   if (msg.includes('{link_cancelamento}')) {
                     msg = msg.replace('{link_cancelamento}', cancelLink);
                   } else {

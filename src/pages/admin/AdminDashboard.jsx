@@ -2534,18 +2534,55 @@ Grande abraço, Jon.`;
     const cleanPhone = phone.replace(/\D/g, '');
     const clientName = booking.clientName || '';
     const serviceName = booking.serviceName || booking.service?.name || '';
-    let formattedDate = booking.date || '';
+    const bookingDate = booking.date || '';
+
+    // Lógica de fuso horário de Brasília para detectar se é hoje, amanhã ou outro dia
+    const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
+    const parts = formatter.formatToParts(new Date());
+    const day = parts.find(p => p.type === 'day').value;
+    const month = parts.find(p => p.type === 'month').value;
+    const year = parts.find(p => p.type === 'year').value;
+    const todayStr = `${year}-${month}-${day}`;
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const tomParts = formatter.formatToParts(tomorrow);
+    const tomDay = tomParts.find(p => p.type === 'day').value;
+    const tomMonth = tomParts.find(p => p.type === 'month').value;
+    const tomYear = tomParts.find(p => p.type === 'year').value;
+    const tomorrowStr = `${tomYear}-${tomMonth}-${tomDay}`;
+
+    let quandoText = 'no dia';
+    if (bookingDate === todayStr) {
+      quandoText = 'hoje';
+    } else if (bookingDate === tomorrowStr) {
+      quandoText = 'amanhã';
+    }
+
+    let formattedDate = bookingDate;
     if (formattedDate.includes('-')) {
       formattedDate = formattedDate.split('-').reverse().join('/');
     }
     const time = booking.time || '';
 
-    const rawTemplate = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨';
-    const message = rawTemplate
-      .replace(/{cliente}/gi, clientName)
+    const rawTemplate = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨';
+    
+    let message = rawTemplate
+      .replace(/{cliente}/gi, clientName.split(' ')[0])
       .replace(/{servico}/gi, serviceName)
       .replace(/{data}/gi, formattedDate)
       .replace(/{hora}/gi, time);
+
+    // Ajuste dinâmico de tempo
+    if (message.includes('{quando}')) {
+      message = message.replace(/{quando}/gi, quandoText);
+    } else {
+      if (quandoText === 'hoje') {
+        message = message.replace(/amanhã/gi, 'hoje');
+      } else if (quandoText === 'no dia') {
+        message = message.replace(/amanhã/gi, 'no dia');
+      }
+    }
 
     const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${booking.id}`;
     let finalMsg = message;
