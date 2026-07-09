@@ -399,7 +399,7 @@ const BookingPage = () => {
       const displayDate = selectedDateObj?.display || payload.date;
       const serviceName = payload.service?.name || (typeof payload.service === 'string' ? payload.service : '');
       const duration = payload.service?.duration || 60;
-      const price = payload.service?.promoPrice ?? payload.service?.price ?? null;
+      const price = payload.totalPrice ?? payload.service?.promoPrice ?? payload.service?.price ?? null;
 
       const response = await fetch('/api/send-email', {
         method: 'POST',
