@@ -1,5 +1,157 @@
 export const posts = [
   {
+    id: 57,
+    slug: 'transicao-capilar-scab-hair-guia-fio-sem-forma',
+    title: 'Transição Capilar e Scab Hair: O Guia Físico para Entender o Cacho que Nasce Sem Forma',
+    seoTitle: 'Transição Capilar e Scab Hair: O Guia do Fio Sem Forma | Studio do Jon',
+    excerpt: 'Parou de alisar e a raiz nova está nascendo dura, áspera e sem definição? Isso não é o seu cabelo natural — é o scab hair. Entenda a física por trás desse fio e saiba como acelerar a transição capilar.',
+    metaDescription: 'Parou de alisar e a raiz nasceu rígida e áspera? Conheça o scab hair na transição capilar, a ciência por trás dele e como recuperar a definição dos cachos.',
+    keywords: 'scab hair transição capilar, raiz dura transição capilar, cabelo áspero transição, parar de alisar o cabelo, recuperação do couro cabeludo, leitura de fio bh, Studio do Jon',
+    date: '09 de Julho, 2026',
+    datePublished: '2026-07-09',
+    dateModified: '2026-07-09',
+    author: 'Jon',
+    category: 'Transição',
+    image: '/blog-transicao-capilar-scab-hair-guia-fio-sem-forma.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é scab hair e por que ele acontece?",
+          "acceptedAnswer": { 
+            "@type": "Answer", 
+            "text": "Scab hair é o fio que nasce logo após a interrupção de químicas alisantes com textura áspera, porosa, rígida e sem padrão definido. Ele ocorre devido a danos acumulados nos folículos pilosos e à inflamação no couro cabeludo causada por anos de químicas agressivas." 
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quanto tempo dura a fase do scab hair?",
+          "acceptedAnswer": { 
+            "@type": "Answer", 
+            "text": "A fase do scab hair geralmente dura de 3 a 12 meses, variando conforme a saúde do couro cabeludo e o ritmo de crescimento do cabelo. Conforme os folículos se recuperam dos danos químicos e a barreira da pele se restabelece, os fios voltam a nascer com sua curvatura e maciez naturais." 
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como diferenciar scab hair de cabelo ressecado normal?",
+          "acceptedAnswer": { 
+            "@type": "Answer", 
+            "text": "O scab hair não responde a tratamentos tradicionais de hidratação ou nutrição e não tem um padrão de curvatura definido (nasce espigado ou esticado). O cabelo seco normal recupera maciez e definição logo após um tratamento adequado com máscaras ácidas ou umectações." 
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que fazer para acelerar o fim do scab hair?",
+          "acceptedAnswer": { 
+            "@type": "Answer", 
+            "text": "Foque na saúde do couro cabeludo com massagens estimulantes, argiloterapia e shampoos suaves. Use acidificantes capilares para selar as cutículas porosas do novo fio e faça umectações com óleos vegetais puros para devolver a elasticidade na raiz." 
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Preciso fazer o big chop para remover o scab hair?",
+          "acceptedAnswer": { 
+            "@type": "Answer", 
+            "text": "Não necessariamente. O big chop remove a parte alisada quimicamente. O scab hair nasce na raiz nova e vai melhorar sozinho conforme o couro cabeludo se desintoxica. Cortar a parte alisada ajuda no peso e no visual, mas a textura da raiz se recupera com o tempo." 
+          }
+        }
+      ]
+    },
+    content: `<blockquote><p><strong>TL;DR:</strong> Scab hair é a textura rígida, áspera e sem curvatura definida que nasce nos primeiros meses após a interrupção de alisamentos químicos. Ele não representa a genética real do seu cacho, mas sim um reflexo temporário dos folículos pilosos danificados pela química. A recuperação exige foco na desintoxicação do couro cabeludo, acidificação para controlar a porosidade extrema e paciência enquanto o bulbo capilar se regenera.</p></blockquote>
+
+    <p>A decisão de passar pela transição capilar é um marco de liberdade. No entanto, é muito comum que, após dois ou três meses sem química, a cliente se depare com uma raiz nova que nasce dura, áspera, extremamente porosa e sem nenhuma definição de cacho. Bate aquele desespero e a pergunta clássica na cadeira do Studio: <em>"Jon, meu cabelo natural é feio assim mesmo? Vou ter que voltar a alisar?"</em></p>
+
+    <p>Calma. A ciência do fio explica isso muito bem. O que você está vendo nascer **não é a textura real do seu cacho**. Trata-se do <strong>scab hair</strong>, um fenômeno físico temporário que afeta a imensa maioria das pessoas que interrompem procedimentos térmicos ou químicos agressivos. Neste guia, vamos entender a física por trás do scab hair, como diferenciá-lo do ressecamento comum e o que fazer para acelerar a regeneração do seu cacho natural.</p>
+
+    <h2>O que é Scab Hair?</h2>
+    <p>Scab hair (que em tradução livre significa "cabelo de ferida") é o fio de cabelo que nasce com a estrutura danificada logo após a suspensão de químicas de alisamento (como progressivas, relaxamentos, guanidina ou hidróxidos). Ele se apresenta de forma porosa, sem brilho, com textura de arame e sem um padrão definido de ondulação ou cacho.</p>
+
+    <p>Esse fio nasce prejudicado porque o folículo piloso — a estrutura viva abaixo do couro cabeludo que produz o cabelo — passou anos sofrendo agressões químicas diretas, inflamações ocultas e bloqueio de oxigenação. Quando a química cessa, o folículo ainda está intoxicado e inflamado, produzindo uma fibra capilar com distribuição de queratina irregular e cutículas extremamente desalinhadas nos primeiros centímetros de crescimento.</p>
+
+    <h2>Como o Scab Hair se comporta fisicamente</h2>
+    <p>Fisicamente, a queratina é a proteína que dá forma e elasticidade ao fio de cabelo. No cabelo cacheado e crespo saudável, os filamentos de queratina se ligam em padrões geométricos específicos que criam a curvatura. No scab hair, a deposição dessa queratina no córtex ocorre de forma desordenada e com falhas estruturais. O resultado é um fio com diâmetro irregular ao longo do comprimento, incapaz de segurar a hidratação ou formar uma espiral limpa.</p>
+
+    <p>Além disso, a glândula sebácea, que deveria produzir o sebo natural para lubrificar o fio, muitas vezes está atrofiada ou desregulada pela química antiga. Sem essa proteção lipídica natural, o novo fio poroso seca imediatamente ao entrar em contato com o ar, resultando na textura áspera típica do "arame".</p>
+
+    <h2>Tabela Comparativa: Scab Hair vs. Cacho Ressecado Comum</h2>
+    <p>Para te ajudar a identificar se o problema da sua raiz é apenas ressecamento ou se é de fato scab hair, veja a tabela de comportamento físico abaixo:</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; text-align: left; border: 0.5px solid var(--adm-rule, rgba(255,255,255,0.08));">
+      <thead>
+        <tr style="background: rgba(220, 163, 84, 0.1); color: var(--adm-gold, #DCA354);">
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Característica</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Scab Hair (Transição)</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Cacho Ressecado Normal</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Padrão de Cacho</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Indefinido, espigado, sem curvatura lógica.</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Mantém a espiral (2A a 4C), apenas sem brilho e com frizz.</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Resposta a Hidratação</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Nula ou baixíssima. O fio parece repelir máscaras tradicionais.</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Boa. Fica macio e maleável imediatamente após o tratamento.</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Elasticidade</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Rígida ou quebradiça na raiz. Sem fator "mola".</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Normal ou reduzida, mas responde ao estímulo físico.</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Porosidade</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Extrema. O fio absorve água rápido, mas seca instantaneamente.</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Variável (baixa, média ou alta) e controlável na rotina.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Como Tratar e Regenerar o Fio em Transição</h2>
+    <p>Tratar o scab hair não é sobre comprar a máscara mais cara do mercado para aplicar nas pontas. O segredo está no couro cabeludo e no controle do pH do fio que está nascendo. Aqui estão as três etapas físicas indispensáveis para essa fase:</p>
+
+    <h3>1. Desintoxicação e Estímulo do Couro Cabeludo</h3>
+    <p>Se o bulbo capilar está intoxicado, precisamos limpá-lo de dentro para fora. Massagens circulares diárias com o couro cabeludo seco estimulam a microcirculação sanguínea, levando mais oxigênio e nutrientes para a raiz. O uso de óleos vegetais puros de propriedades anti-inflamatórias (como óleo de alecrim ou jojoba) ajuda a desobstruir os folículos e acalmar a pele irritada pelas químicas passadas.</p>
+
+    <h3>2. Acidificação e Selagem Cuticular</h3>
+    <p>Como a cutícula do scab hair nasce extremamente aberta e desalinhada, o fio perde água muito rápido. O uso de um acidificante capilar de pH ácido (entre 3.0 e 3.5) é crucial logo após a lavagem. A acidez contrai as cutículas de forma física, selando a água dentro do córtex e suavizando a textura áspera e rígida da fibra.</p>
+
+    <h3>3. Umectação com Óleos Vegetais Puros</h3>
+    <p>A fibra porosa do scab hair precisa de lipídios de baixo peso molecular para penetrar nas falhas da cutícula. A umectação morna (com óleo de coco ou de abacate levemente aquecidos) aplicada diretamente na transição entre a química e a raiz natural ajuda a amaciar a fibra rígida e previne a quebra precoce durante o pentear.</p>
+
+    <h2>O Caminho Seguro no Studio do Jon</h2>
+    <p>A fase da transição capilar exige paciência, mas você não precisa passar por ela no escuro ou sofrendo com a textura áspera do scab hair. No Studio do Jon, em Belo Horizonte, desenvolvemos protocolos voltados especificamente para a saúde do couro cabeludo e desintoxicação capilar.</p>
+
+    <p>Nosso <strong><a href="/servicos/detox-estimulante">Detox Estimulante (R$ 180)</a></strong> atua diretamente na raiz: remove resíduos químicos profundos, combate a inflamação dos folículos com argiloterapia específica e estimula o crescimento saudável de novos fios livres de scab hair. E com o <strong>Tratamento Personalizado (R$ 130)</strong>, criamos uma máscara de nutrição lipídica sob medida para amaciar a transição áspera do seu cabelo.</p>
+
+    <p>Para quem quer mapear a saúde da fibra e entender exatamente qual o padrão de cacho que está nascendo embaixo da química, a <strong><a href="/metodo">Leitura de Fio</a></strong> (R$ 80 avulsa ou inclusa sem custo no <strong>Corte com o Jon por R$ 190</strong>) é o ponto de partida perfeito. Agende seu horário e venha cuidar do seu cabelo com técnica de verdade.</p>
+
+    <h2>Perguntas Frequentes</h2>
+    <h3>O que é scab hair e por que ele acontece?</h3>
+    <p>Scab hair é o fio que nasce com textura áspera, rígida e sem curvatura definida após a interrupção de químicas alisantes. Ele ocorre devido a danos acumulados nos folículos pilosos e à inflamação crônica do couro cabeludo causada por anos de agressão química direta.</p>
+
+    <h3>Quanto tempo dura a fase do scab hair?</h3>
+    <p>A fase do scab hair dura geralmente de 3 a 12 meses. O tempo exato depende do ritmo de crescimento do seu cabelo e do nível de regeneração dos folículos. Conforme o couro cabeludo se desintoxica, o fio volta a nascer macio e com sua curvatura natural.</p>
+
+    <h3>Como diferenciar scab hair de cabelo ressecado normal?</h3>
+    <p>O scab hair não responde a tratamentos comuns de hidratação ou nutrição e nasce sem padrão de curvatura lógico. Já o cabelo ressecado comum recupera maciez e maleabilidade de forma imediata após uma boa máscara hidratante ou acidificação capilar.</p>
+
+    <h3>O que fazer para acelerar o fim do scab hair?</h3>
+    <p>Foque na saúde do couro cabeludo fazendo massagens circulares e argiloterapia. Use acidificantes capilares após a lavagem para fechar as cutículas porosas do novo fio e faça umectações frequentes com óleos vegetais puros para amaciar a fibra rígida na raiz.</p>
+
+    <h3>Preciso fazer o big chop para remover o scab hair?</h3>
+    <p>Não. O big chop remove a parte do cabelo que foi alisada quimicamente. O scab hair nasce diretamente na raiz nova e vai melhorar de forma natural conforme seu bulbo capilar se recupera dos danos passados, sem necessidade de encurtar o comprimento novo.</p>
+
+    <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+      <h3>Sua transição não precisa ser um período de sofrimento.</h3>
+      <p>Agende um diagnóstico de Leitura de Fio e venha tratar seu novo cabelo com quem entende a ciência do cacho.</p>
+      <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+    </div>`
+  },
+  {
     id: 56,
     slug: 'buildup-capilar-cachos-ressecamento-falso',
     title: 'Build-Up Capilar: Como o Acúmulo de Produto Cria um Ressecamento Falso no Cacho',
