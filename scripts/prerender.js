@@ -650,7 +650,7 @@ const homeBody = `
       <h2>Localização e Agendamento</h2>
       <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+553135866673">(31) 3586-6673</a>. <a href="/agendar">Agende seu horário online</a> ou fale pelo <a href="https://wa.me/553135866673">WhatsApp</a>. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
-      <p>Localizado no bairro Caiçaras, na Rua Pedro II, o Studio do Jon fica a poucos passos do metrô Gameleira, um dos pontos mais acessíveis de Belo Horizonte para quem busca um especialista em cabelo cacheado sem depender de carro. Clientes de toda a região metropolitana chegam de metrô, ônibus ou a pé para o diagnóstico da Leitura de Fio, tornando o Caiçaras uma referência local para cortes técnicos em cachos, crespos e ondulados.</p>
+      <p>Localizado no bairro Caiçaras, próximo ao metrô Gameleira e à Avenida Pedro II, o Studio do Jon fica a poucos passos de um dos pontos mais acessíveis de Belo Horizonte para quem busca um especialista em cabelo cacheado sem depender de carro. Clientes de toda a região metropolitana chegam de metrô, ônibus ou a pé para o diagnóstico da Leitura de Fio, tornando o Caiçaras uma referência local para cortes técnicos em cachos, crespos e ondulados.</p>
     </article>
   </noscript>
 `;
