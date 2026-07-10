@@ -383,12 +383,14 @@ const AdminDashboard = () => {
 
   const clientActivePackages = React.useMemo(() => {
     if (!selectedBooking) return [];
-    const phone = selectedBooking.clientPhone;
-    const name = selectedBooking.clientName;
-    return clientPackages.filter(cp => 
-      cp.status === 'active' && 
-      ((phone && cp.clientPhone === phone) || (!phone && cp.clientName === name))
-    );
+    const phone = (selectedBooking.clientPhone || '').replace(/\D/g, '');
+    const name = (selectedBooking.clientName || '').trim().toLowerCase();
+    return clientPackages.filter(cp => {
+      if (cp.status !== 'active') return false;
+      const cpPhone = (cp.clientPhone || '').replace(/\D/g, '');
+      const cpName = (cp.clientName || '').trim().toLowerCase();
+      return (phone && cpPhone === phone) || (name && cpName === name);
+    });
   }, [selectedBooking, clientPackages]);
 
   const availablePackagesForBooking = React.useMemo(() => {
@@ -756,7 +758,10 @@ const AdminDashboard = () => {
     time: '09:00',
     notes: '',
     profissional: 'jon',
-    prepayment: 0
+    prepayment: 0,
+    bookingType: 'service',
+    packageId: '',
+    packageName: ''
   });
 
   // Carrega produtos, serviços, clientes, transações e configurações
@@ -1362,7 +1367,12 @@ const AdminDashboard = () => {
       status: 'confirmado',
       profissional: newBooking.profissional || 'jon',
       prepayment: Number(newBooking.prepayment) || 0,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      ...(newBooking.bookingType === 'package' ? {
+        packageId: newBooking.packageId,
+        packageName: newBooking.packageName,
+        isPackageAcquisition: true
+      } : {})
     };
 
     // Check for overlap conflicts
@@ -1401,7 +1411,11 @@ const AdminDashboard = () => {
       date: getLocalDateString(currentDate),
       time: '09:00',
       notes: '',
-      profissional: 'jon'
+      profissional: 'jon',
+      prepayment: 0,
+      bookingType: 'service',
+      packageId: '',
+      packageName: ''
     });
 
     // Run async write in background
@@ -2093,6 +2107,13 @@ const AdminDashboard = () => {
         setBookings(prev => prev.map(b => b.id === booking.id ? { 
           ...b, 
           status: 'finalizado',
+          serviceName: booking.serviceName,
+          servicePrice: booking.servicePrice,
+          service: {
+            ...b.service,
+            name: booking.serviceName,
+            price: booking.servicePrice
+          },
           isPackageUse: !!usingClientPackageId,
           isPackageAcquisition: !!sellingPackageId,
           packageUsedId: usingClientPackageId || null,
@@ -2148,6 +2169,13 @@ const AdminDashboard = () => {
         const apptRef = doc(db, 'bookings', booking.id);
         await updateDoc(apptRef, { 
           status: 'finalizado',
+          serviceName: booking.serviceName,
+          servicePrice: booking.servicePrice,
+          service: {
+            name: booking.serviceName,
+            price: booking.servicePrice,
+            duration: booking.duration || 60
+          },
           isPackageUse: !!usingClientPackageId,
           isPackageAcquisition: !!sellingPackageId,
           packageUsedId: usingClientPackageId || null,
@@ -6015,28 +6043,92 @@ Grande abraço, Jon.`;
               </div>
 
               <div className="form-group" style={{ marginBottom: 0 }}>
-                <label>Serviço *</label>
+                <label>Tipo de Agendamento</label>
                 <select 
-                  value={newBooking.serviceName}
+                  value={newBooking.bookingType || 'service'}
                   onChange={e => {
-                    const name = e.target.value;
-                    const matched = services.find(s => s.name === name);
-                    setNewBooking(prev => ({ 
-                      ...prev, 
-                      serviceName: name, 
-                      servicePrice: matched ? (matched.promoPrice || matched.price || 0) : 0,
-                      duration: matched ? (matched.duration || 60) : 60
-                    }));
+                    const type = e.target.value;
+                    if (type === 'package') {
+                      const firstPkg = packages[0];
+                      setNewBooking(prev => ({
+                        ...prev,
+                        bookingType: type,
+                        packageId: firstPkg?.id || '',
+                        packageName: firstPkg?.name || '',
+                        serviceName: firstPkg ? `[Pacote] ${firstPkg.name}` : '',
+                        servicePrice: firstPkg?.price || 0,
+                        duration: 60
+                      }));
+                    } else {
+                      const firstSvc = services[0];
+                      setNewBooking(prev => ({
+                        ...prev,
+                        bookingType: type,
+                        packageId: '',
+                        packageName: '',
+                        serviceName: firstSvc?.name || '',
+                        servicePrice: firstSvc ? (firstSvc.promoPrice || firstSvc.price || 0) : 0,
+                        duration: firstSvc?.duration || 60
+                      }));
+                    }
                   }}
                 >
-                  <option value="">Selecione um serviço</option>
-                  {services.map(s => (
-                    <option key={s.id} value={s.name}>
-                      {s.name}
-                    </option>
-                  ))}
+                  <option value="service">Serviço Individual</option>
+                  <option value="package">Pacote de Serviços</option>
                 </select>
               </div>
+
+              {newBooking.bookingType === 'package' ? (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Pacote *</label>
+                  <select 
+                    value={newBooking.packageId}
+                    onChange={e => {
+                      const pkgId = e.target.value;
+                      const matched = packages.find(p => p.id === pkgId);
+                      setNewBooking(prev => ({ 
+                        ...prev, 
+                        packageId: pkgId, 
+                        packageName: matched ? matched.name : '',
+                        serviceName: matched ? `[Pacote] ${matched.name}` : '', 
+                        servicePrice: matched ? (matched.price || 0) : 0,
+                        duration: 60
+                      }));
+                    }}
+                  >
+                    <option value="">Selecione um pacote</option>
+                    {packages.map(p => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} (R$ {p.price})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Serviço *</label>
+                  <select 
+                    value={newBooking.serviceName}
+                    onChange={e => {
+                      const name = e.target.value;
+                      const matched = services.find(s => s.name === name);
+                      setNewBooking(prev => ({ 
+                        ...prev, 
+                        serviceName: name, 
+                        servicePrice: matched ? (matched.promoPrice || matched.price || 0) : 0,
+                        duration: matched ? (matched.duration || 60) : 60
+                      }));
+                    }}
+                  >
+                    <option value="">Selecione um serviço</option>
+                    {services.map(s => (
+                      <option key={s.id} value={s.name}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label>Valor (R$) *</label>

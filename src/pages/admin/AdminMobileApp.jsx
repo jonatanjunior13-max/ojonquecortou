@@ -403,6 +403,32 @@ export default function AdminMobileApp() {
   const [showCheckoutSheet, setShowCheckoutSheet] = useState(false);
   const [checkoutBooking, setCheckoutBooking] = useState(null);
 
+  // States de pacotes no Mobile
+  const [clientPackages, setClientPackages] = useState([]);
+  const [usingClientPackageId, setUsingClientPackageId] = useState('');
+  const [sellingPackageId, setSellingPackageId] = useState('');
+
+  const clientActivePackages = useMemo(() => {
+    if (!checkoutBooking) return [];
+    const phone = (checkoutBooking.clientPhone || '').replace(/\D/g, '');
+    const name = (checkoutBooking.clientName || '').trim().toLowerCase();
+    return clientPackages.filter(cp => {
+      if (cp.status !== 'active') return false;
+      const cpPhone = (cp.clientPhone || '').replace(/\D/g, '');
+      const cpName = (cp.clientName || '').trim().toLowerCase();
+      return (phone && cpPhone === phone) || (name && cpName === name);
+    });
+  }, [checkoutBooking, clientPackages]);
+
+  const availablePackagesForBooking = useMemo(() => {
+    if (!checkoutBooking || !services) return [];
+    const bookingServiceName = checkoutBooking.service?.name || checkoutBooking.serviceName;
+    const servObj = services.find(s => s.name === bookingServiceName);
+    if (!servObj) return [];
+    
+    return clientActivePackages.filter(cp => cp.balance && cp.balance[servObj.id] > 0);
+  }, [checkoutBooking, clientActivePackages, services]);
+
   // ── Checkout form ──────────────────────────────────────────────
   const [paymentMethod, setPaymentMethod] = useState('Pix');
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -443,7 +469,7 @@ export default function AdminMobileApp() {
   const [transitioning, setTransitioning] = useState(false);
 
   // ── New Booking Form ───────────────────────────────────────────
-  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
   const [ebSuggestions, setEbSuggestions] = useState([]);
   const [nbRegisterClient, setNbRegisterClient] = useState(false);
@@ -705,6 +731,10 @@ export default function AdminMobileApp() {
           setPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
           checkLoaded('packages');
         }, (err) => handleError('packages', err)));
+
+        unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => {
+          setClientPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        }, (err) => console.error('Error loading client_packages:', err)));
 
         unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
           setSettings(snap.exists() ? { id: snap.id, ...snap.data() } : { name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] });
@@ -1455,7 +1485,67 @@ export default function AdminMobileApp() {
         createdAt: new Date().toISOString()
       };
 
+      const serviceId = checkoutBooking.service?.id || '';
+
       if (db) {
+        // 1. Process Packages (Sale or Debit)
+        if (sellingPackageId) {
+          const pkgTemplate = packages.find(p => p.id === sellingPackageId);
+          const initialBalance = {};
+          if (pkgTemplate && pkgTemplate.services) {
+            pkgTemplate.services.forEach(s => {
+              initialBalance[s.serviceId] = s.sessions;
+            });
+          }
+          if (serviceId && initialBalance[serviceId] !== undefined) {
+            initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
+          }
+
+          const clientPackagePayload = {
+            clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+            clientName: checkoutBooking.clientName,
+            clientPhone: checkoutBooking.clientPhone || '',
+            packageId: sellingPackageId,
+            packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
+            pricePaid: pkgTemplate ? pkgTemplate.price : 0,
+            paymentMethod: methodLabel,
+            datePurchased: checkoutBooking.date || today(),
+            status: 'active',
+            balance: initialBalance,
+            usage: [
+              {
+                bookingId: checkoutBooking.id,
+                dateUsed: checkoutBooking.date || today(),
+                serviceId
+              }
+            ]
+          };
+          await addDoc(collection(db, 'client_packages'), clientPackagePayload);
+        }
+
+        if (usingClientPackageId) {
+          const cpRef = doc(db, 'client_packages', usingClientPackageId);
+          const cpSnap = await getDoc(cpRef);
+          if (cpSnap.exists()) {
+            const cpData = cpSnap.data();
+            const newBalance = { ...cpData.balance };
+            if (newBalance[serviceId] !== undefined) {
+              newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+            }
+            const isFinished = Object.values(newBalance).every(val => val === 0);
+            const newUsage = [...(cpData.usage || []), {
+              bookingId: checkoutBooking.id,
+              dateUsed: checkoutBooking.date || today(),
+              serviceId
+            }];
+            await updateDoc(cpRef, {
+              balance: newBalance,
+              status: isFinished ? 'finished' : 'active',
+              usage: newUsage
+            });
+          }
+        }
+
         const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'entrada');
         if (bookingTx) {
           // Revert old product inventory adjustments
@@ -1501,7 +1591,13 @@ export default function AdminMobileApp() {
           status: 'finalizado', 
           paymentMethod: methodLabel, 
           finalValue: total, 
-          servicePrice: finalBasePrice 
+          servicePrice: finalBasePrice,
+          serviceName: checkoutBooking.serviceName,
+          service: checkoutBooking.service,
+          isPackageUse: !!usingClientPackageId,
+          isPackageAcquisition: !!sellingPackageId,
+          packageUsedId: usingClientPackageId || null,
+          packageSoldId: sellingPackageId || null
         });
 
         // Deduct sold products stock
@@ -1523,11 +1619,95 @@ export default function AdminMobileApp() {
             await updateDoc(prodRef, { quantity: Math.max(0, cur - u.quantity) });
           }
         }
+      } else {
+        // demo mode
+        if (sellingPackageId) {
+          const pkgTemplate = packages.find(p => p.id === sellingPackageId);
+          const initialBalance = {};
+          if (pkgTemplate && pkgTemplate.services) {
+            pkgTemplate.services.forEach(s => {
+              initialBalance[s.serviceId] = s.sessions;
+            });
+          }
+          if (serviceId && initialBalance[serviceId] !== undefined) {
+            initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
+          }
+
+          const clientPackagePayload = {
+            clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+            clientName: checkoutBooking.clientName,
+            clientPhone: checkoutBooking.clientPhone || '',
+            packageId: sellingPackageId,
+            packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
+            pricePaid: pkgTemplate ? pkgTemplate.price : 0,
+            paymentMethod: methodLabel,
+            datePurchased: checkoutBooking.date || today(),
+            status: 'active',
+            balance: initialBalance,
+            usage: [
+              {
+                bookingId: checkoutBooking.id,
+                dateUsed: checkoutBooking.date || today(),
+                serviceId
+              }
+            ]
+          };
+          const local = localStorage.getItem('demo_client_packages');
+          const current = local ? JSON.parse(local) : [];
+          const newCp = { id: 'cp_' + Date.now(), ...clientPackagePayload };
+          const updatedCp = [newCp, ...current];
+          localStorage.setItem('demo_client_packages', JSON.stringify(updatedCp));
+          setClientPackages(updatedCp);
+        }
+
+        if (usingClientPackageId) {
+          const local = localStorage.getItem('demo_client_packages');
+          if (local) {
+            const arr = JSON.parse(local);
+            const updated = arr.map(cp => {
+              if (cp.id === usingClientPackageId) {
+                const newBalance = { ...cp.balance };
+                if (newBalance[serviceId] !== undefined) {
+                  newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+                }
+                const isFinished = Object.values(newBalance).every(val => val === 0);
+                return {
+                  ...cp,
+                  balance: newBalance,
+                  status: isFinished ? 'finished' : 'active',
+                  usage: [...(cp.usage || []), {
+                    bookingId: checkoutBooking.id,
+                    dateUsed: checkoutBooking.date || today(),
+                    serviceId
+                  }]
+                };
+              }
+              return cp;
+            });
+            localStorage.setItem('demo_client_packages', JSON.stringify(updated));
+            setClientPackages(updated);
+          }
+        }
+
+        const fakeId = 'demo-bk-' + Date.now();
+        // save list is handled below
       }
       if (requestReview) {
         sendFeedbackWhatsApp(checkoutBooking, waWindow).catch(err => console.error(err));
       }
-      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { ...b, status: 'finalizado', paymentMethod: methodLabel, finalValue: total, servicePrice: finalBasePrice } : b));
+      setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { 
+        ...b, 
+        status: 'finalizado', 
+        paymentMethod: methodLabel, 
+        finalValue: total, 
+        servicePrice: finalBasePrice,
+        serviceName: checkoutBooking.serviceName,
+        service: checkoutBooking.service,
+        isPackageUse: !!usingClientPackageId,
+        isPackageAcquisition: !!sellingPackageId,
+        packageUsedId: usingClientPackageId || null,
+        packageSoldId: sellingPackageId || null
+      } : b));
       
       const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'entrada');
       const bookingSaidaTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'saida');
@@ -1614,12 +1794,14 @@ export default function AdminMobileApp() {
 
   const addBooking = async () => {
     if (!nbForm.clientName || !nbForm.serviceName) { showToast('Preencha cliente e serviço', 'error'); return; }
-    const svc = services.find(s => s.name === nbForm.serviceName);
+    const isPkg = nbForm.bookingType === 'package';
+    const pkg = isPkg ? packages.find(p => p.id === nbForm.packageId) : null;
+    const svc = !isPkg ? services.find(s => s.name === nbForm.serviceName) : null;
     const prepay = Number(nbForm.prepayment || 0);
-    const price = nbForm.servicePrice !== '' ? Number(nbForm.servicePrice) : (svc?.promoPrice || svc?.price || 0);
+    const price = nbForm.servicePrice !== '' ? Number(nbForm.servicePrice) : (isPkg ? (pkg?.price || 0) : (svc?.promoPrice || svc?.price || 0));
 
-    // Duração ocupa pelo menos 1h, conforme o tempo do serviço (ex: 4h = 240min)
-    const duration = Math.max(60, Number(svc?.duration) || 60);
+    // Duração ocupa pelo menos 1h
+    const duration = isPkg ? 60 : Math.max(60, Number(svc?.duration) || 60);
 
     // Evita horários duplicados: bloqueia se sobrepõe agendamento/bloqueio existente
     if (bookingOverlaps(nbForm.date, nbForm.time, duration)) {
@@ -1674,7 +1856,7 @@ export default function AdminMobileApp() {
       clientName: nbForm.clientName,
       clientPhone: nbForm.clientPhone || '',
       clientEmail: clientEmail,
-      service: svc || { name: nbForm.serviceName },
+      service: isPkg ? { name: nbForm.serviceName, price: price } : (svc || { name: nbForm.serviceName }),
       serviceName: nbForm.serviceName,
       servicePrice: price,
       date: nbForm.date,
@@ -1683,7 +1865,12 @@ export default function AdminMobileApp() {
       notes: nbForm.notes || '',
       status: 'confirmado',
       prepayment: prepay,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      ...(isPkg ? {
+        packageId: nbForm.packageId,
+        packageName: nbForm.packageName,
+        isPackageAcquisition: true
+      } : {})
     };
     try {
       if (db) {
@@ -1725,7 +1912,7 @@ export default function AdminMobileApp() {
       // Sempre fecha o sheet e reseta o formulário — independente de sucesso ou erro
       setShowNewBookingSheet(false);
       setNbRegisterClient(false);
-      setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '' });
+      setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '' });
       setTab('hoje');
     }
   };
@@ -4371,7 +4558,13 @@ Grande abraço, Jon.`;
       ? salonProducts.filter(p => (p.name || '').toLowerCase().includes(selectedUsedProduct.toLowerCase())).slice(0, 5)
       : [];
 
-    const currentBasePrice = (overrideBasePrice !== null && overrideBasePrice !== '') ? Number(overrideBasePrice) : Number(basePrice) || 0;
+    const baseServicePrice = usingClientPackageId 
+      ? 0 
+      : (sellingPackageId 
+          ? (packages.find(p => p.id === sellingPackageId)?.price || 0)
+          : ((overrideBasePrice !== null && overrideBasePrice !== '') ? Number(overrideBasePrice) : Number(basePrice) || 0)
+        );
+    const currentBasePrice = baseServicePrice;
     const extraServicesVal = selectedServices.reduce((sum, s) => sum + s.price * s.qty, 0);
     const productsVal = selectedProducts.reduce((sum, p) => sum + p.sellingPrice * p.qty, 0);
     const subtotal = currentBasePrice + extraServicesVal + productsVal;
@@ -4393,29 +4586,64 @@ Grande abraço, Jon.`;
           <div className="m-sheet-body" style={{ gap:16 }}>
             {/* Services */}
             <div>
-              <div className="m-label" style={{ marginBottom:8 }}>Serviços</div>
-              <div className="m-info-row" style={{ borderBottom:'none', padding:'0', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-                <span style={{ fontSize:'0.85rem', color:'var(--m-text-2)' }}>{b.service?.name || b.serviceName}</span>
-                <div style={{ display:'flex', alignItems:'center', gap:4 }}>
-                  <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
-                  <input
-                    type="number"
-                    value={overrideBasePrice !== null && overrideBasePrice !== undefined ? overrideBasePrice : ''}
-                    onChange={e => setOverrideBasePrice(e.target.value)}
+              <div className="m-label" style={{ marginBottom:8 }}>Serviço Executado</div>
+              <div className="m-info-row" style={{ borderBottom:'none', padding:'0', display:'flex', flexDirection:'column', gap:6, width:'100%' }}>
+                <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', width:'100%' }}>
+                  <select
+                    value={checkoutBooking.service?.name || checkoutBooking.serviceName}
+                    onChange={e => {
+                      const newName = e.target.value;
+                      const matched = services.find(s => s.name === newName);
+                      if (matched) {
+                        setCheckoutBooking(prev => ({
+                          ...prev,
+                          serviceName: newName,
+                          servicePrice: matched.promoPrice || matched.price,
+                          service: matched
+                        }));
+                        setOverrideBasePrice(matched.promoPrice || matched.price);
+                      }
+                    }}
                     style={{
-                      width: 70,
-                      textAlign: 'right',
-                      background: 'var(--m-card)',
+                      flex: 1,
+                      padding: '6px 10px',
+                      fontSize: '0.82rem',
                       border: '0.5px solid var(--m-rule)',
                       borderRadius: 'var(--m-radius-sm)',
-                      padding: '4px 6px',
-                      fontSize: '0.85rem',
-                      fontWeight: 800,
-                      color: 'var(--m-gold)',
+                      background: 'var(--m-card)',
+                      color: 'var(--m-text)',
                       outline: 'none',
-                      fontFamily: 'inherit'
+                      fontFamily: 'inherit',
+                      marginRight: 8
                     }}
-                  />
+                  >
+                    {services.map(s => (
+                      <option key={s.id} value={s.name}>
+                        {s.name}
+                      </option>
+                    ))}
+                  </select>
+                  <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+                    <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
+                    <input
+                      type="number"
+                      value={overrideBasePrice !== null && overrideBasePrice !== undefined ? overrideBasePrice : ''}
+                      onChange={e => setOverrideBasePrice(e.target.value)}
+                      style={{
+                        width: 70,
+                        textAlign: 'right',
+                        background: 'var(--m-card)',
+                        border: '0.5px solid var(--m-rule)',
+                        borderRadius: 'var(--m-radius-sm)',
+                        padding: '4px 6px',
+                        fontSize: '0.85rem',
+                        fontWeight: 800,
+                        color: 'var(--m-gold)',
+                        outline: 'none',
+                        fontFamily: 'inherit'
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
               
@@ -4676,21 +4904,104 @@ Grande abraço, Jon.`;
               </div>
             ) : (
               <>
+                {/* Pacotes options */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, background: 'rgba(255,255,255,0.015)', padding: 10, borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)' }}>
+                  {availablePackagesForBooking.length > 0 && (
+                    <div className="m-field" style={{ margin: 0 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, color: 'var(--m-text)' }}>
+                        <input 
+                          type="checkbox"
+                          checked={!!usingClientPackageId}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setUsingClientPackageId(availablePackagesForBooking[0].id);
+                              setSellingPackageId('');
+                            } else {
+                              setUsingClientPackageId('');
+                            }
+                          }}
+                          style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
+                        />
+                        Pagar com Pacote?
+                      </label>
+                      {usingClientPackageId && (
+                        <select
+                          className="m-select"
+                          value={usingClientPackageId}
+                          onChange={e => setUsingClientPackageId(e.target.value)}
+                          style={{ marginTop: 6, fontSize: '0.78rem' }}
+                        >
+                          {availablePackagesForBooking.map(cp => {
+                            const bookingServiceName = checkoutBooking?.service?.name || checkoutBooking?.serviceName;
+                            const servObj = services.find(s => s.name === bookingServiceName);
+                            const remaining = servObj ? (cp.balance[servObj.id] || 0) : 0;
+                            return (
+                              <option key={cp.id} value={cp.id}>
+                                {cp.packageName} ({remaining} rest.)
+                              </option>
+                            );
+                          })}
+                        </select>
+                      )}
+                    </div>
+                  )}
+
+                  {!usingClientPackageId && packages.length > 0 && (
+                    <div className="m-field" style={{ margin: 0 }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.82rem', fontWeight: 600, color: 'var(--m-text)' }}>
+                        <input 
+                          type="checkbox"
+                          checked={!!sellingPackageId}
+                          onChange={e => {
+                            if (e.target.checked) {
+                              setSellingPackageId(packages[0].id);
+                            } else {
+                              setSellingPackageId('');
+                            }
+                          }}
+                          style={{ width: 16, height: 16, accentColor: 'var(--m-gold)' }}
+                        />
+                        Vender Pacote?
+                      </label>
+                      {sellingPackageId && (
+                        <select
+                          className="m-select"
+                          value={sellingPackageId}
+                          onChange={e => setSellingPackageId(e.target.value)}
+                          style={{ marginTop: 6, fontSize: '0.78rem' }}
+                        >
+                          {packages.map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.name} (R$ {p.price})
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 {/* Payment method */}
                 <div>
                   <div className="m-label" style={{ marginBottom:8 }}>Forma de Pagamento</div>
-                  <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                    {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
-                      <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
-                        setPaymentMethod(m);
-                        if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
-                          setApplyAnticipation(true);
-                        } else {
-                          setApplyAnticipation(false);
-                        }
-                      }}>{m}</button>
-                    ))}
-                  </div>
+                  {usingClientPackageId ? (
+                    <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.05)', borderRadius: 'var(--m-radius-sm)', border: '0.5px solid var(--m-rule)', fontSize: '0.85rem', color: 'var(--m-gold)', fontWeight: 700, textAlign: 'center' }}>
+                      Débito do Pacote
+                    </div>
+                  ) : (
+                    <div className="m-payment-row" style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
+                      {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
+                        <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
+                          setPaymentMethod(m);
+                          if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
+                            setApplyAnticipation(true);
+                          } else {
+                            setApplyAnticipation(false);
+                          }
+                        }}>{m}</button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Installments selection for Credit Card */}
@@ -4832,19 +5143,83 @@ Grande abraço, Jon.`;
               </div>
             )}
             <div className="m-field">
-              <label className="m-label">Serviço *</label>
-              <select className="m-select" value={nbForm.serviceName} onChange={e => {
-                const sName = e.target.value;
-                const matched = services.find(s => s.name === sName);
-                const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
-                setNbForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
-              }}>
-                <option value="">Selecione um serviço</option>
-                {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+              <label className="m-label">Tipo de Agendamento</label>
+              <select 
+                className="m-select"
+                value={nbForm.bookingType || 'service'}
+                onChange={e => {
+                  const type = e.target.value;
+                  if (type === 'package') {
+                    const firstPkg = packages[0];
+                    setNbForm(prev => ({
+                      ...prev,
+                      bookingType: type,
+                      packageId: firstPkg?.id || '',
+                      packageName: firstPkg?.name || '',
+                      serviceName: firstPkg ? `[Pacote] ${firstPkg.name}` : '',
+                      servicePrice: firstPkg?.price || 0
+                    }));
+                  } else {
+                    const firstSvc = services[0];
+                    setNbForm(prev => ({
+                      ...prev,
+                      bookingType: type,
+                      packageId: '',
+                      packageName: '',
+                      serviceName: firstSvc?.name || '',
+                      servicePrice: firstSvc ? (firstSvc.promoPrice || firstSvc.price || '') : ''
+                    }));
+                  }
+                }}
+              >
+                <option value="service">Serviço Individual</option>
+                <option value="package">Pacote de Serviços</option>
               </select>
             </div>
+
+            {nbForm.bookingType === 'package' ? (
+              <div className="m-field">
+                <label className="m-label">Pacote *</label>
+                <select 
+                  className="m-select"
+                  value={nbForm.packageId}
+                  onChange={e => {
+                    const pkgId = e.target.value;
+                    const matched = packages.find(p => p.id === pkgId);
+                    setNbForm(prev => ({ 
+                      ...prev, 
+                      packageId: pkgId, 
+                      packageName: matched ? matched.name : '',
+                      serviceName: matched ? `[Pacote] ${matched.name}` : '', 
+                      servicePrice: matched ? (matched.price || 0) : 0
+                    }));
+                  }}
+                >
+                  <option value="">Selecione um pacote</option>
+                  {packages.map(p => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} (R$ {p.price})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div className="m-field">
+                <label className="m-label">Serviço *</label>
+                <select className="m-select" value={nbForm.serviceName} onChange={e => {
+                  const sName = e.target.value;
+                  const matched = services.find(s => s.name === sName);
+                  const matchedPrice = matched ? (matched.promoPrice || matched.price || '') : '';
+                  setNbForm(p => ({ ...p, serviceName: sName, servicePrice: matchedPrice }));
+                }}>
+                  <option value="">Selecione um serviço</option>
+                  {services.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+                </select>
+              </div>
+            )}
+
             <div className="m-field">
-              <label className="m-label">Valor do Serviço (R$)</label>
+              <label className="m-label">{nbForm.bookingType === 'package' ? 'Valor do Pacote (R$)' : 'Valor do Serviço (R$)'}</label>
               <input className="m-input" type="number" placeholder="0,00" value={nbForm.servicePrice} onChange={e => setNbForm(p => ({ ...p, servicePrice: e.target.value }))}/>
             </div>
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
