@@ -4328,6 +4328,14 @@ export const posts = [
       <h2>O perigo na transição capilar e o crime do desfiado</h2>
       <p>Muitas vezes em transição capilar, profissionais tentam "conectar" as texturas desfiando as pontas. Desfiar fio com curvatura é um crime estrutural. A navalha estraçalha a cutícula e cria um frizz crônico. O corte com leitura resolve isso extirpando o peso morto de forma limpa e estratégica.</p>
 
+      <h2>4 perguntas para fazer antes de sentar na cadeira</h2>
+      <p>Como o termo virou modinha, a forma mais rápida de separar corte técnico de corte só pra foto é perguntar antes de começar. Um profissional que trabalha com leitura de verdade responde as quatro sem titubear:</p>
+      <ul>
+        <li><strong>"Você vai analisar minha densidade em mais de uma região da cabeça?"</strong> Se a resposta for só "sim, claro" sem explicar como, desconfie — densidade se mapeia por quadrante, não no olhômetro geral.</li>
+        <li><strong>"O corte muda se meu cabelo estiver mais poroso hoje?"</strong> Porosidade afeta como o fio encolhe. Um corte a seco sério ajusta a tensão de puxada conforme esse fator, não usa a mesma força pra todo mundo.</li>
+        <li><strong>"Vocês desfiam a ponta ou cortam reto?"</strong> Desfiar com navalha em fio com curvatura abre cutícula e gera frizz permanente naquela mecha. Corte técnico usa tesoura e ângulo, não atrito.</li>
+        <li><strong>"Como vocês decidem onde cada camada termina?"</strong> Se a resposta é "no olho", é estética de improviso. Se envolve visualizar o caimento seco antes de definir o comprimento final, é projeto.</li>
+      </ul>
       <p>O seu cabelo não aceita mais ser enganado por modinhas. Se você quer parar de ser cobaia e ter um visual que se sustenta com dignidade, conheça todos os nossos <a href="/servicos">serviços de especialista em cachos</a> e agende sua avaliação técnica no Studio do Jon. Aqui, nenhuma tesoura entra em ação antes do <a href="/metodo">Método Leitura de Fio</a>, porque o diagnóstico geométrico do seu cacho sempre vem antes da técnica de corte, seca ou molhada.</p>
     `
   },
@@ -4474,6 +4482,19 @@ export const posts = [
 
       <h2>O desastre na transição capilar e as pontas esticadas</h2>
       <p>Remover o peso morto de forma estratégica exige camadas internas invisíveis. Sem técnica de angulação, o resultado é uma raiz inchada com pontas escorridas. O <strong>Método Jon</strong> foca na previsibilidade cirúrgica para que o seu volume volte a ter sentido.</p>
+
+      <h2>3 sinais de que o buraco é geometria, não a sua textura</h2>
+      <p>Antes de culpar o seu cabelo, olhe no espelho e responda três perguntas. Se bateu com pelo menos duas, o problema não é seu fio — foi o mapeamento que faltou na cadeira anterior:</p>
+      <ul>
+        <li><strong>O buraco aparece sempre no mesmo lugar?</strong> Se o vazio se repete atrás da orelha ou no meio do topo, é porque essa mecha tem densidade diferente do resto e foi cortada com o mesmo ângulo das vizinhas. Densidade desigual pede angulação desigual — não existe corte "um tamanho serve todos" em cacho.</li>
+        <li><strong>O volume "explode" só depois de um certo comprimento?</strong> Isso é sinal de que a camada interna foi cortada reta demais, sem afinar a transição entre o peso da raiz e o peso da ponta. A mola precisa de uma rampa, não de um degrau.</li>
+        <li><strong>Você já tentou "consertar" com creme e ferramenta e não resolve?</strong> Produto e difusor mascaram por algumas horas, mas não mudam a arquitetura. Se o buraco volta toda vez que lava o cabelo, o problema está na tesoura, não na sua rotina.</li>
+      </ul>
+      <p>Na <a href="/metodo">Leitura de Fio</a>, eu mapeio essas três variáveis — densidade por quadrante, ângulo de corte e comportamento pós-lavagem — antes de decidir onde a tesoura entra. É esse mapeamento, e não o fato de estar seco, que evita o buraco reaparecer no próximo corte.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR MINHA LEITURA DE FIO E CORTE BH</a>
+      </div>
     `
   },
   {
@@ -4611,6 +4632,16 @@ export const posts = [
 
       <h2>O Método Jon e a precisão do corte a seco crespo</h2>
       <p>A única saída honesta para o golpe do alisamento natural é a tesoura. Mas isso não significa um Big Chop traumático. Usando técnicas de angulação e <strong>Corte a Seco</strong>, eu esculpo o seu cabelo tirando a química aos poucos, disfarçando a diferença de texturas.</p>
+
+      <h2>Como saber se o "botox" que você usou tinha ácido</h2>
+      <p>Antes de marcar a avaliação, vale um teste sensorial simples em casa. Nenhum dos sinais abaixo, isolado, é prova definitiva — mas dois ou mais juntos indicam alisamento químico disfarçado de tratamento:</p>
+      <ul>
+        <li><strong>Cheiro ácido ou de "queimado" durante a aplicação</strong> — hidratação de verdade não solta esse odor; ácidos de alisamento sim.</li>
+        <li><strong>Exigiu prancha quente ou secador em temperatura alta pra "selar"</strong> — proteína e umectação não precisam de calor extremo para funcionar; alisamento térmico precisa.</li>
+        <li><strong>O cacho voltou "mais mole" ou "mais largo" depois, não mais definido</strong> — é a mola sendo distendida pela ação química, não fortalecida.</li>
+        <li><strong>Efeito durou meses e só saiu cortando</strong> — hidratação lava com o tempo normal de shampoo. Se só saiu com tesoura, a estrutura do fio foi alterada, não só a superfície.</li>
+      </ul>
+      <p>Se dois ou mais desses bateram com sua experiência, a raiz nova que está nascendo é o seu cabelo real — e é ela que eu uso como referência pra desenhar a transição, mecha por mecha, sem forçar um Big Chop de uma vez se você não quiser.</p>
       <p>Para entender a transição capilar por completo — do ponto de quebra entre as duas texturas até o cronograma de cuidados — veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
     `
   },
@@ -4678,6 +4709,15 @@ export const posts = [
       <h2>Scab Hair vs. Porosidade Genética</h2>
       <p>O scab hair é aquele cabelo extremamente áspero e sem forma que nasce após anos de químicas severas ou tração constante. O folículo sofreu uma agressão tão contínua que entrou em estado de defesa. O fio já nasce com a estrutura da cutícula estilhaçada. Ele não tem "escamas" para segurar nada.</p>
 
+      <h2>O teste do fio-boia (em casa, antes de gastar mais um creme)</h2>
+      <p>Existe um teste simples pra ter uma primeira noção da diferença — ele não substitui a análise molhada da Leitura de Fio, mas já ajuda a não continuar comprando produto no escuro:</p>
+      <ul>
+        <li><strong>Pegue um fio solto (dos que caem na escova) e jogue num copo de água.</strong></li>
+        <li><strong>Fio de porosidade alta genética costuma afundar rápido</strong> — a cutícula aberta deixa a água entrar fácil, mas a estrutura interna ainda segura o fio inteiro.</li>
+        <li><strong>Fio com scab hair severo muitas vezes fica esquisito na textura ao toque molhado</strong> — sem elasticidade, quebradiço, quase "plástico" quando você tenta esticar levemente entre os dedos. Se ele rebenta ao esticar pouco, sem quase estender, é sinal de dano estrutural que cronograma não reverte.</li>
+      </ul>
+      <p>Não é diagnóstico — é um alerta. Se o seu fio quebra fácil ao esticar levemente molhado, vale antecipar a avaliação em vez de gastar mais três meses de cronograma num fio que já passou do ponto de recuperação por produto.</p>
+
       <h2>A verdade dolorosa: creme não conserta haste morta</h2>
       <p>Quando a barreira de retenção acabou, o fio não segura água, óleo ou proteína. O produto entra, bate nas paredes rompidas e vai direto para o ralo no primeiro enxágue. Continuar tentando tratar o que já passou do ponto de não retorno é tentar encher uma peneira com água.</p>
 
@@ -4739,6 +4779,15 @@ export const posts = [
       <p>Corte em camadas não é só picotar o cabelo. É criar "pilares de sustentação". O corte a seco permite criar camadas invisíveis que "empurram" o cabelo de fora para cima, criando volume na raiz sem precisar de pente garfo o dia todo. É a engenharia trabalhando a seu favor.</p>
 
       <blockquote>A minha visão funciona por reconhecimento de padrão. Eu mapeio a densidade da sua nuca e a curvatura do seu topo para entregar um formato que se sustenta sozinho.</blockquote>
+
+      <h2>Auto-teste: seu cabelo tem efeito pirâmide ou é só o dia?</h2>
+      <p>Antes de julgar o corte pela primeira semana, tire a prova em três situações diferentes — pirâmide de verdade se repete nas três, dia ruim não:</p>
+      <ul>
+        <li><strong>Cabelo recém-lavado, sem produto nenhum:</strong> a base já nasce "murcha" e as pontas já parecem mais largas que o topo? Isso é forma, não falta de finalização.</li>
+        <li><strong>Depois de um dia de vento ou umidade:</strong> a raiz "cai" enquanto as pontas incham ainda mais? É sinal de que a camada interna não tem peso suficiente puxando de dentro pra fora.</li>
+        <li><strong>Preso num rabo ou coque baixo, solto de novo depois:</strong> o formato triângulo volta idêntico? Cabelo com boa distribuição de camadas muda de silhueta com o movimento; pirâmide volta sempre igual porque o peso está todo concentrado no mesmo lugar geométrico.</li>
+      </ul>
+      <p>Se os três bateram, o problema não é produto nem clima — é arquitetura de corte. E arquitetura só se corrige com tesoura pensada, não com mais um creme "anti-volume".</p>
 
       <h2>A sua tesoura falhou com você</h2>
       <p>Se você gasta mais tempo tentando "consertar" o formato do que vivendo a vida, sua base está errada. O formato perfeito não é sorte, é projeto. Se você quer uma avaliação técnica de verdade que resolva a raiz escorrida e as pontas pesadas, você está no lugar certo.</p>
@@ -5618,6 +5667,14 @@ export const posts = [
         <li><strong>Finalização Estratégica:</strong> Em dias de muita umidade em BH, aposte em finalizadores com boa fixação (géis ou geleias) por cima do seu creme de pentear. Eles criam uma película protetora que impede o fio de "atacar" a umidade externa.</li>
       </ul>
 
+      <h2>O que olhar no rótulo antes de comprar mais um "anti-frizz"</h2>
+      <p>Nem todo produto que promete "controlar o frizz" ataca a causa certa pro seu tipo de fio. Um jeito rápido de filtrar na prateleira:</p>
+      <ul>
+        <li><strong>Se seu fio é mais fino e frizza por ressecamento leve</strong>, procure óleos leves no topo da lista de ingredientes (como óleo de semente de uva ou jojoba) — óleos pesados (coco, mamona em excesso) tendem a pesar e achatar sem resolver a cutícula.</li>
+        <li><strong>Se o frizz vem com aspereza e falta de definição</strong>, o problema provavelmente é cutícula aberta, não falta de óleo — nesse caso, um acidificante (pH mais baixo, geralmente com ácido cítrico ou lático na fórmula) antes do finalizador rende mais do que trocar de creme pela quinta vez.</li>
+        <li><strong>Se o clima de BH está muito seco (aquelas semanas de julho-agosto)</strong>, priorize produtos à base de água como primeira camada (hidratação real) e só depois sele com óleo ou manteiga — óleo direto no fio seco sela o ressecamento por dentro.</li>
+      </ul>
+
       <h2>O "Pulo do Gato": Quando o Frizz é um Sinal</h2>
       <p>Às vezes, por mais que você use o melhor creme do mundo, o frizz não vai embora. E sabe por quê? Porque o seu cabelo pode estar com a porosidade lá no alto ou precisando de uma reposição de massa que o condicionador de mercado não resolve.</p>
       
@@ -5688,6 +5745,15 @@ export const posts = [
 
       <h2>O Big Chop (BC) no seu tempo</h2>
       <p>Muitas clientes chegam ao Studio no Caiçaras com medo do "Big Chop" (o grande corte). Meu papel como especialista em cabelos naturais é respeitar o seu tempo. Se você quer tirar tudo de uma vez, fazemos um BC cheio de estilo. Se prefere ir cortando aos poucos, traçamos um plano de cortes trimestrais para eliminar a química gradualmente.</p>
+
+      <h2>Como fica o cronograma de cortes progressivos, na prática</h2>
+      <p>Pra quem escolhe ir aos poucos, o plano costuma seguir três fases, ajustadas conforme a velocidade de crescimento de cada cliente (em média 1cm por mês):</p>
+      <ul>
+        <li><strong>Primeiro corte (mês 0):</strong> remove só o excesso de peso morto nas pontas mais danificadas, sem tirar comprimento visível — o objetivo aqui é aliviar o peso que puxa a raiz nova pra baixo, não encurtar.</li>
+        <li><strong>Cortes de manutenção (a cada 8-10 semanas):</strong> a cada sessão, avançamos alguns centímetros na linha de química, sempre camuflando com camadas pra não deixar "degrau" visível entre textura natural e química residual.</li>
+        <li><strong>Corte de fechamento:</strong> quando a raiz natural já tem comprimento suficiente pra sustentar o formato sozinha, aí sim eliminamos o restante da parte quimicamente tratada — muitas vezes sem parecer um Big Chop, porque a transição já foi feita em etapas.</li>
+      </ul>
+      <p>O tempo total varia de pessoa pra pessoa — depende de quanto comprimento você quer manter durante o processo e da velocidade de crescimento do seu couro cabeludo, que a gente acompanha a cada retorno.</p>
 
       <h2>Além do corte: Saúde da Fibra em BH</h2>
       <p>A transição não é só sobre tesoura; é sobre devolver nutrientes para o fio que está nascendo. Aqui no Studio, aliamos o corte a seco com tratamentos de alta performance para garantir que seu novo cabelo cresça forte, brilhante e com definição desde a raiz.</p>
