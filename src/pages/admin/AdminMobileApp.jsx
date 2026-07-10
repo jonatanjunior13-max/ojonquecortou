@@ -4606,6 +4606,8 @@ Grande abraço, Jon.`;
                     }}
                     style={{
                       flex: 1,
+                      minWidth: 0,
+                      maxWidth: 'calc(100% - 100px)',
                       padding: '6px 10px',
                       fontSize: '0.82rem',
                       border: '0.5px solid var(--m-rule)',
@@ -4614,7 +4616,10 @@ Grande abraço, Jon.`;
                       color: 'var(--m-text)',
                       outline: 'none',
                       fontFamily: 'inherit',
-                      marginRight: 8
+                      marginRight: 8,
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden'
                     }}
                   >
                     {services.map(s => (
@@ -4623,14 +4628,14 @@ Grande abraço, Jon.`;
                       </option>
                     ))}
                   </select>
-                  <div style={{ display:'flex', alignItems:'center', gap:4 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:4, flexShrink: 0 }}>
                     <span style={{ fontSize:'0.85rem', color:'var(--m-muted)' }}>R$</span>
                     <input
                       type="number"
                       value={overrideBasePrice !== null && overrideBasePrice !== undefined ? overrideBasePrice : ''}
                       onChange={e => setOverrideBasePrice(e.target.value)}
                       style={{
-                        width: 70,
+                        width: 65,
                         textAlign: 'right',
                         background: 'var(--m-card)',
                         border: '0.5px solid var(--m-rule)',
