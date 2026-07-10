@@ -6,28 +6,12 @@
     <link rel="preconnect" href="https://analytics.ahrefs.com" />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-    <!-- Google Tag Manager -->
-    <script>
-      if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/mobile')) {
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-MKKNQRQ4');
-      }
-    </script>
-    <!-- End Google Tag Manager -->
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-666534146"></script>
+    <!-- Google Tag Manager + gtag: deferred to first user interaction (or a 4s fallback)
+         so third-party JS doesn't compete with the initial paint/LCP. See loadThirdPartyScripts below. -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
-      if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/mobile')) {
-        gtag('config', 'AW-666534146', { send_page_view: false });
-      }
     </script>
 
     <meta charset="UTF-8" />
@@ -113,24 +97,74 @@
 
 
 
-    <!-- Meta Pixel Code -->
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1152310907009255');
-    fbq('init', '1414285063481375');
-    fbq('track', 'PageView');
-    </script>
-    <!-- End Meta Pixel Code -->
+    <!-- Meta Pixel + Ahrefs: also deferred, see loadThirdPartyScripts below -->
 
-    <!-- Ahrefs Analytics -->
-    <script async src="https://analytics.ahrefs.com/analytics.js" data-key="+seWmIkd/SuFOZSouW4XjA"></script>
+    <!-- Third-party scripts (GTM, Google Ads tag, Meta Pixel, Ahrefs Analytics) are deferred
+         until the first user interaction (scroll/click/touch/key) or a 4s fallback timer,
+         whichever comes first. This keeps GTM/Pixel/Ahrefs off the critical rendering path
+         (they were consuming 50-66% of page weight and saturating the main thread during
+         initial load) without losing tracking fidelity for real visitors: interaction-based
+         deferral is a standard, widely-used pattern (e.g. Cloudflare Rocket Loader, Partytown)
+         precisely because it fires for essentially every session that isn't an instant bounce. -->
+    <script>
+      (function () {
+        var loaded = false;
+        var isExcludedPath = window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/mobile');
+
+        function loadThirdPartyScripts() {
+          if (loaded) return;
+          loaded = true;
+          events.forEach(function (evt) {
+            window.removeEventListener(evt, loadThirdPartyScripts, { passive: true });
+          });
+          clearTimeout(fallbackTimer);
+
+          if (!isExcludedPath) {
+            // Google Tag Manager
+            (function (w, d, s, l, i) {
+              w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+              var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+              j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+              f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-MKKNQRQ4');
+
+            // Google tag (gtag.js) for Ads conversion tracking
+            var gtagScript = document.createElement('script');
+            gtagScript.async = true;
+            gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=AW-666534146';
+            gtagScript.onload = function () { gtag('config', 'AW-666534146', { send_page_view: false }); };
+            document.head.appendChild(gtagScript);
+          }
+
+          // Meta Pixel
+          !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+              n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+          }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', '1152310907009255');
+          fbq('init', '1414285063481375');
+          fbq('track', 'PageView');
+
+          // Ahrefs Analytics
+          var ahrefsScript = document.createElement('script');
+          ahrefsScript.async = true;
+          ahrefsScript.src = 'https://analytics.ahrefs.com/analytics.js';
+          ahrefsScript.setAttribute('data-key', '+seWmIkd/SuFOZSouW4XjA');
+          document.head.appendChild(ahrefsScript);
+        }
+
+        var events = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
+        events.forEach(function (evt) {
+          window.addEventListener(evt, loadThirdPartyScripts, { passive: true, once: true });
+        });
+        var fallbackTimer = setTimeout(loadThirdPartyScripts, 4000);
+      })();
+    </script>
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
