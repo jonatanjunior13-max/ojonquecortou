@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 import { posts } from '../src/data/posts.js';
 import { SEED_SERVICES } from '../src/data/seedServices.js';
 import { EXPANDED_SERVICE_BODIES, SEED_SERVICE_EXPANDED_BODIES } from '../src/data/expandedServiceBodies.js';
@@ -314,11 +315,12 @@ let servicesBody = `
 SEED_SERVICES.forEach(s => {
   servicesBody += `
         <div style="border: 1px solid rgba(255,255,255,0.08); padding: 16px; border-radius: 8px;">
-          <h2>${s.emoji || '✨'} ${s.name}</h2>
+          <h2><a href="/servicos/${s.id}">${s.emoji || '✨'} ${s.name}</a></h2>
           <p style="color: #c8852a; font-weight: bold;">Preço: R$ ${s.price}</p>
           <p>${s.tagline || ''}</p>
           <p>${s.description}</p>
           ${s.includes && s.includes.length > 0 ? `<p><strong>O que inclui:</strong> ${s.includes.join(', ')}</p>` : ''}
+          <p><a href="/servicos/${s.id}">Ver detalhes completos →</a></p>
         </div>
   `;
 });
@@ -1499,17 +1501,34 @@ console.log('Generated 404.html for custom error routing.');
 
 console.log('Static pre-rendering completed successfully!');
 
+// Static pages (home, /servicos, /faq, individual service pages etc.) don't carry their
+// own datePublished/dateModified the way blog posts do, so previously fell back to
+// "now" on every single build/deploy regardless of whether their content actually
+// changed. Use the last real git commit date that touched prerender.js instead — it
+// only moves forward when this file (where their content lives) is genuinely edited.
+function getLastRealEditDate() {
+  try {
+    const gitDate = execSync('git log -1 --format=%cs -- scripts/prerender.js', {
+      cwd: path.join(__dirname, '..'),
+    }).toString().trim();
+    if (gitDate) return gitDate;
+  } catch (e) {
+    console.warn('Could not read git history for prerender.js lastmod, falling back to build date:', e.message);
+  }
+  return new Date().toISOString().split('T')[0];
+}
+
 // Helper to generate the sitemap.xml dynamically
 function generateSitemap(pagesList) {
-  const currentDate = new Date().toISOString().split('T')[0];
+  const lastRealEditDate = getLastRealEditDate();
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-  
+
   pagesList.forEach(page => {
     const loc = `https://www.ojonquecortou.com.br${page.route === '/' ? '' : page.route}`;
     let changefreq = 'monthly';
     let priority = '0.8';
-    let lastmod = page.lastmod || currentDate;
+    let lastmod = page.lastmod || lastRealEditDate;
 
     if (page.route === '/') {
       changefreq = 'weekly';
