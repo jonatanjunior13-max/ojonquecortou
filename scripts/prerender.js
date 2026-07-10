@@ -1308,8 +1308,13 @@ posts.forEach(post => {
     }
   };
 
+  // Rendered directly into #root (not wrapped in <noscript>) so crawlers/AI bots that
+  // don't execute JS get the full article on the first fetch, same as the home/FAQ
+  // pages already do. Safe because main.jsx uses createRoot().render(), not
+  // hydrateRoot() — React fully replaces #root's contents on mount regardless of what
+  // was here first, so there's no hydration-mismatch risk from this being real markup
+  // instead of a <noscript> fallback.
   const noscriptContent = `
-    <noscript>
       <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
         <h1>${post.title}</h1>
         <p style="font-size: 0.85rem; color: #555; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 20px;">
@@ -1325,7 +1330,6 @@ posts.forEach(post => {
           <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>
         </div>
       </article>
-    </noscript>
   `;
 
   let pageSchema;
