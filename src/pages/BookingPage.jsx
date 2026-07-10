@@ -1403,16 +1403,23 @@ const BookingPage = () => {
       if (conversionEventFired || !window.gtag) return;
       conversionEventFired = true;
       try {
+        const transactionId = `booking-${Date.now()}`;
         window.gtag('event', 'purchase', {
           value: computedFinalTotal,
           currency: 'BRL',
-          transaction_id: `booking-${Date.now()}`,
+          transaction_id: transactionId,
           items: [{
             item_name: bookingPayload.serviceName,
             item_id: bookingPayload.service?.id || 'combined-services',
             price: computedFinalTotal,
             quantity: 1
           }]
+        });
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
+          value: computedFinalTotal,
+          currency: 'BRL',
+          transaction_id: transactionId
         });
       } catch (gtagErr) {
         console.warn('Erro ao disparar evento de conversão:', gtagErr);
