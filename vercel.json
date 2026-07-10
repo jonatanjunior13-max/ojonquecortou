@@ -75,6 +75,11 @@
       "headers": { "Location": "/blog/cronograma-capilar-cabelo-cacheado" }
     },
     {
+      "src": "/blog/fator-encolhimento-cabelo-cacheado",
+      "status": 301,
+      "headers": { "Location": "/blog/fator-encolhimento-cabelo-cacheado-fisica-geometria" }
+    },
+    {
       "src": "/blog/fim-do-bad-hair-day-after",
       "status": 301,
       "headers": { "Location": "/blog/day-after-cabelo-cacheado-bh-como-reativar-sem-lavar" }

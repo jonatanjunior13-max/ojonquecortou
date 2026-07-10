@@ -31,7 +31,7 @@ export const blogLinkMap = [
   { source: 'corte-hibrido-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'técnica de corte a seco' },
   { source: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
   { source: 'frequencia-de-corte-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
-  { source: 'fator-encolhimento-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
+  { source: 'fator-encolhimento-cabelo-cacheado-fisica-geometria', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
   { source: 'transicao-capilar-bh-corte-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte estratégico' },
 
   // Day-after / secagem cluster

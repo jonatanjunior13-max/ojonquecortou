@@ -48,7 +48,7 @@ const relatedArticleClusters = [
     posts: [
       { slug: "curvatura-4c-cabelo-crespo-guia-completo", title: "Curvatura 4C: o guia técnico completo para entender e cuidar do cabelo crespo" },
       { slug: "cacho-vs-crespo-qual-diferenca", title: "Cacho vs Crespo: Qual é a Diferença | Jon" },
-      { slug: "fator-encolhimento-cabelo-cacheado", title: "Fator Encolhimento do Cabelo Cacheado | Jon" },
+      { slug: "fator-encolhimento-cabelo-cacheado-fisica-geometria", title: "Fator Encolhimento Cabelo Cacheado: A Física do Fio | Studio do Jon" },
       { slug: "especialista-em-cabelo-cacheado-bh-texturas", title: "Três Texturas na Mesma Cabeça | Jon" },
       { slug: "finalizacao-por-curvatura-guia-tecnico", title: "Finalização por Curvatura: Do 2C ao 4C | Jon" },
       { slug: "voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz", title: "Você Tem Cabelo Ondulado e Não Sabe? Como Identificar e Cuidar" },
