@@ -36,7 +36,10 @@ import { db } from '../config/firebase';
 import { collection, onSnapshot } from 'firebase/firestore';
 
 const ServicesPage = () => {
-  const [servicesData, setServicesData] = useState([]);
+  // Starts from SEED_SERVICES (not []) so the grid has its real, final height on first
+  // paint instead of rendering empty until the Firestore onSnapshot listener resolves —
+  // that empty-then-pop-in was the cause of a 0.477 CLS ("Poor") on this page.
+  const [servicesData, setServicesData] = useState(SEED_SERVICES);
 
   useEffect(() => {
     // Escuta em tempo real as mudanças no Firestore na coleção unificada
