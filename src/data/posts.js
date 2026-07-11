@@ -3589,6 +3589,14 @@ export const posts = [
 
       <h2>Dica do Jon</h2>
       <p>A saúde do seu cabelo é o resultado do que você faz entre uma visita e outra ao meu Studio. Qual desses hábitos é o mais difícil para você desapegar?</p>
+
+      <h2>Já cometeu algum desses erros? Veja o que fazer agora</h2>
+      <p>Nenhum dos três é irreversível sozinho — o problema é quando eles se acumulam por meses sem que o corte seja ajustado para compensar o dano. Um caminho prático pra cada caso:</p>
+      <ul>
+        <li><strong>Se foi a progressiva "sem formol":</strong> pare de reaplicar. Cada nova aplicação sela mais a cutícula. O caminho é cronograma de reidratação real e, com o tempo, corte progressivo da parte quimicamente tratada.</li>
+        <li><strong>Se foi pentear seco por meses:</strong> o dano geralmente está concentrado nas pontas (é onde o atrito acumula mais). Um corte de manutenção que remova só a parte mais fragilizada já resolve a maior parte do frizz crônico.</li>
+        <li><strong>Se foi a toalha de banho comum:</strong> esse é o mais fácil de reverter — troque a toalha hoje e o frizz por atrito começa a melhorar já nas próximas lavagens, sem precisar de corte.</li>
+      </ul>
     `
   },
   {
@@ -4411,9 +4419,18 @@ export const posts = [
         <p>Porque a textura mais solta não aguenta o próprio comprimento sem camadas internas. O corte com leitura cria pontos de apoio para que a nuca mais lisa não despenque, mantendo o formato redondo.</p>
       </div>
 
+      <h2>Mapeie suas próprias zonas antes da próxima cadeira</h2>
+      <p>Passe a mão no cabelo seco e solto, sem produto, em três pontos: topo, laterais e nuca. Você provavelmente vai notar que o cacho "fecha" mais forte em um ponto e "abre" mais em outro — isso já é o mapa que qualquer profissional deveria estar seguindo. Na próxima vez que for cortar, é essa pergunta que separa quem lê o fio de quem só corta:</p>
+      <ul>
+        <li><strong>"Você vai cortar cada zona com um ângulo diferente, ou tudo igual?"</strong> Se a resposta for "corto tudo igual pra ficar uniforme", é aí que nasce o degrau — uniformizar a tensão numa cabeça com curvaturas diferentes é o erro, não a solução.</li>
+        <li><strong>"Como você vai conectar o topo mais fechado com a nuca mais aberta?"</strong> Precisa existir uma resposta técnica (camadas internas, angulação progressiva) — "no olho" não é resposta.</li>
+      </ul>
+
       <p>A guerra contra as texturas do seu cabelo termina no segundo em que você encontra a geometria certa para ele. O Studio do Jon está de portas abertas para ler seu fio pela ótica certa, mapeando cada padrão de curvatura com o <a href="/metodo">Método Leitura de Fio</a> — porque uma única cabeça frequentemente abriga múltiplos padrões, e ignorar isso é o que gera o degrau.</p>
 
-
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR LEITURA DE FIO E CORTE BH</a>
+      </div>
     `
   },
   {
@@ -4561,8 +4578,30 @@ export const posts = [
       <h2>A farsa da reconstrução mágica</h2>
       <p>Te venderam pacotes caríssimos de cronograma capilar, mas a porosidade alta de um loiro inconsequente não segura tratamento. O produto entra, bate no córtex esburacado e vai direto para o ralo. Tentar colar os pedaços é ilusão.</p>
 
+      <h2>Como clarear cacho sem repetir o erro na próxima vez</h2>
+      <p>Clarear cabelo com curvatura não é proibido — é uma questão de técnica e limite. No Studio, quando faço iluminação em cabelo cacheado, sigo três regras que a maioria dos salões pula por pressa:</p>
+      <ul>
+        <li><strong>Teste de mecha antes de qualquer decisão de volumagem</strong> — não existe "receita padrão" de oxidante pra todo cabelo cacheado, a porosidade de cada cliente define o limite seguro.</li>
+        <li><strong>Nunca descolorir de uma vez só o que precisa de vários graus de clareamento</strong> — sessões espaçadas com reconstrução entre elas preservam a mola; pressa por resultado imediato é o que mais mata curvatura.</li>
+        <li><strong>Acidificação imediata após o oxidante, não "depois de um tempo"</strong> — a cutícula fica aberta e vulnerável logo após a química; fechar o pH nesse momento, não dias depois, é o que decide se o cacho contrai de novo.</li>
+      </ul>
+      <p>Se você já tem luzes ou morena iluminada e não sabe se ainda dá pra prevenir mais dano, essa é justamente a pergunta que uma Leitura de Fio responde antes de decidir entre reconstrução ou corte.</p>
+
       <h2>O corte terapêutico e a engenharia do caimento</h2>
       <p>A única salvação definitiva para a mola que morreu é a tesoura. O <strong>Corte a Seco</strong> me permite enxergar exatamente onde a curvatura termina e o dano químico começa. Eu removo o peso morto de forma estratégica, criando camadas de sustentação.</p>
+
+      <h2>3 sinais de que a descoloração passou do ponto de retorno</h2>
+      <p>Antes de gastar mais um cronograma inteiro tentando "salvar" o loiro, veja se dois ou mais desses sinais batem com o seu cabelo — se sim, é corte, não é creme:</p>
+      <ul>
+        <li><strong>O fio esticado não volta ao formato original quando molha de novo.</strong> Cacho saudável contrai; fio com dano crítico na ponte de dissulfeto fica "morto", sem mola nenhuma.</li>
+        <li><strong>Quebra visível ao pentear, mesmo molhado e com produto.</strong> Não é frizz, é fibra literalmente se partindo — sinal de que a estrutura interna já não segura tração nenhuma.</li>
+        <li><strong>O comprimento "some" a cada lavagem.</strong> Se você sente que tá perdendo centímetros toda semana sem cortar, é a fibra se desfazendo sozinha, não encolhimento normal.</li>
+      </ul>
+      <p>Se dois ou mais bateram, um cronograma novo não vai reverter — só vai adiar o corte que já é necessário. Antes de comprar mais produto, vale uma avaliação técnica pra saber exatamente quanto precisa ser removido pra recuperar a curvatura que ainda está saudável.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800;">AGENDAR AVALIAÇÃO COM O ESPECIALISTA</a>
+      </div>
     `
   },
   {
@@ -4858,6 +4897,13 @@ export const posts = [
 
       <p><strong>"Básico? Hoje não, Faro."</strong> Meu objetivo não é que você venha aqui toda semana. É que você aprenda a dominar o seu próprio cabelo. Se você entende a lógica do seu fio, o "mistério" do salão desaparece e você assume o controle da sua identidade.</p>
 
+      <h2>Como saber se você está usando água de menos</h2>
+      <p>Um jeito prático de calibrar: seu cabelo, ainda no banho, antes do creme, deveria estar pingando — não só "úmido". Se você já consegue passar a mão sem sentir água escorrendo, secou demais antes de aplicar o produto. A regra prática que uso no Studio:</p>
+      <ul>
+        <li><strong>Aplique o creme com o cabelo encharcado</strong>, não só molhado — a maioria erra aqui, seca com toalha antes da hora.</li>
+        <li><strong>Distribua mecha por mecha, não a cabeça inteira de uma vez</strong> — produto espalhado rápido demais não cobre o fio por igual, e aí uma parte finaliza bem e outra fica sem definição.</li>
+        <li><strong>Se o cacho não "fechou" no espelho ainda molhado, não vai fechar seco.</strong> O formato final já está decidido na hora da aplicação — o difusor só acelera a secagem, não corrige aplicação malfeita.</li>
+      </ul>
       <p>Esse "descolamento" entre salão e casa costuma ser sintoma de falta de diagnóstico. Veja os <a href="/blog/como-escolher-especialista-cabelo-cacheado-bh">7 sinais técnicos de um especialista real em cabelo cacheado</a> para saber o que perguntar antes de agendar em qualquer salão.</p>
     `
   },
@@ -4944,6 +4990,13 @@ export const posts = [
       </ul>
 
       <p>Se o seu cabelo embaraça demais, quebra no desembaraço ou parece nunca deslizar de verdade, talvez o problema não seja falta de produto — e sim falta de diagnóstico.</p>
+
+      <h2>Embaraço normal ou sinal de alerta? Teste rápido</h2>
+      <p>Nem todo embaraço é problema — cacho embola, é da estrutura. O jeito de diferenciar: desembarace uma mecha molhada, com condicionador, começando da ponta.</p>
+      <ul>
+        <li><strong>Se o nó desfaz com os dedos, sem puxar</strong>, é embaraço normal da curvatura — rotina básica resolve.</li>
+        <li><strong>Se você precisa puxar com força ou o fio quebra ao desfazer o nó</strong>, isso é sinal de ressecamento ou pontas comprometidas, não só "cabelo difícil" — vale investigar antes de continuar brigando com o pente todo dia.</li>
+      </ul>
 
       <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
         <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
