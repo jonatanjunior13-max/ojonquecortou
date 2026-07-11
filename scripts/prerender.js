@@ -585,6 +585,13 @@ const reviewsSchema = {
   "@context": "https://schema.org",
   "@graph": [
     localBusinessSchema,
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+        { "@type": "ListItem", "position": 2, "name": "Depoimentos", "item": "https://www.ojonquecortou.com.br/depoimentos" }
+      ]
+    },
     ...fallbackReviews.map(r => ({
       "@type": "Review",
       "itemReviewed": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
@@ -832,25 +839,37 @@ const pages = [
     bodyInsert: servicesBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "OfferCatalog",
-      "name": "Serviços — Studio do Jon",
-      "url": "https://www.ojonquecortou.com.br/servicos",
-      "itemListElement": [
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "190.00", "itemOffered": { "@type": "Service", "name": "Corte com o Jon", "description": "Inclui Leitura de Fio completa, corte a seco/técnico e finalização educativa." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "80.00", "itemOffered": { "@type": "Service", "name": "Leitura de Fio", "description": "Diagnóstico capilar de 7 etapas. Valor revertido em crédito se fechar serviço." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "230.00", "itemOffered": { "@type": "Service", "name": "Combo Corte + Tratamento", "description": "Corte especializado com tratamento de alta performance." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "699.00", "itemOffered": { "@type": "Service", "name": "Luzes ou Morena Iluminada", "description": "Iluminação sem descolorante, preservando a estrutura do fio." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "499.00", "itemOffered": { "@type": "Service", "name": "Coloração Completa", "description": "Cor sob medida respeitando a saúde do cacho." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Tratamento personalizado", "description": "Hidratação, nutrição ou reconstrução conforme diagnóstico." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Inside TRP — Reconstrução Premium", "description": "Tratamento proteico premium para fios danificados." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Detox Estimulante", "description": "Esfoliação detox do couro cabeludo." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "100.00", "itemOffered": { "@type": "Service", "name": "Lavar e Finalizar", "description": "Higienização e finalização sob medida (definição, volume ou leveza)." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "390.00", "itemOffered": { "@type": "Service", "name": "Pacote Cachos Perfeitos", "description": "4 sessões de tratamento com cronograma técnico (30% OFF)." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Manutenção de Corte", "description": "Retoque para clientes que cortaram nos últimos 90 dias." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Retoque de Raiz", "description": "Manutenção da cor sem alterar o comprimento." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "150.00", "itemOffered": { "@type": "Service", "name": "Infusão de Carga Hídrica para Cabelos Porosos", "description": "Tratamento de hidratação profunda sob medida conforme Leitura de Fio." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "170.00", "itemOffered": { "@type": "Service", "name": "Ritual de Reposição Lipídica para Nutrição Profunda", "description": "Nutrição lipídica intensiva com blends biocompatíveis para curvaturas ressecadas." } },
-        { "@type": "Offer", "priceCurrency": "BRL", "price": "200.00", "itemOffered": { "@type": "Service", "name": "Protocolo de Blindagem de pH e Reconstrução", "description": "Acidificação técnica e reposição de aminoácidos para cabelos pós-química ou fragilizados." } }
+      "@graph": [
+        {
+          "@type": "OfferCatalog",
+          "name": "Serviços — Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br/servicos",
+          "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
+          "itemListElement": [
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "190.00", "itemOffered": { "@type": "Service", "name": "Corte com o Jon", "description": "Inclui Leitura de Fio completa, corte a seco/técnico e finalização educativa." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "80.00", "itemOffered": { "@type": "Service", "name": "Leitura de Fio", "description": "Diagnóstico capilar de 7 etapas. Valor revertido em crédito se fechar serviço." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "230.00", "itemOffered": { "@type": "Service", "name": "Combo Corte + Tratamento", "description": "Corte especializado com tratamento de alta performance." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "699.00", "itemOffered": { "@type": "Service", "name": "Luzes ou Morena Iluminada", "description": "Iluminação sem descolorante, preservando a estrutura do fio." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "499.00", "itemOffered": { "@type": "Service", "name": "Coloração Completa", "description": "Cor sob medida respeitando a saúde do cacho." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Tratamento personalizado", "description": "Hidratação, nutrição ou reconstrução conforme diagnóstico." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Inside TRP — Reconstrução Premium", "description": "Tratamento proteico premium para fios danificados." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Detox Estimulante", "description": "Esfoliação detox do couro cabeludo." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "100.00", "itemOffered": { "@type": "Service", "name": "Lavar e Finalizar", "description": "Higienização e finalização sob medida (definição, volume ou leveza)." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "390.00", "itemOffered": { "@type": "Service", "name": "Pacote Cachos Perfeitos", "description": "4 sessões de tratamento com cronograma técnico (30% OFF)." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "130.00", "itemOffered": { "@type": "Service", "name": "Manutenção de Corte", "description": "Retoque para clientes que cortaram nos últimos 90 dias." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "180.00", "itemOffered": { "@type": "Service", "name": "Retoque de Raiz", "description": "Manutenção da cor sem alterar o comprimento." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "150.00", "itemOffered": { "@type": "Service", "name": "Infusão de Carga Hídrica para Cabelos Porosos", "description": "Tratamento de hidratação profunda sob medida conforme Leitura de Fio." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "170.00", "itemOffered": { "@type": "Service", "name": "Ritual de Reposição Lipídica para Nutrição Profunda", "description": "Nutrição lipídica intensiva com blends biocompatíveis para curvaturas ressecadas." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "200.00", "itemOffered": { "@type": "Service", "name": "Protocolo de Blindagem de pH e Reconstrução", "description": "Acidificação técnica e reposição de aminoácidos para cabelos pós-química ou fragilizados." } }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+            { "@type": "ListItem", "position": 2, "name": "Serviços", "item": "https://www.ojonquecortou.com.br/servicos" }
+          ]
+        }
       ]
     }
   },
@@ -914,6 +933,13 @@ const pages = [
             "@type": "SpeakableSpecification",
             "cssSelector": ["h1", "dt", "dd"]
           }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+            { "@type": "ListItem", "position": 2, "name": "FAQ", "item": "https://www.ojonquecortou.com.br/faq" }
+          ]
         },
         {
           "@type": "FAQPage",
