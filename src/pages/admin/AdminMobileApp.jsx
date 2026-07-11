@@ -1593,7 +1593,11 @@ export default function AdminMobileApp() {
           finalValue: total, 
           servicePrice: finalBasePrice,
           serviceName: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
-          service: checkoutBooking.service || { name: checkoutBooking.serviceName || 'Serviço' },
+          service: {
+            name: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
+            price: Number(checkoutBooking.servicePrice || checkoutBooking.service?.price || finalBasePrice || 0),
+            duration: Number(checkoutBooking.duration || checkoutBooking.service?.duration || 60)
+          },
           isPackageUse: !!usingClientPackageId,
           isPackageAcquisition: !!sellingPackageId,
           packageUsedId: usingClientPackageId || null,
@@ -1702,7 +1706,11 @@ export default function AdminMobileApp() {
         finalValue: total, 
         servicePrice: finalBasePrice,
         serviceName: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
-        service: checkoutBooking.service || { name: checkoutBooking.serviceName || 'Serviço' },
+        service: {
+          name: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
+          price: Number(checkoutBooking.servicePrice || checkoutBooking.service?.price || finalBasePrice || 0),
+          duration: Number(checkoutBooking.duration || checkoutBooking.service?.duration || 60)
+        },
         isPackageUse: !!usingClientPackageId,
         isPackageAcquisition: !!sellingPackageId,
         packageUsedId: usingClientPackageId || null,
@@ -2058,9 +2066,14 @@ Grande abraço, Jon.`;
             evolutionApiUrl: settings.evolutionApiUrl,
             evolutionApiKey: settings.evolutionApiKey,
             evolutionInstanceName: settings.evolutionInstanceName,
-          date: booking.date,
-          time: booking.time,
-          service: booking.serviceName || booking.service?.name
+            customWebhookUrl: settings.customWebhookUrl
+          },
+          extraData: {
+            bookingId: booking.id,
+            clientName: booking.clientName,
+            date: booking.date,
+            time: booking.time,
+            service: booking.serviceName || booking.service?.name
           }
         })
       });
