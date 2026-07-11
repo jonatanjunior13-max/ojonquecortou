@@ -2107,12 +2107,12 @@ const AdminDashboard = () => {
         setBookings(prev => prev.map(b => b.id === booking.id ? { 
           ...b, 
           status: 'finalizado',
-          serviceName: booking.serviceName,
-          servicePrice: booking.servicePrice,
+          serviceName: booking.serviceName || booking.service?.name || 'Serviço',
+          servicePrice: booking.servicePrice || booking.service?.price || 0,
           service: {
             ...b.service,
-            name: booking.serviceName,
-            price: booking.servicePrice
+            name: booking.serviceName || booking.service?.name || 'Serviço',
+            price: booking.servicePrice || booking.service?.price || 0
           },
           isPackageUse: !!usingClientPackageId,
           isPackageAcquisition: !!sellingPackageId,
@@ -2169,12 +2169,12 @@ const AdminDashboard = () => {
         const apptRef = doc(db, 'bookings', booking.id);
         await updateDoc(apptRef, { 
           status: 'finalizado',
-          serviceName: booking.serviceName,
-          servicePrice: booking.servicePrice,
+          serviceName: booking.serviceName || booking.service?.name || 'Serviço',
+          servicePrice: booking.servicePrice || booking.service?.price || 0,
           service: {
-            name: booking.serviceName,
-            price: booking.servicePrice,
-            duration: booking.duration || 60
+            name: booking.serviceName || booking.service?.name || 'Serviço',
+            price: booking.servicePrice || booking.service?.price || 0,
+            duration: booking.duration || booking.service?.duration || 60
           },
           isPackageUse: !!usingClientPackageId,
           isPackageAcquisition: !!sellingPackageId,
