@@ -645,12 +645,30 @@ Use as seguintes tags no "bodyHtml":
   const gbpConnected = !!settings?.automations?.googleGbpConnected;
   const [isPublishingGbpId, setIsPublishingGbpId] = useState(null);
   const [isPublishingGbpNow, setIsPublishingGbpNow] = useState(false);
-  const [googleReviews, setGoogleReviews] = useState([
-    { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
-    { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
-    { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
-    { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
-  ]);
+  const [manualReviewName, setManualReviewName] = useState('');
+  const [manualReviewRating, setManualReviewRating] = useState(5);
+  const [manualReviewComment, setManualReviewComment] = useState('');
+
+  const [googleReviews, setGoogleReviews] = useState(() => {
+    try {
+      const saved = localStorage.getItem('crm_manual_reviews');
+      const parsed = saved ? JSON.parse(saved) : [];
+      const baseReviews = [
+        { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
+        { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
+        { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
+        { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
+      ];
+      return [...parsed, ...baseReviews];
+    } catch(e) {
+      return [
+        { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
+        { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
+        { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
+        { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
+      ];
+    }
+  });
   const [isGeneratingGbpPost, setIsGeneratingGbpPost] = useState(false);
   const [generatedGbpPost, setGeneratedGbpPost] = useState(null);
   const [themeSearchQuery, setThemeSearchQuery] = useState('');
@@ -781,6 +799,84 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
 
     setGoogleReviews(prev => [newRev, ...prev]);
     alert('Nova avaliação simulada no Google!');
+  };
+
+  const handleCreateManualReview = async () => {
+    if (!manualReviewName.trim() || !manualReviewComment.trim()) {
+      alert('Por favor, preencha o nome do cliente e o comentário da avaliação.');
+      return;
+    }
+
+    const newRev = {
+      id: 'rev_' + Date.now(),
+      author: manualReviewName.trim(),
+      rating: manualReviewRating,
+      comment: manualReviewComment.trim(),
+      date: 'Agora mesmo',
+      reply: ''
+    };
+
+    let replyText = '';
+    const apiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+
+    if (settings?.automations?.google_reviews_enabled !== false) {
+      if (apiKey && apiKey !== 'undefined' && apiKey !== 'null' && !apiKey.includes('placeholder')) {
+        try {
+          const promptText = `Você é o Jon, cabeleireiro profissional especialista em cachos, crespos, transição capilar e visagismo no salão "O Jon Que Cortou" em Belo Horizonte.
+Você está escrevendo uma resposta pessoal, curta (máximo 250 caracteres) e muito natural para um cliente que deixou uma avaliação.
+
+REGRAS CRÍTICAS DE TOM DE VOZ (COMO O JON FALA):
+1. SOE HUMANO E AUTÊNTICO: Escreva de forma totalmente humana, calorosa e direta, como em uma conversa de WhatsApp. Use termos naturais como "valeu demais", "fico felizão", "tô por aqui", "TMJ", "abraço", "obrigado de coração".
+2. ZERO CLICHÊS DE MARKETING OU RESPOSTAS CORPORATIVAS: NUNCA use frases prontas como "Agradecemos o seu feedback", "Nossa missão é a sua satisfação", "Volte sempre", "Prezado(a) cliente", "Ficamos contentes", ou adjetivos vazios como "cachos perfeitos".
+3. TOM TÉCNICO E EMPÁTICO: Foque na saúde do fio, na leitura geométrica e física do cabelo em seu caimento natural (Método Leitura de Fio). NUNCA mencione o termo "corte a seco".
+4. PERSONALIZADO E NÃO REPETITIVO: Se o cliente citou algo (transição, volume, franja, definição), faça referência técnica a isso de forma natural. Varie bastante a abertura (ex: "E aí, [Nome]!", "Fala, [Nome]!", "Valeu demais pelo carinho, [Nome]!", "Que massa ler isso, [Nome]!").
+
+Nome do cliente: ${newRev.author}
+Nota da avaliação: ${newRev.rating} estrelas
+Comentário do cliente: "${newRev.comment}"
+
+Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Termine assinando com "— Jon".`;
+
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: promptText }] }]
+              })
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            const generatedReply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (generatedReply) {
+              replyText = generatedReply.trim();
+            }
+          }
+        } catch (err) {
+          console.warn('Erro ao gerar resposta com Gemini API:', err);
+        }
+      }
+
+      if (!replyText) {
+        replyText = generatePersonalizedFallbackReply(newRev.author, newRev.comment);
+      }
+      newRev.pendingReply = replyText;
+    }
+
+    setGoogleReviews(prev => [newRev, ...prev]);
+
+    try {
+      const savedManuals = JSON.parse(localStorage.getItem('crm_manual_reviews') || '[]');
+      localStorage.setItem('crm_manual_reviews', JSON.stringify([newRev, ...savedManuals]));
+    } catch (e) {}
+
+    setManualReviewName('');
+    setManualReviewComment('');
+    setManualReviewRating(5);
+    alert('Avaliação adicionada e salva com sucesso!');
   };
 
   const handleManualGbpReply = async (id) => {
@@ -3018,10 +3114,55 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
-                      <button className="btn btn-outline btn-small" style={{ fontSize: '0.75rem', flex: 1 }} onClick={handleSimulateNewReview}>
-                        🔄 Simular Nova Avaliação
-                      </button>
+                    {/* Form para adicionar avaliação manualmente */}
+                    <div style={{ padding: '12px', background: 'var(--panel-bg)', borderRadius: 6, border: '1px dashed var(--adm-gold)', marginBottom: 16 }}>
+                      <h6 style={{ margin: '0 0 10px 0', fontSize: '0.82rem', color: 'var(--adm-gold)', fontWeight: 700 }}>✍️ Adicionar Avaliação Manual</h6>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <input 
+                            type="text" 
+                            placeholder="Nome do Cliente"
+                            value={manualReviewName}
+                            onChange={(e) => setManualReviewName(e.target.value)}
+                            style={{ flex: 2, padding: '6px 8px', fontSize: '0.75rem', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: 4, color: 'var(--adm-text)' }}
+                          />
+                          <select
+                            value={manualReviewRating}
+                            onChange={(e) => setManualReviewRating(Number(e.target.value))}
+                            style={{ flex: 1, padding: '6px 8px', fontSize: '0.75rem', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: 4, color: 'var(--adm-gold)', fontWeight: 'bold' }}
+                          >
+                            <option value={5}>5 ★</option>
+                            <option value={4}>4 ★</option>
+                            <option value={3}>3 ★</option>
+                            <option value={2}>2 ★</option>
+                            <option value={1}>1 ★</option>
+                          </select>
+                        </div>
+                        <textarea 
+                          placeholder="Digite aqui o comentário da avaliação..."
+                          rows={2}
+                          value={manualReviewComment}
+                          onChange={(e) => setManualReviewComment(e.target.value)}
+                          style={{ width: '100%', padding: '6px 8px', fontSize: '0.75rem', background: 'var(--sidebar-bg)', border: '1px solid var(--adm-rule)', borderRadius: 4, color: 'var(--adm-text)', resize: 'vertical' }}
+                        />
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button 
+                            className="btn btn-accent btn-small" 
+                            style={{ flex: 2, fontSize: '0.72rem', padding: '6px 0' }} 
+                            onClick={handleCreateManualReview}
+                          >
+                            📥 Postar no CRM
+                          </button>
+                          <button 
+                            className="btn btn-outline btn-small" 
+                            style={{ flex: 1, fontSize: '0.72rem', padding: '6px 0' }} 
+                            onClick={handleSimulateNewReview}
+                            title="Simular avaliação aleatória"
+                          >
+                            🎲 Simular
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxHeight: '350px', overflowY: 'auto', paddingRight: 4 }}>
