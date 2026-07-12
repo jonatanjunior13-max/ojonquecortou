@@ -801,6 +801,10 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
     alert('Nova avaliação simulada no Google!');
   };
 
+  const handleUpdatePendingReplyText = (id, text) => {
+    setGoogleReviews(prev => prev.map(rev => rev.id === id ? { ...rev, pendingReply: text } : rev));
+  };
+
   const handleCreateManualReview = async () => {
     if (!manualReviewName.trim() || !manualReviewComment.trim()) {
       alert('Por favor, preencha o nome do cliente e o comentário da avaliação.');
@@ -3180,38 +3184,48 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                               <strong>✅ Resposta publicada:</strong>
                               <p style={{ margin: '4px 0 0 0', color: 'var(--adm-muted)' }}>{rev.reply}</p>
                             </div>
-                          ) : rev.pendingReply ? (
-                            <div style={{ padding: 10, background: 'rgba(220,163,84,0.08)', borderLeft: '3px solid #DCA354', borderRadius: 4, marginTop: 8 }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                                <strong style={{ fontSize: '0.78rem' }}>✍️ Rascunho gerado:</strong>
-                                <span style={{ fontSize: '0.65rem', color: '#DCA354', fontWeight: 600, background: 'rgba(220,163,84,0.15)', padding: '2px 8px', borderRadius: 12 }}>Aguardando aprovação</span>
-                              </div>
-                              <p style={{ margin: '0 0 10px 0', color: 'var(--adm-text)', fontSize: '0.8rem', lineHeight: 1.5, whiteSpace: 'pre-line' }}>{rev.pendingReply}</p>
-                              <div style={{ display: 'flex', gap: 8 }}>
-                                <button 
-                                  className="btn btn-accent btn-small" 
-                                  style={{ flex: 1, fontSize: '0.75rem', padding: '6px 12px' }}
+                          ) : (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
+                              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--adm-gold)', display: 'flex', justifyContent: 'space-between' }}>
+                                <span>✍️ Responder Avaliação:</span>
+                                {rev.pendingReply && <span style={{ color: '#ecc94b', fontSize: '0.65rem' }}>Rascunho editável</span>}
+                              </label>
+                              <textarea
+                                value={rev.pendingReply || ''}
+                                onChange={(e) => handleUpdatePendingReplyText(rev.id, e.target.value)}
+                                placeholder="Escreva sua resposta diretamente aqui..."
+                                rows={3}
+                                style={{
+                                  width: '100%',
+                                  padding: '6px 8px',
+                                  fontSize: '0.78rem',
+                                  background: 'var(--sidebar-bg)',
+                                  border: '1px solid var(--adm-rule)',
+                                  borderRadius: 4,
+                                  color: 'var(--adm-text)',
+                                  fontFamily: 'inherit',
+                                  resize: 'vertical'
+                                }}
+                              />
+                              <div style={{ display: 'flex', gap: 6 }}>
+                                <button
+                                  className="btn btn-accent btn-small"
+                                  style={{ flex: 2, fontSize: '0.75rem', padding: '6px 12px' }}
                                   onClick={() => handleApproveReply(rev.id)}
+                                  disabled={!rev.pendingReply?.trim()}
                                 >
-                                  ✅ Aprovar e Publicar
+                                  🚀 Enviar p/ Google Maps
                                 </button>
-                                <button 
-                                  className="btn btn-outline btn-small" 
+                                <button
+                                  className="btn btn-outline btn-small"
                                   style={{ flex: 1, fontSize: '0.75rem', padding: '6px 12px' }}
-                                  onClick={() => handleRegenerateReply(rev.id)}
+                                  onClick={() => handleManualGbpReply(rev.id)}
+                                  title="Gerar sugestão de resposta com Inteligência Artificial"
                                 >
-                                  🔄 Gerar Outra
+                                  🤖 Sugerir IA
                                 </button>
                               </div>
                             </div>
-                          ) : (
-                            <button 
-                              className="btn btn-accent btn-small" 
-                              style={{ width: '100%', fontSize: '0.75rem', padding: '4px' }}
-                              onClick={() => handleManualGbpReply(rev.id)}
-                            >
-                              ✍️ Gerar Resposta com IA
-                            </button>
                           )}
                         </div>
                       ))}
