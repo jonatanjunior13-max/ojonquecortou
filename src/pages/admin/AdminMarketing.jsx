@@ -419,9 +419,9 @@ const AdminMarketing = () => {
     };
 
     try {
-      const response = await fetch('/api/generate-newsletter', {
+      const response = await fetch('/api/newsletter-mailgun?action=generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
         body: JSON.stringify({
           themeTitle: selectedTheme.title,
           themeDescription: selectedTheme.description,
