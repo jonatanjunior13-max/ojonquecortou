@@ -160,6 +160,44 @@ async function sendMailerSend(to, toName, subject, html) {
   return messageId;
 }
 
+// Send remaining recipients sequentially via SMTP (e.g. Titan Email)
+export async function sendViaSmtpSequential(recipients, subject, fullHtml) {
+  const transporter = nodemailer.createTransport({
+    host: smtpHost,
+    port: parseInt(smtpPort, 10),
+    secure: smtpSecure,
+    auth: { user: smtpUser, pass: smtpPass },
+    tls: { rejectUnauthorized: false }
+  });
+
+  let sent = 0;
+  let errors = 0;
+  let lastMessageId = '';
+
+  // Sequential sending with a tiny delay to prevent SMTP server overload
+  for (const r of recipients) {
+    try {
+      const info = await transporter.sendMail({
+        from: FROM_EMAIL,
+        to: r.email,
+        subject: subject,
+        html: fullHtml.replace(/{nome}/g, r.name),
+        headers: {
+          'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+        }
+      });
+      lastMessageId = info.messageId || 'smtp-ok';
+      sent++;
+      await new Promise(resolve => setTimeout(resolve, 100));
+    } catch (smtpErr) {
+      console.error(`Error sending email to ${r.email} via SMTP:`, smtpErr.message);
+      errors++;
+    }
+  }
+
+  return { sent, errors, lastMessageId };
+}
+
 function verifyMailgunSignature(signingKey, timestamp, token, signature) {
   if (!signingKey || !timestamp || !token || !signature) return false;
   const encodedToken = crypto
@@ -498,48 +536,60 @@ Use as seguintes tags no "bodyHtml":
 
     try {
       if (MAILERSEND_API_KEY) {
-        // MailerSend Bulk Sending
-        const CHUNK_SIZE = 500; 
-        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-          const chunk = recipients.slice(i, i + CHUNK_SIZE);
-          const bulkEmails = chunk.map(r => ({
-            from: {
-              email: 'contato@ojonquecortou.com.br',
-              name: 'O Jon Que Cortou'
-            },
-            to: [
-              {
-                email: r.email,
-                name: r.name
-              }
-            ],
-            subject: subject,
-            html: fullHtml.replace(/{nome}/g, r.name),
-            headers: [
-              {
-                name: 'List-Unsubscribe',
-                value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
-              }
-            ]
-          }));
+        // MailerSend Bulk Sending, with automatic SMTP fallback on failure (e.g. account under review / rate limit)
+        const CHUNK_SIZE = 500;
+        try {
+          for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+            const chunk = recipients.slice(i, i + CHUNK_SIZE);
+            const bulkEmails = chunk.map(r => ({
+              from: {
+                email: 'contato@ojonquecortou.com.br',
+                name: 'O Jon Que Cortou'
+              },
+              to: [
+                {
+                  email: r.email,
+                  name: r.name
+                }
+              ],
+              subject: subject,
+              html: fullHtml.replace(/{nome}/g, r.name),
+              headers: [
+                {
+                  name: 'List-Unsubscribe',
+                  value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+                }
+              ]
+            }));
 
-          const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bulkEmails)
-          });
+            const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(bulkEmails)
+            });
 
-          if (!resBulk.ok) {
-            const errText = await resBulk.text();
-            throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
+            if (!resBulk.ok) {
+              const errText = await resBulk.text();
+              throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
+            }
+
+            const bulkData = await resBulk.json();
+            lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
+            sent += chunk.length;
           }
-          
-          const bulkData = await resBulk.json();
-          lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
-          sent += chunk.length;
+        } catch (msErr) {
+          console.error('MailerSend send failed:', msErr.message);
+          if (!hasSmtpConfig) throw msErr;
+
+          console.warn('Falling back to SMTP for remaining recipients.');
+          const remaining = recipients.slice(sent);
+          const result = await sendViaSmtpSequential(remaining, subject, fullHtml);
+          sent += result.sent;
+          errors += result.errors;
+          if (result.lastMessageId) lastMessageId = result.lastMessageId;
         }
       }
       else if (MAILGUN_API_KEY) {
@@ -622,36 +672,11 @@ Use as seguintes tags no "bodyHtml":
         }
       } 
       else if (hasSmtpConfig) {
-        // SMTP Sequential/Parallel sending (e.g. Titan Email)
-        const transporter = nodemailer.createTransport({
-          host: smtpHost,
-          port: parseInt(smtpPort, 10),
-          secure: smtpSecure,
-          auth: { user: smtpUser, pass: smtpPass },
-          tls: { rejectUnauthorized: false }
-        });
-
-        // Use sequential sending with a tiny delay to prevent SMTP server overload
-        for (const r of recipients) {
-          try {
-            const info = await transporter.sendMail({
-              from: FROM_EMAIL,
-              to: r.email,
-              subject: subject,
-              html: fullHtml.replace(/{nome}/g, r.name),
-              headers: {
-                'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
-              }
-            });
-            lastMessageId = info.messageId || 'smtp-ok';
-            sent++;
-            // Tiny sleep (100ms) to play nice with Titan SMTP limits
-            await new Promise(resolve => setTimeout(resolve, 100));
-          } catch (smtpErr) {
-            console.error(`Error sending email to ${r.email} via SMTP:`, smtpErr.message);
-            errors++;
-          }
-        }
+        // SMTP Sequential sending (e.g. Titan Email)
+        const result = await sendViaSmtpSequential(recipients, subject, fullHtml);
+        sent += result.sent;
+        errors += result.errors;
+        if (result.lastMessageId) lastMessageId = result.lastMessageId;
       }
 
       // Save to Firestore
