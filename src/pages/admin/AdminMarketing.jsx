@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db, storage } from '../../config/firebase';
-import { collection, onSnapshot, doc, updateDoc, getDoc, query, orderBy, limit, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, getDoc, getDocs, query, orderBy, limit, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
 import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
 import './Admin.css';
