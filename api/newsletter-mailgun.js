@@ -413,7 +413,7 @@ export default async function handler(req, res) {
     try {
       if (MAILERSEND_API_KEY) {
         // MailerSend Bulk Sending
-        const CHUNK_SIZE = 400; 
+        const CHUNK_SIZE = 500; 
         for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
           const chunk = recipients.slice(i, i + CHUNK_SIZE);
           const bulkEmails = chunk.map(r => ({
