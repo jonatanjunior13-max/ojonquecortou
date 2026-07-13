@@ -394,7 +394,7 @@ Use as seguintes tags no "bodyHtml":
       }
     }
 
-    const { subject, htmlBody, newsletterId, testEmail } = req.body;
+    const { subject, htmlBody, newsletterId, testEmail, recipients: customRecipients } = req.body;
 
     if (!subject || !htmlBody) {
       return res.status(400).json({ error: 'subject e htmlBody são obrigatórios' });
@@ -468,20 +468,24 @@ Use as seguintes tags no "bodyHtml":
     }
 
     let recipients = [];
-    try {
-      const snapshot = await getDocs(collection(db, 'client_profiles'));
-      snapshot.forEach(docSnap => {
-        const d = docSnap.data();
-        if (d.email && d.email.includes('@') && d.newsletter !== false && !d.emailInvalid && !d.unsubscribed) {
-          recipients.push({
-            email: d.email.trim().toLowerCase(),
-            name: (d.name || 'Cliente').split(' ')[0]
-          });
-        }
-      });
-    } catch (err) {
-      console.error('Firestore query error:', err);
-      return res.status(500).json({ error: 'Erro ao buscar clientes no Firestore', details: err.message });
+    if (customRecipients && Array.isArray(customRecipients)) {
+      recipients = customRecipients;
+    } else {
+      try {
+        const snapshot = await getDocs(collection(db, 'client_profiles'));
+        snapshot.forEach(docSnap => {
+          const d = docSnap.data();
+          if (d.email && d.email.includes('@') && d.newsletter !== false && !d.emailInvalid && !d.unsubscribed) {
+            recipients.push({
+              email: d.email.trim().toLowerCase(),
+              name: (d.name || 'Cliente').split(' ')[0]
+            });
+          }
+        });
+      } catch (err) {
+        console.error('Firestore query error:', err);
+        return res.status(500).json({ error: 'Erro ao buscar clientes no Firestore', details: err.message });
+      }
     }
 
     if (recipients.length === 0) {

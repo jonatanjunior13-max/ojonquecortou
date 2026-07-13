@@ -531,43 +531,100 @@ const AdminMarketing = () => {
     const confirm1 = window.confirm(`Confirmar envio da newsletter "${nl.subject}" para TODAS as clientes com email cadastrado?`);
     if (!confirm1) return;
     setIsSendingNewsletter(true);
-    setNewsletterSendLog(['[SISTEMA] Conectando ao MailerSend...', '[SISTEMA] Buscando lista de clientes...']);
+    setNewsletterSendLog(['[SISTEMA] Conectando ao Banco de Dados...', '[SISTEMA] Buscando lista de clientes...']);
+    
     try {
-      const res = await fetch('/api/newsletter-mailgun', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
-        body: JSON.stringify({ subject: nl.subject, htmlBody: nl.htmlBody, newsletterId: nl.id })
-      });
-      const data = await res.json();
-      if (data.success) {
-        const sentCount = data.sent;
-        setNewsletterSendLog(prev => [...prev,
-          `[✅ OK] Newsletter enviada com sucesso para ${sentCount} cliente(s)!`,
-          `[✅ OK] ID do lote no MailerSend: ${data.messageId}`
-        ]);
-        setNewsletters(prev => prev.map(n => n.id === nl.id ? {
-          ...n,
-          status: 'sent',
-          sentAt: new Date().toISOString(),
-          sentCount
-        } : n));
-        // Save to Firestore
-        if (db) {
-          try {
-            await addDoc(collection(db, 'newsletter_sends'), {
-              newsletterId: nl.id,
-              subject: nl.subject,
-              sentAt: new Date().toISOString(),
-              sentCount,
-              messageId: data.messageId
-            });
-          } catch (e) { console.warn('Firestore save newsletter log failed:', e); }
+      // 1. Fetch eligible clients from Firestore on the client side
+      const snapshot = await getDocs(collection(db, 'client_profiles'));
+      const allRecipients = [];
+      snapshot.forEach(docSnap => {
+        const d = docSnap.data();
+        if (d.email && d.email.includes('@') && d.newsletter !== false && !d.emailInvalid && !d.unsubscribed) {
+          allRecipients.push({
+            email: d.email.trim().toLowerCase(),
+            name: (d.name || 'Cliente').split(' ')[0]
+          });
         }
-      } else {
-        setNewsletterSendLog(prev => [...prev, `[❌ ERRO] ${data.error}`, data.details ? `[DETALHE] ${data.details}` : '']);
+      });
+
+      if (allRecipients.length === 0) {
+        setNewsletterSendLog(['[❌ ERRO] Nenhuma cliente elegível com email ativo encontrada.']);
+        setIsSendingNewsletter(false);
+        return;
       }
+
+      setNewsletterSendLog([
+        `[SISTEMA] Total de ${allRecipients.length} clientes elegíveis encontradas.`,
+        `[SISTEMA] Iniciando disparos de lote usando MailerSend...`
+      ]);
+
+      const CHUNK_SIZE = 500;
+      let totalSent = 0;
+      let lastBatchId = 'mailersend-ok';
+
+      // 2. Loop through the chunks
+      for (let i = 0; i < allRecipients.length; i += CHUNK_SIZE) {
+        const chunk = allRecipients.slice(i, i + CHUNK_SIZE);
+        const batchNum = Math.floor(i / CHUNK_SIZE) + 1;
+        const totalBatches = Math.ceil(allRecipients.length / CHUNK_SIZE);
+
+        if (i > 0) {
+          setNewsletterSendLog(prev => [...prev, `[⏳ LIMITE MAILERSEND] Esperando 65 segundos antes de enviar o Lote ${batchNum} de ${totalBatches} para respeitar os limites de envio da conta...`]);
+          // Sleep client-side
+          await new Promise(resolve => setTimeout(resolve, 65000));
+        }
+
+        setNewsletterSendLog(prev => [...prev, `[⚡ ENVIANDO] Disparando Lote ${batchNum} de ${totalBatches} (${chunk.length} emails)...`]);
+
+        const res = await fetch('/api/newsletter-mailgun', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
+          body: JSON.stringify({
+            subject: nl.subject,
+            htmlBody: nl.htmlBody,
+            newsletterId: nl.id,
+            recipients: chunk
+          })
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+          throw new Error(data.error || `Falha ao enviar o Lote ${batchNum}`);
+        }
+
+        totalSent += data.sent;
+        lastBatchId = data.messageId || lastBatchId;
+        setNewsletterSendLog(prev => [...prev, `[✅ LOTE OK] Lote ${batchNum} de ${totalBatches} enviado com sucesso (${data.sent} emails)!`]);
+      }
+
+      // 3. Mark newsletter as sent
+      setNewsletterSendLog(prev => [...prev,
+        `[🎉 SUCESSO] Campanha completa enviada para ${totalSent} clientes!`,
+        `[✅ FINALIZADO] ID final: ${lastBatchId}`
+      ]);
+
+      setNewsletters(prev => prev.map(n => n.id === nl.id ? {
+        ...n,
+        status: 'sent',
+        sentAt: new Date().toISOString(),
+        sentCount: totalSent
+      } : n));
+
+      // Save to Firestore log
+      if (db) {
+        try {
+          await addDoc(collection(db, 'newsletter_sends'), {
+            newsletterId: nl.id,
+            subject: nl.subject,
+            sentAt: new Date().toISOString(),
+            sentCount: totalSent,
+            messageId: lastBatchId
+          });
+        } catch (e) { console.warn('Firestore save newsletter log failed:', e); }
+      }
+
     } catch (err) {
-      setNewsletterSendLog(prev => [...prev, `[❌ ERRO] Falha na requisição: ${err.message}`]);
+      setNewsletterSendLog(prev => [...prev, `[❌ ERRO] Falha no envio da campanha: ${err.message}`]);
     } finally {
       setIsSendingNewsletter(false);
     }
