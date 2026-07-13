@@ -25,6 +25,7 @@ try {
 // Check which mail API keys and configs are configured
 const MAILGUN_API_KEY = (process.env.MAILGUN_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
 const RESEND_API_KEY = (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '').trim();
+const MAILERSEND_API_KEY = (process.env.MAILERSEND_API_KEY || '').trim();
 
 const smtpHost = (process.env.SMTP_HOST || '').trim();
 const smtpPort = (process.env.SMTP_PORT || '587').trim();
@@ -120,6 +121,45 @@ async function sendMailgun(to, toName, subject, html) {
   return data.id || 'mailgun-ok';
 }
 
+// Send a single email via MailerSend REST API
+async function sendMailerSend(to, toName, subject, html) {
+  const res = await fetch('https://api.mailersend.com/v1/email', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: {
+        email: 'contato@ojonquecortou.com.br',
+        name: 'O Jon Que Cortou'
+      },
+      to: [
+        {
+          email: to,
+          name: toName || ''
+        }
+      ],
+      subject,
+      html,
+      headers: [
+        {
+          name: 'List-Unsubscribe',
+          value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`
+        }
+      ]
+    })
+  });
+
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`MailerSend ${res.status}: ${errText}`);
+  }
+
+  const messageId = res.headers.get('X-Message-Id') || 'mailersend-ok';
+  return messageId;
+}
+
 function verifyMailgunSignature(signingKey, timestamp, token, signature) {
   if (!signingKey || !timestamp || !token || !signature) return false;
   const encodedToken = crypto
@@ -193,6 +233,22 @@ export default async function handler(req, res) {
             });
           });
         }
+      } else if (MAILERSEND_API_KEY) {
+        // Fetch from MailerSend Bounces Suppressions list
+        const resMS = await fetch('https://api.mailersend.com/v1/suppressions/bounces', {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${MAILERSEND_API_KEY}` }
+        });
+        if (resMS.ok) {
+          const msData = await resMS.json();
+          (msData.data || []).forEach(s => {
+            bounces.push({
+              address: s.email,
+              error: s.reason || 'Bounced',
+              created_at: s.created_at
+            });
+          });
+        }
       }
 
       const snapshot = await getDocs(collection(db, 'client_profiles'));
@@ -262,10 +318,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'subject e htmlBody são obrigatórios' });
     }
 
-    const hasAnySender = Boolean(MAILGUN_API_KEY || RESEND_API_KEY || hasSmtpConfig);
+    const hasAnySender = Boolean(MAILGUN_API_KEY || RESEND_API_KEY || MAILERSEND_API_KEY || hasSmtpConfig);
     if (!hasAnySender) {
       return res.status(500).json({ 
-        error: 'Nenhum serviço de e-mail configurado. Configure RESEND_API_KEY, MAILGUN_API_KEY ou os parâmetros de SMTP (Titan) nas variáveis da Vercel.' 
+        error: 'Nenhum serviço de e-mail configurado. Configure MAILERSEND_API_KEY, RESEND_API_KEY, MAILGUN_API_KEY ou os parâmetros de SMTP (Titan) nas variáveis da Vercel.' 
       });
     }
 
@@ -276,7 +332,9 @@ export default async function handler(req, res) {
       try {
         let messageId = 'test-send-ok';
 
-        if (MAILGUN_API_KEY) {
+        if (MAILERSEND_API_KEY) {
+          messageId = await sendMailerSend(testEmail, 'Teste', subject, fullHtml);
+        } else if (MAILGUN_API_KEY) {
           messageId = await sendMailgun(testEmail, 'Teste', subject, fullHtml);
         } else if (RESEND_API_KEY) {
           const resResend = await fetch('https://api.resend.com/emails', {
@@ -399,6 +457,51 @@ export default async function handler(req, res) {
           sent += chunk.length;
         }
       } 
+      else if (MAILERSEND_API_KEY) {
+        // MailerSend Bulk Sending
+        const CHUNK_SIZE = 400; 
+        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+          const chunk = recipients.slice(i, i + CHUNK_SIZE);
+          const bulkEmails = chunk.map(r => ({
+            from: {
+              email: 'contato@ojonquecortou.com.br',
+              name: 'O Jon Que Cortou'
+            },
+            to: [
+              {
+                email: r.email,
+                name: r.name
+              }
+            ],
+            subject: subject,
+            html: fullHtml.replace(/{nome}/g, r.name),
+            headers: [
+              {
+                name: 'List-Unsubscribe',
+                value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+              }
+            ]
+          }));
+
+          const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bulkEmails)
+          });
+
+          if (!resBulk.ok) {
+            const errText = await resBulk.text();
+            throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
+          }
+          
+          const bulkData = await resBulk.json();
+          lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
+          sent += chunk.length;
+        }
+      }
       else if (RESEND_API_KEY) {
         // Resend Batch Sending
         const CHUNK_SIZE = 100; // Resend limit is 100 emails per batch call
