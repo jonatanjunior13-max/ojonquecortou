@@ -590,7 +590,7 @@ Use as seguintes tags no "bodyHtml":
     const confirm1 = window.confirm(`Confirmar envio da newsletter "${nl.subject}" para TODAS as clientes com email cadastrado?`);
     if (!confirm1) return;
     setIsSendingNewsletter(true);
-    setNewsletterSendLog(['[SISTEMA] Conectando ao Mailgun...', '[SISTEMA] Buscando lista de clientes...']);
+    setNewsletterSendLog(['[SISTEMA] Conectando ao MailerSend...', '[SISTEMA] Buscando lista de clientes...']);
     try {
       const res = await fetch('/api/newsletter-mailgun', {
         method: 'POST',
@@ -602,7 +602,7 @@ Use as seguintes tags no "bodyHtml":
         const sentCount = data.sent;
         setNewsletterSendLog(prev => [...prev,
           `[✅ OK] Newsletter enviada com sucesso para ${sentCount} cliente(s)!`,
-          `[✅ OK] Message ID Mailgun: ${data.messageId}`
+          `[✅ OK] ID do lote no MailerSend: ${data.messageId}`
         ]);
         setNewsletters(prev => prev.map(n => n.id === nl.id ? {
           ...n,
