@@ -197,7 +197,23 @@ export default async function handler(req, res) {
     try {
       let bounces = [];
 
-      if (MAILGUN_API_KEY) {
+      if (MAILERSEND_API_KEY) {
+        // Fetch from MailerSend Bounces Suppressions list
+        const resMS = await fetch('https://api.mailersend.com/v1/suppressions/bounces', {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${MAILERSEND_API_KEY}` }
+        });
+        if (resMS.ok) {
+          const msData = await resMS.json();
+          (msData.data || []).forEach(s => {
+            bounces.push({
+              address: s.email,
+              error: s.reason || 'Bounced',
+              created_at: s.created_at
+            });
+          });
+        }
+      } else if (MAILGUN_API_KEY) {
         // Fetch from Mailgun
         const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
         const mailgunUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/bounces`;
@@ -229,22 +245,6 @@ export default async function handler(req, res) {
             bounces.push({
               address: s.email,
               error: s.reason || 'Blocked/Bounced',
-              created_at: s.created_at
-            });
-          });
-        }
-      } else if (MAILERSEND_API_KEY) {
-        // Fetch from MailerSend Bounces Suppressions list
-        const resMS = await fetch('https://api.mailersend.com/v1/suppressions/bounces', {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${MAILERSEND_API_KEY}` }
-        });
-        if (resMS.ok) {
-          const msData = await resMS.json();
-          (msData.data || []).forEach(s => {
-            bounces.push({
-              address: s.email,
-              error: s.reason || 'Bounced',
               created_at: s.created_at
             });
           });
@@ -411,7 +411,52 @@ export default async function handler(req, res) {
     let lastMessageId = '';
 
     try {
-      if (MAILGUN_API_KEY) {
+      if (MAILERSEND_API_KEY) {
+        // MailerSend Bulk Sending
+        const CHUNK_SIZE = 400; 
+        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+          const chunk = recipients.slice(i, i + CHUNK_SIZE);
+          const bulkEmails = chunk.map(r => ({
+            from: {
+              email: 'contato@ojonquecortou.com.br',
+              name: 'O Jon Que Cortou'
+            },
+            to: [
+              {
+                email: r.email,
+                name: r.name
+              }
+            ],
+            subject: subject,
+            html: fullHtml.replace(/{nome}/g, r.name),
+            headers: [
+              {
+                name: 'List-Unsubscribe',
+                value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+              }
+            ]
+          }));
+
+          const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(bulkEmails)
+          });
+
+          if (!resBulk.ok) {
+            const errText = await resBulk.text();
+            throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
+          }
+          
+          const bulkData = await resBulk.json();
+          lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
+          sent += chunk.length;
+        }
+      }
+      else if (MAILGUN_API_KEY) {
         // Mailgun Batch Sending
         const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
         const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
@@ -454,51 +499,6 @@ export default async function handler(req, res) {
           }
           const resData = await resMailgun.json();
           lastMessageId = resData.id || 'mailgun-batch-ok';
-          sent += chunk.length;
-        }
-      } 
-      else if (MAILERSEND_API_KEY) {
-        // MailerSend Bulk Sending
-        const CHUNK_SIZE = 400; 
-        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-          const chunk = recipients.slice(i, i + CHUNK_SIZE);
-          const bulkEmails = chunk.map(r => ({
-            from: {
-              email: 'contato@ojonquecortou.com.br',
-              name: 'O Jon Que Cortou'
-            },
-            to: [
-              {
-                email: r.email,
-                name: r.name
-              }
-            ],
-            subject: subject,
-            html: fullHtml.replace(/{nome}/g, r.name),
-            headers: [
-              {
-                name: 'List-Unsubscribe',
-                value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
-              }
-            ]
-          }));
-
-          const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(bulkEmails)
-          });
-
-          if (!resBulk.ok) {
-            const errText = await resBulk.text();
-            throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
-          }
-          
-          const bulkData = await resBulk.json();
-          lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
           sent += chunk.length;
         }
       }
