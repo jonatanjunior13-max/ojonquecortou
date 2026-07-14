@@ -73,7 +73,7 @@ function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH</span>
+          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH · <Link to="/politica-privacidade" style={{ color: 'inherit' }}>Política de Privacidade</Link></span>
           <span>Feito com cuidado · Caiçaras, Belo Horizonte</span>
         </div>
       </div>

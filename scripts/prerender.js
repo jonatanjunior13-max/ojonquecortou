@@ -1205,6 +1205,28 @@ const pages = [
     title: 'Agende seu corte | Studio do Jon — Especialista em Cachos BH',
     description: 'Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte.',
     bodyInsert: agendarBody
+  },
+  {
+    route: '/politica-privacidade',
+    title: 'Política de Privacidade | Studio do Jon',
+    description: 'Como o Studio do Jon (O Jon que Cortou) coleta, usa, armazena e protege seus dados pessoais, em conformidade com a LGPD.',
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Política de Privacidade — Studio do Jon</h1>
+      <p>Esta política explica quais dados o Studio do Jon (O Jon que Cortou) coleta ao visitar o site ou agendar um atendimento, para que finalidades os usamos, com quem podem ser compartilhados e quais direitos você tem sobre seus dados, em conformidade com a LGPD (Lei nº 13.709/2018).</p>
+      <h2>Controlador dos dados</h2>
+      <p>O Jon que Cortou — Studio do Jon (Jonatan Junior, profissional autônomo). Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG. Contato: <a href="mailto:contato@ojonquecortou.com.br">contato@ojonquecortou.com.br</a>.</p>
+      <h2>Dados coletados</h2>
+      <p>Dados de agendamento (nome, telefone, e-mail, serviço e horário), histórico de atendimento, e-mail de newsletter, dados de navegação (cookies e analytics) e comunicações via WhatsApp.</p>
+      <h2>Compartilhamento</h2>
+      <p>Operadores utilizados: Google Firebase, Google Calendar, Google Analytics, Vercel Analytics, Meta Ads (Pixel/API de Conversões), WhatsApp Business e MailerSend/Titan E-mail.</p>
+      <h2>Seus direitos</h2>
+      <p>Nos termos do art. 18 da LGPD, você pode confirmar, acessar, corrigir, eliminar ou solicitar a portabilidade dos seus dados, revogar consentimento e reclamar junto à ANPD (gov.br/anpd). Contato: <a href="mailto:contato@ojonquecortou.com.br">contato@ojonquecortou.com.br</a>.</p>
+      <p><a href="/politica-privacidade">Leia a política completa</a>.</p>
+    </article>
+  </noscript>
+`
   }
 ];
 

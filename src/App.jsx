@@ -32,6 +32,7 @@ const ColoracaoCompletaPage = React.lazy(() => import('./pages/ColoracaoCompleta
 const ManutencaoCortePagePage = React.lazy(() => import('./pages/ManutencaoCortePagePage'));
 const DetoxEstimulantePage = React.lazy(() => import('./pages/DetoxEstimulantePage'));
 const TratamentoPersonalizadoPage = React.lazy(() => import('./pages/TratamentoPersonalizadoPage'));
+const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage'));
 
 const CorteHibridoPage = React.lazy(() => import('./pages/CorteHibridoPage'));
 const TransicaoCapilarPage = React.lazy(() => import('./pages/TransicaoCapilarPage'));
@@ -133,6 +134,8 @@ function App() {
             <Route path="/produtos" element={<ProductsPage />} />
             <Route path="/produtos/:productId" element={<ProductDetailPage />} />
             <Route path="/blog/corte-hibrido-cachos-seco-molhado" element={<Navigate to="/servicos/corte-hibrido" replace />} />
+            <Route path="/politica-privacidade" element={<PrivacyPage />} />
+            <Route path="/privacy" element={<Navigate to="/politica-privacidade" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
 
