@@ -1227,6 +1227,41 @@ const pages = [
     </article>
   </noscript>
 `
+  },
+  {
+    route: '/termos-de-servico',
+    title: 'Termos de Serviço | Studio do Jon',
+    description: 'Termos de serviço e condições de uso do Studio do Jon para agendamentos de corte e gerenciamento administrativo via OAuth.',
+    bodyInsert: `
+  <noscript>
+    <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
+      <h1>Termos de Serviço — Studio do Jon</h1>
+      <p>Bem-vindo ao Studio do Jon (O Jon que Cortou). Estes termos regulam seu uso do site <a href="https://www.ojonquecortou.com.br">www.ojonquecortou.com.br</a> e dos serviços de agendamento e autenticação associados.</p>
+      <h2>1. Propósito do Aplicativo</h2>
+      <p>O Studio do Jon oferece um sistema de agendamento online seguro para cortes de cabelo especializados em cabelos cacheados, ondulados e crespos. A autenticação via OAuth do Google garante segurança nos agendamentos e no acesso ao painel administrativo do studio.</p>
+      <p>Este serviço é destinado a clientes que desejam agendar atendimentos capilares com Jonatan Junior (o Jon) e ao staff administrativo do Studio do Jon para gerenciar a agenda, inventário e operações.</p>
+      <h2>2. Autenticação e Segurança</h2>
+      <p>Utilizamos Google OAuth para autenticação segura. Ao fazer login com sua conta Google, você autoriza o Studio do Jon a acessar informações básicas da sua conta Google conforme necessário para agendamentos.</p>
+      <p>Você é responsável por manter a confidencialidade de suas credenciais e por toda atividade que ocorra sob sua conta. Não compartilhe suas credenciais com terceiros.</p>
+      <h2>3. Uso Aceitável</h2>
+      <p>Você concorda em usar este site e seus serviços exclusivamente para:</p>
+      <ul>
+        <li>Agendar atendimentos no Studio do Jon</li>
+        <li>Gerenciar seus agendamentos (visualizar, alterar, cancelar)</li>
+        <li>Acessar funcionalidades administrativas (para staff autorizado)</li>
+        <li>Fins legítimos relacionados aos serviços do studio</li>
+      </ul>
+      <p>Você concorda em NÃO usar este site para atividades ilegais, fraudulentas, abusivas ou prejudiciais.</p>
+      <h2>4. Cancelamento de Agendamentos</h2>
+      <p>Cancelamentos devem ser feitos através do site ou entrando em contato diretamente pelo WhatsApp <a href="https://wa.me/553135866673">(31) 3586-6673</a>. Consulte a política de cancelamento específica para cada serviço no momento do agendamento.</p>
+      <h2>5. Limitação de Responsabilidade</h2>
+      <p>O Studio do Jon fornece este site e seus serviços "como estão". Não oferecemos garantias, expressas ou implícitas, quanto à adequação, comercialização ou adequação para um fim específico.</p>
+      <p>Não seremos responsáveis por danos indiretos, incidentais ou consequentes decorrentes do uso ou impossibilidade de usar este site ou seus serviços.</p>
+      <h2>6. Contato</h2>
+      <p><strong>O Jon que Cortou — Studio do Jon</strong><br />Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG<br />E-mail: <a href="mailto:contato@ojonquecortou.com.br">contato@ojonquecortou.com.br</a><br />WhatsApp: <a href="https://wa.me/553135866673">(31) 3586-6673</a></p>
+    </article>
+  </noscript>
+`
   }
 ];
 

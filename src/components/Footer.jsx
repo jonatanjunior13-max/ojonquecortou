@@ -73,7 +73,7 @@ function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH · <Link to="/politica-privacidade" style={{ color: 'inherit' }}>Política de Privacidade</Link></span>
+          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH · <Link to="/politica-privacidade" style={{ color: 'inherit' }}>Política de Privacidade</Link> · <Link to="/termos-de-servico" style={{ color: 'inherit' }}>Termos de Serviço</Link></span>
           <span style={{ fontSize: '0.75rem', color: 'var(--muted)', opacity: 0.7 }}>Este site utiliza OAuth do Google para autenticação segura de agendamentos e painel administrativo.</span>
           <span>Feito com cuidado · Caiçaras, Belo Horizonte</span>
         </div>
