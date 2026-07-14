@@ -102,6 +102,9 @@ function HomeHero() {
                 Porosidade, curvatura, histórico. Cada cacho conta uma história — e o corte só começa
                 depois que a história fica clara. Sem fórmula pronta, sem tendência genérica.
               </p>
+              <p style={{ marginTop: 14, fontSize: '0.85rem', color: 'var(--muted)', fontStyle: 'italic' }}>
+                Este site utiliza autenticação por Google OAuth para agendamentos seguros e gerenciamento administrativo.
+              </p>
             </Reveal>
 
             <Reveal delay={220} className="hero-actions">
