@@ -1428,17 +1428,29 @@ const BookingPage = () => {
 
     let metaPixelEventFired = false;
     const fireMetaPixelConversion = () => {
-      if (metaPixelEventFired || typeof fbq === 'undefined') return;
+      if (metaPixelEventFired) return;
       metaPixelEventFired = true;
-      try {
-        fbq('track', 'Schedule', {
-          content_name: bookingPayload.serviceName,
-          value: computedFinalTotal,
-          currency: 'BRL'
-        });
-      } catch (fbqErr) {
-        console.warn('Erro ao disparar Meta Pixel:', fbqErr);
+      // Shared with the CAPI call below so Meta deduplicates the two signals into one conversion
+      const eventId = `schedule-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const eventData = {
+        content_name: bookingPayload.serviceName,
+        value: computedFinalTotal,
+        currency: 'BRL'
+      };
+      if (typeof fbq !== 'undefined') {
+        try {
+          fbq('track', 'Schedule', eventData, { eventID: eventId });
+        } catch (fbqErr) {
+          console.warn('Erro ao disparar Meta Pixel:', fbqErr);
+        }
       }
+      // Server-side backup: the browser pixel gets blocked by iOS ATT / in-app browsers often
+      // enough that it alone undercounts bookings, so CAPI mirrors the same event with dedup.
+      fetch('/api/meta-capi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventName: 'Schedule', eventId, eventData })
+      }).catch(capiErr => console.warn('Erro ao disparar Meta CAPI:', capiErr));
     };
 
     try {

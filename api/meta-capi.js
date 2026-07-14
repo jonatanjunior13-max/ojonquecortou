@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { eventName, eventData, pixelId } = req.body;
+  const { eventName, eventData, pixelId, eventId } = req.body;
   const token = process.env.META_CAPI_TOKEN;
 
   if (!token) {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   const targetPixel = pixelId || '1152310907009255';
-  
+
   // Facebook Conversions API endpoint
   const url = `https://graph.facebook.com/v19.0/${targetPixel}/events?access_token=${token}`;
 
@@ -20,6 +20,8 @@ export default async function handler(req, res) {
       {
         event_name: eventName || 'PageView',
         event_time: Math.floor(Date.now() / 1000),
+        // Matches the browser pixel's eventID so Meta deduplicates instead of double-counting
+        event_id: eventId || undefined,
         action_source: 'website',
         event_source_url: req.headers.referer || 'https://www.ojonquecortou.com.br/',
         user_data: {
