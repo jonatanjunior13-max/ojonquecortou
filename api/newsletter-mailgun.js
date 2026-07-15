@@ -23,9 +23,9 @@ try {
 }
 
 // Check which mail API keys and configs are configured
-const MAILGUN_API_KEY = (process.env.MAILGUN_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
+const MAILGUN_API_KEY = (process.env.MAILGUN_API_KEY || '').trim();
 const RESEND_API_KEY = (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '').trim();
-const MAILERSEND_API_KEY = (process.env.MAILERSEND_API_KEY || '').trim();
+const MAILERSEND_API_KEY = (process.env.MAILERSEND_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
 
 const smtpHost = (process.env.SMTP_HOST || '').trim();
 const smtpPort = (process.env.SMTP_PORT || '587').trim();
@@ -85,42 +85,6 @@ function wrapNewsletterHtml(subject, body) {
 </html>`;
 }
 
-// Send a single email via Mailgun REST API
-async function sendMailgun(to, toName, subject, html) {
-  const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-  const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
-
-  const body = new URLSearchParams({
-    from: FROM_EMAIL,
-    to: toName ? `"${toName}" <${to}>` : to,
-    subject,
-    html,
-    'h:List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`,
-    'h:List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-    'o:tag': 'newsletter',
-    'o:tracking': 'yes',
-    'o:tracking-clicks': 'yes',
-    'o:tracking-opens': 'yes'
-  });
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Basic ${basicAuth}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`Mailgun ${res.status}: ${errText}`);
-  }
-
-  const data = await res.json();
-  return data.id || 'mailgun-ok';
-}
-
 // Send a single email via MailerSend REST API
 async function sendMailerSend(to, toName, subject, html) {
   const res = await fetch('https://api.mailersend.com/v1/email', {
@@ -141,13 +105,7 @@ async function sendMailerSend(to, toName, subject, html) {
         }
       ],
       subject,
-      html,
-      headers: [
-        {
-          name: 'List-Unsubscribe',
-          value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(to)}>`
-        }
-      ]
+      html
     })
   });
 
@@ -158,53 +116,6 @@ async function sendMailerSend(to, toName, subject, html) {
 
   const messageId = res.headers.get('X-Message-Id') || 'mailersend-ok';
   return messageId;
-}
-
-// Send remaining recipients sequentially via SMTP (e.g. Titan Email)
-export async function sendViaSmtpSequential(recipients, subject, fullHtml) {
-  const transporter = nodemailer.createTransport({
-    host: smtpHost,
-    port: parseInt(smtpPort, 10),
-    secure: smtpSecure,
-    auth: { user: smtpUser, pass: smtpPass },
-    tls: { rejectUnauthorized: false }
-  });
-
-  let sent = 0;
-  let errors = 0;
-  let lastMessageId = '';
-
-  // Sequential sending with a tiny delay to prevent SMTP server overload
-  for (const r of recipients) {
-    try {
-      const info = await transporter.sendMail({
-        from: FROM_EMAIL,
-        to: r.email,
-        subject: subject,
-        html: fullHtml.replace(/{nome}/g, r.name),
-        headers: {
-          'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
-        }
-      });
-      lastMessageId = info.messageId || 'smtp-ok';
-      sent++;
-      await new Promise(resolve => setTimeout(resolve, 100));
-    } catch (smtpErr) {
-      console.error(`Error sending email to ${r.email} via SMTP:`, smtpErr.message);
-      errors++;
-    }
-  }
-
-  return { sent, errors, lastMessageId };
-}
-
-function verifyMailgunSignature(signingKey, timestamp, token, signature) {
-  if (!signingKey || !timestamp || !token || !signature) return false;
-  const encodedToken = crypto
-    .createHmac('sha256', signingKey)
-    .update(timestamp.toString() + token)
-    .digest('hex');
-  return encodedToken === signature;
 }
 
 export default async function handler(req, res) {
@@ -232,6 +143,13 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
+  // 1. GET Action: Check Bounces list
+  if (req.method === 'GET') {
+    const adminToken = req.headers['x-admin-token'] || req.query.token;
+    if (!adminToken || adminToken !== 'studio-jon-admin') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
     try {
       let bounces = [];
 
@@ -247,42 +165,6 @@ export default async function handler(req, res) {
             bounces.push({
               address: s.email,
               error: s.reason || 'Bounced',
-              created_at: s.created_at
-            });
-          });
-        }
-      } else if (MAILGUN_API_KEY) {
-        // Fetch from Mailgun
-        const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-        const mailgunUrl = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/bounces`;
-        
-        const resMailgun = await fetch(mailgunUrl, {
-          method: 'GET',
-          headers: { 'Authorization': `Basic ${basicAuth}` }
-        });
-
-        if (resMailgun.ok) {
-          const mailgunData = await resMailgun.json();
-          (mailgunData.items || []).forEach(b => {
-            bounces.push({
-              address: b.address,
-              error: b.error,
-              created_at: b.created_at
-            });
-          });
-        }
-      } else if (RESEND_API_KEY) {
-        // Fetch from Resend Suppressions list
-        const resResend = await fetch('https://api.resend.com/suppressions', {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${RESEND_API_KEY}` }
-        });
-        if (resResend.ok) {
-          const resendData = await resResend.json();
-          (resendData.data || []).forEach(s => {
-            bounces.push({
-              address: s.email,
-              error: s.reason || 'Blocked/Bounced',
               created_at: s.created_at
             });
           });
@@ -366,14 +248,14 @@ export default async function handler(req, res) {
 Você está escrevendo a edição mensal da sua newsletter pessoal "Leitura de Fio" baseando-se no tema: "${themeTitle}". Descrição do tema: "${themeDescription || ''}".
 
 DIRETRIZ DE ORIGINALIDADE E COMPLETA VARIABILIDADE:
-Evite a todo custo a repetição de estruturas ou parágrafos anteriores. Traga perspectivas físicas, geométricas ou anatômicas totalmente novas sobre o tema. Se você gerou um texto focado em encolhimento na última vez, mude o foco agora para porosidade, finalização, corte tridimensional ou comportamento do fio na umidade de Belo Horizonte. Varie a abertura e a conclusão. Conte pequenas histórias ou faça analogias com design de móveis, arquitetura ou escultura. Cada newsletter gerada deve parecer um ensaio escrito do zero, mantendo a autenticidade humana e técnica.
+Evite a todo custo a repetição de estruturas ou parágrafos anteriores. Traga perspectivas físicas, geométricas ou anatômicas totalmente novas sobre o tema. Se você gerou um texto focado em encolhimento na última vez, mude o foco agora para porosidade, finalização, corte tridimensional ou comportamento do fio na umidade de Belo Horizonte. Varie a abertura e a conclusão. Conte pequenas histórias ou faça analogias com design de móveis, arquitetura ou sculpture. Cada newsletter gerada deve parecer um ensaio escrito do zero, mantendo a autenticidade humana e técnica.
 
 Siga rigorosamente as diretrizes abaixo:
 1. SOE HUMANO, DIRETO E AUTÊNTICO: Escreva como uma pessoa real em uma conversa direta, com calor humano e informalidade brasileira. Use expressões informais brasileiras e gírias amigáveis com moderação (ex: "valeu demais", "tô por aqui", "TMJ", "abraço", "obrigado de coração").
 2. EVITE CLICHÊS DE MARKETING E JARGÃO CORPORATIVO: Nunca use frases prontas ou robotizadas (como "ficou linda", "cachos perfeitos", "venha arrasar", "tratamento revolucionário"). Use analogias reais de arquitetura, geometria e física do cabelo (Método Leitura de Fio, saúde real do fio). NUNCA utilize o termo "corte a seco" ou "corte seco" no corpo do e-mail.
 3. ESTRUTURA PERSUASIVA E TÉCNICA:
    - Explique o comportamento físico do cacho e sua curvatura (porosidade, distribuição de peso, caimento).
-   - Relembre suavemente que o atendimento no Studio do Jon é individual e exclusivo, com horários disputados de quarta a sábado.
+   - Relembre suavemente que o atendimento no Studio do Jon é individual e exclusive, com horários disputados de quarta a sábado.
    - Traga a segurança lógica de que a curvatura natural do fio, quando respeitada geometricamente, traz praticidade e beleza real.
 4. VARIABILIDADE MÁXIMA: Escreva um texto corrido fluido, mudando a ordem dos argumentos e a estrutura dos parágrafos em relação aos e-mails anteriores. O texto deve surpreender a leitora com uma abordagem fresca.
 
@@ -438,10 +320,9 @@ Use as seguintes tags no "bodyHtml":
       return res.status(400).json({ error: 'subject e htmlBody são obrigatórios' });
     }
 
-    const hasAnySender = Boolean(MAILGUN_API_KEY || RESEND_API_KEY || MAILERSEND_API_KEY || hasSmtpConfig);
-    if (!hasAnySender) {
+    if (!MAILERSEND_API_KEY) {
       return res.status(500).json({ 
-        error: 'Nenhum serviço de e-mail configurado. Configure MAILERSEND_API_KEY, RESEND_API_KEY, MAILGUN_API_KEY ou os parâmetros de SMTP (Titan) nas variáveis da Vercel.' 
+        error: 'Chave de API do MailerSend não configurada. Configure MAILERSEND_API_KEY nas variáveis da Vercel.' 
       });
     }
 
@@ -450,49 +331,7 @@ Use as seguintes tags no "bodyHtml":
     // ── TEST MODE ─────────────────────────────────────────────────────────────
     if (testEmail) {
       try {
-        let messageId = 'test-send-ok';
-
-        if (MAILERSEND_API_KEY) {
-          messageId = await sendMailerSend(testEmail, 'Teste', subject, fullHtml);
-        } else if (MAILGUN_API_KEY) {
-          messageId = await sendMailgun(testEmail, 'Teste', subject, fullHtml);
-        } else if (RESEND_API_KEY) {
-          const resResend = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${RESEND_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              from: FROM_EMAIL,
-              to: [testEmail],
-              subject,
-              html: fullHtml
-            })
-          });
-          if (!resResend.ok) {
-            const errText = await resResend.text();
-            throw new Error(`Resend Error ${resResend.status}: ${errText}`);
-          }
-          const resendData = await resResend.json();
-          messageId = resendData.id || 'resend-ok';
-        } else if (hasSmtpConfig) {
-          const transporter = nodemailer.createTransport({
-            host: smtpHost,
-            port: parseInt(smtpPort, 10),
-            secure: smtpSecure,
-            auth: { user: smtpUser, pass: smtpPass },
-            tls: { rejectUnauthorized: false }
-          });
-          const info = await transporter.sendMail({
-            from: FROM_EMAIL,
-            to: testEmail,
-            subject,
-            html: fullHtml
-          });
-          messageId = info.messageId || 'smtp-ok';
-        }
-
+        const messageId = await sendMailerSend(testEmail, 'Teste', subject, fullHtml);
         return res.status(200).json({ success: true, mode: 'test', messageId, sent: 1 });
       } catch (err) {
         console.error('Test email send error:', err.message);
@@ -535,148 +374,48 @@ Use as seguintes tags no "bodyHtml":
     let lastMessageId = '';
 
     try {
-      if (MAILERSEND_API_KEY) {
-        // MailerSend Bulk Sending, with automatic SMTP fallback on failure (e.g. account under review / rate limit)
-        const CHUNK_SIZE = 500;
-        try {
-          for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-            const chunk = recipients.slice(i, i + CHUNK_SIZE);
-            const bulkEmails = chunk.map(r => ({
-              from: {
-                email: 'contato@ojonquecortou.com.br',
-                name: 'O Jon Que Cortou'
-              },
-              to: [
-                {
-                  email: r.email,
-                  name: r.name
-                }
-              ],
-              subject: subject,
-              html: fullHtml.replace(/{nome}/g, r.name),
-              headers: [
-                {
-                  name: 'List-Unsubscribe',
-                  value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
-                }
-              ]
-            }));
-
-            const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(bulkEmails)
-            });
-
-            if (!resBulk.ok) {
-              const errText = await resBulk.text();
-              throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
+      // MailerSend Bulk Sending
+      const CHUNK_SIZE = 500;
+      for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+        const chunk = recipients.slice(i, i + CHUNK_SIZE);
+        const bulkEmails = chunk.map(r => ({
+          from: {
+            email: 'contato@ojonquecortou.com.br',
+            name: 'O Jon Que Cortou'
+          },
+          to: [
+            {
+              email: r.email,
+              name: r.name
             }
-
-            const bulkData = await resBulk.json();
-            lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
-            sent += chunk.length;
-          }
-        } catch (msErr) {
-          console.error('MailerSend send failed:', msErr.message);
-          if (!hasSmtpConfig) throw msErr;
-
-          console.warn('Falling back to SMTP for remaining recipients.');
-          const remaining = recipients.slice(sent);
-          const result = await sendViaSmtpSequential(remaining, subject, fullHtml);
-          sent += result.sent;
-          errors += result.errors;
-          if (result.lastMessageId) lastMessageId = result.lastMessageId;
-        }
-      }
-      else if (MAILGUN_API_KEY) {
-        // Mailgun Batch Sending
-        const basicAuth = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
-        const url = `https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`;
-        const batchHtml = fullHtml.replace(/{nome}/g, '%recipient.name%');
-        const CHUNK_SIZE = 950;
-
-        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-          const chunk = recipients.slice(i, i + CHUNK_SIZE);
-          const recipientVariables = {};
-          const toEmails = [];
-
-          chunk.forEach(r => {
-            toEmails.push(r.email);
-            recipientVariables[r.email] = { name: r.name };
-          });
-
-          const bodyParams = new URLSearchParams();
-          bodyParams.append('from', FROM_EMAIL);
-          bodyParams.append('subject', subject);
-          bodyParams.append('html', batchHtml);
-          bodyParams.append('recipient-variables', JSON.stringify(recipientVariables));
-          bodyParams.append('h:List-Unsubscribe', `<${UNSUBSCRIBE_BASE}%recipient.email%>`);
-          bodyParams.append('h:List-Unsubscribe-Post', 'List-Unsubscribe=One-Click');
-          bodyParams.append('o:tag', 'newsletter');
-
-          toEmails.forEach(email => bodyParams.append('to', email));
-
-          const resMailgun = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Basic ${basicAuth}`,
-              'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: bodyParams
-          });
-
-          if (!resMailgun.ok) {
-            const errText = await resMailgun.text();
-            throw new Error(`Mailgun batch error ${resMailgun.status}: ${errText}`);
-          }
-          const resData = await resMailgun.json();
-          lastMessageId = resData.id || 'mailgun-batch-ok';
-          sent += chunk.length;
-        }
-      }
-      else if (RESEND_API_KEY) {
-        // Resend Batch Sending
-        const CHUNK_SIZE = 100; // Resend limit is 100 emails per batch call
-        for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-          const chunk = recipients.slice(i, i + CHUNK_SIZE);
-          const batchEmails = chunk.map(r => ({
-            from: FROM_EMAIL,
-            to: [r.email],
-            subject: subject,
-            html: fullHtml.replace(/{nome}/g, r.name),
-            headers: {
-              'List-Unsubscribe': `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
+          ],
+          subject: subject,
+          html: fullHtml.replace(/{nome}/g, r.name),
+          headers: [
+            {
+              name: 'List-Unsubscribe',
+              value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
             }
-          }));
+          ]
+        }));
 
-          const resResend = await fetch('https://api.resend.com/emails/batch', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${RESEND_API_KEY}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(batchEmails)
-          });
+        const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${MAILERSEND_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bulkEmails)
+        });
 
-          if (!resResend.ok) {
-            const errText = await resResend.text();
-            throw new Error(`Resend batch error ${resResend.status}: ${errText}`);
-          }
-          const resData = await resResend.json();
-          lastMessageId = (resData.data && resData.data[0]?.id) || 'resend-batch-ok';
-          sent += chunk.length;
+        if (!resBulk.ok) {
+          const errText = await resBulk.text();
+          throw new Error(`MailerSend Bulk Error ${resBulk.status}: ${errText}`);
         }
-      } 
-      else if (hasSmtpConfig) {
-        // SMTP Sequential sending (e.g. Titan Email)
-        const result = await sendViaSmtpSequential(recipients, subject, fullHtml);
-        sent += result.sent;
-        errors += result.errors;
-        if (result.lastMessageId) lastMessageId = result.lastMessageId;
+
+        const bulkData = await resBulk.json();
+        lastMessageId = bulkData.bulk_email_id || 'mailersend-bulk-ok';
+        sent += chunk.length;
       }
 
       // Save to Firestore
