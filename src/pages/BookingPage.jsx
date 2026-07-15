@@ -1426,6 +1426,11 @@ const BookingPage = () => {
       }
     };
 
+    const getCookie = (name) => {
+      const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+      return match ? decodeURIComponent(match[1]) : null;
+    };
+
     let metaPixelEventFired = false;
     const fireMetaPixelConversion = () => {
       if (metaPixelEventFired) return;
@@ -1446,10 +1451,26 @@ const BookingPage = () => {
       }
       // Server-side backup: the browser pixel gets blocked by iOS ATT / in-app browsers often
       // enough that it alone undercounts bookings, so CAPI mirrors the same event with dedup.
+      // fbc/fbp tie this event back to the ad click; em/ph (hashed server-side) cover the gap
+      // when those cookies got dropped by an in-app browser.
+      let fbc = getCookie('_fbc');
+      if (!fbc) {
+        const fbclid = new URLSearchParams(window.location.search).get('fbclid');
+        if (fbclid) fbc = `fb.1.${Date.now()}.${fbclid}`;
+      }
+      const fbp = getCookie('_fbp');
       fetch('/api/meta-capi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ eventName: 'Schedule', eventId, eventData })
+        body: JSON.stringify({
+          eventName: 'Schedule',
+          eventId,
+          eventData,
+          fbc: fbc || undefined,
+          fbp: fbp || undefined,
+          email: bookingPayload.clientEmail || undefined,
+          phone: bookingPayload.clientPhone || undefined
+        })
       }).catch(capiErr => console.warn('Erro ao disparar Meta CAPI:', capiErr));
     };
 

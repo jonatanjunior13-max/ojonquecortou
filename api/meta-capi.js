@@ -1,9 +1,27 @@
+import crypto from 'crypto';
+
+// Meta requires PII match keys as lowercase-trimmed SHA-256 hashes, never raw values.
+const hashValue = (value) => crypto.createHash('sha256').update(value).digest('hex');
+
+const hashEmail = (email) => {
+  const normalized = (email || '').trim().toLowerCase();
+  return normalized ? hashValue(normalized) : null;
+};
+
+const hashPhone = (phone) => {
+  let digits = (phone || '').replace(/\D/g, '');
+  if (!digits) return null;
+  // Meta expects E.164 digits (country code, no leading +); local numbers are stored without it.
+  if (!digits.startsWith('55')) digits = `55${digits}`;
+  return hashValue(digits);
+};
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method Not Allowed' });
   }
 
-  const { eventName, eventData, pixelId, eventId } = req.body;
+  const { eventName, eventData, pixelId, eventId, fbc, fbp, email, phone } = req.body;
   const token = process.env.META_CAPI_TOKEN;
 
   if (!token) {
@@ -15,6 +33,19 @@ export default async function handler(req, res) {
   // Facebook Conversions API endpoint
   const url = `https://graph.facebook.com/v19.0/${targetPixel}/events?access_token=${token}`;
 
+  // fbc/fbp let Meta tie this server-side event back to the ad click that started the session;
+  // em/ph (hashed) improve match quality when fbc/fbp are missing (e.g. in-app browser cookie loss).
+  const userData = {
+    client_user_agent: req.headers['user-agent'],
+    client_ip_address: req.headers['x-forwarded-for'] || req.socket.remoteAddress
+  };
+  if (fbc) userData.fbc = fbc;
+  if (fbp) userData.fbp = fbp;
+  const hashedEmail = hashEmail(email);
+  if (hashedEmail) userData.em = [hashedEmail];
+  const hashedPhone = hashPhone(phone);
+  if (hashedPhone) userData.ph = [hashedPhone];
+
   const payload = {
     data: [
       {
@@ -24,10 +55,7 @@ export default async function handler(req, res) {
         event_id: eventId || undefined,
         action_source: 'website',
         event_source_url: req.headers.referer || 'https://www.ojonquecortou.com.br/',
-        user_data: {
-          client_user_agent: req.headers['user-agent'],
-          client_ip_address: req.headers['x-forwarded-for'] || req.socket.remoteAddress
-        },
+        user_data: userData,
         custom_data: eventData || {}
       }
     ]
