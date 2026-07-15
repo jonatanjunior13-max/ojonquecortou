@@ -109,6 +109,7 @@ const AdminFinancial = () => {
   const [ledgerSearch, setLedgerSearch] = useState('');
   const [ledgerTypeFilter, setLedgerTypeFilter] = useState('todos'); // 'todos', 'servico', 'produto', 'saida'
   const [ledgerMethodFilter, setLedgerMethodFilter] = useState('todos');
+  const [productSearch, setProductSearch] = useState('');
 
   // Packages Management states
   const [packageSearch, setPackageSearch] = useState('');
@@ -352,6 +353,67 @@ const AdminFinancial = () => {
     });
     return stats;
   }, [filteredTransactions]);
+  
+  // Lista de itens de produtos vendidos para aba de Produtos
+  const productSalesList = useMemo(() => {
+    const list = [];
+    filteredTransactions
+      .filter(t => t.type === 'entrada')
+      .forEach(t => {
+        if (t.productSales && Array.isArray(t.productSales)) {
+          t.productSales.forEach((p, idx) => {
+            const qty = p.quantity || 0;
+            const sellingPrice = p.sellingPrice || 0;
+            const costPrice = p.costPrice || 0;
+            const faturamento = sellingPrice * qty;
+            const custoTotal = costPrice * qty;
+            const lucro = faturamento - custoTotal;
+            
+            list.push({
+              id: `${t.id}_${p.productId || idx}`,
+              date: t.date,
+              clientName: t.clientName || 'Venda Avulsa',
+              productName: p.name || 'Produto sem Nome',
+              quantity: qty,
+              sellingPrice: sellingPrice,
+              costPrice: costPrice,
+              totalSale: faturamento,
+              totalCost: custoTotal,
+              profit: lucro
+            });
+          });
+        } else if (t.isProductSale || t.category === 'venda_produto') {
+          const faturamento = t.value || 0;
+          list.push({
+            id: t.id,
+            date: t.date,
+            clientName: t.clientName || 'Venda Avulsa',
+            productName: t.description || 'Produto',
+            quantity: 1,
+            sellingPrice: faturamento,
+            costPrice: 0,
+            totalSale: faturamento,
+            totalCost: 0,
+            profit: faturamento
+          });
+        }
+      });
+    return list.sort((a, b) => b.date.localeCompare(a.date));
+  }, [filteredTransactions]);
+
+  const totalProductsSold = useMemo(() => {
+    return productSalesList.reduce((sum, item) => sum + item.quantity, 0);
+  }, [productSalesList]);
+
+  const filteredProductSales = useMemo(() => {
+    return productSalesList.filter(item => {
+      const term = productSearch.toLowerCase();
+      return (
+        item.productName.toLowerCase().includes(term) ||
+        item.clientName.toLowerCase().includes(term)
+      );
+    });
+  }, [productSalesList, productSearch]);
 
   // Grupa e consolida atendimentos de clientes por período (combinando serviços e vendas de produtos)
   const detailedAttendanceList = useMemo(() => {
@@ -1245,6 +1307,7 @@ const AdminFinancial = () => {
           { id: 'dashboard', label: 'Gráficos', icon: <TrendingUp size={14} /> },
           { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
           { id: 'atendimentos', label: 'Atendimentos', icon: <Users size={14} /> },
+          { id: 'produtos', label: 'Produtos', icon: <ShoppingBag size={14} /> },
           { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
           { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
           { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
@@ -2167,6 +2230,126 @@ const AdminFinancial = () => {
               </div>
             )}
 
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB: PRODUTOS (LISTA DE PRODUTOS VENDIDOS NO PERÍODO) */}
+      {activeSubTab === 'produtos' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* Resumo de Vendas */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+            <div className="financial-card" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ background: 'rgba(212, 163, 89, 0.1)', color: 'var(--adm-gold)', padding: 12, borderRadius: 8 }}>
+                <ShoppingBag size={24} />
+              </div>
+              <div>
+                <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>Itens Vendidos</span>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '1.8rem' }}>{totalProductsSold}</h2>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>no período selecionado</span>
+              </div>
+            </div>
+
+            <div className="financial-card" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ background: 'rgba(52, 211, 153, 0.1)', color: 'var(--adm-success)', padding: 12, borderRadius: 8 }}>
+                <DollarSign size={24} />
+              </div>
+              <div>
+                <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>Faturamento de Vendas</span>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '1.8rem', color: 'var(--adm-success)' }}>
+                  R$ {productGrossRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </h2>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>bruto consolidado</span>
+              </div>
+            </div>
+
+            <div className="financial-card" style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ background: 'rgba(212, 163, 89, 0.1)', color: 'var(--adm-gold)', padding: 12, borderRadius: 8 }}>
+                <TrendingUp size={24} />
+              </div>
+              <div>
+                <span style={{ fontSize: '0.85rem', color: 'var(--adm-muted)' }}>Lucro Líquido</span>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '1.8rem', color: 'var(--adm-gold)' }}>
+                  R$ {productNetProfit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </h2>
+                <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>
+                  Margem: {productGrossRevenue > 0 ? ((productNetProfit / productGrossRevenue) * 100).toFixed(0) : 0}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabela de Vendas e Filtro de Busca */}
+          <div className="financial-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Relatório Detalhado de Vendas</h3>
+                <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', margin: '4px 0 0 0' }}>
+                  Lista unitária de cada produto comercializado no período filtrado.
+                </p>
+              </div>
+              <div className="search-box" style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--adm-surface)', padding: '6px 12px', borderRadius: 8, border: '0.5px solid var(--adm-rule)', width: '300px' }}>
+                <Search size={16} style={{ color: 'var(--adm-muted)' }} />
+                <input
+                  type="text"
+                  placeholder="Pesquisar por produto ou cliente..."
+                  value={productSearch}
+                  onChange={(e) => setProductSearch(e.target.value)}
+                  style={{ background: 'none', border: 'none', color: 'inherit', fontSize: '0.85rem', width: '100%', outline: 'none' }}
+                />
+              </div>
+            </div>
+
+            <div className="table-responsive">
+              <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--adm-rule)', color: 'var(--adm-muted)', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.05em' }}>
+                    <th style={{ padding: '12px 16px', textAlign: 'left' }}>Data</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'left' }}>Produto</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'left' }}>Cliente</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'center' }}>Qtd</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'right' }}>Preço Venda</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'right' }}>Custo Unit.</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'right' }}>Faturamento</th>
+                    <th style={{ padding: '12px 16px', textAlign: 'right' }}>Lucro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProductSales.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" style={{ textAlign: 'center', padding: 32, color: 'var(--adm-muted)' }}>
+                        Nenhuma venda de produto encontrada para o termo ou período selecionado.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredProductSales.map((item, idx) => {
+                      const [year, month, day] = item.date.split('-');
+                      const formattedDate = `${day}/${month}`;
+                      return (
+                        <tr key={item.id || idx} style={{ borderBottom: '0.5px solid var(--adm-rule)', transition: 'background-color 0.2s' }} className="table-row-hover">
+                          <td style={{ padding: '12px 16px', color: 'var(--adm-muted)' }}>{formattedDate}</td>
+                          <td style={{ padding: '12px 16px', fontWeight: 600 }}>{item.productName}</td>
+                          <td style={{ padding: '12px 16px' }}>{item.clientName}</td>
+                          <td style={{ padding: '12px 16px', textAlign: 'center' }}>{item.quantity}</td>
+                          <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                            R$ {item.sellingPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ padding: '12px 16px', textAlign: 'right', color: 'var(--adm-muted)' }}>
+                            R$ {item.costPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                            R$ {item.totalSale.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                          <td style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)' }}>
+                            R$ {item.profit.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
