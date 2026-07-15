@@ -835,7 +835,7 @@ const pages = [
   {
     route: '/servicos',
     title: 'Serviços para Cabelo Cacheado em BH',
-    description: 'Corte a seco, tratamentos e coloração para cachos, com leitura de fio antes de qualquer tesoura. Veja preços e agende no Studio do Jon, BH.',
+    description: 'Corte a seco, tratamento e coloração para cabelo cacheado — com diagnóstico Leitura de Fio antes da tesoura. Veja preços reais e agende em BH.',
     bodyInsert: servicesBody,
     schema: {
       "@context": "https://schema.org",
