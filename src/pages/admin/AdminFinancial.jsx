@@ -268,28 +268,72 @@ const AdminFinancial = () => {
       .reduce((sum, t) => sum + t.value, 0);
   }, [filteredTransactions]);
 
+  // Lista de itens de produtos vendidos para aba de Produtos
+  const productSalesList = useMemo(() => {
+    const list = [];
+    filteredTransactions
+      .filter(t => t.type === 'entrada')
+      .forEach(t => {
+        if (t.productSales && Array.isArray(t.productSales)) {
+          t.productSales.forEach((p, idx) => {
+            const qty = p.quantity || 0;
+            const sellingPrice = p.sellingPrice || 0;
+            
+            // Match with catalog to get cost price if missing or zero
+            const matchedCatalogProduct = products.find(prod => prod.id === p.productId || prod.name === p.name);
+            const costPrice = p.costPrice || matchedCatalogProduct?.costPrice || 0;
+            
+            const faturamento = sellingPrice * qty;
+            const custoTotal = costPrice * qty;
+            const lucro = faturamento - custoTotal;
+            
+            list.push({
+              id: `${t.id}_${p.productId || idx}`,
+              date: t.date,
+              clientName: t.clientName || 'Venda Avulsa',
+              productName: p.name || 'Produto sem Nome',
+              quantity: qty,
+              sellingPrice: sellingPrice,
+              costPrice: costPrice,
+              totalSale: faturamento,
+              totalCost: custoTotal,
+              profit: lucro
+            });
+          });
+        } else if (t.isProductSale || t.category === 'venda_produto') {
+          const faturamento = t.value || 0;
+          // Try to match product by name in description
+          const matchedCatalogProduct = products.find(prod => 
+            t.description && t.description.toLowerCase().includes(prod.name.toLowerCase())
+          );
+          const costPrice = matchedCatalogProduct?.costPrice || 0;
+          const lucro = faturamento - costPrice;
+          
+          list.push({
+            id: t.id,
+            date: t.date,
+            clientName: t.clientName || 'Venda Avulsa',
+            productName: matchedCatalogProduct?.name || t.description || 'Produto',
+            quantity: 1,
+            sellingPrice: faturamento,
+            costPrice: costPrice,
+            totalSale: faturamento,
+            totalCost: costPrice,
+            profit: lucro
+          });
+        }
+      });
+    return list.sort((a, b) => b.date.localeCompare(a.date));
+  }, [filteredTransactions, products]);
+
   // Product cost and profit calculations
   const productCost = useMemo(() => {
-    return filteredTransactions
-      .filter(t => t.type === 'entrada')
-      .reduce((sum, t) => {
-        if (t.productSales && Array.isArray(t.productSales)) {
-          return sum + t.productSales.reduce((s, p) => s + ((p.costPrice || 0) * (p.quantity || 0)), 0);
-        }
-        return sum;
-      }, 0);
-  }, [filteredTransactions]);
+    return productSalesList.reduce((sum, item) => sum + item.totalCost, 0);
+  }, [productSalesList]);
 
   const productGrossRevenue = useMemo(() => {
-    return filteredTransactions
-      .filter(t => t.type === 'entrada')
-      .reduce((sum, t) => {
-        if (t.productSales && Array.isArray(t.productSales)) {
-          return sum + t.productSales.reduce((s, p) => s + ((p.sellingPrice || 0) * (p.quantity || 0)), 0);
-        }
-        return sum;
-      }, 0);
-  }, [filteredTransactions]);
+    return productSalesList.reduce((sum, item) => sum + item.totalSale, 0);
+  }, [productSalesList]);
 
   const productNetProfit = productGrossRevenue - productCost;
 
@@ -354,52 +398,6 @@ const AdminFinancial = () => {
     return stats;
   }, [filteredTransactions]);
   
-  // Lista de itens de produtos vendidos para aba de Produtos
-  const productSalesList = useMemo(() => {
-    const list = [];
-    filteredTransactions
-      .filter(t => t.type === 'entrada')
-      .forEach(t => {
-        if (t.productSales && Array.isArray(t.productSales)) {
-          t.productSales.forEach((p, idx) => {
-            const qty = p.quantity || 0;
-            const sellingPrice = p.sellingPrice || 0;
-            const costPrice = p.costPrice || 0;
-            const faturamento = sellingPrice * qty;
-            const custoTotal = costPrice * qty;
-            const lucro = faturamento - custoTotal;
-            
-            list.push({
-              id: `${t.id}_${p.productId || idx}`,
-              date: t.date,
-              clientName: t.clientName || 'Venda Avulsa',
-              productName: p.name || 'Produto sem Nome',
-              quantity: qty,
-              sellingPrice: sellingPrice,
-              costPrice: costPrice,
-              totalSale: faturamento,
-              totalCost: custoTotal,
-              profit: lucro
-            });
-          });
-        } else if (t.isProductSale || t.category === 'venda_produto') {
-          const faturamento = t.value || 0;
-          list.push({
-            id: t.id,
-            date: t.date,
-            clientName: t.clientName || 'Venda Avulsa',
-            productName: t.description || 'Produto',
-            quantity: 1,
-            sellingPrice: faturamento,
-            costPrice: 0,
-            totalSale: faturamento,
-            totalCost: 0,
-            profit: faturamento
-          });
-        }
-      });
-    return list.sort((a, b) => b.date.localeCompare(a.date));
-  }, [filteredTransactions]);
 
   const totalProductsSold = useMemo(() => {
     return productSalesList.reduce((sum, item) => sum + item.quantity, 0);
