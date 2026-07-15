@@ -2051,8 +2051,8 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
           <div className="booking-step">
             <h2>Selecione o melhor dia e horário</h2>
             
-            {/* Seletor de Profissionais (se houver mais de um ativo) */}
-            {activeProfessionals.length > 1 && (
+            {/* Seletor de Profissionais (se houver pelo menos um ativo) */}
+            {activeProfessionals.length >= 1 && (
               <div className="professional-selector-wrap" style={{ marginBottom: 24, padding: '16px', background: 'var(--panel-bg)', borderRadius: 8, border: '1px solid var(--rule)' }}>
                 <h4 style={{ margin: '0 0 12px 0', fontSize: '0.95rem' }}>Escolha o Profissional:</h4>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
