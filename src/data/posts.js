@@ -1,5 +1,136 @@
 export const posts = [
   {
+    id: 59,
+    slug: 'corte-borboleta-cabelo-ondulado-cacheado-visagismo',
+    title: 'Corte Borboleta em Cabelo Ondulado e Cacheado: A Geometria do Volume e o Visagismo',
+    seoTitle: 'Corte Borboleta em Cabelo Ondulado e Cacheado | Studio do Jon',
+    excerpt: 'Quer adotar o famoso Corte Borboleta (Butterfly Cut)? Entenda como adaptar o corte em camadas para cabelos ondulados e cacheados usando visagismo e a Leitura de Fio.',
+    metaDescription: 'Quer adotar o famoso Corte Borboleta (Butterfly Cut)? Entenda como adaptar o corte em camadas para cabelos ondulados e cacheados usando visagismo e a Leitura de Fio.',
+    keywords: 'corte borboleta cabelo ondulado, corte borboleta cacheado, butterfly cut cachos, corte em camadas cabelo cacheado, visagismo cabelos cacheados, corte hibrido bh, Studio do Jon',
+    date: '15 de Julho, 2026',
+    datePublished: '2026-07-15',
+    dateModified: '2026-07-15',
+    author: 'Jon',
+    category: 'Corte',
+    image: '/blog-corte-borboleta-cabelo-ondulado-cacheado-visagismo.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O Corte Borboleta funciona em cabelos ondulados?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, funciona perfeitamente! No cabelo ondulado (tipo 2), o Corte Borboleta cria uma ilusão de densidade e movimento espetacular, pois as camadas curtas no topo ativam as ondas que costumam ficar pesadas e esticadas com o comprimento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como o Corte Borboleta é adaptado para cabelos muito cacheados?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Em cachos mais fechados (tipo 3), adaptamos a distribuição de peso. Em vez de desconectar demais as camadas (o que criaria o efeito pirâmide ou buracos no volume), usamos o método Híbrido para suavizar a transição entre o topo e a base, desenhando uma moldura que acompanha o formato do rosto."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O Corte Borboleta diminui o comprimento do cabelo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não necessariamente. A grande vantagem do Corte Borboleta é que ele cria a ilusão de um cabelo curto na frente e no topo por causa das camadas curtas (as asas da borboleta), enquanto mantém o comprimento total da base intacto na parte de trás."
+          }
+        }
+      ]
+    },
+    content: `<blockquote><p><strong>TL;DR:</strong> O Corte Borboleta (Butterfly Cut) é a grande tendência que une a praticidade do cabelo curto ao redor do rosto com o comprimento longo na base. Para cabelos ondulados e cacheados, a adaptação técnica é fundamental: usamos o visagismo para calcular a altura das camadas faciais e o Corte Híbrido para controlar o caimento geométrico tridimensional, evitando falhas e o indesejado efeito pirâmide.</p></blockquote>
+
+    <p>Se você rola o feed do TikTok ou do Instagram por alguns minutos, é quase certo que já cruzou com o famoso <strong>Corte Borboleta</strong> (ou <em>Butterfly Cut</em>). Caracterizado por camadas curtas e volumosas que emolduram o rosto — lembrando as asas de uma borboleta — e uma base longa na parte de trás, ele virou o queridinho das mulheres que querem mudar o visual sem abrir mão do comprimento.</p>
+
+    <p>Mas aqui vem a realidade física: a imensa maioria dos tutoriais que você vê por aí é feita em cabelos lisos ou escovados. Quando tentamos transferir essa mesma técnica de forma direta para cabelos ondulados, cacheados ou crespos, o resultado pode ser desastroso. Sem o controle geométrico correto da curvatura, as camadas curtas demais no topo podem "descolar" da base longa, criando buracos no volume, frizz excessivo ou o temido efeito pirâmide.</p>
+
+    <p>No Studio, a gente não reproduz receitas prontas. Vou te explicar como lemos a física do seu fio e usamos o <strong>visagismo</strong> para adaptar o Corte Borboleta para a sua curvatura natural, garantindo balanço, definição e o volume dos seus sonhos.</p>
+
+    <h2>A Geometria do Corte Borboleta nos Cachos</h2>
+    <p>O Corte Borboleta é, na verdade, um corte de duas seções principais desconectadas de forma estratégica. A seção superior (do topo da cabeça até a linha da franja e laterais faciais) é cortada mais corta, na altura do queixo ou maxilar. A seção inferior (nuca e base de trás) permanece longa.</p>
+
+    <p>No cabelo liso, essa desconexão cria um degradê suave. No cabelo ondulado e cacheado, o comportamento elástico do fio entra em ação. Como vimos no artigo sobre o fator encolhimento, os fios mais curtos do topo da cabeça pesam menos e, consequentemente, encolhem muito mais do que a base longa de trás. Se o profissional cortar ambas as partes sem compensar essa variação mecânica, o cabelo seco parecerá ter dois cortes completamente diferentes e desconectados na mesma cabeça.</p>
+
+    <p>Para desenhar a borboleta perfeita nos cachos, nós distribuímos o peso de forma tridimensional:</p>
+    <ul>
+      <li><strong>Ângulo de Projeção:</strong> Elevamos as mechas do topo em ângulos precisos para suavizar a transição entre o curto e o longo. Isso evita linhas marcadas de tesoura que dividem o cabelo ao meio.</li>
+      <li><strong>Compensação de Textura:</strong> Se você tem múltiplas texturas na cabeça (por exemplo, mais aberto atrás e mais fechado na coroa), ajustamos o comprimento de cada mecha individualmente para que, quando secas, as camadas se encaixem perfeitamente.</li>
+      <li><strong>Lapidação das Pontas:</strong> O corte deve preservar a integridade da espiral. Pontas cortadas no ângulo errado perdem a definição e geram o frizz que finalizador nenhum resolve.</li>
+    </ul>
+
+    <h2>O Papel do Visagismo: Moldando o Rosto com Volume</h2>
+    <p>O visagismo é o estudo das linhas, formas e proporções do rosto para expressar a identidade de cada pessoa. No Corte Borboleta, a altura da primeira camada (a "asa curta") define toda a expressão facial.</p>
+    <p>Não existe uma altura padrão. O ponto inicial das camadas deve ser projetado de acordo com a sua estrutura óssea e o que desejamos destacar:</p>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; text-align: left; border: 0.5px solid var(--adm-rule, rgba(255,255,255,0.08));">
+      <thead>
+        <tr style="background: rgba(220, 163, 84, 0.1); color: var(--adm-gold, #DCA354);">
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Formato do Rosto</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Posicionamento da Camada Facial</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Efeito Visagista Desejado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Rosto Redondo / Quadrado</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Abaixo da linha do maxilar</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Alonga a silhueta facial e suaviza os ângulos da mandíbula.</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Rosto Oval / Coração</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Na altura das maçãs do rosto (zigomático)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Destaca os olhos e preenche o volume lateral, trazendo equilíbrio.</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Rosto Longo</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Na altura do nariz / franja cortina longa</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Quebra a linha vertical do rosto, criando volume horizontal nas laterais.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Como a Leitura de Fio Salva Seu Visual</h2>
+    <p>O maior erro dos salões tradicionais ao fazer cortes em camadas é tratar todas as curvaturas com a mesma técnica. Na nossa <strong>Leitura de Fio</strong>, nós mapeamos fisicamente as propriedades do seu cabelo antes de qualquer ação da tesoura:</p>
+    <ul>
+      <li><strong>Densidade (fios por cm²):</strong> Cabelos com baixa densidade precisam de camadas menos desconectadas para não deixar as pontas de trás ralas e finas. Já cabelos com alta densidade exigem a remoção de peso interno para dar leveza e balanço.</li>
+      <li><strong>Porosidade e Elasticidade:</strong> Cabelos porosos na raiz e pontas respondem de formas diferentes à umidade de Belo Horizonte. Estruturar as camadas respeitando a taxa de elasticidade evita que o corte mude completamente de formato no primeiro Day After.</li>
+    </ul>
+
+    <h2>Como Finalizar o Corte Borboleta em Casa</h2>
+    <p>O Corte Borboleta ganha vida com o movimento. Para finalizar e destacar as camadas faciais sem depender de ferramentas térmicas, a dica é focar na mecânica da secagem:</p>
+    <ol>
+      <li><strong>Fitagem Seletiva:</strong> Aplique seu creme de preferência dividindo o cabelo nas seções do corte. Nas camadas faciais mais curtas, faça a fitagem puxando os fios para a frente do rosto. Isso ajuda as pontas a curvarem de forma natural para trás quando secas, emoldurando as maçãs.</li>
+      <li><strong>Uso do Difusor para Volume de Raiz:</strong> Seque as camadas superiores com o difusor inclinado para cima para incentivar o volume no topo da cabeça. A base longa pode ser seca de forma mais alongada para manter o comprimento visual.</li>
+      <li><strong>Day After Prático:</strong> Use um spray reativador leve nas mechas do contorno facial e amasse levemente com as mãos para resgatar a definição das camadas que emolduram o rosto.</li>
+    </ol>
+
+    <h2>Agende Sua Transformação no Studio do Jon</h2>
+    <p>Quer adotar a tendência do Corte Borboleta com a segurança de um método lógico e personalizado para a sua curvatura? No Studio do Jon, em Belo Horizonte (Caiçaras), nós planejamos cada camada de acordo com a física do seu fio.</p>
+    <p>Nosso <strong><a href="/servicos/corte-hibrido">Corte Híbrido (R$ 190)</a></strong> inclui a <strong>Leitura de Fio</strong> completa e a consultoria de <strong>Visagismo</strong> para alinhar a geometria do corte aos seus traços e estilo de vida. Agende seu horário de quarta a sábado e tenha um cabelo que une volume, definição e movimento real.</p>
+
+    <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+      <h3>Dê asas ao volume dos seus cachos.</h3>
+      <p>Descubra a versão do Corte Borboleta perfeita para o seu rosto. Agende seu horário com o Jon.</p>
+      <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Corte Híbrido no Studio</a>
+    </div>
+
+    <h2>Perguntas Frequentes</h2>
+    <h3>O Corte Borboleta funciona em cabelos ondulados?</h3>
+    <p>Sim, funciona perfeitamente! No cabelo ondulado (tipo 2), o Corte Borboleta cria uma ilusão de densidade e movimento espetacular, pois as camadas curtas no topo ativam as ondas que costumam ficar pesadas e esticadas com o comprimento.</p>
+
+    <h3>Como o Corte Borboleta é adaptado para cabelos muito cacheados?</h3>
+    <p>Em cachos mais fechados (tipo 3), adaptamos a distribuição de peso. Em vez de desconectar demais as camadas (o que criaria o efeito pirâmide ou buracos no volume), usamos o método Híbrido para suavizar a transição entre o topo e a base, desenhando uma moldura que acompanha o formato do rosto.</p>
+
+    <h3>O Corte Borboleta diminui o comprimento do cabelo?</h3>
+    <p>Não necessariamente. A grande vantagem do Corte Borboleta é que ele cria a ilusão de um cabelo curto na frente e no topo por causa das camadas curtas (as asas da borboleta), enquanto mantém o comprimento total da base intacto na parte de trás.</p>
+    `
+  },
+  {
     id: 58,
     slug: 'fator-encolhimento-cabelo-cacheado-fisica-geometria',
     title: 'Fator Encolhimento: A Física e a Geometria por Trás do Tamanho Real dos Cachos',

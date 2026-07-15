@@ -38,9 +38,7 @@ async function run() {
     return;
   }
   const data = snap.data();
-  console.log("Keys in settings/studio document:", Object.keys(data));
-  console.log("custom_automations keys:", Object.keys(data.custom_automations || {}));
-  console.log("automations:", data.automations);
+  console.log("Entire settings/studio document data:", JSON.stringify(data, null, 2));
 }
 
 run().then(() => process.exit(0));
