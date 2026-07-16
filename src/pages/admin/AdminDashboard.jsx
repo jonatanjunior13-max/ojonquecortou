@@ -5984,10 +5984,14 @@ Grande abraço, Jon.`;
                 )}
               </div>
               {(() => {
-                const match = clients.find(c => 
-                  (newBooking.clientPhone && c.phone.replace(/\D/g, '') === newBooking.clientPhone.replace(/\D/g, '')) || 
-                  (newBooking.clientName && c.name.toLowerCase().trim() === newBooking.clientName.toLowerCase().trim())
-                );
+                const match = clients.find(c => {
+                  if (!c) return false;
+                  const cPhone = (c.phone || '').replace(/\D/g, '');
+                  const cName = (c.name || '').toLowerCase().trim();
+                  const targetPhone = (newBooking.clientPhone || '').replace(/\D/g, '');
+                  const targetName = (newBooking.clientName || '').toLowerCase().trim();
+                  return (targetPhone && cPhone === targetPhone) || (targetName && cName === targetName);
+                });
                 if (match) {
                   return (
                     <div style={{ background: 'rgba(56,161,105,0.08)', border: '1px solid rgba(56,161,105,0.2)', padding: '8px 12px', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
