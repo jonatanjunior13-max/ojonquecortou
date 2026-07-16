@@ -1,5 +1,159 @@
 export const posts = [
   {
+    id: 60,
+    slug: 'shaggy-cacheado-crespo-camadas-retro-volume-topo',
+    title: 'Shaggy Cacheado e Crespo: O Retorno das Camadas Retrô com Volume no Topo',
+    seoTitle: 'Shaggy Cacheado e Crespo: Camadas Retrô e Volume | Studio do Jon',
+    excerpt: 'O shaggy cacheado e crespo é um corte em camadas desestruturadas com franja que concentra o volume no topo e reduz o peso nas pontas. Entenda a geometria por trás do corte.',
+    metaDescription: 'Adote o shaggy cacheado ou crespo. Descubra a geometria do corte em camadas retrô, como estilizar e evitar o efeito pirâmide com visagismo.',
+    keywords: 'shaggy cacheado, shaggy crespo, shaggy hair cachos, corte em camadas retro, volume no topo, corte de cabelo bh, Studio do Jon',
+    date: '16 de Julho, 2026',
+    datePublished: '2026-07-16',
+    dateModified: '2026-07-16',
+    author: 'Jon',
+    category: 'Corte',
+    image: '/blog-shaggy-cacheado-crespo-camadas-retro-volume-topo.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O Shaggy funciona em todas as curvaturas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim! O shaggy se adapta de ondas tipo 2 a crespos tipo 4. O segredo técnico é ajustar a altura das camadas do topo de acordo com o fator de encolhimento de cada textura de cacho."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A franja do shaggy cacheado encolhe muito?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, o encolhimento é comum. Por isso, a franja deve ser cortada no estado natural do fio, com margem de segurança. Nunca corte a franja com os fios molhados ou esticados para evitar que fique curta demais."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Com qual frequência devo realizar a manutenção do corte?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Recomenda-se a manutenção do shaggy cacheado a cada 3 ou 4 meses. Como as camadas superiores são bem curtas, o crescimento do cabelo tende a acumular peso e reduzir o volume do topo com o tempo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Preciso usar difusor obrigatoriamente para ter o efeito do corte?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não é obrigatório, mas o difusor ajuda a ativar o volume do topo. Se preferir secar ao natural, estimule a raiz com os dedos durante a secagem para garantir a leveza das camadas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O shaggy deixa o cabelo com muito frizz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O corte valoriza a textura natural e o frizz faz parte do estilo despojado. Uma rotina de hidratação mantém os fios saudáveis e brilhantes sem perder o aspecto orgânico e cheio de atitude."
+          }
+        }
+      ]
+    },
+    content: `
+      <p>O shaggy hair está de volta e, para a felicidade de quem tem cabelos com curvatura, ele se tornou um dos estilos mais emblemáticos e pedidos nos salões em 2026. Esqueça as finalizações rígidas ou as camadas simétricas tradicionais. A grande força desse corte está justamente na sua proposta orgânica, moderna e despojada, que valoriza a textura natural dos fios e o caimento tridimensional.</p>
+
+      <blockquote>
+        <strong>TL;DR:</strong> O shaggy cacheado e crespo é um corte em camadas desestruturadas com franja que concentra o volume no topo e reduz o peso nas pontas. Ele funciona perfeitamente para definir curvaturas e trazer um aspecto moderno e despojado sem alterar o comprimento da base.
+      </blockquote>
+
+      <h2>O que é o Shaggy Cacheado e Crespo?</h2>
+      <p>O shaggy hair para cabelos ondulados, cacheados e crespos é uma releitura dos cortes desfiados dos anos 70 que distribui o volume de forma vertical através de camadas curtas e desconectadas.</p>
+      <p>Diferente de um corte degradê tradicional, que busca uma transição suave entre o topo e as pontas, o shaggy aposta na desconexão intencional. As camadas do topo são cortadas consideravelmente mais curtas, criando uma espécie de moldura arredondada em volta do rosto, enquanto os fios de baixo mantêm um comprimento mais alongado e leve. O resultado é um caimento fluido, cheio de atitude e muito movimento.</p>
+
+      <h2>Por que o Shaggy é o Corte Ideal para Cachos e Crespos?</h2>
+      <p>Muitas pessoas com cabelos cacheados e crespos sofrem com o famoso "efeito pirâmide", onde o cabelo fica sem volume no topo da cabeça e excessivamente largo e pesado nas pontas. O shaggy cacheado resolve esse problema de forma geométrica.</p>
+      <p>Ao remover o peso das laterais e das pontas através de camadas desfiadas e concentrar a graduação no topo, o corte distribui o volume verticalmente. Isso significa que as suas ondas ou cachos ganham muito mais leveza para se formarem perto da raiz, eliminando aquele aspecto estático que cortes de base reta costumam causar.</p>
+
+      <h2>Comparativo: Shaggy vs. Corte Reto vs. Degradê Tradicional</h2>
+      <p>Para ajudar a entender as diferenças de caimento e volume, veja a tabela comparativa abaixo:</p>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; margin-bottom: 1.5rem; text-align: left;">
+        <thead>
+          <tr style="border-bottom: 2px solid var(--adm-rule, rgba(255,255,255,0.1));">
+            <th style="padding: 10px; font-weight: bold;">Estilo de Corte</th>
+            <th style="padding: 10px; font-weight: bold;">Distribuição de Volume</th>
+            <th style="padding: 10px; font-weight: bold;">Foco Principal</th>
+            <th style="padding: 10px; font-weight: bold;">Manutenção Estimada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid var(--adm-rule, rgba(255,255,255,0.05));">
+            <td style="padding: 10px; font-weight: bold;">Shaggy Cacheado</td>
+            <td style="padding: 10px;">Concentrado no topo da cabeça</td>
+            <td style="padding: 10px;">Movimento, leveza e estilo retrô</td>
+            <td style="padding: 10px;">3 a 4 meses</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--adm-rule, rgba(255,255,255,0.05));">
+            <td style="padding: 10px; font-weight: bold;">Degradê Tradicional</td>
+            <td style="padding: 10px;">Uniforme ao longo do comprimento</td>
+            <td style="padding: 10px;">Transição suave sem degraus</td>
+            <td style="padding: 10px;">4 a 5 meses</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--adm-rule, rgba(255,255,255,0.05));">
+            <td style="padding: 10px; font-weight: bold;">Corte Reto (Base Reta)</td>
+            <td style="padding: 10px;">Acumulado nas pontas (efeito pirâmide)</td>
+            <td style="padding: 10px;">Sensação de maior densidade e peso</td>
+            <td style="padding: 10px;">5 a 6 meses</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Como Funciona a Geometria do Shaggy nos Cabelos com Curvatura</h2>
+      
+      <h3>Distribuição Vertical de Volume</h3>
+      <p>Na física do cabelo cacheado, o peso acumulado nas pontas puxa o cacho para baixo, alisando a raiz. No shaggy, trabalhamos uma linha de corte vertical, onde o topo recebe camadas que reduzem esse peso, permitindo que a raiz ganhe volume natural e os fios tenham espaço livre para se movimentar.</p>
+
+      <h3>A Franja como Emolduramento do Rosto</h3>
+      <p>A franja é elemento indispensável no shaggy. Ela não é reta ou pesada; pelo contrário, é cortada em camadas despojadas que se integram com as costeletas e as primeiras camadas do topo. Isso cria uma moldura perfeita para os olhos e maçãs do rosto, valorizando a fisionomia através do visagismo.</p>
+
+      <h3>Método de Corte no Estado Natural do Fio</h3>
+      <p>Para obter o melhor caimento tridimensional, realizamos o corte no estado natural do fio. Dessa forma, conseguimos prever exatamente como cada mola ou onda vai se comportar após secar, respeitando o fator de encolhimento de cada área da cabeça — que costuma variar bastante entre a nuca, as laterais e o topo.</p>
+
+      <h2>Passo a Passo para Estilizar o Seu Shaggy em Casa</h2>
+      <p>Estilizar o shaggy é incrivelmente prático, pois o próprio corte já entrega a estrutura e a definição necessárias. Siga este roteiro simples:</p>
+      <ol>
+        <li><strong>Higienização e Condicionamento:</strong> Use produtos nutritivos que não pesem nos fios.</li>
+        <li><strong>Aplicação do Finalizador:</strong> Com o cabelo úmido, aplique um creme de pentear leve ou um ativador de cachos usando a técnica de fitagem suave.</li>
+        <li><strong>Estimulação dos Cachos:</strong> Amasse os fios de baixo para cima, direcionando o movimento para o couro cabeludo para ativar a memória das ondas.</li>
+        <li><strong>Secagem Estratégica:</strong> Seque com um difusor de cabeça para baixo para estimular o volume no topo e a definição das camadas superiores.</li>
+      </ol>
+
+      <h2>Erros Comuns ao Adotar e Finalizar o Shaggy</h2>
+      <p>O maior erro é tentar finalizar o shaggy buscando uma simetria perfeita ou o controle absoluto do frizz. O charme desse corte está no visual despojado e orgânica. Outro deslize comum é usar cremes muito pesados ou óleos em excesso no topo da cabeça, o que anula o volume conquistado pelas camadas curtas e deixa os fios com aspecto pesado.</p>
+
+      <h2>Perguntas Frequentes sobre Shaggy Cacheado</h2>
+      <h3>O Shaggy funciona em todas as curvaturas?</h3>
+      <p>Sim! O shaggy se adapta de ondas tipo 2 a crespos tipo 4. O segredo técnico é ajustar a altura das camadas do topo de acordo com o fator de encolhimento de cada textura de cacho.</p>
+      
+      <h3>A franja do shaggy cacheado encolhe muito?</h3>
+      <p>Sim, o encolhimento é comum. Por isso, a franja deve ser cortada no estado natural do fio, com margem de segurança. Nunca corte a franja com os fios molhados ou esticados para evitar que fique curta demais.</p>
+
+      <h3>Com qual frequência devo realizar a manutenção do corte?</h3>
+      <p>Recomenda-se a manutenção do shaggy cacheado a cada 3 ou 4 meses. Como as camadas superiores são bem curtas, o crescimento do cabelo tende a acumular peso e reduzir o volume do topo com o tempo.</p>
+
+      <h3>Preciso usar difusor obrigatoriamente para ter o efeito do corte?</h3>
+      <p>Não é obrigatório, mas o difusor ajuda a ativar o volume do topo. Se preferir secar ao natural, estimule a raiz com os dedos durante a secagem para garantir a leveza das camadas.</p>
+
+      <h3>O shaggy deixa o cabelo com muito frizz?</h3>
+      <p>O corte valoriza a textura natural e o frizz faz parte do estilo despojado. Uma rotina de hidratação mantém os fios saudáveis e brilhantes sem perder o aspecto orgânico e cheio de atitude.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer adotar o Shaggy e valorizar seus cachos?</h3>
+        <p>Agende um diagnóstico técnico e corte geométrico personalizado no Studio do Jon, em Belo Horizonte.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 59,
     slug: 'corte-borboleta-cabelo-ondulado-cacheado-visagismo',
     title: 'Corte Borboleta em Cabelo Ondulado e Cacheado: A Geometria do Volume e o Visagismo',
