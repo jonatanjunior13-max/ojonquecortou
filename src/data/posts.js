@@ -2497,6 +2497,7 @@ export const posts = [
       ]
     },
     title: 'Você Tem Cabelo Ondulado e Não Sabe? Como Identificar e Cuidar',
+    seoTitle: 'Ondulado ou Liso com Frizz? Como Identificar',
     excerpt: 'Acha que seu cabelo é liso, indisciplinado e cheio de frizz? Descubra se você na verdade tem cabelos ondulados e como cuidar deles para revelar ondas perfeitas.',
     metaDescription: 'Será que seu cabelo é liso com frizz ou ondulado? Descubra como identificar as curvaturas 2A, 2B e 2C em Belo Horizonte e cuide com o especialista Jon.',
     keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, cabelo ondulado ou liso com frizz, especialista em cachos bh, transição capilar bh',
