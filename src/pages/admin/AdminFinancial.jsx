@@ -417,7 +417,6 @@ const AdminFinancial = () => {
   const detailedAttendanceList = useMemo(() => {
     const list = [];
     const completed = filteredBookings.filter(b => b.status === 'finalizado');
-    const productSales = filteredTransactions.filter(t => t.type === 'entrada' && (t.isProductSale || t.category === 'venda_produto'));
 
     // Agrupamento chave: clientName_date
     const clientVisitMap = {};
@@ -436,42 +435,35 @@ const AdminFinancial = () => {
       };
     });
 
-    // Mescla vendas de produtos ocorridas na mesma data para a mesma cliente
-    productSales.forEach(t => {
-      const key = `${(t.clientName || '').trim().toLowerCase()}_${t.date}`;
-      const productsList = (t.productSales || []).map(p => ({
-        name: p.name || 'Produto',
-        quantity: p.quantity || 1,
-        price: (p.sellingPrice || 0) * (p.quantity || 1)
-      }));
-
-      if (productsList.length === 0) {
-        productsList.push({
-          name: t.description || 'Produto',
-          quantity: 1,
-          price: t.value || 0
-        });
-      }
+    // Mescla as vendas de produtos do productSalesList no mesmo mapa ou cria novas visitas de produto
+    productSalesList.forEach(pSale => {
+      const key = `${pSale.clientName.trim().toLowerCase()}_${pSale.date}`;
+      
+      const prodItem = {
+        name: pSale.productName,
+        quantity: pSale.quantity,
+        price: pSale.totalSale
+      };
 
       if (clientVisitMap[key]) {
-        clientVisitMap[key].products.push(...productsList);
-        clientVisitMap[key].totalValue += t.value;
+        clientVisitMap[key].products.push(prodItem);
+        clientVisitMap[key].totalValue += pSale.totalSale;
       } else {
         clientVisitMap[key] = {
-          date: t.date,
-          time: t.time || '00:00',
-          clientName: t.clientName || 'Venda Avulsa',
+          date: pSale.date,
+          time: '00:00', // Venda avulsa
+          clientName: pSale.clientName,
           clientPhone: '',
           services: [],
-          products: productsList,
-          totalValue: t.value,
+          products: [prodItem],
+          totalValue: pSale.totalSale,
           type: 'produto'
         };
       }
     });
 
     return Object.values(clientVisitMap).sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
-  }, [filteredBookings, filteredTransactions]);
+  }, [filteredBookings, productSalesList]);
 
   // Agrega totais de clientes atendidos, receitas de serviços e produtos por Dia, Semana e Mês
   const attendanceAggregatedStats = useMemo(() => {
