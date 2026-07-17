@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { Plus, Edit2, Trash2, ArrowUp, Scissors, Package, Beaker } from 'lucide-react';
+import { Plus, Edit2, Trash2, ArrowUp, Scissors, Package, Beaker, ShoppingCart, X, Check } from 'lucide-react';
 import './Admin.css';
 
 const SEED_PRODUCTS = [
@@ -27,6 +27,125 @@ const AdminInventory = () => {
   const isDemoMode = !db;
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+
+  // ── Exit Modal State ────────────────────────────────────────────
+  const [showExitModal, setShowExitModal] = useState(false);
+  const [exitType, setExitType] = useState('uso'); // 'uso' | 'venda'
+  const [exitCart, setExitCart] = useState([]);
+  const [exitSearch, setExitSearch] = useState('');
+  const [exitSelectedId, setExitSelectedId] = useState('');
+  const [exitQty, setExitQty] = useState(1);
+  const [exitPayment, setExitPayment] = useState('Pix');
+  const [exitMsg, setExitMsg] = useState('');
+
+  const openExitModal = () => {
+    setExitType('uso');
+    setExitCart([]);
+    setExitSearch('');
+    setExitSelectedId('');
+    setExitQty(1);
+    setExitPayment('Pix');
+    setExitMsg('');
+    setShowExitModal(true);
+  };
+
+  const closeExitModal = () => {
+    setShowExitModal(false);
+    setExitCart([]);
+    setExitSearch('');
+    setExitSelectedId('');
+    setExitQty(1);
+    setExitPayment('Pix');
+    setExitMsg('');
+  };
+
+  const handleAddExitItem = () => {
+    if (!exitSelectedId) { setExitMsg('Selecione um produto.'); return; }
+    const product = products.find(p => p.id === exitSelectedId);
+    if (!product) return;
+    const qty = Number(exitQty);
+    if (isNaN(qty) || qty <= 0) { setExitMsg('Quantidade inválida.'); return; }
+    if (qty > product.quantity) { setExitMsg(`Estoque insuficiente. Disponível: ${product.quantity} un.`); return; }
+    const existing = exitCart.findIndex(i => i.productId === product.id);
+    if (existing !== -1) {
+      const newCart = [...exitCart];
+      const newQty = newCart[existing].quantity + qty;
+      if (newQty > product.quantity) { setExitMsg('Quantidade total excede o estoque.'); return; }
+      newCart[existing].quantity = newQty;
+      setExitCart(newCart);
+    } else {
+      setExitCart(prev => [...prev, { productId: product.id, quantity: qty }]);
+    }
+    setExitSearch('');
+    setExitSelectedId('');
+    setExitQty(1);
+    setExitMsg('');
+  };
+
+  const handleConfirmExit = async () => {
+    if (exitCart.length === 0) { setExitMsg('Adicione pelo menos um produto.'); return; }
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const updatedProducts = [...products];
+      for (const item of exitCart) {
+        const product = products.find(p => p.id === item.productId);
+        if (!product) continue;
+        const newQty = product.quantity - item.quantity;
+        const costVal = (product.costPrice || 0) * item.quantity;
+        // Update stock
+        if (isDemoMode) {
+          const idx = updatedProducts.findIndex(p => p.id === product.id);
+          if (idx !== -1) updatedProducts[idx] = { ...updatedProducts[idx], quantity: newQty };
+        } else {
+          await updateDoc(doc(db, 'products', product.id), { quantity: newQty });
+        }
+        // Log CMV (cost)
+        const cmvPayload = {
+          date: todayStr,
+          type: 'saida',
+          category: 'estoque',
+          value: costVal,
+          description: exitType === 'uso'
+            ? `Uso do Salão: ${product.name} (-${item.quantity} un.)`
+            : `CMV - Venda Avulsa: ${product.name} (x${item.quantity})`,
+          paymentMethod: 'Outro',
+          createdAt: new Date().toISOString()
+        };
+        if (isDemoMode) {
+          const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
+          local.unshift({ id: 'tx_' + Date.now() + Math.random(), ...cmvPayload });
+          localStorage.setItem('demo_financial', JSON.stringify(local));
+          if (setGlobalData) setGlobalData(prev => ({ ...prev, financial_transactions: local }));
+        } else {
+          await addDoc(collection(db, 'financial_transactions'), cmvPayload);
+        }
+        // Log revenue (only for venda)
+        if (exitType === 'venda' && product.sellingPrice) {
+          const revenuePayload = {
+            date: todayStr,
+            type: 'entrada',
+            category: 'estoque',
+            value: (product.sellingPrice || 0) * item.quantity,
+            description: `Venda Avulsa: ${product.name} (x${item.quantity})`,
+            paymentMethod: exitPayment,
+            createdAt: new Date().toISOString()
+          };
+          if (isDemoMode) {
+            const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
+            local.unshift({ id: 'tx_' + Date.now() + Math.random(), ...revenuePayload });
+            localStorage.setItem('demo_financial', JSON.stringify(local));
+            if (setGlobalData) setGlobalData(prev => ({ ...prev, financial_transactions: local }));
+          } else {
+            await addDoc(collection(db, 'financial_transactions'), revenuePayload);
+          }
+        }
+      }
+      if (isDemoMode) saveLocalProducts(updatedProducts);
+      closeExitModal();
+    } catch (err) {
+      setExitMsg('Erro ao registrar saída: ' + err.message);
+    }
+  };
 
   // Salon products state
   const salonProducts = globalData?.salon_products || [];
@@ -296,35 +415,15 @@ const AdminInventory = () => {
     }
   };
 
-  const handleUseInSalon = async (product) => {
-    const amountStr = prompt(`Quantidade de "${product.name}" usada no salão (estoque atual: ${product.quantity}):`, "1");
-    if (amountStr === null) return;
-    const amount = Number(amountStr);
-    if (isNaN(amount) || amount <= 0) {
-      alert("Quantidade inválida.");
-      return;
-    }
-    if (amount > product.quantity) {
-      alert("Quantidade insuficiente em estoque.");
-      return;
-    }
-
-    const newQty = product.quantity - amount;
-    try {
-      if (isDemoMode) {
-        const updated = products.map(p => p.id === product.id ? { ...p, quantity: newQty } : p);
-        saveLocalProducts(updated);
-        await logProductExpense(product.name, amount, product.costPrice, 'Uso do Salão');
-      } else {
-        const docRef = doc(db, 'products', product.id);
-        await updateDoc(docRef, { quantity: newQty });
-        await logProductExpense(product.name, amount, product.costPrice, 'Uso do Salão');
-      }
-      alert(`Registrado com sucesso: saída de ${amount} un. de "${product.name}" para uso do salão.`);
-    } catch (err) {
-      console.error('Erro ao registrar uso do salão:', err);
-      alert('Erro ao processar a saída.');
-    }
+  const handleUseInSalon = (product) => {
+    setExitType('uso');
+    setExitCart([{ productId: product.id, quantity: 1 }]);
+    setExitSearch(product.name);
+    setExitSelectedId(product.id);
+    setExitQty(1);
+    setExitPayment('Pix');
+    setExitMsg('');
+    setShowExitModal(true);
   };
 
   // ===== SALON PRODUCTS (Uso Interno) CRUD =====
@@ -528,9 +627,14 @@ const AdminInventory = () => {
                 Listagem do Almoxarifado {isDemoMode && <span className="status-badge pendente" style={{ marginLeft: 8 }}>Demonstração</span>}
               </span>
             </div>
-            <button className="btn btn-accent" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={handleOpenAdd}>
-              <Plus size={16} style={{ marginRight: 6 }} /> Novo Produto
-            </button>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button className="btn" style={{ padding: '8px 16px', fontSize: '0.9rem', background: 'rgba(255,100,100,0.12)', color: '#ff6b6b', border: '1px solid rgba(255,100,100,0.3)', borderRadius: 6, display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontWeight: 600 }} onClick={openExitModal}>
+                <ShoppingCart size={16} /> Saída de Produtos
+              </button>
+              <button className="btn btn-accent" style={{ padding: '8px 16px', fontSize: '0.9rem' }} onClick={handleOpenAdd}>
+                <Plus size={16} style={{ marginRight: 6 }} /> Novo Produto
+              </button>
+            </div>
           </div>
 
           {/* Tabela de Estoque */}
@@ -1135,6 +1239,196 @@ const AdminInventory = () => {
               <button type="submit" className="btn btn-accent">Salvar Insumo</button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* ===== MODAL DE SAÍDA DE PRODUTOS ===== */}
+      {showExitModal && (
+        <div className="modal-overlay" onClick={closeExitModal}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 640, width: '100%' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                <ShoppingCart size={18} style={{ color: 'var(--adm-gold)' }} />
+                Comanda de Saída de Produtos
+              </h3>
+              <button onClick={closeExitModal} style={{ background: 'none', border: 'none', color: 'var(--adm-muted)', cursor: 'pointer', padding: 4 }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Tipo de saída */}
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: '0.82rem', fontWeight: 600, display: 'block', marginBottom: 8, color: 'var(--adm-muted)' }}>FINALIDADE DA SAÍDA</label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[['uso', '💆 Uso no Salão'], ['venda', '💰 Venda Comercial']].map(([val, label]) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => setExitType(val)}
+                    style={{
+                      flex: 1, padding: '9px 12px', borderRadius: 6, border: '1px solid',
+                      borderColor: exitType === val ? 'var(--adm-gold)' : 'var(--adm-rule)',
+                      background: exitType === val ? 'rgba(220,163,84,0.12)' : 'transparent',
+                      color: exitType === val ? 'var(--adm-gold)' : 'var(--adm-muted)',
+                      fontWeight: exitType === val ? 700 : 400,
+                      cursor: 'pointer', fontSize: '0.88rem', transition: 'all 0.15s'
+                    }}
+                  >{label}</button>
+                ))}
+              </div>
+            </div>
+
+            {/* Adicionar produto */}
+            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--adm-rule)', borderRadius: 8, padding: '14px 16px', marginBottom: 16 }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--adm-gold)', marginBottom: 10 }}>ADICIONAR ITEM</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 8, alignItems: 'end' }}>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    placeholder="Buscar produto por nome..."
+                    value={exitSearch}
+                    onChange={e => { setExitSearch(e.target.value); setExitSelectedId(''); setExitMsg(''); }}
+                    style={{ width: '100%', padding: '8px 10px', background: 'var(--adm-bg)', border: '1px solid var(--adm-rule)', borderRadius: 6, color: 'var(--adm-text)', fontSize: '0.88rem', boxSizing: 'border-box' }}
+                  />
+                  {exitSearch.length >= 2 && !exitSelectedId && (() => {
+                    const results = products.filter(p => (p.name || '').toLowerCase().includes(exitSearch.toLowerCase())).slice(0, 6);
+                    if (results.length === 0) return null;
+                    return (
+                      <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: 'var(--adm-panel, #1e1e2e)', border: '1px solid var(--adm-rule)', borderRadius: 6, zIndex: 50, boxShadow: '0 4px 16px rgba(0,0,0,0.5)', maxHeight: 200, overflowY: 'auto' }}>
+                        {results.map(p => (
+                          <div
+                            key={p.id}
+                            onClick={() => { setExitSelectedId(p.id); setExitSearch(p.name); setExitMsg(''); }}
+                            style={{ padding: '9px 12px', cursor: 'pointer', fontSize: '0.85rem', borderBottom: '1px solid var(--adm-rule)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(220,163,84,0.08)'}
+                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                          >
+                            <span>{p.name}</span>
+                            <span style={{ fontSize: '0.75rem', color: p.quantity <= 2 ? '#ff6b6b' : 'var(--adm-muted)' }}>
+                              Estoque: {p.quantity} un.
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </div>
+                <input
+                  type="number" min="1" value={exitQty}
+                  onChange={e => setExitQty(e.target.value)}
+                  style={{ width: 72, padding: '8px 10px', background: 'var(--adm-bg)', border: '1px solid var(--adm-rule)', borderRadius: 6, color: 'var(--adm-text)', fontSize: '0.88rem', textAlign: 'center' }}
+                  placeholder="Qtd"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddExitItem}
+                  style={{ padding: '8px 14px', background: 'var(--adm-gold)', color: '#000', border: 'none', borderRadius: 6, fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: '0.85rem', whiteSpace: 'nowrap' }}
+                >
+                  <Plus size={14} /> Adicionar
+                </button>
+              </div>
+              {exitSelectedId && (() => {
+                const p = products.find(x => x.id === exitSelectedId);
+                return p ? (
+                  <div style={{ marginTop: 8, fontSize: '0.78rem', color: 'var(--adm-gold)' }}>
+                    Selecionado: {p.name} — Custo: R$ {Number(p.costPrice || 0).toFixed(2)} | Venda: R$ {Number(p.sellingPrice || 0).toFixed(2)} | Estoque: {p.quantity} un.
+                  </div>
+                ) : null;
+              })()}
+            </div>
+
+            {/* Itens na comanda */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--adm-muted)', marginBottom: 8 }}>📋 ITENS NA COMANDA ({exitCart.length})</div>
+              {exitCart.length === 0 ? (
+                <div style={{ padding: '16px', border: '1px dashed var(--adm-rule)', borderRadius: 8, textAlign: 'center', color: 'var(--adm-muted)', fontSize: '0.82rem' }}>
+                  Comanda vazia. Adicione produtos acima.
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  {exitCart.map(item => {
+                    const p = products.find(x => x.id === item.productId);
+                    if (!p) return null;
+                    return (
+                      <div key={item.productId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.03)', borderRadius: 6, border: '1px solid var(--adm-rule)', fontSize: '0.85rem' }}>
+                        <div>
+                          <div style={{ fontWeight: 600 }}>{p.name}</div>
+                          <div style={{ color: 'var(--adm-muted)', fontSize: '0.75rem', marginTop: 2 }}>
+                            {item.quantity} x R$ {Number(exitType === 'venda' ? p.sellingPrice : p.costPrice || 0).toFixed(2)}
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                          <span style={{ fontWeight: 800, color: 'var(--adm-gold)' }}>
+                            R$ {(item.quantity * Number(exitType === 'venda' ? p.sellingPrice : p.costPrice || 0)).toFixed(2)}
+                          </span>
+                          <button
+                            onClick={() => setExitCart(prev => prev.filter(i => i.productId !== item.productId))}
+                            style={{ background: 'none', border: 'none', color: 'var(--adm-danger, #ff4d4f)', cursor: 'pointer', padding: 4, display: 'flex' }}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {/* Total */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(220,163,84,0.06)', borderRadius: 6, border: '1px solid rgba(220,163,84,0.2)', marginTop: 4 }}>
+                    <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Total da Comanda:</span>
+                    <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--adm-gold)' }}>
+                      R$ {exitCart.reduce((acc, item) => {
+                        const p = products.find(x => x.id === item.productId);
+                        return acc + (p ? item.quantity * Number(exitType === 'venda' ? p.sellingPrice : p.costPrice || 0) : 0);
+                      }, 0).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Forma de pagamento (só venda) */}
+            {exitType === 'venda' && exitCart.length > 0 && (
+              <div className="form-group" style={{ marginBottom: 16 }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 600, display: 'block', marginBottom: 8, color: 'var(--adm-muted)' }}>FORMA DE PAGAMENTO</label>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  {['Pix', 'Crédito', 'Débito', 'Dinheiro'].map(method => (
+                    <button
+                      key={method}
+                      type="button"
+                      onClick={() => setExitPayment(method)}
+                      style={{
+                        flex: 1, padding: '8px', borderRadius: 6, border: '1px solid',
+                        borderColor: exitPayment === method ? 'var(--adm-gold)' : 'var(--adm-rule)',
+                        background: exitPayment === method ? 'rgba(220,163,84,0.12)' : 'transparent',
+                        color: exitPayment === method ? 'var(--adm-gold)' : 'var(--adm-muted)',
+                        fontWeight: exitPayment === method ? 700 : 400,
+                        cursor: 'pointer', fontSize: '0.82rem', transition: 'all 0.15s'
+                      }}
+                    >{method}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mensagem de erro */}
+            {exitMsg && (
+              <div style={{ padding: '8px 14px', background: 'rgba(255,107,107,0.1)', border: '1px solid rgba(255,107,107,0.3)', borderRadius: 6, color: '#ff6b6b', fontSize: '0.82rem', marginBottom: 12 }}>
+                {exitMsg}
+              </div>
+            )}
+
+            {/* Ações */}
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 8 }}>
+              <button type="button" className="btn btn-ghost" onClick={closeExitModal}>Cancelar</button>
+              <button
+                type="button"
+                onClick={handleConfirmExit}
+                disabled={exitCart.length === 0}
+                style={{ padding: '10px 24px', background: exitCart.length === 0 ? '#333' : 'var(--adm-gold)', color: exitCart.length === 0 ? '#666' : '#000', border: 'none', borderRadius: 6, fontWeight: 700, cursor: exitCart.length === 0 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.9rem' }}
+              >
+                <Check size={15} /> {exitType === 'venda' ? 'Finalizar Venda' : 'Confirmar Saída para Uso'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
