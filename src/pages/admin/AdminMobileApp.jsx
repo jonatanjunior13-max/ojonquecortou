@@ -2704,6 +2704,11 @@ Grande abraço, Jon.`;
       setExitClientPhone('');
       setExitClientSearch('');
       setExitProductSearch('');
+      setProdExitSelectedId('');
+      setProdExitQuantity(1);
+      setProdExitType('uso');
+      setExitClientType('avulso');
+      setExitPaymentMethod('Pix');
     } catch (err) {
       showToast('Erro ao registrar venda: ' + err.message, 'error');
     }
@@ -5957,6 +5962,19 @@ Grande abraço, Jon.`;
 
 
   // ── Product Exit Sheet ──────────────────────────────────────────
+  const closeExitSheet = () => {
+    setShowProductExitSheet(false);
+    setExitCart([]);
+    setExitProductSearch('');
+    setExitClientSearch('');
+    setExitClientPhone('');
+    setProdExitSelectedId('');
+    setProdExitQuantity(1);
+    setProdExitType('uso');
+    setExitClientType('avulso');
+    setExitPaymentMethod('Pix');
+  };
+
   const renderProductExitSheet = () => {
     if (!showProductExitSheet) return null;
 
@@ -6022,12 +6040,12 @@ Grande abraço, Jon.`;
     };
 
     return (
-      <div className="m-overlay" onClick={() => { setShowProductExitSheet(false); setExitCart([]); }}>
+      <div className="m-overlay" onClick={closeExitSheet}>
         <div className="m-sheet" onClick={e => e.stopPropagation()} style={{ maxHeight: '92%', display: 'flex', flexDirection: 'column' }}>
           <div className="m-sheet-handle"/>
           <div className="m-sheet-header">
             <div className="m-sheet-title">Comanda de Produtos</div>
-            <button onClick={() => { setShowProductExitSheet(false); setExitCart([]); }} className="m-icon-btn"><X size={18}/></button>
+            <button onClick={closeExitSheet} className="m-icon-btn"><X size={18}/></button>
           </div>
 
           <div className="m-sheet-body" style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
@@ -6257,7 +6275,7 @@ Grande abraço, Jon.`;
           </div>
 
           <div className="m-sheet-footer">
-            <button className="m-btn m-btn-outline" style={{ flex: 1 }} onClick={() => { setShowProductExitSheet(false); setExitCart([]); }}>Cancelar</button>
+            <button className="m-btn m-btn-outline" style={{ flex: 1 }} onClick={closeExitSheet}>Cancelar</button>
             <button 
               className="m-btn m-btn-gold" 
               style={{ flex: 2 }} 
@@ -6666,7 +6684,7 @@ Grande abraço, Jon.`;
             {showFabMenu && (
               <div className="m-fab-actions">
                 {/* Saida de Produto */}
-                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setShowProductExitSheet(true); }}>
+                <button className="m-fab-action" onClick={() => { setShowFabMenu(false); setExitCart([]); setExitProductSearch(''); setExitClientSearch(''); setExitClientPhone(''); setProdExitSelectedId(''); setProdExitQuantity(1); setProdExitType('uso'); setExitClientType('avulso'); setExitPaymentMethod('Pix'); setShowProductExitSheet(true); }}>
                   <span className="m-fab-action-label">Saída de Produto</span>
                   <span className="m-fab-action-icon" style={{ background:'rgba(101,146,255,0.15)', color:'var(--m-blue)' }}><Package size={18}/></span>
                 </button>
