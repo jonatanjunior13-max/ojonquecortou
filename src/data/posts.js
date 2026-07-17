@@ -4421,7 +4421,16 @@ export const posts = [
       <h2>Cuidados Pós-Corte (Para Manter a Selvageria Boa)</h2>
       <p>A primeira semana é de aprendizado intenso com seu novo volume. A manutenção das camadas deve ser feita a cada 6-8 semanas; se deixar crescer demais, a estrutura se perde. E lembre-se: Wolf cut + cacho só funciona com definição. Sua rotina vai precisar de leave-in, gel e preferencialmente um difusor para estruturar as camadas durante a secagem.</p>
 
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer o Wolf Cut sem virar bagunça no cacho?</h3>
+        <p>A Leitura de Fio antes da tesoura é o que separa um wolf cut selvagem-de-propósito de um corte que só desandou. Agende com quem lê o encolhimento do seu cacho antes de cortar.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Wolf Cut no Studio do Jon</a>
+      </div>
 
+      <h2>Perguntas Frequentes</h2>
+      <p><strong>O que é o corte Wolf Cut e ele funciona em cabelo cacheado?</strong><br />O Wolf Cut é uma mistura moderna do Shag com o Mullet, caracterizado por camadas muito repicadas e franja. Funciona incrivelmente em cabelos cacheados porque valoriza o volume no topo e dá leveza nas pontas.</p>
+      <p><strong>Como finalizar o Wolf Cut cacheado?</strong><br />Use um leave-in leve e amasse bem os fios de baixo para cima. Secar com difusor de cabeça para baixo ajuda a destacar as camadas e o volume selvagem do corte.</p>
+      <p><strong>Esse corte exige muita manutenção?</strong><br />Não! A proposta dele é ser despojada e natural. Você pode aparar as pontas e franja a cada 3 meses para manter o desenho em dia.</p>
 
       <p><i>Especialista em corte para cabelos cacheados, ondulados e crespos com foco em visagismo em Belo Horizonte.</i></p>
     `
