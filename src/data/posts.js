@@ -1,5 +1,191 @@
 export const posts = [
   {
+    id: 61,
+    slug: 'rotina-noturna-cachos-proteger-fio-dormindo',
+    title: 'Rotina Noturna para Cachos: A Física do Fio Enquanto Você Dorme',
+    seoTitle: 'Rotina Noturna para Cachos: Como Proteger o Fio Dormindo | Studio do Jon',
+    excerpt: 'Touca de cetim, coque abacaxi, fronha de seda — o que realmente protege o cacho enquanto você dorme? Entenda a física da fricção mecânica e monte uma rotina noturna que preserve a definição.',
+    metaDescription: 'Aprenda a rotina noturna ideal para cachos: a física da fricção, touca de cetim vs. fronha, o coque abacaxi e como acordar com os fios definidos.',
+    keywords: 'rotina noturna cabelo cacheado, touca de cetim cachos, como dormir com cabelo cacheado, coque abacaxi cachos, fronha cetim cacheado, proteger cachos dormindo, Studio do Jon BH',
+    date: '17 de Julho, 2026',
+    datePublished: '2026-07-17',
+    dateModified: '2026-07-17',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-rotina-noturna-cachos-proteger-fio-dormindo.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Posso dormir com o cabelo cacheado solto?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, mas não é o ideal. Dormir com os cachos soltos sobre um travesseiro de algodão aumenta a fricção mecânica, quebra a espiral do cacho e gera frizz. Usar uma fronha de cetim ou seda reduz o atrito e preserva a definição até o dia seguinte."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A touca de cetim ou cetim realmente faz diferença para os cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, faz diferença real. O cetim tem superfície lisa com baixo coeficiente de fricção, o que evita que os fios roçem entre si e contra o travesseiro. Isso preserva a espiral, reduz a quebra e mantém a hidratação dentro do fio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que é o coque abacaxi e como fazer corretamente?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O coque abacaxi é uma técnica onde o cabelo é preso no topo da cabeça com um elástico revestido de tecido, de forma bem frouxa. O objetivo é evitar que os cachos sejam amassados contra o travesseiro e preservar o volume da raiz até o dia seguinte."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso aplicar produto no cabelo antes de dormir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, mas apenas se o cabelo estiver completamente seco. Aplicar uma pequena quantidade de óleo vegetal leve (como de pracaxi ou de argan) nas pontas sela a cutícula e evita o ressecamento noturno sem deixar resíduo no travesseiro."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que meu cabelo está cheio de frizz quando acordo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O frizz ao acordar é causado pela fricção mecânica do cabelo contra o tecido do travesseiro durante a noite. A solução é trocar a fronha por uma de cetim ou seda e prender os fios com o coque abacaxi para minimizar o contato e o atrito."
+          }
+        }
+      ]
+    },
+    content: `
+      <blockquote>
+        <strong>TL;DR:</strong> Durante o sono, o cabelo cacheado sofre fricção mecânica constante contra o travesseiro — o principal causador do frizz matinal e da quebra das espirais. A solução não é uma única dica: é uma rotina noturna baseada na física do fio, que combina a proteção mecânica (touca ou fronha de cetim), o posicionamento correto dos fios (coque abacaxi) e, quando necessário, uma camada protetora leve de óleo nas pontas.
+      </blockquote>
+
+      <p>Você passou a tarde inteira finalizando os cachos. Aplicou o creme na sequência certa, fitou cada mecha, secou com o difusor, a espiral ficou impecável. Acordou na manhã seguinte com os fios amassados, sem definição e com o frizz que apareceu do nada. Isso não é azar — é física.</p>
+
+      <p>O que acontece com o seu cabelo durante as seis, sete, oito horas de sono é um processo mecânico contínuo que a maioria das pessoas nunca parou para entender de verdade. Neste artigo, vou explicar a ciência da fricção noturna e mostrar como montar uma rotina noturna que protege a estrutura do seu cacho enquanto você descansa.</p>
+
+      <h2>O que é Fricção Mecânica e Por que ela Destrói os Cachos</h2>
+      <p>Fricção mecânica é a força de resistência que surge quando duas superfícies se movem em contato. No contexto do cabelo, essa força ocorre toda vez que os fios roçam contra o tecido do travesseiro durante o sono — o que acontece centenas de vezes por noite a cada vez que você vira de lado ou muda de posição.</p>
+
+      <p>A cutícula do fio cacheado e crespo é naturalmente mais levantada do que a de um fio liso, porque a estrutura helicoidal do cacho impede que as escamas se fechem completamente ao longo do eixo do fio. Isso significa que a superfície de um cacho é parecida com a de uma pinha: cheia de "dentes" minúsculos levantados. Quando esse fio roça contra um tecido rugoso (como o algodão comum de uma fronha), os dentes das escamas de um fio travam nos dentes das escamas de outros fios. O resultado é a ruptura das espirais, a quebra do padrão de cacho e o frizz que você vê ao se olhar no espelho de manhã.</p>
+
+      <p>Além da deformação das espirais, a fricção constante também provoca dois problemas adicionais:</p>
+      <ul>
+        <li><strong>Quebra de fio:</strong> A tensão mecânica repetida em um ponto da fibra capilar fragiliza a queratina nessa região, levando à quebra. É por isso que muitas pessoas percebem fios curtos e espiralados que não crescem — eles quebram durante o sono antes de atingir o comprimento desejado.</li>
+        <li><strong>Perda de hidratação:</strong> A fricção abre as escamas das cutículas, permitindo que a umidade armazenada dentro do córtex do fio escape rapidamente. Isso explica por que o cabelo que foi hidratado na véspera acorda ressecado.</li>
+      </ul>
+
+      <h2>O que Realmente Protege: Touca de Cetim vs. Fronha de Cetim</h2>
+      <p>A ferramenta mais recomendada para a proteção noturna dos cachos é algo que reduz ao mínimo o coeficiente de atrito entre o fio e a superfície de contato. Tanto a touca de cetim quanto a fronha de cetim ou seda cumprem esse papel — mas de formas diferentes.</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; text-align: left; border: 0.5px solid var(--adm-rule, rgba(255,255,255,0.08));">
+        <thead>
+          <tr style="background: rgba(220, 163, 84, 0.1); color: var(--adm-gold, #DCA354);">
+            <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Método</th>
+            <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Como Funciona</th>
+            <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Melhor Para</th>
+            <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Desvantagem</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Touca de Cetim</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Cria um ambiente fechado de baixa fricção ao redor de todos os fios</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Cabelos curtos a médios; quem move muito durante o sono</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Pode escorregar durante a noite; pode amassar o volume da raiz se muito apertada</td>
+          </tr>
+          <tr style="background: rgba(255,255,255,0.02);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Fronha de Cetim ou Seda</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Substitui a superfície do travesseiro por um tecido de baixíssimo atrito</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Cabelos longos; quem não se adapta a dormir com touca</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Protege menos quando o cabelo está espalhado sobre a fronha sem nenhum prendedor</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Combinação (Fronha + Coque Abacaxi)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Une a superfície deslizante com o posicionamento estratégico dos fios</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Qualquer comprimento; proteção máxima</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Requer adaptação ao hábito de prender o cabelo antes de dormir</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>A Técnica do Coque Abacaxi: Geometria e Posicionamento</h2>
+      <p>O coque abacaxi é uma das técnicas mais simples e eficazes para preservar a estrutura do cacho durante o sono — mas pouquíssimas pessoas fazem da forma correta.</p>
+
+      <h3>Como fazer o coque abacaxi</h3>
+      <ol>
+        <li>Com o cabelo completamente seco, incline a cabeça para frente até que os fios caiam naturalmente em direção ao chão.</li>
+        <li>Junte todos os fios no topo da cabeça com as mãos, como se fosse fazer um rabo de cavalo bem alto.</li>
+        <li>Prenda com um elástico revestido de tecido (tipo scrunchie) de forma <strong>extremamente frouxa</strong> — o elástico não deve marcar nem deixar vincos nos fios.</li>
+        <li>Se quiser, coloque a touca de cetim por cima para proteção adicional.</li>
+      </ol>
+
+      <p>A razão geométrica por trás dessa técnica é direta: ao concentrar todos os fios no topo da cabeça, você retira o peso do cacho das laterais e da nuca — que são as regiões que mais ficam em contato com o travesseiro. As espirais ficam suspensas e soltas dentro do volume formado no alto, sem serem comprimidas por nenhuma superfície.</p>
+
+      <h3>O erro mais comum</h3>
+      <p>Prender o elástico com muita força. Um elástico apertado cria uma marcação circular nos fios que é praticamente irreversível sem lavar o cabelo novamente. Use sempre scrunchies grandes e de tecido macio, e verifique se consegue deslizar o elástico pelo cabelo sem resistência antes de dormir.</p>
+
+      <h2>O Papel da Hidratação Noturna</h2>
+      <p>Além da proteção mecânica, o sono também é um período de ressecamento passivo. A temperatura do corpo sobe levemente durante o sono, o que acelera a evaporação da água dos fios. Para cabelos com alta porosidade — que perdem umidade muito rapidamente — isso é especialmente problemático.</p>
+
+      <h3>Quando e como usar óleo antes de dormir</h3>
+      <p>Se o seu cabelo tende a acordar seco e sem brilho mesmo depois de uma boa hidratação, a solução está em selar a cutícula antes de dormir. A técnica é simples:</p>
+      <ul>
+        <li>Com o cabelo completamente seco, aplique uma quantidade mínima de óleo vegetal leve (óleo de pracaxi, de argan ou de jojoba funcionam bem) apenas nas pontas e no comprimento médio.</li>
+        <li><strong>Evite a raiz</strong> — óleo na raiz obstrui os folículos e pode desencadear dermatite seborreica em pessoas predispostas.</li>
+        <li>Esfregue o óleo entre as palmas antes de aplicar para aquecê-lo e espalhar em uma camada fina e uniforme.</li>
+      </ul>
+
+      <p>O óleo age como uma camada física de selamento sobre as escamas abertas da cutícula, reduzindo a perda de água transepidermal do fio durante a noite. Isso não é hidratação — é proteção. A hidratação real do fio acontece durante o banho, com água e condicionadores. O óleo noturno apenas preserva o que já foi absorvido.</p>
+
+      <h2>O Que Fazer ao Acordar: Reativação Sem Lavar</h2>
+      <p>Uma rotina noturna bem executada significa que ao acordar você precisará de muito pouco para reativar os cachos:</p>
+      <ol>
+        <li>Desfaça o coque abacaxi com cuidado, deixando os fios caírem no próprio peso.</li>
+        <li>Não toque nos cachos secos com as mãos nuas — o calor e a umidade dos dedos ativam o frizz imediatamente.</li>
+        <li>Se necessário, use um spray de água pura ou um reativador de cachos apenas nas mechas que perderam definição, amassando de baixo para cima.</li>
+        <li>Se as pontas ficaram um pouco abertas, aplique uma microquantidade de creme sobre elas e modele levemente.</li>
+      </ol>
+
+      <p>A grande vantagem de uma boa rotina noturna é que o day after — o segundo dia do cabelo — passa a ser tão bonito quanto o primeiro, às vezes até mais, porque as espirais já estão assentadas e definidas.</p>
+
+      <h2>Erros Comuns na Rotina Noturna de Cachos</h2>
+      <p>Mesmo quem já conhece algumas das técnicas acima comete erros que comprometem o resultado:</p>
+      <ul>
+        <li><strong>Dormir com o cabelo úmido:</strong> Além de destruir qualquer definição de cacho que estava formando, o ambiente úmido e quente dentro da touca é um campo fértil para a proliferação de fungos no couro cabeludo.</li>
+        <li><strong>Usar elástico de metal ou borracha:</strong> A pressão e o atrito desses materiais quebram os fios no ponto de contato com o elástico, criando aquelas quebras características na linha onde o cabelo era preso.</li>
+        <li><strong>Aplicar muito produto antes de dormir:</strong> Produto em excesso transfere para o travesseiro, mancha o tecido e pode causar acne na face e no pescoço.</li>
+        <li><strong>Ignorar a manutenção da touca:</strong> Uma touca de cetim deve ser lavada regularmente. O acúmulo de óleos e resíduos de produtos na touca pode transferir de volta para os fios e causar buildup capilar.</li>
+      </ul>
+
+      <h2>Perguntas Frequentes sobre Rotina Noturna para Cachos</h2>
+      <h3>Posso dormir com o cabelo cacheado solto?</h3>
+      <p>Sim, mas não é o ideal. Dormir com os cachos soltos sobre um travesseiro de algodão aumenta a fricção mecânica, quebra a espiral do cacho e gera frizz. Usar uma fronha de cetim ou seda reduz o atrito e preserva a definição até o dia seguinte.</p>
+
+      <h3>A touca de cetim realmente faz diferença para os cachos?</h3>
+      <p>Sim, faz diferença real. O cetim tem superfície lisa com baixo coeficiente de fricção, o que evita que os fios roçem entre si e contra o travesseiro. Isso preserva a espiral, reduz a quebra e mantém a hidratação dentro do fio.</p>
+
+      <h3>O que é o coque abacaxi e como fazer corretamente?</h3>
+      <p>O coque abacaxi é uma técnica onde o cabelo é preso no topo da cabeça com um elástico revestido de tecido, de forma bem frouxa. O objetivo é evitar que os cachos sejam amassados contra o travesseiro e preservar o volume da raiz até o dia seguinte.</p>
+
+      <h3>Posso aplicar produto no cabelo antes de dormir?</h3>
+      <p>Sim, mas apenas se o cabelo estiver completamente seco. Aplique uma quantidade mínima de óleo vegetal leve (como de pracaxi ou argan) somente nas pontas para selar a cutícula e evitar o ressecamento noturno, sem deixar resíduo no travesseiro.</p>
+
+      <h3>Por que meu cabelo está cheio de frizz quando acordo?</h3>
+      <p>O frizz ao acordar é causado pela fricção mecânica do cabelo contra o tecido do travesseiro durante a noite. A solução é trocar a fronha por uma de cetim ou seda e prender os fios com o coque abacaxi para minimizar o contato e o atrito.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer entender a física do seu fio de perto?</h3>
+        <p>A Leitura de Fio no Studio do Jon analisa a estrutura, a porosidade e a curvatura do seu cabelo antes de qualquer decisão — corte, tratamento ou rotina.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 60,
     slug: 'shaggy-cacheado-crespo-camadas-retro-volume-topo',
     title: 'Shaggy Cacheado e Crespo: O Retorno das Camadas Retrô com Volume no Topo',

@@ -5962,13 +5962,13 @@ Grande abraço, Jon.`;
 
     // Filter products by search
     const filteredProducts = inventory.filter(p => 
-      p.name.toLowerCase().includes(exitProductSearch.toLowerCase())
+      (p.name || '').toLowerCase().includes(exitProductSearch.toLowerCase())
     );
 
     // Filter clients by search
     const filteredClients = clients.filter(c => 
-      c.name.toLowerCase().includes(exitClientSearch.toLowerCase()) ||
-      c.phone.includes(exitClientSearch)
+      (c.name || '').toLowerCase().includes(exitClientSearch.toLowerCase()) ||
+      (c.phone || '').includes(exitClientSearch)
     );
 
     // Calculate cart total

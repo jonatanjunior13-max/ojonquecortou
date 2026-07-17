@@ -144,7 +144,7 @@ function App() {
 
           {/* Rotas Administrativas */}
           <Route path="/admin/login" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Acesso...</div>}><AdminLogin /></React.Suspense>} />
-          <Route path="/admin/mobile" element={<React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense>} />
+          <Route path="/admin/mobile" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando App...</div>}><AdminMobileApp /></React.Suspense></AdminErrorBoundary>} />
           <Route path="/admin" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando Painel...</div>}><AdminLayout /></React.Suspense></AdminErrorBoundary>}>
             <Route index element={<Navigate to="/admin/hoje" replace />} />
             <Route path="hoje" element={<AdminErrorBoundary><React.Suspense fallback={<div style={{ padding: 40, textAlign: 'center', color: '#6B5A4B' }}>Carregando...</div>}><AdminHoje /></React.Suspense></AdminErrorBoundary>} />
