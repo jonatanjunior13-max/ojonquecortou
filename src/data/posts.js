@@ -1,5 +1,159 @@
 export const posts = [
   {
+    id: 62,
+    slug: 'por-que-cabelo-cacheado-crespo-nao-cresce-retencao-comprimento',
+    title: 'Por Que Cabelo Cacheado e Crespo Parece Não Crescer? A Ciência da Retenção de Comprimento',
+    seoTitle: 'Por Que Cabelo Cacheado não Cresce? Retenção de Comprimento | Studio do Jon',
+    excerpt: 'Seu cacho parece estacionado na mesma altura há meses? Entenda a diferença biológica entre crescimento do folículo e retenção de comprimento nos cabelos com curvatura.',
+    metaDescription: 'Seu cabelo cacheado ou crespo parece não crescer? Descubra a física dos pontos de torção, a velocidade real do folículo e as soluções de Jon. BH.',
+    keywords: 'por que cabelo cacheado nao cresce, crescimento cabelo crespo, retencao de comprimento cachos, quebra de cabelo cacheado, cronograma capilar bh, Studio do Jon BH',
+    date: '17 de Julho, 2026',
+    datePublished: '2026-07-17',
+    dateModified: '2026-07-17',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-por-que-cabelo-cacheado-crespo-nao-cresce-retencao-comprimento.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que meu cabelo cacheado parece que não sai do lugar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Isso acontece por causa do problema de retenção de comprimento. O seu cabelo está crescendo normalmente na raiz (~1 cm por mês), mas as pontas estão quebrando devido ao atrito físico e à fragilidade estrutural das espirais (pontos de torção). Como a quebra ocorre aos poucos, você tem a falsa impressão de que o crescimento está estacionado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como sei se meu cabelo está quebrando ou caindo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A queda ocorre a partir do folículo piloso, no couro cabeludo; você verá o bulbo esbranquiçado (aquela bolinha branca) na extremidade do fio caído. Já a quebra ocorre ao longo da haste; o fio quebrado é mais curto e não possui a bolinha branca na ponta, apresentando muitas vezes pontas duplas ou esbrançadas na zona do rompimento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a velocidade real de crescimento do cabelo crespo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O folículo de cabelos crespos cresce, em média, de 0,9 cm a 1 cm por mês. Essa taxa é sutilmente menor do que a de cabelos lisos (1,2 cm/mês) devido à inclinação do folículo afro na raiz, mas é perfeitamente saudável e suficiente para ganhar comprimento perceptível ao longo do ano se as pontas forem preservadas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Cortar as pontinhas realmente faz o cabelo crescer mais rápido?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fisicamente, não. O corte é feito na ponta, que é matéria morta, e não altera o metabolismo do folículo vivo na raiz. Porém, aparar as pontas desgastadas remove as partes que já começaram a quebrar ou abrir (pontas duplas). Isso impede que a quebra suba pelo fio, garantindo que você retenha o comprimento que cresceu na raiz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O uso de touca de cetim ajuda no crescimento do cabelo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Indiretamente, sim. O cetim tem uma superfície extremamente lisa que reduz o atrito físico entre o cabelo e o travesseiro durante a noite. Ao diminuir o atrito, você previne o desgaste e a quebra mecânica dos pontos de torção das espirais, ajudando a reter o comprimento real do seu cacho."
+          }
+        }
+      ]
+    },
+    content: `<blockquote><p><strong>TL;DR:</strong> Todo cabelo cresce, em média, 1 cm a 1,2 cm por mês. O fato de seu cabelo ondulado, cacheado ou crespo parecer "estacionado" não é falta de crescimento folicular, mas sim um problema físico de <strong>retenção de comprimento</strong>. A geometria em espiral cria pontos de torção (twist points) que sofrem alta tensão mecânica, levando à quebra invisível das pontas. A solução definitiva é equilibrar a elasticidade do córtex e reduzir o atrito físico, protegendo as extremidades do fio.</p></blockquote>
+
+    <p>Se você tem cabelo com curvatura, com certeza já passou por aquela fase de olhar no espelho mês após mês e sentir que o comprimento do cabelo simplesmente não muda. Você gasta rios de dinheiro em tônicos de crescimento, vitaminas e cronogramas mirabolantes, mas o cabelo parece empacado na mesma altura. Bate aquela frustração e você começa a acreditar no mito de que <em>"cabelo crespo e cacheado não cresce de jeito nenhum"</em>.</p>
+
+    <p>Deixa eu te falar uma verdade científica direta: <strong>o seu cabelo está crescendo sim</strong>. O folículo piloso (a fábrica de cabelo na sua raiz) não sabe qual é a curvatura do fio que ele está produzindo na hora de definir a velocidade de crescimento. A biologia celular é muito parecida para todo mundo. O verdadeiro problema que você está enfrentando não tem nada a ver com a velocidade com que o cabelo sai da sua cabeça — é um problema mecânico de <strong>retenção de comprimento</strong>. O cabelo quebra nas pontas na mesma velocidade ou mais rápido do que cresce na raiz. E, por causa da espiral, essa quebra acontece de forma silenciosa e invisível. Vamos entender a física por trás disso e como resolver de vez.</p>
+
+    <h2>A Biologia da Velocidade de Crescimento</h2>
+    <p>De acordo com estudos publicados no <em>Journal of Cosmetic Science</em>, o crescimento capilar humano é determinado geneticamente e regulado por hormônios e pela circulação sanguínea no bulbo capilar. A taxa de crescimento folicular média varia entre 0,35 mm a 0,40 mm por dia. Isso significa que, independentemente de você ser lisa, ondulada, cacheada ou crespa, seu cabelo cresce cerca de <strong>1 cm a 1,2 cm por mês</strong> (cerca de 12 cm a 15 cm por ano).</p>
+
+    <p>Algumas pesquisas mostram uma variação sutil entre etnias: cabelos de ascendência asiática tendem a crescer ligeiramente mais rápido (cerca de 1,3 cm/mês) devido à angulação perfeitamente vertical do folículo no couro cabeludo. Já os cabelos afro-descendentes têm uma taxa média de 0,9 cm a 1,0 cm/mês por causa do formato elíptico e inclinado do folículo, o que exige um pouco mais de energia metabólica da raiz para empurrar o fio para fora. No entanto, essa diferença é pequena e não justifica um cabelo que fica anos na mesma altura. O mistério está na física do fio seco.</p>
+
+    <h2>A Física do Fio com Curvatura: Pontos de Torção (Twist Points)</h2>
+    <p>Para entender por que o cabelo liso retém comprimento com facilidade e os cachos quebram mais, precisamos olhar para a geometria tridimensional da haste capilar.</p>
+
+    <p>O cabelo liso é um cilindro uniforme. A tensão física exercida sobre ele (ao pentear, lavar ou prender) é distribuída de maneira homogênea por toda a sua extensão. Já o cabelo cacheado e crespo cresce em espirais. Cada curva da espiral é um ponto de torção geométrico (chamado na física capilar de <em>twist point</em>).</p>
+
+    <p>Nesses pontos de torção, ocorrem duas coisas críticas:</p>
+    <ul>
+      <li><strong>Estiramento da Cutícula:</strong> A cutícula (a camada de escamas externas protetoras) fica esticada e ligeiramente mais aberta na parte externa da curva, expondo o córtex (o coração do fio).</li>
+      <li><strong>Concentração de Tensão:</strong> Quando você penteia ou puxa o cabelo, a força mecânica não se distribui igualmente; ela se concentra exatamente nesses pontos de curva. É como uma mola: se você puxar com força excessiva, o metal deforma ou quebra nas dobras, não nas partes retas.</li>
+    </ul>
+
+    <p>Por causa disso, os cachos e crespos possuem pontos de fraqueza estrutural naturais a cada milímetro do fio. Sem a lubrificação adequada, qualquer atrito simples faz o fio se romper exatamente nesses pontos de torção.</p>
+
+    <h2>O Paradoxo do Sebo Natural (A Falta de Lubrificação)</h2>
+    <p>Outro fator físico que sabota a retenção de comprimento é a distribuição de sebo. O couro cabeludo produz uma gordura natural (lipídios) que funciona como um lubrificante mecânico e selante de umidade. No cabelo liso, o sebo escorre facilmente pelo fio, mantendo as pontas lubrificadas.</p>
+
+    <p>Nos cabelos ondulados, cacheados e crespos, o caminho do sebo é cheio de barreiras geográficas. A gordura não consegue viajar pelas espirais e torções. Como resultado, enquanto a raiz pode ser oleosa, o comprimento e as pontas sofrem com um ressecamento extremo e crônico. Sem essa lubrificação lipídica natural, os pontos de torção ficam expostos ao atrito do travesseiro, das roupas, do vento e das mãos. O fio resseca, perde elasticidade e quebra.</p>
+
+    <h2>Tabela Comparativa de Fragilidade por Curvatura</h2>
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; text-align: left; border: 0.5px solid var(--adm-rule, rgba(255,255,255,0.08));">
+      <thead>
+        <tr style="background: rgba(220, 163, 84, 0.1); color: var(--adm-gold, #DCA354);">
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Tipo de Fio</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Densidade de Pontos de Torção</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Lubrificação Natural nas Pontas</th>
+          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Sensibilidade ao Atrito Mecânico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Liso (Tipo 1)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Zero</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Excelente (sebo escorre livremente)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Baixíssima (alta resistência mecânica)</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Ondulado (Tipo 2)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Baixa (curvas suaves em S)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Média a Boa</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Baixa a Média</td>
+        </tr>
+        <tr>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Cacheado (Tipo 3)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Média a Alta (espirais frequentes)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Baixa (sebo não passa das curvas iniciais)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Alta (exige manuseio cuidadoso)</td>
+        </tr>
+        <tr style="background: rgba(255,255,255,0.02);">
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Crespo (Tipo 4)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Extrema (micro-voltas ou padrão em Z denso)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Muito Baixa (comprimento quase sem óleo natural)</td>
+          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Extrema (quebra facilmente sem lubrificação artificial)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Como reter comprimento de verdade: O Protocolo Científico</h2>
+    <p>Para ver o seu cabelo "crescer" (ou melhor, para fazer com que as pontas parem de quebrar e revelem o crescimento real), você precisa mudar a sua rotina focando em reduzir a tensão mecânica e repor os nutrientes corretos no córtex.</p>
+
+    <h3>1. Controle da Elasticidade e Força do Córtex</h3>
+    <p>Um fio sem elasticidade quebra ao menor sinal de estiramento. Para devolver a flexibilidade à fibra capilar, você precisa de tratamentos que penetrem no córtex, não apenas mascarar as cutículas. O uso de aminoácidos de baixo peso molecular (como arginina, ácido glutâmico e queratina hidrolisada) reconstrói as pontes internas de hidrogênio e dissulfeto, devolvendo a força elástica do fio.</p>
+
+    <h3>2. Lubrificação Lipídica Constante (Umectação e Óleos Finalizadores)</h3>
+    <p>Como o seu corpo não consegue levar o óleo natural até as pontas, você precisa fazer isso manualmente. A umectação com óleos vegetais 100% puros (como óleo de abacate ou argan) envolve o fio em uma película protetora que reduz o atrito entre as fibras. O uso diário de um bom óleo finalizador leve nas pontas ajuda a manter as cutículas dos pontos de torção seladas e protegidas contra o desgaste mecânico.</p>
+
+    <h3>3. Higienização sem Desgaste Cuticular</h3>
+    <p>Shampoos com sulfatos agressivos removem o pouco óleo protetor que restou nas curvas do cacho, deixando-o extremamente vulnerável. Prefira shampoos suaves (low-poo) e faça a lavagem focando apenas no couro cabeludo. Deixe que a espuma escorra pelo comprimento apenas na hora do enxágue. Isso é suficiente para limpar sem agredir a haste do cabelo.</p>
+
+    <h3>4. Manuseio Físico Inteligente</h3>
+    <p>Penteie o cabelo apenas quando ele estiver molhado e saturado de condicionador ou creme de pentear, que oferecem o deslizamento necessário para não tensionar os <em>twist points</em>. Comece desembaraçando sempre das pontas e suba progressivamente em direção à raiz. Use pentes de dentes largos ou escovas de cerdas flexíveis projetadas para cabelos cacheados.</p>
+
+    <h2>Como a Leitura de Fio Ajuda a Destravar o Crescimento</h2>
+    <p>Aqui no Studio do Jon, nós não acreditamos em fórmulas mágicas de internet para crescimento. Cada cabelo tem uma elasticidade, porosidade e padrão de curva únicos. O que funciona para um cacho 3A pode quebrar um crespo 4B.</p>
+
+    <p>Por isso, o primeiro passo de qualquer protocolo de tratamento ou corte é a nossa exclusiva <strong><a href="/servicos/leitura-de-fio">Leitura de Fio</a></strong>. Nós analisamos a saúde física do seu couro cabeludo para garantir que os folículos estão saudáveis e desobstruídos, medimos a elasticidade do córtex para ver se o fio precisa de reconstrução ou de óleos, e avaliamos os níveis de porosidade. A partir dessa análise científica, desenhamos o tratamento ideal para o seu cabelo parar de quebrar e finalmente revelar o comprimento real. Valeu demais pela confiança e TMJ! Um abraço forte.</p>
+
+    <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+      <h3>Cansada de ver seu cabelo cacheado estacionado no mesmo comprimento?</h3>
+      <p>Venha fazer um diagnóstico técnico de Leitura de Fio e mude a saúde dos seus cachos de verdade.</p>
+      <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Diagnóstico com o Jon</a>
+    </div>
+    `
+  },
+  {
     id: 61,
     slug: 'rotina-noturna-cachos-proteger-fio-dormindo',
     title: 'Rotina Noturna para Cachos: A Física do Fio Enquanto Você Dorme',
