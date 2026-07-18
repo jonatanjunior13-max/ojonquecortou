@@ -483,7 +483,7 @@ async function sendAdminWhatsAppNotification(type, data, settings) {
         method: 'POST',
         headers: waHeaders,
         body: JSON.stringify({
-          number: '553135866673',
+          number: '5531920066790',
           text: waText
         })
       });
@@ -971,7 +971,7 @@ export default async function handler(req, res) {
       emailSubject = 'Seu horário no Studio do Jon foi cancelado';
       const formattedDateTime = `${formatApptDate(data.date, data.time)} às ${data.time}`;
       const waText = encodeURIComponent(`Olá Jon, meu agendamento previsto para ${formattedDateTime} foi cancelado por ausência e gostaria de remarcar com sinal de 50%.`);
-      const waLink = `https://wa.me/553135866673?text=${waText}`;
+      const waLink = `https://wa.me/5531920066790?text=${waText}`;
 
       emailContent = `
         <div class="eyebrow" style="color: #c97b49;">Cancelamento</div>

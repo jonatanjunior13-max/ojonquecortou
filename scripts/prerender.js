@@ -150,7 +150,7 @@ const fullFaqList = [
   { q: "Qual a diferença entre cabelo ondulado, cacheado e crespo?", a: "É uma questão de curvatura do fio: ondulado (tipo 2A a 2C) forma ondas suaves, cacheado (tipo 3A a 3C) forma cachos definidos em espiral, e crespo (tipo 4A a 4C) tem curvatura mais fechada e maior fator de encolhimento. Atendemos todo esse espectro, do 2A ao 4C, cada um com técnica de corte própria." },
   { q: "Corte a seco funciona em qualquer tamanho de cabelo?", a: "Sim. O Corte Híbrido se adapta a qualquer comprimento, do curto ao longo. A decisão de cortar mais a seco ou mais molhado depende do comportamento do fio identificado na Leitura de Fio, não do tamanho do cabelo." },
   { q: "Quanto custa um corte no Studio do Jon?", a: "O Corte com o Jon (Leitura de Fio completa + corte técnico + finalização educativa) custa R$ 190. Há também o Combo Corte + Tratamento por R$ 230, e a Leitura de Fio isolada, sem corte, por R$ 80 (valor revertido em crédito caso feche o serviço na sequência)." },
-  { q: "Quais os horários de atendimento e onde fica o Studio do Jon?", a: "Atendemos de segunda a sábado, das 9h às 19h. Ficamos na Rua Francisco Ovídio, 184, bairro Caiçaras, Belo Horizonte (MG), próximo ao metrô Gameleira e à Avenida Pedro II. Telefone: (31) 92006679." },
+  { q: "Quais os horários de atendimento e onde fica o Studio do Jon?", a: "Atendemos de segunda a sábado, das 9h às 19h. Ficamos na Rua Francisco Ovídio, 184, bairro Caiçaras, Belo Horizonte (MG), próximo ao metrô Gameleira e à Avenida Pedro II. Telefone: (31) 92006-6790." },
   { q: "Posso fazer só a Leitura de Fio, sem cortar?", a: "Sim. A consultoria de Leitura de Fio isolada custa R$ 80 e inclui o diagnóstico completo de porosidade, curvatura, histórico químico e orientações de cuidado, sem compromisso de corte. Se você decidir fechar o corte na sequência, o valor é revertido em crédito." },
   { q: "Como cuidar do cabelo depois do corte?", a: "Siga a rotina de manutenção mostrada na finalização educativa do próprio atendimento, que é ensinada durante o corte. Em linhas gerais: hidrate com regularidade conforme a porosidade identificada na Leitura de Fio, evite manipulação excessiva do fio seco e retome o cronograma de tratamento (hidratação, nutrição ou reconstrução) conforme o diagnóstico." },
   { q: "Quando devo voltar para manutenção do corte?", a: "O ideal é retornar de 3 em 3 ou de 4 em 4 meses para manter o design do corte. Se cortou há até 90 dias e quer só um retoque, oferecemos a Manutenção de Corte (R$ 130), voltada para quem já passou pela Leitura de Fio recentemente." },
@@ -238,7 +238,7 @@ const aboutBody = `
         <li><strong>Visagismo:</strong> Harmonização do corte com o formato do seu rosto e sua personalidade.</li>
       </ul>
       <h2>Localização e Endereço</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: <a href="tel:+5531920066790">(31) 92006679</a>.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a>.</p>
     </article>
   </noscript>
 `;
@@ -657,7 +657,7 @@ const homeBody = `
       <p>Antes de qualquer tesoura, o Studio do Jon realiza 7 etapas de análise: escuta, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada, definição de técnica e finalização como validação. Esse diagnóstico é incluso em todo atendimento, sem custo extra. Saiba mais sobre o <a href="/metodo">Método Leitura de Fio</a>.</p>
       <p>Veja todos os <a href="/investimento">valores e formas de investimento</a> antes de agendar seu horário.</p>
       <h2>Localização e Agendamento</h2>
-      <p>Studio do Jon (O Jon que Cortou) · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+5531920066790">(31) 92006679</a>. <a href="/agendar">Agende seu horário online</a> ou fale pelo <a href="https://wa.me/553135866673">WhatsApp</a>. Instagram: @ojonquecortou.</p>
+      <p>Studio do Jon (O Jon que Cortou) · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a>. <a href="/agendar">Agende seu horário online</a> ou fale pelo <a href="https://wa.me/5531920066790">WhatsApp</a>. Instagram: @ojonquecortou.</p>
       <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
       <p>Localizado no bairro Caiçaras, próximo ao metrô Gameleira e à Avenida Pedro II, o Studio do Jon fica a poucos passos de um dos pontos mais acessíveis de Belo Horizonte para quem busca um especialista em cabelo cacheado sem depender de carro. Clientes de toda a região metropolitana chegam de metrô, ônibus ou a pé para o diagnóstico da Leitura de Fio, tornando o Caiçaras uma referência local para cortes técnicos em cachos, crespos e ondulados.</p>
     </article>
@@ -687,7 +687,7 @@ const agendarBody = `
       </ul>
       <p>Precisa remarcar ou cancelar depois de agendado? Você pode fazer isso direto pelo site, sem precisar ligar — acesse o link enviado na confirmação ou a <a href="/cancelar">página de cancelamento</a>.</p>
       <h2>Localização e Contato</h2>
-      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+5531920066790">(31) 92006679</a>. Prefere falar antes? Chame no <a href="https://wa.me/553135866673">WhatsApp</a>. Instagram: @ojonquecortou.</p>
+      <p>Studio do Jon · Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG · CEP 30770-040. Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a>. Prefere falar antes? Chame no <a href="https://wa.me/5531920066790">WhatsApp</a>. Instagram: @ojonquecortou.</p>
     </article>
   </noscript>
 `;
@@ -1093,7 +1093,7 @@ const pages = [
         <li><strong>Instagram:</strong> @ojonquecortou</li>
       </ul>
       <h2>Contato para pauta</h2>
-      <p>Para entrevistas ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/553135866673">(31) 92006679</a>.</p>
+      <p>Para entrevistas ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/5531920066790">(31) 92006-6790</a>.</p>
     </article>
   </noscript>
 `,
@@ -1118,7 +1118,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['descoloracao-cabelo-cacheado']}
-      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006679</a></p>
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a></p>
     </article>
   </noscript>
 `,
@@ -1136,7 +1136,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['corte-hibrido']}
-      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006679</a></p>
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a></p>
     </article>
   </noscript>
 `,
@@ -1154,7 +1154,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['transicao-capilar']}
-      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006679</a></p>
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a></p>
     </article>
   </noscript>
 `,
@@ -1172,7 +1172,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['visagismo-cachos']}
-      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006679</a></p>
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a></p>
     </article>
   </noscript>
 `,
@@ -1190,7 +1190,7 @@ const pages = [
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       ${EXPANDED_SERVICE_BODIES['masculino']}
-      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006679</a></p>
+      <p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a></p>
     </article>
   </noscript>
 `,
@@ -1253,12 +1253,12 @@ const pages = [
       </ul>
       <p>Você concorda em NÃO usar este site para atividades ilegais, fraudulentas, abusivas ou prejudiciais.</p>
       <h2>4. Cancelamento de Agendamentos</h2>
-      <p>Cancelamentos devem ser feitos através do site ou entrando em contato diretamente pelo WhatsApp <a href="https://wa.me/553135866673">(31) 92006679</a>. Consulte a política de cancelamento específica para cada serviço no momento do agendamento.</p>
+      <p>Cancelamentos devem ser feitos através do site ou entrando em contato diretamente pelo WhatsApp <a href="https://wa.me/5531920066790">(31) 92006-6790</a>. Consulte a política de cancelamento específica para cada serviço no momento do agendamento.</p>
       <h2>5. Limitação de Responsabilidade</h2>
       <p>O Studio do Jon fornece este site e seus serviços "como estão". Não oferecemos garantias, expressas ou implícitas, quanto à adequação, comercialização ou adequação para um fim específico.</p>
       <p>Não seremos responsáveis por danos indiretos, incidentais ou consequentes decorrentes do uso ou impossibilidade de usar este site ou seus serviços.</p>
       <h2>6. Contato</h2>
-      <p><strong>O Jon que Cortou — Studio do Jon</strong><br />Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG<br />E-mail: <a href="mailto:contato@ojonquecortou.com.br">contato@ojonquecortou.com.br</a><br />WhatsApp: <a href="https://wa.me/553135866673">(31) 92006679</a></p>
+      <p><strong>O Jon que Cortou — Studio do Jon</strong><br />Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG<br />E-mail: <a href="mailto:contato@ojonquecortou.com.br">contato@ojonquecortou.com.br</a><br />WhatsApp: <a href="https://wa.me/5531920066790">(31) 92006-6790</a></p>
     </article>
   </noscript>
 `
@@ -1298,7 +1298,7 @@ SEED_SERVICES.forEach(service => {
 
   // Shared NAP line — appended to every /servicos/* prerendered body so
   // local-SEO signals aren't confined to home/sobre only.
-  const napFooter = `<p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006679</a></p>`;
+  const napFooter = `<p style="font-size: 0.85em; opacity: 0.7;">Studio do Jon &middot; Rua Francisco Ovídio, 184 &middot; Caiçaras &middot; Belo Horizonte, MG &middot; Telefone: <a href="tel:+5531920066790">(31) 92006-6790</a></p>`;
 
   // Use expanded body if available, otherwise use default
   const serviceBody = SEED_SERVICE_EXPANDED_BODIES[service.id] ? `

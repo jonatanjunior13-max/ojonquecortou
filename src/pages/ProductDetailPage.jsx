@@ -5,7 +5,7 @@ import { db } from '../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './ProductDetailPage.css';
 
-const WA_NUMBER = '553135866673';
+const WA_NUMBER = '5531920066790';
 const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
 
 const ProductDetailPage = () => {

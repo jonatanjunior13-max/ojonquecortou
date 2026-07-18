@@ -217,7 +217,7 @@ const EspecialistaCachosBhPage = () => {
             </p>
             <p style={{ marginTop: '1rem', color: '#999', fontSize: '0.9rem' }}>
               📍 Rua Francisco Ovídio, 184 — Caiçaras, BH<br />
-              📞 (31) 3586-6673<br />
+              📞 (31) 92006-6790<br />
               🕐 Terça a Sexta: 9h às 19h | Sábado: 9h às 17h
             </p>
 
@@ -225,7 +225,7 @@ const EspecialistaCachosBhPage = () => {
               <Link to="/agendar" className="btn btn-accent">
                 Agendar Agora <Arrow />
               </Link>
-              <a href="https://wa.me/553135866673?text=Olá, gostaria de agendar uma Leitura de Fio" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+              <a href="https://wa.me/5531920066790?text=Olá, gostaria de agendar uma Leitura de Fio" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
                 Falar no WhatsApp
               </a>
             </div>

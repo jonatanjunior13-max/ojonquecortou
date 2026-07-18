@@ -63,7 +63,7 @@ function Footer() {
               <strong>O Jon que Cortou — Studio do Jon</strong><br />
               Rua Francisco Ovídio, 184<br />
               Caiçaras, Belo Horizonte - MG<br />
-              Telefone: (31) 3586-6673
+              Telefone: (31) 92006-6790
             </p>
             <p style={{ color: "var(--muted)", fontSize: "14.5px", lineHeight: "1.5", margin: 0 }}>
               Terça a Sexta: 9h às 19h<br />

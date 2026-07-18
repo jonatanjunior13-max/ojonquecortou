@@ -82,7 +82,7 @@ const GalleryPage = () => {
               <a href="/agendar" className="btn btn-primary">
                 Agendar Horário
               </a>
-              <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-outline">
+              <a href="https://wa.me/5531920066790" target="_blank" rel="noreferrer" className="btn btn-outline">
                 Falar com Especialista
               </a>
             </div>

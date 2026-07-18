@@ -812,7 +812,7 @@ export default function ClientAreaPage() {
                     <Link to="/agendar" className="btn btn-accent client-quick-btn">
                       Agendar Novo Horário
                     </Link>
-                    <a href="https://wa.me/553135866673" target="_blank" rel="noreferrer" className="btn btn-ghost client-quick-btn">
+                    <a href="https://wa.me/5531920066790" target="_blank" rel="noreferrer" className="btn btn-ghost client-quick-btn">
                       Falar no WhatsApp
                     </a>
                   </div>
