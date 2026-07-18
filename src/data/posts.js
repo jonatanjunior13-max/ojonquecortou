@@ -684,11 +684,11 @@ export const posts = [
         }
       ]
     },
-    content: `<blockquote><p><strong>TL;DR:</strong> O fator encolhimento é uma resposta mecânica e estrutural natural dos fios com curvatura, influenciada por pontes de hidrogênio e dissulfeto. Ele varia de 5% a 80% conforme o padrão de cacho. A solução definitiva para evitar surpresas no comprimento é o Corte Híbrido: estruturação precisa no molhado e escultura personalizada no seco, compensando a variação de texturas na mesma cabeça.</p></blockquote>
+    content: `<p>Você pediu "só um pouco nas pontas" e saiu do salão com o cabelo 5 dedos mais curto. Acontece porque o fator encolhimento — a contração que o cacho sofre ao secar — não foi previsto no corte. E em cabelos cacheados tipo 3 e 4, esse encolhimento pode chegar a 80%.</p>
 
-    <p>Quem tem cabelo ondulado, cacheado ou crespo conhece muito bem a cena: você termina de lavar os fios, eles parecem estar na altura dos ombros, mas basta o cabelo secar para ele encolher três, quatro ou até dez dedos, subindo até a linha do queixo. Esse fenômeno, conhecido como <strong>fator encolhimento</strong>, é uma das principais características dos cabelos com curvatura — e também a maior fonte de medo na hora de encarar a tesoura.</p>
+    <p>Este guia explica a física por trás (por que acontece) e como o <strong>Corte Híbrido</strong> (leitura de fio + estruturação + corte a seco) compensa esse encolhimento ao vivo, garantindo que o comprimento que você vê molhado seja o comprimento que você tem seco.</p>
 
-    <p>Muitas clientes chegam ao Studio com traumas de cortes antigos onde pediram para tirar "só as pontinhas" e saíram com o cabelo curtíssimo. Isso acontece quando o profissional não entende a física do cacho. Não existe mágica: o fator encolhimento é pura ciência física e geometria molecular. Neste artigo, vou explicar o mecanismo biológico e físico que faz o cabelo encolher e como o método de <strong>Corte Híbrido</strong> é a resposta definitiva para você ter o corte dos seus sonhos, sem surpresas desagradáveis.</p>
+    <blockquote><p><strong>TL;DR:</strong> O fator encolhimento é uma resposta mecânica natural dos fios com curvatura, influenciada por pontes de hidrogênio e dissulfeto. Varia de 5% a 80% conforme o padrão de cacho. O Corte Híbrido — estruturação precisa no molhado + escultura personalizada no seco — compensa essa variação em tempo real, compensando a variação de texturas na mesma cabeça.</p></blockquote>
 
     <h2>A Física por Trás do Fator Encolhimento</h2>
     <p>A contração do cabelo cacheado não é um defeito; é uma resposta física à sua estrutura morfológica. Ao contrário do cabelo liso, cujo folículo capilar no couro cabeludo é redondo e reto, o folículo do cabelo cacheado e crespo tem um formato ovalado, elíptico e nasce inclinado.</p>
@@ -2009,7 +2009,7 @@ export const posts = [
           "name": "Onde fica o Studio do Jon e como posso agendar um diagnóstico?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 3586-6673."
+            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 9 2006-6790."
           }
         },
         {
@@ -2079,7 +2079,7 @@ export const posts = [
       <p>Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns.</p>
 
       <h3>Onde fica o Studio do Jon e como posso agendar um diagnóstico?</h3>
-      <p>O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 3586-6673.</p>
+      <p>O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 9 2006-6790.</p>
 
       <h3>O que causa o aparecimento de frizz mecânico?</h3>
       <p>O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração.</p>
@@ -4012,13 +4012,12 @@ export const posts = [
       ]
     },
     content: `
-      <p>Cronograma capilar para cabelos cacheados não é a mesma coisa que pra lisos. A sequência errada desidrata o fio em vez de nutrir. Esse guia foi montado com base na Leitura de Fio — a metodologia do Studio do Jon que analisa seu padrão antes de qualquer protocolo.</p>
+      <p>Cronogramas de internet funcionam para 10% dos cachos. Os outros 90% pioram porque começam com a sequência errada. Este guia mostra como montar O SEU cronograma — baseado na sua porosidade e histórico capilar — usando a Leitura de Fio, o diagnóstico usado no Studio do Jon para determinar exatamente qual de três etapas (hidratação, nutrição, reconstrução) seu fio precisa AGORA.</p>
 
-      <h2>Introdução</h2>
-      <p>Você pesquisou, escolheu os produtos, montou a sequência — hidratação, nutrição, reconstrução — e seguiu à risca por semanas.</p>
-      <p>O cabelo não melhorou. Ou piorou.</p>
-      <p>Isso acontece com uma frequência que cansa de explicar. E o motivo quase sempre é o mesmo: você começou pelo passo errado.</p>
-      <p>O cronograma capilar para cabelo cacheado não começa com produto. Começa com diagnóstico. E sem esse diagnóstico, qualquer protocolo é chute — às vezes um chute que faz mais mal do que bem.</p>
+      <h2>Por Que Cronograma de Internet Não Funciona (E o Seu Pode Funcionar)</h2>
+      <p>Você pesquisou. Escolheu os produtos. Montou hidratação → nutrição → reconstrução. Seguiu à risca por semanas. O cabelo não melhorou, ou piorou.</p>
+      <p>O motivo: você começou pelo passo errado. Um cronograma genérico assume que todas as porosidades respondem igual. Elas não respondem. Um cabelo de alta porosidade (seca rápido, embaraça) precisa de nutrição AGORA. Um de baixa (áspero, não absorve) precisa de hidratação leve. Fazer o protocolo errado não trata o fio — agrava.</p>
+      <p>Este artigo explica como identificar sua necessidade real (via teste de porosidade) e construir um cronograma que funciona.</p>
 
       <h2>O Que É Cronograma Capilar (e por que quase todos explicam errado)</h2>
       <p>Cronograma capilar é um protocolo de cuidados que alterna três tipos de tratamento: hidratação, nutrição e reconstrução. A ideia é simples — cada etapa resolve uma necessidade diferente do fio.</p>
@@ -6597,7 +6596,7 @@ export const posts = [
           "name": "Onde encontrar um especialista em cabelo crespo 4C em Belo Horizonte?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos pelo link ojonquecortou.com.br/agendar, e o telefone para contato é (31) 3586-6673."
+            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos pelo link ojonquecortou.com.br/agendar, e o telefone para contato é (31) 9 2006-6790."
           }
         }
       ]
