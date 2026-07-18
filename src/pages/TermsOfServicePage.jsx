@@ -133,7 +133,7 @@ const TermsOfServicePage = () => {
           <h2 style={h2Style}>4. Cancelamento de Agendamentos</h2>
           <p style={pStyle}>
             Cancelamentos devem ser feitos através do site ou entrando em contato diretamente pelo WhatsApp
-            <a href="https://wa.me/5531920066790" style={linkStyle}> (31) 92006-6790</a>.
+            <a href="https://wa.me/5531983044059" style={linkStyle}> (31) 98304-4059</a>.
             Consulte a política de cancelamento específica para cada serviço no momento do agendamento.
           </p>
         </div>
@@ -177,7 +177,7 @@ const TermsOfServicePage = () => {
             <strong>O Jon que Cortou — Studio do Jon</strong><br />
             Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG<br />
             E-mail: <a href="mailto:contato@ojonquecortou.com.br" style={linkStyle}>contato@ojonquecortou.com.br</a><br />
-            WhatsApp: <a href="https://wa.me/5531920066790" style={linkStyle}>(31) 92006-6790</a>
+            WhatsApp: <a href="https://wa.me/5531983044059" style={linkStyle}>(31) 98304-4059</a>
           </p>
         </div>
       </section>

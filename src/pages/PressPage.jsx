@@ -55,7 +55,7 @@ const PressPage = () => {
 
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Contato para pauta</h2>
           <p className="paragraph-md" style={{ marginTop: 16 }}>
-            Para entrevistas, participação em pautas sobre cabelo cacheado/crespo, ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/5531920066790?text=Ol%C3%A1%2C%20sou%20jornalista%2Fcriador%20de%20conte%C3%BAdo%20e%20gostaria%20de%20falar%20sobre%20uma%20pauta." target="_blank" rel="noreferrer">(31) 92006-6790</a>.
+            Para entrevistas, participação em pautas sobre cabelo cacheado/crespo, ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/5531983044059?text=Ol%C3%A1%2C%20sou%20jornalista%2Fcriador%20de%20conte%C3%BAdo%20e%20gostaria%20de%20falar%20sobre%20uma%20pauta." target="_blank" rel="noreferrer">(31) 98304-4059</a>.
           </p>
         </div>
       </section>

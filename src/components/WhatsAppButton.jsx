@@ -4,7 +4,7 @@ import './WhatsAppButton.css';
 
 const WhatsAppButton = () => {
   const location = useLocation();
-  const phoneNumber = "5531920066790";
+  const phoneNumber = "5531983044059";
   const message = "Olá, gostaria de mais informações";
   const encodedMessage = encodeURIComponent(message);
   const waUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;

@@ -2009,7 +2009,7 @@ export const posts = [
           "name": "Onde fica o Studio do Jon e como posso agendar um diagnóstico?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 9 2006-6790."
+            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 9 8304-4059."
           }
         },
         {
@@ -2079,7 +2079,7 @@ export const posts = [
       <p>Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns.</p>
 
       <h3>Onde fica o Studio do Jon e como posso agendar um diagnóstico?</h3>
-      <p>O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 9 2006-6790.</p>
+      <p>O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 9 8304-4059.</p>
 
       <h3>O que causa o aparecimento de frizz mecânico?</h3>
       <p>O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração.</p>
@@ -6596,7 +6596,7 @@ export const posts = [
           "name": "Onde encontrar um especialista em cabelo crespo 4C em Belo Horizonte?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos pelo link ojonquecortou.com.br/agendar, e o telefone para contato é (31) 9 2006-6790."
+            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos pelo link ojonquecortou.com.br/agendar, e o telefone para contato é (31) 9 8304-4059."
           }
         }
       ]

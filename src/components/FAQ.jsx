@@ -92,7 +92,7 @@ const FAQ = () => {
                   Escolher meu horário →
                 </Link>
                 <a
-                  href={`https://wa.me/5531920066790?text=${encodeURIComponent('Olá Jon! Quero agendar um horário no Studio.')}`}
+                  href={`https://wa.me/5531983044059?text=${encodeURIComponent('Olá Jon! Quero agendar um horário no Studio.')}`}
                   target="_blank"
                   rel="noreferrer"
                   className="bic-whatsapp-link"

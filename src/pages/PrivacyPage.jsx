@@ -91,7 +91,7 @@ const PrivacyPage = () => {
             <strong>O Jon que Cortou — Studio do Jon</strong> (Jonatan Junior, profissional autônomo)<br />
             Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG, CEP 30770-040<br />
             E-mail: <a href="mailto:contato@ojonquecortou.com.br" style={linkStyle}>contato@ojonquecortou.com.br</a><br />
-            Telefone/WhatsApp: <a href="https://wa.me/5531920066790" style={linkStyle}>(31) 92006-6790</a>
+            Telefone/WhatsApp: <a href="https://wa.me/5531983044059" style={linkStyle}>(31) 98304-4059</a>
           </p>
         </div>
       </section>
@@ -195,7 +195,7 @@ const PrivacyPage = () => {
           <p style={pStyle}>
             Para exercer qualquer um desses direitos, entre em contato pelo e-mail{' '}
             <a href="mailto:contato@ojonquecortou.com.br" style={linkStyle}>contato@ojonquecortou.com.br</a>{' '}
-            ou pelo WhatsApp <a href="https://wa.me/5531920066790" style={linkStyle}>(31) 92006-6790</a>.
+            ou pelo WhatsApp <a href="https://wa.me/5531983044059" style={linkStyle}>(31) 98304-4059</a>.
             Responderemos sua solicitação dentro de um prazo razoável. Se não ficar satisfeito, você
             também pode registrar reclamação junto à Autoridade Nacional de Proteção de Dados (ANPD),
             em <a href="https://www.gov.br/anpd" target="_blank" rel="noopener noreferrer" style={linkStyle}>gov.br/anpd</a>.

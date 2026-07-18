@@ -1291,7 +1291,7 @@ const BookingPage = () => {
             <p style={{ margin: 0, fontSize: '0.88rem' }}>O serviço de <strong>Manutenção de Corte</strong> é exclusivo para clientes que realizaram um Corte ou Corte + Tratamento completo conosco nos últimos 90 dias.</p>
             <p style={{ margin: 0, fontSize: '0.88rem' }}>Não identificamos esse histórico em seu cadastro. Por favor, fale diretamente com o Jon pelo WhatsApp para agendar ou tirar dúvidas.</p>
             <a 
-              href={`https://wa.me/5531920066790?text=Olá%20Jon!%20Gostaria%20de%20solicitar%20uma%20Manutenção%20de%20Corte.%20Meu%20telefone%20é%20${cleanPhone}`}
+              href={`https://wa.me/5531983044059?text=Olá%20Jon!%20Gostaria%20de%20solicitar%20uma%20Manutenção%20de%20Corte.%20Meu%20telefone%20é%20${cleanPhone}`}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-accent"
@@ -1918,7 +1918,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                               e.preventDefault();
                               e.stopPropagation();
                               const text = encodeURIComponent(`Olá! Gostaria de um orçamento para ${service.name}.`);
-                              window.open(`https://wa.me/5531920066790?text=${text}`, '_blank');
+                              window.open(`https://wa.me/5531983044059?text=${text}`, '_blank');
                               return;
                             }
                             setSelectedServices([service]);
@@ -2303,7 +2303,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                   Seu perfil está temporariamente bloqueado para agendamentos online automáticos pelo sistema devido a uma ausência anterior. Para agendar um novo horário, é necessário o pagamento de um sinal de R$ 95,00 (50% do valor do corte) que será integralmente abatido no dia do atendimento.
                 </p>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  <a href="https://wa.me/5531920066790?text=Ol%C3%A1%20Jon%2C%20meu%20perfil%20consta%20como%20bloqueado%20e%20gostaria%20de%20solicitar%20um%20novo%20agendamento%20com%20sinal." target="_blank" className="btn btn-accent" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#25D366', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                  <a href="https://wa.me/5531983044059?text=Ol%C3%A1%20Jon%2C%20meu%20perfil%20consta%20como%20bloqueado%20e%20gostaria%20de%20solicitar%20um%20novo%20agendamento%20com%20sinal." target="_blank" className="btn btn-accent" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#25D366', color: '#fff', border: 'none', padding: '10px 18px', borderRadius: '4px', textDecoration: 'none', fontWeight: 'bold', fontSize: '0.9rem' }}>
                     Agendar pelo WhatsApp
                   </a>
                   <button type="button" className="btn btn-ghost" onClick={() => setStep(2)}>Voltar</button>

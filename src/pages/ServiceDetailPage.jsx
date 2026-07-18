@@ -5,7 +5,7 @@ import { SEED_SERVICES } from '../data/seedServices';
 import { Reveal, Arrow } from '../components/NewDesignComponents';
 import './ServiceDetailPage.css';
 
-const WA_NUMBER = '5531920066790';
+const WA_NUMBER = '5531983044059';
 const WA_BASE = `https://wa.me/${WA_NUMBER}?text=`;
 const TRINKS_URL = '/agendar';
 

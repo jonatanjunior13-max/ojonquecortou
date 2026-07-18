@@ -413,7 +413,7 @@ const BlogPostPage = () => {
                   <a href="/agendar" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
                     Agendar Horário
                   </a>
-                  <a href={`https://wa.me/5531920066790?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog">
+                  <a href={`https://wa.me/5531983044059?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog">
                     WhatsApp
                   </a>
                 </div>

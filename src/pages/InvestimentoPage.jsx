@@ -247,7 +247,7 @@ const InvestimentoPage = () => {
           </p>
 
           <a
-            href="https://wa.me/5531920066790"
+            href="https://wa.me/5531983044059"
             className="btn btn-primary"
             style={{ padding: '1rem 2.5rem', fontWeight: 800, textDecoration: 'none', display: 'inline-block' }}
           >

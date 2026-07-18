@@ -297,7 +297,7 @@ const SEED_TRANSACTIONS = [
 
 const DEFAULT_SETTINGS = {
   name: 'Studio do Jon',
-  phone: '31920066790',
+  phone: '31983044059',
   address: 'Rua Francisco Ovídio, 184 - Caiçaras, Belo Horizonte - MG, CEP 30770-040',
   instagram: 'https://instagram.com/ojonquecortou',
   feePix: 0,

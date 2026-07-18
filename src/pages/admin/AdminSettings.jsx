@@ -7,7 +7,7 @@ import './Admin.css';
 const DEFAULT_SETTINGS = {
   // Estabelecimento
   name: 'Studio do Jon',
-  phone: '31920066790',
+  phone: '31983044059',
   address: 'Rua Francisco Ovídio, 184 - Caiçaras, Belo Horizonte - MG, CEP 30770-040',
   instagram: 'https://instagram.com/ojonquecortou',
   
@@ -350,7 +350,7 @@ const AdminSettings = () => {
 
               <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
                 <div className="form-group">
-                  <label>WhatsApp de Contato (ex: 31920066790)</label>
+                  <label>WhatsApp de Contato (ex: 31983044059)</label>
                   <input 
                     type="text" 
                     value={settings.phone}
