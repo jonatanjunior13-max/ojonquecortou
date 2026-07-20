@@ -1,5 +1,158 @@
 export const posts = [
   {
+    id: 64,
+    slug: 'french-bob-cacheado-geometria-volume',
+    title: 'French Bob Cacheado: A Geometria do Corte Curto e a Liberação do Volume',
+    seoTitle: 'French Bob Cacheado: Geometria e Volume Natural | Studio do Jon',
+    excerpt: 'Descubra como a geometria do French Bob estruturado valoriza cachos e ondas, criando volume equilibrado sem o temido efeito pirâmide.',
+    metaDescription: 'O French Bob cacheado une a elegância do corte curto à física de distribuição de peso dos cachos. Veja como funciona a geometria deste corte clássico em BH.',
+    keywords: 'french bob cacheado, corte curto cacheado, volume cachos, visagismo cachos bh, corte de cabelo cacheado bh, o jon que cortou',
+    date: '20 de Julho, 2026',
+    datePublished: '2026-07-20',
+    dateModified: '2026-07-20',
+    author: 'Jon',
+    category: 'Técnica',
+    image: '/blog-french-bob-cacheado-geometria-volume.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O French Bob encolhe muito no cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. O fator de encolhimento pode reduzir o comprimento visual em até 50%. A modelagem precisa ser calculada considerando a elasticidade de cada mecha no estado úmido e seco, garantindo que a base final repouse exatamente na altura planejada da mandíbula."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quem tem cabelo ondulado pode fazer o French Bob?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Com certeza. No cabelo ondulado (tipo 2), o French Bob ganha um caimento despojado e muito movimento. O segredo é graduar as camadas internas para que as ondas não fiquem sem sustentação e esticadas pelo próprio peso."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como evitar o efeito pirâmide no corte curto cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O efeito pirâmide ocorre quando a base é cortada reta. Para evitá-lo, distribuímos o peso através de camadas suaves e graduações internas, permitindo que os cachos do topo tenham leveza para flutuar e criar volume arredondado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O French Bob cacheado dá muito trabalho para finalizar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pelo contrário. A proposta desse corte para 2026 é a textura hiper-real. Com a geometria correta, basta usar um leave-in leve ou gelatina líquida e secar com difusor. O frizz natural é parte da estética elegante do corte."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é a diferença entre French Bob e Short Bob nos cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O French Bob tem uma base mais reta, ligeiramente desfiada nas pontas e geralmente acompanha uma franja curta acima das sobrancelhas. O Short Bob costuma ter a nuca mais batida e a frente mais alongada em bico."
+          }
+        }
+      ]
+    },
+    content: `
+      <p>O corte curto no cabelo ondulado, cacheado e crespo sempre foi cercado de mitos. O maior medo de quem decide desapegar do comprimento é o temido "efeito pirâmide", onde o cabelo perde o volume no topo e se espalha para as laterais, criando uma silhueta triangular sem harmonia. Mas a resposta para esse problema não está em evitar o curto — está na geometria aplicada.</p>
+
+      <p>O French Bob cacheado surge como a união perfeita entre a alfaiataria do corte parisiense clássico e as necessidades físicas dos fios com curvatura. Ao contrário dos bobs tradicionais criados para cabelos lisos, a versão texturizada exige uma leitura inteligente da elasticidade e da densidade das mechas.</p>
+
+      <h2>O Que É o French Bob Cacheado?</h2>
+      <p>O French Bob cacheado é uma releitura do clássico corte curto parisiense, caracterizado por uma base geométrica que termina entre a boca e a mandíbula, adaptada especificamente para respeitar o encolhimento e a densidade dos fios com curvatura. Sua principal assinatura é a leveza nas pontas e o volume distribuído no topo, criando uma moldura elegante para o rosto que destaca as maçãs e a linha do pescoço.</p>
+      
+      <p>Diferente de um bob convencional que foca em linhas estritamente retas e chapadas, a adaptação para cachos e ondas exige um degradê imperceptível na parte interna. Isso cria o que chamamos na engenharia do corte de "área de escape", onde as camadas internas sustentam as externas, dando espaço para que as espirais se formem sem se empilhar lateralmente.</p>
+
+      <h2>Por que o Volume Precisa de Liberdade Geométrica?</h2>
+      <p>Cachos e ondas não se comportam como tecidos planos que caem sob a gravidade de forma uniforme. Eles funcionam como molas físicas. Quando cortamos o cabelo em uma base reta única, o peso dos fios superiores esmaga os cachos de baixo, impedindo-os de definir. Ao mesmo tempo, as pontas se expandem sem controle, gerando o formato triangular.</p>
+
+      <p>O segredo para um French Bob harmonioso é entender a distribuição geométrica de peso. Em vez de lutar contra o volume natural, nós o abraçamos. Removemos o excesso de peso de áreas estratégicas, como a nuca e as têmporas, redistribuindo o foco do volume para o terço médio e superior do rosto. Isso não apenas resolve o efeito pirâmide, mas alonga o pescoço e traz uma leveza incrível para o dia a dia.</p>
+
+      <h2>Como Funciona a Distribuição de Peso no French Bob</h2>
+      <p>Para entender a diferença de comportamento entre os estilos de corte curto e médio no cabelo com curvatura, veja o comparativo abaixo:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Estilo de Bob</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Base Geométrica</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Distribuição de Peso</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Efeito no Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">French Bob</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Mandíbula (curto)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Camadas internas graduadas</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Volume arredondado e leve</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Bob Tradicional</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Ombro / Clavícula (médio)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Base reta / inteira</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Efeito pirâmide nas pontas</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Long Bob</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Alongado na frente</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Nuca levemente desfiada</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Volume deslocado para a frente</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>A magia do French Bob está na sua capacidade de criar um visual "despretensioso mas chique". Ao usar o visagismo, o profissional avalia a estrutura óssea — a distância entre o lóbulo da orelha e o ombro, o ângulo da mandíbula e a proeminência do queixo — para desenhar o comprimento exato onde a linha do corte vai atuar como um moldura.</p>
+
+      <h2>Passo a Passo para Finalizar e Obter a Textura Hiper-Real</h2>
+      <p>A tendência de comportamento capilar para 2026 afasta-se de cachos engessados pelo excesso de creme e foca na **textura hiper-real**. O frizz suave é abraçado como parte do movimento natural do fio, e a leveza é priorizada. Aqui está como alcançar essa estética com o seu French Bob:</p>
+      
+      <ol>
+        <li><strong>Limpeza Equilibrada:</strong> Comece lavando o cabelo com um shampoo leve para remover qualquer buildup de resíduos que possa pesar nos fios curtos.</li>
+        <li><strong>Condicionamento sem Excesso:</strong> Apply condicionador apenas do meio para as pontas e enxágue totalmente. Cabelos curtos precisam de leveza na raiz para ganhar volume.</li>
+        <li><strong>Leave-in Fluido:</strong> Com o cabelo ainda bem molhado, aplique uma pequena quantidade de leave-in de textura fluida ou gelatina líquida leve. Evite cremes densos que esticam a curvatura das ondas e pesam nos cachos.</li>
+        <li><strong>Secagem com Difusor:</strong> Amasse as pontas em direção à raiz com uma toalha de microfibra para retirar o excesso de água. Seque com o difusor inclinado para as laterais e para cima para estimular o volume da raiz.</li>
+        <li><strong>Quebra do Durinho:</strong> Quando o cabelo estiver 100% seco, use as mãos secas (ou com duas gotas de um óleo extremamente leve) para soltar a raiz e quebrar o aspecto rígido do finalizador, revelando cachos soltos e macios.</li>
+      </ol>
+
+      <h2>Erros Comuns ao Cortar o Cabelo Curto Cacheado</h2>
+      <p>Evitar erros clássicos é fundamental quando lidamos com comprimentos curtos e curvaturas:</p>
+      <ul>
+        <li><strong>Ignorar o Fator de Encolhimento:</strong> Cortar sem estimar a elasticidade do cacho molhado vs. seco resulta em um cabelo muito mais curto do que o desejado. Cada tipo de cacho reage de forma diferente à perda de peso.</li>
+        <li><strong>Uso de Navalhas nas Pontas:</strong> O uso de navalha em cabelos com curvatura rasga a cutícula do fio, destruindo a estrutura da mola natural e provocando frizz excessivo e pontas duplas no futuro.</li>
+        <li><strong>Tentar Fazer Base Reta Sem Graduação:</strong> Como explicado, bobs curtos sem camadas internas graduadas geram acúmulo de peso nas pontas, resultando no indesejado visual triangular.</li>
+      </ul>
+
+      <h2>Perguntas Frequentes</h2>
+      <h3>O French Bob encolhe muito no cabelo cacheado?</h3>
+      <p>Sim. O fator de encolhimento pode reduzir o comprimento visual em até 50%. A modelagem precisa ser calculada considerando a elasticidade de cada mecha no estado úmido e seco, garantindo que a base final repouse exatamente na altura planejada da mandíbula.</p>
+
+      <h3>Quem tem cabelo ondulado pode fazer o French Bob?</h3>
+      <p>Com certeza. No cabelo ondulado (tipo 2), o French Bob ganha um caimento despojado e muito movimento. O segredo é graduar as camadas internas para que as ondas não fiquem sem sustentação e esticadas pelo próprio peso.</p>
+
+      <h3>Como evitar o efeito pirâmide no corte curto cacheado?</h3>
+      <p>O efeito pirâmide ocorre quando a base é cortada reta. Para evitá-lo, distribuímos o peso através de camadas suaves e graduações internas, permitindo que os cachos do topo tenham leveza para flutuar e criar volume arredondado.</p>
+
+      <h3>O French Bob cacheado dá muito trabalho para finalizar?</h3>
+      <p>Pelo contrário. A proposta desse corte para 2026 é a textura hiper-real. Com a geometria correta, basta usar um leave-in leve ou gelatina líquida e secar com difusor. O frizz natural é parte da estética elegante do corte.</p>
+
+      <h3>Qual é a diferença entre French Bob e Short Bob nos cachos?</h3>
+      <p>O French Bob tem uma base mais reta, ligeiramente desfiada nas pontas e geralmente acompanha uma franja curta acima das sobrancelhas. O Short Bob costuma ter a nuca mais batida e a frente mais alongada em bico.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer descobrir a melhor versão do seu curto?</h3>
+        <p>A engenharia do caimento perfeito e o visagismo adaptado à sua curvatura acontecem no Studio do Jon, em Belo Horizonte.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 63,
     slug: 'cabelo-soft-fluido-finalizacao-leve-sem-buildup',
     title: 'Cabelo Soft e Fluido: A Física da Mola e o Fim das Finalizações Pesadas',
