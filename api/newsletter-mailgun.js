@@ -390,13 +390,7 @@ Use as seguintes tags no "bodyHtml":
             }
           ],
           subject: subject,
-          html: fullHtml.replace(/{nome}/g, r.name),
-          headers: [
-            {
-              name: 'List-Unsubscribe',
-              value: `<${UNSUBSCRIBE_BASE}${encodeURIComponent(r.email)}>`
-            }
-          ]
+          html: fullHtml.replace(/{nome}/g, r.name)
         }));
 
         const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
