@@ -2586,7 +2586,7 @@ export const posts = [
     id: 44,
     slug: 'caspa-cabelo-cacheado-inverno-como-tratar',
     scientificData: {
-      summary: "O aumento da incidência de descamação (caspa/dermatite seborreica) no inverno é associado à lavagem com água quente, que remove o estrato córneo lipídico protetor, induzindo hipersecreção sebácea rebote e proliferação do fungo Malassezia. O tratamento requer o uso de agentes antifúngicos/queratolíticos suaves na raiz combinados com co-wash ou proteção catiônica no comprimento para evitar o ressecamento da fibra.",
+      summary: "A caspa em cabelo cacheado piora no inverno por causa do banho quente: água acima de 37°C remove a proteção natural do couro cabeludo, que reage produzindo mais oleosidade (efeito rebote) — o alimento do fungo Malassezia, causador da caspa. O tratamento correto: shampoo anticaspa suave aplicado apenas na raiz, pontas protegidas com pré-poo (condicionador ou óleo leve antes do banho), água morna e de 2 a 4 lavagens por semana.",
       sourceLabel: "Journal of Clinical and Aesthetic Dermatology / SBD",
       sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4852869/",
       factSheet: [
@@ -2601,6 +2601,7 @@ export const posts = [
     metaDescription: 'Lidando com caspa e descamação no cabelo cacheado neste inverno em BH? Descubra dicas de especialista para purificar o couro cabeludo sem ressecar as pontas.',
     keywords: 'caspa cabelo cacheado, descamação couro cabeludo bh, caspa no inverno, como tratar caspa cachos, dermatite seborreica cabelo cacheado, studio do jon',
     date: '26 de Junho, 2026',
+    dateModified: '2026-07-20',
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-caspa-cabelo-cacheado.webp',
@@ -2635,6 +2636,8 @@ export const posts = [
       ]
     },
     content: `
+      <p><strong>Resposta rápida:</strong> para tratar caspa em cabelo cacheado no inverno sem ressecar as pontas, lave com água morna (nunca quente), aplique o shampoo anticaspa apenas na raiz, proteja o comprimento com pré-poo antes do banho e mantenha de 2 a 3 lavagens por semana. Abaixo eu explico o porquê de cada passo — e como saber se o que você tem é mesmo caspa.</p>
+
       <h2>O Paradoxo do Inverno: Banho Quente vs. Saúde do Couro Cabeludo</h2>
       <p>Com as manhãs e noites frias de Belo Horizonte em junho e julho, a tentação de tomar aquele banho extremamente quente é inevitável. Mas o que traz conforto para o corpo pode se transformar em um pesadelo para a sua cabeça. É no inverno que as queixas de coceira, descamação e a indesejada caspa (dermatite seborreica) disparam no Studio.</p>
       <p>Para quem tem cabelos ondulados, cacheados ou crespos, tratar a caspa se torna um verdadeiro dilema. Os shampoos anticaspa tradicionais do mercado são formulados com sulfatos extremamente agressivos. Se por um lado eles limpam a oleosidade da raiz, por outro eles descem pelo comprimento e estilhaçam as cutículas das pontas, que já são naturalmente mais secas. O resultado? Uma raiz limpa, mas um cabelo áspero, espigado, sem definição e com frizz descontrolado.</p>
