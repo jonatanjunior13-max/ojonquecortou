@@ -1,5 +1,182 @@
 export const posts = [
   {
+    id: 65,
+    slug: 'do-liso-armado-as-ondas-de-capa-caso-clarissa',
+    title: 'Do "Liso Armado" às Ondas de Capa: O Dia em Que Mudei o Caimento do Cabelo da Clarissa',
+    seoTitle: 'Do Liso Armado às Ondas de Capa: Caso Clarissa | Studio do Jon',
+    excerpt: 'Clarissa achava que tinha cabelo liso armado e cheio de frizz. Descubra a história do diagnóstico técnico que liberou as ondas naturais dela.',
+    metaDescription: 'Veja como a Leitura de Fio e a distribuição geométrica de peso transformaram o cabelo "liso armado" da Clarissa em ondas definidas e leves. Studio do Jon BH.',
+    keywords: 'cabelo ondulado, liso armado, transicao capilar, finalizacao ondulados, leitura de fio, o jon que cortou bh',
+    date: '21 de Julho, 2026',
+    datePublished: '2026-07-21',
+    dateModified: '2026-07-21',
+    author: 'Jon',
+    category: 'Técnica',
+    image: '/blog-do-liso-armado-as-ondas-de-capa-caso-clarissa.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que causa o efeito de liso armado no cabelo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O liso armado é geralmente um cabelo ondulado subdiagnosticado. Quando cortado com base reta ou finalizado com cremes pesados e óleos oclusivos, o peso estica a raiz, enquanto as pontas sem definição sofrem com frizz e volume sem forma."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como a Leitura de Fio ajuda a identificar ondas escondidas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A Leitura de Fio analisa a elasticidade, o diâmetro e a porosidade de cada mecha no estado natural. Isso revela o padrão de curvatura real do cabelo sem a interferência de químicas ou resíduos acumulados de finalizadores."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O óleo de coco é recomendado para cabelo ondulado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. O óleo de coco é muito denso para fios ondulados tipo 2. Ele cria uma barreira oclusiva que impede a entrada de água (buildup), resultando em ondas esticadas, sem definição e com frizz falso por ressecamento interno."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual o melhor finalizador para cabelo ondulado leve?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Finalizadores de textura fluida, como leave-ins hidrofílicos leves ou gelatinas líquidas diluídas em água. Eles fornecem a fixação necessária para manter as ondas agrupadas sem adicionar peso físico que estique a curvatura."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como controlar o frizz em cabelos ondulados tipo 2?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Controla-se o frizz acidificando o fio para selar as cutículas e finalizando com produtos de fixação leve aplicados no cabelo bem úmido. Evite escovar o cabelo seco e use difusor em temperatura média."
+          }
+        }
+      ]
+    },
+    content: `
+      <p id="introducao">A Clarissa sentou na minha cadeira com os ombros contraídos e aquela frustração clássica estampada no rosto. Ela me disse: <em>"Jon, meu cabelo é um liso armado, cheio de frizz, e as pontas parecem que não têm caimento nenhum. Já tentei de tudo, óleos pesados, escova progressiva para abaixar o volume, mas odeio o visual chapado."</em></p>
+
+      <p>Eu olhei para o cabelo dela. Não vi um liso armado. Vi ondas tipo 2B e 2C gritando por espaço, água e liberdade geométrica. O peso do cabelo longo com base reta estava esticando as poucas ondas que tentavam se formar na raiz, enquanto o frizz era simplesmente a onda que não conseguia se agrupar por falta de hidratação interna.</p>
+
+      <p>Abaixo, reuni os 5 principais insights técnicos que discutimos durante a sessão da Clarissa e que mudaram a forma como ela enxerga o próprio cabelo:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); width: 30%;">Ponto-Chave</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Insight Técnico</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Falso Frizz</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">O frizz na onda é o cacho tentando se agrupar sob o efeito de acúmulo de produto (buildup) ou peso excessivo.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Leitura de Fio</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">A elasticidade e a porosidade reais só são reveladas quando removemos as barreiras de óleos pesados e silicones insolúveis.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Geometria Reversa</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Cortar cabelos ondulados com base reta estica a raiz e acumula volume triangular nas pontas. Precisamos de camadas sutis.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Acidificação Ativa</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Fios ondulados com porosidade desequilibrada perdem água muito rápido. O ajuste de pH é a chave para selar as cutículas.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Textura Hiper-Real</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">O caimento perfeito em 2026 preza pelo toque macio e frizz controlado, e não por cachos duros e plastificados.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="whatis">O Que É o Cabelo Ondulado Subdiagnosticado?</h2>
+      <p>O cabelo ondulado subdiagnosticado é aquele cuja curvatura natural (geralmente tipo 2A ou 2B) é mascarada pelo uso de produtos inadequados ou pela secagem incorreta, sendo frequentemente confundido com um cabelo liso armado ou com excesso de frizz. É o cabelo que acorda volumoso, sem forma definida, e reage mal à umidade.</p>
+      
+      <p>A falta de diagnóstico faz com que as pessoas usem tratamentos inadequados. Cabelos ondulados possuem menos curvas para reter a oleosidade natural do couro cabeludo ao longo do fio, mas ainda precisam de água. Quando a pessoa tenta tratar essa desidratação aplicando óleos oclusivos densos, ela apenas impermeabiliza o fio, gerando um ressecamento interno crônico.</p>
+
+      <h2 id="diagnosis">O Caso Clarissa: O Diagnóstico Técnico e a Leitura de Fio</h2>
+      <p>O diagnóstico da Clarissa começou com o meu método de Leitura de Fio. Lavei o cabelo dela com um shampoo de limpeza profunda para remover o buildup de óleo de coco e silicones acumulados. Quando o cabelo secou ao natural, sem nenhum finalizador, a verdade se revelou: o cabelo dela não era liso. Ele tinha um padrão de ondas tipo 2B na parte de trás e 2C nas têmporas.</p>
+
+      <p>A porosidade estava completamente desequilibrada — média na raiz e muito alta nas pontas devido ao uso diário de chapinha. Esse desequilíbrio criava uma discrepância de caimento. A raiz ficava pesada e esticada, enquanto as pontas abriam em leque, dando aquele aspecto armado que ela tanto detestava. O frizz era o grito de socorro do cabelo desidratado tentando absorver umidade do ar.</p>
+
+      <h2 id="geometry">Como a Geometria do Corte Libera as Ondas</h2>
+      <p>Para mudar o caimento do cabelo da Clarissa, o segredo foi a distribuição geométrica de peso. Em vez de manter a base reta tradicional que puxava o cabelo para baixo, criei camadas graduadas internas que respeitam a densidade das mechas. As camadas de baixo dão suporte para que as ondas do topo tenham leveza para flutuar e curvar.</p>
+
+      <p>Ao tirar o peso estrutural da nuca e criar uma graduação suave nas laterais, as ondas da Clarissa finalmente ganharam definição orgânica. O cabelo curto a médio agora se encaixava no contorno do rosto dela, criando uma moldura geométrica que valorizou as maçãs do rosto e a linha do queixo, trazendo sofisticação imediata.</p>
+
+      <h2 id="comparison">Comparativo de Texturas e Finalizadores</h2>
+      <p>Uma parte crucial da transformação foi redefinir a finalização. Ondas tipo 2 não se comportam bem com produtos densos. Veja o comparativo técnico abaixo:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); width: 25%;">Tipo de Produto</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Composição Principal</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Efeito nas Ondas (2A-2C)</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Recomendação do Jon</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Leave-in Fluido</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Agentes hidrofílicos leves</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Definição leve sem pesar</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Ideal para o dia a dia</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Creme Hidratante Denso</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Manteigas e óleos pesados</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Estica a onda e causa buildup</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); color: #8A7866;">Evitar em fios tipo 2</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Gelatina Líquida / Gel</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Polímeros de fixação solúveis</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Mantém a onda agrupada e dura</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Usar diluído para fixar</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="misconceptions">Mitos e Verdades sobre o Cabelo Ondulado</h2>
+      <ul>
+        <li><strong>Mito: Cabelo ondulado é liso com frizz.</strong><br><em>Verdade:</em> O frizz é a onda tentando se formar sem a hidratação e a finalização corretas. Quando o cabelo é devidamente tratado, o frizz diminui e as ondas se agrupam.</li>
+        <li><strong>Mito: Cremes pesados ajudam a definir as ondas.</strong><br><em>Verdade:</em> Cremes densos e óleos pesados adicionam carga física que estica e desfaz as ondas, deixando o cabelo com aspecto ensebado e sem movimento.</li>
+        <li><strong>Mito: Ondas não precisam de reconstrução, apenas de hidratação.</strong><br><em>Verdade:</em> O cabelo ondulado precisa de carga proteica e acidificação periódica para manter a estrutura interna forte o suficiente para sustentar a curvatura.</li>
+      </ul>
+
+      <h2 id="faq">Perguntas Frequentes</h2>
+      <h3>O que causa o efeito de liso armado no cabelo?</h3>
+      <p>O liso armado é geralmente um cabelo ondulado subdiagnosticado. Quando cortado com base reta ou finalizado com cremes pesados e óleos oclusivos, o peso estica a raiz, enquanto as pontas sem definição sofrem com frizz e volume sem forma.</p>
+
+      <h3>Como a Leitura de Fio ajuda a identificar ondas escondidas?</h3>
+      <p>A Leitura de Fio analisa a elasticidade, o diâmetro e a porosidade de cada mecha no estado natural. Isso revela o padrão de curvatura real do cabelo sem a interferência de químicas ou resíduos acumulados de finalizadores.</p>
+
+      <h3>O óleo de coco é recomendado para cabelo ondulado?</h3>
+      <p>Não. O óleo de coco é muito denso para fios ondulados tipo 2. Ele cria uma barreira oclusiva que impede a entrada de água (buildup), resultando em ondas esticadas, sem definição e com frizz falso por ressecamento interno.</p>
+
+      <h3>Qual o melhor finalizador para cabelo ondulado leve?</h3>
+      <p>Finalizadores de textura fluida, como leave-ins hidrofílicos leves ou gelatinas líquidas diluídas em água. Eles fornecem a fixação necessária para manter as ondas agrupadas sem adicionar peso físico que estique a curvatura.</p>
+
+      <h3>Como controlar o frizz em cabelos ondulados tipo 2?</h3>
+      <p>Controla-se o frizz acidificando o fio para selar as cutículas e finalizando com produtos de fixação leve aplicados no cabelo bem úmido. Evite escovar o cabelo seco e use difusor em temperatura média.</p>
+
+      <div id="conclusion" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer descobrir as ondas escondidas no seu cabelo?</h3>
+        <p>No Studio do Jon, em Belo Horizonte, fazemos o diagnóstico técnico preciso para revelar o caimento ideal da sua textura natural.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 64,
     slug: 'french-bob-cacheado-geometria-volume',
     title: 'French Bob Cacheado: A Geometria do Corte Curto e a Liberação do Volume',
