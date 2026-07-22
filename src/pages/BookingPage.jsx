@@ -2246,20 +2246,10 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             style={{
                               '--bar-color': barColor,
                               '--bar-color-rgb': rgbColor,
-                              background: `linear-gradient(90deg, rgba(${rgbColor}, 0.15) 0%, transparent 75%)`
+                              background: `linear-gradient(180deg, rgba(${rgbColor}, 0.12) 0%, transparent 100%)`
                             }}
                           >
                             <span className="time-btn-time">{slot}</span>
-                            <div className="time-btn-info">
-                              <div className="time-btn-name">
-                                {selectedServices.length > 1
-                                  ? selectedServices.map(s => s.name).join(' + ')
-                                  : (primaryService?.name || 'Horário livre')}
-                              </div>
-                              <div className={`time-btn-service${!primaryService ? ' free' : ''}`}>
-                                {selectedServices.length > 0 && `${computedDuration}min`}
-                              </div>
-                            </div>
                             <span className="time-btn-badge" style={{ borderColor: barColor, color: barColor }}>
                               {categoryLabel}
                             </span>
