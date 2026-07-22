@@ -2320,20 +2320,46 @@ const AdminDashboard = () => {
   
   const [revenueThisWeek, setRevenueThisWeek] = useState(0);
 
+  const formatRevenueValue = (val) => {
+    const num = Number(val || 0);
+    if (isNaN(num)) return '0,00';
+    if (num >= 1000000) {
+      return (num / 1000000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + 'M';
+    }
+    if (num >= 100000) {
+      return (num / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'k';
+    }
+    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   useEffect(() => {
+    let startStr = '';
+    let endStr = '';
+
     const d = new Date(currentDate);
-    const day = getAdjustedDay(d);
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    const startOfWeek = new Date(d.setDate(diff));
-    const startStr = getLocalDateString(startOfWeek);
+    if (statsScope === 'dia') {
+      startStr = getLocalDateString(d);
+      endStr = getLocalDateString(d);
+    } else if (statsScope === 'semana') {
+      const day = getAdjustedDay(d);
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const startOfWeek = new Date(d.setDate(diff));
+      startStr = getLocalDateString(startOfWeek);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      endStr = getLocalDateString(endOfWeek);
+    } else { // 'mes'
+      const startOfMonth = new Date(d.getFullYear(), d.getMonth(), 1);
+      const endOfMonth = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+      startStr = getLocalDateString(startOfMonth);
+      endStr = getLocalDateString(endOfMonth);
+    }
 
-    const endStr = getLocalDateString(new Date(startOfWeek.setDate(startOfWeek.getDate() + 5)));
-
-    const weekEntradas = transactions
+    const scopeEntradas = transactions
       .filter(t => t.type === 'entrada' && t.date >= startStr && t.date <= endStr)
       .reduce((sum, t) => sum + Number(calculateNetValue(t.value, t.paymentMethod, settings) || 0), 0);
-    setRevenueThisWeek(weekEntradas);
-  }, [transactions, currentDate]);
+    setRevenueThisWeek(scopeEntradas);
+  }, [transactions, currentDate, statsScope, settings]);
 
   // WhatsApp automation 24h before
   useEffect(() => {
@@ -2993,10 +3019,10 @@ Grande abraço, Jon.`;
         </div>
         <div className="stat-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3>Receita Consolidada (Semana)</h3>
+            <h3>Receita Consolidada ({statsScope === 'dia' ? 'Dia' : statsScope === 'semana' ? 'Semana' : 'Mês'})</h3>
             <DollarSign size={18} style={{ color: '#4a5d4e', opacity: 0.8 }} />
           </div>
-          <div className="value" style={{ color: '#4a5d4e' }}>R$ {revenueThisWeek}</div>
+          <div className="value" style={{ color: '#4a5d4e' }}>R$ {formatRevenueValue(revenueThisWeek)}</div>
         </div>
       </section>
 
