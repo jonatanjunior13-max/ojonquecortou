@@ -270,8 +270,8 @@
 
 .time-picker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
 }
 
 /* ── Service Category Colors ── */
@@ -291,8 +291,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px 6px;
+  gap: 0;
+  padding: 10px 4px;
   background: linear-gradient(180deg, rgba(var(--bar-color-rgb, 226, 112, 58), 0.12) 0%, transparent 100%);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-top: 3px solid var(--bar-color, #E2703A);
@@ -302,7 +302,7 @@
   text-align: center;
   color: var(--ink);
   overflow: hidden;
-  min-height: 72px;
+  min-height: 48px;
 }
 
 .time-btn::before {

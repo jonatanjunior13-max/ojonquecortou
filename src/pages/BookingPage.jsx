@@ -2250,9 +2250,6 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                             }}
                           >
                             <span className="time-btn-time">{slot}</span>
-                            <span className="time-btn-badge" style={{ borderColor: barColor, color: barColor }}>
-                              {categoryLabel}
-                            </span>
                           </button>
                         ))}
                       </div>
