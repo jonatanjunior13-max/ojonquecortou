@@ -270,8 +270,22 @@
 
 .time-picker-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
   gap: 8px;
+}
+
+@media (max-width: 480px) {
+  .time-picker-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .time-btn {
+    min-height: 44px;
+    padding: 8px 2px;
+  }
+  .time-btn-time {
+    font-size: 0.95rem;
+  }
 }
 
 /* ── Service Category Colors ── */
