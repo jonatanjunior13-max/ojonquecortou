@@ -1,4 +1,178 @@
-export const posts = [
+export const posts = [  {
+    id: 66,
+    slug: 'descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes',
+    title: 'Descoloração em Cabelo Cacheado: A Ciência das Pontes de Dissulfeto e Como Iluminar Sem Perder a Curvatura',
+    seoTitle: 'Descoloração em Cabelo Cacheado e Pontes de Dissulfeto | Studio do Jon',
+    excerpt: 'Descubra a física e a química da descoloração em cabelos cacheados: como o pó alcalino afeta as pontes de dissulfeto e o método técnico para fazer luzes mantendo a mola.',
+    metaDescription: 'Entenda o impacto da descoloração nas pontes de dissulfeto do cabelo cacheado. Saiba como fazer morena iluminada sem perder a mola com a Leitura de Fio em BH.',
+    keywords: 'descoloracao cabelo cacheado, pontes de dissulfeto, luzes cabelo cacheado, morena iluminada cacheada, perda de curvatura descoloracao, o jon que cortou bh',
+    date: '24 de Julho, 2026',
+    datePublished: '2026-07-24',
+    dateModified: '2026-07-24',
+    author: 'Jon',
+    category: 'Técnica',
+    image: '/blog-descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+            {
+                  "@type": "Question",
+                  "name": "Por que a descoloração faz o cabelo cacheado perder a curvatura?",
+                  "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A descoloração utiliza um meio altamente alcalino (pH 10 a 11) combinado com peróxido de hidrogênio. Esse processo rompe as pontes de dissulfeto (ligações covalentes de enxofre) no córtex capilar e degrada a camada lipídica 18-MEA, reduzindo a força elástica necessária para sustentar o formato espiral da mola do cacho."
+                  }
+            },
+            {
+                  "@type": "Question",
+                  "name": "É possível fazer luzes em cabelo cacheado sem alisar ou desestruturar os cachos?",
+                  "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Sim. É possível preservar a curvatura realizando uma avaliação prévia através da Leitura de Fio para checar a porosidade e elasticidade, utilizando protetores de pontes (Plex) durante a oxidação, trabalhando com volumes de oxidante mais baixos e acidificando o fio imediatamente após o enxágue."
+                  }
+            },
+            {
+                  "@type": "Question",
+                  "name": "O que são pontes de dissulfeto e qual a sua função no cabelo cacheado?",
+                  "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "As pontes de dissulfeto são ligações químicas covalentes fortes formadas entre aminoácidos de cisteína dentro da queratina do córtex. No cabelo cacheado e crespo, a distribuição assimétrica e angular dessas pontes é o que determina biologicamente a curvatura, a memória e a elasticidade tridimensional do fio."
+                  }
+            },
+            {
+                  "@type": "Question",
+                  "name": "Qual o papel da acidificação capilar após a descoloração?",
+                  "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A acidificação capilar rebaixa o pH alcalino residual do processo de descoloração para a faixa fisiológica do fio (pH 3.5 a 4.5). Isso alinha as cutículas abertas, interrompe a oxidação contínua da queratina e sela a umidade e os aminoácidos no interior do córtex."
+                  }
+            },
+            {
+                  "@type": "Question",
+                  "name": "Qual a diferença entre morena iluminada com Leitura de Fio e descoloração tradicional?",
+                  "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "A descoloração tradicional aplica pó descolorante de forma genérica sem medir a resistência elástica do fio seco. A técnica de morena iluminada com Leitura de Fio analisa a porosidade e a integridade de cada mecha individualmente, aplicando o clareamento apenas até o limite de oxidação que a fibra suporta sem romper as pontes de sustentação."
+                  }
+            }
+      ]
+},
+    content: `<blockquote id="tldr"><p><strong>TL;DR:</strong> A descoloração em cabelos cacheados e crespos não é apenas uma mudança de cor; é uma reação química agressiva que afeta diretamente o córtex. O pó descolorante alcalino (pH 10-11) abre as cutículas e quebra as pontes de dissulfeto (ligações S-S de enxofre) que sustentam o formato helicoidal do cacho. Para iluminar o cabelo (como na técnica morena iluminada ou luzes) sem perder a mola, é indispensável realizar a Leitura de Fio prévia, usar protetores de pontes (Plex), controlar o ritmo de oxidação e executar acidificação imediata com reposição proteica.</p></blockquote>
+
+      <p id="introducao">Uma das maiores dúvidas que recebo no Studio do Jon em Belo Horizonte é: <em>"Jon, quero muito clarear meus cachos, fazer um morena iluminada ou luzes douradas, mas tenho pavor de ver meu cabelo perder a definição e virar uma palha esticada. É verdade que descoloração sempre alisa o cacho?"</em></p>
+
+      <p>A resposta direta é: <strong>não, a descoloração não precisa alisar o seu cacho</strong>, desde que a física e a química da fibra capilar sejam respeitadas. O problema é que a maioria dos salões aplica pó descolorante em cabelos com curvatura usando a mesma lógica e tempo de ação de um cabelo liso. O resultado? Rompimento maciço das pontes de sustentação interna e perda da força elástica do fio. Valeu demais por buscar informação antes de aplicar química, e vamos entender exatamente como a ciência resolve esse dilema!</p>
+
+      <h2 id="pontes-de-dissulfeto">O Que São Pontes de Dissulfeto e Por Que Elas Definem Seus Cachos?</h2>
+      <p>As <strong>pontes de dissulfeto</strong> (ou ligações dissulfídicas S-S) são ligações químicas covalentes fortes formadas entre os átomos de enxofre dos aminoácidos de cisteína presentes na alfa-queratina do córtex capilar. Enquanto as pontes de hidrogênio e salinas são ligações temporárias que se desfazem com água ou calor, as pontes de dissulfeto são as responsáveis pela arquitetura permanente e pela memória geométrica do seu fio.</p>
+
+      <p>Nos cabelos cacheados e crespos (curvaturas tipo 3 e 4), a distribuição das pontes de dissulfeto ao longo da haste não é uniforme nem simétrica. O folículo piloso curvo produz mechas com acúmulos angulares de cisteína. É exatamente essa assimetria molecular que faz a fibra capilar se torcer no espaço tridimensional, gerando o formato de mola elástica.</p>
+
+      <h2 id="quimica-da-descoloracao">A Química da Descoloração: O Que Acontece Dentro da Haste Capilar?</h2>
+      <p>A descoloração ocorre através de uma reação de oxidação. Para retirar os pigmentos naturais de melanina (eumelanina e feomelanina), o cosmético precisa vencer duas barreiras físicas:</p>
+
+      <ol>
+        <li><strong>Abertura Cuticular por Alcalinidade:</strong> O pó descolorante contém persulfatos e agentes alcalinizantes (como a amônia ou bicarbonatos) que elevam o pH do meio para a faixa de 10 a 11. Esse pH extremo faz com que as placas de cutícula inchem e se abram.</li>
+        <li><strong>Oxidação no Córtex:</strong> O peróxido de hidrogênio (água oxigenada) penetra no córtex e libera oxigênio reativo. Esse oxigênio destrói as moléculas de melanina, clareando o fio.</li>
+      </ol>
+
+      <p>O problema biológico é que a oxidação não é seletiva. Ao mesmo tempo em que oxida a cor, o oxigênio reativo ataca os aminoácidos de cisteína, convertendo o enxofre em ácido cisteico. Esse processo rompe permanentemente as pontes de dissulfeto. Além disso, a descoloração remove a camada de lipídios protetores externos (o ácido 18-metileicosanóico ou 18-MEA), deixando a fibra extremamente porosa e hidrofílica.</p>
+
+      <p>Sem as pontes de dissulfeto para sustentar a estrutura angular e sem a camada lipídica de proteção, a mola mecânica do cacho perde sua constante elástica. O cabelo fica com visual murcho, ralo, esticado e com frizz descontrolado.</p>
+
+      <h2 id="tabela-comparativa">Comparativo Técnico: Descoloração Convencional vs. Método com Leitura de Fio</h2>
+      <p>Veja no quadro abaixo a diferença entre um processo de clareamento empírico e a abordagem técnica baseada em química e física capilar:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); width: 25%;">Parâmetro</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Descoloração Convencional</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Descoloração com Leitura de Fio (Jon)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Diagnóstico Prévio</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Visual rápido com o cabelo molhado ou maquiado por silicone.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Leitura de Fio no estado seco e higienizado para medir porosidade e elasticidade real.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Volume de Oxidante</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Oxidantes altos (30 a 40 volumes) para clarear rápido.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Oxidantes de baixa a média volumagem (10 a 20 vol) em ritmo controlado.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Proteção de Pontes</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Ausente ou tratamentos superficiais pós-enxágue.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Protetores sintéticos de pontes (tecnologia Plex) adicionados diretamente na mistura.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Controle de pH</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Máscaras comerciais comuns sem ajuste de pH ácido.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Acidificação imediata pós-clareamento (pH 3.5 - 4.0) para selar cutículas.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Resultado Estrutural</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); color: #8A7866;">Cachos murchos, pontas espigadas e perda de definição.</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Curvatura íntegra, iluminação tridimensional e mola com memória mantida.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="metodo-leitura-de-fio">O Método de Leitura de Fio Aplicado à Descoloração</h2>
+      <p>Antes de aplicar qualquer gota de descolorante na sua cabeça, o meu protocolo exige o diagnóstico físico do cabelo limpo e seco — o <strong>Método Leitura de Fio</strong>. Nesse processo, avaliamos quatro variáveis fundamentais:</p>
+
+      <ul>
+        <li><strong>Teste de Carga Elástica:</strong> Esticamos suavemente uma mecha para observar o ponto de deformação. Se a mecha estica e não retorna à forma helicoidal, as pontes de dissulfeto já estão comprometidas por químicas anteriores ou danos térmicos. Nesse caso, a descoloração é pausada para um ciclo de reconstrução.</li>
+        <li><strong>Nível de Porosidade Cuticular:</strong> Verificamos a taxa de absorção e perda de água. Cabelos muito porosos absorvem química rápido demais, acelerando a degradação da queratina se a mistura não for desacelerada.</li>
+        <li><strong>Histórico de Metais Pesados e Buildup:</strong> A água encanada e cosméticos com silicones insolúveis deixam resíduos de metais (como cobre e ferro) no fio. Quando descolorante entra em contato com metais acumulados, ocorre uma reação exotérmica de superaquecimento que derrete o cabelo. A purificação quelante prévia neutraliza esse risco.</li>
+        <li><strong>Visagismo da Iluminação:</strong> Em vez de criar mechas marcadas na raiz, o visagismo analisa o contorno facial para pintar mechas desenhadas à mão (balayage), respeitando a direção natural onde os cachos caem no estado seco.</li>
+      </ul>
+
+      <h2 id="passo-a-passo-recuperacao">Passo a Passo Pós-Descoloração: Como Tratar o Cabelo Iluminado em Casa</h2>
+      <p>Se você já fez luzes ou morena iluminada, o cuidado pós-química precisa ser focado no equilíbrio de pH e na reposição de matéria proteica. Siga esta sequência lógica:</p>
+
+      <ol>
+        <li><strong>Acidificação Semanal (Primeiras 3 semanas):</strong> Use um acidificante capilar com pH entre 3.0 e 4.0 uma vez por semana após o shampoo. Isso equilibra o pH alcalino residual e impede que as cutículas fiquem abertas perdendo massa.</li>
+        <li><strong>Reconstrução com Cisteína e Aminoácidos:</strong> Alterne tratamentos nutritivos com máscaras reconstrutoras ricas em aminoácidos de baixo peso molecular (cisteína, arginina e queratina hidrolisada). Evite queratinas pesadas em excesso para não enrijecer o fio.</li>
+        <li><strong>Umectação com Óleos Leves Vegetais:</strong> Como a camada 18-MEA foi desgastada, o cabelo iluminado precisa de lipídios bio-compatíveis (como óleo de jojoba ou argan) para restaurar a lubricidade entre os fios sem gerar buildup.</li>
+        <li><strong>Proteção Térmica e Solar Estrita:</strong> O cabelo descolorido perdeu parte do seu filtro natural de melanina. Sempre que usar difusor ou se expor ao sol de Belo Horizonte, aplique protetor térmico e UV hidrossolúvel.</li>
+      </ol>
+
+      <h2 id="erros-comuns">Erros Fatais Que Destroem os Cachos Durante o Clareamento</h2>
+      <p>Se você quer manter a mola dos seus cachos perfeita, fuja destes três erros comuns praticados no mercado:</p>
+      <ul>
+        <li><strong>Usar Tonalizantes e Tinturas com Amônia para Matizar:</strong> Matizar luzes com tinturas alcalinas comuns reabre as cutículas recém-descoloridas. Utilize apenas tonalizantes ácidos sem amônia.</li>
+        <li><strong>Fazer Escova e Chapinha Logo Após Descolorir:</strong> Submeter o fio fragilizado pela oxidação ao calor direto de 200°C da chapinha quebra as pontes de hidrogênio remanescentes e petrifica o dano.</li>
+        <li><strong>Acreditar que Óleo de Coco Salva Cabelo Descolorido:</strong> O óleo de coco cria uma película insolúvel que impede a entrada de água e reconstrutores, maquiando o dano enquanto o fio resseca por dentro.</li>
+      </ul>
+
+      <h2 id="faq">Perguntas Frequentes sobre Descoloração em Cabelo Cacheado</h2>
+      <h3>Por que a descoloração faz o cabelo cacheado perder a curvatura?</h3>
+      <p>A descoloração utiliza um meio altamente alcalino (pH 10 a 11) combinado com peróxido de hidrogênio. Esse processo rompe as pontes de dissulfeto (ligações covalentes de enxofre) no córtex capilar e degrada a camada lipídica 18-MEA, reduzindo a força elástica necessária para sustentar o formato espiral da mola do cacho.</p>
+
+      <h3>É possível fazer luzes em cabelo cacheado sem alisar ou desestruturar os cachos?</h3>
+      <p>Sim. É possível preservar a curvatura realizando uma avaliação prévia através da Leitura de Fio para checar a porosidade e elasticidade, utilizando protetores de pontes (Plex) durante a oxidação, trabalhando com volumes de oxidante mais baixos e acidificando o fio imediatamente após o enxágue.</p>
+
+      <h3>O que são pontes de dissulfeto e qual a sua função no cabelo cacheado?</h3>
+      <p>As pontes de dissulfeto são ligações químicas covalentes fortes formadas entre aminoácidos de cisteína dentro da queratina do córtex. No cabelo cacheado e crespo, a distribuição assimétrica e angular dessas pontes é o que determina biologicamente a curvatura, a memória e a elasticidade tridimensional do fio.</p>
+
+      <h3>Qual o papel da acidificação capilar após a descoloração?</h3>
+      <p>Qual o papel da acidificação capilar após a descoloração?</p>
+      <p>A acidificação capilar rebaixa o pH alcalino residual do processo de descoloração para a faixa fisiológica do fio (pH 3.5 a 4.5). Isso alinha as cutículas abertas, interrompe a oxidação contínua da queratina e sela a umidade e os aminoácidos no interior do córtex.</p>
+
+      <h3>Qual a diferença entre morena iluminada com Leitura de Fio e descoloração tradicional?</h3>
+      <p>A descoloração tradicional aplica pó descolorante de forma genérica sem medir a resistência elástica do fio seco. A técnica de morena iluminada com Leitura de Fio analisa a porosidade e a integridade de cada mecha individualmente, aplicando o clareamento apenas até o limite de oxidação que a fibra suporta sem romper as pontes de sustentação.</p>
+
+      <div id="conclusao" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer iluminar seus cachos com total segurança e respeito à curvatura?</h3>
+        <p>No Studio do Jon, em Belo Horizonte, cada mecha é tratada com rigor científico, Leitura de Fio e proteção estrutural de pontes. Fico felizão em te ajudar a alcançar o visual dos seus sonhos sem abrir mão da mola dos seus cachos. Tô por aqui! TMJ e abraço.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Diagnóstico de Iluminação no Studio do Jon</a>
+      </div>`
+  },
+
   {
     id: 65,
     slug: 'do-liso-armado-as-ondas-de-capa-caso-clarissa',

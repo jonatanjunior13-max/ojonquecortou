@@ -225,6 +225,69 @@ const AdminMarketing = () => {
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
 
   // Newsletter states
+  const JULY_2026_NEWSLETTER_HTML = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
+    <tr>
+      <td align="left" valign="middle">
+        <span style="display: inline-block; width: 26px; height: 26px; border-radius: 50%; background: #DCA354; color: #0A0A0A; text-align: center; line-height: 26px; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 15px; margin-right: 10px; font-weight: 700;">J</span>
+        <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
+      </td>
+      <td align="right" valign="middle">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Julho · 2026</span>
+      </td>
+    </tr>
+  </table>
+
+  <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
+    <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
+    Leitura de Fio · Edição de Inverno
+  </span>
+
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 18ch;">Água quente, ar seco e o erro que <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #DCA354;">desmancha seu cacho.</span></h1>
+
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Oi {nome},</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Temperatura caiu em BH, a água do banho esquentou e o ar ficou seco. E aí acontece aquele fenômeno clássico de inverno: o cacho acorda rígido, com frizz e com aspecto de palha, mesmo depois de você encher a mão de creme.</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">A primeira reação costuma ser trocar de finalizador. Mas deixa eu te contar uma coisa técnica da física do fio: <strong style="color: #FFFFFF;">o problema no inverno raramente é falta de água. É perda de lipídios e desequilíbrio de pH.</strong></p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">A água quente derrete a camada gordurosa que sela as cutículas. Com a cutícula dilatada, o ar seco da estação rouba a umidade de dentro da fibra capilar. O creme comum sela por algumas horas, mas depois a umidade escapa e o frizz volta.</p>
+
+  <div style="background: #141414; border-left: 3px solid #DCA354; border-radius: 0 4px 4px 0; padding: 20px 24px; margin: 28px 0;">
+    <p style="font-family: 'DM Serif Display', Georgia, serif; font-size: 20px; line-height: 1.3; color: #FFFFFF; margin: 0; font-weight: 400;">"Cacho saudável no inverno não precisa de milagre ou quilos de produto; precisa de geometria no ângulo certo e reposição lipídica real."</p>
+    <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: #DCA354; margin: 12px 0 0;">— Jon</p>
+  </div>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Nas tendências de 2026 para curvaturas, o foco está em duas viradas de chave simples:</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;"><strong style="color: #FFFFFF;">1. Distribuição de peso (Corte no estado seco):</strong> Quando as pontas pesam, a raiz achata e o topo fica sem vida. O corte a seco distribui o volume em camadas estratégicas, fazendo o cacho definir sem depender de quilos de gel.</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 28px; max-width: 56ch;"><strong style="color: #FFFFFF;">2. Acidificação e óleos vegetais:</strong> Menos hidratação vazia e mais nutrição lipídica técnica para selar a cutícula antes que a água quente cause a perda de massa.</p>
+
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 28px; max-width: 56ch;">O Método Leitura de Fio faz essa análise individualizada antes da tesoura, garantindo praticidade no seu dia a dia.</p>
+
+  <div style="margin-top: 8px; margin-bottom: 32px;">
+    <a href="https://ojonquecortou.com.br/agendar" style="display: inline-block; background-color: #DCA354; color: #0A0A0A; padding: 14px 24px; border-radius: 999px; font-family: 'Manrope', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; text-decoration: none;">Agendar minha leitura de fio →</a>
+  </div>
+
+  <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
+
+  <div style="margin-top: 28px;">
+    <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
+  </div>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #A0A0A0; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
+    Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+  </p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0; margin: 10px 0 0;">
+    @ojonquecortou · ojonquecortou.com.br/agendar
+  </p>
+  <div style="height: 48px;"></div>
+</div>`;
+
   const JUNE_2026_NEWSLETTER_HTML = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
 
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
@@ -284,6 +347,16 @@ const AdminMarketing = () => {
 
   const [newsletters, setNewsletters] = useState([
     {
+      id: 'newsletter-julho-2026',
+      month: 'Julho 2026',
+      subject: '{nome}, água quente e o erro que desmancha seu cacho no inverno.',
+      status: 'approved', // draft | approved | sent
+      createdAt: new Date().toISOString(),
+      sentAt: null,
+      sentCount: 0,
+      htmlBody: JULY_2026_NEWSLETTER_HTML
+    },
+    {
       id: 'newsletter-junho-2026',
       month: 'Junho 2026',
       subject: 'O frizz que nenhum creme vai resolver.',
@@ -294,7 +367,7 @@ const AdminMarketing = () => {
       htmlBody: JUNE_2026_NEWSLETTER_HTML
     }
   ]);
-  const [activeNewsletterId, setActiveNewsletterId] = useState('newsletter-junho-2026');
+  const [activeNewsletterId, setActiveNewsletterId] = useState('newsletter-julho-2026');
   const [showNewsletterPreview, setShowNewsletterPreview] = useState(false);
   const [isSendingNewsletter, setIsSendingNewsletter] = useState(false);
   const [isGeneratingNewsletter, setIsGeneratingNewsletter] = useState(false);

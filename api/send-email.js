@@ -819,6 +819,23 @@ export default async function handler(req, res) {
             </div>
           </div>
         </div>
+
+        <div style="background-color: rgba(220, 163, 84, 0.1); border-left: 4px solid #DCA354; border-radius: 8px; padding: 20px 24px; margin: 28px 0; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #DCA354; margin-bottom: 8px;">
+            ⚠️ Tolerância de Atraso: 15 Minutos
+          </div>
+          <p style="margin: 0 0 10px 0; font-size: 14.5px; line-height: 1.6; color: #EFE5D2;">
+            Para garantir a atenção e o cuidado que cada cabelo exige, os agendamentos possuem uma <strong>tolerância máxima de 15 minutos de atraso</strong>.
+          </p>
+          <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #A0A0A0;">
+            Caso perceba que vai se atrasar mais do que 15 minutos, por favor nos avise com antecedência pelo WhatsApp.
+          </p>
+          <div style="margin-top: 12px;">
+            <a href="https://wa.me/5531983044059?text=Oi%20Jon%2C%20vou%20me%20atrasar%20para%20o%20meu%20agendamento." target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-family: 'Manrope', sans-serif;">
+              💬 Avisar Atraso no WhatsApp →
+            </a>
+          </div>
+        </div>
         
         <div class="signoff">
           <div class="sig-name">Jon,</div>
@@ -851,6 +868,23 @@ export default async function handler(req, res) {
               <div class="lbl">Duração</div>
               <div class="val">${durationLabel}</div>
             </div>
+          </div>
+        </div>
+
+        <div style="background-color: rgba(220, 163, 84, 0.1); border-left: 4px solid #DCA354; border-radius: 8px; padding: 20px 24px; margin: 28px 0; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #DCA354; margin-bottom: 8px;">
+            ⚠️ Tolerância de Atraso: 15 Minutos
+          </div>
+          <p style="margin: 0 0 10px 0; font-size: 14.5px; line-height: 1.6; color: #EFE5D2;">
+            Para garantir a atenção e o cuidado que cada cabelo exige, os agendamentos possuem uma <strong>tolerância máxima de 15 minutos de atraso</strong>.
+          </p>
+          <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #A0A0A0;">
+            Caso perceba que vai se atrasar mais do que 15 minutos, por favor nos avise com antecedência pelo WhatsApp.
+          </p>
+          <div style="margin-top: 12px;">
+            <a href="https://wa.me/5531983044059?text=Oi%20Jon%2C%20vou%20me%20atrasar%20para%20o%20meu%20agendamento." target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-family: 'Manrope', sans-serif;">
+              💬 Avisar Atraso no WhatsApp →
+            </a>
           </div>
         </div>
         
@@ -928,6 +962,23 @@ export default async function handler(req, res) {
               <div class="lbl">Duração</div>
               <div class="val">${formatDuration(data.duration)}</div>
             </div>
+          </div>
+        </div>
+
+        <div style="background-color: rgba(220, 163, 84, 0.1); border-left: 4px solid #DCA354; border-radius: 8px; padding: 20px 24px; margin: 28px 0; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #DCA354; margin-bottom: 8px;">
+            ⚠️ Tolerância de Atraso: 15 Minutos
+          </div>
+          <p style="margin: 0 0 10px 0; font-size: 14.5px; line-height: 1.6; color: #EFE5D2;">
+            Para garantir a atenção e o cuidado que cada cabelo exige, os agendamentos possuem uma <strong>tolerância máxima de 15 minutos de atraso</strong>.
+          </p>
+          <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #A0A0A0;">
+            Caso perceba que vai se atrasar mais do que 15 minutos, por favor nos avise com antecedência pelo WhatsApp.
+          </p>
+          <div style="margin-top: 12px;">
+            <a href="https://wa.me/5531983044059?text=Oi%20Jon%2C%20vou%20me%20atrasar%20para%20o%20meu%20agendamento." target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-family: 'Manrope', sans-serif;">
+              💬 Avisar Atraso no WhatsApp →
+            </a>
           </div>
         </div>
         
@@ -1229,6 +1280,23 @@ export default async function handler(req, res) {
                 <div class="lbl">Duração</div>
                 <div class="val">${formatDuration(data.duration)}</div>
               </div>
+            </div>
+          </div>
+
+          <div style="background-color: rgba(220, 163, 84, 0.1); border-left: 4px solid #DCA354; border-radius: 8px; padding: 20px 24px; margin: 28px 0; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #DCA354; margin-bottom: 8px;">
+              ⚠️ Tolerância de Atraso: 15 Minutos
+            </div>
+            <p style="margin: 0 0 10px 0; font-size: 14.5px; line-height: 1.6; color: #EFE5D2;">
+              Para garantir a atenção e o cuidado que cada cabelo exige, os agendamentos possuem uma <strong>tolerância máxima de 15 minutos de atraso</strong>.
+            </p>
+            <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #A0A0A0;">
+              Caso perceba que vai se atrasar mais do que 15 minutos, por favor nos avise com antecedência pelo WhatsApp.
+            </p>
+            <div style="margin-top: 12px;">
+              <a href="https://wa.me/5531983044059?text=Oi%20Jon%2C%20vou%20me%20atrasar%20para%20o%20meu%20agendamento." target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-family: 'Manrope', sans-serif;">
+                💬 Avisar Atraso no WhatsApp →
+              </a>
             </div>
           </div>
           
