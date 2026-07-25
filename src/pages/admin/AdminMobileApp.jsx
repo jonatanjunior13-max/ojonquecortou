@@ -357,6 +357,21 @@ const matchSearchText = (productName, searchText) => {
 };
 
 // ═══════════════════════════════════════════════════════════════════
+const getInitialCache = (key, fallback) => {
+  try {
+    const raw = localStorage.getItem(`cache_m_${key}`);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const saveCache = (key, val) => {
+  try {
+    localStorage.setItem(`cache_m_${key}`, JSON.stringify(val));
+  } catch (e) {}
+};
+
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
 export default function AdminMobileApp() {
@@ -365,16 +380,22 @@ export default function AdminMobileApp() {
   // ── Navigation ─────────────────────────────────────────────────
   const [tab, setTab] = useState('hoje');
 
-  // ── Data ───────────────────────────────────────────────────────
-  const [bookings, setBookings] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [services, setServices] = useState([]);
-  const [inventory, setInventory] = useState([]);
-  const [settings, setSettings] = useState({});
-  const [packages, setPackages] = useState([]);
-  const [galleryPhotos, setGalleryPhotos] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // ── Data (Cache-First Instant Loading) ──────────────────────────
+  const [bookings, setBookings] = useState(() => getInitialCache('bookings', []));
+  const [clients, setClients] = useState(() => getInitialCache('clients', []));
+  const [transactions, setTransactions] = useState(() => getInitialCache('transactions', []));
+  const [services, setServices] = useState(() => getInitialCache('services', []));
+  const [inventory, setInventory] = useState(() => getInitialCache('inventory', []));
+  const [settings, setSettings] = useState(() => getInitialCache('settings', {}));
+  const [packages, setPackages] = useState(() => getInitialCache('packages', []));
+  const [galleryPhotos, setGalleryPhotos] = useState(() => getInitialCache('gallery_photos', []));
+  const [loading, setLoading] = useState(() => {
+    try {
+      return !localStorage.getItem('cache_m_bookings');
+    } catch {
+      return true;
+    }
+  });
   const [authReady, setAuthReady] = useState(false);
   const [syncError, setSyncError] = useState('');
   const [selectedFichaClient, setSelectedFichaClient] = useState(null);
@@ -691,53 +712,71 @@ export default function AdminMobileApp() {
         checkLoaded(key);
       };
 
-      // Failsafe: unlock UI after 800ms even if a collection is slow
+      // Failsafe: unlock UI after 300ms even if a collection is slow (or 0ms if cache exists)
       failSafeTimeout = setTimeout(() => {
         setLoading(false);
-      }, 800);
+      }, localStorage.getItem('cache_m_bookings') ? 100 : 400);
 
       // Register the 8 listeners
       try {
         unsubs.push(onSnapshot(collection(db, 'bookings'), (snap) => {
-          setBookings(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setBookings(data);
+          saveCache('bookings', data);
           checkLoaded('bookings');
         }, (err) => handleError('bookings', err)));
 
         unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => {
-          setClients(snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() }));
+          setClients(data);
+          saveCache('clients', data);
           checkLoaded('clients');
         }, (err) => handleError('clients', err)));
 
         unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => {
-          setTransactions(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setTransactions(data);
+          saveCache('transactions', data);
           checkLoaded('transactions');
         }, (err) => handleError('transactions', err)));
 
         unsubs.push(onSnapshot(collection(db, 'services'), (snap) => {
-          setServices(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setServices(data);
+          saveCache('services', data);
           checkLoaded('services');
         }, (err) => handleError('services', err)));
 
         unsubs.push(onSnapshot(collection(db, 'products'), (snap) => {
-          setInventory(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setInventory(data);
+          saveCache('inventory', data);
           checkLoaded('inventory');
         }, (err) => handleError('inventory', err)));
 
         unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => {
-          setSalonProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setSalonProducts(data);
+          saveCache('salon_products', data);
         }, (err) => console.error('Error loading salon_products:', err)));
 
         unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => {
-          setPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setPackages(data);
+          saveCache('packages', data);
           checkLoaded('packages');
         }, (err) => handleError('packages', err)));
 
         unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => {
-          setClientPackages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+          setClientPackages(data);
+          saveCache('client_packages', data);
         }, (err) => console.error('Error loading client_packages:', err)));
 
         unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
-          setSettings(snap.exists() ? { id: snap.id, ...snap.data() } : { name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] });
+          const data = snap.exists() ? { id: snap.id, ...snap.data() } : { name: 'Studio do Jon', professionals: [{ id: 'jon', name: 'Jon', active: true }] };
+          setSettings(data);
+          saveCache('settings', data);
           checkLoaded('settings');
         }, (err) => handleError('settings', err)));
 
@@ -747,6 +786,7 @@ export default function AdminMobileApp() {
             .map(d => ({ id: d.id, ...d.data() }))
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           setGalleryPhotos(sorted);
+          saveCache('gallery_photos', sorted);
         }, (err) => console.error('Error loading gallery_photos:', err)));
 
       } catch (err) {
