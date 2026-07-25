@@ -2324,12 +2324,20 @@ const AdminDashboard = () => {
     const num = Number(val || 0);
     if (isNaN(num)) return '0,00';
     if (num >= 1000000) {
-      return (num / 1000000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 2 }) + 'M';
+      const million = num / 1000000;
+      const parts = million.toFixed(2).split('.');
+      const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return `${integerPart},${parts[1]}M`;
     }
     if (num >= 100000) {
-      return (num / 1000).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'k';
+      const thousand = num / 1000;
+      const parts = thousand.toFixed(1).split('.');
+      const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return `${integerPart},${parts[1]}k`;
     }
-    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const parts = num.toFixed(2).split('.');
+    const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `${integerPart},${parts[1]}`;
   };
 
   useEffect(() => {
@@ -5716,7 +5724,7 @@ Grande abraço, Jon.`;
  
                   <div className="comanda-total-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--adm-rule)', paddingTop: 6, marginTop: 4, fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--adm-text)' }}>
                     <span>Total a Receber</span>
-                    <span style={{ color: 'var(--adm-gold)' }}>R$ {calculateTotal()}</span>
+                    <span style={{ color: 'var(--adm-gold)' }}>R$ {Number(calculateTotal()).toFixed(2).replace('.', ',')}</span>
                   </div>
                 </div>
  

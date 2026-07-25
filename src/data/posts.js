@@ -1,4 +1,152 @@
-export const posts = [  {
+export const posts = [  {
+    id: 67,
+    slug: 'rotina-noturna-cabelos-cacheados-crespos-atrito-cetim-day-after',
+    title: 'A Física do Atrito Noturno: Como Proteger Cachos e Crespos Durante o Sono e Garantir o Day After Perfeito',
+    seoTitle: 'A Física do Atrito Noturno: Proteção de Cachos e Crespos | Studio do Jon',
+    excerpt: 'Descubra por que a fricção no travesseiro desarranja as pontes de hidrogênio e como a touca ou fronha de cetim previne o frizz e a quebra mecânica noturna.',
+    metaDescription: 'Entenda a física do atrito noturno em cabelos cacheados e crespos. Aprenda como preservar o day after sem refinalizar e proteja o fio contra o frizz em BH.',
+    keywords: 'rotina noturna cabelo cacheado, touca de cetim day after, atrito travesseiro frizz, como dormir com cabelo crespo, Studio do Jon BH, o jon que cortou',
+    date: '25 de Julho, 2026',
+    datePublished: '2026-07-25',
+    dateModified: '2026-07-25',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-rotina-noturna-cabelos-cacheados-crespos-atrito-cetim-day-after.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Por que o cabelo cacheado acorda amassado ou com frizz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Durante as 7 a 8 horas de sono, a fricção contínua da cabeça contra tecidos porosos (como algodão) gera eletricidade estática, desarranja as pontes temporárias de hidrogênio e absorve a umidade natural da fibra capilar, desfazendo o alinhamento das espirais."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Fronha de cetim ou touca de cetim: qual a melhor escolha?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "As duas reduzem o coeficiente de atrito. A touca de cetim segura melhor os fios mais curtos, franjas e curvaturas crespos tipo 4 no lugar. A fronha de cetim é excelente para quem sente desconforto na cabeça ou tem sensibilidade no couro cabeludo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é a melhor forma de prender o cabelo para dormir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Utilize o método do abacaxi frouxo: junte os cachos no topo da cabeça e prenda com um scrunchie de cetim ou seda bem solto. Jamais aperte o elástico ou use borrachinhas finas, pois causam tração e quebra mecânica no fio seco."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "É necessário refinalizar o cabelo todo dia no day after?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. Se a proteção noturna for eficiente, você não precisa molhar nem aplicar quilos de creme de manhã. Basta borrifar uma névoa leve de água com hidratante fluido e soltar as raízes com os dedos."
+          }
+        }
+      ]
+    },
+    content: `<blockquote id="tldr"><p><strong>TL;DR:</strong> O frizz e a perda de definição que surgem durante a noite não são mero azar; são resultado da física do atrito mecânico. Durante o sono, a fricção repetida contra fronhas de algodão absorve os lipídios e a água da fibra capilar, além de romper as pontes de hidrogênio que mantêm os cachos agrupados. Usar touca ou fronha de cetim, combinado com a técnica do abacaxi frouxo, preserva a integridade tridimensional da mola e garante um day after funcional sem necessidade de molhar ou sobrecarregar o fio com cosméticos todos os dias.</p></blockquote>
+
+      <p id="introducao">Uma das queixas mais comuns que escuto aqui no Studio do Jon em Belo Horizonte é: <em>"Jon, eu fico 40 minutos fazendo uma fitagem impecável no domingo, o cabelo fica lindo, mas basta uma noite de sono para eu acordar parecendo que tomei um choque! Metade do cabelo acorda amassado, a outra metade cheia de frizz e sem forma. O que tô fazendo de errado?"</em></p>
+
+      <p>Se você se identificou com essa cena, valeu demais por estar buscando entender a raiz do problema! A resposta não está na falta de creme nem no produto que você usou. O culpado tem nome e sobrenome científico: <strong>fricção mecânica e transferência higroscópica noturna</strong>. Vamos entender a física por trás do sono e como resolver isso com atitudes simples que mantêm o seu cabelo intacto por dias!</p>
+
+      <h2 id="fisica-do-atrito">A Física do Sono: O Que Acontece com a Fibra Capilar no Travesseiro?</h2>
+      <p>Para entender por que o cacho se desfaz enquanto você dorme, precisamos olhar para a física do fio no estado seco. Uma pessoa se movimenta, em média, entre 20 e 40 vezes durante uma noite de sono. Quando a sua cabeça se desloca sobre o travesseiro, ocorrem dois fenômenos físicos simultâneos:</p>
+
+      <ol>
+        <li><strong>Atrito de Superfície e Carga Eletrostática:</strong> Tecidos tradicionais de roupa de cama (como o algodão ou o linho) possuem tramas porosas e micro-rugosidades. Ao raspar a fibra capilar contra essa superfície áspera, ocorre um aumento drástico do coeficiente de atrito. As cutículas externas do fio (que funcionam como escamas) são eriçadas. Esse atrito contínuo gera carga elétrica estática (frizz) e separa os fios individuais do seu grupo natural de espiral.</li>
+        <li><strong>Absorção Higroscópica de Umidade:</strong> O algodão é uma fibra vegetal highly absorvente (higroscópica). Ele não apenas absorve o suor do couro cabeludo, mas suga a água interna e a camada lipídica de proteção que você colocou na finalização. O resultado é um fio desidratado e com cutículas abertas antes mesmo do dia começar.</li>
+      </ol>
+
+      <p>Além disso, o peso da cabeça sobre o travesseiro comprime as pontes de hidrogênio (as ligações temporárias que dão o formato ao cacho no dia a dia). Se o fio estiver sob tração ou dobrado de forma errada, essas pontes se reorganizam no formato amassado!</p>
+
+      <h2 id="tabela-atrito">Comparativo de Tecidos: Coeficiente de Atrito e Impacto no Cacho</h2>
+      <p>Veja no quadro abaixo como a escolha do material da sua fronha ou touca impacta diretamente a saúde da fibra capilar:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); width: 25%;">Material</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Atrito Mecânico</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Absorção de Umidade</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Resultado no Day After</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Algodão / Malha</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); color: #8A7866;">Extremamente alto (fricção rígida)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); color: #8A7866;">Alta (suga água e óleo do fio)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); color: #8A7866;">Frizz elevado, desarranjo de cachos e ressecamento.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Seda Natural</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Mínimo (deslizamento constante)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Quase nula (mantém hidratação)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Cachos íntegros, brilho preservado e zero frizz.</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Cetim de Poliéster</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Muito baixo (superfície ultra lisa)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Nula (não absorve umidade)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #FAF5E8;">Excelente custo-benefício, previne frizz e preserva mechas.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="abacaxi-frouxo">A Técnica do Abacaxi Frouxo e o Posicionamento dos Cachos</h2>
+      <p>Não basta apenas trocar a fronha; a forma como a massa capilar repousa durante o sono faz toda a diferença. A técnica do <strong>coque abacaxi frouxo</strong> é o método geométrico mais eficiente para proteger a definição das pontas:</p>
+
+      <ul>
+        <li><strong>Como Fazer:</strong> Incline a cabeça para a frente e reuna todo o cabelo suavemente no topo da cabeça (perto da testa). Passe um elástico de cetim (scrunchie) dando apenas UMA volta, sem apertar.</li>
+        <li><strong>Por Que Funciona:</strong> Quando você dorme de lado ou de costas, a cabeça encosta no travesseiro pressionando apenas a região da nuca. Como os cachos das pontas e da frente foram posicionados no topo da cabeça, eles não recebem o peso do seu corpo nem sofrem atrito direto. Ao soltar o abacaxi de manhã, o topo cai intacto sobre a nuca.</li>
+      </ul>
+
+      <h2 id="touca-vs-fronha">Touca de Cetim vs. Fronha de Cetim: Qual Escolher?</h2>
+      <p>Essa é uma dúvida clássica no estúdio. As duas cumprem a função de reduzir o atrito, mas atendem a necessidades diferentes:</p>
+      
+      <p><strong>A Touca de Cetim</strong> é a melhor opção se você tem fios curtos, franjas, curvaturas crespos 4A a 4C ou se mexe muito na cama. Ela cria um microclima de proteção onde todos os fios ficam contidos sem contato com o ambiente externo. Dica do Jon: certifique-se de que a faixa elástica da touca seja larga e suave para não marcar a testa nem prender a circulação do couro.</p>
+
+      <p><strong>A Fronha de Cetim</strong> é perfeita para quem tem sensibilidade no couro cabeludo, sente calor ao dormir com algo preso na cabeça ou tem cabelos muito longos que não cabem confortavelmente dentro da touca. É praticidade pura: você deita e o cabelo desliza suavemente.</p>
+
+      <h2 id="revitalizacao-day-after">Como Revitalizar sem Molhar ou Encher o Cabelo de Creme</h2>
+      <p>O maior erro do day after é tentar resolver um cacho amassado jogando água abundante e aplicando mais uma camada grossa de creme de pentear. Isso gera o nefasto <strong>buildup (acúmulo de produto)</strong>, deixando o cabelo pesado, sem movimento e com aspecto opaco.</p>
+
+      <p>Se você seguiu a proteção noturna de cetim, a revitalização matinal deve levar menos de 2 minutos:</p>
+
+      <ol>
+        <li>Remova a touca ou solte o abacaxi e espere 5 a 10 minutos para o cabelo "acordar" e a gravidade agir.</li>
+        <li>Se houver alguma mecha pontual amassada, misture em um borrifador 90% de água e 10% de um leave-in fluido hidrofílico. Borrife uma névoa LEVE apenas na mecha desarranjada.</li>
+        <li>Amasse suavemente de baixo para cima para reativar a memória da mola.</li>
+        <li>Aplique 2 gotas de um óleo leve bio-compatível nas palmas das mãos e passe nas pontas para devolver a lubricidade e quebrar qualquer estática remanescente.</li>
+      </ol>
+
+      <h2 id="faq">Perguntas Frequentes sobre a Rotina Noturna Capilar</h2>
+      <h3>Por que o cabelo cacheado acorda amassado ou com frizz?</h3>
+      <p>Durante as 7 a 8 horas de sono, a fricção contínua da cabeça contra tecidos porosos (como algodão) gera eletricidade estática, desarranja as pontes temporárias de hidrogênio e absorve a umidade natural da fibra capilar, desfazendo o alinhamento das espirais.</p>
+
+      <h3>Fronha de cetim ou touca de cetim: qual a melhor escolha?</h3>
+      <p>As duas reduzem o coeficiente de atrito. A touca de cetim segura melhor os fios mais curtos, franjas e curvaturas crespos tipo 4 no lugar. A fronha de cetim é excelente para quem sente desconforto na cabeça ou tem sensibilidade no couro cabeludo.</p>
+
+      <h3>Qual é a melhor forma de prender o cabelo para dormir?</h3>
+      <p>Utilize o método do abacaxi frouxo: junte os cachos no topo da cabeça e prenda com um scrunchie de cetim ou seda bem solto. Jamais aperte o elástico ou use borrachinhas finas, pois causam tração e quebra mecânica no fio seco.</p>
+
+      <h3>É necessário refinalizar o cabelo todo dia no day after?</h3>
+      <p>Não. Se a proteção noturna for eficiente, você não precisa molhar nem aplicar quilos de creme de manhã. Basta borrifar uma névoa leve de água com hidratante fluido e soltar as raízes com os dedos.</p>
+
+      <div id="conclusao" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer aprender o caimento geométrico e os cuidados sob medida para o seu cabelo?</h3>
+        <p>No Studio do Jon, em Belo Horizonte, fazemos a Leitura de Fio presencial e ensinamos a rotina exata para a sua curvatura brilhar todos os dias. Fico felizão em receber você no meu espaço! Tô por aqui! TMJ e aquele abraço.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta Técnica no Studio do Jon</a>
+      </div>`
+  },
+  {
     id: 66,
     slug: 'descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes',
     title: 'Descoloração em Cabelo Cacheado: A Ciência das Pontes de Dissulfeto e Como Iluminar Sem Perder a Curvatura',

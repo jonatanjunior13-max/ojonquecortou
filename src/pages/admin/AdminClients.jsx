@@ -3,6 +3,7 @@ import { db, auth, withTimeout } from '../../config/firebase';
 import { collection, onSnapshot, query, doc, setDoc, getDocs, writeBatch, updateDoc } from 'firebase/firestore';
 import { Search, Save, UserCheck, Plus, Send, Mail, Phone, Calendar, Sparkles, AlertCircle, Upload, ChevronLeft } from 'lucide-react';
 import { parseClientCSV } from '../../utils/clientImport';
+import { formatCurrencyBRL } from '../../utils/finance';
 import './Admin.css';
 
 import { useOutletContext } from 'react-router-dom';
@@ -1242,7 +1243,7 @@ const AdminClients = () => {
                               <div className="visit-detail-service">
                                 {v.service?.name || v.serviceName}{' '}
                                 <span className="price-tag">
-                                  (R$ {Number(v.service?.price || v.servicePrice || 0).toFixed(2)})
+                                  (R$ {formatCurrencyBRL(v.service?.price || v.servicePrice || 0)})
                                 </span>
                               </div>
                               {v.notes && <p className="visit-note-snippet">Nota: "{v.notes}"</p>}
@@ -1271,7 +1272,7 @@ const AdminClients = () => {
                               <div className="visit-detail-service">
                                 {v.service?.name || v.serviceName}{' '}
                                 <span className="price-tag">
-                                  (R$ {Number(v.service?.price || v.servicePrice || 0).toFixed(2)})
+                                  (R$ {formatCurrencyBRL(v.service?.price || v.servicePrice || 0)})
                                 </span>
                               </div>
                               {v.notes && <p className="visit-note-snippet">Nota: "{v.notes}"</p>}

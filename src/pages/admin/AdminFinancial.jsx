@@ -9,7 +9,7 @@ import {
   Search, Edit3
 } from 'lucide-react';
 import KpiCard from '../../components/admin/ui/KpiCard';
-import { calculateNetValue, calculateTransactionFee, calculateProfessionalCommission as calculateProfessionalCommissionUtil } from '../../utils/finance';
+import { calculateNetValue, calculateTransactionFee, calculateProfessionalCommission as calculateProfessionalCommissionUtil, formatCurrencyBRL } from '../../utils/finance';
 
 // Seed data for historical comparison if database is empty/fresh (matches Figma layout screenshots)
 const SEED_HISTORICAL_TRANSACTIONS = [];
@@ -1813,19 +1813,19 @@ const AdminFinancial = () => {
                           </span>
                         </td>
                         <td style={{ color: isEntrada ? '#2f855a' : '#c53030', fontWeight: 'bold' }}>
-                          {isEntrada ? '+' : '-'} R$ {t.value.toFixed(2)}
+                          {isEntrada ? '+' : '-'} R$ {formatCurrencyBRL(t.value)}
                         </td>
                         <td style={{ color: fee > 0 ? 'var(--adm-gold)' : 'var(--adm-muted)' }}>
-                          {fee > 0 ? `R$ ${fee.toFixed(2)}` : '-'}
+                          {fee > 0 ? `R$ ${formatCurrencyBRL(fee)}` : '-'}
                         </td>
                         <td style={{ color: txCost > 0 ? '#c53030' : 'var(--adm-muted)' }}>
-                          {txCost > 0 ? `R$ ${txCost.toFixed(2)}` : '-'}
+                          {txCost > 0 ? `R$ ${formatCurrencyBRL(txCost)}` : '-'}
                         </td>
                         <td style={{ color: txProfit > 0 ? '#2f855a' : 'var(--adm-muted)', fontWeight: txProfit > 0 ? '600' : 'normal' }}>
-                          {txProfit > 0 ? `R$ ${txProfit.toFixed(2)}` : '-'}
+                          {txProfit > 0 ? `R$ ${formatCurrencyBRL(txProfit)}` : '-'}
                         </td>
                         <td style={{ fontWeight: 'bold', color: isEntrada ? '#2f855a' : '#c53030' }}>
-                          R$ {netVal.toFixed(2)}
+                          R$ {formatCurrencyBRL(netVal)}
                         </td>
                       </tr>
                     );
@@ -1935,16 +1935,16 @@ const AdminFinancial = () => {
                         <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>{t.description}</div>
                       </td>
                       <td>{t.paymentMethod}</td>
-                      <td>R$ {t.value.toFixed(2)}</td>
-                      <td>R$ {netVal.toFixed(2)}</td>
+                      <td>R$ {formatCurrencyBRL(t.value)}</td>
+                      <td>R$ {formatCurrencyBRL(netVal)}</td>
                       <td>{prof ? prof.name : 'Não Associado'}</td>
                       <td style={{ color: repasseValue > 0 ? '#48bb78' : 'var(--adm-muted)' }}>
                         {repasseValue > 0 ? (
                           <div>
-                            <div style={{ fontWeight: 700 }}>R$ {repasseValue.toFixed(2)}</div>
+                            <div style={{ fontWeight: 700 }}>R$ {formatCurrencyBRL(repasseValue)}</div>
                             <div style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', marginTop: 2 }}>{detailsStr}</div>
                           </div>
-                        ) : 'R$ 0.00'}
+                        ) : 'R$ 0,00'}
                       </td>
                     </tr>
                   );
@@ -2057,7 +2057,7 @@ const AdminFinancial = () => {
                               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                                 {item.services.map((s, sIdx) => (
                                   <span key={sIdx} style={{ fontSize: '0.82rem', color: 'var(--adm-text)' }}>
-                                    ✅ {s.name} <span style={{ color: 'var(--adm-gold)', fontSize: '0.78rem' }}>(R$ {s.price.toFixed(2)})</span>
+                                    ✅ {s.name} <span style={{ color: 'var(--adm-gold)', fontSize: '0.78rem' }}>(R$ {formatCurrencyBRL(s.price)})</span>
                                   </span>
                                 ))}
                               </div>
@@ -2070,7 +2070,7 @@ const AdminFinancial = () => {
                               <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                                 {item.products.map((p, pIdx) => (
                                   <span key={pIdx} style={{ fontSize: '0.82rem', color: 'var(--adm-text)' }}>
-                                    🛍️ {p.quantity}x {p.name} <span style={{ color: '#4299e1', fontSize: '0.78rem' }}>(R$ {p.price.toFixed(2)})</span>
+                                    🛍️ {p.quantity}x {p.name} <span style={{ color: '#4299e1', fontSize: '0.78rem' }}>(R$ {formatCurrencyBRL(p.price)})</span>
                                   </span>
                                 ))}
                               </div>

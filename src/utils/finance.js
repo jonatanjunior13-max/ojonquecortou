@@ -1,7 +1,16 @@
 /**
- * Financial Calculation Utilities - Studio do Jon
- * Centralizes card machine fees, anticipation deductions, and commission math.
+ * Formats any number or numeric string to standard BRL currency format (e.g. "1.866,35" or "11,99").
+ * Always returns 2 decimal places separated by comma with optional thousands dot.
  */
+export const formatCurrencyBRL = (val) => {
+  const num = Number(val || 0);
+  if (isNaN(num)) return '0,00';
+  const parts = num.toFixed(2).split('.');
+  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return `${integerPart},${parts[1]}`;
+};
+
+export const formatBRL = formatCurrencyBRL;
 
 /**
  * Calculates net value after card operator fees and automatic anticipation deductions.

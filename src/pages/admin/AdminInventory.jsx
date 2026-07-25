@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { Plus, Edit2, Trash2, ArrowUp, Scissors, Package, Beaker, ShoppingCart, X, Check } from 'lucide-react';
+import { formatCurrencyBRL } from '../../utils/finance';
 import './Admin.css';
 
 const SEED_PRODUCTS = [
@@ -616,7 +617,7 @@ const AdminInventory = () => {
             </div>
             <div className="stat-card">
               <h3>Valor Comercial em Estoque</h3>
-              <div className="value" style={{ color: 'var(--adm-success)' }}>R$ {totalValue.toFixed(2)}</div>
+              <div className="value" style={{ color: 'var(--adm-success)' }}>R$ {formatCurrencyBRL(totalValue)}</div>
             </div>
           </section>
 
@@ -727,9 +728,9 @@ const AdminInventory = () => {
                               </div>
                             )}
                           </td>
-                          <td>R$ {Number(p.costPrice).toFixed(2)}</td>
-                          <td>R$ {Number(p.sellingPrice).toFixed(2)}</td>
-                          <td style={{ color: 'var(--adm-success)', fontWeight: 600 }}>R$ {(Number(p.sellingPrice) - Number(p.costPrice)).toFixed(2)}</td>
+                          <td>R$ {formatCurrencyBRL(p.costPrice)}</td>
+                          <td>R$ {formatCurrencyBRL(p.sellingPrice)}</td>
+                          <td style={{ color: 'var(--adm-success)', fontWeight: 600 }}>R$ {formatCurrencyBRL(Number(p.sellingPrice) - Number(p.costPrice))}</td>
                           <td style={{ textAlign: 'right' }}>
                             <div style={{ display: 'inline-flex', gap: 6 }}>
                               <button className="btn-icon" style={{ color: 'var(--adm-accent, var(--m-gold))' }} onClick={() => handleUseInSalon(p)} title="Uso do Salão"><Scissors size={14} /></button>
@@ -759,7 +760,7 @@ const AdminInventory = () => {
             </div>
             <div className="stat-card">
               <h3>Custo Total em Insumos</h3>
-              <div className="value" style={{ color: 'var(--adm-warning, #e6a23c)' }}>R$ {totalSalonValue.toFixed(2)}</div>
+              <div className="value" style={{ color: 'var(--adm-warning, #e6a23c)' }}>R$ {formatCurrencyBRL(totalSalonValue)}</div>
             </div>
           </section>
 
@@ -819,7 +820,7 @@ const AdminInventory = () => {
                         <td>{p.type || '—'}</td>
                         <td>{vol > 0 ? vol : '—'}</td>
                         <td>{p.unit === 'ml' ? 'ml' : 'g'}</td>
-                        <td>R$ {cost.toFixed(2)}</td>
+                        <td>R$ {formatCurrencyBRL(cost)}</td>
                         <td style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {ppu.toFixed(4)}</td>
                         <td>
                           {p.usedIn && p.usedIn.length > 0 ? (

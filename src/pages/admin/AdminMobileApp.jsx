@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import './AdminMobile.css';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
-import { calculateNetValue } from '../../utils/finance';
+import { calculateNetValue, formatCurrencyBRL } from '../../utils/finance';
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -29,7 +29,7 @@ const parseLocalDate = (dateStr) => {
   }
   return new Date(dateStr);
 };
-const fmt = (n) => `R$\u00a0${Number(n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const fmt = (n) => `R$\u00a0${formatCurrencyBRL(n)}`;
 const fmtDate = (d) => { try { const dt = parseLocalDate(d); return dt.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' }); } catch { return d; } };
 const dateStr = (d) => {
   const year = d.getFullYear();

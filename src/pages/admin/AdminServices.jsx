@@ -6,6 +6,7 @@ import { Plus, Trash2, Edit3, Scissors, AlertTriangle, Clock, Sparkles, Tag, Per
 import './Admin.css';
 
 import { SEED_SERVICES } from '../../data/seedServices';
+import { formatCurrencyBRL } from '../../utils/finance';
 
 const normalizeCategory = (cat) => {
   const c = (cat || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
@@ -553,10 +554,10 @@ const AdminServices = () => {
                           <div className="pricing-split">
                             <span className="pricing-label">Preço Promocional</span>
                             <div className="price-comparison">
-                              <span className="price-old-strike">R$ {s.price.toFixed(2)}</span>
+                              <span className="price-old-strike">R$ {formatCurrencyBRL(s.price)}</span>
                               <span className="price-new-value">
                                 <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                                <strong>R$ {s.promoPrice.toFixed(2)}</strong>
+                                <strong>R$ {formatCurrencyBRL(s.promoPrice)}</strong>
                               </span>
                             </div>
                           </div>
@@ -565,7 +566,7 @@ const AdminServices = () => {
                             <span className="pricing-label">Valor do Serviço</span>
                             <span className="price-standard-value">
                               <span className="p-type-prefix">{s.priceType === 'A partir de' ? 'A partir de ' : ''}</span>
-                              <strong>R$ {s.price.toFixed(2)}</strong>
+                              <strong>R$ {formatCurrencyBRL(s.price)}</strong>
                             </span>
                           </div>
                         )}
