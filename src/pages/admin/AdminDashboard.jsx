@@ -1858,12 +1858,7 @@ const AdminDashboard = () => {
         localStorage.setItem('demo_transactions', JSON.stringify(updatedTxList));
         setTransactions(updatedTxList);
       } else {
-        await updateDoc(doc(db, 'bookings', booking.id), { 
-          status: 'finalizado',
-          paymentMethod: pm,
-          finalValue: totalValue,
-          servicePrice: servicePrice
-        });
+        // UI Instant Optimistic Update (0ms delay)
         setBookings(prev => prev.map(b => b.id === booking.id ? { 
           ...b, 
           status: 'finalizado',
@@ -1871,44 +1866,59 @@ const AdminDashboard = () => {
           finalValue: totalValue,
           servicePrice: servicePrice
         } : b));
-        syncBookingToGoogle(booking.id).catch(err => console.warn(err));
 
-        // Deduce stock for used supplies
-        for (const u of usedProductsNorm) {
-          const match = products.find(prod => prod.id === u.productId);
-          if (match) {
-            await updateDoc(doc(db, 'products', u.productId), { quantity: Math.max(0, match.quantity - u.quantity) });
+        toast('Comanda fechada com sucesso! 🚀', 'success');
+        setComandaBooking(null);
+
+        if (waWindow) {
+          const firstName = (booking.clientName || '').split(' ')[0];
+          const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️\n\nSe você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.\n\nLeva apenas 1 minutinho clicando aqui:\nhttps://g.page/r/CRmlu0sO48XmEBM/review\n\nGrande abraço, Jon.`;
+          const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
+          const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+          waWindow.location.href = waUrl;
+          toast('Abrindo WhatsApp... 🚀', 'success');
+        } else if (requestReview && gateway && gateway !== 'none') {
+          handleSendFeedbackWhatsApp(booking).catch(err => console.error(err));
+        }
+
+        // Parallel background Firestore sync
+        (async () => {
+          try {
+            const ops = [
+              updateDoc(doc(db, 'bookings', booking.id), { 
+                status: 'finalizado',
+                paymentMethod: pm,
+                finalValue: totalValue,
+                servicePrice: servicePrice
+              }),
+              addDoc(collection(db, 'financial_transactions'), transactionPayload)
+            ];
+
+            if (totalServiceCost > 0) {
+              ops.push(addDoc(collection(db, 'financial_transactions'), saidaPayload));
+            }
+
+            for (const u of usedProductsNorm) {
+              const match = products.find(prod => prod.id === u.productId);
+              if (match) {
+                ops.push(updateDoc(doc(db, 'products', u.productId), { quantity: Math.max(0, match.quantity - u.quantity) }));
+              }
+            }
+
+            for (const p of productsNorm) {
+              const match = products.find(prod => prod.id === p.productId);
+              if (match) {
+                ops.push(updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) }));
+              }
+            }
+
+            await Promise.all(ops);
+            syncBookingToGoogle(booking.id).catch(err => console.warn(err));
+          } catch (bgErr) {
+            console.error('Erro na sincronização de fechamento com Firestore:', bgErr);
           }
-        }
-
-        // Deduce stock for retail products sold
-        for (const p of productsNorm) {
-          const match = products.find(prod => prod.id === p.productId);
-          if (match) {
-            await updateDoc(doc(db, 'products', p.productId), { quantity: Math.max(0, match.quantity - p.quantity) });
-          }
-        }
-
-        await addDoc(collection(db, 'financial_transactions'), transactionPayload);
-        
-        if (totalServiceCost > 0) {
-          await addDoc(collection(db, 'financial_transactions'), saidaPayload);
-        }
+        })();
       }
-
-      if (waWindow) {
-        const firstName = (booking.clientName || '').split(' ')[0];
-        const msgText = `${firstName}, muito obrigado por vir ao Studio hoje! A sua presença e a confiança que você deposita no meu trabalho significam o mundo para mim. ❤️\n\nSe você gostou do resultado e sentiu a diferença nos seus cachos, você poderia deixar uma avaliação rápida no Google? Isso me ajuda muito e faz com que outras cacheadas nos encontrem.\n\nLeva apenas 1 minutinho clicando aqui:\nhttps://g.page/r/CRmlu0sO48XmEBM/review\n\nGrande abraço, Jon.`;
-        const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-        const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
-        waWindow.location.href = waUrl;
-        toast('Abrindo WhatsApp diretamente... 🚀', 'success');
-      } else if (requestReview && gateway && gateway !== 'none') {
-        handleSendFeedbackWhatsApp(booking).catch(err => console.error(err));
-      }
-
-      toast('Comanda fechada com sucesso!', 'success');
-      setComandaBooking(null);
     } catch (err) {
       if (waWindow) {
         waWindow.close();

@@ -1487,218 +1487,7 @@ export default function AdminMobileApp() {
 
       const serviceId = checkoutBooking.service?.id || '';
 
-      if (db) {
-        // 1. Process Packages (Sale or Debit)
-        if (sellingPackageId) {
-          const pkgTemplate = packages.find(p => p.id === sellingPackageId);
-          const initialBalance = {};
-          if (pkgTemplate && pkgTemplate.services) {
-            pkgTemplate.services.forEach(s => {
-              initialBalance[s.serviceId] = s.sessions;
-            });
-          }
-          if (serviceId && initialBalance[serviceId] !== undefined) {
-            initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
-          }
-
-          const clientPackagePayload = {
-            clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-            clientName: checkoutBooking.clientName,
-            clientPhone: checkoutBooking.clientPhone || '',
-            packageId: sellingPackageId,
-            packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
-            pricePaid: pkgTemplate ? pkgTemplate.price : 0,
-            paymentMethod: methodLabel,
-            datePurchased: checkoutBooking.date || today(),
-            status: 'active',
-            balance: initialBalance,
-            usage: [
-              {
-                bookingId: checkoutBooking.id,
-                dateUsed: checkoutBooking.date || today(),
-                serviceId
-              }
-            ]
-          };
-          await addDoc(collection(db, 'client_packages'), clientPackagePayload);
-        }
-
-        if (usingClientPackageId) {
-          const cpRef = doc(db, 'client_packages', usingClientPackageId);
-          const cpSnap = await getDoc(cpRef);
-          if (cpSnap.exists()) {
-            const cpData = cpSnap.data();
-            const newBalance = { ...cpData.balance };
-            if (newBalance[serviceId] !== undefined) {
-              newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
-            }
-            const isFinished = Object.values(newBalance).every(val => val === 0);
-            const newUsage = [...(cpData.usage || []), {
-              bookingId: checkoutBooking.id,
-              dateUsed: checkoutBooking.date || today(),
-              serviceId
-            }];
-            await updateDoc(cpRef, {
-              balance: newBalance,
-              status: isFinished ? 'finished' : 'active',
-              usage: newUsage
-            });
-          }
-        }
-
-        const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'entrada');
-        if (bookingTx) {
-          // Revert old product inventory adjustments
-          if (bookingTx.productSales) {
-            for (const oldP of bookingTx.productSales) {
-              const prodRef = doc(db, 'products', oldP.productId);
-              const snap = await getDoc(prodRef);
-              if (snap.exists()) {
-                const cur = snap.data().quantity || 0;
-                await updateDoc(prodRef, { quantity: cur + oldP.quantity });
-              }
-            }
-          }
-          // Revert old used products inventory adjustments
-          if (bookingTx.usedProducts) {
-            for (const oldU of bookingTx.usedProducts) {
-              const prodRef = doc(db, 'products', oldU.productId);
-              const snap = await getDoc(prodRef);
-              if (snap.exists()) {
-                const cur = snap.data().quantity || 0;
-                await updateDoc(prodRef, { quantity: cur + oldU.quantity });
-              }
-            }
-          }
-          await updateDoc(doc(db, 'financial_transactions', bookingTx.id), txData);
-        } else {
-          await addDoc(collection(db, 'financial_transactions'), txData);
-        }
-
-        // Save saida transaction
-        const bookingSaidaTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'saida');
-        if (totalServiceCost > 0) {
-          if (bookingSaidaTx) {
-            await updateDoc(doc(db, 'financial_transactions', bookingSaidaTx.id), saidaPayload);
-          } else {
-            await addDoc(collection(db, 'financial_transactions'), saidaPayload);
-          }
-        } else if (bookingSaidaTx) {
-          await deleteDoc(doc(db, 'financial_transactions', bookingSaidaTx.id));
-        }
-
-        await updateDoc(doc(db, 'bookings', checkoutBooking.id), { 
-          status: 'finalizado', 
-          paymentMethod: methodLabel, 
-          finalValue: total, 
-          servicePrice: finalBasePrice,
-          serviceName: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
-          service: {
-            name: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
-            price: Number(checkoutBooking.servicePrice || checkoutBooking.service?.price || finalBasePrice || 0),
-            duration: Number(checkoutBooking.duration || checkoutBooking.service?.duration || 60)
-          },
-          isPackageUse: !!usingClientPackageId,
-          isPackageAcquisition: !!sellingPackageId,
-          packageUsedId: usingClientPackageId || null,
-          packageSoldId: sellingPackageId || null
-        });
-
-        // Deduct sold products stock
-        for (const p of selectedProducts) {
-          const prodRef = doc(db, 'products', p.id);
-          const snap = await getDoc(prodRef);
-          if (snap.exists()) {
-            const cur = snap.data().quantity || 0;
-            await updateDoc(prodRef, { quantity: Math.max(0, cur - p.qty) });
-          }
-        }
-
-        // Apply new used products inventory adjustments
-        for (const u of usedProducts) {
-          const prodRef = doc(db, 'products', u.productId);
-          const snap = await getDoc(prodRef);
-          if (snap.exists()) {
-            const cur = snap.data().quantity || 0;
-            await updateDoc(prodRef, { quantity: Math.max(0, cur - u.quantity) });
-          }
-        }
-      } else {
-        // demo mode
-        if (sellingPackageId) {
-          const pkgTemplate = packages.find(p => p.id === sellingPackageId);
-          const initialBalance = {};
-          if (pkgTemplate && pkgTemplate.services) {
-            pkgTemplate.services.forEach(s => {
-              initialBalance[s.serviceId] = s.sessions;
-            });
-          }
-          if (serviceId && initialBalance[serviceId] !== undefined) {
-            initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
-          }
-
-          const clientPackagePayload = {
-            clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-            clientName: checkoutBooking.clientName,
-            clientPhone: checkoutBooking.clientPhone || '',
-            packageId: sellingPackageId,
-            packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
-            pricePaid: pkgTemplate ? pkgTemplate.price : 0,
-            paymentMethod: methodLabel,
-            datePurchased: checkoutBooking.date || today(),
-            status: 'active',
-            balance: initialBalance,
-            usage: [
-              {
-                bookingId: checkoutBooking.id,
-                dateUsed: checkoutBooking.date || today(),
-                serviceId
-              }
-            ]
-          };
-          const local = localStorage.getItem('demo_client_packages');
-          const current = local ? JSON.parse(local) : [];
-          const newCp = { id: 'cp_' + Date.now(), ...clientPackagePayload };
-          const updatedCp = [newCp, ...current];
-          localStorage.setItem('demo_client_packages', JSON.stringify(updatedCp));
-          setClientPackages(updatedCp);
-        }
-
-        if (usingClientPackageId) {
-          const local = localStorage.getItem('demo_client_packages');
-          if (local) {
-            const arr = JSON.parse(local);
-            const updated = arr.map(cp => {
-              if (cp.id === usingClientPackageId) {
-                const newBalance = { ...cp.balance };
-                if (newBalance[serviceId] !== undefined) {
-                  newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
-                }
-                const isFinished = Object.values(newBalance).every(val => val === 0);
-                return {
-                  ...cp,
-                  balance: newBalance,
-                  status: isFinished ? 'finished' : 'active',
-                  usage: [...(cp.usage || []), {
-                    bookingId: checkoutBooking.id,
-                    dateUsed: checkoutBooking.date || today(),
-                    serviceId
-                  }]
-                };
-              }
-              return cp;
-            });
-            localStorage.setItem('demo_client_packages', JSON.stringify(updated));
-            setClientPackages(updated);
-          }
-        }
-
-        const fakeId = 'demo-bk-' + Date.now();
-        // save list is handled below
-      }
-      if (requestReview) {
-        sendFeedbackWhatsApp(checkoutBooking, waWindow).catch(err => console.error(err));
-      }
+      // ── UI UPDATE (Optimistic Instant Response) ───────────────────
       setBookings(prev => prev.map(b => b.id === checkoutBooking.id ? { 
         ...b, 
         status: 'finalizado', 
@@ -1716,7 +1505,7 @@ export default function AdminMobileApp() {
         packageUsedId: usingClientPackageId || null,
         packageSoldId: sellingPackageId || null
       } : b));
-      
+
       const bookingTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'entrada');
       const bookingSaidaTx = transactions.find(t => t.bookingId === checkoutBooking.id && t.type === 'saida');
       
@@ -1738,10 +1527,133 @@ export default function AdminMobileApp() {
       }
       
       setTransactions(updatedTx);
-      
+
+      // Close modal and notify user IMMEDIATELY (0ms lag)
       setShowCheckoutSheet(false);
       setCheckoutBooking(null);
-      showToast(bookingTx ? 'Comanda atualizada com sucesso!' : 'Comanda fechada com sucesso!', 'success');
+      showToast(bookingTx ? 'Comanda atualizada com sucesso! 🚀' : 'Comanda fechada com sucesso! 🚀', 'success');
+
+      if (requestReview) {
+        sendFeedbackWhatsApp(checkoutBooking, waWindow).catch(err => console.error(err));
+      }
+
+      // ── BACKGROUND FIRESTORE SYNC (Parallel non-blocking operations) ────
+      if (db) {
+        (async () => {
+          try {
+            const ops = [];
+
+            if (sellingPackageId) {
+              const pkgTemplate = packages.find(p => p.id === sellingPackageId);
+              const initialBalance = {};
+              if (pkgTemplate && pkgTemplate.services) {
+                pkgTemplate.services.forEach(s => {
+                  initialBalance[s.serviceId] = s.sessions;
+                });
+              }
+              if (serviceId && initialBalance[serviceId] !== undefined) {
+                initialBalance[serviceId] = Math.max(0, initialBalance[serviceId] - 1);
+              }
+
+              const clientPackagePayload = {
+                clientId: checkoutBooking.clientPhone || checkoutBooking.clientName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+                clientName: checkoutBooking.clientName,
+                clientPhone: checkoutBooking.clientPhone || '',
+                packageId: sellingPackageId,
+                packageName: pkgTemplate ? pkgTemplate.name : 'Pacote',
+                pricePaid: pkgTemplate ? pkgTemplate.price : 0,
+                paymentMethod: methodLabel,
+                datePurchased: checkoutBooking.date || today(),
+                status: 'active',
+                balance: initialBalance,
+                usage: [
+                  {
+                    bookingId: checkoutBooking.id,
+                    dateUsed: checkoutBooking.date || today(),
+                    serviceId
+                  }
+                ]
+              };
+              ops.push(addDoc(collection(db, 'client_packages'), clientPackagePayload));
+            }
+
+            if (usingClientPackageId) {
+              ops.push((async () => {
+                const cpRef = doc(db, 'client_packages', usingClientPackageId);
+                const cpSnap = await getDoc(cpRef);
+                if (cpSnap.exists()) {
+                  const cpData = cpSnap.data();
+                  const newBalance = { ...cpData.balance };
+                  if (newBalance[serviceId] !== undefined) {
+                    newBalance[serviceId] = Math.max(0, newBalance[serviceId] - 1);
+                  }
+                  const isFinished = Object.values(newBalance).every(val => val === 0);
+                  const newUsage = [...(cpData.usage || []), {
+                    bookingId: checkoutBooking.id,
+                    dateUsed: checkoutBooking.date || today(),
+                    serviceId
+                  }];
+                  await updateDoc(cpRef, {
+                    balance: newBalance,
+                    status: isFinished ? 'finished' : 'active',
+                    usage: newUsage
+                  });
+                }
+              })());
+            }
+
+            if (bookingTx) {
+              ops.push(updateDoc(doc(db, 'financial_transactions', bookingTx.id), txData));
+            } else {
+              ops.push(addDoc(collection(db, 'financial_transactions'), txData));
+            }
+
+            if (totalServiceCost > 0) {
+              if (bookingSaidaTx) {
+                ops.push(updateDoc(doc(db, 'financial_transactions', bookingSaidaTx.id), saidaPayload));
+              } else {
+                ops.push(addDoc(collection(db, 'financial_transactions'), saidaPayload));
+              }
+            } else if (bookingSaidaTx) {
+              ops.push(deleteDoc(doc(db, 'financial_transactions', bookingSaidaTx.id)));
+            }
+
+            ops.push(updateDoc(doc(db, 'bookings', checkoutBooking.id), { 
+              status: 'finalizado', 
+              paymentMethod: methodLabel, 
+              finalValue: total, 
+              servicePrice: finalBasePrice,
+              serviceName: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
+              service: {
+                name: checkoutBooking.serviceName || checkoutBooking.service?.name || 'Serviço',
+                price: Number(checkoutBooking.servicePrice || checkoutBooking.service?.price || finalBasePrice || 0),
+                duration: Number(checkoutBooking.duration || checkoutBooking.service?.duration || 60)
+              },
+              isPackageUse: !!usingClientPackageId,
+              isPackageAcquisition: !!sellingPackageId,
+              packageUsedId: usingClientPackageId || null,
+              packageSoldId: sellingPackageId || null
+            }));
+
+            // Deduct stock in parallel using local inventory quantities (0 network getDocs)
+            for (const p of selectedProducts) {
+              const match = inventory.find(prod => prod.id === p.id);
+              const cur = match ? Number(match.quantity || 0) : 0;
+              ops.push(updateDoc(doc(db, 'products', p.id), { quantity: Math.max(0, cur - p.qty) }));
+            }
+
+            for (const u of usedProducts) {
+              const match = inventory.find(prod => prod.id === u.productId);
+              const cur = match ? Number(match.quantity || 0) : 0;
+              ops.push(updateDoc(doc(db, 'products', u.productId), { quantity: Math.max(0, cur - (u.quantity || u.qty || 1)) }));
+            }
+
+            await Promise.all(ops);
+          } catch (bgErr) {
+            console.error('Erro na sincronização de fechamento com Firestore:', bgErr);
+          }
+        })();
+      }
     } catch (err) {
       if (waWindow) waWindow.close();
       showToast('Erro ao fechar comanda: ' + err.message, 'error');
@@ -2033,67 +1945,59 @@ https://g.page/r/CRmlu0sO48XmEBM/review
 Grande abraço, Jon.`;
 
     const phoneWithDDI = cleanPhone.startsWith('55') ? cleanPhone : `55${cleanPhone}`;
-
     const gateway = settings?.waReminderGateway;
-    if (waWindow && gateway && gateway !== 'none') {
-      waWindow.close(); // Close synchronous window since we will send via API gateway
-    }
 
     if (!gateway || gateway === 'none') {
-      console.log('WhatsApp Gateway não configurado, abrindo diretamente:', msgText);
       const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
       if (waWindow) {
         waWindow.location.href = waUrl;
       } else {
-        window.open(waUrl, '_blank');
+        try {
+          window.open(waUrl, '_blank');
+        } catch (e) {
+          console.warn('Fallback window.open failed:', e);
+        }
       }
-      showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
+      showToast('Abrindo WhatsApp para avaliação... 🚀', 'success');
       return;
     }
 
-    try {
-      showToast('Disparando avaliação via API...', 'info');
-      const response = await fetch('/api/whatsapp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          gateway,
-          phone: phoneWithDDI,
-          message: msgText,
-          config: {
-            zApiInstanceId: settings.zApiInstanceId,
-            zApiToken: settings.zApiToken,
-            evolutionApiUrl: settings.evolutionApiUrl,
-            evolutionApiKey: settings.evolutionApiKey,
-            evolutionInstanceName: settings.evolutionInstanceName,
-            customWebhookUrl: settings.customWebhookUrl
-          },
-          extraData: {
-            bookingId: booking.id,
-            clientName: booking.clientName,
-            date: booking.date,
-            time: booking.time,
-            service: booking.serviceName || booking.service?.name
-          }
-        })
-      });
+    if (waWindow) waWindow.close();
 
-      if (response.ok) {
-        showToast('Pedido de avaliação enviado! 🚀', 'success');
-      } else {
-        throw new Error('Falha no gateway de WhatsApp');
-      }
-    } catch (err) {
-      console.warn('Erro ao disparar via API, abrindo WhatsApp diretamente:', err);
-      // Fallback: abrir wa.me link diretamente se o gateway falhar
-      const waUrl = `https://api.whatsapp.com/send?phone=${phoneWithDDI}&text=${encodeURIComponent(msgText)}`;
+    // Instant toast feedback (0ms delay)
+    showToast('Pedido de avaliação disparado! 🚀', 'success');
+
+    // Async background dispatch without blocking UI
+    (async () => {
       try {
-        window.open(waUrl, '_blank');
-      } catch (e) {
-        console.warn('Fallback window.open failed:', e);
+        await fetch('/api/whatsapp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            gateway,
+            phone: phoneWithDDI,
+            message: msgText,
+            config: {
+              zApiInstanceId: settings?.zApiInstanceId,
+              zApiToken: settings?.zApiToken,
+              evolutionApiUrl: settings?.evolutionApiUrl,
+              evolutionApiKey: settings?.evolutionApiKey,
+              evolutionInstanceName: settings?.evolutionInstanceName,
+              customWebhookUrl: settings?.customWebhookUrl
+            },
+            extraData: {
+              bookingId: booking.id,
+              clientName: booking.clientName,
+              date: booking.date,
+              time: booking.time,
+              service: booking.serviceName || booking.service?.name
+            }
+          })
+        });
+      } catch (err) {
+        console.warn('Erro em segundo plano no disparo de avaliação via API:', err);
       }
-      showToast('Abrindo WhatsApp diretamente... 🚀', 'success');
-    }
+    })();
   };
 
   useEffect(() => {
