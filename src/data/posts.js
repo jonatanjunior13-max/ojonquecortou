@@ -1,4 +1,227 @@
-export const posts = [  {
+export const posts = [
+  {
+    id: 68,
+    slug: 'guia-tipos-de-cacho-2a-a-4c',
+    title: 'Guia Completo dos Tipos de Cacho: da Onda 2A ao Crespo 4C | Studio do Jon',
+    seoTitle: 'Tipos de Cacho 2A a 4C: Guia Técnico Completo | Studio do Jon',
+    excerpt: 'Entenda a classificação de curvatura capilar do ondulado 2A ao crespo 4C: características de cada subtipo, porosidade típica, cuidados específicos e os erros mais comuns.',
+    metaDescription: 'Descubra as características, a porosidade típica e os cuidados corretos para cada tipo de cacho, do ondulado 2A ao crespo 4C, com quem faz Leitura de Fio em BH.',
+    keywords: 'tipos de cacho, classificação de cacho, cacho 2a 2b 2c, cabelo cacheado tipo 3, cabelo crespo tipo 4, tabela de curvatura capilar, o jon que cortou, studio do jon',
+    date: '26 de Julho, 2026',
+    datePublished: '2026-07-26',
+    dateModified: '2026-07-26',
+    author: 'Jon',
+    category: 'Guia Completo',
+    image: '/blog-guia-tipos-de-cacho-2a-a-4c.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Como saber meu tipo de cacho?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lave o cabelo com um shampoo de limpeza profunda para remover resíduos de produto, deixe secar 100% ao ar livre sem aplicar nenhum finalizador e observe o formato de uma unidade isolada de cacho, não a massa geral. O padrão que essa mecha forma sozinha, sem peso de produto e sem interferência de mechas vizinhas, é a base real da classificação. Ainda assim, esse teste caseiro só mostra o formato visual; ele não mede porosidade nem fator de encolhimento, que são as duas variáveis que realmente definem a técnica de corte e o cronograma de tratamento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso ter mais de um tipo de cacho na mesma cabeça?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim, e isso é a regra, não a exceção. O padrão de onda é definido pela forma do folículo em cada região do couro cabeludo, então é absolutamente normal ter uma curvatura mais fechada na nuca, uma mais aberta no topo e uma intermediária nas laterais. Fatores como atrito constante, calor do sol e histórico de penteados também acentuam essa variação ao longo da vida do fio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Cabelo 4C pode ficar definido sem alisar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pode, mas é preciso ajustar a expectativa do que significa definição para essa curvatura. O 4C raramente forma uma espiral contínua e visível como um 3C; a beleza dele está no volume uniforme e na textura em zigue-zague. Com corte que respeite o fator de encolhimento real do fio e um cronograma que priorize nutrição sobre hidratação, o 4C fica definido dentro do próprio padrão dele, sem depender de nenhum processo químico de alisamento."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a diferença real entre um cabelo 3C e um 4A?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O diâmetro do cacho pode até ser parecido, mas o formato estrutural muda. O 3C mantém uma espiral contínua, tipo mola, que se refaz quando o cacho é esticado e solto. O 4A já forma um padrão em pequenos S descontínuos, mais próximo de um anel do que de uma mola completa. O teste prático é esticar suavemente uma mecha molhada e observar se ela recompõe uma espiral inteira (3C) ou pequenos segmentos em S (4A)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A classificação numérica sozinha determina o cuidado ideal?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. O número da curvatura descreve apenas o formato visual do fio seco. Porosidade, densidade, elasticidade e histórico químico pesam tanto quanto, ou mais, na hora de montar a rotina certa. Duas pessoas com curvatura 3C podem precisar de cronogramas opostos se uma tiver alta porosidade e a outra, baixa. Por isso a classificação é o ponto de partida da conversa, nunca o diagnóstico completo."
+          }
+        }
+      ]
+    },
+    content: `<blockquote id="tldr"><p><strong>TL;DR:</strong> A classificação de 2A a 4C descreve o formato da curvatura do fio seco e sem produto, indo da onda mais solta (2A) ao crespo mais compacto (4C). Cada subtipo tem um encolhimento médio, uma tendência de porosidade e erros de cuidado característicos, mas o número sozinho não é um diagnóstico completo: porosidade, densidade e histórico químico do fio pesam tanto quanto o formato visual na hora de definir corte e cronograma capilar.</p></blockquote>
+
+      <p id="introducao">Uma das perguntas que mais recebo aqui no Studio do Jon, em Belo Horizonte, é alguma variação de: <em>"Jon, eu não sei se meu cabelo é 3A ou 3B, ou se é 2C ou 3A. Isso muda alguma coisa na prática?"</em> Muda, e muda bastante. A classificação de curvatura não é só uma etiqueta para postar na internet: ela orienta o tipo de corte, o cronograma de hidratação e nutrição, e até a frequência ideal de manutenção. Este guia cobre cada subtipo, do ondulado 2A ao crespo 4C, com a física e a rotina de cuidado que fazem sentido para cada um.</p>
+
+      <h2 id="o-que-e-a-classificacao">O Que É a Classificação de Curvatura (2A a 4C)</h2>
+      <p>A escala de curvatura organiza os padrões de onda e cacho em três grandes grupos numéricos — tipo 2 (ondulado), tipo 3 (cacheado) e tipo 4 (crespo) — e cada grupo se subdivide em A, B e C conforme o padrão fica progressivamente mais fechado e com maior <a href="/glossario">fator de encolhimento</a>. A avaliação correta é feita sempre no cabelo seco, limpo e sem nenhum produto de finalização, porque qualquer creme, gel ou óleo altera o peso da mecha e mascara o formato real da curvatura.</p>
+      <p>Fisicamente, o que determina essa classificação é a distribuição assimétrica das ligações de queratina dentro do <strong>córtex capilar</strong>: quanto mais desigual a distribuição entre o paracórtex (mais frouxo) e o ortocórtex (mais denso) ao longo da haste, mais a fibra se torce no espaço tridimensional, criando desde uma onda suave até um zigue-zague apertado.</p>
+
+      <h2 id="como-identificar">Como Identificar o Seu Tipo de Cacho em Casa</h2>
+      <p>Antes de comparar o seu fio com qualquer tabela, siga esta sequência para reduzir variáveis que distorcem o resultado:</p>
+      <ol>
+        <li><strong>Lave com shampoo de limpeza profunda:</strong> remove óleos, cremes e resíduo acumulado (buildup) que pesam a mecha e escondem a curvatura real.</li>
+        <li><strong>Seque 100% ao natural, sem produto nenhum:</strong> nem leave-in, nem óleo, nem gel. Qualquer finalizador muda o comportamento do fio.</li>
+        <li><strong>Observe uma mecha isolada, não a massa geral:</strong> puxe um fio individual da raiz à ponta e observe o formato dele sozinho, sem a interferência do peso das mechas ao redor.</li>
+        <li><strong>Repita em pelo menos três regiões da cabeça:</strong> topo, lateral e nuca, porque é normal encontrar padrões diferentes em cada uma.</li>
+      </ol>
+      <p>Esse processo caseiro mostra o formato visual do cacho, mas não mede porosidade, elasticidade nem o fator de encolhimento real da fibra. Essas três variáveis são justamente o que decide a técnica de corte e o cronograma de tratamento, e é por isso que o diagnóstico profissional do <a href="/metodo">Método Leitura de Fio</a> vai além da simples observação visual: ele testa a fibra molhada e seca, mede elasticidade e investiga o histórico químico antes de qualquer tesoura encostar no fio.</p>
+
+      <h2 id="tabela-comparativa">Tabela Comparativa: Do Ondulado 2A ao Crespo 4C</h2>
+      <p>A tabela abaixo resume o formato, o encolhimento médio, a tendência de porosidade e o cuidado essencial de cada subtipo. Lembre-se de que "tendência de porosidade" descreve o comportamento mais comum observado na prática, não uma regra fixa — a única forma de confirmar a porosidade real do seu fio é com o <a href="/glossario">teste de porosidade</a>.</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Subtipo</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Formato Visual</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Encolhimento Médio</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Tendência de Porosidade</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Cuidado Essencial</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">2A</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">S alongado, quase reto na raiz</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">10% a 15%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Baixa a média</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Produtos leves, quase líquidos</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">2B</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">S definido a partir do meio do comprimento</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">12% a 18%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Média</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Evitar escovação a seco</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">2C</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">S intenso, presente desde a raiz</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">15% a 20%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Média a alta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Ativação com creme leve e difusor</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">3A</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Mola larga, tipo cabo de caneta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">30% a 40%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Média</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Não sobrecarregar com creme pesado</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">3B</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Mola média, tipo caneta Bic</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">40% a 50%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Média a alta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Cronograma capilar semanal regular</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">3C</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Mola fechada, tipo agulha de crochê</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">50% a 60%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Alta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Finalizar com o fio ainda bem molhado</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">4A</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Anel apertado, visível sem produto</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">60% a 70%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Alta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Evitar atrito e secagem com toalha comum</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">4B</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Zigue-zague em Z, pouca espiral visível</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">65% a 75%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Alta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Priorizar nutrição sobre hidratação</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">4C</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Zigue-zague muito fechado, sem cacho aparente a olho nu</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">70% a 75%</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Alta</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Selagem de pontas com óleo denso</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="ondulados">Tipo 2: Ondulados (2A, 2B e 2C)</h2>
+      <p>O grupo tipo 2 é o mais confundido com cabelo liso, porque a onda costuma se manifestar apenas no comprimento e nas pontas, deixando a raiz praticamente reta.</p>
+
+      <h3>2A — a onda mais solta</h3>
+      <p>Forma um S suave e alongado, geralmente visível só a partir do meio da mecha. É o padrão com menor encolhimento de todo o espectro e o mais fácil de perder para o peso de um produto pesado. <strong>Erro comum:</strong> usar creme para pentear denso ou óleo em excesso, que achata a onda e faz o cabelo parecer liso com frizz em vez de ondulado.</p>
+
+      <h3>2B — a onda de praia</h3>
+      <p>O S fica mais definido e começa mais perto do meio do comprimento, com a raiz ainda tendendo a ficar mais lisa. É o padrão popularmente chamado de "cabelo de praia". <strong>Erro comum:</strong> escovar o cabelo seco no dia a dia, o que rompe o agrupamento das ondas e gera frizz mecânico generalizado.</p>
+
+      <h3>2C — a fronteira com o cacho</h3>
+      <p>A onda mais intensa do grupo, presente desde a raiz e com volume considerável. É o subtipo mais frequentemente subdiagnosticado: muita gente com 2C acredita ter cabelo liso rebelde ou já pula direto para produtos pensados para cacheados tipo 3, que costumam ser pesados demais para essa curvatura. <strong>Erro comum:</strong> copiar a rotina de hidratação de alguém com cacho tipo 3, sobrecarregando o fio.</p>
+
+      <h2 id="cacheados">Tipo 3: Cacheados (3A, 3B e 3C)</h2>
+      <p>No grupo tipo 3, a mola já é uma espiral contínua e reconhecível, com diâmetro e fechamento crescentes de A para C.</p>
+
+      <h3>3A — mola grande</h3>
+      <p>Cacho largo, brilhante, com diâmetro parecido ao de um marcador de texto. Tende a perder a definição com facilidade sob peso ou umidade alta. <strong>Erro comum:</strong> aplicar quantidade excessiva de creme ou gelatina, que estica a mola e reduz o volume natural do cacho.</p>
+
+      <h3>3B — mola média</h3>
+      <p>Espiral mais compacta, com diâmetro próximo ao de uma caneta esferográfica comum, e volume considerável. É o "meio-termo" do grupo, exigindo cronograma capilar equilibrado entre hidratação e nutrição. <strong>Erro comum:</strong> pular etapas do cronograma capilar por acreditar que o cacho "se vira sozinho", levando a ressecamento progressivo.</p>
+
+      <h3>3C — mola fechada</h3>
+      <p>Cachos numerosos e bem fechados, com diâmetro próximo ao de uma agulha de crochê, frequentemente já com textura visível na raiz. É a curvatura que mais sofre com ressecamento nas pontas dentro do grupo cacheado. <strong>Erro comum:</strong> finalizar com o fio já parcialmente seco; o 3C absorve água rápido e precisa do produto aplicado ainda bem molhado para não formar frizz.</p>
+
+      <h2 id="crespos">Tipo 4: Crespos (4A, 4B e 4C)</h2>
+      <p>No grupo tipo 4, o padrão deixa de ser uma espiral limpa e passa a ser um zigue-zague com ângulos de dobra cada vez mais fechados, o que também eleva o fator de encolhimento e a fragilidade mecânica.</p>
+
+      <h3>4A — o anel apertado</h3>
+      <p>Ainda forma um S bem pequeno e visível mesmo sem produto, como um anel apertado. É o primeiro subtipo do grupo crespo e o que mais se aproxima de uma mola completa. <strong>Erro comum:</strong> secar com toalha de tecido áspero esfregando o fio, o que rompe a definição do anel e gera frizz mecânico.</p>
+
+      <h3>4B — o zigue-zague</h3>
+      <p>O padrão muda de espiral para um Z angular, com menos definição de mola isolada e mais variação de densidade entre mechas. <strong>Erro comum:</strong> tratar o 4B com o mesmo cronograma de um cacheado tipo 3, priorizando hidratação quando o fio já sofre mais de falta de lipídios do que de água.</p>
+
+      <h3>4C — o volume sem mola aparente</h3>
+      <p>Zigue-zague com os ângulos mais fechados de toda a escala, raramente formando um cacho visível a olho nu sem manipulação, e com o maior fator de encolhimento do espectro. É a curvatura mais vulnerável a dano mecânico, porque cada ponto de dobra na fibra é um ponto de fragilidade na cutícula. <strong>Erro comum:</strong> pentear o fio seco no dia a dia e negligenciar a selagem das pontas, que é a região mais antiga e mais distante da oleosidade natural do couro cabeludo nesse padrão.</p>
+
+      <h2 id="mais-de-um-tipo">Por Que Você Pode Ter Mais de Um Tipo de Cacho na Mesma Cabeça</h2>
+      <p>É comum, e não uma anomalia, encontrar uma curvatura mais fechada na nuca, uma mais aberta no topo e uma intermediária nas laterais da mesma cabeça. Isso acontece porque o <a href="/glossario">padrão de onda</a> é determinado geneticamente pelo formato do folículo em cada região do couro cabeludo, e o folículo não é uniforme em toda a extensão. Um corte que trata a cabeça inteira como se ela tivesse uma única curvatura tende a deixar partes do resultado "erradas" — daí a importância de mapear essa variação antes da tesoura entrar em ação.</p>
+
+      <h2 id="limites-da-classificacao">Os Limites da Classificação Numérica</h2>
+      <p>O número da curvatura descreve apenas o formato visual do fio seco e sem produto. Ele não informa a <a href="/glossario">porosidade capilar</a> do fio, a densidade, a elasticidade ou o histórico de processos químicos anteriores — e são justamente essas variáveis que decidem se um cronograma deve priorizar hidratação ou nutrição, e se o corte deve ser feito molhado, a seco ou híbrido. Duas pessoas com curvatura 3C podem precisar de rotinas completamente opostas se uma tiver alta porosidade e a outra, baixa. Por isso, no Studio do Jon, a classificação de curvatura é sempre o ponto de partida da conversa, e o <a href="/metodo">Método Leitura de Fio</a> é o processo que completa o diagnóstico antes de qualquer decisão técnica.</p>
+
+      <h2 id="faq">Perguntas Frequentes sobre Tipos de Cacho</h2>
+      <h3>Como saber meu tipo de cacho?</h3>
+      <p>Lave o cabelo com um shampoo de limpeza profunda para remover resíduos de produto, deixe secar 100% ao ar livre sem aplicar nenhum finalizador e observe o formato de uma unidade isolada de cacho, não a massa geral. O padrão que essa mecha forma sozinha, sem peso de produto e sem interferência de mechas vizinhas, é a base real da classificação. Ainda assim, esse teste caseiro só mostra o formato visual; ele não mede porosidade nem fator de encolhimento, que são as duas variáveis que realmente definem a técnica de corte e o cronograma de tratamento.</p>
+
+      <h3>Posso ter mais de um tipo de cacho na mesma cabeça?</h3>
+      <p>Sim, e isso é a regra, não a exceção. O padrão de onda é definido pela forma do folículo em cada região do couro cabeludo, então é absolutamente normal ter uma curvatura mais fechada na nuca, uma mais aberta no topo e uma intermediária nas laterais. Fatores como atrito constante, calor do sol e histórico de penteados também acentuam essa variação ao longo da vida do fio.</p>
+
+      <h3>Cabelo 4C pode ficar definido sem alisar?</h3>
+      <p>Pode, mas é preciso ajustar a expectativa do que significa definição para essa curvatura. O 4C raramente forma uma espiral contínua e visível como um 3C; a beleza dele está no volume uniforme e na textura em zigue-zague. Com corte que respeite o fator de encolhimento real do fio e um cronograma que priorize nutrição sobre hidratação, o 4C fica definido dentro do próprio padrão dele, sem depender de nenhum processo químico de alisamento.</p>
+
+      <h3>Qual a diferença real entre um cabelo 3C e um 4A?</h3>
+      <p>O diâmetro do cacho pode até ser parecido, mas o formato estrutural muda. O 3C mantém uma espiral contínua, tipo mola, que se refaz quando o cacho é esticado e solto. O 4A já forma um padrão em pequenos S descontínuos, mais próximo de um anel do que de uma mola completa. O teste prático é esticar suavemente uma mecha molhada e observar se ela recompõe uma espiral inteira (3C) ou pequenos segmentos em S (4A).</p>
+
+      <h3>A classificação numérica sozinha determina o cuidado ideal?</h3>
+      <p>Não. O número da curvatura descreve apenas o formato visual do fio seco. Porosidade, densidade, elasticidade e histórico químico pesam tanto quanto, ou mais, na hora de montar a rotina certa. Duas pessoas com curvatura 3C podem precisar de cronogramas opostos se uma tiver alta porosidade e a outra, baixa. Por isso a classificação é o ponto de partida da conversa, nunca o diagnóstico completo.</p>
+
+      <div id="conclusao" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer descobrir sua curvatura real, com diagnóstico técnico completo?</h3>
+        <p>A classificação de 2A a 4C é só o começo. No Studio do Jon, em Belo Horizonte, o Método Leitura de Fio mapeia porosidade, elasticidade, encolhimento e histórico químico antes de qualquer corte ou tratamento. Fico felizão em te ajudar a entender de verdade o seu cacho.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Diagnóstico de Curvatura no Studio do Jon</a>
+      </div>`
+  },
+  {
     id: 67,
     slug: 'rotina-noturna-cabelos-cacheados-crespos-atrito-cetim-day-after',
     title: 'A Física do Atrito Noturno: Como Proteger Cachos e Crespos Durante o Sono e Garantir o Day After Perfeito',

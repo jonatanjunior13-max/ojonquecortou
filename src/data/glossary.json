@@ -56,8 +56,8 @@
   },
   {
     "term": "Tipo de curvatura",
-    "definition": "Classificação do padrão natural de onda ou cacho do cabelo, variando de 1A (totalmente liso) a 4C (crespo compacto). A classificação ocorre em base seca natural, sem produto. Cada tipo de curvatura exige estratégias de cuidado e corte específicas.",
-    "context": "Used in especialista-em-cabelo-cacheado-bh-texturas, finalizacao-por-curvatura-guia-tecnico"
+    "definition": "Classificação do padrão natural de onda ou cacho do cabelo, variando de 1A (totalmente liso) a 4C (crespo compacto), organizada nos subtipos 2A/2B/2C (ondulado), 3A/3B/3C (cacheado) e 4A/4B/4C (crespo). A classificação ocorre em base seca natural, sem produto. Cada tipo de curvatura exige estratégias de cuidado e corte específicas — veja o guia completo de cada subtipo, do 2A ao 4C, em /blog/guia-tipos-de-cacho-2a-a-4c.",
+    "context": "Used in especialista-em-cabelo-cacheado-bh-texturas, finalizacao-por-curvatura-guia-tecnico, guia-tipos-de-cacho-2a-a-4c"
   },
   {
     "term": "Padrão de onda",
