@@ -105,6 +105,26 @@
       "headers": { "Location": "/blog/guia-completo-transicao-capilar-cabelo-natural" }
     },
     {
+      "src": "/blog/frizz-em-cabelo-cacheado",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-frizz-cabelo-cacheado" }
+    },
+    {
+      "src": "/blog/voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-frizz-cabelo-cacheado" }
+    },
+    {
+      "src": "/blog/frizz-normal-ou-dano-capilar",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-frizz-cabelo-cacheado" }
+    },
+    {
+      "src": "/blog/guia-sobrevivencia-frizz-bh",
+      "status": 301,
+      "headers": { "Location": "/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento" }
+    },
+    {
       "src": "/sobre-o-jon",
       "status": 301,
       "headers": { "Location": "/sobre" }

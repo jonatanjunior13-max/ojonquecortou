@@ -2382,7 +2382,7 @@ export const posts = [
     keywords: 'frizz cabelo cacheado, o que é frizz, causas do frizz, porosidade capilar, frizz ou dano capilar, tratamento para frizz, leitura de fio, salão cabelo cacheado bh',
     date: '03 de Julho, 2026',
     datePublished: '2026-07-03',
-    dateModified: '2026-07-03',
+    dateModified: '2026-07-26',
     author: 'Jon',
     category: 'Guia Completo',
     image: '/blog-frizz.webp',
@@ -2409,6 +2409,16 @@ export const posts = [
           "@type": "Question",
           "name": "Como sei se meu problema é frizz normal ou dano capilar?",
           "acceptedAnswer": { "@type": "Answer", "text": "Frizz normal responde a hidratação e técnica em 1-2 lavagens e mantém elasticidade. Dano capilar não melhora com a mesma rapidez, perde elasticidade ou se rompe ao esticar, e concentra-se mais grave nas pontas." }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber se meu cabelo é ondulado ou liso com frizz?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Cabelo genuinamente liso seca reto e sem ondas mesmo sem finalização. Se o seu cabelo ganha ondas quando está úmido, ou seca com ondulação nas pontas e muito frizz quando tratado com produtos e técnica de cabelo liso, ele provavelmente é ondulado (curvatura tipo 2) e está sendo mal diagnosticado." }
+        },
+        {
+          "@type": "Question",
+          "name": "O que causa o frizz mecânico, diferente do frizz por umidade?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Frizz mecânico vem do manuseio do fio, não do ar: esfregar o comprimento com shampoo, secar com toalha de algodão comum, pentes de dente fino, escovação a seco, fricção contra fronha de algodão à noite e cortes com lâmina cega ou tração excessiva. Todos geram atrito que levanta a cutícula independente da umidade relativa do ambiente." }
         }
       ]
     },
@@ -2422,7 +2432,13 @@ export const posts = [
 
 <p>Essas frestas fazem duas coisas ao mesmo tempo: primeiro, dispersam a luz de forma irregular, o que visualmente lê como "opacidade" ou fio "sem vida" — é por isso que cabelo com frizz nunca parece brilhante, mesmo com produto. Segundo, e mais importante, elas expõem o córtex (camada interna do fio) à troca de umidade com o ar. O cabelo é <strong>higroscópico</strong>: ele absorve e perde água constantemente, tentando entrar em equilíbrio com a umidade relativa do ambiente. Com a cutícula levantada, essa troca acontece de forma descontrolada e desigual ao longo da fibra — algumas partes incham mais que outras, o fio perde a coesão do formato, e o resultado visual é o que chamamos de frizz.</p>
 
-<p>Aqui está o ponto que a maioria dos textos sobre frizz não explica: frizz não é o cabelo ficando "seco". É o cabelo absorvendo umidade do ar de forma desorganizada. Em dias muito secos, o mecanismo é o oposto — o fio perde água para o ar e a cutícula também se levanta por desidratação. Os dois extremos de umidade produzem o mesmo efeito visual porque o problema real é a integridade da cutícula, não a quantidade de água em si. Cobrimos esse mecanismo em detalhe, incluindo os erros mais comuns de rotina que pioram o quadro, no <a href="/blog/frizz-em-cabelo-cacheado">guia fundamental sobre frizz em cabelo cacheado</a>.</p>
+<p>Aqui está o ponto que a maioria dos textos sobre frizz não explica: frizz não é o cabelo ficando "seco". É o cabelo absorvendo umidade do ar de forma desorganizada. Em dias muito secos, o mecanismo é o oposto — o fio perde água para o ar e a cutícula também se levanta por desidratação. Os dois extremos de umidade produzem o mesmo efeito visual porque o problema real é a integridade da cutícula, não a quantidade de água em si.</p>
+
+<h2>Carga elétrica da cutícula: por que os fios se repelem entre si</h2>
+
+<p>Existe uma segunda camada de física por trás do frizz, além da troca de umidade: a carga elétrica da superfície do fio. Cabelo saudável, com pH levemente ácido, mantém uma carga elétrica equilibrada. Lavagens com shampoo alcalino ou atrito mecânico repetido removem essa proteção ácida e deixam a superfície do fio com excesso de carga negativa (aniônica).</p>
+
+<p>Cargas iguais se repelem — é física básica, não força de expressão. Quando várias fibras próximas acumulam a mesma carga negativa, elas se afastam fisicamente umas das outras. Esse afastamento é o volume desordenado e "elétrico" que muita gente descreve como cabelo "esparramado" mesmo depois de pentear. A correção não é prender o fio com mais produto — é repor a acidez da fibra (acidificação) e usar agentes catiônicos, presentes na maioria dos condicionadores e máscaras de tratamento, que neutralizam essa carga excedente.</p>
 
 <h3>Porosidade: por que o mesmo clima afeta cada cabelo diferente</h3>
 
@@ -2442,23 +2458,41 @@ export const posts = [
 
 <p>Some a isso outro fator estrutural: quanto mais fechado o padrão de cacho (especialmente em 3C e tipos 4), maior o número de pontos de torção ao longo da fibra — e cada ponto de torção é um ponto onde a cutícula fica mecanicamente mais vulnerável a abrir. É por isso que produtos e técnicas pensados para cabelo liso quase sempre pioram o frizz em cabelo cacheado: eles não consideram essa geometria.</p>
 
+<h2>Frizz mecânico: erros de lavagem e secagem que pioram o quadro</h2>
+
+<p>Nem todo frizz nasce de porosidade ou umidade do ar — uma parte relevante é gerada mecanicamente, pelo próprio manuseio do fio no dia a dia, e ela piora quadros que já eram estruturalmente ok. Os gatilhos mais comuns:</p>
+
+<ul>
+<li><strong>Esfregar o comprimento com shampoo</strong>: o shampoo deveria ser massageado só na raiz — a espuma que escorre no enxágue já é suficiente para higienizar o comprimento. Esfregar o comprimento como se fosse tecido gera atrito direto numa região da fibra que já é naturalmente mais frágil.</li>
+<li><strong>Secar com toalha de algodão comum</strong>: o tecido felpudo cria atrito estático e levanta a cutícula ao absorver água rápido demais. Toalha de microfibra ou camiseta de algodão, usadas por pressão e nunca por fricção, fazem o mesmo trabalho sem o dano mecânico.</li>
+<li><strong>Pentes de dente fino e escovação a seco</strong>: quebram a coesão entre as fibras e separam cada fio individualmente — o oposto do que o cacho precisa para manter a formação em mola.</li>
+<li><strong>Fricção noturna contra fronha de algodão</strong>: gera o mesmo atrito da toalha, só que distribuído por 7 a 8 horas de sono. Fronha ou touca de cetim reduz esse atrito porque não absorve a hidratação do fio nem prende a fibra.</li>
+<li><strong>Cortes com lâmina cega ou tração excessiva</strong>: um corte mal executado deixa a ponta do fio mecanicamente fragilizada desde a saída da tesoura — frizz que "começa" ali não é sobre produto, é sobre técnica de corte.</li>
+</ul>
+
+<p>Vale um alerta à parte sobre óleo mineral (derivado de petróleo) aplicado perto da raiz na tentativa de controlar o frizz do fio novo que nasce: ele não é absorvido pelo couro cabeludo, acumula na saída do folículo e cria uma barreira que abafa a raiz — favorecendo dermatite seborreica e queda por abafamento. Frizz na raiz pede hidratação leve e controle de pH, nunca graxa mineral.</p>
+
 <h2>Frizz normal ou dano capilar? Como saber a diferença</h2>
 
 <p>Esse é o erro de diagnóstico mais caro que existe em rotina capilar: tratar dano estrutural como se fosse frizz comum. Frizz normal responde a hidratação, técnica de finalização e proteção — some ou reduz drasticamente em 1 a 2 lavagens com o cuidado certo. Dano capilar (por química agressiva, calor mal aplicado, química de descoloração, ou desgaste mecânico acumulado) não responde da mesma forma, porque a cutícula não está temporariamente levantada — ela está estruturalmente comprometida, às vezes com perdas reais de córtex.</p>
 
-<p>Alguns sinais práticos para diferenciar: fio com frizz normal tem elasticidade preservada (estica e volta ao formato); fio danificado perde elasticidade ou se rompe ao esticar levemente. Frizz normal concentra-se mais no comprimento médio e raiz por crescimento do cacho; dano frequentemente aparece de forma mais grave nas pontas, com aspecto "esfiapado" mesmo seco. Fizemos um checklist completo, com testes que você pode fazer em casa antes de decidir o próximo passo, no <a href="/blog/frizz-normal-ou-dano-capilar">guia de diagnóstico: frizz normal ou dano capilar</a>. Vale a leitura antes de investir em qualquer tratamento — porque o tratamento certo para frizz e o tratamento certo para dano não são o mesmo produto, nem o mesmo protocolo.</p>
+<p>Alguns sinais práticos para diferenciar: fio com frizz normal tem elasticidade preservada (estica e volta ao formato); fio danificado perde elasticidade ou se rompe ao esticar levemente. Frizz normal concentra-se mais no comprimento médio e raiz por crescimento do cacho; dano frequentemente aparece de forma mais grave nas pontas, com aspecto "esfiapado" mesmo seco. Vale a leitura antes de investir em qualquer tratamento — porque o tratamento certo para frizz e o tratamento certo para dano não são o mesmo produto, nem o mesmo protocolo.</p>
+
+<p>Na prática, o checklist completo fica assim: frizz de textura mantém brilho e maciez ao toque, aparece mais em dias úmidos ou após o difusor e cede com uma hidratação leve; frizz de dano deixa o fio áspero como lixa ao toque, concentra quebra visível no topo e nas têmporas (a chamada "coroa de frizz"), perde brilho mesmo com produto novo e tem porosidade tão alta que absorve água instantaneamente mas seca em minutos, voltando a ficar armado. O tratamento também muda com o diagnóstico: frizz de textura responde a ajuste de rotina — trocar toalha e fronha por microfibra e cetim, hidratar sem excesso, evitar tocar no cabelo enquanto seca. Frizz de dano exige cronograma de nutrição e reconstrução alternadas, acidificação para fechar a cutícula, e corte estratégico — pontas com dano real (esfiapadas, sem massa) não se recuperam com máscara, só com tesoura.</p>
 
 <h2>O erro de diagnóstico mais comum: achar que tem cabelo liso com frizz (quando na verdade é ondulado)</h2>
 
 <p>Um padrão que vemos com frequência aqui no salão: pessoa passa a vida inteira se descrevendo como "liso com frizz" e investindo em produtos e técnicas de alisamento/controle para fio liso — quando na verdade o cabelo é ondulado (tipo 2) e nunca teve a chance de expressar a onda, porque a rotina (excesso de escovação, produtos errados, secagem mal feita) sempre desfez o padrão antes dele se formar. Isso não é frizz no sentido estrutural que descrevemos acima — é onda sendo mecanicamente destruída e o resultado lido como "fio liso rebelde".</p>
 
-<p>A distinção importa porque a solução é oposta: quem tem fio liso de verdade com frizz precisa de disciplina de alisamento e proteção térmica; quem tem ondulado não-diagnosticado precisa parar de brigar com o próprio padrão e aprender a definir a onda. Detalhamos como identificar qual é o seu caso no <a href="/blog/voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz">guia sobre cabelo ondulado não diagnosticado</a>.</p>
+<p>A distinção importa porque a solução é oposta: quem tem fio liso de verdade com frizz precisa de disciplina de alisamento e proteção térmica; quem tem ondulado não-diagnosticado precisa parar de brigar com o próprio padrão e aprender a definir a onda.</p>
+
+<p>Na prática, esse ondulado não-diagnosticado se divide em três perfis, e confundir um com outro é parte do problema: o <strong>2A</strong> tem onda leve só nas pontas, some fácil se você pentear seco e por isso "lê" como liso com frizz; o <strong>2B</strong> tem onda em "S" mais definida a partir do meio do comprimento — o clássico "cabelo de praia"; o <strong>2C</strong> já tem onda intensa desde a raiz, bastante volume, e costuma ser confundido com um cacheado 3A raso. O erro que mais destrói a onda desses três perfis é aplicar produto pesado — óleo de coco puro, manteiga em excesso, creme muito consistente — pensando em imitar a rotina de um cacheado 3C: o peso estica a onda pela gravidade e o resultado parece liso ensebado, não ondulado definido. Ondulado pede o oposto: leave-in fluido, gelatina ou mousse de fixação leve, aplicados com o fio ainda encharcado, seguidos de "amassar" as mechas de baixo para cima e secagem com difusor em velocidade baixa — nunca creme pesado tentando imitar cacho fechado.</p>
 
 <h2>Frizz em Belo Horizonte: por que o clima local intensifica tudo isso</h2>
 
 <p>A física do frizz que explicamos lá em cima (troca de umidade descontrolada pela cutícula aberta) fica mais visível em climas de alta variação de umidade relativa — e BH é um caso particular: verão com umidade alta e chuva concentrada, inverno seco com quedas bruscas de umidade, e oscilações de temperatura no mesmo dia que são comuns no clima de altitude da região metropolitana. Cabelo cacheado e crespo, que já tem cutícula estruturalmente mais propensa a abrir (como explicamos acima), sente essa oscilação com mais intensidade que fio liso.</p>
 
-<p>Reunimos as adaptações de rotina específicas para esse clima — incluindo ajustes por estação e por bairro — no <a href="/blog/guia-sobrevivencia-frizz-bh">guia de sobrevivência ao frizz em BH</a>. E porque o inverno de BH tem uma combinação particular de baixa umidade e uso de aquecedores/chuveiro muito quente que resseca o fio rápido, escrevemos um guia à parte, com protocolo de troca sazonal de produto, no <a href="/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento">guia de cabelo cacheado no inverno de BH</a>.</p>
+<p>O inverno de BH concentra o pior dessa combinação: baixa umidade relativa somada ao hábito de banho muito quente, que resseca o fio ainda mais rápido. Reunimos o protocolo completo de troca sazonal de produto, temperatura da água, frequência de lavagem e leitura de rótulo para essa época no <a href="/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento">guia de cabelo cacheado no inverno de BH</a>.</p>
 
 <h2>O que realmente controla frizz (e o que é maquiagem temporária)</h2>
 
@@ -2482,10 +2516,7 @@ export const posts = [
 <h2>Resumo prático: o que fazer com essa informação</h2>
 
 <ul>
-<li>Se você não sabe se seu cabelo é liso, ondulado ou cacheado com frizz, comece pelo <a href="/blog/voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz">guia de diagnóstico de padrão de cacho</a> — a rotina certa depende dessa resposta.</li>
-<li>Se seu frizz muda muito entre estações, veja os ajustes sazonais nos guias de <a href="/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento">inverno</a> e <a href="/blog/guia-sobrevivencia-frizz-bh">clima de BH</a>.</li>
-<li>Se você suspeita que não é frizz comum, faça o checklist do <a href="/blog/frizz-normal-ou-dano-capilar">guia de frizz vs. dano capilar</a> antes de gastar em qualquer tratamento.</li>
-<li>Se quer entender a base completa da rotina de controle, o <a href="/blog/frizz-em-cabelo-cacheado">guia fundamental de frizz em cabelo cacheado</a> cobre produto, técnica de finalização e erros comuns.</li>
+<li>Se seu frizz muda muito no inverno ou em dias muito secos, veja o protocolo sazonal completo no <a href="/blog/cabelo-cacheado-inverno-bh-frizz-ressecamento">guia de cabelo cacheado no inverno de BH</a>.</li>
 <li>Se quer parar de adivinhar e ter um diagnóstico real da sua fibra, <a href="/agendar">agende um horário</a> — a Leitura de Fio está inclusa em qualquer corte.</li>
 </ul>
 
@@ -2912,135 +2943,6 @@ export const posts = [
 <p>Não. Preço reflete posicionamento de mercado, não necessariamente técnica. Os sinais técnicos deste checklist são indicadores mais confiáveis do que o valor cobrado.</p>`
   },
 
-  {
-    id: 47,
-    slug: 'frizz-em-cabelo-cacheado',
-    title: 'Frizz em cabelo cacheado: a física por trás do fio arrepiado',
-    seoTitle: 'Frizz em cabelo cacheado: a física por trás do fio arrepiado | Studio do Jon',
-    excerpt: 'Descubra por que o frizz em cabelo cacheado é uma reação física e como o Método Leitura de Fio no Studio do Jon em BH resolve o problema na raiz.',
-    metaDescription: 'Descubra por que o frizz em cabelo cacheado é uma reação física e como o Método Leitura de Fio no Studio do Jon em BH resolve o problema na raiz.',
-    keywords: 'frizz em cabelo cacheado, como acabar com o frizz em cabelo cacheado, porosidade capilar bh, especialista em cachos belo horizonte, Método Leitura de Fio',
-    date: '29 de Junho, 2026',
-    datePublished: '2026-06-29',
-    dateModified: '2026-06-29',
-    author: 'Jon',
-    category: 'Cuidado Capilar',
-    image: '/blog-frizz-em-cabelo-cacheado.webp',
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Por que meu cabelo cacheado tem tanto frizz mesmo hidratando toda semana?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Se a sua fibra capilar estiver com alta porosidade ou pH desequilibrado (alcalino), as cutículas continuarão abertas. A água da hidratação entra e evapora imediatamente. Para resolver, é preciso fazer a acidificação capilar para fechar as cutículas e reter a hidratação dentro do fio."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "O Studio do Jon realiza tratamentos para soltar os cachos e tirar o frizz?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Não realizamos nenhum tipo de alisamento, relaxamento ou química de redução de volume. Nós tratamos o frizz reequilibrando a porosidade e a saúde do fio através de terapia capilar e cortes geométricos a seco para valorizar a estrutura natural do cacho."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Toalhas de microfibra ajudam a evitar o frizz no cacho?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Onde fica o Studio do Jon e como posso agendar um diagnóstico?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link ojonquecortou.com.br/agendar, e nosso telefone é (31) 9 8304-4059."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "O que causa o aparecimento de frizz mecânico?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração."
-          }
-        }
-      ]
-    },
-    content: `
-      <p>O frizz em cabelo cacheado é uma resposta física do fio poroso que busca umidade no ar devido ao desalinhamento das cutículas ou à falta de lipídios na fibra capilar. Para combater esse quadro, é preciso regular a porosidade e selar as cutículas com pH ácido e reposição lipídica em vez de tentar mascarar o fio com cremes pesados.</p>
-      <p>Eu vejo isso todos os dias no meu studio em Belo Horizonte. A cliente chega reclamando que o cabelo é "rebelde" ou que nenhum creme de supermercado consegue abaixar o frizz. Ela gasta fortunas com óleos de silicone e máscaras milagrosas. O erro está em tratar o frizz como um inimigo de comportamento ou um defeito. Frizz é física pura.</p>
-
-      <h2>A biologia da eletrostática e da porosidade capilar</h2>
-      <p>O cacho possui uma anatomia elíptica. Ele se torce e gira sobre si mesmo durante o crescimento do folículo. Essa torção natural cria pontos de menor densidade cuticular ao longo da haste do fio. Nesses pontos de dobra, a cutícula capilar — a barreira de escamas externa que protege a fibra — fica exposta e se abre com mais facilidade.</p>
-      <p>O frizz em cabelo cacheado é um fenômeno físico e biológico onde as cutículas da fibra capilar se abrem e se expandem para absorver a umidade externa. Esse processo ocorre principalmente em fios porosos que carecem de óleo natural para repelir a água do ar ambiente.</p>
-      <p>Quando o ar de Belo Horizonte está úmido, o córtex capilar busca essa água externa. Como a barreira cuticular está desalinhada ou desprotegida por falta de lipídios (óleos), o fio dilata e se afasta das outras fibras para absorver essa umidade. Esse afastamento gera a carga eletrostática negativa que faz o cabelo parecer arrepiado. O frizz é o seu cabelo tentando respirar a umidade que ele não consegue reter por dentro.</p>
-
-      <h2>Carga aniônica vs. carga catiônica</h2>
-      <p>A fibra do cabelo saudável é levemente ácida e possui uma carga elétrica equilibrada. Processos de lavagem com shampoos alcalinos ou atrito mecânico removem essa barreira protetora ácida. Sem ela, o fio acumula cargas elétricas negativas (aniônicas).</p>
-      <p>Cargas iguais se repelem. Quando os fios de cabelo estão repletos de cargas negativas, eles se afastam uns dos outros fisicamente. Isso resulta no volume desordenado e no frizz resistente a finalizações. Tratar o cacho exige repor a acidez e neutralizar essas cargas negativas com agentes catiônicos.</p>
-
-      <h2>A mentira dos finalizadores pesados e dos silicones insolúveis</h2>
-      <p>O mercado tradicional de cosméticos adora vender a ilusão de que basta passar um óleo pesado ou silicone para resolver o frizz. Quanta ignorância técnica. O silicone insolúvel cria uma película plástica ao redor da fibra. Na primeira hora, o frizz desaparece porque o fio fica impermeabilizado e pesado.</p>
-      <p>Só que essa película impede o cabelo de receber água nas lavagens seguintes. Por baixo do plástico do silicone, o córtex seca. A porosidade aumenta e o cabelo enfraquece por dentro.</p>
-      <p>Quando você lava com um shampoo de sulfato forte para remover o acúmulo de silicone, as cutículas são escancaradas. A umidade evapora imediatamente e o frizz volta três vezes pior. Nós precisamos parar de maquiar o fio. Precisamos selar a cutícula de verdade.</p>
-
-      <h2>O perigo do óleo mineral na raiz</h2>
-      <p>Outro erro crônico é aplicar óleos minerais pesados e derivados de petróleo perto do couro cabeludo na tentativa de controlar os fios novos que nascem com frizz. O óleo mineral não é absorvido pela pele ou pelo córtex.</p>
-      <p>Ele acumula na saída do folículo piloso, criando uma barreira impermeável que abafa a raiz. Isso gera dermatite seborreica, caspa e queda por abafamento. O frizz do fio novo deve ser tratado com hidratação leve e controle de pH, nunca com graxa mineral.</p>
-
-      <h2>O que é a Leitura de Fio no Studio do Jon</h2>
-      <p>Eu não adivinho tratamentos. Eu leio a física do seu cabelo. O <a href="/metodo">Método Leitura de Fio</a> é um protocolo técnico de diagnóstico capilar em sete etapas realizado no Studio do Jon antes de iniciar o corte. Ele engloba a escuta ativa, análise do caimento a seco, diagnóstico do couro cabeludo, histórico químico, comportamento molhado, definição da angulação geométrica e finalização.</p>
-      <p>Como autista, meu cérebro funciona mapeando e decodificando padrões geométricos e físicos na fibra. Nas sete etapas do diagnóstico, nós avaliamos:</p>
-      <ul>
-        <li><strong>Escuta:</strong> entender seus hábitos diários de lavagem, secagem e finalização para identificar gatilhos mecânicos de frizz.</li>
-        <li><strong>Análise a seco:</strong> observar o comportamento eletrostático das mechas no estado seco natural, sem a influência de cremes.</li>
-        <li><strong>Diagnóstico do couro cabeludo:</strong> checar se a descamação na raiz é caspa real ou apenas ressecamento severo.</li>
-        <li><strong>Histórico químico:</strong> avaliar a perda de elasticidade e o desgaste das cutículas por procedimentos passados.</li>
-        <li><strong>Análise molhada:</strong> testar a porosidade do cacho para entender a velocidade de absorção e perda de água.</li>
-        <li><strong>Definição de técnica:</strong> planejar o corte geométrico exato sem criar pontas mastigadas que geram frizz mecânico.</li>
-        <li><strong>Finalização como validação:</strong> secar e validar a física do caimento e o equilíbrio estático do cabelo no estado final seco.</li>
-      </ul>
-      <p>A porosidade capilar é a propriedade física que determina a capacidade da fibra capilar de absorver e reter água ou tratamentos em seu córtex. Cutículas altamente porosas deixam a umidade entrar e sair livremente, resultando em frizz crônico e perda rápida de definição dos cachos.</p>
-
-      <h2>Por que tratar com um especialista em cachos em Belo Horizonte</h2>
-      <p>Tratar o frizz exige entender a biologia da haste do cabelo ondulado a crespo. Eu sou <a href="/sobre">Jonatan Junior, o Jon</a>. No meu studio, localizado no bairro Caiçaras, em Belo Horizonte, atendemos <a href="/servicos">exclusivamente curvaturas do 2A ao 4C</a>. Não trabalhamos com alisamentos, relaxamentos, progressivas ou qualquer outro processo de alteração química de curvatura. O foco é a integridade real do seu cacho.</p>
-      <p>A nossa avaliação de 4.9/5 com 272 avaliações no Google reflete esse compromisso técnico. Nós eliminamos as suposições e focamos na estrutura física e no caimento geométrico correto de cada mecha. Se o seu cacho está poroso, nós acidificamos para fechar a cutícula e repomos os lipídios corretos que o fio consegue absorver de verdade.</p>
-
-      <h2>Engenharia de lavagem para controlar o frizz em casa</h2>
-      <p>O frizz começa na forma como você lava e seca seus cachos no dia a dia. A engenharia de lavagem exige atenção à temperatura da água e ao atrito físico.</p>
-      <p>Primeiro, pare de esfregar o comprimento do cabelo como se estivesse lavando uma calça jeans. O shampoo deve ser massageado apenas na raiz. A espuma que escorre no enxágue é suficiente para higienizar o comprimento. Esfregar as mechas gera atrito mecânico, que destrói as cutículas já fragilizadas e piora o frizz.</p>
-      <p>Segundo, evite secar o cabelo esfregando toalhas de algodão comuns. O algodão absorve a água rápido demais e gera atrito estático. Prefira usar toalhas de microfibra ou camisetas de algodão macio para apenas pressionar o excesso de água. A secagem deve ser feita com difusor em temperatura morna e velocidade média, sem ficar tocando nas mechas enquanto elas secam.</p>
-
-      <h2><a href="/faq">Perguntas Frequentes</a></h2>
-
-      <h3>Por que meu cabelo cacheado tem tanto frizz mesmo hidratando toda semana?</h3>
-      <p>Se a sua fibra capilar estiver com alta porosidade ou pH desequilibrado (alcalino), as cutículas continuarão abertas. A água da hidratação entra e evapora imediatamente. Para resolver, é preciso fazer a acidificação capilar para fechar as cutículas e reter a hidratação dentro do fio.</p>
-
-      <h3>O Studio do Jon realiza tratamentos para soltar os cachos e tirar o frizz?</h3>
-      <p>Não realizamos nenhum tipo de alisamento, relaxamento ou química de redução de volume. Nós tratamos o frizz reequilibrando a porosidade e a saúde do fio através de terapia capilar e cortes geométricos a seco para valorizar a estrutura natural do cacho.</p>
-
-      <h3>Toalhas de microfibra ajudam a evitar o frizz no cacho?</h3>
-      <p>Sim. A microfibra possui fibras extremamente finas que não geram atrito estático com as cutículas capilares. Ela absorve o excesso de água sem eriçar as escamas do fio, diferente das toalhas de algodão felpudas comuns.</p>
-
-      <h3>Onde fica o Studio do Jon e como posso agendar um diagnóstico?</h3>
-      <p>O Studio do Jon está localizado no bairro Caiçaras, Belo Horizonte, na Rua Francisco Ovídio, 184, CEP 30770-040. Os agendamentos são feitos de forma online pelo link <a href="/agendar">ojonquecortou.com.br/agendar</a>, e nosso telefone é (31) 9 8304-4059.</p>
-
-      <h3>O que causa o aparecimento de frizz mecânico?</h3>
-      <p>O frizz mecânico é causado pelo uso de pentes de dentes finos, escovação do cabelo seco, fricção com tecidos ásperos durante a noite ou cortes de cabelo feitos com lâminas cegas e técnicas inadequadas de tração.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
-        <h3>Quer resolver o frizz de uma vez por todas?</h3>
-        <p>Diagnóstico técnico de porosidade e corte geométrico a seco no Studio do Jon, em Belo Horizonte.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
-      </div>
-    `
-  },
   {
     id: 46,
     slug: 'excesso-hidratacao-cronograma-capilar-cacheado',
@@ -3647,106 +3549,6 @@ export const posts = [
     `
   },
   {
-    id: 39,
-    slug: 'voce-tem-cabelo-ondulado-e-nao-sabe-liso-com-frizz',
-    scientificData: {
-      summary: "Cabelos ondulados possuem seção transversal ligeiramente oval e curvatura em \"S\" (curvatura tipo 2), necessitando de agentes hidrossolúveis leves para evitar o peso físico na haste. Tratar ondulados com técnicas e óleos pesados voltados para crespos causa alongamento mecânico da onda e aspecto oleoso.",
-      sourceLabel: "Sociedade Brasileira de Dermatologia (SBD)",
-      sourceUrl: "https://www.sbd.org.br/",
-      factSheet: [
-        { label: "Seção Transversal do Fio", value: "Ligeiramente oval (Maior distribuição de sebo natural)" },
-        { label: "Tipos de Curvatura", value: "2A (Ondas nas pontas) a 2C (Ondas desde a raiz)" },
-        { label: "Efeito de Cremes Pesados", value: "Alongamento indesejado das ondas por gravidade" },
-        { label: "Ingredientes Ideais", value: "Extratos vegetais aquosos e gelatinas hidrossolúveis" }
-      ]
-    },
-    title: 'Você Tem Cabelo Ondulado e Não Sabe? Como Identificar e Cuidar',
-    seoTitle: 'Ondulado ou Liso com Frizz? Como Identificar',
-    excerpt: 'Acha que seu cabelo é liso, indisciplinado e cheio de frizz? Descubra se você na verdade tem cabelos ondulados e como cuidar deles para revelar ondas perfeitas.',
-    metaDescription: 'Será que seu cabelo é liso com frizz ou ondulado? Descubra como identificar as curvaturas 2A, 2B e 2C em Belo Horizonte e cuide com o especialista Jon.',
-    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, cabelo ondulado ou liso com frizz, especialista em cachos bh, transição capilar bh',
-    date: '08 de Junho, 2026',
-    author: 'Jon',
-    category: 'Cuidado Capilar',
-    image: '/blog-ondulado-frizz.webp',
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Como saber se meu cabelo é ondulado ou liso com frizz?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Se o seu cabelo ganha ondas quando está úmido ou seca com ondulações nas pontas e muito frizz no topo quando tratado como liso, ele provavelmente é ondulado (curvatura tipo 2). Cabelos genuinamente lisos secam retos e sem ondas mesmo sem finalização."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Qual é o melhor finalizador para cabelo ondulado?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Cabelos ondulados precisam de produtos leves, como leave-ins fluidos ou gelatinas de fixação suave. Evite cremes de pentear muito pesados e ricos em óleos, que pesam nas ondas e deixam o cabelo sem volume e com aspecto oleoso."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Como finalizar o cabelo ondulado para ativar as ondas?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Com o cabelo úmido, aplique um leave-in leve usando a técnica de fitagem suave ou 'mãos de prece'. Em seguida, amasse as mechas de baixo para cima para estimular as ondas. Seque com difusor na temperatura morna e velocidade baixa ou deixe secar naturalmente."
-          }
-        }
-      ]
-    },
-    content: `
-      <h2>A Mentira do "Cabelo Liso Ruim" ou "Liso com Frizz"</h2>
-      <p>Quantas vezes você já ouviu ou disse: "meu cabelo não é liso nem cacheado, é só armado e cheio de frizz"? Ou talvez você gaste uma fortuna em secador, chapinha ou botox capilar para tentar domar fios que parecem simplesmente rebeldes.</p>
-      <p>Vou te contar uma verdade técnica que pode doer na sua rotina, mas vai salvar a sua autoimagem: <strong>cabelo liso com frizz não existe</strong>. Cabelo liso de verdade nasce liso, seca liso, e fica liso mesmo se você sair no vento da Pampulha. Se o seu cabelo arma, forma ondas quando está úmido ou tem aquele frizz persistente que não cede a nada, parabéns: você tem cabelo ondulado (curvatura tipo 2) e está tratando ele do jeito errado.</p>
-      <p>Tratar um cabelo ondulado como se fosse liso é como tentar abastecer um carro a gasolina com diesel e reclamar que ele está engasgando. Vamos desvendar esse mistério e te ensinar a revelar as ondas que estão escondidas sob esse frizz.</p>
-
-      <h2>Como Identificar o Cabelo Ondulado (Do 2A ao 2C)</h2>
-      <p>O cabelo ondulado é a curvatura mais incompreendida do salão. Como ele não forma espirais completas desde a raiz como os cachos tipo 3, muitas pessoas acham que ele é apenas um liso que deu errado. Na escala de curvaturas, nós classificamos o ondulado em três tipos principais:</p>
-      <ul>
-        <li><strong>Tipo 2A:</strong> É quase liso, mas tem uma leve onda em formato de "S" bem suave nas pontas. Geralmente tem pouco volume e perde a forma facilmente. É aquele cabelo que, se você amassar um pouquinho, já ganha movimento, mas se pentear seco vira um liso com frizz.</li>
-        <li><strong>Tipo 2B:</strong> A onda em "S" é mais definida e começa mais perto do meio do comprimento. A raiz ainda costuma ser lisa ou mais baixa, mas o comprimento tem textura de verdade. É o famoso "cabelo de praia". Se você usa creme pesado nele, ele pesa e fica com aspecto de sujo.</li>
-        <li><strong>Tipo 2C:</strong> É a onda mais intensa, quase um cacho. Começa bem rente à raiz e tem bastante volume. Se não for bem finalizado, arma com muita facilidade e tem bastante frizz natural. Muitas onduladas 2C passam a vida achando que têm cabelo cacheado tipo 3A, mas sem a formação de molas completas.</li>
-      </ul>
-
-      <img src="/blog-curvaturas.webp" alt="Tabela ilustrativa de tipos de curvatura capilar do ondulado 2A ao crespo 4C" class="post-inline-image" />
-
-      <h2>Por que Tratar Ondulado como Liso Destrói Suas Ondas</h2>
-      <p>A física do fio ondulado é delicada. Ao contrário dos cabelos cacheados e crespos, que possuem uma estrutura de fibra mais achatada e elíptica, o fio ondulado tem uma seção transversal ligeiramente oval. Ele tem mais facilidade para produzir e distribuir a oleosidade natural do couro cabeludo do que os cachos fechados, mas ainda assim sofre com o ressecamento nas pontas.</p>
-      <p>Quando você escova o cabelo seco ou usa xampus com sulfatos super agressivos recomendados para cabelos lisos e oleosos, você desfaz a união física que forma a onda. A cutícula se abre, o cimento intercelular do fio se perde no atrito da escova e... tcharam! A onda vira frizz desordenado.</p>
-      <p>Outro erro clássico é o excesso de fontes de calor. A chapinha e o secador sem proteção térmica mudam a estrutura das pontes de hidrogênio e enxofre do fio de forma temporária ou permanente. Com o tempo, o cabelo perde a memória da curvatura. Ele não fica nem liso bonito, nem ondulado definido. Vira o famoso "cabelo sem identidade".</p>
-
-      <h2>O Mito do Creme Pesado: O Pior Inimigo da Ondulada</h2>
-      <p>Quando a pessoa finalmente descobre que o cabelo é ondulado, ela comete o segundo erro mais comum: vai na internet, vê o tutorial de uma cacheada tipo 3C e compra os mesmos produtos. Máscaras ultra nutritivas com óleo de coco, leave-ins consistentes à base de manteiga de karité e gelatinas super densas.</p>
-      <p>O resultado? Um cabelo pesado, sem volume, com aspecto oleoso e sem nenhuma onda formada. O excesso de peso estica a onda do fio ondulado, fazendo-o parecer liso, mas com uma textura áspera e ensebada.</p>
-      <p>Cabelo ondulado precisa de <strong>água (hidratação) e fixação leve</strong>. Esqueça óleos pesados e cremes consistentes. O seu melhor amigo é um leave-in fluido (quase um leite ou loção leve) combinado com uma gelatina ou mousse de fixação suave. O produto precisa reter a umidade sem adicionar peso físico à fibra.</p>
-
-      <h2>A Rotina de Finalização Perfeita para Onduladas</h2>
-      <p>Finalizar cabelo ondulado é mais simples do que parece, mas exige técnica. Se você quer ondas definidas, brilhantes e com volume na medida certa, siga este passo a passo:</p>
-      <ol>
-        <li><strong>Finalize com o cabelo bem úmido:</strong> Não deixe o cabelo começar a secar sozinho antes de passar o produto. Aplique o finalizador ainda no banho ou logo após sair, com os fios encharcados. Isso ajuda a reter a umidade e a evitar o frizz prematuro.</li>
-        <li><strong>Use técnicas de distribuição leve:</strong> Evite fitagens muito estruturadas e apertadas. Prefira aplicar o leave-in com a técnica de "mãos de prece" (deslizando as mãos espalmadas pelas mechas) para distribuir o produto de forma uniforme.</li>
-        <li><strong>Amasse com vontade:</strong> Com os fios já com produto, amasse o cabelo de baixo para cima com as mãos. É esse movimento mecânico que vai ativar a memória da onda e formar as curvas em "S". Use uma toalha de microfibra ou camiseta de algodão para retirar o excesso de água.</li>
-        <li><strong>Seque com difusor na temperatura morna:</strong> O difusor ajuda a fixar a onda antes que o vento desmanche o formato. Use velocidade baixa para não criar frizz e não fique mexendo o secador o tempo todo. Se preferir secagem natural, evite ficar passando a mão no cabelo enquanto ele seca.</li>
-        <li><strong>Quebre o durinho:</strong> Depois que o cabelo estiver 100% seco, você vai sentir um leve aspect rígido ("cast" do gel). Aplique duas gotas de um óleo finalizador super leve nas mãos e amasse o cabelo delicadamente. O resultado serão ondas macias, soltas e super naturais.</li>
-      </ol>
-
-      <h2>Como a Leitura de Fio te Ajuda a Redescobrir Suas Ondas</h2>
-      <p>Se você tentou de tudo e seu cabelo continua parecendo uma nuvem de frizz na Savassi, o problema pode estar na porosidade e no histórico do seu fio. Fios ondulados que passaram por anos de progressiva ou descoloração perdem a elasticidade e precisam de tratamentos reconstrutores específicos antes de conseguirem formar ondas novamente.</p>
-      <p>No Studio do Jon, nós não acreditamos em receitas prontas. Antes de sugerir qualquer corte ou tratamento, nós realizamos o <a href="/metodo">Método Leitura de Fio</a>. São 7 etapas de análise onde identificamos a elasticidade da sua fibra, a porosidade real, o histórico químico invisível e o caimento das diferentes texturas da sua cabeça — incluindo a análise a seco que separa de vez o ondulado real do liso com frizz. Só assim conseguimos desenhar um corte a seco que valorize o volume e definir a rotina de cuidados ideal para o seu estilo de vida.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
-        <h3>Chega de brigar com o espelho e com o secador!</h3>
-        <p>Descubra o verdadeiro potencial do seu cabelo com um diagnóstico técnico personalizado.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Leitura de Fio no Studio do Jon</a>
-      </div>
-    `,
-  },
-  {
     id: 38,
     slug: 'cabelo-cacheado-inverno-bh-frizz-ressecamento',
     scientificData: {
@@ -3765,6 +3567,7 @@ export const posts = [
     metaDescription: 'Como cuidar de cabelos cacheados e crespos no inverno seco de Belo Horizonte. Dicas de especialista para combater o frizz e manter a hidratação.',
     keywords: 'cabelo cacheado inverno bh, frizz cabelo cacheado bh, ressecamento cachos, hidratar cachos inverno, studio do jon, belo horizonte',
     date: '05 de Junho, 2026',
+    dateModified: '2026-07-26',
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-inverno-cachos-bh.webp',
@@ -3821,6 +3624,22 @@ export const posts = [
       <h2>4. Secagem Inteligente: Não Saia com o Cabelo Úmido</h2>
       <p>Sair de casa com o cabelo molhado no vento frio e seco da Avenida Afonso Pena ou do Contorno é pedir para ter frizz. A evaporação rápida da água no vento seco desmancha a estrutura do cacho antes mesmo dele terminar de secar.</p>
       <p>A melhor opção no inverno é usar o difusor. No entanto, o calor do secador também pode ressecar o fio se usado incorretamente. Aplique sempre um protetor térmico antes de secar. Use o secador na temperatura morna ou fria e na velocidade média. Se você tem dúvidas de qual método se adapta melhor ao seu estilo de vida, veja nosso guia sobre <a href="/blog/secagem-cachos-difusor-vs-natural">secagem com difusor versus secagem natural</a>.</p>
+
+      <h2>5. Reduza o Atrito Mecânico: Toalha e Fronha Também Importam no Inverno</h2>
+      <p>Além da rotina de produto, o ar seco de BH torna o fio momentaneamente mais frágil à fricção — e o atrito mecânico se soma ao ressecamento ambiental, não se anula. Duas trocas simples reduzem essa carga extra sobre a cutícula:</p>
+      <ul>
+        <li><strong>Toalha de banho:</strong> troque a toalha felpuda tradicional por uma de microfibra ou uma camiseta de algodão. O tecido felpudo absorve a água rápido demais e gera atrito que levanta a cutícula já enfraquecida pelo ar seco. O movimento correto é pressionar o excesso de água contra o fio, nunca esfregar.</li>
+        <li><strong>Fronha ou touca para dormir:</strong> o algodão comum absorve parte da hidratação que você acabou de repor à noite e gera atrito por 7 a 8 horas seguidas. Cetim ou seda não absorvem e deslizam, preservando o produto aplicado — efeito ainda mais visível nas semanas mais secas do inverno, quando cada resquício de umidade no fio conta.</li>
+      </ul>
+
+      <h2>6. Como Ler o Rótulo Antes de Comprar Mais um "Anti-Frizz"</h2>
+      <p>Nem todo produto que promete "controlar o frizz" ataca a causa certa para o clima seco de BH. Um jeito rápido de filtrar na prateleira, sem depender de propaganda:</p>
+      <ul>
+        <li><strong>Fio mais fino, frizzando por ressecamento leve:</strong> procure óleos leves no topo da lista de ingredientes (semente de uva, jojoba) — óleos pesados como coco puro ou mamona em excesso tendem a pesar e achatar sem corrigir a cutícula, e como vimos acima, o coco ainda solidifica com o frio.</li>
+        <li><strong>Frizz vindo com aspereza e falta de definição:</strong> o problema geralmente é cutícula aberta, não falta de óleo — um acidificante (pH mais baixo, à base de ácido cítrico ou lático) antes do finalizador rende mais do que trocar de creme pela quinta vez.</li>
+        <li><strong>Semanas mais secas do inverno (julho e agosto em BH):</strong> priorize um produto à base de água como primeira camada (hidratação real) e só depois sele com óleo ou manteiga — óleo aplicado direto no fio seco sela o ressecamento por dentro, sem hidratar nada.</li>
+      </ul>
+      <p>Para entender a física completa por trás de tudo isso — cutícula, porosidade, carga elétrica do fio e a diferença entre frizz saudável e dano real — veja o <a href="/blog/guia-completo-frizz-cabelo-cacheado">guia completo do frizz em cabelo cacheado</a>.</p>
 
       <h2>Sinais de que o Seu Cabelo Precisa de uma Avaliação Profissional</h2>
       <p>Se mesmo mudando os produtos e a rotina em casa o seu cabelo continua áspero, embaraçando em excesso ou sem definição, o problema pode estar mais profundo. Fatores como a porosidade real do fio e o acúmulo de resíduos químicos impedem os tratamentos de fazerem efeito.</p>
@@ -6838,125 +6657,6 @@ export const posts = [
     `
   },
   {
-    id: 6,
-    slug: 'frizz-normal-ou-dano-capilar',
-    scientificData: {
-      summary: "O frizz pode ser um comportamento físico natural de cabelos com curvatura (onde os fios menores criam volume e textura) ou um sinal de danos à cutícula. Diferenciar o frizz saudável do frizz por quebra ou porosidade ajuda a desenhar a rotina correta sem obsessão por controle químico.",
-      sourceLabel: "Dermatologia Capilar SBD",
-      sourceUrl: "https://www.sbd.org.br/",
-      factSheet: [
-        { label: "Frizz de Textura (Saudável)", value: "Comportamento normal da curvatura em contato com a umidade" },
-        { label: "Frizz de Dano (Patológico)", value: "Provocado por pontas duplas, quebra e falta de massa capilar" },
-        { label: "Efeito da Umidade Relativa", value: "Pontes de hidrogênio se ligam à água do ar, mudando a forma do fio" },
-        { label: "Tratamento Adequado", value: "Equilíbrio hídrico, finalização leve e corte de pontas desgastadas" }
-      ]
-    },
-    title: 'Frizz em Cabelo Cacheado: Normal ou Dano? | Jon',
-    excerpt: 'Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz.',
-    metaDescription: 'Nem todo frizz é dano. Especialista em cachos em BH explica como diferenciar o frizz natural de textura daquele que avisa que o fio está fraco.',
-    keywords: 'frizz cabelo cacheado, frizz ou dano, transição capilar, saúde capilar, especialista em cachos BH, corte a seco',
-    date: '06 de Abril, 2026',
-    dateModified: '2026-07-04',
-    author: 'Jon',
-    category: 'Saúde Capilar',
-    image: '/blog-frizz-dano.webp',
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Qual a diferença entre o frizz natural e o frizz de dano no cabelo cacheado?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "O frizz natural (ou de textura) é o comportamento normal de fios com curvatura em dias úmidos, sendo macio ao toque e mantendo a elasticidade do cacho. O frizz de dano é causado por quebra, pontas duplas ou porosidade excessiva. Ele deixa o cabelo com toque áspero, opaco e quebradiço, indicando falta de tratamento ou corte."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "O que causa o frizz no cabelo cacheado?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "O frizz acontece quando a cutícula do fio se levanta, geralmente porque o cabelo está seco e tenta absorver a umidade do ar. Outras causas comuns incluem atrito mecânico (como fronhas e toalhas de algodão comuns), eletricidade estática e o uso de produtos com sulfatos fortes que ressecam a fibra capilar."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Como reduzir o frizz de dano sem perder o volume natural do cacho?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Foque em tratamentos de nutrição e reconstrução para preencher os danos da fibra capilar, além de usar um acidificante para manter as cutículas seladas. Na hora de finalizar, use toalhas de microfibra ou camisetas de algodão para secar o cabelo e evite passar as mãos nos cachos enquanto eles estiverem secando."
-          }
-        }
-      ]
-    },
-    content: `
-      <p>Se tem uma coisa que merece ser desmistificada com carinho e um toque de ciência, é o tal do frizz. Muita gente entra em pânico ao ver o primeiro fiozinho "arrepiado", mas a verdade nua e crua é esta: frizz não é, automaticamente, sinal de cabelo destruído.</p>
-
-      <p>Muitas vezes, o frizz é apenas o seu cabelo reagindo ao ambiente, à umidade ou à sua própria natureza. No entanto, em outros casos, ele é sim um pedido de socorro da fibra capilar. Para ajudar você a entender o que está acontecendo aí em cima, vamos separar o frizz de textura do frizz de dano de um jeito técnico e descomplicado.</p>
-
-      <h2>O que é o frizz, afinal?</h2>
-      <p>Cientificamente, o frizz ocorre quando as cutículas (a camada externa do fio) se levantam, fazendo com que o fio se desvie do formato do cacho e procure umidade no ar. Isso pode ser causado por:</p>
-
-      <ul>
-        <li><strong>Eletricidade estática:</strong> atrito com fronhas de algodão ou toalhas comuns.</li>
-        <li><strong>Hidrofobia vs. Higroscopia:</strong> quando o cabelo está seco, ele tenta "sugar" a umidade do ambiente, o que faz o fio inchar e desalinhar.</li>
-        <li><strong>Fatores mecânicos:</strong> passar muito a mão no cabelo ou pentear os cachos depois de secos.</li>
-      </ul>
-
-      <h2>Quando o frizz é NORMAL (Frizz de Textura)</h2>
-      <p>Se o seu cabelo é ondulado, cacheado ou crespo, você terá algum nível de frizz. Isso faz parte da estética de um cabelo com volume e movimento. O frizz é considerado saudável quando:</p>
-
-      <ul>
-        <li>O cabelo mantém o brilho e a maciez ao toque.</li>
-        <li>Os fios têm elasticidade (você puxa levemente e o cacho volta ao lugar sem quebrar).</li>
-        <li>Ele aparece mais em dias úmidos ou após o uso de difusor, mas desaparece com uma revitalização leve.</li>
-        <li>O fio não parece "espetado" ou áspero, apenas com uma aura de volume ao redor da definição.</li>
-      </ul>
-
-      <h2>Quando o frizz é SINAL DE DANO (Frizz Estrutural)</h2>
-      <p>Aqui a conversa muda. Se o frizz vem acompanhado de outros sintomas, a estrutura do seu fio pode estar comprometida. Fique atenta a estes sinais:</p>
-
-      <ul>
-        <li><strong>Aspereza:</strong> o fio parece lixa ao passar os dedos, indicando cutículas extremamente abertas ou danificadas.</li>
-        <li><strong>Quebra excessiva:</strong> você nota muitos fios bem curtinhos, especialmente no topo da cabeça e nas têmporas (a famosa "coroa de frizz").</li>
-        <li><strong>Opacidade:</strong> o cabelo não reflete luz, mesmo usando produtos com brilho.</li>
-        <li><strong>Ponta Espigada:</strong> a extremidade do fio está rala, esbranquiçada ou "dupla".</li>
-        <li><strong>Porosidade Alta:</strong> o cabelo absorve água instantaneamente, mas seca em minutos e volta a ficar armado e sem forma.</li>
-      </ul>
-
-      <h2>Como tratar cada tipo de frizz?</h2>
-      <p>Identificar a causa é o primeiro passo para o tratamento correto. Não adianta entupir o cabelo de óleo se o problema for quebra, nem usar queratina se o problema for apenas falta de técnica na finalização.</p>
-
-      <h3>Para o Frizz de Textura (Dicas de Rotina):</h3>
-      <ul>
-        <li><strong>Troque o atrito:</strong> use fronhas ou toucas de cetim e substitua a toalha de banho por uma camiseta de algodão ou toalha de microfibra.</li>
-        <li><strong>Capriche na hidratação:</strong> o fio bem hidratado não precisa "buscar" umidade no ar, reduzindo o arrepiado natural.</li>
-        <li><strong>Mãos longe:</strong> evite tocar nos cachos enquanto estão secando. Cada toque quebra a película do produto e gera frizz.</li>
-      </ul>
-
-      <h3>Para o Frizz de Dano (Dicas de Tratamento):</h3>
-      <ul>
-        <li><strong>Cronograma Inteligente:</strong> intercale Nutrição (óleos e manteigas para selar a cutícula) com Reconstrução (aminoácidos para fortalecer o fio quebrado).</li>
-        <li><strong>Acidificação:</strong> cabelos muito porosos precisam de acidificantes para fechar as cutículas e manter o tratamento dentro do fio.</li>
-        <li><strong>Corte Estratégico:</strong> pontas duplas e fios extremamente danificados não se recuperam com máscara. O corte remove a parte morta do fio e devolve o caimento.</li>
-      </ul>
-
-      <h2>A ciência por trás do equilíbrio</h2>
-      <p>Aqui no Studio do Jon, eu sempre prezo pela saúde real da fibra. Muitas vezes, o excesso de produtos pesados para "domar" o frizz acaba criando um efeito rebote, deixando o cabelo sem vida e opaco. O segredo é entender se o seu cabelo precisa de água, óleo ou proteína.</p>
-
-      <blockquote>"Frizz não é o vilão da história — a falta de informação é que é."</blockquote>
-
-      <p>Se o seu frizz é apenas parte da sua identidade e volume, abrace-o. Mas se ele está deixando seu cabelo frágil e sem forma, é hora de olhar para a saúde do seu fio com mais critério. O diagnóstico começa pela observação: toque seu cabelo, sinta a textura e observe como ele reage aos produtos. O autoconhecimento capilar é o maior aliado da sua liberdade.</p>
-
-      <p>Para entender a física completa do frizz — cutícula, porosidade e clima — veja o <a href="/blog/guia-completo-frizz-cabelo-cacheado">guia completo do frizz em cabelo cacheado</a>.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
-        <a href="/agendar" class="btn btn-primary" style="padding: 1rem 2rem; display: inline-block;">QUERO AGENDAR MEU HORÁRIO</a>
-      </div>
-    `
-  },
-  {
     id: 4,
     slug: 'alforria-do-cacho-liberdade-2026',
     faqSchema: {
@@ -7038,84 +6738,6 @@ export const posts = [
 
       <p>Liberte sua curvatura. Quem cortou? O Jon que cortou.</p>
     `
-  },
-  {
-    id: 1,
-    slug: 'guia-sobrevivencia-frizz-bh',
-    faqSchema: {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-                {
-                      "@type": "Question",
-                      "name": "Como o clima de Belo Horizonte afeta o frizz dos cachos?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "BH tem épocas de clima extremamente seco e outras com mudanças rápidas de umidade. A falta de umidade faz o fio buscar água no ar, abrindo as cutículas e gerando frizz."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "Como controlar o frizz no dia a dia em BH?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Mantenha a hidratação e a acidificação em dia para selar as cutículas, e utilize finalizadores com boa fixação (como gelatinas ou géis) para selar a umidade no fio."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "O frizz é sempre um sinal de cabelo danificado?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Não! O frizz é uma característica natural do cabelo ondulado, cacheado e crespo. Ele dá volume e movimento; o frizz saudável não é sinal de dano."
-                      }
-                }
-          ]
-    },
-    title: 'Guia de Sobrevivência ao Frizz em BH | Jon',
-    excerpt: 'Se você mora em BH, sabe que o clima é uma montanha-russa. Entenda como o frizz funciona e como manter seus cachos impecáveis no Caiçaras.',
-    metaDescription: 'Sofre com frizz em Belo Horizonte? Descubra como o clima da capital mineira afeta o cabelo cacheado e veja dicas para manter a definição.',
-    date: '30 de Março, 2026',
-    dateModified: '2026-07-04',
-    author: 'Jon',
-    category: 'Cuidado Capilar',
-    content: `
-      <p>Se você mora em BH, já sabe: o clima aqui é uma montanha-russa. Um dia o sol castiga no hipercentro, no outro a umidade do Caiçaras decide que seu cabelo vai dobrar de tamanho em cinco minutos. E aí vem ele, o temido, o polêmico, o onipresente: o Frizz.</p>
-      
-      <p>Mas antes de você sair correndo atrás de qualquer "milagre" de prateleira, senta aqui e vamos conversar como gente grande. O frizz não é um castigo divino, ele é ciência pura (e um pedido de socorro do seu cacho).</p>
-
-      <h2>A Ciência por trás do "Arrepiado"</h2>
-      <p>Por que o frizz acontece? Basicamente, o seu fio está com a cutícula aberta e "com sede". Quando o cabelo está desidratado, ele busca a umidade do ar. Sabe aquela frase "o amor está no ar"? Pois é, o seu cabelo acredita nisso e tenta abraçar a umidade de Belo Horizonte, resultando naqueles fios que insistem em ficar em pé.</p>
-      
-      <p>Além disso, a própria estrutura do cacho (do 2ABC ao 4ABC) dificulta que a oleosidade natural do couro cabeludo chegue até as pontas. Resultado? Fio seco, cutícula eriçada e... frizz.</p>
-
-      <h2>Sobrevivendo ao Frizz em BH: Dicas Práticas</h2>
-      <p>Para manter a dignidade dos cachos na capital mineira, anota essas regras de ouro:</p>
-      
-      <ul>
-        <li><strong>Abandone a Toalha de Banho:</strong> Esfregar o cabelo com toalha de algodão comum gera atrito e quebra a definição. Use uma camiseta de algodão velha ou uma toalha de microfibra. O segredo é amassar, nunca esfregar!</li>
-        <li><strong>O Poder do Cetim:</strong> Fronha ou touca de cetim não é frescura, é investimento. O cetim não absorve a hidratação do fio e evita o atrito enquanto você dorme. Você acorda pronta, sem aquele "ninho" na nuca.</li>
-        <li><strong>Finalização Estratégica:</strong> Em dias de muita umidade em BH, aposte em finalizadores com boa fixação (géis ou geleias) por cima do seu creme de pentear. Eles criam uma película protetora que impede o fio de "atacar" a umidade externa.</li>
-      </ul>
-
-      <h2>O que olhar no rótulo antes de comprar mais um "anti-frizz"</h2>
-      <p>Nem todo produto que promete "controlar o frizz" ataca a causa certa pro seu tipo de fio. Um jeito rápido de filtrar na prateleira:</p>
-      <ul>
-        <li><strong>Se seu fio é mais fino e frizza por ressecamento leve</strong>, procure óleos leves no topo da lista de ingredientes (como óleo de semente de uva ou jojoba) — óleos pesados (coco, mamona em excesso) tendem a pesar e achatar sem resolver a cutícula.</li>
-        <li><strong>Se o frizz vem com aspereza e falta de definição</strong>, o problema provavelmente é cutícula aberta, não falta de óleo — nesse caso, um acidificante (pH mais baixo, geralmente com ácido cítrico ou lático na fórmula) antes do finalizador rende mais do que trocar de creme pela quinta vez.</li>
-        <li><strong>Se o clima de BH está muito seco (aquelas semanas de julho-agosto)</strong>, priorize produtos à base de água como primeira camada (hidratação real) e só depois sele com óleo ou manteiga — óleo direto no fio seco sela o ressecamento por dentro.</li>
-      </ul>
-
-      <h2>O "Pulo do Gato": Quando o Frizz é um Sinal</h2>
-      <p>Às vezes, por mais que você use o melhor creme do mundo, o frizz não vai embora. E sabe por quê? Porque o seu cabelo pode estar com a porosidade lá no alto ou precisando de uma reposição de massa que o condicionador de mercado não resolve.</p>
-      
-      <p>O frizz excessivo é o jeito do seu cabelo dizer: "Jon, me ajuda!". Não adianta tentar "domar" o cacho se a saúde da fibra está comprometida.</p>
-
-      <p>Para entender a física do frizz com mais profundidade — cutícula, porosidade e a diferença entre frizz saudável e dano real — veja o <a href="/blog/guia-completo-frizz-cabelo-cacheado">guia completo do frizz em cabelo cacheado</a>.</p>
-
-      <p>Se você quer entender as reais necessidades do seu cabelo e acabar de vez com o frizz, conheça o nosso <a href="/metodo">Método Leitura de Fio</a>. O primeiro passo é <a href="/agendar">agendar seu horário</a> no Studio do Jon para um diagnóstico científico e personalizado.</p>
-    `,
-    image: '/blog-frizz.webp'
   },
   {
     id: 3,
