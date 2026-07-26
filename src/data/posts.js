@@ -1845,158 +1845,6 @@ export const posts = [
     <p>Com certeza. O cabelo 4C possui o maior índice de encolhimento (até 80%). Estruturar a base molhada garante que o corte tenha um caimento equilibrado e a lapidação a seco permite desenhar o volume afro com total precisão geométrica.</p>`
   },
   {
-    id: 57,
-    slug: 'transicao-capilar-scab-hair-guia-fio-sem-forma',
-    title: 'Transição Capilar e Scab Hair: O Guia Físico para Entender o Cacho que Nasce Sem Forma',
-    seoTitle: 'Transição Capilar e Scab Hair: O Guia do Fio Sem Forma | Studio do Jon',
-    excerpt: 'Parou de alisar e a raiz nova está nascendo dura, áspera e sem definição? Isso não é o seu cabelo natural — é o scab hair. Entenda a física por trás desse fio e saiba como acelerar a transição capilar.',
-    metaDescription: 'Parou de alisar e a raiz nasceu rígida e áspera? Conheça o scab hair na transição capilar, a ciência por trás dele e como recuperar a definição dos cachos.',
-    keywords: 'scab hair transição capilar, raiz dura transição capilar, cabelo áspero transição, parar de alisar o cabelo, recuperação do couro cabeludo, leitura de fio bh, Studio do Jon',
-    date: '09 de Julho, 2026',
-    datePublished: '2026-07-09',
-    dateModified: '2026-07-09',
-    author: 'Jon',
-    category: 'Transição',
-    image: '/blog-transicao-capilar-scab-hair-guia-fio-sem-forma.webp',
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "O que é scab hair e por que ele acontece?",
-          "acceptedAnswer": { 
-            "@type": "Answer", 
-            "text": "Scab hair é o fio que nasce logo após a interrupção de químicas alisantes com textura áspera, porosa, rígida e sem padrão definido. Ele ocorre devido a danos acumulados nos folículos pilosos e à inflamação no couro cabeludo causada por anos de químicas agressivas." 
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Quanto tempo dura a fase do scab hair?",
-          "acceptedAnswer": { 
-            "@type": "Answer", 
-            "text": "A fase do scab hair geralmente dura de 3 a 12 meses, variando conforme a saúde do couro cabeludo e o ritmo de crescimento do cabelo. Conforme os folículos se recuperam dos danos químicos e a barreira da pele se restabelece, os fios voltam a nascer com sua curvatura e maciez naturais." 
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Como diferenciar scab hair de cabelo ressecado normal?",
-          "acceptedAnswer": { 
-            "@type": "Answer", 
-            "text": "O scab hair não responde a tratamentos tradicionais de hidratação ou nutrição e não tem um padrão de curvatura definido (nasce espigado ou esticado). O cabelo seco normal recupera maciez e definição logo após um tratamento adequado com máscaras ácidas ou umectações." 
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "O que fazer para acelerar o fim do scab hair?",
-          "acceptedAnswer": { 
-            "@type": "Answer", 
-            "text": "Foque na saúde do couro cabeludo com massagens estimulantes, argiloterapia e shampoos suaves. Use acidificantes capilares para selar as cutículas porosas do novo fio e faça umectações com óleos vegetais puros para devolver a elasticidade na raiz." 
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Preciso fazer o big chop para remover o scab hair?",
-          "acceptedAnswer": { 
-            "@type": "Answer", 
-            "text": "Não necessariamente. O big chop remove a parte alisada quimicamente. O scab hair nasce na raiz nova e vai melhorar sozinho conforme o couro cabeludo se desintoxica. Cortar a parte alisada ajuda no peso e no visual, mas a textura da raiz se recupera com o tempo." 
-          }
-        }
-      ]
-    },
-    content: `<blockquote><p><strong>TL;DR:</strong> Scab hair é a textura rígida, áspera e sem curvatura definida que nasce nos primeiros meses após a interrupção de alisamentos químicos. Ele não representa a genética real do seu cacho, mas sim um reflexo temporário dos folículos pilosos danificados pela química. A recuperação exige foco na desintoxicação do couro cabeludo, acidificação para controlar a porosidade extrema e paciência enquanto o bulbo capilar se regenera.</p></blockquote>
-
-    <p>A decisão de passar pela transição capilar é um marco de liberdade. No entanto, é muito comum que, após dois ou três meses sem química, a cliente se depare com uma raiz nova que nasce dura, áspera, extremamente porosa e sem nenhuma definição de cacho. Bate aquele desespero e a pergunta clássica na cadeira do Studio: <em>"Jon, meu cabelo natural é feio assim mesmo? Vou ter que voltar a alisar?"</em></p>
-
-    <p>Calma. A ciência do fio explica isso muito bem. O que você está vendo nascer **não é a textura real do seu cacho**. Trata-se do <strong>scab hair</strong>, um fenômeno físico temporário que afeta a imensa maioria das pessoas que interrompem procedimentos térmicos ou químicos agressivos. Neste guia, vamos entender a física por trás do scab hair, como diferenciá-lo do ressecamento comum e o que fazer para acelerar a regeneração do seu cacho natural.</p>
-
-    <h2>O que é Scab Hair?</h2>
-    <p>Scab hair (que em tradução livre significa "cabelo de ferida") é o fio de cabelo que nasce com a estrutura danificada logo após a suspensão de químicas de alisamento (como progressivas, relaxamentos, guanidina ou hidróxidos). Ele se apresenta de forma porosa, sem brilho, com textura de arame e sem um padrão definido de ondulação ou cacho.</p>
-
-    <p>Esse fio nasce prejudicado porque o folículo piloso — a estrutura viva abaixo do couro cabeludo que produz o cabelo — passou anos sofrendo agressões químicas diretas, inflamações ocultas e bloqueio de oxigenação. Quando a química cessa, o folículo ainda está intoxicado e inflamado, produzindo uma fibra capilar com distribuição de queratina irregular e cutículas extremamente desalinhadas nos primeiros centímetros de crescimento.</p>
-
-    <h2>Como o Scab Hair se comporta fisicamente</h2>
-    <p>Fisicamente, a queratina é a proteína que dá forma e elasticidade ao fio de cabelo. No cabelo cacheado e crespo saudável, os filamentos de queratina se ligam em padrões geométricos específicos que criam a curvatura. No scab hair, a deposição dessa queratina no córtex ocorre de forma desordenada e com falhas estruturais. O resultado é um fio com diâmetro irregular ao longo do comprimento, incapaz de segurar a hidratação ou formar uma espiral limpa.</p>
-
-    <p>Além disso, a glândula sebácea, que deveria produzir o sebo natural para lubrificar o fio, muitas vezes está atrofiada ou desregulada pela química antiga. Sem essa proteção lipídica natural, o novo fio poroso seca imediatamente ao entrar em contato com o ar, resultando na textura áspera típica do "arame".</p>
-
-    <h2>Tabela Comparativa: Scab Hair vs. Cacho Ressecado Comum</h2>
-    <p>Para te ajudar a identificar se o problema da sua raiz é apenas ressecamento ou se é de fato scab hair, veja a tabela de comportamento físico abaixo:</p>
-
-    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; text-align: left; border: 0.5px solid var(--adm-rule, rgba(255,255,255,0.08));">
-      <thead>
-        <tr style="background: rgba(220, 163, 84, 0.1); color: var(--adm-gold, #DCA354);">
-          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Característica</th>
-          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Scab Hair (Transição)</th>
-          <th style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Cacho Ressecado Normal</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Padrão de Cacho</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Indefinido, espigado, sem curvatura lógica.</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Mantém a espiral (2A a 4C), apenas sem brilho e com frizz.</td>
-        </tr>
-        <tr style="background: rgba(255,255,255,0.02);">
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Resposta a Hidratação</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Nula ou baixíssima. O fio parece repelir máscaras tradicionais.</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Boa. Fica macio e maleável imediatamente após o tratamento.</td>
-        </tr>
-        <tr>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Elasticidade</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Rígida ou quebradiça na raiz. Sem fator "mola".</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Normal ou reduzida, mas responde ao estímulo físico.</td>
-        </tr>
-        <tr style="background: rgba(255,255,255,0.02);">
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08); font-weight: bold;">Porosidade</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Extrema. O fio absorve água rápido, mas seca instantaneamente.</td>
-          <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.08);">Variável (baixa, média ou alta) e controlável na rotina.</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2>Como Tratar e Regenerar o Fio em Transição</h2>
-    <p>Tratar o scab hair não é sobre comprar a máscara mais cara do mercado para aplicar nas pontas. O segredo está no couro cabeludo e no controle do pH do fio que está nascendo. Aqui estão as três etapas físicas indispensáveis para essa fase:</p>
-
-    <h3>1. Desintoxicação e Estímulo do Couro Cabeludo</h3>
-    <p>Se o bulbo capilar está intoxicado, precisamos limpá-lo de dentro para fora. Massagens circulares diárias com o couro cabeludo seco estimulam a microcirculação sanguínea, levando mais oxigênio e nutrientes para a raiz. O uso de óleos vegetais puros de propriedades anti-inflamatórias (como óleo de alecrim ou jojoba) ajuda a desobstruir os folículos e acalmar a pele irritada pelas químicas passadas.</p>
-
-    <h3>2. Acidificação e Selagem Cuticular</h3>
-    <p>Como a cutícula do scab hair nasce extremamente aberta e desalinhada, o fio perde água muito rápido. O uso de um acidificante capilar de pH ácido (entre 3.0 e 3.5) é crucial logo após a lavagem. A acidez contrai as cutículas de forma física, selando a água dentro do córtex e suavizando a textura áspera e rígida da fibra.</p>
-
-    <h3>3. Umectação com Óleos Vegetais Puros</h3>
-    <p>A fibra porosa do scab hair precisa de lipídios de baixo peso molecular para penetrar nas falhas da cutícula. A umectação morna (com óleo de coco ou de abacate levemente aquecidos) aplicada diretamente na transição entre a química e a raiz natural ajuda a amaciar a fibra rígida e previne a quebra precoce durante o pentear.</p>
-
-    <h2>O Caminho Seguro no Studio do Jon</h2>
-    <p>A fase da transição capilar exige paciência, mas você não precisa passar por ela no escuro ou sofrendo com a textura áspera do scab hair. No Studio do Jon, em Belo Horizonte, desenvolvemos protocolos voltados especificamente para a saúde do couro cabeludo e desintoxicação capilar.</p>
-
-    <p>Nosso <strong><a href="/servicos/detox-estimulante">Detox Estimulante (R$ 180)</a></strong> atua diretamente na raiz: remove resíduos químicos profundos, combate a inflamação dos folículos com argiloterapia específica e estimula o crescimento saudável de novos fios livres de scab hair. E com o <strong>Tratamento Personalizado (R$ 130)</strong>, criamos uma máscara de nutrição lipídica sob medida para amaciar a transição áspera do seu cabelo.</p>
-
-    <p>Para quem quer mapear a saúde da fibra e entender exatamente qual o padrão de cacho que está nascendo embaixo da química, a <strong><a href="/metodo">Leitura de Fio</a></strong> (R$ 80 avulsa ou inclusa sem custo no <strong>Corte com o Jon por R$ 190</strong>) é o ponto de partida perfeito. Agende seu horário e venha cuidar do seu cabelo com técnica de verdade.</p>
-
-    <h2>Perguntas Frequentes</h2>
-    <h3>O que é scab hair e por que ele acontece?</h3>
-    <p>Scab hair é o fio que nasce com textura áspera, rígida e sem curvatura definida após a interrupção de químicas alisantes. Ele ocorre devido a danos acumulados nos folículos pilosos e à inflamação crônica do couro cabeludo causada por anos de agressão química direta.</p>
-
-    <h3>Quanto tempo dura a fase do scab hair?</h3>
-    <p>A fase do scab hair dura geralmente de 3 a 12 meses. O tempo exato depende do ritmo de crescimento do seu cabelo e do nível de regeneração dos folículos. Conforme o couro cabeludo se desintoxica, o fio volta a nascer macio e com sua curvatura natural.</p>
-
-    <h3>Como diferenciar scab hair de cabelo ressecado normal?</h3>
-    <p>O scab hair não responde a tratamentos comuns de hidratação ou nutrição e nasce sem padrão de curvatura lógico. Já o cabelo ressecado comum recupera maciez e maleabilidade de forma imediata após uma boa máscara hidratante ou acidificação capilar.</p>
-
-    <h3>O que fazer para acelerar o fim do scab hair?</h3>
-    <p>Foque na saúde do couro cabeludo fazendo massagens circulares e argiloterapia. Use acidificantes capilares após a lavagem para fechar as cutículas porosas do novo fio e faça umectações frequentes com óleos vegetais puros para amaciar a fibra rígida na raiz.</p>
-
-    <h3>Preciso fazer o big chop para remover o scab hair?</h3>
-    <p>Não. O big chop remove a parte do cabelo que foi alisada quimicamente. O scab hair nasce diretamente na raiz nova e vai melhorar de forma natural conforme seu bulbo capilar se recupera dos danos passados, sem necessidade de encurtar o comprimento novo.</p>
-
-    <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
-      <h3>Sua transição não precisa ser um período de sofrimento.</h3>
-      <p>Agende um diagnóstico de Leitura de Fio e venha tratar seu novo cabelo com quem entende a ciência do cacho.</p>
-      <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
-    </div>`
-  },
-  {
     id: 56,
     slug: 'buildup-capilar-cachos-ressecamento-falso',
     title: 'Build-Up Capilar: Como o Acúmulo de Produto Cria um Ressecamento Falso no Cacho',
@@ -2702,23 +2550,99 @@ export const posts = [
 
 <p>O ponto onde essas duas fibras se encontram — a linha de demarcação entre raiz natural e comprimento processado — é estruturalmente o mais frágil do fio inteiro. Não é uma fragilidade uniforme ao longo do cabelo: é concentrada exatamente nessa junção, porque ali a fibra muda abruptamente de comportamento sob tração. Puxar, escovar com força ou pentear de cima para baixo sem cuidado é o que mais frequentemente rompe o fio bem nesse ponto — o que muita gente descreve como "meu cabelo não cresce", quando na verdade está quebrando na mesma velocidade que cresce.</p>
 
+<h2 id="scab-hair">Scab Hair: por que a raiz nova pode nascer áspera e sem forma</h2>
+
+<p>Um medo comum nas primeiras semanas de transição: abrir o espelho e ver uma raiz nova dura, opaca e sem nenhuma curvatura definida — o que leva muita gente a concluir, errado, que "o cabelo natural é feio assim mesmo". Na maioria dos casos isso não é a textura real do cacho: é o <strong>scab hair</strong>, um fenômeno físico temporário que aparece justamente na raiz recém-nascida após anos de química.</p>
+
+<p>O scab hair acontece porque o folículo piloso passou anos sob agressão química direta (progressivas, relaxamentos, hidróxidos) e ainda está inflamado quando a química é interrompida. Nesse estado, a deposição de queratina no córtex do fio novo ocorre de forma desordenada, com falhas estruturais que resultam em diâmetro irregular ao longo da fibra — incapaz de reter hidratação ou formar uma espiral limpa. A glândula sebácea, muitas vezes atrofiada pela química antiga, também não produz sebo suficiente para lubrificar esse fio recém-nascido, o que explica a textura de "arame" logo que ele seca.</p>
+
+<p>A diferença física entre scab hair e um cacho apenas ressecado está na resposta ao tratamento: o cacho ressecado comum fica macio e maleável quase imediatamente depois de uma boa hidratação. O scab hair não responde — a máscara mais cara do mercado passa raso pela cutícula estilhaçada e não muda a rigidez da raiz. Nesse caso, o caminho não é trocar de produto mais uma vez, é focar em três frentes: desintoxicação do couro cabeludo (massagem circular + óleos com propriedade anti-inflamatória, como alecrim ou jojoba), acidificação pós-lavagem (pH entre 3,0 e 3,5, para selar a cutícula aberta) e umectação com óleos vegetais puros e leves (coco ou abacate levemente aquecidos), aplicados diretamente na junção entre raiz e química.</p>
+
+<p>A boa notícia é que o scab hair é temporário — dura em média de 3 a 12 meses conforme o folículo se recupera — e <strong>não exige Big Chop</strong>: ele nasce na raiz nova independentemente de você cortar ou não a parte processada, e melhora sozinho conforme o couro cabeludo se desintoxica.</p>
+
 <h2>Big Chop ou transição progressiva: a decisão é sua, não da internet</h2>
 
 <p>A ideia mais repetida sobre transição capilar é que você precisa cortar toda a parte processada de uma vez (o Big Chop) para "começar do zero". Isso funciona muito bem para quem quer isso — é imediato, resolve a convivência de texturas no mesmo dia. Mas não é obrigatório, e para muita gente é desnecessariamente radical.</p>
 
-<p>A alternativa são os cortes progressivos: remoção gradual da parte processada, a cada 2 a 3 meses, mantendo o comprimento com o qual você se sente confortável enquanto a raiz natural cresce. É mais lento (12 a 24 meses até eliminar toda a química, dependendo da velocidade de crescimento), mas evita o impacto psicológico de uma mudança radical de comprimento. Detalhamos a comparação completa entre as duas abordagens — incluindo uma tabela lado a lado de velocidade, impacto na autoestima e dificuldade de estilização — no <a href="/blog/transicao-capilar-sem-sofrimento-guia-cachos">guia de transição capilar sem sofrimento</a>.</p>
+<p>A alternativa são os cortes progressivos: remoção gradual da parte processada, a cada 2 a 3 meses, mantendo o comprimento com o qual você se sente confortável enquanto a raiz natural cresce. É mais lento (12 a 24 meses até eliminar toda a química, dependendo da velocidade de crescimento), mas evita o impacto psicológico de uma mudança radical de comprimento. Veja a comparação lado a lado:</p>
+
+<table style="width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid rgba(255, 255, 255, 0.1);">
+  <thead>
+    <tr style="background: rgba(205, 168, 128, 0.1);">
+      <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Critério</th>
+      <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Big Chop Imediato</th>
+      <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Cortes Progressivos (Transição Lenta)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Velocidade de Retorno</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Imediata (100% natural no mesmo dia).</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Gradual (leva de 12 a 24 meses dependendo do crescimento).</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Impacto na Autoestima</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Alto (mudança radical de comprimento).</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Baixo (preserva o comprimento confortável enquanto cresce).</td>
+    </tr>
+    <tr>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Dificuldade de Estilização</strong></td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Baixa (fios curtos e fáceis de finalizar).</td>
+      <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Média/Alta (lidar com duas texturas diferentes no dia a dia).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="disfarcar-texturas">Como disfarçar as duas texturas sem recorrer à chapinha</h2>
+
+<p>Enquanto a raiz nova cresce e o comprimento processado continua liso, a tentação de usar chapinha para "igualar" o visual é grande — e é exatamente o que não fazer. O calor excessivo pode queimar a queratina da raiz natural recém-nascida, somando dano térmico ao dano químico que ela já está tentando superar (calor acima de 180°C inclusive contribui para o próprio quadro de scab hair descrito acima).</p>
+
+<p>A alternativa fisicamente segura é a texturização: em vez de alisar a raiz para combinar com a ponta, cacheia-se a ponta para combinar com a raiz. Três técnicas fazem esse trabalho sem nenhuma fonte de calor:</p>
+
+<ul>
+<li><strong>Dedoliss:</strong> enrolar as mechas lisas nos dedos com creme ou gelatina capilar de boa fixação, imitando manualmente a curvatura que a raiz já tem naturalmente.</li>
+<li><strong>Coquinhos (Bantu Knots):</strong> pequenos coques feitos com o cabelo úmido por toda a extensão; ao soltar já seco, criam ondulação e volume em todo o comprimento, incluindo a parte processada.</li>
+<li><strong>Tranças ou Twists:</strong> trançar ou torcer o fio úmido e deixar secar naturalmente produz um padrão ondulado uniforme que aproxima visualmente as duas texturas, sem qualquer fonte de calor.</li>
+</ul>
+
+<p>Essas técnicas não alteram a estrutura química da parte processada — apenas disfarçam a diferença visual enquanto o corte progressivo avança.</p>
+
+<h2 id="cronograma-corte-progressivo">O cronograma real do corte progressivo, fase a fase</h2>
+
+<p>Quem opta pelo corte progressivo em vez do Big Chop costuma perguntar a mesma coisa: "mas na prática, como isso funciona corte a corte?". Ajustado à velocidade de crescimento de cada pessoa (em média 1 cm por mês), o plano geralmente segue três fases:</p>
+
+<ol>
+<li><strong>Primeiro corte (mês 0):</strong> remove apenas o excesso de peso morto das pontas mais danificadas, sem tirar comprimento visível — o objetivo é aliviar o peso que puxa a raiz nova para baixo, não encurtar.</li>
+<li><strong>Cortes de manutenção (a cada 8 a 10 semanas):</strong> a cada sessão, avança-se alguns centímetros na linha da química, sempre camuflando com camadas para não deixar "degrau" visível entre textura natural e química residual.</li>
+<li><strong>Corte de fechamento:</strong> quando a raiz natural já tem comprimento suficiente para sustentar o formato sozinha, elimina-se o restante da parte processada — muitas vezes sem parecer um Big Chop, porque a transição já foi feita em etapas.</li>
+</ol>
+
+<p>O tempo total até a eliminação completa da química varia de pessoa para pessoa, dependendo de quanto comprimento você quer manter durante o processo e da velocidade de crescimento do seu couro cabeludo — por isso o acompanhamento a cada retorno é o que ajusta o ritmo real, não uma tabela genérica.</p>
 
 <h2>Por que corte molhado nessa fase é um risco (e o corte a seco não é)</h2>
 
 <p>A raiz natural e o comprimento processado não encolhem da mesma forma quando molhados — a raiz, com curvatura intacta, encolhe de acordo com o fator de encolhimento normal daquele padrão de cacho; o comprimento processado, mais relaxado pela química, encolhe pouco ou nada. Cortar essa cabeça inteira molhada, medindo por comprimento como se fosse uma fibra única, é a receita para um contorno desigual assim que tudo seca — porque as duas partes nunca reagiram da mesma forma à água em primeiro lugar.</p>
 
-<p>O corte a seco resolve isso na origem: com o cabelo seco, dá para ver exatamente onde a curvatura natural termina e onde o trecho processado começa, e ajustar cada mecha considerando essa fronteira real, não uma estimativa molhada. Isso também reduz o risco clássico de "cortar demais" tentando adivinhar onde a química acaba. Explicamos a técnica com mais profundidade, incluindo como ela se aplica especificamente ao contexto de Belo Horizonte, no <a href="/blog/transicao-capilar-bh-corte-seco">guia sobre corte a seco na transição capilar</a>.</p>
+<p>O corte a seco resolve isso na origem: com o cabelo seco, dá para ver exatamente onde a curvatura natural termina e onde o trecho processado começa, e ajustar cada mecha considerando essa fronteira real, não uma estimativa molhada. Isso também reduz o risco clássico de "cortar demais" tentando adivinhar onde a química acaba. O cronograma prático desse corte progressivo, fase a fase, está detalhado acima.</p>
 
 <h2>O disfarce químico que sabota transições: "botox capilar" e primos</h2>
 
 <p>Um erro que vemos com frequência: pessoa decide fazer a transição, para de alisar quimicamente, mas continua aplicando (ou aplica pela primeira vez) um "botox capilar" ou tratamento de "redução de volume" achando que é só hidratação profunda. O problema é que boa parte desses produtos contém ácidos que agem estruturalmente como uma progressiva — alisam e impermeabilizam a fibra por meses, mesmo sem serem vendidos com esse nome.</p>
 
-<p>O resultado prático é uma transição que nunca sai do lugar: a raiz nasce natural, mas volta a ser quimicamente tratada a cada aplicação de "botox", e a pessoa vive meses achando que está em transição sem realmente estar. Reconhecer esse disfarce — e entender que a única reversão real, uma vez que a fibra foi alterada por ácidos, é deixar crescer e cortar a parte alisada — está detalhado no <a href="/blog/transicao-capilar-bh-danos-botox">guia sobre os danos do botox capilar na transição</a>.</p>
+<p>O resultado prático é uma transição que nunca sai do lugar: a raiz nasce natural, mas volta a ser quimicamente tratada a cada aplicação de "botox", e a pessoa vive meses achando que está em transição sem realmente estar. Reconhecer esse disfarce — e entender que a única reversão real, uma vez que a fibra foi alterada por ácidos, é deixar crescer e cortar a parte alisada — é essencial. Veja abaixo os sinais práticos para desconfiar de um produto que promete "só hidratar".</p>
+
+<h2 id="sinais-botox-acido">Como saber se o "botox capilar" que você usou tinha ácido</h2>
+
+<p>Antes de aplicar qualquer "botox" ou "redução de volume" durante a transição — ou de desconfiar de um produto que você já usou —, existe um teste sensorial simples que ajuda a identificar alisamento químico disfarçado de tratamento. Nenhum sinal isolado é prova definitiva, mas dois ou mais juntos indicam que o produto agiu como uma progressiva, não como hidratação:</p>
+
+<ul>
+<li><strong>Cheiro ácido ou de "queimado" durante a aplicação</strong> — hidratação de verdade não solta esse odor; ácidos de alisamento sim.</li>
+<li><strong>Exigiu prancha quente ou secador em temperatura alta para "selar"</strong> — proteína e umectação não precisam de calor extremo para funcionar; alisamento térmico precisa.</li>
+<li><strong>O cacho voltou "mais mole" ou "mais largo" depois, em vez de mais definido</strong> — sinal de que a mola do fio foi distendida pela ação química, não fortalecida.</li>
+<li><strong>O efeito só saiu cortando, não lavando</strong> — hidratação sai com o tempo normal de shampoo; se só saiu com tesoura, a estrutura do fio foi alterada, não só a superfície.</li>
+</ul>
+
+<p>Se dois ou mais desses sinais bateram com sua experiência, a raiz nova que está nascendo é o seu cabelo real — e é ela que deve guiar o restante da transição, mecha por mecha, sem forçar um Big Chop de uma vez se você não quiser.</p>
 
 <h2>Cronograma capilar de transição: os três pilares que importam</h2>
 
@@ -2741,9 +2665,11 @@ export const posts = [
 <h2>Resumo prático: por onde seguir</h2>
 
 <ul>
-<li>Se você ainda está decidindo entre Big Chop e corte progressivo, veja a comparação completa no <a href="/blog/transicao-capilar-sem-sofrimento-guia-cachos">guia de transição sem sofrimento</a>.</li>
-<li>Se você já está em transição e quer entender por que o corte a seco reduz o risco de contorno desigual, leia o <a href="/blog/transicao-capilar-bh-corte-seco">guia sobre corte a seco na transição</a>.</li>
-<li>Se você usa (ou pensa em usar) "botox capilar" durante a transição, confira antes o <a href="/blog/transicao-capilar-bh-danos-botox">alerta sobre os danos do botox capilar</a>.</li>
+<li>Se você ainda está decidindo entre Big Chop e corte progressivo, veja a comparação logo acima, em "Big Chop ou transição progressiva".</li>
+<li>Se sua raiz nova está nascendo áspera e sem forma, veja a seção sobre <a href="#scab-hair">Scab Hair</a>.</li>
+<li>Se você já está em transição e quer camuflar as duas texturas sem chapinha, veja <a href="#disfarcar-texturas">como disfarçar as duas texturas sem calor</a>.</li>
+<li>Se optou pelo corte progressivo, veja o <a href="#cronograma-corte-progressivo">cronograma real, fase a fase</a>.</li>
+<li>Se você usa (ou pensa em usar) "botox capilar" durante a transição, confira os <a href="#sinais-botox-acido">sinais de que ele tem ácido</a>.</li>
 <li>Se quer um diagnóstico real da sua fibra antes de decidir qualquer coisa, <a href="/agendar">agende um horário</a> — a Leitura de Fio está inclusa em qualquer corte.</li>
 </ul>
 
@@ -3390,135 +3316,6 @@ export const posts = [
         <h3>Lidando com coceira ou descamação na raiz?</h3>
         <p>Descubra exatamente o que o seu couro cabeludo precisa com o Método Leitura de Fio e recupere a saúde dos seus cachos de forma integrada.</p>
         <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Consulta no Studio do Jon</a>
-      </div>
-    `
-  },
-  {
-    id: 43,
-    slug: 'transicao-capilar-sem-sofrimento-guia-cachos',
-    scientificData: {
-      summary: "A transição capilar envolve a convivência de duas texturas. A taxa de quebra no ponto de junção entre a raiz natural (com elasticidade normal) e o comprimento alisado (com perda de até 60% de elasticidade) é crítica. O cronograma capilar com foco em reconstrução a cada 15 dias e uso de técnicas de texturização sem calor reduzem a quebra mecânica.",
-      sourceLabel: "International Journal of Trichology / SBD",
-      sourceUrl: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4387693/",
-      factSheet: [
-        { label: "Perda de Elasticidade Química", value: "Até 60% de redução na fibra alisada" },
-        { label: "Ponto Crítico de Junção", value: "Zona de transição entre raiz virgem e ponta com química" },
-        { label: "Freqüência de Reconstrução", value: "A cada 15 dias (Reposição proteica no ponto de junção)" },
-        { label: "Dano Térmico Adicional", value: "Chapinha acima de 180°C causa scab hair e desnaturação proteica" }
-      ]
-    },
-    title: 'Transição Capilar Sem Sofrimento: Guia Completo para Voltar aos Cachos',
-    excerpt: 'Voltar ao cabelo natural não precisa ser um processo traumático. Descubra como passar pela transição capilar de forma confortável, saudável e sem pressa.',
-    metaDescription: 'Quer fazer a transição capilar em BH sem sofrimento? Conheça as melhores técnicas de corte a seco e cronograma para reativar seus cachos com o especialista Jon.',
-    keywords: 'cabeleireiro especializado em cachos bh, corte cabelo cacheado belo horizonte, transição capilar bh, big chop bh, especialista em cachos bh',
-    date: '19 de Junho, 2026',
-    dateModified: '2026-07-04',
-    author: 'Jon',
-    category: 'Transição Capilar',
-    image: '/blog-transicao-capilar.webp',
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "O que é a transição capilar?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "É o período em que você deixa de usar químicas de alisamento e permite que o seu cabelo natural (ondulado, cacheado ou crespo) cresça novamente."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Preciso fazer o Big Chop (grande corte) imediatamente?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Não. Você pode optar por fazer cortes progressivos ao longo dos meses para retirar a química aos poucos, mantendo o comprimento que te deixa confortável."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Como lidar com as duas texturas no cabelo durante a transição?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Use técnicas de texturização (como dedoliss, fitagem estruturada ou twists) na parte com química para tentar aproximar a textura da raiz natural, e evite chapinha que pode danificar o cabelo novo."
-          }
-        }
-      ]
-    },
-    content: `
-      <div class="aeo-summary-box" style="background: rgba(205, 168, 128, 0.05); border-left: 4px solid var(--color-gold, #cda880); padding: 16px; margin-bottom: 24px; border-radius: 4px;">
-        <strong>Resumo Rápido (AEO):</strong> A transição capilar é o processo de retorno ao cabelo natural sem o uso de químicas. O ponto crítico do fio é a junção entre a raiz natural e as pontas com química, onde a perda de elasticidade chega a 60%, facilitando a quebra. A reestruturação proteica quinzenal e a texturização sem calor evitam o trauma mecânico.
-      </div>
-
-      <h2>A Decisão de Voltar ao Cabelo Natural</h2>
-      <p>Decidir parar com a progressiva, o relaxamento ou o botox e iniciar a <strong>transição capilar</strong> é um passo de coragem. É um reencontro com a sua identidade natural, mas também é um processo que traz muitas dúvidas, insecurities e, se não for bem orientado, muito sofrimento físico e emocional.</p>
-      <p>A transição capilar é o período em que você interrompe as químicas de alisamento e deixa o cabelo natural crescer. O maior desafio desse processo é lidar com a convivência de duas texturas completamente diferentes na mesma cabeça: a raiz ondulada, cacheada ou crespa que começa a nascer forte e volumosa, e as pontas lisas, finas e sem vida herdadas da química antiga.</p>
-      <p>Estudos da <a href="https://www.sbd.org.br" target="_blank" rel="noopener noreferrer">Sociedade Brasileira de Dermatologia (SBD)</a> indicam que cabelos quimicamente tratados perdem até 60% da elasticidade natural da fibra, tornando o ponto de junção entre a nova raiz e a parte alisada extremamente suscetível à quebra sob tração mecânica. Como explica a Dra. Ana Paula, médica tricologista da SBD: <em>"A fibra capilar submetida a alisamentos alcalinos perde cistina e aminoácidos essenciais. Sem a reconstrução adequada no ponto de junção, o atrito diário do pentear leva inevitavelmente à fratura da haste"</em>.</p>
-      <p>Muitas mulheres desistem no meio do caminho porque acham que a única solução é passar a tesoura em tudo de uma vez (o famoso Big Chop) ou porque não aguentam mais a briga com o espelho. Mas eu estou aqui para te dizer que <strong>é possível passar pela transição sem sofrimento</strong>. Vou te mostrar o caminho técnico e acolhedor para recuperar seus cachos com segurança e no seu próprio ritmo.</p>
-
-      <h2>1. O Mito do Big Chop Imediato: Você Decide o Seu Tempo</h2>
-      <p>Na internet, parece que a regra é clara: para passar pela transição, você precisa cortar todo o cabelo alisado de uma vez e ficar com os fios bem curtinhos. Esse grande corte é chamado de <strong>Big Chop</strong>.</p>
-      <p>Para algumas mulheres, o Big Chop imediato é libertador. Elas querem se livrar da química logo e não se importam com o comprimento curto. Mas para outras, isso é extremamente traumático e afeta diretamente a autoestima. E aqui vai o meu conselho profissional: <strong>você não é obrigada a fazer o Big Chop se não quiser</strong>.</p>
-
-      <h2>Comparativo de Transição: Big Chop vs Cortes Progressivos</h2>
-      <table style="width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid rgba(255, 255, 255, 0.1);">
-        <thead>
-          <tr style="background: rgba(205, 168, 128, 0.1);">
-            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Critério</th>
-            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Big Chop Imediato</th>
-            <th style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: left;">Cortes Progressivos (Transição Lenta)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Velocidade de Retorno</strong></td>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Imediata (100% natural no mesmo dia).</td>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Gradual (leva de 12 a 24 meses dependendo do crescimento).</td>
-          </tr>
-          <tr>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Impacto na Autoestima</strong></td>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Alto (mudança radical de comprimento).</td>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Baixo (preserva o comprimento confortável enquanto cresce).</td>
-          </tr>
-          <tr>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"><strong>Dificuldade de Estilização</strong></td>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Baixa (fios curtos e fáceis de finalizar).</td>
-            <td style="padding: 12px; border: 1px solid rgba(255, 255, 255, 0.1);">Média/Alta (lidar com duas texturas diferentes no dia a dia).</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p>Uma alternativa excelente e muito mais confortável são os <strong>cortes progressivos</strong>. Nós removemos a química aos poucos, a cada dois ou três meses, cortando apenas as pontas alisadas e mantendo um comprimento com o qual você se sinta segura e bonita. A transição capilar é sua, e quem dita o ritmo é você.</p>
-
-      <h2>2. Como Disfarçar as Duas Texturas sem Usar Chapinha</h2>
-      <p>O período em que a raiz cresce e o comprimento continua liso é o mais delicado. A tentação de usar chapinha para igualar o cabelo é enorme, mas esse é um grande perigo. O calor excessivo da chapinha pode queimar a queratina da raiz natural que está nascendo saudável, causando o que chamamos de "scab hair" (fios que nascem danificados e ásperos mesmo sem química) ou alisamento térmico permanente.</p>
-      <p>Para harmonizar as duas texturas, o segredo é a <strong>texturização</strong>. Em vez de alisar a raiz, nós cacheamos as pontas lisas:</p>
-      <ul>
-        <li><strong>Dedoliss:</strong> Enrole as mechas lisas com os dedos, usando um creme consistente ou gelatina capilar, para imitar a curvatura natural da sua raiz.</li>
-        <li><strong>Coquinhos (Bantu Knots):</strong> Faça pequenos coques por toda a cabeça com o cabelo úmido e solte depois de seco. Isso cria ondas volumosas e naturais em toda a extensão do fio.</li>
-        <li><strong>Tranças ou Twists:</strong> Trance o cabelo úmido e deixe secar. Ao soltar, o cabelo ganha um padrão frisado e volumoso super bonito que disfarça a transição.</li>
-      </ul>
-
-      <h2>3. Cronograma Capilar Focado na Transição</h2>
-      <p>O cabelo em transição precisa de cuidados redobrados. A raiz natural está nascendo com força total e precisa de nutrientes, enquanto a junção entre a parte natural e a parte com química é o ponto de maior fragilidade do fio, onde a quebra acontece com facilidade.</p>
-      <p>Seu cronograma deve focar em três pilares:</p>
-      <ol>
-        <li><strong>Hidratação:</strong> Para manter a maleabilidade do fio e evitar a quebra. Procure masks com aloe vera, pantenol e glicerina.</li>
-        <li><strong>Nutrição:</strong> Fundamental para combater o ressecamento natural da curvatura. Use óleos vegetais leves para fazer umectação na raiz e comprimento.</li>
-        <li><strong>Reconstrução:</strong> Essencial para fortalecer o ponto de junção entre as duas texturas, evitando que o cabelo quebre no meio do caminho. Use queratina vegetal ou máscaras reconstrutoras a cada 15 dias.</li>
-      </ol>
-
-      <h2>O Papel da Leitura de Fio na Transição Capilar</h2>
-      <p>Cada cabelo reage de uma forma durante a transição. Em algumas pessoas, a curvatura natural se revela facilmente; em outras, a raiz nasce indefinida devido ao estresse mecânico e químico acumulado. Para passar por isso sem errar no tratamento e nos produtos, o ideal é ter um diagnóstico preciso.</p>
-      <p>No Studio do Jon, antes de qualquer corte ou indicação de cronograma na transição, nós realizamos a <a href="/metodo">Leitura de Fio</a>. São 7 etapas de análise técnica onde avaliamos a elasticidade da sua fibra, identificamos a verdadeira curvatura que está nascendo e definimos o corte de transição progressiva ideal que valorize a sua imagem pessoal sem radicalismos. Assim, você passa pela transição sabendo exatamente o que esperar e como cuidar do seu cabelo em casa.</p>
-
-      <p>Para o panorama técnico completo da transição capilar — incluindo o ponto exato onde o fio mais quebra e os disfarces químicos que sabotam o processo — veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
-
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
-        <h3>Pensando em voltar ao seu cabelo natural?</h3>
-        <p>Não passe pela transição capilar sozinha e sem rumo. Agende seu diagnóstico e corte progressivo com segurança.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar no Studio do Jon</a>
       </div>
     `
   },
@@ -6266,86 +6063,6 @@ export const posts = [
     `
   },
   {
-    id: 16,
-    slug: 'transicao-capilar-bh-danos-botox',
-    faqSchema: {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          "mainEntity": [
-                {
-                      "@type": "Question",
-                      "name": "O botox capilar alisa o cabelo cacheado?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Sim! Muitos produtos vendidos como 'botox' contêm ácidos que agem exatamente como uma progressiva ácida, alisando e impermeabilizando a fibra por meses."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "Como saber se um tratamento vai alisar meu cacho?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Sempre desconfie de promessas de 'redução de frizz extrema' ou 'alinhamento' que exijam prancha quente para finalizar. Tratamentos reais de hidratação não alteram a estrutura do cacho."
-                      }
-                },
-                {
-                      "@type": "Question",
-                      "name": "Como reverter o dano do botox capilar?",
-                      "acceptedAnswer": {
-                            "@type": "Answer",
-                            "text": "Uma vez que a estrutura química foi alterada por ácidos, a única reversão definitiva é deixar a raiz crescer e cortar a parte alisada na transição capilar."
-                      }
-                }
-          ]
-    },
-    scientificData: {
-      summary: "A transição capilar é o período de suspensão de químicas de alisamento para retorno do crescimento natural. Durante essa fase, a fibra possui duas texturas e um ponto de quebra extremamente frágil (junção química/natural), exigindo corte de transição (Big Chop) e tratamentos reconstrutores.",
-      sourceLabel: "Dermatologia Capilar SBD",
-      sourceUrl: "https://www.sbd.org.br/",
-      factSheet: [
-        { label: "Ponto de Ruptura (Scab Hair)", value: "Junção frágil onde o fio muda abruptamente de forma" },
-        { label: "Duração da Transição", value: "Varia conforme a velocidade de crescimento (média 1cm/mês)" },
-        { label: "Tratamento de Suporte", value: "Fortalecimento com queratina e aminoácidos no ponto de quebra" },
-        { label: "Big Chop (Grande Corte)", value: "Eliminação da parte alisada para liberar o crescimento natural" }
-      ]
-    },
-    title: 'Progressiva Derreteu Seus Cachos? | Jon',
-    excerpt: 'Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro. Entenda o golpe do botox capilar e como a transição capilar BH pode ser técnica e sem trauma.',
-    metaDescription: 'Passando pela transição capilar? Especialista em cachos em BH explica como identificar danos por químicas mascaradas e recuperar a textura natural.',
-    keywords: 'transição capilar bh, botox capilar estraga cachos, como recuperar cachos com quimica, corte a seco bh, Studio do Jon, big chop bh, cabelo com duas texturas',
-    date: '14 de Abril, 2026',
-    dateModified: '2026-07-04',
-    author: 'Jon',
-    category: 'Transição Capilar',
-    image: '/blog-transicao-quimica.webp',
-    content: `
-      <h2>Aquela progressiva vendida como "tratamento" está derretendo seus cachos por dentro.</h2>
-      <p>Você pediu um "botox para reduzir o frizz" e saiu com um alisamento térmico mascarado. Agora, vive o pesadelo de uma transição capilar forçada, tentando tratar com creme uma haste capilar que já não tem salvação.</p>
-
-      <h2>A mentira do botox capilar e o diagnóstico preguiçoso</h2>
-      <p>Química que reduz volume age destruindo as pontas de dissulfeto do seu fio. É química de transformação. Ponto final. Os ácidos atuais afinam a estrutura do córtex capilar até o talo, selando a cutícula por fora enquanto carbonizam o interior.</p>
-
-      <blockquote>O seu cabelo cacheado não perde a forma porque ficou hidratado. Ele perde a curvatura porque a mola de sustentação foi derretida pela acidez extrema combinada com o calor da prancha.</blockquote>
-
-      <h2>O perigo de adiar o inevitável por apego a centímetros</h2>
-      <p>Tentar reviver um fio plastificado por ácido é rasgar dinheiro. A <strong>Escuta Antes de Tocar</strong> serve exatamente para frear esse ciclo de decepção. Eu mapeio o nível real de destruição da fibra e o impacto na sua raiz saudável.</p>
-
-      <h2>O Método Jon e a precisão do corte a seco crespo</h2>
-      <p>A única saída honesta para o golpe do alisamento natural é a tesoura. Mas isso não significa um Big Chop traumático. Usando técnicas de angulação e <strong>Corte a Seco</strong>, eu esculpo o seu cabelo tirando a química aos poucos, disfarçando a diferença de texturas.</p>
-
-      <h2>Como saber se o "botox" que você usou tinha ácido</h2>
-      <p>Antes de marcar a avaliação, vale um teste sensorial simples em casa. Nenhum dos sinais abaixo, isolado, é prova definitiva — mas dois ou mais juntos indicam alisamento químico disfarçado de tratamento:</p>
-      <ul>
-        <li><strong>Cheiro ácido ou de "queimado" durante a aplicação</strong> — hidratação de verdade não solta esse odor; ácidos de alisamento sim.</li>
-        <li><strong>Exigiu prancha quente ou secador em temperatura alta pra "selar"</strong> — proteína e umectação não precisam de calor extremo para funcionar; alisamento térmico precisa.</li>
-        <li><strong>O cacho voltou "mais mole" ou "mais largo" depois, não mais definido</strong> — é a mola sendo distendida pela ação química, não fortalecida.</li>
-        <li><strong>Efeito durou meses e só saiu cortando</strong> — hidratação lava com o tempo normal de shampoo. Se só saiu com tesoura, a estrutura do fio foi alterada, não só a superfície.</li>
-      </ul>
-      <p>Se dois ou mais desses bateram com sua experiência, a raiz nova que está nascendo é o seu cabelo real — e é ela que eu uso como referência pra desenhar a transição, mecha por mecha, sem forçar um Big Chop de uma vez se você não quiser.</p>
-      <p>Para entender a transição capilar por completo — do ponto de quebra entre as duas texturas até o cronograma de cuidados — veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
-    `
-  },
-  {
     id: 15,
     slug: 'cabelo-poroso-nao-absorve-creme-scab-hair',
     faqSchema: {
@@ -7399,80 +7116,6 @@ export const posts = [
       <p>Se você quer entender as reais necessidades do seu cabelo e acabar de vez com o frizz, conheça o nosso <a href="/metodo">Método Leitura de Fio</a>. O primeiro passo é <a href="/agendar">agendar seu horário</a> no Studio do Jon para um diagnóstico científico e personalizado.</p>
     `,
     image: '/blog-frizz.webp'
-  },
-  {
-    id: 2,
-    slug: 'transicao-capilar-bh-corte-seco',
-    title: 'Transição Capilar: Corte a Seco é Aliado | Jon',
-    excerpt: 'Decidir parar com a química e assumir a textura natural é um ato de coragem em BH. Entenda como o corte a seco facilita essa jornada no Caiçaras.',
-    date: '30 de Março, 2026',
-    dateModified: '2026-07-04',
-    author: 'Jon',
-    category: 'Transição Capilar',
-    image: '/blog-transicao-bh.webp',
-    faqSchema: {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Por que o corte a seco é recomendado para quem está em transição capilar?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "O corte a seco permite que o especialista veja exatamente onde a nova curvatura natural começa e como o cabelo se comporta sem o peso da água. Cortar o cabelo seco evita surpresas com o fator de encolhimento e ajuda a criar camadas que disfarçam a transição entre a raiz cacheada e as pontas alisadas."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Qual o perigo de fazer um corte molhado tradicional durante a transição?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Quando o cabelo está molhado, a água estica a raiz cacheada, fazendo com que ela pareça mais longa do que realmente é. Cortar nessa condição pode resultar em um corte desigual ou com \"degraus\" marcados entre a parte com química e a parte natural assim que o cabelo secar e encolher."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Sou obrigada a fazer o Big Chop (grande corte) de uma vez só?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Não. No Studio do Jon, nós respeitamos o seu tempo e o seu estilo de vida. Se você não se sente confortável com o cabelo curto, podemos traçar um plano de cortes progressivos trimestrais para remover as pontas lisas aos poucos, mantendo o comprimento com o qual você se sinta segura."
-          }
-        }
-      ]
-    },
-    content: `
-      <p>Decidir parar com a química e assumir a textura natural é um ato de coragem, mas a gente sabe: a fase das "duas texturas" não é fácil. Se você está em transição capilar em Belo Horizonte, provavelmente já se pegou no espelho sem saber o que fazer com a raiz cacheada e as pontas lisas.</p>
-
-      <p>É aqui que entra o diferencial de um especialista. No meu Studio no Caiçaras, eu não apenas corto cabelo; eu ajudo você a atravessar essa ponte com autoestima. E o segredo para isso tem nome: <strong>Corte a Seco (Dry Cutting)</strong>.</p>
-
-      <h2>O problema do corte molhado na transição</h2>
-      <p>Quando o cabelo está molhado, o peso da água estica o fio e esconde o real fator de encolhimento da sua nova curvatura. Cortar assim é um risco: você só descobre o tamanho real quando o cabelo seca, e muitas vezes o resultado é aquele "degrau" indesejado entre o liso e o crespo/cacheado.</p>
-
-      <h2>Por que o Corte a Seco é a solução real?</h2>
-      <p>No Corte a Seco, eu consigo visualizar exatamente onde cada mola nasce e como ela se comporta. Isso é fundamental na transição capilar por três motivos:</p>
-
-      <ul>
-        <li><strong>Respeito ao Volume:</strong> Eu esculpo o cabelo cacho por cacho, tirando o peso das pontas lisas sem sacrificar o comprimento que você quer manter.</li>
-        <li><strong>Sem Surpresas:</strong> Você vê o resultado final em tempo real. O formato é construído com o cabelo do jeito que você vai usar no dia a dia.</li>
-        <li><strong>Harmonização de Texturas:</strong> Consigo camuflar a diferença entre a parte com química e a natural, criando camadas que dão movimento e disfarçam o "estirado" das pontas.</li>
-      </ul>
-
-      <h2>O Big Chop (BC) no seu tempo</h2>
-      <p>Muitas clientes chegam ao Studio no Caiçaras com medo do "Big Chop" (o grande corte). Meu papel como especialista em cabelos naturais é respeitar o seu tempo. Se você quer tirar tudo de uma vez, fazemos um BC cheio de estilo. Se prefere ir cortando aos poucos, traçamos um plano de cortes trimestrais para eliminar a química gradualmente.</p>
-
-      <h2>Como fica o cronograma de cortes progressivos, na prática</h2>
-      <p>Pra quem escolhe ir aos poucos, o plano costuma seguir três fases, ajustadas conforme a velocidade de crescimento de cada cliente (em média 1cm por mês):</p>
-      <ul>
-        <li><strong>Primeiro corte (mês 0):</strong> remove só o excesso de peso morto nas pontas mais danificadas, sem tirar comprimento visível — o objetivo aqui é aliviar o peso que puxa a raiz nova pra baixo, não encurtar.</li>
-        <li><strong>Cortes de manutenção (a cada 8-10 semanas):</strong> a cada sessão, avançamos alguns centímetros na linha de química, sempre camuflando com camadas pra não deixar "degrau" visível entre textura natural e química residual.</li>
-        <li><strong>Corte de fechamento:</strong> quando a raiz natural já tem comprimento suficiente pra sustentar o formato sozinha, aí sim eliminamos o restante da parte quimicamente tratada — muitas vezes sem parecer um Big Chop, porque a transição já foi feita em etapas.</li>
-      </ul>
-      <p>O tempo total varia de pessoa pra pessoa — depende de quanto comprimento você quer manter durante o processo e da velocidade de crescimento do seu couro cabeludo, que a gente acompanha a cada retorno.</p>
-
-      <h2>Além do corte: Saúde da Fibra em BH</h2>
-      <p>A transição não é só sobre tesoura; é sobre devolver nutrientes para o fio que está nascendo. Aqui no Studio, aliamos o corte a seco com tratamentos de alta performance para garantir que seu novo cabelo cresça forte, brilhante e com definição desde a raiz.</p>
-      <p>Quer entender a transição capilar do início ao fim — do ponto de quebra entre raiz e química ao cronograma de cuidados? Veja o <a href="/blog/guia-completo-transicao-capilar-cabelo-natural">guia completo de transição capilar</a>.</p>
-    `
   },
   {
     id: 3,

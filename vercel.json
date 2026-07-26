@@ -85,6 +85,26 @@
       "headers": { "Location": "/blog/day-after-cabelo-cacheado-bh-como-reativar-sem-lavar" }
     },
     {
+      "src": "/blog/transicao-capilar-scab-hair-guia-fio-sem-forma",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-transicao-capilar-cabelo-natural" }
+    },
+    {
+      "src": "/blog/transicao-capilar-sem-sofrimento-guia-cachos",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-transicao-capilar-cabelo-natural" }
+    },
+    {
+      "src": "/blog/transicao-capilar-bh-danos-botox",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-transicao-capilar-cabelo-natural" }
+    },
+    {
+      "src": "/blog/transicao-capilar-bh-corte-seco",
+      "status": 301,
+      "headers": { "Location": "/blog/guia-completo-transicao-capilar-cabelo-natural" }
+    },
+    {
       "src": "/sobre-o-jon",
       "status": 301,
       "headers": { "Location": "/sobre" }
