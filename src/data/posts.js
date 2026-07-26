@@ -4651,6 +4651,22 @@ export const posts = [
             "@type": "Answer",
             "text": "Sim. O excesso de reconstrução capilar acumula queratina e proteínas em excesso na fibra capilar, causando um efeito rebote conhecido como rigidez capilar. Isso torna o cacho extremamente rígido, opaco e quebradiço. A reconstrução deve ser feita apenas quando o fio estiver fraco ou elástico devido a químicas."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso fazer cronograma capilar em casa ou preciso de acompanhamento profissional?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pode, principalmente as etapas de hidratação e nutrição, que são de manutenção e têm baixo risco. A reconstrução exige mais cautela, porque o excesso é o erro mais comum e o mais difícil de reverter sozinho em casa. Um diagnóstico profissional, como a Leitura de Fio, evita meses de tentativa e erro ao indicar exatamente quando e com qual produto reconstruir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "De quanto em quanto tempo devo fazer cada etapa do cronograma capilar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não existe frequência universal — ela muda com a porosidade do fio. Em geral, a hidratação varia de toda lavagem (alta porosidade) a uma vez por semana com calor (baixa porosidade), a nutrição de semanal a quinzenal, e a reconstrução deve seguir o sinal real de dano do fio, não um calendário fixo — podendo ser quinzenal em caso de dano químico recente ou rara em fios saudáveis."
+          }
         }
       ]
     },
@@ -4703,6 +4719,55 @@ export const posts = [
       <p>O fio responde bem à maioria dos protocolos. A estrutura clássica de hidratação, nutrição e reconstrução funciona — mas ainda assim observe os sinais do fio. Se aparecer rigidez, reduza reconstrução. Se aparecer ressecamento, aumente a frequência de hidratação.</p>
       <p><strong>Frequência sugerida:</strong> hidratação 1–2x por semana, nutrição quinzenal, reconstrução mensal ou a cada 6 semanas.</p>
 
+      <h3>Tabela Comparativa: Frequência por Porosidade</h3>
+      <p>Resumo direto das três frequências lado a lado, pra consultar sem precisar reler o texto acima:</p>
+      <table border="1" cellpadding="10" style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 1rem; margin-bottom: 2rem;">
+        <thead>
+          <tr>
+            <th>Porosidade</th>
+            <th>Hidratação</th>
+            <th>Nutrição</th>
+            <th>Reconstrução</th>
+            <th>Atenção especial</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Alta</strong></td>
+            <td>A cada lavagem</td>
+            <td>1–2x por semana</td>
+            <td>Só com dano real (sem calendário fixo)</td>
+            <td>Cutícula aberta perde água rápido — lacre com óleo leve depois de hidratar</td>
+          </tr>
+          <tr>
+            <td><strong>Baixa</strong></td>
+            <td>1x por semana, com calor</td>
+            <td>Quinzenal, produtos leves</td>
+            <td>Rara, só com moléculas pequenas (hidrolisados)</td>
+            <td>Cutícula fechada acumula produto na superfície sem calor</td>
+          </tr>
+          <tr>
+            <td><strong>Média</strong></td>
+            <td>1–2x por semana</td>
+            <td>Quinzenal</td>
+            <td>Mensal ou a cada 6 semanas</td>
+            <td>Estrutura clássica funciona, mas ajuste se aparecer rigidez ou ressecamento</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Cronograma Capilar por Tipo de Curvatura: 2A a 4C</h2>
+      <p>Porosidade não é a única variável que decide o cronograma. A curvatura determina o quanto a oleosidade natural da raiz (o sebo) consegue percorrer a fibra até a ponta — e isso muda quanto o cronograma precisa compensar essa distância. Em fio liso o sebo escorre livre. Quanto mais fechada a curvatura, mais o cronograma deixa de ser manutenção e vira compensação de uma rota que o sebo não consegue fazer sozinho.</p>
+
+      <h3>Ondulado (2A a 2C)</h3>
+      <p>A raiz oleifica rápido e o comprimento ainda recebe alguma oleosidade natural, embora menos que o liso. O risco real aqui não é ressecamento severo — é excesso. Fio ondulado costuma ser mais fino e de densidade mais baixa, então hidratação e nutrição pesadas amassam a onda em vez de defini-la. O cronograma para 2A–2C funciona melhor com produtos leves, reconstrução rara (a maioria não tem histórico químico agressivo) e foco em não sobrecarregar o fio com camada de produto.</p>
+
+      <h3>Cacheado (3A a 3C)</h3>
+      <p>A curva já dificulta a migração do sebo da raiz até a ponta, mas ainda chega alguma oleosidade nas primeiras camadas do comprimento. Hidratação e nutrição bem intercaladas resolvem a maior parte dos casos. O que muda dentro da própria faixa 3A–3C é grande: um 3A está mais próximo do comportamento do ondulado, enquanto um 3C já se aproxima do crespo 4A em ressecamento de ponta. É por isso que o teste de porosidade dentro do grupo cacheado pesa mais do que só saber "sou cacheada" — a letra da curvatura sozinha não fecha o diagnóstico.</p>
+
+      <h3>Crespo (4A a 4C)</h3>
+      <p>A curvatura extremamente fechada praticamente impede o sebo de sair da raiz. A ponta seca de forma estrutural, não por acidente ou falta de cuidado. Por isso o cronograma para 4A–4C precisa ser mais robusto: nutrição deixa de ser opcional e vira rotina de sobrevivência do fio, e a hidratação profunda com calor costuma ser praticamente semanal — principalmente na <a href="/blog/curvatura-4c-cabelo-crespo-guia-completo">curvatura 4C</a>, onde o fio tem o menor diâmetro médio e o maior número de curvaturas por centímetro entre todos os tipos. A <a href="/blog/finalizacao-por-curvatura-guia-tecnico">finalização por curvatura</a> trabalha em conjunto com esse cronograma mais intenso — um sem o outro deixa o resultado pela metade.</p>
+
       <h2>Quando o Cronograma Não É o Que Você Precisa</h2>
       <p>Existe uma situação em que o cronograma capilar não vai resolver nada: quando o problema não é de cuidado, é de <a href="/servicos">corte especializado para cacheadas</a>.</p>
       <p>Fio com dano mecânico acumulado nas pontas — as pontas duplas que não se hidratam, a região que quebra antes do resto — não responde a produto. Aquela parte do fio está morta. O <a href="/servicos">corte especializado para cacheadas</a> é a única resposta.</p>
@@ -4731,7 +4796,7 @@ export const posts = [
       
       <p><strong>Hidratação insuficiente:</strong></p>
       <ul>
-        <li><a href="/blog/frizz-normal-ou-dano-capilar">Frizz ou sinal de dano</a> constante, especialmente nas pontas</li>
+        <li><a href="/blog/guia-completo-frizz-cabelo-cacheado">Frizz ou sinal de dano</a> constante, especialmente nas pontas</li>
         <li>Fio sem elasticidade ao puxar (não "estica" — quebra direto)</li>
         <li>Pontas ressecadas que não respondem a nada</li>
       </ul>
@@ -4744,12 +4809,23 @@ export const posts = [
       </ul>
       <p>Se você se identificou com qualquer um desses padrões, vale revisitar o <a href="/blog/teste-de-porosidade-guia-definitivo">teste de porosidade</a> e ajustar o protocolo a partir daí.</p>
 
+      <h2>Erros Comuns Que Atrasam o Resultado do Cronograma</h2>
+      <p>Mesmo com o diagnóstico de porosidade certo, alguns hábitos sabotam o cronograma antes que ele tenha chance de mostrar resultado. Os mais comuns no consultório:</p>
+      <ul>
+        <li><strong>Fazer as três etapas na mesma semana "pra garantir":</strong> hidratação, nutrição e reconstrução em sequência apertada não dá tempo do fio processar cada etapa — o resultado é sobrecarga, não cura mais rápida.</li>
+        <li><strong>Trocar de linha de produto a cada duas semanas:</strong> sem consistência não dá pra saber se o protocolo está funcionando ou se você simplesmente nunca deu tempo suficiente pra ele agir.</li>
+        <li><strong>Aplicar reconstrução por calendário, não por sinal do fio:</strong> "toda sexta é dia de reconstrução" é a lógica que mais gera rigidez capilar em fio que não precisava daquilo.</li>
+        <li><strong>Ignorar histórico químico recente:</strong> retomar o cronograma padrão logo após coloração ou descoloração sem ajustar frequência trata o fio como se a química não tivesse acontecido.</li>
+        <li><strong>Copiar cronograma pronto de influenciador sem testar a própria porosidade:</strong> o protocolo que funcionou pro cabelo de outra pessoa parte de um diagnóstico que não é o seu.</li>
+        <li><strong>Usar calor de chapinha ou babyliss no meio da semana:</strong> desfaz o trabalho que a etapa de hidratação acabou de fazer, na prática anulando o cronograma.</li>
+      </ul>
+
       <h2>Como Montar o Cronograma Certo Para o Seu Fio</h2>
       <p>Agora que você tem o diagnóstico de porosidade, o caminho fica mais claro. Mas existem mais algumas variáveis que influenciam a resposta do fio:</p>
       <ul>
         <li><strong>Histórico químico:</strong> fio que passou por coloração, descoloração ou alisamento tem porosidade artificialmente elevada. Mesmo que o fio "pareça" de porosidade baixa no teste, o histórico químico indica que a cutícula foi comprometida. Reconstrução pode ser necessária — mas com frequência e produto certos.</li>
         <li><strong>Densidade:</strong> fio fino precisa de produtos mais leves. Fio denso aguenta produtos mais ricos. Isso afeta principalmente a escolha dos produtos de nutrição.</li>
-        <li><strong>Curvatura:</strong> fio mais fechado (3C, 4A, 4B, 4C) tem mais dificuldade de distribuir a oleosidade natural da raiz até as pontas — por isso resseca mais. A <a href="/blog/finalizacao-por-curvatura-guia-tecnico">finalização por curvatura</a> muda dependendo do grau de curvatura, e o cronograma acompanha essa lógica. No caso da <a href="/blog/curvatura-4c-cabelo-crespo-guia-completo">curvatura 4C</a>, essa diferença é ainda mais extrema, e o cronograma precisa se adaptar de verdade, não só reduzir quantidade de produto.</li>
+        <li><strong>Curvatura:</strong> cada faixa (2A a 4C) responde diferente ao mesmo cronograma — veja a seção "Cronograma Capilar por Tipo de Curvatura" acima pra ajustar frequência e intensidade pela sua curva.</li>
         <li><strong>Rotina atual:</strong> se você já tem uma rotina funcionando, não precisa reinventar tudo. Identifica o que está funcionando, o que está faltando e ajusta só o que for necessário. Pode ser que uma <a href="/blog/rotina-minimalista-cabelos-cacheados">rotina minimalista para cacheados</a> com menos produtos já resolva o que o cronograma carregado não conseguiu.</li>
       </ul>
 
@@ -4763,6 +4839,12 @@ export const posts = [
         <li><strong>Dias sem lavar:</strong> Terça, quinta, sábado — apenas leave-in ou finalizador</li>
       </ul>
       <p>Além da máscara, dois detalhes que fazem diferença na prática: troque a fronha de algodão por uma de cetim (o algodão cria atrito que gera frizz e quebra; o cetim preserva a definição enquanto você dorme), e não deixe de usar leave-in na mecha úmida e um selante (óleo leve) nas pontas já secas para travar o resultado do cronograma até a próxima lavagem.</p>
+
+      <h2>Por Que o Cronograma Real Nasce na Leitura de Fio, Não na Internet</h2>
+      <p>Tudo que foi explicado até aqui — porosidade, curvatura, frequência, erros que atrasam o resultado — é o que qualquer protocolo técnico deveria considerar antes de indicar hidratação, nutrição ou reconstrução. Mas o diagnóstico feito em casa, mesmo bem-feito, tem limite: o teste do fio no copo d'água responde uma pergunta. Ele não responde todas.</p>
+      <p>O <a href="/blog/leitura-de-fio-metodo-exclusivo-studio-do-jon">Método Leitura de Fio</a>, usado em toda consulta no Studio do Jon, cruza três variáveis que nenhum teste caseiro isolado alcança: a porosidade real do fio (não só a reação no copo d'água, mas o comportamento sob tração quando molhado), a densidade e o diâmetro por região da cabeça (a nuca quase sempre se comporta diferente do topo), e o histórico químico acumulado (uma coloração de oito meses atrás ainda interfere na resposta do fio hoje, mesmo sem aparentar).</p>
+      <p>É essa leitura que decide se o seu cronograma começa por hidratação ou por nutrição, se a reconstrução entra na segunda semana ou na oitava, e se o que está travando o resultado é o cronograma ou o corte mal distribuído pela curvatura.</p>
+      <p>Cronograma sem esse diagnóstico é estatística: funciona pra maioria, mas você não sabe se está na maioria ou na exceção. Cronograma construído a partir da Leitura de Fio é o que faz o protocolo funcionar desde a primeira semana — sem meses de tentativa e erro trocando produto na esperança de acertar.</p>
 
       <h2>A Pergunta Certa Antes de Começar</h2>
       <p>Antes de pesquisar "melhor cronograma capilar para cacheado", há uma pergunta mais útil:</p>
