@@ -65,6 +65,7 @@ export const posts = [
 
       <h2 id="o-que-e-a-classificacao">O Que É a Classificação de Curvatura (2A a 4C)</h2>
       <p>A escala de curvatura organiza os padrões de onda e cacho em três grandes grupos numéricos — tipo 2 (ondulado), tipo 3 (cacheado) e tipo 4 (crespo) — e cada grupo se subdivide em A, B e C conforme o padrão fica progressivamente mais fechado e com maior <a href="/glossario">fator de encolhimento</a>. A avaliação correta é feita sempre no cabelo seco, limpo e sem nenhum produto de finalização, porque qualquer creme, gel ou óleo altera o peso da mecha e mascara o formato real da curvatura.</p>
+      <img src="/blog-curvaturas.webp" alt="Tabela ilustrativa das curvaturas de cabelo ondulado, cacheado e crespo de 2A a 4C" class="post-inline-image" />
       <p>Fisicamente, o que determina essa classificação é a distribuição assimétrica das ligações de queratina dentro do <strong>córtex capilar</strong>: quanto mais desigual a distribuição entre o paracórtex (mais frouxo) e o ortocórtex (mais denso) ao longo da haste, mais a fibra se torce no espaço tridimensional, criando desde uma onda suave até um zigue-zague apertado.</p>
 
       <h2 id="como-identificar">Como Identificar o Seu Tipo de Cacho em Casa</h2>
@@ -159,6 +160,7 @@ export const posts = [
 
       <h2 id="ondulados">Tipo 2: Ondulados (2A, 2B e 2C)</h2>
       <p>O grupo tipo 2 é o mais confundido com cabelo liso, porque a onda costuma se manifestar apenas no comprimento e nas pontas, deixando a raiz praticamente reta.</p>
+      <img src="/cabelo-longo-ondulado-bh.webp" alt="Exemplo de cabelo ondulado tipo 2 com formato característico em S" class="post-inline-image" />
 
       <h3>2A — a onda mais solta</h3>
       <p>Forma um S suave e alongado, geralmente visível só a partir do meio da mecha. É o padrão com menor encolhimento de todo o espectro e o mais fácil de perder para o peso de um produto pesado. <strong>Erro comum:</strong> usar creme para pentear denso ou óleo em excesso, que achata a onda e faz o cabelo parecer liso com frizz em vez de ondulado.</p>
@@ -171,6 +173,7 @@ export const posts = [
 
       <h2 id="cacheados">Tipo 3: Cacheados (3A, 3B e 3C)</h2>
       <p>No grupo tipo 3, a mola já é uma espiral contínua e reconhecível, com diâmetro e fechamento crescentes de A para C.</p>
+      <img src="/cacho-vs-crespo-hero.webp" alt="Exemplo de cabelo cacheado tipo 3 com espirais definidas e brilhantes" class="post-inline-image" />
 
       <h3>3A — mola grande</h3>
       <p>Cacho largo, brilhante, com diâmetro parecido ao de um marcador de texto. Tende a perder a definição com facilidade sob peso ou umidade alta. <strong>Erro comum:</strong> aplicar quantidade excessiva de creme ou gelatina, que estica a mola e reduz o volume natural do cacho.</p>
@@ -183,6 +186,7 @@ export const posts = [
 
       <h2 id="crespos">Tipo 4: Crespos (4A, 4B e 4C)</h2>
       <p>No grupo tipo 4, o padrão deixa de ser uma espiral limpa e passa a ser um zigue-zague com ângulos de dobra cada vez mais fechados, o que também eleva o fator de encolhimento e a fragilidade mecânica.</p>
+      <img src="/blog-curvatura-4c-cabelo-crespo.webp" alt="Exemplo de cabelo crespo tipo 4 com volume denso e curvatura em zigue-zague" class="post-inline-image" />
 
       <h3>4A — o anel apertado</h3>
       <p>Ainda forma um S bem pequeno e visível mesmo sem produto, como um anel apertado. É o primeiro subtipo do grupo crespo e o que mais se aproxima de uma mola completa. <strong>Erro comum:</strong> secar com toalha de tecido áspero esfregando o fio, o que rompe a definição do anel e gera frizz mecânico.</p>
