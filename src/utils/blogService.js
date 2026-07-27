@@ -2,7 +2,7 @@ import { posts as staticPosts } from '../data/posts';
 import { db } from '../config/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 
-const CACHE_KEY = 'ojon_blog_posts_cache_v3';
+const CACHE_KEY = 'ojon_blog_posts_cache_v4';
 const PINNED_SLUG = 'leitura-de-fio-metodo-exclusivo-studio-do-jon';
 
 let memoryCache = null;
