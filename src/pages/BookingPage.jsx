@@ -22,6 +22,40 @@ const getAdjustedDay = (date) => {
   return date.getDay();
 };
 
+// Helper: converte duração (número ou texto como "120 min", "2h", "1h30m") em minutos
+const parseDurationInMinutes = (val) => {
+  if (typeof val === 'number' && !isNaN(val)) return val;
+  if (!val) return 60;
+  const str = String(val).trim().toLowerCase();
+  if (/^\d+$/.test(str)) return parseInt(str, 10);
+  
+  let total = 0;
+  const hoursMatch = str.match(/(\d+)\s*(?:h|hora|horas)/);
+  if (hoursMatch) total += parseInt(hoursMatch[1], 10) * 60;
+  
+  const minsMatch = str.match(/(\d+)\s*(?:m|min|mins|minuto|minutos)(?![a-z])/);
+  if (minsMatch) total += parseInt(minsMatch[1], 10);
+
+  if (total === 0) {
+    const numMatch = str.match(/\d+/);
+    if (numMatch) return parseInt(numMatch[0], 10);
+  }
+  return total > 0 ? total : 60;
+};
+
+// Helper: calcula duração total de um agendamento existente
+const getBookingDuration = (b) => {
+  if (typeof b === 'string') return 60;
+  if (b.duration) return parseDurationInMinutes(b.duration);
+  if (Array.isArray(b.services) && b.services.length > 0) {
+    const sum = b.services.reduce((acc, s) => acc + parseDurationInMinutes(s?.duration), 0);
+    if (sum > 0) return sum;
+  }
+  if (b.service?.duration) return parseDurationInMinutes(b.service.duration);
+  return 60;
+};
+
+
 // Helper: gera datas disponíveis para agendamento (próximos 60 dias, respeitando folgas e bloqueios)
 const getAvailableDates = (prof) => {
   const dates = [];
@@ -936,12 +970,18 @@ const BookingPage = () => {
         weekday = getAdjustedDay(dateObj);
       }
 
+      const timeToMin = (t) => {
+        if (!t) return 0;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+      };
+
       const inRange = (slot, start, end) => !end || end === start ? slot === start : slot >= start && slot < end;
       const ALL_SLOTS = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00'];
       const activeProfs = (settings?.professionals || []).filter(p => p.active !== false);
       const effectiveAbsences = getEffectiveAbsences(settings);
 
-      // Helper helper to check if a professional is available at a slot
+      // Helper helper para checar se o profissional está disponível em um determinado slot
       const checkProfAvailability = (prof, slot, bookedList) => {
         // 0. Ausências / bloqueios permanentes (Psicóloga, folgas, viagens etc.)
         if (isSlotBlockedByAbsence(effectiveAbsences, selectedDate, slot)) return false;
@@ -954,40 +994,46 @@ const BookingPage = () => {
         const blockedDates = prof.blockedDates || [];
         if (blockedDates.includes(selectedDate)) return false;
 
-        // 3. Check work hours and lunch hours
+        // 3. Check expediente e almoço
         const workStart = prof.workStart || '09:00';
         const workEnd = prof.workEnd || '19:00';
         const lunchStart = prof.lunchStart || '12:00';
         const lunchEnd = prof.lunchEnd || '13:00';
 
-        const [slotH, slotM] = slot.split(':').map(Number);
-        const [startH, startM] = workStart.split(':').map(Number);
-        const [endH, endM] = workEnd.split(':').map(Number);
-        const [lunchStartH, lunchStartM] = lunchStart.split(':').map(Number);
-        const [lunchEndH, lunchEndM] = lunchEnd.split(':').map(Number);
+        const slotMin = timeToMin(slot);
+        const startMin = timeToMin(workStart);
+        const endMin = timeToMin(workEnd);
+        const lunchStartMin = timeToMin(lunchStart);
+        const lunchEndMin = timeToMin(lunchEnd);
 
-        const slotMin = slotH * 60 + slotM;
-        const startMin = startH * 60 + startM;
-        const endMin = endH * 60 + endM;
-        const lunchStartMin = lunchStartH * 60 + lunchStartM;
-        const lunchEndMin = lunchEndH * 60 + lunchEndM;
+        // Duração total dos serviços selecionados no agendamento atual (mínimo 60 min)
+        const totalCandidateDuration = selectedServices && selectedServices.length > 0
+          ? selectedServices.reduce((sum, s) => sum + parseDurationInMinutes(s?.duration), 0)
+          : 60;
+        const candidateDuration = Math.max(60, totalCandidateDuration);
+        const slotEndMin = slotMin + candidateDuration;
 
-        if (slotMin < startMin || slotMin >= endMin) return false;
-        if (slotMin >= lunchStartMin && slotMin < lunchEndMin) return false;
+        // Se o horário inicial for antes do expediente ou se o término ultrapassar o fim do expediente
+        if (slotMin < startMin || slotEndMin > endMin) return false;
 
-        // 4. Check blockedWeekdayHours (recurring)
+        // Se o agendamento sobrepuser com o intervalo de almoço
+        if (Math.max(slotMin, lunchStartMin) < Math.min(slotEndMin, lunchEndMin)) return false;
+
+        // 4. Check blockedWeekdayHours (recorrentes por dia da semana)
         const weekdayBlocks = prof.blockedWeekdayHours || [];
         let isBlockedWeekday = false;
         weekdayBlocks.forEach(block => {
           const segs = block.split('-');
           const w = segs[0]; const start = segs[1]; const end = segs[2] || null;
-          if (Number(w) === weekday && inRange(slot, start, end)) {
+          const bStartMin = timeToMin(start);
+          const bEndMin = end ? timeToMin(end) : bStartMin + 60;
+          if (Number(w) === weekday && Math.max(slotMin, bStartMin) < Math.min(slotEndMin, bEndMin)) {
             isBlockedWeekday = true;
           }
         });
         if (isBlockedWeekday) return false;
 
-        // 5. Check blockedSpecificHours (pontual)
+        // 5. Check blockedSpecificHours (pontuais por data)
         const specificBlocks = prof.blockedSpecificHours || [];
         let isBlockedSpecific = false;
         specificBlocks.forEach(block => {
@@ -995,28 +1041,23 @@ const BookingPage = () => {
           const rest = block.substring(selectedDate.length + 1);
           const restParts = rest.split('-');
           const start = restParts[0]; const end = restParts[1] || null;
-          if (inRange(slot, start, end)) {
+          const bStartMin = timeToMin(start);
+          const bEndMin = end ? timeToMin(end) : bStartMin + 60;
+          if (Math.max(slotMin, bStartMin) < Math.min(slotEndMin, bEndMin)) {
             isBlockedSpecific = true;
           }
         });
         if (isBlockedSpecific) return false;
 
-        // 6. Check existing booking at this slot or overlapping with it
-        const timeToMin = (t) => {
-          const [h, m] = t.split(':').map(Number);
-          return h * 60 + m;
-        };
-        const totalDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
-        const newServiceDuration = Math.max(60, totalDuration || 60);
-        const slotEndMin = slotMin + newServiceDuration;
-
+        // 6. Check agendamentos existentes (bloqueia o horário se sobrepuser com serviços de 1h ou mais)
         const hasOverlap = bookedList.some(b => {
           const bTime = typeof b === 'string' ? b : b.time;
-          const bDuration = typeof b === 'string' ? 60 : (Number(b.duration) || Number(b.service?.duration) || 60);
+          if (!bTime) return false;
+          const bDuration = getBookingDuration(b);
           const bStart = timeToMin(bTime);
           const bEnd = bStart + bDuration;
           
-          // Check if the two intervals [slotMin, slotEndMin) and [bStart, bEnd) overlap
+          // Verifica se o intervalo do candidato [slotMin, slotEndMin) sobrepõe com o agendamento existente [bStart, bEnd)
           return Math.max(slotMin, bStart) < Math.min(slotEndMin, bEnd);
         });
 
@@ -1034,12 +1075,9 @@ const BookingPage = () => {
         const bookingsByProf = {};
         localBookings.forEach(b => {
           if (b.date === selectedDate && b.status !== 'cancelado') {
-            const profId = b.professionalId || 'jon';
+            const profId = b.professionalId || b.profissional || 'jon';
             if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
-            bookingsByProf[profId].push({
-              time: b.time,
-              duration: b.duration || b.service?.duration || 60
-            });
+            bookingsByProf[profId].push(b);
           }
         });
 
@@ -1077,10 +1115,7 @@ const BookingPage = () => {
           if (data.status !== 'cancelado') {
             const profId = data.profissional || data.professionalId || 'jon';
             if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
-            bookingsByProf[profId].push({
-              time: data.time,
-              duration: data.duration || data.service?.duration || 60
-            });
+            bookingsByProf[profId].push(data);
           }
         });
 
@@ -1111,10 +1146,7 @@ const BookingPage = () => {
           if (b.date === selectedDate && b.status !== 'cancelado') {
             const profId = b.profissional || b.professionalId || 'jon';
             if (!bookingsByProf[profId]) bookingsByProf[profId] = [];
-            bookingsByProf[profId].push({
-              time: b.time,
-              duration: b.duration || b.service?.duration || 60
-            });
+            bookingsByProf[profId].push(b);
           }
         });
 
@@ -1138,7 +1170,7 @@ const BookingPage = () => {
     };
 
     fetchBookings();
-  }, [selectedDate, selectedProfessional, settings]);
+  }, [selectedDate, selectedProfessional, settings, selectedServices]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -1162,20 +1194,26 @@ const BookingPage = () => {
     // 1. Verificar se o horário ainda está livre para evitar duplicados/conflitos
     setLoading(true);
     const isStillAvailable = await (async () => {
+      const timeToMin = (t) => {
+        if (!t) return 0;
+        const [h, m] = t.split(':').map(Number);
+        return h * 60 + m;
+      };
+
+      const slotStart = timeToMin(selectedTime);
+      const totalCandidateDuration = selectedServices && selectedServices.length > 0
+        ? selectedServices.reduce((sum, s) => sum + parseDurationInMinutes(s?.duration), 0)
+        : 60;
+      const candidateDuration = Math.max(60, totalCandidateDuration);
+      const slotEnd = slotStart + candidateDuration;
+
       if (!db || isDemoMode) {
         const localBookings = JSON.parse(localStorage.getItem('demo_bookings') || '[]');
-        const bookingsToday = localBookings.filter(b => b.date === selectedDate && b.status !== 'cancelado' && (b.professionalId || 'jon') === (selectedProfessional?.id || 'jon'));
-        const timeToMin = (t) => {
-          const [h, m] = t.split(':').map(Number);
-          return h * 60 + m;
-        };
-        const slotStart = timeToMin(selectedTime);
-        const totalDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
-        const slotEnd = slotStart + Math.max(60, totalDuration || 60);
+        const bookingsToday = localBookings.filter(b => b.date === selectedDate && b.status !== 'cancelado' && (b.professionalId || b.profissional || 'jon') === (selectedProfessional?.id || 'jon'));
 
         return !bookingsToday.some(b => {
           const bStart = timeToMin(b.time);
-          const bEnd = bStart + (Number(b.duration) || 60);
+          const bEnd = bStart + getBookingDuration(b);
           return Math.max(bStart, slotStart) < Math.min(bEnd, slotEnd);
         });
       }
@@ -1200,17 +1238,9 @@ const BookingPage = () => {
           return false;
         }
 
-        const timeToMin = (t) => {
-          const [h, m] = t.split(':').map(Number);
-          return h * 60 + m;
-        };
-        const slotStart = timeToMin(selectedTime);
-        const totalDuration = selectedServices.reduce((sum, s) => sum + Math.max(60, s?.duration || 60), 0);
-        const slotEnd = slotStart + Math.max(60, totalDuration || 60);
-
         return !activeBookings.some(b => {
           const bStart = timeToMin(b.time);
-          const bEnd = bStart + (Number(b.duration) || 60);
+          const bEnd = bStart + getBookingDuration(b);
           return Math.max(bStart, slotStart) < Math.min(bEnd, slotEnd);
         });
       } catch (err) {
@@ -1218,6 +1248,7 @@ const BookingPage = () => {
         return true;
       }
     })();
+
 
     if (!isStillAvailable) {
       setAuthError('Ops! Este horário acabou de ser preenchido por outro agendamento. Por favor, volte ao passo anterior e escolha outro horário.');
