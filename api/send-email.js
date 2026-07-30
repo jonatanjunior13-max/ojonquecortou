@@ -20,7 +20,20 @@ try {
 
 
 
+const sanitizeEnv = (val, fallback = '') => {
+  if (!val) return fallback;
+  return String(val).replace(/[\r\n"']/g, '').trim();
+};
+
+const cleanEmailAddress = (emailStr) => {
+  if (!emailStr) return 'contato@ojonquecortou.com.br';
+  const sanitized = sanitizeEnv(emailStr);
+  const match = sanitized.match(/<([^>]+)>/) || sanitized.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  return match ? match[1].trim() : sanitized.trim();
+};
+
 // Helper function for the shared email template shell
+
 
 function getStandaloneWrapper(title, content) {
   const previewText = content
@@ -412,37 +425,32 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
   }
 
   const mailOptions = {
-    from: `"O Jon Que Cortou" <${smtpFrom}>`,
+    from: `"Studio do Jon" <${smtpFrom}>`,
     to: adminEmail,
     subject: subject,
     html: finalHtml
   };
-
-  if (db) {
-    try {
-      await addDoc(collection(db, 'admin_notifications'), {
-        timestamp: new Date().toISOString(),
-        type: type,
-        subject: subject,
-        clientName: clientName,
-        clientEmail: clientEmail,
-        clientPhone: clientPhone,
-        serviceName: serviceName,
-        date: formattedDate,
-        time: time,
-        htmlBody: finalHtml
-      });
-      console.log('Notificação do admin registrada no Firestore');
-    } catch (dbErr) {
-      console.error('Falha ao salvar log de notificação no banco:', dbErr);
-    }
-  }
 
   try {
     await transporter.sendMail(mailOptions);
     console.log(`Email de notificação enviado para o administrador: ${adminEmail}`);
   } catch (err) {
     console.error('Falha ao enviar e-mail de notificação para o admin:', err);
+  }
+
+  if (db) {
+    addDoc(collection(db, 'admin_notifications'), {
+      timestamp: new Date().toISOString(),
+      type: type,
+      subject: subject,
+      clientName: clientName,
+      clientEmail: clientEmail,
+      clientPhone: clientPhone,
+      serviceName: serviceName,
+      date: formattedDate,
+      time: time,
+      htmlBody: finalHtml
+    }).catch(dbErr => console.warn('Aviso: log de notificação no banco ignorado/falhou:', dbErr.message));
   }
 }
 
@@ -707,14 +715,15 @@ export default async function handler(req, res) {
   }
 
   // Retrieve SMTP variables from environment
-  const smtpHost = (process.env.SMTP_HOST || '').trim();
-  const smtpPort = (process.env.SMTP_PORT || '587').trim();
-  const smtpSecure = (process.env.SMTP_SECURE || '').trim() === 'true' || smtpPort === '465';
-  const smtpUser = (process.env.SMTP_USER || '').trim();
-  const smtpPass = (process.env.SMTP_PASS || '').trim();
-  const smtpFrom = (process.env.SMTP_FROM || 'contato@ojonquecortou.com.br').trim();
+  const smtpHost = sanitizeEnv(process.env.SMTP_HOST, 'smtp.titan.email');
+  const smtpPort = sanitizeEnv(process.env.SMTP_PORT, '465');
+  const smtpSecure = sanitizeEnv(process.env.SMTP_SECURE) === 'true' || smtpPort === '465';
+  const smtpUser = sanitizeEnv(process.env.SMTP_USER, 'contato@ojonquecortou.com.br');
+  const smtpPass = sanitizeEnv(process.env.SMTP_PASS, '7956#Jon!');
+  const smtpFrom = cleanEmailAddress(process.env.SMTP_FROM || 'contato@ojonquecortou.com.br');
 
-  const adminEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br').trim();
+  const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
+
   
   // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
   const isLaunchCampaign = type === 'launch_campaign';
@@ -737,6 +746,15 @@ export default async function handler(req, res) {
     auth: { user: smtpUser, pass: smtpPass },
     tls: { rejectUnauthorized: false }
   }) : null;
+
+  // Enviar e-mail de notificação para o administrador (Jon) se for um evento de agendamento
+  if (isAdminType && transporter) {
+    try {
+      await sendAdminNotification(type, data, transporter, smtpFrom, settings);
+    } catch (adminErr) {
+      console.error('Falha ao disparar e-mail de notificação para o admin:', adminErr);
+    }
+  }
 
   let emailSubject = 'O Jon Que Cortou';
   let emailContent = '';

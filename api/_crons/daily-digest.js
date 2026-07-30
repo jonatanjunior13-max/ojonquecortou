@@ -300,12 +300,19 @@ export default async function handler(req, res) {
     const subject = `📅 Agenda de amanhã — ${tomorrow.weekday}, ${tomorrow.dayNumber} de ${tomorrow.monthName}`;
 
     // Configuração SMTP
-    const smtpHost = (process.env.SMTP_HOST || '').trim();
-    const smtpPort = (process.env.SMTP_PORT || '587').trim();
-    const smtpSecure = (process.env.SMTP_SECURE || '').trim() === 'true' || smtpPort === '465';
-    const smtpUser = (process.env.SMTP_USER || '').trim();
-    const smtpPass = (process.env.SMTP_PASS || '').trim();
-    const smtpFrom = (process.env.SMTP_FROM || 'contato@ojonquecortou.com.br').trim();
+    const sanitizeEnv = (val, fallback = '') => val ? String(val).replace(/[\r\n"']/g, '').trim() : fallback;
+    const cleanEmail = (str) => {
+      if (!str) return 'contato@ojonquecortou.com.br';
+      const m = str.match(/<([^>]+)>/) || str.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+      return m ? m[1].replace(/[\r\n"']/g, '').trim() : str.replace(/[\r\n"']/g, '').trim();
+    };
+
+    const smtpHost = sanitizeEnv(process.env.SMTP_HOST, 'smtp.titan.email');
+    const smtpPort = sanitizeEnv(process.env.SMTP_PORT, '465');
+    const smtpSecure = sanitizeEnv(process.env.SMTP_SECURE) === 'true' || smtpPort === '465';
+    const smtpUser = sanitizeEnv(process.env.SMTP_USER, 'contato@ojonquecortou.com.br');
+    const smtpPass = sanitizeEnv(process.env.SMTP_PASS, '7956#Jon!');
+    const smtpFrom = cleanEmail(process.env.SMTP_FROM || 'contato@ojonquecortou.com.br');
 
     if (!smtpHost || !smtpUser || !smtpPass) {
       // Em ambiente de dev/preview, apenas loga
@@ -323,7 +330,7 @@ export default async function handler(req, res) {
 
     await transporter.sendMail({
       from: `"Studio do Jon" <${smtpFrom}>`,
-      to: recipientEmail,
+      to: cleanEmail(recipientEmail),
       subject,
       html
     });
