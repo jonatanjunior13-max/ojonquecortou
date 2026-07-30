@@ -1,13 +1,30 @@
 /* Admin Pages Styles — Redesign Premium (Obsidian Bronze Edition) */
 
-/* Tactile Active feedback for buttons and interactive items */
+/* Tactile Active feedback & Instant Touch Response (0ms delay) */
+button,
+.btn,
+.btn-icon,
+.action-btn,
+.category-tab-btn,
+.crm-tab-btn,
+.filter-badge-btn,
+.admin-nav-item,
+.appt-card,
+.stat-card {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .btn:active, 
 .btn-icon:active, 
 .action-btn:active, 
 .category-tab-btn:active, 
 .crm-tab-btn:active,
-.filter-badge-btn:active {
-  transform: scale(0.97) translateY(1px) !important;
+.filter-badge-btn:active,
+.admin-nav-item:active {
+  transform: scale(0.96) !important;
+  opacity: 0.9 !important;
+  transition: transform 0.04s ease-out, opacity 0.04s ease-out !important;
 }
 
 /* Custom Scrollbar styled for the premium palette */

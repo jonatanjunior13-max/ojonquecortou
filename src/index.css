@@ -58,6 +58,43 @@ body {
   overflow-x: hidden;
 }
 
+/* ── Responsividade de Toque Instantânea (0ms delay) ── */
+button,
+.btn,
+a,
+select,
+input[type="submit"],
+input[type="button"],
+[role="button"],
+.clickable,
+.m-nav-item,
+.m-icon-btn,
+.m-booking-card,
+.m-date-nav,
+.m-slot-row,
+.card-interactive {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled),
+.btn:not(:disabled),
+a:not(:disabled),
+[role="button"] {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button:active:not(:disabled),
+.btn:active:not(:disabled),
+a.btn:active,
+[role="button"]:active {
+  transform: scale(0.96) !important;
+  opacity: 0.92 !important;
+  transition: transform 0.04s ease-out, opacity 0.04s ease-out !important;
+}
+
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; }
@@ -288,7 +325,7 @@ hr.technical-rule {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   border: 1px solid transparent;
-  transition: transform 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  transition: transform 0.1s var(--ease), background 0.12s var(--ease), color 0.12s var(--ease), box-shadow 0.12s var(--ease);
   white-space: nowrap;
 }
 .btn .arrow {

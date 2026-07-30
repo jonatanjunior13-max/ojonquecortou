@@ -213,9 +213,16 @@
   padding: 4px 0;
   height: 100%;
   position: relative;
-  transition: all 0.2s ease;
+  transition: transform 0.08s ease-out, opacity 0.08s ease-out;
   font-family: inherit;
   box-sizing: border-box;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.m-nav-item:active {
+  transform: scale(0.91) !important;
+  opacity: 0.85 !important;
+  transition: transform 0.04s ease-out !important;
 }
 
 .m-nav-label {

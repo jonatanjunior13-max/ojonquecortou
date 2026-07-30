@@ -6,6 +6,31 @@
   color: var(--ink);
 }
 
+/* Touch Performance & Instant Feedback */
+.service-card,
+.booking-service-card,
+.date-btn,
+.time-btn,
+.booking-category-tab-btn,
+.more-services-btn,
+.step-dot {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.service-card:active,
+.booking-service-card:active,
+.date-btn:active,
+.time-btn:active,
+.booking-category-tab-btn:active,
+.more-services-btn:active {
+  transform: scale(0.96) !important;
+  opacity: 0.9 !important;
+  transition: transform 0.04s ease-out, opacity 0.04s ease-out !important;
+}
+
 .booking-header {
   margin-bottom: 48px;
 }
