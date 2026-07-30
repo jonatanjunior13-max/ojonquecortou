@@ -260,7 +260,15 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
     return;
   }
 
-  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'jon@studio.com';
+  const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
+  const clientEmailClean = cleanEmailAddress(data.clientEmail || '');
+
+  // Evita enviar e-mail de notificação de admin se o cliente for o próprio administrador (ex: testes)
+  if (clientEmailClean && clientEmailClean.toLowerCase() === adminEmail.toLowerCase()) {
+    console.log('E-mail do cliente é o mesmo do administrador. Pulando notificação de admin para evitar duplicidade.');
+    return;
+  }
+
   let subject = '';
   let body = '';
   const formattedDate = data.date ? (data.date.includes('-') ? data.date.split('-').reverse().join('/') : data.date) : '';
@@ -1273,97 +1281,6 @@ export default async function handler(req, res) {
       }
     } else {
       console.log(`E-mail de cliente do tipo ${type} está desativado nas configurações para ${clientEmail}. Pulando envio.`);
-    }
-    
-    // Se agendado com menos de 24h, envia também o e-mail de lembrete de 24h (se ativado nas configurações)
-    if (data.isUnder24h && sendReal && automations.reminder24hEmailEnabled !== false) {
-      try {
-        const emailSubject24h = `Lembrete: Seu horário é em breve, ${firstName}`;
-        const emailContent24h = getEmailWrapper(emailSubject24h, `
-          <div class="eyebrow">Lembrete</div>
-          <h1 class="display-title">Te espero em breve, <span>${firstName}.</span></h1>
-          <p class="lead">Passando para lembrar do seu horário marcado no Studio. Lembre-se de reservar uns 15 minutos a mais no relógio.</p>
-          
-          <div class="appt-card">
-            <div class="label">Agendamento</div>
-            <p class="when">${formatApptDate(data.date || data.rawDate, data.time)} <span>às ${data.time}</span></p>
-            <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
-            
-            <div class="meta-row">
-              <div class="cell">
-                <div class="lbl">Serviço</div>
-                <div class="val">${data.serviceName}</div>
-              </div>
-              <div class="cell">
-                <div class="lbl">Duração</div>
-                <div class="val">${formatDuration(data.duration)}</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="background-color: rgba(220, 163, 84, 0.1); border-left: 4px solid #DCA354; border-radius: 8px; padding: 20px 24px; margin: 28px 0; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #DCA354; margin-bottom: 8px;">
-              ⚠️ Tolerância de Atraso: 15 Minutos
-            </div>
-            <p style="margin: 0 0 10px 0; font-size: 14.5px; line-height: 1.6; color: #EFE5D2;">
-              Para garantir a atenção e o cuidado que cada cabelo exige, os agendamentos possuem uma <strong>tolerância máxima de 15 minutos de atraso</strong>.
-            </p>
-            <p style="margin: 0 0 16px 0; font-size: 13.5px; line-height: 1.6; color: #A0A0A0;">
-              Caso perceba que vai se atrasar mais do que 15 minutos, por favor nos avise com antecedência pelo WhatsApp.
-            </p>
-            <div style="margin-top: 12px;">
-              <a href="https://wa.me/5531983044059?text=Oi%20Jon%2C%20vou%20me%20atrasar%20para%20o%20meu%20agendamento." target="_blank" style="display: inline-block; background-color: #25D366; color: #FFFFFF; font-weight: 700; font-size: 13px; padding: 11px 22px; border-radius: 999px; text-decoration: none; font-family: 'Manrope', sans-serif;">
-                💬 Avisar Atraso no WhatsApp →
-              </a>
-            </div>
-          </div>
-          
-          <hr class="rule" />
-          
-          <div class="instructions-title">Lembrete importante</div>
-          <p class="instructions-body">Lave o cabelo na <strong>noite anterior</strong> com seu shampoo de sempre. Sem creme, sem leave-in, sem prancha. Quero ler o fio do jeito que ele acorda.</p>
-          
-          <div class="signoff">
-            <div class="sig-name">Jon,</div>
-            <div class="sig-meta"><div>JONATAN JUNIOR</div><div>STUDIO DO JON</div></div>
-          </div>
-        `);
-
-        // Check unsubscribe for the 24h reminder
-        let isUnsubscribed = false;
-        if (db && clientEmail) {
-          try {
-            const q = query(collection(db, 'client_profiles'), where('email', '==', clientEmail));
-            const snap = await getDocs(q);
-            if (!snap.empty && snap.docs[0].data().unsubscribed === true) {
-              isUnsubscribed = true;
-            }
-          } catch (e) {
-            console.warn('Erro ao checar opt-out para lembrete 24h:', e);
-          }
-        }
-        
-        if (!isUnsubscribed) {
-          await transporter.sendMail({
-            from: `"O Jon Que Cortou" <${smtpFrom}>`,
-            to: clientEmail,
-            subject: emailSubject24h,
-            html: emailContent24h
-          });
-          console.log('E-mail de lembrete de 24h enviado instantaneamente para o cliente.');
-        }
-      } catch (email24hErr) {
-        console.error('Erro ao enviar e-mail de lembrete de 24h instantâneo:', email24hErr);
-      }
-    }
-
-    // Enviar notificação para o administrador
-    if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado' || type === 'agendamento_alterado' || type === 'agendamento_editado') {
-      try {
-        await sendAdminNotification(type, data, transporter, smtpFrom, settings);
-      } catch (err) {
-        console.error('Erro ao enviar notificação ao admin:', err);
-      }
     }
 
     return res.status(200).json({ success: true, messageId: messageId });
