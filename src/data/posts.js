@@ -1,5 +1,192 @@
 export const posts = [
   {
+    id: 70,
+    slug: 'carga-eletrica-capilar-ponto-isoeletrico-cachos-crespos',
+    title: 'Carga Elétrica Capilar e Ponto Isoelétrico: A Física da Selagem Cuticular e do Frizz nos Cabelos Cacheados e Crespos | Studio do Jon',
+    seoTitle: 'Carga Elétrica Capilar e Ponto Isoelétrico em Cachos e Crespos | Studio do Jon',
+    excerpt: 'Entenda a físico-química da carga aniônica da queratina, o ponto isoelétrico (pH ~3.67 a 4.5) e como a repulsão eletrostática controla o frizz e a selagem das cutículas nos cabelos cacheados e crespos.',
+    metaDescription: 'Descubra como a carga elétrica capilar e o ponto isoelétrico da queratina influenciam o frizz e a retenção de água em cachos e crespos com o Studio do Jon em BH.',
+    keywords: 'carga elétrica capilar, ponto isoelétrico cabelo, queratina carga aniônica catiônica, frizz eletricidade estática cachos, pH isoelétrico fibra capilar, tensoativos catiônicos, Studio do Jon BH',
+    date: '31 de Julho, 2026',
+    datePublished: '2026-07-31',
+    dateModified: '2026-07-31',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-carga-eletrica-capilar-ponto-isoeletrico-cachos-crespos.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que é o ponto isoelétrico da fibra capilar e por que ele importa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O ponto isoelétrico do cabelo é a faixa de pH (entre 3,67 e 4,5) na qual as cargas elétricas positivas e negativas da queratina se anulam perfeitamente. Nesse estado de carga líquida zero, a estrutura proteica atinge sua máxima estabilidade físico-química, as cutículas se selam e o fio apresenta a menor retenção desnecessária de água e a menor tendência ao frizz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que o cabelo cacheado e crespo fica naturalmente mais carregado negativamente?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A geometria helicoidal do cacho expõe mais a superfície das cutículas ao atrito diário. Além disso, a distribuição irregular do sebo natural ao longo das curvas e a perda parcial da camada lipídica de ácido 18-metileicosanóico (18-MEA) expõem os grupos carboxílicos dos aminoácidos da queratina, conferindo uma forte carga aniônica (negativa) à fibra."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é a função dos tensoativos catiônicos nos condicionadores e máscaras?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Os tensoativos catiônicos (como cloreto de cetrimônio e behentrimonium chloride) possuem carga positiva. Como cargas opostas se atraem, esses compostos se conectam quimicamente às áreas danificadas de carga negativa da queratina, neutralizando a eletricidade estática, selando as cutículas e reduzindo a repulsão entre os fios."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Usar um produto com pH abaixo de 3.0 faz bem para o cabelo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Não. Baixar o pH excessivamente para a faixa ácida extrema (abaixo de 3,0) ultrapassa o ponto isoelétrico para o lado catiônico, fazendo com que o fio acumule cargas positivas em excesso. Isso pode gerar rigidez excessiva, cristalização proteica e quebra por perda de elasticidade. O equilíbrio ideal está sempre entre pH 3,5 e 4,5."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber se o meu frizz é por falta de hidratação ou por desequilíbrio de carga elétrica?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O frizz por desequilíbrio eletrostático aparece como fios 'voando' que se repelem e continuam afastados mesmo quando você passa a mão com creme. Já o frizz por ressecamento ou porosidade vem acompanhado de aspereza ao toque e falta de retenção de umidade. No diagnóstico do Método Leitura de Fio, avaliamos se o problema exige ajuste de carga (pH e catiônicos) ou reposição hídrica/lipídica."
+          }
+        }
+      ]
+    },
+    content: `
+      <blockquote id="tldr"><p><strong>TL;DR:</strong> A carga elétrica capilar e o ponto isoelétrico (pI) governam a física da selagem cuticular, a atração de ativos cosméticos e a formação de frizz em cabelos cacheados e crespos. A queratina capilar atinge o equilíbrio elétrico nulo (carga líquida zero) em um pH entre 3,67 e 4,5. Quando o pH do cabelo sobe (em contato com água alcalina ou shampoos agressivos), a fibra acumula cargas negativas (aniônicas) que causam repulsão eletrostática entre os fios. A neutralização com agentes catiônicos (carga positiva) e o ajuste de pH na faixa isoelétrica é a chave físico-química para cachos definidos, sem frizz e com brilho refletivo.</p></blockquote>
+
+      <p id="introducao">Se você cuida de cabelo ondulado, cacheado ou crespo, com certeza já passou por aquela situação frustrante: você aplica uma máscara cara, capricha na finalização, mas assim que o cabelo seca, surge aquela nuvem de fios arrepiados que parecem se repelir como ímãs do mesmo polo. Aqui no Studio do Jon, em Belo Horizonte, recebo clientes me perguntando: <em>"Jon, por que meu cabelo fica tão elétrico e arrepiado mesmo quando tá cheio de creme?"</em> Valeu demais por buscar entender a ciência por trás disso! A resposta não tá em comprar mais um produto milagroso, mas sim na <strong>físico-química da carga elétrica capilar e no Ponto Isoelétrico da fibra</strong>. Vamos desvendar a lógica dos cátions, ânions e pH para você dominar a saúde dos seus cachos de uma vez por todas!</p>
+
+      <h2 id="o-que-e-ponto-isoeletrico">O Que É a Carga Elétrica Capilar e o Ponto Isoelétrico (pI)</h2>
+      <p>O cabelo humano é composto majoritariamente por queratina — uma proteína rica em aminoácidos como cisteína, ácido glutâmico, ácido aspártico e arginina. Como toda proteína amfótera, a queratina possui grupos químicos com capacidade de ganhar ou perder prótons (íons H+) dependendo do valor de pH do meio aquoso em que está imersa.</p>
+      <img src="/blog-carga-eletrica-capilar-ponto-isoeletrico-cachos-crespos.webp" alt="Representação visual e científica das cargas elétricas na fibra capilar e selagem de cutículas" class="post-inline-image" />
+      <p>O <strong>Ponto Isoelétrico (pI)</strong> da fibra capilar é definido como o valor exato de pH no qual a quantidade de cargas positivas (grupos amino protonados, -NH3+) é exatamente igual à quantidade de cargas negativas (grupos carboxilato deprotonados, -COO-). Para o cabelo virgem e saudável, esse ponto isoelétrico situa-se na faixa entre <strong>pH 3,67 e 4,5</strong>.</p>
+      <p>Quando o cabelo está no seu ponto isoelétrico:</p>
+      <ul>
+        <li>A carga elétrica líquida na superfície do fio é <strong>zero</strong>.</li>
+        <li>As pontes salinas internas (ligações iônicas entre aminoácidos) atingem a máxima atração molecular.</li>
+        <li>As escamas de cutícula se acomodam perfeitamente sobre o córtex, reduzindo o atrito e aumentando o brilho de reflexão specular.</li>
+        <li>A fibra capilar absorve apenas a quantidade fisiológica ideal de água, prevenindo a fadiga hídrica.</li>
+      </ul>
+
+      <h2 id="por-que-cachos-acumulam-carga-negativa">Por Que Cabelos Cacheados e Crespos Acumulam Carga Aniônica (Negativa)</h2>
+      <p>A física e a geometria dos cabelos texturizados tornam as curvaturas 3A a 4C especialmente suscetíveis ao acúmulo de carga aniônica (superfície carregada negativamente). Existem três razões físico-químicas principais para isso:</p>
+
+      <h3 id="geometria-e-perda-18mea">1. Geometria Helicoidal e Perda da Camada 18-MEA</h3>
+      <p>Na superfície do fio virgem existe uma camada lipídica natural covalentemente ligada chamada <strong>ácido 18-metileicosanóico (18-MEA)</strong>. Em cabelos lisos, o sebo flui facilmente por essa camada hidrofóbica. Nos cabelos cacheados e crespos, as torções periódicas da mola dificultam o espalhamento do sebo e aumentam o atrito mecânico. Essa fricção contínua desgasta a camada 18-MEA, expondo diretamente os grupos carboxílicos dos aminoácidos ácidos da queratina (-COO-), que possuem carga negativa.</p>
+
+      <h3 id="ph-da-agua-e-shampoos">2. Influência do pH da Água e de Shampoos Aniônicos</h3>
+      <p>A água corrente em Belo Horizonte e na maioria das cidades brasileiras possui pH neutro a ligeiramente alcalino (entre 7,0 e 7,8). Quando você molha o cabelo, o meio fica bem acima do ponto isoelétrico (3,67 - 4,5). Isso faz com que a queratina perca prótons (H+), gerando um excesso maciço de cargas negativas na fibra. Além disso, shampoos tradicionais utilizam sulfatos e tensoativos aniônicos (como Lauril Sulfato de Sódio) que limpam depositando temporariamente mais densidade de carga negativa na superfície cuticular.</p>
+
+      <h3 id="repulsao-eletrostatica-frizz">3. Repulsão Eletrostática: A Origem Física do Frizz</h3>
+      <p>Quando dois fios vizinhos estão carregados negativamente com a mesma polaridade, a <strong>Lei de Coulomb</strong> entra em ação: cargas elétricas de mesmo sinal se repelem com força inversamente proporcional ao quadrado da distância entre elas. Essa repulsão física faz com que fios de curvaturas adjacentes empurrem uns aos outros para fora do agrupamento helicoidal (mola). O resultado visual é o famoso <em>frizz de eletricidade estática</em>.</p>
+
+      <h2 id="mecanismo-de-neutralizacao">Como Funciona a Neutralização Catiônica e o Ajuste de pH</h2>
+      <p>Para desarmar a repulsão eletrostática e reorganizar os cachos em espirais alinhadas, a cosmética capilar avançada atua por dois mecanismos complementares:</p>
+
+      <h3 id="tensoativos-cationicos">1. Adsorção de Tensoativos Catiônicos (Cargas Positivas)</h3>
+      <p>Condicionadores, máscaras de tratamento e leave-ins de alta performance contêm moléculas catiônicas (com carga positiva). Os mais eficientes são os sais de amônio quaternário (como <em>Cetrimonium Chloride</em> e <em>Behentrimonium Chloride</em>) e as amidoaminas. Por atração eletrostática imediata, a cabeça positiva do tensoativo se liga quimicamente às regiões negativas da queratina danificada. A cauda lipídica da molécula fica voltada para fora, recriando uma camada hidrofóbica sintética que suaviza a fricção entre mechas.</p>
+
+      <h3 id="acidificacao-ao-ponto-isoeletrico">2. Acidificação Controlada ao Ponto Isoelétrico</h3>
+      <p>O uso de acidificantes formulados com ácidos orgânicos leves (como ácido lático, ácido cítrico ou ácido málico) reduz o pH do fio de volta para a faixa de 3,5 a 4,5. Ao retornar ao ponto isoelétrico, os grupos carboxilato (-COO-) capturam prótons H+ do meio ácido e voltam ao estado neutro (-COOH). Sem o excesso de cargas negativas repulsivas, as cutículas selam por atração intermolecular natural, devolvendo o toque aveludado e o brilho uniforme à mola.</p>
+
+      <h2 id="tabela-comparativa-ph-carga">Tabela Físico-Química: Faixas de pH, Carga Elétrica e Impacto nos Cachos</h2>
+      <p>A tabela abaixo descreve como diferentes níveis de pH alteram o estado elétrico da queratina, a estrutura das cutículas e o comportamento prático dos cabelos cacheados e crespos:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); width: 18%;">Faixa de pH</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Estado Elétrico da Queratina</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Comportamento da Cutícula</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Efeito nos Cachos e Crespos</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Exemplo de Agente/Etapa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #E76F51;">pH &lt; 3.0 (Ácido Extremo)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Carga Catiônica Exagerada (+), excesso de protonação</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Constrições severas, desidratação proteica</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Fio rígido, quebradiço, perda de elasticidade da mola</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Acidificantes desregulados ou vinagre puro inadequado</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #2A9D8F;">pH 3.5 a 4.5 (Ponto Isoelétrico)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Carga Líquida Zero (Equilíbrio Isoelétrico)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Cutículas seladas, alinhamento plano specular</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Máximo brilho, agrupamento perfeito, zero repulsão (frizz zero)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Acidificantes profissionais, condicionadores equilibrados</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #E9C46A;">pH 5.0 a 6.0 (Fisiológico Leve)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Carga Aniônica Ligeira (-)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Cutículas levemente relaxadas</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Maleabilidade normal, exige finalizador com lipídios</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Shampoos hidratantes sem sulfato, cremes de pentear</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">pH 7.0 a 8.5 (Alcalino Moderado)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Forte Carga Aniônica (-), ionização dos carboxilas</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Abertura das escamas cuticulares, intumescimento</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Frizz severo por repulsão, toque áspero, perda de definição</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Água de chuveiro alcalina, shampoos antirresíduos</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #E76F51;">pH &gt; 9.0 (Alcalino Severo)</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Desprotonação Extrema, rompimento das pontes salinas</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Dilatação excessiva do córtex, erosão mecânica</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Desestruturação da mola, danos permanentes na queratina</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Descolorantes, relaxamentos e químicas alcalinas</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="passos-praticos-equilibrar-carga">4 Passos Práticos para Equilibrar a Carga Elétrica do Seu Cabelo</h2>
+      <p>Para aplicar toda essa física na sua rotina em casa e ter cachos sempre soltos, definidos e sem repulsão, siga estes passos recomendados aqui no Studio:</p>
+
+      <ol>
+        <li><strong>Use Shampoos de Limpeza Suave (pH ~5.5):</strong> Evite detergentes industriais de pH elevado. Prefira higienizadores enriquecidos com tensoativos anfotéricos (como <em>Cocamidopropyl Betaine</em>), que removem sujidades sem arrancar totalmente a proteção lipídica.</li>
+        <li><strong>Aplique o Condicionador com o Cabelo Encharcado:</strong> A presença de água abundante é indispensável para que os sais catiônicos (carga +) naveguem com facilidade e encontrem os sítios aniônicos (carga -) ao longo de todo o comprimento e pontas.</li>
+        <li><strong>Faça Acidificação Periódica Conforme a Porosidade:</strong> Se o seu cabelo tem alta porosidade ou passou por coloração/descoloração, use um acidificante capilar de pH 3.5 a cada 15 dias. Isso recalibra o ponto isoelétrico e sela a cutícula por semanas.</li>
+        <li><strong>Finalize com Agentes Formadores de Filme Hidrofóbico:</strong> Leave-ins que combinam óleos vegetais leves e polímeros catiônicos criam um escudo contra as variações de umidade do ar (higrometria), travando a eletricidade estática.</li>
+      </ol>
+
+      <h2 id="como-leitura-de-fio-avalia">Como o Método Leitura de Fio Avalia a Saúde Eletrostática no Studio</h2>
+      <p>Muitas pessoas acham que o frizz é sempre sinal de ressecamento e enchem o cabelo de óleos pesados, criando o terrível efeito <a href="/blog/buildup-capilar-cachos-ressecamento-falso">buildup</a>. No diagnóstico do <a href="/metodo">Método Leitura de Fio</a> aqui no Studio do Jon em BH, nós não adivinhamos: nós avaliamos o cabelo no estado seco natural para identificar se o atrito e a repulsão vêm de desalinhamento de corte geométrico, porosidade química ou desequilíbrio de carga no pH.</p>
+      <p>Entendendo a resposta física exata da sua estrutura, desenhamos o protocolo sob medida para que você gaste menos tempo e dinheiro no banheiro e consiga resultados de salão no seu dia a dia.</p>
+
+      <h2 id="faq">Perguntas Frequentes sobre Carga Elétrica Capilar e Ponto Isoelétrico</h2>
+      <h3>O que é o ponto isoelétrico da fibra capilar e por que ele importa?</h3>
+      <p>O ponto isoelétrico do cabelo é a faixa de pH (entre 3,67 e 4,5) na qual as cargas elétricas positivas e negativas da queratina se anulam perfeitamente. Nesse estado de carga líquida zero, a estrutura proteica atinge sua máxima estabilidade físico-química, as cutículas se selam e o fio apresenta a menor retenção desnecessária de água e a menor tendência ao frizz.</p>
+
+      <h3>Por que o cabelo cacheado e crespo fica naturalmente mais carregado negativamente?</h3>
+      <p>A geometria helicoidal do cacho expõe mais a superfície das cutículas ao atrito diário. Além disso, a distribuição irregular do sebo natural ao longo das curvas e a perda parcial da camada lipídica de ácido 18-metileicosanóico (18-MEA) expõem os grupos carboxílicos dos aminoácidos da queratina, conferindo uma forte carga aniônica (negativa) à fibra.</p>
+
+      <h3>Qual é a função dos tensoativos catiônicos nos condicionadores e máscaras?</h3>
+      <p>Os tensoativos catiônicos (como cloreto de cetrimônio e behentrimonium chloride) possuem carga positiva. Como cargas opostas se atraem, esses compostos se conectam quimicamente às áreas danificadas de carga negativa da queratina, neutralizando a eletricidade estática, selando as cutículas e reduzindo a repulsão entre os fios.</p>
+
+      <h3>Usar um produto com pH abaixo de 3.0 faz bem para o cabelo?</h3>
+      <p>Não. Baixar o pH excessivamente para a faixa ácida extrema (abaixo de 3,0) ultrapassa o ponto isoelétrico para o lado catiônico, fazendo com que o fio acumule cargas positivas em excesso. Isso pode gerar rigidez excessiva, cristalização proteica e quebra por perda de elasticidade. O equilíbrio ideal está sempre entre pH 3,5 e 4,5.</p>
+
+      <h3>Como saber se o meu frizz é por falta de hidratação ou por desequilíbrio de carga elétrica?</h3>
+      <p>O frizz por desequilíbrio eletrostático aparece como fios 'voando' que se repelem e continuam afastados mesmo quando você passa a mão com creme. Já o frizz por ressecamento ou porosidade vem acompanhado de aspereza ao toque e falta de retenção de umidade. No diagnóstico do Método Leitura de Fio, avaliamos se o problema exige ajuste de carga (pH e catiônicos) ou reposição hídrica/lipídica.</p>
+
+      <div id="conclusao" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer equilibrar seus cachos com diagnóstico científico e corte geométrico em BH?</h3>
+        <p>No Studio do Jon, em Belo Horizonte, o Método Leitura de Fio investiga a físico-química da sua mola para eliminar o frizz na raiz do problema. Fico felizão em te receber e te mostrar o caminho! Tô por aqui! TMJ e aquele abraço.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 69,
     slug: 'tecnicas-de-finalizacao-cabelo-cacheado-fitagem-dedoliss-plopping',
     title: 'Técnicas de Finalização para Cabelo Cacheado e Crespo: A Física por Trás da Fitagem, Dedoliss e Plopping | Studio do Jon',
