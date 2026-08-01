@@ -1102,7 +1102,7 @@ const pages = [
   {
     route: '/investimento',
     title: 'Investimento | Studio do Jon — Especialista em Cachos BH',
-    description: 'Corte especializado com Método Leitura de Fio a partir de R$ 200. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH.',
+    description: 'Corte especializado com Método Leitura de Fio de R$ 190 a R$ 230. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH.',
     bodyInsert: investmentBody,
     schema: {
       "@context": "https://schema.org",
@@ -1280,7 +1280,40 @@ const pages = [
     route: '/agendar',
     title: 'Agende seu corte | Studio do Jon — Especialista em Cachos BH',
     description: 'Marque seu horário com Jon, especialista em corte para cabelos cacheados, crespos e ondulados em Belo Horizonte.',
-    bodyInsert: agendarBody
+    bodyInsert: agendarBody,
+    schema: {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "name": "Agende seu Horário — Studio do Jon",
+          "url": "https://www.ojonquecortou.com.br/agendar",
+          "isPartOf": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
+          "potentialAction": {
+            "@type": "ReserveAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://www.ojonquecortou.com.br/agendar",
+              "actionPlatform": [
+                "http://schema.org/DesktopWebPlatform",
+                "http://schema.org/MobileWebPlatform"
+              ]
+            },
+            "result": {
+              "@type": "Reservation",
+              "name": "Agendamento de corte no Studio do Jon"
+            }
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+            { "@type": "ListItem", "position": 2, "name": "Agendar", "item": "https://www.ojonquecortou.com.br/agendar" }
+          ]
+        }
+      ]
+    }
   },
   {
     route: '/politica-privacidade',

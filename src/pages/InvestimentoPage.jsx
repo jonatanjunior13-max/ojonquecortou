@@ -6,7 +6,8 @@ const priceSchema = {
   "@context": "https://schema.org",
   "@type": "PriceSpecification",
   "name": "Corte especializado cabelo cacheado",
-  "price": "190",
+  "minPrice": "190",
+  "maxPrice": "230",
   "priceCurrency": "BRL",
   "url": "https://www.ojonquecortou.com.br/investimento"
 };
@@ -16,7 +17,7 @@ const InvestimentoPage = () => {
     <main className="investimento-page" style={{ paddingTop: '5rem' }}>
       <SEO
         title="Investimento | Studio do Jon — Especialista em Cachos BH"
-        description="Corte especializado com Método Leitura de Fio a partir de R$ 200. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH."
+        description="Corte especializado com Método Leitura de Fio de R$ 190 a R$ 230. Descoloração e consultoria mediante consulta. Studio do Jon, Caiçaras, BH."
         url="/investimento"
         schema={priceSchema}
       />
