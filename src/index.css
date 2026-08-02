@@ -45,6 +45,25 @@
 html, body { margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
+/* ── Travar Resolução & Anti-Zoom em Formulários / Ficha do Cliente ── */
+@media screen and (max-width: 768px) {
+  input, 
+  select, 
+  textarea,
+  .m-input, 
+  .m-select, 
+  .m-textarea,
+  .form-control, 
+  .form-group input, 
+  .form-group select, 
+  .form-group textarea,
+  .adm-input,
+  .search-input {
+    font-size: 16px !important;
+    touch-action: manipulation;
+  }
+}
+
 body {
   background: var(--bg);
   color: var(--ink);

@@ -617,8 +617,8 @@
   }
 
   .admin-topbar {
-    padding: 0 16px !important;
-    height: 56px !important;
+    padding: env(safe-area-inset-top, 0px) 16px 0 16px !important;
+    height: calc(56px + env(safe-area-inset-top, 0px)) !important;
   }
 
   .topbar-title {
