@@ -1,5 +1,161 @@
 export const posts = [
   {
+    id: 71,
+    slug: 'desmineralizacao-capilar-cachos-shampoo-quelante-agua-dura',
+    title: 'Desmineralização Capilar em Cabelos Cacheados: Como a Água Dura e Metais Travam os Cachos | Studio do Jon',
+    seoTitle: 'Shampoo Quelante vs Anti-resíduos para Cachos e Crespos | Studio do Jon',
+    excerpt: 'Descubra como os minerais e metais pesados da água da torneira criam uma capa rígida nos fios, impedem a definição dos cachos e por que o shampoo quelante é a única solução real.',
+    metaDescription: 'Entenda a física da desmineralização capilar para cabelos cacheados e crespos. Saiba a diferença entre shampoo quelante e anti-resíduos com o Studio do Jon em BH.',
+    keywords: 'desmineralizacao capilar, shampoo quelante cachos, agua dura cabelo cacheado, metais pesados cabelo, detox capilar quelante, Studio do Jon BH',
+    date: '02 de Agosto, 2026',
+    datePublished: '2026-08-02',
+    dateModified: '2026-08-02',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-desmineralizacao-capilar-cachos-shampoo-quelante-agua-dura.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qual é a diferença entre shampoo quelante e shampoo anti-resíduos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O shampoo anti-resíduos remove acúmulos orgânicos como óleos e cremes de pentear. Já o shampoo quelante possui agentes sequestrantes (como EDTA) que atraem e removem minerais e metais pesados depositados pela água dura na fibra capilar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Com que frequência devo fazer a desmineralização capilar?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Para quem mora em cidades com água calcária ou cloro frequente, a desmineralização é indicada uma vez a cada 15 ou 30 dias. O uso excessivo pode ressecar a fibra se não for acompanhado de reposição hídrica."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber se o meu cabelo está mineralizado por água dura?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Os sinais clássicos incluem fios rígidos ao toque, opacidade mesmo após hidratação profunda, desbotamento rápido de cor e produtos de finalização que parecem 'deslizar' sem serem absorvidos pelo córtex."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "A desmineralização capilar pode desmanchar os cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pelo contrário. Ao remover a carcaça mineral pesada que envolve a mola, o fio recupera sua constante elástica e flexibilidade natural, permitindo que a água volte a unir as fibras no agrupamento helicoidal."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "O que aplicar logo após lavar com o shampoo quelante?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Após o uso do shampoo quelante, aplique imediatamente uma máscara de hidratação ou nutrição profunda para repor a umidade e os lipídios internos enquanto a cutícula está desobstruída."
+          }
+        }
+      ]
+    },
+    content: `
+      <blockquote id="tldr"><p><strong>TL;DR:</strong> A desmineralização capilar é a remoção química profunda de metais pesados (como cobre, ferro e cloro) e minerais de água dura (cálcio e magnésio) acumulados na fibra capilar. Esses depósitos formam uma capa invisível e rígida nos cabelos cacheados e crespos, bloqueando a absorção de água e impedindo que a mola se agrupe com definição. Shampoos anti-resíduos comuns não conseguem remover minerais; apenas o shampoo quelante (com agentes sequestrantes) desobstrui o córtex e devolve a flexibilidade natural do fio.</p></blockquote>
+
+      <p id="introducao">Se você mora em Belo Horizonte ou em qualquer região onde a água da torneira passa por tubulações antigas ou tratamento intenso de cloro e flúor, com certeza já passou por essa situação: você compra a melhor máscara do mercado, capricha na finalização, mas o cabelo acorda rígido, opaco e com uma sensação de que os produtos simplesmente "deslizam" pela superfície sem penetrar. Aqui no Studio do Jon, durante o atendimento de <strong>Leitura de Fio</strong>, é super comum ouvir: <em>"Jon, meu cacho tá pesado, sem brilho e parecendo uma palha dura, mesmo eu hidratando toda semana. O que tá acontecendo?"</em> Valeu demais por buscar entender a ciência! A resposta quase nunca é a falta de produto, mas sim a <strong>mineralização capilar por água dura e metais pesados</strong>. Vamos entender a física por trás desse problema e como o shampoo quelante resolve!</p>
+
+      <h2 id="o-que-e-desmineralizacao">O Que É a Desmineralização Capilar e a Física da Água Dura</h2>
+      <p>A desmineralização capilar é o processo físico-químico de sequestrar e remover íons metálicos e minerais inorgânicos encrostados nas escamas das cutículas e na matriz do córtex da fibra capilar. A água tratada que sai das nossas torneiras carrega uma concentração considerável de sais de cálcio, magnésio, além de rastros de cobre e ferro provenientes de tubulações urbanas.</p>
+      <img src="/blog-desmineralizacao-capilar-cachos-shampoo-quelante-agua-dura.webp" alt="Demonstração da estrutura do fio cacheado livre de resíduos e depósitos minerais com desmineralização capilar" class="post-inline-image" />
+      <p>Em cabelos lisos, o acúmulo mineral escorre com mais facilidade pela camada lipídica. Já em cabelos cacheados e crespos — cujas molas possuem torções contínuas e cutículas naturally mais expostas —, os íons minerais encontram pontos de ancoragem perfeita. Com o tempo, o cálcio e o magnésio cristalizam na superfície do fio, criando uma espécie de "carcaça mineral" que enrijece o cacho e impede que as pontes de hidrogênio voltem a ser ativadas pela água.</p>
+
+      <h2 id="quelante-vs-antiresiduos">A Diferença Física entre Shampoo Quelante e Shampoo Anti-resíduos</h2>
+      <p>Muitas pessoas confundem o shampoo quelante com o shampoo anti-resíduos convencional, mas eles atuam em alvos químicos completamente diferentes na fibra capilar:</p>
+
+      <h3 id="shampoo-antiresiduos">1. Shampoo Anti-resíduos (Limpeza Orgânica)</h3>
+      <p>O shampoo anti-resíduos tradicional utiliza tensoativos de alta carga aniônica para remover acúmulos orgânicos — como excesso de cremes de pentear, ceras, silicones insolúveis e oleosidade. Porém, tensoativos não possuem capacidade química de quebrar as ligações iônicas dos minerais cristalizados. Ele limpa a gordura, mas deixa os metais intactos no fio.</p>
+
+      <h3 id="shampoo-quelante">2. Shampoo Quelante (Desmineralização por Sequestro)</h3>
+      <p>O shampoo quelante contém agentes quelantes (como EDTA Dissódico, EDTA Tetrassódico ou Citrato de Sódio). Essas moléculas funcionam como "garras químicas" que envolvem os íons metálicos (cobre, cálcio, ferro e magnésio), desprendendo-os da queratina e permitindo que sejam totalmente enxaguados pela água. O resultado é a desobstrução real dos poros da fibra capilar.</p>
+
+      <h2 id="tabela-comparativa">Tabela Comparativa: Anti-resíduos vs Shampoo Quelante</h2>
+      <p>A tabela abaixo detalha as diferenças de mecanismo, indicação e efeito em cabelos cacheados e crespos:</p>
+
+      <table style="width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;">
+        <thead>
+          <tr style="border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);">
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05); width: 20%;">Característica</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Shampoo Anti-resíduos</th>
+            <th style="padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);">Shampoo Quelante (Desmineralizador)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Alvo de Remoção</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Silicones, cremes pesados, óleos e sujeira orgânica</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Cálcio, magnésio, cobre, cloro e metais pesados da água</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Mecanismo de Ação</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Solubilização por tensoativos aniônicos fortes</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Quelação (sequestro iônico por EDTA/citratos)</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;">Impacto nos Cachos</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Pode ressecar se usado sem critérios</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Devolve a emoliência e a constante elástica do fio</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #A39687;">Frequência Indicada</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">Mensal ou quinzenal em cabelos com buildup</td>
+            <td style="padding: 12px; border: 1px solid rgba(255,255,255,0.05);">A cada 15 a 30 dias (ou pré-coloração/descoloração)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 id="sinais-mineralizacao">5 Sinais de que Seu Cabelo Está Mineralizado por Metais</h2>
+      <p>No diagnóstico do <a href="/metodo">Método Leitura de Fio</a> aqui no Studio do Jon em BH, identificamos os seguintes sintomas característicos da contaminação mineral:</p>
+      <ul>
+        <li><strong>Fios Rígidos e Estaladiços ao Toque:</strong> O cabelo perde o balanço maleável e parece que vai quebrar ao ser dobrado.</li>
+        <li><strong>Creme Deslizando Sem Absorver:</strong> Você aplica a máscara e sente que ela fica apenas boiando na superfície, sem amaciar a fibra.</li>
+        <li><strong>Falta de Definição na Mola:</strong> Os cachos não conseguem se agrupar helicoidalmente porque o mineral impede a flexibilidade das pontes de hidrogênio.</li>
+        <li><strong>Opacidade e Amarelamento:</strong> O acúmulo de cobre e cloro deixa tons esverdeados ou amarelados opacos nas pontas.</li>
+        <li><strong>Desbotamento Rápido da Cor:</strong> Os minerais aceleram a oxidação dos pigmentos de coloração e descoloração.</li>
+      </ul>
+
+      <h2 id="passo-a-passo">Passo a Passo da Desmineralização Capilar Segura</h2>
+      <p>Para desmineralizar o cabelo em casa sem agredir a fibra, siga esta sequência técnica:</p>
+      <ol>
+        <li><strong>Lavagem Quelante:</strong> Aplique o shampoo quelante no couro cabeludo e comprimento bem molhados, massageando suavemente por 2 a 3 minutos para dar tempo da reação de chelação acontecer. Enxágue abundantemente.</li>
+        <li><strong>Pausa de Reposição Hídrica Implacável:</strong> Como as cutículas estão totalmente limpas e desobstruídas, aplique imediatamente uma máscara de hidratação profunda rica em pantenol ou aloe vera.</li>
+        <li><strong>Acidificação do Ponto Isoelétrico:</strong> Enxágue a máscara e use um acidificante capilar (pH ~3.5) para selar as cutículas e fixar a água dentro do córtex.</li>
+        <li><strong>Finalização Leve:</strong> Finalize com um leave-in fluido e água borrifada sem pesar com óleos oclusivos na raiz.</li>
+      </ol>
+
+      <h2 id="faq">Perguntas Frequentes sobre Desmineralização Capilar</h2>
+      <h3>Qual é a diferença entre shampoo quelante e shampoo anti-resíduos?</h3>
+      <p>O shampoo anti-resíduos remove acúmulos orgânicos como óleos e cremes de pentear. Já o shampoo quelante possui agentes sequestrantes (como EDTA) que atraem e removem minerais e metais pesados depositados pela água dura na fibra capilar.</p>
+
+      <h3>Com que frequência devo fazer a desmineralização capilar?</h3>
+      <p>Para quem mora em cidades com água calcária ou cloro frequente, a desmineralização é indicada uma vez a cada 15 ou 30 dias. O uso excessivo pode ressecar a fibra se não for acompanhado de reposição hídrica.</p>
+
+      <h3>Como saber se o meu cabelo está mineralizado por água dura?</h3>
+      <p>Os sinais clássicos incluem fios rígidos ao toque, opacidade mesmo após hidratação profunda, desbotamento rápido de cor e produtos de finalização que parecem 'deslizar' sem serem absorvidos pelo córtex.</p>
+
+      <h3>A desmineralização capilar pode desmanchar os cachos?</h3>
+      <p>Pelo contrário. Ao remover a carcaça mineral pesada que envolve a mola, o fio recupera sua constante elástica e flexibilidade natural, permitindo que a água volte a unir as fibras no agrupamento helicoidal.</p>
+
+      <h3>O que aplicar logo após lavar com o shampoo quelante?</h3>
+      <p>Após o uso do shampoo quelante, aplique imediatamente uma máscara de hidratação ou nutrição profunda para repor a umidade e os lipídios internos enquanto a cutícula está desobstruída.</p>
+
+      <div id="conclusao" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Seus cachos estão travados e sem resposta aos produtos?</h3>
+        <p>No Studio do Jon, em Belo Horizonte, o diagnóstico do Método Leitura de Fio identifica se o seu cabelo precisa de desmineralização, acidificação ou ajuste geométrico no formato do corte. Tô por aqui para transformar a saúde do seu fio! TMJ e aquele abraço.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
+      </div>
+    `
+  },
+  {
     id: 70,
     slug: 'carga-eletrica-capilar-ponto-isoeletrico-cachos-crespos',
     title: 'Carga Elétrica Capilar e Ponto Isoelétrico: A Física da Selagem Cuticular e do Frizz nos Cabelos Cacheados e Crespos | Studio do Jon',
