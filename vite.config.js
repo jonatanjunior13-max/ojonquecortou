@@ -1,35 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { posts } from './src/data/posts.js'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const srcImages = [
-  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\901c1f26-8e9d-496f-8ef7-c6a2f6ce04fd\\media__1782324414995.jpg",
-  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\bab3f6e7-df37-4501-91cc-4a7445936312\\media__1779742637978.jpg",
-  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204349484.jpg",
-  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204307347.jpg",
-  "C:\\Users\\jonat\\.gemini\\antigravity\\brain\\596317c0-68b8-4610-9993-d41ae372cebb\\media__1779204040308.jpg"
-]
-
-const destImage = path.join(__dirname, 'public', 'jon-perfil.jpg')
-
-for (const src of srcImages) {
-  if (fs.existsSync(src)) {
-    try {
-      fs.copyFileSync(src, destImage);
-      console.log("SUCCESSFULLY COPIED PROFILE IMAGE FROM", src, "TO", destImage);
-      break;
-    } catch (err) {
-      console.error("ERROR COPYING PROFILE IMAGE:", err);
-    }
-  }
-}
-
 
 function seoLinksPlugin() {
   return {
@@ -77,7 +48,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,webp}'],
+        globPatterns: ['**/*.{js,css,html,ico,svg}'],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/api\//, /^\/blog\//, /^\/admin\//],
         skipWaiting: true,
@@ -85,6 +56,19 @@ export default defineConfig({
         // Impede que o Service Worker intercepte chamadas do Firebase/Firestore
         // Isso resolve o problema de sincronização no PWA
         runtimeCaching: [
+          {
+            // Imagens cacheiam sob demanda (na primeira vez que aparecem em tela),
+            // em vez de baixar tudo de uma vez na instalação do PWA
+            urlPattern: /\.(?:png|jpe?g|webp)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 60 * 60 * 24 * 60, // 60 dias
+              },
+            },
+          },
           {
             urlPattern: /^https:\/\/firestore\.googleapis\.com\/.*/i,
             handler: 'NetworkOnly',
@@ -128,14 +112,14 @@ export default defineConfig({
         display: 'standalone',
         icons: [
           {
-            src: '/jon-perfil.jpg',
+            src: '/icon-192.png',
             sizes: '192x192',
-            type: 'image/jpeg'
+            type: 'image/png'
           },
           {
-            src: '/jon-perfil.jpg',
+            src: '/icon-512.png',
             sizes: '512x512',
-            type: 'image/jpeg'
+            type: 'image/png'
           }
         ]
       }
