@@ -60,7 +60,6 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
   box-sizing: border-box;
 }
 
@@ -184,8 +183,8 @@
 
 /* ── Bottom Navigation — glassmorphism inspirado na PWA ─────────────── */
 .m-bottom-nav {
-  height: var(--nav-h);
-  min-height: var(--nav-h);
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  min-height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -194,8 +193,7 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
-  padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding: 0 8px env(safe-area-inset-bottom, 0px) 8px;
   flex-shrink: 0;
   position: relative;
   z-index: 10;
