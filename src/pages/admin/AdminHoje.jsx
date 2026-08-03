@@ -267,9 +267,9 @@ const AdminHoje = () => {
   }, [todayBookings, nowMin]);
 
   return (
-    <div className="admin-app" style={{ display: 'flex', flexDirection: 'column', gap: 24, padding: '24px' }}>
+    <div className="admin-app admin-hoje-container">
       {/* KPI Row */}
-      <div className="dashboard-kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+      <div className="dashboard-kpi-grid admin-hoje-kpi-grid">
         <KpiCard
           label="Faturamento hoje"
           value={fmtBRL(todayRevenue)}
@@ -294,7 +294,7 @@ const AdminHoje = () => {
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 20 }}>
+      <div className="admin-hoje-main-grid">
         {/* Proximos clientes */}
         <Card>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>

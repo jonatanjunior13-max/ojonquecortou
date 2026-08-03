@@ -612,7 +612,22 @@
   }
 
   .admin-page-body {
-    padding: 16px !important;
+    padding: 12px !important;
+  }
+
+  .admin-hoje-container {
+    padding: 0 !important;
+    gap: 14px !important;
+  }
+
+  .admin-hoje-kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .admin-hoje-main-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
   }
 
   .admin-topbar {
@@ -630,6 +645,25 @@
 }
 
 /* Desktop layout and topbar styling */
+.admin-hoje-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.admin-hoje-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.admin-hoje-main-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+}
+
 @media (min-width: 768px) {
   .admin-main-content {
     display: flex;
