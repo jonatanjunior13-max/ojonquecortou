@@ -612,6 +612,21 @@ export default function AdminMobileApp() {
   const [showNotifSheet, setShowNotifSheet] = useState(false);
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  // ── Real viewport height (100dvh mismatch workaround em WebViews Android) ──
+  useEffect(() => {
+    const setAppHeight = () => {
+      const h = window.visualViewport?.height || window.innerHeight;
+      document.documentElement.style.setProperty('--app-vh', `${h}px`);
+    };
+    setAppHeight();
+    window.addEventListener('resize', setAppHeight);
+    window.visualViewport?.addEventListener('resize', setAppHeight);
+    return () => {
+      window.removeEventListener('resize', setAppHeight);
+      window.visualViewport?.removeEventListener('resize', setAppHeight);
+    };
+  }, []);
+
   // ── Firebase Listeners ─────────────────────────────────────────
   useEffect(() => {
     const isLocalLogged = localStorage.getItem('admin_logged') === 'true';

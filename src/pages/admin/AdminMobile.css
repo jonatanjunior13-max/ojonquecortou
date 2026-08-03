@@ -49,8 +49,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
-  height: 100dvh;
+  height: var(--app-vh, 100dvh);
   position: fixed;
   top: 0;
   bottom: 0;
