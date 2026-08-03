@@ -6,6 +6,17 @@ import './index.css';
 import './legacy.css';
 import App from './App.jsx'
 
+// Reload once when a new service worker takes control, so fresh deploys
+// actually reach installed PWAs on the next launch instead of after two restarts
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  let swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (swRefreshing) return;
+    swRefreshing = true;
+    window.location.reload();
+  });
+}
+
 // Listen for chunk loading errors and reload to pull new assets
 if (typeof window !== 'undefined') {
   window.addEventListener('error', (e) => {
