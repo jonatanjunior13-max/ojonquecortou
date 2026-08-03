@@ -1703,7 +1703,6 @@ export default function AdminMobileApp() {
   };
 
   const triggerEmailNotification = async (payload, type = 'horario_confirmado') => {
-    if (!payload.clientEmail) return;
     try {
       let displayDate = payload.date;
       if (displayDate && displayDate.includes('-')) {
@@ -1717,7 +1716,7 @@ export default function AdminMobileApp() {
         body: JSON.stringify({
           type: type,
           id: payload.id,
-          clientEmail: payload.clientEmail,
+          clientEmail: payload.clientEmail || '',
           clientName: payload.clientName,
           serviceName: payload.serviceName || payload.service?.name || 'Serviço',
           date: displayDate,

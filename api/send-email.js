@@ -263,12 +263,6 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
   const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
   const clientEmailClean = cleanEmailAddress(data.clientEmail || '');
 
-  // Evita enviar e-mail de notificação de admin se o cliente for o próprio administrador (ex: testes)
-  if (clientEmailClean && clientEmailClean.toLowerCase() === adminEmail.toLowerCase()) {
-    console.log('E-mail do cliente é o mesmo do administrador. Pulando notificação de admin para evitar duplicidade.');
-    return;
-  }
-
   let subject = '';
   let body = '';
   const formattedDate = data.date ? (data.date.includes('-') ? data.date.split('-').reverse().join('/') : data.date) : '';

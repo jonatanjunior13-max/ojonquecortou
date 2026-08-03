@@ -1269,7 +1269,6 @@ const AdminDashboard = () => {
   };
 
   const triggerEmailNotification = async (payload, type = 'horario_confirmado') => {
-    if (!payload.clientEmail) return;
     try {
       // Format date beautifully if possible
       let displayDate = payload.date;
@@ -1292,7 +1291,7 @@ const AdminDashboard = () => {
         },
         body: JSON.stringify({
           type: type,
-          clientEmail: payload.clientEmail,
+          clientEmail: payload.clientEmail || '',
           clientName: payload.clientName,
           serviceName: payload.serviceName || payload.service?.name || payload.service || '',
           date: displayDate,
