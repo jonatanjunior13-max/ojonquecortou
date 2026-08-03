@@ -485,7 +485,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    height: 76px;
+    height: calc(56px + env(safe-area-inset-bottom, 0px));
     background: linear-gradient(90deg, #1E121E 0%, #120D1A 50%, #090B12 100%) !important;
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
@@ -494,8 +494,7 @@
     justify-content: space-around;
     align-items: center;
     z-index: 1000;
-    padding: 0 8px;
-    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px)) 8px;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6) !important;
     box-sizing: border-box;
   }

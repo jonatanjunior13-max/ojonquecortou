@@ -39,9 +39,9 @@
   --m-radius-xl:    24px;
   --m-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --m-ease-fast:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --nav-h:          92px;
-  --header-h:       78px;
-  --content-h:      calc(100dvh - var(--header-h) - var(--nav-h));
+  --nav-h:          56px;
+  --header-h:       54px;
+  --content-h:      calc(100dvh - var(--header-h) - var(--nav-h) - env(safe-area-inset-top, 0px));
 }
 
 /* ── Base Shell ────────────────────────────────────────────────────── */
@@ -63,17 +63,18 @@
 
 /* ── Header ────────────────────────────────────────────────────────── */
 .m-header {
-  height: 58px;
+  height: 54px;
+  min-height: 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 0 16px;
   background: rgba(16, 16, 16, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 0.5px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--m-radius-sm);
-  margin: 12px 16px 8px 16px;
+  margin: calc(6px + env(safe-area-inset-top, 0px)) 16px 6px 16px;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
@@ -168,21 +169,21 @@
 /* ── Content Area ──────────────────────────────────────────────────── */
 .m-content {
   flex: 1;
-  height: var(--content-h);
-  max-height: var(--content-h);
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: y proximity;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
 }
 
 .m-content::-webkit-scrollbar { display: none; }
 
 /* ── Bottom Navigation — glassmorphism inspirado na PWA ─────────────── */
 .m-bottom-nav {
-  height: var(--nav-h);
-  min-height: var(--nav-h);
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  min-height: calc(56px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -191,8 +192,7 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
-  padding: 0 8px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px)) 8px;
   flex-shrink: 0;
   position: relative;
   z-index: 10;
@@ -1366,7 +1366,7 @@
 /* ── FAB Speed-Dial ────────────────────────────────────────────────── */
 .m-fab-container {
   position: fixed;
-  bottom: calc(var(--nav-h) + 16px);
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 16px);
   right: 16px;
   z-index: 200;
   display: flex;
