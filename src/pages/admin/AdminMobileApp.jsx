@@ -612,21 +612,6 @@ export default function AdminMobileApp() {
   const [showNotifSheet, setShowNotifSheet] = useState(false);
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // ── Real viewport height (100dvh mismatch workaround em WebViews Android) ──
-  useEffect(() => {
-    const setAppHeight = () => {
-      const h = window.visualViewport?.height || window.innerHeight;
-      document.documentElement.style.setProperty('--app-vh', `${h}px`);
-    };
-    setAppHeight();
-    window.addEventListener('resize', setAppHeight);
-    window.visualViewport?.addEventListener('resize', setAppHeight);
-    return () => {
-      window.removeEventListener('resize', setAppHeight);
-      window.visualViewport?.removeEventListener('resize', setAppHeight);
-    };
-  }, []);
-
   // ── Firebase Listeners ─────────────────────────────────────────
   useEffect(() => {
     const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
@@ -1718,6 +1703,7 @@ export default function AdminMobileApp() {
   };
 
   const triggerEmailNotification = async (payload, type = 'horario_confirmado') => {
+    if (!payload.clientEmail) return;
     try {
       let displayDate = payload.date;
       if (displayDate && displayDate.includes('-')) {
@@ -1731,7 +1717,7 @@ export default function AdminMobileApp() {
         body: JSON.stringify({
           type: type,
           id: payload.id,
-          clientEmail: payload.clientEmail || '',
+          clientEmail: payload.clientEmail,
           clientName: payload.clientName,
           serviceName: payload.serviceName || payload.service?.name || 'Serviço',
           date: displayDate,
@@ -6595,7 +6581,7 @@ Grande abraço, Jon.`;
               <img src="/logo-jon-cortou.png" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
               <div>
                 <div className="m-header-title">{headerTitles[tab]}</div>
-                {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin · {typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev'}</div>}
+                {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin</div>}
               </div>
             </>
           )}

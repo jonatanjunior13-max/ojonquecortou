@@ -26,10 +26,6 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  define: {
-    // Carimbo de build visível no painel admin mobile (debug de cache/deploy)
-    __BUILD_ID__: JSON.stringify(new Date().toISOString().slice(5, 16).replace('T', ' ')),
-  },
   build: {
     rollupOptions: {
       output: {
