@@ -6595,7 +6595,7 @@ Grande abraço, Jon.`;
               <img src="/logo-jon-cortou.png" className="m-header-logo" alt="Logo" onError={e => { e.target.style.display='none'; }}/>
               <div>
                 <div className="m-header-title">{headerTitles[tab]}</div>
-                {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin</div>}
+                {tab === 'hoje' && <div className="m-header-subtitle">Painel Admin · {typeof __BUILD_ID__ !== 'undefined' ? __BUILD_ID__ : 'dev'}</div>}
               </div>
             </>
           )}
