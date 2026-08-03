@@ -104,30 +104,22 @@ export default defineConfig({
         ],
       },
       manifest: {
-        name: 'O Jon Que Cortou',
-        short_name: 'Jon Cortou',
-        description: 'Studio do Jon - Especialista em Cachos',
-        theme_color: '#141414',
-        background_color: '#141414',
+        name: 'O Jon Que Cortou - Admin',
+        short_name: 'Jon Admin',
+        description: 'Painel de Agendamento do Salão',
+        theme_color: '#fdfbf7',
+        background_color: '#fdfbf7',
         display: 'standalone',
         icons: [
           {
             src: '/icon-192.png',
             sizes: '192x192',
-            type: 'image/png',
-            purpose: 'any maskable'
+            type: 'image/png'
           },
           {
             src: '/icon-512.png',
             sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
-          },
-          {
-            src: '/logo-app.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable'
+            type: 'image/png'
           }
         ]
       }
