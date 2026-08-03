@@ -39,8 +39,8 @@
   --m-radius-xl:    24px;
   --m-ease:         cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --m-ease-fast:    cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  --nav-h:          92px;
-  --header-h:       78px;
+  --nav-h:          56px;
+  --header-h:       54px;
   --content-h:      calc(100dvh - var(--header-h) - var(--nav-h));
 }
 
@@ -59,7 +59,6 @@
   position: relative;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  padding-top: env(safe-area-inset-top, 0px);
   box-sizing: border-box;
 }
 
@@ -76,7 +75,7 @@
   -webkit-backdrop-filter: blur(20px);
   border: 0.5px solid rgba(255, 255, 255, 0.07);
   border-radius: var(--m-radius-sm);
-  margin: 6px 16px 6px 16px;
+  margin: calc(6px + env(safe-area-inset-top, 0px)) 16px 6px 16px;
   position: relative;
   z-index: 10;
   flex-shrink: 0;
@@ -183,8 +182,8 @@
 
 /* ── Bottom Navigation — glassmorphism inspirado na PWA ─────────────── */
 .m-bottom-nav {
-  height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
-  min-height: calc(var(--nav-h) + env(safe-area-inset-bottom, 0px));
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  min-height: calc(56px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -193,7 +192,7 @@
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
-  padding: 0 8px env(safe-area-inset-bottom, 0px) 8px;
+  padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px)) 8px;
   flex-shrink: 0;
   position: relative;
   z-index: 10;
@@ -207,11 +206,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 4px 0;
+  padding: 2px 0;
   height: 100%;
   position: relative;
   transition: transform 0.08s ease-out, opacity 0.08s ease-out;
@@ -227,17 +226,17 @@
 }
 
 .m-nav-label {
-  font-size: 0.65rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.45);
   transition: color 0.2s ease;
 }
 
 .m-nav-icon-wrap {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
