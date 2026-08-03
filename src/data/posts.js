@@ -7,9 +7,9 @@ export const posts = [
     excerpt: 'Descubra como os minerais e metais pesados da água da torneira criam uma capa rígida nos fios, impedem a definição dos cachos e por que o shampoo quelante é a única solução real.',
     metaDescription: 'Entenda a física da desmineralização capilar para cabelos cacheados e crespos. Saiba a diferença entre shampoo quelante e anti-resíduos com o Studio do Jon em BH.',
     keywords: 'desmineralizacao capilar, shampoo quelante cachos, agua dura cabelo cacheado, metais pesados cabelo, detox capilar quelante, Studio do Jon BH',
-    date: '02 de Agosto, 2026',
-    datePublished: '2026-08-02',
-    dateModified: '2026-08-02',
+    date: '03 de Agosto, 2026',
+    datePublished: '2026-08-03',
+    dateModified: '2026-08-03',
     author: 'Jon',
     category: 'Cuidado Capilar',
     image: '/blog-desmineralizacao-capilar-cachos-shampoo-quelante-agua-dura.webp',
@@ -62,12 +62,12 @@ export const posts = [
     content: `
       <blockquote id="tldr"><p><strong>TL;DR:</strong> A desmineralização capilar é a remoção química profunda de metais pesados (como cobre, ferro e cloro) e minerais de água dura (cálcio e magnésio) acumulados na fibra capilar. Esses depósitos formam uma capa invisível e rígida nos cabelos cacheados e crespos, bloqueando a absorção de água e impedindo que a mola se agrupe com definição. Shampoos anti-resíduos comuns não conseguem remover minerais; apenas o shampoo quelante (com agentes sequestrantes) desobstrui o córtex e devolve a flexibilidade natural do fio.</p></blockquote>
 
-      <p id="introducao">Se você mora em Belo Horizonte ou em qualquer região onde a água da torneira passa por tubulações antigas ou tratamento intenso de cloro e flúor, com certeza já passou por essa situação: você compra a melhor máscara do mercado, capricha na finalização, mas o cabelo acorda rígido, opaco e com uma sensação de que os produtos simplesmente "deslizam" pela superfície sem penetrar. Aqui no Studio do Jon, durante o atendimento de <strong>Leitura de Fio</strong>, é super comum ouvir: <em>"Jon, meu cacho tá pesado, sem brilho e parecendo uma palha dura, mesmo eu hidratando toda semana. O que tá acontecendo?"</em> Valeu demais por buscar entender a ciência! A resposta quase nunca é a falta de produto, mas sim a <strong>mineralização capilar por água dura e metais pesados</strong>. Vamos entender a física por trás desse problema e como o shampoo quelante resolve!</p>
+      <p id="introducao">Se você mora em Belo Horizonte ou em qualquer região onde a água da torneira passa por tubulações antigas ou tratamento intenso de cloro e flúor, com certeza já passou por essa situação: você compra uma excelente máscara, capricha na finalização, mas o cabelo acorda rígido, opaco e com uma sensação de que os produtos simplesmente "deslizam" pela superfície sem penetrar. Aqui no Studio do Jon, durante a avaliação no <strong>Método Leitura de Fio</strong>, é super comum ouvir essa queixa no atendimento. Valeu demais por buscar entender a ciência por trás do seu cacho! A resposta quase nunca é falta de hidratação, mas sim a <strong>mineralização capilar por água dura e metais pesados</strong>. Vamos entender a física por trás desse problema e como o shampoo quelante resolve!</p>
 
       <h2 id="o-que-e-desmineralizacao">O Que É a Desmineralização Capilar e a Física da Água Dura</h2>
       <p>A desmineralização capilar é o processo físico-químico de sequestrar e remover íons metálicos e minerais inorgânicos encrostados nas escamas das cutículas e na matriz do córtex da fibra capilar. A água tratada que sai das nossas torneiras carrega uma concentração considerável de sais de cálcio, magnésio, além de rastros de cobre e ferro provenientes de tubulações urbanas.</p>
       <img src="/blog-desmineralizacao-capilar-cachos-shampoo-quelante-agua-dura.webp" alt="Demonstração da estrutura do fio cacheado livre de resíduos e depósitos minerais com desmineralização capilar" class="post-inline-image" />
-      <p>Em cabelos lisos, o acúmulo mineral escorre com mais facilidade pela camada lipídica. Já em cabelos cacheados e crespos — cujas molas possuem torções contínuas e cutículas naturally mais expostas —, os íons minerais encontram pontos de ancoragem perfeita. Com o tempo, o cálcio e o magnésio cristalizam na superfície do fio, criando uma espécie de "carcaça mineral" que enrijece o cacho e impede que as pontes de hidrogênio voltem a ser ativadas pela água.</p>
+      <p>Em cabelos lisos, o acúmulo mineral escorre com mais facilidade pela camada lipídica. Já em cabelos cacheados e crespos — cujas molas possuem torções contínuas e cutículas naturalmente mais expostas nos pontos de curva —, os íons minerais encontram pontos de ancoragem perfeita. Com o tempo, o cálcio e o magnésio cristalizam na superfície do fio, criando uma espécie de "carcaça mineral" que enrijece o cacho e impede que as pontes de hidrogênio voltem a ser ativadas pela água.</p>
 
       <h2 id="quelante-vs-antiresiduos">A Diferença Física entre Shampoo Quelante e Shampoo Anti-resíduos</h2>
       <p>Muitas pessoas confundem o shampoo quelante com o shampoo anti-resíduos convencional, mas eles atuam em alvos químicos completamente diferentes na fibra capilar:</p>
@@ -150,7 +150,7 @@ export const posts = [
 
       <div id="conclusao" style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
         <h3>Seus cachos estão travados e sem resposta aos produtos?</h3>
-        <p>No Studio do Jon, em Belo Horizonte, o diagnóstico do Método Leitura de Fio identifica se o seu cabelo precisa de desmineralização, acidificação ou ajuste geométrico no formato do corte. Tô por aqui para transformar a saúde do seu fio! TMJ e aquele abraço.</p>
+        <p>No Studio do Jon, em Belo Horizonte, a Leitura de Fio identifica se o seu cabelo precisa de desmineralização, acidificação ou ajuste geométrico no formato do corte. Tô por aqui pra cuidar do seu fio! TMJ e aquele abraço.</p>
         <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário no Studio do Jon</a>
       </div>
     `

@@ -52,11 +52,23 @@ html, body, #root {
 }
 html { scroll-behavior: smooth; }
 
-/* ── Travar Resolução & Anti-Zoom em Formulários / Ficha do Cliente ── */
+/* ── Travar Resolução & Anti-Zoom PWA em Janelas, Modais e Formulários ── */
+html, body, #root,
+.modal-overlay, .adm-modal-overlay, .m-modal-overlay, .admin-modal-overlay,
+.modal-content, .adm-modal, .m-modal, .admin-modal,
+[role="dialog"] {
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+  touch-action: manipulation !important;
+}
+
 @media screen and (max-width: 768px) {
   input, 
   select, 
   textarea,
+  button,
+  a,
+  label,
   .m-input, 
   .m-select, 
   .m-textarea,
@@ -67,7 +79,8 @@ html { scroll-behavior: smooth; }
   .adm-input,
   .search-input {
     font-size: 16px !important;
-    touch-action: manipulation;
+    touch-action: manipulation !important;
+    -webkit-text-size-adjust: 100% !important;
   }
 }
 
