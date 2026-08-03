@@ -179,18 +179,21 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: y proximity;
-  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  /* 56px pill + 10px folga + safe-area + respiro */
+  padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px));
 }
 
 .m-content::-webkit-scrollbar { display: none; }
 
-/* ── Bottom Navigation — glassmorphism inspirado na PWA ─────────────── */
+/* ── Bottom Navigation — pill flutuante acima do safe-area ──────────── */
+/* Barra NÃO ocupa mais a zona do indicador de gestos: flutua acima dela,
+   e o fundo preto do app preenche embaixo — some o "bloco preto". */
 .m-bottom-nav {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: calc(52px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+  left: 12px;
+  right: 12px;
+  height: 56px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -198,11 +201,12 @@
   background: linear-gradient(90deg, #1E121E 0%, #120D1A 50%, #090B12 100%) !important;
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
-  padding: 2px 8px env(safe-area-inset-bottom, 0px) 8px;
+  border: 1px solid rgba(251, 197, 211, 0.18) !important;
+  border-radius: 20px;
+  padding: 0 6px;
   flex-shrink: 0;
   z-index: 1000;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7) !important;
   box-sizing: border-box;
 }
 
@@ -1372,7 +1376,7 @@
 /* ── FAB Speed-Dial ────────────────────────────────────────────────── */
 .m-fab-container {
   position: fixed;
-  bottom: calc(var(--nav-h) + 16px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 82px);
   right: 16px;
   z-index: 200;
   display: flex;
