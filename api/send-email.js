@@ -244,10 +244,21 @@ function buildGoogleCalendarLink(data) {
     const location = encodeURIComponent('Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG');
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
-  } catch (e) {
-    return null;
-  }
+  } catch(e) { return null; }
 }
+
+const sanitizeEnv = (val, fallback = '') => {
+  if (!val) return fallback;
+  const cleaned = String(val).replace(/[\r\n"']/g, '').trim();
+  return cleaned || fallback;
+};
+
+const cleanEmailAddress = (emailStr) => {
+  if (!emailStr) return 'contato@ojonquecortou.com.br';
+  const sanitized = sanitizeEnv(emailStr);
+  const match = sanitized.match(/<([^>]+)>/) || sanitized.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
+  return match ? match[1].trim() : sanitized.trim();
+};
 
 async function sendAdminNotification(type, data, transporter, smtpFrom, settings) {
   const automations = settings?.automations || {};
@@ -260,7 +271,22 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
     return;
   }
 
-  const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
+  const candidateAdminEmails = [
+    settings?.adminEmail,
+    process.env.ADMIN_NOTIFICATION_EMAIL,
+    process.env.SMTP_USER,
+    'contato@ojonquecortou.com.br',
+    'jonatanjunior13@gmail.com'
+  ];
+
+  const adminEmailList = Array.from(new Set(
+    candidateAdminEmails
+      .filter(Boolean)
+      .map(cleanEmailAddress)
+      .filter(e => e && e.includes('@') && !e.startsWith('sem-email@'))
+  ));
+
+  const adminEmail = adminEmailList.join(', ');
   const clientEmailClean = cleanEmailAddress(data.clientEmail || '');
 
   let subject = '';
