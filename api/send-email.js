@@ -247,6 +247,8 @@ function buildGoogleCalendarLink(data) {
   } catch(e) { return null; }
 }
 
+const DEFAULT_MAILERSEND_KEY = 'mlsn.4c165db2c7c49ccd9b84519ab200e8d8b4fbcd93d601874dfae814b2a871bdc6';
+
 const sanitizeEnv = (val, fallback = '') => {
   if (!val) return fallback;
   const cleaned = String(val).replace(/[\r\n"']/g, '').trim();
@@ -260,7 +262,54 @@ const cleanEmailAddress = (emailStr) => {
   return match ? match[1].trim() : sanitized.trim();
 };
 
-async function sendAdminNotification(type, data, transporter, smtpFrom, settings) {
+async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br', fromName = 'O Jon Que Cortou', toEmails, subject, html }) {
+  const key = (apiKey || process.env.MAILERSEND_API_KEY || DEFAULT_MAILERSEND_KEY).trim();
+  if (!key) return null;
+
+  let recipientList = [];
+  if (Array.isArray(toEmails)) {
+    recipientList = toEmails.map(item => {
+      if (typeof item === 'string') return { email: cleanEmailAddress(item) };
+      return { email: cleanEmailAddress(item.email), name: item.name || '' };
+    }).filter(r => r.email && r.email.includes('@') && !r.email.startsWith('sem-email@'));
+  } else if (typeof toEmails === 'string') {
+    recipientList = toEmails.split(',')
+      .map(e => cleanEmailAddress(e.trim()))
+      .filter(e => e && e.includes('@') && !e.startsWith('sem-email@'))
+      .map(e => ({ email: e }));
+  }
+
+  if (recipientList.length === 0) return null;
+
+  const res = await fetch('https://api.mailersend.com/v1/email', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: {
+        email: fromEmail,
+        name: fromName
+      },
+      to: recipientList,
+      subject: subject,
+      html: html
+    })
+  });
+
+  if (res.ok) {
+    const msgId = res.headers.get('x-message-id') || 'mailersend-202-ok';
+    console.log(`✅ E-mail enviado via MailerSend para ${recipientList.map(r => r.email).join(', ')}. ID: ${msgId}`);
+    return { success: true, messageId: msgId };
+  } else {
+    const errText = await res.text();
+    console.error(`❌ Erro no MailerSend (${res.status}):`, errText);
+    throw new Error(`MailerSend HTTP ${res.status}: ${errText}`);
+  }
+}
+
+async function sendAdminNotification(type, data, transporter, smtpFrom, settings, mailersendApiKey) {
   const automations = settings?.automations || {};
   if (type === 'solicitacao_recebida' && automations.adminWaitingRequestEmailEnabled === false) {
     console.log('Notificação por e-mail de nova solicitação desativada para admin.');
@@ -459,11 +508,31 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
     html: finalHtml
   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Email de notificação enviado para o administrador: ${adminEmail}`);
-  } catch (err) {
-    console.error('Falha ao enviar e-mail de notificação para o admin:', err);
+  let adminSent = false;
+  if (mailersendApiKey) {
+    try {
+      await sendViaMailerSend({
+        apiKey: mailersendApiKey,
+        fromEmail: 'contato@ojonquecortou.com.br',
+        fromName: 'Studio do Jon',
+        toEmails: adminEmailList,
+        subject: subject,
+        html: finalHtml
+      });
+      console.log(`Notificação de Admin enviada via MailerSend para: ${adminEmail}`);
+      adminSent = true;
+    } catch (msErr) {
+      console.error('Falha ao enviar notificação de Admin via MailerSend, tentando SMTP fallback:', msErr.message);
+    }
+  }
+
+  if (!adminSent && transporter) {
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log(`Email de notificação enviado para o administrador via SMTP: ${adminEmail}`);
+    } catch (err) {
+      console.error('Falha ao enviar e-mail de notificação para o admin via SMTP:', err);
+    }
   }
 
   if (db) {
@@ -753,11 +822,16 @@ export default async function handler(req, res) {
   const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
 
   
-  // Se SMTP_HOST e USER estão configurados, assume que deve enviar e-mails reais
+  // Se SMTP_HOST e USER ou MailerSend estão configurados, assume que deve enviar e-mails reais
   const isLaunchCampaign = type === 'launch_campaign';
-  const mailersendApiKey = (process.env.MAILERSEND_API_KEY || (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || '').trim();
+  const mailersendApiKey = (
+    process.env.MAILERSEND_API_KEY || 
+    (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || 
+    DEFAULT_MAILERSEND_KEY
+  ).trim();
+
   const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
-  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (hasSmtpConfig || (isLaunchCampaign && mailersendApiKey));
+  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (Boolean(mailersendApiKey) || hasSmtpConfig);
 
   if (!sendReal) {
     console.log('Simulação de envio ativa (SMTP não configurado ou desativado). Para:', clientEmail);
@@ -767,7 +841,7 @@ export default async function handler(req, res) {
     return res.status(200).json({ success: true, simulated: true, message: 'Simulado' });
   }
 
-  const transporter = (!isLaunchCampaign && hasSmtpConfig) ? nodemailer.createTransport({
+  const transporter = hasSmtpConfig ? nodemailer.createTransport({
     host: smtpHost,
     port: parseInt(smtpPort, 10),
     secure: smtpSecure,
@@ -776,9 +850,9 @@ export default async function handler(req, res) {
   }) : null;
 
   // Enviar e-mail de notificação para o administrador (Jon) se for um evento de agendamento
-  if (isAdminType && transporter) {
+  if (isAdminType) {
     try {
-      await sendAdminNotification(type, data, transporter, smtpFrom, settings);
+      await sendAdminNotification(type, data, transporter, smtpFrom, settings, mailersendApiKey);
     } catch (adminErr) {
       console.error('Falha ao disparar e-mail de notificação para o admin:', adminErr);
     }
@@ -1253,56 +1327,39 @@ export default async function handler(req, res) {
 
     const isPlaceholderEmail = !targetClientEmail || targetClientEmail === 'Não informado' || targetClientEmail.startsWith('sem-email@') || !targetClientEmail.includes('@');
     if (shouldSendClientEmail && !isPlaceholderEmail) {
-      if (isLaunchCampaign) {
-        if (mailersendApiKey) {
-          try {
-            // Enviar campanha de lançamento via MailerSend
-            const UNSUBSCRIBE_BASE = 'https://ojonquecortou.com.br/api/unsubscribe?email=';
-            const fetchRes = await fetch('https://api.mailersend.com/v1/email', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Bearer ${mailersendApiKey}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                from: {
-                  email: 'contato@ojonquecortou.com.br',
-                  name: 'O Jon Que Cortou'
-                },
-                to: [
-                  {
-                    email: clientEmail,
-                    name: clientName || ''
-                  }
-                ],
-                subject: emailSubject,
-                html: finalHtml
-              })
-            });
-            if (fetchRes.ok) {
-              messageId = fetchRes.headers.get('X-Message-Id') || 'mailersend-ok';
-              console.log(`E-mail de campanha de lançamento enviado via MailerSend para ${clientEmail}.`);
-            } else {
-              const errMsg = await fetchRes.text();
-              console.error(`Falha ao enviar via MailerSend para ${clientEmail}: ${errMsg}.`);
-              return res.status(500).json({ success: false, error: `MailerSend error: ${errMsg}` });
-            }
-          } catch (msErr) {
-            console.error(`Erro ao disparar via MailerSend para ${clientEmail}: ${msErr.message}.`);
-            return res.status(500).json({ success: false, error: msErr.message });
+      let clientSent = false;
+      if (mailersendApiKey) {
+        try {
+          const msRes = await sendViaMailerSend({
+            apiKey: mailersendApiKey,
+            fromEmail: 'contato@ojonquecortou.com.br',
+            fromName: 'O Jon Que Cortou',
+            toEmails: [{ email: targetClientEmail, name: clientName || '' }],
+            subject: emailSubject,
+            html: finalHtml
+          });
+          if (msRes?.success) {
+            messageId = msRes.messageId;
+            clientSent = true;
+            console.log(`E-mail de cliente enviado via MailerSend com sucesso para ${targetClientEmail}. Tipo: ${type}`);
           }
-        } else {
-          console.error('API Key do MailerSend não configurada para campanha de lançamento.');
-          return res.status(500).json({ success: false, error: 'MailerSend API Key not configured' });
+        } catch (msErr) {
+          console.error(`Falha no MailerSend para cliente ${targetClientEmail}, tentando SMTP fallback:`, msErr.message);
         }
-      } else {
-        // Enviar via SMTP
-        const info = await transporter.sendMail(mailOptions);
-        messageId = info.messageId;
-        console.log(`E-mail de cliente enviado via SMTP para ${clientEmail}. Tipo: ${type}`);
+      }
+
+      if (!clientSent && transporter) {
+        try {
+          const info = await transporter.sendMail(mailOptions);
+          messageId = info.messageId;
+          console.log(`E-mail de cliente enviado via SMTP para ${targetClientEmail}. Tipo: ${type}`);
+        } catch (smtpErr) {
+          console.error(`Falha no SMTP fallback para cliente ${targetClientEmail}:`, smtpErr.message);
+          throw smtpErr;
+        }
       }
     } else {
-      console.log(`E-mail de cliente do tipo ${type} está desativado nas configurações para ${clientEmail}. Pulando envio.`);
+      console.log(`E-mail de cliente do tipo ${type} está desativado ou sem e-mail válido para ${targetClientEmail}. Pulando envio.`);
     }
 
     return res.status(200).json({ success: true, messageId: messageId });
