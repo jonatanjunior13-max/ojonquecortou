@@ -247,10 +247,8 @@ function buildGoogleCalendarLink(data) {
   } catch(e) { return null; }
 }
 
-const DEFAULT_MAILERSEND_KEY = 'mlsn.4c165db2c7c49ccd9b84519ab200e8d8b4fbcd93d601874dfae814b2a871bdc6';
-
 async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br', fromName = 'O Jon Que Cortou', toEmails, subject, html }) {
-  const key = (apiKey || process.env.MAILERSEND_API_KEY || DEFAULT_MAILERSEND_KEY).trim();
+  const key = (apiKey || process.env.MAILERSEND_API_KEY || '').trim();
   if (!key) return null;
 
   let recipientList = [];
@@ -803,7 +801,7 @@ export default async function handler(req, res) {
   const smtpPort = sanitizeEnv(process.env.SMTP_PORT, '465');
   const smtpSecure = sanitizeEnv(process.env.SMTP_SECURE) === 'true' || smtpPort === '465';
   const smtpUser = sanitizeEnv(process.env.SMTP_USER, 'contato@ojonquecortou.com.br');
-  const smtpPass = sanitizeEnv(process.env.SMTP_PASS, '7956#Jon!');
+  const smtpPass = sanitizeEnv(process.env.SMTP_PASS, '');
   const smtpFrom = cleanEmailAddress(process.env.SMTP_FROM || 'contato@ojonquecortou.com.br');
 
   const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
@@ -813,8 +811,7 @@ export default async function handler(req, res) {
   const isLaunchCampaign = type === 'launch_campaign';
   const mailersendApiKey = (
     process.env.MAILERSEND_API_KEY || 
-    (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '') || 
-    DEFAULT_MAILERSEND_KEY
+    (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '')
   ).trim();
 
   const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
