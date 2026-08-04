@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { EMAIL_CSS } from '../src/utils/emailTemplates.js';
+const EMAIL_CSS = `@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');`;
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
@@ -496,7 +496,17 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
   };
 
   let adminSent = false;
-  if (mailersendApiKey) {
+  if (transporter) {
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log(`Email de notificação enviado para o admin via Titan SMTP: ${adminEmail}. MessageId: ${info.messageId}`);
+      adminSent = true;
+    } catch (err) {
+      console.error('Falha ao enviar notificação de Admin via Titan SMTP:', err.message);
+    }
+  }
+
+  if (!adminSent && mailersendApiKey) {
     try {
       await sendViaMailerSend({
         apiKey: mailersendApiKey,
@@ -506,19 +516,9 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
         subject: subject,
         html: finalHtml
       });
-      console.log(`Notificação de Admin enviada via MailerSend para: ${adminEmail}`);
-      adminSent = true;
+      console.log(`Notificação de Admin enviada via MailerSend (fallback) para: ${adminEmail}`);
     } catch (msErr) {
-      console.error('Falha ao enviar notificação de Admin via MailerSend, tentando SMTP fallback:', msErr.message);
-    }
-  }
-
-  if (!adminSent && transporter) {
-    try {
-      await transporter.sendMail(mailOptions);
-      console.log(`Email de notificação enviado para o administrador via SMTP: ${adminEmail}`);
-    } catch (err) {
-      console.error('Falha ao enviar e-mail de notificação para o admin via SMTP:', err);
+      console.error('Falha ao enviar notificação de Admin via MailerSend fallback:', msErr.message);
     }
   }
 
@@ -1315,7 +1315,21 @@ export default async function handler(req, res) {
     const isPlaceholderEmail = !targetClientEmail || targetClientEmail === 'Não informado' || targetClientEmail.startsWith('sem-email@') || !targetClientEmail.includes('@');
     if (shouldSendClientEmail && !isPlaceholderEmail) {
       let clientSent = false;
-      if (mailersendApiKey) {
+
+      // 1. Tentar enviar via Titan SMTP (Canal Principal)
+      if (transporter) {
+        try {
+          const info = await transporter.sendMail(mailOptions);
+          messageId = info.messageId;
+          clientSent = true;
+          console.log(`✅ E-mail transacional/régua enviado com SUCESSO via Titan SMTP para ${targetClientEmail}. Tipo: ${type}. MessageId: ${messageId}`);
+        } catch (smtpErr) {
+          console.error(`❌ Falha no Titan SMTP para cliente ${targetClientEmail}, tentando MailerSend fallback:`, smtpErr.message);
+        }
+      }
+
+      // 2. Fallback MailerSend se Titan SMTP falhar por instabilidade de rede ou limite
+      if (!clientSent && mailersendApiKey) {
         try {
           const msRes = await sendViaMailerSend({
             apiKey: mailersendApiKey,
@@ -1328,22 +1342,15 @@ export default async function handler(req, res) {
           if (msRes?.success) {
             messageId = msRes.messageId;
             clientSent = true;
-            console.log(`E-mail de cliente enviado via MailerSend com sucesso para ${targetClientEmail}. Tipo: ${type}`);
+            console.log(`✅ E-mail enviado via MailerSend fallback para ${targetClientEmail}. Tipo: ${type}`);
           }
         } catch (msErr) {
-          console.error(`Falha no MailerSend para cliente ${targetClientEmail}, tentando SMTP fallback:`, msErr.message);
+          console.error(`❌ Falha no MailerSend fallback para cliente ${targetClientEmail}:`, msErr.message);
         }
       }
 
-      if (!clientSent && transporter) {
-        try {
-          const info = await transporter.sendMail(mailOptions);
-          messageId = info.messageId;
-          console.log(`E-mail de cliente enviado via SMTP para ${targetClientEmail}. Tipo: ${type}`);
-        } catch (smtpErr) {
-          console.error(`Falha no SMTP fallback para cliente ${targetClientEmail}:`, smtpErr.message);
-          throw smtpErr;
-        }
+      if (!clientSent) {
+        throw new Error(`Falha ao enviar e-mail (${type}) para ${targetClientEmail} via Titan SMTP e MailerSend`);
       }
     } else {
       console.log(`E-mail de cliente do tipo ${type} está desativado ou sem e-mail válido para ${targetClientEmail}. Pulando envio.`);
