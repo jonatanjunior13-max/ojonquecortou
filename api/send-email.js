@@ -249,19 +249,6 @@ function buildGoogleCalendarLink(data) {
 
 const DEFAULT_MAILERSEND_KEY = 'mlsn.4c165db2c7c49ccd9b84519ab200e8d8b4fbcd93d601874dfae814b2a871bdc6';
 
-const sanitizeEnv = (val, fallback = '') => {
-  if (!val) return fallback;
-  const cleaned = String(val).replace(/[\r\n"']/g, '').trim();
-  return cleaned || fallback;
-};
-
-const cleanEmailAddress = (emailStr) => {
-  if (!emailStr) return 'contato@ojonquecortou.com.br';
-  const sanitized = sanitizeEnv(emailStr);
-  const match = sanitized.match(/<([^>]+)>/) || sanitized.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/);
-  return match ? match[1].trim() : sanitized.trim();
-};
-
 async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br', fromName = 'O Jon Que Cortou', toEmails, subject, html }) {
   const key = (apiKey || process.env.MAILERSEND_API_KEY || DEFAULT_MAILERSEND_KEY).trim();
   if (!key) return null;
