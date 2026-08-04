@@ -481,22 +481,24 @@
   }
 
   .mobile-bottom-nav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: calc(56px + env(safe-area-inset-bottom, 0px));
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 56px !important;
+    min-height: 56px !important;
     background: linear-gradient(90deg, #1E121E 0%, #120D1A 50%, #090B12 100%) !important;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
     border-top: 1.5px solid rgba(251, 197, 211, 0.2) !important;
     display: flex !important;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000;
-    padding: 4px 8px calc(4px + env(safe-area-inset-bottom, 0px)) 8px;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6) !important;
-    box-sizing: border-box;
+    justify-content: space-around !important;
+    align-items: center !important;
+    z-index: 99999 !important;
+    padding: 2px 4px 0px 4px !important;
+    margin: 0 !important;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.8) !important;
+    box-sizing: border-box !important;
   }
 
   .mobile-nav-item {
