@@ -1232,9 +1232,11 @@ export default async function handler(req, res) {
     }
   }
 
+  const targetClientEmail = cleanEmailAddress(clientEmail);
+
   const mailOptions = {
     from: `"O Jon Que Cortou" <${smtpFrom}>`,
-    to: clientEmail,
+    to: targetClientEmail,
     subject: emailSubject,
     html: finalHtml
   };
@@ -1249,7 +1251,7 @@ export default async function handler(req, res) {
       shouldSendClientEmail = false;
     }
 
-    const isPlaceholderEmail = !clientEmail || clientEmail === 'Não informado' || clientEmail.startsWith('sem-email@');
+    const isPlaceholderEmail = !targetClientEmail || targetClientEmail === 'Não informado' || targetClientEmail.startsWith('sem-email@') || !targetClientEmail.includes('@');
     if (shouldSendClientEmail && !isPlaceholderEmail) {
       if (isLaunchCampaign) {
         if (mailersendApiKey) {

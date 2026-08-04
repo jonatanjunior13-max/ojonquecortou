@@ -1559,6 +1559,7 @@ const BookingPage = () => {
             setCreatedBookingId(rescheduleId);
           } else {
             const docRef = await withTimeout(addDoc(collection(db, 'bookings'), bookingPayload), 8000);
+            bookingPayload.id = docRef.id;
             syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
             setCreatedBookingId(docRef.id);
           }
