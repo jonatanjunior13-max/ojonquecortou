@@ -76,6 +76,7 @@ async function run() {
     content = content.replace(/às 14h\./g, 'às {horario}.');
 
     // Fix links
+    content = content.replace(/https:\/\/wa\.me\/5531988899852\?text=Ol%C3%A1%2C%20gostaria%20de%20reagendar%20meu%20hor%C3%A1rio/g, '{LinkReagendamento}');
     content = replaceLink(content, "Chamar no WhatsApp", "https://wa.me/553135866673");
     content = replaceLink(content, "Preciso reagendar", "https://www.ojonquecortou.com.br/agendar");
     content = replaceLink(content, "Preferências", "https://www.ojonquecortou.com.br");
