@@ -275,9 +275,6 @@ const AdminClients = () => {
     const clientObj = clients.find(c => c.phone === selectedClientPhone);
     
     if (clientProf) {
-      // DEBUG TEMPORÁRIO — ver campos reais do Firestore
-      console.log('[DEBUG birthdate] Firestore doc keys:', Object.keys(clientProf));
-      console.log('[DEBUG birthdate] birthdate:', clientProf.birthdate, '| aniversario:', clientProf.aniversario, '| all fields:', JSON.stringify(clientProf));
       setHairProfile({
         name: clientProf.name || clientObj?.name || '',
         email: clientProf.email || clientObj?.email || '',
