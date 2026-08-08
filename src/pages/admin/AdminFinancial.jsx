@@ -9,7 +9,7 @@ import {
   Search, Edit3
 } from 'lucide-react';
 import KpiCard from '../../components/admin/ui/KpiCard';
-import { calculateNetValue, calculateTransactionFee, calculateProfessionalCommission as calculateProfessionalCommissionUtil, formatCurrencyBRL } from '../../utils/finance';
+import { calculateNetValue, calculateTransactionFee, calculateProfessionalCommission as calculateProfessionalCommissionUtil, formatCurrencyBRL, calculateReceivablesSchedule } from '../../utils/finance';
 
 // Seed data for historical comparison if database is empty/fresh (matches Figma layout screenshots)
 const SEED_HISTORICAL_TRANSACTIONS = [];
@@ -111,6 +111,11 @@ const AdminFinancial = () => {
   const [ledgerTypeFilter, setLedgerTypeFilter] = useState('todos'); // 'todos', 'servico', 'produto', 'saida'
   const [ledgerMethodFilter, setLedgerMethodFilter] = useState('todos');
   const [productSearch, setProductSearch] = useState('');
+
+  // Receivables Schedule Filter states
+  const [receivablesSearch, setReceivablesSearch] = useState('');
+  const [receivablesStatusFilter, setReceivablesStatusFilter] = useState('todos'); // 'todos', 'a_receber', 'liquidado', 'antecipado'
+  const [receivablesMethodFilter, setReceivablesMethodFilter] = useState('todos'); // 'todos', 'credito', 'debito', 'pix', 'dinheiro'
 
   // Packages Management states
   const [packageSearch, setPackageSearch] = useState('');
@@ -689,6 +694,63 @@ const AdminFinancial = () => {
       history
     };
   }, [filteredTransactions]);
+
+  // Schedule of all receivables (Previsão de Recebimentos por Vencimento: 30/60/90d crédito, D+1 débito, D+0 pix)
+  const fullReceivablesSchedule = useMemo(() => {
+    return calculateReceivablesSchedule(filteredTransactions, settings);
+  }, [filteredTransactions, settings]);
+
+  const filteredReceivablesSchedule = useMemo(() => {
+    return fullReceivablesSchedule.filter(item => {
+      const term = receivablesSearch.toLowerCase();
+      const matchesSearch = 
+        (item.clientName || '').toLowerCase().includes(term) ||
+        (item.description || '').toLowerCase().includes(term) ||
+        (item.paymentMethod || '').toLowerCase().includes(term);
+
+      const matchesStatus = receivablesStatusFilter === 'todos' || item.status === receivablesStatusFilter;
+
+      let matchesMethod = true;
+      if (receivablesMethodFilter !== 'todos') {
+        const pm = item.paymentMethod.toLowerCase();
+        if (receivablesMethodFilter === 'credito') matchesMethod = pm.includes('crédito') || pm.includes('credito');
+        else if (receivablesMethodFilter === 'debito') matchesMethod = pm.includes('débito') || pm.includes('debito');
+        else if (receivablesMethodFilter === 'pix') matchesMethod = pm.includes('pix');
+        else if (receivablesMethodFilter === 'dinheiro') matchesMethod = pm.includes('dinheiro');
+      }
+
+      return matchesSearch && matchesStatus && matchesMethod;
+    });
+  }, [fullReceivablesSchedule, receivablesSearch, receivablesStatusFilter, receivablesMethodFilter]);
+
+  const receivablesKPIs = useMemo(() => {
+    let pendingNet = 0;
+    let liquidNet = 0;
+    let totalFees = 0;
+    let next30DaysNet = 0;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const in30DaysStr = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+    fullReceivablesSchedule.forEach(item => {
+      totalFees += item.feeValue;
+      if (item.status === 'a_receber') {
+        pendingNet += item.netValue;
+        if (item.dueDate >= todayStr && item.dueDate <= in30DaysStr) {
+          next30DaysNet += item.netValue;
+        }
+      } else {
+        liquidNet += item.netValue;
+      }
+    });
+
+    return {
+      pendingNet,
+      liquidNet,
+      totalFees,
+      next30DaysNet
+    };
+  }, [fullReceivablesSchedule]);
 
   // Save new fee settings to database & local
   const handleSaveFees = async (e) => {
@@ -1299,6 +1361,7 @@ const AdminFinancial = () => {
         {[
           { id: 'dashboard', label: 'Gráficos', icon: <TrendingUp size={14} /> },
           { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
+          { id: 'recebiveis', label: 'Agenda de Recebíveis', icon: <CreditCard size={14} /> },
           { id: 'atendimentos', label: 'Atendimentos', icon: <Users size={14} /> },
           { id: 'produtos', label: 'Produtos', icon: <ShoppingBag size={14} /> },
           { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
@@ -1836,6 +1899,205 @@ const AdminFinancial = () => {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB: AGENDA DE RECEBÍVEIS */}
+      {activeSubTab === 'recebiveis' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* Header Card */}
+          <div className="financial-card" style={{ background: 'linear-gradient(135deg, rgba(212,140,106,0.06) 0%, rgba(0,0,0,0) 100%)', border: '1px solid var(--adm-gold-border)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8, color: 'var(--adm-gold)' }}>
+                  <CreditCard size={20} /> Agenda & Previsão de Recebíveis
+                </h3>
+                <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+                  Acompanhe as datas exatas de liberação de caixa: Pix na hora (D+0), Débito em 1 dia útil (D+1), e Cartão de Crédito em 30, 60 e 90 dias após a dedução das taxas de adquirente.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* KPI Stat Cards */}
+          <div className="kpi-grid">
+            <KpiCard
+              label="A Receber (Previsto)"
+              value={`R$ ${formatCurrencyBRL(receivablesKPIs.pendingNet)}`}
+              sub="Parcelas futuras a entrar no caixa"
+              icon={<Calendar size={18} />}
+              variant="warning"
+            />
+            <KpiCard
+              label="Disponível no Caixa"
+              value={`R$ ${formatCurrencyBRL(receivablesKPIs.liquidNet)}`}
+              sub="Recebimentos já liberados / liquidados"
+              icon={<DollarSign size={18} />}
+              variant="success"
+            />
+            <KpiCard
+              label="Entradas Próximos 30 Dias"
+              value={`R$ ${formatCurrencyBRL(receivablesKPIs.next30DaysNet)}`}
+              sub="Previsão de caixa de curto prazo"
+              icon={<TrendingUp size={18} />}
+              variant="accent"
+            />
+            <KpiCard
+              label="Taxas de Adquirente Retidas"
+              value={`R$ ${formatCurrencyBRL(receivablesKPIs.totalFees)}`}
+              sub="Custo total de maquininha/gateway"
+              icon={<Percent size={18} />}
+              variant="neutral"
+            />
+          </div>
+
+          {/* Table Card */}
+          <div className="financial-card">
+            {/* Filter Bar */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+                {/* Search */}
+                <div style={{ position: 'relative', minWidth: 220 }}>
+                  <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
+                  <input
+                    type="text"
+                    placeholder="Buscar por cliente ou descrição..."
+                    value={receivablesSearch}
+                    onChange={e => setReceivablesSearch(e.target.value)}
+                    style={{ paddingLeft: 30, width: '100%', paddingRight: 10, paddingTop: 6, paddingBottom: 6, fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+
+                {/* Status Filter */}
+                <select
+                  value={receivablesStatusFilter}
+                  onChange={e => setReceivablesStatusFilter(e.target.value)}
+                  style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                >
+                  <option value="todos">Todos os Status</option>
+                  <option value="a_receber">🟧 A Receber (Futuros)</option>
+                  <option value="liquidado">🟢 Disponível (Liquidados)</option>
+                  <option value="antecipado">⚡ Antecipados</option>
+                </select>
+
+                {/* Method Filter */}
+                <select
+                  value={receivablesMethodFilter}
+                  onChange={e => setReceivablesMethodFilter(e.target.value)}
+                  style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                >
+                  <option value="todos">Todas as Formas de Pagamento</option>
+                  <option value="credito">Cartão de Crédito</option>
+                  <option value="debito">Cartão de Débito</option>
+                  <option value="pix">Pix</option>
+                  <option value="dinheiro">Dinheiro</option>
+                </select>
+              </div>
+
+              <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                {filteredReceivablesSchedule.length} lançamento(s) agendados
+              </span>
+            </div>
+
+            {/* Table */}
+            <div style={{ overflowX: 'auto' }}>
+              <table className="financial-table">
+                <thead>
+                  <tr>
+                    <th>Data Venda</th>
+                    <th>Vencimento (Depósito)</th>
+                    <th>Cliente / Lançamento</th>
+                    <th>Forma Pagamento</th>
+                    <th>Parcela</th>
+                    <th>Valor Bruto</th>
+                    <th>Taxa Retida</th>
+                    <th>Valor Líquido Caixa</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredReceivablesSchedule.length === 0 ? (
+                    <tr>
+                      <td colSpan="9" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                        Nenhum recebível encontrado para os filtros ativos.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredReceivablesSchedule.map(item => {
+                      const isLiquid = item.status === 'liquidado';
+                      const isAntecipated = item.status === 'antecipado';
+
+                      return (
+                        <tr key={item.id}>
+                          <td>{item.saleDate.split('-').reverse().join('/')}</td>
+                          <td style={{ fontWeight: 600, color: isLiquid ? '#22c55e' : (isAntecipated ? 'var(--adm-gold)' : '#f97316') }}>
+                            📅 {item.dueDate.split('-').reverse().join('/')}
+                          </td>
+                          <td>
+                            <strong>{item.clientName}</strong>
+                            <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.description}</span>
+                          </td>
+                          <td>{item.paymentMethod}</td>
+                          <td>
+                            <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                              {item.installmentNumber}/{item.totalInstallments}
+                            </span>
+                          </td>
+                          <td>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                          <td style={{ color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                            {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                          </td>
+                          <td style={{ fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.9rem' }}>
+                            R$ {formatCurrencyBRL(item.netValue)}
+                          </td>
+                          <td>
+                            {isLiquid ? (
+                              <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                🟢 Disponível
+                              </span>
+                            ) : isAntecipated ? (
+                              <span className="badge" style={{ background: 'rgba(212,140,106,0.15)', color: 'var(--adm-gold)', border: '1px solid var(--adm-gold)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                ⚡ Antecipado
+                              </span>
+                            ) : (
+                              <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                🟧 {item.statusLabel}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Rule Explanatory Card */}
+          <div className="financial-card" style={{ background: 'var(--adm-card-subtle, rgba(255,255,255,0.015))', border: '1px solid var(--adm-rule)' }}>
+            <h4 style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: 'var(--adm-text)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              ℹ️ Prazos Padrão de Liberação de Recebíveis (Sem Antecipação):
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12, fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+              <div>
+                <strong style={{ color: 'var(--adm-text)' }}>⚡ Pix & Dinheiro:</strong>
+                <p style={{ margin: '2px 0 0 0' }}>Disponível no caixa imediatamente no dia da venda (D+0).</p>
+              </div>
+              <div>
+                <strong style={{ color: 'var(--adm-text)' }}>💳 Cartão de Débito:</strong>
+                <p style={{ margin: '2px 0 0 0' }}>Depositado no caixa em 1 dia útil após a venda (D+1 útil).</p>
+              </div>
+              <div>
+                <strong style={{ color: 'var(--adm-text)' }}>💳 Crédito À Vista (1x):</strong>
+                <p style={{ margin: '2px 0 0 0' }}>Depositado no caixa em 30 dias corridos pós venda.</p>
+              </div>
+              <div>
+                <strong style={{ color: 'var(--adm-text)' }}>💳 Crédito Parcelado (2x e 3x):</strong>
+                <p style={{ margin: '2px 0 0 0' }}>Dividido em parcelas líquidas iguais caindo em 30, 60 e 90 dias.</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
