@@ -241,7 +241,8 @@ const AdminFinancial = () => {
   const filteredTransactions = useMemo(() => {
     return transactions.filter(t => {
       const inDate = t.date >= startDate && t.date <= endDate;
-      const matchesProf = !selectedProfFilter || t.professionalId === selectedProfFilter;
+      const prof = t.professionalId || t.profissional || 'jon';
+      const matchesProf = !selectedProfFilter || prof === selectedProfFilter;
       return inDate && matchesProf;
     });
   }, [transactions, startDate, endDate, selectedProfFilter]);
@@ -249,7 +250,8 @@ const AdminFinancial = () => {
   const filteredBookings = useMemo(() => {
     return bookings.filter(b => {
       const inDate = b.date >= startDate && b.date <= endDate;
-      const matchesProf = !selectedProfFilter || b.profissional === selectedProfFilter;
+      const prof = b.profissional || b.professionalId || 'jon';
+      const matchesProf = !selectedProfFilter || prof === selectedProfFilter;
       return inDate && matchesProf;
     });
   }, [bookings, startDate, endDate, selectedProfFilter]);
@@ -751,6 +753,41 @@ const AdminFinancial = () => {
       next30DaysNet
     };
   }, [fullReceivablesSchedule]);
+
+  // Batch assign all transactions & bookings in the active month window to Jon
+  const handleAssignAllMonthToJon = async () => {
+    try {
+      let updatedCount = 0;
+      if (db) {
+        const txToUpdate = dbTransactions.filter(t => t.date >= startDate && t.date <= endDate && (t.professionalId !== 'jon' || t.profissional !== 'jon'));
+        for (const t of txToUpdate) {
+          if (t.id && !t.id.startsWith('demo-')) {
+            await updateDoc(doc(db, 'financial_transactions', t.id), {
+              professionalId: 'jon',
+              profissional: 'jon',
+              professionalName: 'Jon'
+            });
+            updatedCount++;
+          }
+        }
+
+        const bToUpdate = dbBookings.filter(b => b.date >= startDate && b.date <= endDate && (b.professionalId !== 'jon' || b.profissional !== 'jon'));
+        for (const b of bToUpdate) {
+          if (b.id && !b.id.startsWith('demo-')) {
+            await updateDoc(doc(db, 'bookings', b.id), {
+              professionalId: 'jon',
+              profissional: 'jon',
+              professionalName: 'Jon'
+            });
+            updatedCount++;
+          }
+        }
+      }
+      alert(`Atribuição concluída com sucesso! Todos os serviços do mês foram atribuídos ao Jon (${updatedCount} registro(s) atualizados).`);
+    } catch (err) {
+      alert('Erro ao atribuir serviços ao Jon: ' + err.message);
+    }
+  };
 
   // Save new fee settings to database & local
   const handleSaveFees = async (e) => {
@@ -2107,10 +2144,22 @@ const AdminFinancial = () => {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
           {/* Card: Repasses dos Profissionais */}
           <div className="financial-card">
-            <h3>Profissionais e Comissionamento</h3>
-            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 16 }}>
-              Abaixo são listados os repasses calculados com base na comissão (%) de cada profissional sobre o valor líquido dos atendimentos executados.
-            </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: 0 }}>Profissionais e Comissionamento</h3>
+                <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', margin: '4px 0 0 0' }}>
+                  Abaixo são listados os repasses calculados com base na comissão (%) de cada profissional sobre o valor líquido dos atendimentos executados.
+                </p>
+              </div>
+              <button 
+                type="button" 
+                className="btn btn-accent" 
+                onClick={handleAssignAllMonthToJon}
+                style={{ fontSize: '0.82rem', padding: '8px 14px', background: '#f97316', borderColor: '#f97316' }}
+              >
+                💇‍♂️ Atribuir Todos os Serviços do Mês ao Jon
+              </button>
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
               {professionals.map(p => {
                 const commServ = p.commissionService !== undefined ? p.commissionService : (p.commission || 50);

@@ -101,7 +101,7 @@ export const calculateProfessionalCommission = (prof, transactions) => {
   let productsPayout = 0;
 
   transactions
-    .filter(t => t.type === 'entrada' && t.professionalId === prof.id)
+    .filter(t => t.type === 'entrada' && (t.professionalId || t.profissional || 'jon') === prof.id)
     .forEach(t => {
       const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
       const isProdSale = t.isProductSale || t.category === 'venda_produto';
