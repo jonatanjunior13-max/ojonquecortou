@@ -490,7 +490,7 @@ export default function AdminMobileApp() {
   const [transitioning, setTransitioning] = useState(false);
 
   // ── New Booking Form ───────────────────────────────────────────
-  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '' });
+  const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '', profissional: 'jon' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
   const [ebSuggestions, setEbSuggestions] = useState([]);
   const [nbRegisterClient, setNbRegisterClient] = useState(false);
@@ -1812,6 +1812,10 @@ export default function AdminMobileApp() {
       clientEmail = matchedClient?.email || '';
     }
 
+    const selectedProfId = nbForm.profissional || 'jon';
+    const profObj = (settings?.professionals || []).find(p => p.id === selectedProfId);
+    const profName = profObj ? profObj.name : 'Jon';
+
     const data = {
       clientName: nbForm.clientName,
       clientPhone: nbForm.clientPhone || '',
@@ -1822,6 +1826,9 @@ export default function AdminMobileApp() {
       date: nbForm.date,
       time: nbForm.time,
       duration: duration,
+      profissional: selectedProfId,
+      professionalId: selectedProfId,
+      professionalName: profName,
       notes: nbForm.notes || '',
       status: 'confirmado',
       prepayment: prepay,
@@ -5185,6 +5192,22 @@ Grande abraço, Jon.`;
                 </select>
               </div>
             )}
+
+            <div className="m-field">
+              <label className="m-label">Profissional Responsável *</label>
+              <select 
+                className="m-select" 
+                value={nbForm.profissional || 'jon'} 
+                onChange={e => setNbForm(p => ({ ...p, profissional: e.target.value }))}
+              >
+                {((settings?.professionals || []).filter(p => p.active !== false).length > 0
+                  ? (settings?.professionals || []).filter(p => p.active !== false)
+                  : [{ id: 'jon', name: 'Jon' }]
+                ).map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
 
             <div className="m-field">
               <label className="m-label">{nbForm.bookingType === 'package' ? 'Valor do Pacote (R$)' : 'Valor do Serviço (R$)'}</label>
