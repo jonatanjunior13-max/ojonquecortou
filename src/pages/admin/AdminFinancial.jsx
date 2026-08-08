@@ -102,7 +102,8 @@ const AdminFinancial = () => {
     feeCredit: 2.49,
     feeCredit2x: 4.5,
     feeCredit3x: 5.5,
-    feeAnticipation: 2.50
+    feeAnticipation: 2.50,
+    autoAnticipation: false
   });
 
   // Ledger Filter states
@@ -164,7 +165,8 @@ const AdminFinancial = () => {
         feeCredit: settings.feeCredit ?? 2.49,
         feeCredit2x: settings.feeCredit2x ?? 4.5,
         feeCredit3x: settings.feeCredit3x ?? 5.5,
-        feeAnticipation: settings.feeAnticipation ?? 2.50
+        feeAnticipation: settings.feeAnticipation ?? 2.50,
+        autoAnticipation: settings.autoAnticipation ?? false
       });
     }
   }, [settings]);
@@ -698,7 +700,8 @@ const AdminFinancial = () => {
       feeCredit: Number(feesForm.feeCredit),
       feeCredit2x: Number(feesForm.feeCredit2x),
       feeCredit3x: Number(feesForm.feeCredit3x),
-      feeAnticipation: Number(feesForm.feeAnticipation)
+      feeAnticipation: Number(feesForm.feeAnticipation),
+      autoAnticipation: Boolean(feesForm.autoAnticipation)
     };
 
     try {
@@ -2411,6 +2414,23 @@ const AdminFinancial = () => {
               />
             </div>
 
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label style={{ fontWeight: 600, display: 'block', marginBottom: 6 }}>Modo de Antecipação de Recebíveis</label>
+              <select 
+                value={feesForm.autoAnticipation ? 'auto' : 'manual'} 
+                onChange={e => setFeesForm({ ...feesForm, autoAnticipation: e.target.value === 'auto' })}
+                style={{ width: '100%', padding: '8px 12px', border: '1px solid var(--adm-rule)', borderRadius: '6px', background: 'var(--adm-card)', color: 'var(--adm-text)', fontSize: '0.85rem' }}
+              >
+                <option value="manual">Modo Manual (Padrão - Sem Antecipação Automática nas Operadoras)</option>
+                <option value="auto">Modo Automático (Antecipação em todas as vendas no crédito)</option>
+              </select>
+              <span style={{ fontSize: '0.75rem', color: feesForm.autoAnticipation ? '#f97316' : '#22c55e', display: 'block', marginTop: 6, fontWeight: 500 }}>
+                {feesForm.autoAnticipation 
+                  ? '⚡ Modo Automático: A taxa de antecipação é descontada automaticamente em todas as transações com cartão de crédito.' 
+                  : '🛡️ Modo Manual (Ativo): As vendas com cartão descontam apenas a taxa da adquirente. A antecipação só será calculada se for selecionada manualmente.'}
+              </span>
+            </div>
+
             <div className="form-group" style={{ marginBottom: 20 }}>
               <label>Taxa Extra de Adiantamento / Antecipação (%)</label>
               <input 
@@ -2421,7 +2441,7 @@ const AdminFinancial = () => {
                 onChange={e => setFeesForm({ ...feesForm, feeAnticipation: e.target.value })}
               />
               <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                Esta taxa será somada à taxa do cartão quando a opção de antecipação estiver ativada na venda/comanda.
+                Esta taxa será aplicada quando a antecipação for ativada na venda/comanda ou no modo automático.
               </span>
             </div>
 
@@ -3124,11 +3144,9 @@ const AdminFinancial = () => {
                   value={productSaleForm.paymentMethod}
                   onChange={e => {
                     const method = e.target.value;
-                    const isCard = method.includes('Cartão') || method.includes('Crédito');
                     setProductSaleForm(prev => ({ 
                       ...prev, 
-                      paymentMethod: method,
-                      applyAnticipation: isCard ? true : false
+                      paymentMethod: method
                     }));
                   }}
                 >

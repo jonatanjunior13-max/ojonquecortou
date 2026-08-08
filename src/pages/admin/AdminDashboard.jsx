@@ -5923,11 +5923,6 @@ Grande abraço, Jon.`;
                         onChange={e => {
                           const val = e.target.value;
                           setPaymentMethod(val);
-                          if (val === 'Cartão de Crédito' || val === 'Cartão de Débito') {
-                            setApplyAnticipation(true);
-                          } else {
-                            setApplyAnticipation(false);
-                          }
                         }}
                         style={{ padding: '3px 6px', width: '100%', fontSize: '0.75rem', border: '1px solid var(--adm-rule)', borderRadius: '3px', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                       >

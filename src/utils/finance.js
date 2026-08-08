@@ -13,8 +13,9 @@ export const formatCurrencyBRL = (val) => {
 export const formatBRL = formatCurrencyBRL;
 
 /**
- * Calculates net value after card operator fees and automatic anticipation deductions.
- * Credit card payments automatically apply monthly simple interest anticipation.
+ * Calculates net value after card operator fees and optional anticipation deductions.
+ * Default mode is Manual (autoAnticipation: false): credit card transactions only deduct base MDR fees,
+ * unless explicitly marked as (Antecipado) or autoAnticipation setting is true.
  */
 export const calculateNetValue = (val, method, settings = {}) => {
   const fees = {
@@ -25,6 +26,8 @@ export const calculateNetValue = (val, method, settings = {}) => {
     feeCredit3x: settings.feeCredit3x ?? 5.5,
     feeAnticipation: settings.feeAnticipation ?? 2.50
   };
+
+  const autoAnticipation = settings.autoAnticipation ?? false;
 
   const m = (method || '').toLowerCase();
   if (val === 0 || m.includes('pacote') || m.includes('cortesia')) return 0;
@@ -37,6 +40,9 @@ export const calculateNetValue = (val, method, settings = {}) => {
     return val;
   } else if (m.includes('débito') || m.includes('debito')) {
     rate = fees.feeDebit;
+    if (m.includes('antecipad')) {
+      return val * (1 - rate / 100) * (1 - fees.feeAnticipation / 100);
+    }
     return val * (1 - rate / 100);
   } else if (m.includes('crédito') || m.includes('credito') || m.includes('credit')) {
     let installments = 1;
@@ -53,18 +59,24 @@ export const calculateNetValue = (val, method, settings = {}) => {
       rate = fees.feeCredit;
     }
 
-    // Anticipation is automatic for all credit card payments (à vista or parcelado)
-    const valPerInstallment = val / installments;
-    let totalNet = 0;
-    const antRatePerMonth = fees.feeAnticipation / 100;
-    
-    for (let i = 1; i <= installments; i++) {
-      const days = 30 * i - 1;
-      const netInstallment = valPerInstallment * (1 - rate / 100);
-      const payout = netInstallment * (1 - antRatePerMonth * (days / 30));
-      totalNet += payout;
+    const isAnticipated = m.includes('antecipad') || autoAnticipation;
+
+    if (isAnticipated) {
+      const valPerInstallment = val / installments;
+      let totalNet = 0;
+      const antRatePerMonth = fees.feeAnticipation / 100;
+      
+      for (let i = 1; i <= installments; i++) {
+        const days = 30 * i - 1;
+        const netInstallment = valPerInstallment * (1 - rate / 100);
+        const payout = netInstallment * (1 - antRatePerMonth * (days / 30));
+        totalNet += payout;
+      }
+      return totalNet;
     }
-    return totalNet;
+
+    // Default Manual Mode: calculate net strictly using adquirente MDR rate
+    return val * (1 - rate / 100);
   }
 
   return val;

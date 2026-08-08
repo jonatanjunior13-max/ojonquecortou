@@ -4960,11 +4960,6 @@ Grande abraço, Jon.`;
                       {['Pix','Cartão de Crédito','Cartão de Débito','Dinheiro','Cortesia'].map(m => (
                         <button key={m} className={`m-pay-pill ${paymentMethod === m ? 'active' : ''}`} type="button" onClick={() => {
                           setPaymentMethod(m);
-                          if (m === 'Cartão de Crédito' || m === 'Cartão de Débito') {
-                            setApplyAnticipation(true);
-                          } else {
-                            setApplyAnticipation(false);
-                          }
                         }}>{m}</button>
                       ))}
                     </div>
@@ -4983,12 +4978,18 @@ Grande abraço, Jon.`;
                   </div>
                 )}
 
-                {/* Anticipation toggle (automatic) */}
+                {/* Anticipation toggle (manual mode) */}
                 {(paymentMethod === 'Cartão de Crédito' || paymentMethod === 'Cartão de Débito') && (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, padding: '2px 4px' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--m-gold)', fontWeight: 600 }}>
-                      ✓ Antecipação automática ativa (taxa aplicada)
-                    </span>
+                    <label htmlFor="m-checkout-anticipate" style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: '0.78rem', color: 'var(--m-text-1)' }}>
+                      <input 
+                        id="m-checkout-anticipate"
+                        type="checkbox" 
+                        checked={applyAnticipation}
+                        onChange={e => setApplyAnticipation(e.target.checked)}
+                      />
+                      <span>Antecipar recebimento? (modo manual)</span>
+                    </label>
                   </div>
                 )}
               </>
