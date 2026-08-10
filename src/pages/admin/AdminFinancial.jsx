@@ -43,6 +43,15 @@ const AdminFinancial = () => {
   const [feesTaxPercentage, setFeesTaxPercentage] = useState(10);
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showProductSaleModal, setShowProductSaleModal] = useState(false);
+  const [showCommissionWithdrawalModal, setShowCommissionWithdrawalModal] = useState(false);
+  const [commissionWithdrawalForm, setCommissionWithdrawalForm] = useState({
+    professionalId: 'jon',
+    value: '',
+    date: new Date().toISOString().split('T')[0],
+    paymentMethod: 'Pix',
+    motive: 'Pagamento de Comissão',
+    notes: ''
+  });
   const [showDatePickerDropdown, setShowDatePickerDropdown] = useState(false);
   const [showProfDropdown, setShowProfDropdown] = useState(false);
 
@@ -550,41 +559,111 @@ const AdminFinancial = () => {
     };
   }, [detailedAttendanceList]);
 
-  // Agrega dados de comissões por Dia, Semana, Quinzena, Mês e Extrato Detalhado
+  // Agrega dados de comissões por Dia, Semana, Quinzena, Mês e Extrato Detalhado (incluindo retiradas de comissão)
   const commissionAggregatedStats = useMemo(() => {
     const byDay = {};
     const byWeek = {};
     const byFortnight = {};
     const byMonth = {};
     const detailedList = [];
+    const withdrawalsDetailedList = [];
 
     const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     const weekdayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     const weekdayShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-    filteredTransactions
-      .filter(t => t.type === 'entrada')
-      .forEach(t => {
-        const dateVal = t.date;
-        if (!dateVal) return;
+    const isWithdrawal = (t) => {
+      if (t.type !== 'saida') return false;
+      if (t.isCommissionPayout) return true;
+      if (t.category === 'Comissão - Repasse / Retirada' || t.category === 'comissao_retirada') return true;
+      const desc = (t.description || '').toLowerCase();
+      return desc.includes('comiss') || desc.includes('repasse') || desc.includes('retirada de comissão') || desc.includes('retirada de comissao');
+    };
 
-        const currentAssigned = t.professionalId || t.profissional || 'jon';
-        const prof = professionals.find(p => p.id === currentAssigned) || { id: currentAssigned, name: t.professionalName || 'Jon', commission: 50, commissionService: 50, commissionProduct: 10 };
+    const getBucket = (bucket, key, meta) => {
+      if (!bucket[key]) {
+        bucket[key] = {
+          key,
+          ...meta,
+          count: 0,
+          serviceCount: 0,
+          productCount: 0,
+          serviceRevenue: 0,
+          productRevenue: 0,
+          totalRevenue: 0,
+          serviceCommission: 0,
+          productCommission: 0,
+          totalCommission: 0,
+          totalWithdrawals: 0,
+          pendingCommission: 0,
+          professionals: {},
+          items: [],
+          withdrawals: []
+        };
+      }
+      return bucket[key];
+    };
 
+    filteredTransactions.forEach(t => {
+      const dateVal = t.date;
+      if (!dateVal) return;
+
+      const dateObj = new Date(dateVal + 'T12:00:00');
+      const [yearStr, monthStr, dayStr] = dateVal.split('-');
+      const dayNum = parseInt(dayStr, 10);
+      const monthNum = parseInt(monthStr, 10);
+      const yearNum = parseInt(yearStr, 10);
+      const wDay = dateObj.getDay();
+
+      const currentAssigned = t.professionalId || t.profissional || 'jon';
+      const prof = professionals.find(p => p.id === currentAssigned) || { id: currentAssigned, name: t.professionalName || 'Jon', commission: 50, commissionService: 50, commissionProduct: 10 };
+
+      // Helper to register meta across buckets
+      const dayLabel = `${weekdayShort[wDay]}, ${dayStr}/${monthStr}/${yearStr}`;
+
+      const diff = dateObj.getDate() - wDay + (wDay === 0 ? -6 : 1);
+      const startOfWeek = new Date(dateObj);
+      startOfWeek.setDate(diff);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
+      const endOfWeekStr = endOfWeek.toISOString().split('T')[0];
+      const weekKey = `${startOfWeekStr}_${endOfWeekStr}`;
+      const weekLabel = `Semana de ${startOfWeek.toLocaleDateString('pt-BR')} a ${endOfWeek.toLocaleDateString('pt-BR')}`;
+
+      const isFirstFortnight = dayNum <= 15;
+      const fortnightKey = `${yearStr}-${monthStr}-${isFirstFortnight ? 'Q1' : 'Q2'}`;
+      const lastDayOfMonth = new Date(yearNum, monthNum, 0).getDate();
+      const fortnightSpan = isFirstFortnight 
+        ? `01/${monthStr} a 15/${monthStr}/${yearStr}`
+        : `16/${monthStr} a ${lastDayOfMonth}/${monthStr}/${yearStr}`;
+      const fortnightLabel = `${isFirstFortnight ? '1ª Quinzena' : '2ª Quinzena'} (${monthNames[monthNum - 1]}/${yearStr}) — ${fortnightSpan}`;
+
+      const monthKey = `${yearStr}-${monthStr}`;
+      const monthLabel = `${monthNames[monthNum - 1]} de ${yearStr}`;
+
+      const dayBucket = getBucket(byDay, dateVal, { date: dateVal, label: dayLabel, weekday: weekdayNames[wDay], sortKey: dateVal });
+      const weekBucket = getBucket(byWeek, weekKey, { weekStart: startOfWeekStr, weekEnd: endOfWeekStr, label: weekLabel, sortKey: startOfWeekStr });
+      const fortnightBucket = getBucket(byFortnight, fortnightKey, { fortnightKey, fortnightNumber: isFirstFortnight ? 1 : 2, monthName: monthNames[monthNum - 1], year: yearNum, span: fortnightSpan, label: fortnightLabel, sortKey: `${yearStr}-${monthStr}-${isFirstFortnight ? '01' : '16'}` });
+      const monthBucket = getBucket(byMonth, monthKey, { month: monthKey, monthName: monthNames[monthNum - 1], year: yearNum, label: monthLabel, sortKey: monthKey });
+
+      const allBuckets = [dayBucket, weekBucket, fortnightBucket, monthBucket];
+
+      if (t.type === 'entrada') {
         const commServRate = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 50);
         const commProdRate = prof.commissionProduct !== undefined ? prof.commissionProduct : 10;
 
-        const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + ((p.sellingPrice || 0) * (p.quantity || 1)), 0) : 0;
+        const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (Number(p.sellingPrice || 0) * Number(p.quantity || 1)), 0) : 0;
         const isProdSale = t.isProductSale || t.category === 'venda_produto';
 
         let rawProd = 0;
         let rawServ = 0;
 
         if (isProdSale) {
-          rawProd = t.value || 0;
+          rawProd = Number(t.value || 0);
         } else {
           rawProd = productVal;
-          rawServ = Math.max(0, (t.value || 0) - productVal);
+          rawServ = Math.max(0, Number(t.value || 0) - productVal);
         }
 
         const servComm = rawServ * (commServRate / 100);
@@ -599,7 +678,7 @@ const AdminFinancial = () => {
           clientName: t.clientName || 'Cliente',
           description: t.description || 'Atendimento',
           paymentMethod: t.paymentMethod || 'Pix',
-          grossValue: t.value || 0,
+          grossValue: Number(t.value || 0),
           netValue: netVal,
           profId: prof.id,
           profName: prof.name || 'Jon',
@@ -616,44 +695,21 @@ const AdminFinancial = () => {
 
         detailedList.push(txDetail);
 
-        const dateObj = new Date(dateVal + 'T00:00:00');
-        const [yearStr, monthStr, dayStr] = dateVal.split('-');
-        const dayNum = parseInt(dayStr, 10);
-        const monthNum = parseInt(monthStr, 10);
-        const yearNum = parseInt(yearStr, 10);
+        allBuckets.forEach(b => {
+          b.count += 1;
+          if (rawServ > 0) b.serviceCount += 1;
+          if (rawProd > 0) b.productCount += 1;
+          b.serviceRevenue += rawServ;
+          b.productRevenue += rawProd;
+          b.totalRevenue += (rawServ + rawProd);
+          b.serviceCommission += servComm;
+          b.productCommission += prodComm;
+          b.totalCommission += totalComm;
+          b.pendingCommission = Math.max(0, b.totalCommission - b.totalWithdrawals);
+          b.items.push(txDetail);
 
-        const updateBucket = (bucket, key, meta) => {
-          if (!bucket[key]) {
-            bucket[key] = {
-              key,
-              ...meta,
-              count: 0,
-              serviceCount: 0,
-              productCount: 0,
-              serviceRevenue: 0,
-              productRevenue: 0,
-              totalRevenue: 0,
-              serviceCommission: 0,
-              productCommission: 0,
-              totalCommission: 0,
-              professionals: {},
-              items: []
-            };
-          }
-          const item = bucket[key];
-          item.count += 1;
-          if (rawServ > 0) item.serviceCount += 1;
-          if (rawProd > 0) item.productCount += 1;
-          item.serviceRevenue += rawServ;
-          item.productRevenue += rawProd;
-          item.totalRevenue += (rawServ + rawProd);
-          item.serviceCommission += servComm;
-          item.productCommission += prodComm;
-          item.totalCommission += totalComm;
-          item.items.push(txDetail);
-
-          if (!item.professionals[prof.id]) {
-            item.professionals[prof.id] = {
+          if (!b.professionals[prof.id]) {
+            b.professionals[prof.id] = {
               id: prof.id,
               name: prof.name,
               serviceRevenue: 0,
@@ -661,77 +717,70 @@ const AdminFinancial = () => {
               serviceCommission: 0,
               productCommission: 0,
               totalCommission: 0,
+              totalWithdrawals: 0,
+              pendingCommission: 0,
               count: 0
             };
           }
-          const pEntry = item.professionals[prof.id];
+          const pEntry = b.professionals[prof.id];
           pEntry.count += 1;
           pEntry.serviceRevenue += rawServ;
           pEntry.productRevenue += rawProd;
           pEntry.serviceCommission += servComm;
           pEntry.productCommission += prodComm;
           pEntry.totalCommission += totalComm;
+          pEntry.pendingCommission = Math.max(0, pEntry.totalCommission - pEntry.totalWithdrawals);
+        });
+      } else if (isWithdrawal(t)) {
+        const withdrawalDetail = {
+          id: t.id,
+          date: dateVal,
+          time: t.time || '00:00',
+          profId: prof.id,
+          profName: prof.name || 'Jon',
+          value: Number(t.value || 0),
+          paymentMethod: t.paymentMethod || 'Pix',
+          description: t.description || 'Retirada de Comissão',
+          notes: t.notes || ''
         };
 
-        // 1. Por Dia
-        const wDay = dateObj.getDay();
-        const dayLabel = `${weekdayShort[wDay]}, ${dayStr}/${monthStr}/${yearStr}`;
-        updateBucket(byDay, dateVal, {
-          date: dateVal,
-          label: dayLabel,
-          weekday: weekdayNames[wDay],
-          sortKey: dateVal
-        });
+        withdrawalsDetailedList.push(withdrawalDetail);
 
-        // 2. Por Semana (Segunda a Domingo)
-        const diff = dateObj.getDate() - wDay + (wDay === 0 ? -6 : 1);
-        const startOfWeek = new Date(dateObj);
-        startOfWeek.setDate(diff);
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-        const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
-        const endOfWeekStr = endOfWeek.toISOString().split('T')[0];
-        const weekKey = `${startOfWeekStr}_${endOfWeekStr}`;
-        const weekLabel = `Semana de ${startOfWeek.toLocaleDateString('pt-BR')} a ${endOfWeek.toLocaleDateString('pt-BR')}`;
-        updateBucket(byWeek, weekKey, {
-          weekStart: startOfWeekStr,
-          weekEnd: endOfWeekStr,
-          label: weekLabel,
-          sortKey: startOfWeekStr
-        });
+        allBuckets.forEach(b => {
+          b.totalWithdrawals += Number(t.value || 0);
+          b.pendingCommission = Math.max(0, b.totalCommission - b.totalWithdrawals);
+          b.withdrawals.push(withdrawalDetail);
 
-        // 3. Por Quinzena (1ª Quinzena: 01 a 15 | 2ª Quinzena: 16 ao último dia)
-        const isFirstFortnight = dayNum <= 15;
-        const fortnightKey = `${yearStr}-${monthStr}-${isFirstFortnight ? 'Q1' : 'Q2'}`;
-        const lastDayOfMonth = new Date(yearNum, monthNum, 0).getDate();
-        const fortnightSpan = isFirstFortnight 
-          ? `01/${monthStr} a 15/${monthStr}/${yearStr}`
-          : `16/${monthStr} a ${lastDayOfMonth}/${monthStr}/${yearStr}`;
-        const fortnightLabel = `${isFirstFortnight ? '1ª Quinzena' : '2ª Quinzena'} (${monthNames[monthNum - 1]}/${yearStr}) — ${fortnightSpan}`;
-        updateBucket(byFortnight, fortnightKey, {
-          fortnightKey,
-          fortnightNumber: isFirstFortnight ? 1 : 2,
-          monthName: monthNames[monthNum - 1],
-          year: yearNum,
-          span: fortnightSpan,
-          label: fortnightLabel,
-          sortKey: `${yearStr}-${monthStr}-${isFirstFortnight ? '01' : '16'}`
+          if (!b.professionals[prof.id]) {
+            b.professionals[prof.id] = {
+              id: prof.id,
+              name: prof.name,
+              serviceRevenue: 0,
+              productRevenue: 0,
+              serviceCommission: 0,
+              productCommission: 0,
+              totalCommission: 0,
+              totalWithdrawals: 0,
+              pendingCommission: 0,
+              count: 0
+            };
+          }
+          const pEntry = b.professionals[prof.id];
+          pEntry.totalWithdrawals += Number(t.value || 0);
+          pEntry.pendingCommission = Math.max(0, pEntry.totalCommission - pEntry.totalWithdrawals);
         });
-
-        // 4. Por Mês
-        const monthKey = `${yearStr}-${monthStr}`;
-        const monthLabel = `${monthNames[monthNum - 1]} de ${yearStr}`;
-        updateBucket(byMonth, monthKey, {
-          month: monthKey,
-          monthName: monthNames[monthNum - 1],
-          year: yearNum,
-          label: monthLabel,
-          sortKey: monthKey
-        });
-      });
+      }
+    });
 
     // Custom Period
     const customList = detailedList.filter(item => {
+      if (!commissionCustomStart && !commissionCustomEnd) return true;
+      if (commissionCustomStart && item.date < commissionCustomStart) return false;
+      if (commissionCustomEnd && item.date > commissionCustomEnd) return false;
+      return true;
+    });
+
+    const customWithdrawals = withdrawalsDetailedList.filter(item => {
       if (!commissionCustomStart && !commissionCustomEnd) return true;
       if (commissionCustomStart && item.date < commissionCustomStart) return false;
       if (commissionCustomEnd && item.date > commissionCustomEnd) return false;
@@ -749,9 +798,14 @@ const AdminFinancial = () => {
       serviceCommission: customList.reduce((s, i) => s + i.servComm, 0),
       productCommission: customList.reduce((s, i) => s + i.prodComm, 0),
       totalCommission: customList.reduce((s, i) => s + i.totalComm, 0),
+      totalWithdrawals: customWithdrawals.reduce((s, i) => s + Number(i.value || 0), 0),
+      pendingCommission: 0,
       professionals: {},
-      items: customList
+      items: customList,
+      withdrawals: customWithdrawals
     };
+    customBucket.pendingCommission = Math.max(0, customBucket.totalCommission - customBucket.totalWithdrawals);
+
     customList.forEach(item => {
       if (!customBucket.professionals[item.profId]) {
         customBucket.professionals[item.profId] = {
@@ -762,6 +816,8 @@ const AdminFinancial = () => {
           serviceCommission: 0,
           productCommission: 0,
           totalCommission: 0,
+          totalWithdrawals: 0,
+          pendingCommission: 0,
           count: 0
         };
       }
@@ -772,6 +828,27 @@ const AdminFinancial = () => {
       p.serviceCommission += item.servComm;
       p.productCommission += item.prodComm;
       p.totalCommission += item.totalComm;
+      p.pendingCommission = Math.max(0, p.totalCommission - p.totalWithdrawals);
+    });
+
+    customWithdrawals.forEach(w => {
+      if (!customBucket.professionals[w.profId]) {
+        customBucket.professionals[w.profId] = {
+          id: w.profId,
+          name: w.profName,
+          serviceRevenue: 0,
+          productRevenue: 0,
+          serviceCommission: 0,
+          productCommission: 0,
+          totalCommission: 0,
+          totalWithdrawals: 0,
+          pendingCommission: 0,
+          count: 0
+        };
+      }
+      const p = customBucket.professionals[w.profId];
+      p.totalWithdrawals += Number(w.value || 0);
+      p.pendingCommission = Math.max(0, p.totalCommission - p.totalWithdrawals);
     });
 
     return {
@@ -780,12 +857,14 @@ const AdminFinancial = () => {
       fortnights: Object.values(byFortnight).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
       months: Object.values(byMonth).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
       customPeriod: customBucket,
-      detailedList: detailedList.sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time))
+      detailedList: detailedList.sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time)),
+      withdrawalsDetailedList: withdrawalsDetailedList.sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time))
     };
   }, [filteredTransactions, professionals, commissionCustomStart, commissionCustomEnd]);
 
   const commissionKPIs = useMemo(() => {
     let targetItems = commissionAggregatedStats.detailedList;
+    let targetWithdrawals = commissionAggregatedStats.withdrawalsDetailedList;
     let label = 'Todos os Lançamentos';
 
     if (commissionViewMode === 'dia') {
@@ -793,6 +872,7 @@ const AdminFinancial = () => {
         const match = commissionAggregatedStats.days.find(d => d.date === selectedCommissionDay);
         if (match) {
           targetItems = match.items || [];
+          targetWithdrawals = match.withdrawals || [];
           label = match.label;
         }
       } else {
@@ -803,6 +883,7 @@ const AdminFinancial = () => {
         const match = commissionAggregatedStats.weeks.find(w => w.sortKey === selectedCommissionWeek || w.key === selectedCommissionWeek);
         if (match) {
           targetItems = match.items || [];
+          targetWithdrawals = match.withdrawals || [];
           label = match.label;
         }
       } else {
@@ -813,6 +894,7 @@ const AdminFinancial = () => {
         const match = commissionAggregatedStats.fortnights.find(f => f.fortnightKey === selectedCommissionFortnight);
         if (match) {
           targetItems = match.items || [];
+          targetWithdrawals = match.withdrawals || [];
           label = match.label;
         }
       } else {
@@ -823,6 +905,7 @@ const AdminFinancial = () => {
         const match = commissionAggregatedStats.months.find(m => m.month === selectedCommissionMonth);
         if (match) {
           targetItems = match.items || [];
+          targetWithdrawals = match.withdrawals || [];
           label = match.label;
         }
       } else {
@@ -830,6 +913,7 @@ const AdminFinancial = () => {
       }
     } else if (commissionViewMode === 'personalizado') {
       targetItems = commissionAggregatedStats.customPeriod.items;
+      targetWithdrawals = commissionAggregatedStats.customPeriod.withdrawals;
       label = commissionAggregatedStats.customPeriod.label;
     } else {
       label = 'Extrato Detalhado';
@@ -852,6 +936,8 @@ const AdminFinancial = () => {
         serviceCommission: 0,
         productCommission: 0,
         totalCommission: 0,
+        totalWithdrawals: 0,
+        pendingCommission: 0,
         count: 0
       };
     });
@@ -875,6 +961,21 @@ const AdminFinancial = () => {
       }
     });
 
+    let totalWithdrawals = 0;
+    targetWithdrawals.forEach(w => {
+      const wVal = Number(w.value || 0);
+      totalWithdrawals += wVal;
+      if (profsMap[w.profId]) {
+        profsMap[w.profId].totalWithdrawals += wVal;
+      }
+    });
+
+    Object.values(profsMap).forEach(p => {
+      p.pendingCommission = Math.max(0, p.totalCommission - p.totalWithdrawals);
+    });
+
+    const pendingPayout = Math.max(0, totalCommission - totalWithdrawals);
+
     return {
       totalCommission,
       serviceCommission,
@@ -882,9 +983,13 @@ const AdminFinancial = () => {
       totalServicesRevenue,
       totalProductsRevenue,
       totalAppointments,
+      totalWithdrawals,
+      withdrawalCount: targetWithdrawals.length,
+      pendingPayout,
       label,
       professionalsMap: profsMap,
-      items: targetItems
+      items: targetItems,
+      withdrawalsList: targetWithdrawals
     };
   }, [
     commissionViewMode,
@@ -1721,6 +1826,63 @@ const AdminFinancial = () => {
     } catch (err) {
       console.error('Erro ao registrar despesa:', err);
       alert('Erro ao registrar despesa.');
+    }
+  };
+
+  // Add Commission Withdrawal / Payout
+  const handleSaveCommissionWithdrawal = async (e) => {
+    e.preventDefault();
+    const val = Number(commissionWithdrawalForm.value);
+    if (!val || val <= 0) {
+      alert('Por favor, informe um valor válido para a retirada.');
+      return;
+    }
+
+    const prof = professionals.find(p => p.id === commissionWithdrawalForm.professionalId) || {
+      id: commissionWithdrawalForm.professionalId || 'jon',
+      name: 'Jon'
+    };
+
+    const payload = {
+      type: 'saida',
+      category: 'Comissão - Repasse / Retirada',
+      isCommissionPayout: true,
+      professionalId: prof.id,
+      professionalName: prof.name,
+      value: val,
+      date: commissionWithdrawalForm.date || new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      paymentMethod: commissionWithdrawalForm.paymentMethod || 'Pix',
+      description: `Retirada de Comissão - ${prof.name} (${commissionWithdrawalForm.motive || 'Pagamento'})`,
+      notes: commissionWithdrawalForm.notes || '',
+      createdAt: new Date().toISOString()
+    };
+
+    try {
+      if (isDemoMode) {
+        const local = JSON.parse(localStorage.getItem('demo_financial') || '[]');
+        const updated = [{ id: 'tx_' + Date.now(), ...payload }, ...local];
+        localStorage.setItem('demo_financial', JSON.stringify(updated));
+        setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
+      } else {
+        const docRef = await addDoc(collection(db, 'financial_transactions'), payload);
+        const updated = [{ id: docRef.id, ...payload }, ...(globalData.financial_transactions || [])];
+        setGlobalData(prev => ({ ...prev, financial_transactions: updated }));
+      }
+
+      setShowCommissionWithdrawalModal(false);
+      setCommissionWithdrawalForm({
+        professionalId: 'jon',
+        value: '',
+        date: new Date().toISOString().split('T')[0],
+        paymentMethod: 'Pix',
+        motive: 'Pagamento de Comissão',
+        notes: ''
+      });
+      alert(`Retirada de R$ ${formatCurrencyBRL(val)} registrada com sucesso para ${prof.name}!`);
+    } catch (err) {
+      console.error('Erro ao registrar retirada de comissão:', err);
+      alert('Erro ao registrar retirada de comissão.');
     }
   };
 
@@ -4101,39 +4263,50 @@ const AdminFinancial = () => {
                   <Users size={20} color="var(--adm-gold)" /> Profissionais e Comissionamento
                 </h3>
                 <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', margin: '4px 0 0 0' }}>
-                  Acompanhe os repasses e comissões calculadas por dia, semana, quinzena, mês ou período personalizado com base nos percentuais cadastrados para serviços e produtos.
+                  Acompanhe os repasses e comissões calculadas por dia, semana, quinzena, mês ou período personalizado com deduções de adiantamentos e retiradas.
                 </p>
               </div>
 
-              {/* Seletor de Período da Comissão: Dia, Semana, Quinzena, Mês, Personalizado, Detalhado */}
-              <div style={{ display: 'flex', gap: 6, background: 'var(--adm-surface)', padding: 4, borderRadius: 8, border: '0.5px solid var(--adm-rule)', flexWrap: 'wrap' }}>
-                {[
-                  { id: 'dia', label: '📅 Por Dia' },
-                  { id: 'semana', label: '🗓️ Por Semana' },
-                  { id: 'quinzena', label: '🌓 Por Quinzena' },
-                  { id: 'mes', label: '📊 Por Mês' },
-                  { id: 'personalizado', label: '🗓️ Período Personalizado' },
-                  { id: 'detalhado', label: '📋 Extrato Detalhado' }
-                ].map(mode => (
-                  <button
-                    key={mode.id}
-                    type="button"
-                    onClick={() => setCommissionViewMode(mode.id)}
-                    style={{
-                      padding: '8px 14px',
-                      fontSize: '0.82rem',
-                      fontWeight: 600,
-                      border: 'none',
-                      borderRadius: 6,
-                      cursor: 'pointer',
-                      background: commissionViewMode === mode.id ? 'var(--adm-gold)' : 'transparent',
-                      color: commissionViewMode === mode.id ? '#000' : 'var(--adm-muted)',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    {mode.label}
-                  </button>
-                ))}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn btn-spectro-gold"
+                  onClick={() => setShowCommissionWithdrawalModal(true)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '8px 16px', fontSize: '0.85rem', fontWeight: 600 }}
+                >
+                  💸 Registrar Retirada / Pagamento
+                </button>
+
+                {/* Seletor de Período da Comissão: Dia, Semana, Quinzena, Mês, Personalizado, Detalhado */}
+                <div style={{ display: 'flex', gap: 4, background: 'var(--adm-surface)', padding: 4, borderRadius: 8, border: '0.5px solid var(--adm-rule)', flexWrap: 'wrap' }}>
+                  {[
+                    { id: 'dia', label: '📅 Por Dia' },
+                    { id: 'semana', label: '🗓️ Por Semana' },
+                    { id: 'quinzena', label: '🌓 Por Quinzena' },
+                    { id: 'mes', label: '📊 Por Mês' },
+                    { id: 'personalizado', label: '🗓️ Período Personalizado' },
+                    { id: 'detalhado', label: '📋 Extrato Detalhado' }
+                  ].map(mode => (
+                    <button
+                      key={mode.id}
+                      type="button"
+                      onClick={() => setCommissionViewMode(mode.id)}
+                      style={{
+                        padding: '8px 14px',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        border: 'none',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                        background: commissionViewMode === mode.id ? 'var(--adm-gold)' : 'transparent',
+                        color: commissionViewMode === mode.id ? '#000' : 'var(--adm-muted)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {mode.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -4174,7 +4347,7 @@ const AdminFinancial = () => {
                   >
                     <option value="todos">📅 Todos os Dias ({commissionAggregatedStats.days.length})</option>
                     {commissionAggregatedStats.days.map(d => (
-                      <option key={d.date} value={d.date}>{d.label} — R$ {formatCurrencyBRL(d.totalCommission)}</option>
+                      <option key={d.date} value={d.date}>{d.label} — R$ {formatCurrencyBRL(d.pendingCommission || d.totalCommission)}</option>
                     ))}
                   </select>
                 )}
@@ -4187,7 +4360,7 @@ const AdminFinancial = () => {
                   >
                     <option value="todos">🗓️ Todas as Semanas ({commissionAggregatedStats.weeks.length})</option>
                     {commissionAggregatedStats.weeks.map(w => (
-                      <option key={w.sortKey} value={w.sortKey}>{w.label} — R$ {formatCurrencyBRL(w.totalCommission)}</option>
+                      <option key={w.sortKey} value={w.sortKey}>{w.label} — R$ {formatCurrencyBRL(w.pendingCommission || w.totalCommission)}</option>
                     ))}
                   </select>
                 )}
@@ -4200,7 +4373,7 @@ const AdminFinancial = () => {
                   >
                     <option value="todos">🌓 Todas as Quinzenas ({commissionAggregatedStats.fortnights.length})</option>
                     {commissionAggregatedStats.fortnights.map(f => (
-                      <option key={f.fortnightKey} value={f.fortnightKey}>{f.label} — R$ {formatCurrencyBRL(f.totalCommission)}</option>
+                      <option key={f.fortnightKey} value={f.fortnightKey}>{f.label} — R$ {formatCurrencyBRL(f.pendingCommission || f.totalCommission)}</option>
                     ))}
                   </select>
                 )}
@@ -4213,26 +4386,26 @@ const AdminFinancial = () => {
                   >
                     <option value="todos">📊 Todos os Meses ({commissionAggregatedStats.months.length})</option>
                     {commissionAggregatedStats.months.map(m => (
-                      <option key={m.month} value={m.month}>{m.label} — R$ {formatCurrencyBRL(m.totalCommission)}</option>
+                      <option key={m.month} value={m.month}>{m.label} — R$ {formatCurrencyBRL(m.pendingCommission || m.totalCommission)}</option>
                     ))}
                   </select>
                 )}
 
                 <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>
-                  {commissionKPIs.totalAppointments} lançamento(s) filtrados
+                  {commissionKPIs.totalAppointments} atendimento(s) | {commissionKPIs.withdrawalCount} retirada(s)
                 </span>
               </div>
             )}
 
-            {/* KPIs Resumo da Comissão */}
+            {/* KPIs Resumo da Comissão com Retiradas e Saldo Pendente */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginTop: 16, marginBottom: 20 }}>
-              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.06)', border: '0.5px solid var(--adm-rule-gold)' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Total a Repassar</span>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(72,187,120,0.08)', border: '0.5px solid rgba(72,187,120,0.3)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Saldo Pendente a Pagar</span>
                 <strong style={{ fontSize: '1.4rem', color: '#48bb78' }}>
-                  R$ {formatCurrencyBRL(commissionKPIs.totalCommission)}
+                  R$ {formatCurrencyBRL(commissionKPIs.pendingPayout)}
                 </strong>
                 <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                  {commissionKPIs.label}
+                  Gerado: R$ {formatCurrencyBRL(commissionKPIs.totalCommission)} | Já pago: - R$ {formatCurrencyBRL(commissionKPIs.totalWithdrawals)}
                 </span>
               </div>
               <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
@@ -4253,18 +4426,18 @@ const AdminFinancial = () => {
                   Sobre R$ {formatCurrencyBRL(commissionKPIs.totalProductsRevenue)} em vendas
                 </span>
               </div>
-              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
-                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Lançamentos Comissionados</span>
-                <strong style={{ fontSize: '1.4rem', color: 'var(--adm-text)' }}>
-                  {commissionKPIs.totalAppointments}
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(245,101,101,0.06)', border: '0.5px solid rgba(245,101,101,0.25)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Total Já Retirado / Pago</span>
+                <strong style={{ fontSize: '1.4rem', color: '#fc8181' }}>
+                  R$ {formatCurrencyBRL(commissionKPIs.totalWithdrawals)}
                 </strong>
                 <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                  Atendimentos e vendas com repasse
+                  {commissionKPIs.withdrawalCount} retirada(s) no período ({commissionKPIs.label})
                 </span>
               </div>
             </div>
 
-            {/* Cards Individuais dos Profissionais */}
+            {/* Cards Individuais dos Profissionais com Saldo Pendente e Botão de Retirada */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
               {professionals.map(p => {
                 const commServ = p.commissionService !== undefined ? p.commissionService : (p.commission || 50);
@@ -4275,13 +4448,15 @@ const AdminFinancial = () => {
                   serviceCommission: 0,
                   productCommission: 0,
                   totalCommission: 0,
+                  totalWithdrawals: 0,
+                  pendingCommission: 0,
                   count: 0
                 };
                 return (
                   <div key={p.id} style={{ border: '0.5px solid var(--adm-rule)', padding: 16, borderRadius: 8, background: 'var(--adm-surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(220,163,84,0.15)', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.85rem' }}>
+                        <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(220,163,84,0.15)', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.9rem' }}>
                           {p.name ? p.name.charAt(0).toUpperCase() : 'P'}
                         </div>
                         <div>
@@ -4289,10 +4464,19 @@ const AdminFinancial = () => {
                           <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>{pData.count} atendimento(s) no período</span>
                         </div>
                       </div>
-                      <span style={{ fontSize: '1.15rem', color: '#48bb78', fontWeight: 700 }}>
-                        R$ {formatCurrencyBRL(pData.totalCommission)}
-                      </span>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--adm-muted)', display: 'block' }}>Saldo a Pagar</span>
+                        <span style={{ fontSize: '1.15rem', color: '#48bb78', fontWeight: 700 }}>
+                          R$ {formatCurrencyBRL(pData.pendingCommission)}
+                        </span>
+                      </div>
                     </div>
+
+                    <div style={{ background: 'var(--adm-card)', padding: '8px 12px', borderRadius: 6, fontSize: '0.75rem', display: 'flex', justifyContent: 'space-between', color: 'var(--adm-muted)' }}>
+                      <span>Gerado: <strong style={{ color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(pData.totalCommission)}</strong></span>
+                      <span>Retirado: <strong style={{ color: '#fc8181' }}>- R$ {formatCurrencyBRL(pData.totalWithdrawals)}</strong></span>
+                    </div>
+
                     <div style={{ borderTop: '1px solid var(--adm-rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Serviços ({commServ}%)</span>
@@ -4303,6 +4487,35 @@ const AdminFinancial = () => {
                         <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(pData.productCommission)}</strong>
                       </div>
                     </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      onClick={() => {
+                        setCommissionWithdrawalForm(prev => ({
+                          ...prev,
+                          professionalId: p.id,
+                          value: pData.pendingCommission > 0 ? pData.pendingCommission.toFixed(2) : ''
+                        }));
+                        setShowCommissionWithdrawalModal(true);
+                      }}
+                      style={{
+                        marginTop: 4,
+                        padding: '6px 12px',
+                        fontSize: '0.8rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6,
+                        background: 'rgba(220,163,84,0.08)',
+                        color: 'var(--adm-gold)',
+                        border: '1px solid var(--adm-rule-gold)',
+                        borderRadius: 6,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      💸 Pagar / Retirar Comissão ({p.name})
+                    </button>
                   </div>
                 );
               })}
@@ -4740,6 +4953,82 @@ const AdminFinancial = () => {
               </div>
             </div>
           )}
+
+          {/* TABELA: HISTÓRICO DE RETIRADAS E PAGAMENTOS DE COMISSÃO */}
+          <div className="financial-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <DollarSign size={20} color="#fc8181" /> Histórico de Retiradas e Pagamentos de Comissão
+                </h3>
+                <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', margin: '4px 0 0 0' }}>
+                  Extrato de adiantamentos, vales e pagamentos de comissão efetuados aos profissionais no período ({commissionKPIs.label}).
+                </p>
+              </div>
+              <button 
+                type="button" 
+                className="btn btn-spectro-gold" 
+                onClick={() => setShowCommissionWithdrawalModal(true)}
+                style={{ padding: '6px 14px', fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                💸 + Nova Retirada / Pagar
+              </button>
+            </div>
+
+            <div className="table-responsive">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Data / Hora</th>
+                    <th>Profissional</th>
+                    <th>Descrição / Motivo</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Observações</th>
+                    <th style={{ textAlign: 'right' }}>Valor Deduzido</th>
+                    <th style={{ textAlign: 'center' }}>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {commissionKPIs.withdrawalsList.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                        Nenhuma retirada ou adiantamento de comissão registrado no período selecionado.
+                      </td>
+                    </tr>
+                  ) : (
+                    commissionKPIs.withdrawalsList.map(w => (
+                      <tr key={w.id}>
+                        <td>{w.date.split('-').reverse().join('/')} às {w.time || '00:00'}</td>
+                        <td>
+                          <strong style={{ color: 'var(--adm-gold)' }}>{w.profName}</strong>
+                        </td>
+                        <td>{w.description}</td>
+                        <td>
+                          <span style={{ padding: '2px 8px', borderRadius: 4, background: 'var(--adm-surface)', border: '0.5px solid var(--adm-rule)', fontSize: '0.78rem' }}>
+                            {w.paymentMethod}
+                          </span>
+                        </td>
+                        <td style={{ color: 'var(--adm-muted)', fontSize: '0.8rem' }}>{w.notes || '—'}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181', fontSize: '0.95rem' }}>
+                          - R$ {formatCurrencyBRL(w.value)}
+                        </td>
+                        <td style={{ textAlign: 'center' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteTransaction(w.id)}
+                            title="Excluir retirada de comissão"
+                            style={{ background: 'transparent', border: 'none', color: '#e53e3e', cursor: 'pointer', padding: 4 }}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
 
@@ -6086,6 +6375,109 @@ const AdminFinancial = () => {
             <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
               <button type="button" className="btn btn-ghost" onClick={() => setShowExpenseModal(false)}>Cancelar</button>
               <button type="submit" className="btn btn-accent" style={{ background: '#e53e3e', borderColor: '#e53e3e' }}>Registrar Gasto</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* MODAL: REGISTRAR RETIRADA / PAGAMENTO DE COMISSÃO */}
+      {showCommissionWithdrawalModal && (
+        <div className="modal-overlay">
+          <form className="modal-content" onSubmit={handleSaveCommissionWithdrawal}>
+            <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <DollarSign size={20} color="var(--adm-gold)" /> Registrar Retirada / Pagamento de Comissão
+            </h3>
+            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginTop: 4, marginBottom: 16 }}>
+              O valor registrado será lançado como saída no fluxo de caixa e deduzido automaticamente do saldo de comissões do profissional.
+            </p>
+
+            <div className="form-group">
+              <label>Profissional *</label>
+              <select
+                value={commissionWithdrawalForm.professionalId}
+                onChange={e => setCommissionWithdrawalForm(prev => ({ ...prev, professionalId: e.target.value }))}
+                required
+                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+              >
+                {professionals.map(p => {
+                  const pData = commissionKPIs.professionalsMap && commissionKPIs.professionalsMap[p.id];
+                  const pendente = pData ? pData.pendingCommission : 0;
+                  return (
+                    <option key={p.id} value={p.id}>
+                      {p.name} (Saldo Pendente: R$ {formatCurrencyBRL(pendente)})
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
+              <div className="form-group">
+                <label>Valor da Retirada (R$) *</label>
+                <input 
+                  type="number" 
+                  required 
+                  min="0.01"
+                  step="0.01"
+                  placeholder="0.00"
+                  value={commissionWithdrawalForm.value}
+                  onChange={e => setCommissionWithdrawalForm(prev => ({ ...prev, value: e.target.value }))}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Forma de Pagamento *</label>
+                <select 
+                  value={commissionWithdrawalForm.paymentMethod}
+                  onChange={e => setCommissionWithdrawalForm(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                >
+                  <option value="Pix">Pix</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="Transferência Bancária">Transferência Bancária</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
+              <div className="form-group">
+                <label>Motivo / Tipo de Repasse *</label>
+                <select
+                  value={commissionWithdrawalForm.motive}
+                  onChange={e => setCommissionWithdrawalForm(prev => ({ ...prev, motive: e.target.value }))}
+                  style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '0.5px solid var(--adm-rule)', background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                >
+                  <option value="Pagamento de Comissão">Pagamento de Comissão</option>
+                  <option value="Adiantamento / Vale">Adiantamento / Vale</option>
+                  <option value="Retirada Parcial">Retirada Parcial</option>
+                  <option value="Fechamento Quinzenal">Fechamento Quinzenal</option>
+                  <option value="Fechamento Mensal">Fechamento Mensal</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Data da Retirada *</label>
+                <input 
+                  type="date" 
+                  required
+                  value={commissionWithdrawalForm.date}
+                  onChange={e => setCommissionWithdrawalForm(prev => ({ ...prev, date: e.target.value }))}
+                />
+              </div>
+            </div>
+
+            <div className="form-group" style={{ marginTop: 12 }}>
+              <label>Observações / Comprovante (opcional)</label>
+              <input 
+                type="text" 
+                placeholder="Ex: Chave Pix, adiantamento referente ao sábado, etc."
+                value={commissionWithdrawalForm.notes}
+                onChange={e => setCommissionWithdrawalForm(prev => ({ ...prev, notes: e.target.value }))}
+              />
+            </div>
+
+            <div className="modal-actions" style={{ justifyContent: 'flex-end', gap: 12, marginTop: 24 }}>
+              <button type="button" className="btn btn-ghost" onClick={() => setShowCommissionWithdrawalModal(false)}>Cancelar</button>
+              <button type="submit" className="btn btn-spectro-gold" style={{ padding: '8px 20px', fontWeight: 600 }}>Confirmar Retirada</button>
             </div>
           </form>
         </div>

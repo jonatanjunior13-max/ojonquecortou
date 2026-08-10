@@ -90,41 +90,60 @@ export const calculateTransactionFee = (val, method, settings = {}) => {
 };
 
 /**
- * Calculates professional commission based strictly on the gross values of services and products.
+ * Calculates professional commission based strictly on the gross values of services and products,
+ * deducting any recorded commission payouts/withdrawals.
  */
-export const calculateProfessionalCommission = (prof, transactions) => {
-  if (!prof) return { services: 0, products: 0, total: 0 };
+export const calculateProfessionalCommission = (prof, transactions = []) => {
+  if (!prof) return { services: 0, products: 0, total: 0, withdrawals: 0, pending: 0 };
   const commServ = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 0);
   const commProd = prof.commissionProduct !== undefined ? prof.commissionProduct : 0;
   
   let servicesPayout = 0;
   let productsPayout = 0;
+  let withdrawals = 0;
 
-  transactions
-    .filter(t => t.type === 'entrada' && (t.professionalId || t.profissional || 'jon') === prof.id)
-    .forEach(t => {
-      const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
+  transactions.forEach(t => {
+    const profId = t.professionalId || t.profissional || 'jon';
+    if (profId !== prof.id) return;
+
+    if (t.type === 'entrada') {
+      const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (Number(p.sellingPrice || 0) * Number(p.quantity || 1)), 0) : 0;
       const isProdSale = t.isProductSale || t.category === 'venda_produto';
       
       let rawProd = 0;
       let rawServ = 0;
 
       if (isProdSale) {
-        rawProd = t.value;
+        rawProd = Number(t.value || 0);
       } else {
         rawProd = productVal;
-        rawServ = Math.max(0, t.value - productVal);
+        rawServ = Math.max(0, Number(t.value || 0) - productVal);
       }
 
       // Calculated on gross values (without deducting transaction fees)
       servicesPayout += rawServ * (commServ / 100);
       productsPayout += rawProd * (commProd / 100);
-    });
+    } else if (t.type === 'saida') {
+      const isPayout = t.isCommissionPayout || 
+        t.category === 'Comissão - Repasse / Retirada' || 
+        t.category === 'comissao_retirada' ||
+        (t.description && t.description.toLowerCase().includes('comiss'));
+      
+      if (isPayout) {
+        withdrawals += Number(t.value || 0);
+      }
+    }
+  });
+
+  const total = servicesPayout + productsPayout;
+  const pending = Math.max(0, total - withdrawals);
 
   return {
     services: servicesPayout,
     products: productsPayout,
-    total: servicesPayout + productsPayout
+    total,
+    withdrawals,
+    pending
   };
 };
 
@@ -170,6 +189,7 @@ export const adjustToNextBusinessDay = (dateInput) => {
 /**
  * Generates itemized schedule of expected receivables for each entry transaction.
  * Accounts for 30/60/90 days for credit card (1x, 2x, 3x), 1 business day for debit, and instant for Pix/Cash.
+ * Card transactions from 01/08/2026 to 06/08/2026 (old card machine) are zeroed/excluded.
  */
 export const calculateReceivablesSchedule = (transactions = [], settings = {}) => {
   const fees = {
@@ -205,10 +225,16 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
         const pMethod = (p.method || t.paymentMethod || '').toLowerCase();
         const pAnticipated = p.anticipation || pMethod.includes('antecipad') || isAnticipated;
 
+        // Troca de maquininha: transações de cartão (débito/crédito) entre 01/08/2026 e 06/08/2026 pertenciam à maquininha antiga e foram zeradas/desconsideradas na nova agenda de recebíveis.
+        const isCardPayment = pMethod.includes('crédit') || pMethod.includes('credit') || pMethod.includes('débit') || pMethod.includes('debito');
+        if (isCardPayment && (saleDate >= '2026-08-01' && saleDate <= '2026-08-06')) {
+          return; // Zerado / Desconsiderado
+        }
+
         if (pMethod.includes('pix')) {
           const fee = pVal * (fees.feePix / 100);
           const net = pVal - fee;
-            schedule.push({
+          schedule.push({
             id: `${t.id}_pix_${pIdx}`,
             transactionId: t.id,
             clientName: t.clientName || 'Cliente',
@@ -256,7 +282,7 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
             dueDate = saleDate;
           }
 
-          const isLiquidated = dueDate <= todayStr;
+          const isLiquidated = dueDate < todayStr;
 
           schedule.push({
             id: `${t.id}_deb_${pIdx}`,
@@ -330,7 +356,7 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
               const daysToAdd = 30 * i;
               const rawDueDate = addCalendarDays(saleDate, daysToAdd);
               const adjustedDueDate = adjustToNextBusinessDay(rawDueDate);
-              const isLiquidated = adjustedDueDate <= todayStr;
+              const isLiquidated = adjustedDueDate < todayStr;
 
               schedule.push({
                 id: `${t.id}_cred_${pIdx}_${i}`,
