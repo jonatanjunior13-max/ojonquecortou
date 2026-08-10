@@ -31,6 +31,8 @@ const AdminFinancial = () => {
 
   const [activeSubTab, setActiveSubTab] = useState('dashboard'); // 'dashboard', 'fluxo', 'comissao', 'taxas'
   const [attendanceViewMode, setAttendanceViewMode] = useState('detalhado'); // 'detalhado', 'dia', 'semana', 'mes'
+  const [commissionViewMode, setCommissionViewMode] = useState('dia'); // 'dia', 'semana', 'quinzena', 'mes', 'detalhado'
+  const [commissionSearch, setCommissionSearch] = useState('');
   const [fixedCosts, setFixedCosts] = useState(3500);
   const [proLabore, setProLabore] = useState(5000);
   const [workDays, setWorkDays] = useState(22);
@@ -113,9 +115,24 @@ const AdminFinancial = () => {
   const [productSearch, setProductSearch] = useState('');
 
   // Receivables Schedule Filter states
+  const [receivablesViewMode, setReceivablesViewMode] = useState('dia'); // 'dia', 'semana', 'quinzena', 'mes', 'personalizado', 'detalhado'
   const [receivablesSearch, setReceivablesSearch] = useState('');
   const [receivablesStatusFilter, setReceivablesStatusFilter] = useState('todos'); // 'todos', 'a_receber', 'liquidado', 'antecipado'
   const [receivablesMethodFilter, setReceivablesMethodFilter] = useState('todos'); // 'todos', 'credito', 'debito', 'pix', 'dinheiro'
+  const [receivablesCustomStart, setReceivablesCustomStart] = useState(startDate);
+  const [receivablesCustomEnd, setReceivablesCustomEnd] = useState(endDate);
+
+  // Expenses (Despesas) states
+  const [expenseViewMode, setExpenseViewMode] = useState('dia'); // 'dia', 'semana', 'quinzena', 'mes', 'personalizado', 'detalhado'
+  const [expenseSearch, setExpenseSearch] = useState('');
+  const [expenseCategoryFilter, setExpenseCategoryFilter] = useState('todos');
+  const [expenseMethodFilter, setExpenseMethodFilter] = useState('todos');
+  const [expenseCustomStart, setExpenseCustomStart] = useState(startDate);
+  const [expenseCustomEnd, setExpenseCustomEnd] = useState(endDate);
+
+  // Commission custom date states
+  const [commissionCustomStart, setCommissionCustomStart] = useState(startDate);
+  const [commissionCustomEnd, setCommissionCustomEnd] = useState(endDate);
 
   // Packages Management states
   const [packageSearch, setPackageSearch] = useState('');
@@ -521,6 +538,265 @@ const AdminFinancial = () => {
     };
   }, [detailedAttendanceList]);
 
+  // Agrega dados de comissões por Dia, Semana, Quinzena, Mês e Extrato Detalhado
+  const commissionAggregatedStats = useMemo(() => {
+    const byDay = {};
+    const byWeek = {};
+    const byFortnight = {};
+    const byMonth = {};
+    const detailedList = [];
+
+    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const weekdayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const weekdayShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+    filteredTransactions
+      .filter(t => t.type === 'entrada')
+      .forEach(t => {
+        const dateVal = t.date;
+        if (!dateVal) return;
+
+        const currentAssigned = t.professionalId || t.profissional || 'jon';
+        const prof = professionals.find(p => p.id === currentAssigned) || { id: currentAssigned, name: t.professionalName || 'Jon', commission: 50, commissionService: 50, commissionProduct: 10 };
+
+        const commServRate = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 50);
+        const commProdRate = prof.commissionProduct !== undefined ? prof.commissionProduct : 10;
+
+        const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + ((p.sellingPrice || 0) * (p.quantity || 1)), 0) : 0;
+        const isProdSale = t.isProductSale || t.category === 'venda_produto';
+
+        let rawProd = 0;
+        let rawServ = 0;
+
+        if (isProdSale) {
+          rawProd = t.value || 0;
+        } else {
+          rawProd = productVal;
+          rawServ = Math.max(0, (t.value || 0) - productVal);
+        }
+
+        const servComm = rawServ * (commServRate / 100);
+        const prodComm = rawProd * (commProdRate / 100);
+        const totalComm = servComm + prodComm;
+        const netVal = getNetValue(t.value, t.paymentMethod);
+
+        const txDetail = {
+          id: t.id,
+          date: dateVal,
+          time: t.time || '00:00',
+          clientName: t.clientName || 'Cliente',
+          description: t.description || 'Atendimento',
+          paymentMethod: t.paymentMethod || 'Pix',
+          grossValue: t.value || 0,
+          netValue: netVal,
+          profId: prof.id,
+          profName: prof.name || 'Jon',
+          commServRate,
+          commProdRate,
+          rawServ,
+          rawProd,
+          servComm,
+          prodComm,
+          totalComm,
+          isService: rawServ > 0,
+          isProduct: rawProd > 0
+        };
+
+        detailedList.push(txDetail);
+
+        const dateObj = new Date(dateVal + 'T00:00:00');
+        const [yearStr, monthStr, dayStr] = dateVal.split('-');
+        const dayNum = parseInt(dayStr, 10);
+        const monthNum = parseInt(monthStr, 10);
+        const yearNum = parseInt(yearStr, 10);
+
+        const updateBucket = (bucket, key, meta) => {
+          if (!bucket[key]) {
+            bucket[key] = {
+              key,
+              ...meta,
+              count: 0,
+              serviceCount: 0,
+              productCount: 0,
+              serviceRevenue: 0,
+              productRevenue: 0,
+              totalRevenue: 0,
+              serviceCommission: 0,
+              productCommission: 0,
+              totalCommission: 0,
+              professionals: {}
+            };
+          }
+          const item = bucket[key];
+          item.count += 1;
+          if (rawServ > 0) item.serviceCount += 1;
+          if (rawProd > 0) item.productCount += 1;
+          item.serviceRevenue += rawServ;
+          item.productRevenue += rawProd;
+          item.totalRevenue += (rawServ + rawProd);
+          item.serviceCommission += servComm;
+          item.productCommission += prodComm;
+          item.totalCommission += totalComm;
+
+          if (!item.professionals[prof.id]) {
+            item.professionals[prof.id] = {
+              id: prof.id,
+              name: prof.name,
+              serviceRevenue: 0,
+              productRevenue: 0,
+              serviceCommission: 0,
+              productCommission: 0,
+              totalCommission: 0,
+              count: 0
+            };
+          }
+          const pEntry = item.professionals[prof.id];
+          pEntry.count += 1;
+          pEntry.serviceRevenue += rawServ;
+          pEntry.productRevenue += rawProd;
+          pEntry.serviceCommission += servComm;
+          pEntry.productCommission += prodComm;
+          pEntry.totalCommission += totalComm;
+        };
+
+        // 1. Por Dia
+        const wDay = dateObj.getDay();
+        const dayLabel = `${weekdayShort[wDay]}, ${dayStr}/${monthStr}/${yearStr}`;
+        updateBucket(byDay, dateVal, {
+          date: dateVal,
+          label: dayLabel,
+          weekday: weekdayNames[wDay],
+          sortKey: dateVal
+        });
+
+        // 2. Por Semana (Segunda a Domingo)
+        const diff = dateObj.getDate() - wDay + (wDay === 0 ? -6 : 1);
+        const startOfWeek = new Date(dateObj);
+        startOfWeek.setDate(diff);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
+        const endOfWeekStr = endOfWeek.toISOString().split('T')[0];
+        const weekKey = `${startOfWeekStr}_${endOfWeekStr}`;
+        const weekLabel = `Semana de ${startOfWeek.toLocaleDateString('pt-BR')} a ${endOfWeek.toLocaleDateString('pt-BR')}`;
+        updateBucket(byWeek, weekKey, {
+          weekStart: startOfWeekStr,
+          weekEnd: endOfWeekStr,
+          label: weekLabel,
+          sortKey: startOfWeekStr
+        });
+
+        // 3. Por Quinzena (1ª Quinzena: 01 a 15 | 2ª Quinzena: 16 ao último dia)
+        const isFirstFortnight = dayNum <= 15;
+        const fortnightKey = `${yearStr}-${monthStr}-${isFirstFortnight ? 'Q1' : 'Q2'}`;
+        const lastDayOfMonth = new Date(yearNum, monthNum, 0).getDate();
+        const fortnightSpan = isFirstFortnight 
+          ? `01/${monthStr} a 15/${monthStr}/${yearStr}`
+          : `16/${monthStr} a ${lastDayOfMonth}/${monthStr}/${yearStr}`;
+        const fortnightLabel = `${isFirstFortnight ? '1ª Quinzena' : '2ª Quinzena'} (${monthNames[monthNum - 1]}/${yearStr}) — ${fortnightSpan}`;
+        updateBucket(byFortnight, fortnightKey, {
+          fortnightKey,
+          fortnightNumber: isFirstFortnight ? 1 : 2,
+          monthName: monthNames[monthNum - 1],
+          year: yearNum,
+          span: fortnightSpan,
+          label: fortnightLabel,
+          sortKey: `${yearStr}-${monthStr}-${isFirstFortnight ? '01' : '16'}`
+        });
+
+        // 4. Por Mês
+        const monthKey = `${yearStr}-${monthStr}`;
+        const monthLabel = `${monthNames[monthNum - 1]} de ${yearStr}`;
+        updateBucket(byMonth, monthKey, {
+          month: monthKey,
+          monthName: monthNames[monthNum - 1],
+          year: yearNum,
+          label: monthLabel,
+          sortKey: monthKey
+        });
+      });
+
+    // Custom Period
+    const customList = detailedList.filter(item => {
+      if (!commissionCustomStart && !commissionCustomEnd) return true;
+      if (commissionCustomStart && item.date < commissionCustomStart) return false;
+      if (commissionCustomEnd && item.date > commissionCustomEnd) return false;
+      return true;
+    });
+
+    const customBucket = {
+      label: `Período de ${commissionCustomStart ? commissionCustomStart.split('-').reverse().join('/') : 'Início'} a ${commissionCustomEnd ? commissionCustomEnd.split('-').reverse().join('/') : 'Fim'}`,
+      count: customList.length,
+      serviceCount: customList.filter(i => i.isService).length,
+      productCount: customList.filter(i => i.isProduct).length,
+      serviceRevenue: customList.reduce((s, i) => s + i.rawServ, 0),
+      productRevenue: customList.reduce((s, i) => s + i.rawProd, 0),
+      totalRevenue: customList.reduce((s, i) => s + i.rawServ + i.rawProd, 0),
+      serviceCommission: customList.reduce((s, i) => s + i.servComm, 0),
+      productCommission: customList.reduce((s, i) => s + i.prodComm, 0),
+      totalCommission: customList.reduce((s, i) => s + i.totalComm, 0),
+      professionals: {},
+      items: customList
+    };
+    customList.forEach(item => {
+      if (!customBucket.professionals[item.profId]) {
+        customBucket.professionals[item.profId] = {
+          id: item.profId,
+          name: item.profName,
+          serviceRevenue: 0,
+          productRevenue: 0,
+          serviceCommission: 0,
+          productCommission: 0,
+          totalCommission: 0,
+          count: 0
+        };
+      }
+      const p = customBucket.professionals[item.profId];
+      p.count += 1;
+      p.serviceRevenue += item.rawServ;
+      p.productRevenue += item.rawProd;
+      p.serviceCommission += item.servComm;
+      p.productCommission += item.prodComm;
+      p.totalCommission += item.totalComm;
+    });
+
+    return {
+      days: Object.values(byDay).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      weeks: Object.values(byWeek).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      fortnights: Object.values(byFortnight).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      months: Object.values(byMonth).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      customPeriod: customBucket,
+      detailedList: detailedList.sort((a, b) => b.date.localeCompare(a.date) || b.time.localeCompare(a.time))
+    };
+  }, [filteredTransactions, professionals, commissionCustomStart, commissionCustomEnd]);
+
+  const commissionKPIs = useMemo(() => {
+    let totalCommission = 0;
+    let serviceCommission = 0;
+    let productCommission = 0;
+    let totalServicesRevenue = 0;
+    let totalProductsRevenue = 0;
+    let totalAppointments = 0;
+
+    commissionAggregatedStats.detailedList.forEach(item => {
+      totalCommission += item.totalComm;
+      serviceCommission += item.servComm;
+      productCommission += item.prodComm;
+      totalServicesRevenue += item.rawServ;
+      totalProductsRevenue += item.rawProd;
+      totalAppointments += 1;
+    });
+
+    return {
+      totalCommission,
+      serviceCommission,
+      productCommission,
+      totalServicesRevenue,
+      totalProductsRevenue,
+      totalAppointments
+    };
+  }, [commissionAggregatedStats]);
+
   // Monthly grouping for charts
   const monthlyData = useMemo(() => {
     // Determine unique months in range
@@ -754,40 +1030,324 @@ const AdminFinancial = () => {
     };
   }, [fullReceivablesSchedule]);
 
-  // Batch assign all transactions & bookings in the active month window to Jon
-  const handleAssignAllMonthToJon = async () => {
-    try {
-      let updatedCount = 0;
-      if (db) {
-        const txToUpdate = dbTransactions.filter(t => t.date >= startDate && t.date <= endDate && (t.professionalId !== 'jon' || t.profissional !== 'jon'));
-        for (const t of txToUpdate) {
-          if (t.id && !t.id.startsWith('demo-')) {
-            await updateDoc(doc(db, 'financial_transactions', t.id), {
-              professionalId: 'jon',
-              profissional: 'jon',
-              professionalName: 'Jon'
-            });
-            updatedCount++;
-          }
+  // Agrega recebíveis por Dia, Semana, Quinzena e Mês
+  const receivablesAggregatedStats = useMemo(() => {
+    const byDay = {};
+    const byWeek = {};
+    const byFortnight = {};
+    const byMonth = {};
+
+    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const weekdayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const weekdayShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+    filteredReceivablesSchedule.forEach(item => {
+      const dueDateVal = item.dueDate;
+      if (!dueDateVal) return;
+
+      const dateObj = new Date(dueDateVal + 'T00:00:00');
+      const [yearStr, monthStr, dayStr] = dueDateVal.split('-');
+      const dayNum = parseInt(dayStr, 10);
+      const monthNum = parseInt(monthStr, 10);
+      const yearNum = parseInt(yearStr, 10);
+
+      const updateBucket = (bucket, key, meta) => {
+        if (!bucket[key]) {
+          bucket[key] = {
+            key,
+            ...meta,
+            count: 0,
+            grossValue: 0,
+            feeValue: 0,
+            netValue: 0,
+            liquidNet: 0,
+            pendingNet: 0,
+            methods: {},
+            statuses: { liquidado: 0, a_receber: 0, antecipado: 0 },
+            items: []
+          };
+        }
+        const b = bucket[key];
+        b.count += 1;
+        b.grossValue += Number(item.grossValue || 0);
+        b.feeValue += Number(item.feeValue || 0);
+        b.netValue += Number(item.netValue || 0);
+
+        if (item.status === 'a_receber') {
+          b.pendingNet += Number(item.netValue || 0);
+          b.statuses.a_receber += 1;
+        } else if (item.status === 'antecipado') {
+          b.liquidNet += Number(item.netValue || 0);
+          b.statuses.antecipado += 1;
+        } else {
+          b.liquidNet += Number(item.netValue || 0);
+          b.statuses.liquidado += 1;
         }
 
-        const bToUpdate = dbBookings.filter(b => b.date >= startDate && b.date <= endDate && (b.professionalId !== 'jon' || b.profissional !== 'jon'));
-        for (const b of bToUpdate) {
-          if (b.id && !b.id.startsWith('demo-')) {
-            await updateDoc(doc(db, 'bookings', b.id), {
-              professionalId: 'jon',
-              profissional: 'jon',
-              professionalName: 'Jon'
-            });
-            updatedCount++;
-          }
+        const m = item.paymentMethod || 'Outro';
+        b.methods[m] = (b.methods[m] || 0) + Number(item.netValue || 0);
+        b.items.push(item);
+      };
+
+      // 1. Por Dia
+      const wDay = dateObj.getDay();
+      const dayLabel = `${weekdayShort[wDay]}, ${dayStr}/${monthStr}/${yearStr}`;
+      updateBucket(byDay, dueDateVal, {
+        date: dueDateVal,
+        label: dayLabel,
+        weekday: weekdayNames[wDay],
+        sortKey: dueDateVal
+      });
+
+      // 2. Por Semana (Segunda a Domingo)
+      const diff = dateObj.getDate() - wDay + (wDay === 0 ? -6 : 1);
+      const startOfWeek = new Date(dateObj);
+      startOfWeek.setDate(diff);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
+      const endOfWeekStr = endOfWeek.toISOString().split('T')[0];
+      const weekKey = `${startOfWeekStr}_${endOfWeekStr}`;
+      const weekLabel = `Semana de ${startOfWeek.toLocaleDateString('pt-BR')} a ${endOfWeek.toLocaleDateString('pt-BR')}`;
+      updateBucket(byWeek, weekKey, {
+        weekStart: startOfWeekStr,
+        weekEnd: endOfWeekStr,
+        label: weekLabel,
+        sortKey: startOfWeekStr
+      });
+
+      // 3. Por Quinzena (1ª Quinzena: 01 a 15 | 2ª Quinzena: 16 ao último dia)
+      const isFirstFortnight = dayNum <= 15;
+      const fortnightKey = `${yearStr}-${monthStr}-${isFirstFortnight ? 'Q1' : 'Q2'}`;
+      const lastDayOfMonth = new Date(yearNum, monthNum, 0).getDate();
+      const fortnightSpan = isFirstFortnight 
+        ? `01/${monthStr} a 15/${monthStr}/${yearStr}`
+        : `16/${monthStr} a ${lastDayOfMonth}/${monthStr}/${yearStr}`;
+      const fortnightLabel = `${isFirstFortnight ? '1ª Quinzena' : '2ª Quinzena'} (${monthNames[monthNum - 1]}/${yearStr}) — ${fortnightSpan}`;
+      updateBucket(byFortnight, fortnightKey, {
+        fortnightKey,
+        fortnightNumber: isFirstFortnight ? 1 : 2,
+        monthName: monthNames[monthNum - 1],
+        year: yearNum,
+        span: fortnightSpan,
+        label: fortnightLabel,
+        sortKey: `${yearStr}-${monthStr}-${isFirstFortnight ? '01' : '16'}`
+      });
+
+      // 4. Por Mês
+      const monthKey = `${yearStr}-${monthStr}`;
+      const monthLabel = `${monthNames[monthNum - 1]} de ${yearStr}`;
+      updateBucket(byMonth, monthKey, {
+        month: monthKey,
+        monthName: monthNames[monthNum - 1],
+        year: yearNum,
+        label: monthLabel,
+        sortKey: monthKey
+      });
+    });
+
+    // Custom Period for Receivables
+    const customReceivablesList = filteredReceivablesSchedule.filter(item => {
+      if (!receivablesCustomStart && !receivablesCustomEnd) return true;
+      if (receivablesCustomStart && item.dueDate < receivablesCustomStart) return false;
+      if (receivablesCustomEnd && item.dueDate > receivablesCustomEnd) return false;
+      return true;
+    });
+
+    const customReceivablesBucket = {
+      label: `Período de ${receivablesCustomStart ? receivablesCustomStart.split('-').reverse().join('/') : 'Início'} a ${receivablesCustomEnd ? receivablesCustomEnd.split('-').reverse().join('/') : 'Fim'}`,
+      count: customReceivablesList.length,
+      grossValue: customReceivablesList.reduce((s, i) => s + (i.grossValue || 0), 0),
+      feeValue: customReceivablesList.reduce((s, i) => s + (i.feeValue || 0), 0),
+      netValue: customReceivablesList.reduce((s, i) => s + (i.netValue || 0), 0),
+      liquidNet: customReceivablesList.reduce((s, i) => s + (i.status !== 'a_receber' ? (i.netValue || 0) : 0), 0),
+      pendingNet: customReceivablesList.reduce((s, i) => s + (i.status === 'a_receber' ? (i.netValue || 0) : 0), 0),
+      methods: {},
+      items: customReceivablesList
+    };
+    customReceivablesList.forEach(item => {
+      const m = item.paymentMethod || 'Outro';
+      customReceivablesBucket.methods[m] = (customReceivablesBucket.methods[m] || 0) + Number(item.netValue || 0);
+    });
+
+    return {
+      days: Object.values(byDay).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      weeks: Object.values(byWeek).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      fortnights: Object.values(byFortnight).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      months: Object.values(byMonth).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      customPeriod: customReceivablesBucket
+    };
+  }, [filteredReceivablesSchedule, receivablesCustomStart, receivablesCustomEnd]);
+
+  // Agrega dados de despesas por Dia, Semana, Quinzena, Mês, Período Personalizado e Extrato Detalhado
+  const expenseAggregatedStats = useMemo(() => {
+    const byDay = {};
+    const byWeek = {};
+    const byFortnight = {};
+    const byMonth = {};
+    const categoryTotals = {};
+    const methodTotals = {};
+
+    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const weekdayNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const weekdayShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+    // Base filtered expenses
+    const baseExpenses = filteredTransactions.filter(t => {
+      if (t.type !== 'saida') return false;
+      const term = expenseSearch.toLowerCase();
+      const matchesSearch = !term ||
+        (t.description || '').toLowerCase().includes(term) ||
+        (t.category || '').toLowerCase().includes(term) ||
+        (t.clientName || '').toLowerCase().includes(term) ||
+        (t.paymentMethod || '').toLowerCase().includes(term);
+
+      const matchesCat = expenseCategoryFilter === 'todos' || t.category === expenseCategoryFilter;
+      const matchesMethod = expenseMethodFilter === 'todos' || (t.paymentMethod || '').includes(expenseMethodFilter);
+
+      return matchesSearch && matchesCat && matchesMethod;
+    });
+
+    baseExpenses.forEach(t => {
+      const dateVal = t.date;
+      if (!dateVal) return;
+
+      const dateObj = new Date(dateVal + 'T00:00:00');
+      const [yearStr, monthStr, dayStr] = dateVal.split('-');
+      const dayNum = parseInt(dayStr, 10);
+      const monthNum = parseInt(monthStr, 10);
+      const yearNum = parseInt(yearStr, 10);
+
+      const val = Number(t.value || 0);
+      const cat = t.category || 'Outros';
+      const met = t.paymentMethod || 'Dinheiro';
+
+      // Totals
+      categoryTotals[cat] = (categoryTotals[cat] || 0) + val;
+      methodTotals[met] = (methodTotals[met] || 0) + val;
+
+      const updateBucket = (bucket, key, meta) => {
+        if (!bucket[key]) {
+          bucket[key] = {
+            key,
+            ...meta,
+            count: 0,
+            totalValue: 0,
+            categories: {},
+            methods: {},
+            items: []
+          };
         }
-      }
-      alert(`Atribuição concluída com sucesso! Todos os serviços do mês foram atribuídos ao Jon (${updatedCount} registro(s) atualizados).`);
-    } catch (err) {
-      alert('Erro ao atribuir serviços ao Jon: ' + err.message);
-    }
-  };
+        const b = bucket[key];
+        b.count += 1;
+        b.totalValue += val;
+        b.categories[cat] = (b.categories[cat] || 0) + val;
+        b.methods[met] = (b.methods[met] || 0) + val;
+        b.items.push(t);
+      };
+
+      // 1. Por Dia
+      const wDay = dateObj.getDay();
+      const dayLabel = `${weekdayShort[wDay]}, ${dayStr}/${monthStr}/${yearStr}`;
+      updateBucket(byDay, dateVal, {
+        date: dateVal,
+        label: dayLabel,
+        weekday: weekdayNames[wDay],
+        sortKey: dateVal
+      });
+
+      // 2. Por Semana
+      const diff = dateObj.getDate() - wDay + (wDay === 0 ? -6 : 1);
+      const startOfWeek = new Date(dateObj);
+      startOfWeek.setDate(diff);
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6);
+      const startOfWeekStr = startOfWeek.toISOString().split('T')[0];
+      const endOfWeekStr = endOfWeek.toISOString().split('T')[0];
+      const weekKey = `${startOfWeekStr}_${endOfWeekStr}`;
+      const weekLabel = `Semana de ${startOfWeek.toLocaleDateString('pt-BR')} a ${endOfWeek.toLocaleDateString('pt-BR')}`;
+      updateBucket(byWeek, weekKey, {
+        weekStart: startOfWeekStr,
+        weekEnd: endOfWeekStr,
+        label: weekLabel,
+        sortKey: startOfWeekStr
+      });
+
+      // 3. Por Quinzena
+      const isFirstFortnight = dayNum <= 15;
+      const fortnightKey = `${yearStr}-${monthStr}-${isFirstFortnight ? 'Q1' : 'Q2'}`;
+      const lastDayOfMonth = new Date(yearNum, monthNum, 0).getDate();
+      const fortnightSpan = isFirstFortnight 
+        ? `01/${monthStr} a 15/${monthStr}/${yearStr}`
+        : `16/${monthStr} a ${lastDayOfMonth}/${monthStr}/${yearStr}`;
+      const fortnightLabel = `${isFirstFortnight ? '1ª Quinzena' : '2ª Quinzena'} (${monthNames[monthNum - 1]}/${yearStr}) — ${fortnightSpan}`;
+      updateBucket(byFortnight, fortnightKey, {
+        fortnightKey,
+        fortnightNumber: isFirstFortnight ? 1 : 2,
+        monthName: monthNames[monthNum - 1],
+        year: yearNum,
+        span: fortnightSpan,
+        label: fortnightLabel,
+        sortKey: `${yearStr}-${monthStr}-${isFirstFortnight ? '01' : '16'}`
+      });
+
+      // 4. Por Mês
+      const monthKey = `${yearStr}-${monthStr}`;
+      const monthLabel = `${monthNames[monthNum - 1]} de ${yearStr}`;
+      updateBucket(byMonth, monthKey, {
+        month: monthKey,
+        monthName: monthNames[monthNum - 1],
+        year: yearNum,
+        label: monthLabel,
+        sortKey: monthKey
+      });
+    });
+
+    // Custom Period
+    const customList = baseExpenses.filter(item => {
+      if (!expenseCustomStart && !expenseCustomEnd) return true;
+      if (expenseCustomStart && item.date < expenseCustomStart) return false;
+      if (expenseCustomEnd && item.date > expenseCustomEnd) return false;
+      return true;
+    });
+
+    const customBucket = {
+      label: `Período de ${expenseCustomStart ? expenseCustomStart.split('-').reverse().join('/') : 'Início'} a ${expenseCustomEnd ? expenseCustomEnd.split('-').reverse().join('/') : 'Fim'}`,
+      count: customList.length,
+      totalValue: customList.reduce((s, i) => s + Number(i.value || 0), 0),
+      categories: {},
+      methods: {},
+      items: customList
+    };
+    customList.forEach(t => {
+      const val = Number(t.value || 0);
+      const cat = t.category || 'Outros';
+      const met = t.paymentMethod || 'Dinheiro';
+      customBucket.categories[cat] = (customBucket.categories[cat] || 0) + val;
+      customBucket.methods[met] = (customBucket.methods[met] || 0) + val;
+    });
+
+    const totalExpVal = baseExpenses.reduce((s, t) => s + Number(t.value || 0), 0);
+    const categoryBreakdown = Object.entries(categoryTotals).map(([name, val]) => ({
+      name,
+      value: val,
+      percentage: totalExpVal > 0 ? (val / totalExpVal) * 100 : 0
+    })).sort((a, b) => b.value - a.value);
+
+    return {
+      days: Object.values(byDay).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      weeks: Object.values(byWeek).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      fortnights: Object.values(byFortnight).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      months: Object.values(byMonth).sort((a, b) => b.sortKey.localeCompare(a.sortKey)),
+      customPeriod: customBucket,
+      detailedList: [...baseExpenses].sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.time || '').localeCompare(a.time || '')),
+      categoryBreakdown,
+      totalExpenses: totalExpVal,
+      count: baseExpenses.length
+    };
+  }, [filteredTransactions, expenseSearch, expenseCategoryFilter, expenseMethodFilter, expenseCustomStart, expenseCustomEnd]);
+
+
 
   // Save new fee settings to database & local
   const handleSaveFees = async (e) => {
@@ -1398,10 +1958,11 @@ const AdminFinancial = () => {
         {[
           { id: 'dashboard', label: 'Gráficos', icon: <TrendingUp size={14} /> },
           { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
+          { id: 'despesas', label: 'Despesas', icon: <TrendingDown size={14} /> },
           { id: 'recebiveis', label: 'Agenda de Recebíveis', icon: <CreditCard size={14} /> },
+          { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
           { id: 'atendimentos', label: 'Atendimentos', icon: <Users size={14} /> },
           { id: 'produtos', label: 'Produtos', icon: <ShoppingBag size={14} /> },
-          { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
           { id: 'taxas', label: 'Taxas', icon: <Percent size={14} /> },
           { id: 'pacotes', label: 'Pacotes', icon: <Eye size={14} /> },
           { id: 'precificacao', label: 'Precificação', icon: <DollarSign size={14} /> },
@@ -1940,10 +2501,564 @@ const AdminFinancial = () => {
         </div>
       )}
 
+      {/* SUBTAB: DESPESAS E SAÍDAS */}
+      {activeSubTab === 'despesas' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          {/* Header Card com Seletor de Período */}
+          <div className="financial-card" style={{ background: 'linear-gradient(135deg, rgba(229,62,62,0.06) 0%, rgba(0,0,0,0) 100%)', border: '1px solid rgba(229,62,62,0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8, color: '#fc8181' }}>
+                  <TrendingDown size={20} /> Gestão e Controle de Despesas
+                </h3>
+                <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+                  Acompanhe e audite todas as saídas de caixa, despesas fixas, insumos e custos operacionais por dia, semana, quinzena, mês ou período personalizado.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                <button className="btn btn-spectro-red" onClick={() => setShowExpenseModal(true)} style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                  <Plus size={16} style={{ marginRight: 6 }} /> Registrar Saída/Despesa
+                </button>
+
+                {/* Seletor de Modo: Dia, Semana, Quinzena, Mês, Personalizado, Detalhado */}
+                <div style={{ display: 'flex', gap: 6, background: 'var(--adm-surface)', padding: 4, borderRadius: 8, border: '0.5px solid var(--adm-rule)', flexWrap: 'wrap' }}>
+                  {[
+                    { id: 'dia', label: '📅 Por Dia' },
+                    { id: 'semana', label: '🗓️ Por Semana' },
+                    { id: 'quinzena', label: '🌓 Por Quinzena' },
+                    { id: 'mes', label: '📊 Por Mês' },
+                    { id: 'personalizado', label: '🗓️ Período Personalizado' },
+                    { id: 'detalhado', label: '📋 Extrato Detalhado' }
+                  ].map(mode => (
+                    <button
+                      key={mode.id}
+                      type="button"
+                      onClick={() => setExpenseViewMode(mode.id)}
+                      style={{
+                        padding: '8px 14px',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        border: 'none',
+                        borderRadius: 6,
+                        cursor: 'pointer',
+                        background: expenseViewMode === mode.id ? '#e53e3e' : 'transparent',
+                        color: expenseViewMode === mode.id ? '#fff' : 'var(--adm-muted)',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {mode.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Custom date range bar when in 'personalizado' mode */}
+            {expenseViewMode === 'personalizado' && (
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--adm-rule)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)' }}>Filtrar Período:</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>De:</label>
+                  <input
+                    type="date"
+                    value={expenseCustomStart}
+                    onChange={e => setExpenseCustomStart(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Até:</label>
+                  <input
+                    type="date"
+                    value={expenseCustomEnd}
+                    onChange={e => setExpenseCustomEnd(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* KPI Stat Cards */}
+          <div className="kpi-grid">
+            <KpiCard
+              label="Total de Despesas"
+              value={`- R$ ${formatCurrencyBRL(expenseAggregatedStats.totalExpenses)}`}
+              sub={`${expenseAggregatedStats.count} lançamento(s) no período`}
+              icon={<TrendingDown size={18} />}
+              variant="danger"
+            />
+            <KpiCard
+              label="Média Diária de Gastos"
+              value={`R$ ${formatCurrencyBRL(expenseAggregatedStats.days.length > 0 ? (expenseAggregatedStats.totalExpenses / expenseAggregatedStats.days.length) : 0)}`}
+              sub={`Em ${expenseAggregatedStats.days.length} dia(s) com despesas`}
+              icon={<DollarSign size={18} />}
+              variant="warning"
+            />
+            <KpiCard
+              label="Maior Centro de Custo"
+              value={expenseAggregatedStats.categoryBreakdown[0] ? `R$ ${formatCurrencyBRL(expenseAggregatedStats.categoryBreakdown[0].value)}` : 'R$ 0,00'}
+              sub={expenseAggregatedStats.categoryBreakdown[0] ? `${expenseAggregatedStats.categoryBreakdown[0].name} (${expenseAggregatedStats.categoryBreakdown[0].percentage.toFixed(1)}%)` : 'Nenhuma despesa'}
+              icon={<TrendingDown size={18} />}
+              variant="neutral"
+            />
+            <KpiCard
+              label="Total de Lançamentos"
+              value={`${expenseAggregatedStats.count}`}
+              sub="Saídas e sangrias registradas"
+              icon={<Calendar size={18} />}
+              variant="accent"
+            />
+          </div>
+
+          {/* Category breakdown bar */}
+          {expenseAggregatedStats.categoryBreakdown.length > 0 && (
+            <div className="financial-card" style={{ padding: '16px 20px' }}>
+              <h4 style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'var(--adm-text)' }}>
+                Distribuição por Categoria no Período
+              </h4>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {expenseAggregatedStats.categoryBreakdown.map((cat, idx) => (
+                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600 }}>
+                      <span style={{ color: 'var(--adm-text)' }}>{cat.name}</span>
+                      <span style={{ color: '#fc8181' }}>
+                        R$ {formatCurrencyBRL(cat.value)} ({cat.percentage.toFixed(1)}%)
+                      </span>
+                    </div>
+                    <div style={{ width: '100%', height: 6, background: 'var(--adm-surface)', borderRadius: 3, overflow: 'hidden' }}>
+                      <div style={{ width: `${cat.percentage}%`, height: '100%', background: '#e53e3e', borderRadius: 3 }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Table Card */}
+          <div className="financial-card">
+            {/* Filter Bar */}
+            <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+                {/* Search */}
+                <div style={{ position: 'relative', minWidth: 220 }}>
+                  <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
+                  <input
+                    type="text"
+                    placeholder="Buscar por descrição, fornecedor ou categoria..."
+                    value={expenseSearch}
+                    onChange={e => setExpenseSearch(e.target.value)}
+                    style={{ paddingLeft: 30, width: '100%', paddingRight: 10, paddingTop: 6, paddingBottom: 6, fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+
+                {/* Category Filter */}
+                <select
+                  value={expenseCategoryFilter}
+                  onChange={e => setExpenseCategoryFilter(e.target.value)}
+                  style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                >
+                  <option value="todos">Todas as Categorias</option>
+                  <option value="Custos Fixos - Aluguel e Condomínio">Aluguel e Condomínio</option>
+                  <option value="Custos Fixos - Água, Luz e Telefone">Água, Luz e Telefone</option>
+                  <option value="Custos Fixos - Sistemas e Assinaturas">Sistemas e Assinaturas</option>
+                  <option value="Custos Fixos - Marketing e Anúncios">Marketing e Anúncios</option>
+                  <option value="Custos Fixos - Salários e Pró-labore">Salários e Pró-labore</option>
+                  <option value="Custos Variáveis - Produtos e Insumos">Produtos e Insumos</option>
+                  <option value="Custos Variáveis - Manutenção">Manutenção</option>
+                  <option value="Custos Variáveis - Impostos e Taxas">Impostos e Taxas</option>
+                  <option value="Outros">Outros</option>
+                </select>
+
+                {/* Method Filter */}
+                <select
+                  value={expenseMethodFilter}
+                  onChange={e => setExpenseMethodFilter(e.target.value)}
+                  style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                >
+                  <option value="todos">Todas as Formas de Pagamento</option>
+                  <option value="Pix">Pix</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="Cartão">Cartão de Crédito</option>
+                </select>
+              </div>
+
+              <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                {expenseAggregatedStats.count} despesa(s) registradas
+              </span>
+            </div>
+
+            {/* TABELA: MODO POR DIA */}
+            {expenseViewMode === 'dia' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Data da Despesa</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Categorias</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Total Gasto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseAggregatedStats.days.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhuma despesa encontrada para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      expenseAggregatedStats.days.map((item, idx) => (
+                        <tr key={idx}>
+                          <td><strong>📅 {item.label}</strong></td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.categories).map(([catName, catVal]) => (
+                                <span key={catName} style={{ background: 'rgba(229,62,62,0.1)', color: '#fc8181', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 500 }}>
+                                  {catName}: R$ {formatCurrencyBRL(catVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.methods).map(([mName, mVal]) => (
+                                <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem' }}>
+                                  {mName}: R$ {formatCurrencyBRL(mVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181', fontSize: '0.95rem' }}>
+                            - R$ {formatCurrencyBRL(item.totalValue)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO POR SEMANA */}
+            {expenseViewMode === 'semana' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Semana</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Categorias</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Total Gasto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseAggregatedStats.weeks.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhuma despesa encontrada para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      expenseAggregatedStats.weeks.map((item, idx) => (
+                        <tr key={idx}>
+                          <td><strong>🗓️ {item.label}</strong></td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.categories).map(([catName, catVal]) => (
+                                <span key={catName} style={{ background: 'rgba(229,62,62,0.1)', color: '#fc8181', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 500 }}>
+                                  {catName}: R$ {formatCurrencyBRL(catVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.methods).map(([mName, mVal]) => (
+                                <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem' }}>
+                                  {mName}: R$ {formatCurrencyBRL(mVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181', fontSize: '0.95rem' }}>
+                            - R$ {formatCurrencyBRL(item.totalValue)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO POR QUINZENA */}
+            {expenseViewMode === 'quinzena' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Quinzena</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Categorias</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Total Gasto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseAggregatedStats.fortnights.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhuma despesa encontrada para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      expenseAggregatedStats.fortnights.map((item, idx) => (
+                        <tr key={idx}>
+                          <td><strong>🌓 {item.label}</strong></td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.categories).map(([catName, catVal]) => (
+                                <span key={catName} style={{ background: 'rgba(229,62,62,0.1)', color: '#fc8181', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 500 }}>
+                                  {catName}: R$ {formatCurrencyBRL(catVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.methods).map(([mName, mVal]) => (
+                                <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem' }}>
+                                  {mName}: R$ {formatCurrencyBRL(mVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181', fontSize: '0.95rem' }}>
+                            - R$ {formatCurrencyBRL(item.totalValue)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO POR MÊS */}
+            {expenseViewMode === 'mes' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Mês / Ano</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Categorias</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Total Gasto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseAggregatedStats.months.length === 0 ? (
+                      <tr>
+                        <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhuma despesa encontrada para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      expenseAggregatedStats.months.map((item, idx) => (
+                        <tr key={idx}>
+                          <td><strong>📊 {item.label}</strong></td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.categories).map(([catName, catVal]) => (
+                                <span key={catName} style={{ background: 'rgba(229,62,62,0.1)', color: '#fc8181', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem', fontWeight: 500 }}>
+                                  {catName}: R$ {formatCurrencyBRL(catVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.entries(item.methods).map(([mName, mVal]) => (
+                                <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.72rem' }}>
+                                  {mName}: R$ {formatCurrencyBRL(mVal)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181', fontSize: '0.95rem' }}>
+                            - R$ {formatCurrencyBRL(item.totalValue)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO PERÍODO PERSONALIZADO */}
+            {expenseViewMode === 'personalizado' && (
+              <div>
+                <div style={{ padding: 16, borderRadius: 8, background: 'rgba(229,62,62,0.04)', border: '0.5px solid var(--adm-rule)', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                  <div>
+                    <h4 style={{ margin: 0, color: 'var(--adm-text)' }}>{expenseAggregatedStats.customPeriod.label}</h4>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                      Total de {expenseAggregatedStats.customPeriod.count} saída(s) no intervalo selecionado
+                    </span>
+                  </div>
+                  <strong style={{ fontSize: '1.4rem', color: '#fc8181' }}>
+                    - R$ {formatCurrencyBRL(expenseAggregatedStats.customPeriod.totalValue)}
+                  </strong>
+                </div>
+
+                <div className="table-responsive">
+                  <table className="financial-table">
+                    <thead>
+                      <tr>
+                        <th>Data</th>
+                        <th>Descrição / Fornecedor</th>
+                        <th>Categoria</th>
+                        <th>Forma Pagamento</th>
+                        <th style={{ textAlign: 'right' }}>Valor</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {expenseAggregatedStats.customPeriod.items.length === 0 ? (
+                        <tr>
+                          <td colSpan="5" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                            Nenhuma despesa encontrada para as datas selecionadas.
+                          </td>
+                        </tr>
+                      ) : (
+                        expenseAggregatedStats.customPeriod.items.map(t => (
+                          <tr
+                            key={t.id}
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => {
+                              setSelectedTransaction(t);
+                              setShowTxDetailModal(true);
+                              setIsEditingTx(false);
+                            }}
+                          >
+                            <td>{t.date.split('-').reverse().join('/')} às {t.time || '00:00'}</td>
+                            <td><strong>{t.description}</strong></td>
+                            <td>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--adm-gold)', background: 'rgba(200, 133, 42, 0.1)', padding: '2px 8px', borderRadius: 4 }}>
+                                {t.category || 'Outros'}
+                              </span>
+                            </td>
+                            <td>{t.paymentMethod}</td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181' }}>
+                              - R$ {formatCurrencyBRL(t.value)}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* TABELA: MODO EXTRATO DETALHADO */}
+            {expenseViewMode === 'detalhado' && (
+              <div style={{ overflowX: 'auto' }}>
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Data / Hora</th>
+                      <th>Descrição / Fornecedor</th>
+                      <th>Categoria</th>
+                      <th>Forma de Pagamento</th>
+                      <th>Parcelas</th>
+                      <th style={{ textAlign: 'right' }}>Valor da Despesa</th>
+                      <th style={{ textAlign: 'center' }}>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {expenseAggregatedStats.detailedList.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhuma despesa encontrada para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      expenseAggregatedStats.detailedList.map(t => (
+                        <tr key={t.id}>
+                          <td>{t.date.split('-').reverse().join('/')} às {t.time || '00:00'}</td>
+                          <td>
+                            <strong>{t.description}</strong>
+                            {t.clientName && t.clientName !== 'Cliente' && (
+                              <span style={{ display: 'block', fontSize: '0.72rem', color: 'var(--adm-muted)' }}>Destinatário: {t.clientName}</span>
+                            )}
+                          </td>
+                          <td>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--adm-gold)', background: 'rgba(200, 133, 42, 0.1)', padding: '2px 8px', borderRadius: 4 }}>
+                              {t.category || 'Outros'}
+                            </span>
+                          </td>
+                          <td>{t.paymentMethod}</td>
+                          <td>
+                            {t.installments && t.installments > 1 ? (
+                              <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                {t.installmentIndex || 1}/{t.installments}x
+                              </span>
+                            ) : '-'}
+                          </td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#fc8181', fontSize: '0.92rem' }}>
+                            - R$ {formatCurrencyBRL(t.value)}
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+                              <button
+                                className="btn btn-ghost"
+                                style={{ padding: '4px 8px', fontSize: '0.75rem' }}
+                                onClick={() => {
+                                  setSelectedTransaction(t);
+                                  setShowTxDetailModal(true);
+                                  setIsEditingTx(false);
+                                }}
+                                title="Ver / Editar detalhes"
+                              >
+                                ✏️ Detalhes
+                              </button>
+                              <button
+                                className="btn btn-ghost"
+                                style={{ padding: '4px 8px', fontSize: '0.75rem', color: '#fc8181' }}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteTransaction(t.id);
+                                }}
+                                title="Excluir lançamento"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* SUBTAB: AGENDA DE RECEBÍVEIS */}
       {activeSubTab === 'recebiveis' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* Header Card */}
+          {/* Header Card com Seletor de Período */}
           <div className="financial-card" style={{ background: 'linear-gradient(135deg, rgba(212,140,106,0.06) 0%, rgba(0,0,0,0) 100%)', border: '1px solid var(--adm-gold-border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
               <div>
@@ -1951,10 +3066,66 @@ const AdminFinancial = () => {
                   <CreditCard size={20} /> Agenda & Previsão de Recebíveis
                 </h3>
                 <p style={{ margin: '4px 0 0 0', fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
-                  Acompanhe as datas exatas de liberação de caixa: Pix na hora (D+0), Débito em 1 dia útil (D+1), e Cartão de Crédito em 30, 60 e 90 dias após a dedução das taxas de adquirente.
+                  Acompanhe as datas exatas de liberação de caixa por dia, semana, quinzena, mês ou período personalizado: Pix na hora (D+0), Débito em 1 dia útil (D+1), e Cartão de Crédito em 30, 60 e 90 dias após a dedução das taxas de adquirente.
                 </p>
               </div>
+
+              {/* Seletor de Modo: Dia, Semana, Quinzena, Mês, Personalizado, Detalhado */}
+              <div style={{ display: 'flex', gap: 6, background: 'var(--adm-surface)', padding: 4, borderRadius: 8, border: '0.5px solid var(--adm-rule)', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'dia', label: '📅 Por Dia' },
+                  { id: 'semana', label: '🗓️ Por Semana' },
+                  { id: 'quinzena', label: '🌓 Por Quinzena' },
+                  { id: 'mes', label: '📊 Por Mês' },
+                  { id: 'personalizado', label: '🗓️ Período Personalizado' },
+                  { id: 'detalhado', label: '📋 Extrato Detalhado' }
+                ].map(mode => (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => setReceivablesViewMode(mode.id)}
+                    style={{
+                      padding: '8px 14px',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      border: 'none',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      background: receivablesViewMode === mode.id ? 'var(--adm-gold)' : 'transparent',
+                      color: receivablesViewMode === mode.id ? '#000' : 'var(--adm-muted)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Custom date range bar when in 'personalizado' mode */}
+            {receivablesViewMode === 'personalizado' && (
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--adm-rule)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)' }}>Filtrar Data de Vencimento/Liberação:</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>De:</label>
+                  <input
+                    type="date"
+                    value={receivablesCustomStart}
+                    onChange={e => setReceivablesCustomStart(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Até:</label>
+                  <input
+                    type="date"
+                    value={receivablesCustomEnd}
+                    onChange={e => setReceivablesCustomEnd(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* KPI Stat Cards */}
@@ -2037,79 +3208,472 @@ const AdminFinancial = () => {
               </span>
             </div>
 
-            {/* Table */}
-            <div style={{ overflowX: 'auto' }}>
-              <table className="financial-table">
-                <thead>
-                  <tr>
-                    <th>Data Venda</th>
-                    <th>Vencimento (Depósito)</th>
-                    <th>Cliente / Lançamento</th>
-                    <th>Forma Pagamento</th>
-                    <th>Parcela</th>
-                    <th>Valor Bruto</th>
-                    <th>Taxa Retida</th>
-                    <th>Valor Líquido Caixa</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredReceivablesSchedule.length === 0 ? (
+            {/* TABELA: MODO POR DIA */}
+            {receivablesViewMode === 'dia' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
                     <tr>
-                      <td colSpan="9" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
-                        Nenhum recebível encontrado para os filtros ativos.
-                      </td>
+                      <th>Data de Liberação (Vencimento)</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Valor Bruto</th>
+                      <th style={{ textAlign: 'right' }}>Taxas Retidas</th>
+                      <th style={{ textAlign: 'right' }}>Líquido no Caixa</th>
+                      <th style={{ textAlign: 'center' }}>Status</th>
                     </tr>
-                  ) : (
-                    filteredReceivablesSchedule.map(item => {
-                      const isLiquid = item.status === 'liquidado';
-                      const isAntecipated = item.status === 'antecipado';
+                  </thead>
+                  <tbody>
+                    {receivablesAggregatedStats.days.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum recebível encontrado para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      receivablesAggregatedStats.days.map((item, idx) => {
+                        const isAllLiquid = item.pendingNet === 0;
+                        const isAllPending = item.liquidNet === 0;
 
-                      return (
-                        <tr key={item.id}>
-                          <td>{item.saleDate.split('-').reverse().join('/')}</td>
-                          <td style={{ fontWeight: 600, color: isLiquid ? '#22c55e' : (isAntecipated ? 'var(--adm-gold)' : '#f97316') }}>
-                            📅 {item.dueDate.split('-').reverse().join('/')}
-                          </td>
-                          <td>
-                            <strong>{item.clientName}</strong>
-                            <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.description}</span>
-                          </td>
-                          <td>{item.paymentMethod}</td>
-                          <td>
-                            <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
-                              {item.installmentNumber}/{item.totalInstallments}
-                            </span>
-                          </td>
-                          <td>R$ {formatCurrencyBRL(item.grossValue)}</td>
-                          <td style={{ color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
-                            {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
-                          </td>
-                          <td style={{ fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.9rem' }}>
-                            R$ {formatCurrencyBRL(item.netValue)}
-                          </td>
-                          <td>
-                            {isLiquid ? (
-                              <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
-                                🟢 Disponível
-                              </span>
-                            ) : isAntecipated ? (
-                              <span className="badge" style={{ background: 'rgba(212,140,106,0.15)', color: 'var(--adm-gold)', border: '1px solid var(--adm-gold)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
-                                ⚡ Antecipado
-                              </span>
-                            ) : (
-                              <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
-                                🟧 {item.statusLabel}
-                              </span>
-                            )}
+                        return (
+                          <tr key={idx}>
+                            <td>
+                              <strong>📅 {item.label}</strong>
+                            </td>
+                            <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                                {Object.entries(item.methods).map(([mName, mVal]) => (
+                                  <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500 }}>
+                                    {mName}: R$ {formatCurrencyBRL(mVal)}
+                                  </span>
+                                ))}
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                            <td style={{ textAlign: 'right', color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                              {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.95rem' }}>
+                              R$ {formatCurrencyBRL(item.netValue)}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {isAllLiquid ? (
+                                <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟢 Disponível
+                                </span>
+                              ) : isAllPending ? (
+                                <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟧 A Receber
+                                </span>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+                                  <span style={{ color: '#22c55e', fontSize: '0.72rem', fontWeight: 600 }}>🟢 R$ {formatCurrencyBRL(item.liquidNet)}</span>
+                                  <span style={{ color: '#f97316', fontSize: '0.72rem', fontWeight: 600 }}>🟧 R$ {formatCurrencyBRL(item.pendingNet)}</span>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO POR SEMANA */}
+            {receivablesViewMode === 'semana' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Semana de Liberação</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Valor Bruto</th>
+                      <th style={{ textAlign: 'right' }}>Taxas Retidas</th>
+                      <th style={{ textAlign: 'right' }}>Líquido no Caixa</th>
+                      <th style={{ textAlign: 'center' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {receivablesAggregatedStats.weeks.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum recebível encontrado para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      receivablesAggregatedStats.weeks.map((item, idx) => {
+                        const isAllLiquid = item.pendingNet === 0;
+                        const isAllPending = item.liquidNet === 0;
+
+                        return (
+                          <tr key={idx}>
+                            <td>
+                              <strong>🗓️ {item.label}</strong>
+                            </td>
+                            <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                                {Object.entries(item.methods).map(([mName, mVal]) => (
+                                  <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500 }}>
+                                    {mName}: R$ {formatCurrencyBRL(mVal)}
+                                  </span>
+                                ))}
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                            <td style={{ textAlign: 'right', color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                              {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.95rem' }}>
+                              R$ {formatCurrencyBRL(item.netValue)}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {isAllLiquid ? (
+                                <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟢 Disponível
+                                </span>
+                              ) : isAllPending ? (
+                                <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟧 A Receber
+                                </span>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+                                  <span style={{ color: '#22c55e', fontSize: '0.72rem', fontWeight: 600 }}>🟢 R$ {formatCurrencyBRL(item.liquidNet)}</span>
+                                  <span style={{ color: '#f97316', fontSize: '0.72rem', fontWeight: 600 }}>🟧 R$ {formatCurrencyBRL(item.pendingNet)}</span>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO POR QUINZENA */}
+            {receivablesViewMode === 'quinzena' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Quinzena de Liberação</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Valor Bruto</th>
+                      <th style={{ textAlign: 'right' }}>Taxas Retidas</th>
+                      <th style={{ textAlign: 'right' }}>Líquido no Caixa</th>
+                      <th style={{ textAlign: 'center' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {receivablesAggregatedStats.fortnights.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum recebível encontrado para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      receivablesAggregatedStats.fortnights.map((item, idx) => {
+                        const isAllLiquid = item.pendingNet === 0;
+                        const isAllPending = item.liquidNet === 0;
+
+                        return (
+                          <tr key={idx}>
+                            <td>
+                              <strong>🌓 {item.label}</strong>
+                            </td>
+                            <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                                {Object.entries(item.methods).map(([mName, mVal]) => (
+                                  <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500 }}>
+                                    {mName}: R$ {formatCurrencyBRL(mVal)}
+                                  </span>
+                                ))}
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                            <td style={{ textAlign: 'right', color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                              {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.95rem' }}>
+                              R$ {formatCurrencyBRL(item.netValue)}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {isAllLiquid ? (
+                                <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟢 Disponível
+                                </span>
+                              ) : isAllPending ? (
+                                <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟧 A Receber
+                                </span>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+                                  <span style={{ color: '#22c55e', fontSize: '0.72rem', fontWeight: 600 }}>🟢 R$ {formatCurrencyBRL(item.liquidNet)}</span>
+                                  <span style={{ color: '#f97316', fontSize: '0.72rem', fontWeight: 600 }}>🟧 R$ {formatCurrencyBRL(item.pendingNet)}</span>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO POR MÊS */}
+            {receivablesViewMode === 'mes' && (
+              <div className="table-responsive">
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Mês / Ano de Liberação</th>
+                      <th style={{ textAlign: 'center' }}>Lançamentos</th>
+                      <th>Formas de Pagamento</th>
+                      <th style={{ textAlign: 'right' }}>Valor Bruto</th>
+                      <th style={{ textAlign: 'right' }}>Taxas Retidas</th>
+                      <th style={{ textAlign: 'right' }}>Líquido no Caixa</th>
+                      <th style={{ textAlign: 'center' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {receivablesAggregatedStats.months.length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum recebível encontrado para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      receivablesAggregatedStats.months.map((item, idx) => {
+                        const isAllLiquid = item.pendingNet === 0;
+                        const isAllPending = item.liquidNet === 0;
+
+                        return (
+                          <tr key={idx}>
+                            <td>
+                              <strong>📊 {item.label}</strong>
+                            </td>
+                            <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                            <td>
+                              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                                {Object.entries(item.methods).map(([mName, mVal]) => (
+                                  <span key={mName} style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--adm-text)', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 500 }}>
+                                    {mName}: R$ {formatCurrencyBRL(mVal)}
+                                  </span>
+                                ))}
+                              </div>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                            <td style={{ textAlign: 'right', color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                              {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                            </td>
+                            <td style={{ textAlign: 'right', fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.95rem' }}>
+                              R$ {formatCurrencyBRL(item.netValue)}
+                            </td>
+                            <td style={{ textAlign: 'center' }}>
+                              {isAllLiquid ? (
+                                <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟢 Disponível
+                                </span>
+                              ) : isAllPending ? (
+                                <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟧 A Receber
+                                </span>
+                              ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+                                  <span style={{ color: '#22c55e', fontSize: '0.72rem', fontWeight: 600 }}>🟢 R$ {formatCurrencyBRL(item.liquidNet)}</span>
+                                  <span style={{ color: '#f97316', fontSize: '0.72rem', fontWeight: 600 }}>🟧 R$ {formatCurrencyBRL(item.pendingNet)}</span>
+                                </div>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* TABELA: MODO PERÍODO PERSONALIZADO */}
+            {receivablesViewMode === 'personalizado' && (
+              <div>
+                <div style={{ padding: 16, borderRadius: 8, background: 'rgba(212,140,106,0.06)', border: '0.5px solid var(--adm-gold-border)', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                  <div>
+                    <h4 style={{ margin: 0, color: 'var(--adm-gold)' }}>{receivablesAggregatedStats.customPeriod.label}</h4>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                      Total de {receivablesAggregatedStats.customPeriod.count} recebimento(s) com vencimento no intervalo selecionado
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+                    <div>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block' }}>Líquido a Entrar:</span>
+                      <strong style={{ fontSize: '1.2rem', color: 'var(--adm-gold)' }}>
+                        R$ {formatCurrencyBRL(receivablesAggregatedStats.customPeriod.netValue)}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="table-responsive">
+                  <table className="financial-table">
+                    <thead>
+                      <tr>
+                        <th>Data Venda</th>
+                        <th>Vencimento (Depósito)</th>
+                        <th>Cliente / Lançamento</th>
+                        <th>Forma Pagamento</th>
+                        <th>Parcela</th>
+                        <th>Valor Bruto</th>
+                        <th>Taxa Retida</th>
+                        <th>Valor Líquido Caixa</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {receivablesAggregatedStats.customPeriod.items.length === 0 ? (
+                        <tr>
+                          <td colSpan="9" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                            Nenhum recebível encontrado para o período selecionado.
                           </td>
                         </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+                      ) : (
+                        receivablesAggregatedStats.customPeriod.items.map(item => {
+                          const isLiquid = item.status === 'liquidado';
+                          const isAntecipated = item.status === 'antecipado';
+
+                          return (
+                            <tr key={item.id}>
+                              <td>{item.saleDate.split('-').reverse().join('/')}</td>
+                              <td style={{ fontWeight: 600, color: isLiquid ? '#22c55e' : (isAntecipated ? 'var(--adm-gold)' : '#f97316') }}>
+                                📅 {item.dueDate.split('-').reverse().join('/')}
+                              </td>
+                              <td>
+                                <strong>{item.clientName}</strong>
+                                <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.description}</span>
+                              </td>
+                              <td>{item.paymentMethod}</td>
+                              <td>
+                                <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  {item.installmentNumber}/{item.totalInstallments}
+                                </span>
+                              </td>
+                              <td>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                              <td style={{ color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                                {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                              </td>
+                              <td style={{ fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.9rem' }}>
+                                R$ {formatCurrencyBRL(item.netValue)}
+                              </td>
+                              <td>
+                                {isLiquid ? (
+                                  <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                    🟢 Disponível
+                                  </span>
+                                ) : isAntecipated ? (
+                                  <span className="badge" style={{ background: 'rgba(212,140,106,0.15)', color: 'var(--adm-gold)', border: '1px solid var(--adm-gold)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                    ⚡ Antecipado
+                                  </span>
+                                ) : (
+                                  <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                    🟧 {item.statusLabel}
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
+            {/* TABELA: MODO EXTRATO DETALHADO */}
+            {receivablesViewMode === 'detalhado' && (
+              <div style={{ overflowX: 'auto' }}>
+                <table className="financial-table">
+                  <thead>
+                    <tr>
+                      <th>Data Venda</th>
+                      <th>Vencimento (Depósito)</th>
+                      <th>Cliente / Lançamento</th>
+                      <th>Forma Pagamento</th>
+                      <th>Parcela</th>
+                      <th>Valor Bruto</th>
+                      <th>Taxa Retida</th>
+                      <th>Valor Líquido Caixa</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredReceivablesSchedule.length === 0 ? (
+                      <tr>
+                        <td colSpan="9" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum recebível encontrado para os filtros ativos.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredReceivablesSchedule.map(item => {
+                        const isLiquid = item.status === 'liquidado';
+                        const isAntecipated = item.status === 'antecipado';
+
+                        return (
+                          <tr key={item.id}>
+                            <td>{item.saleDate.split('-').reverse().join('/')}</td>
+                            <td style={{ fontWeight: 600, color: isLiquid ? '#22c55e' : (isAntecipated ? 'var(--adm-gold)' : '#f97316') }}>
+                              📅 {item.dueDate.split('-').reverse().join('/')}
+                            </td>
+                            <td>
+                              <strong>{item.clientName}</strong>
+                              <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.description}</span>
+                            </td>
+                            <td>{item.paymentMethod}</td>
+                            <td>
+                              <span style={{ padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                {item.installmentNumber}/{item.totalInstallments}
+                              </span>
+                            </td>
+                            <td>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                            <td style={{ color: item.feeValue > 0 ? '#ef4444' : 'var(--adm-muted)' }}>
+                              {item.feeValue > 0 ? `- R$ ${formatCurrencyBRL(item.feeValue)}` : 'R$ 0,00'}
+                            </td>
+                            <td style={{ fontWeight: 'bold', color: 'var(--adm-gold)', fontSize: '0.9rem' }}>
+                              R$ {formatCurrencyBRL(item.netValue)}
+                            </td>
+                            <td>
+                              {isLiquid ? (
+                                <span className="badge badge-success" style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟢 Disponível
+                                </span>
+                              ) : isAntecipated ? (
+                                <span className="badge" style={{ background: 'rgba(212,140,106,0.15)', color: 'var(--adm-gold)', border: '1px solid var(--adm-gold)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  ⚡ Antecipado
+                                </span>
+                              ) : (
+                                <span className="badge badge-warning" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)', padding: '4px 8px', borderRadius: 12, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  🟧 {item.statusLabel}
+                                </span>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
 
           {/* Rule Explanatory Card */}
@@ -2142,24 +3706,116 @@ const AdminFinancial = () => {
       {/* SUBTAB: COMISSÕES & REPASSES */}
       {activeSubTab === 'comissao' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          {/* Card: Repasses dos Profissionais */}
+          {/* Header Card com Seletor de Período (Dia, Semana, Quinzena, Mês, Personalizado, Detalhado) */}
           <div className="financial-card">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <h3 style={{ margin: 0 }}>Profissionais e Comissionamento</h3>
+                <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Users size={20} color="var(--adm-gold)" /> Profissionais e Comissionamento
+                </h3>
                 <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', margin: '4px 0 0 0' }}>
-                  Abaixo são listados os repasses calculados com base na comissão (%) de cada profissional sobre o valor líquido dos atendimentos executados.
+                  Acompanhe os repasses e comissões calculadas por dia, semana, quinzena, mês ou período personalizado com base nos percentuais cadastrados para serviços e produtos.
                 </p>
               </div>
-              <button 
-                type="button" 
-                className="btn btn-accent" 
-                onClick={handleAssignAllMonthToJon}
-                style={{ fontSize: '0.82rem', padding: '8px 14px', background: '#f97316', borderColor: '#f97316' }}
-              >
-                💇‍♂️ Atribuir Todos os Serviços do Mês ao Jon
-              </button>
+
+              {/* Seletor de Período da Comissão: Dia, Semana, Quinzena, Mês, Personalizado, Detalhado */}
+              <div style={{ display: 'flex', gap: 6, background: 'var(--adm-surface)', padding: 4, borderRadius: 8, border: '0.5px solid var(--adm-rule)', flexWrap: 'wrap' }}>
+                {[
+                  { id: 'dia', label: '📅 Por Dia' },
+                  { id: 'semana', label: '🗓️ Por Semana' },
+                  { id: 'quinzena', label: '🌓 Por Quinzena' },
+                  { id: 'mes', label: '📊 Por Mês' },
+                  { id: 'personalizado', label: '🗓️ Período Personalizado' },
+                  { id: 'detalhado', label: '📋 Extrato Detalhado' }
+                ].map(mode => (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => setCommissionViewMode(mode.id)}
+                    style={{
+                      padding: '8px 14px',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      border: 'none',
+                      borderRadius: 6,
+                      cursor: 'pointer',
+                      background: commissionViewMode === mode.id ? 'var(--adm-gold)' : 'transparent',
+                      color: commissionViewMode === mode.id ? '#000' : 'var(--adm-muted)',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Custom date range bar when in 'personalizado' mode */}
+            {commissionViewMode === 'personalizado' && (
+              <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid var(--adm-rule)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)' }}>Filtrar Período de Comissões:</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>De:</label>
+                  <input
+                    type="date"
+                    value={commissionCustomStart}
+                    onChange={e => setCommissionCustomStart(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <label style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>Até:</label>
+                  <input
+                    type="date"
+                    value={commissionCustomEnd}
+                    onChange={e => setCommissionCustomEnd(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* KPIs Resumo da Comissão */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 20 }}>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.06)', border: '0.5px solid var(--adm-rule-gold)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Total a Repassar</span>
+                <strong style={{ fontSize: '1.4rem', color: '#48bb78' }}>
+                  R$ {formatCurrencyBRL(commissionKPIs.totalCommission)}
+                </strong>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
+                  Repasse total no período selecionado
+                </span>
+              </div>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Comissão Serviços</span>
+                <strong style={{ fontSize: '1.4rem', color: 'var(--adm-gold)' }}>
+                  R$ {formatCurrencyBRL(commissionKPIs.serviceCommission)}
+                </strong>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
+                  Sobre R$ {formatCurrencyBRL(commissionKPIs.totalServicesRevenue)} em serviços
+                </span>
+              </div>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Comissão Produtos</span>
+                <strong style={{ fontSize: '1.4rem', color: '#4299e1' }}>
+                  R$ {formatCurrencyBRL(commissionKPIs.productCommission)}
+                </strong>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
+                  Sobre R$ {formatCurrencyBRL(commissionKPIs.totalProductsRevenue)} em vendas
+                </span>
+              </div>
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Lançamentos Comissionados</span>
+                <strong style={{ fontSize: '1.4rem', color: 'var(--adm-text)' }}>
+                  {commissionKPIs.totalAppointments}
+                </strong>
+                <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
+                  Atendimentos e vendas com repasse
+                </span>
+              </div>
+            </div>
+
+            {/* Cards Individuais dos Profissionais */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
               {professionals.map(p => {
                 const commServ = p.commissionService !== undefined ? p.commissionService : (p.commission || 50);
@@ -2168,19 +3824,27 @@ const AdminFinancial = () => {
                 return (
                   <div key={p.id} style={{ border: '0.5px solid var(--adm-rule)', padding: 16, borderRadius: 8, background: 'var(--adm-surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem' }}>{p.name}</h4>
-                      <span style={{ fontSize: '1.1rem', color: '#48bb78', fontWeight: 700 }}>
-                        R$ {payout.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(220,163,84,0.15)', color: 'var(--adm-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '0.85rem' }}>
+                          {p.name ? p.name.charAt(0).toUpperCase() : 'P'}
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem' }}>{p.name}</h4>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>{p.phone || 'Sem telefone'}</span>
+                        </div>
+                      </div>
+                      <span style={{ fontSize: '1.15rem', color: '#48bb78', fontWeight: 700 }}>
+                        R$ {formatCurrencyBRL(payout.total)}
                       </span>
                     </div>
                     <div style={{ borderTop: '1px solid var(--adm-rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Serviços ({commServ}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {payout.services.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(payout.services)}</strong>
                       </div>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Produtos ({commProd}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {payout.products.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(payout.products)}</strong>
                       </div>
                     </div>
                   </div>
@@ -2189,83 +3853,437 @@ const AdminFinancial = () => {
             </div>
           </div>
 
-          {/* Table list for detailed checks */}
-          <div className="financial-card">
-            <h3>Lançar Profissional no Serviço Realizado</h3>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Cliente & Serviço</th>
-                  <th>Forma</th>
-                  <th>Valor Bruto</th>
-                  <th>Valor Líquido</th>
-                  <th>Profissional Executora</th>
-                  <th>Repasse (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTransactions.filter(t => t.type === 'entrada').map(t => {
-                  const currentAssigned = t.professionalId || '';
-                  const prof = professionals.find(p => p.id === currentAssigned);
-                  const netVal = getNetValue(t.value, t.paymentMethod);
-                  
-                  let repasseValue = 0;
-                  let detailsStr = '';
+          {/* TABELA: MODO POR DIA */}
+          {commissionViewMode === 'dia' && (
+            <div className="financial-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Comissões por Dia</h3>
+                  <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', margin: '4px 0 0 0' }}>
+                    Demonstrativo consolidado diário dos atendimentos executados e repasses a pagar.
+                  </p>
+                </div>
+              </div>
 
-                  if (prof) {
-                    const commServ = prof.commissionService !== undefined ? prof.commissionService : (prof.commission || 50);
-                    const commProd = prof.commissionProduct !== undefined ? prof.commissionProduct : 10;
-
-                    const productVal = t.productSales ? t.productSales.reduce((acc, p) => acc + (p.sellingPrice * p.quantity), 0) : 0;
-                    const isProdSale = t.isProductSale || t.category === 'venda_produto';
-
-                    let rawProd = 0;
-                    let rawServ = 0;
-
-                    if (isProdSale) {
-                      rawProd = t.value;
-                    } else {
-                      rawProd = productVal;
-                      rawServ = Math.max(0, t.value - productVal);
-                    }
-
-                    const servComm = rawServ * (commServ / 100);
-                    const prodComm = rawProd * (commProd / 100);
-                    
-                    repasseValue = servComm + prodComm;
-
-                    const parts = [];
-                    if (rawServ > 0) parts.push(`Serv: R$ ${servComm.toFixed(2)} (${commServ}%)`);
-                    if (rawProd > 0) parts.push(`Prod: R$ ${prodComm.toFixed(2)} (${commProd}%)`);
-                    detailsStr = parts.join(' + ');
-                  }
-                  
-                  return (
-                    <tr key={t.id}>
-                      <td>{t.date.split('-').reverse().join('/')}</td>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{t.clientName}</div>
-                        <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>{t.description}</div>
-                      </td>
-                      <td>{t.paymentMethod}</td>
-                      <td>R$ {formatCurrencyBRL(t.value)}</td>
-                      <td>R$ {formatCurrencyBRL(netVal)}</td>
-                      <td>{prof ? prof.name : 'Não Associado'}</td>
-                      <td style={{ color: repasseValue > 0 ? '#48bb78' : 'var(--adm-muted)' }}>
-                        {repasseValue > 0 ? (
-                          <div>
-                            <div style={{ fontWeight: 700 }}>R$ {formatCurrencyBRL(repasseValue)}</div>
-                            <div style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', marginTop: 2 }}>{detailsStr}</div>
-                          </div>
-                        ) : 'R$ 0,00'}
-                      </td>
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Profissional(is)</th>
+                      <th style={{ textAlign: 'center' }}>Atendimentos</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Comissão / Repasse</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody>
+                    {commissionAggregatedStats.days.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum lançamento de comissão no período filtrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      commissionAggregatedStats.days.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <strong>{item.label}</strong>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.values(item.professionals).map(prof => (
+                                <span key={prof.id} style={{ background: 'rgba(220,163,84,0.12)', color: 'var(--adm-gold)', padding: '2px 8px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  {prof.name}: R$ {formatCurrencyBRL(prof.totalCommission)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.serviceRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.serviceCommission)}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.productRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: '#4299e1', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.productCommission)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#48bb78', fontSize: '0.95rem' }}>
+                            R$ {formatCurrencyBRL(item.totalCommission)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TABELA: MODO POR SEMANA */}
+          {commissionViewMode === 'semana' && (
+            <div className="financial-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Comissões por Semana</h3>
+                  <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', margin: '4px 0 0 0' }}>
+                    Fechamento semanal para controle de pagamentos da equipe.
+                  </p>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Semana</th>
+                      <th>Profissional(is)</th>
+                      <th style={{ textAlign: 'center' }}>Atendimentos</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Comissão / Repasse</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {commissionAggregatedStats.weeks.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum lançamento de comissão no período filtrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      commissionAggregatedStats.weeks.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <strong>{item.label}</strong>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.values(item.professionals).map(prof => (
+                                <span key={prof.id} style={{ background: 'rgba(220,163,84,0.12)', color: 'var(--adm-gold)', padding: '2px 8px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  {prof.name}: R$ {formatCurrencyBRL(prof.totalCommission)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.serviceRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.serviceCommission)}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.productRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: '#4299e1', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.productCommission)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#48bb78', fontSize: '0.95rem' }}>
+                            R$ {formatCurrencyBRL(item.totalCommission)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TABELA: MODO POR QUINZENA */}
+          {commissionViewMode === 'quinzena' && (
+            <div className="financial-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Comissões por Quinzena</h3>
+                  <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', margin: '4px 0 0 0' }}>
+                    Fechamento quinzenal (1ª Quinzena: 01 a 15 / 2ª Quinzena: 16 ao fim do mês) para acerto com os profissionais.
+                  </p>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Quinzena</th>
+                      <th>Profissional(is)</th>
+                      <th style={{ textAlign: 'center' }}>Atendimentos</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Comissão / Repasse</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {commissionAggregatedStats.fortnights.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum lançamento de comissão no período filtrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      commissionAggregatedStats.fortnights.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <strong>{item.label}</strong>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.values(item.professionals).map(prof => (
+                                <span key={prof.id} style={{ background: 'rgba(220,163,84,0.12)', color: 'var(--adm-gold)', padding: '2px 8px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  {prof.name}: R$ {formatCurrencyBRL(prof.totalCommission)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.serviceRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.serviceCommission)}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.productRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: '#4299e1', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.productCommission)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#48bb78', fontSize: '0.95rem' }}>
+                            R$ {formatCurrencyBRL(item.totalCommission)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TABELA: MODO POR MÊS */}
+          {commissionViewMode === 'mes' && (
+            <div className="financial-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Comissões Consolidadas por Mês</h3>
+                  <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', margin: '4px 0 0 0' }}>
+                    Resumo mensal completo dos repasses e produtividade de cada profissional.
+                  </p>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Mês</th>
+                      <th>Profissional(is)</th>
+                      <th style={{ textAlign: 'center' }}>Atendimentos</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Serviços</th>
+                      <th style={{ textAlign: 'right' }}>Faturamento Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Comissão Produtos</th>
+                      <th style={{ textAlign: 'right' }}>Total Comissão / Repasse</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {commissionAggregatedStats.months.length === 0 ? (
+                      <tr>
+                        <td colSpan="8" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum lançamento de comissão no período filtrado.
+                        </td>
+                      </tr>
+                    ) : (
+                      commissionAggregatedStats.months.map((item, idx) => (
+                        <tr key={idx}>
+                          <td>
+                            <strong>{item.label}</strong>
+                          </td>
+                          <td>
+                            <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                              {Object.values(item.professionals).map(prof => (
+                                <span key={prof.id} style={{ background: 'rgba(220,163,84,0.12)', color: 'var(--adm-gold)', padding: '2px 8px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 600 }}>
+                                  {prof.name}: R$ {formatCurrencyBRL(prof.totalCommission)}
+                                </span>
+                              ))}
+                            </div>
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 'bold' }}>{item.count}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.serviceRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: 'var(--adm-gold)', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.serviceCommission)}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.productRevenue)}</td>
+                          <td style={{ textAlign: 'right', color: '#4299e1', fontWeight: 600 }}>R$ {formatCurrencyBRL(item.productCommission)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#48bb78', fontSize: '0.95rem' }}>
+                            R$ {formatCurrencyBRL(item.totalCommission)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TABELA: MODO PERÍODO PERSONALIZADO */}
+          {commissionViewMode === 'personalizado' && (
+            <div className="financial-card">
+              <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.06)', border: '0.5px solid var(--adm-gold-border)', marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h4 style={{ margin: 0, color: 'var(--adm-gold)' }}>{commissionAggregatedStats.customPeriod.label}</h4>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
+                    Total de {commissionAggregatedStats.customPeriod.count} atendimento(s) e vendas no período personalizado
+                  </span>
+                </div>
+                <div>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block' }}>Total de Repasses:</span>
+                  <strong style={{ fontSize: '1.4rem', color: '#48bb78' }}>
+                    R$ {formatCurrencyBRL(commissionAggregatedStats.customPeriod.totalCommission)}
+                  </strong>
+                </div>
+              </div>
+
+              {/* Cards dos Profissionais no Período Personalizado */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14, marginBottom: 20 }}>
+                {Object.values(commissionAggregatedStats.customPeriod.professionals).map(p => (
+                  <div key={p.id} style={{ border: '0.5px solid var(--adm-rule)', padding: 14, borderRadius: 8, background: 'var(--adm-surface)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                      <strong style={{ fontSize: '1rem', color: 'var(--adm-gold)' }}>{p.name}</strong>
+                      <span style={{ fontWeight: 700, color: '#48bb78', fontSize: '1.05rem' }}>
+                        R$ {formatCurrencyBRL(p.totalCommission)}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'flex', justifyContent: 'space-between' }}>
+                      <span>Serviços: R$ {formatCurrencyBRL(p.serviceCommission)}</span>
+                      <span>Produtos: R$ {formatCurrencyBRL(p.productCommission)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tabela de Lançamentos no Período Personalizado */}
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Cliente</th>
+                      <th>Profissional</th>
+                      <th>Forma</th>
+                      <th style={{ textAlign: 'right' }}>Bruto</th>
+                      <th style={{ textAlign: 'right' }}>Comissão</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {commissionAggregatedStats.customPeriod.items.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum atendimento encontrado para o período selecionado.
+                        </td>
+                      </tr>
+                    ) : (
+                      commissionAggregatedStats.customPeriod.items.map(item => (
+                        <tr key={item.id}>
+                          <td>{item.date.split('-').reverse().join('/')} às {item.time}</td>
+                          <td>
+                            <strong>{item.clientName}</strong>
+                            <div style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.description}</div>
+                          </td>
+                          <td><span style={{ color: 'var(--adm-gold)', fontWeight: 600 }}>{item.profName}</span></td>
+                          <td>{item.paymentMethod}</td>
+                          <td style={{ textAlign: 'right' }}>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold', color: '#48bb78' }}>
+                            R$ {formatCurrencyBRL(item.totalComm)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* TABELA: MODO EXTRATO DETALHADO */}
+          {commissionViewMode === 'detalhado' && (
+            <div className="financial-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h3 style={{ margin: 0 }}>Extrato Detalhado de Comissões</h3>
+                  <p style={{ color: 'var(--adm-muted)', fontSize: '0.82rem', margin: '4px 0 0 0' }}>
+                    Lista de cada atendimento com o detalhamento das porcentagens de serviços e produtos aplicadas.
+                  </p>
+                </div>
+
+                <div style={{ position: 'relative', minWidth: 240 }}>
+                  <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
+                  <input
+                    type="text"
+                    placeholder="Filtrar por cliente, serviço ou profissional..."
+                    value={commissionSearch}
+                    onChange={e => setCommissionSearch(e.target.value)}
+                    style={{ paddingLeft: 30, width: '100%', paddingRight: 10, paddingTop: 6, paddingBottom: 6, fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Data / Hora</th>
+                      <th>Cliente & Serviço</th>
+                      <th>Forma Pagamento</th>
+                      <th>Valor Bruto</th>
+                      <th>Valor Líquido</th>
+                      <th>Profissional</th>
+                      <th>Comissão Calculada</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {commissionAggregatedStats.detailedList.filter(item => 
+                      !commissionSearch || 
+                      item.clientName.toLowerCase().includes(commissionSearch.toLowerCase()) || 
+                      item.description.toLowerCase().includes(commissionSearch.toLowerCase()) ||
+                      item.profName.toLowerCase().includes(commissionSearch.toLowerCase())
+                    ).length === 0 ? (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: 'center', padding: 24, color: 'var(--adm-muted)' }}>
+                          Nenhum atendimento corresponde aos filtros.
+                        </td>
+                      </tr>
+                    ) : (
+                      commissionAggregatedStats.detailedList
+                        .filter(item => 
+                          !commissionSearch || 
+                          item.clientName.toLowerCase().includes(commissionSearch.toLowerCase()) || 
+                          item.description.toLowerCase().includes(commissionSearch.toLowerCase()) ||
+                          item.profName.toLowerCase().includes(commissionSearch.toLowerCase())
+                        )
+                        .map(item => {
+                          const parts = [];
+                          if (item.rawServ > 0) parts.push(`Serv: R$ ${formatCurrencyBRL(item.servComm)} (${item.commServRate}%)`);
+                          if (item.rawProd > 0) parts.push(`Prod: R$ ${formatCurrencyBRL(item.prodComm)} (${item.commProdRate}%)`);
+                          const detailsStr = parts.join(' + ');
+
+                          return (
+                            <tr key={item.id}>
+                              <td>{item.date.split('-').reverse().join('/')} às {item.time}</td>
+                              <td>
+                                <div style={{ fontWeight: 600 }}>{item.clientName}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>{item.description}</div>
+                              </td>
+                              <td>{item.paymentMethod}</td>
+                              <td>R$ {formatCurrencyBRL(item.grossValue)}</td>
+                              <td>R$ {formatCurrencyBRL(item.netValue)}</td>
+                              <td>
+                                <span style={{ fontWeight: 600, color: 'var(--adm-gold)' }}>{item.profName}</span>
+                              </td>
+                              <td style={{ color: item.totalComm > 0 ? '#48bb78' : 'var(--adm-muted)' }}>
+                                {item.totalComm > 0 ? (
+                                  <div>
+                                    <div style={{ fontWeight: 700 }}>R$ {formatCurrencyBRL(item.totalComm)}</div>
+                                    <div style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', marginTop: 2 }}>{detailsStr}</div>
+                                  </div>
+                                ) : 'R$ 0,00'}
+                              </td>
+                            </tr>
+                          );
+                        })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

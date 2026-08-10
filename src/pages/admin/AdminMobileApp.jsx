@@ -606,6 +606,7 @@ export default function AdminMobileApp() {
 
   // ── Mais sub-tabs ──────────────────────────────────────────────
   const [maisSection, setMaisSection] = useState(null); // null | 'servicos' | 'estoque' | 'marketing' | 'config' | 'comissoes'
+  const [commPeriod, setCommPeriod] = useState('mes'); // 'dia' | 'semana' | 'quinzena' | 'mes'
 
   // ── Notifications ─────────────────────────────────────────────
   const [notifications, setNotifications] = useState([]);
@@ -3798,34 +3799,69 @@ Grande abraço, Jon.`;
 
     if (section === 'comissoes') {
       const profName = settings?.profissional || 'Jonatan';
-      const monthBk = bookings.filter(b => {
-        const m = new Date().toISOString().slice(0,7);
-        return (b.date || '').startsWith(m) && b.status === 'finalizado';
+      const now = new Date();
+      const todayStr = today();
+      const currentMonthStr = now.toISOString().slice(0, 7);
+
+      const filteredBk = bookings.filter(b => {
+        if (b.status !== 'finalizado') return false;
+        const bDate = b.date || '';
+        if (commPeriod === 'dia') {
+          return bDate === todayStr;
+        } else if (commPeriod === 'semana') {
+          const dayOfWeek = now.getDay();
+          const diff = now.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+          const monday = new Date(now);
+          monday.setDate(diff);
+          const monStr = dateStr(monday);
+          return bDate >= monStr && bDate <= todayStr;
+        } else if (commPeriod === 'quinzena') {
+          const day = now.getDate();
+          if (day <= 15) {
+            return bDate.startsWith(currentMonthStr) && parseInt(bDate.slice(8, 10), 10) <= 15;
+          } else {
+            return bDate.startsWith(currentMonthStr) && parseInt(bDate.slice(8, 10), 10) >= 16;
+          }
+        } else {
+          // 'mes'
+          return bDate.startsWith(currentMonthStr);
+        }
       });
-      const monthRev = monthBk.reduce((s, b) => s + Number(b.finalValue || b.servicePrice || 0), 0);
-      const commission = monthRev * 0.5;
+
+      const periodRev = filteredBk.reduce((s, b) => s + Number(b.finalValue || b.servicePrice || 0), 0);
+      const commission = periodRev * 0.5;
+      const periodLabel = commPeriod === 'dia' ? 'Hoje' : commPeriod === 'semana' ? 'Esta Semana' : commPeriod === 'quinzena' ? (now.getDate() <= 15 ? '1ª Quinzena' : '2ª Quinzena') : 'Este Mês';
 
       return (
         <div className="m-tab m-page" key="comissoes">
           <MaisHeader title="Comissões"/>
+
+          {/* Seletor de Período da Comissão: Dia, Semana, Quinzena, Mês */}
+          <div className="m-segmented" style={{ background: 'rgba(255,255,255,0.03)', padding: 2, marginBottom: 16 }}>
+            <button className={`m-seg-btn ${commPeriod === 'dia' ? 'active' : ''}`} onClick={() => setCommPeriod('dia')} style={{ fontSize: '0.75rem', padding: '6px 0' }}>Dia</button>
+            <button className={`m-seg-btn ${commPeriod === 'semana' ? 'active' : ''}`} onClick={() => setCommPeriod('semana')} style={{ fontSize: '0.75rem', padding: '6px 0' }}>Semana</button>
+            <button className={`m-seg-btn ${commPeriod === 'quinzena' ? 'active' : ''}`} onClick={() => setCommPeriod('quinzena')} style={{ fontSize: '0.75rem', padding: '6px 0' }}>Quinzena</button>
+            <button className={`m-seg-btn ${commPeriod === 'mes' ? 'active' : ''}`} onClick={() => setCommPeriod('mes')} style={{ fontSize: '0.75rem', padding: '6px 0' }}>Mês</button>
+          </div>
+
           <div className="m-finance-hero">
-            <div className="m-finance-hero-label">Comissão do Mês — {profName}</div>
+            <div className="m-finance-hero-label">Comissão ({periodLabel}) — {profName}</div>
             <div className="m-finance-hero-value">{fmt(commission)}</div>
-            <div className="m-finance-hero-sub">50% sobre {fmt(monthRev)} em serviços</div>
+            <div className="m-finance-hero-sub">50% sobre {fmt(periodRev)} em serviços</div>
           </div>
           <div className="m-kpi-row">
             <div className="m-kpi-card">
               <div className="m-kpi-label">Atendimentos</div>
-              <div className="m-kpi-value">{monthBk.length}</div>
+              <div className="m-kpi-value">{filteredBk.length}</div>
             </div>
             <div className="m-kpi-card green">
               <div className="m-kpi-label">Receita Bruta</div>
-              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1rem' }}>{fmt(monthRev)}</div>
+              <div className="m-kpi-value" style={{ color:'var(--m-green)', fontSize:'1rem' }}>{fmt(periodRev)}</div>
             </div>
           </div>
           <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius)', padding:'14px' }}>
-            <div className="m-section-title" style={{ marginBottom:12 }}>Atendimentos Finalizados</div>
-            {monthBk.slice(0,10).map(b => (
+            <div className="m-section-title" style={{ marginBottom:12 }}>Atendimentos Finalizados ({periodLabel})</div>
+            {filteredBk.slice(0,15).map(b => (
               <div key={b.id} className="m-info-row">
                 <div style={{ flex:1 }}>
                   <div className="m-info-value" style={{ fontSize:'0.82rem' }}>{b.clientName}</div>
@@ -3834,7 +3870,7 @@ Grande abraço, Jon.`;
                 <div style={{ fontWeight:800, color:'var(--m-green)', fontSize:'0.82rem', fontFamily:'"DM Serif Display", serif' }}>{fmt((b.finalValue || b.servicePrice || 0) * 0.5)}</div>
               </div>
             ))}
-            {monthBk.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.82rem', textAlign:'center', padding:'16px 0' }}>Nenhum atendimento finalizado este mês</div>}
+            {filteredBk.length === 0 && <div style={{ color:'var(--m-muted)', fontSize:'0.82rem', textAlign:'center', padding:'16px 0' }}>Nenhum atendimento finalizado no período ({periodLabel})</div>}
           </div>
         </div>
       );
