@@ -116,6 +116,10 @@ const AdminFinancial = () => {
 
   // Receivables Schedule Filter states
   const [receivablesViewMode, setReceivablesViewMode] = useState('dia'); // 'dia', 'semana', 'quinzena', 'mes', 'personalizado', 'detalhado'
+  const [selectedReceivablesDay, setSelectedReceivablesDay] = useState('todos');
+  const [selectedReceivablesWeek, setSelectedReceivablesWeek] = useState('todos');
+  const [selectedReceivablesFortnight, setSelectedReceivablesFortnight] = useState('todos');
+  const [selectedReceivablesMonth, setSelectedReceivablesMonth] = useState('todos');
   const [receivablesSearch, setReceivablesSearch] = useState('');
   const [receivablesStatusFilter, setReceivablesStatusFilter] = useState('todos'); // 'todos', 'a_receber', 'liquidado', 'antecipado'
   const [receivablesMethodFilter, setReceivablesMethodFilter] = useState('todos'); // 'todos', 'credito', 'debito', 'pix', 'dinheiro'
@@ -124,13 +128,21 @@ const AdminFinancial = () => {
 
   // Expenses (Despesas) states
   const [expenseViewMode, setExpenseViewMode] = useState('dia'); // 'dia', 'semana', 'quinzena', 'mes', 'personalizado', 'detalhado'
+  const [selectedExpenseDay, setSelectedExpenseDay] = useState('todos');
+  const [selectedExpenseWeek, setSelectedExpenseWeek] = useState('todos');
+  const [selectedExpenseFortnight, setSelectedExpenseFortnight] = useState('todos');
+  const [selectedExpenseMonth, setSelectedExpenseMonth] = useState('todos');
   const [expenseSearch, setExpenseSearch] = useState('');
   const [expenseCategoryFilter, setExpenseCategoryFilter] = useState('todos');
   const [expenseMethodFilter, setExpenseMethodFilter] = useState('todos');
   const [expenseCustomStart, setExpenseCustomStart] = useState(startDate);
   const [expenseCustomEnd, setExpenseCustomEnd] = useState(endDate);
 
-  // Commission custom date states
+  // Commission sub-period states
+  const [selectedCommissionDay, setSelectedCommissionDay] = useState('todos');
+  const [selectedCommissionWeek, setSelectedCommissionWeek] = useState('todos');
+  const [selectedCommissionFortnight, setSelectedCommissionFortnight] = useState('todos');
+  const [selectedCommissionMonth, setSelectedCommissionMonth] = useState('todos');
   const [commissionCustomStart, setCommissionCustomStart] = useState(startDate);
   const [commissionCustomEnd, setCommissionCustomEnd] = useState(endDate);
 
@@ -624,7 +636,8 @@ const AdminFinancial = () => {
               serviceCommission: 0,
               productCommission: 0,
               totalCommission: 0,
-              professionals: {}
+              professionals: {},
+              items: []
             };
           }
           const item = bucket[key];
@@ -637,6 +650,7 @@ const AdminFinancial = () => {
           item.serviceCommission += servComm;
           item.productCommission += prodComm;
           item.totalCommission += totalComm;
+          item.items.push(txDetail);
 
           if (!item.professionals[prof.id]) {
             item.professionals[prof.id] = {
@@ -771,6 +785,56 @@ const AdminFinancial = () => {
   }, [filteredTransactions, professionals, commissionCustomStart, commissionCustomEnd]);
 
   const commissionKPIs = useMemo(() => {
+    let targetItems = commissionAggregatedStats.detailedList;
+    let label = 'Todos os Lançamentos';
+
+    if (commissionViewMode === 'dia') {
+      if (selectedCommissionDay !== 'todos') {
+        const match = commissionAggregatedStats.days.find(d => d.date === selectedCommissionDay);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${commissionAggregatedStats.days.length} dia(s)`;
+      }
+    } else if (commissionViewMode === 'semana') {
+      if (selectedCommissionWeek !== 'todos') {
+        const match = commissionAggregatedStats.weeks.find(w => w.sortKey === selectedCommissionWeek || w.key === selectedCommissionWeek);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${commissionAggregatedStats.weeks.length} semana(s)`;
+      }
+    } else if (commissionViewMode === 'quinzena') {
+      if (selectedCommissionFortnight !== 'todos') {
+        const match = commissionAggregatedStats.fortnights.find(f => f.fortnightKey === selectedCommissionFortnight);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${commissionAggregatedStats.fortnights.length} quinzena(s)`;
+      }
+    } else if (commissionViewMode === 'mes') {
+      if (selectedCommissionMonth !== 'todos') {
+        const match = commissionAggregatedStats.months.find(m => m.month === selectedCommissionMonth);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${commissionAggregatedStats.months.length} mês(es)`;
+      }
+    } else if (commissionViewMode === 'personalizado') {
+      targetItems = commissionAggregatedStats.customPeriod.items;
+      label = commissionAggregatedStats.customPeriod.label;
+    } else {
+      label = 'Extrato Detalhado';
+    }
+
     let totalCommission = 0;
     let serviceCommission = 0;
     let productCommission = 0;
@@ -778,13 +842,37 @@ const AdminFinancial = () => {
     let totalProductsRevenue = 0;
     let totalAppointments = 0;
 
-    commissionAggregatedStats.detailedList.forEach(item => {
+    const profsMap = {};
+    professionals.forEach(p => {
+      profsMap[p.id] = {
+        id: p.id,
+        name: p.name,
+        serviceRevenue: 0,
+        productRevenue: 0,
+        serviceCommission: 0,
+        productCommission: 0,
+        totalCommission: 0,
+        count: 0
+      };
+    });
+
+    targetItems.forEach(item => {
       totalCommission += item.totalComm;
       serviceCommission += item.servComm;
       productCommission += item.prodComm;
       totalServicesRevenue += item.rawServ;
       totalProductsRevenue += item.rawProd;
       totalAppointments += 1;
+
+      if (profsMap[item.profId]) {
+        const p = profsMap[item.profId];
+        p.count += 1;
+        p.serviceRevenue += item.rawServ;
+        p.productRevenue += item.rawProd;
+        p.serviceCommission += item.servComm;
+        p.productCommission += item.prodComm;
+        p.totalCommission += item.totalComm;
+      }
     });
 
     return {
@@ -793,9 +881,20 @@ const AdminFinancial = () => {
       productCommission,
       totalServicesRevenue,
       totalProductsRevenue,
-      totalAppointments
+      totalAppointments,
+      label,
+      professionalsMap: profsMap,
+      items: targetItems
     };
-  }, [commissionAggregatedStats]);
+  }, [
+    commissionViewMode,
+    selectedCommissionDay,
+    selectedCommissionWeek,
+    selectedCommissionFortnight,
+    selectedCommissionMonth,
+    commissionAggregatedStats,
+    professionals
+  ]);
 
   // Monthly grouping for charts
   const monthlyData = useMemo(() => {
@@ -975,8 +1074,11 @@ const AdminFinancial = () => {
 
   // Schedule of all receivables (Previsão de Recebimentos por Vencimento: 30/60/90d crédito, D+1 débito, D+0 pix)
   const fullReceivablesSchedule = useMemo(() => {
-    return calculateReceivablesSchedule(filteredTransactions, settings);
-  }, [filteredTransactions, settings]);
+    return calculateReceivablesSchedule(transactions, settings).filter(item => {
+      if (!selectedProfFilter) return true;
+      return item.professionalId === selectedProfFilter;
+    });
+  }, [transactions, settings, selectedProfFilter]);
 
   const filteredReceivablesSchedule = useMemo(() => {
     return fullReceivablesSchedule.filter(item => {
@@ -990,7 +1092,7 @@ const AdminFinancial = () => {
 
       let matchesMethod = true;
       if (receivablesMethodFilter !== 'todos') {
-        const pm = item.paymentMethod.toLowerCase();
+        const pm = (item.paymentMethod || '').toLowerCase();
         if (receivablesMethodFilter === 'credito') matchesMethod = pm.includes('crédito') || pm.includes('credito');
         else if (receivablesMethodFilter === 'debito') matchesMethod = pm.includes('débito') || pm.includes('debito');
         else if (receivablesMethodFilter === 'pix') matchesMethod = pm.includes('pix');
@@ -1000,35 +1102,6 @@ const AdminFinancial = () => {
       return matchesSearch && matchesStatus && matchesMethod;
     });
   }, [fullReceivablesSchedule, receivablesSearch, receivablesStatusFilter, receivablesMethodFilter]);
-
-  const receivablesKPIs = useMemo(() => {
-    let pendingNet = 0;
-    let liquidNet = 0;
-    let totalFees = 0;
-    let next30DaysNet = 0;
-
-    const todayStr = new Date().toISOString().split('T')[0];
-    const in30DaysStr = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-
-    fullReceivablesSchedule.forEach(item => {
-      totalFees += item.feeValue;
-      if (item.status === 'a_receber') {
-        pendingNet += item.netValue;
-        if (item.dueDate >= todayStr && item.dueDate <= in30DaysStr) {
-          next30DaysNet += item.netValue;
-        }
-      } else {
-        liquidNet += item.netValue;
-      }
-    });
-
-    return {
-      pendingNet,
-      liquidNet,
-      totalFees,
-      next30DaysNet
-    };
-  }, [fullReceivablesSchedule]);
 
   // Agrega recebíveis por Dia, Semana, Quinzena e Mês
   const receivablesAggregatedStats = useMemo(() => {
@@ -1178,6 +1251,106 @@ const AdminFinancial = () => {
       customPeriod: customReceivablesBucket
     };
   }, [filteredReceivablesSchedule, receivablesCustomStart, receivablesCustomEnd]);
+
+  const receivablesKPIs = useMemo(() => {
+    let targetItems = filteredReceivablesSchedule;
+    let label = 'Todos os Lançamentos';
+
+    if (receivablesViewMode === 'dia') {
+      if (selectedReceivablesDay !== 'todos') {
+        const match = receivablesAggregatedStats.days.find(d => d.date === selectedReceivablesDay);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${receivablesAggregatedStats.days.length} dia(s)`;
+      }
+    } else if (receivablesViewMode === 'semana') {
+      if (selectedReceivablesWeek !== 'todos') {
+        const match = receivablesAggregatedStats.weeks.find(w => w.sortKey === selectedReceivablesWeek || w.key === selectedReceivablesWeek);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${receivablesAggregatedStats.weeks.length} semana(s)`;
+      }
+    } else if (receivablesViewMode === 'quinzena') {
+      if (selectedReceivablesFortnight !== 'todos') {
+        const match = receivablesAggregatedStats.fortnights.find(f => f.fortnightKey === selectedReceivablesFortnight);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${receivablesAggregatedStats.fortnights.length} quinzena(s)`;
+      }
+    } else if (receivablesViewMode === 'mes') {
+      if (selectedReceivablesMonth !== 'todos') {
+        const match = receivablesAggregatedStats.months.find(m => m.month === selectedReceivablesMonth);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+        }
+      } else {
+        label = `Total de ${receivablesAggregatedStats.months.length} mês(es)`;
+      }
+    } else if (receivablesViewMode === 'personalizado') {
+      targetItems = receivablesAggregatedStats.customPeriod.items;
+      label = receivablesAggregatedStats.customPeriod.label;
+    } else {
+      label = 'Extrato Detalhado';
+    }
+
+    let pendingNet = 0;
+    let liquidNet = 0;
+    let totalFees = 0;
+    let totalGross = 0;
+    let totalNet = 0;
+    let count = 0;
+
+    targetItems.forEach(item => {
+      count += 1;
+      totalGross += Number(item.grossValue || 0);
+      totalFees += Number(item.feeValue || 0);
+      totalNet += Number(item.netValue || 0);
+      if (item.status === 'a_receber') {
+        pendingNet += Number(item.netValue || 0);
+      } else {
+        liquidNet += Number(item.netValue || 0);
+      }
+    });
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const in30DaysStr = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    let next30DaysNet = 0;
+    filteredReceivablesSchedule.forEach(item => {
+      if (item.status === 'a_receber' && item.dueDate >= todayStr && item.dueDate <= in30DaysStr) {
+        next30DaysNet += Number(item.netValue || 0);
+      }
+    });
+
+    return {
+      pendingNet,
+      liquidNet,
+      totalFees,
+      totalGross,
+      totalNet,
+      count,
+      next30DaysNet,
+      label,
+      items: targetItems
+    };
+  }, [
+    receivablesViewMode,
+    selectedReceivablesDay,
+    selectedReceivablesWeek,
+    selectedReceivablesFortnight,
+    selectedReceivablesMonth,
+    filteredReceivablesSchedule,
+    receivablesAggregatedStats
+  ]);
 
   // Agrega dados de despesas por Dia, Semana, Quinzena, Mês, Período Personalizado e Extrato Detalhado
   const expenseAggregatedStats = useMemo(() => {
@@ -1346,6 +1519,102 @@ const AdminFinancial = () => {
       count: baseExpenses.length
     };
   }, [filteredTransactions, expenseSearch, expenseCategoryFilter, expenseMethodFilter, expenseCustomStart, expenseCustomEnd]);
+
+  const expenseKPIs = useMemo(() => {
+    let targetItems = expenseAggregatedStats.detailedList;
+    let label = 'Todos os Lançamentos';
+    let daysCount = expenseAggregatedStats.days.length;
+
+    if (expenseViewMode === 'dia') {
+      if (selectedExpenseDay !== 'todos') {
+        const match = expenseAggregatedStats.days.find(d => d.date === selectedExpenseDay);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+          daysCount = 1;
+        }
+      } else {
+        label = `Total de ${expenseAggregatedStats.days.length} dia(s)`;
+      }
+    } else if (expenseViewMode === 'semana') {
+      if (selectedExpenseWeek !== 'todos') {
+        const match = expenseAggregatedStats.weeks.find(w => w.sortKey === selectedExpenseWeek || w.key === selectedExpenseWeek);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+          daysCount = 7;
+        }
+      } else {
+        label = `Total de ${expenseAggregatedStats.weeks.length} semana(s)`;
+      }
+    } else if (expenseViewMode === 'quinzena') {
+      if (selectedExpenseFortnight !== 'todos') {
+        const match = expenseAggregatedStats.fortnights.find(f => f.fortnightKey === selectedExpenseFortnight);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+          daysCount = 15;
+        }
+      } else {
+        label = `Total de ${expenseAggregatedStats.fortnights.length} quinzena(s)`;
+      }
+    } else if (expenseViewMode === 'mes') {
+      if (selectedExpenseMonth !== 'todos') {
+        const match = expenseAggregatedStats.months.find(m => m.month === selectedExpenseMonth);
+        if (match) {
+          targetItems = match.items || [];
+          label = match.label;
+          daysCount = 30;
+        }
+      } else {
+        label = `Total de ${expenseAggregatedStats.months.length} mês(es)`;
+      }
+    } else if (expenseViewMode === 'personalizado') {
+      targetItems = expenseAggregatedStats.customPeriod.items;
+      label = expenseAggregatedStats.customPeriod.label;
+    } else {
+      label = 'Extrato Detalhado';
+    }
+
+    let totalExpenses = 0;
+    const catMap = {};
+
+    targetItems.forEach(t => {
+      const val = Number(t.value || 0);
+      totalExpenses += val;
+      const cat = t.category || 'Outros';
+      catMap[cat] = (catMap[cat] || 0) + val;
+    });
+
+    const categoryBreakdown = Object.entries(catMap).map(([name, val]) => ({
+      name,
+      value: val,
+      percentage: totalExpenses > 0 ? (val / totalExpenses) * 100 : 0
+    })).sort((a, b) => b.value - a.value);
+
+    const topCategory = categoryBreakdown[0] 
+      ? { name: `R$ ${formatCurrencyBRL(categoryBreakdown[0].value)}`, sub: `${categoryBreakdown[0].name} (${categoryBreakdown[0].percentage.toFixed(1)}%)` }
+      : { name: 'R$ 0,00', sub: 'Nenhuma despesa' };
+
+    const dailyAverage = daysCount > 0 ? totalExpenses / daysCount : totalExpenses;
+
+    return {
+      totalExpenses,
+      count: targetItems.length,
+      dailyAverage,
+      topCategory,
+      categoryBreakdown,
+      label,
+      items: targetItems
+    };
+  }, [
+    expenseViewMode,
+    selectedExpenseDay,
+    selectedExpenseWeek,
+    selectedExpenseFortnight,
+    selectedExpenseMonth,
+    expenseAggregatedStats
+  ]);
 
 
 
@@ -2584,28 +2853,28 @@ const AdminFinancial = () => {
           <div className="kpi-grid">
             <KpiCard
               label="Total de Despesas"
-              value={`- R$ ${formatCurrencyBRL(expenseAggregatedStats.totalExpenses)}`}
-              sub={`${expenseAggregatedStats.count} lançamento(s) no período`}
+              value={`- R$ ${formatCurrencyBRL(expenseKPIs.totalExpenses)}`}
+              sub={`${expenseKPIs.count} lançamento(s) — ${expenseKPIs.label}`}
               icon={<TrendingDown size={18} />}
               variant="danger"
             />
             <KpiCard
               label="Média Diária de Gastos"
-              value={`R$ ${formatCurrencyBRL(expenseAggregatedStats.days.length > 0 ? (expenseAggregatedStats.totalExpenses / expenseAggregatedStats.days.length) : 0)}`}
-              sub={`Em ${expenseAggregatedStats.days.length} dia(s) com despesas`}
+              value={`R$ ${formatCurrencyBRL(expenseKPIs.dailyAverage)}`}
+              sub="Média diária no período filtrado"
               icon={<DollarSign size={18} />}
               variant="warning"
             />
             <KpiCard
               label="Maior Centro de Custo"
-              value={expenseAggregatedStats.categoryBreakdown[0] ? `R$ ${formatCurrencyBRL(expenseAggregatedStats.categoryBreakdown[0].value)}` : 'R$ 0,00'}
-              sub={expenseAggregatedStats.categoryBreakdown[0] ? `${expenseAggregatedStats.categoryBreakdown[0].name} (${expenseAggregatedStats.categoryBreakdown[0].percentage.toFixed(1)}%)` : 'Nenhuma despesa'}
+              value={expenseKPIs.topCategory.name}
+              sub={expenseKPIs.topCategory.sub}
               icon={<TrendingDown size={18} />}
               variant="neutral"
             />
             <KpiCard
               label="Total de Lançamentos"
-              value={`${expenseAggregatedStats.count}`}
+              value={`${expenseKPIs.count}`}
               sub="Saídas e sangrias registradas"
               icon={<Calendar size={18} />}
               variant="accent"
@@ -2613,13 +2882,13 @@ const AdminFinancial = () => {
           </div>
 
           {/* Category breakdown bar */}
-          {expenseAggregatedStats.categoryBreakdown.length > 0 && (
+          {expenseKPIs.categoryBreakdown.length > 0 && (
             <div className="financial-card" style={{ padding: '16px 20px' }}>
               <h4 style={{ margin: '0 0 12px 0', fontSize: '0.9rem', color: 'var(--adm-text)' }}>
-                Distribuição por Categoria no Período
+                Distribuição por Categoria — {expenseKPIs.label}
               </h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {expenseAggregatedStats.categoryBreakdown.map((cat, idx) => (
+                {expenseKPIs.categoryBreakdown.map((cat, idx) => (
                   <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: 600 }}>
                       <span style={{ color: 'var(--adm-text)' }}>{cat.name}</span>
@@ -2640,18 +2909,71 @@ const AdminFinancial = () => {
           <div className="financial-card">
             {/* Filter Bar */}
             <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1, alignItems: 'center' }}>
                 {/* Search */}
-                <div style={{ position: 'relative', minWidth: 220 }}>
+                <div style={{ position: 'relative', minWidth: 200 }}>
                   <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
                   <input
                     type="text"
-                    placeholder="Buscar por descrição, fornecedor ou categoria..."
+                    placeholder="Buscar despesa..."
                     value={expenseSearch}
                     onChange={e => setExpenseSearch(e.target.value)}
                     style={{ paddingLeft: 30, width: '100%', paddingRight: 10, paddingTop: 6, paddingBottom: 6, fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                   />
                 </div>
+
+                {/* Sub-period specific dropdown selector */}
+                {expenseViewMode === 'dia' && expenseAggregatedStats.days.length > 0 && (
+                  <select
+                    value={selectedExpenseDay}
+                    onChange={e => setSelectedExpenseDay(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 220 }}
+                  >
+                    <option value="todos">📅 Todos os Dias ({expenseAggregatedStats.days.length})</option>
+                    {expenseAggregatedStats.days.map(d => (
+                      <option key={d.date} value={d.date}>{d.label} — R$ {formatCurrencyBRL(d.totalValue)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {expenseViewMode === 'semana' && expenseAggregatedStats.weeks.length > 0 && (
+                  <select
+                    value={selectedExpenseWeek}
+                    onChange={e => setSelectedExpenseWeek(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 260 }}
+                  >
+                    <option value="todos">🗓️ Todas as Semanas ({expenseAggregatedStats.weeks.length})</option>
+                    {expenseAggregatedStats.weeks.map(w => (
+                      <option key={w.sortKey} value={w.sortKey}>{w.label} — R$ {formatCurrencyBRL(w.totalValue)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {expenseViewMode === 'quinzena' && expenseAggregatedStats.fortnights.length > 0 && (
+                  <select
+                    value={selectedExpenseFortnight}
+                    onChange={e => setSelectedExpenseFortnight(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 260 }}
+                  >
+                    <option value="todos">🌓 Todas as Quinzenas ({expenseAggregatedStats.fortnights.length})</option>
+                    {expenseAggregatedStats.fortnights.map(f => (
+                      <option key={f.fortnightKey} value={f.fortnightKey}>{f.label} — R$ {formatCurrencyBRL(f.totalValue)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {expenseViewMode === 'mes' && expenseAggregatedStats.months.length > 0 && (
+                  <select
+                    value={selectedExpenseMonth}
+                    onChange={e => setSelectedExpenseMonth(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 220 }}
+                  >
+                    <option value="todos">📊 Todos os Meses ({expenseAggregatedStats.months.length})</option>
+                    {expenseAggregatedStats.months.map(m => (
+                      <option key={m.month} value={m.month}>{m.label} — R$ {formatCurrencyBRL(m.totalValue)}</option>
+                    ))}
+                  </select>
+                )}
 
                 {/* Category Filter */}
                 <select
@@ -2685,7 +3007,7 @@ const AdminFinancial = () => {
               </div>
 
               <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                {expenseAggregatedStats.count} despesa(s) registradas
+                {expenseKPIs.count} lançamento(s) exibidos
               </span>
             </div>
 
@@ -3131,23 +3453,35 @@ const AdminFinancial = () => {
           {/* KPI Stat Cards */}
           <div className="kpi-grid">
             <KpiCard
-              label="A Receber (Previsto)"
+              label={
+                receivablesViewMode === 'dia' ? 'A Receber (No Dia)' :
+                receivablesViewMode === 'semana' ? 'A Receber (Na Semana)' :
+                receivablesViewMode === 'quinzena' ? 'A Receber (Na Quinzena)' :
+                receivablesViewMode === 'mes' ? 'A Receber (No Mês)' :
+                receivablesViewMode === 'personalizado' ? 'A Receber (No Período)' : 'A Receber (Previsto)'
+              }
               value={`R$ ${formatCurrencyBRL(receivablesKPIs.pendingNet)}`}
-              sub="Parcelas futuras a entrar no caixa"
+              sub={receivablesKPIs.label}
               icon={<Calendar size={18} />}
               variant="warning"
             />
             <KpiCard
-              label="Disponível no Caixa"
+              label={
+                receivablesViewMode === 'dia' ? 'Disponível (No Dia)' :
+                receivablesViewMode === 'semana' ? 'Disponível (Na Semana)' :
+                receivablesViewMode === 'quinzena' ? 'Disponível (Na Quinzena)' :
+                receivablesViewMode === 'mes' ? 'Disponível (No Mês)' :
+                receivablesViewMode === 'personalizado' ? 'Disponível (No Período)' : 'Disponível no Caixa'
+              }
               value={`R$ ${formatCurrencyBRL(receivablesKPIs.liquidNet)}`}
-              sub="Recebimentos já liberados / liquidados"
+              sub="Recebimentos liberados / liquidados"
               icon={<DollarSign size={18} />}
               variant="success"
             />
             <KpiCard
-              label="Entradas Próximos 30 Dias"
-              value={`R$ ${formatCurrencyBRL(receivablesKPIs.next30DaysNet)}`}
-              sub="Previsão de caixa de curto prazo"
+              label={receivablesViewMode === 'detalhado' ? 'Entradas Próximos 30 Dias' : 'Total Líquido Previsto'}
+              value={`R$ ${formatCurrencyBRL(receivablesViewMode === 'detalhado' ? receivablesKPIs.next30DaysNet : receivablesKPIs.totalNet)}`}
+              sub={receivablesViewMode === 'detalhado' ? 'Previsão de curto prazo' : 'Valor líquido total após taxas'}
               icon={<TrendingUp size={18} />}
               variant="accent"
             />
@@ -3164,9 +3498,9 @@ const AdminFinancial = () => {
           <div className="financial-card">
             {/* Filter Bar */}
             <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1, alignItems: 'center' }}>
                 {/* Search */}
-                <div style={{ position: 'relative', minWidth: 220 }}>
+                <div style={{ position: 'relative', minWidth: 200 }}>
                   <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
                   <input
                     type="text"
@@ -3176,6 +3510,59 @@ const AdminFinancial = () => {
                     style={{ paddingLeft: 30, width: '100%', paddingRight: 10, paddingTop: 6, paddingBottom: 6, fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
                   />
                 </div>
+
+                {/* Sub-period specific dropdown selector */}
+                {receivablesViewMode === 'dia' && receivablesAggregatedStats.days.length > 0 && (
+                  <select
+                    value={selectedReceivablesDay}
+                    onChange={e => setSelectedReceivablesDay(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 220 }}
+                  >
+                    <option value="todos">📅 Todos os Dias ({receivablesAggregatedStats.days.length})</option>
+                    {receivablesAggregatedStats.days.map(d => (
+                      <option key={d.date} value={d.date}>{d.label} — R$ {formatCurrencyBRL(d.netValue)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {receivablesViewMode === 'semana' && receivablesAggregatedStats.weeks.length > 0 && (
+                  <select
+                    value={selectedReceivablesWeek}
+                    onChange={e => setSelectedReceivablesWeek(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 260 }}
+                  >
+                    <option value="todos">🗓️ Todas as Semanas ({receivablesAggregatedStats.weeks.length})</option>
+                    {receivablesAggregatedStats.weeks.map(w => (
+                      <option key={w.sortKey} value={w.sortKey}>{w.label} — R$ {formatCurrencyBRL(w.netValue)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {receivablesViewMode === 'quinzena' && receivablesAggregatedStats.fortnights.length > 0 && (
+                  <select
+                    value={selectedReceivablesFortnight}
+                    onChange={e => setSelectedReceivablesFortnight(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 260 }}
+                  >
+                    <option value="todos">🌓 Todas as Quinzenas ({receivablesAggregatedStats.fortnights.length})</option>
+                    {receivablesAggregatedStats.fortnights.map(f => (
+                      <option key={f.fortnightKey} value={f.fortnightKey}>{f.label} — R$ {formatCurrencyBRL(f.netValue)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {receivablesViewMode === 'mes' && receivablesAggregatedStats.months.length > 0 && (
+                  <select
+                    value={selectedReceivablesMonth}
+                    onChange={e => setSelectedReceivablesMonth(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 220 }}
+                  >
+                    <option value="todos">📊 Todos os Meses ({receivablesAggregatedStats.months.length})</option>
+                    {receivablesAggregatedStats.months.map(m => (
+                      <option key={m.month} value={m.month}>{m.label} — R$ {formatCurrencyBRL(m.netValue)}</option>
+                    ))}
+                  </select>
+                )}
 
                 {/* Status Filter */}
                 <select
@@ -3204,7 +3591,7 @@ const AdminFinancial = () => {
               </div>
 
               <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                {filteredReceivablesSchedule.length} lançamento(s) agendados
+                {receivablesKPIs.count} lançamento(s) exibidos
               </span>
             </div>
 
@@ -3775,15 +4162,77 @@ const AdminFinancial = () => {
               </div>
             )}
 
+            {/* Sub-period dropdown selector bar for Dia, Semana, Quinzena, Mês */}
+            {commissionViewMode !== 'personalizado' && commissionViewMode !== 'detalhado' && (
+              <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--adm-rule)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--adm-text)' }}>Filtrar Seleção:</span>
+                {commissionViewMode === 'dia' && commissionAggregatedStats.days.length > 0 && (
+                  <select
+                    value={selectedCommissionDay}
+                    onChange={e => setSelectedCommissionDay(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 260 }}
+                  >
+                    <option value="todos">📅 Todos os Dias ({commissionAggregatedStats.days.length})</option>
+                    {commissionAggregatedStats.days.map(d => (
+                      <option key={d.date} value={d.date}>{d.label} — R$ {formatCurrencyBRL(d.totalCommission)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {commissionViewMode === 'semana' && commissionAggregatedStats.weeks.length > 0 && (
+                  <select
+                    value={selectedCommissionWeek}
+                    onChange={e => setSelectedCommissionWeek(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 280 }}
+                  >
+                    <option value="todos">🗓️ Todas as Semanas ({commissionAggregatedStats.weeks.length})</option>
+                    {commissionAggregatedStats.weeks.map(w => (
+                      <option key={w.sortKey} value={w.sortKey}>{w.label} — R$ {formatCurrencyBRL(w.totalCommission)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {commissionViewMode === 'quinzena' && commissionAggregatedStats.fortnights.length > 0 && (
+                  <select
+                    value={selectedCommissionFortnight}
+                    onChange={e => setSelectedCommissionFortnight(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 280 }}
+                  >
+                    <option value="todos">🌓 Todas as Quinzenas ({commissionAggregatedStats.fortnights.length})</option>
+                    {commissionAggregatedStats.fortnights.map(f => (
+                      <option key={f.fortnightKey} value={f.fortnightKey}>{f.label} — R$ {formatCurrencyBRL(f.totalCommission)}</option>
+                    ))}
+                  </select>
+                )}
+
+                {commissionViewMode === 'mes' && commissionAggregatedStats.months.length > 0 && (
+                  <select
+                    value={selectedCommissionMonth}
+                    onChange={e => setSelectedCommissionMonth(e.target.value)}
+                    style={{ padding: '6px 10px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)', maxWidth: 260 }}
+                  >
+                    <option value="todos">📊 Todos os Meses ({commissionAggregatedStats.months.length})</option>
+                    {commissionAggregatedStats.months.map(m => (
+                      <option key={m.month} value={m.month}>{m.label} — R$ {formatCurrencyBRL(m.totalCommission)}</option>
+                    ))}
+                  </select>
+                )}
+
+                <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>
+                  {commissionKPIs.totalAppointments} lançamento(s) filtrados
+                </span>
+              </div>
+            )}
+
             {/* KPIs Resumo da Comissão */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 20 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginTop: 16, marginBottom: 20 }}>
               <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.06)', border: '0.5px solid var(--adm-rule-gold)' }}>
                 <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', fontWeight: 600, textTransform: 'uppercase', marginBottom: 4 }}>Total a Repassar</span>
                 <strong style={{ fontSize: '1.4rem', color: '#48bb78' }}>
                   R$ {formatCurrencyBRL(commissionKPIs.totalCommission)}
                 </strong>
                 <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                  Repasse total no período selecionado
+                  {commissionKPIs.label}
                 </span>
               </div>
               <div style={{ padding: 16, borderRadius: 8, background: 'rgba(220,163,84,0.04)', border: '0.5px solid var(--adm-rule)' }}>
@@ -3820,7 +4269,14 @@ const AdminFinancial = () => {
               {professionals.map(p => {
                 const commServ = p.commissionService !== undefined ? p.commissionService : (p.commission || 50);
                 const commProd = p.commissionProduct !== undefined ? p.commissionProduct : 10;
-                const payout = calculateProfessionalCommission(p);
+                const pData = (commissionKPIs.professionalsMap && commissionKPIs.professionalsMap[p.id]) || {
+                  serviceRevenue: 0,
+                  productRevenue: 0,
+                  serviceCommission: 0,
+                  productCommission: 0,
+                  totalCommission: 0,
+                  count: 0
+                };
                 return (
                   <div key={p.id} style={{ border: '0.5px solid var(--adm-rule)', padding: 16, borderRadius: 8, background: 'var(--adm-surface)', display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -3830,21 +4286,21 @@ const AdminFinancial = () => {
                         </div>
                         <div>
                           <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem' }}>{p.name}</h4>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>{p.phone || 'Sem telefone'}</span>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)' }}>{pData.count} atendimento(s) no período</span>
                         </div>
                       </div>
                       <span style={{ fontSize: '1.15rem', color: '#48bb78', fontWeight: 700 }}>
-                        R$ {formatCurrencyBRL(payout.total)}
+                        R$ {formatCurrencyBRL(pData.totalCommission)}
                       </span>
                     </div>
                     <div style={{ borderTop: '1px solid var(--adm-rule)', paddingTop: 8, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Serviços ({commServ}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(payout.services)}</strong>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(pData.serviceCommission)}</strong>
                       </div>
                       <div>
                         <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)', display: 'block' }}>Produtos ({commProd}%)</span>
-                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(payout.products)}</strong>
+                        <strong style={{ fontSize: '0.88rem', color: 'var(--adm-text)' }}>R$ {formatCurrencyBRL(pData.productCommission)}</strong>
                       </div>
                     </div>
                   </div>

@@ -208,12 +208,13 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
         if (pMethod.includes('pix')) {
           const fee = pVal * (fees.feePix / 100);
           const net = pVal - fee;
-          schedule.push({
+            schedule.push({
             id: `${t.id}_pix_${pIdx}`,
             transactionId: t.id,
             clientName: t.clientName || 'Cliente',
             description: t.description || 'Recebimento Pix',
             paymentMethod: 'Pix',
+            professionalId: t.professionalId || t.profissional || 'jon',
             saleDate: saleDate,
             dueDate: saleDate,
             installmentNumber: 1,
@@ -232,6 +233,7 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
             clientName: t.clientName || 'Cliente',
             description: t.description || 'Venda Dinheiro',
             paymentMethod: 'Dinheiro',
+            professionalId: t.professionalId || t.profissional || 'jon',
             saleDate: saleDate,
             dueDate: saleDate,
             installmentNumber: 1,
@@ -262,6 +264,7 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
             clientName: t.clientName || 'Cliente',
             description: t.description || 'Cartão de Débito',
             paymentMethod: pAnticipated ? 'Cartão de Débito (Antecipado)' : 'Cartão de Débito',
+            professionalId: t.professionalId || t.profissional || 'jon',
             saleDate: saleDate,
             dueDate: dueDate,
             installmentNumber: 1,
@@ -305,6 +308,7 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
               clientName: t.clientName || 'Cliente',
               description: `${t.description || 'Crédito'} (${installments}x Antecipado)`,
               paymentMethod: `Cartão de Crédito (${installments}x Antecipado)`,
+              professionalId: t.professionalId || t.profissional || 'jon',
               saleDate: saleDate,
               dueDate: saleDate,
               installmentNumber: 1,
@@ -334,6 +338,7 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
                 clientName: t.clientName || 'Cliente',
                 description: `${t.description || 'Crédito'} (${i}/${installments}x)`,
                 paymentMethod: `Cartão de Crédito (${installments}x)`,
+                professionalId: t.professionalId || t.profissional || 'jon',
                 saleDate: saleDate,
                 dueDate: adjustedDueDate,
                 installmentNumber: i,
