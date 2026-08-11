@@ -13,17 +13,66 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db = getFirestore(app);
 
-// Proxy de envio (outbound) — chamado pelo painel via /api/whatsapp.
-// Reune a antiga função api/whatsapp.js para ficar dentro do limite de
-// 12 Serverless Functions do plano Hobby. Dispatch pelo campo `gateway`.
+// Proxy de envio (outbound) e diagnóstico — chamado pelo painel via /api/whatsapp-webhook.
+// Reune as funções de envio, status e obtenção de QR Code da Evolution API / Z-API.
 async function handleOutboundProxy(req, res) {
-  const { gateway, phone, message, config, extraData } = req.body;
+  const { action = 'send', gateway, phone, message, config, extraData } = req.body;
 
-  if (!gateway || !phone || !message) {
-    return res.status(400).json({ error: 'Parâmetros gateway, phone e message são obrigatórios.' });
+  if (!gateway) {
+    return res.status(400).json({ error: 'Parâmetro gateway é obrigatório.' });
   }
 
   try {
+    // ── 1. STATUS CHECK ───────────────────────────────────────────────────────
+    if (action === 'status') {
+      if (gateway === 'evolution') {
+        const { evolutionApiUrl, evolutionApiKey, evolutionInstanceName } = config || {};
+        if (!evolutionApiUrl || !evolutionApiKey || !evolutionInstanceName) {
+          return res.status(400).json({ error: 'Evolution API não configurada corretamente.' });
+        }
+        const url = `${evolutionApiUrl.replace(/\/$/, '')}/instance/connectionState/${evolutionInstanceName}`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: { 'apikey': evolutionApiKey }
+        });
+        const data = await response.json().catch(() => ({}));
+        return res.status(response.status).json({ success: response.ok, status: data?.instance?.state || data?.state || 'unknown', data });
+      }
+      return res.status(200).json({ success: true, status: 'ready' });
+    }
+
+    // ── 2. QR CODE / CONNECT ──────────────────────────────────────────────────
+    if (action === 'connect' || action === 'qrcode') {
+      if (gateway === 'evolution') {
+        const { evolutionApiUrl, evolutionApiKey, evolutionInstanceName } = config || {};
+        if (!evolutionApiUrl || !evolutionApiKey || !evolutionInstanceName) {
+          return res.status(400).json({ error: 'Evolution API não configurada corretamente.' });
+        }
+        const url = `${evolutionApiUrl.replace(/\/$/, '')}/instance/connect/${evolutionInstanceName}`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: { 'apikey': evolutionApiKey }
+        });
+        const data = await response.json().catch(() => ({}));
+        return res.status(response.status).json({
+          success: response.ok,
+          base64: data?.base64 || null,
+          code: data?.code || null,
+          pairingCode: data?.pairingCode || null,
+          data
+        });
+      }
+      return res.status(400).json({ error: 'Obtenção de QR Code disponível para Evolution API.' });
+    }
+
+    // ── 3. SEND MESSAGE ───────────────────────────────────────────────────────
+    if (!phone || !message) {
+      return res.status(400).json({ error: 'Parâmetros phone e message são obrigatórios para envio.' });
+    }
+
+    const cleanNumber = phone.replace(/\D/g, '');
+    const normalizedPhone = cleanNumber.startsWith('55') ? cleanNumber : `55${cleanNumber}`;
+
     let url = '';
     let headers = { 'Content-Type': 'application/json' };
     let body = {};
@@ -31,27 +80,27 @@ async function handleOutboundProxy(req, res) {
     if (gateway === 'zapi') {
       const { zApiInstanceId, zApiToken } = config || {};
       if (!zApiInstanceId || !zApiToken) {
-        return res.status(400).json({ error: 'Z-API não configurada corretamente' });
+        return res.status(400).json({ error: 'Z-API não configurada corretamente.' });
       }
       url = `https://api.z-api.io/instances/${zApiInstanceId}/token/${zApiToken}/send-text`;
-      body = { phone, message };
+      body = { phone: normalizedPhone, message };
     } else if (gateway === 'evolution') {
       const { evolutionApiUrl, evolutionApiKey, evolutionInstanceName } = config || {};
       if (!evolutionApiUrl || !evolutionApiKey || !evolutionInstanceName) {
-        return res.status(400).json({ error: 'Evolution API não configurada corretamente' });
+        return res.status(400).json({ error: 'Evolution API não configurada corretamente.' });
       }
       url = `${evolutionApiUrl.replace(/\/$/, '')}/message/sendText/${evolutionInstanceName}`;
       headers['apikey'] = evolutionApiKey;
-      body = { number: phone, text: message };
+      body = { number: normalizedPhone, text: message };
     } else if (gateway === 'custom') {
       const { customWebhookUrl } = config || {};
       if (!customWebhookUrl) {
-        return res.status(400).json({ error: 'Webhook customizado não configurado' });
+        return res.status(400).json({ error: 'Webhook customizado não configurado.' });
       }
       url = customWebhookUrl;
-      body = { phone, message, ...extraData };
+      body = { phone: normalizedPhone, message, ...extraData };
     } else {
-      return res.status(400).json({ error: 'Gateway inválido ou não suportado' });
+      return res.status(400).json({ error: 'Gateway inválido ou não suportado.' });
     }
 
     const response = await fetch(url, {
@@ -71,7 +120,11 @@ async function handleOutboundProxy(req, res) {
     if (response.ok) {
       return res.status(200).json({ success: true, data: resJson });
     } else {
-      return res.status(response.status).json({ error: 'Erro no gateway de WhatsApp', details: resJson });
+      return res.status(response.status).json({
+        error: 'Erro no gateway de WhatsApp',
+        details: resJson,
+        isConnectionClosed: resText.includes('Connection Closed') || resText.includes('connection_closed') || response.status === 500
+      });
     }
   } catch (error) {
     console.error('Erro no proxy de whatsapp:', error);
@@ -331,7 +384,7 @@ export default async function handler(req, res) {
   }
 
   // Setmore: if setmoreId or source: 'google' or appointment key is present
-  const isSetmore = (req.body && (req.body.event?.includes('appointment_') || req.body.appointment || req.body.setmoreId || req.body.source === 'google')) || req.query.source === 'google';
+  const isSetmore = (req.body && (req.body.event?.includes('appointment_') || req.body.appointment || req.body.setmoreId || req.body.source === 'google')) || req.query?.source === 'google';
   if (isSetmore) {
     return handleSetmoreWebhook(req, res);
   }

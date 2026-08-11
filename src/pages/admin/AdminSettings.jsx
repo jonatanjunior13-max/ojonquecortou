@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit, Calendar } from 'lucide-react';
+import { Save, Building, Clock, ShieldCheck, CreditCard, Send, Users, UserPlus, Trash2, Edit, Calendar, QrCode, RefreshCw, CheckCircle2, AlertCircle, Phone, MessageSquare, ExternalLink, X } from 'lucide-react';
 import { db } from '../../config/firebase';
 import { doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import './Admin.css';
@@ -57,6 +57,149 @@ const AdminSettings = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [gcalSyncing, setGcalSyncing] = useState(false);
+
+  // WhatsApp Gateway Hub State
+  const [waStatus, setWaStatus] = useState('idle'); // 'idle' | 'checking' | 'open' | 'connecting' | 'close' | 'error'
+  const [waStatusDetails, setWaStatusDetails] = useState('');
+  const [waQrCode, setWaQrCode] = useState(null);
+  const [waQrLoading, setWaQrLoading] = useState(false);
+  const [waShowQrModal, setWaShowQrModal] = useState(false);
+  const [waTestPhone, setWaTestPhone] = useState('31920066790');
+  const [waTestMessage, setWaTestMessage] = useState('Olá! Este é um teste da automação do WhatsApp do Studio do Jon 💇‍♂️✨');
+  const [waTestSending, setWaTestSending] = useState(false);
+  const [waTestResult, setWaTestResult] = useState(null);
+
+  const handleCheckWaStatus = async () => {
+    setWaStatus('checking');
+    setWaStatusDetails('Consultando status da instância...');
+    try {
+      const res = await fetch('/api/whatsapp-webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'status',
+          gateway: settings.waReminderGateway || 'evolution',
+          config: {
+            evolutionApiUrl: settings.evolutionApiUrl,
+            evolutionApiKey: settings.evolutionApiKey,
+            evolutionInstanceName: settings.evolutionInstanceName,
+            zApiInstanceId: settings.zApiInstanceId,
+            zApiToken: settings.zApiToken
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        const state = (data.status || 'unknown').toLowerCase();
+        setWaStatus(state);
+        if (state === 'open') {
+          setWaStatusDetails('Conectado e pronto para disparos! ✅');
+        } else if (state === 'connecting') {
+          setWaStatusDetails('Aguardando leitura do QR Code 🟡');
+        } else if (state === 'close') {
+          setWaStatusDetails('Desconectado. É necessário ler o QR Code 🔴');
+        } else {
+          setWaStatusDetails(`Status: ${data.status}`);
+        }
+      } else {
+        setWaStatus('error');
+        setWaStatusDetails(data.error || 'Falha ao checar status do WhatsApp');
+      }
+    } catch (err) {
+      setWaStatus('error');
+      setWaStatusDetails('Erro de rede ao conectar com o gateway.');
+    }
+  };
+
+  const handleFetchWaQrCode = async () => {
+    setWaQrLoading(true);
+    setWaShowQrModal(true);
+    try {
+      const res = await fetch('/api/whatsapp-webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'qrcode',
+          gateway: settings.waReminderGateway || 'evolution',
+          config: {
+            evolutionApiUrl: settings.evolutionApiUrl,
+            evolutionApiKey: settings.evolutionApiKey,
+            evolutionInstanceName: settings.evolutionInstanceName
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.base64) {
+        setWaQrCode(data.base64);
+        setWaStatus('connecting');
+      } else {
+        alert(data.error || 'Não foi possível gerar o QR Code no momento.');
+      }
+    } catch (err) {
+      alert('Erro ao buscar QR Code da Evolution API.');
+    } finally {
+      setWaQrLoading(false);
+    }
+  };
+
+  const handleSendWaTest = async (e) => {
+    if (e) e.preventDefault();
+    if (!waTestPhone.trim()) {
+      alert('Informe o número de telefone com DDD para teste.');
+      return;
+    }
+    setWaTestSending(true);
+    setWaTestResult(null);
+    try {
+      const res = await fetch('/api/whatsapp-webhook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send',
+          gateway: settings.waReminderGateway || 'evolution',
+          phone: waTestPhone,
+          message: waTestMessage,
+          config: {
+            evolutionApiUrl: settings.evolutionApiUrl,
+            evolutionApiKey: settings.evolutionApiKey,
+            evolutionInstanceName: settings.evolutionInstanceName,
+            zApiInstanceId: settings.zApiInstanceId,
+            zApiToken: settings.zApiToken,
+            customWebhookUrl: settings.customWebhookUrl
+          }
+        })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setWaTestResult({
+          success: true,
+          message: `✅ Mensagem de teste enviada com sucesso para ${waTestPhone}!`
+        });
+        setWaStatus('open');
+      } else {
+        const isClosed = data.isConnectionClosed || (data.details && JSON.stringify(data.details).includes('Connection Closed'));
+        if (isClosed) {
+          setWaStatus('close');
+          setWaTestResult({
+            success: false,
+            message: '🔴 A sessão do WhatsApp está desconectada (Connection Closed). Clique em "📱 Gerar / Conectar QR Code" para escanear o código no WhatsApp do seu celular.'
+          });
+        } else {
+          setWaTestResult({
+            success: false,
+            message: `❌ Erro no envio: ${data.error || 'Falha ao disparar mensagem'}`
+          });
+        }
+      }
+    } catch (err) {
+      setWaTestResult({
+        success: false,
+        message: `❌ Erro de comunicação: ${err.message}`
+      });
+    } finally {
+      setWaTestSending(false);
+    }
+  };
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -529,125 +672,345 @@ const AdminSettings = () => {
 
         {/* CONTEÚDO: INTEGRAÇÃO WHATSAPP */}
         {activeTab === 'whatsapp' && (
-          <div className="financial-card">
-            <h3>Disparos Automáticos de Confirmação (24h Antes)</h3>
-            <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
-              Ative e configure o envio automático de lembretes aos clientes com agendamento para o dia seguinte. A automação ocorre em segundo plano sempre que você ou sua equipe acessam o painel de controle.
-            </p>
-
-            <div className="form-group" style={{ marginBottom: 20 }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, cursor: 'pointer' }}>
-                <input 
-                  type="checkbox" 
-                  checked={settings.waReminderEnabled || false}
-                  onChange={e => setSettings({ ...settings, waReminderEnabled: e.target.checked })}
-                />
-                Ativar envio automático de lembretes (24 horas antes)
-              </label>
-            </div>
-
-            {settings.waReminderEnabled && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--adm-rule)', paddingTop: 20 }}>
-                <div className="form-group" style={{ maxWidth: 300 }}>
-                  <label>Gateway de Disparo WhatsApp</label>
-                  <select 
-                    value={settings.waReminderGateway || 'none'} 
-                    onChange={e => setSettings({ ...settings, waReminderGateway: e.target.value })}
-                  >
-                    <option value="none">WhatsApp Direto (Sem API Gateway)</option>
-                    <option value="zapi">Z-API (Envio Automático)</option>
-                    <option value="evolution">Evolution API (Envio Automático)</option>
-                    <option value="custom">Webhook Customizado</option>
-                  </select>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+            {/* CARD 1: STATUS DA CONEXÃO & QR CODE */}
+            <div className="financial-card" style={{ borderLeft: '4px solid var(--adm-gold)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Send size={18} color="var(--adm-gold)" /> Status do Gateway WhatsApp
+                  </h3>
+                  <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', margin: '4px 0 0 0' }}>
+                    Instância: <strong>{settings.evolutionInstanceName || 'JonStudio'}</strong> ({settings.waReminderGateway === 'evolution' ? 'Evolution API' : settings.waReminderGateway === 'zapi' ? 'Z-API' : 'Personalizado'})
+                  </p>
                 </div>
 
-                {/* Z-API Config */}
-                {settings.waReminderGateway === 'zapi' && (
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <div className="form-group">
-                      <label>ID da Instância Z-API</label>
-                      <input 
-                        type="text" 
-                        value={settings.zApiInstanceId || ''} 
-                        onChange={e => setSettings({ ...settings, zApiInstanceId: e.target.value })}
-                        placeholder="Ex: 3C53896564B9A..."
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>Token Z-API</label>
-                      <input 
-                        type="text" 
-                        value={settings.zApiToken || ''} 
-                        onChange={e => setSettings({ ...settings, zApiToken: e.target.value })}
-                        placeholder="Ex: E4887C815049B..."
-                      />
-                    </div>
-                  </div>
-                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className={`status-badge ${waStatus === 'open' ? 'confirmado' : waStatus === 'connecting' ? 'pendente' : 'cancelado'}`} style={{ fontSize: '0.85rem', padding: '6px 12px' }}>
+                    {waStatus === 'open' && '🟢 Conectado'}
+                    {waStatus === 'connecting' && '🟡 Aguardando Leitura QR'}
+                    {waStatus === 'close' && '🔴 Desconectado'}
+                    {waStatus === 'checking' && '🔄 Verificando...'}
+                    {waStatus === 'idle' && '⚪ Não Testado'}
+                    {waStatus === 'error' && '⚠️ Falha'}
+                  </span>
 
-                {/* Evolution API Config */}
-                {settings.waReminderGateway === 'evolution' && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    <div className="form-group">
-                      <label>URL do Servidor Evolution API</label>
-                      <input 
-                        type="text" 
-                        value={settings.evolutionApiUrl || ''} 
-                        onChange={e => setSettings({ ...settings, evolutionApiUrl: e.target.value })}
-                        placeholder="Ex: https://api.evolution-api.com"
-                      />
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                      <div className="form-group">
-                        <label>Nome da Instância</label>
-                        <input 
-                          type="text" 
-                          value={settings.evolutionInstanceName || ''} 
-                          onChange={e => setSettings({ ...settings, evolutionInstanceName: e.target.value })}
-                          placeholder="Ex: JonStudio"
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>API Key Global / Instância</label>
-                        <input 
-                          type="text" 
-                          value={settings.evolutionApiKey || ''} 
-                          onChange={e => setSettings({ ...settings, evolutionApiKey: e.target.value })}
-                          placeholder="Ex: apikey_12345..."
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={handleCheckWaStatus}
+                    disabled={waStatus === 'checking'}
+                    style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                  >
+                    <RefreshCw size={13} className={waStatus === 'checking' ? 'spin' : ''} />
+                    Verificar Status
+                  </button>
 
-                {/* Custom Webhook Config */}
-                {settings.waReminderGateway === 'custom' && (
-                  <div className="form-group">
-                    <label>URL do Webhook (POST)</label>
-                    <input 
-                      type="text" 
-                      value={settings.customWebhookUrl || ''} 
-                      onChange={e => setSettings({ ...settings, customWebhookUrl: e.target.value })}
-                      placeholder="Ex: https://n8n.meuservidor.com/webhook/lembrete"
-                    />
-                    <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                      Enviaremos uma requisição HTTP POST contendo os campos <code>phone</code>, <code>message</code>, <code>bookingId</code>, <code>clientName</code>, <code>date</code>, <code>time</code> e <code>service</code>.
-                    </span>
-                  </div>
-                )}
+                  {settings.waReminderGateway === 'evolution' && (
+                    <button
+                      type="button"
+                      className="btn btn-accent"
+                      onClick={handleFetchWaQrCode}
+                      disabled={waQrLoading}
+                      style={{ padding: '6px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: 6 }}
+                    >
+                      <QrCode size={14} />
+                      {waQrLoading ? 'Gerando QR...' : 'Conectar / Ler QR Code'}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {waStatusDetails && (
+                <div style={{ marginTop: 14, padding: '10px 14px', borderRadius: 6, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--adm-rule)', fontSize: '0.85rem', color: 'var(--adm-text)' }}>
+                  {waStatusDetails}
+                </div>
+              )}
+            </div>
+
+            {/* CARD 2: TESTAR DISPARO IMEDIATO */}
+            <div className="financial-card">
+              <h3 style={{ margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Phone size={18} color="#25D366" /> Teste de Automação & Envio Imediato
+              </h3>
+              <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 16 }}>
+                Dispare uma mensagem de teste em tempo real para o seu número ou de um cliente para validar a entrega.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr auto', gap: 12, alignItems: 'flex-start' }}>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.8rem' }}>Número de Destino (DDD + Número)</label>
+                  <input
+                    type="text"
+                    value={waTestPhone}
+                    onChange={e => setWaTestPhone(e.target.value)}
+                    placeholder="Ex: 31983044059"
+                    style={{ padding: '9px 12px', fontSize: '0.9rem' }}
+                  />
+                </div>
 
                 <div className="form-group">
-                  <label>Template da Mensagem de Lembrete</label>
-                  <textarea 
-                    rows="4"
-                    value={settings.waReminderTemplate || ''}
-                    onChange={e => setSettings({ ...settings, waReminderTemplate: e.target.value })}
-                    placeholder="Ex: Olá, {cliente}..."
-                    style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                  <label style={{ fontSize: '0.8rem' }}>Mensagem de Teste</label>
+                  <input
+                    type="text"
+                    value={waTestMessage}
+                    onChange={e => setWaTestMessage(e.target.value)}
+                    placeholder="Texto da mensagem de teste..."
+                    style={{ padding: '9px 12px', fontSize: '0.9rem' }}
                   />
-                  <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                    Use as tags: <code>{"{cliente}"}</code> para o nome do cliente, <code>{"{data}"}</code> para a data formatada por extenso, <code>{"{hora}"}</code> para o horário e <code>{"{servico}"}</code> para o serviço.
-                  </span>
+                </div>
+
+                <div style={{ paddingTop: 24 }}>
+                  <button
+                    type="button"
+                    className="btn btn-accent"
+                    onClick={handleSendWaTest}
+                    disabled={waTestSending}
+                    style={{ padding: '10px 20px', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', background: '#25D366', borderColor: '#25D366', color: '#000', fontWeight: 'bold' }}
+                  >
+                    <Send size={14} />
+                    {waTestSending ? 'Enviando...' : 'Enviar Teste'}
+                  </button>
+                </div>
+              </div>
+
+              {waTestResult && (
+                <div style={{
+                  marginTop: 14,
+                  padding: '12px 16px',
+                  borderRadius: 6,
+                  background: waTestResult.success ? 'rgba(37,211,102,0.1)' : 'rgba(239,68,68,0.1)',
+                  border: `1px solid ${waTestResult.success ? 'rgba(37,211,102,0.3)' : 'rgba(239,68,68,0.3)'}`,
+                  color: waTestResult.success ? '#25D366' : '#ef4444',
+                  fontSize: '0.85rem',
+                  lineHeight: '1.4'
+                }}>
+                  {waTestResult.message}
+                </div>
+              )}
+            </div>
+
+            {/* CARD 3: CONFIGURAÇÕES DA EVOLUTION API E LEMBRETES */}
+            <div className="financial-card">
+              <h3>Disparos Automáticos de Confirmação (24h Antes)</h3>
+              <p style={{ color: 'var(--adm-muted)', fontSize: '0.85rem', marginBottom: 20 }}>
+                Ative e configure o envio automático de lembretes aos clientes com agendamento para o dia seguinte. A automação ocorre em segundo plano sempre que você ou sua equipe acessam o painel de controle.
+              </p>
+
+              <div className="form-group" style={{ marginBottom: 20 }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 600, cursor: 'pointer' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={settings.waReminderEnabled || false}
+                    onChange={e => setSettings({ ...settings, waReminderEnabled: e.target.checked })}
+                  />
+                  Ativar envio automático de lembretes (24 horas antes)
+                </label>
+              </div>
+
+              {settings.waReminderEnabled && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 20, borderTop: '1px solid var(--adm-rule)', paddingTop: 20 }}>
+                  <div className="form-group" style={{ maxWidth: 300 }}>
+                    <label>Gateway de Disparo WhatsApp</label>
+                    <select 
+                      value={settings.waReminderGateway || 'none'} 
+                      onChange={e => setSettings({ ...settings, waReminderGateway: e.target.value })}
+                    >
+                      <option value="none">WhatsApp Direto (Sem API Gateway)</option>
+                      <option value="zapi">Z-API (Envio Automático)</option>
+                      <option value="evolution">Evolution API (Envio Automático)</option>
+                      <option value="custom">Webhook Customizado</option>
+                    </select>
+                  </div>
+
+                  {/* Z-API Config */}
+                  {settings.waReminderGateway === 'zapi' && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                      <div className="form-group">
+                        <label>ID da Instância Z-API</label>
+                        <input 
+                          type="text" 
+                          value={settings.zApiInstanceId || ''} 
+                          onChange={e => setSettings({ ...settings, zApiInstanceId: e.target.value })}
+                          placeholder="Ex: 3C53896564B9A..."
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Token Z-API</label>
+                        <input 
+                          type="text" 
+                          value={settings.zApiToken || ''} 
+                          onChange={e => setSettings({ ...settings, zApiToken: e.target.value })}
+                          placeholder="Ex: E4887C815049B..."
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Evolution API Config */}
+                  {settings.waReminderGateway === 'evolution' && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      <div className="form-group">
+                        <label>URL do Servidor Evolution API</label>
+                        <input 
+                          type="text" 
+                          value={settings.evolutionApiUrl || ''} 
+                          onChange={e => setSettings({ ...settings, evolutionApiUrl: e.target.value })}
+                          placeholder="Ex: https://api.evolution-api.com"
+                        />
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                        <div className="form-group">
+                          <label>Nome da Instância</label>
+                          <input 
+                            type="text" 
+                            value={settings.evolutionInstanceName || ''} 
+                            onChange={e => setSettings({ ...settings, evolutionInstanceName: e.target.value })}
+                            placeholder="Ex: JonStudio"
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>API Key Global / Instância</label>
+                          <input 
+                            type="text" 
+                            value={settings.evolutionApiKey || ''} 
+                            onChange={e => setSettings({ ...settings, evolutionApiKey: e.target.value })}
+                            placeholder="Ex: apikey_12345..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Custom Webhook Config */}
+                  {settings.waReminderGateway === 'custom' && (
+                    <div className="form-group">
+                      <label>URL do Webhook (POST)</label>
+                      <input 
+                        type="text" 
+                        value={settings.customWebhookUrl || ''} 
+                        onChange={e => setSettings({ ...settings, customWebhookUrl: e.target.value })}
+                        placeholder="Ex: https://n8n.meuservidor.com/webhook/lembrete"
+                      />
+                      <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
+                        Enviaremos uma requisição HTTP POST contendo os campos <code>phone</code>, <code>message</code>, <code>bookingId</code>, <code>clientName</code>, <code>date</code>, <code>time</code> e <code>service</code>.
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="form-group">
+                    <label>Template da Mensagem de Lembrete</label>
+                    <textarea 
+                      rows="4"
+                      value={settings.waReminderTemplate || ''}
+                      onChange={e => setSettings({ ...settings, waReminderTemplate: e.target.value })}
+                      placeholder="Ex: Olá, {cliente}..."
+                      style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                    />
+                    <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
+                      Use as tags: <code>{"{cliente}"}</code> para o nome do cliente, <code>{"{data}"}</code> para a data formatada por extenso, <code>{"{hora}"}</code> para o horário e <code>{"{servico}"}</code> para o serviço.
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* MODAL: QR CODE DE CONEXÃO DO WHATSAPP */}
+            {waShowQrModal && (
+              <div style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.85)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 9999,
+                padding: 16
+              }}>
+                <div style={{
+                  background: 'var(--adm-card)',
+                  border: '1px solid var(--adm-gold)',
+                  borderRadius: 12,
+                  padding: 24,
+                  maxWidth: 420,
+                  width: '100%',
+                  textAlign: 'center',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.6)'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--adm-gold)' }}>Conectar WhatsApp Web</h3>
+                    <button
+                      type="button"
+                      onClick={() => setWaShowQrModal(false)}
+                      style={{ background: 'none', border: 'none', color: 'var(--adm-muted)', cursor: 'pointer' }}
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+
+                  {waQrLoading ? (
+                    <div style={{ padding: '40px 0' }}>
+                      <RefreshCw size={32} className="spin" style={{ color: 'var(--adm-gold)', margin: '0 auto 12px' }} />
+                      <p style={{ color: 'var(--adm-muted)', margin: 0, fontSize: '0.85rem' }}>Gerando QR Code na Evolution API...</p>
+                    </div>
+                  ) : waQrCode ? (
+                    <div>
+                      <div style={{
+                        background: '#ffffff',
+                        padding: 16,
+                        borderRadius: 8,
+                        display: 'inline-block',
+                        margin: '12px auto'
+                      }}>
+                        <img
+                          src={waQrCode.startsWith('data:') ? waQrCode : `data:image/png;base64,${waQrCode}`}
+                          alt="WhatsApp QR Code"
+                          style={{ width: 240, height: 240, display: 'block' }}
+                        />
+                      </div>
+
+                      <div style={{ textAlign: 'left', background: 'rgba(255,255,255,0.02)', padding: '12px 16px', borderRadius: 8, marginTop: 12, fontSize: '0.82rem', color: 'var(--adm-muted)' }}>
+                        <strong style={{ color: 'var(--adm-text)', display: 'block', marginBottom: 6 }}>Como escanear:</strong>
+                        <ol style={{ margin: 0, paddingLeft: 18, lineHeight: '1.6' }}>
+                          <li>Abra o <strong>WhatsApp</strong> no seu celular</li>
+                          <li>Toque em <strong>Configurações</strong> (ou 3 pontinhos)</li>
+                          <li>Selecione <strong>Aparelhos conectados</strong></li>
+                          <li>Toque em <strong>Conectar um aparelho</strong> e aponte para o código acima</li>
+                        </ol>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                        <button
+                          type="button"
+                          className="btn btn-outline"
+                          onClick={handleFetchWaQrCode}
+                          style={{ flex: 1, fontSize: '0.85rem' }}
+                        >
+                          🔄 Atualizar QR Code
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-accent"
+                          onClick={() => {
+                            setWaShowQrModal(false);
+                            handleCheckWaStatus();
+                          }}
+                          style={{ flex: 1, fontSize: '0.85rem' }}
+                        >
+                          ✅ Concluído
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ padding: '30px 0' }}>
+                      <AlertCircle size={36} color="var(--adm-danger)" style={{ margin: '0 auto 12px' }} />
+                      <p style={{ fontSize: '0.9rem', marginBottom: 16 }}>Não foi possível obter o QR Code da Evolution API.</p>
+                      <button type="button" className="btn btn-accent" onClick={handleFetchWaQrCode}>Tentar Novamente</button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
