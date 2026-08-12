@@ -1,5 +1,167 @@
 export const posts = [
   {
+    id: 74,
+    slug: 'densidade-capilar-vs-espessura-fio-cabelos-cacheados-crespos',
+    title: 'Densidade Capilar vs. Espessura do Fio em Cacheados e Crespos: A Física da Escolha de Produtos e Volume',
+    seoTitle: 'Densidade Capilar vs Espessura do Fio em Cachos | Studio do Jon',
+    excerpt: 'Descubra a diferença física entre densidade de folículos por cm² e calibre do fio no cabelo cacheado e crespo, e como isso define o peso dos produtos e o formato do volume.',
+    metaDescription: 'Entenda a diferença física entre densidade capilar e espessura do fio em cabelos cacheados e crespos. Aprenda a escolher o peso do produto e acertar no volume.',
+    keywords: 'densidade capilar cabelo cacheado, espessura do fio crespo, calibre do fio, cacho fino alta densidade, cacho grosso baixa densidade, Leitura de Fio BH, Studio do Jon BH',
+    date: '12 de Agosto, 2026',
+    datePublished: '2026-08-12',
+    dateModified: '2026-08-12',
+    author: 'Jon',
+    category: 'Cuidado Capilar',
+    image: '/blog-densidade-capilar-vs-espessura-fio-cabelos-cacheados-crespos.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qual a diferença entre densidade capilar e espessura do fio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Densidade capilar é o número total de folículos pilosos por centímetro quadrado no couro cabeludo, enquanto a espessura do fio refere-se ao diâmetro ou calibre individual da haste de queratina (fino, médio ou grosso)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que o cabelo cacheado fino e de alta densidade pesa fácil com cremes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Fios de calibre fino possuem córtex com menor massa queratínica e sustentam pouca carga lipídica. Quando a densidade é alta, o acúmulo de cremes pesados cria atrito e colapso no volume, gerando aspecto murcho."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como saber a densidade do meu cabelo cacheado ou crespo em casa?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Com o cabelo seco e limpo, reparta os fios ao meio: se o couro cabeludo fica muito visível sem esforço, a densidade é baixa; se o couro mal aparece devido à quantidade de fios, a densidade é alta."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quem tem cabelo crespo de baixa densidade deve usar géis ou manteigas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Cabelos de baixa densidade se beneficiam de fluidos e géis leves com polímeros de memória. Manteigas e óleos pesados agrupam demais os fios pouca quantidade, expondo o couro cabeludo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como o diagnóstico no Studio do Jon avalia densidade e espessura?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No Método Leitura de Fio, realizamos a tração física e a contagem folicular visual com o fio seco e molhado, identificando o calibre do córtex para indicar a viscosidade exata de finalizador adequada."
+          }
+        }
+      ]
+    },
+    content: `
+      <blockquote id="tldr">
+        <strong>TL;DR:</strong> A densidade capilar mede a quantidade de folículos por cm² no couro cabeludo, enquanto a espessura se refere ao calibre da haste de queratina. Errar a viscosidade dos cosméticos por confundir esses dois fatores gera acúmulo de carga sintética em fios finos ou falta de selamento em fios grossos.
+      </blockquote>
+
+      <h2>O Que É Densidade Capilar e Espessura do Fio?</h2>
+      <p>A densidade capilar é a quantidade total de fios emergindo por centímetro quadrado no couro cabeludo, enquanto a espessura do fio é o diâmetro transversal da haste queratínica individual.</p>
+      <p>No atendimento diário aqui no Studio do Jon, percebo que 80% das cacheadas e crespas compram produtos baseadas apenas no tipo de curvatura (2C, 3B, 4A), ignorando completamente a biofísica da fibra. O resultado é um ciclo frustrante: comprar cremes densos para cabelos que na verdade têm fios de calibre finíssimo, resultando em sobrecarga e perda de movimento natural.</p>
+
+      <h2>Por Que Confundir Densidade e Espessura Destrói a Definição?</h2>
+      <p>A gravidade e a tensão mecânica atuam de maneira completamente diferente dependendo da combinação entre o diâmetro da fibra e a densidade folicular do couro cabeludo.</p>
+      <p>Um cabelo com espessura fina possui menos camadas de cutícula e um córtex com diâmetro reduzido. Se a pessoa tem alta densidade (muitos fios na cabeça), a impressão visual inicial é de grande volume. Contudo, ao aplicar um creme ultra-nutritivo com ceras e manteigas pesadas, cada haste fina colapsa sob o peso do produto. As molas perdem a memória helicoidal e o cabelo murcha ao longo do dia.</p>
+      <p>Por outro lado, quem possui fios de calibre grosso e baixa densidade (poucos fios por cm²) precisa de produtos que ajudem no acoplamento das mechas sem criar lacunas excessivas onde o couro cabeludo fique exposto.</p>
+
+      <h2>Como a Combinação Física Afeta a Escolha de Cosméticos</h2>
+      <p>Para entender qual viscosidade seu cacho precisa, avaliamos quatro combinações fundamentais no diagnóstico do couro e da haste:</p>
+
+      <h3>1. Fio Fino + Alta Densidade</h3>
+      <p>Muitos fios na cabeça, mas cada um extremamente delicado. Exige finalizadores fluidos, leites de pentear e géis de fixação flexível. Evite manteigas densas de karité ou óleos minerais que criam filme oclusivo pesado.</p>
+
+      <h3>2. Fio Fino + Baixa Densidade</h3>
+      <p>Poucos fios e de calibre delicado. Necessita de cremes em spray ou mousses com proteína hidrolisada para encorpar a fibra temporariamente sem pesar a raiz.</p>
+
+      <h3>3. Fio Grosso + Alta Densidade</h3>
+      <p>Grande quantidade de fios com córtex robusto e cutículas rígidas. Responde perfeitamente a cremes densos, óleos vegetais de alta viscosidade (como abacate e rícino) e fitagem estruturada.</p>
+
+      <h3>4. Fio Grosso + Baixa Densidade</h3>
+      <p>Fios resistentes, mas em menor quantidade folicular. Requer ativadores de cachos com poder de emoliência sem provocar encolhimento excessivo que revele divisões indesejadas na raiz.</p>
+
+      <h2>Tabela Comparativa: Densidade Capilar vs. Espessura do Fio</h2>
+      <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.9rem;">
+        <thead>
+          <tr style="background-color: rgba(255,255,255,0.08); border-bottom: 2px solid rgba(255,255,255,0.2);">
+            <th style="padding: 10px; text-align: left;">Parâmetro Físico</th>
+            <th style="padding: 10px; text-align: left;">Densidade Capilar</th>
+            <th style="padding: 10px; text-align: left;">Espessura do Fio (Calibre)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px; font-weight: bold;">O que mede?</td>
+            <td style="padding: 10px;">Quantidade de folículos/fios por cm² no couro cabeludo</td>
+            <td style="padding: 10px;">Diâmetro do córtex e número de camadas de cutícula</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px; font-weight: bold;">Como testar visualmente?</td>
+            <td style="padding: 10px;">Repartindo o cabelo seco e observando a exposição do couro</td>
+            <td style="padding: 10px;">Rolando um único fio seco entre o polegar e o indicador</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px; font-weight: bold;">Impacto na Escolha do Produto</td>
+            <td style="padding: 10px;">Determina a quantidade total de produto aplicada</td>
+            <td style="padding: 10px;">Determina a viscosidade (peso/consistência) do produto</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px; font-weight: bold;">Efeito de Cosmético Errado</td>
+            <td style="padding: 10px;">Acúmulo no couro cabeludo ou lacunas na distribuição</td>
+            <td style="padding: 10px;">Colapso de volume (fio fino) ou frizz sem definição (fio grosso)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Passos Práticos para Identificar o Peso Ideal da Sua Finalização</h2>
+      <p>Siga estes quatro passos para ajustar sua rotina sem gastar dinheiro com produtos errados:</p>
+      <ol>
+        <li><strong>Faça o teste do toque no fio seco:</strong> Pegue uma única haste na região da coroa. Se você mal sente o fio rolando entre os dedos, seu calibre é fino. Se sente uma linha rígida e bem perceptível, seu calibre é grosso.</li>
+        <li><strong>Observe a divisória natural do couro:</strong> Com os fios secos, reparta o cabelo ao meio sob boa iluminação. Couro visível indica baixa densidade; couro totalmente coberto por camadas de fios indica alta densidade.</li>
+        <li><strong>Ajuste a diluição do creme de pentear:</strong> Se o seu fio é fino, emulsione o creme com água nas mãos antes de aplicar nas mechas. Isso reduz a carga lipídica por centímetro de fibra.</li>
+        <li><strong>Combine com um gel fluido de memória:</strong> Em vez de colocar mais creme para dar fixação, use um gel aquoso para criar a película sem adicionar peso graxo.</li>
+      </ol>
+
+      <h2>Erros Comuns na Avaliação do Cabelo Cacheado e Crespo</h2>
+      <p>Evite estes equívocos frequentes que sabotam a saúde e o visual dos cachos:</p>
+      <ul>
+        <li><strong>Achando que cacho 4C é sempre grosso:</strong> Na verdade, a maioria dos cabelos crespos tipo 4 possui o calibre do fio extremamente fino e frágil, exigindo leveza e cautela no manuseio mecânico.</li>
+        <li><strong>Usando óleos pesados em fios de baixa densidade:</strong> Aplicar óleos densos na tentativa de criar brilho em poucos fios deixa o cabelo rígido e junta as mechas em blocos separados.</li>
+        <li><strong>Confundindo volume de frizz com alta densidade:</strong> Cabelos danificados por porosidade podem criar um volume armado devido à eletricidade estática, escondendo uma densidade folicular baixa a média.</li>
+      </ul>
+
+      <h2>Perguntas Frequentes</h2>
+      <h3>Qual a diferença entre densidade capilar e espessura do fio?</h3>
+      <p>Densidade capilar é o número total de folículos pilosos por centímetro quadrado no couro cabeludo, enquanto a espessura do fio refere-se ao diâmetro ou calibre individual da haste de queratina (fino, médio ou grosso).</p>
+
+      <h3>Por que o cabelo cacheado fino e de alta densidade pesa fácil com cremes?</h3>
+      <p>Fios de calibre fino possuem córtex com menor massa queratínica e sustentam pouca carga lipídica. Quando a densidade é alta, o acúmulo de cremes pesados cria atrito e colapso no volume, gerando aspecto murcho.</p>
+
+      <h3>Como saber a densidade do meu cabelo cacheado ou crespo em casa?</h3>
+      <p>Com o cabelo seco e limpo, reparta os fios ao meio: se o couro cabeludo fica muito visível sem esforço, a densidade é baixa; se o couro mal aparece devido à quantidade de fios, a densidade é alta.</p>
+
+      <h3>Quem tem cabelo crespo de baixa densidade deve usar géis ou manteigas?</h3>
+      <p>Cabelos de baixa densidade se beneficiam de fluidos e géis leves com polímeros de memória. Manteigas e óleos pesados agrupam demais os fios pouca quantidade, expondo o couro cabeludo.</p>
+
+      <h3>Como o diagnóstico no Studio do Jon avalia densidade e espessura?</h3>
+      <p>No Método Leitura de Fio, realizamos a tração física e a contagem folicular visual com o fio seco e molhado, identificando o calibre do córtex para indicar a viscosidade exata de finalizador adequada.</p>
+
+      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
+        <h3>Quer descobrir o peso exato que seu cabelo precisa?</h3>
+        <p>No Studio do Jon em Belo Horizonte, fazemos a análise física do seu fio molhado e seco pelo Método Leitura de Fio, encontrando a combinação perfeita entre densidade, calibre e curvatura.</p>
+        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Horário com Jon em BH</a>
+      </div>
+    `
+  },
+  {
   "id": 73,
   "slug": "protecao-termica-cabelo-cacheado-difusor-danos-termicos",
   "title": "Proteção Térmica em Cabelos Cacheados e Crespos: A Ciência por Trás do Difusor, Denaturação e Memória da Mola",
