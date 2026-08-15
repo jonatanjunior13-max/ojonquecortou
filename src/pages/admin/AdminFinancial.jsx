@@ -161,6 +161,12 @@ const AdminFinancial = () => {
   const [editingClientPackage, setEditingClientPackage] = useState(null);
   const [editingBalanceForm, setEditingBalanceForm] = useState({});
 
+  // Anticipation Subtab states
+  const [antecipationSimulatedRate, setAntecipationSimulatedRate] = useState(2.50);
+  const [anticipationSearch, setAnticipationSearch] = useState('');
+  const [anticipationInstallmentFilter, setAnticipationInstallmentFilter] = useState('todos');
+  const [selectedAnticipationIds, setSelectedAnticipationIds] = useState([]);
+
   // Get data from global context
   const dbTransactions = useMemo(() => globalData.financial_transactions || [], [globalData.financial_transactions]);
   const dbBookings = useMemo(() => globalData.bookings || [], [globalData.bookings]);
@@ -211,6 +217,9 @@ const AdminFinancial = () => {
         feeAnticipation: settings.feeAnticipation ?? 2.50,
         autoAnticipation: settings.autoAnticipation ?? false
       });
+      if (settings.feeAnticipation !== undefined) {
+        setAntecipationSimulatedRate(settings.feeAnticipation);
+      }
     }
   }, [settings]);
 
@@ -1180,10 +1189,79 @@ const AdminFinancial = () => {
   // Schedule of all receivables (Previsão de Recebimentos por Vencimento: 30/60/90d crédito, D+1 débito, D+0 pix)
   const fullReceivablesSchedule = useMemo(() => {
     return calculateReceivablesSchedule(transactions, settings).filter(item => {
+      // Exclui lançamentos antigos de anos/meses anteriores a Agosto de 2026 para focar apenas nas comandas e vendas atuais de Agosto
+      if ((item.saleDate || '') < '2026-08-01') return false;
       if (!selectedProfFilter) return true;
       return item.professionalId === selectedProfFilter;
     });
   }, [transactions, settings, selectedProfFilter]);
+
+  // Antecipação Data Computation
+  const anticipationData = useMemo(() => {
+    const rateMonthly = Number(antecipationSimulatedRate || 0);
+
+    // Filter credit receivables that are pending (future) and saleDate >= 2026-08-01
+    const eligibleItems = fullReceivablesSchedule.filter(item => {
+      const isCredit = (item.paymentMethod || '').toLowerCase().includes('crédito') || (item.paymentMethod || '').toLowerCase().includes('credito');
+      const isPending = item.status === 'a_receber';
+      const isAugustOnwards = (item.saleDate || '') >= '2026-08-01';
+
+      if (!isCredit || !isPending || !isAugustOnwards) return false;
+
+      const term = anticipationSearch.toLowerCase();
+      const matchesSearch = 
+        (item.clientName || '').toLowerCase().includes(term) ||
+        (item.description || '').toLowerCase().includes(term) ||
+        (item.paymentMethod || '').toLowerCase().includes(term);
+
+      let matchesInst = true;
+      if (anticipationInstallmentFilter === '1x') matchesInst = item.totalInstallments === 1;
+      else if (anticipationInstallmentFilter === '2x') matchesInst = item.totalInstallments === 2;
+      else if (anticipationInstallmentFilter === '3x') matchesInst = item.totalInstallments >= 3;
+
+      return matchesSearch && matchesInst;
+    });
+
+    let totalGross = 0;
+    let totalMdrFee = 0;
+    let totalNetOriginal = 0;
+    let totalAnticipationDiscount = 0;
+    let totalPayoutNet = 0;
+
+    const itemsWithCalculations = eligibleItems.map(item => {
+      const gross = Number(item.grossValue || 0);
+      const mdrFee = Number(item.feeValue || 0);
+      const netOrig = Number(item.netValue || 0);
+
+      // Estimate months to due date (30 days = 1 month, 60 days = 2 months, 90 days = 3 months)
+      const months = Math.max(1, Math.ceil((item.daysToReceive || 30) / 30));
+      const antDiscount = netOrig * (rateMonthly / 100) * months;
+      const payout = Math.max(0, netOrig - antDiscount);
+
+      totalGross += gross;
+      totalMdrFee += mdrFee;
+      totalNetOriginal += netOrig;
+      totalAnticipationDiscount += antDiscount;
+      totalPayoutNet += payout;
+
+      return {
+        ...item,
+        months,
+        antDiscount,
+        payout
+      };
+    });
+
+    return {
+      items: itemsWithCalculations,
+      totalGross,
+      totalMdrFee,
+      totalNetOriginal,
+      totalAnticipationDiscount,
+      totalPayoutNet,
+      count: itemsWithCalculations.length
+    };
+  }, [fullReceivablesSchedule, antecipationSimulatedRate, anticipationSearch, anticipationInstallmentFilter]);
 
   const filteredReceivablesSchedule = useMemo(() => {
     return fullReceivablesSchedule.filter(item => {
@@ -2039,6 +2117,90 @@ const AdminFinancial = () => {
     }
   };
 
+  const handleClearOldTransactions = async () => {
+    if (!window.confirm("Deseja zerar todos os lançamentos financeiros antigos anteriores a Agosto de 2026? Essa ação manterá apenas as comandas e vendas de Agosto de 2026 em diante.")) {
+      return;
+    }
+    const currentTx = globalData.financial_transactions || [];
+    const augustOnly = currentTx.filter(t => (t.date || '') >= '2026-08-01');
+    
+    // Update local storage
+    localStorage.setItem('demo_financial', JSON.stringify(augustOnly));
+    setGlobalData(prev => ({ ...prev, financial_transactions: augustOnly }));
+
+    // Delete from Firestore if db is active
+    if (db) {
+      const oldTx = currentTx.filter(t => (t.date || '') < '2026-08-01');
+      for (const t of oldTx) {
+        if (t.id) {
+          try {
+            await deleteDoc(doc(db, 'financial_transactions', t.id));
+          } catch(e) {}
+        }
+      }
+    }
+    alert("Lançamentos anteriores a Agosto de 2026 foram zerados com sucesso!");
+  };
+
+  const handleAnticipateReceivables = async (receivableItemIds = []) => {
+    if (!receivableItemIds || receivableItemIds.length === 0) {
+      alert("Nenhum recebível selecionado para antecipação.");
+      return;
+    }
+
+    if (!window.confirm(`Deseja antecipar ${receivableItemIds.length} lançamento(s) de cartão de crédito para liberação imediata no caixa?`)) {
+      return;
+    }
+
+    const targetTxIds = new Set();
+    fullReceivablesSchedule.forEach(item => {
+      if (receivableItemIds.includes(item.id)) {
+        targetTxIds.add(item.transactionId);
+      }
+    });
+
+    const currentTx = globalData.financial_transactions || [];
+    const updatedTx = currentTx.map(t => {
+      if (targetTxIds.has(t.id)) {
+        const pm = (t.paymentMethod || '').toLowerCase();
+        let newPm = t.paymentMethod;
+        if (!pm.includes('antecipad')) {
+          newPm = `${t.paymentMethod} (Antecipado)`;
+        }
+        return {
+          ...t,
+          paymentMethod: newPm,
+          applyAnticipation: true,
+          autoAnticipation: true
+        };
+      }
+      return t;
+    });
+
+    localStorage.setItem('demo_financial', JSON.stringify(updatedTx));
+    setGlobalData(prev => ({ ...prev, financial_transactions: updatedTx }));
+
+    if (db) {
+      for (const txId of targetTxIds) {
+        const tObj = currentTx.find(t => t.id === txId);
+        if (tObj) {
+          const pm = (tObj.paymentMethod || '').toLowerCase();
+          const newPm = pm.includes('antecipad') ? tObj.paymentMethod : `${tObj.paymentMethod} (Antecipado)`;
+          try {
+            await updateDoc(doc(db, 'financial_transactions', txId), {
+              paymentMethod: newPm,
+              applyAnticipation: true,
+              autoAnticipation: true
+            });
+          } catch(e) {}
+        }
+      }
+    }
+
+    setSelectedAnticipationIds([]);
+    alert("Antecipação efetuada com sucesso! Os valores foram liberados no caixa.");
+  };
+
   // CSV Export utility
   const handleExportCSV = () => {
     const headers = ['Data', 'Descricao', 'Cliente', 'Tipo', 'Metodo Pagamento', 'Valor Bruto (R$)', 'Valor Liquido (R$)', 'Taxa Retida (R$)', 'Custo de Produto (R$)', 'Lucro de Produto (R$)'];
@@ -2391,6 +2553,7 @@ const AdminFinancial = () => {
           { id: 'fluxo', label: 'Extrato', icon: <DollarSign size={14} /> },
           { id: 'despesas', label: 'Despesas', icon: <TrendingDown size={14} /> },
           { id: 'recebiveis', label: 'Agenda de Recebíveis', icon: <CreditCard size={14} /> },
+          { id: 'antecipacao', label: 'Antecipação', icon: <ArrowUpRight size={14} /> },
           { id: 'comissao', label: 'Comissões', icon: <Users size={14} /> },
           { id: 'atendimentos', label: 'Atendimentos', icon: <Users size={14} /> },
           { id: 'produtos', label: 'Produtos', icon: <ShoppingBag size={14} /> },
@@ -4247,6 +4410,275 @@ const AdminFinancial = () => {
                 <strong style={{ color: 'var(--adm-text)' }}>💳 Crédito Parcelado (2x e 3x):</strong>
                 <p style={{ margin: '2px 0 0 0' }}>Dividido em parcelas líquidas iguais caindo em 30, 60 e 90 dias.</p>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUBTAB: ANTECIPAÇÃO DE CRÉDITO */}
+      {activeSubTab === 'antecipacao' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          {/* Header & Description Card */}
+          <div className="financial-card" style={{ background: 'linear-gradient(135deg, rgba(200, 155, 60, 0.08) 0%, rgba(20, 20, 25, 0.6) 100%)', border: '1px solid var(--adm-gold-30)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                  <span style={{ padding: '4px 10px', borderRadius: 20, background: 'rgba(200, 155, 60, 0.2)', color: 'var(--adm-gold)', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 4 }}>
+                    <ArrowUpRight size={14} /> Menu de Antecipação
+                  </span>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', color: 'var(--adm-text)', fontWeight: 700 }}>Antecipação de Recebíveis (Cartão de Crédito)</h3>
+                </div>
+                <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--adm-muted)' }}>
+                  Acompanhe e simule os recebimentos de cartão de crédito a vista (30 dias), 2x (30/60 dias) e 3x (30/60/90 dias) disponíveis para liberação imediata no caixa.
+                </p>
+              </div>
+
+              {/* Botão para Zerar Histórico Legado e manter apenas Agosto */}
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className="btn btn-outline btn-sm"
+                  onClick={handleClearOldTransactions}
+                  style={{ color: '#ff6b6b', borderColor: 'rgba(255, 107, 107, 0.3)' }}
+                >
+                  <Trash2 size={14} style={{ marginRight: 4 }} /> Zerar Histórico Antigo (Manter Agosto)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Rate Configuration Banner */}
+          <div className="financial-card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', padding: '16px 20px', background: 'var(--adm-card)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 8, background: 'rgba(200, 155, 60, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--adm-gold)' }}>
+                <Percent size={20} />
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '0.92rem', color: 'var(--adm-text)' }}>Taxa de Antecipação da Maquininha (% ao mês)</h4>
+                <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)' }}>
+                  Ajuste a taxa mensal cobrada pela operadora para simular o valor líquido antecipado na hora.
+                </span>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--adm-input-bg)', border: '1px solid var(--adm-rule)', borderRadius: 8, padding: '4px 10px' }}>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="50"
+                  value={antecipationSimulatedRate}
+                  onChange={e => setAntecipationSimulatedRate(e.target.value)}
+                  style={{ width: 70, border: 'none', background: 'none', color: 'var(--adm-text)', fontSize: '0.95rem', fontWeight: 700, textAlign: 'right', outline: 'none' }}
+                />
+                <span style={{ color: 'var(--adm-gold)', fontWeight: 700, fontSize: '0.9rem' }}>% / mês</span>
+              </div>
+
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={async () => {
+                  const rateVal = parseFloat(antecipationSimulatedRate) || 0;
+                  const newSettings = { ...settings, feeAnticipation: rateVal };
+                  setGlobalData(prev => ({ ...prev, settings: newSettings }));
+                  if (db) {
+                    try {
+                      await setDoc(doc(db, 'settings', 'general'), newSettings, { merge: true });
+                    } catch(e) {}
+                  }
+                  alert(`Taxa de antecipação salva em ${rateVal}% ao mês!`);
+                }}
+              >
+                Salvar Taxa
+              </button>
+            </div>
+          </div>
+
+          {/* KPI Stat Cards */}
+          <div className="kpi-grid">
+            <KpiCard
+              label="Total Crédito Futuro (A Receber)"
+              value={`R$ ${formatCurrencyBRL(anticipationData.totalGross)}`}
+              sub={`${anticipationData.count} parcela(s) pendente(s)`}
+              icon={<CreditCard size={18} />}
+              variant="accent"
+            />
+            <KpiCard
+              label="Taxa MDR Retida (Adquirente)"
+              value={`R$ ${formatCurrencyBRL(anticipationData.totalMdrFee)}`}
+              sub="Custo base da máquina"
+              icon={<Percent size={18} />}
+              variant="neutral"
+            />
+            <KpiCard
+              label="Líquido Sem Antecipar (30/60/90d)"
+              value={`R$ ${formatCurrencyBRL(anticipationData.totalNetOriginal)}`}
+              sub="Recebimento no prazo normal"
+              icon={<Calendar size={18} />}
+              variant="warning"
+            />
+            <KpiCard
+              label="Valor Líquido Antecipado (Na Hora)"
+              value={`R$ ${formatCurrencyBRL(anticipationData.totalPayoutNet)}`}
+              sub={`Liberado hoje (-${formatCurrencyBRL(anticipationData.totalAnticipationDiscount)} desc. antecipação)`}
+              icon={<DollarSign size={18} />}
+              variant="success"
+            />
+          </div>
+
+          {/* Action Bar & Table */}
+          <div className="financial-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 16 }}>
+              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center', flex: 1 }}>
+                <div style={{ position: 'relative', minWidth: 220 }}>
+                  <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: 'var(--adm-muted)' }} />
+                  <input
+                    type="text"
+                    placeholder="Buscar por cliente..."
+                    value={anticipationSearch}
+                    onChange={e => setAnticipationSearch(e.target.value)}
+                    style={{ width: '100%', padding: '7px 10px 7px 32px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                  />
+                </div>
+
+                <select
+                  value={anticipationInstallmentFilter}
+                  onChange={e => setAnticipationInstallmentFilter(e.target.value)}
+                  style={{ padding: '7px 12px', fontSize: '0.82rem', border: '1px solid var(--adm-rule)', borderRadius: 6, background: 'var(--adm-card)', color: 'var(--adm-text)' }}
+                >
+                  <option value="todos">Todas as Parcelas (1x, 2x, 3x)</option>
+                  <option value="1x">Apenas 1x (30 dias)</option>
+                  <option value="2x">Apenas 2x (30/60 dias)</option>
+                  <option value="3x">Apenas 3x (30/60/90 dias)</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-sm"
+                  disabled={anticipationData.items.length === 0}
+                  onClick={() => {
+                    const idsToAnticipate = selectedAnticipationIds.length > 0
+                      ? selectedAnticipationIds
+                      : anticipationData.items.map(i => i.id);
+                    handleAnticipateReceivables(idsToAnticipate);
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+                >
+                  <ArrowUpRight size={14} /> 
+                  {selectedAnticipationIds.length > 0 
+                    ? `Antecipar Selecionados (${selectedAnticipationIds.length})`
+                    : `Antecipar Todos (${anticipationData.count})`}
+                </button>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.83rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--adm-rule)', color: 'var(--adm-muted)', textTransform: 'uppercase', fontSize: '0.72rem', letterSpacing: '0.5px' }}>
+                    <th style={{ padding: '10px 12px', textAlign: 'center', width: 40 }}>
+                      <input
+                        type="checkbox"
+                        checked={anticipationData.items.length > 0 && selectedAnticipationIds.length === anticipationData.items.length}
+                        onChange={e => {
+                          if (e.target.checked) {
+                            setSelectedAnticipationIds(anticipationData.items.map(i => i.id));
+                          } else {
+                            setSelectedAnticipationIds([]);
+                          }
+                        }}
+                      />
+                    </th>
+                    <th style={{ padding: '10px 12px', textAlign: 'left' }}>Data Venda</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'left' }}>Vencimento Original</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'left' }}>Cliente / Descrição</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'center' }}>Parcela</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'right' }}>Valor Bruto</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'right' }}>Taxa MDR</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'right' }}>Líquido Normal</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'right' }}>Desc. Antecipação</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'right', color: 'var(--adm-gold)' }}>A Sacar Hoje</th>
+                    <th style={{ padding: '10px 12px', textAlign: 'center' }}>Ação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {anticipationData.items.length === 0 ? (
+                    <tr>
+                      <td colSpan={11} style={{ padding: '30px 12px', textAlign: 'center', color: 'var(--adm-muted)' }}>
+                        Nenhum recebível de cartão de crédito pendente para antecipação no período selecionado.
+                      </td>
+                    </tr>
+                  ) : (
+                    anticipationData.items.map(item => {
+                      const isSelected = selectedAnticipationIds.includes(item.id);
+                      return (
+                        <tr key={item.id} style={{ borderBottom: '1px solid var(--adm-rule)', background: isSelected ? 'rgba(200, 155, 60, 0.05)' : 'transparent' }}>
+                          <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={e => {
+                                if (e.target.checked) {
+                                  setSelectedAnticipationIds(prev => [...prev, item.id]);
+                                } else {
+                                  setSelectedAnticipationIds(prev => prev.filter(id => id !== item.id));
+                                }
+                              }}
+                            />
+                          </td>
+                          <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+                            {item.saleDate ? item.saleDate.split('-').reverse().join('/') : '-'}
+                          </td>
+                          <td style={{ padding: '10px 12px', whiteSpace: 'nowrap', fontWeight: 600 }}>
+                            {item.dueDate ? item.dueDate.split('-').reverse().join('/') : '-'}
+                            <span style={{ fontSize: '0.72rem', color: 'var(--adm-muted)', display: 'block' }}>
+                              +{item.daysToReceive} dias
+                            </span>
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <strong style={{ color: 'var(--adm-text)', display: 'block' }}>{item.clientName || 'Cliente'}</strong>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--adm-muted)' }}>{item.description}</span>
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                            <span style={{ padding: '2px 8px', borderRadius: 4, background: 'rgba(255, 255, 255, 0.08)', fontSize: '0.75rem', fontWeight: 600 }}>
+                              {item.installmentNumber}/{item.totalInstallments}x
+                            </span>
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 500 }}>
+                            R$ {formatCurrencyBRL(item.grossValue)}
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'right', color: '#ff6b6b' }}>
+                            -R$ {formatCurrencyBRL(item.feeValue)}
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>
+                            R$ {formatCurrencyBRL(item.netValue)}
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'right', color: '#ff6b6b' }}>
+                            -R$ {formatCurrencyBRL(item.antDiscount)}
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 700, color: 'var(--adm-gold)', fontSize: '0.9rem' }}>
+                            R$ {formatCurrencyBRL(item.payout)}
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline"
+                              onClick={() => handleAnticipateReceivables([item.id])}
+                              style={{ padding: '4px 8px', fontSize: '0.75rem', color: 'var(--adm-gold)', borderColor: 'var(--adm-gold-30)' }}
+                            >
+                              ⚡ Antecipar
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

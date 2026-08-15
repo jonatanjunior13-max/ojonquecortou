@@ -225,12 +225,6 @@ export const calculateReceivablesSchedule = (transactions = [], settings = {}) =
         const pMethod = (p.method || t.paymentMethod || '').toLowerCase();
         const pAnticipated = p.anticipation || pMethod.includes('antecipad') || isAnticipated;
 
-        // Troca de maquininha: transações de cartão (débito/crédito) entre 01/08/2026 e 06/08/2026 pertenciam à maquininha antiga e foram zeradas/desconsideradas na nova agenda de recebíveis.
-        const isCardPayment = pMethod.includes('crédit') || pMethod.includes('credit') || pMethod.includes('débit') || pMethod.includes('debito');
-        if (isCardPayment && (saleDate >= '2026-08-01' && saleDate <= '2026-08-06')) {
-          return; // Zerado / Desconsiderado
-        }
-
         if (pMethod.includes('pix')) {
           const fee = pVal * (fees.feePix / 100);
           const net = pVal - fee;
