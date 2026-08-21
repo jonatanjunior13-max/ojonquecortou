@@ -1864,48 +1864,53 @@ export default function AdminMobileApp() {
         isPackageAcquisition: true
       } : {})
     };
-    try {
-      if (db) {
-        const ref = await addDoc(collection(db, 'bookings'), data);
-        // setBookings is handled by onSnapshot listener automatically
-        try { await syncBookingToGoogle({ id: ref.id, ...data }); } catch {}
+    const tempId = 'temp-bk-' + Date.now();
+    const optimisticBooking = { id: tempId, ...data };
 
+    // ⚡ Optimistic UI update: fecha o modal e insere na lista IMEDIATAMENTE (0ms delay)
+    setBookings(prev => [optimisticBooking, ...prev]);
+    setShowNewBookingSheet(false);
+    setNbRegisterClient(false);
+    setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '', profissional: 'jon' });
+    showToast('Agendamento criado! ✅', 'success');
+
+    if (db) {
+      addDoc(collection(db, 'bookings'), data).then(ref => {
+        // Substitui ID temporário pelo ID oficial do Firestore
+        setBookings(prev => prev.map(b => b.id === tempId ? { ...b, id: ref.id } : b));
+        
+        // Sincronização em segundo plano com Google Calendar (não bloqueia UI)
+        syncBookingToGoogle(ref.id).catch(err => console.warn('Erro sync GCal:', err));
+
+        // Disparo de e-mail em segundo plano
         const finalEmail = (clientEmail && clientEmail.includes('@') && clientEmail !== 'Não informado') 
           ? clientEmail 
           : 'sem-email@ojonquecortou.com.br';
         triggerEmailNotification({ ...data, id: ref.id, clientEmail: finalEmail });
 
-        // Log prepayment transaction if > 0
+        // Lançamento de adiantamento/sinal em segundo plano
         if (prepay > 0) {
           const tx = {
             bookingId: ref.id,
             date: dateStr(new Date()),
             time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-            clientName: nbForm.clientName,
-            clientPhone: nbForm.clientPhone || '',
+            clientName: data.clientName,
+            clientPhone: data.clientPhone || '',
             type: 'entrada',
             paymentMethod: 'Pix',
             value: prepay,
-            description: `Adiantamento/Sinal: ${nbForm.serviceName} - ${nbForm.clientName}`,
-            professionalId: 'jon',
+            description: `Adiantamento/Sinal: ${data.serviceName} - ${data.clientName}`,
+            professionalId: selectedProfId,
             createdAt: new Date().toISOString()
           };
-          await addDoc(collection(db, 'financial_transactions'), tx);
-          setTransactions(prev => [{ id: Date.now().toString(), ...tx }, ...prev]);
+          addDoc(collection(db, 'financial_transactions'), tx).then(tRef => {
+            setTransactions(prev => [{ id: tRef.id, ...tx }, ...prev]);
+          }).catch(err => console.warn('Erro ao registrar transação de adiantamento:', err));
         }
-      } else {
-        const fakeId = 'demo-bk-' + Date.now();
-        setBookings(prev => [...prev, { id: fakeId, ...data }]);
-      }
-      showToast('Agendamento criado! ✅', 'success');
-    } catch (err) {
-      showToast('Erro: ' + err.message, 'error');
-    } finally {
-      // Sempre fecha o sheet e reseta o formulário — independente de sucesso ou erro
-      setShowNewBookingSheet(false);
-      setNbRegisterClient(false);
-      setNbForm({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '' });
-      setTab('hoje');
+      }).catch(err => {
+        setBookings(prev => prev.filter(b => b.id !== tempId));
+        showToast('Erro ao gravar no banco: ' + err.message, 'error');
+      });
     }
   };
 
