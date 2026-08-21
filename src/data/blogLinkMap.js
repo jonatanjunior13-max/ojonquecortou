@@ -52,6 +52,16 @@ export const blogLinkMap = [
 
   // Frizz types
   { source: 'frizz-normal-ou-dano-capilar', target: 'frizz-em-cabelo-cacheado', anchor: 'física do frizz' },
+
+  // Fadiga Higral cluster
+  { source: 'fadiga-higral-cabelo-cacheado-crespo-sintomas-tratamento', target: 'acidificacao-capilar-cachos-porosidade', anchor: 'acidificação capilar' },
+  { source: 'fadiga-higral-cabelo-cacheado-crespo-sintomas-tratamento', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
+  { source: 'excesso-hidratacao-cronograma-capilar-cacheado', target: 'fadiga-higral-cabelo-cacheado-crespo-sintomas-tratamento', anchor: 'fadiga higral' },
+
+  // Peptídeos Biomiméticos cluster
+  { source: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia', target: 'descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes', anchor: 'descoloração' },
+  { source: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
+  { source: 'descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes', target: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia', anchor: 'peptídeos biomiméticos' },
 ];
 
 // Utility to inject links into HTML content

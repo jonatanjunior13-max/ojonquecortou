@@ -54,7 +54,13 @@ const minToTime = (min) => {
 
 
 
+const serviceCatCache = new Map();
 const getServiceCategory = (serviceName = '', servicesList = [], booking = null) => {
+  const cacheKey = `${serviceName}_${booking?.status || ''}_${booking?.clientName || ''}_${booking?.notes || ''}_${servicesList.length}`;
+  if (serviceCatCache.has(cacheKey)) {
+    return serviceCatCache.get(cacheKey);
+  }
+
   const name = (serviceName || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
   const isBlocked = booking && (
     booking.status === 'bloqueado' ||
@@ -99,28 +105,28 @@ const getServiceCategory = (serviceName = '', servicesList = [], booking = null)
   }
 
   const catLower = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  let res;
   if (catLower.includes('almoco') || catLower.includes('almo\u00e7o')) {
-    return { class: 'svc-almoco', badge: 'ALMOÇO' };
+    res = { class: 'svc-almoco', badge: 'ALMOÇO' };
+  } else if (catLower.includes('combo') || catLower.includes('misto')) {
+    res = { class: 'svc-combo', badge: 'COMBO' };
+  } else if (catLower.includes('corte')) {
+    res = { class: 'svc-corte', badge: 'CORTE' };
+  } else if (catLower.includes('cor') || catLower.includes('colora')) {
+    res = { class: 'svc-cor', badge: 'COR' };
+  } else if (catLower.includes('analise') || catLower.includes('avaliacao')) {
+    res = { class: 'svc-analise', badge: 'ANÁLISE' };
+  } else if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
+    res = { class: 'svc-finalizacao', badge: 'FINALIZAÇÃO' };
+  } else if (catLower.includes('ausencia') || catLower.includes('bloqueio') || catLower.includes('indisponivel') || catLower.includes('bloqueado')) {
+    res = { class: 'svc-ausencia', badge: 'AUSÊNCIA' };
+  } else {
+    res = { class: 'svc-tratamento', badge: 'TRATAMENTO' };
   }
-  if (catLower.includes('combo') || catLower.includes('misto')) {
-    return { class: 'svc-combo', badge: 'COMBO' };
-  }
-  if (catLower.includes('corte')) {
-    return { class: 'svc-corte', badge: 'CORTE' };
-  }
-  if (catLower.includes('cor') || catLower.includes('colora')) {
-    return { class: 'svc-cor', badge: 'COR' };
-  }
-  if (catLower.includes('analise') || catLower.includes('avaliacao')) {
-    return { class: 'svc-analise', badge: 'ANÁLISE' };
-  }
-  if (catLower.includes('finalizacao') || catLower.includes('finaliza')) {
-    return { class: 'svc-finalizacao', badge: 'FINALIZAÇÃO' };
-  }
-  if (catLower.includes('ausencia') || catLower.includes('bloqueio') || catLower.includes('indisponivel') || catLower.includes('bloqueado')) {
-    return { class: 'svc-ausencia', badge: 'AUSÊNCIA' };
-  }
-  return { class: 'svc-tratamento', badge: 'TRATAMENTO' };
+
+  if (serviceCatCache.size > 500) serviceCatCache.clear();
+  serviceCatCache.set(cacheKey, res);
+  return res;
 };
 
 const calculateOverlappingLayout = (items) => {
@@ -366,10 +372,14 @@ const getInitialCache = (key, fallback) => {
   }
 };
 
+const cacheTimeouts = {};
 const saveCache = (key, val) => {
-  try {
-    localStorage.setItem(`cache_m_${key}`, JSON.stringify(val));
-  } catch (e) {}
+  if (cacheTimeouts[key]) clearTimeout(cacheTimeouts[key]);
+  cacheTimeouts[key] = setTimeout(() => {
+    try {
+      localStorage.setItem(`cache_m_${key}`, JSON.stringify(val));
+    } catch (e) {}
+  }, 400);
 };
 
 // MAIN COMPONENT
@@ -488,6 +498,9 @@ export default function AdminMobileApp() {
   const [isDragging, setIsDragging] = useState(false);
   const [slideStyle, setSlideStyle] = useState({});
   const [transitioning, setTransitioning] = useState(false);
+
+  const timelineRef = useRef(null);
+  const dragOffsetRef = useRef(0);
 
   // ── New Booking Form ───────────────────────────────────────────
   const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '', profissional: 'jon' });
@@ -997,32 +1010,35 @@ export default function AdminMobileApp() {
   const animateDayChange = (direction) => {
     if (transitioning) return;
     setTransitioning(true);
-    const targetOffset = direction > 0 ? -window.innerWidth : window.innerWidth;
-    setSlideStyle({
-      transform: `translateX(${targetOffset}px)`,
-      transition: 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-      opacity: 0
-    });
+    if (timelineRef.current) {
+      const targetOffset = direction > 0 ? -window.innerWidth : window.innerWidth;
+      timelineRef.current.style.transform = `translateX(${targetOffset}px)`;
+      timelineRef.current.style.transition = 'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)';
+      timelineRef.current.style.opacity = '0';
+    }
 
     setTimeout(() => {
       navigateDate(direction);
-      setSlideStyle({
-        transform: `translateX(${direction > 0 ? window.innerWidth : -window.innerWidth}px)`,
-        transition: 'none',
-        opacity: 0
-      });
+      if (timelineRef.current) {
+        timelineRef.current.style.transform = `translateX(${direction > 0 ? window.innerWidth : -window.innerWidth}px)`;
+        timelineRef.current.style.transition = 'none';
+        timelineRef.current.style.opacity = '0';
+      }
 
       requestAnimationFrame(() => {
         setTimeout(() => {
-          setSlideStyle({
-            transform: 'translateX(0)',
-            transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            opacity: 1
-          });
+          if (timelineRef.current) {
+            timelineRef.current.style.transform = 'translateX(0)';
+            timelineRef.current.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            timelineRef.current.style.opacity = '1';
+          }
           setTimeout(() => {
             setTransitioning(false);
-            setTranslateX(0);
-            setSlideStyle({});
+            if (timelineRef.current) {
+              timelineRef.current.style.transform = '';
+              timelineRef.current.style.transition = '';
+              timelineRef.current.style.opacity = '';
+            }
           }, 300);
         }, 30);
       });
@@ -1031,6 +1047,7 @@ export default function AdminMobileApp() {
 
   const handleTouchStart = (e) => {
     if (transitioning) return;
+    dragOffsetRef.current = 0;
     setTouchStart(e.targetTouches[0].clientX);
     setTouchStartY(e.targetTouches[0].clientY);
     setActiveSwipeDirection(null);
@@ -1062,7 +1079,11 @@ export default function AdminMobileApp() {
 
     if (direction === 'horizontal') {
       const cappedDiff = Math.max(-150, Math.min(150, diffX));
-      setTranslateX(cappedDiff);
+      dragOffsetRef.current = cappedDiff;
+      if (timelineRef.current) {
+        timelineRef.current.style.transform = `translateX(${cappedDiff}px)`;
+        timelineRef.current.style.transition = 'none';
+      }
       if (e.cancelable) {
         e.preventDefault();
       }
@@ -1073,21 +1094,20 @@ export default function AdminMobileApp() {
     setIsDragging(false);
     setActiveSwipeDirection(null);
     setTouchStartY(null);
-    if (translateX !== 0) {
+
+    const offset = dragOffsetRef.current;
+    if (timelineRef.current) {
+      timelineRef.current.style.transform = '';
+      timelineRef.current.style.transition = '';
+    }
+    dragOffsetRef.current = 0;
+
+    if (offset !== 0) {
       const threshold = 60;
-      if (translateX > threshold) {
+      if (offset > threshold) {
         animateDayChange(-1);
-      } else if (translateX < -threshold) {
+      } else if (offset < -threshold) {
         animateDayChange(1);
-      } else {
-        setSlideStyle({
-          transform: 'translateX(0)',
-          transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-        });
-        setTimeout(() => {
-          setTranslateX(0);
-          setSlideStyle({});
-        }, 200);
       }
     }
     setTouchStart(null);
@@ -1095,6 +1115,7 @@ export default function AdminMobileApp() {
 
   const handleMouseDown = (e) => {
     if (transitioning) return;
+    dragOffsetRef.current = 0;
     setTouchStart(e.clientX);
     setTouchStartY(e.clientY);
     setActiveSwipeDirection(null);
@@ -1124,7 +1145,11 @@ export default function AdminMobileApp() {
 
     if (direction === 'horizontal') {
       const cappedDiff = Math.max(-150, Math.min(150, diffX));
-      setTranslateX(cappedDiff);
+      dragOffsetRef.current = cappedDiff;
+      if (timelineRef.current) {
+        timelineRef.current.style.transform = `translateX(${cappedDiff}px)`;
+        timelineRef.current.style.transition = 'none';
+      }
     }
   };
 
@@ -1132,21 +1157,20 @@ export default function AdminMobileApp() {
     setIsDragging(false);
     setActiveSwipeDirection(null);
     setTouchStartY(null);
-    if (translateX !== 0) {
+
+    const offset = dragOffsetRef.current;
+    if (timelineRef.current) {
+      timelineRef.current.style.transform = '';
+      timelineRef.current.style.transition = '';
+    }
+    dragOffsetRef.current = 0;
+
+    if (offset !== 0) {
       const threshold = 60;
-      if (translateX > threshold) {
+      if (offset > threshold) {
         animateDayChange(-1);
-      } else if (translateX < -threshold) {
+      } else if (offset < -threshold) {
         animateDayChange(1);
-      } else {
-        setSlideStyle({
-          transform: 'translateX(0)',
-          transition: 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)'
-        });
-        setTimeout(() => {
-          setTranslateX(0);
-          setSlideStyle({});
-        }, 200);
       }
     }
     setTouchStart(null);
@@ -3081,6 +3105,7 @@ Grande abraço, Jon.`;
 
         {/* Timeline Grid Container */}
         <div 
+          ref={timelineRef}
           style={{ 
             flex: 1, 
             display: 'flex', 
