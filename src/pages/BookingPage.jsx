@@ -733,6 +733,29 @@ const BookingPage = () => {
     }
   };
 
+  const [resetSentMsg, setResetSentMsg] = useState('');
+  const handleForgotPasswordBooking = async () => {
+    const emailToUse = existingProfile?.email || clientData?.email || loginEmail;
+    if (!emailToUse) {
+      setAuthError('Por favor, informe seu e-mail para enviarmos o link de redefinição.');
+      return;
+    }
+    setAuthLoading(true);
+    setAuthError('');
+    try {
+      if (auth) {
+        const { sendPasswordResetEmail } = await import('firebase/auth');
+        await sendPasswordResetEmail(auth, emailToUse.trim());
+      }
+      setResetSentMsg(`E-mail de redefinição enviado para ${emailToUse}! Verifique sua caixa de entrada.`);
+    } catch (err) {
+      console.error(err);
+      setAuthError('Erro ao enviar e-mail. Você também pode acessar /redefinir-senha.');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
   // Email/Password login or registration linking
   const handleEmailPasswordAuth = async (e) => {
     if (e) e.preventDefault();
@@ -2551,7 +2574,16 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                       </div>
                     )}
                     <div className="form-group" style={{ marginBottom: '10px' }}>
-                      <label htmlFor="auth-password" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Senha</label>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                        <label htmlFor="auth-password" style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, margin: 0 }}>Senha</label>
+                        <button 
+                          type="button" 
+                          onClick={handleForgotPasswordBooking}
+                          style={{ background: 'none', border: 'none', color: '#FBC5D3', fontSize: '0.78rem', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+                        >
+                          Esqueceu a senha?
+                        </button>
+                      </div>
                       <input 
                         type="password" 
                         id="auth-password" 
@@ -2561,6 +2593,11 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
                         disabled={authLoading}
                       />
                     </div>
+                    {resetSentMsg && (
+                      <div style={{ marginBottom: '10px', fontSize: '0.8rem', color: '#4ade80', background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', padding: '8px 10px', borderRadius: 6 }}>
+                        {resetSentMsg}
+                      </div>
+                    )}
                     <button 
                       type="button" 
                       className="btn btn-accent" 

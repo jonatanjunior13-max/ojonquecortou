@@ -41,6 +41,7 @@ const MasculinoPage = React.lazy(() => import('./pages/MasculinoPage'));
 const LeituraFioPage = React.lazy(() => import('./pages/LeituraFioPage'));
 const EspecialistaCachosBhPage = React.lazy(() => import('./pages/EspecialistaCachosBhPage'));
 const CachosLandingPage = React.lazy(() => import('./pages/CachosLandingPage'));
+const ResetPasswordPage = React.lazy(() => import('./pages/ResetPasswordPage'));
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -132,6 +133,9 @@ function App() {
             <Route path="/agendar" element={<BookingPage />} />
             <Route path="/cancelar" element={<CancelBookingPage />} />
             <Route path="/cliente" element={<ClientAreaPage />} />
+            <Route path="/redefinir-senha" element={<ResetPasswordPage />} />
+            <Route path="/esqueci-senha" element={<ResetPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/produtos" element={<ProductsPage />} />
             <Route path="/produtos/:productId" element={<ProductDetailPage />} />
             <Route path="/blog/corte-hibrido-cachos-seco-molhado" element={<Navigate to="/servicos/corte-hibrido" replace />} />

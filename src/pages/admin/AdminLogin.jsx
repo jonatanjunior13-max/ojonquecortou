@@ -180,15 +180,20 @@ const AdminLogin = () => {
 
   const handleForgotPassword = async () => {
     if (!email) {
-      setError('Insira seu e-mail acima para recuperar a senha.');
+      setError('Insira seu e-mail de acesso acima para receber o link de recuperação de senha.');
       return;
     }
     try {
-      await sendPasswordResetEmail(auth, email);
-      setSuccessMsg('E-mail de recuperação enviado! Verifique sua caixa de entrada.');
-      setError('');
-    } catch {
-      setError('Erro ao enviar e-mail de recuperação.');
+      if (auth) {
+        await sendPasswordResetEmail(auth, email.trim());
+        setSuccessMsg(`E-mail de recuperação enviado com sucesso para ${email}! Verifique sua caixa de entrada.`);
+        setError('');
+      } else {
+        navigate('/redefinir-senha');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Erro ao enviar e-mail de recuperação. Acesse ojonquecortou.com.br/redefinir-senha');
     }
   };
 
