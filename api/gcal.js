@@ -61,10 +61,16 @@ function parseGcalDateTime(dateTimeStr) {
 
 function getRedirectUri(req) {
   if (process.env.GOOGLE_REDIRECT_URI) {
-    return process.env.GOOGLE_REDIRECT_URI;
+    return process.env.GOOGLE_REDIRECT_URI.trim();
   }
-  const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:5173';
-  const proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');
+  let host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:5173';
+  if (host.includes(',')) {
+    host = host.split(',')[0].trim();
+  }
+  let proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');
+  if (proto.includes(',')) {
+    proto = proto.split(',')[0].trim();
+  }
   return `${proto}://${host}/api/gcal?action=callback`;
 }
 
@@ -86,7 +92,7 @@ export default async function handler(req, res) {
 
   // 1. ACTION: AUTH (Inicia o login para o Google Agenda)
   if (action === 'auth') {
-    const client_id = process.env.GOOGLE_CLIENT_ID;
+    const client_id = (process.env.GOOGLE_CLIENT_ID || process.env.GCAL_CLIENT_ID || '').trim();
     const redirect_uri = getRedirectUri(req);
     const scope = 'https://www.googleapis.com/auth/calendar';
 
@@ -102,8 +108,8 @@ export default async function handler(req, res) {
       return res.status(400).send('Código de autorização ausente.');
     }
 
-    const client_id = process.env.GOOGLE_CLIENT_ID;
-    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+    const client_id = (process.env.GOOGLE_CLIENT_ID || process.env.GCAL_CLIENT_ID || '').trim();
+    const client_secret = (process.env.GOOGLE_CLIENT_SECRET || process.env.GCAL_CLIENT_SECRET || '').trim();
     const redirect_uri = getRedirectUri(req);
 
     try {
