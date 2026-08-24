@@ -15,13 +15,16 @@ const db = getFirestore(app);
 
 // Helper to refresh Google OAuth access token
 async function refreshAccessToken(refreshToken) {
+  const client_id = (process.env.GOOGLE_CLIENT_ID || process.env.GCAL_CLIENT_ID || '').trim();
+  const client_secret = (process.env.GOOGLE_CLIENT_SECRET || process.env.GCAL_CLIENT_SECRET || '').trim();
+
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      refresh_token: refreshToken,
+      client_id,
+      client_secret,
+      refresh_token: (refreshToken || '').trim(),
       grant_type: 'refresh_token'
     })
   });
@@ -419,6 +422,10 @@ Observações: ${booking.notes || ''}`;
           continue;
         }
 
+        if (!booking.date || !booking.time || typeof booking.date !== 'string' || typeof booking.time !== 'string' || !booking.date.includes('-') || !booking.time.includes(':')) {
+          continue;
+        }
+
         const [yr, mo, dy] = booking.date.split('-').map(Number);
         const [hr, mn] = booking.time.split(':').map(Number);
         const start = new Date(yr, mo - 1, dy, hr, mn, 0);
@@ -593,7 +600,19 @@ Observações: ${booking.notes || ''}`;
 
     } catch (err) {
       console.error('Erro na sincronização em lote:', err);
-      return res.status(500).json({ error: 'Erro interno no sincronizador.', details: err.message });
+      const isAuthError = err.message && (err.message.includes('invalid_grant') || err.message.includes('unauthorized_client') || err.message.includes('refresh_token'));
+      if (isAuthError) {
+        try {
+          await setDoc(doc(db, 'settings', 'studio'), {
+            automations: { googleCalendarConnected: false, googleCalendarLastError: err.message }
+          }, { merge: true });
+        } catch {}
+        return res.status(200).json({
+          success: false,
+          error: 'Sua autorização do Google Agenda expirou devido à troca das chaves. Por favor, clique em "Conectar Google Agenda" para reconectar.'
+        });
+      }
+      return res.status(500).json({ error: `Erro na sincronização: ${err.message || 'Erro interno'}`, details: err.message });
     }
   }
 
