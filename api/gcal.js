@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc, setDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.VITE_FIREBASE_API_KEY,
@@ -133,20 +133,19 @@ export default async function handler(req, res) {
 
       const { access_token, refresh_token } = tokenData;
 
-      // Salvar credenciais no Firestore
+      // Salvar credenciais no Firestore (setDoc com merge para criar se não existir)
       const settingsRef = doc(db, 'settings', 'studio');
       const updateData = {
-        'automations.googleCalendarConnected': true,
-        'automations.googleCalendarAccessToken': access_token,
-        'automations.googleCalendarId': 'primary',
-        'automations.googleCalendarLastError': null
+        automations: {
+          googleCalendarConnected: true,
+          googleCalendarAccessToken: access_token,
+          googleCalendarId: 'primary',
+          googleCalendarLastError: null,
+          ...(refresh_token ? { googleCalendarRefreshToken: refresh_token } : {})
+        }
       };
 
-      if (refresh_token) {
-        updateData['automations.googleCalendarRefreshToken'] = refresh_token;
-      }
-
-      await updateDoc(settingsRef, updateData);
+      await setDoc(settingsRef, updateData, { merge: true });
 
       return res.redirect('/admin/configuracoes?gcal_status=success');
 
