@@ -59,6 +59,16 @@ function parseGcalDateTime(dateTimeStr) {
   };
 }
 
+function getRedirectUri(req) {
+  if (process.env.GOOGLE_REDIRECT_URI) {
+    return process.env.GOOGLE_REDIRECT_URI;
+  }
+  const host = req.headers.host || 'localhost:5173';
+  const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
+  const protocol = isLocal ? 'http' : 'https';
+  return `${protocol}://${host}/api/gcal?action=callback`;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -78,9 +88,7 @@ export default async function handler(req, res) {
   // 1. ACTION: AUTH (Inicia o login para o Google Agenda)
   if (action === 'auth') {
     const client_id = process.env.GOOGLE_CLIENT_ID;
-    const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
-    const protocol = isLocal ? 'http' : 'https';
-    const redirect_uri = `${protocol}://${req.headers.host}/api/gcal?action=callback`;
+    const redirect_uri = getRedirectUri(req);
     const scope = 'https://www.googleapis.com/auth/calendar';
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
@@ -97,9 +105,7 @@ export default async function handler(req, res) {
 
     const client_id = process.env.GOOGLE_CLIENT_ID;
     const client_secret = process.env.GOOGLE_CLIENT_SECRET;
-    const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
-    const protocol = isLocal ? 'http' : 'https';
-    const redirect_uri = `${protocol}://${req.headers.host}/api/gcal?action=callback`;
+    const redirect_uri = getRedirectUri(req);
 
     try {
       const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
