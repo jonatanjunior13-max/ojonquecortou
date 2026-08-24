@@ -381,7 +381,8 @@ Observações: ${booking.notes || ''}`;
 
       if (!listResponse.ok) {
         console.error('Erro ao buscar eventos do Google:', listData);
-        return res.status(listResponse.status).json({ error: 'Erro ao buscar eventos do Google.', details: listData });
+        const detailMsg = listData?.error?.message || JSON.stringify(listData);
+        return res.status(200).json({ success: false, error: `Erro na API do Google Calendar: ${detailMsg}`, details: listData });
       }
 
       const gcalEvents = listData.items || [];
