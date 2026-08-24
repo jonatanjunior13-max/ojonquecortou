@@ -63,10 +63,9 @@ function getRedirectUri(req) {
   if (process.env.GOOGLE_REDIRECT_URI) {
     return process.env.GOOGLE_REDIRECT_URI;
   }
-  const host = req.headers.host || 'localhost:5173';
-  const isLocal = host.includes('localhost') || host.includes('127.0.0.1');
-  const protocol = isLocal ? 'http' : 'https';
-  return `${protocol}://${host}/api/gcal?action=callback`;
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:5173';
+  const proto = req.headers['x-forwarded-proto'] || (host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https');
+  return `${proto}://${host}/api/gcal?action=callback`;
 }
 
 export default async function handler(req, res) {
