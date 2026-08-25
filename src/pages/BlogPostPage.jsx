@@ -275,9 +275,26 @@ const BlogPostPage = () => {
       return processed;
     }
     const inlineCtaHtml = `
-      <div class="blog-inline-cta">
-        <p class="inline-cta-text">Quer saber como isso se aplica ao SEU cabelo? Jon faz a leitura do fio antes de qualquer corte. Agende:</p>
-        <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>
+      <div class="blog-inline-cta" style="margin: 2.5rem 0; padding: 1.6rem; background: linear-gradient(135deg, rgba(251, 197, 211, 0.08) 0%, rgba(20, 18, 16, 0.95) 100%); border-left: 4px solid #FBC5D3; border-radius: 14px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: flex; align-items: flex-start; gap: 12px;">
+          <span style="font-size: 1.5rem; line-height: 1;">✂️</span>
+          <div>
+            <p class="inline-cta-text" style="margin: 0 0 6px 0; font-weight: 800; font-size: 1.05rem; color: #ffffff; line-height: 1.3;">
+              Quer aplicar essa técnica no SEU tipo de cacho sem surpresas?
+            </p>
+            <p style="margin: 0; font-size: 0.88rem; color: #d1c7bd; line-height: 1.55;">
+              No Studio do Jon (Caiçaras - BH), todo serviço começa com a <strong>Leitura de Fio a seco</strong> para mapear o encolhimento, a densidade e o caimento real antes de qualquer corte.
+            </p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px;">
+          <a href="/agendar" class="inline-cta-btn" style="background: #FBC5D3; color: #121110; padding: 11px 20px; border-radius: 8px; font-weight: 800; text-decoration: none; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+            📅 Ver Horários no Estúdio
+          </a>
+          <a href="https://wa.me/5531983044059?text=Oi%20Jon!%20Li%20o%20artigo%20no%20blog%20e%20gostaria%20de%20saber%20mais%20sobre%20o%20agendamento." target="_blank" rel="noreferrer" style="background: rgba(255,255,255,0.06); color: #ffffff; padding: 11px 18px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,0.25);">
+            💬 Chamar no WhatsApp
+          </a>
+        </div>
       </div>
     `;
     const part1 = paragraphs.slice(0, 3).join('</p>') + '</p>';
@@ -401,22 +418,30 @@ const BlogPostPage = () => {
           </section>
 
           <footer className="post-cta-section section-padding reveal active">
-            <div className="post-cta-card">
+            <div className="post-cta-card" style={{ background: 'linear-gradient(135deg, #161412 0%, #0d0c0b 100%)', border: '1px solid rgba(251,197,211,0.25)', borderRadius: '20px', padding: '2.5rem 2rem', boxShadow: '0 15px 40px rgba(0,0,0,0.6)' }}>
               <img src="/jon-trabalhando.webp" alt="Jon atendendo cliente" className="post-cta-image" />
               <div className="post-cta-content">
-                <h2 className="heading-lg">O seu cabelo não precisa de mais testes.</h2>
-                <p className="paragraph-md">
-                  Chega de tentar adivinhar o que o seu fio precisa. Agende uma leitura de fio no Studio do Jon e descubra o corte técnico exato para a sua curvatura.
+                <span className="post-cta-badge" style={{ display: 'inline-block', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px', color: '#FBC5D3', background: 'rgba(251,197,211,0.12)', padding: '4px 12px', borderRadius: 12, marginBottom: 12 }}>
+                  Especialista em Cachos & Visagismo em BH
+                </span>
+                <h2 className="heading-lg" style={{ fontSize: '1.65rem', color: '#ffffff', marginBottom: 12, lineHeight: 1.25 }}>
+                  O seu cabelo não precisa de mais experimentos.
+                </h2>
+                <p className="paragraph-md" style={{ color: '#d1c7bd', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: 20 }}>
+                  Chega de tentar adivinhar o que o seu fio precisa ou temer o corte a seco. Agende sua sessão com Leitura de Fio no Studio do Jon (Caiçaras - BH) e conquiste a forma e o volume que o seu cacho merece.
                 </p>
                 
-                <div className="post-cta-btns">
-                  <a href="/agendar" className="btn btn-primary" style={{ backgroundColor: 'var(--color-yellow)', color: 'var(--color-dark)', borderColor: 'var(--color-yellow)' }}>
-                    Agendar Horário
+                <div className="post-cta-btns" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                  <a href="/agendar" className="btn btn-primary" style={{ backgroundColor: '#FBC5D3', color: '#121110', borderColor: '#FBC5D3', fontWeight: 800, padding: '12px 24px', borderRadius: 10 }}>
+                    📅 Agendar meu Horário Online
                   </a>
-                  <a href={`https://wa.me/5531983044059?text=Oi Jon! Li o post sobre "${post.title}" e queria agendar.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog">
-                    WhatsApp
+                  <a href={`https://wa.me/5531983044059?text=Oi%20Jon!%20Li%20o%20post%20"${encodeURIComponent(post.title)}"%20e%20quero%20agendar%20meu%20hor%C3%A1rio.`} target="_blank" rel="noreferrer" className="btn btn-outline btn-blog" style={{ borderColor: 'rgba(255,255,255,0.3)', color: '#ffffff', fontWeight: 700, padding: '12px 20px', borderRadius: 10 }}>
+                    💬 Falar pelo WhatsApp
                   </a>
                 </div>
+                <p style={{ fontSize: '0.8rem', color: '#a4968d', marginTop: 14, marginBottom: 0 }}>
+                  📍 Rua Francisco Ovídio, 184 - Caiçaras, Belo Horizonte - MG
+                </p>
               </div>
             </div>
           </footer>

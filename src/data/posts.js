@@ -6454,10 +6454,25 @@ export const posts = [
       <h2>Cuidados Pós-Corte (Para Manter a Selvageria Boa)</h2>
       <p>A primeira semana é de aprendizado intenso com seu novo volume. A manutenção das camadas deve ser feita a cada 6-8 semanas; se deixar crescer demais, a estrutura se perde. E lembre-se: Wolf cut + cacho só funciona com definição. Sua rotina vai precisar de leave-in, gel e preferencialmente um difusor para estruturar as camadas durante a secagem.</p>
 
-      <div style="text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));">
-        <h3>Quer o Wolf Cut sem virar bagunça no cacho?</h3>
-        <p>A Leitura de Fio antes da tesoura é o que separa um wolf cut selvagem-de-propósito de um corte que só desandou. Agende com quem lê o encolhimento do seu cacho antes de cortar.</p>
-        <a href="/agendar" class="btn btn-primary" style="padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;">Agendar Wolf Cut no Studio do Jon</a>
+      <h2>Pronta Para o Wolf Cut Perfeito Sem Errar o Encolhimento?</h2>
+      <p>O Wolf Cut é um dos cortes mais expressivos e selvagens para cabelos cacheados e crespos, mas ele <strong>exige leitura geométrica a seco</strong>. Sem calcular a taxa de encolhimento exata do seu cacho em cada quadrante da cabeça, o topo fica curto demais e as pontas ficam ralas.</p>
+      <p>No <strong>Studio do Jon em Belo Horizonte (Caiçaras)</strong>, você não corre esse risco. Toda sessão de Wolf Cut começa com a <strong>Leitura de Fio</strong>: mapeamos a densidade, a porosidade e a memória de mola do seu cabelo antes de encostar a tesoura.</p>
+
+      <div class="blog-conversion-box" style="margin: 2.5rem 0; padding: 2.2rem; background: linear-gradient(135deg, rgba(251, 197, 211, 0.12) 0%, rgba(18, 18, 20, 0.95) 100%); border: 2px solid #FBC5D3; border-radius: 16px; box-shadow: 0 12px 30px rgba(0,0,0,0.5); text-align: center;">
+        <span style="display: inline-block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: #FBC5D3; background: rgba(251, 197, 211, 0.15); padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;">Agendamento Exclusivo BH</span>
+        <h3 style="font-family: 'Bricolage Grotesque', Georgia, serif; font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-bottom: 12px; line-height: 1.25;">Garanta Seu Wolf Cut com Especialista em Cachos</h3>
+        <p style="font-size: 0.98rem; color: #d1c7bd; max-width: 580px; margin: 0 auto 20px auto; line-height: 1.6;">
+          Atendimento individual e personalizado com leitura de fio a seco e consultoria de finalização pra você sair do estúdio dominando a rotina do seu novo corte.
+        </p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="/agendar" class="btn btn-primary" style="background-color: #FBC5D3; color: #121110; border: none; padding: 1rem 2rem; font-weight: 800; font-size: 1rem; border-radius: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(251, 197, 211, 0.3);">
+            📅 Agendar meu Horário no Site
+          </a>
+          <a href="https://wa.me/5531983044059?text=Oi%20Jon!%20Li%20o%20post%20sobre%20Wolf%20Cut%20e%20quero%20agendar%20meu%20corte." target="_blank" rel="noreferrer" class="btn btn-outline" style="background: rgba(255,255,255,0.05); color: #ffffff; border: 1px solid rgba(255,255,255,0.3); padding: 1rem 1.8rem; font-weight: 700; font-size: 0.95rem; border-radius: 10px; text-decoration: none;">
+            💬 Falar pelo WhatsApp
+          </a>
+        </div>
+        <p style="font-size: 0.8rem; color: #a4968d; margin-top: 14px; margin-bottom: 0;">⚡ Vagas limitadas nesta semana no Studio do Jon (Bairro Caiçaras - BH)</p>
       </div>
 
       <h2>Perguntas Frequentes</h2>

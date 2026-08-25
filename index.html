@@ -134,28 +134,28 @@
             gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=AW-666534146';
             gtagScript.onload = function () { gtag('config', 'AW-666534146', { send_page_view: false }); };
             document.head.appendChild(gtagScript);
+
+            // Meta Pixel
+            !function (f, b, e, v, n, t, s) {
+              if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+              };
+              if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+              n.queue = []; t = b.createElement(e); t.async = !0;
+              t.src = v; s = b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t, s)
+            }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '1152310907009255');
+            fbq('init', '1414285063481375');
+            fbq('track', 'PageView');
+
+            // Ahrefs Analytics
+            var ahrefsScript = document.createElement('script');
+            ahrefsScript.async = true;
+            ahrefsScript.src = 'https://analytics.ahrefs.com/analytics.js';
+            ahrefsScript.setAttribute('data-key', '+seWmIkd/SuFOZSouW4XjA');
+            document.head.appendChild(ahrefsScript);
           }
-
-          // Meta Pixel
-          !function (f, b, e, v, n, t, s) {
-            if (f.fbq) return; n = f.fbq = function () {
-              n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
-            };
-            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
-            n.queue = []; t = b.createElement(e); t.async = !0;
-            t.src = v; s = b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t, s)
-          }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '1152310907009255');
-          fbq('init', '1414285063481375');
-          fbq('track', 'PageView');
-
-          // Ahrefs Analytics
-          var ahrefsScript = document.createElement('script');
-          ahrefsScript.async = true;
-          ahrefsScript.src = 'https://analytics.ahrefs.com/analytics.js';
-          ahrefsScript.setAttribute('data-key', '+seWmIkd/SuFOZSouW4XjA');
-          document.head.appendChild(ahrefsScript);
         }
 
         var events = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
