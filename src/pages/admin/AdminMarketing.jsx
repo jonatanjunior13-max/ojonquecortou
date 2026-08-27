@@ -236,7 +236,24 @@ const AdminMarketing = () => {
       const data = await res.json();
       if (res.ok) {
         const totalSent = (data.stats?.sequenceMails || 0) + (data.stats?.birthdays || 0);
-        setManualAutomationStatus(`✅ Régua processada! ${totalSent} e-mail(s) disparado(s).`);
+        if (totalSent > 0) {
+          setManualAutomationStatus(`✅ Régua processada! ${totalSent} novo(s) e-mail(s) disparado(s).`);
+        } else {
+          setManualAutomationStatus(`✅ Régua em dia! Todos os e-mails elegíveis de hoje já foram disparados.`);
+        }
+
+        // Recarrega os logs mais recentes imediatamente
+        if (db) {
+          try {
+            const snap = await getDocs(query(collection(db, 'automation_logs'), orderBy('timestamp', 'desc'), limit(300)));
+            const lgs = [];
+            snap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
+            setAutomationLogs(lgs);
+          } catch (e) {
+            console.warn('Erro ao atualizar logs pós-execução:', e);
+          }
+        }
+
         setTimeout(() => setManualAutomationStatus(null), 8000);
       } else {
         setManualAutomationStatus(`⚠️ Retorno: ${data.error || data.message || 'Erro ao processar'}`);
@@ -1554,22 +1571,26 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     const getLogChannel = (log) => {
       if (log.channel) return log.channel;
       const stage = (log.stage || '').toLowerCase();
-      if (stage.includes('whatsapp') || stage.includes('wa') || stage.includes('whats') || stage.includes('birthday')) {
+      if (stage.includes('whatsapp') || stage.includes('wa') || stage.includes('whats') || stage.includes('wa_')) {
         return 'whatsapp';
+      }
+      if (log.email || stage.includes('d+') || stage.includes('aniversário') || stage.includes('aniversario') || stage.includes('launch')) {
+        return 'email';
       }
       return 'email';
     };
 
     automationLogs.forEach(log => {
-      if (!log.timestamp) return;
-      const logDate = new Date(log.timestamp);
+      const ts = log.timestamp || log.createdAt || log.date;
+      if (!ts) return;
+      const logDate = new Date(ts);
       if (isNaN(logDate.getTime())) return;
 
       const diffMs = now - logDate;
       const diffDays = diffMs / (1000 * 60 * 60 * 24);
       const channel = getLogChannel(log);
 
-      const isToday = logDate.toDateString() === now.toDateString();
+      const isToday = logDate.toDateString() === now.toDateString() || (log.date && log.date === now.toISOString().split('T')[0]);
       const isThisWeek = diffDays <= 7;
       const isThisMonth = diffDays <= 30;
 
@@ -1616,13 +1637,21 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 
     const loadData = async () => {
       try {
-        unsubscribeLogs = onSnapshot(collection(db, 'automation_logs'), (logsSnap) => {
+        const qLogs = query(collection(db, 'automation_logs'), orderBy('timestamp', 'desc'), limit(500));
+        unsubscribeLogs = onSnapshot(qLogs, (logsSnap) => {
           const lgs = [];
           logsSnap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
-          lgs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
           setAutomationLogs(lgs);
           setLoading(false);
-        }, () => setLoading(false));
+        }, (err) => {
+          console.warn('Fallback onSnapshot automation_logs:', err);
+          getDocs(collection(db, 'automation_logs')).then(snap => {
+            const lgs = [];
+            snap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
+            lgs.sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date));
+            setAutomationLogs(lgs.slice(0, 500));
+          }).finally(() => setLoading(false));
+        });
 
         unsubscribeAdminNotifs = onSnapshot(
           query(collection(db, 'admin_notifications'), orderBy('timestamp', 'desc'), limit(50)),

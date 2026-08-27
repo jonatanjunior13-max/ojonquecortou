@@ -293,7 +293,9 @@ export default async function handler(req, res) {
                 date: todayStr,
                 clientName: p.name,
                 email: p.email,
-                stage: 'Aniversário'
+                stage: 'Aniversário',
+                channel: 'email',
+                status: 'success'
               });
               stats.birthdays++;
               logs.push(`Aniversário (D-5) enviado para: ${p.name} (${p.email})`);
@@ -426,7 +428,9 @@ export default async function handler(req, res) {
                   date: todayStr,
                   clientName: booking.clientName,
                   email: booking.clientEmail,
-                  stage: `D+${daysAgo}`
+                  stage: `D+${daysAgo}`,
+                  channel: 'email',
+                  status: 'success'
                 });
                 stats.sequenceMails++;
                 logs.push(`Email D+${daysAgo} enviado para: ${booking.clientName} (${booking.clientEmail})`);
