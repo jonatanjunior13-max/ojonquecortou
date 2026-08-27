@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jon-crm": {
+      "command": "node",
+      "args": ["C:/Users/jonat/Documents/antigravity/proud-lovelace/mcp-server/index.js"]
+    }
+  }
+}

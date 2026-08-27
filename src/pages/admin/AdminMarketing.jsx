@@ -3,10 +3,11 @@ import { useOutletContext } from 'react-router-dom';
 import { db, storage } from '../../config/firebase';
 import { collection, onSnapshot, doc, updateDoc, getDoc, getDocs, query, orderBy, limit, addDoc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadString, getDownloadURL } from 'firebase/storage';
-import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen } from 'lucide-react';
+import { Sparkles, Phone, Mail, Search, CheckSquare, Square, Send, Eye, BarChart3, Newspaper, RefreshCw, ChevronRight, BookOpen, Layers, Image as ImageIcon } from 'lucide-react';
 import './Admin.css';
 import { HTML_TEMPLATES, EMAIL_CSS, ADMIN_HTML_TEMPLATES } from '../../utils/emailTemplates.js';
 import { TRENDING_THEMES, GBP_REVIEW_REPLIES } from '../../utils/marketingDatabase.js';
+import InstagramCarouselStudio from '../../components/admin/InstagramCarouselStudio.jsx';
 
 // Imagens próprias on-brand (existem em /public) usadas como fallback confiável
 // quando a geração de imagem do Gemini falhar. Servem rápido do domínio e são
@@ -194,6 +195,7 @@ const AdminMarketing = () => {
   }, [rawClients, bookings]);
 
   // Marketing states
+  const [activeMarketingSection, setActiveMarketingSection] = useState('crm'); // 'crm' | 'instagram' | 'gbp' | 'newsletter'
   const [searchTerm, setSearchTerm] = useState('');
   const [marketingTarget, setMarketingTarget] = useState('todos');
   const [marketingChannel, setMarketingChannel] = useState('whatsapp');
@@ -223,6 +225,29 @@ const AdminMarketing = () => {
   const [adminNotifications, setAdminNotifications] = useState([]);
   const [selectedAdminNotif, setSelectedAdminNotif] = useState(null);
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
+  const [isRunningAutomations, setIsRunningAutomations] = useState(false);
+  const [manualAutomationStatus, setManualAutomationStatus] = useState(null);
+
+  const handleRunAutomationsManual = async () => {
+    setIsRunningAutomations(true);
+    setManualAutomationStatus('Executando régua de relacionamento...');
+    try {
+      const res = await fetch('/api/cron-automations');
+      const data = await res.json();
+      if (res.ok) {
+        const totalSent = (data.stats?.sequenceMails || 0) + (data.stats?.birthdays || 0);
+        setManualAutomationStatus(`✅ Régua processada! ${totalSent} e-mail(s) disparado(s).`);
+        setTimeout(() => setManualAutomationStatus(null), 8000);
+      } else {
+        setManualAutomationStatus(`⚠️ Retorno: ${data.error || data.message || 'Erro ao processar'}`);
+      }
+    } catch (err) {
+      console.error('Erro ao executar automação manual:', err);
+      setManualAutomationStatus(`❌ Falha na chamada: ${err.message}`);
+    } finally {
+      setIsRunningAutomations(false);
+    }
+  };
 
   // Newsletter states
   const JULY_2026_NEWSLETTER_HTML = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
@@ -2044,13 +2069,24 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 
   return (
     <div className="admin-clients-page">
-      <div className="crm-header-tabs" style={{ marginBottom: 20 }}>
-        <button className="crm-tab-btn active" style={{ cursor: 'default' }}>
-          <Sparkles size={16} /> Central de Campanhas
+      <div className="crm-header-tabs" style={{ marginBottom: 24, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button 
+          className={`crm-tab-btn ${activeMarketingSection === 'crm' ? 'active' : ''}`} 
+          onClick={() => setActiveMarketingSection('crm')}
+        >
+          <Sparkles size={16} /> ✨ Central de Campanhas & Régua CRM
+        </button>
+        <button 
+          className={`crm-tab-btn ${activeMarketingSection === 'instagram' ? 'active' : ''}`} 
+          onClick={() => setActiveMarketingSection('instagram')}
+        >
+          <ImageIcon size={16} /> 📱 Estúdio de Carrosséis (Instagram)
         </button>
       </div>
 
-      {loading ? (
+      {activeMarketingSection === 'instagram' ? (
+        <InstagramCarouselStudio />
+      ) : loading ? (
         <div style={{ padding: 24, textAlign: 'center', color: 'var(--adm-muted)' }}>Carregando dados...</div>
       ) : (
         <div className="crm-body-content">
@@ -2067,9 +2103,41 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 const stats = deliveryStats;
                 return (
                   <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                      <BarChart3 size={18} style={{ color: 'var(--adm-gold)' }} />
-                      <h4 style={{ margin: 0 }}>Histórico de Envios (Acompanhamento)</h4>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <BarChart3 size={18} style={{ color: 'var(--adm-gold)' }} />
+                        <h4 style={{ margin: 0 }}>Histórico de Envios (Acompanhamento)</h4>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+                        {manualAutomationStatus && (
+                          <span style={{ fontSize: '0.85rem', color: manualAutomationStatus.includes('✅') ? '#4ade80' : 'var(--adm-gold)', fontWeight: 600, background: 'rgba(0,0,0,0.4)', padding: '6px 12px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                            {manualAutomationStatus}
+                          </span>
+                        )}
+                        <button 
+                          className="btn"
+                          onClick={handleRunAutomationsManual}
+                          disabled={isRunningAutomations}
+                          style={{ 
+                            display: 'inline-flex', 
+                            alignItems: 'center', 
+                            gap: 8, 
+                            background: '#c8852a', 
+                            color: '#000000', 
+                            fontWeight: '700',
+                            fontSize: '0.88rem',
+                            padding: '9px 18px',
+                            borderRadius: '8px',
+                            border: 'none',
+                            boxShadow: '0 4px 14px rgba(200, 133, 42, 0.35)',
+                            cursor: isRunningAutomations ? 'not-allowed' : 'pointer',
+                            transition: 'all 0.2s ease'
+                          }}
+                        >
+                          <RefreshCw size={14} className={isRunningAutomations ? 'spin' : ''} />
+                          {isRunningAutomations ? 'Disparando Régua...' : '⚡ Disparar Régua de Relacionamento Agora'}
+                        </button>
+                      </div>
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
                       {[
