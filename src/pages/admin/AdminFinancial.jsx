@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { db } from '../../config/firebase';
-import { collection, doc, addDoc, updateDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { collection, doc, addDoc, updateDoc, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { 
   Plus, Trash2, DollarSign, TrendingUp, TrendingDown, CreditCard, 
   Users, Percent, ShieldCheck, Calendar, Download, Filter, 
@@ -222,6 +222,22 @@ const AdminFinancial = () => {
       }
     }
   }, [settings]);
+
+  // Safety real-time sync for financial transactions
+  useEffect(() => {
+    if (!db) return;
+    const unsub = onSnapshot(collection(db, 'financial_transactions'), (snap) => {
+      if (snap && snap.docs) {
+        const txList = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (setGlobalData) {
+          setGlobalData(prev => ({ ...prev, financial_transactions: txList }));
+        }
+      }
+    }, (err) => {
+      console.warn('[AdminFinancial] Local snapshot error:', err);
+    });
+    return () => unsub();
+  }, [setGlobalData]);
 
   // Handle Date range presets
   const handleDateWindowChange = (windowType) => {

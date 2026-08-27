@@ -180,8 +180,10 @@ const AdminLayoutInner = () => {
       const isLocalLogged = localStorage.getItem('admin_logged') === 'true';
       if (user || isLocalLogged) {
         setAuthorized(true);
+        setCurrentUser(user);
       } else {
         setAuthorized(false);
+        setCurrentUser(null);
         navigate('/admin/login');
       }
     });
@@ -225,26 +227,26 @@ const AdminLayoutInner = () => {
         // Mark bookings as resolved for data-ready gate
         resolvedCollections.current.add('bookings');
         if (['bookings','services','settings'].every(k => resolvedCollections.current.has(k))) setDataReady(true);
-      }));
+      }, (err) => console.warn('[AdminLayout] bookings onSnapshot error:', err)));
 
-      unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => setGlobalData(prev => ({ ...prev, clients: snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })) }))));
+      unsubs.push(onSnapshot(collection(db, 'client_profiles'), (snap) => setGlobalData(prev => ({ ...prev, clients: snap.docs.map(d => ({ id: d.id, phone: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] client_profiles onSnapshot error:', err)));
       unsubs.push(onSnapshot(collection(db, 'services'), (snap) => {
         setGlobalData(prev => ({ ...prev, services: snap.docs.map(d => ({ id: d.id, ...d.data() })) }));
         resolvedCollections.current.add('services');
         if (['bookings','services','settings'].every(k => resolvedCollections.current.has(k))) setDataReady(true);
-      }));
-      unsubs.push(onSnapshot(collection(db, 'products'), (snap) => setGlobalData(prev => ({ ...prev, products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => setGlobalData(prev => ({ ...prev, financial_transactions: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'coupons'), (snap) => setGlobalData(prev => ({ ...prev, coupons: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'giftcards'), (snap) => setGlobalData(prev => ({ ...prev, giftcards: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => setGlobalData(prev => ({ ...prev, packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => setGlobalData(prev => ({ ...prev, client_packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
-      unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => setGlobalData(prev => ({ ...prev, salon_products: snap.docs.map(d => ({ id: d.id, ...d.data() })) }))));
+      }, (err) => console.warn('[AdminLayout] services onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'products'), (snap) => setGlobalData(prev => ({ ...prev, products: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] products onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'financial_transactions'), (snap) => setGlobalData(prev => ({ ...prev, financial_transactions: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] financial_transactions onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'coupons'), (snap) => setGlobalData(prev => ({ ...prev, coupons: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] coupons onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'giftcards'), (snap) => setGlobalData(prev => ({ ...prev, giftcards: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] giftcards onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => setGlobalData(prev => ({ ...prev, packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] packages onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => setGlobalData(prev => ({ ...prev, client_packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] client_packages onSnapshot error:', err)));
+      unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => setGlobalData(prev => ({ ...prev, salon_products: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] salon_products onSnapshot error:', err)));
       unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
         setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }));
         resolvedCollections.current.add('settings');
         if (['bookings','services','settings'].every(k => resolvedCollections.current.has(k))) setDataReady(true);
-      }));
+      }, (err) => console.warn('[AdminLayout] settings onSnapshot error:', err)));
     } else {
       // Demo Mode fallback
       try {
