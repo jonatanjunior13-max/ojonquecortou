@@ -179,6 +179,14 @@
       "dest": "/api/whatsapp-webhook.js"
     },
     {
+      "src": "/api/instagram",
+      "dest": "/api/meta-capi.js?action=instagram"
+    },
+    {
+      "src": "/api/mailgun-webhook",
+      "dest": "/api/newsletter-mailgun.js?action=webhook"
+    },
+    {
       "src": "/api/unsubscribe",
       "dest": "/api/newsletter-mailgun.js"
     },

@@ -225,6 +225,54 @@ export default async function handler(req, res) {
     }
   }
 
+  // 1.5 Webhook Receiver from Mailgun
+  if (req.method === 'POST' && (req.query.action === 'webhook' || req.body?.signature)) {
+    const signatureData = req.body.signature;
+    const eventData = req.body['event-data'];
+
+    if (!signatureData || !eventData) {
+      return res.status(400).json({ error: 'Payload incompleto.' });
+    }
+
+    const { timestamp, token, signature } = signatureData;
+    const signingKey = process.env.MAILGUN_SIGNING_KEY || MAILGUN_API_KEY;
+
+    if (signingKey) {
+      const encodedToken = crypto.createHmac('sha256', signingKey).update(timestamp.toString() + token).digest('hex');
+      if (encodedToken !== signature) {
+        return res.status(401).json({ error: 'Unauthorized: Assinatura inválida.' });
+      }
+    }
+
+    const event = eventData.event;
+    const recipient = eventData.recipient;
+    const reason = eventData['delivery-status']?.description || eventData.reason || event;
+
+    if ((event === 'failed' && eventData.severity === 'permanent') || event === 'complained') {
+      if (recipient && db) {
+        try {
+          const q = query(collection(db, 'client_profiles'), where('email', '==', recipient.trim().toLowerCase()));
+          const snapshot = await getDocs(q);
+          const updates = [];
+          snapshot.forEach((document) => {
+            const clientRef = doc(db, 'client_profiles', document.id);
+            updates.push(updateDoc(clientRef, {
+              email: 'Não informado',
+              unsubscribed: true,
+              emailInvalid: true,
+              lastBounceReason: `${event}: ${reason}`,
+              lastBounceAt: new Date().toISOString()
+            }));
+          });
+          await Promise.all(updates);
+        } catch (err) {
+          console.error(`Erro ao tratar e-mail inválido (${recipient}):`, err);
+        }
+      }
+    }
+    return res.status(200).json({ success: true, message: `Evento ${event} processado.` });
+  }
+
   // 2. POST Action: Send Newsletter to all, Test or Generate
   if (req.method === 'POST') {
     const adminToken = req.headers['x-admin-token'];
