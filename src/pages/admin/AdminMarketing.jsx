@@ -1637,6 +1637,17 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
 
     const loadData = async () => {
       try {
+        // Eager initial fetch
+        getDocs(query(collection(db, 'automation_logs'), orderBy('timestamp', 'desc'), limit(500)))
+          .then(snap => {
+            if (!snap.empty) {
+              const lgs = [];
+              snap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
+              setAutomationLogs(lgs);
+            }
+          })
+          .catch(e => console.warn('Initial eager getDocs error:', e));
+
         const qLogs = query(collection(db, 'automation_logs'), orderBy('timestamp', 'desc'), limit(500));
         unsubscribeLogs = onSnapshot(qLogs, (logsSnap) => {
           const lgs = [];

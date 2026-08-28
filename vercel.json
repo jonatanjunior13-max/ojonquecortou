@@ -234,23 +234,7 @@
   ],
   "crons": [
     {
-      "path": "/api/indexnow",
-      "schedule": "0 1 * * *" 
-    },
-    {
-      "path": "/api/cron-reminders",
-      "schedule": "0 12 * * *"
-    },
-    {
-      "path": "/api/cron-automations",
-      "schedule": "5 12 * * *"
-    },
-    {
-      "path": "/api/cron-daily-digest",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/cron-blog",
+      "path": "/api/cron?task=daily",
       "schedule": "0 12 * * *"
     }
   ]
