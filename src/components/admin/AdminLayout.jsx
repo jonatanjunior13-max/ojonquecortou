@@ -241,7 +241,11 @@ const AdminLayoutInner = () => {
       unsubs.push(onSnapshot(collection(db, 'giftcards'), (snap) => setGlobalData(prev => ({ ...prev, giftcards: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] giftcards onSnapshot error:', err)));
       unsubs.push(onSnapshot(collection(db, 'packages'), (snap) => setGlobalData(prev => ({ ...prev, packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] packages onSnapshot error:', err)));
       unsubs.push(onSnapshot(collection(db, 'client_packages'), (snap) => setGlobalData(prev => ({ ...prev, client_packages: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] client_packages onSnapshot error:', err)));
-      unsubs.push(onSnapshot(collection(db, 'salon_products'), (snap) => setGlobalData(prev => ({ ...prev, salon_products: snap.docs.map(d => ({ id: d.id, ...d.data() })) })), (err) => console.warn('[AdminLayout] salon_products onSnapshot error:', err)));
+      unsubs.push(onSnapshot(
+        query(collection(db, 'automation_logs'), orderBy('timestamp', 'desc'), limit(500)),
+        (snap) => setGlobalData(prev => ({ ...prev, automation_logs: snap.docs.map(d => ({ id: d.id, ...d.data() })) })),
+        (err) => console.warn('[AdminLayout] automation_logs onSnapshot error:', err)
+      ));
       unsubs.push(onSnapshot(doc(db, 'settings', 'studio'), (snap) => {
         setGlobalData(prev => ({ ...prev, settings: snap.exists() ? { id: snap.id, ...snap.data() } : null }));
         resolvedCollections.current.add('settings');

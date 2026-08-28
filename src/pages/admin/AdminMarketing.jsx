@@ -220,8 +220,13 @@ const AdminMarketing = () => {
   const [editingCustomHtml, setEditingCustomHtml] = useState('');
   const [customPreviewHtml, setCustomPreviewHtml] = useState('');
   const [emailLogs, setEmailLogs] = useState([]);
-  const [whatsappLogs, setWhatsappLogs] = useState([]);
-  const [automationLogs, setAutomationLogs] = useState([]);
+  const [localAutomationLogs, setLocalAutomationLogs] = useState([]);
+  const automationLogs = useMemo(() => {
+    if (globalData?.automation_logs && globalData.automation_logs.length > 0) {
+      return globalData.automation_logs;
+    }
+    return localAutomationLogs;
+  }, [globalData?.automation_logs, localAutomationLogs]);
   const [adminNotifications, setAdminNotifications] = useState([]);
   const [selectedAdminNotif, setSelectedAdminNotif] = useState(null);
   const [showAdminNotifModal, setShowAdminNotifModal] = useState(false);
@@ -248,7 +253,7 @@ const AdminMarketing = () => {
             const snap = await getDocs(query(collection(db, 'automation_logs'), orderBy('timestamp', 'desc'), limit(300)));
             const lgs = [];
             snap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
-            setAutomationLogs(lgs);
+            setLocalAutomationLogs(lgs);
           } catch (e) {
             console.warn('Erro ao atualizar logs pós-execução:', e);
           }
@@ -1553,7 +1558,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
         const localLogs = JSON.parse(localStorage.getItem('demo_automation_logs')) || [];
         const updated = [{ id: 'demo_' + Date.now() + Math.random().toString(36).substr(2, 5), ...newLog }, ...localLogs];
         localStorage.setItem('demo_automation_logs', JSON.stringify(updated));
-        setAutomationLogs(updated);
+        setLocalAutomationLogs(updated);
       } catch (e) {
         console.error("Erro ao salvar log no localStorage:", e);
       }
@@ -1586,13 +1591,18 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
       const logDate = new Date(ts);
       if (isNaN(logDate.getTime())) return;
 
-      const diffMs = now - logDate;
+      const diffMs = now.getTime() - logDate.getTime();
       const diffDays = diffMs / (1000 * 60 * 60 * 24);
       const channel = getLogChannel(log);
 
-      const isToday = logDate.toDateString() === now.toDateString() || (log.date && log.date === now.toISOString().split('T')[0]);
-      const isThisWeek = diffDays <= 7;
-      const isThisMonth = diffDays <= 30;
+      const isToday = (
+        logDate.getFullYear() === now.getFullYear() &&
+        logDate.getMonth() === now.getMonth() &&
+        logDate.getDate() === now.getDate()
+      ) || (log.date && log.date === now.toISOString().split('T')[0]);
+
+      const isThisWeek = diffDays >= 0 && diffDays <= 7;
+      const isThisMonth = diffDays >= 0 && diffDays <= 30;
 
       if (isToday) {
         if (channel === 'email') stats.today.email++;
@@ -1643,7 +1653,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             if (!snap.empty) {
               const lgs = [];
               snap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
-              setAutomationLogs(lgs);
+              setLocalAutomationLogs(lgs);
             }
           })
           .catch(e => console.warn('Initial eager getDocs error:', e));
@@ -1652,7 +1662,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
         unsubscribeLogs = onSnapshot(qLogs, (logsSnap) => {
           const lgs = [];
           logsSnap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
-          setAutomationLogs(lgs);
+          setLocalAutomationLogs(lgs);
           setLoading(false);
         }, (err) => {
           console.warn('Fallback onSnapshot automation_logs:', err);
@@ -1660,7 +1670,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
             const lgs = [];
             snap.forEach(d => lgs.push({ id: d.id, ...d.data() }));
             lgs.sort((a, b) => new Date(b.timestamp || b.date) - new Date(a.timestamp || a.date));
-            setAutomationLogs(lgs.slice(0, 500));
+            setLocalAutomationLogs(lgs.slice(0, 500));
           }).finally(() => setLoading(false));
         });
 
