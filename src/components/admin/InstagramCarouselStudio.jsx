@@ -576,6 +576,14 @@ export const RESERVE_CAROUSELS_AGENDA = [
 ];
 
 export default function InstagramCarouselStudio() {
+  const [customCarousels, setCustomCarousels] = useState(() => {
+    try {
+      const saved = localStorage.getItem('studio_custom_carousels');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
   const [selectedCarouselId, setSelectedCarouselId] = useState(SEPTEMBER_CAROUSELS_AGENDA[0].id);
   const [activeViewMode, setActiveViewMode] = useState('grid'); // 'grid' | 'slider'
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
@@ -586,11 +594,65 @@ export default function InstagramCarouselStudio() {
   const [customCoverProfile, setCustomCoverProfile] = useState('');
   const [isCustomMode, setIsCustomMode] = useState(false);
 
+  // Save custom carousels to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('studio_custom_carousels', JSON.stringify(customCarousels));
+    } catch (e) {
+      console.warn('Erro ao salvar carrosséis no localStorage:', e);
+    }
+  }, [customCarousels]);
+
   // Active Carousel Data
   const currentCarousel = useMemo(() => {
+    const foundCustom = customCarousels.find(c => c.id === selectedCarouselId);
+    if (foundCustom) return foundCustom;
     const found = SEPTEMBER_CAROUSELS_AGENDA.find(c => c.id === selectedCarouselId);
     return found || SEPTEMBER_CAROUSELS_AGENDA[0];
-  }, [selectedCarouselId]);
+  }, [selectedCarouselId, customCarousels]);
+
+  const handleGenerateAiCarousel = async () => {
+    if (!customThemeTitle.trim()) {
+      alert('Por favor, informe o tema ou a dúvida principal para o carrossel.');
+      return;
+    }
+
+    setIsGeneratingWithAi(true);
+    try {
+      const response = await fetch('/api/newsletter-mailgun?action=generate-carousel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-token': 'studio-jon-admin'
+        },
+        body: JSON.stringify({
+          themeTitle: customThemeTitle.trim(),
+          coverProfile: customCoverProfile.trim() || 'Mulher brasileira com curvatura natural'
+        })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({ error: 'Falha no servidor' }));
+        throw new Error(errData.error || errData.details || 'Falha na resposta do servidor.');
+      }
+
+      const generated = await response.json();
+      if (!generated || !generated.slides || !Array.isArray(generated.slides)) {
+        throw new Error('Formato inválido retornado pela IA.');
+      }
+
+      setCustomCarousels(prev => [generated, ...prev]);
+      setSelectedCarouselId(generated.id);
+      setActiveSlideIndex(0);
+      setActiveTab('slides');
+      alert(`Carrossel sobre "${generated.title}" gerado com sucesso pelo Método Leitura de Fio!`);
+    } catch (err) {
+      console.error('Erro ao gerar carrossel:', err);
+      alert(`Erro ao gerar carrossel com IA: ${err.message}`);
+    } finally {
+      setIsGeneratingWithAi(false);
+    }
+  };
 
   const handleCopy = (text, key) => {
     if (!text) return;
@@ -812,12 +874,43 @@ PROIBIÇÕES: sem contador de slide, sem bordas laterais, sem ghost number, sem 
             </div>
             <button 
               className="generate-ai-btn"
-              onClick={() => {
-                alert(`Tema "${customThemeTitle || 'Personalizado'}" preparado! O assistente pode gerar a pesquisa e os 9 slides.`);
-              }}
+              onClick={handleGenerateAiCarousel}
+              disabled={isGeneratingWithAi}
+              style={{ opacity: isGeneratingWithAi ? 0.7 : 1, cursor: isGeneratingWithAi ? 'wait' : 'pointer' }}
             >
-              <Sparkles size={16} /> Gerar Carrossel com o Método Leitura de Fio
+              <Sparkles size={16} className={isGeneratingWithAi ? 'spin' : ''} /> 
+              {isGeneratingWithAi ? 'Gerando Carrossel Técnico com IA (Leitura de Fio)...' : '✨ Gerar Carrossel com o Método Leitura de Fio'}
             </button>
+
+            {customCarousels.length > 0 && (
+              <div style={{ marginTop: '20px', borderTop: '1px solid var(--adm-rule, #333)', paddingTop: '15px' }}>
+                <h5 style={{ margin: '0 0 10px 0', fontSize: '0.85rem', color: 'var(--adm-muted, #888)' }}>Carrosséis Personalizados Criados:</h5>
+                <div className="carousel-agenda-grid">
+                  {customCarousels.map((item) => {
+                    const isSelected = item.id === selectedCarouselId;
+                    return (
+                      <div 
+                        key={item.id}
+                        className={`agenda-post-card ${isSelected ? 'selected' : ''}`}
+                        onClick={() => {
+                          setSelectedCarouselId(item.id);
+                          setActiveSlideIndex(0);
+                        }}
+                      >
+                        <div className="agenda-card-top">
+                          <span className="agenda-date-pill" style={{ background: '#3b82f6', color: '#fff' }}>✨ Personalizado</span>
+                        </div>
+                        <h4 className="agenda-card-title">{item.title}</h4>
+                        <div className="agenda-card-footer">
+                          <span className="agenda-obj-tag">🎯 {item.objective || 'Engajamento'}</span>
+                          <span className="agenda-slides-count">{item.slides?.length || 9} slides</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

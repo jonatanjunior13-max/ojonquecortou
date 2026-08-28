@@ -280,7 +280,105 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Intercept generation action
+    // Intercept carousel generation action
+    if (req.query.action === 'generate-carousel') {
+      const { themeTitle, coverProfile } = req.body;
+      if (!themeTitle) {
+        return res.status(400).json({ error: 'Título do tema é obrigatório' });
+      }
+
+      const apiKey = (process.env.GOOGLE_PLACES_API_KEY || process.env.GEMINI_API_KEY || '').trim();
+      if (!apiKey) {
+        return res.status(500).json({ error: 'Chave de API do Gemini não configurada no servidor' });
+      }
+
+      const promptText = `Você é o Jon (@ojonquecortou), cabeleireiro profissional especialista em cachos, crespos e visagismo no salão "O Jon Que Cortou" em Belo Horizonte (Caiçaras).
+Você vai criar um Carrossel para o Instagram (9 slides formato 4:5) completo e de altíssimo nível técnico sobre o tema: "${themeTitle}".
+Perfil da modelo/cliente da capa: "${coverProfile || 'Mulher brasileira com cabelos cacheados ou crespos'}".
+
+DIRETRIZES FUNDAMENTAIS DO JON:
+1. Tom de voz: Altamente técnico, lógico, focado em física, biologia e geometria do cabelo em seu estado seco (Método Leitura de Fio). Fale com calor humano, sem clichês de marketing. NUNCA use a expressão "corte a seco" (use "Método Leitura de Fio" ou "leitura no estado seco natural").
+2. Estrutura dos 9 Slides:
+   - Slide 1 (cover): Capa com headline forte em 2 linhas uppercase e 1 subtítulo lowercase.
+   - Slide 2 (second_cover): Segunda capa / quebra de padrão ou provocação direta com seta "→".
+   - Slide 3 (content): Ponto 01 com tag "01 · [TÍTULO CURTO]", headline marcante e explicação física do problema.
+   - Slide 4 (content): Ponto 02 com tag "02 · [TÍTULO CURTO]", headline marcante e explicação.
+   - Slide 5 (content): Ponto 03 com tag "03 · [TÍTULO CURTO]", headline marcante e explicação.
+   - Slide 6 (content): Ponto 04 com tag "04 · [TÍTULO CURTO]", headline marcante e solução prática.
+   - Slide 7 (content): Ponto 05 com tag "05 · [TÍTULO CURTO]", headline marcante e leitura personalizada do fio.
+   - Slide 8 (fecho): Síntese impactante / frase marcante do Jon.
+   - Slide 9 (cta): Pergunta para a audiência nos comentários + incentivo para compartilhar ou salvar.
+3. Legenda Completa: Uma legenda profunda e persuasiva para o Instagram, com abertura que prende a atenção, desenvolvimento técnico do problema e da solução, assinatura do Studio do Jon (Belo Horizonte - Caiçaras) e hashtags relevantes (#cachos #cachosbrasil #cacheadas #visagismo).
+4. Pesquisa Técnica: Objeto com "mechanism" (física/química do fio), "literalQuotes" (3 frases reais que clientes falam sobre esse problema), "gap" (o erro que o mercado comete) e "unverified" (o que não deve ser afirmado sem teste de mecha).
+
+Retorne APENAS um JSON válido puro (sem markdown ou texto extra) com a seguinte estrutura:
+{
+  "id": "carrossel-custom-${Date.now()}",
+  "date": "Tema Personalizado",
+  "isSearchRanked": false,
+  "searchRank": "Tema Personalizado",
+  "objective": "Salvamento + Compartilhamento",
+  "title": "${themeTitle}",
+  "theme": "${themeTitle}",
+  "coverProfile": "${coverProfile || 'Mulher brasileira com curvatura natural'}",
+  "coverLine1": "LINHA 1 DA CAPA EM CAIXA ALTA",
+  "coverLine2": "LINHA 2 DA CAPA EM CAIXA ALTA",
+  "coverLine3": "subtítulo explicativo em minúsculas",
+  "coverImage": "/blog-leitura-fio-capa.webp",
+  "slides": [
+    { "type": "cover", "tag": null, "headline": "LINHA 1\\nLINHA 2", "body": "subtítulo" },
+    { "type": "second_cover", "tag": null, "headline": "...", "body": "... →" },
+    { "type": "content", "tag": "01 · TÍTULO", "headline": "...", "body": "..." },
+    { "type": "content", "tag": "02 · TÍTULO", "headline": "...", "body": "..." },
+    { "type": "content", "tag": "03 · TÍTULO", "headline": "...", "body": "..." },
+    { "type": "content", "tag": "04 · TÍTULO", "headline": "...", "body": "..." },
+    { "type": "content", "tag": "05 · TÍTULO", "headline": "...", "body": "..." },
+    { "type": "fecho", "tag": null, "headline": "...", "body": "..." },
+    { "type": "cta", "tag": null, "headline": "...", "body": "...", "action": "Salva para consultar depois." }
+  ],
+  "caption": "Texto da legenda...",
+  "altText": "Descrição da capa...",
+  "researchSummary": {
+    "mechanism": "...",
+    "literalQuotes": ["...", "...", "..."],
+    "gap": "...",
+    "unverified": "..."
+  }
+}`;
+
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: promptText }] }],
+              generationConfig: { responseMimeType: "application/json" }
+            })
+          }
+        );
+
+        if (!response.ok) {
+          const errText = await response.text();
+          return res.status(response.status).json({ error: 'Erro na API do Gemini', details: errText });
+        }
+
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) {
+          return res.status(500).json({ error: 'Resposta vazia da API do Gemini' });
+        }
+
+        const parsed = JSON.parse(text);
+        return res.status(200).json(parsed);
+      } catch (err) {
+        console.error('Carousel generation error:', err);
+        return res.status(500).json({ error: err.message });
+      }
+    }
+
+    // Intercept newsletter generation action
     if (req.query.action === 'generate') {
       const { themeTitle, themeDescription, extraInstruction } = req.body;
       if (!themeTitle) {
