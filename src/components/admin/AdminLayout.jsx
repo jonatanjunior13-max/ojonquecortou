@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { auth, db } from '../../config/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, updateDoc, query, orderBy, limit } from 'firebase/firestore';
 import {
   Calendar, Users, LogOut, Package, DollarSign,
   Scissors, Settings, Megaphone, ChevronLeft, ChevronRight, Search, Smartphone,
@@ -18,7 +18,7 @@ const AdminLayoutInner = () => {
   const [globalData, setGlobalData] = useState({
     bookings: [], clients: [], services: [], products: [],
     financial_transactions: [], settings: null, coupons: [], giftcards: [],
-    packages: [], client_packages: [], salon_products: []
+    packages: [], client_packages: [], salon_products: [], automation_logs: []
   });
   const navigate = useNavigate();
   const location = useLocation();
