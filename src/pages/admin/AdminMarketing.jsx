@@ -220,6 +220,7 @@ const AdminMarketing = () => {
   const [editingCustomHtml, setEditingCustomHtml] = useState('');
   const [customPreviewHtml, setCustomPreviewHtml] = useState('');
   const [emailLogs, setEmailLogs] = useState([]);
+  const [whatsappLogs, setWhatsappLogs] = useState([]);
   const [localAutomationLogs, setLocalAutomationLogs] = useState([]);
   const automationLogs = useMemo(() => {
     if (globalData?.automation_logs && globalData.automation_logs.length > 0) {
