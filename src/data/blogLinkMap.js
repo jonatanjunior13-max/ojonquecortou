@@ -62,6 +62,13 @@ export const blogLinkMap = [
   { source: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia', target: 'descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes', anchor: 'descoloração' },
   { source: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
   { source: 'descoloracao-cabelo-cacheado-pontes-dissulfeto-luzes', target: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia', anchor: 'peptídeos biomiméticos' },
+
+  // Franja e Visagismo cluster
+  { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'fator-encolhimento-cabelo-cacheado-fisica-geometria', anchor: 'fator encolhimento' },
+  { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
+  { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
+  { source: 'corte-a-seco-cabelo-cacheado-bh-volume', target: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', anchor: 'franja cacheada' },
+  { source: 'corte-borboleta-cabelo-ondulado-cacheado-visagismo', target: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', anchor: 'franja' },
 ];
 
 // Utility to inject links into HTML content

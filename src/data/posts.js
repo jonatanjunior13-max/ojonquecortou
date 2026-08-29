@@ -1,5 +1,184 @@
 export const posts = [
   {
+    id: 78,
+    slug: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco',
+    title: 'Franja em Cabelo Cacheado e Crespo: O Guia Geométrico de Visagismo, Fator Encolhimento e Corte a Seco',
+    seoTitle: 'Franja em Cabelo Cacheado e Crespo: Visagismo e Corte a Seco | Studio do Jon',
+    excerpt: 'Descubra como a física do corte a seco e o visagismo geométrico permitem desenhar a franja perfeita em cabelos cacheados e crespos sem o trauma do encolhimento.',
+    metaDescription: 'Entenda como escolher e cortar franja em cabelo cacheado e crespo: cálculo do fator encolhimento, visagismo por formato de rosto e protocolo a seco.',
+    keywords: 'franja cabelo cacheado, franja crespa, franja cacheada rosto redondo, cortar franja a seco cachos, visagismo franja cacheada, curtain bangs cacheada, fator encolhimento franja, Studio do Jon BH, Leitura de Fio',
+    date: '28 de Agosto, 2026',
+    datePublished: '2026-08-28',
+    dateModified: '2026-08-28',
+    author: 'Jon',
+    category: 'Visagismo',
+    image: '/blog-franja-cabelo-cacheado-crespo-visagismo-corte-seco.webp',
+    faqSchema: {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Cabelo cacheado e crespo pode ter franja?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sim. Qualquer curvatura do 2A ao 4C pode ter franja, desde que o corte seja feito 100% a seco no padrão natural do cacho, compensando a retração elástica e distribuindo o volume pelo visagismo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Por que nunca se deve cortar franja cacheada com o cabelo molhado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Porque a água e a tração esticam as pontes de hidrogênio. Ao secar, a mola retrai entre 30% e 75%, fazendo com que uma franja cortada nos olhos encolha até o meio da testa."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é a melhor franja cacheada para quem tem rosto redondo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A franja cortina (curtain bangs) com corte diagonal ou a franja desfiada (shaggy). Elas abrem o centro do rosto e alongam a fisionomia, evitando achatar a expressão visual."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como finalizar a franja cacheada para não armar no day after?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Use pouca quantidade de leave-in fluido na raiz, faça dedoliss suave nas mechas frontais e seque com difusor sem amassar os fios com as mãos antes do filme protetor secar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como o visagismo define o comprimento ideal da franja?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O visagismo avalia a proporção dos três terços faciais, a projeção das maçãs do rosto e o direcionamento dos redemoinhos frontais para criar um caimento equilibrado sem sobrecarregar a mandíbula."
+          }
+        }
+      ]
+    },
+    content: `
+      <blockquote id="tldr">
+        <strong>TL;DR:</strong> Cabelo cacheado e crespo pode usar franja com total harmonia, desde que o corte seja planejado pelo visagismo e executado estritamente a seco. O corte molhado mascara o fator encolhimento, fazendo o fio subir entre 30% e 75% ao secar. Ao calcular a memória helicoidal da mola no estado real, desenhamos uma moldura frontal personalizada que valoriza o olhar e mantém a leveza natural.
+      </blockquote>
+
+      <h2>O Que É o Corte de Franja em Cabelos Cacheados e Crespos?</h2>
+      <p>O corte de franja em cabelos cacheados e crespos é a técnica de escultura geométrica das mechas do terço frontal da cabeça, realizada exclusivamente no estado seco para emoldurar o rosto respeitando o fator de encolhimento e a memória elástica de cada curvatura.</p>
+      <p>Diferente do cabelo liso — onde o caimento é linear e bidimensional —, a mecha com curvatura se expande tridimensionalmente nos eixos vertical, horizontal e de profundidade. Por isso, a franja não pode ser pensada como uma linha reta e estática, mas como uma estrutura dinâmica de molas que reagem à umidade, à gravidade e ao corte.</p>
+      <p>No Studio do Jon, em Belo Horizonte, recebemos diariamente clientes que passaram anos sonhando com uma franja, mas foram desestimuladas pelo mito de que "cacho arma e fica sem controle". Quando entendemos a física do fio, esse medo desaparece.</p>
+
+      <h2>Por Que Cortar a Franja Molhada Causa o "Efeito Mola" e Desastres Visuais?</h2>
+      <p>Cortar a franja molhada provoca erro de comprimento porque a água rompe as pontes transitórias de hidrogênio e a tração da tesoura ou pente estica o fio; após a secagem e evaporação da água, a fibra recupera o padrão helicoidal e retrai de 30% a 75% da sua extensão.</p>
+      <p>Existem três fatores físicos fundamentais que explicam por que o corte molhado falha em cabelos texturizados:</p>
+      <ul>
+        <li><strong>Alívio Imediato da Carga Gravitacional:</strong> No cabelo longo, o peso acumulado das pontas puxa a raiz para baixo. Quando cortamos a franja e reduzimos o comprimento, a raiz se liberta desse peso e ganha projeção vertical instantânea, elevando o cacho muito além do ponto onde a tesoura tocou.</li>
+        <li><strong>Heterogeneidade das Molas na Linha Frontal:</strong> É extremamente comum ter padrões de curvatura diferentes na mesma cabeça — por exemplo, mechas 3B nas têmporas e 3C no topo da testa. Cortar tudo na mesma régua molhada gera desníveis visíveis quando o cabelo seca.</li>
+        <li><strong>Direcionamento Folicular e Redemoinhos (Cowlicks):</strong> No estado molhado, o peso da água oculta a rotação natural com que o fio emerge do couro cabeludo. Ao secar, o redemoinho empurra a mecha para o lado ou para cima, abrindo fendas indesejadas no meio da franja.</li>
+      </ul>
+
+      <h2>Como o Visagismo Geométrico Harmoniza a Franja com Cada Formato de Rosto</h2>
+      <p>O visagismo capilar para cabelos com curvatura estuda as linhas ósseas do rosto — terço superior (testa), médio (olhos e nariz) e inferior (boca e queixo) — em conjunto com o volume do cacho para definir a direção e a densidade ideal da franja.</p>
+
+      <h3>Curtain Bangs (Franja Cortina) para Rostos Redondos e Quadrados</h3>
+      <p>A franja cortina possui o centro mais curto (na altura do nariz ou lábios) e cresce diagonalmente em direção às maçãs do rosto, abrindo a visão central. Em rostos redondos ou quadrados, essa diagonal quebra a rigidez da mandíbula e cria uma sensação visual de alongamento.</p>
+
+      <h3>Franja Shaggy Desfiada para Integração em Camadas</h3>
+      <p>Com mechas desconectadas e pontas texturizadas, a franja shaggy não cria um bloco pesado sobre a testa. Ela se funde com as camadas laterais do corte (face-framing), proporcionando muito balanço para quem tem curvaturas 3A a 4A e adora volume no topo.</p>
+
+      <h3>Franja Reta Texturizada para Rostos Alongados</h3>
+      <p>Desenvolvida para repousar suavemente entre a sobrancelha e o côncavo dos olhos, a franja reta reduz a amplitude vertical de testas proeminentes. No método a seco, aliviamos a densidade interna para que os cachos se entrelacem sem empilhar volume excessivo.</p>
+
+      <h3>Baby Bangs (Micro-Franja) em Curvaturas 4A a 4C</h3>
+      <p>Cortada dois ou três dedos acima da sobrancelha, a micro-franja valoriza o padrão de ziguezague e a alta densidade do cabelo crespo. É um corte de forte expressão e atitude que destaca os olhos e a estrutura dos maxilares.</p>
+
+      <h2>Tabela Comparativa: Tipos de Franja, Formatos de Rosto e Retração da Curvatura</h2>
+      <table style="width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 0.92rem;">
+        <thead>
+          <tr style="background-color: rgba(255,255,255,0.08); border-bottom: 2px solid rgba(255,255,255,0.2);">
+            <th style="padding: 12px; text-align: left;">Modelo de Franja</th>
+            <th style="padding: 12px; text-align: left;">Formato de Rosto Indicado</th>
+            <th style="padding: 12px; text-align: left;">Curvaturas Principais</th>
+            <th style="padding: 12px; text-align: left;">Retração por Encolhimento</th>
+            <th style="padding: 12px; text-align: left;">Manutenção Recomendada</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px;"><strong>Curtain Bangs (Cortina)</strong></td>
+            <td style="padding: 10px;">Redondo, Quadrado, Oval</td>
+            <td style="padding: 10px;">2A a 3C</td>
+            <td style="padding: 10px;">Baixa a Média (20% a 40%)</td>
+            <td style="padding: 10px;">A cada 60 a 90 dias</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px;"><strong>Shaggy / Desfiada</strong></td>
+            <td style="padding: 10px;">Oval, Triangular, Redondo</td>
+            <td style="padding: 10px;">3A a 4B</td>
+            <td style="padding: 10px;">Média a Alta (40% a 60%)</td>
+            <td style="padding: 10px;">A cada 45 a 60 dias</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            <td style="padding: 10px;"><strong>Reta Texturizada</strong></td>
+            <td style="padding: 10px;">Alongado, Retangular</td>
+            <td style="padding: 10px;">2B a 3B</td>
+            <td style="padding: 10px;">Média (30% a 50%)</td>
+            <td style="padding: 10px;">A cada 30 a 45 dias</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px;"><strong>Baby Bangs (Micro)</strong></td>
+            <td style="padding: 10px;">Oval, Coração, Pequeno</td>
+            <td style="padding: 10px;">3C a 4C</td>
+            <td style="padding: 10px;">Alta a Muito Alta (50% a 75%)</td>
+            <td style="padding: 10px;">A cada 20 a 30 dias</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Passo a Passo: Como Cortamos Franja no Método Leitura de Fio</h2>
+      <p>No Studio do Jon, o corte da franja segue uma sequência biomecânica rigorosa para garantir previsibilidade e beleza:</p>
+      <ol>
+        <li><strong>Análise de Repouso Natural a Seco:</strong> Avaliamos o cabelo 100% seco com a finalização de rotina da cliente, mapeando a força elástica das molas frontais.</li>
+        <li><strong>Isolamento da Seção Triangular:</strong> Definimos a base da franja a partir do ponto alto do crânio. A profundidade do triângulo é ajustada conforme a densidade de fios que a cliente possui.</li>
+        <li><strong>Escultura Cacho a Cacho sem Tração:</strong> Cortamos mecha por mecha na sua posição exata de repouso, sem puxar com os dedos ou esticar com pentes. O que você vê no espelho é exatamente como ele vai secar em casa.</li>
+        <li><strong>Integração Tridimensional (Face-Framing):</strong> Conectamos as pontas da franja às mechas das têmporas e maçãs do rosto para evitar linhas duras ou divisões desconectadas.</li>
+      </ol>
+
+      <h2>Os 4 Erros Mais Comuns ao Cortar e Cuidar de Franja Cacheada</h2>
+      <p>Para manter sua franja impecável no dia a dia, evite estas quatro práticas prejudiciais:</p>
+      <ul>
+        <li><strong>Puxar a Mecha com o Pente na Hora do Corte:</strong> A tração mecânica falseia a altura real do cacho e faz a franja subir incontrolavelmente ao secar.</li>
+        <li><strong>Aplicar Creme Pesado na Raiz da Testa:</strong> A região frontal tem oleosidade natural. O excesso de manteigas e óleos pesados causa acúmulo de resíduos (build-up) e deixa o cacho sem movimento.</li>
+        <li><strong>Amassar o Fio Molhado Antes do Cast Secar:</strong> Tocar na franja enquanto ela seca quebra o filme protetor do finalizador e estimula o frizz por atrito desnecessário.</li>
+        <li><strong>Tentar Finalizar com Escova Reta:</strong> Modificar a curvatura da franja com calor constante enfraquece a estrutura proteica e cria um contraste artificial com o restante do cabelo natural.</li>
+      </ul>
+
+      <h2>Perguntas Frequentes Sobre Franja em Cabelo Cacheado e Crespo</h2>
+      <div class="faq-section">
+        <h3>Cabelo cacheado e crespo pode ter franja?</h3>
+        <p>Sim. Qualquer curvatura do 2A ao 4C pode ter franja, desde que o corte seja feito 100% a seco no padrão natural do cacho, compensando a retração elástica e distribuindo o volume pelo visagismo.</p>
+
+        <h3>Por que nunca se deve cortar franja cacheada com o cabelo molhado?</h3>
+        <p>Porque a água e a tração esticam as pontes de hidrogênio. Ao secar, a mola retrai entre 30% e 75%, fazendo com que uma franja cortada nos olhos encolha até o meio da testa.</p>
+
+        <h3>Qual é a melhor franja cacheada para quem tem rosto redondo?</h3>
+        <p>A franja cortina (curtain bangs) com corte diagonal ou a franja desfiada (shaggy). Elas abrem o centro do rosto e alongam a fisionomia, evitando achatar a expressão visual.</p>
+
+        <h3>Como finalizar a franja cacheada para não armar no day after?</h3>
+        <p>Use pouca quantidade de leave-in fluido na raiz, faça dedoliss suave nas mechas frontais e seque com difusor sem amassar os fios com as mãos antes do filme protetor secar.</p>
+
+        <h3>Como o visagismo define o comprimento ideal da franja?</h3>
+        <p>O visagismo avalia a proporção dos três terços faciais, a projeção das maçãs do rosto e o direcionamento dos redemoinhos frontais para criar um caimento equilibrado sem sobrecarregar a mandíbula.</p>
+      </div>
+
+      <h2>Quer Mudar o Visual com Segurança em Belo Horizonte?</h2>
+      <p>Ter franja em cabelo cacheado ou crespo é uma escolha cheia de personalidade e leveza quando existe respeito à geometria natural do seu fio.</p>
+      <p>Se você está em Belo Horizonte e quer experimentar um corte desenhado sob medida para seus traços faciais, venha conhecer o nosso espaço. O <a href="/servicos/corte-hibrido"><strong>Corte Híbrido</strong></a> com o Método Leitura de Fio e a consultoria de visagismo garantem que você saia com a mola definida, no comprimento certo e sem sustos.</p>
+      <p>Valeu demais pela leitura! Se tiver qualquer dúvida sobre sua curvatura ou rotina, tô por aqui. Um abraço e TMJ!</p>
+    `
+  },
+  {
     id: 77,
     slug: 'peptideos-biomimeticos-cabelo-cacheado-crespo-biotecnologia',
     title: 'Peptídeos Biomiméticos em Cabelos Cacheados e Crespos: A Ciência da Reconstrução Sem Efeito Arame',
