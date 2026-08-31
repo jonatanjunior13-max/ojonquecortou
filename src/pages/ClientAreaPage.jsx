@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { auth, db } from '../config/firebase';
 import { 
@@ -10,7 +10,7 @@ import {
   signOut,
   sendPasswordResetEmail
 } from 'firebase/auth';
-import { collection, getDocs, query, where, doc, updateDoc, addDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 import { Calendar, Clock, Lock, Unlock, LogOut, Scissors, AlertCircle, ChevronRight, User, PlusCircle, ArrowLeft, Mail } from 'lucide-react';
 import SEO from '../components/SEO';
 import './ClientAreaPage.css';
@@ -336,7 +336,9 @@ export default function ClientAreaPage() {
               link: 'https://ojonquecortou.com.br/cliente?action=reset'
             })
           });
-        } catch (simErr) {}
+        } catch {
+          // Ignore error in simulation mode
+        }
       } else {
         await sendPasswordResetEmail(auth, email);
         setResetSuccess(true);
