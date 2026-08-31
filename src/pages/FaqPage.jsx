@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 
@@ -140,7 +140,7 @@ const faqs = [
   }
 ];
 
-function FaqItem({ question, answer, index }) {
+function FaqItem({ question, answer }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -289,7 +289,6 @@ const FaqPage = () => {
           {faqs.map((item, i) => (
             <FaqItem
               key={i}
-              index={i}
               question={item.question}
               answer={item.answer}
             />
