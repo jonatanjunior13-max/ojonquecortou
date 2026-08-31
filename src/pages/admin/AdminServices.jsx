@@ -331,13 +331,12 @@ const AdminServices = () => {
     if (isDemoMode) {
       localStorage.setItem('demo_services', JSON.stringify(finalServices));
     } else {
-      for (const s of finalServices) {
-        try {
-          await setDoc(doc(db, 'services', s.id), { position: s.position }, { merge: true });
-        } catch (err) {
-          console.error('Erro ao atualizar posição do serviço:', err);
-        }
-      }
+      await Promise.all(
+        finalServices.map(s =>
+          setDoc(doc(db, 'services', s.id), { position: s.position }, { merge: true })
+            .catch(err => console.error('Erro ao atualizar posição do serviço:', err))
+        )
+      );
     }
   };
 
