@@ -1782,19 +1782,34 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     setIsSendingBirthdayWa(true);
     cancelSendingRef.current = false;
     setBirthdayWaLogs(['[SISTEMA] Iniciando disparo de aniversário...']);
-    for (const client of targets) {
+
+    const BATCH_SIZE = 10;
+    for (let i = 0; i < targets.length; i += BATCH_SIZE) {
       if (cancelSendingRef.current) {
         setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo cancelado pelo usuário.']);
         break;
       }
-      await new Promise(r => setTimeout(r, 1000));
+
+      const batch = targets.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async (client) => {
+        await saveLog(client.name, client.phone, 'Aniversário (WhatsApp)', 'whatsapp');
+      }));
+
       if (cancelSendingRef.current) {
         setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo cancelado pelo usuário.']);
         break;
       }
-      await saveLog(client.name, client.phone, 'Aniversário (WhatsApp)', 'whatsapp');
-      setBirthdayWaLogs(prev => [...prev, `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`]);
+
+      setBirthdayWaLogs(prev => [
+        ...prev,
+        ...batch.map(client => `[✅ OK] Mensagem enfileirada para ${client.name} (${client.phone})`)
+      ]);
+
+      if (i + BATCH_SIZE < targets.length) {
+        await new Promise(r => setTimeout(r, 1000));
+      }
     }
+
     if (!cancelSendingRef.current) {
       setBirthdayWaLogs(prev => [...prev, '[SISTEMA] Disparo finalizado! Verifique o WhatsApp.']);
     }
