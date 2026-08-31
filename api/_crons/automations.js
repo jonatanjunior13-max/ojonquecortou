@@ -331,6 +331,40 @@ export default async function handler(req, res) {
         const q = query(collection(db, 'bookings'), where('date', '==', targetDateStr), where('status', 'in', ['Concluído', 'finalizado']));
         const snap = await getDocs(q);
 
+        // --- OPTIMIZATION: Pre-fetch recent bookings for all candidates in batches ---
+        // 1. Gather unique candidate phones
+        const candidatePhones = new Set();
+        for (const bDoc of snap.docs) {
+          const booking = bDoc.data();
+          if (booking.clientPhone && booking.clientEmail && booking.clientEmail.includes('@')) {
+            candidatePhones.add(booking.clientPhone);
+          }
+        }
+
+        // 2. Query in batches of 30 (Firebase 'in' query limit is 30)
+        const recentPhonesSet = new Set();
+        const uniquePhonesArray = Array.from(candidatePhones);
+        const chunkedQueries = [];
+        for (let i = 0; i < uniquePhonesArray.length; i += 30) {
+          const chunk = uniquePhonesArray.slice(i, i + 30);
+          const recentQ = query(
+            collection(db, 'bookings'),
+            where('clientPhone', 'in', chunk)
+          );
+          chunkedQueries.push(getDocs(recentQ));
+        }
+
+        const allRecentSnaps = await Promise.all(chunkedQueries);
+        for (const rSnap of allRecentSnaps) {
+          for (const rDoc of rSnap.docs) {
+            const b = rDoc.data();
+            if (b.date > targetDateStr && ['Concluído', 'Confirmado', 'finalizado'].includes(b.status)) {
+              recentPhonesSet.add(b.clientPhone);
+            }
+          }
+        }
+        // --- END OPTIMIZATION ---
+
         const processedPhones = new Set();
 
         for (const bDoc of snap.docs) {
@@ -365,15 +399,7 @@ export default async function handler(req, res) {
             continue;
           }
 
-          const recentQ = query(
-            collection(db, 'bookings'),
-            where('clientPhone', '==', booking.clientPhone)
-          );
-          const recentSnap = await getDocs(recentQ);
-          const hasRecent = recentSnap.docs.some(doc => {
-            const b = doc.data();
-            return b.date > targetDateStr && ['Concluído', 'Confirmado', 'finalizado'].includes(b.status);
-          });
+          const hasRecent = recentPhonesSet.has(booking.clientPhone);
 
           if (!hasRecent) {
             // Determine which template to send based on daysAgo
