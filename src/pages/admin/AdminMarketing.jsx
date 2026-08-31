@@ -116,7 +116,7 @@ const EMAIL_PREVIEWS = {
     Studio do Jon <span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; color: #6E2F18; display: block; margin-top: 4px;">— corte com leitura.</span>
   </div>
   <p style="font-size: 13.5px; color: #6B5A4B; line-height: 1.5; margin: 0 0 20px 0;">
-    Rua Francisco Ovídio, 184 · Caiçaras<br>Belo Horizonte · MG · 30770-040<br>Quarta a Sábado · 9h às 19h
+    Rua Belmiro Braga, 544 · Caiçaras<br>Belo Horizonte · MG · 30770-550<br>Quarta a Sábado · 9h às 19h
   </p>
   <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #6B5A4B; border-top: 1px solid rgba(26, 19, 16, 0.14); padding-top: 18px; margin-top: 18px;">
     © 2026 Studio do Jon
@@ -127,7 +127,8 @@ const EMAIL_PREVIEWS = {
   birthdayEnabled: { subject: 'Parabéns, {nome}.', body: HTML_TEMPLATES['aniversario'] },
   launchE1: { subject: 'Agendamento online no Studio do Jon. Acabou de mudar.', body: HTML_TEMPLATES['launch_e1'] },
   launchE2: { subject: 'Antes de marcar em qualquer lugar, você precisa saber isso.', body: HTML_TEMPLATES['launch_e2'] },
-  launchE3: { subject: 'Primeiros agendamentos pelo novo site têm prioridade de horário.', body: HTML_TEMPLATES['launch_e3'] }
+  launchE3: { subject: 'Primeiros agendamentos pelo novo site têm prioridade de horário.', body: HTML_TEMPLATES['launch_e3'] },
+  novoEnderecoSetembro: { subject: 'O Studio do Jon tá de casa nova (+ um brinde pra você em setembro)', body: HTML_TEMPLATES['novo_endereco_setembro'] }
 };
 
 
@@ -221,6 +222,13 @@ const AdminMarketing = () => {
   const [customPreviewHtml, setCustomPreviewHtml] = useState('');
   const [emailLogs, setEmailLogs] = useState([]);
   const [whatsappLogs, setWhatsappLogs] = useState([]);
+  const [septemberWaMessage, setSeptemberWaMessage] = useState(
+    `Oi {nome}! Passando pra te dar um aviso importante sobre o seu agendamento no Studio do Jon:\n\nA partir do dia 02/09, nossos atendimentos estão de casa nova!\n\n📍 Novo endereço: Rua Belmiro Braga, 544 · Caiçaras, BH\n(Fica pertinho do endereço anterior, com mais conforto e a mesma leitura de sempre).\n\n🗺️ Como chegar pelo Google Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nSeu dia e horário continuam exatamente os mesmos combinados. Se tiver qualquer dúvida sobre como chegar, é só me chamar por aqui.\n\nTe espero na casa nova! TMJ e aquele abraço,\nJon`
+  );
+  const [isSendingSeptemberEmail, setIsSendingSeptemberEmail] = useState(false);
+  const [septemberEmailProgressCount, setSeptemberEmailProgressCount] = useState(0);
+  const [septemberEmailProgressTotal, setSeptemberEmailProgressTotal] = useState(0);
+  const [septemberEmailLogs, setSeptemberEmailLogs] = useState([]);
   const [localAutomationLogs, setLocalAutomationLogs] = useState([]);
   const automationLogs = useMemo(() => {
     if (globalData?.automation_logs && globalData.automation_logs.length > 0) {
@@ -1776,6 +1784,23 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
     return `https://wa.me/55${client.phone}?text=${encodeURIComponent(msg)}`;
   };
 
+  const upcomingSeptemberBookings = useMemo(() => {
+    const cutoff = '2026-09-02';
+    return (bookings || []).filter(b => {
+      if (!b.date || b.date < cutoff) return false;
+      if (b.status === 'cancelled' || b.status === 'canceled' || b.status === 'blocked' || b.isBlock) return false;
+      if (!b.clientPhone || b.clientPhone.replace(/\D/g, '').length < 8) return false;
+      return true;
+    }).sort((a, b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+  }, [bookings]);
+
+  const getSeptemberWaLink = (booking) => {
+    const firstName = (booking.clientName || 'Cliente').split(' ')[0];
+    const cleanPhone = (booking.clientPhone || '').replace(/\D/g, '');
+    const msg = septemberWaMessage.replace(/{nome}/g, firstName);
+    return `https://wa.me/55${cleanPhone}?text=${encodeURIComponent(msg)}`;
+  };
+
   const handleSendBirthdayWaCampaign = async () => {
     const targets = birthdayClients;
     if (targets.length === 0) return;
@@ -2590,192 +2615,7 @@ Você deve retornar obrigatoriamente um objeto JSON com as seguintes chaves:
                 )}
               </div>
 
-              {/* Campanha de Lançamento (Novo Sistema) */}
-              <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                  <h4 style={{ margin: 0 }}>🚀 Campanha de Lançamento — Novo Sistema de Agendamento</h4>
-                  <button
-                    className={`btn-toggle ${settings?.automations?.launchCampaignEnabled !== false ? 'active' : ''}`}
-                    onClick={() => toggleAutomation('launchCampaignEnabled', settings?.automations?.launchCampaignEnabled === false)}
-                  >
-                    {settings?.automations?.launchCampaignEnabled !== false ? 'ON' : 'OFF'}
-                  </button>
-                </div>
-                <p style={{ fontSize: '0.85rem', color: 'var(--adm-muted)', marginTop: 0, marginBottom: '20px' }}>
-                  Campanha para a lista fria (leads sem histórico de visita no Studio). Envia uma sequência de 3 e-mails para atrair os primeiros agendamentos pelo site.
-                </p>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '15px', marginBottom: '20px' }}>
-                  {[
-                    { key: 'launchE1', label: 'E-mail 1 (D+0)', desc: 'Anúncio do Novo Sistema' },
-                    { key: 'launchE2', label: 'E-mail 2 (D+5)', desc: 'Construção de Valor (Método)' },
-                    { key: 'launchE3', label: 'E-mail 3 (D+10)', desc: 'Exclusividade & Urgência' }
-                  ].map(step => (
-                    <div key={step.key} style={{ padding: '12px', border: '1px solid var(--adm-rule)', borderRadius: '6px', background: 'var(--sidebar-bg)', display: 'flex', flexDirection: 'column' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                        <span style={{ fontWeight: 600, fontSize: '0.9rem' }}>{step.label}</span>
-                      </div>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--adm-muted)', marginBottom: '12px' }}>{step.desc}</span>
-                      <div style={{ display: 'flex', gap: '6px', marginTop: 'auto' }}>
-                        <button 
-                          className="btn btn-outline btn-small"
-                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.7rem', padding: '4px' }}
-                          onClick={() => {
-                            setEditingTemplateKey(step.key);
-                            setEditingTemplateContent(settings?.email_templates?.[step.key] || EMAIL_PREVIEWS[step.key]);
-                            setShowEmailEditModal(true);
-                          }}
-                        >
-                          ✏️ Editar
-                        </button>
-                        <button 
-                          className="btn btn-outline btn-small"
-                          style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'center', fontSize: '0.7rem', padding: '4px' }}
-                          onClick={() => {
-                            setEmailPreviewContent(settings?.email_templates?.[step.key] || EMAIL_PREVIEWS[step.key]);
-                            setShowEmailPreviewModal(true);
-                          }}
-                        >
-                          <Eye size={12} /> Ver
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{ background: 'var(--sidebar-bg)', padding: '16px', borderRadius: '8px', border: '1px solid var(--adm-rule)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
-                    <div>
-                      <h5 style={{ margin: '0 0 4px 0' }}>Disparar Sequência Manualmente</h5>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--adm-muted)' }}>
-                        Alvos: {
-                          clients.filter(c => {
-                            if (!c.email || c.email === 'Não informado' || !c.email.includes('@')) return false;
-                            const phone = c.phone || '';
-                            const alreadySent = Array.isArray(automationLogs) && automationLogs.some(log => log.clientPhone === phone && log.stage === 'launch_e1');
-                            return !alreadySent;
-                          }).length
-                        } contatos pendentes.
-                      </p>
-                      {isSendingEmail && emailProgressTotal > 0 && (
-                        <div style={{ marginTop: '8px', minWidth: '200px' }}>
-                          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--adm-gold)' }}>
-                            Progresso: {emailProgressCount} de {emailProgressTotal} enviados ({Math.round((emailProgressCount / emailProgressTotal) * 100)}%)
-                          </span>
-                          <div style={{ width: '100%', height: '4px', background: 'var(--adm-rule)', borderRadius: '2px', marginTop: '4px', overflow: 'hidden' }}>
-                            <div style={{ width: `${(emailProgressCount / emailProgressTotal) * 100}%`, height: '100%', background: 'var(--adm-gold)', transition: 'width 0.3s ease' }}></div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    {isSendingEmail ? (
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => { cancelSendingRef.current = true; }}
-                        style={{ padding: '10px 20px', fontSize: '0.85rem', background: 'var(--adm-danger)', color: '#fff' }}
-                      >
-                        🛑 Parar Disparos
-                      </button>
-                    ) : (
-                      <button
-                        className="btn btn-accent"
-                        onClick={async () => {
-                          const targets = clients.filter(c => {
-                             if (!c.email || c.email === 'Não informado' || !c.email.includes('@')) return false;
-                             const phone = c.phone || '';
-                             const alreadySent = Array.isArray(automationLogs) && automationLogs.some(log => log.clientPhone === phone && log.stage === 'launch_e1');
-                             return !alreadySent;
-                           });
-                          const total = targets.length;
-                          if (total === 0) {
-                            alert('Nenhum alvo válido encontrado.');
-                            return;
-                          }
-
-                          const BATCH_SIZE = 10;
-                          const BATCH_DELAY = 2000;
-                          const INDIVIDUAL_DELAY = 150;
-                          
-                          const estTimeMinutes = Math.ceil(((total * INDIVIDUAL_DELAY) + (Math.floor(total / BATCH_SIZE) * BATCH_DELAY)) / 60000);
-
-                          if (!confirm(`Deseja iniciar a campanha de lançamento REAL para ${total} contatos via Resend?\n\nConfiguração de Proteção (Resend):\n- Intervalo: ${INDIVIDUAL_DELAY}ms\n- Lote: ${BATCH_SIZE} e-mails\n- Pausa lote: ${BATCH_DELAY/1000}s\n- Tempo total: ~${estTimeMinutes} min.`)) return;
-                          
-                          setEmailProgressTotal(total);
-                          setEmailProgressCount(0);
-                          setIsSendingEmail(true);
-                          cancelSendingRef.current = false;
-                          const logTime = () => new Date().toLocaleTimeString('pt-BR');
-                          setEmailLogs([
-                            `[${logTime()}] 🚀 Iniciando Campanha de Lançamento REAL via Resend (E-mail 1)`,
-                            `[${logTime()}] Alvos válidos: ${total} | Tempo estimado: ~${estTimeMinutes} min`
-                          ]);
-
-                          const tpl = settings?.email_templates?.launchE1 || EMAIL_PREVIEWS.launchE1;
-                          let count = 0;
-
-                          for (const client of targets) {
-                            if (cancelSendingRef.current) {
-                              setEmailLogs(prev => [...prev, `[${logTime()}] 🛑 Disparo cancelado pelo usuário.`]);
-                              break;
-                            }
-                            try {
-                              const firstName = (client.name || 'Cliente').split(' ')[0];
-                              const subject = (tpl.subject || 'Agendamento online no Studio do Jon. Acabou de mudar.').replace(/{nome}/g, firstName);
-                              
-                              // Replace dynamic tags in template body
-                              let content = (tpl.body || '').replace(/{nome}/g, firstName);
-                              
-                              const response = await fetch('/api/send-email', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                  type: 'launch_campaign',
-                                  subject: subject,
-                                  htmlBody: content,
-                                  clientEmail: client.email,
-                                  clientName: client.name
-                                })
-                              });
-
-                              if (response.ok) {
-                                setEmailLogs(prev => [...prev, `[${logTime()}] ✅ E-mail 1 enviado para ${client.name} (${client.email})`]);
-                                await saveLog(client.name, client.phone, 'launch_e1', 'email');
-                              } else {
-                                setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro ao enviar para ${client.name}: Status ${response.status}`]);
-                              }
-                            } catch (err) {
-                              setEmailLogs(prev => [...prev, `[${logTime()}] ❌ Erro de rede para ${client.name}: ${err.message}`]);
-                            }
-
-                            count++;
-                            setEmailProgressCount(count);
-                            if (count < total) {
-                              if (count % BATCH_SIZE === 0) {
-                                setEmailLogs(prev => [...prev, `[${logTime()}] ⏳ Pausa de segurança de ${BATCH_DELAY/1000}s...`]);
-                                const delaySteps = BATCH_DELAY / 1000;
-                                for (let s = 0; s < delaySteps; s++) {
-                                  if (cancelSendingRef.current) break;
-                                  await new Promise(r => setTimeout(r, 1000));
-                                }
-                              } else {
-                                await new Promise(r => setTimeout(r, INDIVIDUAL_DELAY));
-                              }
-                            }
-                          }
-
-                          if (!cancelSendingRef.current) {
-                            setEmailLogs(prev => [...prev, `[${logTime()}] 🏁 Campanha de lançamento concluída com sucesso!`]);
-                          }
-                          setIsSendingEmail(false);
-                        }}
-                        style={{ padding: '10px 20px', fontSize: '0.85rem' }}
-                      >
-                        🚀 Disparar Sequência
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
 
               {/* E-mails do Sistema e Notificações */}
               <div className="marketing-automations-card" style={{ gridColumn: '1 / -1', padding: '20px', background: 'var(--panel-bg)', borderRadius: '8px', border: '1px solid var(--adm-rule)', marginBottom: '20px' }}>
