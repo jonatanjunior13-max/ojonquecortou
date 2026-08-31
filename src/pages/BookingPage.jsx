@@ -1489,37 +1489,41 @@ const BookingPage = () => {
     const fireMetaPixelConversion = () => {
       if (metaPixelEventFired) return;
       metaPixelEventFired = true;
-      // Shared with the CAPI call below so Meta deduplicates the two signals into one conversion
-      const eventId = `schedule-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      
+      const eventIdSchedule = `schedule-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const eventIdPurchase = `purchase-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const eventData = {
         content_name: bookingPayload.serviceName,
         value: computedFinalTotal,
         currency: 'BRL'
       };
-      if (typeof fbq !== 'undefined') {
+
+      // Client-side Browser Pixel
+      if (typeof window !== 'undefined' && window.fbq) {
         try {
-          fbq('track', 'Schedule', eventData, { eventID: eventId });
+          window.fbq('track', 'Schedule', eventData, { eventID: eventIdSchedule });
+          window.fbq('track', 'Purchase', eventData, { eventID: eventIdPurchase });
         } catch (fbqErr) {
           console.warn('Erro ao disparar Meta Pixel:', fbqErr);
         }
       }
-      // Server-side backup: the browser pixel gets blocked by iOS ATT / in-app browsers often
-      // enough that it alone undercounts bookings, so CAPI mirrors the same event with dedup.
-      // fbc/fbp tie this event back to the ad click; em/ph (hashed server-side) cover the gap
-      // when those cookies got dropped by an in-app browser.
+
+      // Server-side Meta CAPI backup with deduplication
       let fbc = getCookie('_fbc');
       if (!fbc) {
         const fbclid = new URLSearchParams(window.location.search).get('fbclid');
         if (fbclid) fbc = `fb.1.${Date.now()}.${fbclid}`;
       }
       const fbp = getCookie('_fbp');
+
       fetch('/api/meta-capi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          eventName: 'Schedule',
-          eventId,
-          eventData,
+          events: [
+            { eventName: 'Schedule', eventId: eventIdSchedule, eventData },
+            { eventName: 'Purchase', eventId: eventIdPurchase, eventData }
+          ],
           fbc: fbc || undefined,
           fbp: fbp || undefined,
           email: bookingPayload.clientEmail || undefined,
