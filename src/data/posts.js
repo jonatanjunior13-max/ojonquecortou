@@ -1,4 +1,996 @@
-export const posts = [
+export const posts = [  {
+  "id": 79,
+  "slug": "wolf-cut-cabelo-cacheado",
+  "title": "Wolf Cut em Cabelo Cacheado: Funciona? Guia Completo Antes de Cortar",
+  "seoTitle": "Wolf Cut em Cabelo Cacheado: Funciona? Guia Antes de Cortar | Studio do Jon",
+  "excerpt": "Descubra se o wolf cut funciona no cabelo cacheado ou se destrói a definição. Aprenda como adaptar as camadas ao fator encolhimento com o Método Leitura de Fio.",
+  "metaDescription": "Wolf cut em cabelo cacheado funciona ou destrói o cacho? Veja como adaptar o corte pro seu padrão de fio e quando vale a pena, com o Método Leitura de Fio.",
+  "keywords": "wolf cut cacheado, wolf cut em cabelo cacheado, corte wolf cut cachos, corte lobo cacheado, wolf cut cabelo cacheado bh, corte em camadas cachos, Studio do Jon",
+  "date": "08 de Setembro, 2026",
+  "datePublished": "2026-09-08",
+  "dateModified": "2026-09-08",
+  "author": "Jon",
+  "category": "Cortes",
+  "image": "/blog-wolf-capa.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Wolf cut funciona em qualquer tipo de cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, funciona do 2A ao 4C, desde que as camadas sejam esculpidas a seco para respeitar o encolhimento de cada mecha e evitar o formato piramidal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual é a diferença entre wolf cut e shaggy hair no cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O wolf cut combina mullet e shaggy, trazendo topo mais volumoso e nuca mais longa e desconectada, enquanto o shaggy distribui camadas uniformes."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Por que não se deve cortar wolf cut com cabelo molhado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O cabelo molhado estica e disfarça o encolhimento. Cortar molhado faz o topo encolher excessivamente ao secar, desproporcionando o corte."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como finalizar o wolf cut cacheado para ter volume e definição?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use leave-in leve ou gel fluido, faça fitagem rápida sem pesar a raiz e seque com difusor de baixo para cima para ativar as camadas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "De quanto em quanto tempo preciso fazer manutenção do wolf cut?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A cada 70 a 90 dias para reajustar o peso do topo e impedir que a base perca a desconexão característica do estilo."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Sim, o wolf cut funciona perfeitamente em cabelo cacheado, desde que seja adaptado à densidade e ao fator de encolhimento individual de cada mecha. Quando cortado 100% a seco pelo Método Leitura de Fio, o corte equilibra o volume da coroa, preserva o comprimento das pontas e elimina o efeito capacete sem afinar o cacho.\n      </blockquote>\n\n      <h2>O Que É o Wolf Cut e de Onde Ele Veio?</h2>\n      <p>O wolf cut é uma fusão geométrica contemporânea entre o corte mullet dos anos 80 e o clássico shaggy hair dos anos 70, caracterizado por camadas densas no topo e laterais graduadas que se afunilam em direção à nuca.</p>\n      <p>Originalmente popularizado na Coreia do Sul e no Japão em texturas lisas e onduladas, o corte conquistou o mundo justamente pelo seu visual selvagem e orgânico. Porém, nos cabelos cacheados e crespos, o formato ganha uma dimensão completamente nova: em vez de depender de pomadas e texturizadores para criar movimento, a própria memória elástica da mola entrega a atitude natural do corte.</p>\n      <p>No Studio do Jon, em Belo Horizonte, vemos o wolf cut como uma das soluções mais inteligentes para quem busca volume expressivo no topo sem abrir mão do comprimento.</p>\n\n      <h2>Wolf Cut Funciona em Qualquer Tipo de Cacho?</h2>\n      <p>Sim, o corte se adapta do padrão 2A ao 4C, mas a angulação da tesoura muda radicalmente em cada curvatura. Cachos mais fechados retraem com mais força e pedem camadas mais longas no topo para não formarem um bloco compacto.</p>\n\n      <table style=\"width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;\">\n        <thead>\n          <tr style=\"border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);\">\n            <th style=\"padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);\">Curvatura</th>\n            <th style=\"padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);\">Comportamento do Wolf Cut</th>\n            <th style=\"padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);\">Ajuste Técnico Necessário</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr style=\"border-bottom: 1px solid rgba(255,255,255,0.05);\">\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #E9C46A;\">Ondulados (2A - 2C)</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Visual rockstar despojado com ondas soltas.</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Desfiamento suave para estimular a ondulação da raiz.</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid rgba(255,255,255,0.05);\">\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #2A9D8F;\">Cacheados (3A - 3C)</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Volume arredondado no topo e caimento cascata.</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Camadas em ângulos de 45° a 90° respeitando a mola.</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid rgba(255,255,255,0.05);\">\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;\">Crespos (4A - 4C)</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Escultura tridimensional com halo de volume alto.</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Corte puramente geométrico a seco com compensação de retração.</td>\n          </tr>\n        </tbody>\n      </table>\n\n      <h2>Os Riscos de Cortar Wolf Cut Sem Leitura de Fio</h2>\n      <p>O maior erro ao pedir esse corte em salões tradicionais é a tentativa de reproduzir fotos de referência cortando o cabelo molhado ou puxando as mechas com tração excessiva.</p>\n      <p>Quando o cacho molhado é esticado, ele perde temporariamente sua constante de elasticidade. Se o profissional corta uma camada curta no topo achando que ela vai bater no queixo, ao secar essa mecha pode subir até a altura dos olhos, criando um degrau indesejado e desarmônico. Se você quer uma versão mais contida, vale conferir também o nosso guia sobre o <a href=\"/blog/corte-lobo-cacheado-curto\">corte lobo curto em cacheado</a>.</p>\n\n      <h2>Como o Studio do Jon Adapta o Wolf Cut pro Cacheado</h2>\n      <p>No Método Leitura de Fio, antes de encostar a tesoura no cabelo, mapeamos a densidade em cada quadrante da cabeça, a porosidade e a direção natural de nascimento das mechas.</p>\n      <p>A escultura é feita com os fios secos e finalizados no seu estado real do dia a dia. Isso garante que cada camada se encaixe perfeitamente sobre a outra, sem buracos na nuca e sem perda da massa capilar essencial.</p>\n\n      <h2>Antes de Marcar: 3 Perguntas pra Fazer ao Cabeleireiro</h2>\n      <p>Se você decidiu adotar o visual, faça estas perguntas ao profissional antes de sentar na cadeira:</p>\n      <ul>\n        <li><strong>Você vai cortar meu cabelo seco ou molhado?</strong> (Exija corte a seco).</li>\n        <li><strong>Como você calcula o fator de encolhimento da minha franja?</strong> (Ele precisa avaliar a retração da sua mola).</li>\n        <li><strong>Você usa tesoura de desbaste/navalha?</strong> (Em cabelos cacheados, lâminas de desbaste mastigam as cutículas e geram frizz estático).</li>\n      </ul>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Pronta para transformar seu visual com precisão técnica?</h3>\n        <p>No Studio do Jon, em Belo Horizonte, nós esculpimos o seu wolf cut respeitando a geometria única do seu cacho. Agende agora o seu horário online sem espera de WhatsApp!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Horário no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 80,
+  "slug": "wolf-cut-cacheado-feminino",
+  "title": "Wolf Cut Cacheado Feminino: Como Fica Sem Perder o Cacho",
+  "seoTitle": "Wolf Cut Cacheado Feminino: Volume e Definição | Studio do Jon",
+  "excerpt": "Saiba como o wolf cut cacheado feminino mantém o cacho definido e volumoso sem ficar quadrado ou desproporcional. Dicas de manutenção e visagismo em BH.",
+  "metaDescription": "Wolf cut feminino em cabelo cacheado: como manter volume e definição do cacho sem ficar com corte quadrado. Técnica e resultado real do Studio do Jon.",
+  "keywords": "wolf cut feminino cacheado, wolf cut cacheado, corte wolf cut feminino cachos, wolf cut cacheado médio, corte em camadas feminino cachos, Studio do Jon",
+  "date": "10 de Setembro, 2026",
+  "datePublished": "2026-09-10",
+  "dateModified": "2026-09-10",
+  "author": "Jon",
+  "category": "Cortes",
+  "image": "/blog-shag-capa.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O wolf cut feminino tira muito o comprimento do cacho?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não necessariamente. As camadas concentram-se no terço superior e médio, preservando o comprimento da base na nuca."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como evitar que o wolf cut feminino fique com aspecto de pirâmide?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Distribuindo camadas graduadas no topo da coroa para retirar o peso acumulado que empurra a base para fora."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quem tem cabelo fino pode fazer wolf cut feminino?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, as camadas criam a ilusão óptica de maior densidade e encorpamento da raiz às pontas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Preciso usar difusor obrigatoriamente no wolf cut feminino?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não, o corte bem estruturado seca naturalmente com formato bonito, mas o difusor potencializa o volume."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual produto usar no day after do wolf cut feminino?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Uma bruma hidratante suave ou água com algumas gotas de óleo vegetal leve apenas para reativar as pontas."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> O wolf cut cacheado feminino valoriza as linhas da mandíbula e maçãs do rosto através de camadas dinâmicas que contornam a cabeça sem afinar o comprimento. Ao contrário do corte reto tradicional, ele redistribui o volume de forma aerodinâmica, mantendo a curvatura definida e com balanço natural.\n      </blockquote>\n\n      <h2>Wolf Cut Feminino x Wolf Cut Unissex: A Diferença É a Camada</h2>\n      <p>O wolf cut feminino se diferencia pela transição suave entre a franja cortina e as camadas que emolduram as maçãs do rosto, criando uma curvatura envolvente que suaviza os traços faciais.</p>\n      <p>Enquanto versões masculinas ou andróginas costumam priorizar desconexões retas e uma nuca mais marcada, a abordagem feminina no Studio do Jon foca na fluidez: cada cacho repousa sobre a camada inferior como uma mola independente, garantindo que o cabelo não fique pesado nem quadrado. Para entender a estrutura geral, veja nosso <a href=\"/blog/wolf-cut-cabelo-cacheado\">guia completo sobre wolf cut em cabelo cacheado</a>.</p>\n\n      <h2>Como Fica em 2C, 3A, 3B, 3C e 4A</h2>\n      <p>Cada curvatura reage de maneira particular à graduação das camadas:</p>\n      <ul>\n        <li><strong>2C e 3A:</strong> Cria ondas marcadas desde a raiz, eliminando o aspecto pesado que puxa o cabelo para baixo.</li>\n        <li><strong>3B e 3C:</strong> Entrega o volume arredondado ideal com definição nítida em cada mecha, destacando o contorno dos ombros.</li>\n        <li><strong>4A:</strong> Constrói uma coroa escultural imponente com transições suaves que valorizam a textura densa do cacho.</li>\n      </ul>\n\n      <h2>Erro Mais Comum: Tirar Peso Demais na Raiz</h2>\n      <p>Um dos maiores desastres ao cortar camadas em cabelos cacheados é repicar mechas internas com navalha ou desbastadeira. Isso destrói a coesão dos fios, gerando pontas mastigadas que não agrupam no day after. O corte de camadas em cacho deve ser sempre feito com fio a fio e lâmina reta em estado seco.</p>\n\n      <h2>Manutenção: Quanto Tempo Dura o Formato?</h2>\n      <p>Em média, o formato permanece harmonioso por 2 a 3 meses. Conforme a raiz cresce cerca de 1 cm ao mês, as camadas superiores vão descendo e o volume do topo migra suavemente para as laterais, sinalizando o momento do retoque.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Quer um wolf cut sob medida para o seu formato de rosto?</h3>\n        <p>No Studio do Jon, em Belo Horizonte, aplicamos visagismo técnico para desenhar o caimento exato das suas camadas. Marque seu horário!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Horário no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 81,
+  "slug": "wolf-cut-cabelo-crespo",
+  "title": "Wolf Cut em Cabelo Crespo: O Que Muda no Corte pro 4C",
+  "seoTitle": "Wolf Cut em Cabelo Crespo 4C: Geometria e Camadas | Studio do Jon",
+  "excerpt": "Descubra a engenharia do wolf cut em cabelos crespos tipo 4A, 4B e 4C. Como compensar o fator encolhimento e esculpir o volume perfeito a seco.",
+  "metaDescription": "Wolf cut em cabelo crespo tem outra lógica de camada por causa do encolhimento. Entenda como o corte muda do 3C pro 4C e como evitar erro de proporção.",
+  "keywords": "wolf cut cabelo crespo, wolf cut crespo 4c, corte wolf cut crespo, corte crespo em camadas, wolf cut 4a 4b 4c, Studio do Jon BH",
+  "date": "15 de Setembro, 2026",
+  "datePublished": "2026-09-15",
+  "dateModified": "2026-09-15",
+  "author": "Jon",
+  "category": "Cortes",
+  "image": "/blog-curvatura-4c-cabelo-crespo.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Cabelo crespo 4C pode ter wolf cut sem perder o formato?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, o cabelo 4C cria uma escultura tridimensional incrível com wolf cut, desde que cortado a seco respeitando a densidade."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quanto o cabelo crespo encolhe no wolf cut?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O encolhimento pode variar de 50% a 75%. Por isso, a tesoura precisa calcular a posição do cacho seco e não esticado."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "É necessário alisar ou escovar para cortar wolf cut em crespo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nunca. Escovar altera a geometria original da fibra e resulta em um corte assimétrico e disforme ao voltar ao natural."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como manter as camadas do wolf cut crespo hidratadas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Com reposição lipídica frequente (manteigas vegetais) e finalização com cremes ricos em óleos de alta retenção."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual o melhor tipo de franja para wolf cut em cabelo crespo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Franja densa em formato meia-lua esculpida mecha a mecha na altura das sobrancelhas."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> No cabelo crespo 4C, o wolf cut é uma verdadeira escultura arquitetônica. Como o fio crespo possui retração elástica de até 75%, as camadas não caem para baixo, mas se projetam em ângulos tridimensionais, exigindo um corte 100% a seco e estruturado no padrão natural de volume.\n      </blockquote>\n\n      <h2>Por Que o Crespo Pede Leitura Diferente do Cacheado Solto?</h2>\n      <p>O cabelo crespo apresenta uma morfologia elíptica muito estreita com múltiplos pontos de torção ao longo da fibra capilar, o que gera o característico padrão zigue-zague ou molas microscópicas.</p>\n      <p>Em vez de um caimento pendular influenciado pela gravidade, o fio crespo se sustenta no ar através da sua própria densidade. Por isso, aplicar a mesma técnica de corte usada em cabelos ondulados em um crespo 4C resulta em perda de volume lateral e topo excessivamente curto.</p>\n\n      <h2>Fator de Encolhimento e a Camada do Wolf Cut</h2>\n      <p>O fator de encolhimento é o elemento central do planejamento. Uma mecha de 20 cm esticada pode medir apenas 6 cm em repouso natural. Se você quer entender a fundo como calcular essa taxa, veja nosso artigo detalhado sobre <a href=\"/blog/fator-de-encolhimento-cabelo-cacheado\">como medir o fator de encolhimento no cabelo cacheado e crespo</a>.</p>\n\n      <h2>Corte a Seco x Corte Molhado Nesse Formato</h2>\n      <p>Cortar o cabelo crespo molhado é receita certa para frustração. A água mascara a curvatura real e faz todas as mechas parecerem homogêneas. No Studio do Jon, o atendimento de crespos é realizado com o cabelo lavado, seco e finalizado na sua rotina habitual, permitindo esculpir cada centímetro com precisão cirúrgica.</p>\n\n      <h2>Como Fica o Resultado Esticado x Natural</h2>\n      <p>A beleza do wolf cut no crespo está na versatilidade: no estado natural ele exibe um halo de poder com topo elevado e nuca alongada; quando texturizado em twists ou tranças soltas, revela camadas compridas e cheias de movimento.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Quer esculpir o seu crespo com um especialista em BH?</h3>\n        <p>No Studio do Jon, celebramos a potência e a física natural da curvatura 4C. Agende sua sessão com Leitura de Fio!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Horário no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 82,
+  "slug": "corte-lobo-cacheado-curto",
+  "title": "Corte Lobo (Wolf Cut) Curto em Cacheado: Vale a Pena?",
+  "seoTitle": "Corte Lobo Curto em Cacheado: Vale a Pena? | Studio do Jon BH",
+  "excerpt": "Descubra se o corte lobo curto combina com o seu tipo de cacho e formato de rosto. Quanto tempo leva para crescer e como pedir sem fotos falsas.",
+  "metaDescription": "Corte lobo curto em cabelo cacheado: pra quem vale, quanto tempo leva pra crescer e como saber se seu cacho aguenta o formato mais camadado.",
+  "keywords": "corte lobo cacheado, wolf cut cabelo cacheado curto, corte lobo curto cachos, wolf cut curto cacheado, corte moderno cachos curto, Studio do Jon",
+  "date": "17 de Setembro, 2026",
+  "datePublished": "2026-09-17",
+  "dateModified": "2026-09-17",
+  "author": "Jon",
+  "category": "Cortes",
+  "image": "/blog-corte-hibrido-cachos.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Corte lobo e wolf cut são o mesmo corte?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, corte lobo é a tradução literal em português para wolf cut, referindo-se à mesma estrutura de camadas no topo e nuca longa."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte lobo curto funciona em rosto redondo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, porque a concentração de volume no topo alonga verticalmente a silhueta do rosto e equilibra os traços."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quanto tempo leva para o corte lobo curto crescer se eu não gostar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Em cerca de 4 a 6 meses as camadas superiores já se integram ao comprimento médio, permitindo nivelar o formato."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como pedir o corte lobo no salão sem usar fotos irrealistas?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Peça camadas curtas no topo com franja conectada e nuca desconectada, cortadas a seco na sua curvatura real."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte lobo curto precisa de muitos finalizadores pesados?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não, quanto mais leve o finalizador, mais as camadas flutuam e mantêm a leveza característica do visual."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> O corte lobo curto em cabelo cacheado vale muito a pena para quem busca praticidade máxima na rotina e um visual expressivo. Ele reduz o tempo de secagem pela metade, realça a textura das ondas e cachos e cria uma moldura moderna sem exigir manutenção excessiva no dia a dia.\n      </blockquote>\n\n      <h2>Corte Lobo x Wolf Cut: É a Mesma Coisa?</h2>\n      <p>Sim, o termo \"corte lobo\" é a tradução em português para o consagrado \"wolf cut\". Trata-se da mesma geometria capilar que combina a atitude desfiada dos anos 70 e 80 com a técnica moderna de escultura a seco.</p>\n      <p>Em comprimentos mais curtos (acima da linha da clavícula ou na altura da mandíbula), o corte ganha um frescor único, tornando-se uma excelente opção para quem está saindo da transição capilar ou quer renovar o visual após química. Para mais contexto sobre o formato clássico, confira o nosso <a href=\"/blog/wolf-cut-cabelo-cacheado\">guia sobre wolf cut em cabelo cacheado</a>.</p>\n\n      <h2>Pra Que Tipo de Rosto e Cacho Funciona Melhor?</h2>\n      <p>O corte lobo curto é extremamente democrático:</p>\n      <ul>\n        <li><strong>Rostos Redondos e Ovais:</strong> A altura gerada no topo alonga a silhueta e cria harmonia visual com o queixo.</li>\n        <li><strong>Rostos Quadrados:</strong> As mechas frontais desfiadas suavizam os ângulos da mandíbula.</li>\n        <li><strong>Cachos 2B a 3C:</strong> Ganham ativação instantânea na curvatura devido ao alívio do peso da base.</li>\n      </ul>\n\n      <h2>Quanto Tempo Até Crescer de Volta?</h2>\n      <p>Com o crescimento médio de 1 a 1,2 cm por mês, em 5 meses o corte atinge o padrão de um bob camadado, facilitando transições caso você deseje voltar ao cabelo longo no futuro.</p>\n\n      <h2>Como Pedir Esse Corte Sem Foto Genérica de Pinterest</h2>\n      <p>Evite levar fotos de cabelos lisos modelados com babyliss. Explique ao profissional que você quer um corte lobo adaptado ao seu cacho, pedindo graduação a seco, franja cortina orgânica e preservação da nuca sem desbastes agressivos.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Pronta para adotar o corte lobo curto em BH?</h3>\n        <p>No Studio do Jon, cuidamos da saúde do seu fio enquanto transformamos seu estilo. Agende seu atendimento online!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Horário no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 83,
+  "slug": "salao-especialista-cabelo-cacheado-bh",
+  "title": "Como Escolher Salão Especialista em Cabelo Cacheado em BH",
+  "seoTitle": "Como Escolher Salão Especialista em Cachos BH | Studio do Jon",
+  "excerpt": "Como saber se um salão realmente entende de cacho antes de marcar horário em Belo Horizonte. 5 sinais de quem lê o fio em vez de aplicar receita pronta.",
+  "metaDescription": "Como saber se um salão realmente entende de cacho antes de marcar horário em BH. 5 sinais de que o profissional lê o fio em vez de aplicar receita pronta.",
+  "keywords": "salão para cabelos cacheados em bh, salão cabelo cacheado bh, salão especialista em cachos bh, cabeleireiro cacheado bh, corte de cacho belo horizonte, Studio do Jon",
+  "date": "22 de Setembro, 2026",
+  "datePublished": "2026-09-22",
+  "dateModified": "2026-09-22",
+  "author": "Jon",
+  "category": "Especialista BH",
+  "image": "/blog-como-escolher-especialista.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Como saber se um salão em BH realmente entende de cabelos cacheados?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Verifique se o profissional realiza diagnóstico prévio a seco, se respeita a curvatura natural e se dispensa tesouras desbastadeiras."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte de cabelo cacheado em salão especialista deve ser a seco?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, o corte a seco é fundamental para enxergar o encolhimento, a distribuição de volume e a densidade real de cada quadrante."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Onde fica localizado o Studio do Jon em Belo Horizonte?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O Studio do Jon está localizado na Rua Belmiro Braga, 544, no bairro Caiçaras em Belo Horizonte, MG."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual é a média de valor de um corte em salão especialista em BH?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Varia entre R$ 150 e R$ 350, incluindo diagnóstico de saúde capilar, corte técnico a seco e protocolo de finalização."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como agendar um horário no Studio do Jon?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O agendamento é feito de forma 100% online e instantânea pelo site oficial na rota /agendar."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Para escolher um salão especialista em cabelo cacheado em BH com segurança, analise se o atendimento é baseado em diagnóstico físico do fio (corte a seco, porosidade e tração) ou em receitas genéricas de catálogo. Fuja de salões que molham o cabelo antes de avaliar a mola ou que insistem em usar navalhas e tesouras de desbaste.\n      </blockquote>\n\n      <h2>Certificado Não É Garantia — Leitura de Fio É</h2>\n      <p>Um salão especialista em cabelo cacheado é aquele que fundamenta cada tesourada e cada produto na física e na bioquímica da fibra capilar individual, em vez de aplicar um passo a passo padronizado.</p>\n      <p>Em Belo Horizonte, existem dezenas de salões com paredes cheias de diplomas de cursos de fim de semana. No entanto, a verdadeira autoridade técnica se prova na cadeira: na escuta atenta da sua rotina, na análise do histórico químico e no respeito à curvatura real sem imposição de padrões inalcançáveis.</p>\n\n      <h2>5 Perguntas pra Fazer Antes de Marcar</h2>\n      <ul>\n        <li><strong>Como é feito o corte?</strong> (A resposta deve ser a seco e no formato natural do seu dia a dia).</li>\n        <li><strong>Qual a composição dos produtos usados no lavatório?</strong> (Devem ser livres de sulfatos agressivos e silicones insolúveis pesados).</li>\n        <li><strong>Haverá diagnóstico de porosidade e elasticidade?</strong> (Veja como funciona o diagnóstico no <a href=\"/blog/especialista-cachos-bh\">guia sobre especialista em cachos em BH</a>).</li>\n        <li><strong>Você usa pente fino ou desembaraça com as mãos e escova flexível?</strong> (Desembaraço correto preserva a cutícula).</li>\n        <li><strong>O corte é pensado para o meu formato de rosto (visagismo)?</strong> (Entenda no nosso artigo sobre <a href=\"/blog/corte-cabelo-cacheado-bh\">por que o método importa mais que o salão</a>).</li>\n      </ul>\n\n      <h2>Sinais de Salão Que Não Entende de Cacho</h2>\n      <p>Fique atenta aos sinais de alerta:</p>\n      <ul>\n        <li>Levar você direto para o lavatório molhar o cabelo antes de conversar e ver o cacho seco.</li>\n        <li>Pentear o cabelo da raiz para baixo com força bruta no banho.</li>\n        <li>Oferecer \"botox\" ou \"alinhamento térmico\" com a falsa promessa de que \"apenas reduz o frizz sem alisar\".</li>\n      </ul>\n\n      <h2>Onde Fica o Studio do Jon e Como Funciona o Atendimento</h2>\n      <p>O <strong>Studio do Jon</strong> fica na Rua Belmiro Braga, 544, no tradicional bairro Caiçaras, em BH. Nosso espaço é dedicado exclusivamente ao estudo e cuidado de ondulados, cacheados e crespos, com atendimento calmo, individualizado e sem esteira de produção.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Pronta para viver uma experiência técnica de verdade em BH?</h3>\n        <p>Descubra o Método Leitura de Fio e tenha o corte dos seus sonhos. Escolha seu serviço e horário agora!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 84,
+  "slug": "especialista-cachos-bh",
+  "title": "Especialista em Cachos em BH: O Que Perguntar Antes de Marcar Horário",
+  "seoTitle": "Especialista em Cachos em BH: O Que Perguntar | Studio do Jon",
+  "excerpt": "Especialista em cachos em BH não é quem faz curly cut igual pra todo mundo. Veja as 7 etapas do Método Leitura de Fio e o que checar antes de agendar.",
+  "metaDescription": "Especialista em cachos em BH não é quem faz curly cut igual pra todo mundo. Veja o que perguntar e como funciona o diagnóstico antes da tesoura.",
+  "keywords": "especialista em cachos bh, cabeleireiro especialista em cabelo cacheado bh, corte especialista cachos bh, visagismo cachos bh, Studio do Jon",
+  "date": "24 de Setembro, 2026",
+  "datePublished": "2026-09-24",
+  "dateModified": "2026-09-24",
+  "author": "Jon",
+  "category": "Especialista BH",
+  "image": "/especialista-em-cabelo-cacheado-resultado.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que caracteriza um especialista em cachos de verdade?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O domínio da tricologia e da geometria a seco, avaliando curvatura, densidade, porosidade e tração antes de qualquer procedimento."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O que é o Método Leitura de Fio do Studio do Jon?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "É um protocolo proprietário em 7 etapas que une diagnóstico físico-químico, escultura a seco, higienização inteligente e educação capilar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Preciso levar meu cabelo pronto para a consulta com especialista?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, lavado, seco e finalizado na sua rotina normal de uso, sem coques apertados ou grampos que marquem a curvatura."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Um especialista em cachos faz químicas no cabelo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, descolorações e colorações seguras, desde que antecedidas por teste de mecha rigoroso e protocolo pré-química."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como sei se meu corte foi feito com a técnica correta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O cabelo mantém o caimento harmonioso no dia seguinte à lavagem em casa, sem pontas retas saltando para fora."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Um verdadeiro especialista em cachos em Belo Horizonte não replica fórmulas de internet; ele lê a geometria tridimensional da sua fibra. O diagnóstico precisa anteceder a tesoura em pelo menos 7 etapas claras, garantindo que o corte respeite seu estilo de vida, facilidade de finalização e a física natural da sua curvatura.\n      </blockquote>\n\n      <h2>A Diferença Entre \"Faz Cacho\" e \"Lê o Fio\"</h2>\n      <p>Muitos profissionais aprenderam apenas a usar difusor e finalizar cabelo com excesso de gelatina, mas continuam cortando a estrutura do fio como se fosse um cabelo liso repicado.</p>\n      <p>Ler o fio significa compreender que o couro cabeludo pode abrigar até três padrões de curvatura diferentes (por exemplo, 3A na nuca e 3B no topo), com taxas de encolhimento distintas. Tratar essa cabeça com uma única tesourada em linha reta causa assimetria imediata. Se você busca o espaço ideal na capital mineira, confira também nosso artigo sobre <a href=\"/blog/salao-especialista-cabelo-cacheado-bh\">como escolher salão especialista em cabelo cacheado em BH</a>.</p>\n\n      <h2>As 7 Etapas do Método Leitura de Fio, Explicadas Rápido</h2>\n      <ol>\n        <li><strong>Escuta & Rotina:</strong> Entendemos seu tempo real no dia a dia e suas maiores frustrações.</li>\n        <li><strong>Mapeamento Tridimensional a Seco:</strong> Medimos as zonas de maior retração e a densidade por quadrante.</li>\n        <li><strong>Visagismo Geométrico:</strong> Definimos a moldura ideal para harmonizar com seus traços faciais.</li>\n        <li><strong>Escultura Estrutural a Seco:</strong> O corte é executado mecha a mecha no estado natural do fio.</li>\n        <li><strong>Higienização & Acidificação:</strong> Limpeza fisiológica e equilíbrio de pH para fechar as cutículas.</li>\n        <li><strong>Finalização Didática:</strong> Você aprende na prática a técnica exata de aplicação para reproduzir em casa.</li>\n        <li><strong>Refinamento Pós-Secagem:</strong> Checagem milimétrica de pontas e balanço final sob o difusor.</li>\n      </ol>\n\n      <h2>O Que Perguntar na Hora de Marcar</h2>\n      <p>Pergunte sempre como será a condução do diagnóstico inicial e certifique-se de que o profissional não utilizará química de alisamento mascarada de tratamento. Sua identidade natural é inegociável.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Agende com quem é autoridade em cachos em Belo Horizonte</h3>\n        <p>No Studio do Jon, seu cacho é tratado com ciência, respeito e arte. Agende seu horário online em segundos!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Consulta com Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 85,
+  "slug": "corte-cabelo-cacheado-bh",
+  "title": "Corte de Cabelo Cacheado em BH: Por Que o Método Importa Mais que o Salão",
+  "seoTitle": "Corte Cabelo Cacheado BH: Método Leitura de Fio | Studio do Jon",
+  "excerpt": "Corte de cabelo cacheado em BH: por que salão chique ou preço alto não garante resultado. O que decide é o método de leitura e escultura a seco.",
+  "metaDescription": "Corte de cabelo cacheado em BH: por que endereço chique ou preço alto não garante resultado. O que realmente decide é o método de leitura do fio.",
+  "keywords": "corte cabelo cacheado bh, corte de cabelo cacheado bh, corte a seco bh, corte cacheado feminino bh, visagismo cacho bh, Studio do Jon",
+  "date": "29 de Setembro, 2026",
+  "datePublished": "2026-09-29",
+  "dateModified": "2026-09-29",
+  "author": "Jon",
+  "category": "Especialista BH",
+  "image": "/blog-leitura-fio-capa.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Por que o método de corte é mais importante que o luxo do salão?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Porque o resultado depende da compreensão física da retração da fibra capilar e não da sofisticação da decoração do ambiente."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual é a melhor técnica para cortar cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O corte a seco tridimensional mecha a mecha, que esculpe o formato no estado real que você usará no dia a dia."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte de cabelo cacheado perde o formato rápido?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Quando cortado pelo método correto a seco, o crescimento é uniforme e o corte dura perfeitamente de 3 a 4 meses."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Posso cortar as pontas sem perder o volume do meu cacho?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, removendo apenas as pontas envelhecidas nas camadas estratégicas, o cacho ganha ainda mais leveza e definição."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como é o pós-corte no Studio do Jon?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Inclui tratamento com acidificação biológica e aula prática de finalização para você manter o resultado em casa."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Um corte de cabelo cacheado bem-sucedido em BH não depende do valor da cadeira ou da localização do salão, mas do método geométrico aplicado. Quando o profissional domina a física do cacho a seco e o visagismo, o cabelo ganha balanço, facilidade de finalização e zero arrependimento no dia seguinte.\n      </blockquote>\n\n      <h2>Preço Alto ≠ Corte Bom</h2>\n      <p>O mercado de beleza tradicional costuma associar salões caros em bairros nobres a excelência técnica. Contudo, no universo dos cabelos com curvatura, a realidade frequentemente é outra: muitos estabelecimentos de alto padrão continuam aplicando técnicas ultrapassadas de escovação e corte molhado, entregando frustração e perda de definição.</p>\n      <p>O que realmente assegura a satisfação da cliente é a fidelidade a um método comprovado de leitura capilar. Vale a pena aprofundar nos critérios descritos em <a href=\"/blog/salao-especialista-cabelo-cacheado-bh\">como escolher salão especialista em BH</a> e nas perguntas essenciais do nosso artigo sobre <a href=\"/blog/especialista-cachos-bh\">especialista em cachos em BH</a>.</p>\n\n      <h2>O Que É Ler o Padrão de Fio na Prática</h2>\n      <p>Ler o padrão de fio significa observar a direção do redemoinho da coroa, a espessura da cutícula, a velocidade com que a água evapora e a força de tração que cada cacho suporta. É essa leitura que define se o corte deve ter camadas conectadas em 45° ou se precisa de graduações verticais para soltar a raiz.</p>\n\n      <h2>Antes e Depois: Exemplos Reais de BH</h2>\n      <p>No Studio do Jon, localizado no bairro Caiçaras, já atendemos centenas de mulheres e homens de todas as regiões de Belo Horizonte que chegaram com cabelos em formato de \"abajur\" ou \"pirâmide\" causados por cortes retos. Através da redistribuição tridimensional das mechas, devolvemos a liberdade de usar o cabelo solto com orgulho e praticidade.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Experimente o corte que entende a física do seu cacho em BH</h3>\n        <p>Agende seu horário no Studio do Jon e transforme sua relação com seu cabelo natural.</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Meu Corte</a>\n      </div>\n    "
+},
+  {
+  "id": 86,
+  "slug": "cabelo-cacheado-corta-seco",
+  "title": "Cabelo Cacheado se Corta Seco? A Verdade Sobre Seco x Molhado",
+  "seoTitle": "Cabelo Cacheado se Corta Seco ou Molhado? A Verdade | Studio do Jon",
+  "excerpt": "Cabelo cacheado se corta seco ou molhado? A resposta certa depende da física do fio. Descubra quando cada técnica deve ser aplicada sem mitos.",
+  "metaDescription": "Cabelo cacheado se corta seco ou molhado? A resposta certa depende do padrão de fio, não é regra única. Entenda quando cada técnica funciona.",
+  "keywords": "cabelo cacheado se corta seco, corte a seco cabelo cacheado, cortar cacho seco ou molhado, corte a seco vs molhado cachos, Studio do Jon BH",
+  "date": "01 de Outubro, 2026",
+  "datePublished": "2026-10-01",
+  "dateModified": "2026-10-01",
+  "author": "Jon",
+  "category": "Método Leitura de Fio",
+  "image": "/blog-fator-encolhimento-cachos-fisica-geometria.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Por que o corte a seco é tão recomendado para cabelos cacheados?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Porque permite visualizar o desenho do cacho, o volume e o fator de encolhimento no estado real em tempo real."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Existe alguma situação em que o cabelo cacheado deve ser cortado molhado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, em correções de bases estritas e alinhamentos milimétricos de densidade homogênea em ondulados 2A/2B."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como devo ir ao salão para fazer um corte a seco?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Com o cabelo limpo, completamente seco, finalizado como de costume e solto, sem prendedores ou tranças."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte a seco danifica as pontas do cabelo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não, desde que seja utilizado instrumental cirúrgico de aço japonês afiado com corte a laser sem tração mecânica."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte a seco demora mais que o corte tradicional?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Geralmente leva entre 60 e 90 minutos devido ao diagnóstico minucioso mecha por mecha e refinamento pós-lavagem."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Cabelo cacheado deve ser esculpido predominantemente a seco porque a água estica as pontes de hidrogênio e mascara o fator de encolhimento natural. Cortar a seco permite calibrar cada mecha exatamente onde ela repousa no dia a dia, evitando surpresas no comprimento quando o cabelo secar.\n      </blockquote>\n\n      <h2>Por Que \"Sempre Seco\" ou \"Sempre Molhado\" É Resposta Errada</h2>\n      <p>O corte a seco é a técnica de escultura capilar realizada com as mechas no seu padrão de curvatura e hidratação habitual, permitindo esculpir o volume tridimensional em tempo real.</p>\n      <p>No entanto, o extremismo de certas franquias que afirmam que \"molhado é proibido\" ignora casos específicos de transição e alinhamentos de perímetro. O segredo está no diagnóstico técnico individual. Para entender como aplicamos isso a fundo, veja nosso artigo completo sobre <a href=\"/blog/corte-a-seco-metodo-leitura-de-fio\">o corte a seco no Método Leitura de Fio</a>.</p>\n\n      <h2>Quando o Corte a Seco Funciona Melhor</h2>\n      <ul>\n        <li>Cachos tipo 3A a 4C com múltiplos padrões de encolhimento na mesma cabeça.</li>\n        <li>Cortes com foco em volume, camadas dinâmicas, wolf cut e franja.</li>\n        <li>Cabelos em transição capilar que precisam de harmonização de texturas diferentes.</li>\n      </ul>\n\n      <h2>Quando o Corte Molhado É Mais Preciso</h2>\n      <p>Em cabelos ondulados com baixíssima retração elástica (2A/2B) que buscam bases retas compactas (blunt cut), o corte úmido pode ser utilizado para definição de linhas perimetrais milimétricas, sempre com posterior checagem a seco.</p>\n\n      <h2>Como o Studio do Jon Decide Caso a Caso</h2>\n      <p>No Studio do Jon, avaliamos o coeficiente elástico do seu fio. Se a mola encolhe mais de 20%, o corte é estruturado integralmente a seco, garantindo que o comprimento planejado seja rigorosamente o comprimento entregue.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Descubra a precisão do corte feito sob medida para sua mola</h3>\n        <p>Agende sua sessão no Studio do Jon em BH e tenha um corte que valoriza seu cacho no estado real.</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Corte no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 87,
+  "slug": "corte-a-seco-metodo-leitura-de-fio",
+  "title": "Corte a Seco em Cabelo Cacheado: Como Funciona no Método Leitura de Fio",
+  "seoTitle": "Corte a Seco no Método Leitura de Fio | Studio do Jon BH",
+  "excerpt": "Corte a seco em cabelo cacheado no Método Leitura de Fio: conheça as 7 etapas, da escuta até a finalização como validação do resultado.",
+  "metaDescription": "Corte a seco em cabelo cacheado dentro do Método Leitura de Fio: veja as 7 etapas, da escuta até a finalização como validação do resultado.",
+  "keywords": "corte a seco cabelo cacheado, método leitura de fio, corte a seco cachos bh, como funciona corte a seco, Studio do Jon",
+  "date": "06 de Outubro, 2026",
+  "datePublished": "2026-10-06",
+  "dateModified": "2026-10-06",
+  "author": "Jon",
+  "category": "Método Leitura de Fio",
+  "image": "/blog-leitura-fio-capa.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que torna o Método Leitura de Fio diferente de outros cortes a seco?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ele integra a física do cacho ao visagismo e à educação da cliente, tratando a finalização como ferramenta de validação da saúde capilar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como é avaliada a porosidade durante o corte?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pelo teste tátil da cutícula e pela velocidade de absorção hídrica nas mechas piloto antes de definir a química ou o tratamento."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O Método Leitura de Fio serve para quem está em transição capilar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, é perfeito para remover progressivamente a parte com química sem encurtar bruscamente o comprimento visual."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quantas vezes por ano devo fazer o corte pelo método?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "De 3 a 4 vezes ao ano para manter as pontas livres de nós e a distribuição de volume sempre aerodinâmica."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte inclui lavagem e tratamento?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, todo atendimento conta com lavagem fisiológica com acidificação inteligente e finalização com difusor."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> O corte a seco pelo Método Leitura de Fio é um processo holístico de 7 etapas criado para eliminar a loteria dos salões. Ao esculpir os cachos no seu estado real e utilizar a finalização como teste de estresse da textura, o método entrega um formato duradouro que continua impecável semanas após sair do estúdio.\n      </blockquote>\n\n      <h2>As 7 Etapas, Uma por Uma</h2>\n      <p>O Método Leitura de Fio é o sistema proprietário de atendimento desenvolvido por Jonatan Junior no Studio do Jon em Belo Horizonte, estruturado em:</p>\n      <ul>\n        <li><strong>1. Anamnese de Estilo e Rotina:</strong> Identificamos seus hábitos, tempo de secagem e histórico químico.</li>\n        <li><strong>2. Leitura Biométrica do Fio:</strong> Mapeamento de densidade, curvatura por setor e fator de encolhimento.</li>\n        <li><strong>3. Arquitetura Visagista:</strong> Definição das linhas de força do corte em relação aos traços faciais.</li>\n        <li><strong>4. Escultura Estrutural a Seco:</strong> Corte preciso mecha a mecha com tesouras convexas de altíssima precisão.</li>\n        <li><strong>5. Terapia de Lavatório & Acidificação:</strong> Higienização fisiológica e reposição de nutrientes com controle de pH.</li>\n        <li><strong>6. Validação Didática na Finalização:</strong> Ensino da técnica ideal de aplicação para seu tipo de cacho.</li>\n        <li><strong>7. Ajuste Fino de Balanço:</strong> Polimento milimétrico com difusor após a secagem completa.</li>\n      </ul>\n      <p>Entenda mais sobre a discussão técnica em nosso artigo <a href=\"/blog/cabelo-cacheado-corta-seco\">cabelo cacheado se corta seco ou molhado</a> e nas orientações sobre <a href=\"/blog/especialista-cachos-bh\">especialista em cachos em BH</a>.</p>\n\n      <h2>Por Que a Finalização É Parte do Diagnóstico, Não Só Acabamento</h2>\n      <p>No método convencional, a finalização serve apenas para \"maquiar\" o corte antes da foto. No Studio do Jon, ela funciona como uma prova de carga: observamos como a fibra absorve o creme, se há formação de falsa caspa ou excesso de peso, ajustando o protocolo de home care na hora.</p>\n\n      <h2>O Que Muda no Resultado Final</h2>\n      <p>O resultado é a autonomia: você acorda no day after sabendo exatamente como reativar seu cabelo em 2 minutos, sem depender de receitas milagrosas ou horas de dedoliss exaustivo.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Venha vivenciar o Método Leitura de Fio no Studio do Jon</h3>\n        <p>Agende seu horário com Jonatan Junior em Belo Horizonte e conquiste a melhor versão do seu cacho.</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Sessão Completa</a>\n      </div>\n    "
+},
+  {
+  "id": 88,
+  "slug": "french-bob-cacheado",
+  "title": "French Bob Cacheado: Como Adaptar o Corte Francês pro Cacho",
+  "seoTitle": "French Bob Cacheado: Como Adaptar o Corte Francês | Studio do Jon",
+  "excerpt": "French bob em cabelo cacheado: como o clássico corte reto francês se adapta ao volume do cacho sem perder o charme parisiense e sem armar.",
+  "metaDescription": "French bob em cabelo cacheado: como o corte reto francês se adapta ao volume do cacho sem perder o formato icônico. Antes de cortar, veja isso.",
+  "keywords": "french bob cacheado, french bob cabelo cacheado, corte frances cachos, bob curto cacheado, corte chanell cacheado curto, Studio do Jon BH",
+  "date": "08 de Outubro, 2026",
+  "datePublished": "2026-10-08",
+  "dateModified": "2026-10-08",
+  "author": "Jon",
+  "category": "Cortes",
+  "image": "/blog-french-bob-cacheado-geometria-volume.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que caracteriza o french bob no cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Comprimento na altura da boca ou mandíbula com franja na linha das sobrancelhas e leve graduação interna para não armar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Cabelo cacheado com muito volume pode usar french bob?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, criando canais internos de alívio de peso a seco que mantêm o contorno arredondado e elegante."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual é a diferença entre chanel clássico e french bob no cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O french bob é mais curto e descontraído, quase sempre acompanhado de franja e pontas com leve movimento natural."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como finalizar o french bob cacheado no dia a dia?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Aplique mousse leve ou leave-in líquido e amasse suavemente as mechas de baixo para cima, secando ao ar ou difusor."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "De quanto em quanto tempo precisa retocar o french bob?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A cada 60 a 75 dias para manter o comprimento icônico acima da linha dos ombros."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> O french bob cacheado une o charme sofisticado parisiense à textura exuberante dos cachos. Para não ficar triangular ou com peso excessivo na mandíbula, o corte exige camadas ocultas internas esculpidas a seco que distribuem o volume sem quebrar a linha geométrica perimetral do queixo.\n      </blockquote>\n\n      <h2>O Que É o French Bob Original</h2>\n      <p>O french bob é um corte chanel curto clássico de inspiração francesa dos anos 1920, com terminação na altura dos lábios ou mandíbula e franja na altura das sobrancelhas.</p>\n      <p>Se em cabelos lisos ele cria uma silhueta gráfica e polida, no cabelo cacheado ele entrega um visual vintage moderno e extremamente estiloso. No Studio do Jon, em Belo Horizonte, adaptamos a geometria para que a franja converse perfeitamente com as mechas laterais. Se você gosta de cortes com movimento, conheça também o <a href=\"/blog/corte-borboleta-cabelo-cacheado\">corte borboleta em cabelo cacheado</a>.</p>\n\n      <h2>Por Que Corte Reto em Cacho Precisa de Camada Escondida</h2>\n      <p>Cortar uma linha reta pura em cabelo cacheado gera o temido formato de triângulo: as pontas se acumulam e a raiz fica colada na cabeça. A técnica do french bob cacheado envolve esculpir graduações imperceptíveis no interior da mecha, fazendo com que o volume flutue de forma harmônica ao redor do pescoço.</p>\n\n      <h2>Pra Qual Comprimento de Cacho Funciona Melhor</h2>\n      <p>É ideal para quem tem cachos médios a curtos ou está buscando um corte de renovação pós-transição capilar. Em curvaturas 2C, 3A e 3B ele entrega uma textura despojada irresistível.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Quer a elegância do French Bob no seu cacho?</h3>\n        <p>No Studio do Jon em BH, desenhamos o corte com base na geometria do seu rosto. Agende seu horário!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar French Bob</a>\n      </div>\n    "
+},
+  {
+  "id": 89,
+  "slug": "corte-borboleta-cabelo-cacheado",
+  "title": "Corte Borboleta em Cabelo Cacheado: Funciona no Crespo e no Ondulado?",
+  "seoTitle": "Corte Borboleta em Cabelo Cacheado: Funciona? | Studio do Jon",
+  "excerpt": "Corte borboleta em cabelo cacheado: como as camadas em V criam asas de volume sem ralar as pontas. Comparação de ondulados a crespos.",
+  "metaDescription": "Corte borboleta em cabelo cacheado funciona em qualquer padrão? Veja como a camada em V se comporta do ondulado ao crespo e onde costuma dar errado.",
+  "keywords": "corte borboleta cabelo cacheado, corte borboleta cacheado, butterfly cut cacheado, corte em v cacheado com camadas, Studio do Jon BH",
+  "date": "13 de Outubro, 2026",
+  "datePublished": "2026-10-13",
+  "dateModified": "2026-10-13",
+  "author": "Jon",
+  "category": "Cortes",
+  "image": "/blog-corte-borboleta-cabelo-ondulado-cacheado-visagismo.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que é o corte borboleta (butterfly cut)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "É um corte com duas camadas visíveis distintas: uma superior mais curta que emoldura o rosto e outra inferior que preserva o comprimento longo."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte borboleta afina as pontas do cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Se cortado de forma incorreta sim; mas quando executado a seco com base sólida, preserva a densidade das pontas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Cabelo crespo pode fazer o corte borboleta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, adaptando as camadas superiores para que a retração elástica não crie um degrau desproporcional no topo."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O corte borboleta dá ilusão de cabelo mais curto?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "De frente ele aparenta um corte curto volumoso, enquanto de costas mantém todo o comprimento longo."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual é a melhor finalização para o corte borboleta cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Finalização em camadas separadas com difusor posicionado a 90 graus para inflar as asas superiores."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> O corte borboleta em cabelo cacheado cria o efeito de \"duas em uma\": entrega o volume e a leveza de um cabelo curto na frente enquanto preserva todo o comprimento e a densidade nas costas. É perfeito para quem quer mudar radicalmente a moldura facial sem abrir mão do cabelo longo.\n      </blockquote>\n\n      <h2>O Que É o Corte Borboleta</h2>\n      <p>O corte borboleta (butterfly cut) é uma arquitetura de camadas sobrepostas com forte inspiração nos anos 90, caracterizada por uma divisão clara entre o bloco superior (que cria uma moldura curta ao redor das maçãs do rosto) e o bloco inferior longo.</p>\n      <p>No cabelo cacheado, as camadas agem como verdadeiras asas: quando o cacho seca, as mechas superiores flutuam livremente, gerando movimento multidirecional. Se você também aprecia cortes clássicos elegantes, vale ler sobre o <a href=\"/blog/french-bob-cacheado\">french bob cacheado</a>.</p>\n\n      <h2>Em Ondulado x Crespo: O Que Muda</h2>\n      <ul>\n        <li><strong>Em Cabelos Ondulados (2A a 2C):</strong> As camadas proporcionam balanço fluido e facilitam a formação de ondas na raiz sem peso.</li>\n        <li><strong>Em Cabelos Cacheados (3A a 3C):</strong> Cria uma transição perfeita em cascata, ideal para cabelos volumosos e cheios.</li>\n        <li><strong>Em Cabelos Crespos (4A a 4C):</strong> Exige cálculo apurado da retração para não formar um bloco desconectado em relação à nuca.</li>\n      </ul>\n\n      <h2>Erro Comum: Camada Alta Demais no Crespo</h2>\n      <p>O principal erro em salões não especializados é elevar a mecha frontal a 180° e cortar curto demais. No cabelo com curvatura, isso faz com que a camada superior encolha acima da testa, perdendo a conexão com a base. No Studio do Jon, cada mecha é cortada na sua queda natural a seco.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Quer o movimento único do Corte Borboleta em BH?</h3>\n        <p>No Studio do Jon, calculamos a proporção exata para o seu cacho. Marque seu horário online!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Corte Borboleta</a>\n      </div>\n    "
+},
+  {
+  "id": 90,
+  "slug": "cronograma-capilar-para-cabelos-cacheados",
+  "title": "Cronograma Capilar para Cabelo Cacheado: Passo a Passo Real",
+  "seoTitle": "Cronograma Capilar Cabelo Cacheado: Passo a Passo Real | Studio do Jon",
+  "excerpt": "Cronograma capilar para cabelo cacheado sem tabelas genéricas de internet. Aprenda a montar hidratação, nutrição e reconstrução pela porosidade.",
+  "metaDescription": "Cronograma capilar pra cabelo cacheado, sem receita genérica de internet. Como montar hidratação, nutrição e reconstrução pro seu padrão de fio.",
+  "keywords": "cronograma capilar para cabelos cacheados, cronograma capilar cabelo cacheado, hidratação nutrição reconstrução cachos, tabela cronograma cacheado, Studio do Jon",
+  "date": "15 de Outubro, 2026",
+  "datePublished": "2026-10-15",
+  "dateModified": "2026-10-15",
+  "author": "Jon",
+  "category": "Tratamentos",
+  "image": "/blog-cronograma-capilar.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que é cronograma capilar para cabelos cacheados?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "É uma rotina organizada de tratamento dividida em hidratação (água), nutrição (lipídios) e reconstrução (proteínas) conforme a necessidade do fio."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quantas vezes por semana devo fazer o cronograma no cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Geralmente 1 a 2 vezes por semana, acompanhando o seu ritmo de lavagem para não saturar as cutículas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual etapa o cabelo cacheado mais precisa?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A nutrição (lipídios), pois o formato espiral dificulta a chegada da oleosidade natural da raiz até as pontas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Com que frequência devo fazer reconstrução capilar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A cada 15 a 30 dias em cabelos com química e a cada 30 a 45 dias em cabelos naturais virgens."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como saber se o cronograma está funcionando?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "O cabelo ganha elasticidade macia, facilidade para desembaraçar e retenção de definição por múltiplos day afters."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Um cronograma capilar eficaz para cabelos cacheados não segue tabelas engessadas de internet, mas responde ao nível de porosidade e perda lipídica da fibra. Priorizar a reposição lipídica (nutrição) e selar com pH ácido é a chave para reter água e manter o cacho sedoso e definido.\n      </blockquote>\n\n      <h2>Hidratação, Nutrição, Reconstrução: O Que Cada Uma Faz</h2>\n      <p>O cronograma capilar é o protocolo sequencial de reposição dos componentes estruturais da fibra capilar: água, ácidos graxos e queratina.</p>\n      <ul>\n        <li><strong>Hidratação (Reposição Hídrica):</strong> Devolve água e flexibilidade através de ativos como aloe vera, pantenol e glicerina.</li>\n        <li><strong>Nutrição (Reposição Lipídica):</strong> Cria o filme protetor que impede a evaporação da água usando manteigas de karité, murumuru e óleos vegetais nobres.</li>\n        <li><strong>Reconstrução (Reposição Proteica):</strong> Devolve massa e aminoácidos à queratina fragilizada por química ou tração mecânica.</li>\n      </ul>\n      <p>Se você tentou fazer e não viu efeito, confira nosso guia sobre os <a href=\"/blog/cronograma-capilar-erros-cacheado\">erros mais comuns no cronograma capilar cacheado</a> e aprenda sobre <a href=\"/blog/porosidade-cabelo-cacheado\">como identificar sua porosidade capilar</a>.</p>\n\n      <h2>Como Montar a Ordem Certa pro Seu Cacho</h2>\n      <table style=\"width: 100%; border-collapse: collapse; margin: 2rem 0; font-family: sans-serif; font-size: 14px; text-align: left; color: #FAF5E8;\">\n        <thead>\n          <tr style=\"border-bottom: 2px solid rgba(255,255,255,0.1); background-color: rgba(255,255,255,0.02);\">\n            <th style=\"padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);\">Diagnóstico de Porosidade</th>\n            <th style=\"padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);\">Foco Principal do Cronograma</th>\n            <th style=\"padding: 12px; font-weight: bold; border: 1px solid rgba(255,255,255,0.05);\">Ciclo Mensal Sugerido</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr style=\"border-bottom: 1px solid rgba(255,255,255,0.05);\">\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #E9C46A;\">Porosidade Baixa</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Hidratação com calor suave e produtos fluidos.</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">3x Hidratação / 1x Nutrição leve.</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid rgba(255,255,255,0.05);\">\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #2A9D8F;\">Porosidade Média</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Equilíbrio entre água e nutrição lipídica.</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">2x Hidratação / 2x Nutrição / 1x Reconstrução mensal.</td>\n          </tr>\n          <tr style=\"border-bottom: 1px solid rgba(255,255,255,0.05);\">\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05); font-weight: bold; color: #D48C6A;\">Porosidade Alta (Química/Descolorido)</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">Reconstrução + Nutrição densa + Acidificação.</td>\n            <td style=\"padding: 12px; border: 1px solid rgba(255,255,255,0.05);\">2x Nutrição / 1x Reconstrução quinzenal / Acidificação semanal.</td>\n          </tr>\n        </tbody>\n      </table>\n\n      <h2>Erros Que Travam o Resultado</h2>\n      <p>O maior erro é o excesso de queratina sem necessidade (que enrijece o cacho e causa quebra) ou a sobreposição de máscaras sem o enxágue correto, gerando acúmulo de resíduos (build-up).</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Quer um diagnóstico profissional do seu cronograma em BH?</h3>\n        <p>No Studio do Jon, avaliamos seu fio e montamos sua rotina de tratamento personalizada. Agende seu horário!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Tratamento Personalizado</a>\n      </div>\n    "
+},
+  {
+  "id": 91,
+  "slug": "cronograma-capilar-erros-cacheado",
+  "title": "Cronograma Capilar Não Funciona? Erros Mais Comuns no Cacheado",
+  "seoTitle": "Cronograma Capilar Não Funciona? Erros no Cacheado | Studio do Jon",
+  "excerpt": "Fez cronograma capilar e o cacho continuou sem definição e ressecado? Veja os 3 maiores erros que travam a absorção dos produtos.",
+  "metaDescription": "Fez cronograma capilar e não viu diferença no cacho? Veja os erros mais comuns — geralmente é ordem errada ou produto que não bate com sua porosidade.",
+  "keywords": "cronograma capilar erros cacheado, cronograma capilar nao funciona, cabelo cacheado rigido quebrando, excesso de queratina cachos, Studio do Jon",
+  "date": "20 de Outubro, 2026",
+  "datePublished": "2026-10-20",
+  "dateModified": "2026-10-20",
+  "author": "Jon",
+  "category": "Tratamentos",
+  "image": "/blog-fadiga-higral-cabelo-cacheado-crespo-sintomas-tratamento.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Por que o cronograma capilar não fez efeito no meu cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Normalmente devido à cutícula aberta por pH desequilibrado ou acúmulo de resíduos (build-up) que impede os ativos de penetrarem."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O que acontece se usar muita queratina no cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ocorre enrijecimento excessivo da fibra, perda da elasticidade natural do cacho e quebra mecânica."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como remover o excesso de produtos acumulados no fio?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Fazendo uma higienização profunda com shampoo antirresíduos equilibrado ou tratamento quelante desmineralizante."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Posso misturar várias máscaras na mesma aplicação?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não é recomendado, pois a incompatibilidade de emulsificantes anula a ação dos ingredientes ativos."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Por que hidratar sem acidificar não adianta em cabelo poroso?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Porque com o pH alcalino as cutículas permanecem abertas e a água evapora poucas horas após a secagem."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> Se o seu cronograma capilar não está gerando resultado, o problema quase sempre reside em três fatores: cutículas desreguladas por pH alcalino, excesso prejudicial de proteínas (efeito reboco) ou acúmulo de silicones insolúveis. Corrigir o pH com acidificação é o primeiro passo para destravar a absorção.\n      </blockquote>\n\n      <h2>Erro 1: Ignorar a Porosidade Antes de Montar o Cronograma</h2>\n      <p>Tentar tratar um cabelo sem conhecer sua capacidade de absorção e retenção hídrica é como regar uma planta com vaso furado: os ativos entram e saem sem fixar na fibra.</p>\n      <p>Cabelos com porosidade alta perdem água instantaneamente se não receberem uma blindagem ácida nas cutículas. Entenda como medir isso no nosso artigo sobre <a href=\"/blog/porosidade-cabelo-cacheado\">porosidade do cabelo cacheado</a> e no guia de <a href=\"/blog/cronograma-capilar-para-cabelos-cacheados\">cronograma capilar passo a passo</a>.</p>\n\n      <h2>Erro 2: Excesso de Proteína (Reconstrução Desnecessária)</h2>\n      <p>Muitas pessoas acreditam que reconstrução é o tratamento mais potente e a utilizam semanalmente em cabelos naturais virgens. O excesso de aminoácidos cristaliza a haste capilar, tornando o cacho duro, opaco e quebradiço ao toque.</p>\n\n      <h2>Erro 3: Hidratação Sem Selagem de Cutícula</h2>\n      <p>Aplicar máscaras ricas em água sem um condicionador de pH fisiológico (entre 3.5 e 4.5) deixa as escamas da cutícula entreabertas. O resultado é o cabelo bonito molhado e armado com frizz logo após secar.</p>\n\n      <h2>Como Corrigir Sem Jogar Tudo Fora</h2>\n      <p>Faça uma pausa nos tratamentos pesados, realize uma desintoxicação capilar com shampoo suave de limpeza profunda e introduza uma acidificação semanal balanceada.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Recupere a saúde do seu cacho com diagnóstico clínico</h3>\n        <p>No Studio do Jon em BH, identificamos a causa raiz do ressecamento e restauramos sua fibra. Agende agora!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Avaliação no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 92,
+  "slug": "acidificacao-capilar-ph-acido",
+  "title": "Acidificação Capilar: o Que é pH Ácido e Por Que Ele Sela a Cutícula",
+  "seoTitle": "Acidificação Capilar: pH Ácido e Selagem de Cutícula | Studio do Jon",
+  "excerpt": "Entenda a química da acidificação capilar: como o pH ácido fecha as cutículas do cabelo cacheado, retém hidratação e elimina o frizz poroso.",
+  "metaDescription": "Acidificação capilar explicada sem enrolação técnica: o que é pH ácido, por que ele sela a cutícula e como isso muda o brilho e a definição do cacho.",
+  "keywords": "acidificação capilar, ph ácido cabelo cacheado, selar cutícula cachos, acidificante capilar como usar, cabelo poroso acidificação, Studio do Jon BH",
+  "date": "22 de Outubro, 2026",
+  "datePublished": "2026-10-22",
+  "dateModified": "2026-10-22",
+  "author": "Jon",
+  "category": "Tratamentos",
+  "image": "/blog-ph-capilar-capa.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que é acidificação capilar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "É a aplicação de produtos com pH entre 3.0 e 4.5 para neutralizar a alcalinidade e alinhar as escamas da cutícula capilar."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Posso usar vinagre de maçã puro para acidificar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não é o ideal. Formulações cosméticas contêm tamponamento de pH seguro e agentes emolientes que não ressecam a fibra."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Com que frequência devo acidificar meu cacho?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cabelos descoloridos: quinzenalmente; cabelos virgens e saudáveis: 1 vez ao mês ou a cada 45 dias."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Acidificação alisa o cabelo cacheado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Não, o pH ácido não altera as pontes de dissulfeto responsáveis pela curvatura; apenas alinha a cutícula externa."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "A acidificação entra antes ou depois da máscara de tratamento?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Geralmente após o shampoo e antes da máscara de hidratação ou nutrição, facilitando a retenção dos nutrientes."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> A acidificação capilar é o reequilíbrio eletroquímico do fio de cabelo. Como a fibra capilar saudável é naturalmente ácida (pH entre 4.5 e 5.5), o contato com água clorada, descolorações e shampoos alcalinos abre as cutículas. O acidificante devolve o ponto isoelétrico, blindando a hidratação interna.\n      </blockquote>\n\n      <h2>O Que É pH e Por Que o Cabelo Pede Ácido</h2>\n      <p>O potencial hidrogeniônico (pH) é a escala que mede o grau de acidez ou alcalinidade de uma substância em relação à água pura.</p>\n      <p>A estrutura de queratina do cabelo humano tem ponto isoelétrico em torno de pH 3.67. Quando exposto a substâncias com pH acima de 6.0 (como pós descolorantes e águas duras), o fio ganha cargas elétricas negativas que afastam as placas da cutícula, gerando aspereza e perda de nutrientes. Veja também nosso estudo sobre <a href=\"/blog/porosidade-cabelo-cacheado\">porosidade capilar no cacho</a> e o guia sobre <a href=\"/blog/cronograma-capilar-para-cabelos-cacheados\">cronograma capilar</a>.</p>\n\n      <h2>Como a Acidificação Sela a Cutícula na Prática</h2>\n      <p>Ao aplicar um acidificante cosmético com pH 3.0 a 3.5, as pontes iônicas da haste capilar se contraem imediatamente. As escamas sobrepostas fecham-se perfeitamente sobre o córtex, criando uma superfície plana e espelhada que reflete a luz e entrega brilho radiante.</p>\n\n      <h2>Sinais de Que Seu Cabelo Tá Alcalinizado</h2>\n      <ul>\n        <li>Cabelo que embaraça instantaneamente no contato com a água do banho.</li>\n        <li>Frizz constante que não cede com nenhum tipo de óleo vegetal.</li>\n        <li>Pontas que secam muito rápido mas parecem sempre estaladiças e ásperas.</li>\n      </ul>\n\n      <h2>Como Entra no Cronograma</h2>\n      <p>Use o acidificante após lavar com shampoo suave, deixe agir de 3 a 5 minutos, enxágue abundantemente e aplique sua máscara de nutrição favorita.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Experimente a acidificação biológica profissional em BH</h3>\n        <p>No Studio do Jon, restauramos o pH do seu cacho com produtos biocompatíveis de alta performance. Agende seu horário!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Tratamento de Acidificação</a>\n      </div>\n    "
+},
+  {
+  "id": 93,
+  "slug": "porosidade-cabelo-cacheado",
+  "title": "Porosidade do Cabelo Cacheado: Como Descobrir a Sua e o Que Muda no Cuidado",
+  "seoTitle": "Porosidade Cabelo Cacheado: Como Descobrir | Studio do Jon",
+  "excerpt": "Porosidade alta, baixa ou normal: como descobrir a sua sem o mito do teste do copo d'água e escolher os produtos certos para o seu cacho.",
+  "metaDescription": "Porosidade alta, baixa ou normal: como descobrir a sua sem teste caseiro furado, e por que isso decide todo o cronograma capilar do cacho.",
+  "keywords": "porosidade cabelo cacheado, como saber a porosidade do cabelo, teste porosidade cachos, porosidade alta o que fazer, porosidade baixa cachos, Studio do Jon",
+  "date": "27 de Outubro, 2026",
+  "datePublished": "2026-10-27",
+  "dateModified": "2026-10-27",
+  "author": "Jon",
+  "category": "Tratamentos",
+  "image": "/blog-porosidade.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que é porosidade capilar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "É a capacidade física da cutícula do cabelo de absorver e reter umidade, lipídios e nutrientes no córtex."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Por que o teste do copo d'água com fio de cabelo não é confiável?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Porque a tensão superficial da água e resíduos de cremes de pentear impedem o fio de afundar, gerando falsos diagnósticos."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O que fazer com cabelo cacheado de porosidade alta?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Acidificar regularmente, usar máscaras ricas em lipídios e selar as pontas com óleos vegetais de alta viscosidade."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como tratar cabelo de porosidade baixa?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Utilizar água morna para abrir levemente as cutículas e priorizar finalizadores leves à base de água."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "A porosidade pode mudar ao longo do comprimento do cabelo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, é muito comum ter raiz de porosidade baixa/média e pontas com porosidade alta devido ao desgaste ambiental."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> A porosidade capilar mede a abertura das escamas da cutícula e dita a velocidade com que seu cacho ganha ou perde água. Identificar sua porosidade com métodos táteis reais é o que define se você precisa de produtos leves fluidos ou de manteigas densas com acidificação constante.\n      </blockquote>\n\n      <h2>Por Que Teste do Copo d'Água Engana</h2>\n      <p>A porosidade capilar é a propriedade higroscópica que determina a permeabilidade da haste capilar aos líquidos e tratamentos cosméticos.</p>\n      <p>O famoso teste de colocar o fio de cabelo no copo d'água é uma falácia científica: a tensão superficial do líquido e a presença de óleos residuais fazem quase qualquer fio boiar, levando milhares de pessoas a comprar produtos errados. Para entender como o pH interfere na cutícula, veja nosso artigo sobre <a href=\"/blog/acidificacao-capilar-ph-acido\">acidificação capilar e pH</a> e nosso guia de <a href=\"/blog/cronograma-capilar-para-cabelos-cacheados\">cronograma capilar</a>.</p>\n\n      <h2>Como o Diagnóstico É Feito no Studio do Jon</h2>\n      <p>No Método Leitura de Fio, o diagnóstico de porosidade é feito através do <strong>teste tátil de deslizamento</strong>: deslizamos os dedos de baixo para cima contra as escamas do fio seco para sentir o grau de aspereza, e observamos o comportamento do cacho sob a névoa de água no lavatório.</p>\n\n      <h2>Porosidade Alta x Baixa: O Que Muda no Produto</h2>\n      <ul>\n        <li><strong>Porosidade Baixa:</strong> Cutículas muito fechadas e compactas. Requer calor suave na aplicação, produtos aquosos e formulações sem manteigas pesadas.</li>\n        <li><strong>Porosidade Média (Ideal):</strong> Cutículas alinhadas e saudáveis. Mantém hidratação com rotina padrão de cuidados.</li>\n        <li><strong>Porosidade Alta:</strong> Cutículas abertas, desgastadas ou danificadas por descoloração. Exige acidificantes periódicos e manteigas selantes para reter nutrientes.</li>\n      </ul>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Descubra o diagnóstico real da porosidade do seu cacho em BH</h3>\n        <p>No Studio do Jon, indicamos os produtos exatos que seu fio precisa. Agende sua consultoria capilar!</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar Consulta no Studio do Jon</a>\n      </div>\n    "
+},
+  {
+  "id": 94,
+  "slug": "fator-de-encolhimento-cabelo-cacheado",
+  "title": "Fator de Encolhimento no Cabelo Cacheado: Como Medir e Por Que Ele Engana no Corte",
+  "seoTitle": "Fator de Encolhimento Cabelo Cacheado: Como Medir | Studio do Jon",
+  "excerpt": "Fator de encolhimento: por que seu cacho parece muito mais curto seco do que molhado e como calcular essa taxa para nunca errar no corte.",
+  "metaDescription": "Fator de encolhimento é por que seu cabelo parece mais curto molhado x seco — e por que ignorar isso é o erro nº1 que estraga corte de cacheado.",
+  "keywords": "fator encolhimento cabelo cacheado, fator de encolhimento cacheado, encolhimento cabelo crespo, como medir fator encolhimento, corte cacho encolhimento, Studio do Jon BH",
+  "date": "29 de Outubro, 2026",
+  "datePublished": "2026-10-29",
+  "dateModified": "2026-10-29",
+  "author": "Jon",
+  "category": "Método Leitura de Fio",
+  "image": "/blog-fator-encolhimento-cachos-fisica-geometria.webp",
+  "faqSchema": {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "O que é o fator de encolhimento?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "É a diferença percentual entre o comprimento da mecha totalmente esticada e seu comprimento em repouso natural seco."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qual curvatura tem o maior fator de encolhimento?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Os cabelos crespos 4A, 4B e 4C, que podem encolher entre 50% e 75% do seu comprimento real."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "O fator de encolhimento é sinal de cabelo saudável?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim, indica alta elasticidade córtex e integridade das pontes de hidrogênio e dissulfeto da queratina."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como diminuir o fator de encolhimento sem química?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Utilizando técnicas de finalização como fitagem com cremes mais densos, dedoliss ou secagem com difusor esticando a raiz suavemente."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Como o Studio do Jon compensa o encolhimento no corte?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Cortando 100% a seco no caimento natural do cacho, eliminando qualquer surpresa pós-lavagem."
+        }
+      }
+    ]
+  },
+  "content": "\n      <blockquote id=\"tldr\">\n        <strong>TL;DR:</strong> O fator de encolhimento é a prova física de que o seu cacho tem saúde e elasticidade. Ele ocorre porque a mola da queratina se contrai à medida que a água evapora. Ignorar essa retração ao cortar é a causa nº 1 de cortes que ficam curtos demais, exigindo escultura puramente a seco.\n      </blockquote>\n\n      <h2>O Que É Fator de Encolhimento</h2>\n      <p>O fator de encolhimento é o coeficiente biomecânico de retração da haste capilar com curvatura, calculado pela relação entre o comprimento esticado sob tensão e o comprimento em repouso elástico no estado seco.</p>\n      <p>Quanto mais fechada for a espiral do cacho, maior é o número de voltas por centímetro e, portanto, maior será a retração visual. Se você tem cabelos crespos, veja nosso artigo sobre <a href=\"/blog/wolf-cut-cabelo-crespo\">wolf cut em cabelo crespo 4C</a>.</p>\n\n      <h2>Como Medir o Seu em Casa</h2>\n      <ol>\n        <li>Separe uma mecha na lateral da cabeça com o cabelo seco e finalizado.</li>\n        <li>Meça com uma fita métrica a mecha solta em repouso (exemplo: 10 cm).</li>\n        <li>Estique suavemente a mesma mecha até o limite sem forçar a raiz e meça novamente (exemplo: 25 cm).</li>\n        <li>Calcule a taxa: <code>[(25 - 10) / 25] * 100 = 60% de encolhimento</code>.</li>\n      </ol>\n\n      <h2>Por Que Cortar Sem Considerar Isso Dá Corte Curto Demais</h2>\n      <p>Se um cabeleireiro corta 5 cm de um cabelo molhado que tem 60% de encolhimento, na prática o cabelo parecerá 12 a 15 cm mais curto quando secar. É por isso que tantas pessoas relatam traumas de cortes em salões não especializados.</p>\n\n      <h2>Como Entra na Leitura de Fio Antes da Tesoura</h2>\n      <p>No Studio do Jon, cada quadrante da sua cabeça é avaliado antes do primeiro corte. Esculpimos a mecha exatamente onde ela vai viver no seu cotidiano, garantindo total segurança e previsibilidade.</p>\n\n      <div id=\"conclusao\" style=\"text-align: center; margin-top: 2rem; margin-bottom: 2rem; padding: 2rem; border-radius: 8px; background-color: var(--color-surface-light, rgba(255,255,255,0.05));\">\n        <h3>Quer um corte seguro que respeita o encolhimento do seu cacho em BH?</h3>\n        <p>Agende seu horário no Studio do Jon e viva uma transformação precisa e sem traumas.</p>\n        <a href=\"/agendar\" class=\"btn btn-primary\" style=\"padding: 1.25rem 2.5rem; display: inline-block; font-weight: 800; margin-top: 1rem; text-decoration: none;\">Agendar com Jonatan Junior</a>\n      </div>\n    "
+},
+
   {
     id: 78,
     slug: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco',
