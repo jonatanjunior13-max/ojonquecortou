@@ -298,7 +298,7 @@ const SEED_TRANSACTIONS = [
 const DEFAULT_SETTINGS = {
   name: 'Studio do Jon',
   phone: '31983044059',
-  address: 'Rua Francisco Ovídio, 184 - Caiçaras, Belo Horizonte - MG, CEP 30770-040',
+  address: 'Rua Belmiro Braga, 544 - Caiçaras, Belo Horizonte - MG, CEP 30770-550',
   instagram: 'https://instagram.com/ojonquecortou',
   feePix: 0,
   feeDebit: 1.40,
@@ -476,7 +476,9 @@ const AdminDashboard = () => {
 
   // Autocomplete suggestions states
   const [showAddSuggestions, setShowAddSuggestions] = useState(false);
+  const [showAddPhoneSuggestions, setShowAddPhoneSuggestions] = useState(false);
   const [showEditSuggestions, setShowEditSuggestions] = useState(false);
+  const [showEditPhoneSuggestions, setShowEditPhoneSuggestions] = useState(false);
 
   // New States for Trinks layout
   const [currentDate, setCurrentDate] = useState(() => new Date());
@@ -594,7 +596,7 @@ const AdminDashboard = () => {
 
   // Autocomplete filtering helper
   const getFilteredClients = (queryText) => {
-    if (!queryText || queryText.trim().length < 3) return [];
+    if (!queryText || queryText.trim().length < 2) return [];
     const normQuery = queryText.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     return uniqueClientsList.filter(c => {
       if (!c.name) return false;
@@ -609,6 +611,16 @@ const AdminDashboard = () => {
     }).slice(0, 6);
   };
 
+  const getFilteredClientsByPhone = (phoneQuery) => {
+    if (!phoneQuery) return [];
+    const cleanQuery = phoneQuery.replace(/\D/g, '');
+    if (cleanQuery.length < 2) return [];
+    return uniqueClientsList.filter(c => {
+      const cleanPhone = (c.phone || '').replace(/\D/g, '');
+      return cleanPhone.includes(cleanQuery);
+    }).slice(0, 6);
+  };
+
   const selectClientForAdd = (c) => {
     setNewBooking(prev => ({
       ...prev,
@@ -618,6 +630,7 @@ const AdminDashboard = () => {
       notes: c.notes || prev.notes || ''
     }));
     setShowAddSuggestions(false);
+    setShowAddPhoneSuggestions(false);
   };
 
   const selectClientForEdit = (c) => {
@@ -631,6 +644,7 @@ const AdminDashboard = () => {
       notes: c.notes || prev.notes || ''
     }));
     setShowEditSuggestions(false);
+    setShowEditPhoneSuggestions(false);
   };
 
   // Auto-fill by phone on blur (add modal)
@@ -4737,8 +4751,8 @@ Grande abraço, Jon.`;
                         onChange={e => setEditBookingForm(prev => ({ ...prev, cpf: e.target.value }))}
                       />
                     </div>
-                    <div className="form-group" style={{ marginBottom: 6 }}>
-                      <label style={{ display: 'flex', alignItems: 'center', justifycontent: 'space-between' }}>
+                    <div className="form-group" style={{ marginBottom: 6, position: 'relative' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <span>WhatsApp *</span>
                         {editBookingForm.clientPhone && (
                           <a 
@@ -4756,13 +4770,54 @@ Grande abraço, Jon.`;
                           </a>
                         )}
                       </label>
-                      <input 
-                        type="tel" 
-                        required 
-                        value={editBookingForm.clientPhone}
-                        onChange={e => setEditBookingForm(prev => ({ ...prev, clientPhone: e.target.value }))}
-                        onBlur={handlePhoneBlurForEdit}
-                      />
+                      <div className="autocomplete-container">
+                        <input 
+                          type="tel" 
+                          required 
+                          value={editBookingForm.clientPhone}
+                          onChange={e => {
+                            const val = e.target.value;
+                            setEditBookingForm(prev => ({ ...prev, clientPhone: val }));
+                            setShowEditPhoneSuggestions(true);
+                            const clean = val.replace(/\D/g, '');
+                            if (clean.length >= 10) {
+                              const match = uniqueClientsList.find(c => c.phone && c.phone.replace(/\D/g, '') === clean);
+                              if (match) {
+                                setEditBookingForm(prev => ({
+                                  ...prev,
+                                  clientName: prev.clientName || match.name || '',
+                                  clientEmail: prev.clientEmail || match.email || '',
+                                  cpf: prev.cpf || match.cpf || '',
+                                  tags: (prev.tags && prev.tags.length > 0) ? prev.tags : (match.tags || [])
+                                }));
+                              }
+                            }
+                          }}
+                          onFocus={() => setShowEditPhoneSuggestions(true)}
+                          onBlur={() => {
+                            handlePhoneBlurForEdit();
+                            setTimeout(() => setShowEditPhoneSuggestions(false), 300);
+                          }}
+                        />
+                        {showEditPhoneSuggestions && getFilteredClientsByPhone(editBookingForm.clientPhone).length > 0 && (
+                          <ul className="suggestions-list" style={{ zIndex: 300 }}>
+                            {getFilteredClientsByPhone(editBookingForm.clientPhone).map(c => (
+                              <li 
+                                key={c.phone || c.id} 
+                                className="suggestion-item"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  selectClientForEdit(c);
+                                  setShowEditPhoneSuggestions(false);
+                                }}
+                              >
+                                <span className="suggestion-name">{c.name}</span>
+                                {c.phone && <span className="suggestion-phone">{c.phone}</span>}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -6050,16 +6105,56 @@ Grande abraço, Jon.`;
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 16, rowGap: 12, overflowY: 'auto', flex: 1, paddingRight: 4, paddingBottom: 8 }}>
-              <div className="form-group" style={{ marginBottom: 0 }}>
+              <div className="form-group" style={{ marginBottom: 0, position: 'relative' }}>
                 <label>WhatsApp *</label>
-                <input 
-                  type="tel" 
-                  required 
-                  placeholder="Ex: 31999998888"
-                  value={newBooking.clientPhone}
-                  onChange={e => setNewBooking(prev => ({ ...prev, clientPhone: e.target.value }))}
-                  onBlur={handlePhoneBlurForAdd}
-                />
+                <div className="autocomplete-container">
+                  <input 
+                    type="tel" 
+                    required 
+                    placeholder="Ex: 31999998888"
+                    value={newBooking.clientPhone}
+                    onChange={e => {
+                      const val = e.target.value;
+                      setNewBooking(prev => ({ ...prev, clientPhone: val }));
+                      setShowAddPhoneSuggestions(true);
+                      const clean = val.replace(/\D/g, '');
+                      if (clean.length >= 10) {
+                        const match = uniqueClientsList.find(c => c.phone && c.phone.replace(/\D/g, '') === clean);
+                        if (match) {
+                          setNewBooking(prev => ({
+                            ...prev,
+                            clientName: prev.clientName || match.name || '',
+                            clientEmail: prev.clientEmail || match.email || '',
+                            notes: prev.notes || match.notes || ''
+                          }));
+                        }
+                      }
+                    }}
+                    onFocus={() => setShowAddPhoneSuggestions(true)}
+                    onBlur={() => {
+                      handlePhoneBlurForAdd();
+                      setTimeout(() => setShowAddPhoneSuggestions(false), 300);
+                    }}
+                  />
+                  {showAddPhoneSuggestions && getFilteredClientsByPhone(newBooking.clientPhone).length > 0 && (
+                    <ul className="suggestions-list" style={{ zIndex: 300 }}>
+                      {getFilteredClientsByPhone(newBooking.clientPhone).map(c => (
+                        <li 
+                          key={c.phone || c.id} 
+                          className="suggestion-item"
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            selectClientForAdd(c);
+                            setShowAddPhoneSuggestions(false);
+                          }}
+                        >
+                          <span className="suggestion-name">{c.name}</span>
+                          {c.phone && <span className="suggestion-phone">{c.phone}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
 
               <div className="form-group" style={{ marginBottom: 0 }}>

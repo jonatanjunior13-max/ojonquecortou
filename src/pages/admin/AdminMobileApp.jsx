@@ -505,7 +505,9 @@ export default function AdminMobileApp() {
   // ── New Booking Form ───────────────────────────────────────────
   const [nbForm, setNbForm] = useState({ clientName:'', clientPhone:'', serviceName:'', servicePrice:'', date: today(), time:'09:00', notes:'', prepayment: '', bookingType: 'service', packageId: '', packageName: '', profissional: 'jon' });
   const [nbSuggestions, setNbSuggestions] = useState([]);
+  const [nbPhoneSuggestions, setNbPhoneSuggestions] = useState([]);
   const [ebSuggestions, setEbSuggestions] = useState([]);
+  const [ebPhoneSuggestions, setEbPhoneSuggestions] = useState([]);
   const [nbRegisterClient, setNbRegisterClient] = useState(false);
 
   // ── Block States ───────────────────────────────────────────────
@@ -2078,17 +2080,60 @@ Grande abraço, Jon.`;
   };
 
   useEffect(() => {
-    if (nbForm.clientName.length < 2) { setNbSuggestions([]); return; }
+    if (!nbForm.clientName || nbForm.clientName.length < 2) { setNbSuggestions([]); return; }
     const q = nbForm.clientName.toLowerCase();
-    setNbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
+    setNbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q) || (c.phone && c.phone.includes(q))).slice(0, 5));
   }, [nbForm.clientName, clients]);
+
+  useEffect(() => {
+    const clean = (nbForm.clientPhone || '').replace(/\D/g, '');
+    if (clean.length < 2) { setNbPhoneSuggestions([]); return; }
+    setNbPhoneSuggestions(clients.filter(c => {
+      const cPhone = (c.phone || '').replace(/\D/g, '');
+      return cPhone.includes(clean);
+    }).slice(0, 5));
+  }, [nbForm.clientPhone, clients]);
 
   // ── Client name autocomplete for Edit ──────────────────────────
   useEffect(() => {
     if (!editBookingForm || !editBookingForm.clientName || editBookingForm.clientName.length < 2) { setEbSuggestions([]); return; }
     const q = editBookingForm.clientName.toLowerCase();
-    setEbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q)).slice(0, 5));
+    setEbSuggestions(clients.filter(c => c.name?.toLowerCase().includes(q) || (c.phone && c.phone.includes(q))).slice(0, 5));
   }, [editBookingForm?.clientName, clients]);
+
+  useEffect(() => {
+    if (!editBookingForm || !editBookingForm.clientPhone) { setEbPhoneSuggestions([]); return; }
+    const clean = editBookingForm.clientPhone.replace(/\D/g, '');
+    if (clean.length < 2) { setEbPhoneSuggestions([]); return; }
+    setEbPhoneSuggestions(clients.filter(c => {
+      const cPhone = (c.phone || '').replace(/\D/g, '');
+      return cPhone.includes(clean);
+    }).slice(0, 5));
+  }, [editBookingForm?.clientPhone, clients]);
+
+  const selectClientForNb = (c) => {
+    setNbForm(p => ({
+      ...p,
+      clientName: c.name || p.clientName,
+      clientPhone: c.phone || p.clientPhone,
+      clientEmail: c.email || p.clientEmail || '',
+      clientCurvatura: c.curvatura || p.clientCurvatura || '3A',
+      clientNotes: c.notes || p.clientNotes || ''
+    }));
+    setNbSuggestions([]);
+    setNbPhoneSuggestions([]);
+  };
+
+  const selectClientForEb = (c) => {
+    setEditBookingForm(p => ({
+      ...p,
+      clientName: c.name || p.clientName,
+      clientPhone: c.phone || p.clientPhone,
+      clientEmail: c.email || p.clientEmail || ''
+    }));
+    setEbSuggestions([]);
+    setEbPhoneSuggestions([]);
+  };
 
   const changeStatus = async (bookingId, status) => {
     try {
@@ -5139,10 +5184,10 @@ Grande abraço, Jon.`;
               <label className="m-label">Cliente *</label>
               <input className="m-input" placeholder="Nome do cliente" value={nbForm.clientName} onChange={e => setNbForm(p => ({ ...p, clientName: e.target.value }))}/>
               {nbSuggestions.length > 0 && (
-                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden' }}>
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden', marginTop: 4 }}>
                   {nbSuggestions.map(c => (
-                    <div key={c.id} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
-                      onClick={() => { setNbForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setNbSuggestions([]); }}>
+                    <div key={c.id || c.phone} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => selectClientForNb(c)}>
                       {c.name} {c.phone ? <span style={{ color:'var(--m-muted)', fontWeight:400 }}>· {c.phone}</span> : ''}
                     </div>
                   ))}
@@ -5150,8 +5195,52 @@ Grande abraço, Jon.`;
               )}
             </div>
             <div className="m-field">
-              <label className="m-label">Telefone</label>
-              <input className="m-input" type="tel" placeholder="(31) 99999-9999" value={nbForm.clientPhone} onChange={e => setNbForm(p => ({ ...p, clientPhone: e.target.value }))}/>
+              <label className="m-label">Telefone (WhatsApp)</label>
+              <input 
+                className="m-input" 
+                type="tel" 
+                placeholder="(31) 99999-9999" 
+                value={nbForm.clientPhone} 
+                onChange={e => {
+                  const val = e.target.value;
+                  setNbForm(p => ({ ...p, clientPhone: val }));
+                  const clean = val.replace(/\D/g, '');
+                  if (clean.length >= 10) {
+                    const match = clients.find(c => (c.phone || '').replace(/\D/g, '') === clean);
+                    if (match) {
+                      setNbForm(p => ({
+                        ...p,
+                        clientName: p.clientName || match.name || '',
+                        clientEmail: p.clientEmail || match.email || '',
+                        clientCurvatura: match.curvatura || p.clientCurvatura || '3A',
+                        clientNotes: p.clientNotes || match.notes || ''
+                      }));
+                    }
+                  }
+                }}
+              />
+              {nbPhoneSuggestions.length > 0 && (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden', marginTop: 4 }}>
+                  {nbPhoneSuggestions.map(c => (
+                    <div key={c.id || c.phone} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => selectClientForNb(c)}>
+                      <span style={{ color:'var(--m-gold)', fontWeight:700 }}>{c.phone}</span> · <span style={{ color:'var(--m-text)' }}>{c.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {(() => {
+                const clean = (nbForm.clientPhone || '').replace(/\D/g, '');
+                const match = clean.length >= 10 ? clients.find(c => (c.phone || '').replace(/\D/g, '') === clean) : null;
+                if (match) {
+                  return (
+                    <div style={{ background: 'rgba(56,161,105,0.12)', border: '1px solid rgba(56,161,105,0.3)', padding: '6px 10px', borderRadius: 'var(--m-radius-sm)', marginTop: 6, fontSize: '0.78rem', color: '#48bb78', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      ✓ Cliente cadastrada: {match.name} {match.curvatura ? `(Curvatura ${match.curvatura})` : ''}
+                    </div>
+                  );
+                }
+                return null;
+              })()}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '12px 0 16px 0' }}>
               <input 
@@ -5330,10 +5419,10 @@ Grande abraço, Jon.`;
               <label className="m-label">Cliente *</label>
               <input className="m-input" placeholder="Nome do cliente" value={editBookingForm.clientName} onChange={e => setEditBookingForm(p => ({ ...p, clientName: e.target.value }))}/>
               {ebSuggestions.length > 0 && (
-                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden' }}>
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden', marginTop: 4 }}>
                   {ebSuggestions.map(c => (
-                    <div key={c.id} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
-                      onClick={() => { setEditBookingForm(p => ({ ...p, clientName: c.name, clientPhone: c.phone || '' })); setEbSuggestions([]); }}>
+                    <div key={c.id || c.phone} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => selectClientForEb(c)}>
                       {c.name} {c.phone ? <span style={{ color:'var(--m-muted)', fontWeight:400 }}>· {c.phone}</span> : ''}
                     </div>
                   ))}
@@ -5341,8 +5430,38 @@ Grande abraço, Jon.`;
               )}
             </div>
             <div className="m-field">
-              <label className="m-label">Telefone</label>
-              <input className="m-input" type="tel" placeholder="(31) 99999-9999" value={editBookingForm.clientPhone} onChange={e => setEditBookingForm(p => ({ ...p, clientPhone: e.target.value }))}/>
+              <label className="m-label">Telefone (WhatsApp)</label>
+              <input 
+                className="m-input" 
+                type="tel" 
+                placeholder="(31) 99999-9999" 
+                value={editBookingForm.clientPhone} 
+                onChange={e => {
+                  const val = e.target.value;
+                  setEditBookingForm(p => ({ ...p, clientPhone: val }));
+                  const clean = val.replace(/\D/g, '');
+                  if (clean.length >= 10) {
+                    const match = clients.find(c => (c.phone || '').replace(/\D/g, '') === clean);
+                    if (match) {
+                      setEditBookingForm(p => ({
+                        ...p,
+                        clientName: p.clientName || match.name || '',
+                        clientEmail: p.clientEmail || match.email || ''
+                      }));
+                    }
+                  }
+                }}
+              />
+              {ebPhoneSuggestions.length > 0 && (
+                <div style={{ background:'var(--m-card)', border:'0.5px solid var(--m-rule)', borderRadius:'var(--m-radius-sm)', overflow:'hidden', marginTop: 4 }}>
+                  {ebPhoneSuggestions.map(c => (
+                    <div key={c.id || c.phone} style={{ padding:'10px 14px', cursor:'pointer', borderBottom:'0.5px solid var(--m-rule)', fontSize:'0.85rem', color:'var(--m-text)', fontWeight:600 }}
+                      onClick={() => selectClientForEb(c)}>
+                      <span style={{ color:'var(--m-gold)', fontWeight:700 }}>{c.phone}</span> · <span style={{ color:'var(--m-text)' }}>{c.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="m-field">
               <label className="m-label">Serviço *</label>
