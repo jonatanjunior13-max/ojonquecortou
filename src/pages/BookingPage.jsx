@@ -1469,8 +1469,17 @@ const BookingPage = () => {
             quantity: 1
           }]
         });
+        // Conversão 1: Agendamento Online (Compra)
         window.gtag('event', 'conversion', {
           send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
+          value: computedFinalTotal,
+          currency: 'BRL',
+          transaction_id: transactionId
+        });
+
+        // Conversão 2: Agendar Horário (Reservar Horário)
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-666534146/g1yNCMDxhKMYEIKC6r0C',
           value: computedFinalTotal,
           currency: 'BRL',
           transaction_id: transactionId

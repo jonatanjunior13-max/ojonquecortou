@@ -75,9 +75,17 @@ const GoogleAnalytics = () => {
 
         const buttonLabel = clickable.textContent?.trim().slice(0, 50) || 'Agende seu Horário';
 
-        // Disparo Direto para Google Ads (Conversão "Clicou no botao agende seu horário")
+        // Disparo Direto para Google Ads
         if (window.gtag) {
           try {
+            // Conversão 1: "Agendar horário" (Reservar horário) - Rótulo: g1yNCMDxhKMYEIKC6r0C
+            window.gtag('event', 'conversion', {
+              send_to: 'AW-666534146/g1yNCMDxhKMYEIKC6r0C',
+              event_category: 'engagement',
+              event_label: 'Clicou no botao agende seu horário'
+            });
+
+            // Conversão 2: "Agendamento Online" - Rótulo: 2mF8CM-rl84cEIKC6r0C
             window.gtag('event', 'conversion', {
               send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
               event_category: 'engagement',
