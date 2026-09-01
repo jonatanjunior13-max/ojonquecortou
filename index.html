@@ -99,13 +99,17 @@
 
     <!-- Meta Pixel + Ahrefs: also deferred, see loadThirdPartyScripts below -->
 
-    <!-- Third-party scripts (GTM, Google Ads tag, Meta Pixel, Ahrefs Analytics) are deferred
-         until the first user interaction (scroll/click/touch/key) or a 4s fallback timer,
-         whichever comes first. This keeps GTM/Pixel/Ahrefs off the critical rendering path
-         (they were consuming 50-66% of page weight and saturating the main thread during
-         initial load) without losing tracking fidelity for real visitors: interaction-based
-         deferral is a standard, widely-used pattern (e.g. Cloudflare Rocket Loader, Partytown)
-         precisely because it fires for essentially every session that isn't an instant bounce. -->
+    <!-- Google Tag & GTM initialization (Synchronous stubs for zero event loss) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-2HCS01RSP2');
+      gtag('config', 'AW-666534146', { send_page_view: false });
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2HCS01RSP2"></script>
+
     <script>
       (function () {
         var loaded = false;
@@ -127,16 +131,6 @@
               j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
               f.parentNode.insertBefore(j, f);
             })(window, document, 'script', 'dataLayer', 'GTM-MKKNQRQ4');
-
-            // Google tag (gtag.js) for Ads conversion tracking & GA4
-            var gtagScript = document.createElement('script');
-            gtagScript.async = true;
-            gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-2HCS01RSP2';
-            gtagScript.onload = function () {
-              gtag('config', 'G-2HCS01RSP2');
-              gtag('config', 'AW-666534146', { send_page_view: false });
-            };
-            document.head.appendChild(gtagScript);
 
             // Meta Pixel
             !function (f, b, e, v, n, t, s) {
