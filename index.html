@@ -128,11 +128,14 @@
               f.parentNode.insertBefore(j, f);
             })(window, document, 'script', 'dataLayer', 'GTM-MKKNQRQ4');
 
-            // Google tag (gtag.js) for Ads conversion tracking
+            // Google tag (gtag.js) for Ads conversion tracking & GA4
             var gtagScript = document.createElement('script');
             gtagScript.async = true;
-            gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=AW-666534146';
-            gtagScript.onload = function () { gtag('config', 'AW-666534146', { send_page_view: false }); };
+            gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-2HCS01RSP2';
+            gtagScript.onload = function () {
+              gtag('config', 'G-2HCS01RSP2');
+              gtag('config', 'AW-666534146', { send_page_view: false });
+            };
             document.head.appendChild(gtagScript);
 
             // Meta Pixel
