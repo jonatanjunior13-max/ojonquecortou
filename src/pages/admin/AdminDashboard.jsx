@@ -317,7 +317,7 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨',
+  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨',
   professionals: [
     { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commission: 50, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
@@ -2427,7 +2427,12 @@ const AdminDashboard = () => {
         booking.reminderSent = 'enviando';
       }
 
-      const rawTemplate = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+      const defaultAutoTpl = 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨';
+      
+      let rawTemplate = settings.waReminderTemplate || defaultAutoTpl;
+      if (!rawTemplate.includes('Belmiro Braga') && !rawTemplate.includes('endereço') && !rawTemplate.includes('casa nova')) {
+        rawTemplate = defaultAutoTpl;
+      }
       
       const [year, month, day] = booking.date.split('-');
       const dateObj = new Date(year, month - 1, day);
@@ -2435,13 +2440,14 @@ const AdminDashboard = () => {
 
       const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${booking.id}`;
       let msgText = rawTemplate
-        .replace('{cliente}', booking.clientName)
-        .replace('{data}', weekdayStr)
-        .replace('{hora}', booking.time)
-        .replace('{servico}', booking.serviceName || booking.service?.name || 'Serviço');
+        .replace(/{cliente}/gi, booking.clientName.split(' ')[0])
+        .replace(/{data}/gi, weekdayStr)
+        .replace(/{hora}/gi, booking.time)
+        .replace(/{servico}/gi, booking.serviceName || booking.service?.name || 'Serviço')
+        .replace(/{quando}/gi, 'amanhã');
 
       if (msgText.includes('{link_cancelamento}')) {
-        msgText = msgText.replace('{link_cancelamento}', cancelLink);
+        msgText = msgText.replace(/{link_cancelamento}/gi, cancelLink);
       } else {
         msgText += `\n\nCaso precise cancelar ou remarcar seu horário, acesse: ${cancelLink}`;
       }
@@ -2650,7 +2656,12 @@ Grande abraço, Jon.`;
     }
     const time = booking.time || '';
 
-    const rawTemplate = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨';
+    const defaultTpl = 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨';
+    
+    let rawTemplate = settings?.waReminderTemplate || defaultTpl;
+    if (!rawTemplate.includes('Belmiro Braga') && !rawTemplate.includes('endereço') && !rawTemplate.includes('casa nova')) {
+      rawTemplate = defaultTpl;
+    }
     
     let message = rawTemplate
       .replace(/{cliente}/gi, clientName.split(' ')[0])

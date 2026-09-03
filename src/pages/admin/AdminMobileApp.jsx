@@ -4373,13 +4373,18 @@ Grande abraço, Jon.`;
                   }
 
                   const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
-                  const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+                  const defaultTemplate = 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨';
+                  
+                  let template = settings?.waReminderTemplate || defaultTemplate;
+                  if (!template.includes('Belmiro Braga') && !template.includes('endereço') && !template.includes('casa nova')) {
+                    template = defaultTemplate;
+                  }
                   
                   let msg = template
-                    .replace('{cliente}', b.clientName.split(' ')[0])
-                    .replace('{data}', b.date.split('-').reverse().join('/'))
-                    .replace('{hora}', b.time)
-                    .replace('{servico}', b.service?.name || b.serviceName);
+                    .replace(/{cliente}/gi, b.clientName.split(' ')[0])
+                    .replace(/{data}/gi, b.date.split('-').reverse().join('/'))
+                    .replace(/{hora}/gi, b.time)
+                    .replace(/{servico}/gi, b.service?.name || b.serviceName);
 
                   // Ajuste dinâmico de tempo
                   if (msg.includes('{quando}')) {
@@ -4393,7 +4398,7 @@ Grande abraço, Jon.`;
                   }
 
                   if (msg.includes('{link_cancelamento}')) {
-                    msg = msg.replace('{link_cancelamento}', cancelLink);
+                    msg = msg.replace(/{link_cancelamento}/gi, cancelLink);
                   } else {
                     msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
                   }

@@ -8,7 +8,7 @@ const DEFAULT_SETTINGS = {
   // Estabelecimento
   name: 'Studio do Jon',
   phone: '31983044059',
-  address: 'Rua Francisco Ovídio, 184 - Caiçaras, Belo Horizonte - MG, CEP 30770-040',
+  address: 'Rua Belmiro Braga, 544 - Caiçaras, Belo Horizonte - MG, CEP 30770-550',
   instagram: 'https://instagram.com/ojonquecortou',
   
   // Taxas de Maquininha
@@ -42,7 +42,7 @@ const DEFAULT_SETTINGS = {
   evolutionApiKey: 'de173acec677c6da63cf021049ffa7c6c120a82c765b7e540d585a9ea9ced356',
   evolutionInstanceName: 'JonStudio',
   customWebhookUrl: '',
-  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar? 💇‍♂️✨',
+  waReminderTemplate: 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨',
   professionals: [
     { id: 'jon', name: 'Jon', avatar: '/jon-perfil.webp', commissionService: 50, commissionProduct: 10, phone: '31995097613', email: 'jon@studio.com', active: true }
   ]
@@ -899,16 +899,16 @@ const AdminSettings = () => {
                   )}
 
                   <div className="form-group">
-                    <label>Template da Mensagem de Lembrete</label>
+                    <label>Template da Mensagem de Confirmação e Lembrete (WhatsApp)</label>
                     <textarea 
-                      rows="4"
+                      rows="6"
                       value={settings.waReminderTemplate || ''}
                       onChange={e => setSettings({ ...settings, waReminderTemplate: e.target.value })}
                       placeholder="Ex: Olá, {cliente}..."
-                      style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.9rem', border: '1px solid var(--adm-rule)', borderRadius: 6 }}
+                      style={{ width: '100%', padding: 10, fontFamily: 'sans-serif', fontSize: '0.88rem', border: '1px solid var(--adm-rule)', borderRadius: 6, lineHeight: 1.4 }}
                     />
                     <span style={{ fontSize: '0.78rem', color: 'var(--adm-muted)', display: 'block', marginTop: 4 }}>
-                      Use as tags: <code>{"{cliente}"}</code> para o nome do cliente, <code>{"{data}"}</code> para a data formatada por extenso, <code>{"{hora}"}</code> para o horário e <code>{"{servico}"}</code> para o serviço.
+                      Use as tags: <code>{"{cliente}"}</code> (primeiro nome), <code>{"{quando}"}</code> (hoje / amanhã / no dia), <code>{"{data}"}</code> (data), <code>{"{hora}"}</code> (horário), <code>{"{servico}"}</code> (serviço) e <code>{"{link_cancelamento}"}</code> (link para reagendar/cancelar).
                     </span>
                   </div>
                 </div>
