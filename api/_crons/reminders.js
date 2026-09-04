@@ -116,7 +116,12 @@ export default async function handler(req, res) {
       }
     }
 
-    const template = settings?.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}. Podemos confirmar?';
+    const default24hTpl = 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨';
+
+    let template = settings?.waReminderTemplate || default24hTpl;
+    if (!template.includes('Belmiro Braga') && !template.includes('endereço') && !template.includes('casa nova')) {
+      template = default24hTpl;
+    }
 
     let successCount = 0;
     let failCount = 0;
@@ -126,13 +131,14 @@ export default async function handler(req, res) {
 
       const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
       let msg = template
-        .replace('{cliente}', b.clientName.split(' ')[0])
-        .replace('{data}', b.date.split('-').reverse().join('/'))
-        .replace('{hora}', b.time)
-        .replace('{servico}', b.service?.name || b.serviceName);
+        .replace(/{cliente}/gi, b.clientName.split(' ')[0])
+        .replace(/{data}/gi, b.date.split('-').reverse().join('/'))
+        .replace(/{hora}/gi, b.time)
+        .replace(/{servico}/gi, b.service?.name || b.serviceName)
+        .replace(/{quando}/gi, 'amanhã');
 
       if (msg.includes('{link_cancelamento}')) {
-        msg = msg.replace('{link_cancelamento}', cancelLink);
+        msg = msg.replace(/{link_cancelamento}/gi, cancelLink);
       } else {
         msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
       }
@@ -179,7 +185,12 @@ export default async function handler(req, res) {
     });
 
     const currentMin = now.getHours() * 60 + now.getMinutes();
-    const template2h = settings?.waReminder2hTemplate || 'Olá, {cliente}! Passando para lembrar do seu atendimento daqui a pouco, às {hora} ({servico}). Tudo certo?';
+    const default2hTpl = 'Olá, {cliente}! Passando para lembrar do seu atendimento daqui a pouco, às {hora} ({servico}).\n\n📍 Endereço: Rua Belmiro Braga, 544 · Caiçaras, BH\n🗺️ Maps: https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nTudo pronto por aqui para te receber! 💇‍♂️✨';
+
+    let template2h = settings?.waReminder2hTemplate || default2hTpl;
+    if (!template2h.includes('Belmiro Braga') && !template2h.includes('endereço') && !template2h.includes('casa nova')) {
+      template2h = default2hTpl;
+    }
     
     let wa2hSuccessCount = 0;
     let wa2hFailCount = 0;
@@ -194,13 +205,13 @@ export default async function handler(req, res) {
       if (diffMin >= 110 && diffMin <= 145) {
         const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${b.id}`;
         let msg = template2h
-          .replace('{cliente}', b.clientName.split(' ')[0])
-          .replace('{data}', b.date.split('-').reverse().join('/'))
-          .replace('{hora}', b.time)
-          .replace('{servico}', b.service?.name || b.serviceName);
+          .replace(/{cliente}/gi, b.clientName.split(' ')[0])
+          .replace(/{data}/gi, b.date.split('-').reverse().join('/'))
+          .replace(/{hora}/gi, b.time)
+          .replace(/{servico}/gi, b.service?.name || b.serviceName);
 
         if (msg.includes('{link_cancelamento}')) {
-          msg = msg.replace('{link_cancelamento}', cancelLink);
+          msg = msg.replace(/{link_cancelamento}/gi, cancelLink);
         } else {
           msg += `\n\nCaso precise cancelar ou remarcar: ${cancelLink}`;
         }

@@ -167,7 +167,7 @@ function getEmailWrapper(title, content, isDark = false) {
                   Studio do Jon <span style="font-style: italic; font-weight: 400; color: ${accentColor}; font-family: 'Bricolage Grotesque', Georgia, serif; text-transform: none; letter-spacing: normal; margin-left: 5px;">— corte com leitura.</span>
                 </div>
                 <div style="font-size: 12px; color: ${textMuted}; line-height: 1.6; margin-bottom: 15px;">
-                  Rua Francisco Ovídio, 184 · Caiçaras<br>Belo Horizonte · MG · 30000-000<br>Quarta a Sábado · 9h às 19h
+                  Rua Belmiro Braga, 544 · Caiçaras<br>Belo Horizonte · MG · 30770-550<br>Quarta a Sábado · 9h às 19h
                 </div>
                 <div style="margin-bottom: 20px; font-size: 11px; line-height: 1.6; color: ${textMuted}; background: ${isDark ? 'rgba(255,255,255,0.012)' : 'rgba(0,0,0,0.012)'}; padding: 12px 14px; border-radius: 6px; border: 1px solid ${borderInner}; display: inline-block; max-width: 460px; text-align: left; font-family: 'Inter', sans-serif;">
                   <span style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: ${accentColor}; font-weight: 600; display: block; margin-bottom: 4px; font-family: 'JetBrains Mono', monospace;">Preferências de Conteúdo</span>
@@ -240,8 +240,8 @@ function buildGoogleCalendarLink(data) {
     const end = `${endDate.getFullYear()}${pad(endDate.getMonth()+1)}${pad(endDate.getDate())}T${pad(endDate.getHours())}${pad(endDate.getMinutes())}00`;
 
     const title = encodeURIComponent(`Corte no Studio do Jon — ${data.serviceName || 'Cabelo'}`);
-    const details = encodeURIComponent(`Serviço: ${data.serviceName || ''}\nDuração: ${formatDuration(durationMins)}\nRua Francisco Ovídio, 184 - Caiçaras, BH`);
-    const location = encodeURIComponent('Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG');
+    const details = encodeURIComponent(`Serviço: ${data.serviceName || ''}\nDuração: ${formatDuration(durationMins)}\nRua Belmiro Braga, 544 - Caiçaras, BH`);
+    const location = encodeURIComponent('Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte - MG');
 
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${start}/${end}&details=${details}&location=${location}`;
   } catch(e) { return null; }
@@ -610,7 +610,12 @@ async function sendClientWhatsAppReminder(data, settings) {
   }
 
   const cancelLink = `https://www.ojonquecortou.com.br/cancelar?id=${data.id || ''}`;
-  const template = settings.waReminderTemplate || 'Olá, {cliente}! Passando para lembrar do seu horário amanhã ({data} às {hora}) para o serviço: {servico}.';
+  const defaultTemplate = 'Olá, {cliente}! Passando para lembrar do seu horário {quando} ({data} às {hora}) para o serviço: {servico}.\n\n📍 Lembrando que estamos de casa nova:\nRua Belmiro Braga, 544 · Caiçaras, BH\n(Espaço renovado com mais conforto para cuidar dos seus cachos)\n\n🗺️ Como chegar pelo Maps:\nhttps://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte\n\nPodemos confirmar? 💇‍♂️✨';
+
+  let template = settings.waReminderTemplate || defaultTemplate;
+  if (!template.includes('Belmiro Braga') && !template.includes('endereço') && !template.includes('casa nova')) {
+    template = defaultTemplate;
+  }
 
   // Lógica de fuso horário de Brasília para detectar se é hoje, amanhã ou outro dia
   const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -637,10 +642,10 @@ async function sendClientWhatsAppReminder(data, settings) {
   }
 
   let msg = template
-    .replace('{cliente}', (data.clientName || 'Cliente').split(' ')[0])
-    .replace('{data}', (data.date || '').includes('-') ? data.date.split('-').reverse().join('/') : data.date)
-    .replace('{hora}', data.time || '')
-    .replace('{servico}', data.serviceName || '');
+    .replace(/{cliente}/gi, (data.clientName || 'Cliente').split(' ')[0])
+    .replace(/{data}/gi, (data.date || '').includes('-') ? data.date.split('-').reverse().join('/') : data.date)
+    .replace(/{hora}/gi, data.time || '')
+    .replace(/{servico}/gi, data.serviceName || '');
 
   // Ajuste dinâmico de tempo
   if (msg.includes('{quando}')) {
@@ -950,7 +955,7 @@ export default async function handler(req, res) {
 
     case 'horario_confirmado': {
       const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
-      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçaras,+Belo+Horizonte';
+      const mapsLink = 'https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte';
       const durationLabel = formatDuration(data.duration);
       emailSubject = `Está marcado — ${formatApptDate(data.date, data.time)} às ${data.time}`;
       emailContent = `
@@ -961,7 +966,7 @@ export default async function handler(req, res) {
         <div class="appt-card">
           <div class="label">Agendamento Confirmado</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
+          <p class="where">Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
@@ -1030,6 +1035,7 @@ export default async function handler(req, res) {
       break;
 
     case 'launch_campaign':
+    case 'novo_endereco_setembro':
       emailSubject = subject || 'Novidades do Jon Que Cortou';
       emailContent = htmlBody;
       currentType = 'campanha_raw';
@@ -1055,7 +1061,7 @@ export default async function handler(req, res) {
         <div class="appt-card">
           <div class="label">Agendamento</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
+          <p class="where">Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
@@ -1159,7 +1165,7 @@ export default async function handler(req, res) {
 
     case 'agendamento_editado': {
       const calendarLink = buildGoogleCalendarLink(data) || 'https://calendar.google.com';
-      const mapsLink = 'https://maps.google.com/?q=Rua+Francisco+Ovídio,+184,+Caiçaras,+Belo+Horizonte';
+      const mapsLink = 'https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte';
       const durationLabel = formatDuration(data.duration);
       emailSubject = `Horário Atualizado — ${formatApptDate(data.date, data.time)} às ${data.time}`;
       emailContent = `
@@ -1170,7 +1176,7 @@ export default async function handler(req, res) {
         <div class="appt-card" style="border-color: #c97b49;">
           <div class="label" style="color: #c97b49;">Novos Detalhes Confirmados</div>
           <p class="when">${formatApptDate(data.date, data.time)} <span>às ${data.time}</span></p>
-          <p class="where">Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte</p>
+          <p class="where">Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte</p>
           
           <div class="meta-row">
             <div class="cell">
