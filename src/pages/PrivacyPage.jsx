@@ -89,7 +89,7 @@ const PrivacyPage = () => {
           </p>
           <p style={pStyle}>
             <strong>O Jon que Cortou — Studio do Jon</strong> (Jonatan Junior, profissional autônomo)<br />
-            Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte - MG, CEP 30770-040<br />
+            Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte - MG, CEP 30770-550<br />
             E-mail: <a href="mailto:contato@ojonquecortou.com.br" style={linkStyle}>contato@ojonquecortou.com.br</a><br />
             Telefone/WhatsApp: <a href="https://wa.me/5531983044059" style={linkStyle}>(31) 98304-4059</a>
           </p>

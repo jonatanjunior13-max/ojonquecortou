@@ -246,8 +246,8 @@ const MetodoPage = () => {
   return (
     <main className="metodo-page" style={{ paddingTop: '5rem' }}>
       <SEO
-        title="Método Leitura de Fio | Studio do Jon"
-        description="O método exclusivo do Studio do Jon — 7 etapas de diagnóstico do fio antes de qualquer corte. Incluso em todo atendimento, sem custo extra."
+        title="Diagnóstico de Cabelo Cacheado em BH: 7 Etapas"
+        description="Antes da tesoura, a leitura. As 7 etapas que identificam curvatura, porosidade e encolhimento do seu fio. Studio do Jon, Caiçaras, BH."
         url="/metodo"
         schema={[serviceSchema, howtoSchema]}
       />

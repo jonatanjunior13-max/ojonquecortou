@@ -46,7 +46,7 @@ const PressPage = () => {
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Dados rápidos</h2>
           <ul className="paragraph-md" style={{ marginTop: 16, lineHeight: 1.8 }}>
             <li><strong>Fundador:</strong> Jonatan Junior</li>
-            <li><strong>Localização:</strong> Rua Francisco Ovídio, 184, Caiçaras, Belo Horizonte, MG</li>
+            <li><strong>Localização:</strong> Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte, MG</li>
             <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A–4C)</li>
             <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
             <li><strong>Avaliação:</strong> 4.9/5 com base em 272 avaliações no Google</li>

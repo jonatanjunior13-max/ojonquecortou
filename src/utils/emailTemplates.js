@@ -76,7 +76,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -162,7 +162,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -266,7 +266,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -368,7 +368,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -472,7 +472,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -573,7 +573,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -677,7 +677,7 @@ export const HTML_TEMPLATES = {
                 Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
               </div>
               <p style="font-family: 'Inter', Arial, sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-                Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
               </p>
               <div style="font-family: 'Inter', Arial, sans-serif; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
                 &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -754,7 +754,7 @@ export const HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -830,7 +830,7 @@ export const HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -902,11 +902,124 @@ export const HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
         </div>
+      </td>
+    </tr>
+  </table>
+</div>`,
+  novo_endereco_setembro: `<div style="background-color: #0A0A0A; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #FFFFFF; -webkit-font-smoothing: antialiased; margin: 0; padding: 0;">
+  <!-- Preheader preview text for inbox -->
+  <div style="display: none; max-height: 0px; overflow: hidden; font-size: 1px; line-height: 1px; color: #0A0A0A; opacity: 0; display: none !important; mso-hide: all;">
+    A partir de 02/09, novo endereço no Caiçaras e um brinde especial para você em qualquer atendimento no mês.
+  </div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0A0A0A" style="background-color: #0A0A0A; table-layout: fixed; width: 100%; margin: 0; padding: 0;">
+    <tr>
+      <td align="center" valign="top" style="padding: 40px 10px;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%; background-color: #141414; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 48px rgba(255, 255, 255, 0.08), 0 1px 3px rgba(26, 19, 16, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
+          <tr>
+            <td style="padding: 56px 48px; background-color: #141414;">
+              
+              <!-- HEADER -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 24px; margin-bottom: 48px;">
+                <tr>
+                  <td align="left" valign="middle">
+                    <span style="display: inline-block; width: 32px; height: 32px; border-radius: 50%; background: #FF2D8B; color: #FFFFFF; text-align: center; line-height: 32px; font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; font-size: 18px; margin-right: 12px; vertical-align: middle;">J</span>
+                    <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-size: 18px; letter-spacing: -0.01em; color: #FFFFFF; vertical-align: middle; font-weight: 400;">Studio do Jon</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- TAG / EYEBROW -->
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right: 10px; font-size: 0; line-height: 0;">
+                    <div style="width: 18px; height: 1px; background-color: #FF2D8B; display: inline-block; vertical-align: middle;"></div>
+                  </td>
+                  <td>
+                    <span style="font-family: 'Inter', Arial, sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: #FF2D8B; vertical-align: middle;">Novidade Especial · Setembro</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- TITLE -->
+              <h1 style="font-family: 'Bricolage Grotesque', Georgia, serif; font-weight: 400; font-size: 36px; letter-spacing: -0.018em; line-height: 1.18; color: #FFFFFF; margin: 24px 0 0 0;">
+                O Studio do Jon tá de <span style='font-family: "Bricolage Grotesque", Georgia, serif; font-style: italic; color: #FF2D8B;'>casa nova</span> (+ um brinde pra você em setembro).
+              </h1>
+
+              <!-- CONTENT -->
+              <div style="margin-top: 32px; font-family: 'Inter', Arial, sans-serif;">
+                <p style="margin: 0 0 16px 0; font-family: 'Inter', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #F4EFE7; max-width: 54ch;">Oi {nome},</p>
+                <p style="margin: 0 0 16px 0; font-family: 'Inter', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #F4EFE7; max-width: 54ch;">Tô passando pra te contar uma novidade que preparei com muito carinho: <strong>o Studio do Jon tá de casa nova!</strong></p>
+                <p style="margin: 0 0 16px 0; font-family: 'Inter', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #F4EFE7; max-width: 54ch;">A partir do dia <strong>2 de setembro (02/09)</strong>, todos os atendimentos passam a ser no nosso novo espaço no Caiçaras:</p>
+
+                <!-- ENDEREÇO CARD -->
+                <div style="background-color: rgba(255, 45, 139, 0.06); border: 1px solid rgba(255, 45, 139, 0.25); border-radius: 12px; padding: 20px 24px; margin: 24px 0;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #FF2D8B; margin-bottom: 8px;">
+                    📍 Novo Endereço (a partir de 02/09)
+                  </div>
+                  <div style="font-size: 16px; font-weight: 600; color: #FFFFFF; line-height: 1.4;">
+                    Rua Belmiro Braga, 544 · Caiçaras
+                  </div>
+                  <div style="font-size: 13px; color: #A0A0A0; margin-top: 4px;">
+                    Belo Horizonte - MG · CEP 30770-550
+                  </div>
+                  <div style="margin-top: 14px;">
+                    <a href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte" target="_blank" style="color: #FF2D8B; text-decoration: underline; font-size: 13px; font-weight: 600;">
+                      🗺️ Ver rota no Google Maps →
+                    </a>
+                  </div>
+                </div>
+
+                <!-- BRINDE SETEMBRO -->
+                <div style="background-color: rgba(220, 163, 84, 0.08); border-left: 4px solid #DCA354; border-radius: 8px; padding: 18px 22px; margin: 24px 0;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #DCA354; margin-bottom: 6px;">
+                    🎁 Ação Especial de Setembro
+                  </div>
+                  <p style="margin: 0; font-size: 14.5px; line-height: 1.6; color: #EFE5D2;">
+                    Pra comemorar essa nova casa com quem confia no meu trabalho, preparei um <strong>brinde especial exclusivo</strong> para todo mundo que fizer qualquer serviço no Studio durante todo o mês de setembro.
+                  </p>
+                </div>
+
+                <p style="margin: 20px 0 16px 0; font-family: 'Inter', Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #F4EFE7; max-width: 54ch;">
+                  Se o seu cacho já tá pedindo corte, ajuste de volume ou se você quer fazer um diagnóstico completo com a Leitura de Fio, a agenda de setembro já está aberta.
+                </p>
+
+                <!-- CTA BUTTON -->
+                <div style="margin: 32px 0 24px 0; text-align: center;">
+                  <a href="https://www.ojonquecortou.com.br/agendar" target="_blank" style="display: inline-block; background-color: #FF2D8B; color: #FFFFFF; font-family: 'Inter', Arial, sans-serif; font-size: 15px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 999px; letter-spacing: 0.02em;">
+                    Garantir Meu Horário em Setembro →
+                  </a>
+                </div>
+
+                <p style="margin: 24px 0 0 0; font-family: 'Inter', Arial, sans-serif; font-size: 14px; line-height: 1.65; color: #A0A0A0;">
+                  Te espero no novo espaço!<br />
+                  Valeu demais e aquele abraço,<br />
+                  <strong style="color: #FFFFFF;">Jon</strong>
+                </p>
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color: #0A0A0A; padding: 40px 48px; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+              <div style="font-family: 'Bricolage Grotesque', Georgia, serif; font-size: 24px; line-height: 1.2; letter-spacing: -0.015em; color: #FFFFFF; margin: 0 0 12px;">
+                Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
+              </div>
+              <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.4); line-height: 1.6; margin: 0 0 24px 0;">
+                Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
+              </p>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
+                &copy; 2026 Studio do Jon &middot; @ojonquecortou
+              </div>
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>
   </table>
@@ -974,7 +1087,7 @@ export const ADMIN_HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(26, 19, 16, 0.6); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(26, 19, 16, 0.6); border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou
@@ -1042,7 +1155,7 @@ export const ADMIN_HTML_TEMPLATES = {
           Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #FF2D8B; display: block; margin-top: 6px;">— corte com leitura.</span>
         </div>
         <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: rgba(250, 245, 232, 0.4); line-height: 1.6; margin: 0 0 24px 0;">
-          Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-040<br>Quarta a Sábado &middot; 9h às 19h
+          Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
         </p>
         <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(250, 245, 232, 0.2); border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
           &copy; 2026 Studio do Jon &middot; @ojonquecortou

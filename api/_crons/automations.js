@@ -98,7 +98,7 @@ const baseLayout = (content, linkUrl, linkText) => `
             Studio do Jon <span style="font-family: 'Bricolage Grotesque', Georgia, serif; font-style: italic; color: #C4738A; display: block; margin-top: 6px;">— corte com leitura.</span>
           </div>
           <p style="font-family: 'Inter', sans-serif; font-size: 13px; color: #A0A0A0; line-height: 1.6; margin: 0 0 24px 0;">
-            Rua Francisco Ovídio, 184 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30000-000<br>Quarta a Sábado &middot; 9h às 19h
+            Rua Belmiro Braga, 544 &middot; Caiçaras<br>Belo Horizonte &middot; MG &middot; 30770-550<br>Quarta a Sábado &middot; 9h às 19h
           </p>
           <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #808080; border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 20px;">
             &copy; ${new Date().getFullYear()} Studio do Jon &middot; @ojonquecortou

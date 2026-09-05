@@ -128,7 +128,7 @@ const Reviews = ({ isPage = false }) => {
           <p style={{ fontWeight: 800 }}>Já passou pela experiência de um corte com leitura de fio?</p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1.5rem' }}>
             <a 
-              href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Francisco+Ovídio+184+Belo+Horizonte" 
+              href="https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Belo+Horizonte" 
               target="_blank" 
               rel="noreferrer" 
               className="btn btn-outline"

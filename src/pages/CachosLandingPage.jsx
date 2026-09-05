@@ -135,7 +135,7 @@ const CachosLandingPage = () => {
 
       <footer className="cachos-footer">
         <p>© 2026 Studio do Jon. Todos os direitos reservados.</p>
-        <p>Rua Francisco Ovídio, 184 · Caiçaras · Belo Horizonte, MG</p>
+        <p>Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte, MG</p>
       </footer>
     </div>
   );

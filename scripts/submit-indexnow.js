@@ -24,34 +24,44 @@ try {
     { name: 'Yandex', hostname: 'yandex.com' }
   ];
 
-  engines.forEach(engine => {
-    const options = {
-      hostname: engine.hostname,
-      port: 443,
-      path: '/indexnow',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Content-Length': Buffer.byteLength(data)
-      }
-    };
+  const promises = engines.map(engine => {
+    return new Promise((resolve) => {
+      const options = {
+        hostname: engine.hostname,
+        port: 443,
+        path: '/indexnow',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf-8',
+          'Content-Length': Buffer.byteLength(data)
+        }
+      };
 
-    const req = https.request(options, (res) => {
-      console.log(`[${engine.name}] Status de resposta: ${res.statusCode}`);
-      if (res.statusCode === 200 || res.statusCode === 202) {
-        console.log(`[${engine.name}] URLs aceitas com sucesso pelo IndexNow!`);
-      } else {
-        console.error(`[${engine.name}] Erro ao enviar URLs. Código: ${res.statusCode}`);
-      }
+      const req = https.request(options, (res) => {
+        res.on('data', () => {});
+        res.on('end', () => {
+          console.log(`[${engine.name}] Status de resposta: ${res.statusCode}`);
+          if (res.statusCode === 200 || res.statusCode === 202) {
+            console.log(`[${engine.name}] URLs aceitas com sucesso pelo IndexNow!`);
+          } else {
+            console.error(`[${engine.name}] Erro ao enviar URLs. Código: ${res.statusCode}`);
+          }
+          resolve();
+        });
+      });
+
+      req.on('error', (error) => {
+        console.error(`[${engine.name}] Erro na requisição:`, error);
+        resolve();
+      });
+
+      req.write(data);
+      req.end();
     });
-
-    req.on('error', (error) => {
-      console.error(`[${engine.name}] Erro na requisição:`, error);
-    });
-
-    req.write(data);
-    req.end();
   });
+
+  await Promise.all(promises);
 } catch (error) {
   console.error('Falha ao ler o sitemap:', error);
 }
+

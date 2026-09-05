@@ -61,7 +61,7 @@ function Footer() {
             <h4>Contato & Endereço</h4>
             <p style={{ color: "var(--muted)", fontSize: "14px", lineHeight: "1.5", margin: "0 0 10px 0" }}>
               <strong>O Jon que Cortou — Studio do Jon</strong><br />
-              Rua Francisco Ovídio, 184<br />
+              Rua Belmiro Braga, 544<br />
               Caiçaras, Belo Horizonte - MG<br />
               Telefone: (31) 98304-4059
             </p>

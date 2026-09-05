@@ -440,7 +440,7 @@ const BlogPostPage = () => {
                   </a>
                 </div>
                 <p style={{ fontSize: '0.8rem', color: '#a4968d', marginTop: 14, marginBottom: 0 }}>
-                  📍 Rua Francisco Ovídio, 184 - Caiçaras, Belo Horizonte - MG
+                  📍 Rua Belmiro Braga, 544 - Caiçaras, Belo Horizonte - MG
                 </p>
               </div>
             </div>

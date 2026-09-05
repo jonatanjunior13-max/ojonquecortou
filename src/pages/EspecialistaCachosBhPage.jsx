@@ -46,8 +46,8 @@ const EspecialistaCachosBhPage = () => {
   return (
     <main>
       <SEO
-        title="Especialista em Cachos BH | Cortes para Cabelo Cacheado em Belo Horizonte | Studio do Jon"
-        description="Conhece o Jon, especialista em cortes e tratamentos para cabelos cacheados, crespos e ondulados. Método Leitura de Fio — diagnóstico antes de qualquer corte. Agende em BH."
+        title="Especialista em Cabelo Cacheado em BH | Studio do Jon"
+        description="Corte para cacheado, crespo e ondulado no bairro Caiçaras, BH. 336 avaliações com nota 4,9. Leitura de Fio inclusa. Agende seu horário."
         url="/servicos/especialista-cachos-bh"
         schema={faqSchema}
       />
@@ -216,7 +216,7 @@ const EspecialistaCachosBhPage = () => {
               Studio do Jon — Especialista em cachos em Belo Horizonte, Caiçaras.
             </p>
             <p style={{ marginTop: '1rem', color: '#999', fontSize: '0.9rem' }}>
-              📍 Rua Francisco Ovídio, 184 — Caiçaras, BH<br />
+              📍 Rua Belmiro Braga, 544 — Caiçaras, BH<br />
               📞 (31) 98304-4059<br />
               🕐 Terça a Sexta: 9h às 19h | Sábado: 9h às 17h
             </p>
