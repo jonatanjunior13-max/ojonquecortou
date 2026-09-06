@@ -46,18 +46,17 @@ async function ensureAuthenticated() {
   if (!authPromise) {
     authPromise = (async () => {
       const email = process.env.CRON_FIREBASE_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br';
-      let pass = process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '7956#Jon!';
+      let pass = process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '';
       if (pass.startsWith('"') && pass.endsWith('"')) pass = pass.slice(1, -1);
+      if (!pass) {
+        console.error('[jon-crm-mcp] Aviso: CRON_FIREBASE_PASSWORD não definida, executando em modo leitura.');
+        return;
+      }
       try {
         await signInWithEmailAndPassword(auth, email, pass);
         console.error(`[jon-crm-mcp] Autenticado com sucesso como admin: ${email}`);
       } catch (err) {
-        try {
-          await signInWithEmailAndPassword(auth, email, '7956#Jon');
-          console.error(`[jon-crm-mcp] Autenticado como admin (chave secundária): ${email}`);
-        } catch (e2) {
-          console.error('[jon-crm-mcp] Aviso: login admin falhou, executando em modo leitura:', e2.message);
-        }
+        console.error('[jon-crm-mcp] Aviso: login admin falhou, executando em modo leitura:', err.message);
       }
     })();
   }

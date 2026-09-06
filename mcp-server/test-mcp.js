@@ -23,18 +23,16 @@ const db = getFirestore(app);
 async function runTests() {
   try {
     const adminEmail = process.env.CRON_FIREBASE_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br';
-    let adminPass = process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '7956#Jon!';
+    let adminPass = process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '';
     if (adminPass.startsWith('"') && adminPass.endsWith('"')) adminPass = adminPass.slice(1, -1);
 
-    console.log('Tentando autenticação com:', adminEmail);
-    try {
-      await signInWithEmailAndPassword(auth, adminEmail, adminPass);
-      console.log('🔑 Autenticado com sucesso como Admin!');
-    } catch (authErr) {
-      console.warn('Tentando senha alternativa...');
-      await signInWithEmailAndPassword(auth, adminEmail, '7956#Jon');
-      console.log('🔑 Autenticado com sucesso como Admin (senha 2)!');
+    if (!adminPass) {
+      throw new Error('CRON_FIREBASE_PASSWORD ou SMTP_PASS não configurada.');
     }
+
+    console.log('Tentando autenticação com:', adminEmail);
+    await signInWithEmailAndPassword(auth, adminEmail, adminPass);
+    console.log('🔑 Autenticado com sucesso como Admin!');
 
     const productsSnap = await getDocs(query(collection(db, 'products'), limit(2)));
     console.log('✅ Produtos:', productsSnap.size, 'encontrados');

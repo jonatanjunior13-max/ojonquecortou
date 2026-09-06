@@ -38,15 +38,13 @@ export default async function handler(req, res) {
   try {
     const { db, auth } = getFirebase();
     const adminEmail = (process.env.CRON_FIREBASE_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br').trim();
-    let adminPassword = (process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '7956#Jon!').trim();
+    let adminPassword = (process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '').trim();
     if (adminPassword.startsWith('"') && adminPassword.endsWith('"')) adminPassword = adminPassword.slice(1, -1);
 
     const candidates = [
       adminPassword,
-      adminPassword.endsWith('!') ? adminPassword.slice(0, -1) : `${adminPassword}!`,
-      '7956#Jon!',
-      '7956#Jon'
-    ];
+      adminPassword.endsWith('!') ? adminPassword.slice(0, -1) : `${adminPassword}!`
+    ].filter(Boolean);
     let authenticated = false;
     for (const pass of candidates) {
       try {

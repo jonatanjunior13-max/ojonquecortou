@@ -268,16 +268,14 @@ export default async function handler(req, res) {
   try {
     const { db, auth } = getFirebase();
     const adminEmail = (process.env.CRON_FIREBASE_EMAIL || process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br').trim();
-    let adminPassword = (process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '7956#Jon!').trim();
+    let adminPassword = (process.env.CRON_FIREBASE_PASSWORD || process.env.SMTP_PASS || '').trim();
     if (adminPassword.startsWith('"') && adminPassword.endsWith('"')) adminPassword = adminPassword.slice(1, -1);
     const recipientEmail = (process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br').trim();
 
     const candidates = [
       adminPassword,
-      adminPassword.endsWith('!') ? adminPassword.slice(0, -1) : `${adminPassword}!`,
-      '7956#Jon!',
-      '7956#Jon'
-    ];
+      adminPassword.endsWith('!') ? adminPassword.slice(0, -1) : `${adminPassword}!`
+    ].filter(Boolean);
     let authenticated = false;
     for (const pass of candidates) {
       try {
@@ -319,7 +317,7 @@ export default async function handler(req, res) {
     const smtpPort = sanitizeEnv(process.env.SMTP_PORT, '465');
     const smtpSecure = sanitizeEnv(process.env.SMTP_SECURE) === 'true' || smtpPort === '465';
     const smtpUser = sanitizeEnv(process.env.SMTP_USER, 'contato@ojonquecortou.com.br');
-    const smtpPass = sanitizeEnv(process.env.SMTP_PASS, '7956#Jon!');
+    const smtpPass = sanitizeEnv(process.env.SMTP_PASS);
     const smtpFrom = cleanEmail(process.env.SMTP_FROM || 'contato@ojonquecortou.com.br');
 
     if (!smtpHost || !smtpUser || !smtpPass) {

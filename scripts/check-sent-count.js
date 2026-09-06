@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config();
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
@@ -18,7 +18,10 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 async function check() {
-  await signInWithEmailAndPassword(auth, process.env.ADMIN_NOTIFICATION_EMAIL || 'contato@ojonquecortou.com.br', process.env.ADMIN_PASSWORD || '7956#Jon');
+  if (!process.env.ADMIN_PASSWORD) {
+    throw new Error('ADMIN_PASSWORD não configurada no .env');
+  }
+  await signInWithEmailAndPassword(auth, process.env.ADMIN_NOTIFICATION_EMAIL || 'contato@ojonquecortou.com.br', process.env.ADMIN_PASSWORD);
   const snap = await getDocs(collection(db, 'automation_logs'));
   let count = 0;
   snap.forEach(d => {

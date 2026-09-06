@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Script de Envio de Notificação via WhatsApp para Clientes Agendados
  * Studio do Jon — Mudança de Endereço a partir de 02/09/2026
  * 
@@ -47,12 +47,16 @@ async function run() {
 
   console.log('1. Autenticando com Firebase...');
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || 'contato@ojonquecortou.com.br';
-  const adminPass = process.env.ADMIN_PASSWORD || '7956#Jon';
-  try {
-    await signInWithEmailAndPassword(auth, adminEmail, adminPass);
-    console.log('✅ Autenticado no Firebase.');
-  } catch (e) {
-    console.warn('⚠️ Autenticação anônima/padrão:', e.message);
+  const adminPass = process.env.ADMIN_PASSWORD;
+  if (adminPass) {
+    try {
+      await signInWithEmailAndPassword(auth, adminEmail, adminPass);
+      console.log('✅ Autenticado no Firebase.');
+    } catch (e) {
+      console.warn('⚠️ Autenticação falhou:', e.message);
+    }
+  } else {
+    console.warn('⚠️ ADMIN_PASSWORD não configurada no .env.');
   }
 
   console.log('2. Obtendo configurações da Evolution API...');

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Script de Disparo da Campanha de Novo Endereço & Ação de Setembro
  * Studio do Jon — Especialista em Cachos & Visagismo
  * 
@@ -36,14 +36,18 @@ async function run() {
   if (isDryRun) console.log('🔍 MODO DRY-RUN: Simulação ativa. Nenhum e-mail real será enviado.');
 
   const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || 'contato@ojonquecortou.com.br';
-  const adminPass = process.env.ADMIN_PASSWORD || '7956#Jon';
+  const adminPass = process.env.ADMIN_PASSWORD;
   
   console.log('1. Autenticando com Firebase...');
-  try {
-    await signInWithEmailAndPassword(auth, adminEmail, adminPass);
-    console.log('✅ Autenticado com sucesso no Firebase.');
-  } catch (authErr) {
-    console.warn('⚠️ Autenticação anônima ou padrão:', authErr.message);
+  if (adminPass) {
+    try {
+      await signInWithEmailAndPassword(auth, adminEmail, adminPass);
+      console.log('✅ Autenticado com sucesso no Firebase.');
+    } catch (authErr) {
+      console.warn('⚠️ Autenticação falhou:', authErr.message);
+    }
+  } else {
+    console.warn('⚠️ ADMIN_PASSWORD não configurada no .env.');
   }
 
   // Configuração SMTP

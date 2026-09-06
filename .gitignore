@@ -28,6 +28,24 @@ dist-ssr
 .env.*
 .env*.local
 
-# Scratch directory
+# Scratch & Local test scripts
 scratch/
+check_*.js
+check_*.cjs
+clear_*.js
+clear_*.cjs
+send_*.js
+send_*.cjs
+update_*.js
+update_*.cjs
+create_*.js
+create_*.cjs
+test_*.js
+test_*.cjs
+send_via_smtp.js
+email_*.html
+extracted*.html
+preview.html
+structure.html
+
 
