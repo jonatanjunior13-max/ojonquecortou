@@ -1484,6 +1484,22 @@ const BookingPage = () => {
           currency: 'BRL',
           transaction_id: transactionId
         });
+
+        // Conversão 3: Lead/Agendamento Histórico GTM
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-666534146/mENYCMyFzNsDEIKC6r0C',
+          value: computedFinalTotal,
+          currency: 'BRL',
+          transaction_id: transactionId
+        });
+
+        // Conversão 4: Form Submit GTM
+        window.gtag('event', 'conversion', {
+          send_to: 'AW-666534146/F3qvCNaz5IUbEIKC6r0C',
+          value: computedFinalTotal,
+          currency: 'BRL',
+          transaction_id: transactionId
+        });
       } catch (gtagErr) {
         console.warn('Erro ao disparar evento de conversão:', gtagErr);
       }

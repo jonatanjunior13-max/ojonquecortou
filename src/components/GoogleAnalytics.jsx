@@ -78,16 +78,23 @@ const GoogleAnalytics = () => {
         // Disparo Direto para Google Ads
         if (window.gtag) {
           try {
-            // Conversão 1: "Agendar horário" (Reservar horário) - Rótulo: g1yNCMDxhKMYEIKC6r0C
+            // Conversão Primária 1: "Agendar horário" (Reservar horário)
             window.gtag('event', 'conversion', {
               send_to: 'AW-666534146/g1yNCMDxhKMYEIKC6r0C',
               event_category: 'engagement',
               event_label: 'Clicou no botao agende seu horário'
             });
 
-            // Conversão 2: "Agendamento Online" - Rótulo: 2mF8CM-rl84cEIKC6r0C
+            // Conversão Primária 2: "Agendamento Online"
             window.gtag('event', 'conversion', {
               send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
+              event_category: 'engagement',
+              event_label: 'Clicou no botao agende seu horário'
+            });
+
+            // Conversão Histórica/GTM: "Escolher Data e Hora" / Agendamento GTM
+            window.gtag('event', 'conversion', {
+              send_to: 'AW-666534146/mENYCMyFzNsDEIKC6r0C',
               event_category: 'engagement',
               event_label: 'Clicou no botao agende seu horário'
             });
