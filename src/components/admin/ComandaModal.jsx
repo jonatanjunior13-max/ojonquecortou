@@ -35,24 +35,27 @@ const getFee = (settings, method) => {
 // Helper to normalize search text by stripping accents, lowercasing, and trimming
 const cleanSearchText = (str) => {
   if (!str) return '';
-  return str
+  return String(str)
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim();
 };
 
-// Matches product name if all search terms are prefix of at least one word in the product name
-const matchSearchText = (productName, searchText) => {
-  if (!productName || !searchText) return false;
-  const searchTerms = cleanSearchText(searchText).split(/\s+/).filter(Boolean);
-  if (searchTerms.length === 0) return false;
-  
-  const productWords = cleanSearchText(productName).split(/\s+/).filter(Boolean);
-  
-  return searchTerms.every(term => 
-    productWords.some(word => word.startsWith(term))
-  );
+// Matches product name if search query is substring or all search tokens match any part of the name/brand/category
+const matchSearchText = (item, searchText) => {
+  if (!item || !searchText) return false;
+  const cleanQuery = cleanSearchText(searchText);
+  if (!cleanQuery) return false;
+
+  const targetStr = typeof item === 'string'
+    ? cleanSearchText(item)
+    : cleanSearchText(`${item.name || ''} ${item.brand || ''} ${item.category || ''} ${item.type || ''}`);
+
+  if (targetStr.includes(cleanQuery)) return true;
+
+  const searchTerms = cleanQuery.split(/\s+/).filter(Boolean);
+  return searchTerms.every(term => targetStr.includes(term));
 };
 
 const ComandaModal = ({ booking, products = [], salonProducts = [], services = [], settings = {}, onClose, onConfirm }) => {
@@ -194,24 +197,24 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
   const commissionValue = (totalServicesPrice * professionalCommissionRate) / 100;
 
   const filteredProducts = useMemo(() => {
-    if (saleProductSearch.trim().length < 3) return [];
+    if (!saleProductSearch.trim()) return [];
     return products.filter(p =>
-      matchSearchText(p.name, saleProductSearch)
-    ).slice(0, 5);
+      matchSearchText(p, saleProductSearch)
+    ).slice(0, 8);
   }, [products, saleProductSearch]);
 
   const filteredUsedProducts = useMemo(() => {
-    if (usedProductSearch.trim().length < 3) return [];
+    if (!usedProductSearch.trim()) return [];
     return salonProducts.filter(p =>
-      (p.name || '').toLowerCase().includes(usedProductSearch.toLowerCase())
-    ).slice(0, 5);
+      matchSearchText(p, usedProductSearch)
+    ).slice(0, 8);
   }, [salonProducts, usedProductSearch]);
 
   const filteredServices = useMemo(() => {
-    if (serviceSearch.trim().length < 3) return [];
+    if (!serviceSearch.trim()) return [];
     return services.filter(s =>
-      (s.name || '').toLowerCase().includes(serviceSearch.toLowerCase())
-    ).slice(0, 5);
+      matchSearchText(s, serviceSearch)
+    ).slice(0, 8);
   }, [services, serviceSearch]);
 
   const handleAddSaleProduct = useCallback((prod) => {
@@ -487,13 +490,13 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Buscar serviço (mín. 3 letras)..."
+                placeholder="Buscar serviço extra..."
                 value={serviceSearch}
                 onChange={e => setServiceSearch(e.target.value)}
                 style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
               />
             </div>
-            {serviceSearch.trim().length >= 3 && filteredServices.length > 0 && (
+            {serviceSearch.trim().length > 0 && filteredServices.length > 0 && (
               <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
                 {filteredServices.map(svc => (
                   <button
@@ -532,13 +535,13 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Buscar produto para venda (mín. 3 letras)..."
+                placeholder="Buscar produto para revenda..."
                 value={saleProductSearch}
                 onChange={e => setSaleProductSearch(e.target.value)}
                 style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
               />
             </div>
-            {saleProductSearch.trim().length >= 3 && filteredProducts.length > 0 && (
+            {saleProductSearch.trim().length > 0 && filteredProducts.length > 0 && (
               <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
                 {filteredProducts.map(prod => (
                   <button
@@ -587,13 +590,13 @@ const ComandaModal = ({ booking, products = [], salonProducts = [], services = [
               <Search size={14} style={{ color: 'var(--adm-muted)', flexShrink: 0 }} />
               <input
                 type="text"
-                placeholder="Buscar produto de uso do salão (mín. 3 letras)..."
+                placeholder="Buscar produto de uso do salão (insumos)..."
                 value={usedProductSearch}
                 onChange={e => setUsedProductSearch(e.target.value)}
                 style={{ border: 'none', background: 'none', outline: 'none', fontSize: '0.85rem', color: 'var(--adm-text)', width: '100%', fontFamily: 'inherit' }}
               />
             </div>
-            {usedProductSearch.trim().length >= 3 && filteredUsedProducts.length > 0 && (
+            {usedProductSearch.trim().length > 0 && filteredUsedProducts.length > 0 && (
               <div style={{ border: '0.5px solid var(--adm-rule)', borderRadius: 'var(--adm-radius-sm)', overflow: 'hidden', marginBottom: 6 }}>
                 {filteredUsedProducts.map(prod => (
                   <button
