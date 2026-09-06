@@ -1,0 +1,46 @@
+# Vercel Ignore File
+# Excludes local tools, audit logs, raw assets, mobile bundles, and scripts from being uploaded to Vercel
+
+# Mobile & Raw Assets
+ios/
+assets-src/
+ojonquecortou.com.br-audit/
+ojonquecortou/
+Meu site/
+
+# AI, Editor & Local Tooling
+.agents/
+.claude/
+scratch/
+docs/
+mcp-server/
+
+# HTML & Log dumps in root
+email_*.html
+extracted*.html
+preview.html
+structure.html
+*.log
+build_log.txt
+layout_info.txt
+extracted.txt
+
+# Local Maintenance Scripts in root
+*.cjs
+check*.js
+clear*.js
+send*.js
+update*.js
+debug*.js
+find*.js
+inspect*.js
+remove*.js
+trigger*.js
+create_user.js
+test.js
+check.js
+cors.json
+
+# Audit & Documentation Markdown
+ADMIN_REDESIGN_HANDOFF.md
+GEO-AUDIT-REPORT.md
