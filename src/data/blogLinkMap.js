@@ -68,7 +68,13 @@ export const blogLinkMap = [
   { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
   { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
   { source: 'corte-a-seco-cabelo-cacheado-bh-volume', target: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', anchor: 'franja cacheada' },
-  { source: 'corte-borboleta-cabelo-ondulado-cacheado-visagismo', target: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', anchor: 'franja' },
+  // Bixie Cut cluster
+  { source: 'bixie-cut-cabelo-cacheado', target: 'corte-a-seco-metodo-leitura-de-fio', anchor: 'Método Leitura de Fio' },
+  { source: 'bixie-cut-cabelo-cacheado', target: 'fator-de-encolhimento-cabelo-cacheado', anchor: 'fator de encolhimento' },
+  { source: 'bixie-cut-cabelo-cacheado', target: 'french-bob-cacheado', anchor: 'french bob' },
+  { source: 'bixie-cut-cabelo-cacheado', target: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', anchor: 'franja' },
+  { source: 'french-bob-cacheado', target: 'bixie-cut-cabelo-cacheado', anchor: 'bixie cut' },
+  { source: 'corte-lobo-cacheado-curto', target: 'bixie-cut-cabelo-cacheado', anchor: 'bixie' },
 ];
 
 // Utility to inject links into HTML content
