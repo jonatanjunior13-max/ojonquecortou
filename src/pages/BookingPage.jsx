@@ -290,6 +290,7 @@ const BookingPage = () => {
 
   const [loading, setLoading] = useState(false);
   const isSubmittingRef = useRef(false);
+  const conversionFiredRef = useRef(false);
   const [success, setSuccess] = useState(false);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [bookingDemoMode, setBookingDemoMode] = useState(false);
@@ -1247,7 +1248,7 @@ const BookingPage = () => {
           where('date', '==', selectedDate),
           where('profissional', '==', selectedProfessional?.id || 'jon')
         );
-        const querySnapshot = await getDocs(q);
+        const querySnapshot = await withTimeout(getDocs(q), 4000);
         const activeBookings = [];
         querySnapshot.forEach(doc => {
           const data = doc.data();
@@ -1308,12 +1309,12 @@ const BookingPage = () => {
         try {
           const bookingsRef = collection(db, 'bookings');
           const q = query(bookingsRef, where('clientPhone', '==', clientData.phone));
-          const querySnapshot = await getDocs(q);
+          const querySnapshot = await withTimeout(getDocs(q), 4000);
           clientBookings = querySnapshot.docs.map(doc => doc.data());
           
           if (cleanPhone !== clientData.phone) {
             const qClean = query(bookingsRef, where('clientPhone', '==', cleanPhone));
-            const querySnapshotClean = await getDocs(qClean);
+            const querySnapshotClean = await withTimeout(getDocs(qClean), 4000);
             const cleanList = querySnapshotClean.docs.map(doc => doc.data());
             clientBookings = [...clientBookings, ...cleanList];
           }
@@ -1454,10 +1455,11 @@ const BookingPage = () => {
 
     let conversionEventFired = false;
     const fireBookingConversionEvent = () => {
-      if (conversionEventFired || !window.gtag) return;
+      if (conversionFiredRef.current || conversionEventFired || !window.gtag) return;
+      conversionFiredRef.current = true;
       conversionEventFired = true;
       try {
-        const transactionId = `booking-${Date.now()}`;
+        const transactionId = bookingPayload.id || `booking-${Date.now()}`;
         window.gtag('event', 'purchase', {
           value: computedFinalTotal,
           currency: 'BRL',
@@ -1500,6 +1502,17 @@ const BookingPage = () => {
           currency: 'BRL',
           transaction_id: transactionId
         });
+
+        // Conversão 5: Confirmação de Agendamento Google Ads (Resultado real pós-agendamento)
+        const confirmationConversion = {
+          send_to: 'AW-666534146/BWwzCICy5u8cEIKC6r0C',
+          value: computedFinalTotal,
+          currency: 'BRL'
+        };
+        if (transactionId) {
+          confirmationConversion.transaction_id = transactionId;
+        }
+        window.gtag('event', 'conversion', confirmationConversion);
       } catch (gtagErr) {
         console.warn('Erro ao disparar evento de conversão:', gtagErr);
       }
