@@ -247,6 +247,49 @@ function buildGoogleCalendarLink(data) {
   } catch(e) { return null; }
 }
 
+async function sendViaResend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br', fromName = 'O Jon Que Cortou', toEmails, subject, html }) {
+  const key = (apiKey || process.env.RESEND_API_KEY || '').trim();
+  if (!key) return null;
+
+  let recipientList = [];
+  if (Array.isArray(toEmails)) {
+    recipientList = toEmails.map(item => {
+      if (typeof item === 'string') return cleanEmailAddress(item);
+      return cleanEmailAddress(item.email);
+    }).filter(e => e && e.includes('@') && !e.startsWith('sem-email@'));
+  } else if (typeof toEmails === 'string') {
+    recipientList = toEmails.split(',')
+      .map(e => cleanEmailAddress(e.trim()))
+      .filter(e => e && e.includes('@') && !e.startsWith('sem-email@'));
+  }
+
+  if (recipientList.length === 0) return null;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: `${fromName} <${fromEmail}>`,
+      to: recipientList,
+      subject: subject,
+      html: html
+    })
+  });
+
+  if (res.ok) {
+    const resData = await res.json();
+    console.log(`✅ E-mail enviado via Resend para ${recipientList.join(', ')}. ID: ${resData.id}`);
+    return { success: true, messageId: resData.id };
+  } else {
+    const errText = await res.text();
+    console.error(`❌ Erro no Resend (${res.status}):`, errText);
+    throw new Error(`Resend HTTP ${res.status}: ${errText}`);
+  }
+}
+
 async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br', fromName = 'O Jon Que Cortou', toEmails, subject, html }) {
   const key = (apiKey || process.env.MAILERSEND_API_KEY || '').trim();
   if (!key) return null;
@@ -294,7 +337,7 @@ async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.co
   }
 }
 
-async function sendAdminNotification(type, data, transporter, smtpFrom, settings, mailersendApiKey) {
+async function sendAdminNotification(type, data, transporter, smtpFrom, settings, mailersendApiKey, resendApiKey) {
   const automations = settings?.automations || {};
   if (type === 'solicitacao_recebida' && automations.adminWaitingRequestEmailEnabled === false) {
     console.log('Notificação por e-mail de nova solicitação desativada para admin.');
@@ -504,6 +547,23 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
     }
   }
 
+  if (!adminSent && resendApiKey) {
+    try {
+      await sendViaResend({
+        apiKey: resendApiKey,
+        fromEmail: 'contato@ojonquecortou.com.br',
+        fromName: 'Studio do Jon',
+        toEmails: adminEmailList,
+        subject: subject,
+        html: finalHtml
+      });
+      console.log(`Notificação de Admin enviada via Resend (fallback) para: ${adminEmail}`);
+      adminSent = true;
+    } catch (rsErr) {
+      console.error('Falha ao enviar notificação de Admin via Resend fallback:', rsErr.message);
+    }
+  }
+
   if (!adminSent && mailersendApiKey) {
     try {
       await sendViaMailerSend({
@@ -515,6 +575,7 @@ async function sendAdminNotification(type, data, transporter, smtpFrom, settings
         html: finalHtml
       });
       console.log(`Notificação de Admin enviada via MailerSend (fallback) para: ${adminEmail}`);
+      adminSent = true;
     } catch (msErr) {
       console.error('Falha ao enviar notificação de Admin via MailerSend fallback:', msErr.message);
     }
@@ -812,18 +873,16 @@ export default async function handler(req, res) {
   const adminEmail = cleanEmailAddress(process.env.ADMIN_NOTIFICATION_EMAIL || process.env.SMTP_USER || 'contato@ojonquecortou.com.br');
 
   
-  // Se SMTP_HOST e USER ou MailerSend estão configurados, assume que deve enviar e-mails reais
+  // Providers: Titan SMTP, Resend API e MailerSend API
   const isLaunchCampaign = type === 'launch_campaign';
-  const mailersendApiKey = (
-    process.env.MAILERSEND_API_KEY || 
-    (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith('re_') ? process.env.RESEND_API_KEY : '')
-  ).trim();
+  const resendApiKey = (process.env.RESEND_API_KEY || '').trim();
+  const mailersendApiKey = (process.env.MAILERSEND_API_KEY || '').trim();
 
   const hasSmtpConfig = Boolean(smtpHost && smtpUser && smtpPass);
-  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (Boolean(mailersendApiKey) || hasSmtpConfig);
+  const sendReal = process.env.SEND_REAL_EMAILS === 'false' ? false : (Boolean(resendApiKey) || Boolean(mailersendApiKey) || hasSmtpConfig);
 
   if (!sendReal) {
-    console.log('Simulação de envio ativa (SMTP não configurado ou desativado). Para:', clientEmail);
+    console.log('Simulação de envio ativa (nenhum canal de e-mail configurado ou desativado). Para:', clientEmail);
     if (type === 'solicitacao_recebida' || type === 'horario_confirmado' || type === 'agendamento_cancelado') {
       console.log('Simulação de notificação para o administrador (e-mail):', adminEmail, 'Tipo:', type);
     }
@@ -835,13 +894,16 @@ export default async function handler(req, res) {
     port: parseInt(smtpPort, 10),
     secure: smtpSecure,
     auth: { user: smtpUser, pass: smtpPass },
-    tls: { rejectUnauthorized: false }
+    tls: { rejectUnauthorized: false },
+    connectionTimeout: 4000,
+    greetingTimeout: 4000,
+    socketTimeout: 6000
   }) : null;
 
   // Enviar e-mail de notificação para o administrador (Jon) se for um evento de agendamento
   if (isAdminType) {
     try {
-      await sendAdminNotification(type, data, transporter, smtpFrom, settings, mailersendApiKey);
+      await sendAdminNotification(type, data, transporter, smtpFrom, settings, mailersendApiKey, resendApiKey);
     } catch (adminErr) {
       console.error('Falha ao disparar e-mail de notificação para o admin:', adminErr);
     }
@@ -1327,11 +1389,32 @@ export default async function handler(req, res) {
           clientSent = true;
           console.log(`✅ E-mail transacional/régua enviado com SUCESSO via Titan SMTP para ${targetClientEmail}. Tipo: ${type}. MessageId: ${messageId}`);
         } catch (smtpErr) {
-          console.error(`❌ Falha no Titan SMTP para cliente ${targetClientEmail}, tentando MailerSend fallback:`, smtpErr.message);
+          console.error(`❌ Falha no Titan SMTP para cliente ${targetClientEmail}, tentando Resend / MailerSend fallback:`, smtpErr.message);
         }
       }
 
-      // 2. Fallback MailerSend se Titan SMTP falhar por instabilidade de rede ou limite
+      // 2. Fallback Resend se Titan SMTP falhar
+      if (!clientSent && resendApiKey) {
+        try {
+          const rsRes = await sendViaResend({
+            apiKey: resendApiKey,
+            fromEmail: 'contato@ojonquecortou.com.br',
+            fromName: 'O Jon Que Cortou',
+            toEmails: [{ email: targetClientEmail, name: clientName || '' }],
+            subject: emailSubject,
+            html: finalHtml
+          });
+          if (rsRes?.success) {
+            messageId = rsRes.messageId;
+            clientSent = true;
+            console.log(`✅ E-mail enviado via Resend fallback para ${targetClientEmail}. Tipo: ${type}`);
+          }
+        } catch (rsErr) {
+          console.error(`❌ Falha no Resend fallback para cliente ${targetClientEmail}:`, rsErr.message);
+        }
+      }
+
+      // 3. Fallback MailerSend se Resend falhar
       if (!clientSent && mailersendApiKey) {
         try {
           const msRes = await sendViaMailerSend({
@@ -1353,7 +1436,7 @@ export default async function handler(req, res) {
       }
 
       if (!clientSent) {
-        throw new Error(`Falha ao enviar e-mail (${type}) para ${targetClientEmail} via Titan SMTP e MailerSend`);
+        throw new Error(`Falha ao enviar e-mail (${type}) para ${targetClientEmail} via Titan SMTP, Resend e MailerSend`);
       }
     } else {
       console.log(`E-mail de cliente do tipo ${type} está desativado ou sem e-mail válido para ${targetClientEmail}. Pulando envio.`);

@@ -25,22 +25,27 @@ build_log.txt
 layout_info.txt
 extracted.txt
 
+# Never ignore Vercel serverless API functions
+!api/
+!api/**
+
 # Local Maintenance Scripts in root
-*.cjs
-check*.js
-clear*.js
-send*.js
-update*.js
-debug*.js
-find*.js
-inspect*.js
-remove*.js
-trigger*.js
-create_user.js
-test.js
-check.js
-cors.json
+/*.cjs
+/check*.js
+/clear*.js
+/send*.js
+/update*.js
+/debug*.js
+/find*.js
+/inspect*.js
+/remove*.js
+/trigger*.js
+/create_user.js
+/test.js
+/check.js
+/cors.json
 
 # Audit & Documentation Markdown
 ADMIN_REDESIGN_HANDOFF.md
 GEO-AUDIT-REPORT.md
+

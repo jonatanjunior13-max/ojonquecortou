@@ -8,6 +8,9 @@
     },
     "api/newsletter-mailgun.js": {
       "maxDuration": 60
+    },
+    "api/send-email.js": {
+      "maxDuration": 30
     }
   },
   "routes": [
@@ -189,6 +192,10 @@
     {
       "src": "/api/unsubscribe",
       "dest": "/api/newsletter-mailgun.js"
+    },
+    {
+      "src": "/api/send-email",
+      "dest": "/api/send-email.js"
     },
     {
       "src": "/api/(.*)",
