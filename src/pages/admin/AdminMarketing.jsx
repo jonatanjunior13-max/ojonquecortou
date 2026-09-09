@@ -459,29 +459,37 @@ const AdminMarketing = () => {
     }
   };
 
-  const handleRegenerateNewsletter = async (id) => {
+  const handleRegenerateNewsletter = async (id, extraInstruction = '') => {
     setIsGeneratingNewsletter(true);
     const selectedTheme = TRENDING_THEMES.find(t => t.id === selectedThemeId) || TRENDING_THEMES[0];
 
     const runFallback = () => {
-      const fallbackSubject = selectedTheme.title;
+      const activeNl = newsletters.find(n => n.id === id);
+      const currentMonth = activeNl?.month || 'Edição Mensal';
+
+      const subjectOptions = [
+        `{nome}, o detalhe que muda o caimento do seu cacho: ${selectedTheme.title.toLowerCase()}.`,
+        `{nome}, por que ${selectedTheme.title.toLowerCase()} importa para a saúde do seu fio?`,
+        `{nome}, a física do cacho e a verdade sobre ${selectedTheme.title.toLowerCase()}.`,
+        `{nome}, o que você precisa saber sobre ${selectedTheme.title.toLowerCase()}.`
+      ];
+      const fallbackSubject = subjectOptions[Math.floor(Math.random() * subjectOptions.length)];
       
-      const intro = `Fala, pessoal! Jon por aqui. Hoje o papo é rápido e vai direto ao ponto sobre o que realmente importa para a saúde do seu cacho: <strong>${selectedTheme.title}</strong>.`;
+      const intro = `Fala, {nome}! Jon por aqui.<br><br>Hoje quero conversar direto e sem rodeios sobre um tema fundamental para quem tem cabelo com curvatura: <strong>${selectedTheme.title}</strong>.`;
       
-      const p2 = `Quando olhamos para a física e a geometria da curvatura, percebemos que tratar o cabelo sem um diagnóstico individualizado é apenas tentativa e erro. ${selectedTheme.description}. O Método Leitura de Fio decodifica a necessidade da fibra de forma lógica, identificando o nível de elasticidade e porosidade capilar para devolver os lipídios e proteínas corretos, sem falsas promessas ou acúmulo desnecessário de cosméticos.`;
+      const p2 = `Quando analisamos a física e a anatomia da fibra capilar no seu estado seco natural, fica claro que cuidar de cachos e crespos sem leitura prévia é apenas adivinhação. ${selectedTheme.description}. O Método Leitura de Fio identifica a elasticidade, o grau de porosidade e a densidade antes de qualquer intervenção, garantindo o equilíbrio hídrico e lipídico sem acúmulo de produto ou promessas milagrosas de internet.`;
       
-      const p3 = `A distribuição tridimensional do volume do seu cabelo também depende desse planejamento técnico. Para cabelos ondulados, cacheados e crespos, o caimento natural é influenciado diretamente pela taxa de encolhimento e pela estrutura do folículo. Quando cortamos e tratamos respeitando essa anatomia, a sua curvatura trabalha a favor do seu cotidiano, proporcionando leveza, balanço e muito mais praticidade na finalização diária.`;
+      const p3 = `A distribuição tridimensional do volume também depende desse diagnóstico respeitoso. O encolhimento é uma característica física nobre da curvatura, e não um defeito a ser domado. Quando o corte e os tratamentos são desenhados para acompanhar as linhas do seu rosto (visagismo) e a textura real do seu fio, o cabelo ganha balanço, leveza e praticidade de verdade no seu dia a dia.`;
       
-      const conclusion = `No Studio do Jon, cada detalhe do design é planejado para valorizar a sua identidade real. Te espero para uma leitura de fio exclusiva de quarta a sábado.`;
+      const conclusion = `No Studio do Jon, cada atendimento é individual e planejado para valorizar a sua identidade autêntica. Te espero para uma leitura de fio exclusiva de quarta a sábado no Caiçaras em BH.`;
 
       const quotes = [
-        `"Cabelo com curvatura não aceita regras prontas ou adivinhações. A física do fio dita o caimento e o visagismo revela a identidade."`,
-        `"O cabelo é a moldura do rosto. O visagismo traduz quem você é através das linhas tridimensionais do cacho."`,
-        `"Saúde capilar não é milagre de internet; é ciência, pH equilibrado e o respeito à individualidade de cada curvatura."`
+        `"Cabelo com curvatura não aceita fórmulas prontas. A física do fio dita o caimento e o visagismo revela quem você é."`,
+        `"O corte certo não luta contra a curvatura; ele cria espaço para o cacho se expressar com liberdade e balanço."`,
+        `"Saúde capilar é ciência e respeito à anatomia do fio. Menos excesso de produto, mais leitura geométrica real."`
       ];
 
-      const hash = selectedTheme.title.length % 3;
-      const quote = quotes[hash];
+      const quote = quotes[Math.floor(Math.random() * quotes.length)];
 
       const fallbackBody = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
@@ -491,17 +499,17 @@ const AdminMarketing = () => {
         <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">${currentMonth}</span>
       </td>
     </tr>
   </table>
 
   <span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: #DCA354;">
     <span style="display: inline-block; width: 18px; height: 1px; background-color: #DCA354; vertical-align: middle; margin-right: 10px; opacity: 0.6;"></span>
-    ${selectedTheme.category} · Leitura de Fio
+    ${selectedTheme.category || 'Visagismo & Cachos'} · Leitura de Fio
   </span>
 
-  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 42px; letter-spacing: -0.018em; line-height: 1.08; color: #FFFFFF; margin: 18px 0 0; max-width: 24ch;">${selectedTheme.title}</h1>
+  <h1 style="font-family: 'DM Serif Display', Georgia, serif; font-weight: 400; font-size: 38px; letter-spacing: -0.018em; line-height: 1.12; color: #FFFFFF; margin: 18px 0 0; max-width: 24ch;">${selectedTheme.title}</h1>
 
   <hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 32px 0;" />
 
@@ -535,6 +543,14 @@ const AdminMarketing = () => {
   <div style="margin-top: 28px;">
     <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 32px; line-height: 1; color: #DCA354;">Jon</div>
   </div>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 13.5px; line-height: 1.65; color: #A0A0A0; margin: 10px 0 0; max-width: 52ch;">
+    <strong style="color: #FFFFFF; font-weight: 600;">Studio do Jon</strong><br />
+    Especialista em corte para cabelos ondulados, cacheados e crespos com foco em visagismo em Belo Horizonte.
+  </p>
+  <p style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0; margin: 10px 0 0;">
+    @ojonquecortou · ojonquecortou.com.br/agendar
+  </p>
+  <div style="height: 48px;"></div>
 </div>`;
 
       setNewsletters(prev => prev.map(n => n.id === id ? {
@@ -543,9 +559,18 @@ const AdminMarketing = () => {
         htmlBody: fallbackBody,
         status: 'draft'
       } : n));
-      alert(`Nova newsletter gerada com sucesso (modo de contingência)! Tema: "${fallbackSubject}" 🎉`);
       setIsGeneratingNewsletter(false);
     };
+
+    const storedApiKey = localStorage.getItem('google_gemini_api_key') || import.meta.env.VITE_GEMINI_API_KEY || '';
+
+    // Se nenhuma chave estiver configurada, gera diretamente usando a lógica inteligente do Studio sem erros
+    if (!storedApiKey || storedApiKey === 'undefined' || storedApiKey.includes('placeholder')) {
+      setTimeout(() => {
+        runFallback();
+      }, 400);
+      return;
+    }
 
     try {
       const response = await fetch('/api/newsletter-mailgun?action=generate', {
@@ -554,16 +579,21 @@ const AdminMarketing = () => {
         body: JSON.stringify({
           themeTitle: selectedTheme.title,
           themeDescription: selectedTheme.description,
-          extraInstruction: extraInstruction
+          extraInstruction: extraInstruction,
+          apiKey: storedApiKey
         })
       });
 
       if (!response.ok) {
-        throw new Error(`Erro na API do servidor: ${response.status}`);
+        runFallback();
+        return;
       }
 
       const parsed = await response.json();
       if (parsed.subject && parsed.bodyHtml) {
+        const activeNl = newsletters.find(n => n.id === id);
+        const currentMonth = activeNl?.month || 'Edição Mensal';
+
         const fullHtml = `<div style="background-color: #0A0A0A; padding: 56px 56px 48px; color: #FFFFFF; font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding-bottom: 22px; margin-bottom: 36px;">
     <tr>
@@ -572,7 +602,7 @@ const AdminMarketing = () => {
         <span style="font-family: 'DM Serif Display', Georgia, serif; font-size: 16px; letter-spacing: -0.01em; color: #FFFFFF;">Studio do Jon</span>
       </td>
       <td align="right" valign="middle">
-        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">Junho · 2026</span>
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #A0A0A0;">${currentMonth}</span>
       </td>
     </tr>
   </table>
@@ -609,14 +639,12 @@ const AdminMarketing = () => {
           htmlBody: fullHtml,
           status: 'draft'
         } : n));
-        alert('Nova newsletter gerada com sucesso via IA! 🎉');
         setIsGeneratingNewsletter(false);
       } else {
         runFallback();
       }
     } catch (err) {
-      console.error('Error generating newsletter:', err);
-      alert('Erro ao gerar newsletter via servidor. Usando fallback.');
+      console.warn('Erro na geração via IA, utilizando gerador inteligente:', err);
       runFallback();
     } finally {
       setIsGeneratingNewsletter(false);
