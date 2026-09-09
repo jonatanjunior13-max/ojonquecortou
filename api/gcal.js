@@ -15,8 +15,8 @@ const db = getFirestore(app);
 
 // Helper to refresh Google OAuth access token
 async function refreshAccessToken(refreshToken) {
-  const client_id = (process.env.GOOGLE_CLIENT_ID || process.env.GCAL_CLIENT_ID || '').trim();
-  const client_secret = (process.env.GOOGLE_CLIENT_SECRET || process.env.GCAL_CLIENT_SECRET || '').trim();
+  const client_id = (process.env.GCAL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '').trim();
+  const client_secret = (process.env.GCAL_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET || '').trim();
 
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -95,7 +95,7 @@ export default async function handler(req, res) {
 
   // 1. ACTION: AUTH (Inicia o login para o Google Agenda)
   if (action === 'auth') {
-    const client_id = (process.env.GOOGLE_CLIENT_ID || process.env.GCAL_CLIENT_ID || '').trim();
+    const client_id = (process.env.GCAL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '').trim();
     const redirect_uri = getRedirectUri(req);
     const scope = 'https://www.googleapis.com/auth/calendar';
 
@@ -111,8 +111,8 @@ export default async function handler(req, res) {
       return res.status(400).send('Código de autorização ausente.');
     }
 
-    const client_id = (process.env.GOOGLE_CLIENT_ID || process.env.GCAL_CLIENT_ID || '').trim();
-    const client_secret = (process.env.GOOGLE_CLIENT_SECRET || process.env.GCAL_CLIENT_SECRET || '').trim();
+    const client_id = (process.env.GCAL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '').trim();
+    const client_secret = (process.env.GCAL_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET || '').trim();
     const redirect_uri = getRedirectUri(req);
 
     try {

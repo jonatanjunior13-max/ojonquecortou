@@ -42,6 +42,36 @@ function formatGoogleImageUrl(image) {
   return imageUrl;
 }
 
+function getGoogleCredentials() {
+  const clientId = (process.env.GOOGLE_GBP_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '').trim();
+  const clientSecret = (process.env.GOOGLE_GBP_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET || '').trim();
+  return { clientId, clientSecret };
+}
+
+async function refreshGoogleToken(refreshToken) {
+  const { clientId, clientSecret } = getGoogleCredentials();
+  const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: (refreshToken || '').trim(),
+      grant_type: 'refresh_token'
+    })
+  });
+
+  const tokenData = await tokenResponse.json();
+  if (!tokenResponse.ok) {
+    console.error('Erro ao renovar token com o Google:', tokenData);
+    const detailMsg = tokenData.error_description || tokenData.error || 'Erro ao renovar token de acesso com o Google.';
+    const err = new Error(detailMsg);
+    err.details = tokenData;
+    throw err;
+  }
+  return tokenData.access_token;
+}
+
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Credentials', true);
@@ -61,13 +91,13 @@ export default async function handler(req, res) {
 
   // 1. AÇÃO: AUTH (Inicia o login no Google)
   if (action === 'auth') {
-    const client_id = process.env.GOOGLE_CLIENT_ID;
+    const { clientId } = getGoogleCredentials();
     const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
     const protocol = isLocal ? 'http' : 'https';
     const redirect_uri = `${protocol}://${req.headers.host}/api/gbp?action=callback`;
     const scope = 'https://www.googleapis.com/auth/business.manage https://www.googleapis.com/auth/content';
     
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
     
     return res.redirect(authUrl);
   }
@@ -79,8 +109,7 @@ export default async function handler(req, res) {
       return res.status(400).send('Código de autorização ausente.');
     }
 
-    const client_id = process.env.GOOGLE_CLIENT_ID;
-    const client_secret = process.env.GOOGLE_CLIENT_SECRET;
+    const { clientId, clientSecret } = getGoogleCredentials();
     const isLocal = req.headers.host.includes('localhost') || req.headers.host.includes('127.0.0.1');
     const protocol = isLocal ? 'http' : 'https';
     const redirect_uri = `${protocol}://${req.headers.host}/api/gbp?action=callback`;
@@ -92,8 +121,8 @@ export default async function handler(req, res) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           code,
-          client_id,
-          client_secret,
+          client_id: clientId,
+          client_secret: clientSecret,
           redirect_uri,
           grant_type: 'authorization_code'
         })
@@ -212,24 +241,15 @@ export default async function handler(req, res) {
       }
 
       // Renovar access token
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          refresh_token: refreshToken,
-          grant_type: 'refresh_token'
-        })
-      });
-
-      const tokenData = await tokenResponse.json();
-      if (!tokenResponse.ok) {
-        console.error('Erro ao renovar token:', tokenData);
-        return res.status(500).json({ error: 'Erro ao renovar token de acesso com o Google.', details: tokenData });
+      let accessToken;
+      try {
+        accessToken = await refreshGoogleToken(refreshToken);
+      } catch (tokenErr) {
+        return res.status(500).json({ 
+          error: `Erro ao renovar token de acesso com o Google: ${tokenErr.message}`, 
+          details: tokenErr.details 
+        });
       }
-
-      const accessToken = tokenData.access_token;
 
       let mediaList = [];
       if (image) {
@@ -316,24 +336,15 @@ export default async function handler(req, res) {
       }
 
       // Renovar access token
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          refresh_token: refreshToken,
-          grant_type: 'refresh_token'
-        })
-      });
-
-      const tokenData = await tokenResponse.json();
-      if (!tokenResponse.ok) {
-        console.error('Erro ao renovar token:', tokenData);
-        return res.status(500).json({ error: 'Erro ao renovar token de acesso com o Google.', details: tokenData });
+      let accessToken;
+      try {
+        accessToken = await refreshGoogleToken(refreshToken);
+      } catch (tokenErr) {
+        return res.status(500).json({ 
+          error: `Erro ao renovar token de acesso com o Google: ${tokenErr.message}`, 
+          details: tokenErr.details 
+        });
       }
-
-      const accessToken = tokenData.access_token;
 
       const imageUrl = formatGoogleImageUrl(image);
 
@@ -396,24 +407,15 @@ export default async function handler(req, res) {
       }
 
       // Renovar access token
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          refresh_token: refreshToken,
-          grant_type: 'refresh_token'
-        })
-      });
-
-      const tokenData = await tokenResponse.json();
-      if (!tokenResponse.ok) {
-        console.error('Erro ao renovar token no get-reviews:', tokenData);
-        return res.status(500).json({ error: 'Erro ao renovar token de acesso com o Google.' });
+      let accessToken;
+      try {
+        accessToken = await refreshGoogleToken(refreshToken);
+      } catch (tokenErr) {
+        return res.status(500).json({ 
+          error: `Erro ao renovar token de acesso com o Google: ${tokenErr.message}`, 
+          details: tokenErr.details 
+        });
       }
-
-      const accessToken = tokenData.access_token;
 
       // Buscar avaliações
       const reviewsUrl = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${locationId}/reviews`;
@@ -483,23 +485,15 @@ export default async function handler(req, res) {
       }
 
       // Renovar access token
-      const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          client_id: process.env.GOOGLE_CLIENT_ID,
-          client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          refresh_token: refreshToken,
-          grant_type: 'refresh_token'
-        })
-      });
-
-      const tokenData = await tokenResponse.json();
-      if (!tokenResponse.ok) {
-        return res.status(500).json({ error: 'Erro ao renovar token de acesso.' });
+      let accessToken;
+      try {
+        accessToken = await refreshGoogleToken(refreshToken);
+      } catch (tokenErr) {
+        return res.status(500).json({ 
+          error: `Erro ao renovar token de acesso com o Google: ${tokenErr.message}`, 
+          details: tokenErr.details 
+        });
       }
-
-      const accessToken = tokenData.access_token;
 
       // Enviar resposta
       const replyUrl = `https://mybusiness.googleapis.com/v4/accounts/${accountId}/locations/${locationId}/reviews/${reviewId}/reply`;
@@ -561,9 +555,10 @@ export default async function handler(req, res) {
         });
       }
 
+      const { clientId, clientSecret } = getGoogleCredentials();
       const oauth2Client = new google.auth.OAuth2(
-        process.env.GOOGLE_CLIENT_ID,
-        process.env.GOOGLE_CLIENT_SECRET
+        clientId,
+        clientSecret
       );
 
       oauth2Client.setCredentials({
