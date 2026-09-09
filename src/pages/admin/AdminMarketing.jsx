@@ -638,11 +638,17 @@ const AdminMarketing = () => {
         headers: { 'Content-Type': 'application/json', 'x-admin-token': 'studio-jon-admin' },
         body: JSON.stringify({ subject: nl.subject, htmlBody: nl.htmlBody, newsletterId: nl.id, testEmail: testEmailAddress })
       });
-      const data = await res.json();
-      if (data.success) {
+      const resText = await res.text();
+      let data;
+      try {
+        data = JSON.parse(resText);
+      } catch {
+        throw new Error(`Resposta inválida do servidor (${res.status}): ${resText.slice(0, 120)}`);
+      }
+      if (res.ok && data.success) {
         setNewsletterSendLog(prev => [...prev, `[✅ OK] Email de teste enviado para ${testEmailAddress}. Message ID: ${data.messageId}`]);
       } else {
-        setNewsletterSendLog(prev => [...prev, `[❌ ERRO] ${data.error} — ${data.details || ''}`]);
+        setNewsletterSendLog(prev => [...prev, `[❌ ERRO] ${data.error || 'Falha no envio'} ${data.details ? '— ' + data.details : ''}`]);
       }
     } catch (err) {
       setNewsletterSendLog(prev => [...prev, `[❌ ERRO] Falha na requisição: ${err.message}`]);
@@ -716,9 +722,16 @@ const AdminMarketing = () => {
           })
         });
 
-        const data = await res.json();
-        if (!data.success) {
-          throw new Error(data.error || `Falha ao enviar o Lote ${batchNum}`);
+        const resText = await res.text();
+        let data;
+        try {
+          data = JSON.parse(resText);
+        } catch {
+          throw new Error(`Resposta inválida do servidor (${res.status}): ${resText.slice(0, 120)}`);
+        }
+
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || `Falha ao enviar o Lote ${batchNum}${data.details ? ': ' + data.details : ''}`);
         }
 
         totalSent += data.sent;

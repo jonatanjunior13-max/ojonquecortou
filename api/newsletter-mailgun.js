@@ -143,13 +143,6 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-  // 1. GET Action: Check Bounces list
-  if (req.method === 'GET') {
-    const adminToken = req.headers['x-admin-token'] || req.query.token;
-    if (!adminToken || adminToken !== 'studio-jon-admin') {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
     try {
       let bounces = [];
 
@@ -535,7 +528,7 @@ Use as seguintes tags no "bodyHtml":
               name: r.name
             }
           ],
-          subject: subject,
+          subject: subject.replace(/{nome}/g, r.name),
           html: fullHtml.replace(/{nome}/g, r.name)
         }));
 
