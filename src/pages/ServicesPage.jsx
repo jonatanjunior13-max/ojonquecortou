@@ -43,23 +43,28 @@ const SERVICE_IMAGE_MAP = {
   'coloracao-completa': '/cachos-ruivos-definicao.webp',
   'tratamento-personalizado-novo': '/cachos-longos-sorriso-bh.webp',
   'inside-trp': '/corte-crespo-com-volume.webp',
-  'detox-estimulante': '/cabelo-curto-platinado.webp',
+  'detox-estimulante': null,
   'manutencao-corte': '/cachos-curtos-definidos-bh.webp',
   'lavar-finalizar': '/cabelo-longo-ondulado-bh.webp',
   'pacote-cachos-perfeitos': '/cachos-longos-acobreados.webp',
   'retoque-raiz': '/corte-ondulado-ruivo-bh.webp',
-  'infusao-carga-hidrica': '/cachos-medios-volumosos-bh.webp',
-  'ritual-reposicao-lipidica': '/cachos-masculinos-longos.webp',
-  'protocolo-blindagem-ph': '/corte-pixie-cacheado.webp'
+  'infusao-carga-hidrica': null,
+  'infusao-carga-hidrica-porosos': null,
+  'ritual-reposicao-lipidica': null,
+  'ritual-reposicao-lipidica-nutricao': null,
+  'protocolo-blindagem-ph': null,
+  'protocolo-blindagem-ph-reconstrucao': null
 };
 
 const getServiceImage = (s) => {
   if (s.image) return s.image;
-  if (SERVICE_IMAGE_MAP[s.id]) return SERVICE_IMAGE_MAP[s.id];
+  if (Object.prototype.hasOwnProperty.call(SERVICE_IMAGE_MAP, s.id)) {
+    return SERVICE_IMAGE_MAP[s.id];
+  }
   const cat = (s.category || '').toLowerCase();
   if (cat.includes('corte')) return '/corte-a-seco-cachos-definidos-bh.webp';
   if (cat.includes('color')) return '/cachos-longos-luzes.webp';
-  if (cat.includes('tratamento')) return '/cachos-longos-sorriso-bh.webp';
+  if (cat.includes('tratamento')) return null;
   if (cat.includes('combo')) return '/cachos-longos-castanhos-bh.webp';
   if (cat.includes('análise') || cat.includes('analise')) return '/jon-trabalhando.jpg';
   return '/corte-visagista-cachos-bh.webp';
@@ -171,17 +176,19 @@ const ServicesPage = () => {
                   <span className="sdc-emoji">{service.emoji}</span>
                   <span className="sdc-category">{service.category}</span>
                 </div>
-                <div className="sdc-img-wrap">
-                  <img 
-                    src={service.image} 
-                    alt={`${service.name} — Especialista em cabelos cacheados e crespos no Studio do Jon em Belo Horizonte`} 
-                    className="sdc-img" 
-                    loading="lazy" 
-                    decoding="async" 
-                    width="360" 
-                    height="200" 
-                  />
-                </div>
+                {service.image && (
+                  <div className="sdc-img-wrap">
+                    <img 
+                      src={service.image} 
+                      alt={`${service.name} — Especialista em cabelos cacheados e crespos no Studio do Jon em Belo Horizonte`} 
+                      className="sdc-img" 
+                      loading="lazy" 
+                      decoding="async" 
+                      width="360" 
+                      height="200" 
+                    />
+                  </div>
+                )}
                 <h2 className="sdc-name">
                   <Link to={`/servicos/${service.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
                     {service.name}

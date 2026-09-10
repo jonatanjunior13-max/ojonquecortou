@@ -225,7 +225,7 @@ const aboutBody = `
       <p>Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.</p>
       <p>Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçaras (BH), construí um espaço focado na liberdade do seu fio natural, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.</p>
       <h2>Trajetória e Anos de Experiência</h2>
-      <p>Há mais de uma década atrás da cadeira, Jonatan Junior construiu sua trajetória profissional dedicada quase que integralmente ao universo dos cabelos com curvatura — ondulados, cacheados e crespos. Passou por formações técnicas em corte, coloração e química capilar, mas foi na prática diária, atendendo centenas de texturas diferentes no bairro Caiçaras, que desenvolveu o olhar clínico que hoje é a marca registrada do Studio do Jon. Anos de atendimento a cabelos que chegavam danificados por descolorações mal avaliadas, cortes feitos com o fio molhado e esticado, ou queixas de "cabelo que não cresce" (quando na verdade só estava quebrando) revelaram um padrão: a maioria dos problemas capilares não nascia do cabelo em si, mas da falta de diagnóstico antes da tesoura ou da química.</p>
+      <p>Há quase uma década atrás da cadeira (8 a 9 anos dedicados ao ofício), Jonatan Junior construiu sua trajetória profissional focada quase que integralmente no universo dos cabelos com curvatura — ondulados, cacheados e crespos. Passou por formações técnicas em corte, coloração e química capilar, mas foi na prática diária, atendendo centenas de texturas diferentes no bairro Caiçaras, que desenvolveu o olhar clínico que hoje é a marca registrada do Studio do Jon. Anos de atendimento a cabelos que chegavam danificados por descolorações mal avaliadas, cortes feitos com o fio molhado e esticado, ou queixas de "cabelo que não cresce" (quando na verdade só estava quebrando) revelaram um padrão: a maioria dos problemas capilares não nascia do cabelo em si, mas da falta de diagnóstico antes da tesoura ou da química.</p>
       <h2>A Origem do Método Leitura de Fio</h2>
       <p>O Método Leitura de Fio não surgiu de um curso ou de uma fórmula copiada. Nasceu da repetição de um mesmo erro visto em centenas de atendimentos: cortar ou transformar quimicamente um cabelo cacheado do mesmo jeito que se trata um cabelo liso, ignorando que a fibra com curvatura se comporta como uma mola — encolhe ao secar, reage diferente à porosidade e exige leitura individual antes de qualquer intervenção. Jonatan percebeu que preview e resultado só coincidiam quando havia, antes da tesoura, uma etapa de escuta, análise a seco, análise molhada e checagem de histórico químico. Dessa constatação nasceu um protocolo estruturado em 7 etapas, testado e refinado atendimento após atendimento, até se tornar parte obrigatória (e sem custo extra) de todo corte realizado no Studio do Jon. Hoje, a Leitura de Fio é o que diferencia o Studio do Jon de salões que ainda tratam cabelo cacheado com fórmulas prontas de revista.</p>
       <h2>Especialização em Curvaturas 2A a 4C</h2>
@@ -1164,7 +1164,7 @@ const pages = [
       <h2>Dados rápidos</h2>
       <ul>
         <li><strong>Fundador:</strong> Jonatan Junior</li>
-        <li><strong>Experiência:</strong> Mais de uma década (10+ anos) dedicada exclusivamente a curvaturas 2A a 4C</li>
+        <li><strong>Experiência:</strong> 8–9 anos dedicados exclusivamente a curvaturas 2A a 4C (quase uma década)</li>
         <li><strong>Localização:</strong> Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte, MG</li>
         <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A-4C)</li>
         <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
@@ -1173,7 +1173,7 @@ const pages = [
         <li><strong>Instagram:</strong> @ojonquecortou</li>
       </ul>
       <h2>Trajetória e Porta-voz</h2>
-      <p>Com mais de uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.</p>
+      <p>Com quase uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (8–9 anos de prática especializada em Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.</p>
       <h2>Contato para pauta</h2>
       <p>Para entrevistas ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/5531983044059">(31) 98304-4059</a>.</p>
     </article>

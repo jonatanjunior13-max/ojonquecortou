@@ -46,7 +46,7 @@ const PressPage = () => {
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Dados rápidos</h2>
           <ul className="paragraph-md" style={{ marginTop: 16, lineHeight: 1.8 }}>
             <li><strong>Fundador:</strong> Jonatan Junior</li>
-            <li><strong>Experiência:</strong> Mais de uma década (10+ anos) dedicada exclusivamente a curvaturas 2A a 4C</li>
+            <li><strong>Experiência:</strong> 8–9 anos dedicados exclusivamente a curvaturas 2A a 4C (quase uma década)</li>
             <li><strong>Localização:</strong> Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte, MG</li>
             <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A–4C)</li>
             <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
@@ -57,7 +57,7 @@ const PressPage = () => {
 
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Trajetória e Porta-voz</h2>
           <p className="paragraph-md" style={{ marginTop: 16 }}>
-            Com mais de uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.
+            Com quase uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (8–9 anos de prática especializada em Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.
           </p>
           <p className="paragraph-md" style={{ marginTop: 16 }}>
             Jonatan está disponível como fonte técnica para veículos de imprensa, podcasts e criadores de conteúdo para pautas sobre transição capilar, saúde do couro cabeludo, física do corte a seco em curvaturas 2A a 4C, descoloração segura em cachos e impacto da Leitura de Fio na autoestima de pessoas crespas e cacheadas.

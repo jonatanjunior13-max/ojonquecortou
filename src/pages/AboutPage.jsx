@@ -56,7 +56,7 @@ const AboutPage = () => {
               <img src="/jon-trabalhando.jpg" alt="Jonatan Junior realizando corte de cabelo cacheado no Studio do Jon em Belo Horizonte" className="about-image" />
             </div>
             <div className="experience-tag">
-              <span className="exp-number">10+</span>
+              <span className="exp-number">8-9</span>
               <span className="exp-text">Anos de Especialização</span>
             </div>
           </div>
@@ -83,7 +83,7 @@ const AboutPage = () => {
           <div className="reveal active">
             <h2 className="heading-lg mb-3">Trajetória e Anos de Experiência</h2>
             <p className="paragraph-md mb-3">
-              Há mais de uma década atrás da cadeira, Jonatan Junior construiu sua trajetória profissional dedicada quase que integralmente ao universo dos cabelos com curvatura — ondulados, cacheados e crespos. Passou por formações técnicas em corte, coloração e química capilar, mas foi na prática diária, atendendo centenas de texturas diferentes no bairro Caiçaras, que desenvolveu o olhar clínico que hoje é a marca registrada do Studio do Jon.
+              Há quase uma década atrás da cadeira (8 a 9 anos dedicados ao ofício), Jonatan Junior construiu sua trajetória profissional focada quase que integralmente no universo dos cabelos com curvatura — ondulados, cacheados e crespos. Passou por formações técnicas em corte, coloração e química capilar, mas foi na prática diária, atendendo centenas de texturas diferentes no bairro Caiçaras, que desenvolveu o olhar clínico que hoje é a marca registrada do Studio do Jon.
             </p>
             <p className="paragraph-md mb-4">
               Anos de atendimento a cabelos que chegavam danificados por descolorações mal avaliadas, cortes feitos com o fio molhado e esticado, ou queixas de "cabelo que não cresce" (quando na verdade só estava quebrando) revelaram um padrão: a maioria dos problemas capilares não nascia do cabelo em si, mas da falta de diagnóstico antes da tesoura ou da química.

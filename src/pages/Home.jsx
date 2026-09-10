@@ -220,7 +220,7 @@ function HomeManifesto() {
 
 function HomeTeasers() {
   const items = [
-    { n: "01", t: "Sobre o Jon", d: "Mais de 10 anos especializado, método próprio, atendimento individual.", href: "/sobre" },
+    { n: "01", t: "Sobre o Jon", d: "8-9 anos especializado, método próprio, atendimento individual.", href: "/sobre" },
     { n: "02", t: "Serviços", d: "Leitura, corte, morena iluminada, transição e cronograma.", href: "/servicos" },
     { n: "03", t: "Galeria", d: "Antes/depois reais, sem retoque pra parecer domado.", href: "/galeria" },
     { n: "04", t: "Depoimentos", d: "O que muda na rotina depois da Leitura de Fio.", href: "/depoimentos" },
@@ -317,7 +317,7 @@ function HomeTestimonials() {
               O que muda quando<br/>o fio é <span className="italic">lido primeiro.</span>
             </h2>
           </div>
-          <p className="lead">Mais de uma década com cacheadas e crespas em BH.</p>
+          <p className="lead">Quase uma década (8–9 anos) com cacheadas e crespas em BH.</p>
         </Reveal>
 
         <div className="testimonial-track">
