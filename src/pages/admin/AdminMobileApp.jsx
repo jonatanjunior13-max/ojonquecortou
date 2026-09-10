@@ -17,6 +17,7 @@ import {
 import './AdminMobile.css';
 import { syncBookingToGoogle } from '../../utils/gcalSync';
 import { calculateNetValue, formatCurrencyBRL } from '../../utils/finance';
+import { trackManualBooking } from '../../utils/attribution';
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -1859,6 +1860,7 @@ export default function AdminMobileApp() {
       notes: nbForm.notes || '',
       status: 'confirmado',
       prepayment: prepay,
+      created_by: 'admin_mobile_manual',
       createdAt: new Date().toISOString(),
       ...(isPkg ? {
         packageId: nbForm.packageId,
@@ -1881,6 +1883,20 @@ export default function AdminMobileApp() {
         // Substitui ID temporário pelo ID oficial do Firestore
         setBookings(prev => prev.map(b => b.id === tempId ? { ...b, id: ref.id } : b));
         
+        // Registrar agendamento manual no GA4
+        trackManualBooking({
+          bookingId: ref.id,
+          clientName: data.clientName,
+          clientPhone: data.clientPhone,
+          clientEmail: data.clientEmail,
+          serviceName: data.serviceName,
+          servicePrice: data.servicePrice,
+          date: data.date,
+          time: data.time,
+          profissional: data.profissional || 'jon',
+          source: 'admin_mobile'
+        });
+
         // Sincronização em segundo plano com Google Calendar (não bloqueia UI)
         syncBookingToGoogle(ref.id).catch(err => console.warn('Erro sync GCal:', err));
 

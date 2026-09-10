@@ -31,6 +31,7 @@ import {
 import { syncBookingToGoogle } from '../../utils/gcalSync';
 import ComandaModal from '../../components/admin/ComandaModal';
 import { useToast } from '../../components/admin/ui/Toast';
+import { trackManualBooking } from '../../utils/attribution';
 import './Admin.css';
 
 // Lista de horários padrão
@@ -1380,6 +1381,7 @@ const AdminDashboard = () => {
       status: 'confirmado',
       profissional: newBooking.profissional || 'jon',
       prepayment: Number(newBooking.prepayment) || 0,
+      created_by: 'admin_manual',
       createdAt: new Date().toISOString(),
       ...(newBooking.bookingType === 'package' ? {
         packageId: newBooking.packageId,
@@ -1450,6 +1452,20 @@ const AdminDashboard = () => {
           }
           syncBookingToGoogle(finalId).catch(err => console.warn('Error syncing new booking:', err));
         }
+
+        // Registrar agendamento manual no GA4
+        trackManualBooking({
+          bookingId: finalId,
+          clientName: payload.clientName,
+          clientPhone: payload.clientPhone,
+          clientEmail: payload.clientEmail,
+          serviceName: payload.serviceName,
+          servicePrice: payload.servicePrice,
+          date: payload.date,
+          time: payload.time,
+          profissional: payload.profissional || 'jon',
+          source: 'admin_desktop'
+        });
 
         // Swap tempId with finalId
         setBookings(prev => prev.map(b => b.id === tempId ? { ...b, id: finalId } : b));
@@ -2313,21 +2329,39 @@ const AdminDashboard = () => {
           date: targetDate,
           time: targetTime,
           profissional: targetProf,
+          created_by: 'admin_manual_duplicate',
           createdAt: new Date().toISOString()
         };
         delete newPayload.id;
 
+        let pasteId = '';
         if (isDemoMode || !db) {
-          const newId = 'demo-' + Date.now();
-          setBookings(prev => [...prev, { id: newId, ...newPayload }]);
+          pasteId = 'demo-' + Date.now();
+          setBookings(prev => [...prev, { id: pasteId, ...newPayload }]);
           const local = localStorage.getItem('demo_bookings');
           const arr = local ? JSON.parse(local) : [];
-          arr.push({ id: newId, ...newPayload });
+          arr.push({ id: pasteId, ...newPayload });
           localStorage.setItem('demo_bookings', JSON.stringify(arr));
         } else {
           const docRef = await addDoc(collection(db, 'bookings'), newPayload);
+          pasteId = docRef.id;
           syncBookingToGoogle(docRef.id).catch(err => console.warn(err));
         }
+
+        // Registrar no GA4
+        trackManualBooking({
+          bookingId: pasteId,
+          clientName: newPayload.clientName,
+          clientPhone: newPayload.clientPhone,
+          clientEmail: newPayload.clientEmail,
+          serviceName: newPayload.serviceName,
+          servicePrice: newPayload.servicePrice,
+          date: newPayload.date,
+          time: newPayload.time,
+          profissional: targetProf,
+          source: 'admin_desktop_duplicate'
+        });
+
         alert('Agendamento copiado com sucesso!');
       }
     } catch (err) {

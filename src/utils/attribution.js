@@ -112,3 +112,61 @@ export const getAttribution = () => {
     return {};
   }
 };
+
+/**
+ * Track manual/offline bookings created by Jon/Admin in GA4
+ */
+export const trackManualBooking = ({
+  bookingId,
+  clientName,
+  clientPhone,
+  clientEmail,
+  serviceName,
+  servicePrice,
+  date,
+  time,
+  profissional = 'jon',
+  source = 'admin_desktop'
+} = {}) => {
+  if (typeof window === 'undefined') return;
+
+  const numericValue = Number(servicePrice) || 0;
+
+  try {
+    // 1. Google Analytics 4 (GA4) custom event
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'manual_booking', {
+        event_category: 'booking',
+        booking_id: bookingId || `manual-${Date.now()}`,
+        service_name: serviceName || 'Serviço',
+        value: numericValue,
+        currency: 'BRL',
+        booking_date: date,
+        booking_time: time,
+        profissional: profissional || 'jon',
+        booking_source: source,
+        created_by: 'jon_admin',
+        client_name: clientName || '',
+        send_to: 'G-BC8WXZKTLL'
+      });
+    }
+
+    // 2. DataLayer push (for Google Tag Manager & GA4 custom definitions)
+    if (Array.isArray(window.dataLayer)) {
+      window.dataLayer.push({
+        event: 'manual_booking',
+        booking_id: bookingId || `manual-${Date.now()}`,
+        service_name: serviceName || 'Serviço',
+        value: numericValue,
+        currency: 'BRL',
+        profissional: profissional || 'jon',
+        booking_source: source,
+        created_by: 'jon_admin'
+      });
+    }
+
+    console.log(`[GA4] Manual booking tracked: ${bookingId} (${serviceName} - R$${numericValue}) via ${source}`);
+  } catch (err) {
+    console.warn('[GA4] Erro ao registrar agendamento manual:', err);
+  }
+};
