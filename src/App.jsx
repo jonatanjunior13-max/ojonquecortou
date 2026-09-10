@@ -56,7 +56,7 @@ const AdminMarketing = React.lazy(() => import('./pages/admin/AdminMarketing'));
 const AdminSettings = React.lazy(() => import('./pages/admin/AdminSettings'));
 const AdminMobileApp = React.lazy(() => import('./pages/admin/AdminMobileApp'));
 const AdminHoje = React.lazy(() => import('./pages/admin/AdminHoje'));
-const GoogleAnalytics = React.lazy(() => import('./components/GoogleAnalytics'));
+import GoogleAnalytics from './components/GoogleAnalytics';
 const CustomCursor = React.lazy(() => import('./components/CustomCursor'));
 
 // Layout público com cabeçalho, rodapé e botão do WhatsApp
@@ -94,6 +94,8 @@ function App() {
     <Router>
       <ScrollToTop />
       <CanonicalTag />
+      <PaidSocialRedirector />
+      <GoogleAnalytics />
       <React.Suspense fallback={null}>
         <CustomCursor />
       </React.Suspense>

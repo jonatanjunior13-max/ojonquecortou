@@ -1,15 +1,19 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { initAttribution, getAttribution } from '../utils/attribution';
 
 const GoogleAnalytics = () => {
   const location = useLocation();
 
-  // 1. Rastreamento de PageView em mudanças de rota (SPA)
+  // 1. Rastreamento de PageView em mudanças de rota (SPA) e captura de atribuição
   useEffect(() => {
     // Exclude /admin/* and /mobile from tracking
     if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/mobile')) {
       return;
     }
+
+    // Capture & persist gclid, fbclid, wbraid, gbraid, UTMs immediately on route change
+    initAttribution();
 
     // Delay pageview tracking slightly to let SEO/Helmet update the document title
     const handleTracking = () => {
@@ -74,6 +78,7 @@ const GoogleAnalytics = () => {
         lastTrackTime = now;
 
         const buttonLabel = clickable.textContent?.trim().slice(0, 50) || 'Agende seu Horário';
+        const attribution = getAttribution();
 
         // Disparo Direto para Google Ads
         if (window.gtag) {
@@ -99,6 +104,13 @@ const GoogleAnalytics = () => {
               event_label: 'Clicou no botao agende seu horário'
             });
 
+            window.gtag('event', 'schedule_click', {
+              event_category: 'engagement',
+              event_label: 'Clicou no botao agende seu horário',
+              button_text: buttonLabel,
+              destination_url: href || '/agendar'
+            });
+
             window.gtag('event', 'click_agende_seu_horario', {
               event_category: 'engagement',
               event_label: 'Clicou no botao agende seu horário',
@@ -109,8 +121,33 @@ const GoogleAnalytics = () => {
           }
         }
 
+        // Meta Pixel Browser Events
+        if (window.fbq) {
+          try {
+            window.fbq('trackCustom', 'schedule_click', {
+              button_text: buttonLabel,
+              destination_url: href || '/agendar'
+            });
+            window.fbq('track', 'Contact', {
+              content_name: buttonLabel
+            });
+            window.fbq('track', 'Schedule', {
+              content_name: buttonLabel
+            });
+          } catch (fbErr) {
+            console.warn('Erro ao disparar Meta Pixel no clique:', fbErr);
+          }
+        }
+
         // Disparo para o Google Tag Manager (GTM) dataLayer
         window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: 'schedule_click',
+          event_category: 'conversion',
+          event_label: 'Clicou no botao agende seu horário',
+          click_text: buttonLabel,
+          destination_url: href || '/agendar'
+        });
         window.dataLayer.push({
           event: 'click_agende_seu_horario',
           event_category: 'conversion',
@@ -118,6 +155,23 @@ const GoogleAnalytics = () => {
           click_text: buttonLabel,
           destination_url: href || '/agendar'
         });
+
+        // Background Meta CAPI dispatch for schedule_click
+        if (attribution.fbc || attribution.fbp || attribution.fbclid) {
+          fetch('/api/meta-capi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              eventName: 'Schedule',
+              eventData: {
+                content_name: buttonLabel,
+                status: 'click_agendar'
+              },
+              fbc: attribution.fbc,
+              fbp: attribution.fbp
+            })
+          }).catch(() => {});
+        }
       }
     };
 

@@ -15,6 +15,7 @@ import { Arrow } from '../components/NewDesignComponents';
 import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar, Plus } from 'lucide-react';
 import { syncBookingToGoogle } from '../utils/gcalSync';
 import { getEffectiveAbsences, isSlotBlockedByAbsence } from '../utils/absences';
+import { getAttribution } from '../utils/attribution';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
 
@@ -1455,85 +1456,133 @@ const BookingPage = () => {
 
     let conversionEventFired = false;
     const fireBookingConversionEvent = () => {
-      if (conversionFiredRef.current || conversionEventFired || !window.gtag) return;
+      if (conversionFiredRef.current || conversionEventFired) return;
       conversionFiredRef.current = true;
       conversionEventFired = true;
-      try {
-        const transactionId = bookingPayload.id || `booking-${Date.now()}`;
-        window.gtag('event', 'purchase', {
-          value: computedFinalTotal,
-          currency: 'BRL',
-          transaction_id: transactionId,
-          items: [{
-            item_name: bookingPayload.serviceName,
-            item_id: bookingPayload.service?.id || 'combined-services',
-            price: computedFinalTotal,
-            quantity: 1
-          }]
-        });
-        // Conversão 1: Agendamento Online (Compra)
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
-          value: computedFinalTotal,
-          currency: 'BRL',
-          transaction_id: transactionId
-        });
 
-        // Conversão 2: Agendar Horário (Reservar Horário)
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-666534146/g1yNCMDxhKMYEIKC6r0C',
-          value: computedFinalTotal,
-          currency: 'BRL',
-          transaction_id: transactionId
-        });
+      const attribution = getAttribution();
+      const transactionId = bookingPayload.id || `booking-${Date.now()}`;
+      const cleanPhone = (clientData.phone || '').replace(/\D/g, '');
+      const e164Phone = cleanPhone ? (cleanPhone.startsWith('55') ? `+${cleanPhone}` : `+55${cleanPhone}`) : undefined;
+      const clientEmail = (clientData.email && clientData.email !== 'Não informado') ? clientData.email.trim().toLowerCase() : undefined;
 
-        // Conversão 3: Lead/Agendamento Histórico GTM
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-666534146/mENYCMyFzNsDEIKC6r0C',
-          value: computedFinalTotal,
-          currency: 'BRL',
-          transaction_id: transactionId
-        });
+      // 1. Google Ads Conversions & Enhanced Conversions (user_data)
+      if (window.gtag) {
+        try {
+          if (clientEmail || e164Phone) {
+            const userDataObj = {};
+            if (clientEmail) userDataObj.email = clientEmail;
+            if (e164Phone) userDataObj.phone_number = e164Phone;
+            window.gtag('set', 'user_data', userDataObj);
+          }
 
-        // Conversão 4: Form Submit GTM
-        window.gtag('event', 'conversion', {
-          send_to: 'AW-666534146/F3qvCNaz5IUbEIKC6r0C',
-          value: computedFinalTotal,
-          currency: 'BRL',
-          transaction_id: transactionId
-        });
+          // Conversão Primária 1: Agendar Horário (Reservar Horário)
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-666534146/g1yNCMDxhKMYEIKC6r0C',
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId,
+            user_data: clientEmail || e164Phone ? {
+              email_address: clientEmail,
+              phone_number: e164Phone
+            } : undefined
+          });
 
-        // Conversão 5: Confirmação de Agendamento Google Ads (Resultado real pós-agendamento)
-        const confirmationConversion = {
-          send_to: 'AW-666534146/BWwzCICy5u8cEIKC6r0C',
-          value: computedFinalTotal,
-          currency: 'BRL'
-        };
-        if (transactionId) {
-          confirmationConversion.transaction_id = transactionId;
+          // Conversão Primária 2: Agendamento Online (Compra)
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId,
+            user_data: clientEmail || e164Phone ? {
+              email_address: clientEmail,
+              phone_number: e164Phone
+            } : undefined
+          });
+
+          // Conversão Histórica/GTM: Escolher Data e Hora
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-666534146/mENYCMyFzNsDEIKC6r0C',
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId
+          });
+
+          // Conversão GTM: Form Submit
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-666534146/F3qvCNaz5IUbEIKC6r0C',
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId
+          });
+
+          // Conversão 5: Confirmação de Agendamento Google Ads
+          window.gtag('event', 'conversion', {
+            send_to: 'AW-666534146/BWwzCICy5u8cEIKC6r0C',
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId
+          });
+
+          // GA4 Purchase
+          window.gtag('event', 'purchase', {
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId,
+            items: [{
+              item_name: bookingPayload.serviceName,
+              item_id: bookingPayload.service?.id || 'combined-services',
+              price: computedFinalTotal,
+              quantity: 1
+            }]
+          });
+        } catch (gtagErr) {
+          console.warn('Erro ao disparar evento de conversão Google Ads:', gtagErr);
         }
-        window.gtag('event', 'conversion', confirmationConversion);
-      } catch (gtagErr) {
-        console.warn('Erro ao disparar evento de conversão:', gtagErr);
       }
-    };
 
-    const getCookie = (name) => {
-      const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-      return match ? decodeURIComponent(match[1]) : null;
+      // 2. DataLayer push para GTM
+      try {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: 'purchase',
+          ecommerce: {
+            transaction_id: transactionId,
+            value: computedFinalTotal,
+            currency: 'BRL',
+            items: [{
+              item_name: bookingPayload.serviceName,
+              item_id: bookingPayload.service?.id || 'combined-services',
+              price: computedFinalTotal,
+              quantity: 1
+            }]
+          },
+          user_data: {
+            email: clientEmail,
+            phone_number: e164Phone
+          }
+        });
+      } catch (dlErr) {
+        console.warn('Erro ao enviar purchase para dataLayer:', dlErr);
+      }
     };
 
     let metaPixelEventFired = false;
     const fireMetaPixelConversion = () => {
       if (metaPixelEventFired) return;
       metaPixelEventFired = true;
-      
+
+      const attribution = getAttribution();
+      const transactionId = bookingPayload.id || `booking-${Date.now()}`;
       const eventIdSchedule = `schedule-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const eventIdPurchase = `purchase-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const eventIdScheduleClick = `schedule_click-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
       const eventData = {
         content_name: bookingPayload.serviceName,
         value: computedFinalTotal,
-        currency: 'BRL'
+        currency: 'BRL',
+        order_id: transactionId
       };
 
       // Client-side Browser Pixel
@@ -1541,18 +1590,15 @@ const BookingPage = () => {
         try {
           window.fbq('track', 'Schedule', eventData, { eventID: eventIdSchedule });
           window.fbq('track', 'Purchase', eventData, { eventID: eventIdPurchase });
+          window.fbq('trackCustom', 'schedule_click', eventData, { eventID: eventIdScheduleClick });
         } catch (fbqErr) {
           console.warn('Erro ao disparar Meta Pixel:', fbqErr);
         }
       }
 
-      // Server-side Meta CAPI backup with deduplication
-      let fbc = getCookie('_fbc');
-      if (!fbc) {
-        const fbclid = new URLSearchParams(window.location.search).get('fbclid');
-        if (fbclid) fbc = `fb.1.${Date.now()}.${fbclid}`;
-      }
-      const fbp = getCookie('_fbp');
+      // Server-side Meta CAPI backup com deduplicação
+      const cleanPhone = (clientData.phone || '').replace(/\D/g, '');
+      const clientEmail = (clientData.email && clientData.email !== 'Não informado') ? clientData.email : undefined;
 
       fetch('/api/meta-capi', {
         method: 'POST',
@@ -1560,12 +1606,13 @@ const BookingPage = () => {
         body: JSON.stringify({
           events: [
             { eventName: 'Schedule', eventId: eventIdSchedule, eventData },
-            { eventName: 'Purchase', eventId: eventIdPurchase, eventData }
+            { eventName: 'Purchase', eventId: eventIdPurchase, eventData },
+            { eventName: 'schedule_click', eventId: eventIdScheduleClick, eventData }
           ],
-          fbc: fbc || undefined,
-          fbp: fbp || undefined,
-          email: bookingPayload.clientEmail || undefined,
-          phone: bookingPayload.clientPhone || undefined
+          fbc: attribution.fbc,
+          fbp: attribution.fbp,
+          email: clientEmail,
+          phone: cleanPhone || undefined
         })
       }).catch(capiErr => console.warn('Erro ao disparar Meta CAPI:', capiErr));
     };

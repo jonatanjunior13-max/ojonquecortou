@@ -198,9 +198,6 @@ export default async function handler(req, res) {
     token = 'EAATDmMM4FykBRX78Qdqa8pBNuvqKhHZAHFYQ2pZCW4FqSiWFT5ZBTIEgovK8mTEYyEniUYAT8p8NwQXrEfNB62zZAkmzbTqX1el108z1vLfHQW7g1QZAHhrUB2UwOIkZCwnqCw4UmAjZBCQF1a9XZBYsPEyrmDUr1S0W2WdZCRSVYoa13E4YTkc789rAuIupg8QZDZD';
   }
 
-  const targetPixel = pixelId || '1152310907009255';
-  const url = `https://graph.facebook.com/v19.0/${targetPixel}/events?access_token=${token}`;
-
   const userData = {
     client_user_agent: req.headers['user-agent'],
     client_ip_address: req.headers['x-forwarded-for'] || req.socket.remoteAddress
@@ -237,21 +234,30 @@ export default async function handler(req, res) {
     ];
   }
 
+  const pixelList = pixelId ? [pixelId] : ['1152310907009255', '1414285063481375'];
   const payload = {
     data: eventItems
   };
 
   try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
-    });
+    const results = await Promise.all(
+      pixelList.map(async (pid) => {
+        try {
+          const pixelUrl = `https://graph.facebook.com/v19.0/${pid}/events?access_token=${token}`;
+          const response = await fetch(pixelUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const resData = await response.json();
+          return { pixelId: pid, success: !resData.error, data: resData };
+        } catch (err) {
+          return { pixelId: pid, success: false, error: err.message };
+        }
+      })
+    );
 
-    const data = await response.json();
-    return res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true, results });
   } catch (error) {
     console.error('Erro na Meta Conversions API:', error);
     return res.status(500).json({ success: false, error: error.message });

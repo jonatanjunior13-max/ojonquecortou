@@ -101,12 +101,51 @@
 
     <!-- Google Tag & GTM initialization (Synchronous stubs for zero event loss) -->
     <script>
+      // Immediate Marketing Parameter Capture & Persistence (gclid, fbclid, wbraid, gbraid, UTMs)
+      (function() {
+        try {
+          var p = new URLSearchParams(window.location.search);
+          var keys = ['gclid', 'fbclid', 'wbraid', 'gbraid', 'gad_source', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+          var d = {};
+          var found = false;
+          for (var i = 0; i < keys.length; i++) {
+            var v = p.get(keys[i]);
+            if (v) { d[keys[i]] = v; found = true; }
+          }
+          if (found) {
+            d.timestamp = Date.now();
+            d.landingPage = window.location.pathname;
+            localStorage.setItem('ojon_attribution', JSON.stringify(d));
+            sessionStorage.setItem('ojon_attribution', JSON.stringify(d));
+            if (!localStorage.getItem('ojon_first_touch')) {
+              localStorage.setItem('ojon_first_touch', JSON.stringify(d));
+            }
+            var expires = new Date(Date.now() + 90 * 864e5).toUTCString();
+            var domain = window.location.hostname.indexOf('ojonquecortou.com.br') !== -1 ? '; domain=.ojonquecortou.com.br' : '';
+            if (d.gclid && document.cookie.indexOf('_gcl_aw=') === -1) {
+              document.cookie = '_gcl_aw=GCL.' + Math.floor(Date.now() / 1000) + '.' + d.gclid + '; expires=' + expires + '; path=/' + domain + '; SameSite=Lax';
+            }
+            if (d.fbclid && document.cookie.indexOf('_fbc=') === -1) {
+              document.cookie = '_fbc=fb.1.' + Date.now() + '.' + d.fbclid + '; expires=' + expires + '; path=/' + domain + '; SameSite=Lax';
+            }
+          }
+        } catch(e) {}
+      })();
+
+      // Synchronous stub for Meta Pixel (Guarantees zero dropped fbq events during deferred load)
+      !function(f,b,e,v,n,t,s){
+        if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];
+      }(window, document);
+
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       window.gtag = gtag;
       gtag('js', new Date());
       gtag('config', 'G-2HCS01RSP2');
-      gtag('config', 'AW-666534146', { send_page_view: false });
+      gtag('config', 'AW-666534146');
     </script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2HCS01RSP2"></script>
 
@@ -134,13 +173,19 @@
 
             // Meta Pixel
             !function (f, b, e, v, n, t, s) {
+              if (f.fbq && f.fbq.queue) {
+                t = b.createElement(e); t.async = !0;
+                t.src = v; s = b.getElementsByTagName(e)[0];
+                s.parentNode.insertBefore(t, s);
+                return;
+              }
               if (f.fbq) return; n = f.fbq = function () {
                 n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
               };
               if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
               n.queue = []; t = b.createElement(e); t.async = !0;
               t.src = v; s = b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t, s)
+              s.parentNode.insertBefore(t, s);
             }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '1152310907009255');
             fbq('init', '1414285063481375');
