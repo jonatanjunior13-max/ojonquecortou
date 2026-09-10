@@ -87,6 +87,7 @@ function wrapNewsletterHtml(subject, body) {
 
 // Send a single email via MailerSend REST API
 async function sendMailerSend(to, toName, subject, html) {
+  const unsubUrl = `https://ojonquecortou.com.br/api/unsubscribe?email=${encodeURIComponent(to)}`;
   const res = await fetch('https://api.mailersend.com/v1/email', {
     method: 'POST',
     headers: {
@@ -105,7 +106,12 @@ async function sendMailerSend(to, toName, subject, html) {
         }
       ],
       subject,
-      html
+      html,
+      list_unsubscribe: unsubUrl,
+      headers: [
+        { name: 'List-Unsubscribe', value: `<${unsubUrl}>` },
+        { name: 'List-Unsubscribe-Post', value: 'List-Unsubscribe=One-Click' }
+      ]
     })
   });
 
@@ -517,20 +523,28 @@ Use as seguintes tags no "bodyHtml":
       const CHUNK_SIZE = 500;
       for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
         const chunk = recipients.slice(i, i + CHUNK_SIZE);
-        const bulkEmails = chunk.map(r => ({
-          from: {
-            email: 'contato@ojonquecortou.com.br',
-            name: 'O Jon Que Cortou'
-          },
-          to: [
-            {
-              email: r.email,
-              name: r.name
-            }
-          ],
-          subject: subject.replace(/{nome}/g, r.name),
-          html: fullHtml.replace(/{nome}/g, r.name)
-        }));
+        const bulkEmails = chunk.map(r => {
+          const unsubUrl = `https://ojonquecortou.com.br/api/unsubscribe?email=${encodeURIComponent(r.email)}`;
+          return {
+            from: {
+              email: 'contato@ojonquecortou.com.br',
+              name: 'O Jon Que Cortou'
+            },
+            to: [
+              {
+                email: r.email,
+                name: r.name
+              }
+            ],
+            subject: subject.replace(/{nome}/g, r.name),
+            html: fullHtml.replace(/{nome}/g, r.name),
+            list_unsubscribe: unsubUrl,
+            headers: [
+              { name: 'List-Unsubscribe', value: `<${unsubUrl}>` },
+              { name: 'List-Unsubscribe-Post', value: 'List-Unsubscribe=One-Click' }
+            ]
+          };
+        });
 
         const resBulk = await fetch('https://api.mailersend.com/v1/bulk-email', {
           method: 'POST',

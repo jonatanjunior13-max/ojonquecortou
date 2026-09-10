@@ -191,7 +191,7 @@
     },
     {
       "src": "/api/unsubscribe",
-      "dest": "/api/newsletter-mailgun.js"
+      "dest": "/api/unsubscribe.js"
     },
     {
       "src": "/api/send-email",

@@ -148,6 +148,8 @@ async function run() {
         htmlContent += unsubLink;
       }
 
+      const unsubUrl = `https://ojonquecortou.com.br/api/unsubscribe?email=${encodeURIComponent(client.email.trim().toLowerCase())}`;
+
       return {
         from: {
           email: 'contato@ojonquecortou.com.br',
@@ -160,7 +162,12 @@ async function run() {
           }
         ],
         subject,
-        html: htmlContent
+        html: htmlContent,
+        list_unsubscribe: unsubUrl,
+        headers: [
+          { name: 'List-Unsubscribe', value: `<${unsubUrl}>` },
+          { name: 'List-Unsubscribe-Post', value: 'List-Unsubscribe=One-Click' }
+        ]
       };
     });
 

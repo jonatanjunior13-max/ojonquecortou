@@ -265,6 +265,9 @@ async function sendViaResend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br
 
   if (recipientList.length === 0) return null;
 
+  const primaryEmailResend = Array.isArray(recipientList) ? (recipientList[0] || '') : recipientList;
+  const unsubUrlResend = `https://ojonquecortou.com.br/api/unsubscribe?email=${encodeURIComponent(primaryEmailResend)}`;
+
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -275,7 +278,11 @@ async function sendViaResend({ apiKey, fromEmail = 'contato@ojonquecortou.com.br
       from: `${fromName} <${fromEmail}>`,
       to: recipientList,
       subject: subject,
-      html: html
+      html: html,
+      headers: {
+        'List-Unsubscribe': `<${unsubUrlResend}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+      }
     })
   });
 
@@ -309,6 +316,9 @@ async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.co
 
   if (recipientList.length === 0) return null;
 
+  const primaryEmailMS = recipientList[0]?.email || '';
+  const unsubUrlMS = `https://ojonquecortou.com.br/api/unsubscribe?email=${encodeURIComponent(primaryEmailMS)}`;
+
   const res = await fetch('https://api.mailersend.com/v1/email', {
     method: 'POST',
     headers: {
@@ -322,7 +332,12 @@ async function sendViaMailerSend({ apiKey, fromEmail = 'contato@ojonquecortou.co
       },
       to: recipientList,
       subject: subject,
-      html: html
+      html: html,
+      list_unsubscribe: unsubUrlMS,
+      headers: [
+        { name: 'List-Unsubscribe', value: `<${unsubUrlMS}>` },
+        { name: 'List-Unsubscribe-Post', value: 'List-Unsubscribe=One-Click' }
+      ]
     })
   });
 
