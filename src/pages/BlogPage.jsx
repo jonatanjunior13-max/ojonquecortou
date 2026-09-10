@@ -39,7 +39,15 @@ const BlogPage = () => {
           {allPosts.map((post, index) => (
             <article key={post.id} className={`blog-card reveal active stagger-${(index % 3) + 1}`}>
               <div className="blog-card-img-wrap">
-                <img src={post.image} alt={post.title} className="blog-card-image" />
+                <img 
+                  src={post.image || '/og-image.jpg'} 
+                  alt={`${post.title} — Artigo técnico sobre cachos no Studio do Jon`} 
+                  className="blog-card-image" 
+                  loading="lazy" 
+                  decoding="async" 
+                  width="400" 
+                  height="240" 
+                />
               </div>
               <div className="blog-card-content">
                 <span className="blog-card-category">{post.category}</span>

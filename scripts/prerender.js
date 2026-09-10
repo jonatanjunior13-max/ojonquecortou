@@ -6,6 +6,7 @@ import { posts } from '../src/data/posts.js';
 import { SEED_SERVICES } from '../src/data/seedServices.js';
 import { EXPANDED_SERVICE_BODIES, SEED_SERVICE_EXPANDED_BODIES } from '../src/data/expandedServiceBodies.js';
 import { galleryImages } from '../src/data/galleryImages.js';
+import { injectArticleImages } from '../src/utils/blogImageInjector.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distDir = path.join(__dirname, '../dist');
@@ -1163,11 +1164,16 @@ const pages = [
       <h2>Dados rápidos</h2>
       <ul>
         <li><strong>Fundador:</strong> Jonatan Junior</li>
+        <li><strong>Experiência:</strong> Mais de uma década (10+ anos) dedicada exclusivamente a curvaturas 2A a 4C</li>
         <li><strong>Localização:</strong> Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte, MG</li>
         <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A-4C)</li>
+        <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
+        <li><strong>Posicionamento:</strong> 100% natural — zero química alisante, relaxamento ou progressiva</li>
         <li><strong>Avaliação:</strong> 4.9/5 com base em 272 avaliações no Google</li>
         <li><strong>Instagram:</strong> @ojonquecortou</li>
       </ul>
+      <h2>Trajetória e Porta-voz</h2>
+      <p>Com mais de uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.</p>
       <h2>Contato para pauta</h2>
       <p>Para entrevistas ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/5531983044059">(31) 98304-4059</a>.</p>
     </article>
@@ -1506,6 +1512,13 @@ posts.forEach(post => {
   // hydrateRoot() — React fully replaces #root's contents on mount regardless of what
   // was here first, so there's no hydration-mismatch risk from this being real markup
   // instead of a <noscript> fallback.
+  const postHeroImageUrl = post.image ? (post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`) : '';
+  const postHeroImageHtml = postHeroImageUrl 
+    ? `<div style="margin: 20px 0;"><img src="${postHeroImageUrl}" alt="${post.title} — Artigo técnico sobre cabelos cacheados e crespos" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 8px;" width="800" height="450" /></div>` 
+    : '';
+
+  const processedContentWithImages = injectArticleImages(post.content, post);
+
   const noscriptContent = `
       <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
         <h1>${post.title}</h1>
@@ -1514,9 +1527,10 @@ posts.forEach(post => {
           Escrito por <strong>Jonatan Junior</strong> (Cabeleireiro especialista em cabelos cacheados, crespos e ondulados) ·
           Publicado em: <strong><time datetime="${post.datePublished || isoDate}">${post.date || isoDate}</time></strong>${post.dateModified && post.dateModified !== post.datePublished ? ` · Atualizado em: <strong><time datetime="${post.dateModified}">${post.dateModified}</time></strong>` : ''}
         </p>
+        ${postHeroImageHtml}
         <p style="font-weight: bold; color: #555;">${post.excerpt || ''}</p>
         <hr />
-        <div>${injectMidArticleCta(post.content)}</div>
+        <div>${injectMidArticleCta(processedContentWithImages)}</div>
         <div class="blog-inline-cta" style="margin-top: 32px;">
           <p class="inline-cta-text">O seu cabelo não precisa de mais testes. Agende uma leitura de fio no Studio do Jon e descubra o corte técnico exato para a sua curvatura.</p>
           <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>

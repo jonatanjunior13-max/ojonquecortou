@@ -46,12 +46,22 @@ const PressPage = () => {
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Dados rápidos</h2>
           <ul className="paragraph-md" style={{ marginTop: 16, lineHeight: 1.8 }}>
             <li><strong>Fundador:</strong> Jonatan Junior</li>
+            <li><strong>Experiência:</strong> Mais de uma década (10+ anos) dedicada exclusivamente a curvaturas 2A a 4C</li>
             <li><strong>Localização:</strong> Rua Belmiro Braga, 544, Caiçaras, Belo Horizonte, MG</li>
             <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A–4C)</li>
             <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
+            <li><strong>Posicionamento:</strong> 100% natural — zero química alisante, relaxamento ou progressiva</li>
             <li><strong>Avaliação:</strong> 4.9/5 com base em 272 avaliações no Google</li>
             <li><strong>Instagram:</strong> <a href="https://www.instagram.com/ojonquecortou" target="_blank" rel="noreferrer">@ojonquecortou</a></li>
           </ul>
+
+          <h2 className="heading-lg" style={{ marginTop: 48 }}>Trajetória e Porta-voz</h2>
+          <p className="paragraph-md" style={{ marginTop: 16 }}>
+            Com mais de uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.
+          </p>
+          <p className="paragraph-md" style={{ marginTop: 16 }}>
+            Jonatan está disponível como fonte técnica para veículos de imprensa, podcasts e criadores de conteúdo para pautas sobre transição capilar, saúde do couro cabeludo, física do corte a seco em curvaturas 2A a 4C, descoloração segura em cachos e impacto da Leitura de Fio na autoestima de pessoas crespas e cacheadas.
+          </p>
 
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Contato para pauta</h2>
           <p className="paragraph-md" style={{ marginTop: 16 }}>

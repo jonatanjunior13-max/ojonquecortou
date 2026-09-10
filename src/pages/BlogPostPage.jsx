@@ -4,6 +4,7 @@ import { db } from '../config/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { getInitialPosts, fetchLatestPosts } from '../utils/blogService';
 import { injectBlogLinks } from '../data/blogLinkMap';
+import { injectArticleImages } from '../utils/blogImageInjector';
 import './Blog.css';
 import { ArrowLeft } from 'lucide-react';
 import SEO from '../components/SEO';
@@ -270,6 +271,11 @@ const BlogPostPage = () => {
     // Inject blog-to-blog internal links for GEO
     processed = injectBlogLinks(processed, slug);
 
+    // Inject contextual real gallery images into article body
+    if (post) {
+      processed = injectArticleImages(processed, post);
+    }
+
     const paragraphs = processed.split('</p>');
     if (paragraphs.length <= 3) {
       return processed;
@@ -340,7 +346,16 @@ const BlogPostPage = () => {
           </header>
 
           <div className="reveal active stagger-1">
-            <img src={post.image} alt={`${post.title} — Artigo técnico sobre cabelos cacheados e crespos`} className="post-hero-image" fetchpriority="high" loading="eager" decoding="async" />
+            <img 
+              src={post.image || '/og-image.jpg'} 
+              alt={`${post.title} — Artigo técnico sobre cabelos cacheados e crespos no Studio do Jon`} 
+              className="post-hero-image" 
+              fetchpriority="high" 
+              loading="eager" 
+              decoding="async" 
+              width="800" 
+              height="450" 
+            />
           </div>
 
           {post.scientificData && (
