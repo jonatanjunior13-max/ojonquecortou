@@ -234,7 +234,7 @@ export default async function handler(req, res) {
     ];
   }
 
-  const pixelList = pixelId ? [pixelId] : ['1152310907009255', '1414285063481375'];
+  const pixelList = pixelId ? [pixelId] : ['1152310907009255'];
   const payload = {
     data: eventItems
   };

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Arrow, Reveal, ContactCTA } from '../components/NewDesignComponents';
-import { getInitialPosts, fetchLatestPosts } from '../utils/blogService';
+import { getInitialPosts } from '../utils/blogService';
 import Magnetic from '../components/Magnetic';
 
 // Scroll hint: vanishes once user starts scrolling
@@ -377,24 +377,24 @@ function HomeBlog() {
   });
 
   useEffect(() => {
-    async function loadLatest() {
-      try {
-        const latest = await fetchLatestPosts();
-        const top3 = latest.slice(0, 3);
-        setPosts(top3.map((post, i) => ({
-          cat: post.category,
-          title: post.title,
-          ex: post.excerpt,
-          time: getReadingTime(post.content),
-          slug: post.slug,
-          image: post.image,
-          grad: defaultGradients[i % defaultGradients.length]
-        })));
-      } catch (err) {
-        console.warn('Erro ao carregar posts na home:', err);
-      }
-    }
-    loadLatest();
+    // Carrega posts.json estático sob demanda sem tocar no SDK do Firestore
+    fetch('/posts.json')
+      .then(res => res.ok ? res.json() : null)
+      .then(latest => {
+        if (Array.isArray(latest) && latest.length > 0) {
+          const top3 = latest.slice(0, 3);
+          setPosts(top3.map((post, i) => ({
+            cat: post.category,
+            title: post.title,
+            ex: post.excerpt,
+            time: getReadingTime(post.content),
+            slug: post.slug,
+            image: post.image,
+            grad: defaultGradients[i % defaultGradients.length]
+          })));
+        }
+      })
+      .catch(() => {});
   }, []);
 
   return (
