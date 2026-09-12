@@ -1466,62 +1466,66 @@ const BookingPage = () => {
       const e164Phone = cleanPhone ? (cleanPhone.startsWith('55') ? `+${cleanPhone}` : `+55${cleanPhone}`) : undefined;
       const clientEmail = (clientData.email && clientData.email !== 'Não informado') ? clientData.email.trim().toLowerCase() : undefined;
 
+      const nameParts = (clientData.name || '').trim().split(/\s+/);
+      const firstName = nameParts[0] || undefined;
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined;
+
+      const userDataObj = {};
+      if (clientEmail) userDataObj.email = clientEmail;
+      if (e164Phone) userDataObj.phone_number = e164Phone;
+      if (firstName || lastName) {
+        userDataObj.address = {};
+        if (firstName) userDataObj.address.first_name = firstName;
+        if (lastName) userDataObj.address.last_name = lastName;
+      }
+      const hasUserData = Object.keys(userDataObj).length > 0;
+
       // 1. Google Ads Conversions & Enhanced Conversions (user_data)
       if (window.gtag) {
         try {
-          if (clientEmail || e164Phone) {
-            const userDataObj = {};
-            if (clientEmail) userDataObj.email = clientEmail;
-            if (e164Phone) userDataObj.phone_number = e164Phone;
+          window.gtag('config', 'AW-666534146', {
+            allow_enhanced_conversions: true
+          });
+
+          if (hasUserData) {
             window.gtag('set', 'user_data', userDataObj);
           }
+
+          const conversionPayload = {
+            value: computedFinalTotal,
+            currency: 'BRL',
+            transaction_id: transactionId,
+            user_data: hasUserData ? userDataObj : undefined
+          };
 
           // Conversão Primária 1: Agendar Horário (Reservar Horário)
           window.gtag('event', 'conversion', {
             send_to: 'AW-666534146/g1yNCMDxhKMYEIKC6r0C',
-            value: computedFinalTotal,
-            currency: 'BRL',
-            transaction_id: transactionId,
-            user_data: clientEmail || e164Phone ? {
-              email_address: clientEmail,
-              phone_number: e164Phone
-            } : undefined
+            ...conversionPayload
           });
 
           // Conversão Primária 2: Agendamento Online (Compra)
           window.gtag('event', 'conversion', {
             send_to: 'AW-666534146/2mF8CM-rl84cEIKC6r0C',
-            value: computedFinalTotal,
-            currency: 'BRL',
-            transaction_id: transactionId,
-            user_data: clientEmail || e164Phone ? {
-              email_address: clientEmail,
-              phone_number: e164Phone
-            } : undefined
+            ...conversionPayload
           });
 
           // Conversão Histórica/GTM: Escolher Data e Hora
           window.gtag('event', 'conversion', {
             send_to: 'AW-666534146/mENYCMyFzNsDEIKC6r0C',
-            value: computedFinalTotal,
-            currency: 'BRL',
-            transaction_id: transactionId
+            ...conversionPayload
           });
 
           // Conversão GTM: Form Submit
           window.gtag('event', 'conversion', {
             send_to: 'AW-666534146/F3qvCNaz5IUbEIKC6r0C',
-            value: computedFinalTotal,
-            currency: 'BRL',
-            transaction_id: transactionId
+            ...conversionPayload
           });
 
           // Conversão 5: Confirmação de Agendamento Google Ads
           window.gtag('event', 'conversion', {
             send_to: 'AW-666534146/BWwzCICy5u8cEIKC6r0C',
-            value: computedFinalTotal,
-            currency: 'BRL',
-            transaction_id: transactionId
+            ...conversionPayload
           });
 
           // GA4 Purchase
@@ -1534,7 +1538,8 @@ const BookingPage = () => {
               item_id: bookingPayload.service?.id || 'combined-services',
               price: computedFinalTotal,
               quantity: 1
-            }]
+            }],
+            user_data: hasUserData ? userDataObj : undefined
           });
         } catch (gtagErr) {
           console.warn('Erro ao disparar evento de conversão Google Ads:', gtagErr);
@@ -1559,7 +1564,9 @@ const BookingPage = () => {
           },
           user_data: {
             email: clientEmail,
-            phone_number: e164Phone
+            phone_number: e164Phone,
+            first_name: firstName,
+            last_name: lastName
           }
         });
       } catch (dlErr) {
