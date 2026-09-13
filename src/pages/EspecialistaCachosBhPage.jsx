@@ -3,41 +3,59 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Reveal, Arrow } from '../components/NewDesignComponents';
 
-const faqSchema = {
+const pageSchema = {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
+  "@graph": [
     {
-      "@type": "Question",
-      "name": "O que torna um especialista em cachos diferente de um cabeleireiro genérico?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Um especialista diagnostica antes de cortar. Analisa porosidade, encolhimento, histórico químico e padrão de curvatura. Um genérico aplica templates. No Studio do Jon, usamos o Método Leitura de Fio — 7 etapas de diagnóstico que mapeiam a física exata do seu fio."
-      }
+      "@type": "Service",
+      "name": "Especialista em Cachos Belo Horizonte",
+      "description": "Corte para cacheado, crespo e ondulado no bairro Caiçaras, BH. 336 avaliações com nota 4,9. Leitura de Fio inclusa. Agende seu horário.",
+      "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" }
     },
     {
-      "@type": "Question",
-      "name": "Como funciona o Método Leitura de Fio?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "É um protocolo em 7 etapas: escuta do histórico, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada (porosidade/elasticidade), definição da técnica de corte, e finalização com validação. Nenhuma suposição — tudo baseado na física real do seu cabelo."
-      }
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+        { "@type": "ListItem", "position": 2, "name": "Serviços", "item": "https://www.ojonquecortou.com.br/servicos" },
+        { "@type": "ListItem", "position": 3, "name": "Especialista em Cachos", "item": "https://www.ojonquecortou.com.br/servicos/especialista-cachos-bh" }
+      ]
     },
     {
-      "@type": "Question",
-      "name": "Quanto custa uma consulta com especialista em cachos?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A Leitura de Fio (diagnóstico) com corte começa a partir de R$ 190 com o Jon. Serviços específicos como transição capilar ou coloração cacheada variam. Agende para receber orçamento personalizado."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
-      }
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "O que torna um especialista em cachos diferente de um cabeleireiro genérico?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Um especialista diagnostica antes de cortar. Analisa porosidade, encolhimento, histórico químico e padrão de curvatura. Um genérico aplica templates. No Studio do Jon, usamos o Método Leitura de Fio — 7 etapas de diagnóstico que mapeiam a física exata do seu fio."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como funciona o Método Leitura de Fio?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "É um protocolo em 7 etapas: escuta do histórico, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada (porosidade/elasticidade), definição da técnica de corte, e finalização com validação. Nenhuma suposição — tudo baseado na física real do seu cabelo."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quanto custa uma consulta com especialista em cachos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A Leitura de Fio (diagnóstico) com corte começa a partir de R$ 190 com o Jon. Serviços específicos como transição capilar ou coloração cacheada variam. Agende para receber orçamento personalizado."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
+          }
+        }
+      ]
     }
   ]
 };
@@ -49,7 +67,7 @@ const EspecialistaCachosBhPage = () => {
         title="Especialista em Cabelo Cacheado em BH | Studio do Jon"
         description="Corte para cacheado, crespo e ondulado no bairro Caiçaras, BH. 336 avaliações com nota 4,9. Leitura de Fio inclusa. Agende seu horário."
         url="/servicos/especialista-cachos-bh"
-        schema={faqSchema}
+        schema={pageSchema}
       />
 
       {/* HERO SECTION */}

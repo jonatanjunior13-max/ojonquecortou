@@ -235,12 +235,16 @@ const BlogPostPage = () => {
   const postDesc = generatePostDescription(post);
   const isoDate = parseDateToISO(post.date);
 
+  const todayIso = new Date().toISOString().split('T')[0];
+  const safePubDate = post.datePublished && post.datePublished > todayIso ? todayIso : (post.datePublished || isoDate);
+  const safeModDate = post.dateModified && post.dateModified > todayIso ? todayIso : (post.dateModified || safePubDate);
+
   const articleSchema = {
     "@context": "https://schema.org",
-    "@type": post.schemaType || "Article",
+    "@type": "Article",
     "headline": post.title,
     "description": postDesc,
-    "image": post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`,
+    "image": post.image ? (post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`) : 'https://www.ojonquecortou.com.br/og-image.jpg',
     "author": {
       "@type": "Person",
       "name": "Jonatan Junior",
@@ -254,8 +258,8 @@ const BlogPostPage = () => {
         "url": "https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png"
       }
     },
-    "datePublished": post.datePublished || isoDate,
-    "dateModified": post.dateModified || isoDate,
+    "datePublished": safePubDate,
+    "dateModified": safeModDate,
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://www.ojonquecortou.com.br/blog/${post.slug}`
@@ -333,12 +337,12 @@ const BlogPostPage = () => {
                 By <strong>Jonatan Junior</strong> (Especialista em cabelo cacheado)
               </div>
               <div className="byline-dates">
-                Published: <time dateTime={post.datePublished || isoDate}>{post.date}</time>
-                {post.dateModified && post.dateModified !== post.datePublished && post.dateModified !== isoDate && (
-                  <> &bull; Updated: <time dateTime={post.dateModified}>{
-                    new Date(post.dateModified).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) !== 'Invalid Date' 
-                    ? new Date(post.dateModified).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) 
-                    : post.dateModified
+                Published: <time dateTime={safePubDate}>{post.date}</time>
+                {safeModDate && safeModDate !== safePubDate && (
+                  <> &bull; Updated: <time dateTime={safeModDate}>{
+                    new Date(safeModDate).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) !== 'Invalid Date' 
+                    ? new Date(safeModDate).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' }) 
+                    : safeModDate
                   }</time></>
                 )}
               </div>
@@ -405,6 +409,24 @@ const BlogPostPage = () => {
             dangerouslySetInnerHTML={{ __html: getProcessedContent(post.content) }} 
             onClick={handleContentClick}
           />
+
+          {post.faqSchema && post.faqSchema.mainEntity && post.faqSchema.mainEntity.length > 0 && (
+            <section className="post-faq-section reveal active stagger-2" style={{ marginTop: '2.5rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+              <h2 className="heading-lg" style={{ marginBottom: '1.5rem', color: '#ffffff', fontSize: '1.5rem' }}>Perguntas Frequentes</h2>
+              <dl className="post-faq-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {post.faqSchema.mainEntity.map((item, idx) => (
+                  <div key={idx} className="post-faq-item" style={{ background: 'rgba(255,255,255,0.03)', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <dt style={{ fontWeight: '700', fontSize: '1.05rem', color: '#FBC5D3', marginBottom: '0.4rem' }}>
+                      {item.name}
+                    </dt>
+                    <dd style={{ marginLeft: 0, color: '#d1c7bd', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                      {item.acceptedAnswer?.text}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
           
           <section className="related-posts-section reveal active">
             <h2 className="related-posts-title heading-lg">Leia Também</h2>

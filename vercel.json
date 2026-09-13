@@ -17,6 +17,7 @@
     {
       "src": "/(.*)",
       "headers": {
+        "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "X-Frame-Options": "SAMEORIGIN",
         "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -151,7 +152,8 @@
     },
     {
       "src": "/servicos/tratamento-personalizado(/)?$",
-      "dest": "/index.html"
+      "status": 301,
+      "headers": { "Location": "/servicos/tratamento-personalizado-novo" }
     },
     {
       "src": "/api/indexnow",

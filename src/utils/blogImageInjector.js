@@ -27,7 +27,6 @@ const THEMATIC_SETS = {
     '/cachos-longos-castanhos-definidos.webp',
     '/cachos-escuros-sorridentes-estudio.webp',
     '/cachos-longos-castanhos-sorriso.webp',
-    '/cachos-masculinos-longos.webp',
     '/cabelo-curto-platinado.webp'
   ]
 };
@@ -98,8 +97,10 @@ export function getContextualArticleImages(post) {
 }
 
 /**
- * Injeta imagens reais de apoio no HTML do artigo com tags semânticas figure/figcaption,
+ * Injeta imagens reais de apoio no HTML do artigo com tags semânticas figure,
  * lazy loading, decoding assíncrono e dimensões explícitas.
+ * OBS: Não injeta figcaption com textos da galeria para evitar vazamento de legendas
+ * de banco de imagens no corpo editorial do texto.
  */
 export function injectArticleImages(contentHtml, post) {
   if (!contentHtml) return contentHtml;
@@ -119,7 +120,6 @@ export function injectArticleImages(contentHtml, post) {
     const fig1 = `
       <figure class="post-inline-figure">
         <img src="${img1.url}" alt="${img1.title} — ${img1.description} no Studio do Jon em Belo Horizonte" class="post-inline-img" loading="lazy" decoding="async" width="720" height="480" />
-        <figcaption class="post-inline-caption"><strong>${img1.title}:</strong> ${img1.description}</figcaption>
       </figure>
     `;
     const p1 = paragraphs.slice(0, 2).join('</p>') + '</p>';
@@ -136,7 +136,6 @@ export function injectArticleImages(contentHtml, post) {
   const fig1 = `
     <figure class="post-inline-figure">
       <img src="${img1.url}" alt="${img1.title} — ${img1.description} no Studio do Jon em Belo Horizonte" class="post-inline-img" loading="lazy" decoding="async" width="720" height="480" />
-      <figcaption class="post-inline-caption"><strong>${img1.title}:</strong> ${img1.description}</figcaption>
     </figure>
   `;
 
@@ -144,7 +143,6 @@ export function injectArticleImages(contentHtml, post) {
   const fig2 = `
     <figure class="post-inline-figure">
       <img src="${img2.url}" alt="${img2.title} — ${img2.description} no Studio do Jon em Belo Horizonte" class="post-inline-img" loading="lazy" decoding="async" width="720" height="480" />
-      <figcaption class="post-inline-caption"><strong>${img2.title}:</strong> ${img2.description}</figcaption>
     </figure>
   `;
 

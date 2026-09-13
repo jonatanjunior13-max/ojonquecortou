@@ -87,16 +87,25 @@ function manualServiceBody({ name, text, route }) {
 `;
 }
 
-function manualServiceSchema({ name, description, route }) {
+function manualServiceSchema({ name, description, route, price }) {
+  const serviceNode = {
+    "@type": "Service",
+    "name": name,
+    "description": description,
+    "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" }
+  };
+  if (price) {
+    serviceNode.offers = {
+      "@type": "Offer",
+      "price": price,
+      "priceCurrency": "BRL",
+      "valueAddedTaxIncluded": true
+    };
+  }
   return {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "Service",
-        "name": name,
-        "description": description,
-        "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" }
-      },
+      serviceNode,
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
@@ -107,6 +116,20 @@ function manualServiceSchema({ name, description, route }) {
       }
     ]
   };
+}
+
+const todayIso = new Date().toISOString().split('T')[0];
+
+function formatIsoToPtBr(isoStr) {
+  if (!isoStr || !isoStr.includes('-')) return isoStr;
+  const [y, m, d] = isoStr.split('-');
+  const monthNames = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+  const mIndex = parseInt(m, 10) - 1;
+  const monthName = monthNames[mIndex] || 'Maio';
+  return `${parseInt(d, 10)} de ${monthName}, ${y}`;
 }
 
 // Helper to convert date format from PT-BR "02 de Junho, 2026" to ISO "2026-06-02"
@@ -131,6 +154,31 @@ function parseDateToISO(dateStr) {
     console.warn('Failed parsing date:', dateStr, e);
   }
   return "2026-05-14";
+}
+
+function getSafePostDates(post) {
+  let pubIso = post.datePublished || parseDateToISO(post.date);
+  let modIso = post.dateModified || pubIso;
+  let displayDate = post.date || formatIsoToPtBr(pubIso);
+
+  if (pubIso > todayIso) {
+    console.warn(`[WARN] Post "${post.slug}" has future datePublished "${pubIso}". Clamping to "${todayIso}".`);
+    pubIso = todayIso;
+    displayDate = formatIsoToPtBr(pubIso);
+  }
+  if (modIso > todayIso) {
+    console.warn(`[WARN] Post "${post.slug}" has future dateModified "${modIso}". Clamping to "${todayIso}".`);
+    modIso = todayIso;
+  }
+  if (modIso < pubIso) {
+    modIso = pubIso;
+  }
+
+  return {
+    datePublished: pubIso,
+    dateModified: modIso,
+    displayDate
+  };
 }
 
 // Define complete structured FAQ questions and answers
@@ -428,12 +476,11 @@ const localBusinessSchema = {
   "telephone": "+5531983044059",
   "email": "contato@ojonquecortou.com.br",
   "priceRange": "$$",
-  "hasMap": "https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte",
+  "hasMap": "https://www.google.com/maps?cid=16629671607593282841",
   "sameAs": [
     "https://www.instagram.com/ojonquecortou",
-    "https://www.google.com/maps/search/?api=1&query=O+Jon+que+Cortou+Rua+Belmiro+Braga+544+Cai%C3%A7aras+Belo+Horizonte",
-    "https://www.facebook.com/ojonquecortou/",
-    "https://www.wikidata.org/wiki/Q140387726"
+    "https://www.google.com/maps?cid=16629671607593282841",
+    "https://www.facebook.com/ojonquecortou/"
   ],
   "address": {
     "@type": "PostalAddress",
@@ -445,8 +492,8 @@ const localBusinessSchema = {
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": "-19.908634",
-    "longitude": "-43.967875"
+    "latitude": -19.908634,
+    "longitude": -43.967875
   },
   "openingHoursSpecification": [
     {
@@ -473,9 +520,12 @@ const localBusinessSchema = {
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "4.9",
-    "reviewCount": "272",
+    "reviewCount": "336",
     "bestRating": "5",
     "worstRating": "1"
+  },
+  "hasOfferCatalog": {
+    "@id": "https://www.ojonquecortou.com.br/servicos#servicos"
   },
   "founder": { "@id": "https://www.ojonquecortou.com.br/#person" },
   "areaServed": {
@@ -659,7 +709,7 @@ const homeBody = `
       <p>Veja todos os <a href="/investimento">valores e formas de investimento</a> antes de agendar seu horário.</p>
       <h2>Localização e Agendamento</h2>
       <p>Studio do Jon (O Jon que Cortou) · Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte, MG · CEP 30770-550. Telefone: <a href="tel:+5531983044059">(31) 98304-4059</a>. <a href="/agendar">Agende seu horário online</a> ou fale pelo <a href="https://wa.me/5531983044059">WhatsApp</a>. Instagram: @ojonquecortou.</p>
-      <p>Avaliação média: 4.9 estrelas com base em 272 avaliações no Google.</p>
+      <p>Avaliação média: 4.9 estrelas com base em 336 avaliações no Google.</p>
       <p>Localizado no bairro Caiçaras, próximo ao metrô Gameleira e à Avenida Pedro II, o Studio do Jon fica a poucos passos de um dos pontos mais acessíveis de Belo Horizonte para quem busca um especialista em cabelo cacheado sem depender de carro. Clientes de toda a região metropolitana chegam de metrô, ônibus ou a pé para o diagnóstico da Leitura de Fio, tornando o Caiçaras uma referência local para cortes técnicos em cachos, crespos e ondulados.</p>
       <h2>Perguntas Frequentes</h2>
       <h3>O que é o Método Leitura de Fio?</h3>
@@ -684,7 +734,7 @@ const agendarBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Agende seu Horário — Studio do Jon</h1>
-      <p style="color: #c8852a;">★★★★★ 4.9/5 com base em 272 avaliações no Google</p>
+      <p style="color: #c8852a;">★★★★★ 4.9/5 com base em 336 avaliações no Google</p>
       <p>Marque seu horário com Jon, especialista em cabelos ondulados, cacheados e crespos no bairro Caiçaras, Belo Horizonte (MG). O Método Leitura de Fio — diagnóstico capilar em 7 etapas — está incluído em todo atendimento, sem custo extra. O agendamento é feito de forma instantânea e online, direto por este site.</p>
       <h2>Serviços e Valores</h2>
       <ul>
@@ -773,53 +823,65 @@ const pages = [
     bodyInsert: especialistaCachosBhBody,
     schema: {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
+      "@graph": [
         {
-          "@type": "Question",
-          "name": "O que torna um especialista em cachos diferente de um cabeleireiro genérico?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Um especialista diagnostica antes de cortar. Analisa porosidade, encolhimento, histórico químico e padrão de curvatura. Um genérico aplica templates. No Studio do Jon, usamos o Método Leitura de Fio — 7 etapas de diagnóstico que mapeiam a física exata do seu fio."
+          "@type": "Service",
+          "name": "Especialista em Cabelo Cacheado em BH",
+          "description": "Corte para cabelo cacheado, crespo e ondulado no bairro Caiçaras em Belo Horizonte com o Método Leitura de Fio.",
+          "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "4.9",
+            "reviewCount": "336"
           }
         },
         {
-          "@type": "Question",
-          "name": "Como funciona o Método Leitura de Fio?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "É um protocolo em 7 etapas: escuta do histórico, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada (porosidade/elasticidade), definição da técnica de corte, e finalização com validação. Nenhuma suposição — tudo baseado na física real do seu cabelo."
-          }
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+            { "@type": "ListItem", "position": 2, "name": "Serviços", "item": "https://www.ojonquecortou.com.br/servicos" },
+            { "@type": "ListItem", "position": 3, "name": "Especialista em Cachos", "item": "https://www.ojonquecortou.com.br/servicos/especialista-cachos-bh" }
+          ]
         },
         {
-          "@type": "Question",
-          "name": "Quanto custa uma consulta com especialista em cachos?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A Leitura de Fio (diagnóstico) com corte começa a partir de R$ 190 com o Jon. Serviços específicos como transição capilar ou coloração cacheada variam. Agende para receber orçamento personalizado."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
-          }
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "O que torna um especialista em cachos diferente de um cabeleireiro genérico?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Um especialista diagnostica antes de cortar. Analisa porosidade, encolhimento, histórico químico e padrão de curvatura. Um genérico aplica templates. No Studio do Jon, usamos o Método Leitura de Fio — 7 etapas de diagnóstico que mapeiam a física exata do seu fio."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Como funciona o Método Leitura de Fio?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "É um protocolo em 7 etapas: escuta do histórico, análise a seco, diagnóstico do couro cabeludo, histórico químico, análise molhada (porosidade/elasticidade), definição da técnica de corte, e finalização com validação. Nenhuma suposição — tudo baseado na física real do seu cabelo."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Quanto custa uma consulta com especialista em cachos?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "A Leitura de Fio (diagnóstico) com corte começa a partir de R$ 190 com o Jon. Serviços específicos como transição capilar ou coloração cacheada variam. Agende para receber orçamento personalizado."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
+              }
+            }
+          ]
         }
       ]
     }
-  },
-  {
-    route: '/servicos/tratamento-personalizado',
-    title: 'Tratamento Personalizado | Cabelo Cacheado em BH | Studio do Jon',
-    description: 'Tratamento sob medida para seu tipo de cabelo. Diagnóstico técnico + protocolos customizados. Recupere força, hidratação e definição. Agende em Belo Horizonte.',
-    bodyInsert: tratamentoPersonalizadoBody,
-    schema: manualServiceSchema({
-      name: 'Tratamento Personalizado',
-      description: 'Tratamento sob medida para seu tipo de cabelo. Diagnóstico técnico + protocolos customizados. Recupere força, hidratação e definição.',
-      route: '/servicos/tratamento-personalizado'
-    })
   },
   {
     route: '/',
@@ -919,6 +981,7 @@ const pages = [
       "@graph": [
         {
           "@type": "OfferCatalog",
+          "@id": "https://www.ojonquecortou.com.br/servicos#servicos",
           "name": "Serviços — Studio do Jon",
           "url": "https://www.ojonquecortou.com.br/servicos",
           "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
@@ -1169,7 +1232,7 @@ const pages = [
         <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A-4C)</li>
         <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
         <li><strong>Posicionamento:</strong> 100% natural — zero química alisante, relaxamento ou progressiva</li>
-        <li><strong>Avaliação:</strong> 4.9/5 com base em 272 avaliações no Google</li>
+        <li><strong>Avaliação:</strong> 4.9/5 com base em 336 avaliações no Google</li>
         <li><strong>Instagram:</strong> @ojonquecortou</li>
       </ul>
       <h2>Trajetória e Porta-voz</h2>
@@ -1187,8 +1250,7 @@ const pages = [
       "url": "https://www.ojonquecortou.com.br",
       "logo": "https://www.ojonquecortou.com.br/logo-app.png",
       "sameAs": [
-        "https://www.instagram.com/ojonquecortou",
-        "https://www.wikidata.org/wiki/Q140387726"
+        "https://www.instagram.com/ojonquecortou"
       ]
     }
   },
@@ -1225,7 +1287,8 @@ const pages = [
     schema: manualServiceSchema({
       name: 'Corte Híbrido',
       description: 'Especialista em corte de cabelo cacheado em Belo Horizonte. Corte Híbrido: molhado para precisão e seco para caimento.',
-      route: '/servicos/corte-hibrido'
+      route: '/servicos/corte-hibrido',
+      price: '190.00'
     })
   },
   {
@@ -1392,7 +1455,7 @@ SEED_SERVICES.forEach(service => {
       "@type": "Offer",
       "price": service.promoPrice || service.price,
       "priceCurrency": "BRL",
-      "valueAddedTaxIncluded": "true"
+      "valueAddedTaxIncluded": true
     }
   };
 
@@ -1471,13 +1534,11 @@ function injectMidArticleCta(contentHtml) {
 
 posts.forEach(post => {
   const postDesc = post.metaDescription || `${post.excerpt || post.title}. Conquiste definição, brilho e volume ideal. Especialista em cachos em Belo Horizonte explica.`;
-  const isoDate = parseDateToISO(post.date);
-  const currentDate = new Date().toISOString().split('T')[0];
+  const safeDates = getSafePostDates(post);
   
   const wordCount = post.content
     ? post.content.replace(/<[^>]+>/g, ' ').trim().split(/\s+/).filter(Boolean).length
     : 0;
-
 
   const articleSchema = {
     "@type": "Article",
@@ -1493,8 +1554,8 @@ posts.forEach(post => {
         "url": "https://www.ojonquecortou.com.br/logo-cabeleireiro-de-cachos.png"
       }
     },
-    "datePublished": post.datePublished || isoDate,
-    "dateModified": post.dateModified || post.datePublished || isoDate,
+    "datePublished": safeDates.datePublished,
+    "dateModified": safeDates.dateModified,
     "wordCount": wordCount,
     "speakable": {
       "@type": "SpeakableSpecification",
@@ -1508,10 +1569,7 @@ posts.forEach(post => {
 
   // Rendered directly into #root (not wrapped in <noscript>) so crawlers/AI bots that
   // don't execute JS get the full article on the first fetch, same as the home/FAQ
-  // pages already do. Safe because main.jsx uses createRoot().render(), not
-  // hydrateRoot() — React fully replaces #root's contents on mount regardless of what
-  // was here first, so there's no hydration-mismatch risk from this being real markup
-  // instead of a <noscript> fallback.
+  // pages already do.
   const postHeroImageUrl = post.image ? (post.image.startsWith('http') ? post.image : `https://www.ojonquecortou.com.br${post.image}`) : '';
   const postHeroImageHtml = postHeroImageUrl 
     ? `<div style="margin: 20px 0;"><img src="${postHeroImageUrl}" alt="${post.title} — Artigo técnico sobre cabelos cacheados e crespos" style="width: 100%; max-height: 480px; object-fit: cover; border-radius: 8px;" width="800" height="450" /></div>` 
@@ -1519,18 +1577,35 @@ posts.forEach(post => {
 
   const processedContentWithImages = injectArticleImages(post.content, post);
 
+  const faqHtml = post.faqSchema && post.faqSchema.mainEntity && post.faqSchema.mainEntity.length > 0
+    ? `
+      <section class="post-faq-section" style="margin-top: 2.5rem; margin-bottom: 2.5rem; padding: 1.5rem; background-color: rgba(0,0,0,0.03); border-radius: 8px;">
+        <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">Perguntas Frequentes</h3>
+        <dl>
+          ${post.faqSchema.mainEntity.map(item => `
+            <div style="margin-bottom: 1rem;">
+              <dt style="font-weight: bold; color: #b05a2e;">${item.name}</dt>
+              <dd style="margin-left: 0; margin-top: 0.25rem;">${item.acceptedAnswer ? item.acceptedAnswer.text : ''}</dd>
+            </div>
+          `).join('\n')}
+        </dl>
+      </section>
+    `
+    : '';
+
   const noscriptContent = `
-      <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
+      <article class="post-content" style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #333;">
         <h1>${post.title}</h1>
         <p style="font-size: 0.85rem; color: #555; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 20px;">
           Categoria: <strong>${post.category || 'Cuidado Capilar'}</strong> ·
           Escrito por <strong>Jonatan Junior</strong> (Cabeleireiro especialista em cabelos cacheados, crespos e ondulados) ·
-          Publicado em: <strong><time datetime="${post.datePublished || isoDate}">${post.date || isoDate}</time></strong>${post.dateModified && post.dateModified !== post.datePublished ? ` · Atualizado em: <strong><time datetime="${post.dateModified}">${post.dateModified}</time></strong>` : ''}
+          Publicado em: <strong><time datetime="${safeDates.datePublished}">${safeDates.displayDate}</time></strong>${safeDates.dateModified && safeDates.dateModified !== safeDates.datePublished ? ` · Atualizado em: <strong><time datetime="${safeDates.dateModified}">${safeDates.dateModified}</time></strong>` : ''}
         </p>
         ${postHeroImageHtml}
         <p style="font-weight: bold; color: #555;">${post.excerpt || ''}</p>
         <hr />
         <div>${injectMidArticleCta(processedContentWithImages)}</div>
+        ${faqHtml}
         <div class="blog-inline-cta" style="margin-top: 32px;">
           <p class="inline-cta-text">O seu cabelo não precisa de mais testes. Agende uma leitura de fio no Studio do Jon e descubra o corte técnico exato para a sua curvatura.</p>
           <a href="/agendar" class="inline-cta-btn">Agendar Horário</a>
@@ -1570,6 +1645,13 @@ posts.forEach(post => {
     };
   }
 
+  const safePost = {
+    ...post,
+    date: safeDates.displayDate,
+    datePublished: safeDates.datePublished,
+    dateModified: safeDates.dateModified
+  };
+
   pages.push({
     route: `/blog/${post.slug}`,
     title: post.seoTitle || post.title,
@@ -1577,8 +1659,8 @@ posts.forEach(post => {
     image: post.image,
     schema: pageSchema,
     bodyInsert: noscriptContent,
-    postData: post,
-    lastmod: post.dateModified || post.datePublished || parseDateToISO(post.date)
+    postData: safePost,
+    lastmod: safeDates.dateModified || safeDates.datePublished
   });
 });
 
@@ -1610,9 +1692,12 @@ pages.forEach(page => {
       const datePublished = page.schema.datePublished || 
                             (page.schema['@graph'] && page.schema['@graph'][0] && page.schema['@graph'][0].datePublished) ||
                             '';
+      const dateModified = page.schema.dateModified || 
+                           (page.schema['@graph'] && page.schema['@graph'][0] && page.schema['@graph'][0].dateModified) ||
+                           datePublished;
       if (datePublished) {
         html = replaceOrAddMeta(html, 'article:published_time', datePublished, true);
-        html = replaceOrAddMeta(html, 'article:modified_time', new Date().toISOString().split('T')[0], true);
+        html = replaceOrAddMeta(html, 'article:modified_time', dateModified, true);
       }
     }
     html = replaceOrAddMeta(html, 'article:section', 'Cuidados Capilares', true);
@@ -1786,7 +1871,16 @@ fs.writeFileSync(path.join(distDir, 'sitemap.txt'), sitemapTxt);
 console.log('Sitemap.txt generated and updated successfully in public/ and dist/!');
 
 console.log('Generating posts.json...');
-const postsJson = JSON.stringify(posts);
+const safePosts = posts.map(p => {
+  const d = getSafePostDates(p);
+  return {
+    ...p,
+    date: d.displayDate,
+    datePublished: d.datePublished,
+    dateModified: d.dateModified
+  };
+});
+const postsJson = JSON.stringify(safePosts);
 fs.writeFileSync(path.join(__dirname, '../public/posts.json'), postsJson);
 fs.writeFileSync(path.join(distDir, 'posts.json'), postsJson);
 console.log('posts.json generated and updated successfully in public/ and dist/!');

@@ -10,6 +10,7 @@ const TRINKS_URL = '/agendar';
 const servicesSchema = {
   "@context": "https://schema.org",
   "@type": "OfferCatalog",
+  "@id": "https://www.ojonquecortou.com.br/servicos#servicos",
   "name": "Serviços — Studio do Jon",
   "url": "https://www.ojonquecortou.com.br/servicos",
   "itemListElement": [

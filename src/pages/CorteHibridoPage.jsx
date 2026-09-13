@@ -3,33 +3,57 @@ import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 import { Arrow, Reveal } from '../components/NewDesignComponents';
 
-const faqSchema = {
+const corteHibridoSchema = {
   "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
+  "@graph": [
     {
-      "@type": "Question",
-      "name": "Preciso ir com o cabelo lavado de que forma?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Venha com o cabelo 100% seco, finalizado do seu jeito comum e totalmente desembaraçado. Não use coques, tranças ou presilhas que marquem o caimento natural."
+      "@type": "Service",
+      "name": "Corte Híbrido",
+      "description": "Especialista em corte de cabelo cacheado em Belo Horizonte. Corte Híbrido: molhado para precisão e seco para caimento.",
+      "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
+      "offers": {
+        "@type": "Offer",
+        "price": "190.00",
+        "priceCurrency": "BRL",
+        "valueAddedTaxIncluded": true
       }
     },
     {
-      "@type": "Question",
-      "name": "Como funciona o Corte Híbrido?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "O corte é iniciado no cabelo molhado para definir a estrutura e comprimento com precisão técnica. Após a secagem e finalização, realizamos a lapidação a seco cacho por cacho para ajustar o volume e o caimento real."
-      }
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://www.ojonquecortou.com.br" },
+        { "@type": "ListItem", "position": 2, "name": "Serviços", "item": "https://www.ojonquecortou.com.br/servicos" },
+        { "@type": "ListItem", "position": 3, "name": "Corte Híbrido", "item": "https://www.ojonquecortou.com.br/servicos/corte-hibrido" }
+      ]
     },
     {
-      "@type": "Question",
-      "name": "Qual a frequência recomendada para manter o corte?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "A média recomendada é a cada 3 ou 4 meses para manter o design e evitar pontas duplas que causam nós e quebra."
-      }
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Preciso ir com o cabelo lavado de que forma?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Venha com o cabelo 100% seco, finalizado do seu jeito comum e totalmente desembaraçado. Não use coques, tranças ou presilhas que marquem o caimento natural."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Como funciona o Corte Híbrido?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "O corte é iniciado no cabelo molhado para definir a estrutura e comprimento com precisão técnica. Após a secagem e finalização, realizamos a lapidação a seco cacho por cacho para ajustar o volume e o caimento real."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qual a frequência recomendada para manter o corte?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A média recomendada é a cada 3 ou 4 meses para manter o design e evitar pontas duplas que causam nós e quebra."
+          }
+        }
+      ]
     }
   ]
 };
@@ -41,7 +65,7 @@ const CorteHibridoPage = () => {
         title="Corte Híbrido Cabelo Cacheado BH | Studio do Jon"
         description="Especialista em corte de cabelo cacheado em Belo Horizonte. Conheça o Corte Híbrido: molhado para precisão e seco para caimento. Agende já."
         url="/servicos/corte-hibrido"
-        schema={faqSchema}
+        schema={corteHibridoSchema}
       />
 
       <header className="hero">

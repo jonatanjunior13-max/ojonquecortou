@@ -10,8 +10,7 @@ const pressSchema = {
   "url": "https://www.ojonquecortou.com.br",
   "logo": "https://www.ojonquecortou.com.br/logo-app.png",
   "sameAs": [
-    "https://www.instagram.com/ojonquecortou",
-    "https://www.wikidata.org/wiki/Q140387726"
+    "https://www.instagram.com/ojonquecortou"
   ]
 };
 
@@ -51,7 +50,7 @@ const PressPage = () => {
             <li><strong>Especialidade:</strong> Corte técnico e visagismo para cabelos ondulados, cacheados e crespos (2A–4C)</li>
             <li><strong>Diferencial:</strong> Método Leitura de Fio — diagnóstico de 7 etapas antes de qualquer corte</li>
             <li><strong>Posicionamento:</strong> 100% natural — zero química alisante, relaxamento ou progressiva</li>
-            <li><strong>Avaliação:</strong> 4.9/5 com base em 272 avaliações no Google</li>
+            <li><strong>Avaliação:</strong> 4.9/5 com base em 336 avaliações no Google</li>
             <li><strong>Instagram:</strong> <a href="https://www.instagram.com/ojonquecortou" target="_blank" rel="noreferrer">@ojonquecortou</a></li>
           </ul>
 

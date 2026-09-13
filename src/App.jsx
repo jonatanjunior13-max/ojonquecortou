@@ -120,7 +120,7 @@ function App() {
             <Route path="/servicos/coloracao-completa" element={<ColoracaoCompletaPage />} />
             <Route path="/servicos/manutencao-corte" element={<ManutencaoCortePagePage />} />
             <Route path="/servicos/detox-estimulante" element={<DetoxEstimulantePage />} />
-            <Route path="/servicos/tratamento-personalizado" element={<TratamentoPersonalizadoPage />} />
+            <Route path="/servicos/tratamento-personalizado" element={<Navigate to="/servicos/tratamento-personalizado-novo" replace />} />
             <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/galeria" element={<GalleryPage />} />
             <Route path="/blog" element={<BlogPage />} />
