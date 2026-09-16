@@ -1766,6 +1766,9 @@ const BookingPage = () => {
       }
       setSuccess(true);
       setStep(4);
+      if (typeof window !== 'undefined' && window.history?.replaceState) {
+        window.history.replaceState(null, '', '/agendar?status=confirmado');
+      }
     } catch (err) {
       console.error('Erro ao processar agendamento:', err);
       // Ainda simula o sucesso para não travar a cliente
@@ -1796,6 +1799,9 @@ const BookingPage = () => {
       }
       setSuccess(true);
       setStep(4);
+      if (typeof window !== 'undefined' && window.history?.replaceState) {
+        window.history.replaceState(null, '', '/agendar?status=confirmado');
+      }
     } finally {
       setLoading(false);
       isSubmittingRef.current = false;

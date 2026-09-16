@@ -83,6 +83,15 @@ const GoogleAnalytics = () => {
         // Disparo Direto para Google Ads (Micro-conversão de clique)
         if (window.gtag) {
           try {
+            // Conversão Secundária: "Clique Agendar (secundária)"
+            window.gtag('event', 'conversion', {
+              send_to: 'AW-666534146/ssMQCI6R7PkcEIKC6r0C',
+              value: 1.0,
+              currency: 'BRL',
+              event_category: 'engagement',
+              event_label: 'Clicou no botao agende seu horário'
+            });
+
             // Conversão Histórica/GTM: "Escolher Data e Hora" / Agendamento GTM
             window.gtag('event', 'conversion', {
               send_to: 'AW-666534146/mENYCMyFzNsDEIKC6r0C',
