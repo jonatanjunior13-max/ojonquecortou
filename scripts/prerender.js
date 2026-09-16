@@ -184,7 +184,7 @@ function getSafePostDates(post) {
 // Define complete structured FAQ questions and answers
 const fullFaqList = [
   { q: "Com que frequência devo cortar cabelo cacheado?", a: "Para cabelos saudáveis, de 3 em 3 ou de 4 em 4 meses para manter o design. Se está em transição capilar ou tratando pontas muito danificadas, a cada 2 meses é o ideal para eliminar a quebra." },
-  { q: "Corte a seco é melhor para cachos? Por quê?", a: "O corte depende de como o seu cabelo se comporta. Eu trabalho com o Corte Híbrido (feito molhado de precisão e lapidado a seco após a finalização). Cortar apenas seco ou molhado ignora a individualidade física de cada cacho. A decisão técnica do que fazer é tomada durante a Leitura de Fio." },
+  { q: "Você faz corte a seco para cachos?", a: "Eu não trabalho com o modelo tradicional de corte a seco isolado. Minha técnica é o Corte Híbrido integrado à Leitura de Fio: combinamos a leitura geométrica do cacho em repouso natural com precisão de corte e lapidação personalizada, garantindo caimento perfeito sem encolhimento imprevisível." },
   { q: "O que é o Método Leitura de Fio?", a: "Minha metodologia exclusiva de 7 etapas de análise antes de a tesoura tocar no cabelo. Mapeamos porosidade, curvaturas, histórico químico e caimento real para definir a técnica exata do seu atendimento." },
   { q: "Atende cabelos 4C?", a: "Atendo todas as curvaturas. Cabelos crespos (tipo 4A, 4B, 4C) têm particularidades de volume e caimento que exigem técnicas específicas de precisão, seja no corte molhado ou seco. Sem alisamento disfarçado aqui." },
   { q: "Quanto tempo dura o atendimento?", a: "O corte completo integrado com o diagnóstico da Leitura de Fio leva por volta de 1h. Atendimento individual, focado em precisão técnica e sem pressa." },
@@ -197,7 +197,7 @@ const fullFaqList = [
   { q: "Qual a diferença de atendimento do Studio do Jon para outros salões?", a: "Não trabalhamos com fórmulas prontas ou cortes padronizados de revista. Cada corte é precedido pela Leitura de Fio, o que significa que ouvimos, analisamos e diagnosticamos o cabelo antes de decidir a técnica de corte. O foco é a sua identidade e a facilidade de cuidar do seu cabelo no dia a dia." },
   { q: "Cabelo cacheado precisa de escova para 'domar' o volume?", a: "Não. Volume não é defeito a ser corrigido — é resultado de curvatura, densidade e de um corte mal ajustado ao formato do fio. Um corte técnico, feito após a Leitura de Fio, distribui o peso e organiza o volume sem precisar recorrer à escova ou à química alisante." },
   { q: "Qual a diferença entre cabelo ondulado, cacheado e crespo?", a: "É uma questão de curvatura do fio: ondulado (tipo 2A a 2C) forma ondas suaves, cacheado (tipo 3A a 3C) forma cachos definidos em espiral, e crespo (tipo 4A a 4C) tem curvatura mais fechada e maior fator de encolhimento. Atendemos todo esse espectro, do 2A ao 4C, cada um com técnica de corte própria." },
-  { q: "Corte a seco funciona em qualquer tamanho de cabelo?", a: "Sim. O Corte Híbrido se adapta a qualquer comprimento, do curto ao longo. A decisão de cortar mais a seco ou mais molhado depende do comportamento do fio identificado na Leitura de Fio, não do tamanho do cabelo." },
+  { q: "O Corte Híbrido funciona em qualquer tamanho de cabelo?", a: "Sim. O Corte Híbrido se adapta a qualquer comprimento, do curto ao longo. A definição técnica das angulações e camadas depende do comportamento do fio identificado na Leitura de Fio, não do tamanho do cabelo." },
   { q: "Quanto custa um corte no Studio do Jon?", a: "O Corte com o Jon (Leitura de Fio completa + corte técnico + finalização educativa) custa R$ 190. Há também o Combo Corte + Tratamento por R$ 230, e a Leitura de Fio isolada, sem corte, por R$ 80 (valor revertido em crédito caso feche o serviço na sequência)." },
   { q: "Quais os horários de atendimento e onde fica o Studio do Jon?", a: "Atendemos de segunda a sábado, das 9h às 19h. Ficamos na Rua Belmiro Braga, 544, bairro Caiçaras, Belo Horizonte (MG), próximo ao metrô Gameleira e à Avenida Pedro II. Telefone: (31) 98304-4059." },
   { q: "Posso fazer só a Leitura de Fio, sem cortar?", a: "Sim. A consultoria de Leitura de Fio isolada custa R$ 80 e inclui o diagnóstico completo de porosidade, curvatura, histórico químico e orientações de cuidado, sem compromisso de corte. Se você decidir fechar o corte na sequência, o valor é revertido em crédito." },
@@ -220,7 +220,7 @@ const fullFaqList = [
   { q: "Qual a diferença entre cacho e crespo?", a: "Cacho (3A-3C) forma espirais visíveis, com canela clara entre os fios. Crespo (4A-4C) forma ondulações muito fechadas, quase invisíveis, com padrão parafuso microscópico. Crespo é mais denso, menos definido visualmente e tem maior encolhimento quando seca." },
   { q: "Por que o cabelo encolhe mais se for crespo tipo 4C?", a: "Porque a curvatura é mais fechada. A haste da fibra se torce muitas vezes em poucos centímetros. Quando molhado, a água abre essas torções, esticando o fio. Ao secar e os fios voltarem a enroscar, o comprimento total reduz drasticamente — até 70% em alguns casos." },
   { q: "Tenho 2-3 texturas diferentes na minha cabeça. É normal?", a: "Extremamente normal. A nuca frequentemente é mais crespa enquanto o topo é mais ondulado. Isso é genética pura. O corte precisa considerar essas zonas diferentes de encolhimento para não gerar assimetria quando o cabelo seca. A Leitura de Fio mapeia cada zona." },
-  { q: "Meu cabelo está com 4C no topo e 3B na nuca. Como faço um corte equilibrado?", a: "Através de um corte desconectado (sem camadas uniformes) que respeita os diferentes encolhimentos de cada zona. O topo que é 4C vai encolher 60-70%, enquanto a nuca 3B encolhe 40%. O corte a seco mapeia essas diferenças e compensa geometricamente." },
+  { q: "Meu cabelo está com 4C no topo e 3B na nuca. Como faço um corte equilibrado?", a: "Através de um corte desconectado (sem camadas uniformes) que respeita os diferentes encolhimentos de cada zona. O topo que é 4C vai encolher 60-70%, enquanto a nuca 3B encolhe 40%. A Leitura de Fio mapeia essas diferenças e compensa geometricamente na arquitetura do corte." },
   { q: "O cabelo 4C é mais frágil que ondulado?", a: "Não é mais frágil por natureza. Mas a microestrutura muito fechada gera mais pontos de tensão onde atrito mecânico causa dano. Por isso, pentes de dentes finos e escovação viram vilões. Cuidado gentil com técnica adequada preserva a integridade." },
   { q: "Como meu tipo de cabelo define qual corte devo fazer?", a: "Cada curvatura encolhe diferente, o que determina a angulação e o comprimento planejado. 2A aceita comprimentos maiores com menos perda visual. 4C precisa planejamento maior de volume porque perde comprimento ao secar. O visagismo então adapta a geometria ao seu rosto." },
   { q: "Cabelo ondulado tipo 2A pode usar técnicas de 4C?", a: "Sim, mas com adaptações. As mesmas técnicas de cuidado com porosidade se aplicam, mas a sequência de corte e a compensação de encolhimento são menores. Um corte híbrido exigido para 4C pode ser excessivo para 2A que naturalmente já cai bem molhado." },
@@ -248,13 +248,13 @@ const fullFaqList = [
   { q: "O que é leave-in e com que frequência devo usar?", a: "Leave-in é produto de tratamento que não enxaguamos, permanecendo no cabelo. Pode ser usado diariamente ou a cada 2-3 dias conforme o tipo (light vs denso). Em clima úmido de BH, leave-in ligth à base de água funciona bem; em clima seco, use versões com mais óleos." },
   { q: "Difusor ajuda a manter os cachos mais definidos?", a: "Sim, muito. O difusor distribui o ar quente de forma mais suave que a secadora comum, respeitando a curvatura do cacho sem danificar. Mantém a umidade dentro da fibra por mais tempo, evitando ressecamento. Use sempre em temperatura morna e velocidade média." },
   { q: "Qual a sequência correta de produtos na rotina de cabelo cacheado?", a: "1. Shampoo sem sulfato (lavar apenas raiz). 2. Condicionador (desembaraçar). 3. Máscara hidratante/nutritiva (conforme cronograma). 4. Acidificante (fechar cutícula). 5. Leave-in (opcional, aplicar úmido). 6. Sérum/óleo (nas pontas, antes de secar). 7. Secagem com difusor." },
-  { q: "Diferença entre corte seco e corte molhado em cabelos cacheados?", a: "Corte seco mostra o caimento real e o encolhimento verdadeiro de cada fio. Molhado mascara a curvatura porque a água estica o fio. Corte molhado é mais rápido mas gera surpresas quando o cabelo seca. Corte a seco (ou híbrido) é mais preciso mas exige expertise técnica." },
-  { q: "Por que o corte híbrido funciona melhor que corte só molhado?", a: "Porque combina a precisão geométrica a seco (respeita encolhimento real) com o refinamento molhado (limpa linhas e pontas). Corte só molhado ignora o encolhimento e gera comprimento perdido ao secar. Corte só seco de mestre é ideal, mas corte híbrido é mais acessível para preservar comprimento." },
+  { q: "Diferença entre a leitura no seco e o corte molhado convencional?", a: "A análise no estado seco revela o caimento real e o encolhimento verdadeiro de cada mola. Cortar puramente molhado mascara a curvatura porque a água estica a fibra capilar em até 30% ou mais. Por isso o Corte Híbrido do Jon combina a leitura no seco com a precisão de corte, evitando surpresas indesejadas pós-lavagem." },
+  { q: "Por que o corte híbrido funciona melhor que cortes convencionais?", a: "Porque combina a leitura precisa do encolhimento natural no estado seco com a precisão geométrica das linhas e lapidação personalizada. Cortar apenas molhado ignora o encolhimento e gera assimetrias, enquanto cortes a seco isolados podem deixar pontas sem alinhamento limpo. O Corte Híbrido entrega o melhor dos dois mundos." },
   { q: "Como faço manutenção do corte entre visitas ao studio?", a: "Cortes em cabelo cacheado exigem retoque entre 8 a 12 semanas. Para manutenção caseira, evite pentes finos, faça cronograma consistente e proteja as pontas com óleos. Se o corte começar a ficar desigual, agende retoque. Não tente consertar em casa; o dano não compensa." },
   { q: "Como prevenir o efeito pirâmide (topo volumoso, embaixo fino)?", a: "O efeito pirâmide acontece com cortes em camadas mal-dimensionadas. A solução é usar cortes mais geométricos e desconectados, onde cada camada tem peso e suporte próprio. Visagismo equilibra o volume a partir do seu rosto, evitando essa forma desfavorável de forma inteligente." },
   { q: "Como controlar volume excessivo nos cachos?", a: "Volume é controlado pela angulação das camadas, pelo tipo de corte (blunt vs camadas) e pelo cronograma de secagem. Câmeras mais fechadas (curtas) geram volume; comprimentos maiores ajudam volume a cair. Difusor com movimento controlado também reduz volume final. Visagismo escolhe a melhor combinação." },
   { q: "Como desembaraçar cabelo cacheado sem danificar os cachos?", a: "Sempre molhado. Use condicionador copioso para lubrificar. Pente de dentes largos ou os dedos para desfazer nós. Nunca use pente fino ou escova, que quebram o fio. Escove do comprimento em direção à raiz, com muito cuidado no ponto de junção entre fios em alta porosidade." },
-  { q: "Se eu cortar em outro salão que não o Studio, como peço um bom corte de cachos?", a: "Peça especificamente por corte a seco ou híbrido que respeite seu tipo de curvatura. Leve fotos referências de como VOCÊ quer, não cópias de influenciadoras. Explique seu encolhimento esperado e seu comprimento final desejado. Mas o ideal é vir para o Studio onde a Leitura de Fio garante certeza técnica." },
+  { q: "Se eu cortar em outro salão que não o Studio, como peço um bom corte de cachos?", a: "Peça por uma avaliação prévia do seu fator de encolhimento e do seu caimento natural antes da tesoura. Leve fotos referências de como VOCÊ quer, não cópias de influenciadoras. Explique seu encolhimento esperado e seu comprimento final desejado. Mas o ideal é vir para o Studio onde a Leitura de Fio garante certeza técnica." },
   { q: "Cabelo comprido ou curto se adapta melhor a cachos?", a: "Ambos funcionam. Cabelo curto (pixie, bob) exige visagismo muito preciso para equilibrar o volume na sua face. Cabelo comprido (ombro, cintura) facilita o caimento mas exige cronograma mais intenso. A escolha é estilo pessoal; o visagismo adapta a geometria ao seu desejo." },
   { q: "Como estilo pessoal influencia o tipo de corte que devo fazer?", a: "Muito. Se você ama estilo grunge, wolf cut funciona. Se ama minimalismo, corte geométrico blunt é perfeito. Se ama volume dramático, camadas amplas e radicais. O visagismo técnico valida essas escolhas contra seu formato de rosto, garantindo que o estilo também seja harmonioso." },
   { q: "Cabelo saudável faz diferença no resultado visual final?", a: "Absoluta diferença. Um corte perfeito em cabelo poroso e ressecado fica feio e dura pouco. Um corte perfeito em cabelo saudável brilha e dura meses. Por isso, a Leitura de Fio começa com diagnóstico de saúde antes do corte. Tratamento e diagnóstico vêm sempre primeiro." },
@@ -447,11 +447,11 @@ const metodoBody = `
         <li><a href="/blog/transicao-capilar-sem-sofrimento-guia-cachos">Transição Capilar Sem Sofrimento: Guia Completo para Voltar aos Cachos</a></li>
         <li><a href="/blog/transicao-capilar-bh-danos-botox">Progressiva Derreteu Seus Cachos? | Jon</a></li>
       </ul>
-      <h3>Corte Técnico (seco/híbrido) &amp; Visagismo</h3>
+      <h3>Corte Técnico Híbrido &amp; Visagismo</h3>
       <ul>
         <li><a href="/blog/corte-hibrido-cabelo-cacheado">Corte Híbrido em Cabelo Cacheado: Técnica Molhada + Seca</a></li>
         <li><a href="/blog/corte-cabelo-cacheado-visagismo-influenciadora">Corte de Influenciadora Pode Não Ficar em Você | Jon</a></li>
-        <li><a href="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">Corte a Seco para Cabelo Cacheado | Jon</a></li>
+        <li><a href="/blog/corte-para-cabelo-cacheado-mentira-do-corte-a-seco">A Mentira do Corte a Seco | Jon</a></li>
         <li><a href="/blog/corte-para-cabelo-cacheado-bh-volume">Efeito Pirâmide no Cabelo Cacheado | Jon</a></li>
       </ul>
       <h3>Química &amp; Danos</h3>
@@ -723,7 +723,7 @@ const homeBody = `
       <h3>Como agendar no Studio do Jon?</h3>
       <p>O agendamento no Studio do Jon é feito diretamente pelo nosso site de forma totalmente online e instantânea. Basta acessar o link do calendário (/agendar), escolher o serviço desejado (como corte especializado, visagismo ou transição), selecionar a data e o melhor horário disponível e preencher seus dados de contato. A confirmação do seu horário é feita de forma automática por e-mail, sem a necessidade de ligações ou esperas no WhatsApp.</p>
       <h3>Como o corte se adapta a quem tem mais de uma textura na cabeça?</h3>
-      <p>É extremamente comum ter de duas a três curvaturas diferentes na mesma cabeça (como ondas suaves nas laterais e cachos fechados no topo). Através da Leitura de Fio a seco, identificamos onde cada textura se posiciona e calculamos a força de encolhimento de cada quadrante. A partir disso, o corte é desenhado de forma híbrida e desconectada para equilibrar a distribuição do volume, garantindo que o design final seja simétrico e tenha um caimento harmonioso.</p>
+      <p>É extremamente comum ter de duas a três curvaturas diferentes na mesma cabeça (como ondas suaves nas laterais e cachos fechados no topo). Através da Leitura de Fio, identificamos onde cada textura se posiciona em repouso natural e calculamos a força de encolhimento de cada quadrante. A partir disso, o corte é desenhado de forma híbrida e desconectada para equilibrar a distribuição do volume, garantindo que o design final seja simétrico e tenha um caimento harmonioso.</p>
       <h3>Como funciona o corte para quem está em transição capilar?</h3>
       <p>Se você está passando pela transição capilar, oferecemos cortes progressivos que ajudam a remover as pontas com química de forma gradual. Isso permite que você mantenha um comprimento confortável sem a necessidade de fazer o Big Chop radical logo no primeiro dia, caso não queira. O corte é adaptado para disfarçar a diferença de texturas entre a raiz natural e a ponta lisa, proporcionando volume e movimento enquanto o cacho natural cresce.</p>
     </article>
@@ -786,7 +786,7 @@ const especialistaCachosBhBody = `
       <h1>Especialista em Cachos Belo Horizonte — Studio do Jon</h1>
       <p>Seu cabelo cacheado merece um especialista que lê antes de cortar. No Studio do Jon, localizado no bairro Caiçaras, em BH, desenvolvemos o Método Leitura de Fio para diagnosticar com precisão a porosidade, o encolhimento e a saúde do seu fio antes de tocar com a tesoura.</p>
       <h2>Por que um Especialista em Cachos?</h2>
-      <p>Salões genéricos cortam cabelos cacheados molhados e esticados, ignorando a física da curvatura. O resultado seco quase sempre é imprevisível. Jon trabalha com técnicas de visagismo e corte híbrido (a seco e molhado de precisão) para desenhar um corte que se ajusta à sua identidade e é fácil de finalizar em casa.</p>
+      <p>Salões genéricos cortam cabelos cacheados molhados e esticados, ignorando a física da curvatura. O resultado quase sempre é imprevisível. Jon trabalha com técnicas de visagismo e corte híbrido personalizado para desenhar um corte que se ajusta à sua identidade e é fácil de finalizar em casa.</p>
       <ul>
         <li><a href="/metodo">Conheça o Método Leitura de Fio</a></li>
         <li><a href="/servicos/corte-hibrido">Saiba mais sobre o Corte Híbrido</a></li>
@@ -872,10 +872,10 @@ const pages = [
             },
             {
               "@type": "Question",
-              "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
+              "name": "Como é definido o corte para cada tipo de cacho?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
+                "text": "O corte é definido através do Método Leitura de Fio e da técnica de Corte Híbrido: analisamos a curvatura real e o encolhimento no estado natural para então planejar a geometria e o caimento perfeito, sem surpresas pós-lavagem."
               }
             }
           ]
@@ -886,7 +886,7 @@ const pages = [
   {
     route: '/',
     title: 'Especialista em Cabelo Cacheado BH | Studio do Jon',
-    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçaras). Corte a seco, visagismo e transição capilar.',
+    description: 'Salão especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte (Caiçaras). Método Leitura de Fio, visagismo e transição capilar.',
     bodyInsert: homeBody,
     schema: {
       "@context": "https://schema.org",
@@ -955,7 +955,7 @@ const pages = [
               "name": "Como o corte se adapta a quem tem mais de uma textura na cabeça?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "É extremamente comum ter de duas a três curvaturas diferentes na mesma cabeça (como ondas suaves nas laterais e cachos fechados no topo). Através da Leitura de Fio a seco, identificamos onde cada textura se posiciona e calculamos a força de encolhimento de cada quadrante. A partir disso, o corte é desenhado de forma híbrida e desconectada para equilibrar a distribuição do volume, garantindo que o design final seja simétrico e tenha um caimento harmonioso."
+                "text": "É extremamente comum ter de duas a três curvaturas diferentes na mesma cabeça (como ondas suaves nas laterais e cachos fechados no topo). Através da Leitura de Fio, identificamos onde cada textura se posiciona em repouso natural e calculamos a força de encolhimento de cada quadrante. A partir disso, o corte é desenhado de forma híbrida e desconectada para equilibrar a distribuição do volume, garantindo que o design final seja simétrico e tenha um caimento harmonioso."
               }
             },
             {
@@ -974,7 +974,7 @@ const pages = [
   {
     route: '/servicos',
     title: 'Serviços para Cabelo Cacheado em BH',
-    description: 'Corte a seco, tratamento e coloração para cabelo cacheado — com diagnóstico Leitura de Fio antes da tesoura. Veja preços reais e agende em BH.',
+    description: 'Corte personalizado, tratamento e coloração para cabelo cacheado — com diagnóstico Leitura de Fio antes da tesoura. Veja preços reais e agende em BH.',
     bodyInsert: servicesBody,
     schema: {
       "@context": "https://schema.org",
@@ -986,7 +986,7 @@ const pages = [
           "url": "https://www.ojonquecortou.com.br/servicos",
           "provider": { "@id": "https://www.ojonquecortou.com.br/#localbusiness" },
           "itemListElement": [
-            { "@type": "Offer", "priceCurrency": "BRL", "price": "190.00", "itemOffered": { "@type": "Service", "name": "Corte com o Jon", "description": "Inclui Leitura de Fio completa, corte a seco/técnico e finalização educativa." } },
+            { "@type": "Offer", "priceCurrency": "BRL", "price": "190.00", "itemOffered": { "@type": "Service", "name": "Corte com o Jon", "description": "Inclui Leitura de Fio completa, corte híbrido de precisão e finalização educativa." } },
             { "@type": "Offer", "priceCurrency": "BRL", "price": "80.00", "itemOffered": { "@type": "Service", "name": "Leitura de Fio", "description": "Diagnóstico capilar de 7 etapas. Valor revertido em crédito se fechar serviço." } },
             { "@type": "Offer", "priceCurrency": "BRL", "price": "230.00", "itemOffered": { "@type": "Service", "name": "Combo Corte + Tratamento", "description": "Corte especializado com tratamento de alta performance." } },
             { "@type": "Offer", "priceCurrency": "BRL", "price": "699.00", "itemOffered": { "@type": "Service", "name": "Luzes ou Morena Iluminada", "description": "Iluminação sem descolorante, preservando a estrutura do fio." } },
@@ -1236,7 +1236,7 @@ const pages = [
         <li><strong>Instagram:</strong> @ojonquecortou</li>
       </ul>
       <h2>Trajetória e Porta-voz</h2>
-      <p>Com quase uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (8–9 anos de prática especializada em Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.</p>
+      <p>Com quase uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (8–9 anos de prática especializada em Belo Horizonte), Jonatan Junior consolidou-se como referência técnica no Método Leitura de Fio, corte com visagismo e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.</p>
       <h2>Contato para pauta</h2>
       <p>Para entrevistas ou pedido de imagens em alta resolução, fale pelo WhatsApp: <a href="https://wa.me/5531983044059">(31) 98304-4059</a>.</p>
     </article>

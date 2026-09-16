@@ -319,7 +319,7 @@ const AdminMarketing = () => {
 
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;">Nas tendências de 2026 para curvaturas, o foco está em duas viradas de chave simples:</p>
 
-  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;"><strong style="color: #FFFFFF;">1. Distribuição de peso (Corte no estado seco):</strong> Quando as pontas pesam, a raiz achata e o topo fica sem vida. O corte a seco distribui o volume em camadas estratégicas, fazendo o cacho definir sem depender de quilos de gel.</p>
+  <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 18px; max-width: 56ch;"><strong style="color: #FFFFFF;">1. Distribuição de peso (Corte Híbrido com Leitura de Fio):</strong> Quando as pontas pesam, a raiz achata e o topo fica sem vida. O corte híbrido distribui o volume em camadas estratégicas, fazendo o cacho definir sem depender de quilos de gel.</p>
 
   <p style="font-family: 'Manrope', sans-serif; font-size: 15.5px; line-height: 1.68; color: #EFE5D2; margin: 0 0 28px; max-width: 56ch;"><strong style="color: #FFFFFF;">2. Acidificação e óleos vegetais:</strong> Menos hidratação vazia e mais nutrição lipídica técnica para selar a cutícula antes que a água quente cause a perda de massa.</p>
 
@@ -822,7 +822,7 @@ const AdminMarketing = () => {
       const parsed = saved ? JSON.parse(saved) : [];
       const baseReviews = [
         { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
-        { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
+        { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte com Leitura de Fio revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
         { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
         { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
       ];
@@ -830,7 +830,7 @@ const AdminMarketing = () => {
     } catch(e) {
       return [
         { id: 'rev_1', author: 'Isabela Rodrigues', rating: 5, comment: 'Nunca tinha visto meu cabelo tão bem definido! O Jon leu meu fio antes de tocar na tesoura e o resultado foi incrível. Recomendo demais para quem tem cacheado!', date: '2 dias atrás', reply: '' },
-        { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte a seco revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
+        { id: 'rev_2', author: 'Camila Ferreira', rating: 5, comment: 'Fui pela primeira vez e já marquei a volta. O visagismo foi perfeito pro formato do meu rosto. O corte com Leitura de Fio revelou um volume que eu não sabia que tinha.', date: '1 semana atrás', reply: 'Camila, que alegria ter você por aqui! O visagismo junto com a leitura de fio é exatamente o que permite a gente criar o volume certo pra cada rosto. Te esperamos na próxima! — Jon' },
         { id: 'rev_3', author: 'Lucas Mendes', rating: 5, comment: 'Meu crespo estava perdido e o Jon salvou. Ele explicou o scab hair, o problema de porosidade e cortou de um jeito que o cacho definiu muito melhor.', date: '2 semanas atrás', reply: '' },
         { id: 'rev_4', author: 'Fernanda Costa', rating: 5, comment: 'Finalmente um profissional que entende de transição capilar de verdade. Não foi só corte, foi uma consultoria completa. Saí completamente diferente e feliz!', date: '3 semanas atrás', reply: 'Fernanda, muito obrigado pela confiança no processo! Transição capilar exige técnica e cuidado com cada fase. Estamos aqui pra cada etapa da sua jornada! — Jon' }
       ];
@@ -1186,7 +1186,7 @@ Escreva apenas o texto da resposta direta em português do Brasil, sem aspas. Te
 
       const hooks = [
         'Seu fio tem memória — você sabia? 💡',
-        'Corte a seco: por que faz toda a diferença? ✂️',
+        'Corte híbrido: por que faz toda a diferença? ✂️',
         'Cachos e crespos não são iguais. Sabia disso? 🤷‍♀️',
         'Frizz: textura natural ou sinal de dano? 🔍',
         'Qual é o segredo de um cacho bem definido? 🌀',
@@ -1281,7 +1281,7 @@ Você escreve posts para o GBP do Studio do Jon (@ojonquecortou), cabeleireiro e
 
 ESTRUTURA OBRIGATÓRIA DE CADA POST
 1. GANCHO (1-2 linhas): Começa com o erro que o cliente comete, a dor real, ou uma afirmação contraintuitiva. Sem "Você sabia que...". Sem "Vamos falar sobre...".
-2. DESENVOLVIMENTO (3-5 linhas): A causa técnica do problema. Mencionar ao menos um destes: Método Leitura de Fio, corte a seco, visagismo, diagnóstico de couro, histórico químico, encolhimento, porosidade.
+2. DESENVOLVIMENTO (3-5 linhas): A causa técnica do problema. Mencionar ao menos um destes: Método Leitura de Fio, corte híbrido, visagismo, diagnóstico de couro, histórico químico, encolhimento, porosidade. NUNCA mencione o termo "corte a seco".
 3. CTA (1-2 linhas): Direto ao ponto. Incluir sempre: ojonquecortou.com.br/agendar e "📍 Caiçaras — BH | Studio do Jon"
 
 LIMITES TÉCNICOS

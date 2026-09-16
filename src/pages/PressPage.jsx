@@ -56,10 +56,10 @@ const PressPage = () => {
 
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Trajetória e Porta-voz</h2>
           <p className="paragraph-md" style={{ marginTop: 16 }}>
-            Com quase uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (8–9 anos de prática especializada em Belo Horizonte), Jonatan Junior consolidou-se como referência técnica em corte a seco e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e do visagismo, com foco em educação para autonomia do cliente em casa.
+            Com quase uma década atuando no atendimento a cabelos com curvatura no bairro Caiçaras (8–9 anos de prática especializada em Belo Horizonte), Jonatan Junior consolidou-se como referência técnica no Método Leitura de Fio, corte personalizado com visagismo e recuperação capilar sem química alisante. Seu trabalho é pautado na desmistificação do cuidado com o cacho natural através da física da fibra e da arquitetura do corte, com foco em educação para autonomia do cliente em casa.
           </p>
           <p className="paragraph-md" style={{ marginTop: 16 }}>
-            Jonatan está disponível como fonte técnica para veículos de imprensa, podcasts e criadores de conteúdo para pautas sobre transição capilar, saúde do couro cabeludo, física do corte a seco em curvaturas 2A a 4C, descoloração segura em cachos e impacto da Leitura de Fio na autoestima de pessoas crespas e cacheadas.
+            Jonatan está disponível como fonte técnica para veículos de imprensa, podcasts e criadores de conteúdo para pautas sobre transição capilar, saúde do couro cabeludo, física da curvatura capilar 2A a 4C, descoloração segura em cachos e impacto da Leitura de Fio na autoestima de pessoas crespas e cacheadas.
           </p>
 
           <h2 className="heading-lg" style={{ marginTop: 48 }}>Contato para pauta</h2>

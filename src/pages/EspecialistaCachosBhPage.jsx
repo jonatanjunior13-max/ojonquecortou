@@ -49,10 +49,10 @@ const pageSchema = {
         },
         {
           "@type": "Question",
-          "name": "Qual é a diferença entre corte a seco e corte molhado em cabelo cacheado?",
+          "name": "Como é definido o corte para cada tipo de cacho?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Corte molhado estica o fio 30%, removendo a curvatura real — o resultado muda radicalmente quando seca. Corte a seco respeita o encolhimento natural. O Método Leitura de Fio usa híbrido: a seco para ler a curvatura real, molhado para refinar."
+            "text": "O corte é desenhado a partir da Leitura de Fio, avaliando o fator de encolhimento e a curvatura no estado natural para garantir que o resultado final tenha simetria, movimento e zero surpresas pós-lavagem."
           }
         }
       ]
@@ -261,7 +261,7 @@ const EspecialistaCachosBhPage = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
             {[
               {
-                quote: 'O Jon lê o fio perfeitamente. O melhor corte a seco que já fiz!',
+                quote: 'O Jon lê o fio perfeitamente. O melhor corte que já fiz!',
                 author: 'Mariana S.'
               },
               {

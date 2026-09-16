@@ -464,7 +464,7 @@ const Home = () => {
     <main>
       <SEO 
         title="Especialista em Cabelo Cacheado BH | Studio do Jon" 
-        description="Especialista em cachos em Belo Horizonte. O Studio do Jon oferece corte a seco, diagnóstico técnico e tratamentos sob medida no Caiçaras. Agende seu horário!" 
+        description="Especialista em cachos em Belo Horizonte. O Studio do Jon oferece corte personalizado com Leitura de Fio, visagismo e tratamentos sob medida no Caiçaras. Agende seu horário!" 
       />
       <HomeHero />
       <hr className="technical-rule" />

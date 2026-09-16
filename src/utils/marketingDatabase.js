@@ -7,8 +7,8 @@ export const TRENDING_THEMES = [
     id: 'theme_corte_hibrido',
     title: 'Corte Híbrido: Geometria e Leveza',
     category: 'Corte & Visagismo',
-    description: 'A junção da técnica geométrica molhada com a lapidação a seco. Geometria define a base; o cabelo seco define a leveza e a distribuição real do volume no rosto.',
-    keywords: 'corte híbrido, corte de cachos, visagismo, corte a seco'
+    description: 'A junção da técnica geométrica molhada com a lapidação personalizada. Geometria define a base; a Leitura de Fio define a leveza e a distribuição real do volume no rosto.',
+    keywords: 'corte híbrido, corte de cachos, visagismo, Leitura de Fio'
   },
   {
     id: 'theme_visagismo_cachos',
@@ -28,28 +28,28 @@ export const TRENDING_THEMES = [
     id: 'theme_fator_encolhimento',
     title: 'Fator de Encolhimento na Prática',
     category: 'Corte & Visagismo',
-    description: 'O cacho seco encolhe até 70% comparado ao fio molhado. Explicamos por que cortar no estado seco é a única forma segura de prever o comprimento real final.',
+    description: 'O cacho seco encolhe até 70% comparado ao fio molhado. Explicamos por que avaliar no estado natural é a única forma segura de prever o comprimento real final.',
     keywords: 'fator de encolhimento, elasticidade capilar, comprimento dos cachos'
   },
   {
     id: 'theme_franja_cacheada',
     title: 'A Geometria da Franja Cacheada',
     category: 'Corte & Visagismo',
-    description: 'Franja em cabelo com curvatura funciona sim, desde que cortada cacho por cacho a seco, considerando o encolhimento e o caimento no centro da testa para não subir demais.',
-    keywords: 'franja cacheada, corte a seco franja, visagismo testa, volume frontal'
+    description: 'Franja em cabelo com curvatura funciona sim, desde que cortada com leitura mecha a mecha, considerando o encolhimento e o caimento no centro da testa para não subir demais.',
+    keywords: 'franja cacheada, visagismo franja, visagismo testa, volume frontal'
   },
   {
     id: 'theme_manutencao_corte',
     title: 'Janela de Manutenção do Corte',
     category: 'Corte & Visagismo',
-    description: 'Corte a seco bem executado dura de 3 a 4 meses porque cresce de forma proporcional. Passado esse tempo, as pontas perdem a geometria e o volume desce. Hora de refinar a forma.',
-    keywords: 'manutenção de corte, crescimento proporcional, corte a seco bh, caçara'
+    description: 'Corte técnico bem executado dura de 3 a 4 meses porque cresce de forma proporcional. Passado esse tempo, as pontas perdem a geometria e o volume desce. Hora de refinar a forma.',
+    keywords: 'manutenção de corte, crescimento proporcional, corte cachos bh, caiçaras'
   },
   {
     id: 'theme_linhas_visagismo',
     title: 'Linhas do Visagismo: Força vs. Leveza',
     category: 'Corte & Visagismo',
-    description: 'Como linhas retas, inclinadas e curvas no corte a seco comunicam dinamismo, suavidade ou seriedade. O corte como assinatura da sua identidade pessoal.',
+    description: 'Como linhas retas, inclinadas e curvas no corte com visagismo comunicam dinamismo, suavidade ou seriedade. O corte como assinatura da sua identidade pessoal.',
     keywords: 'linhas do visagismo, corte de cabelo personalizado, imagem pessoal'
   },
   {
@@ -419,7 +419,7 @@ export const TRENDING_THEMES = [
     id: 'theme_transicao_tardia',
     title: 'Transição Capilar aos 40 ou 50 Anos',
     category: 'Transição Capilar',
-    description: 'Nunca é tarde para voltar ao natural. O cabelo maduro tem dinâmicas hormonais diferentes, mas responde perfeitamente ao corte a seco e hidratação lipídica.',
+    description: 'Nunca é tarde para voltar ao natural. O cabelo maduro tem dinâmicas hormonais diferentes, mas responde perfeitamente ao corte híbrido e hidratação lipídica.',
     keywords: 'transição tardia, cabelos maduros cacheados, cachos grisalhos'
   },
   {

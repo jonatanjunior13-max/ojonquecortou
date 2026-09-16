@@ -63,7 +63,7 @@ const CachosLandingPage = () => {
     <div className="cachos-landing">
       <SEO 
         title="Especialista em Cachos BH | Método Leitura de Fio" 
-        description="Recupere a definição dos seus cachos no Studio do Jon. Corte a seco e diagnóstico exclusivo Leitura de Fio em Belo Horizonte." 
+        description="Recupere a definição dos seus cachos no Studio do Jon. Corte com visagismo e diagnóstico exclusivo Leitura de Fio em Belo Horizonte." 
         url="/cachos"
       />
 

@@ -62,11 +62,11 @@ const relatedArticleClusters = [
     ],
   },
   {
-    name: "Corte Técnico (seco/híbrido) & Visagismo",
+    name: "Corte Híbrido & Visagismo",
     posts: [
-      { slug: "corte-hibrido-cabelo-cacheado", title: "Corte Híbrido em Cabelo Cacheado: Técnica Molhada + Seca" },
+      { slug: "corte-hibrido-cabelo-cacheado", title: "Corte Híbrido em Cabelo Cacheado: Técnica e Precisão" },
       { slug: "corte-cabelo-cacheado-visagismo-influenciadora", title: "Corte de Influenciadora Pode Não Ficar em Você | Jon" },
-      { slug: "corte-para-cabelo-cacheado-mentira-do-corte-a-seco", title: "Corte a Seco para Cabelo Cacheado | Jon" },
+      { slug: "corte-para-cabelo-cacheado-mentira-do-corte-a-seco", title: "A Mentira do Corte a Seco | Jon" },
       { slug: "corte-para-cabelo-cacheado-bh-volume", title: "Efeito Pirâmide no Cabelo Cacheado | Jon" },
     ],
   },
@@ -123,7 +123,7 @@ const steps = [
     number: "06",
     title: "Definição de Técnica",
     paragraphs: [
-      "Só depois de passar pelas cinco etapas anteriores eu decido a estratégia. Trabalho com o Corte Híbrido (feito molhado de precisão e lapidado a seco após a finalização). A técnica exata é decidida com base no comportamento do seu fio e o resultado desejado. Cortar apenas seco ou apenas molhado de forma arbitrária ignora a física real do cacho.",
+      "Só depois de passar pelas cinco etapas anteriores eu decido a estratégia. Trabalho com o Corte Híbrido (combinando leitura e planejamento da curvatura no seu caimento natural, precisão geométrica e refinamento no acabamento). A técnica exata é decidida com base no comportamento do seu fio e o resultado desejado. Cortar puramente seco ou puramente molhado de forma arbitrária ignora a física real do cacho.",
       "Essa decisão não segue um padrão de revista ou de vídeo do Instagram. Ela é baseada nas necessidades específicas do seu fio naquele exato momento. O visagismo entra aqui com força, harmonizando o formato do corte com as linhas do seu rosto, valorizando a sua expressão pessoal."
     ]
   },

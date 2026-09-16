@@ -26,12 +26,12 @@ export const blogLinkMap = [
   { source: 'curvatura-4c-cabelo-crespo-guia-completo', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
 
   // Corte cluster
-  { source: '3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
+  { source: '3-erros-fatais-que-destroem-cabelos-cacheados-e-crespos', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte para cachos' },
   { source: 'corte-a-seco-cabelo-cacheado-bh-volume', target: 'frequencia-de-corte-cabelo-cacheado', anchor: 'frequência de corte' },
-  { source: 'corte-hibrido-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'técnica de corte a seco' },
-  { source: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
-  { source: 'frequencia-de-corte-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
-  { source: 'fator-encolhimento-cabelo-cacheado-fisica-geometria', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
+  { source: 'corte-hibrido-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'arquitetura do corte' },
+  { source: 'corte-para-cabelo-cacheado-mentira-do-corte-a-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'geometria do cacho' },
+  { source: 'frequencia-de-corte-cabelo-cacheado', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte técnico' },
+  { source: 'fator-encolhimento-cabelo-cacheado-fisica-geometria', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte estruturado' },
   { source: 'transicao-capilar-bh-corte-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte estratégico' },
 
   // Day-after / secagem cluster
@@ -65,7 +65,7 @@ export const blogLinkMap = [
 
   // Franja e Visagismo cluster
   { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'fator-encolhimento-cabelo-cacheado-fisica-geometria', anchor: 'fator encolhimento' },
-  { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte a seco' },
+  { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'corte-a-seco-cabelo-cacheado-bh-volume', anchor: 'corte de cachos' },
   { source: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', target: 'leitura-de-fio-metodo-exclusivo-studio-do-jon', anchor: 'Método Leitura de Fio' },
   { source: 'corte-a-seco-cabelo-cacheado-bh-volume', target: 'franja-cabelo-cacheado-crespo-visagismo-corte-seco', anchor: 'franja cacheada' },
   // Bixie Cut cluster

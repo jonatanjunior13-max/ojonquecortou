@@ -23,7 +23,7 @@ const personSchema = {
   ],
   "knowsAbout": [
     "Método Leitura de Fio",
-    "Corte a seco para cabelos cacheados",
+    "Corte com Leitura de Fio e Visagismo",
     "Visagismo capilar",
     "Transição capilar",
     "Descoloração em cabelos cacheados",

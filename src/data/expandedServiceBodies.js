@@ -126,12 +126,12 @@ export const EXPANDED_SERVICE_BODIES = {
   <li><strong>Análise Facial e Mapeamento (15 min):</strong> Medimos proporções, identificamos formato, traços proeminentes e distribuição de volume desejada, com base nos princípios de proporção áurea aplicados ao seu rosto específico.</li>
   <li><strong>Leitura de Fio (15 min):</strong> Curvatura, porosidade, densidade, histórico químico, comportamento a seco versus molhado — os dados técnicos que vão validar (ou revisar) o plano de visagismo.</li>
   <li><strong>Planejamento do Corte (10 min):</strong> Definimos exatamente como o corte será estruturado para harmonizar face, curvatura real e rotina, cruzando os dados das etapas anteriores.</li>
-  <li><strong>Corte Técnico (20-25 min):</strong> Execução do corte híbrido ou seco, respeitando as linhas planejadas e ajustando em tempo real conforme o fio reage.</li>
+  <li><strong>Corte Técnico (20-25 min):</strong> Execução do Corte Híbrido, respeitando as linhas planejadas e ajustando em tempo real conforme o fio reage.</li>
   <li><strong>Finalização Educativa (5 min):</strong> Mostramos como replicar a finalização em casa para que o corte funcione além do salão, não apenas no dia da execução.</li>
 </ol>
 
-<h2>Diferenças: Corte Híbrido vs. Corte a Seco no Visagismo</h2>
-<p>O visagismo é mais preciso com o Corte Híbrido (molhado + lapidação seca) porque avaliamos as linhas nos dois estados — molhado, quando o cacho está esticado pela água, e seco, quando está encolhido pela física natural da mola capilar. No corte exclusivamente a seco, corremos o risco de errar na proporção porque o fio já está contraído e é mais difícil visualizar linhas retas e simetria de comprimento entre lados.</p>
+<h2>Por Que Não Adotamos Corte Exclusivamente a Seco no Visagismo</h2>
+<p>O visagismo é infinitamente mais preciso com o Corte Híbrido guiado pela Leitura de Fio. No corte comercial vendido como "100% a seco", há grande risco de errar na simetria e nas proporções porque o fio já está contraído de forma irregular, dificultando a limpeza geométrica das linhas. Por outro lado, cortar apenas molhado mascara o encolhimento. O Corte Híbrido do Jon resolve isso: diagnosticamos no seco e combinamos precisão geométrica com lapidação personalizada.</p>
 
 <h2>Erros Comuns de Visagismo em Salões Sem Especialização em Cacho</h2>
 <p>Vemos com frequência clientes que passaram por "visagismo" em salões generalistas e saíram com resultado desproporcional. Os erros mais comuns:</p>
@@ -377,7 +377,7 @@ export const EXPANDED_SERVICE_BODIES = {
   <li><strong>Análise Facial (10-15 min):</strong> Conversamos, observamos proporções, tomamos notas específicas. Qual é seu estilo pessoal? Como você quer se sentir com o resultado final?</li>
   <li><strong>Leitura de Fio (15-20 min):</strong> Avaliamos curvatura, densidade, porosidade e histórico químico. Mapeamos exatamente o quanto de volume você realmente consegue sustentar de forma natural ao longo do dia.</li>
   <li><strong>Planejamento do Corte (10 min):</strong> Definimos exatamente que linhas, que volume e que comprimento vão harmonizar seu rosto respeitando a física real do seu cacho, não uma versão idealizada dele.</li>
-  <li><strong>Corte Técnico (25-30 min):</strong> Execução híbrida (molhado + seco) ou exclusivamente seca, conforme planejado, com máxima precisão em cada linha.</li>
+  <li><strong>Corte Técnico (25-30 min):</strong> Execução do Corte Híbrido com máxima precisão geométrica e lapidação personalizada em cada mecha.</li>
   <li><strong>Finalização Educativa (5 min):</strong> Ensinamos a replicar a finalização em casa, incluindo direção de penteado e técnica específica para maximizar o efeito de visagismo planejado.</li>
 </ol>
 
@@ -487,7 +487,7 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <h3>Por Que a Cutícula Determina Tudo</h3>
 <p>A cutícula é a camada externa do fio, formada por células sobrepostas como telhas de um telhado. Quando essas células estão bem cerradas, o fio tem baixa porosidade: repele água, demora para molhar e secar, e produtos tendem a ficar na superfície em vez de penetrar. Quando essas células estão afastadas ou danificadas — por química, calor, manipulação agressiva ou predisposição genética — o fio tem alta porosidade: absorve água e produto rapidamente, mas perde umidade na mesma velocidade. Isso não é estético, é estrutural, e é o motivo pelo qual a mesma máscara de hidratação que funciona maravilhosamente numa cliente pode deixar o cabelo de outra pesado e sem vida no dia seguinte.</p>
 <h3>O Papel do Córtex na Elasticidade</h3>
-<p>Abaixo da cutícula está o córtex, onde ficam as proteínas — principalmente queratina — organizadas em cadeias que dão ao fio sua força e capacidade de esticar e voltar ao formato original. Um fio saudável se comporta como uma mola: estica molhado, alonga, solta e retorna à curvatura original. Um fio com o córtex comprometido por química mal executada, calor excessivo ou desgaste mecânico perde essa capacidade elástica — estica e não volta, ou se rompe. Esse é o critério técnico que separa um cabelo que pode receber uma técnica de corte a seco mais agressiva de um cabelo que primeiro precisa de reconstrução proteica.</p>
+<p>Abaixo da cutícula está o córtex, onde ficam as proteínas — principalmente queratina — organizadas em cadeias que dão ao fio sua força e capacidade de esticar e voltar ao formato original. Um fio saudável se comporta como uma mola: estica molhado, alonga, solta e retorna à curvatura original. Um fio com o córtex comprometido por química mal executada, calor excessivo ou desgaste mecânico perde essa capacidade elástica — estica e não volta, ou se rompe. Esse é o critério técnico que separa um cabelo que suporta uma lapidação de camadas mais desconectada de um cabelo que primeiro precisa de reconstrução proteica.</p>
 <h3>Curvatura Não é Escolha, é Geometria do Folículo</h3>
 <p>O formato do folículo capilar — redondo, oval ou achatado, e o ângulo em que emerge do couro cabeludo — determina a curvatura do fio que nasce dali. Isso explica por que uma única cabeça frequentemente tem múltiplos padrões de cacho: a nuca pode ter um ângulo, a coroa outro, as laterais outro ainda. Tratar a cabeça inteira como um padrão único de curvatura é um dos erros mais comuns e mais destrutivos que vemos em quem já passou por outros salões.</p>
 <h3>Densidade e Diâmetro: Duas Variáveis Que se Confundem</h3>
@@ -697,7 +697,7 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h3>3. Corte técnico (25 a 30 minutos)</h3>
 
-<p>Esta é a etapa de execução, e a técnica usada é definida pela Leitura de Fio, não por padrão fixo do salão. Na maioria dos casos aplicamos o Corte Híbrido, que combina uma etapa a seco (para avaliar e ajustar o comprimento real, com o cacho já formado e reagindo à gravidade) com uma etapa molhada ou semi-molhada (para uniformizar linhas internas antes da formação final do cacho). Em alguns casos, quando o padrão de cacho é muito uniforme ou o objetivo é uma transformação estrutural maior, o corte pode ser feito exclusivamente a seco ou exclusivamente molhado — a decisão é sempre baseada no diagnóstico, nunca em protocolo automático. Cada linha é avaliada mecha a mecha, já que o mesmo comprimento nominal pode produzir contornos diferentes dependendo da curvatura daquela mecha específica.</p>
+<p>Esta é a etapa de execução, e a técnica usada é definida pela Leitura de Fio, não por padrão fixo do salão. Aplicamos o Corte Híbrido personalizado: unimos o diagnóstico e leitura da curvatura no estado natural (para mapear com precisão o encolhimento de cada mola em repouso) com a precisão geométrica e a lapidação das camadas. Cada linha é avaliada mecha a mecha, garantindo que o caimento se mantenha perfeito tanto no dia a dia quanto logo após a lavagem.</p>
 
 <h3>4. Finalização educativa (5 minutos)</h3>
 
@@ -750,8 +750,8 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <h2>Perguntas frequentes</h2>
 
-<h3>O corte é sempre feito com o cabelo seco?</h3>
-<p>Não necessariamente. Na maioria dos casos usamos o Corte Híbrido, que combina uma etapa molhada (para uniformizar linhas internas com mais controle) e uma etapa seca (para avaliar o contorno real, já com o cacho formado e reagindo à gravidade). Em alguns diagnósticos o corte pode ser feito exclusivamente seco, quando o padrão de cacho é muito definido e previsível, ou exclusivamente molhado, quando o objetivo é uma transformação estrutural maior. A decisão é sempre baseada na Leitura de Fio, nunca em protocolo padrão.</p>
+<h3>Você faz o corte tradicional a seco?</h3>
+<p>Não. Não trabalhamos com o corte puramente a seco comercial ou padronizado. Jon utiliza o Corte Híbrido guiado pelo Método Leitura de Fio: analisamos a curvatura e a taxa de encolhimento no estado seco natural (para entender a anatomia da mola sem o esticamento da água), combinando precisão geométrica e lapidação personalizada para que o corte tenha caimento simétrico, fluido e sem sustos pós-lavagem.</p>
 
 <h3>Meu cabelo tem mais de um padrão de cacho na mesma cabeça. Isso é um problema?</h3>
 <p>Não é um problema, é a regra, não a exceção. A maioria das pessoas com cabelo cacheado tem dois ou três padrões de curvatura convivendo — costuma ser mais fechado na nuca e mais solto nas laterais e na parte superior. A Leitura de Fio mapeia essa variação antes do corte para que a técnica considere cada zona da cabeça separadamente, em vez de tratar o cabelo como uniforme.</p>
@@ -968,7 +968,7 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 <p>Tratamento profissional não substitui cuidado diário — os dois trabalham juntos. Entre sessões, recomendamos uma rotina simples: máscara em casa 1x por semana, ou creme hidratante de uso contínuo 2x por semana, sempre respeitando o mesmo raciocínio de porosidade usado aqui no salão. Produto de nutrição em cabelo de alta porosidade, por exemplo, tende a não resolver o problema real — a fibra continua perdendo água mais rápido do que repõe. Os produtos específicos para o seu perfil são recomendados durante a Leitura de Fio ou nesta própria sessão de Tratamento.</p>
 
 <h2>Combinação Ideal: Tratamento + Corte</h2>
-<p>O ideal é fazer o Tratamento Personalizado 1-2 semanas antes de um corte. Cortar em fio saudável, hidratado e com elasticidade normalizada permite uma leitura de cacho mais precisa — cabelo ressecado ou quebradiço se comporta de forma diferente sob a tesoura, o que pode distorcer o resultado final do corte, especialmente em técnicas de corte a seco fio a fio.</p>
+<p>O ideal é fazer o Tratamento Personalizado 1-2 semanas antes de um corte. Cortar em fio saudável, hidratado e com elasticidade normalizada permite uma leitura de cacho mais precisa — cabelo ressecado ou quebradiço se comporta de forma diferente sob a tesoura, o que pode distorcer a previsibilidade das camadas e o caimento final.</p>
 
 <h2>Perguntas Frequentes</h2>
 

@@ -53,11 +53,11 @@ Um combo pensado para quem busca um especialista em cabelo cacheado em Belo Hori
     tagline: 'Ondulados, Cacheados e Crespos',
     description: `Nada de cortar os cachos de qualquer jeito seguindo uma fórmula genérica. Aqui conversamos primeiro — sobre seu estilo, sua rotina, o que você quer e o que seus cachos realmente precisam. É essa conversa inicial que torna cada corte único.
 
-O corte é totalmente personalizado. Muitas vezes um corte híbrido (molhado + seco), combinando técnica de precisão a úmido com lapidação cacho-a-cacho a seco — para realçar o formato natural dos fios e garantir movimento real que dura 3-4 meses. Cada corte nasce de uma leitura de fio completa (7 etapas: análise de curvatura, porosidade, elasticidade, densidade, histórico químico) e de princípios de visagismo aplicados a cabelo cacheado, crespo e ondulado.
+O corte é totalmente personalizado. Um corte híbrido totalmente estruturado pelo Método Leitura de Fio, combinando técnica de precisão com lapidação cacho a cacho — para realçar o formato natural dos fios e garantir movimento real que dura 3-4 meses. Cada corte nasce de uma leitura de fio completa (7 etapas: análise de curvatura, porosidade, elasticidade, densidade, histórico químico) e de princípios de visagismo aplicados a cabelo cacheado, crespo e ondulado.
 
 Nós não impomos tendências. Adaptamos cortes clássicos (shaggy, wolf cut, bob em camadas) para que funcionem com seu padrão de curvatura, sua densidade capilar e sua realidade de cuidados em casa. O objetivo é criar uma forma harmônica que valorize seus melhores traços e seja fácil de manter.
 
-Incluso: Leitura de Fio técnica completa, corte a seco/técnico com padrão real de caimento, finalização educativa (ensinamos como replicar em casa). Resultado: um cacho que cresce simétrico, que se acomoda naturalmente após lavagem, sem precisar de artifícios.
+Incluso: Leitura de Fio técnica completa, corte personalizado com padrão real de caimento, finalização educativa (ensinamos como replicar em casa). Resultado: um cacho que cresce simétrico, que se acomoda naturalmente após lavagem, sem precisar de artifícios.
 
 O corte que é porta de entrada de quem procura um especialista em cabelo cacheado no Caiçaras, em Belo Horizonte.`,
     price: 190,
@@ -66,7 +66,7 @@ O corte que é porta de entrada de quem procura um especialista em cabelo cachea
     duration: 60,
     isPrimary: true,
     position: 2,
-    includes: ['Leitura de Fio técnica completa', 'Corte híbrido a seco/úmido', 'Finalização educativa']
+    includes: ['Leitura de Fio técnica completa', 'Corte híbrido personalizado', 'Finalização educativa']
   },
   {
     id: 'luzes-morena-iluminada',

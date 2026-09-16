@@ -31,7 +31,7 @@
       ],
       "benefits": [
         "Leitura de Fio técnica incluída (diagnostica curvatura verdadeira e encolhimento real)",
-        "Corte híbrido (molhado de precisão + lapidado a seco) customizado",
+        "Corte híbrido (precisão geométrica + lapidação personalizada) customizado",
         "Finalização educativa mostrando rotina de cuidado",
         "Visagismo equilibra volume com formato do rosto",
         "Dura 3-4 meses com cronograma de manutenção"
@@ -61,23 +61,23 @@
       "bestFor": "Homem com cacho natural que quer qualidade similar ao corte feminino, respeitando sua curvatura e traços."
     },
     {
-      "id": "corte-seco",
-      "name": "Corte Seco (Lapidagem)",
+      "id": "corte-hibrido",
+      "name": "Corte Híbrido (Leitura de Fio)",
       "idealFor": [
-        "Primeira vez cortando a seco",
+        "Primeira vez buscando corte com diagnóstico profundo",
         "Cabelo em transição capilar (equilibra raiz natural com pontas alisadas)",
-        "Precisão máxima de comprimento e formato",
+        "Precisão máxima de comprimento, caimento e formato",
         "Depois de tratamentos químicos recentes"
       ],
       "benefits": [
-        "Mostra encolhimento real de cada fio (não mascara com água)",
-        "Lapidagem técnica mantém volume estruturado",
+        "Mostra encolhimento real de cada fio sem mascarar a curvatura",
+        "Lapidação técnica mantém volume estruturado",
         "Ideal para transição capilar (remove pontas danificadas com precisão)",
-        "Geralmente combinado com Corte Híbrido para melhor resultado"
+        "Combina geometria de precisão com finalização sob medida"
       ],
       "duration": "45m - 1h30m",
       "price": "R$ 190",
-      "bestFor": "Cliente em transição capilar ou em primeira avaliação onde encolhimento real precisa ser visto com precisão máxima."
+      "bestFor": "Cliente em transição capilar ou em avaliação onde encolhimento real precisa ser respeitado com precisão máxima."
     },
     {
       "id": "combo-corte-tratamento",

@@ -126,7 +126,7 @@ export const galleryImages = [
     id: 135,
     url: '/cachos-longos-castanhos-sorriso.webp',
     title: 'Cachos Longos com Sorriso',
-    description: 'Cachos longos e saudáveis com definição natural. Resultado de um corte técnico a seco.'
+    description: 'Cachos longos e saudáveis com definição natural. Resultado de um corte técnico personalizado com Leitura de Fio.'
   },
   {
     id: 136,
@@ -263,7 +263,7 @@ export const galleryImages = [
   {
     id: 101,
     url: '/corte-a-seco-cachos-definidos-bh.webp',
-    title: 'Corte a Seco Visagista',
+    title: 'Corte com Visagismo',
     description: 'Análise de curvatura antes da tesoura. Definição absoluta para cachos tipo 3.'
   },
   {

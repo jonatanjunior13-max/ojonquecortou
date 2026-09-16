@@ -22,7 +22,7 @@ const Services = () => {
              </div>
              <h3>Corte Especializado</h3>
              <p className="text-gray">
-               Corte a seco ou molhado com técnica exclusiva, visando a arquitetura do seu cacho. Inclui consultoria e finalização.
+               Corte personalizado com o Método Leitura de Fio, visando a arquitetura e o caimento natural do seu cacho. Inclui consultoria e finalização educativa.
              </p>
              <div className="service-price">
                <span>A partir de</span>

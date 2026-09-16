@@ -465,7 +465,7 @@ const BlogPostPage = () => {
                   O seu cabelo não precisa de mais experimentos.
                 </h2>
                 <p className="paragraph-md" style={{ color: '#d1c7bd', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: 20 }}>
-                  Chega de tentar adivinhar o que o seu fio precisa ou temer o corte a seco. Agende sua sessão com Leitura de Fio no Studio do Jon (Caiçaras - BH) e conquiste a forma e o volume que o seu cacho merece.
+                  Chega de tentar adivinhar o que o seu fio precisa ou cortar sem diagnóstico. Agende sua sessão com Leitura de Fio no Studio do Jon (Caiçaras - BH) e conquiste a forma e o volume que o seu cacho merece.
                 </p>
                 
                 <div className="post-cta-btns" style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>

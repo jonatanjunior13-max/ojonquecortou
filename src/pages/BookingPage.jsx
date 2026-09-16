@@ -3016,7 +3016,7 @@ ${clientData.notes ? `- *Observações:* ${clientData.notes}` : ''}`;
         <div className="social-proof-quotes">
           <div className="quote-item">
             <span className="stars">★★★★★</span>
-            <p>"O Jon lê o fio perfeitamente. O melhor corte a seco que já fiz!"</p>
+            <p>"O Jon lê o fio perfeitamente. O melhor corte que já fiz!"</p>
             <span className="author">- Mariana S.</span>
           </div>
           <div className="quote-item">

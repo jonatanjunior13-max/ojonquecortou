@@ -141,7 +141,7 @@
   },
   {
     "term": "Corte a seco",
-    "definition": "Técnica de corte realizado no cabelo completamente seco, sem molhá-lo previamente. Permite ver o caimento e o volume reais do fio. Ideal para cortar pontas danificadas e definir o volume geométrico desejado. Deve ser precedido de análise molhada para determinar o comprimento final.",
+    "definition": "Técnica de corte realizada no cabelo completamente seco. Embora seja um termo popular no mercado, o Studio do Jon não adota o modelo de corte puramente a seco isolado por considerar que ele dificulta a precisão de linhas retas e simetria. Em sua prática, Jon adota o Corte Híbrido guiado pela Leitura de Fio.",
     "context": "Used in corte-a-seco-cabelo-cacheado-bh-volume, corte-hibrido-cabelo-cacheado"
   },
   {
@@ -151,7 +151,7 @@
   },
   {
     "term": "Corte híbrido",
-    "definition": "Técnica que combina corte molhado de precisão (para marcar os ângulos e calcular encolhimento) com lapidação a seco (para refinar o volume e o caimento). Integra os benefícios de ambas as técnicas e exige maior domínio técnico. É a base da metodologia do Studio do Jon.",
+    "definition": "Técnica que combina diagnóstico e leitura no estado seco (para respeitar o encolhimento real da curvatura) com precisão geométrica e lapidação personalizada. Integra os benefícios de ambas as abordagens sem os riscos do corte puramente a seco ou puramente molhado. É a base da metodologia do Studio do Jon.",
     "context": "Used in corte-hibrido-cabelo-cacheado, leitura-de-fio-metodo-exclusivo-studio-do-jon"
   },
   {
