@@ -12,7 +12,7 @@ export const posts = [
     "dateModified": "2026-09-12",
     "author": "Jon",
     "category": "Cortes",
-    "image": "/blog-shag-hair-cacheado.webp",
+    "image": "/blog-shag-hair-cacheado-2026.webp",
     "faqSchema": {
       "@context": "https://schema.org",
       "@type": "FAQPage",

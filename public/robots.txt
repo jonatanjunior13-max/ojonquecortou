@@ -3,6 +3,13 @@ Allow: /
 Disallow: /admin
 Disallow: /cliente
 
+# Ahrefs Crawlers
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: AhrefsSiteAudit
+Allow: /
+
 # Crawlers de IA — explicitamente permitidos
 User-agent: GPTBot
 Allow: /

@@ -50,7 +50,14 @@ const SEO = ({ title, description, image, url, schema, noindex = false }) => {
     updateMeta('twitter:card', 'summary_large_image', false);
 
     if (url || typeof window !== 'undefined') {
-      const currentUrl = url ? `https://www.ojonquecortou.com.br${url}` : window.location.href;
+      let cleanPath = url;
+      if (!cleanPath && typeof window !== 'undefined') {
+        cleanPath = window.location.pathname;
+      }
+      if (cleanPath && cleanPath.length > 1 && cleanPath.endsWith('/')) {
+        cleanPath = cleanPath.slice(0, -1);
+      }
+      const currentUrl = `https://www.ojonquecortou.com.br${cleanPath || ''}`;
       updateMeta('og:url', currentUrl, true);
       
       // Update or create canonical link tag
