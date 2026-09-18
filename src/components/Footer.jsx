@@ -38,11 +38,14 @@ function Footer() {
             <ul>
               <li><Link to="/sobre">Sobre o Jon</Link></li>
               <li><Link to="/servicos">Serviços</Link></li>
+              <li><Link to="/servicos/especialista-cachos-bh">Especialista em Cachos BH</Link></li>
               <li><Link to="/servicos/corte-hibrido">Corte Híbrido</Link></li>
               <li><Link to="/servicos/transicao-capilar">Transição Capilar</Link></li>
               <li><Link to="/servicos/visagismo-cachos">Visagismo de Cachos</Link></li>
+              <li><Link to="/servicos/inside-trp">Reconstrução Inside TRP</Link></li>
               <li><Link to="/galeria">Galeria</Link></li>
               <li><Link to="/depoimentos">Depoimentos</Link></li>
+              <li><Link to="/imprensa">Imprensa</Link></li>
               <li><Link to="/blog">Blog</Link></li>
             </ul>
           </div>
@@ -73,7 +76,7 @@ function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH · <Link to="/politica-privacidade" style={{ color: 'inherit' }}>Política de Privacidade</Link> · <Link to="/termos-de-servico" style={{ color: 'inherit' }}>Termos de Serviço</Link></span>
+          <span>© {new Date().getFullYear()} · O Jon que Cortou · Studio do Jon · BH · <Link to="/politica-privacidade" style={{ color: 'inherit' }}>Política de Privacidade</Link> · <Link to="/termos-de-servico" style={{ color: 'inherit' }}>Termos de Serviço</Link> · <Link to="/imprensa" style={{ color: 'inherit' }}>Imprensa</Link></span>
           <span style={{ fontSize: '0.75rem', color: 'var(--muted)', opacity: 0.7 }}>Este site utiliza OAuth do Google para autenticação segura de agendamentos e painel administrativo.</span>
           <span>Feito com cuidado · Caiçaras, Belo Horizonte</span>
         </div>

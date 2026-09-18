@@ -222,8 +222,9 @@ function HomeTeasers() {
   const items = [
     { n: "01", t: "Sobre o Jon", d: "8-9 anos especializado, método próprio, atendimento individual.", href: "/sobre" },
     { n: "02", t: "Serviços", d: "Leitura, corte, morena iluminada, transição e cronograma.", href: "/servicos" },
-    { n: "03", t: "Galeria", d: "Antes/depois reais, sem retoque pra parecer domado.", href: "/galeria" },
-    { n: "04", t: "Depoimentos", d: "O que muda na rotina depois da Leitura de Fio.", href: "/depoimentos" },
+    { n: "03", t: "Especialista em Cachos BH", d: "Atendimento técnico e visagismo para onduladas, cacheadas e crespas em BH.", href: "/servicos/especialista-cachos-bh" },
+    { n: "04", t: "Galeria", d: "Antes/depois reais, sem retoque pra parecer domado.", href: "/galeria" },
+    { n: "05", t: "Depoimentos", d: "O que muda na rotina depois da Leitura de Fio.", href: "/depoimentos" },
   ];
   return (
     <section className="section" style={{ paddingTop: "clamp(60px, 9vw, 110px)" }}>

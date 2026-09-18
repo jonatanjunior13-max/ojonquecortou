@@ -94,6 +94,8 @@ function Navbar() {
                       </Link>
                       <div className="nav-dropdown-menu">
                         <Link to="/servicos">Todos os Serviços</Link>
+                        <Link to="/servicos/especialista-cachos-bh">Especialista em Cachos BH</Link>
+                        <Link to="/servicos/inside-trp">Reconstrução Inside TRP</Link>
                         <Link to="/servicos/descoloracao-cabelo-cacheado">Descoloração de Cachos</Link>
                         <Link to="/servicos/visagismo-cachos">Visagismo de Cachos</Link>
                       </div>
@@ -139,6 +141,12 @@ function Navbar() {
                         {l.label}<Arrow />
                       </Link>
                       <div className="mobile-sublinks" style={{ paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '8px' }}>
+                        <Link to="/servicos/especialista-cachos-bh" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
+                          ↳ Especialista em Cachos BH
+                        </Link>
+                        <Link to="/servicos/inside-trp" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
+                          ↳ Reconstrução Inside TRP
+                        </Link>
                         <Link to="/servicos/descoloracao-cabelo-cacheado" style={{ fontSize: '0.9rem', opacity: 0.8 }} onClick={() => setOpen(false)}>
                           ↳ Descoloração de Cachos
                         </Link>

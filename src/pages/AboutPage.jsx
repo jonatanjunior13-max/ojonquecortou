@@ -64,7 +64,7 @@ const AboutPage = () => {
           <div className="about-content reveal">
             <h2 className="heading-lg mb-2">O Cabelo não mente.<br />O corte errado, sim.</h2>
             <p className="paragraph-md mb-2">
-              Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.
+              Se você procura um <Link to="/servicos/especialista-cachos-bh" style={{ color: 'inherit', textDecoration: 'underline' }}>especialista em cachos em Belo Horizonte</Link> que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.
             </p>
             <p className="paragraph-md mb-3">
               Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçaras (BH), construí um espaço focado na <strong>liberdade do seu fio natural</strong>, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.
@@ -170,6 +170,9 @@ const AboutPage = () => {
           </div>
           <p className="text-center paragraph-md" style={{ marginTop: '1.5rem', color: 'var(--muted)' }}>
             📍 Bairro Caiçaras · BH · Próximo ao metrô Gameleira
+          </p>
+          <p className="text-center paragraph-sm" style={{ marginTop: '1rem', color: 'var(--muted)' }}>
+            Veículos de comunicação, jornalistas e criadores: conheça nossa <Link to="/imprensa" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>sala de imprensa e mídia</Link>.
           </p>
         </div>
       </section>

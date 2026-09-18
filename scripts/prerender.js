@@ -270,7 +270,7 @@ const aboutBody = `
       <h1>Muito Prazer, O Jon.</h1>
       <p>Especialista em curvaturas e visagismo no coração do bairro Caiçaras, BH.</p>
       <h2>O Cabelo não mente. O corte errado, sim.</h2>
-      <p>Se você procura um especialista em cachos em Belo Horizonte que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.</p>
+      <p>Se você procura um <a href="/servicos/especialista-cachos-bh">especialista em cachos em Belo Horizonte</a> que realmente entenda a ciência por trás das curvaturas, prazer. Meu Studio é um refúgio para quem cansou de cortes genéricos e busca um atendimento personalizado para cabelos ondulados, cacheados e crespos.</p>
       <p>Não sou apenas um cabeleireiro. Sou um leitor de fios. No Caiçaras (BH), construí um espaço focado na liberdade do seu fio natural, utilizando técnicas que respeitam o fator de encolhimento e a identidade de cada cliente.</p>
       <h2>Trajetória e Anos de Experiência</h2>
       <p>Há quase uma década atrás da cadeira (8 a 9 anos dedicados ao ofício), Jonatan Junior construiu sua trajetória profissional focada quase que integralmente no universo dos cabelos com curvatura — ondulados, cacheados e crespos. Passou por formações técnicas em corte, coloração e química capilar, mas foi na prática diária, atendendo centenas de texturas diferentes no bairro Caiçaras, que desenvolveu o olhar clínico que hoje é a marca registrada do Studio do Jon. Anos de atendimento a cabelos que chegavam danificados por descolorações mal avaliadas, cortes feitos com o fio molhado e esticado, ou queixas de "cabelo que não cresce" (quando na verdade só estava quebrando) revelaram um padrão: a maioria dos problemas capilares não nascia do cabelo em si, mas da falta de diagnóstico antes da tesoura ou da química.</p>
@@ -287,7 +287,7 @@ const aboutBody = `
         <li><strong>Visagismo:</strong> Harmonização do corte com o formato do seu rosto e sua personalidade.</li>
       </ul>
       <h2>Localização e Endereço</h2>
-      <p>Studio do Jon · Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: <a href="tel:+5531983044059">(31) 98304-4059</a>.</p>
+      <p>Studio do Jon · Rua Belmiro Braga, 544 · Caiçaras · Belo Horizonte, MG. Próximo ao metrô Gameleira e Avenida Pedro II. Telefone: <a href="tel:+5531983044059">(31) 98304-4059</a>. Para contatos de imprensa e pautas de mídia, consulte nossa sala de <a href="/imprensa">imprensa</a>.</p>
     </article>
   </noscript>
 `;
@@ -358,7 +358,7 @@ let servicesBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h1>Nossos Serviços — Studio do Jon</h1>
-      <p>Processos técnicos focados na saúde e na definição real do seu cacho. Especialidade em cabelos ondulados, cacheados e crespos em Belo Horizonte.</p>
+      <p>Processos técnicos focados na saúde e na definição real do seu cacho. Especialidade em cabelos ondulados, cacheados e crespos em Belo Horizonte. Conheça nosso atendimento de <a href="/servicos/especialista-cachos-bh">especialista em cachos em BH</a>.</p>
       <div style="display: grid; gap: 24px; margin-top: 24px;">
 `;
 SEED_SERVICES.forEach(s => {
@@ -375,6 +375,7 @@ SEED_SERVICES.forEach(s => {
 });
 servicesBody += `
       </div>
+      <p style="margin-top: 24px;"><a href="/imprensa">Sala de Imprensa e Pautas de Mídia</a> &middot; <a href="/agendar">Agendar Atendimento</a></p>
     </article>
   </noscript>
 `;
@@ -695,12 +696,13 @@ const homeBody = `
   <noscript>
     <article style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif; line-height: 1.6; color: #1a1310; background: #efe5d2;">
       <h2>Especialista em Cabelo Cacheado, Crespo e Ondulado em Belo Horizonte</h2>
-      <p>Jonatan Junior, o Jon, é cabeleireiro especialista em cabelos ondulados, cacheados e crespos no bairro Caiçaras, Belo Horizonte (MG). Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas realizado antes de qualquer corte. Atende todas as curvaturas, do tipo 2A ao 4C. Não realiza alisamento, relaxamento ou qualquer procedimento de modificação da curvatura.</p>
+      <p>Jonatan Junior, o Jon, é cabeleireiro <a href="/servicos/especialista-cachos-bh">especialista em cabelos ondulados, cacheados e crespos em Belo Horizonte</a> (bairro Caiçaras). Criador do Método Leitura de Fio — diagnóstico capilar em 7 etapas realizado antes de qualquer corte. Atende todas as curvaturas, do tipo 2A ao 4C. Não realiza alisamento, relaxamento ou qualquer procedimento de modificação da curvatura.</p>
       <h2>Serviços Principais</h2>
       <ul>
         <li><strong>Corte com o Jon</strong> — R$ 190. Inclui Leitura de Fio completa, corte e finalização educativa.</li>
         <li><strong>Leitura de Fio</strong> — R$ 80 (revertido em crédito se fechar serviço). Diagnóstico exclusivo de 7 etapas.</li>
         <li><strong>Combo Corte + Tratamento</strong> — R$ 230 (promocional, de R$ 320). Corte especializado com tratamento de alta performance.</li>
+        <li><strong>Inside TRP (Reconstrução Premium)</strong> — R$ 180. <a href="/servicos/inside-trp">Recuperação proteica profunda para fios com dano químico ou quebra</a>.</li>
         <li><strong>Descoloração em Cabelo Cacheado</strong> — A partir de R$ 699. Com diagnóstico de porosidade e histórico químico.</li>
         <li><strong>Tratamento Personalizado</strong> — R$ 130. Hidratação, nutrição ou reconstrução conforme diagnóstico.</li>
       </ul>

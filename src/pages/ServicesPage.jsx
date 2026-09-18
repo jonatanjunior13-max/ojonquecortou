@@ -144,7 +144,7 @@ const ServicesPage = () => {
         <div className="container text-center reveal active">
           <h1 className="heading-xl">Tabela de <span className="text-gradient">Serviços</span></h1>
           <p className="paragraph-lg max-w-lg mx-auto">
-            Processos técnicos focados na saúde e na definição real do seu cacho.
+            Processos técnicos focados na saúde e na definição real do seu cacho. Conheça nosso atendimento de <Link to="/servicos/especialista-cachos-bh" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>especialista em cachos em BH</Link>.
           </p>
         </div>
       </section>

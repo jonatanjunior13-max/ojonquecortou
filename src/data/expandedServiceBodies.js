@@ -26,7 +26,7 @@ export const EXPANDED_SERVICE_BODIES = {
   <li><strong>Divisão por Zonas de Curvatura:</strong> Não aplicamos o descolorante uniformemente como se fosse cabelo liso. As áreas com mais volume e menor porosidade (raiz, em geral) recebem o descolorante primeiro. As pontas, mais porosas e delicadas, recebem o produto por último e por menos tempo — uma inversão da lógica de aplicação usada em fio liso, onde muitas vezes se começa pelas pontas.</li>
   <li><strong>Proteção de Pontas:</strong> As pontas são pré-saturadas com óleos protetores antes da aplicação para reduzir a penetração excessiva do descolorante. Isso é especialmente importante em cabelo cacheado, onde as pontas já são cronicamente mais secas pelo paradoxo do cacho mencionado acima.</li>
   <li><strong>Tempo de Processamento Reduzido:</strong> Em cabelo cacheado, usamos tempos de processamento 10-30% menores comparado a cabelos lisos da mesma estrutura de melanina, dependendo do tipo de curvatura. O risco de dano aumenta exponencialmente (não linearmente) com o tempo em fios com curvatura, porque a fadiga mecânica das dobras da espiral se soma ao dano químico.</li>
-  <li><strong>Finalização com Reconstrução Imediata:</strong> Logo após remover o descolorante, aplicamos um protocolo intensivo de reconstrução: banho ácido para fechar e selar cutículas (voltando o pH do fio de alcalino para a faixa ácida natural de 4.5-5.5), máscara proteica profunda para repor parcialmente a queratina oxidada, e selamento final com óleos nobres. Isso reduz drasticamente a quebra pós-processo nos dias seguintes.</li>
+  <li><strong>Finalização com Reconstrução Imediata:</strong> Logo após remover o descolorante, aplicamos um protocolo intensivo de reconstrução como o nosso tratamento <a href="/servicos/inside-trp">Inside TRP — Reconstrução Premium</a>: banho ácido para fechar e selar cutículas (voltando o pH do fio de alcalino para a faixa ácida natural de 4.5-5.5), reposição proteica profunda para repor a queratina oxidada, e selamento final com óleos nobres. Isso reduz drasticamente a quebra pós-processo nos dias seguintes.</li>
 </ul>
 
 <h2>Tipo de Descoloração: Sem Descolorante vs. Descolorante Tradicional</h2>
@@ -162,7 +162,7 @@ export const EXPANDED_SERVICE_BODIES = {
 `,
 
   'corte-hibrido': `<h1>Corte Híbrido em Cabelo Cacheado | Studio do Jon</h1>
-<p>O Corte Híbrido é a técnica que combina precisão molhada com lapidação a seco — é a metodologia que dominou a especialização do Studio do Jon em cabelos cacheados, crespos e ondulados em Belo Horizonte. Diferente do corte exclusivamente a seco ou do corte exclusivamente molhado, o híbrido permite que o cabeleireiro avalie a linha tanto no estado contraído (seco) quanto no estado esticado (molhado), garantindo um resultado simétrico e funcional nos dois cenários — não apenas no espelho do salão no dia do corte.</p>
+<p>O Corte Híbrido é a técnica que combina precisão molhada com lapidação a seco — é a metodologia que consolidou o trabalho do <a href="/servicos/especialista-cachos-bh">especialista em cachos em BH</a> no Studio do Jon em cabelos cacheados, crespos e ondulados. Diferente do corte exclusivamente a seco ou do corte exclusivamente molhado, o híbrido permite que o cabeleireiro avalie a linha tanto no estado contraído (seco) quanto no estado esticado (molhado), garantindo um resultado simétrico e funcional nos dois cenários — não apenas no espelho do salão no dia do corte.</p>
 
 <h2>A Física do Encolhimento: Por Que Nenhum Corte de Cacho é Confiável em Um Estado Só</h2>
 <p>Cabelo com curvatura se comporta fisicamente como uma mola helicoidal. Quando molhado, a tensão superficial da água e o peso próprio esticam parcialmente essa espiral, alongando o fio. Quando seca, a estrutura de pontes de hidrogênio dentro do córtex se reorganiza e a fibra retorna à sua forma helicoidal natural — encolhendo. Esse encolhimento não é uma estimativa vaga: varia de forma previsível conforme o padrão de curvatura, de cerca de 10% em ondulados tipo 2A até 75% em crespos tipo 4C. Um corte planejado e finalizado inteiramente no estado molhado ignora essa variável física fundamental, e o resultado só se revela — geralmente para pior — depois que a cliente já foi embora do salão.</p>
@@ -1312,6 +1312,7 @@ export const SEED_SERVICE_EXPANDED_BODIES = {
 
 <p>Se o seu fio está entre dois mundos — opaco e sem definição, mas também quebrando ou perdendo elasticidade — vale entender com precisão qual é a proporção real do problema antes de tratar. <a href="/metodo">Conheça a Leitura de Fio</a> e <a href="/agendar">agende seu horário</a> para começar pelo diagnóstico.</p>
 
+<p>Para danos corticais mais severos com quebra ao pentear, conheça também o tratamento <a href="/servicos/inside-trp">Inside TRP — Reconstrução Premium</a>.</p>
 <p>Protocolo de recuperação intensiva realizado no Studio do Jon, em Belo Horizonte, no bairro Caiçaras.</p>
 `,
   'ritual-reposicao-lipidica-nutricao': `<h1>Ritual de Reposição Lipídica e Nutrição | Studio do Jon</h1>
