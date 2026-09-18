@@ -6,7 +6,7 @@ import {
   collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, setDoc, getDoc, writeBatch
 } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getEffectiveAbsences, absenceCoversDate } from '../../utils/absences';
+import { getEffectiveAbsences, absenceCoversDate, getAdjustedDay } from '../../utils/absences';
 import {
   Home, Calendar, Camera, Users, DollarSign, MoreHorizontal,
   Plus, Bell, ChevronLeft, ChevronRight, X, Check, Phone, MessageSquare,
@@ -232,10 +232,6 @@ const isFeriado = (dateStr) => {
   if (mobileHolidays.includes(dateStr)) return true;
 
   return false;
-};
-
-const getAdjustedDay = (date) => {
-  return date.getDay();
 };
 
 const isSlotBlocked = (prof, dateStr, slot) => {

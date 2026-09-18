@@ -14,14 +14,10 @@ import SEO from '../components/SEO';
 import { Arrow } from '../components/NewDesignComponents';
 import { Clock, ChevronDown, ChevronUp, Sparkles, Check, MessageCircle, Lock, Unlock, Mail, ShieldAlert, Calendar, Plus } from 'lucide-react';
 import { syncBookingToGoogle } from '../utils/gcalSync';
-import { getEffectiveAbsences, isSlotBlockedByAbsence } from '../utils/absences';
+import { getEffectiveAbsences, isSlotBlockedByAbsence, getAdjustedDay } from '../utils/absences';
 import { getAttribution } from '../utils/attribution';
 import './Booking.css';
 import { SEED_SERVICES } from '../data/seedServices';
-
-const getAdjustedDay = (date) => {
-  return date.getDay();
-};
 
 // Helper: converte duração (número ou texto como "120 min", "2h", "1h30m") em minutos
 const parseDurationInMinutes = (val) => {

@@ -38,7 +38,7 @@ import './Admin.css';
 const TIME_SLOTS = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
 import { SEED_SERVICES } from '../../data/seedServices';
 import { calculateNetValue } from '../../utils/finance';
-import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate } from '../../utils/absences';
+import { getEffectiveAbsences, getAbsenceForSlot, absenceCoversDate, getAdjustedDay } from '../../utils/absences';
 
 // Mapeia dias da semana
 const DAYS_TRANSLATION = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
@@ -198,10 +198,6 @@ const isFeriado = (dateStr) => {
   if (mobileHolidays.includes(dateStr)) return true;
 
   return false;
-};
-
-const getAdjustedDay = (date) => {
-  return date.getDay();
 };
 
 const getSlotBlockReason = (prof, dateStr, slot) => {

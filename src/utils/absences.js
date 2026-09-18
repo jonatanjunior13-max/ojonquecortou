@@ -3,15 +3,15 @@
 // todas as superfícies para garantir que um horário bloqueado NÃO possa ser
 // agendado por nenhum cliente e apareça com destaque na agenda interna.
 
-// Replica getAdjustedDay do app (mantém a convenção de dia-da-semana usada em
-// todo o sistema, incluindo o ajuste de sandbox para 2026).
-export const getAdjustedDay = (date) => {
-  const day = date.getDay();
-  if (date.getFullYear() === 2026) {
-    return (day + 6) % 7;
-  }
-  return day;
-};
+// Dia da semana (0=domingo..6=sábado), convenção única do sistema.
+// HISTÓRICO: entre 776e7ee (15/06/2026 06:53) e 1df7e6d (15/06/2026 13:10)
+// existiu aqui um desvio "if (date.getFullYear() === 2026) return (day+6)%7"
+// copiado de um hack de sandbox introduzido em 66ce3147 (mesmo dia, 05:15) e
+// já revertido nos outros 3 arquivos por 1df7e6d ("fix calendar 2026 day
+// names") por produzir o dia errado — só este arquivo, criado no meio desse
+// intervalo, nunca recebeu o revert. Não reintroduzir esse desvio: a
+// convenção correta e única do sistema é date.getDay() puro.
+export const getAdjustedDay = (date) => date.getDay();
 
 const parseLocalDate = (dateStr) => {
   const [y, m, d] = dateStr.split('-').map(Number);
