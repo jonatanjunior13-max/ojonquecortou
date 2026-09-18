@@ -121,6 +121,8 @@ function App() {
             <Route path="/servicos/manutencao-corte" element={<ManutencaoCortePagePage />} />
             <Route path="/servicos/detox-estimulante" element={<DetoxEstimulantePage />} />
             <Route path="/servicos/tratamento-personalizado" element={<Navigate to="/servicos/tratamento-personalizado-novo" replace />} />
+            <Route path="/servicos/tratamento-personalizado-" element={<Navigate to="/servicos/tratamento-personalizado-novo" replace />} />
+            <Route path="/blog/teste-de-porosidade-capilar" element={<Navigate to="/blog/teste-de-porosidade-guia-definitivo" replace />} />
             <Route path="/servicos/:serviceId" element={<ServiceDetailPage />} />
             <Route path="/galeria" element={<GalleryPage />} />
             <Route path="/blog" element={<BlogPage />} />

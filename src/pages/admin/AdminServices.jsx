@@ -179,7 +179,7 @@ const AdminServices = () => {
           await setDoc(doc(db, 'packages', editingPackage.id), payload, { merge: true });
         }
       } else {
-        const id = packageForm.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-pkg';
+        const id = (packageForm.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'pacote') + '-pkg';
         if (isDemoMode) {
           const updated = [...packages, { id, ...payload }];
           saveLocalPackages(updated);
@@ -286,7 +286,7 @@ const AdminServices = () => {
           await setDoc(doc(db, 'services', editingService.id), payload, { merge: true });
         }
       } else {
-        const id = form.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const id = form.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'servico';
         if (isDemoMode) {
           const updated = [...services, { id, ...payload }];
           saveLocalServices(updated);

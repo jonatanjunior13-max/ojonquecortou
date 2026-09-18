@@ -5545,7 +5545,7 @@ export const posts = [
 
 <h2>Erro 2: Cronograma genérico sem diagnóstico de porosidade</h2>
 
-<p>Quase todos os salões usam receitas universais. <a href=\"/blog/teste-de-porosidade-capilar\">A porosidade é a capacidade da fibra de absorver e reter água</a>. Nenhum salão genérico testa isso. Um especialista faz testes de elasticidade no molhado, observa a velocidade de absorção, analisa o brilho, e ENTÃO prescreve cronograma personalizado.</p>
+<p>Quase todos os salões usam receitas universais. <a href=\"/blog/teste-de-porosidade-guia-definitivo\">A porosidade é a capacidade da fibra de absorver e reter água</a>. Nenhum salão genérico testa isso. Um especialista faz testes de elasticidade no molhado, observa a velocidade de absorção, analisa o brilho, e ENTÃO prescreve cronograma personalizado.</p>
 
 <h2>Erro 3: Shampoo com sulfato + falta de acidificação</h2>
 
