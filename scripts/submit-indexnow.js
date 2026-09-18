@@ -20,6 +20,7 @@ try {
   });
 
   const engines = [
+    { name: 'IndexNow Central', hostname: 'api.indexnow.org' },
     { name: 'Bing', hostname: 'www.bing.com' },
     { name: 'Yandex', hostname: 'yandex.com' }
   ];

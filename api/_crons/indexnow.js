@@ -25,30 +25,29 @@ export default async function handler(req, res) {
       return res.status(400).send('Nenhuma URL válida encontrada no sitemap.');
     }
 
-    console.log(`Enviando ${urls.length} URLs para o Bing...`);
+    console.log(`Enviando ${urls.length} URLs para o IndexNow (api.indexnow.org e bing.com)...`);
 
-    // 3. Envia para o IndexNow
-    // Usando o endpoint em minúsculas conforme padrão da documentação
-    const response = await fetch('https://www.bing.com/indexnow', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json; charset=utf-8'
-      },
-      body: JSON.stringify({
-        host: 'www.ojonquecortou.com.br',
-        key: key,
-        keyLocation: `${SITE_URL}/${key}.txt`,
-        urlList: urls
-      })
+    const payload = JSON.stringify({
+      host: 'www.ojonquecortou.com.br',
+      key: key,
+      keyLocation: `${SITE_URL}/${key}.txt`,
+      urlList: urls
     });
 
-    const responseText = await response.text();
+    const headers = { 'Content-Type': 'application/json; charset=utf-8' };
 
-    if (response.ok) {
-      res.status(200).send(`Bing avisado com sucesso! ${urls.length} URLs indexadas. Resposta: ${responseText}`);
+    const [resCentral, resBing] = await Promise.allSettled([
+      fetch('https://api.indexnow.org/indexnow', { method: 'POST', headers, body: payload }),
+      fetch('https://www.bing.com/indexnow', { method: 'POST', headers, body: payload })
+    ]);
+
+    const centralOk = resCentral.status === 'fulfilled' && resCentral.value.ok;
+    const bingOk = resBing.status === 'fulfilled' && resBing.value.ok;
+
+    if (centralOk || bingOk) {
+      res.status(200).send(`IndexNow avisado com sucesso! (Central: ${centralOk ? 'OK' : 'Falha'}, Bing: ${bingOk ? 'OK' : 'Falha'}) - ${urls.length} URLs enviadas.`);
     } else {
-      console.error(`Erro do Bing: ${response.status}`, responseText);
-      res.status(response.status).send(`Erro ao falar com o Bing (${response.status}): ${responseText}`);
+      res.status(502).send('Falha ao comunicar com os endpoints do IndexNow.');
     }
   } catch (error) {
     console.error('Erro interno na função:', error);
