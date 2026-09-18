@@ -151,12 +151,17 @@
       "headers": { "Location": "/servicos/visagismo-cachos" }
     },
     {
-      "src": "/servicos/tratamento-personalizado(-)?(/)?$",
+      "src": "/servicos/tratamento-personalizado",
       "status": 301,
       "headers": { "Location": "/servicos/tratamento-personalizado-novo" }
     },
     {
-      "src": "/blog/teste-de-porosidade-capilar(/)?$",
+      "src": "/servicos/tratamento-personalizado-",
+      "status": 301,
+      "headers": { "Location": "/servicos/tratamento-personalizado-novo" }
+    },
+    {
+      "src": "/blog/teste-de-porosidade-capilar",
       "status": 301,
       "headers": { "Location": "/blog/teste-de-porosidade-guia-definitivo" }
     },
